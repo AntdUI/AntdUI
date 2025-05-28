@@ -50,6 +50,7 @@ namespace AntdUI
         string keyid;
         public override string name => keyid;
         TAMode ColorScheme;
+        TAlign DropDownTextAlign = TAlign.Left;
         public LayeredFormSelectDown(Select control, IList<object> items, string filtertext)
         {
             keyid = "Select";
@@ -65,6 +66,8 @@ namespace AntdUI
             selectedValue = control.SelectedValue;
             Radius = (int)(control.DropDownRadius ?? control.radius * Config.Dpi);
             DPadding = control.DropDownPadding;
+            DropDownTextAlign = control.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items, filtertext);
         }
@@ -82,7 +85,9 @@ namespace AntdUI
             Font = control.Font;
             selectedValue = control.SelectedValue;
             Radius = (int)(control.DropDownRadius ?? radius * Config.Dpi);
+            sf = Helper.SF(DropDownTextAlign);
             DPadding = control.DropDownPadding;
+            DropDownTextAlign = control.DropDownTextAlign;
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
         }
@@ -101,6 +106,7 @@ namespace AntdUI
             selectedValue = sValue;
             Radius = (int)(radius * Config.Dpi);
             DPadding = new Size(12, 5);
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             TAlignFrom align;
             switch (control.Alignment)
@@ -136,6 +142,8 @@ namespace AntdUI
             selectedValue = cell.DropDownValue;
             Radius = (int)(cell.DropDownRadius ?? control.Radius * Config.Dpi);
             DPadding = cell.DropDownPadding;
+            DropDownTextAlign = cell.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             Init(control, cell.DropDownPlacement, cell.DropDownArrow, true, rect, items, "");
         }
@@ -151,6 +159,8 @@ namespace AntdUI
             selectedValue = control.SelectedValue;
             scrollY = new ScrollY(this);
             DPadding = control.DropDownPadding;
+            DropDownTextAlign = control.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
@@ -161,6 +171,8 @@ namespace AntdUI
             ClickEnd = control.ClickEnd;
             scrollY = new ScrollY(this);
             DPadding = control.DropDownPadding;
+            DropDownTextAlign = control.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
@@ -174,6 +186,8 @@ namespace AntdUI
             selectedValue = cell.DropDownValue;
             Radius = (int)(cell.DropDownRadius ?? control.Radius * Config.Dpi);
             DPadding = cell.DropDownPadding;
+            DropDownTextAlign = cell.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
         }
@@ -239,8 +253,8 @@ namespace AntdUI
                         else if (CloseIcon) b_w += text_height;
                         w = r_w = b_w + gap_x2 + gap2;
                     }
-                    else stringFormatLeft.Trimming = StringTrimming.EllipsisCharacter;
-                    stringFormatLeft.FormatFlags = StringFormatFlags.NoWrap;
+                    else sf.Trimming = StringTrimming.EllipsisCharacter;
+                    sf.FormatFlags = StringFormatFlags.NoWrap;
 
                     int selY = -1;
                     int item_count = 0, divider_count = 0;
@@ -419,7 +433,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
+        StringFormat sf;
 
         public override Bitmap PrintBit()
         {
@@ -464,7 +478,7 @@ namespace AntdUI
         void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
         {
             if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, stringFormatLeft);
+            else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
             else if (selectedValue == it.Val || it.Val is SelectItem item && item.Tag == selectedValue)
             {
                 using (var path = it.Rect.RoundPath(Radius))
@@ -478,7 +492,7 @@ namespace AntdUI
                 {
                     var size = g.MeasureText(it.Text, Font);
                     var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    g.DrawText(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
+                    g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
                 }
                 DrawTextIconSelect(g, it);
             }
@@ -495,8 +509,8 @@ namespace AntdUI
                 {
                     var size = g.MeasureText(it.Text, Font);
                     var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, stringFormatLeft);
-                    else g.DrawText(it.SubText, Font, subbrush, rectSubText, stringFormatLeft);
+                    if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
+                    else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
                 }
                 DrawTextIcon(g, it, brush, it.Fore);
             }
@@ -531,14 +545,14 @@ namespace AntdUI
                 {
                     using (var fore = new SolidBrush(Colour.TextBase.Get(keyid, ColorScheme)))
                     {
-                        g.DrawText(it.Text, font, fore, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Text, font, fore, it.RectText, sf);
                     }
                 }
                 else
                 {
                     using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                     {
-                        g.DrawText(it.Text, font, fore, it.RectText, stringFormatLeft);
+                        g.DrawText(it.Text, font, fore, it.RectText, sf);
                     }
                 }
             }
@@ -548,14 +562,14 @@ namespace AntdUI
         {
             if (it.Enable)
             {
-                if (color.HasValue) g.DrawText(it.Text, Font, color.Value, it.RectText, stringFormatLeft);
-                else g.DrawText(it.Text, Font, brush, it.RectText, stringFormatLeft);
+                if (color.HasValue) g.DrawText(it.Text, Font, color.Value, it.RectText, sf);
+                else g.DrawText(it.Text, Font, brush, it.RectText, sf);
             }
             else
             {
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                 {
-                    g.DrawText(it.Text, Font, fore, it.RectText, stringFormatLeft);
+                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
                 }
             }
             DrawIcon(g, it, color ?? brush.Color);

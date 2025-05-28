@@ -861,6 +861,9 @@ namespace AntdUI
 
                                 PaintBgRowFrontStyle(g, row);
                                 PaintBgRowItem(g, row.row);
+
+                                g.ResetTransform();
+                                g.TranslateTransform(0, -sy);
                                 PaintBg(g, row.row);
                             }
                         }

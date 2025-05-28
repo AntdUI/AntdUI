@@ -1002,10 +1002,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="hwnd">The window handle.</param>
         /// <param name="state">The progress state.</param>
-        public static void SetProgressState(IntPtr hwnd, ThumbnailProgressState state)
-        {
-            TaskbarList.SetProgressState(hwnd, state);
-        }
+        public static void SetProgressState(IntPtr hwnd, ThumbnailProgressState state) => TaskbarList.SetProgressState(hwnd, state);
 
         /// <summary>
         /// Sets the progress value of the specified window's
@@ -1014,15 +1011,9 @@ namespace AntdUI
         /// <param name="hwnd">The window handle.</param>
         /// <param name="current">The current value.</param>
         /// <param name="maximum">The maximum value.</param>
-        public static void SetProgressValue(IntPtr hwnd, ulong current, ulong maximum)
-        {
-            TaskbarList.SetProgressValue(hwnd, current, maximum);
-        }
+        public static void SetProgressValue(IntPtr hwnd, ulong current, ulong maximum) => TaskbarList.SetProgressValue(hwnd, current, maximum);
 
-        public static void SetProgressValue(IntPtr hwnd, ulong current)
-        {
-            TaskbarList.SetProgressValue(hwnd, current, 100);
-        }
+        public static void SetProgressValue(IntPtr hwnd, ulong current) => TaskbarList.SetProgressValue(hwnd, current, 100);
     }
 
     /// <summary>
@@ -1052,13 +1043,13 @@ namespace AntdUI
         Paused = 0x8
     }
 
+    [ComImport]
     [Guid("56FDF344-FD6D-11d0-958A-006097C9A090")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ComImport]
     internal class CTaskbarList { }
 
     [ComImport]
-    [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
+    [Guid("EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface ITaskbarList3
     {

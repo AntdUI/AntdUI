@@ -32,6 +32,37 @@ namespace AntdUI
         /// <summary>
         /// 文本布局
         /// </summary>
+        public static StringFormat SF(TAlign align)
+        {
+            switch (align)
+            {
+                case TAlign.Left:
+                    return SF(tb: StringAlignment.Center, lr: StringAlignment.Near);
+                case TAlign.TL:
+                case TAlign.LT:
+                    return SF(tb: StringAlignment.Near, lr: StringAlignment.Near);
+                case TAlign.Top:
+                    return SF(tb: StringAlignment.Near, lr: StringAlignment.Center);
+                case TAlign.TR:
+                case TAlign.RT:
+                    return SF(tb: StringAlignment.Near, lr: StringAlignment.Far);
+                case TAlign.Right:
+                    return SF(tb: StringAlignment.Center, lr: StringAlignment.Far);
+                case TAlign.BR:
+                case TAlign.RB:
+                    return SF(tb: StringAlignment.Far, lr: StringAlignment.Far);
+                case TAlign.Bottom:
+                    return SF(tb: StringAlignment.Far, lr: StringAlignment.Center);
+                case TAlign.BL:
+                case TAlign.LB:
+                    return SF(tb: StringAlignment.Far, lr: StringAlignment.Near);
+                default: return SF();
+            }
+        }
+
+        /// <summary>
+        /// 文本布局
+        /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
         public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)

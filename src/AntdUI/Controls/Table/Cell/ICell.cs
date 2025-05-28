@@ -100,6 +100,11 @@ namespace AntdUI
         public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         /// <summary>
+        /// 下拉文本方向
+        /// </summary>
+        public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
+
+        /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         public bool DropDownClickEnd { get; set; }

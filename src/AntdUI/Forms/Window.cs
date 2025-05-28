@@ -52,7 +52,7 @@ namespace AntdUI
                 if (winState == value) return;
                 winState = value;
                 if (IsHandleCreated) HandMessage();
-                EventHub.Dispatch(EventType.WINDOW_STATE, winState == WState.Maximize);
+                EventHub.Dispatch(EventType.WINDOW_STATE);
             }
         }
 
@@ -164,7 +164,12 @@ namespace AntdUI
                     break;
                 case WindowMessage.WM_ACTIVATEAPP:
                 case WindowMessage.WM_NCACTIVATE:
-                    InvalidateNonclient();
+                    if (DarkUI.IsCompositionEnabled) InvalidateNonclient();
+                    else
+                    {
+                        m.Result = TRUE;
+                        return;
+                    }
                     break;
                 default:
                     if (WmGhostingHandler(m)) return;

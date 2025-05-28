@@ -372,16 +372,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            if (UseDwm && OS.Version.Major >= 6)
-            {
-                try
-                {
-                    int enabled = 0;
-                    DarkUI.DwmIsCompositionEnabled(ref enabled);
-                    DwmEnabled = enabled == 1;
-                }
-                catch { }
-            }
+            if (UseDwm && OS.Version.Major >= 6) DwmEnabled = DarkUI.IsCompositionEnabled;
             SetTheme();
             DisableProcessWindowsGhosting();
             HandMessage();

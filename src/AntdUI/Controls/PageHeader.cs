@@ -1131,24 +1131,22 @@ namespace AntdUI
                 }
             }
             hasr = rr;
-            if (DragMove)
+            if (DragMove) RMax(Parent.FindPARENT(MDI));
+        }
+
+        void RMax(Form? form)
+        {
+            if (form == null || form is LayeredFormDrawer) return;
+            if (form is BaseForm form_win)
             {
-                var form = Parent.FindPARENT(MDI);
-                if (form != null)
-                {
-                    if (form is LayeredFormDrawer) return;
-                    if (form is BaseForm form_win)
-                    {
-                        IsMax = form_win.IsMax;
-                        IsFull = form_win.IsFull;
-                    }
-                    else
-                    {
-                        IsMax = form.WindowState == FormWindowState.Maximized;
-                        if (IsMax) IsFull = form.FormBorderStyle == FormBorderStyle.None;
-                        else IsFull = false;
-                    }
-                }
+                IsMax = form_win.IsMax;
+                IsFull = form_win.IsFull;
+            }
+            else
+            {
+                IsMax = form.WindowState == FormWindowState.Maximized;
+                if (IsMax) IsFull = form.FormBorderStyle == FormBorderStyle.None;
+                else IsFull = false;
             }
         }
 
@@ -1342,7 +1340,7 @@ namespace AntdUI
                     Invalidate();
                     break;
                 case EventType.WINDOW_STATE:
-                    if (tag is bool state) IsMax = state;
+                    RMax(Parent.FindPARENT(MDI));
                     break;
             }
         }
