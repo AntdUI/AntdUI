@@ -202,6 +202,7 @@ namespace Demo.Controls
             ic4.TabIndex = 4;
             ic4.TextAlign = HorizontalAlignment.Center;
             ic4.TextChanged += CodeTextChanged;
+            ic4.VerifyKeyboard += VerifyKeyboard;
             ic4.KeyPress += CodeKeyPress;
             // 
             // ic3
@@ -214,6 +215,7 @@ namespace Demo.Controls
             ic3.TabIndex = 3;
             ic3.TextAlign = HorizontalAlignment.Center;
             ic3.TextChanged += CodeTextChanged;
+            ic3.VerifyKeyboard += VerifyKeyboard;
             ic3.KeyPress += CodeKeyPress;
             // 
             // ic2
@@ -226,6 +228,7 @@ namespace Demo.Controls
             ic2.TabIndex = 2;
             ic2.TextAlign = HorizontalAlignment.Center;
             ic2.TextChanged += CodeTextChanged;
+            ic2.VerifyKeyboard += VerifyKeyboard;
             ic2.KeyPress += CodeKeyPress;
             // 
             // ic1
@@ -238,6 +241,7 @@ namespace Demo.Controls
             ic1.TabIndex = 1;
             ic1.TextAlign = HorizontalAlignment.Center;
             ic1.TextChanged += CodeTextChanged;
+            ic1.VerifyKeyboard += VerifyKeyboard;
             ic1.KeyPress += CodeKeyPress;
             // 
             // panel5

@@ -32,7 +32,7 @@ AntdUI.Config.IsDark = true;// Set to dark mode
 AntdUI.Config.Animation = false;
 ```
 
-### Touch Screen Enabled 🔴
+### Touch Screen Enabled
 
 > Default Enable touch
 
@@ -40,7 +40,7 @@ AntdUI.Config.Animation = false;
 AntdUI.Config.TouchEnabled = true;
 ```
 
-### Shadow Enabled 🔴
+### Shadow Enabled
 
 > Default shadow on
 
@@ -48,7 +48,7 @@ AntdUI.Config.TouchEnabled = true;
 AntdUI.Config.ShadowEnabled = false;
 ```
 
-### ScrollBar Hidden Style 🔴
+### ScrollBar Hidden Style
 
 > Default continuous display `false`
 
@@ -73,14 +73,14 @@ AntdUI.Config.ShowInWindow = true;
 ```
 
 <details>
-<summary>Separate Config 🔴</summary>
+<summary>Separate Config</summary>
 
-> Popup in the window（Message）
+> Popup in the window (Message)
 ``` csharp
 AntdUI.Config.ShowInWindowByMessage = true;
 ```
 
-> Popup in the window（Notification）
+> Popup in the window (Notification)
 ``` csharp
 AntdUI.Config.ShowInWindowByNotification = true;
 ```
@@ -93,6 +93,14 @@ AntdUI.Config.ShowInWindowByNotification = true;
 
 ``` csharp
 AntdUI.Config.NoticeWindowOffsetXY = 0;
+```
+
+### Close Message/Notification immediately after exceeding the display limit 🔴
+
+> Default, wait for old ones to close before displaying
+
+``` csharp
+AntdUI.Config.NoticeOverflowClose = false;
 ```
 
 ### Text Rendering Quality

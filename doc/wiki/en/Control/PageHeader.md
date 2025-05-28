@@ -43,6 +43,7 @@ Name | Description | Type | Default Value |
 **FullBox** | Whether to display the full screen button | bool | false |
 **DragMove** | Can I drag the position | bool | true |
 **CloseSize** | Close button size | int | 48 |
+**MDI** 🔴 | Is it only effective for the parent window | bool | false |
 ||||
 **UseSystemStyleColor** | Use system colors | bool | false |
 **CancelButton** | Click to exit and close | bool | false |

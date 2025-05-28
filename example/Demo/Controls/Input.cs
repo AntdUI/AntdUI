@@ -62,6 +62,39 @@ namespace Demo.Controls
             }
         }
 
+        private void VerifyKeyboard(object sender, AntdUI.InputVerifyKeyboardEventArgs e)
+        {
+            if (sender is AntdUI.Input input && e.KeyData == (Keys.Control | Keys.V))
+            {
+                e.Result = false;
+                var strText = AntdUI.Helper.ClipboardGetText();
+                if (strText == null || string.IsNullOrEmpty(strText)) return;
+                int i = 0;
+                foreach (var it in strText)
+                {
+                    if (i == 0) input.Text = it.ToString();
+                    else
+                    {
+                        var find = tableLayoutPanel1.Controls.Find("ic" + (input.TabIndex + i), false);
+                        if (find.Length == 1 && find[0] is AntdUI.Input input_next)
+                        {
+                            input_next.Text = it.ToString();
+                            input_next.Focus();
+                        }
+                        else return;
+                    }
+                    i++;
+                }
+
+                var find_last = tableLayoutPanel1.Controls.Find("ic" + (input.TabIndex + i), false);
+                if (find_last.Length == 1 && find_last[0] is AntdUI.Input input_last_next)
+                {
+                    input_last_next.Text = "";
+                    input_last_next.Focus();
+                }
+            }
+        }
+
         private void CodeKeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 8 && sender is AntdUI.Input input && input.Text.Length == 0)

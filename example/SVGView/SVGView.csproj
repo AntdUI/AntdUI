@@ -25,7 +25,7 @@
     <PackageReference Include="PublishAotCompressed" Version="1.0.5" />
     <PackageReference Include="VC-LTL" Version="5.2.1" />
     <PackageReference Include="WinFormsComInterop" Version="0.5.0" />
-    <PackageReference Include="YY-Thunks" Version="1.1.6" />
+    <PackageReference Include="YY-Thunks" Version="1.1.7" />
     <RdXmlFile Include="rd.xml" />
   </ItemGroup>
 

@@ -102,7 +102,46 @@ Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **PrefixClick** | Occurrence when Prefix is clicked | void | MouseEventArgs e |
 **SuffixClick** | Occurrence when Suffix is clicked | void | MouseEventArgs e |
+**ClearClick** 🔴 | Clear occurs when clicked | void | MouseEventArgs e |
+**VerifyChar** 🔴 | Occurred during character verification | void | char Char `input character`,string? ReplaceText `replace text`, bool Result  |
+**VerifyKeyboard** 🔴 | Occurred during keyboard verification | void | Keys KeyData, bool Result |
 
+### Input Intercept strings
+
+> Not through `KeyPress`, but through `VerifyChar` or rewriting `Verify`
+
+> The following is a simulation of [InputNumber](#inputnumber) to achieve only numerical input
+
+``` csharp
+private void Input1_VerifyChar(object sender, AntdUI.InputVerifyCharEventArgs e)
+{
+    NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+    string decimalSeparator = numberFormatInfo.NumberDecimalSeparator,
+        groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
+    string keyInput = e.Char.ToString();
+    if (char.IsDigit(e.Char))
+    {
+        e.Result = true; // Numbers can be
+    }
+    else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
+    {
+        e.Result = true; // The decimal separator can be used
+    }
+    else if (e.Char == '\b')
+    {
+        e.Result = true; // The Backspace key can be used
+    }
+    else if (e.Char == '。')
+    {
+        e.ReplaceText = ".";
+        e.Result = true; // Replace Chinese period with English period
+    }
+    else
+    {
+        e.Result = false;
+    }
+}
+```
 
 ***
 
