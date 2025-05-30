@@ -1068,10 +1068,7 @@ namespace AntdUI
 
         #region 模糊
 
-        public static void Blur(Bitmap bmp, int range)
-        {
-            Blur(bmp, range, new Rectangle(0, 0, bmp.Width, bmp.Height));
-        }
+        public static void Blur(Bitmap bmp, int range) => Blur(bmp, range, new Rectangle(0, 0, bmp.Width, bmp.Height));
         public static void Blur(Bitmap bmp, int range, Rectangle rect)
         {
             if (range > 1)
@@ -1197,8 +1194,23 @@ namespace AntdUI
 
         #region 阴影
 
-        public static Bitmap PaintShadow(this GraphicsPath path, int width, int height, int range = 10) => PaintShadow(path, width, height, Color.Black, range);
-        public static Bitmap PaintShadow(this GraphicsPath path, int width, int height, Color color, int range = 10)
+        public static SafeBitmap PaintShadow(this GraphicsPath path, int width, int height, int range = 10) => PaintShadow(path, width, height, Color.Black, range);
+        public static SafeBitmap PaintShadow(this GraphicsPath path, int width, int height, Color color, int range = 10)
+        {
+            var bmp_shadow = new SafeBitmap(width, height);
+            using (var g = bmp_shadow.Graphics)
+            {
+                using (var brush = new SolidBrush(color))
+                {
+                    g.FillPath(brush, path);
+                }
+                Blur(bmp_shadow.Bitmap, range);
+            }
+            return bmp_shadow;
+        }
+
+        public static Bitmap PaintShadowO(this GraphicsPath path, int width, int height, int range = 10) => PaintShadowO(path, width, height, Color.Black, range);
+        public static Bitmap PaintShadowO(this GraphicsPath path, int width, int height, Color color, int range = 10)
         {
             var bmp_shadow = new Bitmap(width, height);
             using (var g = Graphics.FromImage(bmp_shadow))

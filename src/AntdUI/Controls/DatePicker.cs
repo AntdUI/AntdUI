@@ -136,7 +136,7 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; }
 
-        public TDatePicker picker = TDatePicker.Date;
+        TDatePicker picker = TDatePicker.Date;
         /// <summary>
         /// 设置选择器类型
         /// </summary>
@@ -227,13 +227,7 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
-                        subForm = new LayeredFormCalendar(this, ReadRectangle, _value, Picker, date =>
-                        {
-                            Value = date;
-                        }, btn =>
-                        {
-                            PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn));
-                        }, BadgeAction);
+                        subForm = new LayeredFormCalendar(this, ReadRectangle, _value, Picker, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                         subForm.Disposed += (a, b) =>
                         {
                             subForm = null;

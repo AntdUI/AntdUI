@@ -114,7 +114,7 @@ namespace AntdUI
                             {
                                 AnimationStateValue = i;
                                 Invalidate();
-                            }, 50, 1F, 0.05F);
+                            }, 50, 1F, .05F);
                         }
                     }
                     else
@@ -270,7 +270,7 @@ namespace AntdUI
                 var dpi = Config.Dpi;
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
                 gap = (int)(_gap * dpi), gap2 = gap * 2, gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
-                split = (int)(1F * dpi), split2 = split / 2,
+                split = (int)(1F * dpi), split2 = split / 2, sp2 = split * 2,
                 split_move = (int)(6F * dpi), split_move2 = split_move / 2;
 
                 check_radius = check_size * .12F * dpi;
@@ -361,8 +361,16 @@ namespace AntdUI
                     }
                 }
 
-                rect_read.Width = rect.Width;
-                rect_read.Height = rect.Height;
+                if (bordered)
+                {
+                    rect_read.Width = rect.Width - sp2;
+                    rect_read.Height = rect.Height - sp2;
+                }
+                else
+                {
+                    rect_read.Width = rect.Width;
+                    rect_read.Height = rect.Height;
+                }
 
                 var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
 
@@ -446,8 +454,7 @@ namespace AntdUI
                 bool iseg = emptyHeader && _rows.Count == 1;
                 if ((rect.Y + rect.Height) > last.RECT.Bottom && !iseg) rect_read.Height = last.RECT.Bottom - rect.Y;
 
-                int sp2 = split * 2;
-                rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width - sp2, rect_read.Height - sp2);
+                rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width, rect_read.Height);
 
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
                 foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);

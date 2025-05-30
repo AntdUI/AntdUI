@@ -397,6 +397,38 @@ namespace AntdUI
         /// </summary>
         public Rectangle Rect { get; private set; }
     }
+    public class TableHoverEventArgs : MouseEventArgs
+    {
+        public TableHoverEventArgs(object? record, int rowIndex, int columnIndex, Rectangle? rect, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            Record = record;
+            RowIndex = rowIndex;
+            ColumnIndex = columnIndex;
+            Rect = rect;
+        }
+
+        public TableHoverEventArgs(MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            RowIndex = ColumnIndex = -1;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+        /// <summary>
+        /// 行序号
+        /// </summary>
+        public int RowIndex { get; private set; }
+        /// <summary>
+        /// 列序号
+        /// </summary>
+        public int ColumnIndex { get; private set; }
+        /// <summary>
+        /// 表格区域
+        /// </summary>
+        public Rectangle? Rect { get; private set; }
+    }
     public class TableButtonEventArgs : MouseEventArgs
     {
         public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
@@ -606,6 +638,16 @@ namespace AntdUI
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
+    }
+
+    public class TablePaintBeginEventArgs : TablePaintEventArgs
+    {
+        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index) : base(canvas, rect, rectreal, record, rowIndex, index) { }
+
+        /// <summary>
+        /// 是否处理
+        /// </summary>
+        public bool Handled { get; set; }
     }
 
     public class TableSortModeEventArgs : EventArgs

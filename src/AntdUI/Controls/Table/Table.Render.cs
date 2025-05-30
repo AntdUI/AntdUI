@@ -653,54 +653,65 @@ namespace AntdUI
             var state = g.Save();
             try
             {
-                if (it is TCellCheck check) PaintCheck(g, check, enable);
-                else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
-                else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
-                else if (it is TCellSort sort)
+                if (CellPaintBegin == null) PaintItemCore(g, columnIndex, it, enable, fore);
+                else
                 {
-                    if (sort.AnimationHover)
-                    {
-                        using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table", ColorScheme))))
-                        {
-                            using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
-                            {
-                                g.Fill(brush, path_sort);
-                            }
-                        }
-                    }
-                    else if (sort.Hover)
-                    {
-                        using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
-                        {
-                            g.Fill(Colour.FillTertiary.Get("Table", ColorScheme), path_sort);
-                        }
-                    }
-                    SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
-                }
-                else if (it is Template template)
-                {
-                    g.SetClip(it.RECT, CombineMode.Intersect);
-                    foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
-                }
-                else if (it is TCellText text)
-                {
-                    g.SetClip(it.RECT, CombineMode.Intersect);
-                    g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
-                }
-                if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
-                if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
-                {
-                    using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
-                    {
-                        g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
-                        g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
-                        PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
-                    }
+                    var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex);
+                    CellPaintBegin(this, arge);
+                    if (!arge.Handled) PaintItemCore(g, columnIndex, it, enable, fore);
                 }
                 CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex));
             }
             catch { }
             g.Restore(state);
+        }
+
+        void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, SolidBrush fore)
+        {
+            if (it is TCellCheck check) PaintCheck(g, check, enable);
+            else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
+            else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
+            else if (it is TCellSort sort)
+            {
+                if (sort.AnimationHover)
+                {
+                    using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table", ColorScheme))))
+                    {
+                        using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
+                        {
+                            g.Fill(brush, path_sort);
+                        }
+                    }
+                }
+                else if (sort.Hover)
+                {
+                    using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
+                    {
+                        g.Fill(Colour.FillTertiary.Get("Table", ColorScheme), path_sort);
+                    }
+                }
+                SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
+            }
+            else if (it is Template template)
+            {
+                g.SetClip(it.RECT, CombineMode.Intersect);
+                foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
+            }
+            else if (it is TCellText text)
+            {
+                g.SetClip(it.RECT, CombineMode.Intersect);
+                g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
+            }
+            if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
+            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
+            {
+                using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
+                {
+                    g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
+                    g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
+                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                }
+            }
         }
 
         #endregion
@@ -1137,10 +1148,7 @@ namespace AntdUI
             var sps2 = sps / 2F;
             using (var bg = new SolidBrush(Colour.BgBase.Get("Table", ColorScheme)))
             {
-                foreach (var it in CellRanges)
-                {
-                    PaintMergeCells(g, rows, bg, split_color, fore, foreEnable, sps, sps2, it);
-                }
+                foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, split_color, fore, foreEnable, sps, sps2, it);
             }
             g.Restore(state);
         }

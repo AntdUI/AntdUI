@@ -30,11 +30,15 @@ namespace AntdUI
         /// </summary>
         public delegate void CheckEventHandler(object sender, TableCheckEventArgs e);
 
-
         /// <summary>
         /// 点击事件
         /// </summary>
         public delegate void ClickEventHandler(object sender, TableClickEventArgs e);
+
+        /// <summary>
+        /// 移动事件
+        /// </summary>
+        public delegate void HoverEventHandler(object sender, TableHoverEventArgs e);
 
         /// <summary>
         /// 按钮点击事件
@@ -87,6 +91,12 @@ namespace AntdUI
         public event ClickEventHandler? CellClick;
 
         /// <summary>
+        /// 滑动时发生
+        /// </summary>
+        [Description("滑动时发生"), Category("行为")]
+        public event HoverEventHandler? CellHover;
+
+        /// <summary>
         /// 单击按钮时发生
         /// </summary>
         [Description("单击按钮时发生"), Category("行为")]
@@ -133,6 +143,11 @@ namespace AntdUI
         public delegate void CellPaintEventHandler(object sender, TablePaintEventArgs e);
 
         /// <summary>
+        /// 绘制单元格之前发生
+        /// </summary>
+        public delegate void CellPaintBeginEventHandler(object sender, TablePaintBeginEventArgs e);
+
+        /// <summary>
         /// 编辑后事件
         /// </summary>
         public delegate void EndEditCompleteEventHandler(object sender, ITableEventArgs e);
@@ -154,6 +169,12 @@ namespace AntdUI
         /// </summary>
         [Description("绘制单元格时发生"), Category("行为")]
         public event CellPaintEventHandler? CellPaint;
+
+        /// <summary>
+        /// 绘制单元格之前发生
+        /// </summary>
+        [Description("绘制单元格之前发生"), Category("行为")]
+        public event CellPaintBeginEventHandler? CellPaintBegin;
 
         /// <summary>
         /// 编辑后发生

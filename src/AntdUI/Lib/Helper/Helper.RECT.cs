@@ -128,7 +128,7 @@ namespace AntdUI
             return rectlr;
         }
 
-        public static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = 0.8F)
+        public static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = .8F)
         {
             int h = (int)(text_height * size);
             int dot_size_ = h / 2;

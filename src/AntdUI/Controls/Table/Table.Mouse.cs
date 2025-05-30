@@ -421,6 +421,20 @@ namespace AntdUI
                             }
                         }
                     }
+                    else if (it.cell is Template template)
+                    {
+                        foreach (var item in template.Value)
+                        {
+                            if (item is CellCheckbox checkbox)
+                            {
+                                if (checkbox.Rect.Contains(r_x, r_y) && checkbox.Enabled && checkbox.AutoCheck) checkbox.Checked = !checkbox.Checked;
+                            }
+                            else if (item is CellRadio radio)
+                            {
+                                if (radio.Rect.Contains(r_x, r_y) && radio.Enabled && radio.AutoCheck) radio.Checked = !radio.Checked;
+                            }
+                        }
+                    }
                     else if (it.row.IsColumn && it.cell.COLUMN.SortOrder && it.cell is TCellColumn col)
                     {
                         //点击排序
@@ -587,6 +601,7 @@ namespace AntdUI
                 var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
                 if (cel_sel == null)
                 {
+                    MouseMoveCell(e);
                     foreach (RowTemplate it in rows)
                     {
                         if (it.IsColumn) continue;
@@ -594,19 +609,14 @@ namespace AntdUI
                         foreach (var cel_tmp in it.cells)
                         {
                             if (cel_tmp is TCellSort sort) sort.Hover = false;
-                            else if (cel_tmp is Template template)
-                            {
-                                foreach (var item in template.Value)
-                                {
-                                    if (item is CellLink btn) btn.ExtraMouseHover = false;
-                                }
-                            }
+                            else if (cel_tmp is Template template) ILeave(template);
                         }
                     }
                     SetCursor(false);
                 }
                 else
                 {
+                    MouseMoveCell(cel_sel, i_row, i_cel, offset_x, offset_y, e);
                     if (mode > 0)
                     {
                         for (int i = 1; i < rows.Length; i++)
@@ -614,13 +624,7 @@ namespace AntdUI
                             rows[i].Hover = false;
                             foreach (var cel_tmp in rows[i].cells)
                             {
-                                if (cel_tmp is Template template)
-                                {
-                                    foreach (var item in template.Value)
-                                    {
-                                        if (item is CellLink btn) btn.ExtraMouseHover = false;
-                                    }
-                                }
+                                if (cel_tmp is Template template) ILeave(template);
                             }
                         }
                         var cel = (TCellColumn)cel_sel;
@@ -664,13 +668,7 @@ namespace AntdUI
                                 foreach (var cel_tmp in rows[i].cells)
                                 {
                                     if (cel_tmp is TCellSort sort) sort.Hover = false;
-                                    else if (cel_tmp is Template template)
-                                    {
-                                        foreach (var item in template.Value)
-                                        {
-                                            if (item is CellLink btn) btn.ExtraMouseHover = false;
-                                        }
-                                    }
+                                    else if (cel_tmp is Template template) ILeave(template);
                                 }
                             }
                         }
@@ -678,7 +676,7 @@ namespace AntdUI
                         else
                         {
                             if (cel_sel.ROW.CanExpand && cel_sel.ROW.RectExpand.Contains(r_x, r_y)) { SetCursor(true); return; }
-                            SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y));
+                            SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y, e));
                         }
                     }
                 }
@@ -686,7 +684,7 @@ namespace AntdUI
             else ILeave();
         }
 
-        bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y)
+        bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y, MouseEventArgs e)
         {
             if (cel is TCellCheck checkCell)
             {
@@ -730,6 +728,24 @@ namespace AntdUI
                     else if (item is CellImage img_template)
                     {
                         if (img_template.Tooltip != null && img_template.Rect.Contains(x, y)) tipcel = img_template;
+                    }
+                    else if (item is CellCheckbox checkbox_template)
+                    {
+                        if (checkbox_template.Enabled && checkbox_template.AutoCheck)
+                        {
+                            checkbox_template.ExtraMouseHover = checkbox_template.Rect.Contains(x, y);
+                            if (checkbox_template.ExtraMouseHover) hand++;
+                        }
+                        else checkbox_template.ExtraMouseHover = false;
+                    }
+                    else if (item is CellRadio radio_template)
+                    {
+                        if (radio_template.Enabled && radio_template.AutoCheck)
+                        {
+                            radio_template.ExtraMouseHover = radio_template.Rect.Contains(x, y);
+                            if (radio_template.ExtraMouseHover) hand++;
+                        }
+                        else radio_template.ExtraMouseHover = false;
                     }
                 }
                 if (tipcel == null) CloseTip();
@@ -806,7 +822,23 @@ namespace AntdUI
             }
             return false;
         }
-        string? oldmove = null;
+
+        void MouseMoveCell(CELL cel, int i_row, int i_cel, int offset_x, int offset_y, MouseEventArgs e)
+        {
+            if (CellHover == null) return;
+            var moveid = i_row + "_" + i_cel;
+            if (oldmove2 == moveid) return;
+            oldmove2 = moveid;
+            CellHover(this, new TableHoverEventArgs(cel.ROW.RECORD, i_row, i_cel, new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height), e));
+        }
+        void MouseMoveCell(MouseEventArgs? e)
+        {
+            if (CellHover == null || oldmove2 == null) return;
+            oldmove2 = null;
+            CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+        }
+
+        string? oldmove = null, oldmove2 = null;
         TooltipForm? tooltipForm = null;
         void CloseTip(bool clear = false)
         {
@@ -1104,14 +1136,19 @@ namespace AntdUI
                 foreach (var cel in it.cells)
                 {
                     if (cel is TCellSort sort) sort.Hover = false;
-                    else if (cel is Template template)
-                    {
-                        foreach (var item in template.Value)
-                        {
-                            if (item is CellLink btn) btn.ExtraMouseHover = false;
-                        }
-                    }
+                    else if (cel is Template template) ILeave(template);
                 }
+            }
+            MouseMoveCell(null);
+        }
+
+        void ILeave(Template template)
+        {
+            foreach (var it in template.Value)
+            {
+                if (it is CellLink btn) btn.ExtraMouseHover = false;
+                else if (it is CellCheckbox checkbox) checkbox.ExtraMouseHover = false;
+                else if (it is CellRadio radio) radio.ExtraMouseHover = false;
             }
         }
 

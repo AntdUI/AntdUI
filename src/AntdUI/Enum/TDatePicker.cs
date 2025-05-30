@@ -26,14 +26,14 @@ namespace AntdUI
         /// <summary>
         /// 日
         /// </summary>
-        Date,
+        Date = 0,
         /// <summary>
         /// 月
         /// </summary>
-        Month,
+        Month = 1,
         /// <summary>
         /// 年
         /// </summary>
-        Year,
+        Year = 2,
     }
 }
