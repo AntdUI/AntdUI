@@ -87,6 +87,7 @@ namespace Demo.Controls
             pagination2.Location = new Point(3, 55);
             pagination2.Name = "pagination2";
             pagination2.Padding = new Padding(4);
+            pagination2.RecordsPerPageText = "项/页";
             pagination2.ShowSizeChanger = true;
             pagination2.Size = new Size(359, 46);
             pagination2.TabIndex = 12;
