@@ -1,5 +1,19 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.2` 2025-05-30
+
+- ➕ Select/Dropdown/Table DropDownTextAlign
+- ➕ Table CellPaintBegin/CellHover Events
+- ➕ Table CellCheckbox/CellRadio Cells
+- ✍️ Table Right floating floating background
+- ✍️ Page Header Maximization Button Change
+- ✍️ Suppress Win7 No Aero flicker
+- ✍️ Optimize shadow concurrency
+- ✍️ Optimize DatePickerRange interaction
+- ✍️ Date selection layout
+- ✍️ Table Merge Borders
+- ✍️ Adapt to Win7 scrollbar with no focus and no response
+
 ### `2.0.1` 2025-05-26
 
 - ➕ Label IconGap

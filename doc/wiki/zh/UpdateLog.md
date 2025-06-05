@@ -1,5 +1,19 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.2` 2025-05-30
+
+- ➕ Select/Dropdown/Table DropDownTextAlign
+- ➕ Table CellPaintBegin/CellHover 事件
+- ➕ Table CellCheckbox/CellRadio 单元格
+- ✍️ Table 右浮动悬浮背景
+- ✍️ PageHeader 最大化按钮变化
+- ✍️ 抑制 Win7 No Aero 闪烁
+- ✍️ 优化 阴影并发
+- ✍️ 优化 DatePickerRange 交互
+- ✍️ 日期选择布局
+- ✍️ Table 合并边框
+- ✍️ 适配 Win7 滚动条无焦点不响应
+
 ### `2.0.1` 2025-05-26
 
 - ➕ Label IconGap

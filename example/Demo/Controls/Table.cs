@@ -234,7 +234,6 @@ namespace Demo.Controls
             public override AntdUI.ICell GetCellValue(object value) => new AntdUI.CellTag(value.ToString(), AntdUI.TTypeMini.Success);
         }
 
-
         public class TestClass : AntdUI.NotifyProperty
         {
             public TestClass(int index, int start, string name, int age)
