@@ -33,6 +33,8 @@ namespace AntdUI
         /// <param name="text">文本</param>
         public CellLink(string id, string? text) { Id = id; _text = text; }
 
+        #region 属性
+
         /// <summary>
         /// ID
         /// </summary>
@@ -94,6 +96,35 @@ namespace AntdUI
         /// 文本提示
         /// </summary>
         public string? Tooltip { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        public CellLink SetText(string? text)
+        {
+            _text = text;
+            return this;
+        }
+        public CellLink SetTextAlign(ContentAlignment align = ContentAlignment.MiddleLeft)
+        {
+            textAlign = align;
+            textAlign.SetAlignment(ref stringFormat);
+            return this;
+        }
+        public CellLink SetEnabled(bool value = false)
+        {
+            enabled = value;
+            return this;
+        }
+        public CellLink SetTooltip(string? tooltip)
+        {
+            Tooltip = tooltip;
+            return this;
+        }
+
+
+        #endregion
 
         public override string? ToString() => _text;
     }

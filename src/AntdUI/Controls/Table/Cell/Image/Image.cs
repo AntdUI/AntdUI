@@ -64,6 +64,8 @@ namespace AntdUI
         /// <param name="_radius">圆角</param>
         public CellImage(Image img, int _radius) { image = img; radius = _radius; }
 
+        #region 属性
+
         #region 边框
 
         Color? bordercolor;
@@ -207,6 +209,99 @@ namespace AntdUI
         /// 文本提示
         /// </summary>
         public string? Tooltip { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        #region 图
+
+        public CellImage SetImage(Image img)
+        {
+            image = img;
+            return this;
+        }
+
+        public CellImage SetImage(string svg)
+        {
+            imageSvg = svg;
+            return this;
+        }
+
+        public CellImage SetImage(string svg, Color? fill)
+        {
+            imageSvg = svg;
+            fillSvg = fill;
+            return this;
+        }
+
+        public CellImage SetImageFit(TFit fit = TFit.Fill)
+        {
+            ImageFit = fit;
+            return this;
+        }
+
+        #endregion
+
+        #region 边框
+
+        public CellImage SetBorder(Color? color)
+        {
+            bordercolor = color;
+            return this;
+        }
+        public CellImage SetBorder(float value = 1F)
+        {
+            borderwidth = value;
+            return this;
+        }
+        public CellImage SetBorder(Color? color, float value = 1F)
+        {
+            bordercolor = color;
+            borderwidth = value;
+            return this;
+        }
+
+        #endregion
+
+        #region 大小
+
+        public CellImage SetSize(Size _size)
+        {
+            size = _size;
+            return this;
+        }
+        public CellImage SetSize(int _size)
+        {
+            size = new Size(_size, _size);
+            return this;
+        }
+        public CellImage SetSize(int w, int h)
+        {
+            size = new Size(w, h);
+            return this;
+        }
+
+        #endregion
+
+        public CellImage SetRound(bool value = true)
+        {
+            round = value;
+            return this;
+        }
+
+        public CellImage SetRadius(int value = 0)
+        {
+            radius = value;
+            return this;
+        }
+        public CellImage SetTooltip(string? tooltip)
+        {
+            Tooltip = tooltip;
+            return this;
+        }
+
+        #endregion
 
         public override string? ToString() => null;
     }

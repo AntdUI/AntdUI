@@ -550,7 +550,7 @@ namespace AntdUI
                     if (collapsed) ChangeUTitle(items);
                 }
             });
-            ScrollBar.SetVrSize(y);
+            ScrollBar.SetVrSize(y + Padding.Vertical);
             ScrollBar.SizeChange(_rect);
         }
 

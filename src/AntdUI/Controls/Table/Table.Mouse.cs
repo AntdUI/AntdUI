@@ -799,7 +799,7 @@ namespace AntdUI
                 {
                     CloseTip();
                     oldmove = moveid;
-                    if (!cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width)
+                    if (!cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1)
                     {
                         var text = cel.ToString();
                         if (!string.IsNullOrEmpty(text))

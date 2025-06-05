@@ -303,33 +303,53 @@ namespace AntdUI.Core
         Size MeasureText(List<TMPChar> txts, int width, int height)
         {
             int w = 0, x = 0, h = height;
-
-            for (int i = 0; i < txts.Count; i++)
+            if (width > 0)
             {
-                var it = txts[i];
+                for (int i = 0; i < txts.Count; i++)
+                {
+                    var it = txts[i];
 
-                if (it.emoji)
-                {
-                    x += it.w;
-                    if (x + DrawTextNextChar(txts, i + 1) > width)
+                    if (it.emoji)
                     {
-                        x = 0;
-                        h += height;
+                        x += it.w;
+                        if (x + DrawTextNextChar(txts, i + 1) > width)
+                        {
+                            x = 0;
+                            h += height;
+                        }
+                        else w += it.w;
                     }
-                    else w += it.w;
+                    else
+                    {
+                        x += it.w;
+                        if (x + DrawTextNextChar(txts, i + 1) > width)
+                        {
+                            x = 0;
+                            h += height;
+                        }
+                        else w += it.w;
+                    }
                 }
-                else
+                if (w > width) w = width;
+            }
+            else
+            {
+                for (int i = 0; i < txts.Count; i++)
                 {
-                    x += it.w;
-                    if (x + DrawTextNextChar(txts, i + 1) > width)
+                    var it = txts[i];
+
+                    if (it.emoji)
                     {
-                        x = 0;
-                        h += height;
+                        x += it.w;
+                        w += it.w;
                     }
-                    else w += it.w;
+                    else
+                    {
+                        x += it.w;
+                        w += it.w;
+                    }
                 }
             }
-            if (w > width) w = width;
             return new Size(w, h);
         }
 
@@ -386,7 +406,7 @@ namespace AntdUI.Core
                             float fontsize = StringPathFontSize(font);
                             using (var sf_font = Helper.SF_MEASURE_FONT())
                             {
-                                var sizeO = MeasureString(Config.NullText, font, rect.Width, sf_font);
+                                var sizeO = MeasureString(Config.NullText, font, 0, sf_font);
                                 int h = sizeO.Height;
                                 foreach (var it in txts)
                                 {
@@ -451,7 +471,7 @@ namespace AntdUI.Core
                                     else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
                                     else y = rect.Y;
 
-                                    int ox = x;
+                                    int ox = x, usex = 0;
 
                                     for (int i = 0; i < txts.Count; i++)
                                     {
@@ -463,7 +483,8 @@ namespace AntdUI.Core
                                             if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
                                             else SvgExtend.GetImgExtend(this, svg, rect_ico);
                                             x += it.w;
-                                            if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                            usex += it.w;
+                                            if (usex + DrawTextNextChar(txts, i + 1) > rect.Width)
                                             {
                                                 if (wrap)
                                                 {
@@ -472,13 +493,15 @@ namespace AntdUI.Core
                                                 }
                                                 x = ox;
                                                 y += it.w;
+                                                usex = 0;
                                             }
                                         }
                                         else
                                         {
                                             path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x, y, it.w, h), sf_font);
                                             x += it.w;
-                                            if (x + DrawTextNextChar(txts, i + 1) > rect.Width)
+                                            usex += it.w;
+                                            if (usex + DrawTextNextChar(txts, i + 1) > rect.Width)
                                             {
                                                 if (wrap)
                                                 {
@@ -487,6 +510,7 @@ namespace AntdUI.Core
                                                 }
                                                 x = ox;
                                                 y += h;
+                                                usex = 0;
                                             }
                                         }
                                     }

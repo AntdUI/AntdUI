@@ -48,6 +48,8 @@ namespace AntdUI
             _text = text;
         }
 
+        #region 属性
+
         Color? fore;
         /// <summary>
         /// 字体颜色
@@ -125,6 +127,36 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
+
+        #endregion
+
+        #region 设置
+
+        public CellBadge SetFore(Color? value)
+        {
+            fore = value;
+            return this;
+        }
+        public CellBadge SetFill(Color? value)
+        {
+            fill = value;
+            return this;
+        }
+
+        public CellBadge SetState(TState value = TState.Success)
+        {
+            _state = value;
+            return this;
+        }
+
+        public CellBadge SetDotRatio(float value)
+        {
+            dotratio = value;
+            return this;
+        }
+
+        #endregion
+
         public override string? ToString() => _text;
     }
 }

@@ -68,6 +68,8 @@ namespace AntdUI
             _fore = fore;
         }
 
+        #region 属性
+
         Color? _fore;
         /// <summary>
         /// 字体颜色
@@ -154,39 +156,43 @@ namespace AntdUI
                 if (_checked == value) return;
                 _checked = value;
                 ThreadCheck?.Dispose();
-                if (PARENT.PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
+                try
                 {
-                    AnimationCheck = true;
-                    if (value)
+                    if (PARENT.PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
                     {
-                        ThreadCheck = new ITask(PARENT.PARENT, () =>
+                        AnimationCheck = true;
+                        if (value)
                         {
-                            AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
-                            if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
-                            OnPropertyChanged();
-                            return true;
-                        }, 20, () =>
+                            ThreadCheck = new ITask(PARENT.PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
+                                if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
+                                OnPropertyChanged();
+                                return true;
+                            }, 20, () =>
+                            {
+                                AnimationCheck = false;
+                                OnPropertyChanged();
+                            });
+                        }
+                        else
                         {
-                            AnimationCheck = false;
-                            OnPropertyChanged();
-                        });
+                            ThreadCheck = new ITask(PARENT.PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
+                                if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
+                                OnPropertyChanged();
+                                return true;
+                            }, 20, () =>
+                            {
+                                AnimationCheck = false;
+                                OnPropertyChanged();
+                            });
+                        }
                     }
-                    else
-                    {
-                        ThreadCheck = new ITask(PARENT.PARENT, () =>
-                        {
-                            AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
-                            if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
-                            OnPropertyChanged();
-                            return true;
-                        }, 20, () =>
-                        {
-                            AnimationCheck = false;
-                            OnPropertyChanged();
-                        });
-                    }
+                    else AnimationCheckValue = value ? 1F : 0F;
                 }
-                else AnimationCheckValue = value ? 1F : 0F;
+                catch { }
                 CheckedChanged?.Invoke(this, new BoolEventArgs(value));
                 OnPropertyChanged();
             }
@@ -252,6 +258,48 @@ namespace AntdUI
         /// </summary>
         [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(true)]
         public bool AutoCheck { get; set; } = true;
+
+        #endregion
+
+        #region 设置
+
+        public CellRadio SetText(string? value)
+        {
+            _text = value;
+            return this;
+        }
+        public CellRadio SetFore(Color? value)
+        {
+            _fore = value;
+            return this;
+        }
+        public CellRadio SetFont(Font? value)
+        {
+            _font = value;
+            return this;
+        }
+        public CellRadio SetFill(Color? value)
+        {
+            fill = value;
+            return this;
+        }
+        public CellRadio SetChecked(bool value = true)
+        {
+            _checked = value;
+            return this;
+        }
+        public CellRadio SetEnabled(bool value = false)
+        {
+            enabled = value;
+            return this;
+        }
+        public CellRadio SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
+
+        #endregion
 
         #region 事件
 
