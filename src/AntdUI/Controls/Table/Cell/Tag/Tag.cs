@@ -117,6 +117,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        public int? Gap { get; set; }
+
         public override string ToString() => _text;
     }
 }

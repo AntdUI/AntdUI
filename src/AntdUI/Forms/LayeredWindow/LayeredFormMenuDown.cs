@@ -78,6 +78,7 @@ namespace AntdUI
         LayeredFormMenuDown? subForm = null;
         void Init(Control control, Rectangle rect_read, IList<MenuItem> items)
         {
+            if (OS.Win7OrLower) Select();
             int y = 10, w = rect_read.Width, count = 0;
             OMenuItem? oMenuItem = null;
             Helper.GDI(g =>

@@ -1043,14 +1043,8 @@ namespace AntdUI
                         PaintBgRowItem(g, row.row);
                         foreach (int fixedIndex in fixedColumnL) PaintItemFixed(g, row.row.cells[fixedIndex], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable, row.style);
                     }
-
-                    //if (dividers.Length > 0) foreach (var divider in dividers) g.Fill(brush_split, divider);
                     g.ResetTransform();
-                    if (fixedHeader)
-                    {
-
-                    }
-                    else g.TranslateTransform(0, bordered ? 0 : -sy);
+                    if (!fixedHeader) g.TranslateTransform(0, bordered ? 0 : -sy);
                     if (dividerHs.Length > 0) foreach (var divider in dividerHs) g.Fill(brush_split, divider);
 
                     clipath?.Dispose();
@@ -1116,7 +1110,6 @@ namespace AntdUI
                         }
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
-                        //if (dividers.Length > 0) foreach (var divider in dividers) g.Fill(brush_split, divider);
                         g.ResetTransform();
 
                         g.TranslateTransform(-sFixedR, 0);

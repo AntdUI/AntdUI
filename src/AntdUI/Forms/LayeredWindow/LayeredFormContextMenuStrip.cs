@@ -93,7 +93,6 @@ namespace AntdUI
                     break;
             }
             Init(point);
-
             KeyCall = keys =>
             {
                 if (keys == Keys.Escape)
@@ -207,6 +206,7 @@ namespace AntdUI
             else if (point.Y > (screen.Y + screen.Height) - TargetRect.Height) point.Y = screen.Y + screen.Height - TargetRect.Height;
 
             SetLocation(point);
+            if (OS.Win7OrLower) Select();
         }
 
         bool has_subtext = false;

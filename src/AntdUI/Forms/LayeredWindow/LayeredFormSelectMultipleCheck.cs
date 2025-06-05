@@ -88,6 +88,7 @@ namespace AntdUI
 
         void InitObj(SelectMultiple parent, int sx, LayeredFormSelectMultipleCheck control, float radius, Rectangle rect_read, IList<object> items, int sel)
         {
+            if (OS.Win7OrLower) Select();
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
@@ -113,6 +114,7 @@ namespace AntdUI
         int ArrowSize = 8;
         void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
+            if (OS.Win7OrLower) Select();
             int y = 10, w = rect_read.Width;
             r_w = w;
 

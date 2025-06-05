@@ -72,6 +72,7 @@ namespace AntdUI
         int ArrowSize = 8;
         void Init(SelectMultiple control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
+            if (OS.Win7OrLower) Select();
             int y = 10, w = rect_read.Width;
             r_w = w;
             int r_h;

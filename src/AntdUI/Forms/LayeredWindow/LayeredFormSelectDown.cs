@@ -194,6 +194,7 @@ namespace AntdUI
 
         void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, Rectangle rect_read, IList<object> items, int sel)
         {
+            if (OS.Win7OrLower) Select();
             lay = control;
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
@@ -224,6 +225,7 @@ namespace AntdUI
         LayeredFormSelectDown? subForm = null;
         void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
+            if (OS.Win7OrLower) Select();
             int y = 10, w = rect_read.Width;
             r_w = w;
             var point = control.PointToScreen(Point.Empty);

@@ -494,7 +494,12 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (Config.TouchClickEnabled)
+            if (OS.Win7OrLower && m.Msg == WM_LBUTTONDOWN)
+            {
+                Select();
+                base.WndProc(ref m);
+            }
+            else if (Config.TouchClickEnabled)
             {
                 switch (m.Msg)
                 {

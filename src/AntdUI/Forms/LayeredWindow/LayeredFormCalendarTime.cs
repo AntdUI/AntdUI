@@ -134,6 +134,7 @@ namespace AntdUI
             if (ShowButtonNow) rect_buttonok = new Rectangle(rect_button.Right, rect_button.Top, rect_button.Width, rect_button.Height);
             else rect_buttonok = new Rectangle(rect_button.X, rect_button.Top, t_width, rect_button.Height);
             CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            if (OS.Win7OrLower) Select();
         }
 
         public override string name => nameof(TimePicker);

@@ -156,6 +156,7 @@ namespace AntdUI
             }
             CLocation(point, _control.Placement, _control.DropDownArrow, shadow, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
             t_h = r_h;
+            if (OS.Win7OrLower) Select();
         }
 
         public override string name => nameof(DatePicker);

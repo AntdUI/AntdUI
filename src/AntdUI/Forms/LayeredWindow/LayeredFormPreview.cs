@@ -99,6 +99,7 @@ namespace AntdUI
             form.SizeChanged += Form_LSChanged;
             LoadImg();
             base.OnLoad(e);
+            if (OS.Win7OrLower) Select();
         }
 
         private void Form_LSChanged(object? sender, EventArgs e)

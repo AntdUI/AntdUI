@@ -147,6 +147,7 @@ namespace AntdUI
             int t_time_w = t_time * 3;
             rect_buttonok = new Rectangle(t_x + 10 + t_one_width, rect_button.Y, t_time_w, t_button);
             CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            if (OS.Win7OrLower) Select();
         }
 
         public override string name => nameof(DatePicker);
