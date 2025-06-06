@@ -1024,7 +1024,7 @@ namespace AntdUI
                     var size = it.GetSize(g, font, gap, gap2);
                     sizes.Add(size);
                     w += size.Width + sp;
-                    if (it.ImpactHeight && h < size.Height) h = size.Height;
+                    if ((PARENT.CellImpactHeight ?? it.ImpactHeight) && h < size.Height) h = size.Height;
                 }
                 MinWidth = w + gap + sp;
                 SIZES = sizes.ToArray();

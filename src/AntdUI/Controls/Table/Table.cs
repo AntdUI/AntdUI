@@ -172,6 +172,15 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 单元格标签间距
+        /// </summary>
+        [Description("单元格标签间距"), Category("外观"), DefaultValue(null)]
+        public int? GapCellTag { get; set; }
+
+        [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
+        public bool? CellImpactHeight { get; set; }
+
         bool fixedHeader = true;
         /// <summary>
         /// 固定表头
@@ -486,6 +495,22 @@ namespace AntdUI
             }
         }
 
+        float borderWidth = 1F;
+        /// <summary>
+        /// 边框宽度
+        /// </summary>
+        [Description("边框宽度"), Category("边框"), DefaultValue(1F)]
+        public float BorderWidth
+        {
+            get => borderWidth;
+            set
+            {
+                if (borderWidth == value) return;
+                borderWidth = value;
+                Invalidate();
+            }
+        }
+
         Color? borderColor;
         /// <summary>
         /// 表格边框颜色
@@ -503,6 +528,12 @@ namespace AntdUI
                 OnPropertyChanged(nameof(BorderColor));
             }
         }
+
+        /// <summary>
+        /// 单元格边框宽度
+        /// </summary>
+        [Description("单元格边框宽度"), Category("边框"), DefaultValue(1F)]
+        public float BorderCellWidth { get; set; } = 1F;
 
         #region 表头
 
@@ -1948,6 +1979,11 @@ namespace AntdUI
         /// <summary>
         /// 设置列样式
         /// </summary>
+        public Column SetStyle(Color? back, Color? fore = null) => SetStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
+
+        /// <summary>
+        /// 设置列样式
+        /// </summary>
         public Column SetStyle(Table.CellStyleInfo? style)
         {
             Style = style;
@@ -1958,6 +1994,11 @@ namespace AntdUI
         /// 标题列样式
         /// </summary>
         public Table.CellStyleInfo? ColStyle { get; set; }
+
+        /// <summary>
+        /// 设置标题列样式
+        /// </summary>
+        public Column SetColStyle(Color? back, Color? fore = null) => SetStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
 
         /// <summary>
         /// 设置标题列样式

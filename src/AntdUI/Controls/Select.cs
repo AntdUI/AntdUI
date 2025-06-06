@@ -783,15 +783,23 @@ namespace AntdUI
     }
     public class ISelectItem { }
 
-    internal class ObjectItemSearch
+    public class iItemSearchWeigth
     {
-        public ObjectItemSearch(int weigth, ObjectItem value)
+        public iItemSearchWeigth(int weigth, object value)
         {
             Weight = weigth;
             Value = value;
         }
         public int Weight { get; set; }
-        public ObjectItem Value { get; set; }
+        public virtual object Value { get; set; }
+    }
+    public class ItemSearchWeigth<T> : iItemSearchWeigth
+    {
+        public ItemSearchWeigth(int weigth, T value) : base(weigth, value!)
+        {
+            Value = value;
+        }
+        public new T Value { get; set; }
     }
 
     internal class ObjectItem : SelectItem
@@ -881,34 +889,7 @@ namespace AntdUI
         public Rectangle RectOnline { get; set; }
 
         string[] PY { get; set; }
-        public int Contains(string val, out bool select)
-        {
-            select = false;
-            int gear = PY.Length, score = 0;
-            if (Text == val)
-            {
-                select = true;
-                score += gear * 10;
-            }
-            val = val.ToLower();
-            if (Text == val)
-            {
-                select = true;
-                score += gear * 8;
-            }
-            foreach (var pinyin in PY)
-            {
-                if (pinyin == val)
-                {
-                    select = true;
-                    score += gear * 3;
-                }
-                else if (pinyin.StartsWith(val)) score += gear * 2;
-                else if (pinyin.Contains(val)) score += gear;
-                gear--;
-            }
-            return score;
-        }
+        public int Contains(string val, out bool select) => Helper.SearchContains(val, Text, PY, out select);
 
         public int ID { get; set; }
 

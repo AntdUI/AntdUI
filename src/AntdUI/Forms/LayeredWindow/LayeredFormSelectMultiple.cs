@@ -16,7 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -44,7 +43,7 @@ namespace AntdUI
         internal List<object> selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
-        ObjectItemSearch[]? ItemsSearch;
+        ObjectItem[]? ItemsSearch;
         TAMode ColorScheme;
         TAlign DropDownTextAlign = TAlign.Left;
         public LayeredFormSelectMultiple(SelectMultiple control, Rectangle rect_read, IList<object> items, string filtertext)
@@ -710,7 +709,7 @@ namespace AntdUI
             else
             {
                 int showcount = 0;
-                var listSearch = new List<ObjectItemSearch>(Items.Count);
+                var listSearch = new List<ItemSearchWeigth<ObjectItem>>(Items.Count);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
@@ -719,7 +718,7 @@ namespace AntdUI
                         int score = it.Contains(val, out var select);
                         if (score > 0)
                         {
-                            listSearch.Add(new ObjectItemSearch(score, it));
+                            listSearch.Add(new ItemSearchWeigth<ObjectItem>(score, it));
                             showcount++;
                             if (select)
                             {
@@ -743,11 +742,7 @@ namespace AntdUI
                         }
                     }
                 }
-                if (listSearch.Count > 0)
-                {
-                    listSearch.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
-                    ItemsSearch = listSearch.ToArray();
-                }
+                ItemsSearch = listSearch.SearchWeightSortArray();
                 nodata = showcount == 0;
             }
             if (count > 0)
@@ -769,7 +764,7 @@ namespace AntdUI
                         gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                         text_height = size.Height, item_height = text_height + gap_y2;
                         y += gap;
-                        ForEach(it =>
+                        foreach (var it in GetItems())
                         {
                             if (it.ID > -1 && it.Show)
                             {
@@ -779,7 +774,7 @@ namespace AntdUI
                                 it.SetRectAuto(rect_bg, rect_text, false, gap_x, gap_x2, gap_y, gap_y2);
                                 y += item_height;
                             }
-                        });
+                        }
                         var vr = item_height * list_count;
                         if (list_count > MaxCount)
                         {
@@ -816,7 +811,7 @@ namespace AntdUI
             else
             {
                 int showcount = 0;
-                var listSearch = new List<ObjectItemSearch>(Items.Count);
+                var listSearch = new List<ItemSearchWeigth<ObjectItem>>(Items.Count);
                 for (int i = 0; i < Items.Count; i++)
                 {
                     var it = Items[i];
@@ -825,7 +820,7 @@ namespace AntdUI
                         int score = it.Contains(val, out var select);
                         if (score > 0)
                         {
-                            listSearch.Add(new ObjectItemSearch(score, it));
+                            listSearch.Add(new ItemSearchWeigth<ObjectItem>(score, it));
                             showcount++;
                             if (select)
                             {
@@ -837,11 +832,7 @@ namespace AntdUI
                         else it.Show = false;
                     }
                 }
-                if (listSearch.Count > 0)
-                {
-                    listSearch.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
-                    ItemsSearch = listSearch.ToArray();
-                }
+                ItemsSearch = listSearch.SearchWeightSortArray();
                 nodata = showcount == 0;
             }
             if (nodata) return (int)(100 * Config.Dpi);
@@ -856,7 +847,7 @@ namespace AntdUI
                     gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
                     text_height = size.Height, item_height = text_height + gap_y2;
                     y += gap;
-                    ForEach(it =>
+                    foreach (var it in GetItems())
                     {
                         if (it.ID > -1 && it.Show)
                         {
@@ -866,7 +857,7 @@ namespace AntdUI
                             it.SetRectAuto(rect_bg, rect_text, false, gap_x, gap_x2, gap_y, gap_y2);
                             y += item_height;
                         }
-                    });
+                    }
                     var vr = item_height * list_count;
                     if (list_count > MaxCount)
                     {
@@ -885,16 +876,10 @@ namespace AntdUI
             }
         }
 
-        void ForEach(Action<ObjectItem> action)
+        IList<ObjectItem> GetItems()
         {
-            if (ItemsSearch == null)
-            {
-                foreach (var it in Items) action(it);
-            }
-            else
-            {
-                foreach (var it in ItemsSearch) action(it.Value);
-            }
+            if (ItemsSearch == null) return Items;
+            else return ItemsSearch;
         }
 
         #endregion

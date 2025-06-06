@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -274,6 +275,116 @@ namespace AntdUI
             {
                 return new System.Security.Principal.WindowsPrincipal(id).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
             }
+        }
+
+        /// <summary>
+        /// 判断文本是否包含拼音
+        /// </summary>
+        /// <param name="search">搜索文字</param>
+        /// <param name="text">全文本</param>
+        /// <param name="py">拼音</param>
+        /// <param name="select">是否需要选中</param>
+        /// <returns>返回权重</returns>
+        public static int SearchContains(string search, string text, string[] py, out bool select)
+        {
+            select = false;
+            int gear = py.Length, score = 0;
+            if (text == search)
+            {
+                select = true;
+                score += gear * 10;
+            }
+            search = search.ToLower();
+            if (text == search)
+            {
+                select = true;
+                score += gear * 8;
+            }
+            foreach (var pinyin in py)
+            {
+                if (pinyin == search)
+                {
+                    select = true;
+                    score += gear * 3;
+                }
+                else if (pinyin.StartsWith(search)) score += gear * 2;
+                else if (pinyin.Contains(search)) score += gear;
+                gear--;
+            }
+            return score;
+        }
+
+        public static List<object>? SearchWeightSort(this List<iItemSearchWeigth> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                var result = new List<object>(list.Count);
+                foreach (var it in list) result.Add(it.Value);
+                return result;
+            }
+            return null;
+        }
+        public static List<T>? SearchWeightSort<T>(this List<iItemSearchWeigth> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                var result = new List<T>(list.Count);
+                foreach (var it in list)
+                {
+                    if (it.Value is T n) result.Add(n);
+                }
+                return result;
+            }
+            return null;
+        }
+        public static List<T>? SearchWeightSort<T>(this List<ItemSearchWeigth<T>> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                var result = new List<T>(list.Count);
+                foreach (var it in list) result.Add(it.Value);
+                return result;
+            }
+            return null;
+        }
+        public static object[]? SearchWeightSortArray(this List<iItemSearchWeigth> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                var result = new List<object>(list.Count);
+                foreach (var it in list) result.Add(it.Value);
+                return result.ToArray();
+            }
+            return null;
+        }
+        public static T[]? SearchWeightSortArray<T>(this List<iItemSearchWeigth> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                var result = new List<T>(list.Count);
+                foreach (var it in list)
+                {
+                    if (it.Value is T n) result.Add(n);
+                }
+                return result.ToArray();
+            }
+            return null;
+        }
+        public static T[]? SearchWeightSortArray<T>(this List<ItemSearchWeigth<T>> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                var result = new List<T>(list.Count);
+                foreach (var it in list) result.Add(it.Value);
+                return result.ToArray();
+            }
+            return null;
         }
     }
 

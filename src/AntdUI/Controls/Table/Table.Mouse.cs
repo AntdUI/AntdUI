@@ -121,7 +121,6 @@ namespace AntdUI
                     }
                 }
             }
-            else shift_index = -1;
         }
 
         void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c)
