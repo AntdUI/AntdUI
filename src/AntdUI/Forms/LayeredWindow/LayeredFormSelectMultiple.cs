@@ -39,6 +39,7 @@ namespace AntdUI
 
         int MaxCount = 4, MaxChoiceCount = 4;
         Size DPadding;
+        bool DropNoMatchClose = false;
         internal float Radius = 0;
         internal List<object> selectedValue;
         int r_w = 0;
@@ -52,6 +53,7 @@ namespace AntdUI
             control.Parent.SetTopMost(Handle);
             PARENT = control;
             scrollY = new ScrollY(this);
+            DropNoMatchClose = control.DropDownEmptyClose;
             MaxCount = control.MaxCount;
             MaxChoiceCount = control.MaxChoiceCount;
             Font = control.Font;
@@ -120,6 +122,11 @@ namespace AntdUI
             else
             {
                 nodata = true;
+                if (DropNoMatchClose)
+                {
+                    IClose();
+                    return;
+                }
                 if (ListAutoWidth) r_w = w = (int)(136 * Config.Dpi);
                 else
                 {
@@ -416,6 +423,11 @@ namespace AntdUI
         }
         void DrawIcon(Canvas g, ObjectItem it, Color color)
         {
+            if (it.Icon != null)
+            {
+                if (it.Enable) g.Image(it.Icon, it.RectIcon);
+                else g.Image(it.Icon, it.RectIcon, 0.25F);
+            }
             if (it.IconSvg != null)
             {
                 using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
@@ -424,14 +436,8 @@ namespace AntdUI
                     {
                         if (it.Enable) g.Image(bmp, it.RectIcon);
                         else g.Image(bmp, it.RectIcon, 0.25F);
-                        return;
                     }
                 }
-            }
-            if (it.Icon != null)
-            {
-                if (it.Enable) g.Image(it.Icon, it.RectIcon);
-                else g.Image(it.Icon, it.RectIcon, 0.25F);
             }
         }
 
@@ -744,6 +750,11 @@ namespace AntdUI
                 }
                 ItemsSearch = listSearch.SearchWeightSortArray();
                 nodata = showcount == 0;
+                if (DropNoMatchClose && nodata)
+                {
+                    IClose();
+                    return;
+                }
             }
             if (count > 0)
             {
@@ -834,6 +845,11 @@ namespace AntdUI
                 }
                 ItemsSearch = listSearch.SearchWeightSortArray();
                 nodata = showcount == 0;
+                if (DropNoMatchClose && nodata)
+                {
+                    IClose();
+                    return 1;
+                }
             }
             if (nodata) return (int)(100 * Config.Dpi);
             else

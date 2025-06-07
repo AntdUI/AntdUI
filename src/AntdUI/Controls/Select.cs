@@ -99,6 +99,12 @@ namespace AntdUI
         public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
 
         /// <summary>
+        /// 下拉为空关闭
+        /// </summary>
+        [Description("下拉为空关闭"), Category("行为"), DefaultValue(false)]
+        public bool DropDownEmptyClose { get; set; }
+
+        /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
@@ -558,14 +564,17 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            var r = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Down:
+                    ExpandDrop = true;
+                    return true;
                 case Keys.Enter:
                     ExpandDrop = true;
                     break;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return r;
         }
         protected override void OnLostFocus(EventArgs e)
         {

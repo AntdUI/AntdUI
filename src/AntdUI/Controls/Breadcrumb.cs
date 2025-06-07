@@ -270,12 +270,10 @@ namespace AntdUI
 
         bool PaintImg(Canvas g, BreadcrumbItem it, Color color, string? svg, Image? bmp)
         {
-            if (svg != null)
-            {
-                if (g.GetImgExtend(svg, it.RectImg, color)) return false;
-            }
-            else if (bmp != null) { g.Image(bmp, it.RectImg); return false; }
-            return true;
+            int count = 0;
+            if (bmp != null) { g.Image(bmp, it.RectImg); count++; }
+            if (svg != null && g.GetImgExtend(svg, it.RectImg, color)) count++;
+            return count == 0;
         }
 
         #endregion

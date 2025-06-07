@@ -42,7 +42,7 @@ namespace AntdUI
         int MaxCount = 0;
         Size DPadding;
         internal float Radius = 0;
-        bool ClickEnd = false, CloseIcon = false;
+        bool ClickEnd = false, CloseIcon = false, DropNoMatchClose = false;
         object? selectedValue;
         int r_w = 0;
         List<ObjectItem> Items;
@@ -59,6 +59,7 @@ namespace AntdUI
             PARENT = control;
             ClickEnd = control.ClickEnd;
             CloseIcon = control.CloseIcon;
+            DropNoMatchClose = control.DropDownEmptyClose;
             select_x = 0;
             scrollY = new ScrollY(this);
             MaxCount = control.MaxCount;
@@ -156,6 +157,7 @@ namespace AntdUI
             keyid = "Select";
             ColorScheme = control.ColorScheme;
             ClickEnd = control.ClickEnd;
+            DropNoMatchClose = control.DropDownEmptyClose;
             selectedValue = control.SelectedValue;
             scrollY = new ScrollY(this);
             DPadding = control.DropDownPadding;
@@ -314,6 +316,11 @@ namespace AntdUI
             else
             {
                 nodata = true;
+                if (DropNoMatchClose)
+                {
+                    IClose();
+                    return;
+                }
                 if (ListAutoWidth) r_w = w = (int)(136 * Config.Dpi);
                 else
                 {
@@ -578,6 +585,11 @@ namespace AntdUI
         }
         void DrawIcon(Canvas g, ObjectItem it, Color color)
         {
+            if (it.Icon != null)
+            {
+                if (it.Enable) g.Image(it.Icon, it.RectIcon);
+                else g.Image(it.Icon, it.RectIcon, 0.25F);
+            }
             if (it.IconSvg != null)
             {
                 using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
@@ -586,14 +598,8 @@ namespace AntdUI
                     {
                         if (it.Enable) g.Image(bmp, it.RectIcon);
                         else g.Image(bmp, it.RectIcon, 0.25F);
-                        return;
                     }
                 }
-            }
-            if (it.Icon != null)
-            {
-                if (it.Enable) g.Image(it.Icon, it.RectIcon);
-                else g.Image(it.Icon, it.RectIcon, 0.25F);
             }
         }
         void DrawArrow(Canvas g, ObjectItem item, Color color)
@@ -990,6 +996,11 @@ namespace AntdUI
                 }
                 ItemsSearch = listSearch.SearchWeightSortArray();
                 nodata = showcount == 0;
+                if (DropNoMatchClose && nodata)
+                {
+                    IClose();
+                    return;
+                }
             }
             if (count > 0)
             {
@@ -1082,6 +1093,11 @@ namespace AntdUI
                 }
                 ItemsSearch = listSearch.ToArray();
                 nodata = listSearch.Count == 0;
+                if (DropNoMatchClose && nodata)
+                {
+                    IClose();
+                    return;
+                }
             }
             if (count > 0)
             {
@@ -1173,6 +1189,11 @@ namespace AntdUI
                 }
                 ItemsSearch = listSearch.SearchWeightSortArray();
                 nodata = showcount == 0;
+                if (DropNoMatchClose && nodata)
+                {
+                    IClose();
+                    return 1;
+                }
             }
             if (nodata) return (int)(100 * Config.Dpi);
             else

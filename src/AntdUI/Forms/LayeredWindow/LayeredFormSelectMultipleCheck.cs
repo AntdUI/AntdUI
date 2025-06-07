@@ -495,6 +495,11 @@ namespace AntdUI
         }
         void DrawIcon(Canvas g, ObjectItemCheck it, Color color)
         {
+            if (it.Icon != null)
+            {
+                if (it.Enable) g.Image(it.Icon, it.RectIcon);
+                else g.Image(it.Icon, it.RectIcon, 0.25F);
+            }
             if (it.IconSvg != null)
             {
                 using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
@@ -503,14 +508,8 @@ namespace AntdUI
                     {
                         if (it.Enable) g.Image(bmp, it.RectIcon);
                         else g.Image(bmp, it.RectIcon, 0.25F);
-                        return;
                     }
                 }
-            }
-            if (it.Icon != null)
-            {
-                if (it.Enable) g.Image(it.Icon, it.RectIcon);
-                else g.Image(it.Icon, it.RectIcon, 0.25F);
             }
         }
         void DrawArrow(Canvas g, ObjectItemCheck item, Color color)

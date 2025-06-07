@@ -146,6 +146,57 @@ namespace AntdUI
             }
         }
 
+        string? imageSvg = null;
+        /// <summary>
+        /// 图片SVG
+        /// </summary>
+        [Description("图片SVG"), Category("外观"), DefaultValue(null)]
+        public string? ImageSvg
+        {
+            get => imageSvg;
+            set
+            {
+                if (imageSvg == value) return;
+                imageSvg = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ImageSvg));
+            }
+        }
+
+        TFit imageFit = TFit.Cover;
+        /// <summary>
+        /// 图片布局
+        /// </summary>
+        [Description("图片布局"), Category("外观"), DefaultValue(TFit.Cover)]
+        public TFit ImageFit
+        {
+            get => imageFit;
+            set
+            {
+                if (imageFit == value) return;
+                imageFit = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ImageFit));
+            }
+        }
+
+        public Avatar SetImage(Image? value, string? svg = null)
+        {
+            image = value;
+            imageSvg = svg;
+            Invalidate();
+            if (image != null && IsHandleCreated) LoadGif();
+            return this;
+        }
+        public Avatar SetImage(string? value, Image? img = null)
+        {
+            image = img;
+            imageSvg = value;
+            Invalidate();
+            if (image != null && IsHandleCreated) LoadGif();
+            return this;
+        }
+
         #region GIF
 
         bool playGIF = true;
@@ -227,40 +278,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        string? imageSvg = null;
-        /// <summary>
-        /// 图片SVG
-        /// </summary>
-        [Description("图片SVG"), Category("外观"), DefaultValue(null)]
-        public string? ImageSvg
-        {
-            get => imageSvg;
-            set
-            {
-                if (imageSvg == value) return;
-                imageSvg = value;
-                Invalidate();
-                OnPropertyChanged(nameof(ImageSvg));
-            }
-        }
-
-        TFit imageFit = TFit.Cover;
-        /// <summary>
-        /// 图片布局
-        /// </summary>
-        [Description("图片布局"), Category("外观"), DefaultValue(TFit.Cover)]
-        public TFit ImageFit
-        {
-            get => imageFit;
-            set
-            {
-                if (imageFit == value) return;
-                imageFit = value;
-                Invalidate();
-                OnPropertyChanged(nameof(ImageFit));
-            }
-        }
 
         #endregion
 
@@ -408,6 +425,46 @@ namespace AntdUI
 
         #endregion
 
+        #region 悬浮
+
+        /// <summary>
+        /// 启用悬浮交互
+        /// </summary>
+        [Description("启用悬浮交互"), Category("外观"), DefaultValue(false)]
+        public bool EnableHover { get; set; }
+
+        /// <summary>
+        /// 悬浮前景
+        /// </summary>
+        [Description("悬浮前景"), Category("外观"), DefaultValue(null)]
+        public Color? HoverFore { get; set; }
+
+        /// <summary>
+        /// 悬浮背景
+        /// </summary>
+        [Description("悬浮背景"), Category("外观"), DefaultValue(null)]
+        public Color? HoverBack { get; set; }
+
+        /// <summary>
+        /// 悬浮图标
+        /// </summary>
+        [Description("悬浮图标"), Category("外观"), DefaultValue(null)]
+        public Image? HoverImage { get; set; }
+
+        /// <summary>
+        /// 悬浮图标SVG
+        /// </summary>
+        [Description("悬浮图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? HoverImageSvg { get; set; }
+
+        /// <summary>
+        /// 悬浮图标比例
+        /// </summary>
+        [Description("悬浮图标比例"), Category("外观"), DefaultValue(.4F)]
+        public float HoverImageRatio { get; set; } = .4F;
+
+        #endregion
+
         #endregion
 
         #region 渲染
@@ -423,23 +480,16 @@ namespace AntdUI
             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
             FillRect(g, rect, back, _radius, round);
 
-            if (image != null)
-            {
-                lock (_lock)
-                {
-                    g.Image(rect, image, imageFit, _radius, round);
-                }
-            }
-            else if (imageSvg != null)
-            {
-                using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
-                {
-                    if (bmp == null) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
-                    else g.Image(rect, bmp, imageFit, _radius, round);
-                }
-            }
-            else g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
+            if (PaintImage(g, rect, _radius)) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
+            if (Hover)
+            {
+                int size = (int)((rect.Width > rect.Height ? rect.Height : rect.Width) * HoverImageRatio);
+                FillRect(g, rect, HoverBack ?? Style.Db.TextTertiary, _radius, round);
+                var rect_hover = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
+                if (HoverImage != null) g.Image(HoverImage, rect_hover);
+                if (HoverImageSvg != null) g.GetImgExtend(HoverImageSvg, rect_hover, HoverFore ?? Style.Db.BgBase);
+            }
             if (loading)
             {
                 var bor6 = 6F * Config.Dpi;
@@ -458,6 +508,31 @@ namespace AntdUI
         #region 渲染帮助
 
         readonly StringFormat stringCenter = Helper.SF_ALL();
+
+        bool PaintImage(Canvas g, Rectangle rect, float _radius)
+        {
+            int count = 0;
+            if (image != null)
+            {
+                lock (_lock)
+                {
+                    g.Image(rect, image, imageFit, _radius, round);
+                }
+                count++;
+            }
+            if (imageSvg != null)
+            {
+                using (var bmp = SvgExtend.GetImgExtend(imageSvg, rect, ForeColor))
+                {
+                    if (bmp != null)
+                    {
+                        g.Image(rect, bmp, imageFit, _radius, round);
+                        count++;
+                    }
+                }
+            }
+            return count == 0;
+        }
 
         void FillRect(Canvas g, Rectangle rect, Color color, float radius, bool round)
         {
@@ -535,6 +610,33 @@ namespace AntdUI
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region 键盘
+
+        bool hover = false;
+        bool Hover
+        {
+            get => hover;
+            set
+            {
+                if (hover == value) return;
+                hover = value;
+                Invalidate();
+            }
+        }
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if (EnableHover) Hover = true;
+            else if (Hover) Hover = false;
+        }
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            Hover = false;
         }
 
         #endregion

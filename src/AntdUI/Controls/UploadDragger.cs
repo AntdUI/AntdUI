@@ -403,8 +403,8 @@ namespace AntdUI
                         int th = gap + icon_size + size.Height, y = rect.Y + (rect.Height - th) / 2;
                         Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                             rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height);
-                        if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Colour.Primary.Get("UploadDragger", ColorScheme));
                         if (icon != null) g.Image(icon, rect_icon);
+                        if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Colour.Primary.Get("UploadDragger", ColorScheme));
                         using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger", ColorScheme)))
                         {
                             g.DrawText(Text, Font, brush, rect_text, s_f);
@@ -419,8 +419,8 @@ namespace AntdUI
                             Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                                 rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
-                            if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Colour.Primary.Get("UploadDragger", ColorScheme));
                             if (icon != null) g.Image(icon, rect_icon);
+                            if (iconSvg != null) g.GetImgExtend(iconSvg, rect_icon, Colour.Primary.Get("UploadDragger", ColorScheme));
                             using (var brush = new SolidBrush(fore ?? Colour.Text.Get("UploadDragger", ColorScheme)))
                             {
                                 g.DrawText(Text, Font, brush, rect_text, s_f);
