@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -55,19 +51,19 @@ namespace Demo.Controls
             alert13 = new AntdUI.Alert();
             divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
-            alert9 = new AntdUI.Alert();
             alert12 = new AntdUI.Alert();
-            alert10 = new AntdUI.Alert();
             alert11 = new AntdUI.Alert();
+            alert10 = new AntdUI.Alert();
+            alert9 = new AntdUI.Alert();
             divider2 = new AntdUI.Divider();
             panel2 = new System.Windows.Forms.Panel();
             alert8 = new AntdUI.Alert();
-            alert4 = new AntdUI.Alert();
             alert7 = new AntdUI.Alert();
-            alert3 = new AntdUI.Alert();
             alert6 = new AntdUI.Alert();
-            alert2 = new AntdUI.Alert();
             alert5 = new AntdUI.Alert();
+            alert4 = new AntdUI.Alert();
+            alert3 = new AntdUI.Alert();
+            alert2 = new AntdUI.Alert();
             alert1 = new AntdUI.Alert();
             divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
@@ -158,17 +154,6 @@ namespace Demo.Controls
             panel3.Size = new Size(614, 251);
             panel3.TabIndex = 2;
             // 
-            // alert9
-            // 
-            alert9.BorderWidth = 1F;
-            alert9.Icon = AntdUI.TType.Success;
-            alert9.Location = new Point(16, 6);
-            alert9.Name = "alert9";
-            alert9.Size = new Size(264, 111);
-            alert9.TabIndex = 0;
-            alert9.Text = "Success Description Success Description Success Description";
-            alert9.TextTitle = "Success Text";
-            // 
             // alert12
             // 
             alert12.BorderWidth = 1F;
@@ -179,6 +164,17 @@ namespace Demo.Controls
             alert12.TabIndex = 3;
             alert12.Text = "Error Description Error Description Error Description Error Description";
             alert12.TextTitle = "Error Text";
+            // 
+            // alert11
+            // 
+            alert11.BorderWidth = 1F;
+            alert11.Icon = AntdUI.TType.Warn;
+            alert11.Location = new Point(293, 6);
+            alert11.Name = "alert11";
+            alert11.Size = new Size(264, 111);
+            alert11.TabIndex = 1;
+            alert11.Text = "Warning Description Warning Description Warning Description ";
+            alert11.TextTitle = "Warning Text";
             // 
             // alert10
             // 
@@ -191,16 +187,16 @@ namespace Demo.Controls
             alert10.Text = "Info Description Info Description Info Description Info Description";
             alert10.TextTitle = "Info Text";
             // 
-            // alert11
+            // alert9
             // 
-            alert11.BorderWidth = 1F;
-            alert11.Icon = AntdUI.TType.Warn;
-            alert11.Location = new Point(293, 6);
-            alert11.Name = "alert11";
-            alert11.Size = new Size(264, 111);
-            alert11.TabIndex = 1;
-            alert11.Text = "Warning Description Warning Description Warning Description ";
-            alert11.TextTitle = "Warning Text";
+            alert9.BorderWidth = 1F;
+            alert9.Icon = AntdUI.TType.Success;
+            alert9.Location = new Point(16, 6);
+            alert9.Name = "alert9";
+            alert9.Size = new Size(264, 111);
+            alert9.TabIndex = 0;
+            alert9.Text = "Success Description Success Description Success Description";
+            alert9.TextTitle = "Success Text";
             // 
             // divider2
             // 
@@ -239,6 +235,33 @@ namespace Demo.Controls
             alert8.TabIndex = 7;
             alert8.Text = "Error Text";
             // 
+            // alert7
+            // 
+            alert7.Icon = AntdUI.TType.Warn;
+            alert7.Location = new Point(301, 43);
+            alert7.Name = "alert7";
+            alert7.Size = new Size(148, 31);
+            alert7.TabIndex = 6;
+            alert7.Text = "Warning Text";
+            // 
+            // alert6
+            // 
+            alert6.Icon = AntdUI.TType.Info;
+            alert6.Location = new Point(454, 6);
+            alert6.Name = "alert6";
+            alert6.Size = new Size(122, 31);
+            alert6.TabIndex = 3;
+            alert6.Text = "Info Text";
+            // 
+            // alert5
+            // 
+            alert5.Icon = AntdUI.TType.Success;
+            alert5.Location = new Point(301, 6);
+            alert5.Name = "alert5";
+            alert5.Size = new Size(148, 31);
+            alert5.TabIndex = 2;
+            alert5.Text = "Success Text";
+            // 
             // alert4
             // 
             alert4.BorderWidth = 1F;
@@ -248,15 +271,6 @@ namespace Demo.Controls
             alert4.Size = new Size(122, 31);
             alert4.TabIndex = 5;
             alert4.Text = "Error Text";
-            // 
-            // alert7
-            // 
-            alert7.Icon = AntdUI.TType.Warn;
-            alert7.Location = new Point(301, 43);
-            alert7.Name = "alert7";
-            alert7.Size = new Size(148, 31);
-            alert7.TabIndex = 6;
-            alert7.Text = "Warning Text";
             // 
             // alert3
             // 
@@ -268,15 +282,6 @@ namespace Demo.Controls
             alert3.TabIndex = 4;
             alert3.Text = "Warning Text";
             // 
-            // alert6
-            // 
-            alert6.Icon = AntdUI.TType.Info;
-            alert6.Location = new Point(454, 6);
-            alert6.Name = "alert6";
-            alert6.Size = new Size(122, 31);
-            alert6.TabIndex = 3;
-            alert6.Text = "Info Text";
-            // 
             // alert2
             // 
             alert2.BorderWidth = 1F;
@@ -286,15 +291,6 @@ namespace Demo.Controls
             alert2.Size = new Size(122, 31);
             alert2.TabIndex = 1;
             alert2.Text = "Info Text";
-            // 
-            // alert5
-            // 
-            alert5.Icon = AntdUI.TType.Success;
-            alert5.Location = new Point(301, 6);
-            alert5.Name = "alert5";
-            alert5.Size = new Size(148, 31);
-            alert5.TabIndex = 2;
-            alert5.Text = "Success Text";
             // 
             // alert1
             // 

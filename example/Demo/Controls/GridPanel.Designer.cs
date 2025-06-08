@@ -16,19 +16,21 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
+
 namespace Demo.Controls
 {
     partial class GridPanel
     {
         /// <summary> 
-        /// 必需的设计器变量。
+        ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary> 
-        /// 清理所有正在使用的资源。
+        ///  Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -38,12 +40,8 @@ namespace Demo.Controls
             base.Dispose(disposing);
         }
 
-        #region 组件设计器生成的代码
+        #region Windows Form Designer generated code
 
-        /// <summary> 
-        /// 设计器支持所需的方法 - 不要修改
-        /// 使用代码编辑器修改此方法的内容。
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -71,13 +69,13 @@ namespace Demo.Controls
             // 
             header1.Description = "精准划分区域的格栅布局容器。";
             header1.Dock = System.Windows.Forms.DockStyle.Top;
-            header1.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.LocalizationDescription = "GridPanel.Description";
             header1.LocalizationText = "GridPanel.Text";
-            header1.Location = new System.Drawing.Point(0, 0);
+            header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            header1.Size = new System.Drawing.Size(1000, 75);
+            header1.Size = new Size(1000, 75);
             header1.TabIndex = 0;
             header1.Text = "GridPanel 格栅布局";
             header1.UseTitleFont = true;
@@ -86,9 +84,9 @@ namespace Demo.Controls
             // 
             label1.Dock = System.Windows.Forms.DockStyle.Fill;
             label1.LocalizationText = "GridPanel.Describe";
-            label1.Location = new System.Drawing.Point(503, 3);
+            label1.Location = new Point(503, 3);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(494, 60);
+            label1.Size = new Size(494, 60);
             label1.TabIndex = 1;
             label1.Text = "以-为分解。-前为列宽属性，-后为行高属性列宽以；分组。每一组代表一行\r\n行高属性个数要与行数对应,每个数之间用空格间隔";
             // 
@@ -96,12 +94,12 @@ namespace Demo.Controls
             // 
             input1.Dock = System.Windows.Forms.DockStyle.Fill;
             input1.LocalizationPrefixText = "GridPanel.Prefix";
-            input1.Location = new System.Drawing.Point(0, 0);
+            input1.Location = new Point(0, 0);
             input1.Margin = new System.Windows.Forms.Padding(0);
             input1.Multiline = true;
             input1.Name = "input1";
             input1.PrefixText = "Span属性";
-            input1.Size = new System.Drawing.Size(500, 66);
+            input1.Size = new Size(500, 66);
             input1.SuffixText = "";
             input1.TabIndex = 0;
             input1.Text = "100%;25% 25% 25% 25%;33.33% 33.33% 33.33%;50% 50%;66.66% 33.33%;-20% 20% 18% 21% 21%";
@@ -115,11 +113,11 @@ namespace Demo.Controls
             tableLayoutPanel1.Controls.Add(label1, 1, 0);
             tableLayoutPanel1.Controls.Add(input1, 0, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            tableLayoutPanel1.Location = new System.Drawing.Point(0, 75);
+            tableLayoutPanel1.Location = new Point(0, 75);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(1000, 66);
+            tableLayoutPanel1.Size = new Size(1000, 66);
             tableLayoutPanel1.TabIndex = 1;
             // 
             // gridPanel1
@@ -137,10 +135,10 @@ namespace Demo.Controls
             gridPanel1.Controls.Add(button2);
             gridPanel1.Controls.Add(button1);
             gridPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridPanel1.Font = new System.Drawing.Font("Microsoft YaHei UI", 22F);
-            gridPanel1.Location = new System.Drawing.Point(0, 141);
+            gridPanel1.Font = new Font("Microsoft YaHei UI", 22F);
+            gridPanel1.Location = new Point(0, 141);
             gridPanel1.Name = "gridPanel1";
-            gridPanel1.Size = new System.Drawing.Size(1000, 659);
+            gridPanel1.Size = new Size(1000, 659);
             gridPanel1.Span = "100%;25% 25% 25% 25%;33.33% 33.33% 33.33%;50% 50%;66.66% 33.33%;-20% 20% 18% 21% 21%";
             gridPanel1.TabIndex = 3;
             gridPanel1.Paint += gridPanel1_Paint;
@@ -148,22 +146,22 @@ namespace Demo.Controls
             // button12
             // 
             button12.Ghost = true;
-            button12.Location = new System.Drawing.Point(667, 523);
+            button12.Location = new Point(667, 523);
             button12.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button12.Name = "button12";
             button12.Radius = 0;
-            button12.Size = new System.Drawing.Size(333, 134);
+            button12.Size = new Size(333, 134);
             button12.TabIndex = 12;
             button12.Text = "33.33%";
             button12.WaveSize = 0;
             // 
             // button11
             // 
-            button11.Location = new System.Drawing.Point(0, 523);
+            button11.Location = new Point(0, 523);
             button11.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button11.Name = "button11";
             button11.Radius = 0;
-            button11.Size = new System.Drawing.Size(667, 134);
+            button11.Size = new Size(667, 134);
             button11.TabIndex = 11;
             button11.Text = "66.66%";
             button11.Type = AntdUI.TTypeMini.Primary;
@@ -172,22 +170,22 @@ namespace Demo.Controls
             // button10
             // 
             button10.Ghost = true;
-            button10.Location = new System.Drawing.Point(500, 385);
+            button10.Location = new Point(500, 385);
             button10.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button10.Name = "button10";
             button10.Radius = 0;
-            button10.Size = new System.Drawing.Size(500, 134);
+            button10.Size = new Size(500, 134);
             button10.TabIndex = 10;
             button10.Text = "50%";
             button10.WaveSize = 0;
             // 
             // button9
             // 
-            button9.Location = new System.Drawing.Point(0, 385);
+            button9.Location = new Point(0, 385);
             button9.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button9.Name = "button9";
             button9.Radius = 0;
-            button9.Size = new System.Drawing.Size(500, 134);
+            button9.Size = new Size(500, 134);
             button9.TabIndex = 9;
             button9.Text = "50%";
             button9.Type = AntdUI.TTypeMini.Primary;
@@ -195,11 +193,11 @@ namespace Demo.Controls
             // 
             // button8
             // 
-            button8.Location = new System.Drawing.Point(666, 266);
+            button8.Location = new Point(666, 266);
             button8.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button8.Name = "button8";
             button8.Radius = 0;
-            button8.Size = new System.Drawing.Size(333, 115);
+            button8.Size = new Size(333, 115);
             button8.TabIndex = 8;
             button8.Text = "33.33%";
             button8.Type = AntdUI.TTypeMini.Primary;
@@ -208,22 +206,22 @@ namespace Demo.Controls
             // button7
             // 
             button7.Ghost = true;
-            button7.Location = new System.Drawing.Point(333, 266);
+            button7.Location = new Point(333, 266);
             button7.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button7.Name = "button7";
             button7.Radius = 0;
-            button7.Size = new System.Drawing.Size(333, 115);
+            button7.Size = new Size(333, 115);
             button7.TabIndex = 7;
             button7.Text = "33.33%";
             button7.WaveSize = 0;
             // 
             // button6
             // 
-            button6.Location = new System.Drawing.Point(0, 266);
+            button6.Location = new Point(0, 266);
             button6.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button6.Name = "button6";
             button6.Radius = 0;
-            button6.Size = new System.Drawing.Size(333, 115);
+            button6.Size = new Size(333, 115);
             button6.TabIndex = 6;
             button6.Text = "33.33%";
             button6.Type = AntdUI.TTypeMini.Primary;
@@ -232,22 +230,22 @@ namespace Demo.Controls
             // button5
             // 
             button5.Ghost = true;
-            button5.Location = new System.Drawing.Point(750, 134);
+            button5.Location = new Point(750, 134);
             button5.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button5.Name = "button5";
             button5.Radius = 0;
-            button5.Size = new System.Drawing.Size(250, 128);
+            button5.Size = new Size(250, 128);
             button5.TabIndex = 5;
             button5.Text = "25%";
             button5.WaveSize = 0;
             // 
             // button4
             // 
-            button4.Location = new System.Drawing.Point(500, 134);
+            button4.Location = new Point(500, 134);
             button4.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button4.Name = "button4";
             button4.Radius = 0;
-            button4.Size = new System.Drawing.Size(250, 128);
+            button4.Size = new Size(250, 128);
             button4.TabIndex = 4;
             button4.Text = "25%";
             button4.Type = AntdUI.TTypeMini.Primary;
@@ -256,22 +254,22 @@ namespace Demo.Controls
             // button3
             // 
             button3.Ghost = true;
-            button3.Location = new System.Drawing.Point(250, 134);
+            button3.Location = new Point(250, 134);
             button3.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button3.Name = "button3";
             button3.Radius = 0;
-            button3.Size = new System.Drawing.Size(250, 128);
+            button3.Size = new Size(250, 128);
             button3.TabIndex = 3;
             button3.Text = "25%";
             button3.WaveSize = 0;
             // 
             // button2
             // 
-            button2.Location = new System.Drawing.Point(0, 134);
+            button2.Location = new Point(0, 134);
             button2.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button2.Name = "button2";
             button2.Radius = 0;
-            button2.Size = new System.Drawing.Size(250, 128);
+            button2.Size = new Size(250, 128);
             button2.TabIndex = 2;
             button2.Text = "25%";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -279,11 +277,11 @@ namespace Demo.Controls
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(0, 2);
+            button1.Location = new Point(0, 2);
             button1.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button1.Name = "button1";
             button1.Radius = 0;
-            button1.Size = new System.Drawing.Size(1000, 128);
+            button1.Size = new Size(1000, 128);
             button1.TabIndex = 1;
             button1.Text = "100%";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -294,8 +292,9 @@ namespace Demo.Controls
             Controls.Add(gridPanel1);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(header1);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "GridPanel";
-            Size = new System.Drawing.Size(1000, 800);
+            Size = new Size(1000, 800);
             tableLayoutPanel1.ResumeLayout(false);
             gridPanel1.ResumeLayout(false);
             ResumeLayout(false);

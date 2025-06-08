@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -293,7 +289,7 @@ namespace Demo.Controls
             label4.LocalizationText = "Tooltip.{id}";
             label4.Location = new Point(12, 10);
             label4.Name = "label4";
-            label4.Size = new Size(105, 23);
+            label4.Size = new Size(96, 21);
             label4.TabIndex = 0;
             label4.Text = "最简单的用法";
             tooltipComponent1.SetTip(label4, "prompt text");
@@ -388,6 +384,7 @@ namespace Demo.Controls
         }
 
         #endregion
+
         private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Divider divider1;

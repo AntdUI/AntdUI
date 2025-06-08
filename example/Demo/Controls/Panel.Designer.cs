@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -83,10 +79,10 @@ namespace Demo.Controls
             header1.Description = "内容区域。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
-            header1.Location = new Point(0, 0);
-            header1.Name = "header1";
             header1.LocalizationDescription = "Panel.Description";
             header1.LocalizationText = "Panel.Text";
+            header1.Location = new Point(0, 0);
+            header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
             header1.Size = new Size(835, 74);
             header1.TabIndex = 0;
@@ -129,10 +125,11 @@ namespace Demo.Controls
             label5.Font = new Font("Microsoft YaHei UI", 11F);
             label5.Location = new Point(24, 73);
             label5.Name = "label5";
-            label5.Padding = new Padding(20, 10, 0, 0);
+            label5.Padding = new Padding(20, 0, 0, 0);
             label5.Size = new Size(221, 124);
             label5.TabIndex = 2;
             label5.Text = "Card content\r\n\r\nCard content\r\n\r\nCard content";
+            label5.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // divider1
             // 
@@ -180,10 +177,11 @@ namespace Demo.Controls
             label1.Font = new Font("Microsoft YaHei UI", 11F);
             label1.Location = new Point(24, 73);
             label1.Name = "label1";
-            label1.Padding = new Padding(20, 10, 0, 0);
+            label1.Padding = new Padding(20, 0, 0, 0);
             label1.Size = new Size(221, 124);
             label1.TabIndex = 2;
             label1.Text = "Card content\r\n\r\nCard content\r\n\r\nCard content";
+            label1.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // divider3
             // 
@@ -352,7 +350,7 @@ namespace Demo.Controls
             // 
             Controls.Add(flowLayoutPanel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Panel";
             Size = new Size(835, 634);
             flowLayoutPanel1.ResumeLayout(false);
@@ -365,6 +363,7 @@ namespace Demo.Controls
         }
 
         #endregion
+
         private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.Panel panel9;

@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             AntdUI.BreadcrumbItem breadcrumbItem1 = new AntdUI.BreadcrumbItem();
@@ -114,7 +110,7 @@ namespace Demo.Controls
             Controls.Add(breadcrumb2);
             Controls.Add(breadcrumb1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 11F);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Breadcrumb";
             Size = new Size(740, 402);
             ResumeLayout(false);

@@ -43,10 +43,6 @@ namespace Demo
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             btn_mode = new AntdUI.Button();
@@ -125,7 +121,6 @@ namespace Demo
             windowBar.DividerMargin = 3;
             windowBar.DividerShow = true;
             windowBar.Dock = DockStyle.Top;
-            windowBar.Font = new Font("Microsoft YaHei UI", 12F);
             windowBar.Icon = Properties.Resources.logo;
             windowBar.Location = new Point(0, 0);
             windowBar.Name = "windowBar";
@@ -178,6 +173,7 @@ namespace Demo
         }
 
         #endregion
+
         private AntdUI.Button btn_mode;
         private AntdUI.Dropdown btn_global;
         private AntdUI.Button btn_setting;

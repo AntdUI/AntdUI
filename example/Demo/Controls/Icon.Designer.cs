@@ -43,14 +43,10 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.SegmentedItem segmentedItem3 = new AntdUI.SegmentedItem();
-            AntdUI.SegmentedItem segmentedItem4 = new AntdUI.SegmentedItem();
+            AntdUI.SegmentedItem segmentedItem1 = new AntdUI.SegmentedItem();
+            AntdUI.SegmentedItem segmentedItem2 = new AntdUI.SegmentedItem();
             header1 = new AntdUI.PageHeader();
             segmented1 = new AntdUI.Segmented();
             panel1 = new System.Windows.Forms.Panel();
@@ -78,11 +74,27 @@ namespace Demo.Controls
             // 
             segmented1.Dock = DockStyle.Left;
             segmented1.IconAlign = AntdUI.TAlignMini.Left;
-            segmentedItem3.Text = "线框风格";
-            segmentedItem4.IconSvg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M864 64H160C107 64 64 107 64 160v704c0 53 43 96 96 96h704c53 0 96-43 96-96V160c0-53-43-96-96-96z\"></path></svg>";
-            segmentedItem4.Text = "实底风格";
-            segmented1.Items.Add(segmentedItem3);
-            segmented1.Items.Add(segmentedItem4);
+            segmentedItem1.Badge = null;
+            segmentedItem1.BadgeAlign = AntdUI.TAlign.TR;
+            segmentedItem1.BadgeBack = null;
+            segmentedItem1.BadgeMode = false;
+            segmentedItem1.BadgeOffsetX = 0;
+            segmentedItem1.BadgeOffsetY = 0;
+            segmentedItem1.BadgeSize = 0.6F;
+            segmentedItem1.BadgeSvg = null;
+            segmentedItem1.Text = "线框风格";
+            segmentedItem2.Badge = null;
+            segmentedItem2.BadgeAlign = AntdUI.TAlign.TR;
+            segmentedItem2.BadgeBack = null;
+            segmentedItem2.BadgeMode = false;
+            segmentedItem2.BadgeOffsetX = 0;
+            segmentedItem2.BadgeOffsetY = 0;
+            segmentedItem2.BadgeSize = 0.6F;
+            segmentedItem2.BadgeSvg = null;
+            segmentedItem2.IconSvg = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M864 64H160C107 64 64 107 64 160v704c0 53 43 96 96 96h704c53 0 96-43 96-96V160c0-53-43-96-96-96z\"></path></svg>";
+            segmentedItem2.Text = "实底风格";
+            segmented1.Items.Add(segmentedItem1);
+            segmented1.Items.Add(segmentedItem2);
             segmented1.Location = new Point(10, 0);
             segmented1.Name = "segmented1";
             segmented1.SelectIndex = 0;

@@ -43,10 +43,6 @@ namespace Demo
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             panel_primary = new AntdUI.Panel();
@@ -85,7 +81,6 @@ namespace Demo
             // color_primary
             // 
             color_primary.Dock = DockStyle.Fill;
-            color_primary.Font = new Font("Microsoft YaHei UI", 14F);
             color_primary.Location = new Point(0, 0);
             color_primary.Name = "color_primary";
             color_primary.Padding = new Padding(13, 0, 0, 0);
@@ -128,7 +123,6 @@ namespace Demo
             // colorPanel10
             // 
             colorPanel10.Dock = DockStyle.Fill;
-            colorPanel10.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel10.Location = new Point(864, 20);
             colorPanel10.Margin = new Padding(0, 20, 0, 0);
             colorPanel10.Name = "colorPanel10";
@@ -143,7 +137,6 @@ namespace Demo
             // colorPanel9
             // 
             colorPanel9.Dock = DockStyle.Fill;
-            colorPanel9.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel9.Location = new Point(768, 20);
             colorPanel9.Margin = new Padding(0, 20, 0, 0);
             colorPanel9.Name = "colorPanel9";
@@ -158,7 +151,6 @@ namespace Demo
             // colorPanel8
             // 
             colorPanel8.Dock = DockStyle.Fill;
-            colorPanel8.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel8.Location = new Point(672, 20);
             colorPanel8.Margin = new Padding(0, 20, 0, 0);
             colorPanel8.Name = "colorPanel8";
@@ -173,7 +165,6 @@ namespace Demo
             // colorPanel7
             // 
             colorPanel7.Dock = DockStyle.Fill;
-            colorPanel7.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel7.Location = new Point(576, 20);
             colorPanel7.Margin = new Padding(0, 20, 0, 0);
             colorPanel7.Name = "colorPanel7";
@@ -188,7 +179,6 @@ namespace Demo
             // colorPanel6
             // 
             colorPanel6.Dock = DockStyle.Fill;
-            colorPanel6.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel6.Location = new Point(480, 20);
             colorPanel6.Margin = new Padding(0, 20, 0, 0);
             colorPanel6.Name = "colorPanel6";
@@ -203,7 +193,6 @@ namespace Demo
             // colorPanel5
             // 
             colorPanel5.Dock = DockStyle.Fill;
-            colorPanel5.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel5.Location = new Point(384, 20);
             colorPanel5.Margin = new Padding(0, 20, 0, 0);
             colorPanel5.Name = "colorPanel5";
@@ -218,7 +207,6 @@ namespace Demo
             // colorPanel4
             // 
             colorPanel4.Dock = DockStyle.Fill;
-            colorPanel4.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel4.Location = new Point(288, 20);
             colorPanel4.Margin = new Padding(0, 20, 0, 0);
             colorPanel4.Name = "colorPanel4";
@@ -233,7 +221,6 @@ namespace Demo
             // colorPanel3
             // 
             colorPanel3.Dock = DockStyle.Fill;
-            colorPanel3.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel3.Location = new Point(192, 20);
             colorPanel3.Margin = new Padding(0, 20, 0, 0);
             colorPanel3.Name = "colorPanel3";
@@ -248,7 +235,6 @@ namespace Demo
             // colorPanel2
             // 
             colorPanel2.Dock = DockStyle.Fill;
-            colorPanel2.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel2.Location = new Point(96, 20);
             colorPanel2.Margin = new Padding(0, 20, 0, 0);
             colorPanel2.Name = "colorPanel2";
@@ -263,7 +249,6 @@ namespace Demo
             // colorPanel1
             // 
             colorPanel1.Dock = DockStyle.Fill;
-            colorPanel1.Font = new Font("Microsoft YaHei UI", 14F);
             colorPanel1.Location = new Point(0, 20);
             colorPanel1.Margin = new Padding(0, 20, 0, 0);
             colorPanel1.Name = "colorPanel1";
@@ -277,7 +262,6 @@ namespace Demo
             // 
             // textBox1
             // 
-            textBox1.Font = new Font("Microsoft YaHei UI", 14F);
             textBox1.Location = new Point(13, 100);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(114, 38);
@@ -301,7 +285,6 @@ namespace Demo
             // color_dark
             // 
             color_dark.Dock = DockStyle.Fill;
-            color_dark.Font = new Font("Microsoft YaHei UI", 14F);
             color_dark.Location = new Point(0, 0);
             color_dark.Name = "color_dark";
             color_dark.Padding = new Padding(13, 0, 0, 0);
@@ -316,6 +299,7 @@ namespace Demo
             Controls.Add(tablePanel);
             Controls.Add(panel11);
             Controls.Add(panel_primary);
+            Font = new Font("Microsoft YaHei UI", 14F);
             MinimumSize = new Size(980, 310);
             Name = "Colors";
             StartPosition = FormStartPosition.CenterScreen;

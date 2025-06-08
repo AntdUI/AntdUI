@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -172,7 +168,6 @@ namespace Demo.Controls
             // 
             avatar5.BackColor = Color.FromArgb(0, 144, 255);
             avatar5.Badge = " ";
-            avatar5.Font = new Font("Microsoft YaHei UI", 14F);
             avatar5.ForeColor = Color.White;
             avatar5.LocalizationText = "Avatar.{id}";
             avatar5.Location = new Point(248, 6);
@@ -228,7 +223,7 @@ namespace Demo.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F);
+            Font = new Font("Microsoft YaHei UI", 14F);
             Name = "Avatar";
             Size = new Size(614, 446);
             panel1.ResumeLayout(false);

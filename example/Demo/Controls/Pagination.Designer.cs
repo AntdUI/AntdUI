@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -88,7 +84,7 @@ namespace Demo.Controls
             pagination2.Name = "pagination2";
             pagination2.Padding = new Padding(4);
             pagination2.ShowSizeChanger = true;
-            pagination2.Size = new Size(359, 46);
+            pagination2.Size = new Size(397, 46);
             pagination2.TabIndex = 12;
             pagination2.Total = 100;
             // 
@@ -106,7 +102,7 @@ namespace Demo.Controls
             // 
             Controls.Add(panel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 10F);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Pagination";
             Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
@@ -114,6 +110,7 @@ namespace Demo.Controls
         }
 
         #endregion
+
         private AntdUI.PageHeader header1;
         private System.Windows.Forms.Panel panel1;
         private AntdUI.Pagination pagination2;

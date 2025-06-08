@@ -16,19 +16,21 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
+
 namespace Demo.Controls
 {
     partial class Signal
     {
         /// <summary> 
-        /// 必需的设计器变量。
+        ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary> 
-        /// 清理所有正在使用的资源。
+        ///  Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -38,12 +40,8 @@ namespace Demo.Controls
             base.Dispose(disposing);
         }
 
-        #region 组件设计器生成的代码
+        #region Windows Form Designer generated code
 
-        /// <summary> 
-        /// 设计器支持所需的方法 - 不要修改
-        /// 使用代码编辑器修改此方法的内容。
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -80,38 +78,38 @@ namespace Demo.Controls
             // 
             header1.Description = "展示设备信号。";
             header1.Dock = System.Windows.Forms.DockStyle.Top;
-            header1.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F);
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.LocalizationDescription = "Signal.Description";
             header1.LocalizationText = "Signal.Text";
-            header1.Location = new System.Drawing.Point(0, 0);
+            header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            header1.Size = new System.Drawing.Size(596, 74);
+            header1.Size = new Size(596, 74);
             header1.TabIndex = 0;
             header1.Text = "Signal 信号强度";
             header1.UseTitleFont = true;
             // 
             // signal1
             // 
-            signal1.Location = new System.Drawing.Point(3, 3);
+            signal1.Location = new Point(3, 3);
             signal1.Name = "signal1";
-            signal1.Size = new System.Drawing.Size(74, 42);
+            signal1.Size = new Size(74, 42);
             signal1.TabIndex = 0;
             signal1.Value = 1;
             // 
             // signal2
             // 
-            signal2.Location = new System.Drawing.Point(83, 3);
+            signal2.Location = new Point(83, 3);
             signal2.Name = "signal2";
-            signal2.Size = new System.Drawing.Size(74, 42);
+            signal2.Size = new Size(74, 42);
             signal2.TabIndex = 1;
             signal2.Value = 2;
             // 
             // signal3
             // 
-            signal3.Location = new System.Drawing.Point(163, 3);
+            signal3.Location = new Point(163, 3);
             signal3.Name = "signal3";
-            signal3.Size = new System.Drawing.Size(74, 42);
+            signal3.Size = new Size(74, 42);
             signal3.TabIndex = 2;
             signal3.Value = 3;
             // 
@@ -119,9 +117,9 @@ namespace Demo.Controls
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.LocalizationText = "Signal.Subtract";
-            button2.Location = new System.Drawing.Point(54, 7);
+            button2.Location = new Point(59, 7);
             button2.Name = "button2";
-            button2.Size = new System.Drawing.Size(45, 38);
+            button2.Size = new Size(50, 38);
             button2.TabIndex = 10;
             button2.Text = "减";
             button2.Type = AntdUI.TTypeMini.Success;
@@ -131,9 +129,9 @@ namespace Demo.Controls
             // 
             button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.LocalizationText = "Signal.Add";
-            button1.Location = new System.Drawing.Point(3, 7);
+            button1.Location = new Point(3, 7);
             button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(45, 38);
+            button1.Size = new Size(50, 38);
             button1.TabIndex = 9;
             button1.Text = "加";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -147,36 +145,36 @@ namespace Demo.Controls
             stackPanel1.Controls.Add(signal2);
             stackPanel1.Controls.Add(signal1);
             stackPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            stackPanel1.Location = new System.Drawing.Point(0, 102);
+            stackPanel1.Location = new Point(0, 102);
             stackPanel1.Name = "stackPanel1";
-            stackPanel1.Size = new System.Drawing.Size(596, 48);
+            stackPanel1.Size = new Size(596, 48);
             stackPanel1.TabIndex = 1;
             // 
             // signal5
             // 
-            signal5.Location = new System.Drawing.Point(323, 3);
+            signal5.Location = new Point(323, 3);
             signal5.Name = "signal5";
-            signal5.Size = new System.Drawing.Size(74, 42);
+            signal5.Size = new Size(74, 42);
             signal5.TabIndex = 4;
             signal5.Value = 5;
             // 
             // signal4
             // 
-            signal4.Location = new System.Drawing.Point(243, 3);
+            signal4.Location = new Point(243, 3);
             signal4.Name = "signal4";
-            signal4.Size = new System.Drawing.Size(74, 42);
+            signal4.Size = new Size(74, 42);
             signal4.TabIndex = 3;
             signal4.Value = 4;
             // 
             // divider1
             // 
             divider1.Dock = System.Windows.Forms.DockStyle.Top;
-            divider1.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F);
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
             divider1.LocalizationText = "Signal.{id}";
-            divider1.Location = new System.Drawing.Point(0, 74);
+            divider1.Location = new Point(0, 74);
             divider1.Name = "divider1";
             divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new System.Drawing.Size(596, 28);
+            divider1.Size = new Size(596, 28);
             divider1.TabIndex = 0;
             divider1.Text = "基本用法";
             // 
@@ -188,57 +186,57 @@ namespace Demo.Controls
             stackPanel2.Controls.Add(signal9);
             stackPanel2.Controls.Add(signal10);
             stackPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-            stackPanel2.Location = new System.Drawing.Point(0, 178);
+            stackPanel2.Location = new Point(0, 178);
             stackPanel2.Name = "stackPanel2";
-            stackPanel2.Size = new System.Drawing.Size(596, 48);
+            stackPanel2.Size = new Size(596, 48);
             stackPanel2.TabIndex = 2;
             // 
             // signal6
             // 
-            signal6.Location = new System.Drawing.Point(323, 3);
+            signal6.Location = new Point(323, 3);
             signal6.Name = "signal6";
             signal6.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal6.Size = new System.Drawing.Size(74, 42);
+            signal6.Size = new Size(74, 42);
             signal6.StyleLine = true;
             signal6.TabIndex = 4;
             signal6.Value = 5;
             // 
             // signal7
             // 
-            signal7.Location = new System.Drawing.Point(243, 3);
+            signal7.Location = new Point(243, 3);
             signal7.Name = "signal7";
             signal7.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal7.Size = new System.Drawing.Size(74, 42);
+            signal7.Size = new Size(74, 42);
             signal7.StyleLine = true;
             signal7.TabIndex = 3;
             signal7.Value = 4;
             // 
             // signal8
             // 
-            signal8.Location = new System.Drawing.Point(163, 3);
+            signal8.Location = new Point(163, 3);
             signal8.Name = "signal8";
             signal8.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal8.Size = new System.Drawing.Size(74, 42);
+            signal8.Size = new Size(74, 42);
             signal8.StyleLine = true;
             signal8.TabIndex = 2;
             signal8.Value = 3;
             // 
             // signal9
             // 
-            signal9.Location = new System.Drawing.Point(83, 3);
+            signal9.Location = new Point(83, 3);
             signal9.Name = "signal9";
             signal9.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal9.Size = new System.Drawing.Size(74, 42);
+            signal9.Size = new Size(74, 42);
             signal9.StyleLine = true;
             signal9.TabIndex = 1;
             signal9.Value = 2;
             // 
             // signal10
             // 
-            signal10.Location = new System.Drawing.Point(3, 3);
+            signal10.Location = new Point(3, 3);
             signal10.Name = "signal10";
             signal10.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal10.Size = new System.Drawing.Size(74, 42);
+            signal10.Size = new Size(74, 42);
             signal10.StyleLine = true;
             signal10.TabIndex = 0;
             signal10.Value = 1;
@@ -246,12 +244,12 @@ namespace Demo.Controls
             // divider2
             // 
             divider2.Dock = System.Windows.Forms.DockStyle.Top;
-            divider2.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F);
+            divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Signal.{id}";
-            divider2.Location = new System.Drawing.Point(0, 150);
+            divider2.Location = new Point(0, 150);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
-            divider2.Size = new System.Drawing.Size(596, 28);
+            divider2.Size = new Size(596, 28);
             divider2.TabIndex = 0;
             divider2.Text = "线条样式";
             // 
@@ -262,58 +260,58 @@ namespace Demo.Controls
             stackPanel3.Controls.Add(signal14);
             stackPanel3.Controls.Add(signal15);
             stackPanel3.Dock = System.Windows.Forms.DockStyle.Top;
-            stackPanel3.Location = new System.Drawing.Point(0, 254);
+            stackPanel3.Location = new Point(0, 254);
             stackPanel3.Name = "stackPanel3";
-            stackPanel3.Size = new System.Drawing.Size(596, 48);
+            stackPanel3.Size = new Size(596, 48);
             stackPanel3.TabIndex = 3;
             // 
             // signal12
             // 
-            signal12.FillFully = System.Drawing.Color.Orange;
+            signal12.FillFully = Color.Orange;
             signal12.Loading = true;
-            signal12.Location = new System.Drawing.Point(243, 3);
+            signal12.Location = new Point(243, 3);
             signal12.Name = "signal12";
             signal12.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal12.Size = new System.Drawing.Size(74, 42);
+            signal12.Size = new Size(74, 42);
             signal12.StyleLine = true;
             signal12.TabIndex = 3;
             // 
             // signal13
             // 
-            signal13.FillFully = System.Drawing.Color.Orange;
+            signal13.FillFully = Color.Orange;
             signal13.Loading = true;
-            signal13.Location = new System.Drawing.Point(163, 3);
+            signal13.Location = new Point(163, 3);
             signal13.Name = "signal13";
-            signal13.Size = new System.Drawing.Size(74, 42);
+            signal13.Size = new Size(74, 42);
             signal13.TabIndex = 2;
             // 
             // signal14
             // 
             signal14.Loading = true;
-            signal14.Location = new System.Drawing.Point(83, 3);
+            signal14.Location = new Point(83, 3);
             signal14.Name = "signal14";
             signal14.Padding = new System.Windows.Forms.Padding(24, 0, 24, 0);
-            signal14.Size = new System.Drawing.Size(74, 42);
+            signal14.Size = new Size(74, 42);
             signal14.StyleLine = true;
             signal14.TabIndex = 1;
             // 
             // signal15
             // 
             signal15.Loading = true;
-            signal15.Location = new System.Drawing.Point(3, 3);
+            signal15.Location = new Point(3, 3);
             signal15.Name = "signal15";
-            signal15.Size = new System.Drawing.Size(74, 42);
+            signal15.Size = new Size(74, 42);
             signal15.TabIndex = 0;
             // 
             // divider3
             // 
             divider3.Dock = System.Windows.Forms.DockStyle.Top;
-            divider3.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F);
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Signal.{id}";
-            divider3.Location = new System.Drawing.Point(0, 226);
+            divider3.Location = new Point(0, 226);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
-            divider3.Size = new System.Drawing.Size(596, 28);
+            divider3.Size = new Size(596, 28);
             divider3.TabIndex = 0;
             divider3.Text = "动画";
             // 
@@ -322,10 +320,10 @@ namespace Demo.Controls
             stackPanel4.Controls.Add(button2);
             stackPanel4.Controls.Add(button1);
             stackPanel4.Dock = System.Windows.Forms.DockStyle.Top;
-            stackPanel4.Location = new System.Drawing.Point(0, 302);
+            stackPanel4.Location = new Point(0, 302);
             stackPanel4.Name = "stackPanel4";
             stackPanel4.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            stackPanel4.Size = new System.Drawing.Size(596, 48);
+            stackPanel4.Size = new Size(596, 48);
             stackPanel4.TabIndex = 10;
             // 
             // Signal
@@ -338,8 +336,9 @@ namespace Demo.Controls
             Controls.Add(stackPanel1);
             Controls.Add(divider1);
             Controls.Add(header1);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Signal";
-            Size = new System.Drawing.Size(596, 445);
+            Size = new Size(596, 445);
             stackPanel1.ResumeLayout(false);
             stackPanel2.ResumeLayout(false);
             stackPanel3.ResumeLayout(false);

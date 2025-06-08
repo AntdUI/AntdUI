@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -93,7 +89,6 @@ namespace Demo.Controls
             panel1.Controls.Add(label2);
             panel1.Controls.Add(divider1);
             panel1.Controls.Add(label1);
-            panel1.Font = new Font("Microsoft YaHei UI", 12F);
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
             panel1.Size = new Size(512, 213);
@@ -105,7 +100,7 @@ namespace Demo.Controls
             divider2.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
             divider2.Location = new Point(0, 116);
             divider2.Name = "divider2";
-            divider2.Size = new Size(512, 20);
+            divider2.Size = new Size(512, 26);
             divider2.TabIndex = 3;
             divider2.Text = "With Text";
             divider2.Thickness = 2F;
@@ -151,7 +146,7 @@ namespace Demo.Controls
             // 
             Controls.Add(flowLayoutPanel1);
             Controls.Add(header1);
-            Font = new Font("Microsoft YaHei UI", 16F);
+            Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Divider";
             Size = new Size(740, 402);
             flowLayoutPanel1.ResumeLayout(false);

@@ -540,6 +540,12 @@ namespace Demo
                     return "Tabs";
                 case "Tabs.Description":
                     return "Tabs make it easy to explore and switch between different views.";
+                case "Tabs.divider1":
+                    return "Basic";
+                case "Tabs.divider2":
+                    return "Card style";
+                case "Tabs.divider3":
+                    return "Center position";
 
                 //Tag ----------------------------
                 case "Tag.Text":
