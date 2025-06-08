@@ -344,6 +344,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        public int? Gap { get; set; }
+
         #endregion
 
         #region 设置

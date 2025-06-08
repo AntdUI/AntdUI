@@ -173,10 +173,10 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 单元格标签间距
+        /// 单元格内间距
         /// </summary>
-        [Description("单元格标签间距"), Category("外观"), DefaultValue(null)]
-        public int? GapCellTag { get; set; }
+        [Description("单元格内间距"), Category("外观"), DefaultValue(null)]
+        public int? GapCell { get; set; }
 
         [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
         public bool? CellImpactHeight { get; set; }
@@ -1067,7 +1067,7 @@ namespace AntdUI
                 {
                     var _row = rows[row];
                     var cel = _row.cells[column];
-                    CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _);
+                    CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _, out _);
                     return new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
                 }
                 catch { }
@@ -1230,7 +1230,7 @@ namespace AntdUI
         public CELL? HitTest(int x, int y)
         {
             if (rows == null) return null;
-            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out _, out _, out _);
+            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out _, out _, out _, out _);
             return cell;
         }
 
@@ -1241,7 +1241,7 @@ namespace AntdUI
                 i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out i_row, out i_cel, out _);
+            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out i_row, out i_cel, out var _, out _);
             return cell;
         }
 
@@ -1252,7 +1252,7 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _);
+            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out _);
             return cell;
         }
 
@@ -1264,7 +1264,7 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out mode);
+            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out mode);
             return cell;
         }
 

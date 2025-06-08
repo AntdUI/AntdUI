@@ -87,9 +87,9 @@ namespace AntdUI
                 int sp = (int)(Gap.Value * Config.Dpi);
                 return new Size(size.Width + sp * 2, size.Height + sp);
             }
-            else if (PARENT.PARENT.GapCellTag.HasValue)
+            else if (PARENT.PARENT.GapCell.HasValue)
             {
-                int sp = (int)(PARENT.PARENT.GapCellTag.Value * Config.Dpi);
+                int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
                 return new Size(size.Width + sp * 2, size.Height + sp);
             }
             else return new Size(size.Width + gap2, size.Height + gap);

@@ -25,7 +25,24 @@ namespace AntdUI
     {
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gap, Rect, this, enable, PARENT.PARENT.ColorScheme);
 
+        #region GetSize
+
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        {
+            if (Gap.HasValue)
+            {
+                int sp = (int)(Gap.Value * Config.Dpi);
+                return GetSizeCore(g, font, sp, sp * 2);
+            }
+            else if (PARENT.PARENT.GapCell.HasValue)
+            {
+                int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
+                return GetSizeCore(g, font, sp, sp * 2);
+            }
+            else return GetSizeCore(g, font, gap, gap2);
+        }
+
+        Size GetSizeCore(Canvas g, Font font, int gap, int gap2)
         {
             if (string.IsNullOrEmpty(Text))
             {
@@ -52,6 +69,8 @@ namespace AntdUI
                 else return new Size(size.Width + gap, size.Height + gap);
             }
         }
+
+        #endregion
 
         #region 动画
 
