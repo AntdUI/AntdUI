@@ -751,7 +751,12 @@ namespace AntdUI
             return false;
         }
 
-        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last, bool start = false)
+        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last)
+        {
+            bool start = false;
+            return SetSelects(items, first, last, ref start);
+        }
+        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last, ref bool start)
         {
             foreach (var it in items)
             {
@@ -764,7 +769,7 @@ namespace AntdUI
                 if (start) it.SetSelect();
                 if (it.items != null && it.items.Count > 0)
                 {
-                    if (SetSelects(it.items, first, last, start)) return true;
+                    if (SetSelects(it.items, first, last, ref start)) return true;
                 }
             }
             return false;

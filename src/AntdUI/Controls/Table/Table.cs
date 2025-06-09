@@ -333,6 +333,12 @@ namespace AntdUI
         [Description("拖拽手柄图标大小"), Category("外观"), DefaultValue(14)]
         public int DragHandleIconSize { get; set; } = 14;
 
+        /// <summary>
+        /// 排序大小
+        /// </summary>
+        [Description("排序大小"), Category("外观"), DefaultValue(null)]
+        public int? SortOrderSize { get; set; }
+
         #endregion
 
         /// <summary>
