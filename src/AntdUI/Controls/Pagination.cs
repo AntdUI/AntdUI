@@ -76,6 +76,28 @@ namespace AntdUI
             }
         }
 
+
+
+        string? _recordsPerPageText;
+
+        /// <summary>
+        /// 每页记录数文本，标签提醒文本
+        /// </summary>
+        [Description("每页记录数文本，标签提醒文本"), Category("外观"), DefaultValue(null)]
+        public string? RecordsPerPageText
+        {
+            get => _recordsPerPageText;
+            set
+            {
+                if (_recordsPerPageText == value || string.IsNullOrWhiteSpace(value)) return;
+                _recordsPerPageText = value;
+                ButtonLayout();
+                Invalidate();
+                OnPropertyChanged(nameof(RecordsPerPageText));
+            }
+        }
+
+
         int pageSize = 10;
         /// <summary>
         /// 每页条数
@@ -92,7 +114,7 @@ namespace AntdUI
                 ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 if (input_SizeChanger != null)
                 {
-                    string tips = Localization.Get("ItemsPerPage", "条/页");
+                    string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
                     input_SizeChanger.Clear();
                     input_SizeChanger.PlaceholderText = value.ToString() + " " + tips;
                 }
@@ -669,7 +691,7 @@ namespace AntdUI
         {
             if (input_SizeChanger == null)
             {
-                string tips = Localization.Get("ItemsPerPage", "条/页");
+                string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
                 var placeholder = pageSize.ToString() + " " + tips;
                 bool r = rightToLeft == RightToLeft.Yes;
                 int width = GetSizeChangerWidth(placeholder);
@@ -721,7 +743,7 @@ namespace AntdUI
             {
                 if (sizeChangerWidth <= 0)
                 {
-                    string tips = Localization.Get("ItemsPerPage", "条/页");
+                    string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
                     var placeholder = pageSize.ToString() + " " + tips;
                     int width = GetSizeChangerWidth(placeholder);
                     if (InvokeRequired) Invoke(() => SetSizeChanger(input_SizeChanger, width, placeholder));

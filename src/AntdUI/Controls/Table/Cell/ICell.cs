@@ -135,6 +135,18 @@ namespace AntdUI
 
         #endregion
 
+        #region 属性
+
+        public bool ImpactHeight { get; set; } = true;
+
+        public ICell SetImpactHeight(bool value = false)
+        {
+            ImpactHeight = value;
+            return this;
+        }
+
+        #endregion
+
         public Action<bool>? Changed { get; set; }
         public void OnPropertyChanged(bool layout = false) => Changed?.Invoke(layout);
     }

@@ -310,13 +310,7 @@ namespace AntdUI
                     {
                         if (ShowTime)
                         {
-                            subForm = new LayeredFormCalendarTimeRange(this, ReadRectangle, _value, date =>
-                            {
-                                Value = date;
-                            }, btn =>
-                            {
-                                PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn));
-                            }, BadgeAction);
+                            subForm = new LayeredFormCalendarTimeRange(this, ReadRectangle, _value, EndFocused, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;
@@ -326,13 +320,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            subForm = new LayeredFormCalendarRange(this, ReadRectangle, _value, date =>
-                            {
-                                Value = date;
-                            }, btn =>
-                            {
-                                PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn));
-                            }, BadgeAction);
+                            subForm = new LayeredFormCalendarRange(this, ReadRectangle, _value, EndFocused, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;

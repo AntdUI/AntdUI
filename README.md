@@ -9,7 +9,7 @@
 [![Download](https://img.shields.io/nuget/dt/antdui?style=flat-square)](https://www.nuget.org/packages/AntdUI)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
-[中文](README-zh.md)・English・[Document](doc/wiki/en/Home.md)・[Demo](https://gitee.com/mubaiyanghua/antdui-demo)
+[中文](README-zh.md)・English・[Document](doc/wiki/en/Home.md)・[UpdateLog](doc/wiki/en/UpdateLog.md)・[Demo](https://gitee.com/mubaiyanghua/antdui-demo)
 
 </div>
 

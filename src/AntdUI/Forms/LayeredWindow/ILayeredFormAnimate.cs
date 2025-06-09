@@ -531,20 +531,23 @@ namespace AntdUI
         {
             try
             {
-                if (!ILayeredFormAnimate.list.TryGetValue(key, out var list) || list.Count == 0) return;
-                switch (align)
+                if (ILayeredFormAnimate.list.TryGetValue(key, out var list))
                 {
-                    case TAlignFrom.Bottom:
-                    case TAlignFrom.BL:
-                    case TAlignFrom.BR:
-                        CloseB(key, name, list);
-                        break;
-                    case TAlignFrom.Top:
-                    case TAlignFrom.TL:
-                    case TAlignFrom.TR:
-                    default:
-                        CloseT(key, name, list);
-                        break;
+                    if (list.Count == 0) return;
+                    switch (align)
+                    {
+                        case TAlignFrom.Bottom:
+                        case TAlignFrom.BL:
+                        case TAlignFrom.BR:
+                            CloseB(key, name, list);
+                            break;
+                        case TAlignFrom.Top:
+                        case TAlignFrom.TL:
+                        case TAlignFrom.TR:
+                        default:
+                            CloseT(key, name, list);
+                            break;
+                    }
                 }
             }
             catch { }

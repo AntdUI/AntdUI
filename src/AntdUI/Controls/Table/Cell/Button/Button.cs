@@ -344,6 +344,163 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 间距
+        /// </summary>
+        public int? Gap { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        public CellButton SetFore(Color? value)
+        {
+            fore = value;
+            return this;
+        }
+        public CellButton SetBack(Color? value)
+        {
+            back = value;
+            return this;
+        }
+
+        public CellButton SetBack(Color? value, Color? hover, Color? active = null)
+        {
+            back = value;
+            BackHover = hover;
+            BackActive = active;
+            return this;
+        }
+
+        public CellButton SetBack(string? value)
+        {
+            backExtend = value;
+            return this;
+        }
+
+        public CellButton SetDefaultBack(Color? value)
+        {
+            defaultback = value;
+            return this;
+        }
+
+        public CellButton SetDefault(Color? value, Color? bor)
+        {
+            defaultback = value;
+            defaultbordercolor = bor;
+            return this;
+        }
+
+        public CellButton SetBorder(float value = 1F)
+        {
+            borderWidth = value;
+            return this;
+        }
+
+        #region 图标
+
+        public CellButton SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public CellButton SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        public CellButton SetIcon(Image? img, Image? hover)
+        {
+            icon = img;
+            IconHover = hover;
+            return this;
+        }
+
+        public CellButton SetIcon(string? svg, string? hover)
+        {
+            iconSvg = svg;
+            IconHoverSvg = hover;
+            return this;
+        }
+
+        public CellButton SetIconHover(string? svg, int animation = 200)
+        {
+            IconHoverSvg = svg;
+            IconHoverAnimation = animation;
+            return this;
+        }
+        public CellButton SetIconHover(Image? img, int animation = 200)
+        {
+            IconHover = img;
+            IconHoverAnimation = animation;
+            return this;
+        }
+
+        public CellButton SetIconPosition(TAlignMini align)
+        {
+            iconPosition = align;
+            return this;
+        }
+
+        #endregion
+
+        public CellButton SetIconRatio(float value = 1F)
+        {
+            iconratio = value;
+            return this;
+        }
+        public CellButton SetIconGap(float value = 0F)
+        {
+            icongap = value;
+            return this;
+        }
+
+        public CellButton SetRadius(int value = 0)
+        {
+            radius = value;
+            return this;
+        }
+        public CellButton SetShape(TShape value = TShape.Round)
+        {
+            shape = value;
+            return this;
+        }
+        public CellButton SetType(TTypeMini value = TTypeMini.Primary)
+        {
+            type = value;
+            return this;
+        }
+        public CellButton SetGhost(bool value = true)
+        {
+            ghost = value;
+            return this;
+        }
+        public CellButton SetArrow(bool value = true)
+        {
+            showArrow = value;
+            return this;
+        }
+        public CellButton SetIsLink(bool value = true)
+        {
+            isLink = value;
+            return this;
+        }
+
+        public CellButton SetArrow(bool value, bool link)
+        {
+            showArrow = value;
+            isLink = value;
+            return this;
+        }
+
+        public CellButton SetArrow(float value = 1F)
+        {
+            ArrowProg = value;
+            return this;
+        }
+
         #endregion
     }
 }

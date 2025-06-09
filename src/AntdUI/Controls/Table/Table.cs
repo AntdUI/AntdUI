@@ -172,6 +172,15 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 单元格内间距
+        /// </summary>
+        [Description("单元格内间距"), Category("外观"), DefaultValue(null)]
+        public int? GapCell { get; set; }
+
+        [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
+        public bool? CellImpactHeight { get; set; }
+
         bool fixedHeader = true;
         /// <summary>
         /// 固定表头
@@ -323,6 +332,12 @@ namespace AntdUI
         /// </summary>
         [Description("拖拽手柄图标大小"), Category("外观"), DefaultValue(14)]
         public int DragHandleIconSize { get; set; } = 14;
+
+        /// <summary>
+        /// 排序大小
+        /// </summary>
+        [Description("排序大小"), Category("外观"), DefaultValue(null)]
+        public int? SortOrderSize { get; set; }
 
         #endregion
 
@@ -486,6 +501,22 @@ namespace AntdUI
             }
         }
 
+        float borderWidth = 1F;
+        /// <summary>
+        /// 边框宽度
+        /// </summary>
+        [Description("边框宽度"), Category("边框"), DefaultValue(1F)]
+        public float BorderWidth
+        {
+            get => borderWidth;
+            set
+            {
+                if (borderWidth == value) return;
+                borderWidth = value;
+                Invalidate();
+            }
+        }
+
         Color? borderColor;
         /// <summary>
         /// 表格边框颜色
@@ -503,6 +534,12 @@ namespace AntdUI
                 OnPropertyChanged(nameof(BorderColor));
             }
         }
+
+        /// <summary>
+        /// 单元格边框宽度
+        /// </summary>
+        [Description("单元格边框宽度"), Category("边框"), DefaultValue(1F)]
+        public float BorderCellWidth { get; set; } = 1F;
 
         #region 表头
 
@@ -1036,7 +1073,7 @@ namespace AntdUI
                 {
                     var _row = rows[row];
                     var cel = _row.cells[column];
-                    CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _);
+                    CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _, out _);
                     return new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
                 }
                 catch { }
@@ -1199,7 +1236,7 @@ namespace AntdUI
         public CELL? HitTest(int x, int y)
         {
             if (rows == null) return null;
-            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out _, out _, out _);
+            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out _, out _, out _, out _);
             return cell;
         }
 
@@ -1210,7 +1247,7 @@ namespace AntdUI
                 i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out i_row, out i_cel, out _);
+            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out i_row, out i_cel, out var _, out _);
             return cell;
         }
 
@@ -1221,7 +1258,7 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _);
+            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out _);
             return cell;
         }
 
@@ -1233,7 +1270,7 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out mode);
+            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out mode);
             return cell;
         }
 
@@ -1948,6 +1985,11 @@ namespace AntdUI
         /// <summary>
         /// 设置列样式
         /// </summary>
+        public Column SetStyle(Color? back, Color? fore = null) => SetStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
+
+        /// <summary>
+        /// 设置列样式
+        /// </summary>
         public Column SetStyle(Table.CellStyleInfo? style)
         {
             Style = style;
@@ -1958,6 +2000,11 @@ namespace AntdUI
         /// 标题列样式
         /// </summary>
         public Table.CellStyleInfo? ColStyle { get; set; }
+
+        /// <summary>
+        /// 设置标题列样式
+        /// </summary>
+        public Column SetColStyle(Color? back, Color? fore = null) => SetStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
 
         /// <summary>
         /// 设置标题列样式

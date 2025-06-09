@@ -91,7 +91,7 @@ namespace AntdUI
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
                 int dot_size = rect.Width > rect.Height ? rect.Height : rect.Width;
-                var rect_dot = new Rectangle((rect.Width - dot_size) / 2, (rect.Height - dot_size) / 2, dot_size, dot_size);
+                var rect_dot = new Rectangle(rect.X + (rect.Width - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
                 if (color.HasValue)
                 {
                     using (var brush = new SolidBrush(color.Value))

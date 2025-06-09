@@ -99,6 +99,12 @@ namespace AntdUI
         public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
 
         /// <summary>
+        /// 下拉为空关闭
+        /// </summary>
+        [Description("下拉为空关闭"), Category("行为"), DefaultValue(false)]
+        public bool DropDownEmptyClose { get; set; }
+
+        /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
         [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
@@ -558,14 +564,17 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            var r = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
                 case Keys.Down:
+                    ExpandDrop = true;
+                    return true;
                 case Keys.Enter:
                     ExpandDrop = true;
                     break;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            return r;
         }
         protected override void OnLostFocus(EventArgs e)
         {
@@ -783,15 +792,23 @@ namespace AntdUI
     }
     public class ISelectItem { }
 
-    internal class ObjectItemSearch
+    public class iItemSearchWeigth
     {
-        public ObjectItemSearch(int weigth, ObjectItem value)
+        public iItemSearchWeigth(int weigth, object value)
         {
             Weight = weigth;
             Value = value;
         }
         public int Weight { get; set; }
-        public ObjectItem Value { get; set; }
+        public virtual object Value { get; set; }
+    }
+    public class ItemSearchWeigth<T> : iItemSearchWeigth
+    {
+        public ItemSearchWeigth(int weigth, T value) : base(weigth, value!)
+        {
+            Value = value;
+        }
+        public new T Value { get; set; }
     }
 
     internal class ObjectItem : SelectItem
@@ -881,34 +898,7 @@ namespace AntdUI
         public Rectangle RectOnline { get; set; }
 
         string[] PY { get; set; }
-        public int Contains(string val, out bool select)
-        {
-            select = false;
-            int gear = PY.Length, score = 0;
-            if (Text == val)
-            {
-                select = true;
-                score += gear * 10;
-            }
-            val = val.ToLower();
-            if (Text == val)
-            {
-                select = true;
-                score += gear * 8;
-            }
-            foreach (var pinyin in PY)
-            {
-                if (pinyin == val)
-                {
-                    select = true;
-                    score += gear * 3;
-                }
-                else if (pinyin.StartsWith(val)) score += gear * 2;
-                else if (pinyin.Contains(val)) score += gear;
-                gear--;
-            }
-            return score;
-        }
+        public int Contains(string val, out bool select) => Helper.SearchContains(val, Text, PY, out select);
 
         public int ID { get; set; }
 

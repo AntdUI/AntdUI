@@ -78,6 +78,7 @@ namespace AntdUI
         LayeredFormMenuDown? subForm = null;
         void Init(Control control, Rectangle rect_read, IList<MenuItem> items)
         {
+            if (OS.Win7OrLower) Select();
             int y = 10, w = rect_read.Width, count = 0;
             OMenuItem? oMenuItem = null;
             Helper.GDI(g =>
@@ -386,7 +387,7 @@ namespace AntdUI
         void PaintIcon(Canvas g, OMenuItem it, Color fore)
         {
             if (it.Val.Icon != null) g.Image(it.Val.Icon, it.RectIcon);
-            else if (it.Val.IconSvg != null) g.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore);
+            if (it.Val.IconSvg != null) g.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore);
         }
         void PaintArrow(Canvas g, OMenuItem item, Color color)
         {
@@ -401,7 +402,7 @@ namespace AntdUI
             g.ResetTransform();
         }
 
-        Bitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp = null;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -411,7 +412,7 @@ namespace AntdUI
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
                     using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
@@ -419,7 +420,7 @@ namespace AntdUI
                         shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.Image(shadow_temp, rect, 0.2F);
+                g.Image(shadow_temp.Bitmap, rect, .2F);
             }
         }
 

@@ -147,7 +147,7 @@ namespace Demo.Controls
             if (e.Button == MouseButtons.Right)
             {
                 AntdUI.ContextMenuStrip.Config config = new AntdUI.ContextMenuStrip.Config(this, RightKey, menulist);
-                config.Font = new System.Drawing.Font("Microsoft YaHei UI", 10f, FontStyle.Bold);
+                config.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Bold);
                 AntdUI.ContextMenuStrip.open(config);
             }
         }

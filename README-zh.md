@@ -10,7 +10,7 @@
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
-中文・[English](README.md)・[文档](doc/wiki/zh/Home.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)
+中文・[English](README.md)・[文档](doc/wiki/zh/Home.md)・[更新日志](doc/wiki/zh/UpdateLog.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)
 
 </div>
 
@@ -87,7 +87,7 @@
 ➡️| [**Popover** 气泡卡片](doc/wiki/zh/Control/Popover.md) | ✅ | ❎ |
 ➡️| [**Segmented** 分段控制器](doc/wiki/zh/Control/Segmented.md) | ✅ | ✅ |
 ➡️| [**Table** 表格](doc/wiki/zh/Control/Table.md) | ✅ | ❎ |
-➡️| [**Tabs** 标签页](doc/wiki/zh/Control/Tabs.md) | ✅ | ❎ |
+➡️| [**Tabs** 标签页](doc/wiki/zh/Control/Tabs.md) | ✅ | ✅ |
 ➡️| [**Tag** 标签](doc/wiki/zh/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline** 时间轴](doc/wiki/zh/Control/Timeline.md) | ❎ | ❎ |
 ➡️| [**Tooltip** 文字提示](doc/wiki/zh/Control/Tooltip.md) | ✅ | ❎ |

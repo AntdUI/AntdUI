@@ -29,6 +29,21 @@ namespace AntdUI
         [DllImport("dwmapi.dll")]
         public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
+        public static bool IsCompositionEnabled
+        {
+            get
+            {
+                try
+                {
+                    int enabled = 0;
+                    DwmIsCompositionEnabled(ref enabled);
+                    return enabled == 1;
+                }
+                catch { }
+                return false;
+            }
+        }
+
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 

@@ -344,7 +344,7 @@ namespace AntdUI
                     it.shadow_temp?.Dispose();
                     using (var path2 = Helper.RoundPath(new Rectangle(ShadowXY, ShadowXY, it.rect_read.Width, it.rect_read.Height), radius, round))
                     {
-                        it.shadow_temp = path2.PaintShadow(it.rect.Width, it.rect.Height, 14);
+                        it.shadow_temp = path2.PaintShadowO(it.rect.Width, it.rect.Height, 14);
                     }
                 }
                 using (var attributes = new ImageAttributes())
@@ -447,7 +447,11 @@ namespace AntdUI
             ThreadLoading?.Dispose();
             config.Form.LocationChanged -= Form_LSChanged;
             config.Form.SizeChanged -= Form_LSChanged;
-            foreach (var it in config.Btns) it.PropertyChanged -= Notify_PropertyChanged;
+            foreach (var it in config.Btns)
+            {
+                it.shadow_temp?.Dispose();
+                it.PropertyChanged -= Notify_PropertyChanged;
+            }
             base.Dispose(disposing);
         }
 

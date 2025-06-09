@@ -250,12 +250,10 @@ namespace AntdUI
 
         bool PaintIcon(Canvas g, TimelineItem it, Color fore)
         {
-            if (it.Icon != null) { g.Image(it.Icon, it.ico_rect); return false; }
-            else if (it.IconSvg != null)
-            {
-                if (g.GetImgExtend(it.IconSvg, it.ico_rect, fore)) return false;
-            }
-            return true;
+            int count = 0;
+            if (it.Icon != null) { g.Image(it.Icon, it.ico_rect); count++; }
+            if (it.IconSvg != null && g.GetImgExtend(it.IconSvg, it.ico_rect, fore)) count++;
+            return count == 0;
         }
 
         #endregion

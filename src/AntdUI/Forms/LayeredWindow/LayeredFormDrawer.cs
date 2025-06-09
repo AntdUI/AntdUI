@@ -652,7 +652,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        Bitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp = null;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -666,7 +666,7 @@ namespace AntdUI
                 case TAlignMini.Top:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Width != end_W)
+                        if (shadow_temp == null || shadow_temp.Width != end_W)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
@@ -677,14 +677,14 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp, new Rectangle(rect.Y, rect.Bottom - 80, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.Y, rect.Bottom - 80, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - 20);
                 case TAlignMini.Bottom:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Width != end_W)
+                        if (shadow_temp == null || shadow_temp.Width != end_W)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X, rect.Y + 20, end_W, 40).RoundPath(FrmRadius))
@@ -695,14 +695,14 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp, new Rectangle(rect.Y, rect.Y, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.Y, rect.Y, rect.Width, 80), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X, rect.Y + 20, rect.Width, rect.Height - 20);
                 case TAlignMini.Left:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Height != end_H)
+                        if (shadow_temp == null || shadow_temp.Height != end_H)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
@@ -713,7 +713,7 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp, new Rectangle(rect.Right - 80, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.Right - 80, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X, rect.Y, rect.Width - 20, rect.Height);
@@ -721,7 +721,7 @@ namespace AntdUI
                 default:
                     if (Config.ShadowEnabled)
                     {
-                        if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || shadow_temp.Height != end_H)
+                        if (shadow_temp == null || shadow_temp.Height != end_H)
                         {
                             shadow_temp?.Dispose();
                             using (var path = new Rectangle(rect.X + 20, rect.Y, 40, end_H).RoundPath(FrmRadius))
@@ -732,7 +732,7 @@ namespace AntdUI
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp, new Rectangle(rect.X, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
+                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.X, rect.Y, 80, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
                         }
                     }
                     return new Rectangle(rect.X + 20, rect.Y, rect.Width - 20, rect.Height);

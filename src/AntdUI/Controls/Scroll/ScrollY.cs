@@ -227,7 +227,11 @@ namespace AntdUI
 
         public virtual bool MouseUp(Point e)
         {
-            ShowDown = false;
+            if (ShowDown)
+            {
+                ShowDown = false;
+                return false;
+            }
             return true;
         }
 

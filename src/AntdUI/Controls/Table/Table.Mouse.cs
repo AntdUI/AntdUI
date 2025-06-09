@@ -42,7 +42,7 @@ namespace AntdUI
                 base.OnMouseDown(e);
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
-                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out int mode);
+                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out var column, out int mode);
                 if (cell == null) return;
                 else
                 {
@@ -117,14 +117,13 @@ namespace AntdUI
                             Invalidate();
                             return;
                         }
-                        MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, i_row, i_cel);
+                        MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, i_row, i_cel, column);
                     }
                 }
             }
-            else shift_index = -1;
         }
 
-        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c)
+        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c, Column column)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, e.Clicks > 1);
             if (cell is Template template)
@@ -141,7 +140,7 @@ namespace AntdUI
                                 {
                                     btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, cellMouseDown.doubleClick);
                                     btn_template.ExtraMouseDown = true;
-                                    CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, e));
+                                    CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, column, e));
                                     return;
                                 }
                             }
@@ -160,7 +159,7 @@ namespace AntdUI
                                 if (btn_template.Rect.Contains(x, y))
                                 {
                                     btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, cellMouseDown.doubleClick);
-                                    CellButtonDown(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, e));
+                                    CellButtonDown(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, column, e));
                                     return;
                                 }
                             }
@@ -325,7 +324,7 @@ namespace AntdUI
                     if (btnMDown == null) return;
                     if (btnMDown.cell.ExtraMouseDown)
                     {
-                        CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, e));
+                        CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, e));
                         btnMDown.cell.ExtraMouseDown = false;
                     }
                 }
@@ -334,12 +333,12 @@ namespace AntdUI
 
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
-            var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
-            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel)) MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y);
+            var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
+            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel)) MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y, null);
             else
             {
                 if (selectedIndex.Length == 1) SelectedIndex = it.i_row;
-                if (MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y)) return;
+                if (MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y, column)) return;
                 if (e.Button == MouseButtons.Left)
                 {
                     if (it.cell is TCellCheck checkCell)
@@ -353,14 +352,14 @@ namespace AntdUI
                                 {
                                     checkCell.Checked = value;
                                     SetValue(it.cell, checkCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
+                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, column));
                                 }
                             }
                             else if (checkCell.AutoCheck)
                             {
                                 checkCell.Checked = !checkCell.Checked;
                                 SetValue(it.cell, checkCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, column));
                             }
                         }
                     }
@@ -391,7 +390,7 @@ namespace AntdUI
                                 }
                                 radioCell.Checked = true;
                                 SetValue(it.cell, radioCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel, column));
                             }
                         }
                     }
@@ -417,7 +416,21 @@ namespace AntdUI
                             {
                                 switchCell.Checked = !switchCell.Checked;
                                 SetValue(it.cell, switchCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel));
+                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel, column));
+                            }
+                        }
+                    }
+                    else if (it.cell is Template template)
+                    {
+                        foreach (var item in template.Value)
+                        {
+                            if (item is CellCheckbox checkbox)
+                            {
+                                if (checkbox.Rect.Contains(r_x, r_y) && checkbox.Enabled && checkbox.AutoCheck) checkbox.Checked = !checkbox.Checked;
+                            }
+                            else if (item is CellRadio radio)
+                            {
+                                if (radio.Rect.Contains(r_x, r_y) && radio.Enabled && radio.AutoCheck) radio.Checked = !radio.Checked;
                             }
                         }
                     }
@@ -465,12 +478,12 @@ namespace AntdUI
                 bool enterEdit = false;
                 if (it.doubleClick)
                 {
-                    CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
+                    CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, column, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
                 }
                 else
                 {
-                    CellClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
+                    CellClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, column, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
                 }
                 if (enterEdit)
@@ -479,12 +492,12 @@ namespace AntdUI
                     if (CanEditMode(it.row, cel_sel))
                     {
                         int val = ScrollLine(i_row, rows);
-                        OnEditMode(it.row, cel_sel, i_row, i_cel, offset_xi, offset_y - val);
+                        OnEditMode(it.row, cel_sel, i_row, i_cel, column, offset_xi, offset_y - val);
                     }
                 }
             }
         }
-        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y, int offset_xi, int offset_y)
+        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y, int offset_xi, int offset_y, Column? column)
         {
             if (btn == null) return false;
             btn.cell.ExtraMouseDown = false;
@@ -502,12 +515,12 @@ namespace AntdUI
                     subForm.Show(this);
                 }
 
-                var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, e);
+                var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, e);
                 CellButtonUp?.Invoke(this, arge);
                 CellButtonClick?.Invoke(this, arge);
                 return true;
             }
-            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, e));
+            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, e));
             return false;
         }
         LayeredFormSelectDown? subForm = null;
@@ -545,7 +558,7 @@ namespace AntdUI
                 var cells = rows[0].cells;
                 dragHeader.last = e.X > dragHeader.x;
 
-                var cel_sel = CellContains(rows, false, xr, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                var cel_sel = CellContains(rows, false, xr, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel != null)
                 {
                     var it = cells[i_cel];
@@ -568,7 +581,7 @@ namespace AntdUI
                 int yr = dragBody.x + dragBody.xr;
                 dragBody.last = e.Y > dragBody.x;
 
-                var cel_sel = CellContains(rows, false, e.X, yr, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                var cel_sel = CellContains(rows, false, e.X, yr, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel != null)
                 {
                     if (i_row == dragBody.i) dragBody.im = -1;
@@ -584,9 +597,10 @@ namespace AntdUI
             if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
             {
                 if (rows == null || inEditMode) return;
-                var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode);
+                var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel == null)
                 {
+                    MouseMoveCell(e);
                     foreach (RowTemplate it in rows)
                     {
                         if (it.IsColumn) continue;
@@ -594,19 +608,14 @@ namespace AntdUI
                         foreach (var cel_tmp in it.cells)
                         {
                             if (cel_tmp is TCellSort sort) sort.Hover = false;
-                            else if (cel_tmp is Template template)
-                            {
-                                foreach (var item in template.Value)
-                                {
-                                    if (item is CellLink btn) btn.ExtraMouseHover = false;
-                                }
-                            }
+                            else if (cel_tmp is Template template) ILeave(template);
                         }
                     }
                     SetCursor(false);
                 }
                 else
                 {
+                    MouseMoveCell(cel_sel, i_row, i_cel, column, offset_x, offset_y, e);
                     if (mode > 0)
                     {
                         for (int i = 1; i < rows.Length; i++)
@@ -614,13 +623,7 @@ namespace AntdUI
                             rows[i].Hover = false;
                             foreach (var cel_tmp in rows[i].cells)
                             {
-                                if (cel_tmp is Template template)
-                                {
-                                    foreach (var item in template.Value)
-                                    {
-                                        if (item is CellLink btn) btn.ExtraMouseHover = false;
-                                    }
-                                }
+                                if (cel_tmp is Template template) ILeave(template);
                             }
                         }
                         var cel = (TCellColumn)cel_sel;
@@ -664,13 +667,7 @@ namespace AntdUI
                                 foreach (var cel_tmp in rows[i].cells)
                                 {
                                     if (cel_tmp is TCellSort sort) sort.Hover = false;
-                                    else if (cel_tmp is Template template)
-                                    {
-                                        foreach (var item in template.Value)
-                                        {
-                                            if (item is CellLink btn) btn.ExtraMouseHover = false;
-                                        }
-                                    }
+                                    else if (cel_tmp is Template template) ILeave(template);
                                 }
                             }
                         }
@@ -678,7 +675,7 @@ namespace AntdUI
                         else
                         {
                             if (cel_sel.ROW.CanExpand && cel_sel.ROW.RectExpand.Contains(r_x, r_y)) { SetCursor(true); return; }
-                            SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y));
+                            SetCursor(MouseMoveRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y, e));
                         }
                     }
                 }
@@ -686,7 +683,7 @@ namespace AntdUI
             else ILeave();
         }
 
-        bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y)
+        bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y, MouseEventArgs e)
         {
             if (cel is TCellCheck checkCell)
             {
@@ -730,6 +727,24 @@ namespace AntdUI
                     else if (item is CellImage img_template)
                     {
                         if (img_template.Tooltip != null && img_template.Rect.Contains(x, y)) tipcel = img_template;
+                    }
+                    else if (item is CellCheckbox checkbox_template)
+                    {
+                        if (checkbox_template.Enabled && checkbox_template.AutoCheck)
+                        {
+                            checkbox_template.ExtraMouseHover = checkbox_template.Rect.Contains(x, y);
+                            if (checkbox_template.ExtraMouseHover) hand++;
+                        }
+                        else checkbox_template.ExtraMouseHover = false;
+                    }
+                    else if (item is CellRadio radio_template)
+                    {
+                        if (radio_template.Enabled && radio_template.AutoCheck)
+                        {
+                            radio_template.ExtraMouseHover = radio_template.Rect.Contains(x, y);
+                            if (radio_template.ExtraMouseHover) hand++;
+                        }
+                        else radio_template.ExtraMouseHover = false;
                     }
                 }
                 if (tipcel == null) CloseTip();
@@ -783,7 +798,7 @@ namespace AntdUI
                 {
                     CloseTip();
                     oldmove = moveid;
-                    if (!cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width)
+                    if (!cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1)
                     {
                         var text = cel.ToString();
                         if (!string.IsNullOrEmpty(text))
@@ -806,7 +821,23 @@ namespace AntdUI
             }
             return false;
         }
-        string? oldmove = null;
+
+        void MouseMoveCell(CELL cel, int i_row, int i_cel, Column? column, int offset_x, int offset_y, MouseEventArgs e)
+        {
+            if (CellHover == null) return;
+            var moveid = i_row + "_" + i_cel;
+            if (oldmove2 == moveid) return;
+            oldmove2 = moveid;
+            CellHover(this, new TableHoverEventArgs(cel.ROW.RECORD, i_row, i_cel, column, new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height), e));
+        }
+        void MouseMoveCell(MouseEventArgs? e)
+        {
+            if (CellHover == null || oldmove2 == null) return;
+            oldmove2 = null;
+            CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+        }
+
+        string? oldmove = null, oldmove2 = null;
         TooltipForm? tooltipForm = null;
         void CloseTip(bool clear = false)
         {
@@ -819,7 +850,7 @@ namespace AntdUI
 
         #region 判断是否在内部
 
-        CELL? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        CELL? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out Column? column, out int mode)
         {
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
@@ -840,6 +871,7 @@ namespace AntdUI
 
                             i_row = tmp.i_row;
                             i_cel = tmp.i_cel;
+                            column = tmp.col;
                             return tmp.cell;
                         }
                     }
@@ -856,6 +888,7 @@ namespace AntdUI
 
                             i_row = tmp.i_row;
                             i_cel = tmp.i_cel;
+                            column = tmp.col;
                             return tmp.cell;
                         }
                     }
@@ -874,12 +907,14 @@ namespace AntdUI
 
                         i_row = tmp.i_row;
                         i_cel = tmp.i_cel;
+                        column = tmp.col;
                         return tmp.cell;
                     }
                 }
             }
             mode = 0;
             r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+            column = null;
             return null;
         }
 
@@ -894,7 +929,7 @@ namespace AntdUI
                     var cel = it.cells[i];
                     if (cel.CONTAIN(ex, ey))
                     {
-                        cell = new ContainCellTMP(cel, ex, ey, 0, 0, sy, it.INDEX, i);
+                        cell = new ContainCellTMP(cel, ex, ey, 0, 0, sy, it.INDEX, i, cel.COLUMN);
                         return true;
                     }
                 }
@@ -907,7 +942,7 @@ namespace AntdUI
                     var cel = it.cells[i];
                     if (cel.CONTAIN(ex + sFixedR, ey))
                     {
-                        cell = new ContainCellTMP(cel, ex + sFixedR, ey, -sFixedR, sFixedR, sy, it.INDEX, i);
+                        cell = new ContainCellTMP(cel, ex + sFixedR, ey, -sFixedR, sFixedR, sy, it.INDEX, i, cel.COLUMN);
                         return true;
                     }
                 }
@@ -918,7 +953,7 @@ namespace AntdUI
                 var cel = it.cells[i];
                 if (cel.CONTAIN(px, ey))
                 {
-                    cell = new ContainCellTMP(cel, px, ey, sx, sx, sy, it.INDEX, i);
+                    cell = new ContainCellTMP(cel, px, ey, sx, sx, sy, it.INDEX, i, cel.COLUMN);
                     return true;
                 }
             }
@@ -937,7 +972,7 @@ namespace AntdUI
                     var cel = it.cells[i];
                     if (cel.CONTAIN(ex, py))
                     {
-                        cell = new ContainCellTMP(cel, ex, py, 0, 0, sy, it.INDEX, i);
+                        cell = new ContainCellTMP(cel, ex, py, 0, 0, sy, it.INDEX, i, cel.COLUMN);
                         return true;
                     }
                 }
@@ -950,7 +985,7 @@ namespace AntdUI
                     var cel = it.cells[i];
                     if (cel.CONTAIN(ex + sFixedR, py))
                     {
-                        cell = new ContainCellTMP(cel, ex + sFixedR, py, -sFixedR, sFixedR, sy, it.INDEX, i);
+                        cell = new ContainCellTMP(cel, ex + sFixedR, py, -sFixedR, sFixedR, sy, it.INDEX, i, cel.COLUMN);
                         return true;
                     }
                 }
@@ -961,7 +996,7 @@ namespace AntdUI
                 var cel = it.cells[i];
                 if (cel.CONTAIN(px, py))
                 {
-                    cell = new ContainCellTMP(cel, px, py, sx, sx, sy, it.INDEX, i);
+                    cell = new ContainCellTMP(cel, px, py, sx, sx, sy, it.INDEX, i, cel.COLUMN);
                     return true;
                 }
             }
@@ -971,7 +1006,7 @@ namespace AntdUI
 
         class ContainCellTMP
         {
-            public ContainCellTMP(CELL _cell, int _r_x, int _r_y, int _offset_x, int _offset_xi, int _offset_y, int _i_row, int _i_cel)
+            public ContainCellTMP(CELL _cell, int _r_x, int _r_y, int _offset_x, int _offset_xi, int _offset_y, int _i_row, int _i_cel, Column _col)
             {
                 cell = _cell;
                 r_x = _r_x;
@@ -981,6 +1016,7 @@ namespace AntdUI
                 offset_y = _offset_y;
                 i_row = _i_row;
                 i_cel = _i_cel;
+                col = _col;
             }
 
             public CELL cell { get; set; }
@@ -992,6 +1028,7 @@ namespace AntdUI
             public int offset_y { get; set; }
             public int i_row { get; set; }
             public int i_cel { get; set; }
+            public Column col { get; set; }
         }
 
         #endregion
@@ -1104,14 +1141,19 @@ namespace AntdUI
                 foreach (var cel in it.cells)
                 {
                     if (cel is TCellSort sort) sort.Hover = false;
-                    else if (cel is Template template)
-                    {
-                        foreach (var item in template.Value)
-                        {
-                            if (item is CellLink btn) btn.ExtraMouseHover = false;
-                        }
-                    }
+                    else if (cel is Template template) ILeave(template);
                 }
+            }
+            MouseMoveCell(null);
+        }
+
+        void ILeave(Template template)
+        {
+            foreach (var it in template.Value)
+            {
+                if (it is CellLink btn) btn.ExtraMouseHover = false;
+                else if (it is CellCheckbox checkbox) checkbox.ExtraMouseHover = false;
+                else if (it is CellRadio radio) radio.ExtraMouseHover = false;
             }
         }
 

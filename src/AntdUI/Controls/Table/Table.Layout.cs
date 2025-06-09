@@ -114,7 +114,7 @@ namespace AntdUI
                             {
                                 AnimationStateValue = i;
                                 Invalidate();
-                            }, 50, 1F, 0.05F);
+                            }, 50, 1F, .05F);
                         }
                     }
                     else
@@ -270,7 +270,7 @@ namespace AntdUI
                 var dpi = Config.Dpi;
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
                 gap = (int)(_gap * dpi), gap2 = gap * 2, gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
-                split = (int)(1F * dpi), split2 = split / 2,
+                split = (int)(BorderCellWidth * dpi), split2 = split / 2, sp2 = split * 2,
                 split_move = (int)(6F * dpi), split_move2 = split_move / 2;
 
                 check_radius = check_size * .12F * dpi;
@@ -361,8 +361,16 @@ namespace AntdUI
                     }
                 }
 
-                rect_read.Width = rect.Width;
-                rect_read.Height = rect.Height;
+                if (bordered)
+                {
+                    rect_read.Width = rect.Width - sp2;
+                    rect_read.Height = rect.Height - sp2;
+                }
+                else
+                {
+                    rect_read.Width = rect.Width;
+                    rect_read.Height = rect.Height;
+                }
 
                 var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
 
@@ -443,11 +451,10 @@ namespace AntdUI
                 }
                 var last = last_row.cells[last_row.cells.Length - 1];
 
-                bool iseg = emptyHeader && _rows.Count == 1;
-                if ((rect.Y + rect.Height) > last.RECT.Bottom && !iseg) rect_read.Height = last.RECT.Bottom - rect.Y;
+                bool isempty = emptyHeader && _rows.Count == 1;
+                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y;
 
-                int sp2 = split * 2;
-                rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width - sp2, rect_read.Height - sp2);
+                rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width, rect_read.Height);
 
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
                 foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);
@@ -465,12 +472,12 @@ namespace AntdUI
                         }
                         if (bordered)
                         {
-                            if (iseg)
+                            if (isempty)
                             {
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, it.RECT.Height));
+                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, it.RECT.Height - split));
                                 }
                             }
                             else
@@ -478,7 +485,7 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, rect_read.Height));
+                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, rect_read.Height));
                                 }
                             }
                             if (visibleHeader) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
@@ -498,7 +505,7 @@ namespace AntdUI
                         else _dividers.Add(new Rectangle(row.RECT.X, row.RECT.Bottom - split2, row.RECT.Width, split));
                     }
                 }
-                if (bordered && !iseg) _dividers.RemoveAt(_dividers.Count - 1);
+                if (bordered && !isempty) _dividers.RemoveAt(_dividers.Count - 1);
                 dividerHs = _dividerHs.ToArray();
                 dividers = _dividers.ToArray();
                 moveheaders = MoveHeaders.ToArray();
@@ -1060,7 +1067,7 @@ namespace AntdUI
                     {
                         checkCell.Checked = value;
                         SetValue(item, checkCell.Checked);
-                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(value, rows[i_row].RECORD, i_row, i_cel));
+                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN));
                     }
                     else nocount++;
                 }

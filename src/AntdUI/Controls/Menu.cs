@@ -349,12 +349,34 @@ namespace AntdUI
                 if (it == item)
                 {
                     it.Select = true;
+                    tmpAM = true;
                     OnSelectIndexChanged(it);
+                    if (SelectEx(it.PARENTITEM) > 0)
+                    {
+                        ChangeList();
+                        Invalidate();
+                    }
+                    tmpAM = false;
                     if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
                     return;
                 }
                 else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
             }
+        }
+
+        internal bool tmpAM = false;
+        int SelectEx(MenuItem? it)
+        {
+            int count = 0;
+            if (it == null) return count;
+            if (it.Expand) it.Select = true;
+            else
+            {
+                count++;
+                it.Expand = it.Select = true;
+            }
+            count += SelectEx(it.PARENTITEM);
+            return count;
         }
 
         /// <summary>
@@ -550,7 +572,7 @@ namespace AntdUI
                     if (collapsed) ChangeUTitle(items);
                 }
             });
-            ScrollBar.SetVrSize(y);
+            ScrollBar.SetVrSize(y + Padding.Vertical);
             ScrollBar.SizeChange(_rect);
         }
 
@@ -1584,6 +1606,12 @@ namespace AntdUI
                     }
                     if (Config.HasAnimation(nameof(Menu)))
                     {
+                        if (PARENT != null && PARENT.tmpAM)
+                        {
+                            ExpandProg = 1F;
+                            ArrowProg = value ? 1F : -1F;
+                            return;
+                        }
                         ThreadExpand?.Dispose();
                         float oldval = -1;
                         if (ThreadExpand?.Tag is float oldv) oldval = oldv;

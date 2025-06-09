@@ -94,15 +94,29 @@ namespace AntdUI
             int size_time_one = (int)(t_time * 0.857F);
             int size_time_height_one = (int)(t_time_height * 0.93F);
 
-            var rect_s_h = new Rectangle(10, 18, t_time, t_height - 8);
-            rect_read_h = new Rectangle(rect_s_h.Right - t_time, rect_s_h.Y, t_time, rect_s_h.Height);
-            rect_read_m = new Rectangle(rect_s_h.Right, rect_s_h.Y, t_time, rect_s_h.Height);
-            rect_read_s = new Rectangle(rect_s_h.Right + t_time, rect_s_h.Y, t_time, rect_s_h.Height);
-            scrollY_h.SizeChange(rect_s_h);
-            rect_s_h.Width += t_time;
-            scrollY_m.SizeChange(rect_s_h);
-            rect_s_h.Width += t_time;
-            scrollY_s.SizeChange(rect_s_h);
+            var rect_time = new Rectangle(10, 18, t_time, t_height - 8);
+            int tmp = rect_time.Right - t_time;
+            if (ShowH)
+            {
+                rect_read_h = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
+                scrollY_h.SizeChange(rect_time);
+                tmp += t_time;
+                rect_time.Width += t_time;
+            }
+            if (ShowM)
+            {
+                rect_read_m = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
+                scrollY_m.SizeChange(rect_time);
+                tmp += t_time;
+                rect_time.Width += t_time;
+            }
+            if (ShowS)
+            {
+                rect_read_s = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
+                scrollY_s.SizeChange(rect_time);
+                tmp += t_time;
+                rect_time.Width += t_time;
+            }
 
             int endh2 = t_height - (t_time_height - size_time_height_one);
             if (ValueTimeHorizontal)
@@ -134,6 +148,7 @@ namespace AntdUI
             if (ShowButtonNow) rect_buttonok = new Rectangle(rect_button.Right, rect_button.Top, rect_button.Width, rect_button.Height);
             else rect_buttonok = new Rectangle(rect_button.X, rect_button.Top, t_width, rect_button.Height);
             CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            if (OS.Win7OrLower) Select();
         }
 
         public override string name => nameof(TimePicker);
@@ -273,7 +288,7 @@ namespace AntdUI
 
         Rectangle rect_read_h, rect_read_m, rect_read_s;
 
-        Bitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp = null;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -283,7 +298,7 @@ namespace AntdUI
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
                     using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
@@ -291,7 +306,7 @@ namespace AntdUI
                         shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.Image(shadow_temp, rect, .2F);
+                g.Image(shadow_temp.Bitmap, rect, .2F);
             }
         }
 
@@ -370,59 +385,59 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (RunAnimation) return;
-            scrollY_h.MouseUp(e.Location);
-            scrollY_m.MouseUp(e.Location);
-            scrollY_s.MouseUp(e.Location);
-            if (e.Button == MouseButtons.Left)
+            if (scrollY_h.MouseUp(e.Location) && scrollY_m.MouseUp(e.Location) && scrollY_s.MouseUp(e.Location))
             {
-                if (ShowButtonNow && rect_button.Contains(e.Location))
+                if (e.Button == MouseButtons.Left)
                 {
-                    DateNow = DateTime.Now;
-                    SelDate = new TimeSpan(DateNow.Hour, DateNow.Minute, DateNow.Second);
-                    action(SelDate);
-                    ScrollYTime();
-                    Print();
-                    return;
-                }
-                else if (rect_buttonok.Contains(e.Location))
-                {
-                    action(SelDate);
-                    IClose();
-                    return;
-                }
-
-                foreach (var it in calendar_time)
-                {
-                    switch (it.rx)
+                    if (ShowButtonNow && rect_button.Contains(e.Location))
                     {
-                        case 1:
-                            if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out _))
-                            {
-                                SelDate = new TimeSpan(SelDate.Hours, it.t, SelDate.Seconds);
-                                if (ValueTimeHorizontal) ScrollYTime();
-                                Print();
-                                return;
-                            }
-                            break;
-                        case 2:
-                            if (it.Contains(e.X, e.Y, 0, scrollY_s.Value, out _))
-                            {
-                                SelDate = new TimeSpan(SelDate.Hours, SelDate.Minutes, it.t);
-                                if (ValueTimeHorizontal) ScrollYTime();
-                                Print();
-                                return;
-                            }
-                            break;
-                        case 0:
-                        default:
-                            if (it.Contains(e.X, e.Y, 0, scrollY_h.Value, out _))
-                            {
-                                SelDate = new TimeSpan(it.t, SelDate.Minutes, SelDate.Seconds);
-                                if (ValueTimeHorizontal) ScrollYTime();
-                                Print();
-                                return;
-                            }
-                            break;
+                        DateNow = DateTime.Now;
+                        SelDate = new TimeSpan(DateNow.Hour, DateNow.Minute, DateNow.Second);
+                        action(SelDate);
+                        ScrollYTime();
+                        Print();
+                        return;
+                    }
+                    else if (rect_buttonok.Contains(e.Location))
+                    {
+                        action(SelDate);
+                        IClose();
+                        return;
+                    }
+
+                    foreach (var it in calendar_time)
+                    {
+                        switch (it.rx)
+                        {
+                            case 1:
+                                if (it.Contains(e.X, e.Y, 0, scrollY_m.Value, out _))
+                                {
+                                    SelDate = new TimeSpan(SelDate.Hours, it.t, SelDate.Seconds);
+                                    if (ValueTimeHorizontal) ScrollYTime();
+                                    Print();
+                                    return;
+                                }
+                                break;
+                            case 2:
+                                if (it.Contains(e.X, e.Y, 0, scrollY_s.Value, out _))
+                                {
+                                    SelDate = new TimeSpan(SelDate.Hours, SelDate.Minutes, it.t);
+                                    if (ValueTimeHorizontal) ScrollYTime();
+                                    Print();
+                                    return;
+                                }
+                                break;
+                            case 0:
+                            default:
+                                if (it.Contains(e.X, e.Y, 0, scrollY_h.Value, out _))
+                                {
+                                    SelDate = new TimeSpan(it.t, SelDate.Minutes, SelDate.Seconds);
+                                    if (ValueTimeHorizontal) ScrollYTime();
+                                    Print();
+                                    return;
+                                }
+                                break;
+                        }
                     }
                 }
             }

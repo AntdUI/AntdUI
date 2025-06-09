@@ -193,6 +193,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 使文本居中显示
+        /// </summary>
+        [Description("使文本居中显示"), Category("外观"), DefaultValue(false)]
+        public bool UseTextCenter { get; set; }
+
+        /// <summary>
         /// 显示进度文本小数点位数
         /// </summary>
         [Description("显示进度文本小数点位数"), Category("外观"), DefaultValue(0)]
@@ -771,48 +777,72 @@ namespace AntdUI
 
             if (state == TType.None)
             {
-                string? showtmp, textShow;
-
-                if (ValueFormatChanged == null)
+                if (UseTextCenter)
                 {
-                    if (useSystemText) showtmp = textShow = Text;
-                    else
+                    string? textShow;
+                    if (ValueFormatChanged == null)
                     {
-                        string basetext = (_value_show * 100F).ToString("F" + ShowTextDot);
-                        var chars = new char[basetext.Length];
-                        chars[0] = basetext[0];
-                        for (int i = 1; i < basetext.Length; i++)
-                        {
-                            if (basetext[i] == '.') chars[i] = '.';
-                            else chars[i] = '0';
-                        }
-                        showtmp = string.Join("", chars) + TextUnit;
-                        textShow = basetext + TextUnit;
+                        if (useSystemText) textShow = Text;
+                        else textShow = (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit;
                     }
-                }
-                else showtmp = textShow = ValueFormatChanged(this, new FloatEventArgs(_value_show));
+                    else textShow = ValueFormatChanged(this, new FloatEventArgs(_value_show));
 
-                if (showtmp == null && textShow == null)
-                {
                     var sizef = g.MeasureString(Config.NullText, Font);
                     int pro_h = (int)(sizef.Height * valueratio);
                     rect.Y = rect.Y + (rect.Height - pro_h) / 2;
                     rect.Height = pro_h;
                     PaintProgress(g, _radius, rect, _back, color);
-                }
-                else
-                {
-                    var sizef = g.MeasureString(showtmp, Font);
-                    int pro_h = (int)(sizef.Height * valueratio), size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
-                    var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
-                    rect.Y = rect.Y + (rect.Height - pro_h) / 2;
-                    rect.Height = pro_h;
-                    rect.Width -= size_font_w;
-                    if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
 
                     using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Progress", ColorScheme)))
                     {
-                        g.String(textShow, Font, brush, rect_rext, s_r);
+                        g.String(textShow, Font, brush, rect_t, s_c);
+                    }
+                }
+                else
+                {
+                    string? showtmp, textShow;
+
+                    if (ValueFormatChanged == null)
+                    {
+                        if (useSystemText) showtmp = textShow = Text;
+                        else
+                        {
+                            string basetext = (_value_show * 100F).ToString("F" + ShowTextDot);
+                            var chars = new char[basetext.Length];
+                            chars[0] = basetext[0];
+                            for (int i = 1; i < basetext.Length; i++)
+                            {
+                                if (basetext[i] == '.') chars[i] = '.';
+                                else chars[i] = '0';
+                            }
+                            showtmp = string.Join("", chars) + TextUnit;
+                            textShow = basetext + TextUnit;
+                        }
+                    }
+                    else showtmp = textShow = ValueFormatChanged(this, new FloatEventArgs(_value_show));
+
+                    if (showtmp == null && textShow == null)
+                    {
+                        var sizef = g.MeasureString(Config.NullText, Font);
+                        int pro_h = (int)(sizef.Height * valueratio);
+                        rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                        rect.Height = pro_h;
+                        PaintProgress(g, _radius, rect, _back, color);
+                    }
+                    else
+                    {
+                        var sizef = g.MeasureString(showtmp, Font);
+                        int pro_h = (int)(sizef.Height * valueratio), size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
+                        var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
+                        rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                        rect.Height = pro_h;
+                        rect.Width -= size_font_w;
+                        if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
+
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Progress", ColorScheme)))
+                        {
+                            g.String(textShow, Font, brush, rect_rext, s_r);
+                        }
                     }
                 }
             }
@@ -1002,10 +1032,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="hwnd">The window handle.</param>
         /// <param name="state">The progress state.</param>
-        public static void SetProgressState(IntPtr hwnd, ThumbnailProgressState state)
-        {
-            TaskbarList.SetProgressState(hwnd, state);
-        }
+        public static void SetProgressState(IntPtr hwnd, ThumbnailProgressState state) => TaskbarList.SetProgressState(hwnd, state);
 
         /// <summary>
         /// Sets the progress value of the specified window's
@@ -1014,15 +1041,9 @@ namespace AntdUI
         /// <param name="hwnd">The window handle.</param>
         /// <param name="current">The current value.</param>
         /// <param name="maximum">The maximum value.</param>
-        public static void SetProgressValue(IntPtr hwnd, ulong current, ulong maximum)
-        {
-            TaskbarList.SetProgressValue(hwnd, current, maximum);
-        }
+        public static void SetProgressValue(IntPtr hwnd, ulong current, ulong maximum) => TaskbarList.SetProgressValue(hwnd, current, maximum);
 
-        public static void SetProgressValue(IntPtr hwnd, ulong current)
-        {
-            TaskbarList.SetProgressValue(hwnd, current, 100);
-        }
+        public static void SetProgressValue(IntPtr hwnd, ulong current) => TaskbarList.SetProgressValue(hwnd, current, 100);
     }
 
     /// <summary>
@@ -1052,13 +1073,13 @@ namespace AntdUI
         Paused = 0x8
     }
 
+    [ComImport]
     [Guid("56FDF344-FD6D-11d0-958A-006097C9A090")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ComImport]
     internal class CTaskbarList { }
 
     [ComImport]
-    [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
+    [Guid("EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface ITaskbarList3
     {

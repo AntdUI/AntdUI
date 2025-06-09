@@ -42,6 +42,21 @@ namespace AntdUI
             _type = type;
         }
 
+        /// <summary>
+        /// 标签
+        /// </summary>
+        /// <param name="text">文本</param>
+        /// <param name="type">类型</param>
+        /// <param name="gap">间隔</param>
+        public CellTag(string text, TTypeMini type, int gap)
+        {
+            _text = text;
+            _type = type;
+            Gap = gap;
+        }
+
+        #region 属性
+
         Color? fore;
         /// <summary>
         /// 字体颜色
@@ -116,6 +131,43 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
+
+        /// <summary>
+        /// 间距
+        /// </summary>
+        public int? Gap { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        public CellTag SetFore(Color? value)
+        {
+            fore = value;
+            return this;
+        }
+        public CellTag SetBack(Color? value)
+        {
+            back = value;
+            return this;
+        }
+        public CellTag SetBorderWidth(float value = 0F)
+        {
+            borderWidth = value;
+            return this;
+        }
+        public CellTag SetType(TTypeMini value = TTypeMini.Success)
+        {
+            _type = value;
+            return this;
+        }
+        public CellTag SetGap(int? value)
+        {
+            Gap = value;
+            return this;
+        }
+
+        #endregion
 
         public override string ToString() => _text;
     }

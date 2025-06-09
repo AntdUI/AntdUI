@@ -42,6 +42,11 @@ namespace AntdUI
         /// </summary>
         public static bool Win10 => Version.Major >= 10;
 
+        /// <summary>
+        /// 小于等于Windows 7
+        /// </summary>
+        public static bool Win7OrLower => Version.Major < 6 || (Version.Major == 6 && Version.Minor <= 1);
+
         #region OS版本
 
 #if NET40 || NET46 || NET48

@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             AntdUI.MenuItem menuItem1 = new AntdUI.MenuItem();
@@ -187,6 +183,8 @@ namespace Demo.Controls
             // 
             menu2.Dock = DockStyle.Left;
             menuItem8.IconSvg = "MailOutlined";
+            menuItem8.Select = true;
+            menuItem9.Select = true;
             menuItem10.Select = true;
             menuItem10.Text = "Option 1";
             menuItem11.Text = "Option 2";
@@ -399,6 +397,7 @@ namespace Demo.Controls
         }
 
         #endregion
+
         private AntdUI.PageHeader header1;
         private AntdUI.Divider divider1;
         private AntdUI.Menu menu1;

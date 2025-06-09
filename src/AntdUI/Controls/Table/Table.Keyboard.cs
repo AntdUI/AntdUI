@@ -98,7 +98,7 @@ namespace AntdUI
                     if (rows != null && selectedIndex.Length > 0)
                     {
                         var it = rows[selectedIndex[0]];
-                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
                     }
                     break;
             }

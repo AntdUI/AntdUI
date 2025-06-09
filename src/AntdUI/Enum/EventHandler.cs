@@ -361,7 +361,7 @@ namespace AntdUI
 
     public class TableCheckEventArgs : ITableEventArgs
     {
-        public TableCheckEventArgs(bool value, object? record, int rowIndex, int columnIndex) : base(record, rowIndex, columnIndex)
+        public TableCheckEventArgs(bool value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -372,11 +372,12 @@ namespace AntdUI
     }
     public class TableClickEventArgs : MouseEventArgs
     {
-        public TableClickEventArgs(object? record, int rowIndex, int columnIndex, Rectangle rect, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableClickEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         {
             Record = record;
             RowIndex = rowIndex;
             ColumnIndex = columnIndex;
+            Column = column;
             Rect = rect;
         }
 
@@ -393,18 +394,60 @@ namespace AntdUI
         /// </summary>
         public int ColumnIndex { get; private set; }
         /// <summary>
+        /// 表头
+        /// </summary>
+        public Column? Column { get; private set; }
+        /// <summary>
         /// 表格区域
         /// </summary>
         public Rectangle Rect { get; private set; }
     }
+    public class TableHoverEventArgs : MouseEventArgs
+    {
+        public TableHoverEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle? rect, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            Record = record;
+            RowIndex = rowIndex;
+            ColumnIndex = columnIndex;
+            Column = column;
+            Rect = rect;
+        }
+
+        public TableHoverEventArgs(MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            RowIndex = ColumnIndex = -1;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+        /// <summary>
+        /// 行序号
+        /// </summary>
+        public int RowIndex { get; private set; }
+        /// <summary>
+        /// 列序号
+        /// </summary>
+        public int ColumnIndex { get; private set; }
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column? Column { get; private set; }
+        /// <summary>
+        /// 表格区域
+        /// </summary>
+        public Rectangle? Rect { get; private set; }
+    }
     public class TableButtonEventArgs : MouseEventArgs
     {
-        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column? column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         {
             Btn = btn;
             Record = record;
             RowIndex = rowIndex;
             ColumnIndex = columnIndex;
+            Column = column;
         }
 
         /// <summary>
@@ -424,10 +467,14 @@ namespace AntdUI
         /// 列序号
         /// </summary>
         public int ColumnIndex { get; private set; }
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column? Column { get; private set; }
     }
     public class TableEventArgs : ITableEventArgs
     {
-        public TableEventArgs(object? value, object? record, int rowIndex, int columnIndex) : base(record, rowIndex, columnIndex)
+        public TableEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -440,7 +487,7 @@ namespace AntdUI
 
     public class TableBeginEditInputStyleEventArgs : ITableEventArgs
     {
-        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, Input input) : base(record, rowIndex, columnIndex)
+        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column? column, Input input) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
             Input = input;
@@ -462,7 +509,7 @@ namespace AntdUI
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<InputNumber>(input, e));
+            Call = e => call(new Result<InputNumber>(input, Column, e));
             return input;
         }
 
@@ -470,7 +517,7 @@ namespace AntdUI
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<Select>(input, e));
+            Call = e => call(new Result<Select>(input, Column, e));
             return input;
         }
 
@@ -478,7 +525,7 @@ namespace AntdUI
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<SelectMultiple>(input, e));
+            Call = e => call(new Result<SelectMultiple>(input, Column, e));
             return input;
         }
 
@@ -486,7 +533,7 @@ namespace AntdUI
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<DatePicker>(input, e));
+            Call = e => call(new Result<DatePicker>(input, Column, e));
             return input;
         }
 
@@ -494,7 +541,7 @@ namespace AntdUI
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<DatePickerRange>(input, e));
+            Call = e => call(new Result<DatePickerRange>(input, Column, e));
             return input;
         }
 
@@ -502,7 +549,7 @@ namespace AntdUI
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<TimePicker>(input, e));
+            Call = e => call(new Result<TimePicker>(input, Column, e));
             return input;
         }
 
@@ -518,7 +565,7 @@ namespace AntdUI
 
         public class Result<T> : ITableEventArgs
         {
-            public Result(T input, TableEndEditEventArgs e) : base(e.Record, e.RowIndex, e.ColumnIndex)
+            public Result(T input, Column? column, TableEndEditEventArgs e) : base(e.Record, e.RowIndex, e.ColumnIndex, column)
             {
                 Input = input;
             }
@@ -529,7 +576,7 @@ namespace AntdUI
 
     public class TableEndEditEventArgs : ITableEventArgs
     {
-        public TableEndEditEventArgs(string value, object? record, int rowIndex, int columnIndex) : base(record, rowIndex, columnIndex)
+        public TableEndEditEventArgs(string value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -608,6 +655,16 @@ namespace AntdUI
         public int RowIndex { get; private set; }
     }
 
+    public class TablePaintBeginEventArgs : TablePaintEventArgs
+    {
+        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index) : base(canvas, rect, rectreal, record, rowIndex, index) { }
+
+        /// <summary>
+        /// 是否处理
+        /// </summary>
+        public bool Handled { get; set; }
+    }
+
     public class TableSortModeEventArgs : EventArgs
     {
         public TableSortModeEventArgs(SortMode sortMode, Column column)
@@ -670,11 +727,12 @@ namespace AntdUI
 
     public class ITableEventArgs : EventArgs
     {
-        public ITableEventArgs(object? record, int rowIndex, int columnIndex)
+        public ITableEventArgs(object? record, int rowIndex, int columnIndex, Column? column)
         {
             Record = record;
             RowIndex = rowIndex;
             ColumnIndex = columnIndex;
+            Column = column;
         }
 
         /// <summary>
@@ -689,6 +747,11 @@ namespace AntdUI
         /// 列序号
         /// </summary>
         public int ColumnIndex { get; private set; }
+
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column? Column { get; private set; }
     }
 
     #endregion

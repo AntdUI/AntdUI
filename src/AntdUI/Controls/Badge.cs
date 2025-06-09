@@ -176,7 +176,7 @@ namespace AntdUI
                 {
                     AnimationStateValue = i;
                     Invalidate();
-                }, 50, 1F, 0.05F);
+                }, 50, 1F, .05F);
             }
         }
         void StopAnimation()

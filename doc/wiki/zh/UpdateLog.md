@@ -1,5 +1,46 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.3` 2025-06-09
+
+- ➕ Table SortOrderSize
+- ➕ Table 事件补充 Column
+- ➕ Table GapCell
+- ➕ Table CellImpactHeight
+- ➕ Table ICell ImpactHeight
+- ➕ Table ICell 补全 设置
+- ➕ Table Tag Gap
+- ➕ Avatar 鼠标悬浮交互
+- ➕ Progress UseTextCenter
+- ➕ Select DropDownEmptyClose
+- ➕ Pagination 增加页面标签文本标签文字提示修改
+- ➕ Helper SearchWeightSort
+- ➕ Tooltip 补全 方向
+- ➕ 图片共存显示
+- ✍️ ILayeredFormAnimate 在 Dispose 时可能引发的字典访问异常
+- ✍️ Tree 多选
+- ✍️ Tree Hover 判定
+- ✍️ Table 列固定标题栏边框杂边
+- ✍️ Table Shift+滚动条
+- ✍️ Menu Select 方法
+- ✍️ Menu Padding 滚动条
+- ✍️ TimePicker 滚动条问题
+- ✍️ IconState 错位
+- ✍️ Lable Emoji 错位
+
+### `2.0.2` 2025-05-30
+
+- ➕ Select/Dropdown/Table DropDownTextAlign
+- ➕ Table CellPaintBegin/CellHover 事件
+- ➕ Table CellCheckbox/CellRadio 单元格
+- ✍️ Table 右浮动悬浮背景
+- ✍️ PageHeader 最大化按钮变化
+- ✍️ 抑制 Win7 No Aero 闪烁
+- ✍️ 优化 阴影并发
+- ✍️ 优化 DatePickerRange 交互
+- ✍️ 日期选择布局
+- ✍️ Table 合并边框
+- ✍️ 适配 Win7 滚动条无焦点不响应
+
 ### `2.0.1` 2025-05-26
 
 - ➕ Label IconGap

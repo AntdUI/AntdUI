@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             input1 = new AntdUI.Input();
@@ -169,7 +165,7 @@ namespace Demo.Controls
             label1.LocalizationText = "Input.Code";
             label1.Location = new Point(262, 71);
             label1.Name = "label1";
-            label1.Size = new Size(105, 23);
+            label1.Size = new Size(96, 23);
             label1.TabIndex = 0;
             label1.Text = "请输入验证码";
             // 
@@ -201,6 +197,7 @@ namespace Demo.Controls
             ic4.Size = new Size(46, 44);
             ic4.TabIndex = 4;
             ic4.TextAlign = HorizontalAlignment.Center;
+            ic4.VerifyKeyboard += VerifyKeyboard;
             ic4.TextChanged += CodeTextChanged;
             ic4.KeyPress += CodeKeyPress;
             // 
@@ -213,6 +210,7 @@ namespace Demo.Controls
             ic3.Size = new Size(46, 44);
             ic3.TabIndex = 3;
             ic3.TextAlign = HorizontalAlignment.Center;
+            ic3.VerifyKeyboard += VerifyKeyboard;
             ic3.TextChanged += CodeTextChanged;
             ic3.KeyPress += CodeKeyPress;
             // 
@@ -225,6 +223,7 @@ namespace Demo.Controls
             ic2.Size = new Size(46, 44);
             ic2.TabIndex = 2;
             ic2.TextAlign = HorizontalAlignment.Center;
+            ic2.VerifyKeyboard += VerifyKeyboard;
             ic2.TextChanged += CodeTextChanged;
             ic2.KeyPress += CodeKeyPress;
             // 
@@ -237,6 +236,7 @@ namespace Demo.Controls
             ic1.Size = new Size(46, 44);
             ic1.TabIndex = 1;
             ic1.TextAlign = HorizontalAlignment.Center;
+            ic1.VerifyKeyboard += VerifyKeyboard;
             ic1.TextChanged += CodeTextChanged;
             ic1.KeyPress += CodeKeyPress;
             // 

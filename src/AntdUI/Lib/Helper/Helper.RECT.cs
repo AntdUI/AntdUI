@@ -128,7 +128,7 @@ namespace AntdUI
             return rectlr;
         }
 
-        public static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = 0.8F)
+        public static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = .8F)
         {
             int h = (int)(text_height * size);
             int dot_size_ = h / 2;
@@ -728,13 +728,17 @@ namespace AntdUI
                 case TAlign.BR:
                     return new Point(point.X + size.Width - width, point.Y + size.Height);
                 case TAlign.Left:
-                case TAlign.LT:
-                case TAlign.LB:
                     return new Point(point.X - width, point.Y + (size.Height - height) / 2);
+                case TAlign.LT:
+                    return new Point(point.X - width, point.Y);
+                case TAlign.LB:
+                    return new Point(point.X - width, point.Y + size.Height - height);
                 case TAlign.Right:
-                case TAlign.RT:
-                case TAlign.RB:
                     return new Point(point.X + size.Width, point.Y + (size.Height - height) / 2);
+                case TAlign.RT:
+                    return new Point(point.X + size.Width, point.Y);
+                case TAlign.RB:
+                    return new Point(point.X + size.Width, point.Y + size.Height - height);
                 default:
                     return new Point(point.X + (size.Width - width) / 2, point.Y - height);
             }

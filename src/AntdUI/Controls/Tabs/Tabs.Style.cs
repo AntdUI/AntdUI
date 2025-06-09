@@ -414,7 +414,7 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
                     }
                     g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
@@ -423,7 +423,7 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme));
+                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme));
                     }
                     g.String(page.Text, owner.Font, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme), rects.Rect_Text, owner.s_c);
                 }
@@ -1262,7 +1262,7 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
                     }
                     if (closable)
                     {
@@ -1278,7 +1278,7 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme));
+                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme));
                     }
                     if (closable)
                     {
@@ -2152,7 +2152,7 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
                     }
                     if (closable != CloseType.none && closshow)
                     {
@@ -2168,7 +2168,7 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        else if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme));
+                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get("Tabs", owner.ColorScheme));
                     }
                     if (closable != CloseType.none && closshow)
                     {

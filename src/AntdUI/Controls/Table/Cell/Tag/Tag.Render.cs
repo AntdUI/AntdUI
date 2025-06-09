@@ -82,7 +82,17 @@ namespace AntdUI
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             var size = g.MeasureString(Text, font, 0, PARENT.PARENT.sf);
-            return new Size(size.Width + gap2, size.Height + gap);
+            if (Gap.HasValue)
+            {
+                int sp = (int)(Gap.Value * Config.Dpi);
+                return new Size(size.Width + sp * 2, size.Height + sp);
+            }
+            else if (PARENT.PARENT.GapCell.HasValue)
+            {
+                int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
+                return new Size(size.Width + sp * 2, size.Height + sp);
+            }
+            else return new Size(size.Width + gap2, size.Height + gap);
         }
 
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)

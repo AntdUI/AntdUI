@@ -43,10 +43,6 @@ namespace Demo.Controls
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
@@ -128,8 +124,8 @@ namespace Demo.Controls
             Controls.Add(button1);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(header1);
             Controls.Add(iconState);
+            Controls.Add(header1);
             Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Result";
             Size = new Size(677, 450);

@@ -751,7 +751,12 @@ namespace AntdUI
             return false;
         }
 
-        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last, bool start = false)
+        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last)
+        {
+            bool start = false;
+            return SetSelects(items, first, last, ref start);
+        }
+        bool SetSelects(TreeItemCollection items, TreeItem first, TreeItem last, ref bool start)
         {
             foreach (var it in items)
             {
@@ -764,7 +769,7 @@ namespace AntdUI
                 if (start) it.SetSelect();
                 if (it.items != null && it.items.Count > 0)
                 {
-                    if (SetSelects(it.items, first, last, start)) return true;
+                    if (SetSelects(it.items, first, last, ref start)) return true;
                 }
             }
             return false;
@@ -1603,6 +1608,7 @@ namespace AntdUI
                 x += icon_size + gap;
             }
 
+            int xicon = x;
             if (HasIcon)
             {
                 ico_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -1611,7 +1617,6 @@ namespace AntdUI
 
             var size = g.MeasureText(Text, font);
             int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y + (_rect.Height - txt_h) / 2;
-
             if (subTitle == null)
             {
                 if (blockNode)
@@ -1620,11 +1625,14 @@ namespace AntdUI
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     if (rw < txt_w) rw = txt_w;
                     rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
+                    rect_all = new Rectangle(xicon, rect.Y, _rect.Width - xicon - gap, rect.Height);
                 }
                 else
                 {
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     rect = txt_rect;
+                    if (HasIcon) rect_all = new Rectangle(xicon, txt_y, txt_w + icon_size + gap, txt_h);
+                    else rect_all = rect;
                 }
             }
             else
@@ -1638,18 +1646,20 @@ namespace AntdUI
                     txt_w += sizesub.Width;
                     if (rw < txt_w) rw = txt_w;
                     rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
+                    rect_all = new Rectangle(xicon, rect.Y, _rect.Width - xicon - gap, rect.Height);
                 }
                 else
                 {
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
                     rect = new Rectangle(x, txt_y, txt_w + sizesub.Width, txt_h);
+                    if (HasIcon) rect_all = new Rectangle(xicon, txt_y, txt_w + sizesub.Width + icon_size + gap, txt_h);
+                    else rect_all = rect;
                 }
             }
-
-
             Show = true;
         }
+        internal Rectangle rect_all { get; set; }
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
 
@@ -1659,15 +1669,15 @@ namespace AntdUI
             {
                 if (arrow_rect.Contains(x + sx, y + sy) && CanExpand)
                 {
-                    Hover = rect.Contains(arrow_rect);
+                    Hover = true;
                     return TreeCType.Arrow;
                 }
                 else if (checkable && check_rect.Contains(x + sx, y + sy))
                 {
-                    Hover = rect.Contains(arrow_rect);
+                    Hover = true;
                     return TreeCType.Check;
                 }
-                else if (rect.Contains(x + sx, y + sy) || ico_rect.Contains(x + sx, y + sy))
+                else if (rect_all.Contains(x + sx, y + sy))
                 {
                     Hover = true;
                     return TreeCType.Item;

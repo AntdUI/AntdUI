@@ -382,6 +382,12 @@ namespace AntdUI
 
         static bool PaintButtonCoreImage(Canvas g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
         {
+            int count = 0;
+            if (btn.Icon != null)
+            {
+                g.Image(btn.Icon, rect, opacity);
+                count++;
+            }
             if (btn.IconSvg != null)
             {
                 using (var _bmp = SvgExtend.GetImgExtend(btn.IconSvg, rect, color))
@@ -389,20 +395,21 @@ namespace AntdUI
                     if (_bmp != null)
                     {
                         g.Image(_bmp, rect, opacity);
-                        return true;
+                        count++;
                     }
                 }
             }
-            else if (btn.Icon != null)
-            {
-                g.Image(btn.Icon, rect, opacity);
-                return true;
-            }
-            return false;
+            return count > 0;
         }
 
         static bool PaintButtonCoreImageHover(Canvas g, CellButton btn, Rectangle rect, Color? color, float opacity = 1F)
         {
+            int count = 0;
+            if (btn.IconHover != null)
+            {
+                g.Image(btn.IconHover, rect, opacity);
+                count++;
+            }
             if (btn.IconHoverSvg != null)
             {
                 using (var _bmp = SvgExtend.GetImgExtend(btn.IconHoverSvg, rect, color))
@@ -410,16 +417,11 @@ namespace AntdUI
                     if (_bmp != null)
                     {
                         g.Image(_bmp, rect, opacity);
-                        return true;
+                        count++;
                     }
                 }
             }
-            else if (btn.IconHover != null)
-            {
-                g.Image(btn.IconHover, rect, opacity);
-                return true;
-            }
-            return false;
+            return count > 0;
         }
 
         static Rectangle PaintButtonImageRectCenter(CellButton btn, Size font_size, Rectangle rect_read)

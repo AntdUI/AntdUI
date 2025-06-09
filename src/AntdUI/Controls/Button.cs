@@ -514,6 +514,21 @@ namespace AntdUI
             }
         }
 
+        public Button SetIcon(Image? value, string? svg = null)
+        {
+            icon = value;
+            iconSvg = svg;
+            Invalidate();
+            return this;
+        }
+        public Button SetIcon(string? value, Image? img = null)
+        {
+            icon = img;
+            iconSvg = value;
+            Invalidate();
+            return this;
+        }
+
         /// <summary>
         /// 是否包含图标
         /// </summary>
@@ -1833,6 +1848,12 @@ namespace AntdUI
 
         bool PaintCoreIcon(Canvas g, Image? icon, string? iconSvg, Rectangle rect, Color? color, float opacity = 1F)
         {
+            int count = 0;
+            if (icon != null)
+            {
+                g.Image(icon, rect, opacity);
+                count++;
+            }
             if (iconSvg != null)
             {
                 using (var _bmp = SvgExtend.GetImgExtend(iconSvg, rect, color))
@@ -1840,16 +1861,11 @@ namespace AntdUI
                     if (_bmp != null)
                     {
                         g.Image(_bmp, rect, opacity);
-                        return true;
+                        count++;
                     }
                 }
             }
-            else if (icon != null)
-            {
-                g.Image(icon, rect, opacity);
-                return true;
-            }
-            return false;
+            return count > 0;
         }
 
         #endregion

@@ -844,9 +844,12 @@ namespace AntdUI
                 RECT = _rect;
                 if (COLUMN.SortOrder)
                 {
-                    int icon_sp = (int)(gap * 0.34F), y = _rect.Y + (_rect.Height - (gap * 2) + icon_sp) / 2;
-                    rect_up = new Rectangle(_rect.Right - gap2, y, gap, gap);
-                    rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, gap, gap);
+                    int size;
+                    if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
+                    else size = (int)(_rect.Height * .27F);
+                    int size2 = size * 2, icon_sp = (int)(size * .34F), y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
+                    rect_up = new Rectangle(_rect.Right - size2, y, size, size);
+                    rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
                 }
             }
 
@@ -1024,7 +1027,7 @@ namespace AntdUI
                     var size = it.GetSize(g, font, gap, gap2);
                     sizes.Add(size);
                     w += size.Width + sp;
-                    if (h < size.Height) h = size.Height;
+                    if ((PARENT.CellImpactHeight ?? it.ImpactHeight) && h < size.Height) h = size.Height;
                 }
                 MinWidth = w + gap + sp;
                 SIZES = sizes.ToArray();

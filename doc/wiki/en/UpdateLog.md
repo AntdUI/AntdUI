@@ -1,5 +1,46 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.3` 2025-06-09
+
+- ➕ Table SortOrderSize
+- ➕ Table Event Supplementary Column
+- ➕ Table GapCell
+- ➕ Table CellImpactHeight
+- ➕ Table ICell ImpactHeight
+- ➕ Table ICell completion settings
+- ➕ Table Tag Gap
+- ➕ Avatar Mouse Suspension Interaction
+- ➕ Progress UseTextCenter
+- ➕ Select DropDownEmptyClose
+- ➕ Pagination adds page labels, text labels, and text prompts for modification
+- ➕ Helper SearchWeightSort
+- ➕ Tooltip completion direction
+- ➕ Image coexistence display
+- ✍️ Possible dictionary access exceptions caused by ILayereddFormAnimate during Dispose
+- ✍️ Tree Multiple Choice
+- ✍️ Tree Hover Judgment
+- ✍️ Table column fixed title bar border miscellaneous edges
+- ✍️ Table Shift+scrollbar
+- ✍️ Menu Select Method
+- ✍️ Menu Padding scrollbar
+- ✍️ TimePicker scrollbar issue
+- ✍️ IconState misalignment
+- ✍️ Lable Emoji Misalignment
+
+### `2.0.2` 2025-05-30
+
+- ➕ Select/Dropdown/Table DropDownTextAlign
+- ➕ Table CellPaintBegin/CellHover Events
+- ➕ Table CellCheckbox/CellRadio Cells
+- ✍️ Table Right floating floating background
+- ✍️ Page Header Maximization Button Change
+- ✍️ Suppress Win7 No Aero flicker
+- ✍️ Optimize shadow concurrency
+- ✍️ Optimize DatePickerRange interaction
+- ✍️ Date selection layout
+- ✍️ Table Merge Borders
+- ✍️ Adapt to Win7 scrollbar with no focus and no response
+
 ### `2.0.1` 2025-05-26
 
 - ➕ Label IconGap

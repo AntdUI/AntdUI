@@ -42,6 +42,8 @@ namespace AntdUI
             _fore = fore;
         }
 
+        #region 属性
+
         Color? _back;
         /// <summary>
         /// 背景颜色
@@ -188,6 +190,53 @@ namespace AntdUI
         /// 是否包含后缀
         /// </summary>
         public bool HasSuffix => suffixSvg != null || suffix != null;
+
+        #endregion
+
+        #endregion
+
+        #region 设置
+
+        public CellText SetBack(Color? value)
+        {
+            _back = value;
+            return this;
+        }
+        public CellText SetFore(Color? value)
+        {
+            _fore = value;
+            return this;
+        }
+        public CellText SetFont(Font? value)
+        {
+            _font = value;
+            return this;
+        }
+        public CellText SetPrefix(Image? value)
+        {
+            prefix = value;
+            return this;
+        }
+        public CellText SetPrefix(string? value)
+        {
+            prefixSvg = value;
+            return this;
+        }
+        public CellText SetSuffix(Image? value)
+        {
+            suffix = value;
+            return this;
+        }
+        public CellText SetSuffix(string? value)
+        {
+            suffixSvg = value;
+            return this;
+        }
+        public CellText SetIconRatio(float value)
+        {
+            iconratio = value;
+            return this;
+        }
 
         #endregion
 

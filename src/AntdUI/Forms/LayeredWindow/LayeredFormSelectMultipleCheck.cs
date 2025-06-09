@@ -88,6 +88,7 @@ namespace AntdUI
 
         void InitObj(SelectMultiple parent, int sx, LayeredFormSelectMultipleCheck control, float radius, Rectangle rect_read, IList<object> items, int sel)
         {
+            if (OS.Win7OrLower) Select();
             parent.Parent.SetTopMost(Handle);
             select_x = sx;
             PARENT = parent;
@@ -113,6 +114,7 @@ namespace AntdUI
         int ArrowSize = 8;
         void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
+            if (OS.Win7OrLower) Select();
             int y = 10, w = rect_read.Width;
             r_w = w;
 
@@ -493,6 +495,11 @@ namespace AntdUI
         }
         void DrawIcon(Canvas g, ObjectItemCheck it, Color color)
         {
+            if (it.Icon != null)
+            {
+                if (it.Enable) g.Image(it.Icon, it.RectIcon);
+                else g.Image(it.Icon, it.RectIcon, 0.25F);
+            }
             if (it.IconSvg != null)
             {
                 using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
@@ -501,14 +508,8 @@ namespace AntdUI
                     {
                         if (it.Enable) g.Image(bmp, it.RectIcon);
                         else g.Image(bmp, it.RectIcon, 0.25F);
-                        return;
                     }
                 }
-            }
-            if (it.Icon != null)
-            {
-                if (it.Enable) g.Image(it.Icon, it.RectIcon);
-                else g.Image(it.Icon, it.RectIcon, 0.25F);
             }
         }
         void DrawArrow(Canvas g, ObjectItemCheck item, Color color)
@@ -525,7 +526,7 @@ namespace AntdUI
             g.TranslateTransform(0, -scrollY.Value);
         }
 
-        Bitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp = null;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -535,7 +536,7 @@ namespace AntdUI
         {
             if (Config.ShadowEnabled)
             {
-                if (shadow_temp == null || shadow_temp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
+                if (shadow_temp == null)
                 {
                     shadow_temp?.Dispose();
                     using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
@@ -543,7 +544,7 @@ namespace AntdUI
                         shadow_temp = path.PaintShadow(rect.Width, rect.Height);
                     }
                 }
-                g.Image(shadow_temp, rect, .2F);
+                g.Image(shadow_temp.Bitmap, rect, .2F);
             }
         }
 
