@@ -10,7 +10,7 @@
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
-中文・[English](README-en.md)・[文档](doc/wiki/zh/Home.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)
+中文・[English](README-en.md)・[文档](doc/wiki/zh/Home.md)・[更新日志](doc/wiki/zh/UpdateLog.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)
 
 </div>
 

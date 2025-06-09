@@ -9,6 +9,7 @@
 - [**Config** Global Configuration](Config.md)
 - [**Theme** Light and dark color mode custom theme](Theme.md)
 - [**SVG**](SVG.md)
+- [**AOT**](AOT.md)
 
 ---
 
