@@ -378,7 +378,11 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             task_start?.Dispose();
-            list[key].Remove(this);
+            if (list.TryGetValue(key, out var layeredFormAnimateList) && layeredFormAnimateList.Contains(this))
+            {
+                if (layeredFormAnimateList.Count == 1) list.Remove(key);
+                else layeredFormAnimateList.Remove(this);
+            }
             base.Dispose(disposing);
         }
     }
@@ -527,31 +531,31 @@ namespace AntdUI
         {
             try
             {
+                if (!ILayeredFormAnimate.list.TryGetValue(key, out var list) || list.Count == 0) return;
                 switch (align)
                 {
                     case TAlignFrom.Bottom:
                     case TAlignFrom.BL:
                     case TAlignFrom.BR:
-                        CloseB(key, name);
+                        CloseB(key, name, list);
                         break;
                     case TAlignFrom.Top:
                     case TAlignFrom.TL:
                     case TAlignFrom.TR:
                     default:
-                        CloseT(key, name);
+                        CloseT(key, name, list);
                         break;
                 }
             }
             catch { }
         }
 
-        static void CloseT(string key, string name)
+        static void CloseT(string key, string name, List<ILayeredFormAnimate> list)
         {
             var arr = key.Split('|');
             int y = int.Parse(arr[2]);
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             int y_temp = y + offset;
-            var list = ILayeredFormAnimate.list[key];
             var dir = new Dictionary<ILayeredFormAnimate, int[]>(list.Count);
             foreach (var it in list)
             {
@@ -596,13 +600,12 @@ namespace AntdUI
                 }
             }
         }
-        static void CloseB(string key, string name)
+        static void CloseB(string key, string name, List<ILayeredFormAnimate> list)
         {
             var arr = key.Split('|');
             int b = int.Parse(arr[4]);
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             int y_temp = b - offset;
-            var list = ILayeredFormAnimate.list[key];
             var dir = new Dictionary<ILayeredFormAnimate, int[]>(list.Count);
             foreach (var it in list)
             {
