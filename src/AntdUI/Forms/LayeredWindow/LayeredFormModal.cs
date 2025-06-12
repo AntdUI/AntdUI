@@ -59,9 +59,6 @@ namespace AntdUI
             else Font = config.Font ?? Config.Font ?? config.Form.Font;
             ForeColor = Colour.TextBase.Get("Modal");
             ShowInTaskbar = false;
-            if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
-            else if (config.Form.WindowState == FormWindowState.Minimized || !config.Form.Visible) StartPosition = FormStartPosition.CenterScreen;
-            else StartPosition = FormStartPosition.CenterParent;
 
             if (butt_h > 0)
             {
@@ -349,6 +346,15 @@ namespace AntdUI
             });
             ResumeLayout();
             config.Layered = this;
+
+            if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
+            else if (config.Form.WindowState == FormWindowState.Minimized || !config.Form.Visible) StartPosition = FormStartPosition.CenterScreen;
+            else
+            {
+                StartPosition = FormStartPosition.Manual;
+                Top = config.Form.Top + (config.Form.Height - Height) / 2;
+                Left = config.Form.Left + (config.Form.Width - Width) / 2;
+            }
         }
 
         /// <summary>
