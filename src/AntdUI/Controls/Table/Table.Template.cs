@@ -800,15 +800,21 @@ namespace AntdUI
                 {
                     if (COLUMN.Width != null)
                     {
-                        if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
+                        if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
+                            var size2 = g.MeasureString(value, font, w - gap2, PARENT.sf);
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                        else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
+                        {
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2, PARENT.sf);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2, PARENT.sf);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
@@ -874,7 +880,7 @@ namespace AntdUI
                     }
                 }
                 var size = g.MeasureString(value, font, 0, PARENT.sf);
-                SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
+                SortWidth = COLUMN.SortOrder ? (int)(size.Height * .8F) : 0;
                 MinWidth = size.Width + gap2 + SortWidth;
 
                 return new Size(size.Width + gap2 + SortWidth, size.Height);

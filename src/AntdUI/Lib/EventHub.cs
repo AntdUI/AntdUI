@@ -28,20 +28,24 @@ namespace AntdUI
         public static void AddListener(this IEventListener listener)
         {
             var id = listener.GetHashCode();
-            if (dic.TryAdd(id, new WeakReference(listener)))
-            {
-                listener.Disposed += (s, e) =>
-                {
-                    dic.TryRemove(id, out _);
-                };
-            }
+            if (dic.TryAdd(id, new WeakReference(listener))) listener.Disposed += (s, e) => dic.TryRemove(id, out _);
+        }
+
+        internal static void Add(this BaseForm listener)
+        {
+            var id = listener.GetHashCode();
+            if (dic.TryAdd(id, new WeakReference(listener))) listener.Disposed += (s, e) => dic.TryRemove(id, out _);
         }
 
         public static void Dispatch(EventType id, object? tag = null)
         {
             foreach (var item in dic)
             {
-                if (item.Value.IsAlive && item.Value.Target is IEventListener listener) listener.HandleEvent(id, tag);
+                if (item.Value.IsAlive)
+                {
+                    if (item.Value.Target is IEventListener listener) listener.HandleEvent(id, tag);
+                    else if (item.Value.Target is BaseForm baseForm) baseForm.themeConfig!.HandleEvent(id, tag);
+                }
                 else dic.TryRemove(item.Key, out _);
             }
         }

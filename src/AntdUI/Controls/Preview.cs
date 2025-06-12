@@ -118,6 +118,8 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
+            public int SelectIndex { get; set; }
+
             /// <summary>
             /// 内容
             /// </summary>

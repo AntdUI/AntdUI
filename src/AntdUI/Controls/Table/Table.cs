@@ -730,6 +730,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 编辑模式输入框样式
+        /// </summary>
+        [Description("编辑模式输入框样式"), Category("行为"), DefaultValue(TEditInputStyle.Default)]
+        public TEditInputStyle EditInputStyle { get; set; } = TEditInputStyle.Default;
+
         #endregion
 
         bool pauseLayout = false;

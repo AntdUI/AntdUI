@@ -18,7 +18,9 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO.MemoryMappedFiles;
+using System.Runtime.InteropServices;
 
 namespace AntdUI
 {
@@ -27,41 +29,48 @@ namespace AntdUI
         private readonly MemoryMappedFile _mmf;
         private readonly MemoryMappedViewAccessor _accessor;
         private readonly int _stride;
+        private readonly int _width;
+        private readonly int _height;
         private readonly Bitmap _bitmap;
         private bool _isDisposed = false;
+        private GCHandle _pinnedBitmap;
 
         public SafeBitmap(int width, int height)
         {
-            Width = width;
-            Width = height;
+            _width = width;
+            _height = height;
             _stride = (width * 32 + 31) / 32 * 4; // 计算每行字节数，按4字节对齐
             long capacity = (long)_stride * height;
+
+            // 创建内存映射文件
             _mmf = MemoryMappedFile.CreateNew(null, capacity);
             _accessor = _mmf.CreateViewAccessor();
-            unsafe
-            {
-                byte* pointer = null;
-                _accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
-                try
-                {
-                    _bitmap = new Bitmap(width, height, _stride, System.Drawing.Imaging.PixelFormat.Format32bppArgb, new IntPtr(pointer));
-                }
-                finally
-                {
-                    _accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-                }
-            }
+
+            // 分配托管内存用于Bitmap
+            byte[] bitmapData = new byte[capacity];
+            _pinnedBitmap = GCHandle.Alloc(bitmapData, GCHandleType.Pinned);
+
+            // 创建Bitmap，使用托管内存
+            _bitmap = new Bitmap(width, height, _stride, PixelFormat.Format32bppArgb, _pinnedBitmap.AddrOfPinnedObject());
         }
 
         public Graphics Graphics => Graphics.FromImage(_bitmap);
 
         // 安全的像素更新方法
-        public void UpdatePixels(Action<MemoryMappedViewAccessor> updateAction) => updateAction(_accessor);
+        public void UpdatePixels(Action<byte[]> updateAction)
+        {
+            byte[] bitmapData = new byte[_stride * _height];
+            _accessor.ReadArray(0, bitmapData, 0, bitmapData.Length);
+
+            updateAction(bitmapData);
+
+            _accessor.WriteArray(0, bitmapData, 0, bitmapData.Length);
+        }
 
         // 获取 Bitmap 用于显示或保存
         public Bitmap Bitmap => _bitmap;
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int Width => _width;
+        public int Height => _height;
 
         public void Dispose()
         {
@@ -76,6 +85,9 @@ namespace AntdUI
                 if (disposing)
                 {
                     _bitmap?.Dispose();
+
+                    if (_pinnedBitmap.IsAllocated) _pinnedBitmap.Free();
+
                     _accessor?.Dispose();
                     _mmf?.Dispose();
                 }

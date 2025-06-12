@@ -454,7 +454,7 @@ namespace AntdUI
                 bool isempty = emptyHeader && _rows.Count == 1;
                 if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y;
 
-                rect_divider = new Rectangle(rect_read.X + split, rect_read.Y + split, rect_read.Width, rect_read.Height);
+                rect_divider = new Rectangle(rect_read.X + split2, rect_read.Y + split2, rect_read.Width, rect_read.Height);
 
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
                 foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);

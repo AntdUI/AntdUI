@@ -55,7 +55,7 @@ namespace AntdUI
                 Location = form.Location;
             }
             PageSize = config.ContentCount;
-
+            SelectIndex = config.SelectIndex;
             int len = 8;
             if (config.Btns != null && config.Btns.Length > 0) len += config.Btns.Length;
             var btnwiths = new List<PreBtns>(len)

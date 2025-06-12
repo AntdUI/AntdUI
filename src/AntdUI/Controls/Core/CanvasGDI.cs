@@ -1063,6 +1063,11 @@ namespace AntdUI.Core
         public void FillPie(Brush brush, RectangleF rect, float startAngle, float sweepAngle) => g.FillPie(brush, rect.X, rect.Y, rect.Width, rect.Height, startAngle, sweepAngle);
         public void FillPie(Brush brush, float x, float y, float w, float h, float startAngle, float sweepAngle) => g.FillPie(brush, x, y, w, h, startAngle, sweepAngle);
 
+        public void FillClosedCurve(Brush brush, params Point[] points) => g.FillClosedCurve(brush, points);
+        public void FillClosedCurve(Brush brush, params PointF[] points) => g.FillClosedCurve(brush, points);
+        public void FillClosedCurve(Brush brush, Point[] points, FillMode fillmode) => g.FillClosedCurve(brush, points, fillmode);
+        public void FillClosedCurve(Brush brush, PointF[] points, FillMode fillmode) => g.FillClosedCurve(brush, points, fillmode);
+
         #endregion
 
         #region Draw

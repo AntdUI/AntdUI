@@ -83,8 +83,21 @@ namespace AntdUI
             }
         }
 
+        internal ThemeConfig? themeConfig;
+        public ThemeConfig Theme()
+        {
+            themeConfig = new ThemeConfig(this);
+            return themeConfig;
+        }
+
         internal void SetTheme()
         {
+            if (mode == TAMode.Auto && themeConfig != null)
+            {
+                dark = Config.IsDark;
+                themeConfig.Change(dark);
+                EventHub.Add(this);
+            }
             if (mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark)) DarkUI.UseImmersiveDarkMode(Handle, true);
         }
 
@@ -195,7 +208,6 @@ namespace AntdUI
         }
 
         #endregion
-
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual bool AutoHandDpi { get; set; } = true;
@@ -403,5 +415,196 @@ namespace AntdUI
 #endif
 
         #endregion
+    }
+
+    public class ThemeConfig
+    {
+        BaseForm form;
+        public ThemeConfig(BaseForm _form)
+        {
+            form = _form;
+        }
+
+        #region 回调
+
+        Action? callLight, callDark;
+        Action<bool>? oncall;
+
+        /// <summary>
+        /// 设置回调
+        /// </summary>
+        public ThemeConfig Call(Action<bool>? call)
+        {
+            oncall = call;
+            return this;
+        }
+
+        /// <summary>
+        /// 浅色模式回调
+        /// </summary>
+        /// <param name="light">浅色模式</param>
+        public ThemeConfig Light(Action? light = null)
+        {
+            callLight = light;
+            return this;
+        }
+
+        /// <summary>
+        /// 深色模式回调
+        /// </summary>
+        /// <param name="dark">深色模式</param>
+        public ThemeConfig Dark(Action? dark = null)
+        {
+            callDark = dark;
+            return this;
+        }
+
+        #endregion
+
+        #region 背景
+
+        Color? backLight, foreLight, backDark, foreDark;
+
+        #region 浅色模式颜色
+
+        /// <summary>
+        /// 浅色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        /// <param name="fore">文本颜色</param>
+        public ThemeConfig Light(Color back, Color fore)
+        {
+            backLight = back;
+            foreLight = fore;
+            return this;
+        }
+
+        /// <summary>
+        /// 浅色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        public ThemeConfig Light(Color back) => Light(back, Color.Black);
+
+        /// <summary>
+        /// 浅色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        /// <param name="fore">文本颜色</param>
+        public ThemeConfig Light(string back, string fore) => Light(back.ToColor(), fore.ToColor());
+
+        /// <summary>
+        /// 浅色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        public ThemeConfig Light(string back) => Light(back, "000000");
+
+        #endregion
+
+        #region 深色模式颜色
+
+        /// <summary>
+        /// 深色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        /// <param name="fore">文本颜色</param>
+        public ThemeConfig Dark(Color back, Color fore)
+        {
+            backDark = back;
+            foreDark = fore;
+            return this;
+        }
+
+        /// <summary>
+        /// 深色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        public ThemeConfig Dark(Color back) => Dark(back, Color.White);
+
+        /// <summary>
+        /// 深色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        /// <param name="fore">文本颜色</param>
+        public ThemeConfig Dark(string back, string fore) => Dark(back.ToColor(), fore.ToColor());
+
+        /// <summary>
+        /// 深色模式颜色
+        /// </summary>
+        /// <param name="back">背景颜色</param>
+        public ThemeConfig Dark(string back) => Dark(back, "ffffff");
+
+        #endregion
+
+        PageHeader? pageheader;
+        Color? headerLight, headerDark;
+        /// <summary>
+        /// 设置页面头部颜色
+        /// </summary>
+        /// <param name="header">页头</param>
+        /// <param name="light">浅色背景色</param>
+        /// <param name="dark">深色背景色</param>
+        public ThemeConfig Header(PageHeader header, Color light, Color dark)
+        {
+            pageheader = header;
+            headerLight = light;
+            headerDark = dark;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置页面头部颜色
+        /// </summary>
+        /// <param name="header">页头</param>
+        /// <param name="light">浅色背景色</param>
+        /// <param name="dark">深色背景色</param>
+        public ThemeConfig Header(PageHeader header, string light, string dark)
+        {
+            pageheader = header;
+            headerLight = light.ToColor();
+            headerDark = dark.ToColor();
+            return this;
+        }
+
+        #endregion
+
+        #region 按钮
+
+        Button? btn;
+        /// <summary>
+        /// 设置按钮 Toggle
+        /// </summary>
+        public ThemeConfig Button(Button? button)
+        {
+            btn = button;
+            return this;
+        }
+
+        #endregion
+
+        public void Change(bool dark)
+        {
+            form.Dark = dark;
+            if (btn != null) btn.Toggle = dark;
+            if (dark)
+            {
+                callDark?.Invoke();
+                if (pageheader != null && headerDark.HasValue) pageheader.BackColor = headerDark.Value;
+                if (backDark.HasValue) form.BackColor = backDark.Value;
+                if (foreDark.HasValue) form.ForeColor = foreDark.Value;
+            }
+            else
+            {
+                callLight?.Invoke();
+                if (pageheader != null && headerLight.HasValue) pageheader.BackColor = headerLight.Value;
+                if (backLight.HasValue) form.BackColor = backLight.Value;
+                if (foreLight.HasValue) form.ForeColor = foreLight.Value;
+            }
+            oncall?.Invoke(dark);
+        }
+
+        internal void HandleEvent(EventType id, object? tag)
+        {
+            if (id == EventType.THEME && tag is TMode mode) Change(mode == TMode.Dark);
+        }
     }
 }

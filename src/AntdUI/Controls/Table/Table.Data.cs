@@ -234,26 +234,29 @@ namespace AntdUI
 
         void Binding_ListChanged(object? sender, ListChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            if (sender == dataSource)
             {
-                case ListChangedType.ItemAdded:
-                    BindingItemAdded(sender, e.NewIndex);
-                    break;
-                case ListChangedType.ItemDeleted:
-                    BindingItemDeleted(sender, e.NewIndex);
-                    break;
-                case ListChangedType.ItemChanged:
-                    BindingItemChanged(sender, e.NewIndex);
-                    break;
-                case ListChangedType.Reset:
-                    if (dataTmp == null) return;
-                    dataTmp.rows = new IRow[0];
-                    if (LoadLayout()) Invalidate();
-                    break;
-                case ListChangedType.ItemMoved:
-                default:
-                    if (sender is IList list) DataSource = list;
-                    break;
+                switch (e.ListChangedType)
+                {
+                    case ListChangedType.ItemAdded:
+                        BindingItemAdded(sender, e.NewIndex);
+                        break;
+                    case ListChangedType.ItemDeleted:
+                        BindingItemDeleted(sender, e.NewIndex);
+                        break;
+                    case ListChangedType.ItemChanged:
+                        BindingItemChanged(sender, e.NewIndex);
+                        break;
+                    case ListChangedType.Reset:
+                        if (dataTmp == null) return;
+                        dataTmp.rows = new IRow[0];
+                        if (LoadLayout()) Invalidate();
+                        break;
+                    case ListChangedType.ItemMoved:
+                    default:
+                        if (sender is IList list) DataSource = list;
+                        break;
+                }
             }
         }
 
