@@ -42,6 +42,7 @@ namespace Demo
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());
+            else if (command == "tab") Application.Run(new TabHeaderForm());
             else Application.Run(new Overview(command == "t"));
         }
     }
