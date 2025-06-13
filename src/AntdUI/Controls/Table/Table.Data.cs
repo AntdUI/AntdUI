@@ -389,14 +389,11 @@ namespace AntdUI
             }
             var dir = new List<int>();
             int index = 0;
-            foreach (var column in columns)
+            ForColumnI(columns, column =>
             {
-                if (column.Visible)
-                {
-                    if (column.Fixed) dir.Add(index);
-                    index++;
-                }
-            }
+                if (column.Fixed) dir.Add(index);
+                index++;
+            });
             if (dir.Count > 0)
             {
                 List<int> _fixedColumnL = new List<int>(), _fixedColumnR = new List<int>();

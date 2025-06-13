@@ -679,6 +679,8 @@ namespace AntdUI
             val = default;
             return false;
         }
+
+        public override string? ToString() => _value?.ToString();
     }
 
     public class NotifyProperty : INotifyPropertyChanged

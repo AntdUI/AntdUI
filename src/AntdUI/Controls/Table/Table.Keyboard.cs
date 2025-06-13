@@ -38,7 +38,7 @@ namespace AntdUI
                     if (rows != null)
                     {
                         if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
-                        else if (selectedIndex[selectedIndex.Length - 1] < rows.Length - 1)
+                        else if (selectedIndex[selectedIndex.Length - 1] < (rows.Length - 1 - rowSummary))
                         {
                             int value = selectedIndex[selectedIndex.Length - 1] + 1;
                             SelectedIndex = value;

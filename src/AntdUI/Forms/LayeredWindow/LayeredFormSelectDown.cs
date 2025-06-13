@@ -86,9 +86,9 @@ namespace AntdUI
             Font = control.Font;
             selectedValue = control.SelectedValue;
             Radius = (int)(control.DropDownRadius ?? radius * Config.Dpi);
-            sf = Helper.SF(DropDownTextAlign);
             DPadding = control.DropDownPadding;
             DropDownTextAlign = control.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
         }

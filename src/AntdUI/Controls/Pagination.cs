@@ -227,6 +227,22 @@ namespace AntdUI
             }
         }
 
+        int? dropDownRadius;
+        /// <summary>
+        /// 下拉圆角
+        /// </summary>
+        [Description("下拉圆角"), Category("外观"), DefaultValue(null)]
+        public int? DropDownRadius
+        {
+            get => dropDownRadius;
+            set
+            {
+                if (dropDownRadius == value) return;
+                dropDownRadius = value;
+                if (input_SizeChanger is Select select) select.DropDownRadius = value;
+            }
+        }
+
         int pyr = 0;
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Config.Dpi);
 
@@ -716,6 +732,7 @@ namespace AntdUI
                         PlaceholderText = placeholder,
                         ListAutoWidth = true,
                         DropDownArrow = true,
+                        DropDownRadius = DropDownRadius,
                         Placement = TAlignFrom.Top,
                         Size = new Size(width, rect.Height),
                         Dock = DockStyle.Right,

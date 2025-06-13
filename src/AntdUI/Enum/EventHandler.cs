@@ -227,6 +227,8 @@ namespace AntdUI
 
     public delegate void SelectEventHandler(object sender, MenuSelectEventArgs e);
 
+    public delegate bool SelectBoolEventHandler(object sender, MenuSelectEventArgs e);
+
     #endregion
 
     #region Pagination
