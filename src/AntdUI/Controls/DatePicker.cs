@@ -136,23 +136,11 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
         public bool DropDownArrow { get; set; }
 
-        TDatePicker picker = TDatePicker.Date;
         /// <summary>
-        /// 设置选择器类型
+        /// 选择器类型
         /// </summary>
-        [Description("设置选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]
-        public TDatePicker Picker
-        {
-            get => picker;
-            set
-            {
-                if (picker == value) return;
-                picker = value;
-                if (picker == TDatePicker.Month) Format = "yyyy-MM";
-                else if (picker == TDatePicker.Year) Format = "yyyy";
-                else Format = "yyyy-MM-dd";
-            }
-        }
+        [Description("选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]
+        public TDatePicker Picker { get; set; } = TDatePicker.Date;
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -227,7 +215,7 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
-                        subForm = new LayeredFormCalendar(this, ReadRectangle, _value, Picker, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                        subForm = new LayeredFormCalendar(this, ReadRectangle, _value, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                         subForm.Disposed += (a, b) =>
                         {
                             subForm = null;
@@ -332,7 +320,8 @@ namespace AntdUI
             if (count > 0)
             {
                 if (count == 999) Content = "999";
-                else if (count > 1000) Content = (count / 1000).ToString().Substring(0, 1) + "K+";
+                else if (count >= 10000) Content = Math.Round(count / 10000.0, 1) + "W";// 转换为万(W)
+                else if (count >= 1000) Content = Math.Round(count / 1000.0, 1) + "K";// 转换为千(K)
                 else if (count > 99) Content = "99+";
                 else Content = count.ToString();
             }

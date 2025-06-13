@@ -133,6 +133,13 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 判断提示ID是否存在队列
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="time_expand">是否延长时间</param>
+        public static bool contains(string id, bool time_expand = false) => MsgQueue.contains("M" + id, time_expand);
+
+        /// <summary>
         /// 配置
         /// </summary>
         public class Config
@@ -329,9 +336,10 @@ namespace AntdUI
     {
         internal Message.Config config;
         int shadow_size = 10;
-        public MessageFrm(Message.Config _config)
+        public MessageFrm(Message.Config _config, string? id)
         {
             config = _config;
+            Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Form.SetTopMost(Handle);
             shadow_size = (int)(shadow_size * Config.Dpi);
@@ -396,7 +404,7 @@ namespace AntdUI
                 loadingend = true;
                 if (config.AutoClose > 0)
                 {
-                    Thread.Sleep(config.AutoClose * 1000);
+                    Sleep(config.AutoClose);
                     CloseMe();
                 }
             });

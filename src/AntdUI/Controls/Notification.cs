@@ -19,7 +19,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -138,6 +137,13 @@ namespace AntdUI
                 foreach (var it in close_list) it.CloseMe();
             }
         }
+
+        /// <summary>
+        /// 判断通知ID是否存在队列
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="time_expand">是否延长时间</param>
+        public static bool contains(string id, bool time_expand = false) => MsgQueue.contains("N" + id, time_expand);
 
         /// <summary>
         /// 配置
@@ -330,9 +336,10 @@ namespace AntdUI
         Font font_title;
         internal Notification.Config config;
         int shadow_size = 10;
-        public NotificationFrm(Notification.Config _config)
+        public NotificationFrm(Notification.Config _config, string? id)
         {
             config = _config;
+            Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Form.SetTopMost(Handle);
             shadow_size = (int)(shadow_size * Config.Dpi);
@@ -364,7 +371,7 @@ namespace AntdUI
             {
                 ITask.Run(() =>
                 {
-                    Thread.Sleep(config.AutoClose * 1000);
+                    Sleep(config.AutoClose);
                     CloseMe();
                 });
             }

@@ -142,6 +142,12 @@ namespace AntdUI
         [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
         public bool ValueTimeHorizontal { get; set; }
 
+        /// <summary>
+        /// 选择器类型
+        /// </summary>
+        [Description("选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]
+        public TDatePicker Picker { get; set; } = TDatePicker.Date;
+
         protected override void OnTextChanged(EventArgs e)
         {
             if (isempty) showS = showE = true;

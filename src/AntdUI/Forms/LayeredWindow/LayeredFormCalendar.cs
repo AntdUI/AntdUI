@@ -33,7 +33,7 @@ namespace AntdUI
         bool ValueTimeHorizontal = false, ShowButtonToDay = true;
         TAMode ColorScheme;
         int shadow = 10, shadow2 = 20;
-        public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, TDatePicker _datepicker, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
+        public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
         {
             ColorScheme = _control.ColorScheme;
             _control.Parent.SetTopMost(Handle);
@@ -59,7 +59,7 @@ namespace AntdUI
             scrollY_h = new ScrollY(this);
             scrollY_m = new ScrollY(this);
             scrollY_s = new ScrollY(this);
-            showType = PickerType = _datepicker;
+            showType = PickerType = _control.Picker;
             Culture = new CultureInfo(CultureID);
             YDR = CultureID.StartsWith("en");
 
