@@ -149,6 +149,24 @@ namespace Demo.Properties {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 48 48&quot;&gt;&lt;path fill=&quot;#FFA000&quot; d=&quot;M40 12H22l-4-4H8c-2.2 0-4 1.8-4 4v8h40v-4c0-2.2-1.8-4-4-4&quot;/&gt;&lt;path fill=&quot;#FFCA28&quot; d=&quot;M40 12H8c-2.2 0-4 1.8-4 4v20c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V16c0-2.2-1.8-4-4-4&quot;/&gt;&lt;/svg&gt; 的本地化字符串。
+        /// </summary>
+        internal static string icon_folder {
+            get {
+                return ResourceManager.GetString("icon_folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 48 48&quot;&gt;&lt;path fill=&quot;#FFA000&quot; d=&quot;M38 12H22l-4-4H8c-2.2 0-4 1.8-4 4v24c0 2.2 1.8 4 4 4h31c1.7 0 3-1.3 3-3V16c0-2.2-1.8-4-4-4&quot;/&gt;&lt;path fill=&quot;#FFCA28&quot; d=&quot;M42.2 18H15.3c-1.9 0-3.6 1.4-3.9 3.3L8 40h31.7c1.9 0 3.6-1.4 3.9-3.3l2.5-14c.5-2.4-1.4-4.7-3.9-4.7&quot;/&gt;&lt;/svg&gt; 的本地化字符串。
+        /// </summary>
+        internal static string icon_folderopened {
+            get {
+                return ResourceManager.GetString("icon_folderopened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 1024 1024&quot;&gt;&lt;path d=&quot;M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string icon_like {

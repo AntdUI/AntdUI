@@ -1,5 +1,27 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.4` 2025-06-14
+
+- ➕ Tree BeforeExpand、AfterExpand
+- ➕ Preview SelectIndex
+- ➕ Preview OnSelectIndexChanged
+- ➕ Message/Notification contains
+- ➕ DatePickerRange Picker
+- ➕ Menu SelectChanging
+- ➕ Pagination DropDownRadius
+- ➕ BaseForm Color Mode Change Configuration
+- ➕ Table EditInputStyle
+- ➕ Input TextTotalLine
+- ➕ Calendar SetMinMax/SetBadge method
+- ✍️ Table Column Drag+Hide Exception
+- ✍️ Table Keyboard Up and Down Activation Summary
+- ✍️ Table line break text disappears
+- ✍️ Merge cell borders in Table
+- ✍️ Input text is crowded
+- ✍️ Refactoring cursor interaction with Input
+- ✍️ Dropdown DropDownTextAlign is invalid
+- ✍️ Modal centering parent form adjustment
+
 ### `2.0.3` 2025-06-09
 
 - ➕ Table SortOrderSize

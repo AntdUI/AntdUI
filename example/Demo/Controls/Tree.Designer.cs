@@ -48,6 +48,7 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             tree1 = new AntdUI.Tree();
             tree2 = new AntdUI.Tree();
+            tree3 = new AntdUI.Tree();
             SuspendLayout();
             // 
             // header1
@@ -69,24 +70,32 @@ namespace Demo.Controls
             // 
             tree1.Checkable = true;
             tree1.Dock = DockStyle.Left;
-            tree1.Font = new Font("Microsoft YaHei UI", 12F);
             tree1.Location = new Point(0, 74);
             tree1.Name = "tree1";
             tree1.Size = new Size(328, 328);
-            tree1.TabIndex = 18;
+            tree1.TabIndex = 0;
             // 
             // tree2
             // 
             tree2.BlockNode = true;
-            tree2.Dock = DockStyle.Fill;
-            tree2.Font = new Font("Microsoft YaHei UI", 12F);
+            tree2.Dock = DockStyle.Left;
             tree2.Location = new Point(328, 74);
             tree2.Name = "tree2";
-            tree2.Size = new Size(412, 328);
-            tree2.TabIndex = 19;
+            tree2.Size = new Size(328, 328);
+            tree2.TabIndex = 1;
+            // 
+            // tree3
+            // 
+            tree3.Dock = DockStyle.Fill;
+            tree3.Location = new Point(656, 74);
+            tree3.Name = "tree3";
+            tree3.Size = new Size(84, 328);
+            tree3.TabIndex = 2;
+            tree3.BeforeExpand += tree3_BeforeExpand;
             // 
             // Tree
             // 
+            Controls.Add(tree3);
             Controls.Add(tree2);
             Controls.Add(tree1);
             Controls.Add(header1);
@@ -101,5 +110,6 @@ namespace Demo.Controls
         private AntdUI.PageHeader header1;
         private AntdUI.Tree tree1;
         private AntdUI.Tree tree2;
+        private AntdUI.Tree tree3;
     }
 }

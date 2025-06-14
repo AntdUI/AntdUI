@@ -18,14 +18,7 @@
 
 using AntdUI;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Demo
 {
@@ -35,14 +28,14 @@ namespace Demo
         {
             InitializeComponent();
             var homeImage = SvgExtend.GetImgExtend("HomeOutlined", new Rectangle(0, 0, 16, 16));
-            this.tabHeader1.AddTab("首页", homeImage);
-            this.tabHeader1.AddTab("关于");
+            tabHeader1.AddTab("首页", homeImage);
+            tabHeader1.AddTab("关于");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var timeImage = SvgExtend.GetImgExtend("FieldTimeOutlined", new Rectangle(0, 0, 16, 16));
-            this.tabHeader1.AddTab(DateTime.Now.ToString(), timeImage);
+            tabHeader1.AddTab(DateTime.Now.ToString(), timeImage);
         }
     }
 }
