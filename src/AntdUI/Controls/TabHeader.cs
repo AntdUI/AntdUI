@@ -536,19 +536,6 @@ namespace AntdUI.Controls
                 {
                     // 使用路径绘制边框，确保圆角处也有边框
                     g.DrawPath(pen, path);
-
-                    // 绘制选中标签的底部边框（更粗）
-                    if (tab.IsSelected)
-                    {
-                        using (Pen selectedPen = new Pen(_selectedTabColor, _cornerRadius + 1))
-                        {
-                            g.DrawLine(selectedPen,
-                                visibleBounds.Left,
-                                visibleBounds.Bottom - 1,
-                                visibleBounds.Right,
-                                visibleBounds.Bottom - 1);
-                        }
-                    }
                 }
             }
 
@@ -607,17 +594,16 @@ namespace AntdUI.Controls
         /// </summary>
         private GraphicsPath GetRoundedRectanglePath(Rectangle rect, int radius)
         {
-            GraphicsPath path = new GraphicsPath();
+            var path = new GraphicsPath();
             int diameter = radius * 2;
-
+            //左侧直线
+            path.AddLine(rect.X, rect.Bottom, rect.X, radius);
             // 左上角
             path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
             // 右上角
             path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
-            // 右下角
-            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
-            // 左下角
-            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            //右侧直线
+            path.AddLine(rect.Right, diameter, rect.Right, rect.Bottom);
 
             path.CloseFigure();
             return path;
