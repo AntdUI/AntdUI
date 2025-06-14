@@ -185,7 +185,7 @@ namespace AntdUI
 
         #region 动画
 
-        ILayeredForm? subForm = null;
+        ILayeredForm? subForm;
         public ILayeredForm? SubForm() => subForm;
 
         #endregion

@@ -45,7 +45,7 @@ namespace AntdUI
             }
         }
 
-        internal RowTemplate[]? rows = null;
+        internal RowTemplate[]? rows;
         int rowSummary = 0;
         internal List<object> rows_Expand = new List<object>();
         Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
@@ -770,7 +770,7 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? ThreadState = null;
+        ITask? ThreadState;
         internal float AnimationStateValue = 0;
 
         #endregion

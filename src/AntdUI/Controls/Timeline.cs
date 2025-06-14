@@ -318,7 +318,7 @@ namespace AntdUI
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event TimelineEventHandler? ItemClick = null;
+        public event TimelineEventHandler? ItemClick;
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
@@ -413,7 +413,7 @@ namespace AntdUI
         [Description("名称"), Category("数据"), DefaultValue(null)]
         public string? Name { get; set; }
 
-        string? description = null;
+        string? description;
         /// <summary>
         /// 描述，可选
         /// </summary>

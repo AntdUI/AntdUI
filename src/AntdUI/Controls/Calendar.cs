@@ -155,13 +155,11 @@ namespace AntdUI
         /// <summary>
         /// 日期徽标回调
         /// </summary>
-        public Func<DateTime[], List<DateBadge>?>? BadgeAction = null;
+        public Func<DateTime[], List<DateBadge>?>? BadgeAction;
 
         #region 日期
 
-        List<Calendari>? calendar_year = null;
-        List<Calendari>? calendar_month = null;
-        List<Calendari>? calendar_day = null;
+        List<Calendari>? calendar_year, calendar_month, calendar_day;
 
         DateTime _value = DateTime.Now;
         /// <summary>
@@ -202,7 +200,7 @@ namespace AntdUI
             }
         }
 
-        DateTime? maxDate = null;
+        DateTime? maxDate;
         /// <summary>
         /// 最大日期
         /// </summary>

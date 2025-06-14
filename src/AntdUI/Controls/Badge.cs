@@ -106,7 +106,7 @@ namespace AntdUI
         }
 
         bool has_text = true;
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -147,7 +147,7 @@ namespace AntdUI
             }
         }
 
-        Color? fill = null;
+        Color? fill;
         /// <summary>
         /// 颜色
         /// </summary>
@@ -188,7 +188,7 @@ namespace AntdUI
             StopAnimation();
             base.Dispose(disposing);
         }
-        ITask? ThreadState = null;
+        ITask? ThreadState;
         float AnimationStateValue = 0;
 
         #endregion

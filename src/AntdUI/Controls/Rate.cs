@@ -120,7 +120,7 @@ namespace AntdUI
         [Description("自定义每项的提示信息"), Category("数据"), DefaultValue(null)]
         public string[]? Tooltips { get; set; }
 
-        string? character = null;
+        string? character;
         /// <summary>
         /// 自定义字符
         /// </summary>
@@ -154,7 +154,7 @@ namespace AntdUI
 
         #region 渲染
 
-        Bitmap? icon = null, icon_active = null;
+        Bitmap? icon, icon_active;
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect = ClientRectangle.PaddingRect(Padding);
@@ -329,7 +329,7 @@ namespace AntdUI
             internal float AnimationActiveValueO = 0;
             internal float AnimationActiveValueS = 0;
             internal bool AnimationActive = false;
-            ITask? ThreadActive = null;
+            ITask? ThreadActive;
             internal bool Animatio(bool _active, bool _hover, bool _half)
             {
                 if (active == _active && hover == _hover)
@@ -461,8 +461,8 @@ namespace AntdUI
 
         #region 提示
 
-        TooltipForm? tooltipForm = null;
-        string? tooltipText = null;
+        TooltipForm? tooltipForm;
+        string? tooltipText;
         void ShowTips(Rectangle dot_rect, string text)
         {
             if (text == tooltipText && tooltipForm != null) return;

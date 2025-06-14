@@ -130,7 +130,7 @@ namespace AntdUI
             }
         }
 
-        Size? size = null;
+        Size? size;
         /// <summary>
         /// 自定义大小
         /// </summary>
@@ -175,7 +175,7 @@ namespace AntdUI
             }
         }
 
-        string? imageSvg = null;
+        string? imageSvg;
         /// <summary>
         /// 图片SVG
         /// </summary>

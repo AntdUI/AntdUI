@@ -435,7 +435,7 @@ namespace AntdUI
         }
         bool AnimationBar = false;
         RectangleF AnimationBarValue;
-        ITask? ThreadBar = null;
+        ITask? ThreadBar;
 
         RectangleF TabSelectRect;
 
@@ -575,19 +575,19 @@ namespace AntdUI
         /// SelectIndex 属性值更改时发生
         /// </summary>
         [Description("SelectIndex 属性值更改时发生"), Category("行为")]
-        public event IntEventHandler? SelectIndexChanged = null;
+        public event IntEventHandler? SelectIndexChanged;
 
         /// <summary>
         /// SelectIndex 属性值更改前发生
         /// </summary>
         [Description("SelectIndex 属性值更改前发生"), Category("行为")]
-        public event IntBoolEventHandler? SelectIndexChanging = null;
+        public event IntBoolEventHandler? SelectIndexChanging;
 
         /// <summary>
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event SegmentedItemEventHandler? ItemClick = null;
+        public event SegmentedItemEventHandler? ItemClick;
 
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
@@ -1160,7 +1160,7 @@ namespace AntdUI
                 else tooltipForm.SetText(rect, it.Tooltip);
             }
         }
-        TooltipForm? tooltipForm = null;
+        TooltipForm? tooltipForm;
 
         protected override void OnMouseLeave(EventArgs e)
         {
@@ -1320,7 +1320,7 @@ namespace AntdUI
             }
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1336,7 +1336,7 @@ namespace AntdUI
             }
         }
 
-        string? iconsvg = null;
+        string? iconsvg;
         /// <summary>
         /// 图标SVG
         /// </summary>
@@ -1381,7 +1381,7 @@ namespace AntdUI
         [Description("图标悬浮态SVG"), Category("外观"), DefaultValue(null)]
         public string? IconHoverSvg { get; set; }
 
-        string? text = null;
+        string? text;
         bool multiLine = false;
         /// <summary>
         /// 文本
@@ -1412,7 +1412,7 @@ namespace AntdUI
 
         #region Tooltip
 
-        string? tooltip = null;
+        string? tooltip;
         /// <summary>
         /// 提示
         /// </summary>
@@ -1599,7 +1599,7 @@ namespace AntdUI
             }
         }
 
-        string? badgeSvg = null;
+        string? badgeSvg;
         /// <summary>
         /// 徽标SVG
         /// </summary>

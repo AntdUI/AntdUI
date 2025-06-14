@@ -308,7 +308,7 @@ namespace AntdUI
                 }
             }
 
-            string? text = null;
+            string? text;
             /// <summary>
             /// 文字及其它内容
             /// </summary>
@@ -383,7 +383,7 @@ namespace AntdUI
                 }
             }
 
-            string? badgeSvg = null;
+            string? badgeSvg;
             /// <summary>
             /// 徽标SVG
             /// </summary>
@@ -454,7 +454,7 @@ namespace AntdUI
             internal Rectangle rect;
             internal Rectangle rect_read;
             internal Rectangle rect_icon;
-            internal Bitmap? shadow_temp = null;
+            internal Bitmap? shadow_temp;
 
             #endregion
         }

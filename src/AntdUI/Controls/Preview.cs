@@ -135,6 +135,11 @@ namespace AntdUI
             /// </summary>
             public object? Tag { get; set; }
 
+            /// <summary>
+            /// SelectIndex 改变回调
+            /// </summary>
+            public Func<int, bool>? OnSelectIndexChanged { get; set; }
+
             #region 自定义按钮
 
             /// <summary>

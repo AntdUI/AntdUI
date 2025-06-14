@@ -84,7 +84,7 @@ namespace AntdUI
         /// </summary>
         public Color? BackActive { get; set; }
 
-        string? backExtend = null;
+        string? backExtend;
         /// <summary>
         /// 背景渐变色
         /// </summary>
@@ -186,7 +186,7 @@ namespace AntdUI
             }
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -201,7 +201,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标SVG
         /// </summary>

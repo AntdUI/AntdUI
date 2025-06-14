@@ -30,7 +30,7 @@ namespace AntdUI
         bool HasBor = false;
         Drawer.Config config;
         int padding = 24;
-        ILayeredForm? formMask = null;
+        ILayeredForm? formMask;
         public bool isclose = false;
         internal bool topMost = false;
         public LayeredFormDrawer(Drawer.Config _config, ILayeredForm mask) : this(_config)
@@ -319,7 +319,7 @@ namespace AntdUI
 
         int start_X = 0, end_X = 0, start_Y = 0, end_Y = 0;
         int start_W = 0, end_W = 0, start_H = 0, end_H = 0;
-        ITask? task_start = null;
+        ITask? task_start;
         bool run_end = false, ok_end = false;
         protected override void OnLoad(EventArgs e)
         {
@@ -652,7 +652,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

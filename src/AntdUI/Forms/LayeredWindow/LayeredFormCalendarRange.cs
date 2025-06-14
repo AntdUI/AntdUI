@@ -174,7 +174,7 @@ namespace AntdUI
         int year_width = 60, year2_width = 90, month_width = 60;
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
-        List<CalendarButton>? left_buttons = null;
+        List<CalendarButton>? left_buttons;
         ScrollY scrollY_left;
         CultureInfo Culture;
         string CultureID = Localization.Get("ID", "zh-CN"),
@@ -196,12 +196,7 @@ namespace AntdUI
 
         DateTime _Date, _Date_R;
         DateTime DateNow = DateTime.Now;
-        List<Calendari>? calendar_year = null;
-        List<Calendari>? calendar_year2 = null;
-        List<Calendari>? calendar_month = null;
-        List<Calendari>? calendar_month2 = null;
-        List<Calendari>? calendar_day = null;
-        List<Calendari>? calendar_day2 = null;
+        List<Calendari>? calendar_year, calendar_year2, calendar_month, calendar_month2, calendar_day, calendar_day2;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Date
@@ -1132,7 +1127,7 @@ namespace AntdUI
 
         #endregion
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

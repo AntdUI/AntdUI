@@ -219,7 +219,7 @@ namespace AntdUI
         /// SelectedValue 属性值更改时发生
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
-        public event ObjectsEventHandler? SelectedValueChanged = null;
+        public event ObjectsEventHandler? SelectedValueChanged;
 
         string filtertext = "";
         bool TerminateExpand = false;
@@ -577,10 +577,10 @@ namespace AntdUI
 
         #region 动画
 
-        ISelectMultiple? subForm = null;
+        ISelectMultiple? subForm;
         public ILayeredForm? SubForm() => subForm;
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         float ArrowProg = -1F;
         bool expand = false;
         /// <summary>

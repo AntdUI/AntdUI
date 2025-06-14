@@ -54,7 +54,7 @@ namespace AntdUI
             }
         }
 
-        string? colorExtend = null;
+        string? colorExtend;
         /// <summary>
         /// 文字渐变色
         /// </summary>
@@ -73,7 +73,7 @@ namespace AntdUI
 
         #region 文本
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -188,7 +188,7 @@ namespace AntdUI
             }
         }
 
-        string? prefix = null;
+        string? prefix;
         /// <summary>
         /// 前缀
         /// </summary>
@@ -210,7 +210,7 @@ namespace AntdUI
         [Description("前缀"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationPrefix { get; set; }
 
-        string? prefixSvg = null;
+        string? prefixSvg;
         /// <summary>
         /// 前缀SVG
         /// </summary>
@@ -240,7 +240,7 @@ namespace AntdUI
         /// </summary>
         public bool HasPrefix => prefixSvg != null || Prefix != null;
 
-        string? suffix = null;
+        string? suffix;
         /// <summary>
         /// 后缀
         /// </summary>
@@ -262,7 +262,7 @@ namespace AntdUI
         [Description("后缀"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationSuffix { get; set; }
 
-        string? suffixSvg = null;
+        string? suffixSvg;
         /// <summary>
         /// 后缀SVG
         /// </summary>
@@ -814,7 +814,7 @@ namespace AntdUI
 
         #endregion
 
-        TooltipForm? tooltipForm = null;
+        TooltipForm? tooltipForm;
         protected override void OnMouseHover(EventArgs e)
         {
             tooltipForm?.Close();

@@ -121,7 +121,7 @@ namespace AntdUI
             }
         }
 
-        Image? prefix = null;
+        Image? prefix;
         /// <summary>
         /// 前缀
         /// </summary>
@@ -136,7 +136,7 @@ namespace AntdUI
             }
         }
 
-        string? prefixSvg = null;
+        string? prefixSvg;
         /// <summary>
         /// 前缀SVG
         /// </summary>
@@ -156,7 +156,7 @@ namespace AntdUI
         /// </summary>
         public bool HasPrefix => prefixSvg != null || prefix != null;
 
-        Image? suffix = null;
+        Image? suffix;
         /// <summary>
         /// 后缀
         /// </summary>
@@ -171,7 +171,7 @@ namespace AntdUI
             }
         }
 
-        string? suffixSvg = null;
+        string? suffixSvg;
         /// <summary>
         /// 后缀SVG
         /// </summary>

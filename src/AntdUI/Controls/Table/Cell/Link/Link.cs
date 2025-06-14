@@ -43,7 +43,7 @@ namespace AntdUI
         #region 文本
 
         internal bool textLine = false;
-        string? _text = null;
+        string? _text;
         /// <summary>
         /// 文本
         /// </summary>

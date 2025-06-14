@@ -186,7 +186,7 @@ namespace AntdUI
             }
         }
 
-        int[]? pageSizeOptions = null;
+        int[]? pageSizeOptions;
         /// <summary>
         /// 指定每页可以显示多少条
         /// </summary>
@@ -551,10 +551,10 @@ namespace AntdUI
         }
 
         ButtonLoad[] buttons = new ButtonLoad[0];
-        internal string? showTotal = null;
+        internal string? showTotal;
         internal Rectangle rect_text;
 
-        Input? input_SizeChanger = null;
+        Input? input_SizeChanger;
         void InputSizeChangerDispose()
         {
             if (InvokeRequired)

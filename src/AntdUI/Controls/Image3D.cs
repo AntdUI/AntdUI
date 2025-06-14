@@ -78,7 +78,7 @@ namespace AntdUI
             }
         }
 
-        Image? image = null;
+        Image? image;
         /// <summary>
         /// 图片
         /// </summary>
@@ -298,7 +298,7 @@ namespace AntdUI
 
         #region 渲染
 
-        Bitmap? run = null;
+        Bitmap? run;
         protected override void OnPaint(PaintEventArgs e)
         {
             var _rect = ClientRectangle;

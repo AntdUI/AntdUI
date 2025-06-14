@@ -275,7 +275,7 @@ namespace AntdUI.Chat
 
         #region 鼠标
 
-        TextChatItem? mouseDown = null;
+        TextChatItem? mouseDown;
         Point oldMouseDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -752,7 +752,7 @@ namespace AntdUI.Chat
         [Description("本人"), Category("行为"), DefaultValue(false)]
         public bool Me { get; set; }
 
-        Image? _icon = null;
+        Image? _icon;
         /// <summary>
         /// 图标
         /// </summary>

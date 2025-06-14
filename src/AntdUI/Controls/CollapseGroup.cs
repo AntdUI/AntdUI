@@ -365,7 +365,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        object? MDown = null;
+        object? MDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -525,7 +525,7 @@ namespace AntdUI
         /// 点击项事件
         /// </summary>
         [Description("点击项事件"), Category("行为")]
-        public event ItemClickEventHandler? ItemClick = null;
+        public event ItemClickEventHandler? ItemClick;
 
         #endregion
 
@@ -577,7 +577,7 @@ namespace AntdUI
             Text = text;
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -617,7 +617,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         bool expand = false;
         /// <summary>
         /// 展开
@@ -790,7 +790,7 @@ namespace AntdUI
             Icon = icon;
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -806,7 +806,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标
         /// </summary>
@@ -833,7 +833,7 @@ namespace AntdUI
         [Description("名称"), Category("数据"), DefaultValue(null)]
         public string? Name { get; set; }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -1016,7 +1016,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover = null;
+        ITask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }

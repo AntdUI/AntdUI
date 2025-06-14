@@ -451,19 +451,19 @@ namespace AntdUI
         #region 事件
 
         [Description("清空 点击时发生"), Category("行为")]
-        public event MouseEventHandler? ClearClick = null;
+        public event MouseEventHandler? ClearClick;
 
         [Description("前缀 点击时发生"), Category("行为")]
-        public event MouseEventHandler? PrefixClick = null;
+        public event MouseEventHandler? PrefixClick;
 
         [Description("后缀 点击时发生"), Category("行为")]
-        public event MouseEventHandler? SuffixClick = null;
+        public event MouseEventHandler? SuffixClick;
 
         [Description("验证字符时发生"), Category("行为")]
-        public event InputVerifyCharEventHandler? VerifyChar = null;
+        public event InputVerifyCharEventHandler? VerifyChar;
 
         [Description("验证键盘时发生"), Category("行为")]
-        public event InputVerifyKeyboardEventHandler? VerifyKeyboard = null;
+        public event InputVerifyKeyboardEventHandler? VerifyKeyboard;
 
         #endregion
     }

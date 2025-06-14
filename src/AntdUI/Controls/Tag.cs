@@ -84,7 +84,7 @@ namespace AntdUI
             }
         }
 
-        Image? backImage = null;
+        Image? backImage;
         /// <summary>
         /// 背景图片
         /// </summary>
@@ -194,7 +194,7 @@ namespace AntdUI
 
         #region 文本
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -275,7 +275,7 @@ namespace AntdUI
 
         #region 图片
 
-        Image? image = null;
+        Image? image;
         /// <summary>
         /// 图像
         /// </summary>
@@ -292,7 +292,7 @@ namespace AntdUI
             }
         }
 
-        string? imageSvg = null;
+        string? imageSvg;
         [Description("图像SVG"), Category("外观"), DefaultValue(null)]
         public string? ImageSvg
         {
@@ -327,7 +327,7 @@ namespace AntdUI
         /// Close时发生
         /// </summary>
         [Description("Close时发生"), Category("行为")]
-        public event RBoolEventHandler? CloseChanged = null;
+        public event RBoolEventHandler? CloseChanged;
 
         #endregion
 

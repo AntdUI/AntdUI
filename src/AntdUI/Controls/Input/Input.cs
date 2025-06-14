@@ -109,7 +109,7 @@ namespace AntdUI
             }
         }
 
-        Image? backImage = null;
+        Image? backImage;
         /// <summary>
         /// 背景图片
         /// </summary>
@@ -329,7 +329,7 @@ namespace AntdUI
             }
         }
 
-        Image? prefix = null;
+        Image? prefix;
         /// <summary>
         /// 前缀
         /// </summary>
@@ -347,7 +347,7 @@ namespace AntdUI
             }
         }
 
-        string? prefixSvg = null;
+        string? prefixSvg;
         /// <summary>
         /// 前缀SVG
         /// </summary>
@@ -365,7 +365,7 @@ namespace AntdUI
             }
         }
 
-        string? prefixText = null;
+        string? prefixText;
         [Description("前缀文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? PrefixText
@@ -407,7 +407,7 @@ namespace AntdUI
         /// </summary>
         public virtual bool HasPrefix => prefixSvg != null || prefix != null;
 
-        Image? suffix = null;
+        Image? suffix;
         /// <summary>
         /// 后缀
         /// </summary>
@@ -425,7 +425,7 @@ namespace AntdUI
             }
         }
 
-        string? suffixSvg = null;
+        string? suffixSvg;
         /// <summary>
         /// 后缀SVG
         /// </summary>
@@ -443,7 +443,7 @@ namespace AntdUI
             }
         }
 
-        string? suffixText = null;
+        string? suffixText;
         [Description("后缀文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? SuffixText
@@ -797,7 +797,7 @@ namespace AntdUI
 
         #region 水印
 
-        string? placeholderText = null;
+        string? placeholderText;
         /// <summary>
         /// 水印文本
         /// </summary>
@@ -818,7 +818,7 @@ namespace AntdUI
         [Description("水印文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationPlaceholderText { get; set; }
 
-        Color? placeholderColor = null;
+        Color? placeholderColor;
         /// <summary>
         /// 水印颜色
         /// </summary>
@@ -836,7 +836,7 @@ namespace AntdUI
             }
         }
 
-        string? placeholderColorExtend = null;
+        string? placeholderColorExtend;
         /// <summary>
         /// 水印渐变色
         /// </summary>
@@ -1730,7 +1730,7 @@ namespace AntdUI
         #region 闪烁动画
 
         Color? colorBlink;
-        ITask? ThreadAnimateBlink = null;
+        ITask? ThreadAnimateBlink;
         /// <summary>
         /// 闪烁动画状态
         /// </summary>
@@ -1822,7 +1822,7 @@ namespace AntdUI
             ThreadAnimateBlink?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
-        ITask? ThreadFocus = null;
+        ITask? ThreadHover;
+        ITask? ThreadFocus;
     }
 }

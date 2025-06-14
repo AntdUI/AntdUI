@@ -25,14 +25,14 @@ namespace AntdUI
 {
     public abstract class ILayeredFormOpacityDown : ILayeredForm
     {
-        ITask? task_start = null;
+        ITask? task_start;
         bool run_end = false, ok_end = false;
 
         public bool Inverted = false;
 
         public override bool MessageEnable => true;
 
-        Bitmap? bmp_tmp = null;
+        Bitmap? bmp_tmp;
         public bool RunAnimation = true;
         protected override void OnLoad(EventArgs e)
         {

@@ -172,7 +172,7 @@ namespace AntdUI
         bool YDR = false;
 
         ScrollY scrollY_left, scrollY_h, scrollY_m, scrollY_s;
-        List<CalendarButton>? left_buttons = null;
+        List<CalendarButton>? left_buttons;
 
         /// <summary>
         /// 回调
@@ -203,10 +203,8 @@ namespace AntdUI
         }
         DateTime _Date;
         DateTime DateNow = DateTime.Now;
-        List<Calendari>? calendar_year = null;
-        List<Calendari>? calendar_month = null;
-        List<Calendari>? calendar_day = null;
-        List<CalendarT>? calendar_time = null;
+        List<Calendari>? calendar_year, calendar_month, calendar_day;
+        List<CalendarT>? calendar_time;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Date
@@ -947,7 +945,7 @@ namespace AntdUI
 
         #endregion
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

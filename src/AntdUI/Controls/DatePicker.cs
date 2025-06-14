@@ -58,7 +58,7 @@ namespace AntdUI
             }
         }
 
-        DateTime? _value = null;
+        DateTime? _value;
         /// <summary>
         /// 控件当前日期
         /// </summary>
@@ -93,7 +93,7 @@ namespace AntdUI
         /// <summary>
         /// 日期徽标回调
         /// </summary>
-        public Func<DateTime[], List<DateBadge>?>? BadgeAction = null;
+        public Func<DateTime[], List<DateBadge>?>? BadgeAction;
 
         BaseCollection? items;
         /// <summary>
@@ -192,7 +192,7 @@ namespace AntdUI
         /// 预置点击时发生
         /// </summary>
         [Description("预置点击时发生"), Category("行为")]
-        public event ObjectNEventHandler? PresetsClickChanged = null;
+        public event ObjectNEventHandler? PresetsClickChanged;
 
         #endregion
 
@@ -254,7 +254,7 @@ namespace AntdUI
 
         #region 动画
 
-        LayeredFormCalendar? subForm = null;
+        LayeredFormCalendar? subForm;
         public ILayeredForm? SubForm() => subForm;
 
         #endregion

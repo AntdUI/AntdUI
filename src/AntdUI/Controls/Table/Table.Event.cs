@@ -80,7 +80,7 @@ namespace AntdUI
         /// 全局 CheckState 属性值更改时发生
         /// </summary>
         [Description("全局 CheckState 属性值更改时发生"), Category("行为")]
-        public event CheckStateEventHandler? CheckedOverallChanged = null;
+        public event CheckStateEventHandler? CheckedOverallChanged;
 
         internal void OnCheckedOverallChanged(ColumnCheck column, CheckState checkState) => CheckedOverallChanged?.Invoke(this, new CheckStateEventArgs(column, checkState));
 
@@ -241,7 +241,7 @@ namespace AntdUI
         /// 自定义排序
         /// </summary>
         [Description("自定义排序"), Category("行为")]
-        public event Comparison<string>? CustomSort = null;
+        public event Comparison<string>? CustomSort;
 
         /// <summary>
         /// 展开事件

@@ -238,7 +238,7 @@ namespace AntdUI
 
         #endregion
 
-        ITask? task_start = null;
+        ITask? task_start;
         protected override void OnLoad(EventArgs e)
         {
             if (ActiveAnimation) PlayAnimation();
@@ -249,7 +249,7 @@ namespace AntdUI
 
         #region 开始动画
 
-        Bitmap? bmp_tmp = null;
+        Bitmap? bmp_tmp;
         public void PlayAnimation()
         {
             if (Config.HasAnimation(name))

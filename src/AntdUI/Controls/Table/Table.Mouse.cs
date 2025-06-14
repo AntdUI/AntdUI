@@ -523,7 +523,7 @@ namespace AntdUI
             CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, e));
             return false;
         }
-        LayeredFormSelectDown? subForm = null;
+        LayeredFormSelectDown? subForm;
 
         #endregion
 
@@ -838,8 +838,8 @@ namespace AntdUI
             CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
         }
 
-        string? oldmove = null, oldmove2 = null;
-        TooltipForm? tooltipForm = null;
+        string? oldmove, oldmove2;
+        TooltipForm? tooltipForm;
         void CloseTip(bool clear = false)
         {
             tooltipForm?.IClose();
@@ -1055,13 +1055,13 @@ namespace AntdUI
 
         #endregion
 
-        DragHeader? dragHeader = null;
-        DragHeader? dragBody = null;
+        DragHeader? dragHeader;
+        DragHeader? dragBody;
 
         #region 排序
 
-        int[]? SortHeader = null;
-        int[]? SortData = null;
+        int[]? SortHeader;
+        int[]? SortData;
         List<SortModel> SortDatas(Column column)
         {
             if (dataTmp == null) return new List<SortModel>(0);

@@ -75,7 +75,7 @@ namespace AntdUI
         public override string name => nameof(Menu);
 
         public ILayeredForm? SubForm() => subForm;
-        LayeredFormMenuDown? subForm = null;
+        LayeredFormMenuDown? subForm;
         void Init(Control control, Rectangle rect_read, IList<MenuItem> items)
         {
             if (OS.Win7OrLower) Select();
@@ -402,7 +402,7 @@ namespace AntdUI
             g.ResetTransform();
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

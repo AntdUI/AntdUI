@@ -160,7 +160,7 @@ namespace AntdUI
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
-            internal ITask? ThreadHover = null;
+            internal ITask? ThreadHover;
 
             #endregion
 
@@ -263,7 +263,7 @@ namespace AntdUI
             public bool AnimationCheck = false;
             public float AnimationCheckValue = 0;
 
-            ITask? ThreadCheck = null;
+            ITask? ThreadCheck;
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -371,7 +371,7 @@ namespace AntdUI
             public bool AnimationCheck = false;
             public float AnimationCheckValue = 0;
 
-            ITask? ThreadCheck = null;
+            ITask? ThreadCheck;
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -478,7 +478,7 @@ namespace AntdUI
             internal bool AnimationCheck = false;
             internal float AnimationCheckValue = 0;
 
-            ITask? ThreadCheck = null;
+            ITask? ThreadCheck;
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -542,7 +542,7 @@ namespace AntdUI
 
             #region 悬浮
 
-            ITask? ThreadHover = null;
+            ITask? ThreadHover;
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
             internal bool _mouseHover = false;
@@ -633,7 +633,7 @@ namespace AntdUI
                 }
             }
 
-            ITask? ThreadLoading = null;
+            ITask? ThreadLoading;
             internal float LineWidth = 6, LineAngle = 0;
 
             #endregion
@@ -760,7 +760,7 @@ namespace AntdUI
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
-            internal ITask? ThreadHover = null;
+            internal ITask? ThreadHover;
 
             #endregion
         }
@@ -924,7 +924,7 @@ namespace AntdUI
             public PropertyDescriptor? PROPERTY { get; set; }
             public object? VALUE { get; set; }
 
-            RowTemplate? _ROW = null;
+            RowTemplate? _ROW;
             /// <summary>
             /// 行对象
             /// </summary>

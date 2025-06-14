@@ -127,7 +127,7 @@ namespace AntdUI
                 return false;
             }
         }
-        ITask? ThreadLoading = null;
+        ITask? ThreadLoading;
 
         #endregion
 
@@ -361,7 +361,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        TooltipForm? tooltipForm = null;
+        TooltipForm? tooltipForm;
 
         protected override void OnMouseMove(MouseEventArgs e)
         {

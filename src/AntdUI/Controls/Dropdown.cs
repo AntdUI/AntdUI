@@ -126,13 +126,13 @@ namespace AntdUI
         /// SelectedValue 属性值更改时发生
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
-        public event ObjectNEventHandler? SelectedValueChanged = null;
+        public event ObjectNEventHandler? SelectedValueChanged;
 
         /// <summary>
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event ObjectNEventHandler? ItemClick = null;
+        public event ObjectNEventHandler? ItemClick;
 
         internal void DropDownChange(object value)
         {
@@ -154,10 +154,10 @@ namespace AntdUI
 
         #region 动画
 
-        LayeredFormSelectDown? subForm = null;
+        LayeredFormSelectDown? subForm;
         public ILayeredForm? SubForm() => subForm;
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         bool expand = false;
         bool Expand
         {

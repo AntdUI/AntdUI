@@ -871,6 +871,20 @@ namespace AntdUI
 
     public delegate void TreeCheckedEventHandler(object sender, TreeCheckedEventArgs e);
 
+    public class TreeExpandEventArgs : EventArgs
+    {
+        public TreeExpandEventArgs(TreeItem item, bool value)
+        {
+            Item = item;
+            Value = value;
+        }
+        public TreeItem Item { get; private set; }
+        public bool Value { get; private set; }
+        public bool CanExpand { get; set; } = true;
+    }
+
+    public delegate void TreeExpandEventHandler(object sender, TreeExpandEventArgs e);
+
     #endregion
 
     #region Chat

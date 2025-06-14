@@ -950,11 +950,11 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? ThreadHoverY = null;
+        ITask? ThreadHoverY;
         float AnimationHoverYValue = 0F;
         bool AnimationHoverY = false;
 
-        ITask? ThreadHoverX = null;
+        ITask? ThreadHoverX;
         float AnimationHoverXValue = 0F;
         bool AnimationHoverX = false;
 

@@ -23,7 +23,7 @@ namespace AntdUI
 {
     public abstract class ILayeredFormOpacity : ILayeredForm, LayeredFormAsynLoad
     {
-        ITask? task_start = null;
+        ITask? task_start;
         bool run_end = false, ok_end = false;
         public byte maxalpha = 240;
         protected override void OnLoad(EventArgs e)
@@ -61,7 +61,7 @@ namespace AntdUI
 
         #region 设置动画参数
 
-        System.Drawing.Bitmap? bmp_tmp = null;
+        System.Drawing.Bitmap? bmp_tmp;
         void SetAnimateValue(byte _alpha, bool isrint = false)
         {
             if (isrint)

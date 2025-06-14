@@ -188,7 +188,7 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
-            string? title = null;
+            string? title;
             /// <summary>
             /// 标题
             /// </summary>
@@ -213,7 +213,7 @@ namespace AntdUI
             /// </summary>
             public FontStyle? FontStyleTitle { get; set; }
 
-            string? text = null;
+            string? text;
             /// <summary>
             /// 文本
             /// </summary>
@@ -434,7 +434,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

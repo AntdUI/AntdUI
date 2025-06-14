@@ -64,7 +64,7 @@ namespace AntdUI
             };
         }
 
-        ITask? Thread = null;
+        ITask? Thread;
 
         bool enable = true;
         public bool Enable

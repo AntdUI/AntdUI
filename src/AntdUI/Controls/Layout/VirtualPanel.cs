@@ -973,7 +973,7 @@ namespace AntdUI
 
         #region 模糊标题
 
-        public Control? BlurBar = null;
+        public Control? BlurBar;
         ManualResetEvent _event = new ManualResetEvent(false);
         void LongTask()
         {
@@ -1104,9 +1104,9 @@ namespace AntdUI
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event VirtualItemEventHandler? ItemClick = null;
+        public event VirtualItemEventHandler? ItemClick;
 
-        VirtualItem? MDown = null;
+        VirtualItem? MDown;
         int isdouclick = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -1285,7 +1285,7 @@ namespace AntdUI
     public abstract class VirtualShadowItem : VirtualItem
     {
         internal Rectangle RECT_S;
-        internal ITask? ThreadHover = null;
+        internal ITask? ThreadHover;
         internal float AnimationHoverValue = 0.1F;
         internal bool AnimationHover = false;
 

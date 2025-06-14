@@ -457,7 +457,7 @@ namespace AntdUI
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event StepsItemEventHandler? ItemClick = null;
+        public event StepsItemEventHandler? ItemClick;
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
@@ -533,7 +533,7 @@ namespace AntdUI
         [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标，可选
         /// </summary>
@@ -549,7 +549,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标SVG，可选
         /// </summary>
@@ -565,7 +565,7 @@ namespace AntdUI
             }
         }
 
-        int? iconsize = null;
+        int? iconsize;
         /// <summary>
         /// 图标的大小，可选
         /// </summary>
@@ -610,7 +610,7 @@ namespace AntdUI
 
         internal Size TitleSize { get; set; }
 
-        string? subTitle = null;
+        string? subTitle;
         internal bool showSub = false;
         /// <summary>
         /// 子标题
@@ -633,7 +633,7 @@ namespace AntdUI
         public string? LocalizationSubTitle { get; set; }
         internal Size SubTitleSize { get; set; }
 
-        string? description = null;
+        string? description;
         internal bool showDescription = false;
         /// <summary>
         /// 详情描述，可选

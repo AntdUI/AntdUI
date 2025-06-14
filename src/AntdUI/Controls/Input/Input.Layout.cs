@@ -33,8 +33,8 @@ namespace AntdUI
 
         #region 确定字体宽度
 
-        CacheFont[]? cache_font = null;
-        CacheCaret[]? cache_caret = null;
+        CacheFont[]? cache_font;
+        CacheCaret[]? cache_caret;
         bool HasEmoji = false;
         void FixFontWidth(bool force = false)
         {
@@ -231,7 +231,7 @@ namespace AntdUI
         internal Rectangle rect_text, rect_l, rect_r;
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
-        internal Rectangle? RECTDIV = null;
+        internal Rectangle? RECTDIV;
         internal int UR = 0;
         internal void CalculateRect()
         {

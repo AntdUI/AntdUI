@@ -424,7 +424,7 @@ namespace AntdUI
             };
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -630,7 +630,7 @@ namespace AntdUI
 
         ManualResetEvent? resetEvent;
 
-        LayeredFormContextMenuStrip? subForm = null;
+        LayeredFormContextMenuStrip? subForm;
         ILayeredForm? SubLayeredForm.SubForm() => subForm;
 
         #endregion

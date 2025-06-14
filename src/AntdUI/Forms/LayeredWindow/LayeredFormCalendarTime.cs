@@ -288,7 +288,7 @@ namespace AntdUI
 
         Rectangle rect_read_h, rect_read_m, rect_read_s;
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

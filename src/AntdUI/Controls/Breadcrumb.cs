@@ -114,7 +114,7 @@ namespace AntdUI
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
-        public event BreadcrumbItemEventHandler? ItemClick = null;
+        public event BreadcrumbItemEventHandler? ItemClick;
 
         #region Change
 
@@ -377,7 +377,7 @@ namespace AntdUI
         [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -393,7 +393,7 @@ namespace AntdUI
             }
         }
 
-        string? iconsvg = null;
+        string? iconsvg;
         /// <summary>
         /// 图标SVG
         /// </summary>
@@ -414,7 +414,7 @@ namespace AntdUI
         /// </summary>
         public bool HasIcon => IconSvg != null || Icon != null;
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>

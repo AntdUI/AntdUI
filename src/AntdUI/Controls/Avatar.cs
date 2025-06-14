@@ -71,7 +71,7 @@ namespace AntdUI
             }
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -129,7 +129,7 @@ namespace AntdUI
 
         #region 图片
 
-        Image? image = null;
+        Image? image;
         /// <summary>
         /// 图片
         /// </summary>
@@ -146,7 +146,7 @@ namespace AntdUI
             }
         }
 
-        string? imageSvg = null;
+        string? imageSvg;
         /// <summary>
         /// 图片SVG
         /// </summary>

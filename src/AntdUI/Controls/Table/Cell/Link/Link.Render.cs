@@ -39,8 +39,7 @@ namespace AntdUI
 
         #region 动画
 
-        internal ITask? ThreadHover = null;
-        internal ITask? ThreadImageHover = null;
+        internal ITask? ThreadHover, ThreadImageHover;
 
         internal bool _mouseDown = false;
         internal bool ExtraMouseDown
@@ -73,7 +72,7 @@ namespace AntdUI
 
         #region 点击动画
 
-        internal ITask? ThreadClick = null;
+        internal ITask? ThreadClick;
         internal bool AnimationClick = false;
         internal float AnimationClickValue = 0;
         internal virtual void Click()

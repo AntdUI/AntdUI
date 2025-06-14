@@ -406,7 +406,7 @@ namespace AntdUI.Chat
         [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
 
-        Image? _icon = null;
+        Image? _icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -440,7 +440,7 @@ namespace AntdUI.Chat
 
         #region 文本
 
-        string? _text = null;
+        string? _text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -581,7 +581,7 @@ namespace AntdUI.Chat
 
         #region 时间
 
-        string? time = null;
+        string? time;
         /// <summary>
         /// 时间
         /// </summary>

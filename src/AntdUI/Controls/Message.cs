@@ -176,7 +176,7 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
-            string? text = null;
+            string? text;
             /// <summary>
             /// 文本
             /// </summary>
@@ -357,7 +357,7 @@ namespace AntdUI
 
         bool loading = false, loadingend = true;
         int AnimationLoadingValue = 0;
-        ITask? ThreadLoading = null;
+        ITask? ThreadLoading;
         public bool IInit()
         {
             if (SetPosition(config.Form, config.ShowInWindow ?? Config.ShowInWindowByMessage)) return true;
@@ -465,7 +465,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

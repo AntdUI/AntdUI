@@ -90,7 +90,7 @@ namespace AntdUI
             }
         }
 
-        string? backExtend = null;
+        string? backExtend;
         /// <summary>
         /// 背景渐变色
         /// </summary>
@@ -121,7 +121,7 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
-        Image? backImage = null;
+        Image? backImage;
         /// <summary>
         /// 背景图片
         /// </summary>
@@ -341,7 +341,7 @@ namespace AntdUI
         #region 文本
 
         bool textLine = false;
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -480,7 +480,7 @@ namespace AntdUI
             }
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -497,7 +497,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标SVG
         /// </summary>
@@ -645,7 +645,7 @@ namespace AntdUI
             }
         }
 
-        Image? iconToggle = null;
+        Image? iconToggle;
         /// <summary>
         /// 切换图标
         /// </summary>
@@ -662,7 +662,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvgToggle = null;
+        string? iconSvgToggle;
         /// <summary>
         /// 切换图标SVG
         /// </summary>
@@ -720,7 +720,7 @@ namespace AntdUI
             }
         }
 
-        TTypeMini? typeToggle = null;
+        TTypeMini? typeToggle;
         /// <summary>
         /// 切换类型
         /// </summary>
@@ -757,7 +757,7 @@ namespace AntdUI
             }
         }
 
-        string? backExtendToggle = null;
+        string? backExtendToggle;
         /// <summary>
         /// 切换背景渐变色
         /// </summary>
@@ -935,11 +935,11 @@ namespace AntdUI
 
         #endregion
 
-        ITask? ThreadHover = null;
-        ITask? ThreadIconHover = null;
-        ITask? ThreadIconToggle = null;
-        ITask? ThreadClick = null;
-        ITask? ThreadLoading = null;
+        ITask? ThreadHover;
+        ITask? ThreadIconHover;
+        ITask? ThreadIconToggle;
+        ITask? ThreadClick;
+        ITask? ThreadLoading;
 
         #region 点击动画
 
@@ -1090,7 +1090,7 @@ namespace AntdUI
         #region 闪烁动画
 
         Color? colorBlink;
-        ITask? ThreadAnimateBlink = null;
+        ITask? ThreadAnimateBlink;
         /// <summary>
         /// 闪烁动画状态
         /// </summary>

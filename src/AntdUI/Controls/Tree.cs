@@ -261,31 +261,43 @@ namespace AntdUI
         /// Select 属性值更改时发生
         /// </summary>
         [Description("Select 属性值更改时发生"), Category("行为")]
-        public event TreeSelectEventHandler? SelectChanged = null;
+        public event TreeSelectEventHandler? SelectChanged;
+
+        /// <summary>
+        /// Expand 更改前发生
+        /// </summary>
+        [Description("Expand 更改前发生"), Category("行为")]
+        public event TreeExpandEventHandler? BeforeExpand;
+
+        /// <summary>
+        /// Expand 更改后发生
+        /// </summary>
+        [Description("Expand 更改后发生"), Category("行为")]
+        public event TreeCheckedEventHandler? AfterExpand;
 
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
         [Description("Checked 属性值更改时发生"), Category("行为")]
-        public event TreeCheckedEventHandler? CheckedChanged = null;
+        public event TreeCheckedEventHandler? CheckedChanged;
 
         /// <summary>
         /// 点击项事件
         /// </summary>
         [Description("点击项事件"), Category("行为")]
-        public event TreeSelectEventHandler? NodeMouseClick = null;
+        public event TreeSelectEventHandler? NodeMouseClick;
 
         /// <summary>
         /// 双击项事件
         /// </summary>
         [Description("双击项事件"), Category("行为")]
-        public event TreeSelectEventHandler? NodeMouseDoubleClick = null;
+        public event TreeSelectEventHandler? NodeMouseDoubleClick;
 
         /// <summary>
         /// 移动项事件
         /// </summary>
         [Description("移动项事件"), Category("行为")]
-        public event TreeHoverEventHandler? NodeMouseMove = null;
+        public event TreeHoverEventHandler? NodeMouseMove;
         internal void OnNodeMouseMove(TreeItem item, bool hover)
         {
             if (NodeMouseMove == null) return;
@@ -312,6 +324,8 @@ namespace AntdUI
             NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
         }
         internal void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
+
+        internal void OnAfterExpand(TreeItem item, bool value) => AfterExpand?.Invoke(this, new TreeCheckedEventArgs(item, value));
 
         #endregion
 
@@ -358,7 +372,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                if (it.CanExpand) return true;
+                if (it.ICanExpand) return true;
             }
             return false;
         }
@@ -366,7 +380,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                if (it.CanExpand)
+                if (it.ICanExpand)
                 {
                     dir.Insert(0, it);
                     TestSub(ref dir, it.Sub);
@@ -392,7 +406,7 @@ namespace AntdUI
                 if (it.Show && it.Visible)
                 {
                     y += height + gapI;
-                    if (it.CanExpand)
+                    if (it.ICanExpand)
                     {
                         int y_item = y;
                         ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
@@ -471,7 +485,7 @@ namespace AntdUI
             if (item.Select)
             {
                 PaintBack(g, active, item.rect, radius);
-                if (item.CanExpand) PaintArrow(g, item, fore_active, sx, sy);
+                if (item.ICanExpand) PaintArrow(g, item, fore_active, sx, sy);
                 PaintItemText(g, item, fore_active, brushTextTertiary);
             }
             else
@@ -492,7 +506,7 @@ namespace AntdUI
                     }
                 }
                 else if (item.Hover) PaintBack(g, hover, item.rect, radius);
-                if (item.CanExpand) PaintArrow(g, item, fore, sx, sy);
+                if (item.ICanExpand) PaintArrow(g, item, fore, sx, sy);
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
@@ -628,7 +642,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        TreeItem? MDown = null;
+        TreeItem? MDown;
         bool doubleClick = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -666,7 +680,7 @@ namespace AntdUI
                 MDown = item;
                 return true;
             }
-            if (item.CanExpand && item.Expand)
+            if (item.ICanExpand && item.Expand)
             {
                 foreach (var sub in item.Sub)
                 {
@@ -680,7 +694,7 @@ namespace AntdUI
         TreeItem? shift_index;
         bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown)
         {
-            bool can = item.CanExpand;
+            bool can = item.ICanExpand;
             if (MDown == item)
             {
                 var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
@@ -697,10 +711,30 @@ namespace AntdUI
                                 SetCheckStrictly(item.PARENTITEM);
                             }
                         }
-                        else if (down == TreeCType.Arrow && can) item.Expand = !item.Expand;
+                        else if (down == TreeCType.Arrow && can)
+                        {
+                            bool value = !item.Expand;
+                            if (BeforeExpand == null) item.Expand = value;
+                            else
+                            {
+                                var arge = new TreeExpandEventArgs(item, value);
+                                BeforeExpand(this, arge);
+                                if (arge.CanExpand) item.Expand = value;
+                            }
+                        }
                         else
                         {
-                            if (doubleClick && can) item.Expand = !item.Expand;
+                            if (doubleClick && can)
+                            {
+                                bool value = !item.Expand;
+                                if (BeforeExpand == null) item.Expand = value;
+                                else
+                                {
+                                    var arge = new TreeExpandEventArgs(item, value);
+                                    BeforeExpand(this, arge);
+                                    if (arge.CanExpand) item.Expand = value;
+                                }
+                            }
                             else
                             {
                                 selectItem = item;
@@ -1059,7 +1093,7 @@ namespace AntdUI
                 mdown = item;
                 return true;
             }
-            if (item.CanExpand && item.Expand)
+            if (item.ICanExpand && item.Expand)
             {
                 foreach (var sub in item.Sub)
                 {
@@ -1136,7 +1170,7 @@ namespace AntdUI
         [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1152,7 +1186,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1179,7 +1213,7 @@ namespace AntdUI
         [Description("名称"), Category("数据"), DefaultValue(null)]
         public string? Name { get; set; }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -1198,7 +1232,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        string? subTitle = null;
+        string? subTitle;
         /// <summary>
         /// 子标题
         /// </summary>
@@ -1278,7 +1312,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         bool expand = false;
         /// <summary>
         /// 展开
@@ -1291,6 +1325,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
+                PARENT?.OnAfterExpand(this, value);
                 if (items != null && items.Count > 0)
                 {
                     if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
@@ -1359,8 +1394,10 @@ namespace AntdUI
             return count;
         }
 
-        [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
-        public bool CanExpand => visible && items != null && items.Count > 0;
+        [Description("是否可以展开"), Category("行为"), DefaultValue(null)]
+        public bool? CanExpand { get; set; }
+
+        internal bool ICanExpand => CanExpand ?? visible && items != null && items.Count > 0;
 
         #endregion
 
@@ -1369,8 +1406,7 @@ namespace AntdUI
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
 
-        //ITask? ThreadHover = null;
-        ITask? ThreadCheck = null;
+        ITask? ThreadCheck;
 
         bool _checked = false;
         [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -1667,7 +1703,7 @@ namespace AntdUI
         {
             if (visible && enabled)
             {
-                if (arrow_rect.Contains(x + sx, y + sy) && CanExpand)
+                if (arrow_rect.Contains(x + sx, y + sy) && ICanExpand)
                 {
                     Hover = true;
                     return TreeCType.Arrow;
@@ -1689,7 +1725,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover = null;
+        ITask? ThreadHover;
 
         internal Rectangle check_rect { get; set; }
         internal Rectangle txt_rect { get; set; }

@@ -407,13 +407,13 @@ namespace AntdUI
         /// Select 属性值更改时发生
         /// </summary>
         [Description("Select 属性值更改时发生"), Category("行为")]
-        public event SelectEventHandler? SelectChanged = null;
+        public event SelectEventHandler? SelectChanged;
 
         /// <summary>
         /// Select 属性值更改前发生
         /// </summary>
         [Description("Select 属性值更改前发生"), Category("行为")]
-        public event SelectBoolEventHandler? SelectChanging = null;
+        public event SelectBoolEventHandler? SelectChanging;
 
         bool IsCanChang(MenuItem it)
         {
@@ -962,7 +962,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        MenuItem? MDown = null;
+        MenuItem? MDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -1328,8 +1328,8 @@ namespace AntdUI
 
         #region 子窗口
 
-        TooltipForm? tooltipForm = null;
-        ILayeredForm? subForm = null;
+        TooltipForm? tooltipForm;
+        ILayeredForm? subForm;
         public ILayeredForm? SubForm() => subForm;
         internal int select_x = 0;
 
@@ -1454,7 +1454,7 @@ namespace AntdUI
 
         #region 图标
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1470,7 +1470,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1505,7 +1505,7 @@ namespace AntdUI
 
         #endregion
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -1590,7 +1590,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         bool expand = true;
         /// <summary>
         /// 展开
@@ -1721,7 +1721,7 @@ namespace AntdUI
 
         #region 徽标
 
-        string? badge = null;
+        string? badge;
         [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
@@ -1734,7 +1734,7 @@ namespace AntdUI
             }
         }
 
-        string? badgeSvg = null;
+        string? badgeSvg;
         [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
@@ -1786,7 +1786,7 @@ namespace AntdUI
             }
         }
 
-        Color? badgeback = null;
+        Color? badgeback;
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {
@@ -1982,7 +1982,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover = null;
+        ITask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
