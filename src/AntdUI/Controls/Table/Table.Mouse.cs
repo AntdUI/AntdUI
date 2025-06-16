@@ -205,22 +205,21 @@ namespace AntdUI
                 if (hand && dragHeader.im != -1)
                 {
                     //执行排序
-                    if (rows == null) return;
-                    var cells = rows[0].cells;
-                    var sortHeader = new List<int>(cells.Length);
+                    if (dataTmp == null) return;
+                    var sortHeader = new List<int>(dataTmp.columns.Length);
                     int dim = dragHeader.im, di = dragHeader.i;
                     if (SortHeader != null)
                     {
                         foreach (var item in SortHeader)
                         {
-                            var it = cells[item];
-                            if (dragHeader.im == it.INDEX) dim = it.COLUMN.INDEX;
-                            if (dragHeader.i == it.INDEX) di = it.COLUMN.INDEX;
+                            var it = dataTmp.columns[item];
+                            if (dragHeader.im == it.i) dim = it.i;
+                            if (dragHeader.i == it.i) di = it.i;
                         }
                     }
-                    foreach (var it in cells)
+                    foreach (var it in dataTmp.columns)
                     {
-                        int index = it.COLUMN.INDEX;
+                        int index = it.i;
                         if (index == dim)
                         {
                             if (dragHeader.last) sortHeader.Add(index);
@@ -230,6 +229,7 @@ namespace AntdUI
                         if (!sortHeader.Contains(index)) sortHeader.Add(index);
                     }
                     SortHeader = sortHeader.ToArray();
+                    ExtractHeaderFixed();
                     LoadLayout();
                 }
                 dragHeader = null;
@@ -523,7 +523,7 @@ namespace AntdUI
             CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, e));
             return false;
         }
-        LayeredFormSelectDown? subForm = null;
+        LayeredFormSelectDown? subForm;
 
         #endregion
 
@@ -589,8 +589,9 @@ namespace AntdUI
                     Invalidate();
                     return;
                 }
-                if (rows[rows.Length - 1].INDEX == dragBody.i) dragBody.im = -1;
-                else dragBody.im = rows[rows.Length - 1].INDEX;
+                int last_i = rows.Length - 1 - rowSummary;
+                if (rows[last_i].INDEX == dragBody.i) dragBody.im = -1;
+                else dragBody.im = rows[last_i].INDEX;
                 Invalidate();
                 return;
             }
@@ -837,8 +838,8 @@ namespace AntdUI
             CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
         }
 
-        string? oldmove = null, oldmove2 = null;
-        TooltipForm? tooltipForm = null;
+        string? oldmove, oldmove2;
+        TooltipForm? tooltipForm;
         void CloseTip(bool clear = false)
         {
             tooltipForm?.IClose();
@@ -1054,13 +1055,13 @@ namespace AntdUI
 
         #endregion
 
-        DragHeader? dragHeader = null;
-        DragHeader? dragBody = null;
+        DragHeader? dragHeader;
+        DragHeader? dragBody;
 
         #region 排序
 
-        int[]? SortHeader = null;
-        int[]? SortData = null;
+        int[]? SortHeader;
+        int[]? SortData;
         List<SortModel> SortDatas(Column column)
         {
             if (dataTmp == null) return new List<SortModel>(0);

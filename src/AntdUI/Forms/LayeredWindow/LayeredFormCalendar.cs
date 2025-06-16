@@ -33,7 +33,7 @@ namespace AntdUI
         bool ValueTimeHorizontal = false, ShowButtonToDay = true;
         TAMode ColorScheme;
         int shadow = 10, shadow2 = 20;
-        public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, TDatePicker _datepicker, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
+        public LayeredFormCalendar(DatePicker _control, Rectangle rect_read, DateTime? date, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
         {
             ColorScheme = _control.ColorScheme;
             _control.Parent.SetTopMost(Handle);
@@ -59,7 +59,7 @@ namespace AntdUI
             scrollY_h = new ScrollY(this);
             scrollY_m = new ScrollY(this);
             scrollY_s = new ScrollY(this);
-            showType = PickerType = _datepicker;
+            showType = PickerType = _control.Picker;
             Culture = new CultureInfo(CultureID);
             YDR = CultureID.StartsWith("en");
 
@@ -186,7 +186,7 @@ namespace AntdUI
         bool YDR = false;
 
         ScrollY scrollY_left, scrollY_h, scrollY_m, scrollY_s;
-        List<CalendarButton>? left_buttons = null;
+        List<CalendarButton>? left_buttons;
 
         /// <summary>
         /// 回调
@@ -203,10 +203,8 @@ namespace AntdUI
         public DateTime? SelDate;
         DateTime _Date;
         DateTime DateNow = DateTime.Now;
-        List<Calendari>? calendar_year = null;
-        List<Calendari>? calendar_month = null;
-        List<Calendari>? calendar_day = null;
-        List<CalendarT>? calendar_time = null;
+        List<Calendari>? calendar_year, calendar_month, calendar_day;
+        List<CalendarT>? calendar_time;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Date
@@ -785,7 +783,7 @@ namespace AntdUI
 
         #endregion
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

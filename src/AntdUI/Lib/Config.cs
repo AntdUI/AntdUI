@@ -48,7 +48,7 @@ namespace AntdUI
             set
             {
                 Mode = value ? TMode.Light : TMode.Dark;
-                EventHub.Dispatch(EventType.THEME, value);
+                EventHub.Dispatch(EventType.THEME, mode);
             }
         }
         public static bool IsDark
@@ -57,7 +57,7 @@ namespace AntdUI
             set
             {
                 Mode = value ? TMode.Dark : TMode.Light;
-                EventHub.Dispatch(EventType.THEME, value);
+                EventHub.Dispatch(EventType.THEME, mode);
             }
         }
 

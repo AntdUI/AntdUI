@@ -309,7 +309,7 @@ namespace AntdUI
             ThreadDot2Hover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadDot2Hover = null;
+        ITask? ThreadDot2Hover;
 
         #endregion
 

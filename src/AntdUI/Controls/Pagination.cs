@@ -186,7 +186,7 @@ namespace AntdUI
             }
         }
 
-        int[]? pageSizeOptions = null;
+        int[]? pageSizeOptions;
         /// <summary>
         /// 指定每页可以显示多少条
         /// </summary>
@@ -224,6 +224,22 @@ namespace AntdUI
                     Invalidate();
                 }
                 OnPropertyChanged(nameof(SizeChangerWidth));
+            }
+        }
+
+        int? dropDownRadius;
+        /// <summary>
+        /// 下拉圆角
+        /// </summary>
+        [Description("下拉圆角"), Category("外观"), DefaultValue(null)]
+        public int? DropDownRadius
+        {
+            get => dropDownRadius;
+            set
+            {
+                if (dropDownRadius == value) return;
+                dropDownRadius = value;
+                if (input_SizeChanger is Select select) select.DropDownRadius = value;
             }
         }
 
@@ -535,10 +551,10 @@ namespace AntdUI
         }
 
         ButtonLoad[] buttons = new ButtonLoad[0];
-        internal string? showTotal = null;
+        internal string? showTotal;
         internal Rectangle rect_text;
 
-        Input? input_SizeChanger = null;
+        Input? input_SizeChanger;
         void InputSizeChangerDispose()
         {
             if (InvokeRequired)
@@ -716,6 +732,7 @@ namespace AntdUI
                         PlaceholderText = placeholder,
                         ListAutoWidth = true,
                         DropDownArrow = true,
+                        DropDownRadius = DropDownRadius,
                         Placement = TAlignFrom.Top,
                         Size = new Size(width, rect.Height),
                         Dock = DockStyle.Right,

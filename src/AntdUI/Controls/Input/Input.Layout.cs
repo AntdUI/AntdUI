@@ -33,7 +33,8 @@ namespace AntdUI
 
         #region 确定字体宽度
 
-        CacheFont[]? cache_font = null;
+        CacheFont[]? cache_font;
+        CacheCaret[]? cache_caret;
         bool HasEmoji = false;
         void FixFontWidth(bool force = false)
         {
@@ -47,67 +48,12 @@ namespace AntdUI
                     int font_height = g.MeasureString(Config.NullText, Font, 10000, sf_font).Height;
                     if (isempty)
                     {
+                        TextTotalLine = 0;
                         ScrollX = ScrollY = 0;
                         cache_font = null;
+                        cache_caret = null;
                     }
-                    else
-                    {
-                        var font_widths = new List<CacheFont>(text.Length);
-                        if (IsPassWord)
-                        {
-                            var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
-                            int w = sizefont.Width;
-                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                            foreach (char it in text) font_widths.Add(new CacheFont(it.ToString(), false, w));
-                        }
-                        else
-                        {
-                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
-                            {
-                                string txt = str.Substring(nStart, nLen);
-                                if (nType == 18 || nType == 4)
-                                {
-                                    HasEmoji = true;
-                                    font_widths.Add(new CacheFont(txt, true, 0));
-                                }
-                                else
-                                {
-                                    if (txt == "\t")
-                                    {
-                                        var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                        if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                        font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
-                                    }
-                                    else if (txt == "\n" || txt == "\r\n")
-                                    {
-                                        var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                        if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                        font_widths.Add(new CacheFont(txt, false, sizefont.Width));
-                                    }
-                                    else
-                                    {
-                                        var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
-                                        if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                        font_widths.Add(new CacheFont(txt, false, sizefont.Width));
-                                    }
-                                }
-                                return true;
-                            });
-                            if (HasEmoji)
-                            {
-                                using (var font = new Font(EmojiFont, Font.Size))
-                                {
-                                    foreach (var it in font_widths)
-                                    {
-                                        if (it.emoji) it.width = font_height;
-                                    }
-                                }
-                            }
-                        }
-                        for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
-                        cache_font = font_widths.ToArray();
-                        SetStyle();
-                    }
+                    else FixFontWidth(g, text, force, ref font_height);
                     CaretInfo.Height = font_height;
                     CalculateRect();
                 });
@@ -116,8 +62,10 @@ namespace AntdUI
             {
                 if (isempty)
                 {
+                    TextTotalLine = 0;
                     ScrollX = ScrollY = 0;
                     cache_font = null;
+                    cache_caret = null;
                     CalculateRect();
                 }
                 else
@@ -130,75 +78,7 @@ namespace AntdUI
                             CaretInfo.Height = font_height;
                             return;
                         }
-                        var font_widths = new List<CacheFont>(text.Length);
-                        if (IsPassWord)
-                        {
-                            var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
-                            int w = sizefont.Width;
-                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                            foreach (char it in text) font_widths.Add(new CacheFont(it.ToString(), false, w));
-                        }
-                        else
-                        {
-                            var font_dir = new Dictionary<string, CacheFont>(font_widths.Count);
-                            if (cache_font != null)
-                            {
-                                foreach (var it in cache_font) if (!it.emoji && !font_dir.ContainsKey(it.text)) font_dir.Add(it.text, it);
-                            }
-                            GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
-                            {
-                                string txt = str.Substring(nStart, nLen);
-                                if (nType == 18 || nType == 4)
-                                {
-                                    HasEmoji = true;
-                                    font_widths.Add(new CacheFont(txt, true, 0));
-                                }
-                                else
-                                {
-                                    if (font_dir.TryGetValue(txt, out var find))
-                                    {
-                                        if (font_height < find.rect.Height) font_height = find.rect.Height;
-                                        font_widths.Add(new CacheFont(txt, false, find.width));
-                                    }
-                                    else
-                                    {
-                                        if (txt == "\t")
-                                        {
-                                            var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            font_widths.Add(new CacheFont(txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
-                                        }
-                                        else if (txt == "\n" || txt == "\r\n")
-                                        {
-                                            var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            font_widths.Add(new CacheFont(txt, false, sizefont.Width));
-                                        }
-                                        else
-                                        {
-                                            var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
-                                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                            font_widths.Add(new CacheFont(txt, false, sizefont.Width));
-                                        }
-                                    }
-                                }
-                                return true;
-                            });
-
-                            if (HasEmoji)
-                            {
-                                using (var font = new Font(EmojiFont, Font.Size))
-                                {
-                                    foreach (var it in font_widths)
-                                    {
-                                        if (it.emoji) it.width = font_height;
-                                    }
-                                }
-                            }
-                        }
-                        for (int i = 0; i < font_widths.Count; i++) { font_widths[i].i = i; }
-                        cache_font = font_widths.ToArray();
-                        SetStyle();
+                        FixFontWidth(g, text, force, ref font_height);
                         CaretInfo.Height = font_height;
                         CalculateRect();
                     });
@@ -206,10 +86,95 @@ namespace AntdUI
             }
         }
 
+        void FixFontWidth(Canvas g, string text, bool force, ref int fontHeight)
+        {
+            var font_widths = new List<CacheFont>(text.Length);
+            int index = 0;
+            if (IsPassWord)
+            {
+                var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
+                int w = sizefont.Width;
+                if (fontHeight < sizefont.Height) fontHeight = sizefont.Height;
+                foreach (char it in text)
+                {
+                    font_widths.Add(new CacheFont(index, it.ToString(), false, w));
+                    index++;
+                }
+            }
+            else
+            {
+                Dictionary<string, CacheFont> font_dir;
+                if (force || cache_font == null) font_dir = new Dictionary<string, CacheFont>(0);
+                else
+                {
+                    font_dir = new Dictionary<string, CacheFont>(font_widths.Count);
+                    foreach (var it in cache_font)
+                    {
+                        if (it.emoji || font_dir.ContainsKey(it.text)) continue;
+                        font_dir.Add(it.text, it);
+                    }
+                }
+
+                int font_height = fontHeight;
+                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                {
+                    string txt = str.Substring(nStart, nLen);
+                    if (nType == 18 || nType == 4)
+                    {
+                        HasEmoji = true;
+                        font_widths.Add(new CacheFont(index, txt, true, 0));
+                    }
+                    else
+                    {
+                        if (font_dir.TryGetValue(txt, out var find))
+                        {
+                            if (font_height < find.rect.Height) font_height = find.rect.Height;
+                            font_widths.Add(new CacheFont(index, txt, false, find.width));
+                        }
+                        else
+                        {
+                            if (txt == "\t")
+                            {
+                                var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
+                                if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                font_widths.Add(new CacheFont(index, txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
+                            }
+                            else if (txt == "\n" || txt == "\r\n")
+                            {
+                                var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
+                                if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                font_widths.Add(new CacheFont(index, txt, false, sizefont.Width));
+                            }
+                            else
+                            {
+                                var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
+                                if (font_height < sizefont.Height) font_height = sizefont.Height;
+                                font_widths.Add(new CacheFont(index, txt, false, sizefont.Width));
+                            }
+                        }
+                    }
+                    index++;
+                    return true;
+                });
+                fontHeight = font_height;
+                if (HasEmoji)
+                {
+                    foreach (var it in font_widths)
+                    {
+                        if (it.emoji) it.width = font_height;
+                    }
+                }
+            }
+            for (int i = 0; i < font_widths.Count; i++) font_widths[i].i = i;
+            cache_font = font_widths.ToArray();
+            SetStyle();
+        }
+
         internal class CacheFont
         {
-            public CacheFont(string _text, bool _emoji, int _width)
+            public CacheFont(int index, string _text, bool _emoji, int _width)
             {
+                i = index;
                 text = _text;
                 emoji = _emoji;
                 width = _width;
@@ -218,7 +183,6 @@ namespace AntdUI
             public int line { get; set; }
             public string text { get; set; }
             public Rectangle rect { get; set; }
-            public Rectangle? rect2 { get; set; }
             public bool ret { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
@@ -246,14 +210,29 @@ namespace AntdUI
             public override string ToString() => text;
         }
 
+        internal class CacheCaret
+        {
+            public int x { get; set; }
+            public int y { get; set; }
+
+            /// <summary>
+            /// Caret 内序号
+            /// </summary>
+            public int index { get; set; }
+
+            /// <summary>
+            /// 真实的文本序号
+            /// </summary>
+            public int i { get; set; }
+        }
+
         #endregion
 
         internal Rectangle rect_text, rect_l, rect_r;
         internal Rectangle rect_d_ico, rect_d_l, rect_d_r;
 
-        internal Rectangle? RECTDIV = null;
+        internal Rectangle? RECTDIV;
         internal int UR = 0;
-        List<int> LineBreakNumber = new List<int>(0);
         internal void CalculateRect()
         {
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
@@ -262,9 +241,9 @@ namespace AntdUI
             RectAuto(rect, sps, sps2);
             if (cache_font == null)
             {
+                TextTotalLine = 0;
                 ScrollXShow = ScrollYShow = false;
                 scrollx = scrolly = ScrollXMin = ScrollXMax = ScrollYMax = 0;
-                if (LineBreakNumber.Count > 0) LineBreakNumber.Clear();
                 if (ModeRange)
                 {
                     int center = rect_text.Width / 2;
@@ -273,30 +252,24 @@ namespace AntdUI
                     rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
                     rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
                 }
-                CaretInfo.Place = false;
                 CaretInfo.SetXY(rect_text.X, rect_text.Y);
             }
             else
             {
                 if (multiline)
                 {
-                    var _retnot = new List<int>();
                     var rectText = rect_text;
                     if (ScrollYShow) rectText.Width -= 16;
                     int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
-                    int usex = 0, usey = 0, line = 0, retindex = -1;
+                    int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
                     {
                         it.show = false;
                         if (it.text == "\n" || it.text == "\r\n")
                         {
-                            if (usex == 0) retindex++;
-                            else retindex = -1;
                             it.ret = true;
                             it.line = line;
                             line++;
-                            it.rect2 = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                            if (retindex > 0) _retnot.Add(rectText.Y + usey - lineHeight);
                             usey += lineHeight;
                             usex = 0;
                             it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
@@ -304,7 +277,6 @@ namespace AntdUI
                         }
                         else
                         {
-                            retindex = -1;
                             if (it.text == "\r")
                             {
                                 it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
@@ -321,22 +293,67 @@ namespace AntdUI
                         it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                         usex += it.width;
                     }
+                    TextTotalLine = line;
                     HandTextAlignCore(cache_font);
-                    LineBreakNumber = _retnot;
                 }
                 else
                 {
-                    if (LineBreakNumber.Count > 0) LineBreakNumber.Clear();
+                    TextTotalLine = 1;
                     HandTextAlign(cache_font);
                 }
+
                 if (cache_font.Length == 0)
                 {
+                    TextTotalLine = 0;
                     isempty = true;
                     _text = "";
                     cache_font = null;
+                    cache_caret = null;
                     return;
                 }
+
                 var last = cache_font[cache_font.Length - 1];
+
+                var carets = new List<CacheCaret>(cache_font.Length + 2)
+                {
+                    new CacheCaret { x = rect_text.X, y = rect_text.Y, i = 0,index=0 }
+                };
+                int tmp = 1;
+                for (int i = 0; i < cache_font.Length; i++)
+                {
+                    var it = cache_font[i];
+                    if (it.ret && i > 0)
+                    {
+                        var it_up = cache_font[i - 1];
+                        carets.Add(new CacheCaret
+                        {
+                            index = tmp,
+                            i = i,
+                            x = it_up.rect.Right,
+                            y = it_up.rect.Y
+                        });
+                    }
+                    else
+                    {
+                        carets.Add(new CacheCaret
+                        {
+                            index = tmp,
+                            i = i,
+                            x = it.rect.X,
+                            y = it.rect.Y
+                        });
+                    }
+                    tmp++;
+                }
+                carets.Add(new CacheCaret
+                {
+                    index = tmp,
+                    i = cache_font.Length,
+                    x = last.rect.Right,
+                    y = last.rect.Y
+                });
+                cache_caret = carets.ToArray();
+
                 ScrollXMax = last.rect.Right - rect_text.Right;
                 switch (textalign)
                 {

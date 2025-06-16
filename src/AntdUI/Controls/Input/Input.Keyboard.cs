@@ -24,7 +24,6 @@ namespace AntdUI
 {
     partial class Input
     {
-
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
             bool result = base.ProcessCmdKey(ref msg, keyData);
@@ -378,8 +377,13 @@ namespace AntdUI
                     {
                         SpeedScrollTo = true;
                         SelectionLength = 0;
-                        var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - (rect_text.Height - cache_font[0].rect.Height));
-                        SetSelectionStart(index);
+                        var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
+                        if (caret == null) SetSelectionStart(0);
+                        else
+                        {
+                            SetSelectionStart(caret.i, false);
+                            SetCaretPostion(caret.index);
+                        }
                         SpeedScrollTo = false;
                         if (HandShortcutKeys) return true;
                     }
@@ -389,8 +393,13 @@ namespace AntdUI
                     {
                         SpeedScrollTo = true;
                         SelectionLength = 0;
-                        var index = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + (rect_text.Height - cache_font[0].rect.Height));
-                        SetSelectionStart(index);
+                        var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
+                        if (caret == null) SetSelectionStart(cache_font.Length);
+                        else
+                        {
+                            SetSelectionStart(caret.i, false);
+                            SetCaretPostion(caret.index);
+                        }
                         SpeedScrollTo = false;
                         if (HandShortcutKeys) return true;
                     }
@@ -494,7 +503,6 @@ namespace AntdUI
             {
                 AddHistoryRecord();
                 int start = selectionStart - 1;
-                if (start == 0) CaretInfo.FirstRet = true;
                 var texts = new List<string>(cache_font.Length);
                 foreach (var it in cache_font)
                 {
@@ -540,7 +548,6 @@ namespace AntdUI
 
         void ProcessLeftKey(bool shift)
         {
-            tmpUp = 0;
             if (shift)
             {
                 int old = selectionStartTemp;
@@ -548,8 +555,7 @@ namespace AntdUI
                 if (selectionStartTemp < 0) selectionStartTemp = 0;
                 if (old == selectionStartTemp) return;
                 SelectionLength++;
-                CurrentPosIndex = selectionStartTemp;
-                SetCaretPostion();
+                SetCaretPostion(CurrentPosIndex - 1);
                 return;
             }
             if (SelectionLength > 0)
@@ -566,33 +572,21 @@ namespace AntdUI
             else
             {
                 SelectionLength = 0;
-                if (selectionStart == 1) CaretInfo.FirstRet = true;
                 SetSelectionStart(selectionStart - 1);
             }
         }
 
         void ProcessRightKey(bool shift)
         {
-            tmpUp = 0;
-            if (CaretInfo.FirstRet)
-            {
-                CaretInfo.FirstRet = false;
-                CaretInfo.Place = true;
-            }
             if (shift)
             {
                 if (selectionStart > selectionStartTemp)
                 {
                     selectionStartTemp++;
                     SelectionLength--;
-                    CurrentPosIndex = selectionStartTemp + selectionLength;
                 }
-                else
-                {
-                    SelectionLength++;
-                    CurrentPosIndex = selectionStart + selectionLength;
-                }
-                SetCaretPostion();
+                else SelectionLength++;
+                SetCaretPostion(CurrentPosIndex + 1);
                 return;
             }
             if (SelectionLength > 0)
@@ -613,7 +607,6 @@ namespace AntdUI
             }
         }
 
-        int tmpUp = 0;
         void ProcessUpKey(bool shift)
         {
             if (shift)
@@ -627,9 +620,7 @@ namespace AntdUI
                 {
                     int index = selectionStartTemp, cend = cache_font.Length - 1;
                     if (index > cend) index = cend;
-                    var it = cache_font[index];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out bool two);
-                    CaretInfo.FirstRet = two;
+                    var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
                     if (nearest == null || nearest.i == selectionStartTemp)
                     {
                         SetSelectionStart(index - 1);
@@ -648,25 +639,10 @@ namespace AntdUI
                 if (cache_font == null) SetSelectionStart(selectionStart - 1);
                 else
                 {
-                    int end = SelectionStart;
-                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
-                    var it = cache_font[end];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Y - it.rect.Height / 2, cache_font, out bool two);
-                    CaretInfo.FirstRet = two;
+                    var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
                     if (nearest == null) SetSelectionStart(selectionStart - 1);
                     else
                     {
-                        if (nearest.i == 0)
-                        {
-                            if (tmpUp > 0)
-                            {
-                                CaretInfo.FirstRet = true;
-                                tmpUp = 0;
-                                SetCaretPostion(nearest.i);
-                            }
-                            else if (!CaretInfo.FirstRet) tmpUp++;
-                        }
-                        else tmpUp = 0;
                         if (nearest.i == selectionStart) SetSelectionStart(selectionStart - 1);
                         else SetSelectionStart(nearest.i);
                     }
@@ -676,13 +652,6 @@ namespace AntdUI
 
         void ProcessDownKey(bool shift)
         {
-            tmpUp = 0;
-            if (CaretInfo.FirstRet)
-            {
-                CaretInfo.FirstRet = false;
-                CaretInfo.Place = true;
-                tmpUp++;
-            }
             if (shift)
             {
                 if (cache_font == null)
@@ -694,12 +663,11 @@ namespace AntdUI
                 {
                     int index = selectionStartTemp + selectionLength;
                     if (index > cache_font.Length - 1) return;
-                    var it = cache_font[index];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out bool two);
-                    CaretInfo.FirstRet = two;
+                    var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
                     if (nearest == null || nearest.i == index) SelectionLength++;
                     else SelectionLength += nearest.i - index;
-                    CurrentPosIndex = selectionStart + selectionLength;
+                    if (nearest == null) CurrentPosIndex = selectionStart + selectionLength;
+                    else CurrentPosIndex = nearest.index;
                     SetCaretPostion();
                 }
             }
@@ -709,11 +677,7 @@ namespace AntdUI
                 if (cache_font == null) SetSelectionStart(selectionStart + 1);
                 else
                 {
-                    int end = SelectionStart;
-                    if (end > cache_font.Length - 1) return;
-                    var it = cache_font[end];
-                    var nearest = FindNearestFont(it.rect.X + it.rect.Width / 2, it.rect.Bottom + it.rect.Height / 2, cache_font, out bool two);
-                    CaretInfo.FirstRet = two;
+                    var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
                     if (nearest == null || nearest.i == selectionStart) SetSelectionStart(selectionStart + 1);
                     else SetSelectionStart(nearest.i);
                 }
@@ -748,7 +712,6 @@ namespace AntdUI
                         {
                             int start = FindStartY(cache_font, index - 1);
                             if (start == index) return;
-                            CaretInfo.Place = false;
                             SetSelectionStart(start);
                         }
                     }
@@ -787,7 +750,6 @@ namespace AntdUI
                         if (index > cache_font.Length - 1) return;
                         int start = FindEndY(cache_font, index) + 1;
                         if (start == index) return;
-                        CaretInfo.Place = true;
                         SetSelectionStart(start);
                     }
                     else

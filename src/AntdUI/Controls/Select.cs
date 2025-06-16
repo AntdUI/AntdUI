@@ -193,7 +193,7 @@ namespace AntdUI
 
         int selectedIndexX = -1;
         int selectedIndex = -1;
-        object? selectedValue = null;
+        object? selectedValue;
         void ChangeValueNULL()
         {
             Text = "";
@@ -325,25 +325,25 @@ namespace AntdUI
         /// SelectedIndex 属性值更改时发生
         /// </summary>
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
-        public event IntEventHandler? SelectedIndexChanged = null;
+        public event IntEventHandler? SelectedIndexChanged;
 
         /// <summary>
         /// 多层树结构更改时发生
         /// </summary>
         [Description("多层树结构更改时发生"), Category("行为")]
-        public event IntXYEventHandler? SelectedIndexsChanged = null;
+        public event IntXYEventHandler? SelectedIndexsChanged;
 
         /// <summary>
         /// SelectedValue 属性值更改时发生
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
-        public event ObjectNEventHandler? SelectedValueChanged = null;
+        public event ObjectNEventHandler? SelectedValueChanged;
 
         /// <summary>
         /// 关闭某项 时发生
         /// </summary>
         [Description("关闭某项 时发生"), Category("行为")]
-        public event ObjectNEventHandler? ClosedItem = null;
+        public event ObjectNEventHandler? ClosedItem;
 
         public delegate IList<object>? FilterEventHandler(object sender, string value);
 
@@ -351,7 +351,7 @@ namespace AntdUI
         /// 控制筛选 Text更改时发生
         /// </summary>
         [Description("控制筛选 Text更改时发生"), Category("行为")]
-        public event FilterEventHandler? FilterChanged = null;
+        public event FilterEventHandler? FilterChanged;
 
         string filtertext = "";
         bool TerminateExpand = false;
@@ -442,10 +442,10 @@ namespace AntdUI
 
         #region 动画
 
-        LayeredFormSelectDown? subForm = null;
+        LayeredFormSelectDown? subForm;
         public ILayeredForm? SubForm() => subForm;
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         float ArrowProg = -1F;
         bool expand = false;
         /// <summary>
@@ -692,7 +692,7 @@ namespace AntdUI
         /// </summary>
         public bool Enable { get; set; } = true;
 
-        string? subText = null;
+        string? subText;
         /// <summary>
         /// 子文本
         /// </summary>

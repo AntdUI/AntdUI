@@ -55,7 +55,7 @@ namespace AntdUI
             }
         }
 
-        Color? headerBg = null;
+        Color? headerBg;
         /// <summary>
         /// 折叠面板头部背景
         /// </summary>
@@ -122,7 +122,7 @@ namespace AntdUI
             }
         }
 
-        Color? borderColor = null;
+        Color? borderColor;
         /// <summary>
         /// 边框颜色
         /// </summary>
@@ -314,7 +314,7 @@ namespace AntdUI
         /// Expand 属性值更改时发生
         /// </summary>
         [Description("Expand 属性值更改时发生"), Category("行为")]
-        public event CollapseExpandEventHandler? ExpandChanged = null;
+        public event CollapseExpandEventHandler? ExpandChanged;
 
         internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand));
 
@@ -676,7 +676,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Category("外观"), Description("展开进度"), DefaultValue(0F)]

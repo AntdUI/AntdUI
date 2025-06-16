@@ -272,7 +272,7 @@ namespace AntdUI
             }
             var it1 = items[i1];
             it1.Select = true;
-            OnSelectIndexChanged(it1);
+            SelectChanged?.Invoke(this, new MenuSelectEventArgs(it1));
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it1.rect.Y;
             Invalidate();
         }
@@ -291,7 +291,7 @@ namespace AntdUI
             }
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
-            OnSelectIndexChanged(it2);
+            SelectChanged?.Invoke(this, new MenuSelectEventArgs(it2));
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it2.rect.Y;
             Invalidate();
         }
@@ -317,7 +317,7 @@ namespace AntdUI
             }
             var it3 = it2.Sub[i3];
             it1.Select = it2.Select = it3.Select = true;
-            OnSelectIndexChanged(it3);
+            SelectChanged?.Invoke(this, new MenuSelectEventArgs(it3));
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
         }
@@ -350,7 +350,7 @@ namespace AntdUI
                 {
                     it.Select = true;
                     tmpAM = true;
-                    OnSelectIndexChanged(it);
+                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(it));
                     if (SelectEx(it.PARENTITEM) > 0)
                     {
                         ChangeList();
@@ -407,9 +407,21 @@ namespace AntdUI
         /// Select 属性值更改时发生
         /// </summary>
         [Description("Select 属性值更改时发生"), Category("行为")]
-        public event SelectEventHandler? SelectChanged = null;
+        public event SelectEventHandler? SelectChanged;
 
-        internal void OnSelectIndexChanged(MenuItem item) => SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
+        /// <summary>
+        /// Select 属性值更改前发生
+        /// </summary>
+        [Description("Select 属性值更改前发生"), Category("行为")]
+        public event SelectBoolEventHandler? SelectChanging;
+
+        bool IsCanChang(MenuItem it)
+        {
+            bool pass = false;
+            if (SelectChanging == null) pass = true;
+            else if (SelectChanging(this, new MenuSelectEventArgs(it))) pass = true;
+            return pass;
+        }
 
         #endregion
 
@@ -950,7 +962,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        MenuItem? MDown = null;
+        MenuItem? MDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -1014,33 +1026,36 @@ namespace AntdUI
                 {
                     if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
                     {
-                        if (can)
+                        if (IsCanChang(item))
                         {
-                            if ((mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
+                            if (can)
                             {
-                                if (subForm == null)
+                                if ((mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
                                 {
-                                    var _rect = RectangleToScreen(ClientRectangle);
-                                    var Rect = item.Rect;
-                                    var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
-                                    select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, rect, item.items);
-                                    subForm.Show(this);
+                                    if (subForm == null)
+                                    {
+                                        var _rect = RectangleToScreen(ClientRectangle);
+                                        var Rect = item.Rect;
+                                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
+                                        select_x = 0;
+                                        subForm = new LayeredFormMenuDown(this, radius, rect, item.items);
+                                        subForm.Show(this);
+                                    }
+                                    else { subForm.IClose(); subForm = null; }
                                 }
-                                else { subForm.IClose(); subForm = null; }
+                                else item.Expand = !item.Expand;
                             }
-                            else item.Expand = !item.Expand;
-                        }
-                        else
-                        {
-                            IUSelect(items);
-                            if (list.Count > 1)
+                            else
                             {
-                                foreach (var it in list) it.Select = true;
+                                IUSelect(items);
+                                if (list.Count > 1)
+                                {
+                                    foreach (var it in list) it.Select = true;
+                                }
+                                item.Select = true;
+                                SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
+                                Invalidate();
                             }
-                            item.Select = true;
-                            OnSelectIndexChanged(item);
-                            Invalidate();
                         }
                     }
                     return true;
@@ -1313,8 +1328,8 @@ namespace AntdUI
 
         #region 子窗口
 
-        TooltipForm? tooltipForm = null;
-        ILayeredForm? subForm = null;
+        TooltipForm? tooltipForm;
+        ILayeredForm? subForm;
         public ILayeredForm? SubForm() => subForm;
         internal int select_x = 0;
 
@@ -1336,17 +1351,20 @@ namespace AntdUI
             bool can = item.CanExpand;
             if (item.Enabled && item == value)
             {
-                if (can) item.Expand = !item.Expand;
-                else
+                if (IsCanChang(item))
                 {
-                    IUSelect(items);
-                    if (list.Count > 1)
+                    if (can) item.Expand = !item.Expand;
+                    else
                     {
-                        foreach (var it in list) it.Select = true;
+                        IUSelect(items);
+                        if (list.Count > 1)
+                        {
+                            foreach (var it in list) it.Select = true;
+                        }
+                        item.Select = true;
+                        SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
+                        Invalidate();
                     }
-                    item.Select = true;
-                    OnSelectIndexChanged(item);
-                    Invalidate();
                 }
                 return true;
             }
@@ -1436,7 +1454,7 @@ namespace AntdUI
 
         #region 图标
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1452,7 +1470,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1487,7 +1505,7 @@ namespace AntdUI
 
         #endregion
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -1572,7 +1590,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand = null;
+        ITask? ThreadExpand;
         bool expand = true;
         /// <summary>
         /// 展开
@@ -1703,7 +1721,7 @@ namespace AntdUI
 
         #region 徽标
 
-        string? badge = null;
+        string? badge;
         [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
@@ -1716,7 +1734,7 @@ namespace AntdUI
             }
         }
 
-        string? badgeSvg = null;
+        string? badgeSvg;
         [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
@@ -1768,7 +1786,7 @@ namespace AntdUI
             }
         }
 
-        Color? badgeback = null;
+        Color? badgeback;
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {
@@ -1964,7 +1982,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover = null;
+        ITask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }

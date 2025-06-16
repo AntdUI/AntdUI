@@ -46,7 +46,7 @@ namespace AntdUI
             set => ColorScheme = value;
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文字
         /// </summary>
@@ -111,7 +111,7 @@ namespace AntdUI
             }
         }
 
-        string? desc = null;
+        string? desc;
         /// <summary>
         /// 副标题
         /// </summary>
@@ -129,7 +129,7 @@ namespace AntdUI
             }
         }
 
-        Font? descFont = null;
+        Font? descFont;
         /// <summary>
         /// 副标题字体
         /// </summary>
@@ -152,7 +152,7 @@ namespace AntdUI
         [Description("副标题"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationSubText { get; set; }
 
-        string? description = null;
+        string? description;
         /// <summary>
         /// 描述文本
         /// </summary>
@@ -177,7 +177,7 @@ namespace AntdUI
         [Description("描述文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationDescription { get; set; }
 
-        int? gap = null;
+        int? gap;
         /// <summary>
         /// 间隔
         /// </summary>
@@ -280,7 +280,7 @@ namespace AntdUI
             }
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -297,7 +297,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标SVG
         /// </summary>
@@ -389,7 +389,7 @@ namespace AntdUI
             temp_close_hover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading = null;
+        ITask? ThreadLoading;
 
         #endregion
 
@@ -662,7 +662,7 @@ namespace AntdUI
 
         #region 背景
 
-        string? backExtend = null;
+        string? backExtend;
         /// <summary>
         /// 背景渐变色
         /// </summary>
@@ -937,7 +937,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        Bitmap? temp_logo = null, temp_back = null, temp_back_hover = null, temp_back_down = null, temp_full = null, temp_full_restore = null, temp_min = null, temp_max = null, temp_restore = null, temp_close = null, temp_close_hover = null;
+        Bitmap? temp_logo, temp_back, temp_back_hover, temp_back_down, temp_full, temp_full_restore, temp_min, temp_max, temp_restore, temp_close, temp_close_hover;
         void PrintBack(Canvas g, Color color, Rectangle rect_icon)
         {
             if (temp_back == null || temp_back.Width != rect_icon.Width)
@@ -1152,7 +1152,7 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? ThreadBack = null;
+        ITask? ThreadBack;
         ITaskOpacity hove_back, hove_close, hove_full, hove_max, hove_min;
         public PageHeader()
         {

@@ -133,7 +133,7 @@ namespace AntdUI
 
         #region 显示文本
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -440,8 +440,8 @@ namespace AntdUI
             ThreadValue?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading = null;
-        ITask? ThreadValue = null;
+        ITask? ThreadLoading;
+        ITask? ThreadValue;
 
         #endregion
 

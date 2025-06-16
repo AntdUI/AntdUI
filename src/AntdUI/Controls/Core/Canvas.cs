@@ -119,6 +119,11 @@ namespace AntdUI
         void FillPie(Brush brush, RectangleF rect, float startAngle, float sweepAngle);
         void FillPie(Brush brush, float x, float y, float w, float h, float startAngle, float sweepAngle);
 
+        void FillClosedCurve(Brush brush, params Point[] points);
+        void FillClosedCurve(Brush brush, params PointF[] points);
+        void FillClosedCurve(Brush brush, Point[] points, FillMode fillmode);
+        void FillClosedCurve(Brush brush, PointF[] points, FillMode fillmode);
+
         #endregion
 
         #region Draw

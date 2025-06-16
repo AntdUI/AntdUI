@@ -86,9 +86,9 @@ namespace AntdUI
             Font = control.Font;
             selectedValue = control.SelectedValue;
             Radius = (int)(control.DropDownRadius ?? radius * Config.Dpi);
-            sf = Helper.SF(DropDownTextAlign);
             DPadding = control.DropDownPadding;
             DropDownTextAlign = control.DropDownTextAlign;
+            sf = Helper.SF(DropDownTextAlign);
             Items = new List<ObjectItem>(items.Count);
             Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
         }
@@ -224,7 +224,7 @@ namespace AntdUI
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
         public ILayeredForm? SubForm() => subForm;
-        LayeredFormSelectDown? subForm = null;
+        LayeredFormSelectDown? subForm;
         void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
         {
             if (OS.Win7OrLower) Select();
@@ -616,7 +616,7 @@ namespace AntdUI
             g.TranslateTransform(0, -scrollY.Value);
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

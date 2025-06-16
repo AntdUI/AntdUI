@@ -381,7 +381,7 @@ namespace AntdUI
                 }
             }
 
-            internal LayeredFormModal? Layered = null;
+            internal LayeredFormModal? Layered;
 
             /// <summary>
             /// 确认按钮类型

@@ -526,7 +526,7 @@ namespace AntdUI
             g.TranslateTransform(0, -scrollY.Value);
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -613,7 +613,7 @@ namespace AntdUI
         }
 
         public ILayeredForm? SubForm() => subForm;
-        LayeredFormSelectMultipleCheck? subForm = null;
+        LayeredFormSelectMultipleCheck? subForm;
 
         void OnClick(ObjectItemCheck it)
         {

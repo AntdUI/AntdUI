@@ -75,7 +75,7 @@ namespace AntdUI
             }
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -219,7 +219,7 @@ namespace AntdUI
         /// Checked 属性值更改时发生
         /// </summary>
         [Description("Checked 属性值更改时发生"), Category("行为")]
-        public event BoolEventHandler? CheckedChanged = null;
+        public event BoolEventHandler? CheckedChanged;
 
         #endregion
 
@@ -401,8 +401,8 @@ namespace AntdUI
             ThreadHover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
-        ITask? ThreadCheck = null;
+        ITask? ThreadHover;
+        ITask? ThreadCheck;
 
         #endregion
 

@@ -118,6 +118,8 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
+            public int SelectIndex { get; set; }
+
             /// <summary>
             /// 内容
             /// </summary>
@@ -132,6 +134,11 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            /// <summary>
+            /// SelectIndex 改变回调
+            /// </summary>
+            public Func<int, bool>? OnSelectIndexChanged { get; set; }
 
             #region 自定义按钮
 

@@ -38,7 +38,7 @@ namespace AntdUI
     {
         #region 属性
 
-        ColumnCollection? columns = null;
+        ColumnCollection? columns;
         /// <summary>
         /// 表格列的配置
         /// </summary>
@@ -65,7 +65,7 @@ namespace AntdUI
             }
         }
 
-        object? dataSource = null;
+        object? dataSource;
         /// <summary>
         /// 数据数组
         /// </summary>
@@ -87,7 +87,7 @@ namespace AntdUI
             }
         }
 
-        object? summary = null;
+        object? summary;
         /// <summary>
         /// 总结栏
         /// </summary>
@@ -353,7 +353,7 @@ namespace AntdUI
         [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
         public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
 
-        int? rowHeight = null;
+        int? rowHeight;
         /// <summary>
         /// 行高
         /// </summary>
@@ -370,7 +370,7 @@ namespace AntdUI
             }
         }
 
-        int? rowHeightHeader = null;
+        int? rowHeightHeader;
         /// <summary>
         /// 表头行高
         /// </summary>
@@ -729,6 +729,12 @@ namespace AntdUI
                 OnPropertyChanged(nameof(EditMode));
             }
         }
+
+        /// <summary>
+        /// 编辑模式输入框样式
+        /// </summary>
+        [Description("编辑模式输入框样式"), Category("行为"), DefaultValue(TEditInputStyle.Default)]
+        public TEditInputStyle EditInputStyle { get; set; } = TEditInputStyle.Default;
 
         #endregion
 
@@ -1478,7 +1484,7 @@ namespace AntdUI
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
 
-        ITask? ThreadCheck = null;
+        ITask? ThreadCheck;
 
         internal CheckState checkStateOld = CheckState.Unchecked;
 

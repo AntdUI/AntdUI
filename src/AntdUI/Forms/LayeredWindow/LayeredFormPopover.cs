@@ -321,7 +321,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

@@ -43,16 +43,17 @@ namespace AntdUI
                 {
                     mDownMove = mDown = false;
 
-                    var index = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
-
+                    var caret2 = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                    if (caret2 == null) return;
                     int start = 0, end;
 
-                    if (index > 0) start = FindStart(cache_font, index - 2);
-                    if (index >= cache_font.Length) end = cache_font.Length;
-                    else end = FindEnd(cache_font, index);
+                    if (caret2.i > 0) start = FindStart(cache_font, caret2.i - 2);
+                    if (caret2.i >= cache_font.Length) end = cache_font.Length;
+                    else end = FindEnd(cache_font, caret2.i);
 
                     SetSelectionStart(start);
                     SelectionLength = end - start;
+
                     return;
                 }
                 if (is_clear && rect_r.Contains(e.Location))
@@ -84,26 +85,35 @@ namespace AntdUI
                 mDownMove = false;
                 mDownLocation = e.Location;
                 if (BanInput) return;
-                int indeX = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
-                if (ModifierKeys.HasFlag(Keys.Shift))
+                var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                if (caret == null)
                 {
-                    if (indeX > selectionStartTemp)
-                    {
-                        if (selectionStart != selectionStartTemp) SetSelectionStart(selectionStartTemp);
-                        SelectionLength = indeX - selectionStartTemp;
-                    }
-                    else
-                    {
-                        int len = selectionStartTemp - indeX;
-                        SetSelectionStart(indeX);
-                        SelectionLength = len;
-                    }
+                    SetSelectionStart(0);
+                    SelectionLength = 0;
+                    SetCaretPostion(selectionStart);
                 }
                 else
                 {
-                    SetSelectionStart(indeX);
-                    SelectionLength = 0;
-                    SetCaretPostion(selectionStart);
+                    if (ModifierKeys.HasFlag(Keys.Shift))
+                    {
+                        if (caret.i > selectionStartTemp)
+                        {
+                            if (selectionStart != selectionStartTemp) SetSelectionStart(selectionStartTemp);
+                            SelectionLength = caret.i - selectionStartTemp;
+                        }
+                        else
+                        {
+                            int len = selectionStartTemp - caret.i;
+                            SetSelectionStart(caret.i, false);
+                            SelectionLength = len;
+                        }
+                    }
+                    else
+                    {
+                        SetSelectionStart(caret.i);
+                        SelectionLength = 0;
+                    }
+                    SetCaretPostion(caret.index);
                 }
                 if (cache_font != null) mDown = true;
                 else if (ModeRange) SetCaretPostion();
@@ -125,11 +135,19 @@ namespace AntdUI
             {
                 mDownMove = true;
                 SetCursor(CursorType.IBeam);
-                var index = GetCaretPostion(mDownLocation.X + scrollx + (e.X - mDownLocation.X), mDownLocation.Y + scrolly + (e.Y - mDownLocation.Y));
-                SelectionLength = Math.Abs(index - selectionStart);
-                if (index > selectionStart) selectionStartTemp = selectionStart;
-                else selectionStartTemp = index;
-                SetCaretPostion(index);
+                var caret = GetCaretPostion(mDownLocation.X + scrollx + (e.X - mDownLocation.X), mDownLocation.Y + scrolly + (e.Y - mDownLocation.Y));
+                if (caret == null)
+                {
+                    Window.CanHandMessage = false;
+                    return;
+                }
+                else
+                {
+                    SelectionLength = Math.Abs(caret.i - selectionStart);
+                    if (caret.i > selectionStart) selectionStartTemp = selectionStart;
+                    else selectionStartTemp = caret.i;
+                    SetCaretPostion(caret.index);
+                }
                 Window.CanHandMessage = false;
             }
             else
@@ -212,19 +230,24 @@ namespace AntdUI
             if (IMouseUp(e.Location)) return;
             if (md && mDownMove && mDownLocation != e.Location && cache_font != null)
             {
-                var index = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
-                if (selectionStart == index) SelectionLength = 0;
-                else if (index > selectionStart)
-                {
-                    SelectionLength = Math.Abs(index - selectionStart);
-                    SetCaretPostion(selectionStart + selectionLength);
-                }
+                var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                if (caret == null) { }
                 else
                 {
-                    int x = scrollx;
-                    SelectionLength = Math.Abs(index - selectionStart);
-                    SetSelectionStart(index);
-                    ScrollX = x;
+                    if (selectionStart == caret.i) SelectionLength = 0;
+                    else if (caret.i > selectionStart)
+                    {
+                        SelectionLength = Math.Abs(caret.i - selectionStart);
+                        SetCaretPostion(caret.index);
+                    }
+                    else
+                    {
+                        int x = scrollx;
+                        SelectionLength = Math.Abs(caret.i - selectionStart);
+                        SetSelectionStart(caret.i, false);
+                        SetCaretPostion(caret.index);
+                        ScrollX = x;
+                    }
                 }
             }
             else OnClickContent();
@@ -428,19 +451,19 @@ namespace AntdUI
         #region 事件
 
         [Description("清空 点击时发生"), Category("行为")]
-        public event MouseEventHandler? ClearClick = null;
+        public event MouseEventHandler? ClearClick;
 
         [Description("前缀 点击时发生"), Category("行为")]
-        public event MouseEventHandler? PrefixClick = null;
+        public event MouseEventHandler? PrefixClick;
 
         [Description("后缀 点击时发生"), Category("行为")]
-        public event MouseEventHandler? SuffixClick = null;
+        public event MouseEventHandler? SuffixClick;
 
         [Description("验证字符时发生"), Category("行为")]
-        public event InputVerifyCharEventHandler? VerifyChar = null;
+        public event InputVerifyCharEventHandler? VerifyChar;
 
         [Description("验证键盘时发生"), Category("行为")]
-        public event InputVerifyKeyboardEventHandler? VerifyKeyboard = null;
+        public event InputVerifyKeyboardEventHandler? VerifyKeyboard;
 
         #endregion
     }

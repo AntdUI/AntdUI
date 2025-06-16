@@ -37,7 +37,7 @@ namespace AntdUI
     {
         #region 参数
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>

@@ -261,7 +261,7 @@ namespace AntdUI
             }
         }
 
-        string? backExtend = null;
+        string? backExtend;
         /// <summary>
         /// 背景渐变色
         /// </summary>
@@ -278,7 +278,7 @@ namespace AntdUI
             }
         }
 
-        Image? backImage = null;
+        Image? backImage;
         /// <summary>
         /// 背景图片
         /// </summary>
@@ -437,7 +437,7 @@ namespace AntdUI
             }
         }
 
-        Bitmap? shadow_temp = null;
+        Bitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -540,7 +540,7 @@ namespace AntdUI
             shadow_temp = null;
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
+        ITask? ThreadHover;
 
         #endregion
 

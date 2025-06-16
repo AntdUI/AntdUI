@@ -38,7 +38,7 @@ namespace AntdUI
         #region 属性
 
         bool showS = true, showE = true;
-        string? placeholderS = null, placeholderE = null;
+        string? placeholderS, placeholderE;
         /// <summary>
         /// 显示的水印文本
         /// </summary>
@@ -103,7 +103,7 @@ namespace AntdUI
             }
         }
 
-        DateTime[]? _value = null;
+        DateTime[]? _value;
         [Description("控件当前日期"), Category("数据"), DefaultValue(null)]
         public DateTime[]? Value
         {
@@ -141,6 +141,12 @@ namespace AntdUI
         /// </summary>
         [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
         public bool ValueTimeHorizontal { get; set; }
+
+        /// <summary>
+        /// 选择器类型
+        /// </summary>
+        [Description("选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]
+        public TDatePicker Picker { get; set; } = TDatePicker.Date;
 
         protected override void OnTextChanged(EventArgs e)
         {
@@ -181,7 +187,7 @@ namespace AntdUI
             return base.Verify(key, out change);
         }
 
-        string? swapSvg = null;
+        string? swapSvg;
         /// <summary>
         /// 交换图标SVG
         /// </summary>
@@ -200,7 +206,7 @@ namespace AntdUI
         /// <summary>
         /// 日期徽标回调
         /// </summary>
-        public Func<DateTime[], List<DateBadge>?>? BadgeAction = null;
+        public Func<DateTime[], List<DateBadge>?>? BadgeAction;
 
         BaseCollection? items;
         /// <summary>
@@ -285,7 +291,7 @@ namespace AntdUI
         /// 预置点击时发生
         /// </summary>
         [Description("预置点击时发生"), Category("行为")]
-        public event ObjectNEventHandler? PresetsClickChanged = null;
+        public event ObjectNEventHandler? PresetsClickChanged;
 
         #endregion
 
@@ -367,7 +373,7 @@ namespace AntdUI
 
         #region 动画
 
-        ILayeredForm? subForm = null;
+        ILayeredForm? subForm;
         public ILayeredForm? SubForm() => subForm;
 
         #endregion
@@ -550,7 +556,7 @@ namespace AntdUI
 
         bool AnimationBar = false;
         RectangleF AnimationBarValue = RectangleF.Empty;
-        ITask? ThreadBar = null;
+        ITask? ThreadBar;
 
         string StartEndFocusedTmp = "00";
         void StartEndFocused()

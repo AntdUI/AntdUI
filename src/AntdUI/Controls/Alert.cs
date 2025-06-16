@@ -70,7 +70,7 @@ namespace AntdUI
             }
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -97,7 +97,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        string? textTitle = null;
+        string? textTitle;
         /// <summary>
         /// 标题
         /// </summary>
@@ -189,7 +189,7 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? task = null;
+        ITask? task;
         void StartTask()
         {
             task?.Dispose();
@@ -222,7 +222,7 @@ namespace AntdUI
         #region 参数
 
         int val;
-        Size? font_size = null;
+        Size? font_size;
 
         #endregion
 

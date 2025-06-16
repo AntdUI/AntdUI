@@ -84,7 +84,7 @@ namespace AntdUI
             return mask;
         }
 
-        internal static bool FormFrame(this Form form, out int Radius, out int Padd)
+        public static bool FormFrame(this Form form, out int Radius, out int Padd)
         {
             Padd = Radius = 0;
             if (form.WindowState != FormWindowState.Maximized)

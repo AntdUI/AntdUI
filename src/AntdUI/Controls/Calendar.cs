@@ -155,13 +155,11 @@ namespace AntdUI
         /// <summary>
         /// 日期徽标回调
         /// </summary>
-        public Func<DateTime[], List<DateBadge>?>? BadgeAction = null;
+        public Func<DateTime[], List<DateBadge>?>? BadgeAction;
 
         #region 日期
 
-        List<Calendari>? calendar_year = null;
-        List<Calendari>? calendar_month = null;
-        List<Calendari>? calendar_day = null;
+        List<Calendari>? calendar_year, calendar_month, calendar_day;
 
         DateTime _value = DateTime.Now;
         /// <summary>
@@ -195,13 +193,14 @@ namespace AntdUI
             {
                 if (minDate == value) return;
                 minDate = value;
+                if (minDate.HasValue && _Date > minDate) _Date = minDate.Value;
                 Date = _Date;
                 Invalidate();
                 OnPropertyChanged(nameof(MinDate));
             }
         }
 
-        DateTime? maxDate = null;
+        DateTime? maxDate;
         /// <summary>
         /// 最大日期
         /// </summary>
@@ -213,10 +212,22 @@ namespace AntdUI
             {
                 if (maxDate == value) return;
                 maxDate = value;
+                if (maxDate.HasValue && _Date < maxDate) _Date = maxDate.Value;
                 Date = _Date;
                 Invalidate();
                 OnPropertyChanged(nameof(MaxDate));
             }
+        }
+
+        public void SetMinMax(DateTime min, DateTime max)
+        {
+            if (minDate == min && maxDate == max) return;
+            minDate = min;
+            maxDate = max;
+            if (_Date > min) _Date = min;
+            else if (_Date < max) _Date = max;
+            Date = _Date;
+            Invalidate();
         }
 
         DateTime _Date;
@@ -388,6 +399,18 @@ namespace AntdUI
                     }
                 });
             }
+        }
+
+        public void SetBadge(Dictionary<string, DateBadge> dir)
+        {
+            badge_list = dir;
+            Invalidate();
+        }
+        public void SetBadge(IList<DateBadge> dir)
+        {
+            badge_list = new Dictionary<string, DateBadge>(dir.Count);
+            foreach (var it in dir) badge_list.Add(it.Date, it);
+            Invalidate();
         }
 
         #endregion

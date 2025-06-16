@@ -114,8 +114,7 @@ namespace AntdUI
                 BeginInvoke(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    int height = EditInputHeight(value, cell);
-                    var tmp_input = CreateInput(cell, sx, sy, height, multiline, value);
+                    var tmp_input = CreateInput(cell, sx, sy, multiline, value);
                     if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -164,8 +163,7 @@ namespace AntdUI
                         BeginInvoke(() =>
                         {
                             for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                            int height = EditInputHeight(value, cell);
-                            var tmp_input = CreateInput(cell, sx, sy, height, multiline, value);
+                            var tmp_input = CreateInput(cell, sx, sy, multiline, value);
                             if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                             else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -200,17 +198,6 @@ namespace AntdUI
                         return;
                     }
                 }
-            }
-        }
-
-        int EditInputHeight(object? value, CELL cell)
-        {
-            if (cell.COLUMN.LineBreak) return cell.RECT.Height;
-            else
-            {
-                int gap = (int)(Math.Max(_gap, 8) * Config.Dpi), height2 = cell.RECT_REAL.Height + gap,
-                    height_real = Helper.GDI(g => g.MeasureString(value?.ToString(), Font).Height + gap);
-                return height_real > height2 ? height_real : height2;
             }
         }
 
@@ -257,16 +244,30 @@ namespace AntdUI
             return false;
         }
 
-        Input CreateInput(CELL cell, int sx, int sy, int height, bool multiline, object? value)
+        Input CreateInput(CELL cell, int sx, int sy, bool multiline, object? value)
         {
-            if (value is CellText text2)
+            switch (EditInputStyle)
+            {
+                case TEditInputStyle.Full:
+                    int wave = (int)((4 + 1 / 2F) * Config.Dpi), wave2 = wave * 2;
+                    var inputFull = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - wave, cell.RECT.Y - sy - wave, cell.RECT.Width + wave2, cell.RECT.Height + wave2));
+                    inputFull.Radius = 0;
+                    return inputFull;
+                case TEditInputStyle.Default:
+                default:
+                    return CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, cell.RECT.Y - sy, cell.RECT.Width, cell.RECT.Height));
+            }
+        }
+        Input CreateInput(bool multiline, object? value, Rectangle rect)
+        {
+            if (value is CellText text)
             {
                 return new Input
                 {
                     Multiline = multiline,
-                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                    Size = new Size(cell.RECT.Width, height),
-                    Text = text2.Text ?? ""
+                    Location = rect.Location,
+                    Size = rect.Size,
+                    Text = text.Text ?? ""
                 };
             }
             else
@@ -274,8 +275,8 @@ namespace AntdUI
                 return new Input
                 {
                     Multiline = multiline,
-                    Location = new Point(cell.RECT.X - sx, cell.RECT.Y - sy + (cell.RECT.Height - height) / 2),
-                    Size = new Size(cell.RECT.Width, height),
+                    Location = rect.Location,
+                    Size = rect.Size,
                     Text = value?.ToString() ?? ""
                 };
             }

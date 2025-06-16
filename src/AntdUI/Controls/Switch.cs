@@ -152,7 +152,7 @@ namespace AntdUI
         [Description("间距"), Category("外观"), DefaultValue(2)]
         public int Gap { get; set; } = 2;
 
-        string? _checkedText = null, _unCheckedText = null;
+        string? _checkedText, _unCheckedText;
 
         [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
@@ -232,7 +232,7 @@ namespace AntdUI
             }
         }
 
-        ITask? ThreadLoading = null;
+        ITask? ThreadLoading;
         internal float LineWidth = 6, LineAngle = 0;
 
         #endregion
@@ -245,7 +245,7 @@ namespace AntdUI
         /// Checked 属性值更改时发生
         /// </summary>
         [Description("Checked 属性值更改时发生"), Category("行为")]
-        public event BoolEventHandler? CheckedChanged = null;
+        public event BoolEventHandler? CheckedChanged;
 
         #endregion
 
@@ -463,9 +463,7 @@ namespace AntdUI
             ThreadLoading?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
-        ITask? ThreadCheck = null;
-        ITask? ThreadClick = null;
+        ITask? ThreadHover, ThreadCheck, ThreadClick;
 
         bool AnimationClick = false;
         float AnimationClickValue = 0;

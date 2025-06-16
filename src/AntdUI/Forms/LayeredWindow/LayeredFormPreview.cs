@@ -55,7 +55,7 @@ namespace AntdUI
                 Location = form.Location;
             }
             PageSize = config.ContentCount;
-
+            SelectIndex = config.SelectIndex;
             int len = 8;
             if (config.Btns != null && config.Btns.Length > 0) len += config.Btns.Length;
             var btnwiths = new List<PreBtns>(len)
@@ -148,7 +148,7 @@ namespace AntdUI
             }
         }
 
-        string? LoadingProgressStr = null;
+        string? LoadingProgressStr;
         float _value = -1F;
         /// <summary>
         /// 加载进度
@@ -167,7 +167,7 @@ namespace AntdUI
             }
         }
 
-        Image? Img = null;
+        Image? Img;
         int SelectIndex = 0;
         object? SelectValue;
         Size ImgSize = new Size();
@@ -848,14 +848,26 @@ namespace AntdUI
             {
                 if (enabledLeft && rect_left.Contains(e.Location))
                 {
-                    SelectIndex--;
+                    int newIndex = SelectIndex - 1;
+                    if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
+                    else
+                    {
+                        if (config.OnSelectIndexChanged(newIndex)) SelectIndex = newIndex;
+                        else return;
+                    }
                     LoadImg();
                     Print();
                     return;
                 }
                 if (enabledRight && rect_right.Contains(e.Location))
                 {
-                    SelectIndex++;
+                    int newIndex = SelectIndex + 1;
+                    if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
+                    else
+                    {
+                        if (config.OnSelectIndexChanged(newIndex)) SelectIndex = newIndex;
+                        else return;
+                    }
                     LoadImg();
                     Print();
                     return;

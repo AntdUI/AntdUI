@@ -65,7 +65,7 @@ namespace AntdUI
             }
         }
 
-        Color? fill = null;
+        Color? fill;
         /// <summary>
         /// 颜色
         /// </summary>

@@ -1,5 +1,27 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.4` 2025-06-14
+
+- ➕ Tree BeforeExpand、AfterExpand
+- ➕ Preview SelectIndex
+- ➕ Preview OnSelectIndexChanged
+- ➕ Message/Notification contains
+- ➕ DatePickerRange Picker
+- ➕ Menu SelectChanging
+- ➕ Pagination DropDownRadius
+- ➕ BaseForm 色彩模式变化配置
+- ➕ Table EditInputStyle
+- ➕ Input TextTotalLine
+- ➕ Calendar SetMinMax/SetBadge 方法
+- ✍️ Table 列拖动+隐藏 异常
+- ✍️ Table 键盘上下激活 Summary
+- ✍️ Table 换行文字消失
+- ✍️ Table 合并单元格边框
+- ✍️ Input 文字拥挤
+- ✍️ Input 重构光标交互
+- ✍️ Dropdown DropDownTextAlign 无效
+- ✍️ Modal 居中父窗体调整
+
 ### `2.0.3` 2025-06-09
 
 - ➕ Table SortOrderSize

@@ -59,7 +59,7 @@ namespace AntdUI
             }
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
@@ -80,7 +80,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        string? textDesc = null;
+        string? textDesc;
         /// <summary>
         /// 文本描述
         /// </summary>
@@ -98,7 +98,7 @@ namespace AntdUI
             }
         }
 
-        Color? fore = null;
+        Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
@@ -128,7 +128,7 @@ namespace AntdUI
         [Description("多个文件"), Category("行为"), DefaultValue(true)]
         public bool Multiselect { get; set; } = true;
 
-        string? filter = null;
+        string? filter;
         /// <summary>
         /// 文件名筛选器字符串
         /// </summary>
@@ -195,7 +195,7 @@ namespace AntdUI
             }
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -251,7 +251,7 @@ namespace AntdUI
             }
         }
 
-        Image? backImage = null;
+        Image? backImage;
         /// <summary>
         /// 背景图片
         /// </summary>
@@ -579,7 +579,7 @@ namespace AntdUI
             ThreadHover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
+        ITask? ThreadHover;
     }
 
     public sealed class FileDropHandler : IMessageFilter, IDisposable

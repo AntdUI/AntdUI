@@ -199,7 +199,7 @@ namespace AntdUI
         }
 
 
-        ITask? ThreadCheck = null, ThreadHover = null;
+        ITask? ThreadCheck, ThreadHover;
 
         int AnimationHoverValue = 0;
         bool AnimationHover = false;
@@ -307,7 +307,7 @@ namespace AntdUI
         /// Checked 属性值更改时发生
         /// </summary>
         [Description("Checked 属性值更改时发生"), Category("行为")]
-        public event BoolEventHandler? CheckedChanged = null;
+        public event BoolEventHandler? CheckedChanged;
 
         #endregion
 

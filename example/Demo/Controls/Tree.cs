@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -34,7 +35,7 @@ namespace Demo.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            tree1.PauseLayout = tree2.PauseLayout = true;
+            tree1.PauseLayout = tree2.PauseLayout = tree3.PauseLayout = true;
             AntdUI.ITask.Run(() =>
             {
                 var random = new Random();
@@ -50,9 +51,28 @@ namespace Demo.Controls
                     AddSub(it, 1, random);
                     tree2.Items.Add(it);
                 }
+                var basepath = new DirectoryInfo(Environment.CurrentDirectory.Substring(0, 3));
+                foreach (var item in basepath.GetDirectories())
+                {
+                    var it = new AntdUI.TreeItem(item.Name)
+                    {
+                        IconSvg = Properties.Resources.icon_folder,
+                        CanExpand = true,
+                        Name = item.FullName
+                    };
+                    tree3.Items.Add(it);
+                }
+                foreach (var item in basepath.GetFiles())
+                {
+                    var it = new AntdUI.TreeItem(item.Name)
+                    {
+                        Name = item.FullName
+                    };
+                    tree3.Items.Add(it);
+                }
             }).ContinueWith(action =>
             {
-                tree1.PauseLayout = tree2.PauseLayout = false;
+                tree1.PauseLayout = tree2.PauseLayout = tree3.PauseLayout = false;
             });
         }
 
@@ -75,6 +95,58 @@ namespace Demo.Controls
                 }
                 it.Sub.AddRange(list);
             }
+        }
+
+
+        private void tree3_BeforeExpand(object sender, AntdUI.TreeExpandEventArgs e)
+        {
+            if (e.Value)
+            {
+                if (e.Item.Tag is bool)
+                {
+                    e.Item.IconSvg = Properties.Resources.icon_folderopened;
+                    return;
+                }
+                e.CanExpand = false;
+                tree3.PauseLayout = true;
+                AntdUI.ITask.Run(() =>
+                {
+                    e.Item.Tag = true;
+                    int count = 0;
+                    try
+                    {
+                        var basepath = new DirectoryInfo(e.Item.Name);
+                        foreach (var item in basepath.GetDirectories())
+                        {
+                            var it = new AntdUI.TreeItem(item.Name)
+                            {
+                                IconSvg = Properties.Resources.icon_folder,
+                                CanExpand = true,
+                                Name = item.FullName
+                            };
+                            e.Item.Sub.Add(it);
+                            count++;
+                        }
+                        foreach (var item in basepath.GetFiles())
+                        {
+                            var it = new AntdUI.TreeItem(item.Name)
+                            {
+                                Name = item.FullName
+                            };
+                            e.Item.Sub.Add(it);
+                            count++;
+                        }
+                    }
+                    catch { }
+                    if (count == 0) e.Item.CanExpand = false;
+                    else
+                    {
+                        e.Item.IconSvg = Properties.Resources.icon_folderopened;
+                        e.Item.Expand = true;
+                    }
+                }).ContinueWith(action => tree3.PauseLayout = false);
+            }
+            else e.Item.IconSvg = Properties.Resources.icon_folder;
         }
     }
 }

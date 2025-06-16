@@ -145,8 +145,8 @@ namespace AntdUI
         [Description("Value格式化时发生"), Category("行为")]
         public event ValueFormatEventHandler? ValueFormatChanged;
 
-        TooltipForm? tooltipForm = null;
-        string? tooltipText = null;
+        TooltipForm? tooltipForm;
+        string? tooltipText;
         internal void ShowTips(int Value, RectangleF dot_rect)
         {
             var text = ValueFormatChanged == null ? Value.ToString() : ValueFormatChanged.Invoke(this, new IntEventArgs(Value));
@@ -745,8 +745,8 @@ namespace AntdUI
             ThreadDotHover?.Dispose();
             base.Dispose(disposing);
         }
-        internal ITask? ThreadHover = null;
-        ITask? ThreadDotHover = null;
+        internal ITask? ThreadHover;
+        ITask? ThreadDotHover;
 
         #endregion
 
@@ -826,7 +826,7 @@ namespace AntdUI
         }
 
 
-        Color? fore = null;
+        Color? fore;
         /// <summary>
         /// 文本颜色
         /// </summary>
@@ -842,7 +842,7 @@ namespace AntdUI
             }
         }
 
-        string? text = null;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>

@@ -46,7 +46,7 @@ namespace AntdUI
             set => base.AllowClear = false;
         }
 
-        decimal? minimum = null, maximum = null;
+        decimal? minimum, maximum;
         [Description("最小值"), Category("数据"), DefaultValue(null)]
         public decimal? Minimum
         {

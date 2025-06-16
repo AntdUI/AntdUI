@@ -301,7 +301,7 @@ namespace AntdUI
             }
         }
 
-        int? _itemSize = null;
+        int? _itemSize;
         /// <summary>
         /// 自定义项宽度
         /// </summary>
@@ -754,7 +754,7 @@ namespace AntdUI
         /// 点击标签时发生
         /// </summary>
         [Description("点击标签时发生"), Category("行为")]
-        public event TabsItemEventHandler? TabClick = null;
+        public event TabsItemEventHandler? TabClick;
 
         int hover_i = -1;
         int Hover_i
@@ -862,7 +862,7 @@ namespace AntdUI
 
         #region 超出
 
-        LayeredFormSelectDown? subForm = null;
+        LayeredFormSelectDown? subForm;
         bool MouseMovePre(int x, int y)
         {
             if (items == null) return false;
@@ -1052,7 +1052,7 @@ namespace AntdUI
             }
         }
 
-        Bitmap? bitblock_l = null, bitblock_r = null;
+        Bitmap? bitblock_l, bitblock_r;
         public virtual void PaintExceed(Canvas g, Color color, int radius, Rectangle rect, Rectangle first, Rectangle last, bool full)
         {
             switch (typExceed)
@@ -1499,7 +1499,7 @@ namespace AntdUI
         /// SelectedIndex 属性值更改时发生
         /// </summary>
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
-        public event IntEventHandler? SelectedIndexChanged = null;
+        public event IntEventHandler? SelectedIndexChanged;
 
         internal void MouseChangeIndex(int index)
         {
@@ -1609,7 +1609,7 @@ namespace AntdUI
             set => dock = value;
         }
 
-        Image? icon = null;
+        Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1625,7 +1625,7 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg = null;
+        string? iconSvg;
         /// <summary>
         /// 图标
         /// </summary>
@@ -1664,7 +1664,7 @@ namespace AntdUI
 
         #region 徽标
 
-        string? badge = null;
+        string? badge;
         [Description("徽标内容"), Category("徽标"), DefaultValue(null)]
         public string? Badge
         {
@@ -1692,7 +1692,7 @@ namespace AntdUI
             }
         }
 
-        Color? badgeback = null;
+        Color? badgeback;
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {

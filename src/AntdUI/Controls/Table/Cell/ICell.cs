@@ -53,7 +53,7 @@ namespace AntdUI
         public abstract void PaintBack(Canvas g);
         public abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);
 
-        Table.CELL? _PARENT = null;
+        Table.CELL? _PARENT;
         /// <summary>
         /// 模板父级
         /// </summary>
@@ -129,7 +129,7 @@ namespace AntdUI
         /// <summary>
         /// DropDownValue 属性值更改时发生
         /// </summary>
-        public Action<object>? DropDownValueChanged = null;
+        public Action<object>? DropDownValueChanged;
 
         #endregion
 

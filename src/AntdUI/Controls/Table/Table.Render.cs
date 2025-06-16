@@ -236,9 +236,9 @@ namespace AntdUI
                 g.ResetClip();
                 g.ResetTransform();
 
-                var splitsize = (int)(borderWidth * Config.Dpi);
+                int splitsize = (int)(borderWidth * Config.Dpi);
 
-                PaintMergeCells(g, rows, sx, sy, brush_split.Color, brush_fore, brush_foreEnable, splitsize);
+                PaintMergeCells(g, rows, sx, sy, brush_split.Color, brush_fore, brush_foreEnable);
 
                 #region 渲染浮动列
 
@@ -1132,13 +1132,13 @@ namespace AntdUI
 
         #region 合并
 
-        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps)
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Color split_color, SolidBrush fore, SolidBrush foreEnable)
         {
             if (CellRanges == null || CellRanges.Length == 0) return;
             var state = g.Save();
             if (visibleHeader && fixedHeader) g.SetClip(new Rectangle(rect_read.X, rect_read.Y + rows[0].Height, rect_read.Width, rect_read.Height));
             g.TranslateTransform(-sx, -sy);
-            var sps2 = sps / 2F;
+            int sps = (int)(BorderCellWidth * Config.Dpi), sps2 = sps * 2;
             using (var bg = new SolidBrush(Colour.BgBase.Get("Table", ColorScheme)))
             {
                 foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, split_color, fore, foreEnable, sps, sps2, it);
@@ -1146,7 +1146,7 @@ namespace AntdUI
             g.Restore(state);
         }
 
-        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, float sps2, CellRange range)
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, int sps2, CellRange range)
         {
             if (range.FirstRow == range.LastRow)
             {
@@ -1182,14 +1182,29 @@ namespace AntdUI
             }
         }
 
-        void PaintMergeCells(Canvas g, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, float sps2, CELL first, CELL last)
+        void PaintMergeCells(Canvas g, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, int sps2, CELL first, CELL last)
         {
             var state = g.Save();
             var rect = RectMergeCells(first, last, out bool fz);
             g.Fill(bg, rect);
             if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get("Table", ColorScheme)), rect);
             else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table", ColorScheme), rect);
-            g.Draw(split_color, sps, new RectangleF(rect.X + sps2, rect.Y + sps2, rect.Width, rect.Height));
+
+            if (BorderCellWidth > 1)
+            {
+                float sp2 = sps / 2F, x = rect.X - sp2, y = rect.Y - sp2, w = rect.Width + sps, h = rect.Height + sps;
+                g.Fill(split_color, new RectangleF(x, y, w, sps));
+                g.Fill(split_color, new RectangleF(x, y, sps, h));
+                g.Fill(split_color, new RectangleF(x, rect.Bottom - sp2, w, sps));
+                g.Fill(split_color, new RectangleF(rect.Right - sp2, y, sps, h));
+            }
+            else
+            {
+                g.Fill(split_color, new RectangleF(rect.X, rect.Y, rect.Width, sps));
+                g.Fill(split_color, new RectangleF(rect.X, rect.Y, sps, rect.Height));
+                g.Fill(split_color, new RectangleF(rect.X, rect.Bottom, rect.Width, sps));
+                g.Fill(split_color, new RectangleF(rect.Right, rect.Y, sps, rect.Height));
+            }
 
             #region 绘制内容
 

@@ -100,7 +100,7 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
-        Bitmap? temp = null;
+        Bitmap? temp;
         public override Bitmap PrintBit()
         {
             Rectangle rect_read = TargetRectXY, rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;

@@ -386,7 +386,7 @@ namespace AntdUI
         /// Value 属性值更改时发生
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
-        public event ColorEventHandler? ValueChanged = null;
+        public event ColorEventHandler? ValueChanged;
 
         /// <summary>
         /// Value格式化时发生
@@ -504,7 +504,7 @@ namespace AntdUI
             }
         }
 
-        Bitmap? bmp_alpha = null;
+        Bitmap? bmp_alpha;
         void PaintAlpha(Canvas g, float radius, RectangleF rect)
         {
             if (bmp_alpha == null || bmp_alpha.Width != rect.Width || bmp_alpha.Height != rect.Height)
@@ -776,7 +776,7 @@ namespace AntdUI
         }
 
 
-        LayeredFormColorPicker? subForm = null;
+        LayeredFormColorPicker? subForm;
         public ILayeredForm? SubForm() => subForm;
         protected override void OnMouseClick(MouseEventArgs e)
         {
@@ -830,8 +830,8 @@ namespace AntdUI
             ThreadHover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover = null;
-        ITask? ThreadFocus = null;
+        ITask? ThreadHover;
+        ITask? ThreadFocus;
 
         #endregion
 

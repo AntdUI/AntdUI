@@ -196,7 +196,7 @@ namespace AntdUI
         /// SelectIndex 属性值更改时发生
         /// </summary>
         [Description("SelectIndex 属性值更改时发生"), Category("行为")]
-        public event IntEventHandler? SelectIndexChanged = null;
+        public event IntEventHandler? SelectIndexChanged;
 
         #region SetSelectIndex
 
@@ -425,7 +425,7 @@ namespace AntdUI
             ThreadChange?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadChange = null;
+        ITask? ThreadChange;
 
         void LongTime()
         {
@@ -508,8 +508,8 @@ namespace AntdUI
 
         #region 渲染
 
-        string? bmpcode = null;
-        Bitmap? bmp = null;
+        string? bmpcode;
+        Bitmap? bmp;
         protected override void OnPaint(PaintEventArgs e)
         {
             var _rect = ClientRectangle;

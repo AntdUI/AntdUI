@@ -51,8 +51,8 @@ namespace AntdUI
             base.OnHandleCreated(e);
         }
 
-        public Control? PARENT = null;
-        public Func<Keys, bool>? KeyCall = null;
+        public Control? PARENT;
+        public Func<Keys, bool>? KeyCall;
 
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -432,7 +432,7 @@ namespace AntdUI
             return true;
         }
 
-        ITask? taskTouch = null;
+        ITask? taskTouch;
         protected virtual bool OnTouchUp()
         {
             taskTouch?.Dispose();

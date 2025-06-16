@@ -198,7 +198,7 @@ namespace AntdUI
             base.OnVisibleChanged(e);
         }
 
-        BorderlessFormShadow? skin = null;
+        BorderlessFormShadow? skin;
         void ShowSkin()
         {
             if (DwmEnabled) return;

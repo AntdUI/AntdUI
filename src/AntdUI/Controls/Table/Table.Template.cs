@@ -160,7 +160,7 @@ namespace AntdUI
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
-            internal ITask? ThreadHover = null;
+            internal ITask? ThreadHover;
 
             #endregion
 
@@ -263,7 +263,7 @@ namespace AntdUI
             public bool AnimationCheck = false;
             public float AnimationCheckValue = 0;
 
-            ITask? ThreadCheck = null;
+            ITask? ThreadCheck;
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -371,7 +371,7 @@ namespace AntdUI
             public bool AnimationCheck = false;
             public float AnimationCheckValue = 0;
 
-            ITask? ThreadCheck = null;
+            ITask? ThreadCheck;
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -478,7 +478,7 @@ namespace AntdUI
             internal bool AnimationCheck = false;
             internal float AnimationCheckValue = 0;
 
-            ITask? ThreadCheck = null;
+            ITask? ThreadCheck;
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -542,7 +542,7 @@ namespace AntdUI
 
             #region 悬浮
 
-            ITask? ThreadHover = null;
+            ITask? ThreadHover;
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
             internal bool _mouseHover = false;
@@ -633,7 +633,7 @@ namespace AntdUI
                 }
             }
 
-            ITask? ThreadLoading = null;
+            ITask? ThreadLoading;
             internal float LineWidth = 6, LineAngle = 0;
 
             #endregion
@@ -760,7 +760,7 @@ namespace AntdUI
 
             internal float AnimationHoverValue = 0;
             internal bool AnimationHover = false;
-            internal ITask? ThreadHover = null;
+            internal ITask? ThreadHover;
 
             #endregion
         }
@@ -800,15 +800,21 @@ namespace AntdUI
                 {
                     if (COLUMN.Width != null)
                     {
-                        if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
+                        if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
+                            var size2 = g.MeasureString(value, font, w - gap2, PARENT.sf);
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                        else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
+                        {
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2, PARENT.sf);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2, PARENT.sf);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
@@ -874,7 +880,7 @@ namespace AntdUI
                     }
                 }
                 var size = g.MeasureString(value, font, 0, PARENT.sf);
-                SortWidth = COLUMN.SortOrder ? (int)(size.Height * 0.8F) : 0;
+                SortWidth = COLUMN.SortOrder ? (int)(size.Height * .8F) : 0;
                 MinWidth = size.Width + gap2 + SortWidth;
 
                 return new Size(size.Width + gap2 + SortWidth, size.Height);
@@ -918,7 +924,7 @@ namespace AntdUI
             public PropertyDescriptor? PROPERTY { get; set; }
             public object? VALUE { get; set; }
 
-            RowTemplate? _ROW = null;
+            RowTemplate? _ROW;
             /// <summary>
             /// 行对象
             /// </summary>

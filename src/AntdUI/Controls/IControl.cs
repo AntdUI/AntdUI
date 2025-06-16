@@ -123,7 +123,7 @@ namespace AntdUI
 
         #region 徽标
 
-        string? badge = null;
+        string? badge;
         [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
@@ -136,7 +136,7 @@ namespace AntdUI
             }
         }
 
-        string? badgeSvg = null;
+        string? badgeSvg;
         [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
@@ -188,7 +188,7 @@ namespace AntdUI
             }
         }
 
-        Color? badgeback = null;
+        Color? badgeback;
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {
@@ -428,7 +428,7 @@ namespace AntdUI
             return true;
         }
 
-        ITask? taskTouch = null;
+        ITask? taskTouch;
         protected virtual bool OnTouchUp()
         {
             taskTouch?.Dispose();
@@ -532,7 +532,7 @@ namespace AntdUI
         protected virtual void OnDragLeave()
         { }
 
-        FileDropHandler? fileDrop = null;
+        FileDropHandler? fileDrop;
         /// <summary>
         /// 使用管理员权限拖拽上传
         /// </summary>
@@ -642,7 +642,7 @@ namespace AntdUI
         /// 文件拖拽后时发生
         /// </summary>
         [Description("文件拖拽后时发生"), Category("行为")]
-        public event DragEventHandler? DragChanged = null;
+        public event DragEventHandler? DragChanged;
         internal void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
 
         #endregion

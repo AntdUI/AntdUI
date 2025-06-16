@@ -133,6 +133,13 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 判断提示ID是否存在队列
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="time_expand">是否延长时间</param>
+        public static bool contains(string id, bool time_expand = false) => MsgQueue.contains("M" + id, time_expand);
+
+        /// <summary>
         /// 配置
         /// </summary>
         public class Config
@@ -169,7 +176,7 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
-            string? text = null;
+            string? text;
             /// <summary>
             /// 文本
             /// </summary>
@@ -329,9 +336,10 @@ namespace AntdUI
     {
         internal Message.Config config;
         int shadow_size = 10;
-        public MessageFrm(Message.Config _config)
+        public MessageFrm(Message.Config _config, string? id)
         {
             config = _config;
+            Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Form.SetTopMost(Handle);
             shadow_size = (int)(shadow_size * Config.Dpi);
@@ -349,7 +357,7 @@ namespace AntdUI
 
         bool loading = false, loadingend = true;
         int AnimationLoadingValue = 0;
-        ITask? ThreadLoading = null;
+        ITask? ThreadLoading;
         public bool IInit()
         {
             if (SetPosition(config.Form, config.ShowInWindow ?? Config.ShowInWindowByMessage)) return true;
@@ -396,7 +404,7 @@ namespace AntdUI
                 loadingend = true;
                 if (config.AutoClose > 0)
                 {
-                    Thread.Sleep(config.AutoClose * 1000);
+                    Sleep(config.AutoClose);
                     CloseMe();
                 }
             });
@@ -457,7 +465,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

@@ -34,7 +34,7 @@ namespace AntdUI
     {
         #region 属性
 
-        Color? fill = null;
+        Color? fill;
         /// <summary>
         /// 填充颜色
         /// </summary>
@@ -135,7 +135,7 @@ namespace AntdUI
             ThreadLoading?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading = null;
+        ITask? ThreadLoading;
 
         #endregion
 

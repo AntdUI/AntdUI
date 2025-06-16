@@ -19,7 +19,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -140,6 +139,13 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 判断通知ID是否存在队列
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="time_expand">是否延长时间</param>
+        public static bool contains(string id, bool time_expand = false) => MsgQueue.contains("N" + id, time_expand);
+
+        /// <summary>
         /// 配置
         /// </summary>
         public class Config
@@ -182,7 +188,7 @@ namespace AntdUI
             /// </summary>
             public Form Form { get; set; }
 
-            string? title = null;
+            string? title;
             /// <summary>
             /// 标题
             /// </summary>
@@ -207,7 +213,7 @@ namespace AntdUI
             /// </summary>
             public FontStyle? FontStyleTitle { get; set; }
 
-            string? text = null;
+            string? text;
             /// <summary>
             /// 文本
             /// </summary>
@@ -330,9 +336,10 @@ namespace AntdUI
         Font font_title;
         internal Notification.Config config;
         int shadow_size = 10;
-        public NotificationFrm(Notification.Config _config)
+        public NotificationFrm(Notification.Config _config, string? id)
         {
             config = _config;
+            Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Form.SetTopMost(Handle);
             shadow_size = (int)(shadow_size * Config.Dpi);
@@ -364,7 +371,7 @@ namespace AntdUI
             {
                 ITask.Run(() =>
                 {
-                    Thread.Sleep(config.AutoClose * 1000);
+                    Sleep(config.AutoClose);
                     CloseMe();
                 });
             }
@@ -427,7 +434,7 @@ namespace AntdUI
             return original_bmp;
         }
 
-        SafeBitmap? shadow_temp = null;
+        SafeBitmap? shadow_temp;
         /// <summary>
         /// 绘制阴影
         /// </summary>

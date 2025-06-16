@@ -238,7 +238,7 @@ namespace AntdUI
 
         #endregion
 
-        ITask? task_start = null;
+        ITask? task_start;
         protected override void OnLoad(EventArgs e)
         {
             if (ActiveAnimation) PlayAnimation();
@@ -249,7 +249,7 @@ namespace AntdUI
 
         #region 开始动画
 
-        Bitmap? bmp_tmp = null;
+        Bitmap? bmp_tmp;
         public void PlayAnimation()
         {
             if (Config.HasAnimation(name))
@@ -361,6 +361,21 @@ namespace AntdUI
 
         #region 关闭
 
+        public void Sleep(int second)
+        {
+            Thread.Sleep(second * 1000);
+            if (Tag is string id)
+            {
+                while (MsgQueue.expands.TryGetValue(id, out var d))
+                {
+                    var now = DateTime.Now;
+                    MsgQueue.expands.Remove(id);
+                    int t = (int)(d.AddSeconds(second) - now).TotalMilliseconds;
+                    Thread.Sleep(t);
+                }
+            }
+        }
+
         DateTime closetime;
         bool handclose = false;
         public void CloseMe()
@@ -392,16 +407,28 @@ namespace AntdUI
         static ManualResetEvent _event = new ManualResetEvent(false);
         internal static ConcurrentQueue<object> queue = new ConcurrentQueue<object>(), queue_cache = new ConcurrentQueue<object>();
         internal static List<string> volley = new List<string>();
+        internal static List<string> ids = new List<string>();
+        internal static Dictionary<string, DateTime> expands = new Dictionary<string, DateTime>();
 
         #region 添加队列
 
         public static void Add(Notification.Config config)
         {
+            if (config.ID != null)
+            {
+                string key = "N" + config.ID;
+                ids.Add(key);
+            }
             queue.Enqueue(config);
             _event.SetWait();
         }
         public static void Add(Message.Config config)
         {
+            if (config.ID != null)
+            {
+                string key = "M" + config.ID;
+                ids.Add(key);
+            }
             queue.Enqueue(config);
             _event.SetWait();
         }
@@ -413,6 +440,25 @@ namespace AntdUI
         }
 
         #endregion
+
+        /// <summary>
+        /// 判断ID是否存在队列
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="time_expand">是否延长时间</param>
+        public static bool contains(string id, bool time_expand = false)
+        {
+            bool result = ids.Contains(id);
+            if (result)
+            {
+                lock (expands)
+                {
+                    if (expands.ContainsKey(id)) expands[id] = DateTime.Now;
+                    else expands.Add(id, DateTime.Now);
+                }
+            }
+            return result;
+        }
 
         static MsgQueue()
         {
@@ -426,6 +472,7 @@ namespace AntdUI
                 if (_event.Wait()) return;
                 while (queue.TryDequeue(out var d)) Hand(d);
                 volley.Clear();
+                expands.Clear();
                 _event.ResetWait();
             }
         }
@@ -444,6 +491,7 @@ namespace AntdUI
                 }
                 else if (d is ILayeredFormAnimate formAnimate)
                 {
+                    if (formAnimate.Tag is string ID) ids.Remove(ID);
                     if (Config.HasAnimation(formAnimate.name)) formAnimate.StopAnimation().Wait();
                     formAnimate.IClose(true);
                     Close(formAnimate.Align, formAnimate.key, formAnimate.name);
@@ -457,11 +505,13 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
+                string? key = null;
                 if (config.ID != null)
                 {
-                    string key = "N" + config.ID;
+                    key = "N" + config.ID;
                     if (volley.Contains(key))
                     {
+                        ids.Remove(key);
                         volley.Remove(key);
                         return false;
                     }
@@ -469,7 +519,7 @@ namespace AntdUI
                 bool ishand = false;
                 config.Form.Invoke(new Action(() =>
                 {
-                    var from = new NotificationFrm(config);
+                    var from = new NotificationFrm(config, key);
                     if (from.IInit())
                     {
                         from.Dispose();
@@ -494,11 +544,13 @@ namespace AntdUI
         {
             if (config.Form.IsHandleCreated)
             {
+                string? key = null;
                 if (config.ID != null)
                 {
-                    string key = "M" + config.ID;
+                    key = "M" + config.ID;
                     if (volley.Contains(key))
                     {
+                        ids.Remove(key);
                         volley.Remove(key);
                         return false;
                     }
@@ -506,7 +558,7 @@ namespace AntdUI
                 bool ishand = false;
                 config.Form.Invoke(new Action(() =>
                 {
-                    var from = new MessageFrm(config);
+                    var from = new MessageFrm(config, key);
                     if (from.IInit())
                     {
                         from.Dispose();

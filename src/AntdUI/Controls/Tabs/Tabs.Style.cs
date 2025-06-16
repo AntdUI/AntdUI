@@ -458,7 +458,7 @@ namespace AntdUI
 
             bool AnimationBar = false;
             RectangleF AnimationBarValue;
-            ITask? ThreadBar = null;
+            ITask? ThreadBar;
 
             void SetRect(int old, int value)
             {

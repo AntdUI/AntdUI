@@ -177,7 +177,7 @@ namespace AntdUI
         /// </summary>
         public string? LocalizationText { get; set; }
 
-        string? subText = null;
+        string? subText;
         /// <summary>
         /// 子文本
         /// </summary>

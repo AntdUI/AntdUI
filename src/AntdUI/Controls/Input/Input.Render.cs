@@ -433,6 +433,7 @@ namespace AntdUI
                 if (scrollx == value) return;
                 scrollx = value;
                 Invalidate();
+                if (SyncScrollObj is Input input) input.ScrollX = scrollx;
             }
         }
         int ScrollY
@@ -446,6 +447,7 @@ namespace AntdUI
                 scrolly = value;
                 CaretInfo.flag = true;
                 Invalidate();
+                if (SyncScrollObj is Input input) input.ScrollY = scrolly;
             }
         }
 
@@ -533,6 +535,13 @@ namespace AntdUI
             else if (count > 5) System.Threading.Thread.Sleep(10);
             else if (count > 3) System.Threading.Thread.Sleep(30);
             else System.Threading.Thread.Sleep(50);
+        }
+
+        object? SyncScrollObj;
+        public Input SyncScroll(Input input)
+        {
+            SyncScrollObj = input;
+            return this;
         }
 
         #endregion
