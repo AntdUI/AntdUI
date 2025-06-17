@@ -2367,6 +2367,17 @@ namespace AntdUI
 
         #endregion
 
+        protected override void OnClick(EventArgs e)
+        {
+            Form? form = FindForm();
+            if (form != null)
+            {
+                form.DialogResult = DialogResult;
+            }
+
+            base.OnClick(e);
+        }
+
         protected override void Dispose(bool disposing)
         {
             ThreadClick?.Dispose();
