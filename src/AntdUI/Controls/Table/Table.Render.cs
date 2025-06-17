@@ -322,7 +322,8 @@ namespace AntdUI
                 if (dragHeader == null) return;
                 foreach (var column in row.cells)
                 {
-                    if (dragHeader.i == column.INDEX)
+                    int index = column.COLUMN.INDEX_REAL;
+                    if (dragHeader.i == index)
                     {
                         using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
                         {
@@ -347,7 +348,7 @@ namespace AntdUI
                             else g.Fill(brush, column.RECT);
                         }
                     }
-                    if (dragHeader.im == column.INDEX)
+                    if (dragHeader.im == index)
                     {
                         using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
                         {
@@ -367,7 +368,6 @@ namespace AntdUI
                 int i = 0, gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
                 foreach (var it in StackedHeaderRows)
                 {
-                    //if (it.StackedColumns == null || it.StackedColumns.Length == 0) continue;
                     foreach (var item in it.StackedColumns) PaintTableHeaderStacked(g, row, fore, column_font, ref handkey, ref dskey, rY, rHeight, item);
                     rY += rHeight;
                 }
@@ -409,7 +409,8 @@ namespace AntdUI
                 if (dragHeader == null) return;
                 foreach (var column in row.cells)
                 {
-                    if (dragHeader.i == column.INDEX)
+                    int index = column.COLUMN.INDEX_REAL;
+                    if (dragHeader.i == index)
                     {
                         using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
                         {
@@ -434,7 +435,7 @@ namespace AntdUI
                             else g.Fill(brush, column.RECT);
                         }
                     }
-                    if (dragHeader.im == column.INDEX)
+                    if (dragHeader.im == index)
                     {
                         using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
                         {
@@ -703,7 +704,7 @@ namespace AntdUI
                 g.SetClip(it.RECT, CombineMode.Intersect);
                 g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
             }
-            if (dragHeader != null && dragHeader.i == it.INDEX) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
+            if (dragHeader != null && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
             {
                 using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))

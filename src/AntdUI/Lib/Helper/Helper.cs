@@ -195,12 +195,19 @@ namespace AntdUI
 
         public static bool DateExceedMonth(DateTime date, DateTime? min, DateTime? max)
         {
-            if (min.HasValue && min.Value >= date) return false;
+            // 检查目标月份是否早于minDate所在的月份
+            if (min.HasValue)
+            {
+                // 如果目标月份比minDate的月份还早，禁用
+                if (date.Year < min.Value.Year || (date.Year == min.Value.Year && date.Month < min.Value.Month)) return false;
+            }
+            // 检查目标月份是否晚于maxDate所在的月份
             if (max.HasValue)
             {
-                if (max.Value.Year == date.Year && max.Value.Month == date.Month) return true;
-                if (max.Value <= date) return false;
+                // 如果目标月份比maxDate的月份还晚，禁用
+                if (date.Year > max.Value.Year || (date.Year == max.Value.Year && date.Month > max.Value.Month)) return false;
             }
+            // 目标月份在允许范围内
             return true;
         }
 

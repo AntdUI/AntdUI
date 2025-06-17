@@ -2025,6 +2025,7 @@ namespace AntdUI
 
         internal Table? PARENT { get; set; }
         internal int INDEX { get; set; }
+        internal int INDEX_REAL { get; set; }
         void Invalidate()
         {
             if (PARENT == null) return;
