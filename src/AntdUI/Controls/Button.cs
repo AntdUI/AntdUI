@@ -1496,8 +1496,9 @@ namespace AntdUI
         {
             if (enabled && hasFocus && WaveSize > 0)
             {
-                float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
-                using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(radius + wave))
+                float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2, r = radius + wave;
+                var rect_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2);
+                using (var path_focus = Path(rect_focus, r))
                 {
                     g.Draw(Colour.PrimaryBorder.Get("Button", ColorScheme), wave, path_focus);
                 }
@@ -2365,6 +2366,13 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void OnClick(EventArgs e)
+        {
+            Form? form = FindForm();
+            if (form != null) form.DialogResult = DialogResult;
+            base.OnClick(e);
+        }
 
         protected override void Dispose(bool disposing)
         {

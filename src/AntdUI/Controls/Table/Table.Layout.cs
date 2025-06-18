@@ -429,78 +429,74 @@ namespace AntdUI
                 #endregion
 
                 List<Rectangle> _dividerHs = new List<Rectangle>(), _dividers = new List<Rectangle>();
-                var MoveHeaders = new List<MoveHeader>();
-
                 int last_index = _rows.Count - 1;
-                if (last_index > 0)
+                var last_row = _rows[last_index];
+                while (!last_row.ShowExpand)
                 {
-                    var last_row = _rows[last_index];
-                    while (!last_row.ShowExpand)
+                    last_index--;
+                    last_row = _rows[last_index];
+                }
+                var last = last_row.cells[last_row.cells.Length - 1];
+
+                bool isempty = emptyHeader && _rows.Count == 1;
+                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y + split;
+
+                rect_divider = new Rectangle(rect_read.X + split2, rect_read.Y + split2, rect_read.Width, rect_read.Height);
+
+                var MoveHeaders = new List<MoveHeader>();
+                var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
+                foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);
+                foreach (var row in _rows)
+                {
+                    if (row.IsColumn)
                     {
-                        last_index--;
-                        last_row = _rows[last_index];
-                    }
-                    var last = last_row.cells[last_row.cells.Length - 1];
-
-                    bool isempty = emptyHeader && _rows.Count == 1;
-                    if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y + split;
-
-                    rect_divider = new Rectangle(rect_read.X + split2, rect_read.Y + split2, rect_read.Width, rect_read.Height);
-
-                    var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
-                    foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);
-                    foreach (var row in _rows)
-                    {
-                        if (row.IsColumn)
+                        if (EnableHeaderResizing)
                         {
-                            if (EnableHeaderResizing)
+                            for (int i = 0; i < row.cells.Length; i++)
                             {
-                                for (int i = 0; i < row.cells.Length; i++)
+                                var it = row.cells[i];
+                                MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth));
+                            }
+                        }
+                        if (bordered)
+                        {
+                            if (isempty)
+                            {
+                                for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth));
+                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, it.RECT.Height - split));
                                 }
-                            }
-                            if (bordered)
-                            {
-                                if (isempty)
-                                {
-                                    for (int i = 0; i < row.cells.Length - 1; i++)
-                                    {
-                                        var it = row.cells[i];
-                                        _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, it.RECT.Height - split));
-                                    }
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < row.cells.Length - 1; i++)
-                                    {
-                                        var it = row.cells[i];
-                                        _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, rect_read.Height));
-                                    }
-                                }
-                                if (visibleHeader) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
                             }
                             else
                             {
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT.Y + gap, split, it.RECT.Height - gap2));
+                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, rect_read.Height));
                                 }
                             }
+                            if (visibleHeader) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
                         }
                         else
                         {
-                            if (bordered) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
-                            else _dividers.Add(new Rectangle(row.RECT.X, row.RECT.Bottom - split2, row.RECT.Width, split));
+                            for (int i = 0; i < row.cells.Length - 1; i++)
+                            {
+                                var it = row.cells[i];
+                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT.Y + gap, split, it.RECT.Height - gap2));
+                            }
                         }
                     }
-                    if (bordered && !isempty) _dividers.RemoveAt(_dividers.Count - 1);
-                    dividerHs = _dividerHs.ToArray();
-                    dividers = _dividers.ToArray();
-                    moveheaders = MoveHeaders.ToArray();
+                    else
+                    {
+                        if (bordered) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
+                        else _dividers.Add(new Rectangle(row.RECT.X, row.RECT.Bottom - split2, row.RECT.Width, split));
+                    }
                 }
+                if (bordered && !isempty) _dividers.RemoveAt(_dividers.Count - 1);
+                dividerHs = _dividerHs.ToArray();
+                dividers = _dividers.ToArray();
+                moveheaders = MoveHeaders.ToArray();
             });
 
             #endregion
@@ -517,10 +513,10 @@ namespace AntdUI
         {
             if (SortHeader == null)
             {
-                int index = 0;
                 foreach (var it in columns)
                 {
-                    action(new Column(it.key, it.text ?? it.key) { INDEX = index });
+                    int index = 0;
+                    action(new Column(it.key, it.text ?? it.key) { INDEX = index, INDEX_REAL = index });
                     index++;
                 }
             }
@@ -529,32 +525,40 @@ namespace AntdUI
                 foreach (var i in SortHeader)
                 {
                     var it = columns[i];
-                    action(new Column(it.key, it.text ?? it.key) { INDEX = i });
+                    action(new Column(it.key, it.text ?? it.key) { INDEX = i, INDEX_REAL = i });
                 }
             }
         }
         void ForColumn(ColumnCollection columns, Func<Column, int> action)
         {
+            int index = 0;
             if (SortHeader == null)
             {
                 foreach (var it in columns)
                 {
                     it.PARENT = this;
+                    it.INDEX_REAL = index;
                     if (it.Visible) it.INDEX = action(it);
+                    index++;
                 }
             }
             else
             {
                 var dir = new Dictionary<int, Column>();
-                foreach (var it in columns) dir.Add(dir.Count, it);
+                foreach (var it in columns)
+                {
+
+                    it.INDEX_REAL = index;
+                    dir.Add(dir.Count, it);
+                    index++;
+                }
                 try
                 {
-                    foreach (var index in SortHeader)
+                    foreach (var i in SortHeader)
                     {
-                        var it = dir[index];
+                        var it = dir[i];
                         it.PARENT = this;
-                        it.INDEX = index;
-                        if (it.Visible) action(it);
+                        if (it.Visible) it.INDEX = action(it);
                     }
                 }
                 catch { }

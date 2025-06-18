@@ -91,7 +91,7 @@ namespace AntdUI
                         {
                             dragHeader = new DragHeader
                             {
-                                i = cell.INDEX,
+                                i = cell.COLUMN.INDEX_REAL,
                                 x = e.X
                             };
                             return;
@@ -205,29 +205,19 @@ namespace AntdUI
                 if (hand && dragHeader.im != -1)
                 {
                     //执行排序
-                    if (dataTmp == null) return;
-                    var sortHeader = new List<int>(dataTmp.columns.Length);
-                    int dim = dragHeader.im, di = dragHeader.i;
-                    if (SortHeader != null)
+                    if (columns == null) return;
+                    var sortHeader = new List<int>(columns.Count);
+                    if (SortHeader == null)
                     {
-                        foreach (var item in SortHeader)
-                        {
-                            var it = dataTmp.columns[item];
-                            if (dragHeader.im == it.i) dim = it.i;
-                            if (dragHeader.i == it.i) di = it.i;
-                        }
+                        foreach (var it in columns) sortHeader.Add(it.INDEX_REAL);
                     }
-                    foreach (var it in dataTmp.columns)
-                    {
-                        int index = it.i;
-                        if (index == dim)
-                        {
-                            if (dragHeader.last) sortHeader.Add(index);
-                            if (sortHeader.Contains(di)) sortHeader.Remove(di);
-                            sortHeader.Add(di);
-                        }
-                        if (!sortHeader.Contains(index)) sortHeader.Add(index);
-                    }
+                    else sortHeader.AddRange(SortHeader);
+
+                    int sourceIndex = sortHeader.IndexOf(dragHeader.i), targetIndex = sortHeader.IndexOf(dragHeader.im);
+                    int sourceRealIndex = sortHeader[sourceIndex];
+                    sortHeader.RemoveAt(sourceIndex);
+                    // 调整插入位置，处理拖到最后位置的情况
+                    sortHeader.Insert(targetIndex, sourceRealIndex);
                     SortHeader = sortHeader.ToArray();
                     ExtractHeaderFixed();
                     LoadLayout();
@@ -562,13 +552,14 @@ namespace AntdUI
                 if (cel_sel != null)
                 {
                     var it = cells[i_cel];
-                    if (it.INDEX == dragHeader.i) dragHeader.im = -1;
-                    else dragHeader.im = it.INDEX;
+                    if (it.COLUMN.INDEX_REAL == dragHeader.i) dragHeader.im = -1;
+                    else dragHeader.im = it.COLUMN.INDEX_REAL;
                     Invalidate();
                     return;
                 }
-                if (cells[cells.Length - 1].INDEX == dragHeader.i) dragHeader.im = -1;
-                else dragHeader.im = cells[cells.Length - 1].INDEX;
+                var last = cells[cells.Length - 1].COLUMN.INDEX_REAL;
+                if (last == dragHeader.i) dragHeader.im = -1;
+                else dragHeader.im = last;
                 Invalidate();
                 return;
             }
