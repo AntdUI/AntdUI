@@ -711,10 +711,10 @@ namespace AntdUI
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    IPaint(g, rect_, rect, g.MeasureString(Config.NullText, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
+                    IPaint(g, rect_, rect, MeasureString(g, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
                 }
             }
-            else IPaint(g, rect_, rect, g.MeasureText(Text ?? Config.NullText, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
+            else IPaint(g, rect_, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
             this.PaintBadge(g);
             if (showDivider)
             {
@@ -737,7 +737,7 @@ namespace AntdUI
                 heightDescription = rect_real.Height / 3;
                 rect_real = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height - heightDescription);
             }
-            int u_x = IPaint(g, rect_real, fore, size.Height, ratio);
+            int u_x = IPaint(g, rect_real, fore, size, ratio);
             int rl = u_x;
             rect_real.X += u_x;
             rect_real.Width -= u_x;
@@ -773,32 +773,53 @@ namespace AntdUI
                 }
             }
             hasl = rl;
+            PaintContent(g, rect, _hasl, hasr);
             if (showButton) IPaintButton(g, rect_real, fore, fillsecondary, size);
+        }
+
+        protected virtual void PaintContent(Canvas g, Rectangle rect, int left, int rigth) { }
+
+        Size MeasureString(Canvas g, Font font)
+        {
+            var size = g.MeasureString(Config.NullText, font);
+            size.Width = 0;
+            return size;
+        }
+
+        Size MeasureString(Canvas g, string? text, Font font)
+        {
+            if (text == null)
+            {
+                var size = g.MeasureString(Config.NullText, font);
+                size.Width = 0;
+                return size;
+            }
+            else return g.MeasureString(text, font);
         }
 
         public Rectangle GetTitleRect(Canvas g)
         {
             var rect = ClientRectangle.PaddingRect(Padding, 0, 0, hasr, 0);
-            var size = g.MeasureText(Text ?? Config.NullText, Font);
+            var size = MeasureString(g, Text ?? Config.NullText, Font);
             if (UseTitleFont)
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
                     var sizeTitle = g.MeasureText(Text, fontTitle);
-                    rect.X += IPaintS(g, rect, size.Height, iconratio ?? 1.36F) / 2;
+                    rect.X += IPaintS(g, rect, size, iconratio ?? 1.36F) / 2;
                     return new Rectangle(rect.X, rect.Y + (rect.Height - sizeTitle.Height) / 2, sizeTitle.Width, sizeTitle.Height);
                 }
             }
             else
             {
-                rect.X += IPaintS(g, rect, size.Height, iconratio ?? 1F) / 2;
+                rect.X += IPaintS(g, rect, size, iconratio ?? 1F) / 2;
                 return new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
             }
         }
 
-        int IPaintS(Canvas g, Rectangle rect, int sHeight, float icon_ratio)
+        int IPaintS(Canvas g, Rectangle rect, Size size, float icon_ratio)
         {
-            int u_x = 0;
+            int u_x = 0, sHeight = size.Height;
             int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
             int icon_size = (int)Math.Round(sHeight * .72F);
             if (showback || AnimationBack)
@@ -817,12 +838,13 @@ namespace AntdUI
                 icon_size = icon_ratio == 1 ? sHeight : (int)Math.Round(sHeight * icon_ratio);
                 u_x += (icon_size + _gap);
             }
-            return u_x + _gap;
+            if (u_x > 0 || size.Width > 0) return u_x + _gap;
+            return 0;
         }
 
-        int IPaint(Canvas g, Rectangle rect, Color fore, int sHeight, float icon_ratio)
+        int IPaint(Canvas g, Rectangle rect, Color fore, Size size, float icon_ratio)
         {
-            int u_x = 0;
+            int u_x = 0, sHeight = size.Height;
             int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
             int icon_size = (int)Math.Round(sHeight * .72F);
             if (showback || AnimationBack)
@@ -882,8 +904,10 @@ namespace AntdUI
                 }
                 u_x += (icon_size + _gap);
             }
-            return u_x + _gap;
+            if (u_x > 0 || size.Width > 0) return u_x + _gap;
+            return 0;
         }
+
         void IPaintButton(Canvas g, Rectangle rect, Color fore, Color fillsecondary, Size size)
         {
             int btn_size = (int)(size.Height * 1.2F), btn_x = (rect_close.Width - btn_size) / 2, btn_y = (rect_close.Height - btn_size) / 2;
@@ -1071,7 +1095,7 @@ namespace AntdUI
         #endregion
 
         bool setsize = false;
-        int _hasl = 0, hasr = 0;
+        internal int _hasl = 0, hasr = 0;
         int hasl
         {
             get => _hasl;

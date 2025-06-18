@@ -20,119 +20,906 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace AntdUI.Controls
+namespace AntdUI
 {
     /// <summary>
-    /// 自定义标签头部控件
+    /// TabHeader 多标签页头
     /// </summary>
-    [ToolboxItem(true)]
+    [Description("TabHeader 多标签页头")]
+    [DefaultProperty("SelectedIndex")]
+    [DefaultEvent("TabChanged")]
     public class TabHeader : PageHeader
     {
-        // 标签数据集合
-        private List<TagtabItem> _tabs = new List<TagtabItem>();
+        #region 属性
 
-        // 标签尺寸和样式参数
-        private int _tabHeight = 30;
-        private int _tabPadding = 10;
-        private int _closeButtonSize = 16;
-        private int _closeButtonPadding = 5;
-        private int _iconSize = 16;
-        private int _iconPadding = 5;
-        private int _cornerRadius = 8; //圆角半径
-
-        // 自定义标签绘制内边距（不影响子控件布局）
-        private Padding _tabDrawingPadding = new Padding(60, 3, 80, 3);
-
-        // 颜色设置
-        private Color _selectedTabColor => AntdUI.Style.Get(Colour.PrimaryActive);// = Color.FromArgb(240, 240, 240);
-        private Color _hoverTabColor => Style.Get(Colour.HoverBg);// Color.FromArgb(230, 230, 230);
-        private Color _normalTabColor => Style.Get(Colour.BgContainer);// Color.White;
-        private Color _closeButtonColor = Color.Gray;
-        private Color _closeButtonHoverColor = Color.Red;
-        private Color _borderColor => Style.Get(Colour.BorderColor);
-        private Color _selectTabForeColor => Style.Get(Colour.TextBase);
-
-        // 当前鼠标悬停的关闭按钮索引
-        private int _hoveredCloseButtonIndex = -1;
-
-        // 滚动相关
-        private int _scrollOffset = 0;
-        private int _totalTabWidth = 0;
-        private bool _canScrollLeft = false;
-        private bool _canScrollRight = false;
-
-        // 事件委托
-        public event EventHandler<TabChangedEventArgs> TabChanged;
-        public event EventHandler<TabCloseEventArgs> TabClosing;
-
+        int radius = 6;
         /// <summary>
-        /// 公有属性
+        /// 圆角
         /// </summary>
-        public List<TagtabItem> Items => _tabs;
-
-        public TabHeader()
+        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        public int Radius
         {
-            SetStyle(ControlStyles.UserPaint |
-                     ControlStyles.AllPaintingInWmPaint |
-                     ControlStyles.OptimizedDoubleBuffer, true);
-
-            // 选中第一个标签
-            if (_tabs.Count > 0)
-                _tabs[0].IsSelected = true;
+            get => radius;
+            set
+            {
+                if (radius == value) return;
+                radius = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Radius));
+            }
         }
 
         /// <summary>
-        /// 自定义标签绘制内边距属性
+        /// 内容圆角
         /// </summary>
-        [Category("外观"), Description("自定义标签绘制内边距属性")]
-        [DefaultValue(typeof(Padding), "60,3,80,3")]
-        public Padding TabDrawingPadding
+        [Description("内容圆角"), Category("外观"), DefaultValue(4)]
+        public int RadiusContent { get; set; } = 4;
+
+        int offsetY = 0;
+        /// <summary>
+        /// Y偏移量
+        /// </summary>
+        [Description("Y偏移量"), Category("外观"), DefaultValue(0)]
+        public int OffsetY
         {
-            get { return _tabDrawingPadding; }
+            get => offsetY;
             set
             {
-                _tabDrawingPadding = value;
-                RecalculateLayout();
+                if (offsetY == value) return;
+                offsetY = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(OffsetY));
+            }
+        }
+
+        bool showAdd = false;
+        /// <summary>
+        /// 是否显示添加
+        /// </summary>
+        [Description("是否显示添加"), Category("外观"), DefaultValue(false)]
+        public bool ShowAdd
+        {
+            get => showAdd;
+            set
+            {
+                if (showAdd == value) return;
+                showAdd = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(ShowAdd));
+            }
+        }
+
+        /// <summary>
+        /// 拖拽排序
+        /// </summary>
+        [Description("拖拽排序"), Category("行为"), DefaultValue(false)]
+        public bool DragSort { get; set; }
+
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ForeColor));
+            }
+        }
+
+        /// <summary>
+        /// 悬浮文本颜色
+        /// </summary>
+        [Description("激活文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? ForeHover { get; set; }
+
+        /// <summary>
+        /// 悬浮背景颜色
+        /// </summary>
+        [Description("悬浮背景颜色"), Category("外观"), DefaultValue(null)]
+        public Color? BackHover { get; set; }
+
+        /// <summary>
+        /// 激活文本颜色
+        /// </summary>
+        [Description("激活文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? ForeActive { get; set; }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        public Color? BackActive { get; set; }
+
+        #region 边框
+
+        float borderWidth = 0;
+        /// <summary>
+        /// 边框宽度
+        /// </summary>
+        [Description("边框宽度"), Category("边框"), DefaultValue(0F)]
+        public float BorderWidth
+        {
+            get => borderWidth;
+            set
+            {
+                if (borderWidth == value) return;
+                borderWidth = value;
                 Invalidate();
             }
         }
 
         /// <summary>
-        /// 添加标签
+        /// 边框颜色
         /// </summary>
-        /// <param name="item"></param>
-        public void AddTab(TagtabItem item)
-        {
-            _tabs.Add(item);
-            RecalculateLayout();
-            Invalidate();
-        }
+        [Description("边框颜色"), Category("边框"), DefaultValue(null)]
+        public Color? BorderColor { get; set; }
+
+        #endregion
+
+        #region 边距
+
+        float tabIconRatio = 1.34F;
         /// <summary>
-        /// 插入标签
+        /// 图标比例
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="item"></param>
-        public void InsertTab(int index, TagtabItem item)
+        [Description("图标比例"), Category("外观"), DefaultValue(1.34F)]
+        public float TabIconRatio
         {
-            _tabs.Insert(index, item);
-            RecalculateLayout();
-            Invalidate();
+            get => tabIconRatio;
+            set
+            {
+                if (tabIconRatio == value) return;
+                tabIconRatio = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(IconRatio));
+            }
+        }
+
+        float tabCloseRatio = 1.408F;
+        /// <summary>
+        /// 关闭按钮比例
+        /// </summary>
+        [Description("关闭按钮比例"), Category("外观"), DefaultValue(1.408F)]
+        public float TabCloseRatio
+        {
+            get => tabCloseRatio;
+            set
+            {
+                if (tabCloseRatio == value) return;
+                tabCloseRatio = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(TabCloseRatio));
+            }
+        }
+
+        /// <summary>
+        /// 关闭图标比例
+        /// </summary>
+        [Description("关闭图标比例"), Category("外观"), DefaultValue(.74F)]
+        public float TabCloseIconRatio { get; set; } = .74F;
+
+        float tabGapRatio = .6F;
+        /// <summary>
+        /// 边距比例
+        /// </summary>
+        [Description("边距比例"), Category("外观"), DefaultValue(.6F)]
+        public float TabGapRatio
+        {
+            get => tabGapRatio;
+            set
+            {
+                if (tabGapRatio == value) return;
+                tabGapRatio = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(TabGapRatio));
+            }
+        }
+
+        float tabIconGapRatio = .74F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.74F)]
+        public float TabIconGapRatio
+        {
+            get => tabIconGapRatio;
+            set
+            {
+                if (tabIconGapRatio == value) return;
+                tabIconGapRatio = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(TabIconGapRatio));
+            }
+        }
+
+        float tabAddIconRatio = 1.18F;
+        /// <summary>
+        /// 新增按钮图标比例
+        /// </summary>
+        [Description("新增按钮图标比例"), Category("外观"), DefaultValue(1.18F)]
+        public float TabAddIconRatio
+        {
+            get => tabAddIconRatio;
+            set
+            {
+                if (tabAddIconRatio == value) return;
+                tabAddIconRatio = value;
+                if (showAdd) LoadLayout();
+                OnPropertyChanged(nameof(TabAddIconRatio));
+            }
+        }
+
+        float tabAddGapRatio = .148F;
+        /// <summary>
+        /// 新增按钮边距比例
+        /// </summary>
+        [Description("新增按钮边距比例"), Category("外观"), DefaultValue(.148F)]
+        public float TabAddGapRatio
+        {
+            get => tabAddGapRatio;
+            set
+            {
+                if (tabAddGapRatio == value) return;
+                tabAddGapRatio = value;
+                if (showAdd) LoadLayout();
+                OnPropertyChanged(nameof(TabAddGapRatio));
+            }
+        }
+
+        #endregion
+
+        #region 数据
+
+        TagTabCollection? items;
+        /// <summary>
+        /// 数据
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("集合"), Category("数据")]
+        public TagTabCollection Items
+        {
+            get
+            {
+                items ??= new TagTabCollection(this);
+                return items;
+            }
+            set => items = value.BindData(this);
+        }
+
+        int _select = 0;
+        [Description("选中序号"), Category("数据"), DefaultValue(0)]
+        public int SelectedIndex
+        {
+            get => _select;
+            set
+            {
+                if (_select == value) return;
+                int old = _select;
+                _select = value;
+                Invalidate();
+                if (items == null) return;
+                TabChanged?.Invoke(this, new TabChangedEventArgs(items[value], value));
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 布局
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            LoadLayout();
+        }
+
+        /// <summary>
+        /// 计算所有标签的布局和尺寸
+        /// </summary>
+        internal void LoadLayout(bool r = true)
+        {
+            if (IsHandleCreated)
+            {
+                if (items == null) return;
+                Helper.GDI(g =>
+                {
+                    var dir = new Dictionary<int, int[]>(items.Count);
+                    int txtHeight = g.MeasureString(Config.NullText, Font, 0, sf).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
+                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width, crect.Height - offset);
+                    if (showAdd) rect.Width -= rect.Height;
+                    int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
+                    ico_size = (int)(txtHeight * tabIconRatio), close_size = (int)(txtHeight * tabCloseRatio), close_i_size = (int)(txtHeight * TabCloseIconRatio),
+                    ico_y = rect.Y + (rect.Height - ico_size) / 2, close_y = rect.Y + (rect.Height - close_size) / 2, close_ico_y = (close_size - close_i_size) / 2;
+                    int use_x = rect.X, count_loading = 0;
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        var it = items[i];
+                        it.PARENT = this;
+                        if (it.Visible)
+                        {
+                            var size = g.MeasureText(it.Text, Font, 0, sf);
+                            int tabWidth;
+                            if (it.HasIcon) tabWidth = size.Width + paddx2 + gap2 + ico_size + close_size;
+                            else tabWidth = size.Width + paddx2 + gap + close_size;
+                            dir.Add(i, new[] { size.Width, tabWidth, size.Width });
+                            txtTW += tabWidth;
+                        }
+                    }
+
+                    #region 判断超出缩进
+
+                    int mw = rect.Width - hasr - _hasl;
+                    if (txtTW > mw)
+                    {
+                        var dirb = new Dictionary<int, float>(items.Count);
+                        foreach (var it in dir) dirb.Add(it.Key, it.Value[1] * 1F / txtTW);
+                        for (int i = 0; i < items.Count; i++)
+                        {
+                            var it = items[i];
+                            if (it.Visible)
+                            {
+                                int max = (int)Math.Round(mw * dirb[i]);
+                                if (dir[i][1] > max)
+                                {
+                                    if (it.HasIcon) dir[i][0] = max - (paddx2 + gap2 + ico_size + close_size);
+                                    else dir[i][0] = max - (paddx2 + gap + close_size);
+                                    dir[i][1] = max;
+                                }
+                            }
+                        }
+                    }
+
+                    #endregion
+
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        var it = items[i];
+                        if (it.Visible)
+                        {
+                            var textSize = dir[i];
+                            int tabWidth = textSize[1];
+                            it.Ellipsis = textSize[2] > textSize[0];
+                            it.ShowText = textSize[0] > 0;
+                            if (it.HasIcon || it.Loading)
+                            {
+                                var _rect = new Rectangle(use_x, rect.Y, tabWidth, rect.Height);
+                                it.Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height + border2);
+                                int x = _rect.X + paddx;
+                                if (it.ShowText)
+                                {
+                                    it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
+                                    var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
+                                    var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
+                                    it.RectText = _rect_text;
+                                    it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
+                                    it.RectClose = _rect_close;
+                                    it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                    it.ShowIcon = true;
+                                }
+                                else
+                                {
+                                    var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
+                                    var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
+                                    if (_rect_close.X < _rect_text.X - gap)
+                                    {
+                                        it.ShowIcon = false;
+                                        _rect_close.X = _rect.X + (_rect.Width - close_size) / 2;
+                                        it.RectClose = _rect_close;
+                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                    }
+                                    else
+                                    {
+                                        it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
+                                        it.RectText = _rect_text;
+                                        it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
+                                        it.RectClose = _rect_close;
+                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                        it.ShowIcon = true;
+                                    }
+                                }
+                                if (it.ShowIcon && it.Loading) count_loading++;
+                            }
+                            else
+                            {
+                                var _rect = new Rectangle(use_x, rect.Y, tabWidth, rect.Height);
+                                it.Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height + border2);
+                                if (it.ShowText)
+                                {
+                                    var _rect_text = new Rectangle(_rect.X + paddx, _rect.Y, textSize[0], _rect.Height);
+                                    it.RectText = _rect_text;
+                                    it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
+                                    var _rect_close = new Rectangle(_rect.X + paddx + gap + textSize[0], close_y, close_size, close_size);
+                                    it.RectClose = _rect_close;
+                                    it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                }
+                                else
+                                {
+                                    var _rect_close = new Rectangle(_rect.X + (_rect.Width - close_size) / 2, close_y, close_size, close_size);
+                                    it.RectClose = _rect_close;
+                                    it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                }
+                            }
+                            use_x += tabWidth;
+                        }
+                    }
+
+                    if (showAdd)
+                    {
+                        int ico_add_size = (int)(txtHeight * tabAddIconRatio), gap_add = (int)(txtHeight * tabAddGapRatio), gap_add2 = gap_add * 2, h = rect.Height - gap_add2, iy = (h - ico_add_size) / 2;
+                        RectAdd = new Rectangle(use_x + gap_add, rect.Y + gap_add, h, h);
+                        RectAddIco = new Rectangle(RectAdd.X + iy, RectAdd.Y + iy, ico_add_size, ico_add_size);
+                    }
+
+                    if (count_loading > 0)
+                    {
+                        if (ThreadLoading == null)
+                        {
+                            ThreadLoading = new ITask(this, () =>
+                            {
+                                AnimationLoadingValue += 6;
+                                if (AnimationLoadingValue > 360) AnimationLoadingValue = 0;
+                                Invalidate();
+                                return true;
+                            }, 10, () => Invalidate());
+                        }
+                    }
+                    else
+                    {
+                        ThreadLoading?.Dispose();
+                        ThreadLoading = null;
+                    }
+                    return use_x;
+                });
+                if (r) Invalidate();
+            }
+        }
+
+        Rectangle RectAdd, RectAddIco;
+        bool HoverAdd = false;
+
+        #endregion
+
+        #region 渲染
+
+        protected override void PaintContent(Canvas g, Rectangle rect, int left, int rigth)
+        {
+            if (items == null) return;
+            var state = g.Save();
+            var rect_real = new Rectangle(rect.X + left, rect.Y, rect.Width - rigth - left, rect.Height);
+            // 设置新的剪裁区域
+            g.SetClip(rect_real);
+            g.TranslateTransform(left, 0);
+            int _radius = (int)(radius * Config.Dpi), radiusContent = (int)(RadiusContent * Config.Dpi), border = (int)(borderWidth * Config.Dpi);
+            TagTabItem? tabselect = null;
+            var color = Colour.Text.Get("TabHeader", ColorScheme);
+            for (int i = 0; i < items.Count; i++)
+            {
+                var it = items[i];
+                if (it.Visible)
+                {
+                    if (i == _select)
+                    {
+                        tabselect = items[i];
+                        continue;
+                    }
+                    DrawTab(g, items[i], color, i, _radius, radiusContent, border);
+                }
+            }
+            if (dragHeader != null && dragHeader.im > -1)
+            {
+                g.Restore(state);
+                state = g.Save();
+                var it = items[dragHeader.im];
+                using (var brush_split = new SolidBrush(Colour.BorderColor.Get("TabHeader", ColorScheme)))
+                {
+                    int sp = (int)(2 * Config.Dpi);
+                    if (dragHeader.last) g.Fill(brush_split, new Rectangle(left + it.Rect.Right - sp, it.Rect.Y, sp * 2, it.Rect.Height));
+                    else g.Fill(brush_split, new Rectangle(left + it.Rect.X - sp, it.Rect.Y, sp * 2, it.Rect.Height));
+                }
+                g.SetClip(rect_real);
+                g.TranslateTransform(left, 0);
+            }
+            if (tabselect != null)
+            {
+                using (var path = tabselect.Rect.RoundPath(radius, true, true, false, false))
+                {
+                    g.Fill(BackActive ?? Colour.BgBase.Get("TabHeader", ColorScheme), path);
+                    if (border > 0)
+                    {
+                        using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get("TabHeader", ColorScheme), border))
+                        {
+                            g.Draw(pen, path);
+                        }
+                    }
+                }
+                DrawText(g, tabselect, ForeActive ?? fore ?? color);
+                DrawCloseButton(g, tabselect, color, radiusContent);
+            }
+            if (showAdd)
+            {
+                if (HoverAdd)
+                {
+                    using (var path = RectAdd.RoundPath(radiusContent))
+                    {
+                        g.Fill(Colour.FillSecondary.Get("TabHeader"), path);
+                    }
+                }
+                g.PaintIconCore(RectAddIco, "PlusOutlined", color);
+            }
+            g.Restore(state);
+        }
+
+        StringFormat sf = Helper.SF_NoWrap(lr: StringAlignment.Near);
+        /// <summary>
+        /// 绘制单个标签（包含圆角）
+        /// </summary>
+        void DrawTab(Canvas g, TagTabItem tab, Color color, int index, int radius, int radiusContent, int border)
+        {
+            if (tab.Hover)
+            {
+                using (var path = tab.Rect.RoundPath(radius, true, true, false, false))
+                {
+                    g.Fill(BackHover ?? Colour.FillTertiary.Get("TabHeader", ColorScheme), path);
+                }
+                DrawText(g, tab, ForeHover ?? fore ?? color);
+            }
+            else DrawText(g, tab, fore ?? color);
+
+            // 绘制关闭按钮
+            DrawCloseButton(g, tab, color, radiusContent);
+        }
+        void DrawText(Canvas g, TagTabItem tab, Color color)
+        {
+            if (tab.ShowText)
+            {
+                if (tab.Ellipsis)
+                {
+                    float prog = tab.RectText.Width * 1F / tab.RectTextFull.Width;
+                    using (var brush = new LinearGradientBrush(tab.RectTextFull, Color.Transparent, Color.Transparent, 0F))
+                    {
+                        brush.InterpolationColors = new ColorBlend(4)
+                        {
+                            Colors = new Color[] { color, color, Color.Transparent, Color.Transparent },
+                            Positions = new float[] { 0, prog / 2F, prog, 1F }
+                        };
+                        g.DrawText(tab.Text, Font, brush, tab.RectTextFull, sf);
+                    }
+                }
+                else g.DrawText(tab.Text, Font, color, tab.RectText, sf);
+            }
+            if (tab.ShowIcon)
+            {
+                if (tab.Loading)
+                {
+                    using (var pen = new Pen(Colour.Fill.Get("PageHeader", ColorScheme), tab.RectIcon.Height * .14F))
+                    using (var brush = new Pen(Color.FromArgb(170, color), pen.Width))
+                    {
+                        g.DrawEllipse(pen, tab.RectIcon);
+                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        g.DrawArc(brush, tab.RectIcon, AnimationLoadingValue, 100);
+                    }
+                }
+                else
+                {
+                    // 绘制图标
+                    if (tab.Icon != null) g.Image(tab.Icon, tab.RectIcon);
+                    if (tab.IconSvg != null) g.GetImgExtend(tab.IconSvg, tab.RectIcon, color);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绘制关闭按钮
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="tab"></param>
+        void DrawCloseButton(Canvas g, TagTabItem tab, Color color, int radius)
+        {
+            if (tab.HoverClose)
+            {
+                using (var path = tab.RectClose.RoundPath(radius))
+                {
+                    g.Fill(Colour.FillSecondary.Get("TabHeader"), path);
+                }
+            }
+            g.PaintIconClose(tab.RectCloseIco, color);
+        }
+
+        #region Loading
+
+        int AnimationLoadingValue = 0;
+        ITask? ThreadLoading;
+
+        protected override void Dispose(bool disposing)
+        {
+            ThreadLoading?.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 鼠标
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (items == null) return;
+            int count = 0, hand = 0;
+            int x = e.X - _hasl, y = e.Y;
+            if (dragHeader != null)
+            {
+                SetCursor(CursorType.SizeAll);
+                dragHeader.hand = true;
+                dragHeader.xr = x - dragHeader.x;
+                int xr = dragHeader.x + dragHeader.xr;
+                dragHeader.last = x > dragHeader.x;
+
+                var cel_sel = HitTestCore(x, y, out int i);
+                if (cel_sel != null)
+                {
+                    if (i == dragHeader.i) dragHeader.im = -1;
+                    else dragHeader.im = i;
+                }
+                else
+                {
+                    var last = items.Count - 1;
+                    if (last == dragHeader.i) dragHeader.im = -1;
+                    else dragHeader.im = last;
+                }
+                Invalidate();
+                return;
+            }
+            foreach (var it in items)
+            {
+                if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
+                {
+                    bool hoveClose = it.RectClose.Contains(x, y);
+                    if (hoveClose) hand++;
+                    if (it.Hover == true && it.HoverClose == hoveClose) continue;
+                    it.Hover = true;
+                    it.HoverClose = hoveClose;
+                    count++;
+                }
+                else
+                {
+                    if (it.Hover)
+                    {
+                        count++;
+                        it.Hover = false;
+                    }
+                    if (it.HoverClose)
+                    {
+                        count++;
+                        it.HoverClose = false;
+                    }
+                }
+            }
+            if (showAdd && RectAdd.Contains(x, y))
+            {
+                hand++;
+                if (!HoverAdd)
+                {
+                    HoverAdd = true;
+                    count++;
+                }
+            }
+            else if (HoverAdd)
+            {
+                HoverAdd = false;
+                count++;
+            }
+            SetCursor(hand > 0);
+            if (count > 0) Invalidate();
+        }
+
+        TagTabItem? mdown;
+        int mdownindex;
+        Table.DragHeader? dragHeader;
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            mdown = null;
+            if (items == null)
+            {
+                int x = e.X - _hasl, y = e.Y;
+                if (showAdd && RectAdd.Contains(x, y)) return;
+                base.OnMouseDown(e);
+                return;
+            }
+            if (e.Button == MouseButtons.Left)
+            {
+                int x = e.X - _hasl, y = e.Y;
+                if (showAdd && RectAdd.Contains(x, y)) return;
+                for (int i = 0; i < items.Count; i++)
+                {
+                    var it = items[i];
+                    if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
+                    {
+                        mdownindex = i;
+                        mdown = it;
+                        SelectedIndex = i;
+                        if (DragSort)
+                        {
+                            dragHeader = new Table.DragHeader
+                            {
+                                i = i,
+                                x = x
+                            };
+                            return;
+                        }
+                        return;
+                    }
+                }
+            }
+            base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            int x = e.X - _hasl, y = e.Y;
+            if (dragHeader != null)
+            {
+                bool hand = dragHeader.hand;
+                if (hand && dragHeader.im != -1)
+                {
+                    _select = dragHeader.im;
+                    var source = items![dragHeader.i];
+                    items.RemoveAt(dragHeader.i);
+                    items.Insert(dragHeader.im, source);
+                    LoadLayout();
+                }
+                dragHeader = null;
+                if (hand)
+                {
+                    Invalidate();
+                    OnTouchCancel();
+                    return;
+                }
+            }
+            if (showAdd && RectAdd.Contains(x, y))
+            {
+                dragHeader = null;
+                mdown = null;
+                AddClick?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            if (items == null) return;
+            if (mdown == null)
+            {
+                if (e.Button == MouseButtons.Middle)
+                {
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        var it = items[i];
+                        if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
+                        {
+                            // 触发标签关闭事件
+                            var args = new TabCloseEventArgs(it, mdownindex);
+                            TabClosing?.Invoke(this, args);
+                            if (args.Cancel) return;
+                            items.Remove(it);
+                            // 如果关闭的是当前选中标签，自动选择下一个标签
+                            if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
+                            return;
+                        }
+                    }
+                }
+                return;
+            }
+            if (mdown.RectClose.Contains(x, y))
+            {
+                // 触发标签关闭事件
+                var args = new TabCloseEventArgs(mdown, mdownindex);
+                TabClosing?.Invoke(this, args);
+                if (args.Cancel) return;
+                items.Remove(mdown);
+                // 如果关闭的是当前选中标签，自动选择下一个标签
+                if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
+            }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            int count = 0;
+            if (HoverAdd)
+            {
+                HoverAdd = false;
+                count++;
+            }
+            if (items == null)
+            {
+                if (count > 0) Invalidate();
+                return;
+            }
+            // 重置所有标签的悬停状态
+            foreach (var it in items)
+            {
+                if (it.Hover || it.HoverClose)
+                {
+                    it.Hover = false;
+                    it.HoverClose = false;
+                    count++;
+                }
+            }
+            if (count > 0) Invalidate();
+        }
+
+        #endregion
+
+        #region 方法
+
+        public TagTabItem? HitTest(int x, int y, out int i) => HitTestCore(x - _hasl, y, out i);
+        public TagTabItem? HitTestCore(int x, int y, out int i)
+        {
+            i = -1;
+            if (items == null) return null;
+            for (int j = 0; j < items.Count; j++)
+            {
+                var it = items[j];
+                if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
+                {
+                    i = j;
+                    return it;
+                }
+            }
+            return null;
+        }
+
+        public void Select(TagTabItem item)
+        {
+            if (items == null) return;
+            SelectedIndex = items.IndexOf(item);
         }
 
         /// <summary>
         /// 添加标签
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="icon"></param>
-        public void AddTab(string text, Image icon = null)
+        /// <param name="item"></param>
+        public void AddTab(TagTabItem item, bool select = false)
         {
-            _tabs.Add(new TagtabItem(text, icon));
-            RecalculateLayout();
-            Invalidate();
+            if (select)
+            {
+                if (items == null) _select = 0;
+                else _select = items.Count;
+            }
+            Items.Add(item);
         }
+
+        /// <summary>
+        /// 插入标签
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="item"></param>
+        public void InsertTab(int index, TagTabItem item, bool select = false)
+        {
+            if (select) _select = index;
+            Items.Insert(index, item);
+        }
+
+        /// <summary>
+        /// 添加标签
+        /// </summary>
+        public void AddTab(string text, Image? icon = null) => Items.Add(new TagTabItem(text, icon));
+
+        /// <summary>
+        /// 添加标签
+        /// </summary>
+        public void AddTab(string text, string? iconsvg = null) => Items.Add(new TagTabItem(text, iconsvg));
 
         /// <summary>
         /// 插入标签
@@ -140,12 +927,7 @@ namespace AntdUI.Controls
         /// <param name="index"></param>
         /// <param name="text"></param>
         /// <param name="icon"></param>
-        public void InsertTab(int index, string text, Image icon = null)
-        {
-            _tabs.Insert(index, new TagtabItem(text, icon));
-            RecalculateLayout();
-            Invalidate();
-        }
+        public void InsertTab(int index, string text, Image? icon = null) => Items.Insert(index, new TagTabItem(text, icon));
 
         /// <summary>
         /// 移除标签
@@ -153,558 +935,197 @@ namespace AntdUI.Controls
         /// <param name="index"></param>
         public void RemoveTab(int index)
         {
-            if (index >= 0 && index < _tabs.Count)
+            if (index >= 0 && index < Items.Count)
             {
-                _tabs.RemoveAt(index);
-                RecalculateLayout();
-                Invalidate();
+                Items.RemoveAt(index);
+                LoadLayout();
             }
         }
 
+        #endregion
+
+        #region 事件
+
         /// <summary>
-        /// 选中指定索引的标签
+        /// 点击添加按钮
         /// </summary>
-        /// <param name="index"></param>
-        public void SelectTab(int index)
+        public event EventHandler? AddClick;
+        public event EventHandler<TabChangedEventArgs>? TabChanged;
+        public event EventHandler<TabCloseEventArgs>? TabClosing;
+
+        #endregion
+    }
+
+    public class TagTabCollection : iCollection<TagTabItem>
+    {
+        public TagTabCollection(TabHeader it)
         {
-            if (index >= 0 && index < _tabs.Count)
-            {
-                for (int i = 0; i < _tabs.Count; i++)
-                {
-                    _tabs[i].IsSelected = i == index;
-                }
-
-                // 触发标签变更事件
-                TabChanged?.Invoke(this, new TabChangedEventArgs(index, _tabs[index]));
-
-                // 确保选中的标签可见
-                EnsureTabVisible(index);
-
-                Invalidate();
-            }
+            BindData(it);
         }
 
-        /// <summary>
-        /// 确保指定索引的标签可见（滚动到视野内）
-        /// </summary>
-        /// <param name="index"></param>
-        private void EnsureTabVisible(int index)
+        internal TagTabCollection BindData(TabHeader it)
         {
-            if (index < 0 || index >= _tabs.Count)
-                return;
-
-            Rectangle tabBounds = _tabs[index].Bounds;
-
-            // 如果标签在左侧不可见区域
-            if (tabBounds.Left < _tabDrawingPadding.Left)
+            action = render =>
             {
-                _scrollOffset += tabBounds.Left - _tabDrawingPadding.Left;
-            }
-            // 如果标签在右侧不可见区域
-            else if (tabBounds.Right > Width - _tabDrawingPadding.Right)
-            {
-                _scrollOffset -= Width - _tabDrawingPadding.Right - tabBounds.Right;
-            }
-
-            // 确保滚动偏移量在有效范围内
-            _scrollOffset = Math.Max(0, Math.Min(_scrollOffset, _totalTabWidth - (Width - _tabDrawingPadding.Left - _tabDrawingPadding.Right)));
-
-            UpdateScrollState();
-        }
-
-        /// <summary>
-        /// 计算所有标签的布局和尺寸
-        /// </summary>
-        private void RecalculateLayout()
-        {
-            _totalTabWidth = 0;
-
-            using (Graphics g = CreateGraphics())
-            {
-                for (int i = 0; i < _tabs.Count; i++)
-                {
-                    TagtabItem tab = _tabs[i];
-                    SizeF textSize = g.MeasureString(tab.Text, Font);
-
-                    // 计算标签宽度：文字宽度 + 左右内边距 + 关闭按钮宽度 + 关闭按钮内边距 + 图标宽度 + 图标内边距
-                    int tabWidth = (int)Math.Ceiling(textSize.Width) +
-                                  _tabPadding * 2 +
-                                  _closeButtonSize +
-                                  _closeButtonPadding;
-
-                    // 如果有图标，增加图标宽度和间距
-                    if (tab.Icon != null)
-                    {
-                        tabWidth += _iconSize + _iconPadding;
-                    }
-
-                    // 设置标签位置和大小（使用自定义绘制内边距）
-                    tab.Bounds = new Rectangle(
-                        _tabDrawingPadding.Left + _totalTabWidth - _scrollOffset,
-                        _tabDrawingPadding.Top,
-                        tabWidth,
-                        _tabHeight
-                    );
-
-                    // 设置关闭按钮位置
-                    tab.CloseButtonBounds = new Rectangle(
-                        tab.Bounds.Right - _closeButtonSize - _closeButtonPadding,
-                        tab.Bounds.Top + (tab.Bounds.Height - _closeButtonSize) / 2,
-                        _closeButtonSize,
-                        _closeButtonSize
-                    );
-
-                    _totalTabWidth += tabWidth;
-                }
-            }
-
-            UpdateScrollState();
-        }
-
-        /// <summary>
-        /// 更新滚动状态
-        /// </summary>
-        private void UpdateScrollState()
-        {
-            _canScrollLeft = _scrollOffset > 0;
-            _canScrollRight = _scrollOffset < _totalTabWidth - (Width - _tabDrawingPadding.Left - _tabDrawingPadding.Right);
-        }
-
-        /// <summary>
-        /// 向左滚动
-        /// </summary>
-        private void ScrollLeft()
-        {
-            if (_canScrollLeft)
-            {
-                _scrollOffset = Math.Max(0, _scrollOffset - 50);
-                RecalculateLayout();
-                Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// 向右滚动
-        /// </summary>
-        private void ScrollRight()
-        {
-            if (_canScrollRight)
-            {
-                _scrollOffset = Math.Min(_totalTabWidth - (Width - _tabDrawingPadding.Left - _tabDrawingPadding.Right), _scrollOffset + 50);
-                RecalculateLayout();
-                Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// 处理鼠标移动事件
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-
-            // 重置所有标签的悬停状态
-            for (int i = 0; i < _tabs.Count; i++)
-            {
-                _tabs[i].IsHovered = false;
-            }
-
-            _hoveredCloseButtonIndex = -1;
-
-            // 检测鼠标悬停在哪个标签上
-            for (int i = 0; i < _tabs.Count; i++)
-            {
-                TagtabItem tab = _tabs[i];
-
-                // 检查是否悬停在标签上
-                if (tab.Bounds.Contains(e.Location))
-                {
-                    tab.IsHovered = true;
-
-                    // 检查是否悬停在关闭按钮上
-                    if (tab.CloseButtonBounds.Contains(e.Location))
-                    {
-                        _hoveredCloseButtonIndex = i;
-                    }
-
-                    break;
-                }
-            }
-
-            Invalidate();
-        }
-
-        /// <summary>
-        /// 处理鼠标离开事件
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-
-            // 重置所有标签的悬停状态
-            for (int i = 0; i < _tabs.Count; i++)
-            {
-                _tabs[i].IsHovered = false;
-            }
-
-            _hoveredCloseButtonIndex = -1;
-
-            Invalidate();
-        }
-
-        /// <summary>
-        /// 处理鼠标点击事件
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-
-            if (e.Button == MouseButtons.Left)
-            {
-                // 检查是否点击了某个标签的关闭按钮
-                for (int i = 0; i < _tabs.Count; i++)
-                {
-                    if (_tabs[i].CloseButtonBounds.Contains(e.Location))
-                    {
-                        // 触发标签关闭事件
-                        var args = new TabCloseEventArgs(i);
-                        TabClosing?.Invoke(this, args);
-
-                        if (!args.Cancel)
-                        {
-                            RemoveTab(i);
-
-                            // 如果关闭的是当前选中标签，自动选择下一个标签
-                            if (i == _tabs.Count)
-                            {
-                                SelectTab(Math.Max(0, _tabs.Count - 1));
-                            }
-                        }
-
-                        return;
-                    }
-                }
-
-                // 检查是否点击了某个标签（非关闭按钮区域）
-                for (int i = 0; i < _tabs.Count; i++)
-                {
-                    if (_tabs[i].Bounds.Contains(e.Location) &&
-                        !_tabs[i].CloseButtonBounds.Contains(e.Location))
-                    {
-                        SelectTab(i);
-                        return;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 处理鼠标滚轮事件
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            base.OnMouseWheel(e);
-
-            if (e.Delta > 0)
-            {
-                ScrollLeft();
-            }
-            else
-            {
-                ScrollRight();
-            }
-        }
-
-        /// <summary>
-        /// 处理大小改变事件
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            RecalculateLayout();
-            Invalidate();
-        }
-
-        /// <summary>
-        /// 绘制控件
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            Graphics g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            // 设置剪裁区域，使用自定义绘制内边距
-            Rectangle clipRect = new Rectangle(
-                _tabDrawingPadding.Left,
-                _tabDrawingPadding.Top,
-                Width - _tabDrawingPadding.Left - _tabDrawingPadding.Right,
-                _tabHeight
-            );
-
-            // 保存当前剪裁区域
-            Region originalClip = g.Clip;
-
-            try
-            {
-                // 设置新的剪裁区域
-                g.SetClip(clipRect);
-
-                // 绘制每个标签
-                for (int i = 0; i < _tabs.Count; i++)
-                {
-                    // 只绘制在可见区域内的标签
-                    if (_tabs[i].Bounds.Right > _tabDrawingPadding.Left &&
-                        _tabs[i].Bounds.Left < Width - _tabDrawingPadding.Right)
-                    {
-                        DrawTab(g, _tabs[i], i);
-                    }
-                }
-            }
-            finally
-            {
-                // 恢复原始剪裁区域
-                g.Clip = originalClip;
-            }
-
-            // 绘制底部边框，使用自定义绘制内边距
-            using (Pen borderPen = new Pen(_selectedTabColor))
-            {
-                g.DrawLine(
-                    borderPen,
-                    _tabDrawingPadding.Left,
-                    _tabDrawingPadding.Top + _tabHeight - 1,
-                    Width - _tabDrawingPadding.Right,
-                    _tabDrawingPadding.Top + _tabHeight - 1
-                );
-            }
-        }
-
-        /// <summary>
-        /// 绘制单个标签（包含圆角）
-        /// </summary>
-        private void DrawTab(Graphics g, TagtabItem tab, int index)
-        {
-            // 计算在剪裁区域内的标签边界
-            Rectangle visibleBounds = tab.Bounds;
-
-            if (tab.Bounds.Left < _tabDrawingPadding.Left)
-            {
-                visibleBounds.X = _tabDrawingPadding.Left;
-                visibleBounds.Width = tab.Bounds.Right - _tabDrawingPadding.Left;
-            }
-
-            if (tab.Bounds.Right > Width - _tabDrawingPadding.Right)
-            {
-                visibleBounds.Width = Width - _tabDrawingPadding.Right - visibleBounds.Left;
-            }
-
-            // 绘制标签背景（圆角矩形）
-            using (GraphicsPath path = GetRoundedRectanglePath(visibleBounds, _cornerRadius))
-            {
-                // 确定标签背景颜色
-                Color tabColor;
-                if (tab.IsSelected)
-                {
-                    tabColor = _selectedTabColor;
-                }
-                else if (tab.IsHovered)
-                {
-                    tabColor = _hoverTabColor;
-                }
-                else
-                {
-                    tabColor = _normalTabColor;
-                }
-
-                using (SolidBrush brush = new SolidBrush(tabColor))
-                {
-                    g.FillPath(brush, path);
-                }
-
-                // 绘制标签边框
-                using (Pen pen = new Pen(_borderColor))
-                {
-                    // 使用路径绘制边框，确保圆角处也有边框
-                    g.DrawPath(pen, path);
-                }
-            }
-
-            // 计算文本绘制区域
-            Rectangle textRect = new Rectangle(
-                visibleBounds.Left + _tabPadding,
-                visibleBounds.Top,
-                visibleBounds.Width - _tabPadding * 2 - _closeButtonSize - _closeButtonPadding,
-                visibleBounds.Height
-            );
-
-            if (tab.Icon != null)
-            {
-                textRect.X += _iconSize + _iconPadding;
-                textRect.Width -= _iconSize + _iconPadding;
-            }
-
-            if (textRect.Width > 10)
-            {
-                using var textBrush = new SolidBrush(_selectTabForeColor);
-                using var sf = new StringFormat();
-                sf.Alignment = StringAlignment.Near;
-                sf.LineAlignment = StringAlignment.Center;
-                sf.Trimming = StringTrimming.EllipsisCharacter;
-                sf.FormatFlags = StringFormatFlags.NoWrap;
-
-                g.DrawString(tab.Text, Font, textBrush, textRect, sf);
-            }
-
-            // 绘制图标
-            if (tab.Icon != null)
-            {
-                Rectangle iconRect = new Rectangle(
-                    visibleBounds.Left + _tabPadding,
-                    visibleBounds.Top + (visibleBounds.Height - _iconSize) / 2,
-                    _iconSize,
-                    _iconSize
-                );
-
-                if (iconRect.Right <= Width - _tabDrawingPadding.Right)
-                {
-                    g.DrawImage(tab.Icon, iconRect);
-                }
-            }
-
-            // 绘制关闭按钮
-            if (tab.CloseButtonBounds.Left >= _tabDrawingPadding.Left &&
-                tab.CloseButtonBounds.Right <= Width - _tabDrawingPadding.Right)
-            {
-                DrawCloseButton(g, tab);
-            }
-        }
-
-        /// <summary>
-        /// 创建圆角矩形路径
-        /// </summary>
-        private GraphicsPath GetRoundedRectanglePath(Rectangle rect, int radius)
-        {
-            var path = new GraphicsPath();
-            int diameter = radius * 2;
-            //左侧直线
-            path.AddLine(rect.X, rect.Bottom, rect.X, radius);
-            // 左上角
-            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
-            // 右上角
-            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
-            //右侧直线
-            path.AddLine(rect.Right, diameter, rect.Right, rect.Bottom);
-
-            path.CloseFigure();
-            return path;
-        }
-        /// <summary>
-        /// 绘制关闭按钮
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="tab"></param>
-        private void DrawCloseButton(Graphics g, TagtabItem tab)
-        {
-            // 仅当鼠标悬停在关闭按钮上时才显示红色，不考虑标签是否被选中
-            Color buttonColor = _hoveredCloseButtonIndex == _tabs.IndexOf(tab)
-                ? _closeButtonHoverColor
-                : _closeButtonColor;
-
-            // 绘制关闭按钮背景
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(200, 200, 200)))
-            {
-                g.FillEllipse(brush, tab.CloseButtonBounds);
-            }
-
-            // 绘制关闭按钮的叉号
-            using (Pen pen = new Pen(buttonColor, 2))
-            {
-                int offset = 4;
-                g.DrawLine(
-                    pen,
-                    tab.CloseButtonBounds.Left + offset,
-                    tab.CloseButtonBounds.Top + offset,
-                    tab.CloseButtonBounds.Right - offset,
-                    tab.CloseButtonBounds.Bottom - offset
-                );
-
-                g.DrawLine(
-                    pen,
-                    tab.CloseButtonBounds.Right - offset,
-                    tab.CloseButtonBounds.Top + offset,
-                    tab.CloseButtonBounds.Left + offset,
-                    tab.CloseButtonBounds.Bottom - offset
-                );
-            }
+                if (render) it.LoadLayout(false);
+                it.Invalidate();
+            };
+            return this;
         }
     }
 
     /// <summary>
     /// 标签页数据结构
     /// </summary>
-    public class TagtabItem
+    public class TagTabItem
     {
-        public string Text { get; set; }
-        public Image Icon { get; set; }
-        public bool IsSelected { get; set; }
-        public bool IsHovered { get; set; }
-        public object Tag { get; set; }
-        public Rectangle Bounds { get; set; }
-        public Rectangle CloseButtonBounds { get; set; }
+        public TagTabItem() : this("Text")
+        { }
 
-        public TagtabItem(string text, Image icon = null)
+        public TagTabItem(string text)
         {
-            Text = text;
+            _text = text;
+        }
+
+        public TagTabItem(string text, Image? icon)
+        {
+            _text = text;
             Icon = icon;
-            IsSelected = false;
-            IsHovered = false;
         }
-    }
-
-    /// <summary>
-    /// 标签变更事件参数
-    /// </summary>
-    /// <param name="tabIndex"></param>
-    /// <param name="item"></param>
-    public class TabChangedEventArgs : EventArgs
-    {
-        public TabChangedEventArgs(int tabIndex, TagtabItem item)
+        public TagTabItem(string text, string? iconSvg)
         {
-            this.TabIndex = tabIndex;
-            this.Item = item;
+            _text = text;
+            IconSvg = iconSvg;
         }
+
         /// <summary>
-        /// 标签Index
+        /// ID
         /// </summary>
-        public int TabIndex { get; private set; }
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
 
-        public TagtabItem Item { get; private set; }
-    }
-
-    /// <summary>
-    /// 标签关闭事件参数
-    /// </summary>
-    /// <param name="tabIndex"></param>
-    public class TabCloseEventArgs : EventArgs
-    {
-        public TabCloseEventArgs(int tabIndex)
+        string _text;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Category("外观"), Description("文本")]
+        public string Text
         {
-            this.TabIndex = tabIndex;
+            get => _text;
+            set
+            {
+                if (_text == value) return;
+                _text = value;
+                PARENT?.LoadLayout();
+            }
         }
+
+        Image? icon;
         /// <summary>
-        /// 标签Index
+        /// 图标
         /// </summary>
-        public int TabIndex { get; private set; }
+        [Category("外观"), Description("图标"), DefaultValue(null)]
+        public Image? Icon
+        {
+            get => icon;
+            set
+            {
+                if (icon == value) return;
+                icon = value;
+                PARENT?.LoadLayout();
+            }
+        }
+
+        string? iconSvg;
         /// <summary>
-        /// 取消操作
+        /// 图标
         /// </summary>
-        public bool Cancel { get; set; } = false;
+        [Category("外观"), Description("图标SVG"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                PARENT?.LoadLayout();
+            }
+        }
+
+        /// <summary>
+        /// 是否包含图片
+        /// </summary>
+        public bool HasIcon => iconSvg != null || icon != null;
+
+        public bool Hover { get; set; }
+        public bool HoverClose { get; set; }
+
+        bool visible = true;
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        public bool Visible
+        {
+            get => visible;
+            set
+            {
+                if (visible == value) return;
+                visible = value;
+                PARENT?.LoadLayout();
+            }
+        }
+
+        #region 禁用
+
+        bool enabled = true;
+        /// <summary>
+        /// 禁用状态
+        /// </summary>
+        [Description("禁用状态"), Category("行为"), DefaultValue(true)]
+        public bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (enabled == value) return;
+                enabled = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        #endregion
+
+        #region 加载
+
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        public bool Loading { get; set; }
+
+        #endregion
+
+        public object? Tag { get; set; }
+
+        #region 内部
+
+        #region 变更
+
+        internal TabHeader? PARENT;
+
+        #endregion
+
+        internal bool Ellipsis { get; set; }
+        internal bool ShowText { get; set; }
+        internal bool ShowIcon { get; set; }
+        internal Rectangle Rect { get; set; }
+        internal Rectangle RectText { get; set; }
+        internal Rectangle RectTextFull { get; set; }
+        internal Rectangle RectIcon { get; set; }
+        internal Rectangle RectClose { get; set; }
+        internal Rectangle RectCloseIco { get; set; }
+
+        #endregion
     }
 }

@@ -328,6 +328,11 @@ namespace AntdUI
             /// 点击回调
             /// </summary>
             public Func<bool> Call { get; set; }
+
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
+            public object? Tag { get; set; }
         }
     }
 

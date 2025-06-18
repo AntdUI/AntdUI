@@ -569,6 +569,11 @@ namespace AntdUI
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
+
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
+            public object? Tag { get; set; }
         }
     }
 

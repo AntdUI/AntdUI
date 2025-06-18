@@ -16,26 +16,46 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using AntdUI;
 using System;
-using System.Drawing;
 
 namespace Demo
 {
-    public partial class TabHeaderForm : Window
+    public partial class TabHeaderForm : AntdUI.Window
     {
         public TabHeaderForm()
         {
             InitializeComponent();
-            var homeImage = SvgExtend.GetImgExtend("HomeOutlined", new Rectangle(0, 0, 16, 16));
-            tabHeader1.AddTab("首页", homeImage);
-            tabHeader1.AddTab("关于");
+            tabHeader1.AddTab("关于", "SlackSquareFilled");
+            tabHeader1.AddTab(new AntdUI.TagTabItem("关于"));
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var timeImage = SvgExtend.GetImgExtend("FieldTimeOutlined", new Rectangle(0, 0, 16, 16));
-            tabHeader1.AddTab(DateTime.Now.ToString(), timeImage);
+            var tab = new AntdUI.TagTabItem(DateTime.Now.ToString(), "TikTokFilled")
+            {
+                Loading = true
+            };
+            tabHeader1.AddTab(tab);
+
+            AntdUI.ITask.Run(() =>
+            {
+                System.Threading.Thread.Sleep(2000); // 模拟加载延时
+                tab.Loading = false;
+            });
+        }
+
+        private void tabHeader1_AddClick(object sender, EventArgs e)
+        {
+            var tab = new AntdUI.TagTabItem("苹果", "AppleFilled")
+            {
+                Loading = true
+            };
+            tabHeader1.AddTab(tab,true);
+            AntdUI.ITask.Run(() =>
+            {
+                System.Threading.Thread.Sleep(2000); // 模拟加载延时
+                tab.Loading = false;
+            });
         }
     }
 }

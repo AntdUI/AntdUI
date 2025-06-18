@@ -2021,6 +2021,11 @@ namespace AntdUI
             return this;
         }
 
+        /// <summary>
+        /// 用户定义数据
+        /// </summary>
+        public object? Tag { get; set; }
+
         #region 内部
 
         internal Table? PARENT { get; set; }
