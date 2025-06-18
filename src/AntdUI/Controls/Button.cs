@@ -2370,11 +2370,7 @@ namespace AntdUI
         protected override void OnClick(EventArgs e)
         {
             Form? form = FindForm();
-            if (form != null)
-            {
-                form.DialogResult = DialogResult;
-            }
-
+            if (form != null) form.DialogResult = DialogResult;
             base.OnClick(e);
         }
 

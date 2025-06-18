@@ -557,8 +557,9 @@ namespace AntdUI
                     Invalidate();
                     return;
                 }
-                if (cells[cells.Length - 1].COLUMN.INDEX_REAL == dragHeader.i) dragHeader.im = -1;
-                else dragHeader.im = cells[cells.Length - 1].COLUMN.INDEX_REAL;
+                var last = cells[cells.Length - 1].COLUMN.INDEX_REAL;
+                if (last == dragHeader.i) dragHeader.im = -1;
+                else dragHeader.im = last;
                 Invalidate();
                 return;
             }

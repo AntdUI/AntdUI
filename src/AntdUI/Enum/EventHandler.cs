@@ -917,6 +917,30 @@ namespace AntdUI
 
     #endregion
 
+    #region TabHeader
+
+    public class TabChangedEventArgs : VEventArgs<TagTabItem>
+    {
+        public TabChangedEventArgs(TagTabItem value, int tabIndex) : base(value)
+        {
+            Index = tabIndex;
+        }
+
+        public int Index { get; private set; }
+    }
+
+    public class TabCloseEventArgs : TabChangedEventArgs
+    {
+        public TabCloseEventArgs(TagTabItem value, int tabIndex) : base(value, tabIndex) { }
+
+        /// <summary>
+        /// 取消操作
+        /// </summary>
+        public bool Cancel { get; set; }
+    }
+
+    #endregion
+
     #endregion
 
     #region 基础

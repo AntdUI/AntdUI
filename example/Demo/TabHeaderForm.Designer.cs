@@ -46,26 +46,38 @@ namespace Demo
         /// </summary>
         private void InitializeComponent()
         {
-            tabHeader1 = new AntdUI.Controls.TabHeader();
+            AntdUI.TagTabItem tagTabItem1 = new AntdUI.TagTabItem();
+            tabHeader1 = new AntdUI.TabHeader();
             button1 = new AntdUI.Button();
             SuspendLayout();
             // 
             // tabHeader1
             // 
+            tabHeader1.BackActive = System.Drawing.Color.White;
+            tabHeader1.BackColor = System.Drawing.Color.FromArgb(232, 232, 232);
+            tabHeader1.BorderWidth = 1F;
             tabHeader1.Dock = System.Windows.Forms.DockStyle.Top;
-            tabHeader1.IconSvg = "HomeOutlined";
+            tabHeader1.DragSort = true;
+            tabHeader1.IconSvg = "ChromeFilled";
+            tagTabItem1.Hover = false;
+            tagTabItem1.HoverClose = false;
+            tagTabItem1.IconSvg = "WeiboSquareFilled";
+            tagTabItem1.Tag = null;
+            tagTabItem1.Text = "🦄 首页";
+            tabHeader1.Items.Add(tagTabItem1);
             tabHeader1.Location = new System.Drawing.Point(0, 0);
             tabHeader1.Name = "tabHeader1";
+            tabHeader1.ShowAdd = true;
             tabHeader1.ShowButton = true;
             tabHeader1.ShowIcon = true;
-            tabHeader1.Size = new System.Drawing.Size(800, 33);
-            tabHeader1.TabDrawingPadding = new System.Windows.Forms.Padding(150, 3, 140, 0);
+            tabHeader1.Size = new System.Drawing.Size(830, 44);
             tabHeader1.TabIndex = 0;
-            tabHeader1.Text = "tabHeader Test";
+            tabHeader1.AddClick += tabHeader1_AddClick;
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(12, 72);
+            button1.BorderWidth = 1F;
+            button1.Location = new System.Drawing.Point(12, 66);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(105, 38);
             button1.TabIndex = 1;
@@ -74,19 +86,19 @@ namespace Demo
             // 
             // TabHeaderForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            BackColor = System.Drawing.Color.White;
+            ClientSize = new System.Drawing.Size(830, 414);
             Controls.Add(button1);
             Controls.Add(tabHeader1);
             Name = "TabHeaderForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "TabHeader";
             ResumeLayout(false);
         }
 
         #endregion
 
-        private AntdUI.Controls.TabHeader tabHeader1;
+        private AntdUI.TabHeader tabHeader1;
         private AntdUI.Button button1;
     }
 }

@@ -457,6 +457,11 @@ namespace AntdUI
             internal Bitmap? shadow_temp;
 
             #endregion
+
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
+            public object? Tag { get; set; }
         }
     }
 }
