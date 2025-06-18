@@ -1,5 +1,13 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.5` 2025-06-17
+
+- ✍️ Table Column Drag and Drop Misalignment
+- ✍️ Table shows the misalignment of empty lines
+- ✍️ Button Focus
+- ✍️ Menu horizontal layout application Gap
+- ✍️ Calendar maximum and minimum values before and after
+
 ### `2.0.4` 2025-06-14
 
 - ➕ Tree BeforeExpand、AfterExpand
