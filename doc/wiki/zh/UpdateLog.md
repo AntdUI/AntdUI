@@ -1,5 +1,13 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.5` 2025-06-17
+
+- ✍️ Table 列拖拽错位
+- ✍️ Table 为空线错位
+- ✍️ Button 焦点
+- ✍️ Menu 横向布局应用 Gap
+- ✍️ 日历最大值最小值前后
+
 ### `2.0.4` 2025-06-14
 
 - ➕ Tree BeforeExpand、AfterExpand
