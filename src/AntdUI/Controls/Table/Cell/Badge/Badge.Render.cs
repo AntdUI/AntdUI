@@ -62,12 +62,12 @@ namespace AntdUI
         {
             if (string.IsNullOrEmpty(Text))
             {
-                var size = g.MeasureString(Config.NullText, font, 0, PARENT.PARENT.sf);
+                var size = g.MeasureString(Config.NullText, font);
                 return new Size(size.Height, size.Height);
             }
             else
             {
-                var size = g.MeasureString(Text, font, 0, PARENT.PARENT.sf);
+                var size = g.MeasureString(Text, font);
                 return new Size(size.Width + size.Height, size.Height);
             }
         }

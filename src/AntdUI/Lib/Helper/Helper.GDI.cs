@@ -29,6 +29,8 @@ namespace AntdUI
     {
         #region 文本布局
 
+        readonly public static StringFormat m_sf = SF_MEASURE_FONT();
+
         /// <summary>
         /// 文本布局
         /// </summary>
@@ -65,10 +67,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
-        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
-        {
-            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
-        }
+        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
 
         /// <summary>
         /// 文本布局（不换行）
@@ -87,10 +86,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
-        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
-        {
-            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
-        }
+        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
 
         /// <summary>
         /// 文本布局（超出省略号+不换行）
@@ -109,25 +105,6 @@ namespace AntdUI
             var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
             sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
             return sf;
-        }
-
-        public static StringFormat SF_MEASURE_FONT(StringFormat? format)
-        {
-            if (format == null)
-            {
-                var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-                sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-                return sf;
-            }
-            else
-            {
-                var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-                sf.FormatFlags = format.FormatFlags;
-                sf.Trimming = format.Trimming;
-                sf.HotkeyPrefix = format.HotkeyPrefix;
-                sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-                return sf;
-            }
         }
 
         /// <summary>

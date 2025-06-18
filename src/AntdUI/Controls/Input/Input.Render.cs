@@ -28,7 +28,6 @@ namespace AntdUI
     {
         #region 渲染
 
-        StringFormat sf_font = Helper.SF_MEASURE_FONT();
         internal StringFormat sf_center = Helper.SF_NoWrap();
         internal StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
 
@@ -324,15 +323,15 @@ namespace AntdUI
 
         void String(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
         {
-            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect, sf_font);
-            else g.String(text, cache.font ?? font, brush, cache.rect, sf_font);
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect);
+            else g.String(text, cache.font ?? font, brush, cache.rect);
         }
 
         void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
         {
             var rect = new Rectangle(cache.rect.X - 20, cache.rect.Y - 20, cache.rect.Width + 40, cache.rect.Height + 40);
-            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, rect, sf_font);
-            else g.String(text, cache.font ?? font, brush, rect, sf_font);
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, rect);
+            else g.String(text, cache.font ?? font, brush, rect);
         }
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }

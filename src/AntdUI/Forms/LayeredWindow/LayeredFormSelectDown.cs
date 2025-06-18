@@ -231,7 +231,7 @@ namespace AntdUI
             int y = 10, w = rect_read.Width;
             r_w = w;
             var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromPoint(point).WorkingArea;
+            var screen = Screen.FromRectangle(new Rectangle(point, control.Size)).WorkingArea;
             int r_h;
             if (items.Count > 0)
             {

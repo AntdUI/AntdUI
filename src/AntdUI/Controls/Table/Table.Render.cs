@@ -27,7 +27,6 @@ namespace AntdUI
 {
     partial class Table
     {
-        internal StringFormat sf = Helper.SF_MEASURE_FONT();
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();

@@ -61,7 +61,7 @@ namespace AntdUI
             if (Size.HasValue) return new Size((int)Math.Ceiling(Size.Value.Width * Config.Dpi), (int)Math.Ceiling(Size.Value.Height * Config.Dpi));
             else
             {
-                int size = gap2 + g.MeasureString(Config.NullText, font, 0, PARENT.PARENT.sf).Height;
+                int size = gap2 + g.MeasureString(Config.NullText, font).Height;
                 return new Size(size, size);
             }
         }

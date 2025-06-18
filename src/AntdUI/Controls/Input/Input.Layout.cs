@@ -45,7 +45,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     float dpi = Config.Dpi;
-                    int font_height = g.MeasureString(Config.NullText, Font, 10000, sf_font).Height;
+                    int font_height = g.MeasureString(Config.NullText, Font).Height;
                     if (isempty)
                     {
                         TextTotalLine = 0;
@@ -72,7 +72,7 @@ namespace AntdUI
                 {
                     Helper.GDI(g =>
                     {
-                        int font_height = g.MeasureString(Config.NullText, Font, 10000, sf_font).Height;
+                        int font_height = g.MeasureString(Config.NullText, Font).Height;
                         if (text == null)
                         {
                             CaretInfo.Height = font_height;
@@ -92,7 +92,7 @@ namespace AntdUI
             int index = 0;
             if (IsPassWord)
             {
-                var sizefont = g.MeasureString(PassWordChar, Font, 10000, sf_font);
+                var sizefont = g.MeasureString(PassWordChar, Font);
                 int w = sizefont.Width;
                 if (fontHeight < sizefont.Height) fontHeight = sizefont.Height;
                 foreach (char it in text)
@@ -135,19 +135,19 @@ namespace AntdUI
                         {
                             if (txt == "\t")
                             {
-                                var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
+                                var sizefont = g.MeasureString(" ", Font);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
                                 font_widths.Add(new CacheFont(index, txt, false, (int)Math.Ceiling(sizefont.Width * 8F)));
                             }
                             else if (txt == "\n" || txt == "\r\n")
                             {
-                                var sizefont = g.MeasureString(" ", Font, 10000, sf_font);
+                                var sizefont = g.MeasureString(" ", Font);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
                                 font_widths.Add(new CacheFont(index, txt, false, sizefont.Width));
                             }
                             else
                             {
-                                var sizefont = g.MeasureString(txt, Font, 10000, sf_font);
+                                var sizefont = g.MeasureString(txt, Font);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
                                 font_widths.Add(new CacheFont(index, txt, false, sizefont.Width));
                             }

@@ -336,7 +336,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var dir = new Dictionary<int, int[]>(items.Count);
-                    int txtHeight = g.MeasureString(Config.NullText, Font, 0, sf).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
+                    int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
                     Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
