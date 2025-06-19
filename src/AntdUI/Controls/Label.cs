@@ -475,7 +475,18 @@ namespace AntdUI
                 {
                     case TRotate.Clockwise_90:
                     case TRotate.CounterClockwise_90:
-                        if (autoEllipsis) ellipsis = rec.Height < font_size.Width;
+                        if (autoEllipsis)
+                        {
+                            bool wrap = stringFormat.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                            if (wrap) ellipsis = rec.Height < font_size.Width;
+                            else if (rec.Height < font_size.Width)
+                            {
+                                var line = (int)Math.Ceiling(font_size.Width * 1F / rec.Height);
+                                int height = font_size.Height * line;
+                                ellipsis = rec.Width < height;
+                            }
+                            else ellipsis = false;
+                        }
                         else ellipsis = false;
                         int off = (rec.Width - rec.Height) / 2, tmp = rec.Width, tmpx = rec.X;
                         rec.X = rec.Y + off;
@@ -484,7 +495,18 @@ namespace AntdUI
                         rec.Y = tmpx - off;
                         break;
                     default:
-                        if (autoEllipsis) ellipsis = rec.Width < font_size.Width;
+                        if (autoEllipsis)
+                        {
+                            bool wrap = stringFormat.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                            if (wrap) ellipsis = rec.Width < font_size.Width;
+                            else if (rec.Width < font_size.Width)
+                            {
+                                var line = (int)Math.Ceiling(font_size.Width * 1F / rec.Width);
+                                int height = font_size.Height * line;
+                                ellipsis = rec.Height < height;
+                            }
+                            else ellipsis = false;
+                        }
                         else ellipsis = false;
                         break;
                 }
