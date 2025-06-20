@@ -94,12 +94,12 @@ namespace AntdUI
             nullText = string.IsNullOrWhiteSpace(Text);
             if (nullText)
             {
-                var font_size = g.MeasureString(Config.NullText, Font ?? font, 0, PARENT.PARENT.sf);
+                var font_size = g.MeasureString(Config.NullText, Font ?? font);
                 return new Size(font_size.Height + gap, font_size.Height + gap);
             }
             else
             {
-                var font_size = g.MeasureText(Text, Font ?? font, 0, PARENT.PARENT.sf);
+                var font_size = g.MeasureText(Text, Font ?? font);
                 return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
             }
         }
@@ -112,12 +112,12 @@ namespace AntdUI
             Rect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, width, size.Height);
             if (nullText)
             {
-                var font_size = g.MeasureString(Config.NullText, Font ?? font, 0, PARENT.PARENT.sf);
+                var font_size = g.MeasureString(Config.NullText, Font ?? font);
                 RectIcon = new Rectangle(Rect.X + (Rect.Width - font_size.Height) / 2, Rect.Y + (Rect.Height - font_size.Height) / 2, font_size.Height, font_size.Height);
             }
             else
             {
-                var font_size = g.MeasureText(Text, Font ?? font, 0, PARENT.PARENT.sf);
+                var font_size = g.MeasureText(Text, Font ?? font);
                 Rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
                 RectIcon = icon_rect;
                 RectText = text_rect;

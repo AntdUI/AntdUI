@@ -929,11 +929,13 @@ namespace AntdUI
             {
                 if (selectIndex <= 0) return;
                 SetSelectIndex(selectIndex - 1);
+                if (e is HandledMouseEventArgs handled) handled.Handled = true;
             }
             else
             {
                 if (items == null || selectIndex >= items.Count - 1) return;
                 SetSelectIndex(selectIndex + 1);
+                if (e is HandledMouseEventArgs handled) handled.Handled = true;
             }
             base.OnMouseWheel(e);
         }

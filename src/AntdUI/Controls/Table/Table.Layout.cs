@@ -200,7 +200,7 @@ namespace AntdUI
                 foreach (var row in dataTmp.summary)
                 {
                     var cells = new List<CELL>(_columns.Count);
-                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key, true);
                     if (cells.Count > 0)
                     {
                         rowSummary++;
@@ -780,16 +780,16 @@ namespace AntdUI
         #endregion
 
         float check_radius = 0F, check_border = 1F;
-        void AddRows(ref List<CELL> cells, ref int processing, Column column, IRow row, string key)
+        void AddRows(ref List<CELL> cells, ref int processing, Column column, IRow row, string key, bool summary = false)
         {
-            if (column is ColumnSort columnSort) AddRows(ref cells, new TCellSort(this, columnSort));
+            if (column is ColumnSort columnSort) cells.Add(new TCellSort(this, columnSort));
             else if (row.cells.TryGetValue(key, out var ov))
             {
                 var value = OGetValue(ov, row.record, out var property, out var rv);
-                if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property);
-                else AddRows(ref cells, ref processing, column, rv, column.Render?.Invoke(value, row.record, row.i), property);
+                if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property, summary);
+                else AddRows(ref cells, ref processing, column, rv, column.Render?.Invoke(value, row.record, row.i), property, summary);
             }
-            else AddRows(ref cells, ref processing, column, null, column.Render?.Invoke(null, row.record, row.i), null);
+            else AddRows(ref cells, ref processing, column, null, column.Render?.Invoke(null, row.record, row.i), null, summary);
         }
 
         /// <summary>
@@ -801,39 +801,10 @@ namespace AntdUI
         /// <param name="ov">原始值</param>
         /// <param name="value">真值</param>
         /// <param name="prop">反射</param>
-        void AddRows(ref List<CELL> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop)
+        void AddRows(ref List<CELL> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop, bool summary)
         {
             if (value == null) cells.Add(new TCellText(this, column, prop, ov, null));
-            else
-            {
-                if (column is ColumnCheck columnCheck)
-                {
-                    //复选框
-                    has_check = true;
-                    bool value_check = false;
-                    if (value is bool check) value_check = check;
-                    AddRows(ref cells, new TCellCheck(this, columnCheck, prop, ov, value_check));
-                }
-                else if (column is ColumnRadio columnRadio)
-                {
-                    //单选框
-                    has_check = true;
-                    bool value_check = false;
-                    if (value is bool check) value_check = check;
-                    AddRows(ref cells, new TCellRadio(this, columnRadio, prop, ov, value_check));
-                }
-                else if (column is ColumnSwitch columnSwitch)
-                {
-                    //开关
-                    bool value_check = false;
-                    if (value is bool check) value_check = check;
-                    AddRows(ref cells, new TCellSwitch(this, columnSwitch, prop, ov, value_check));
-                }
-                else if (value is IList<ICell> icells) AddRows(ref cells, new Template(this, column, prop, ov, ref processing, icells));
-                else if (value is ICell icell) AddRows(ref cells, new Template(this, column, prop, ov, ref processing, new ICell[] { icell }));
-                else if (column is TemplateColumn tc) AddRows(ref cells, tc.CreateCell(this, tc, prop, ov, ref processing, value));
-                else cells.Add(new TCellText(this, column, prop, ov, value.ToString()));
-            }
+            else cells.Add(GetCELL(column, ref processing, ov, value, prop, summary));
             if (ov is INotifyPropertyChanged notify)
             {
                 notify.PropertyChanged -= Notify_PropertyChanged;
@@ -841,12 +812,40 @@ namespace AntdUI
             }
         }
 
-        void AddRows(ref List<CELL> cells, CELL data)
+        CELL GetCELL(Column column, ref int processing, object? ov, object value, PropertyDescriptor? prop, bool summary)
         {
-            cells.Add(data);
-            if (data is Template template)
+            if (summary) return AddRows(column, ref processing, ov, value, prop);
+            else if (column is ColumnCheck columnCheck)
             {
-                foreach (var it in template.Value)
+                //复选框
+                has_check = true;
+                bool value_check = false;
+                if (value is bool check) value_check = check;
+                return new TCellCheck(this, columnCheck, prop, ov, value_check);
+            }
+            else if (column is ColumnRadio columnRadio)
+            {
+                //单选框
+                has_check = true;
+                bool value_check = false;
+                if (value is bool check) value_check = check;
+                return new TCellRadio(this, columnRadio, prop, ov, value_check);
+            }
+            else if (column is ColumnSwitch columnSwitch)
+            {
+                //开关
+                bool value_check = false;
+                if (value is bool check) value_check = check;
+                return new TCellSwitch(this, columnSwitch, prop, ov, value_check);
+            }
+            else return AddRows(column, ref processing, ov, value, prop);
+        }
+        CELL AddRows(Column column, ref int processing, object? ov, object value, PropertyDescriptor? prop)
+        {
+            if (value is IList<ICell> icells)
+            {
+                var tmp = new Template(this, column, prop, ov, ref processing, icells);
+                foreach (var it in tmp.Value)
                 {
                     it.Changed = layout =>
                     {
@@ -854,7 +853,23 @@ namespace AntdUI
                         Invalidate();
                     };
                 }
+                return tmp;
             }
+            else if (value is ICell icell)
+            {
+                var tmp = new Template(this, column, prop, ov, ref processing, new ICell[] { icell });
+                foreach (var it in tmp.Value)
+                {
+                    it.Changed = layout =>
+                    {
+                        if (layout) LoadLayout();
+                        Invalidate();
+                    };
+                }
+                return tmp;
+            }
+            else if (column is TemplateColumn tc) return tc.CreateCell(this, tc, prop, ov, ref processing, value);
+            else return new TCellText(this, column, prop, ov, value.ToString());
         }
 
         RowTemplate AddRows(ref List<RowTemplate> rows, CELL[] cells, int row_i, object? record)

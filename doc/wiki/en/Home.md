@@ -42,7 +42,7 @@
 [![Splitter](Icon/Splitter.png)](Control/Splitter.md)
 
 
-### Navigation `6`
+### Navigation `7`
 
 #### [Breadcrumb](Control/Breadcrumb.md)
 [![Breadcrumb](Icon/Breadcrumb.png)](Control/Breadcrumb.md)
@@ -55,6 +55,9 @@
 
 #### [PageHeader](Control/PageHeader.md)
 [![PageHeader](Icon/PageHeader.png)](Control/PageHeader.md)
+
+#### [TabHeader](Control/TabHeader.md)
+[![TabHeader](Icon/TabHeader.png)](Control/TabHeader.md)
 
 #### [Pagination](Control/Pagination.md)
 [![Pagination](Icon/Pagination.png)](Control/Pagination.md)

@@ -86,7 +86,7 @@ namespace AntdUI
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
             if (Size.HasValue) return new Size((int)(Size.Value.Width * Config.Dpi), (int)(Size.Value.Height * Config.Dpi));
-            int height = g.MeasureString(Config.NullText, font, 0, PARENT.PARENT.sf).Height;
+            int height = g.MeasureString(Config.NullText, font).Height;
             if (Shape == TShape.Circle)
             {
                 int size = gap2 + height;

@@ -40,7 +40,7 @@ namespace AntdUI
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, Font ?? font, 0, PARENT.PARENT.sf);
+            var size = g.MeasureString(Text, Font ?? font);
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)
             {

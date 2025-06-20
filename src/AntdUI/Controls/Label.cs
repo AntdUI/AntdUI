@@ -96,8 +96,7 @@ namespace AntdUI
         public string? LocalizationText { get; set; }
 
         StringFormat stringCNoWrap = Helper.SF_NoWrap(),
-            stringFormat = Helper.SF(lr: StringAlignment.Near),
-            sf = Helper.SF_MEASURE_FONT();
+            stringFormat = Helper.SF(lr: StringAlignment.Near);
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -449,7 +448,7 @@ namespace AntdUI
             if (!string.IsNullOrEmpty(text))
             {
                 Rectangle rec;
-                var font_size = g.MeasureText(text, Font, 0, sf);
+                var font_size = g.MeasureText(text, Font);
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
@@ -476,7 +475,18 @@ namespace AntdUI
                 {
                     case TRotate.Clockwise_90:
                     case TRotate.CounterClockwise_90:
-                        if (autoEllipsis) ellipsis = rec.Height < font_size.Width;
+                        if (autoEllipsis)
+                        {
+                            bool wrap = stringFormat.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                            if (wrap) ellipsis = rec.Height < font_size.Width;
+                            else if (rec.Height < font_size.Width)
+                            {
+                                var line = (int)Math.Ceiling(font_size.Width * 1F / rec.Height);
+                                int height = font_size.Height * line;
+                                ellipsis = rec.Width < height;
+                            }
+                            else ellipsis = false;
+                        }
                         else ellipsis = false;
                         int off = (rec.Width - rec.Height) / 2, tmp = rec.Width, tmpx = rec.X;
                         rec.X = rec.Y + off;
@@ -485,7 +495,18 @@ namespace AntdUI
                         rec.Y = tmpx - off;
                         break;
                     default:
-                        if (autoEllipsis) ellipsis = rec.Width < font_size.Width;
+                        if (autoEllipsis)
+                        {
+                            bool wrap = stringFormat.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                            if (wrap) ellipsis = rec.Width < font_size.Width;
+                            else if (rec.Width < font_size.Width)
+                            {
+                                var line = (int)Math.Ceiling(font_size.Width * 1F / rec.Width);
+                                int height = font_size.Height * line;
+                                ellipsis = rec.Height < height;
+                            }
+                            else ellipsis = false;
+                        }
                         else ellipsis = false;
                         break;
                 }
@@ -899,7 +920,7 @@ namespace AntdUI
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureText(Text ?? Config.NullText, Font, 0, sf);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
@@ -907,13 +928,13 @@ namespace AntdUI
                         if (has_prefix) add += font_size.Height;
                         else if (has_prefixText)
                         {
-                            var font_size_prefix = g.MeasureText(Prefix, Font, 0, sf).Width;
+                            var font_size_prefix = g.MeasureText(Prefix, Font).Width;
                             add += font_size_prefix;
                         }
                         if (has_suffix) add += font_size.Height;
                         else if (has_suffixText)
                         {
-                            var font_size_suffix = g.MeasureText(Suffix, Font, 0, sf).Width;
+                            var font_size_suffix = g.MeasureText(Suffix, Font).Width;
                             add += font_size_suffix;
                         }
                         return new Size((int)Math.Ceiling(font_size.Width + add), font_size.Height);

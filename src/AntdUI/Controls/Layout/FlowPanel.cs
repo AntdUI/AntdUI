@@ -34,7 +34,7 @@ namespace AntdUI
     [DefaultProperty("Align")]
     [Designer(typeof(IControlDesigner))]
     [ProvideProperty("Index", typeof(Control))]
-    public class FlowPanel : IControl, IExtenderProvider
+    public class FlowPanel : ContainerPanel, IExtenderProvider
     {
         #region 属性
 
@@ -133,8 +133,10 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            ScrollBar?.Paint(e.Graphics.High());
             base.OnPaint(e);
+            var g = e.Graphics.High();
+            PaintBack(g);
+            ScrollBar?.Paint(g);
         }
 
         #region Index 排序
@@ -389,7 +391,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar?.MouseWheel(e.Delta);
+            ScrollBar?.MouseWheel(e);
             base.OnMouseWheel(e);
         }
 

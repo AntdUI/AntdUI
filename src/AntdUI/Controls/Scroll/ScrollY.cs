@@ -24,24 +24,12 @@ namespace AntdUI
 {
     public class ScrollY
     {
-        IControl? control;
         TAMode ColorScheme = TAMode.Auto;
-
-        public ScrollY(IControl _control)
-        {
-            ColorScheme = _control.ColorScheme;
-            Invalidate = () => _control.Invalidate();
-            control = _control;
-        }
 
         public ScrollY(FlowLayoutPanel _control)
         {
             SIZE = SystemInformation.VerticalScrollBarWidth;
             Invalidate = () => _control.Invalidate(Rect);
-        }
-        public ScrollY(Control _control)
-        {
-            Invalidate = () => _control.Invalidate();
         }
         public ScrollY(ILayeredForm _form)
         {
@@ -247,7 +235,6 @@ namespace AntdUI
             else if (Show && Rect.Contains(e))
             {
                 Hover = true;
-                control?.SetCursor(false);
                 return false;
             }
             else Hover = false;
@@ -268,7 +255,6 @@ namespace AntdUI
             else if (Show && Rect.Contains(e))
             {
                 Hover = true;
-                control?.SetCursor(false);
                 return false;
             }
             else Hover = false;

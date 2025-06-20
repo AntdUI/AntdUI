@@ -167,7 +167,7 @@ namespace AntdUI
         RectangleF[] splits = new RectangleF[0];
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
 

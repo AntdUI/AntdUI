@@ -711,7 +711,7 @@ namespace AntdUI
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    IPaint(g, rect_, rect, MeasureString(g, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
+                    IPaint(g, rect_, rect, MeasureString(g, Text, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
                 }
             }
             else IPaint(g, rect_, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
@@ -778,13 +778,6 @@ namespace AntdUI
         }
 
         protected virtual void PaintContent(Canvas g, Rectangle rect, int left, int rigth) { }
-
-        Size MeasureString(Canvas g, Font font)
-        {
-            var size = g.MeasureString(Config.NullText, font);
-            size.Width = 0;
-            return size;
-        }
 
         Size MeasureString(Canvas g, string? text, Font font)
         {

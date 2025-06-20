@@ -32,7 +32,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Vertical")]
     [Designer(typeof(IControlDesigner))]
-    public class StackPanel : IControl
+    public class StackPanel : ContainerPanel
     {
         bool autoscroll = false;
         /// <summary>
@@ -143,8 +143,10 @@ namespace AntdUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            ScrollBar?.Paint(e.Graphics.High());
             base.OnPaint(e);
+            var g = e.Graphics.High();
+            PaintBack(g);
+            ScrollBar?.Paint(g);
         }
 
         #region 布局
@@ -352,7 +354,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (ScrollBar != null && ScrollBar.EnabledY) ScrollBar.MouseWheel(e.Delta);
+            ScrollBar?.MouseWheel(e);
             base.OnMouseWheel(e);
         }
         protected override bool OnTouchScrollX(int value)

@@ -34,7 +34,7 @@ namespace AntdUI
     [DefaultProperty("Span")]
     [Designer(typeof(IControlDesigner))]
     [ProvideProperty("Index", typeof(Control))]
-    public class GridPanel : IControl, IExtenderProvider
+    public class GridPanel : ContainerPanel, IExtenderProvider
     {
         #region 属性
 
@@ -417,5 +417,11 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            PaintBack(e.Graphics.High());
+            base.OnPaint(e);
+        }
     }
 }

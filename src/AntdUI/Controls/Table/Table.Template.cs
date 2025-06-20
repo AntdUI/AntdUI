@@ -336,7 +336,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
+                var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
                 return size;
             }
@@ -444,7 +444,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
+                var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
                 return size;
             }
@@ -651,7 +651,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
+                var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
                 return size;
             }
@@ -686,7 +686,7 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font, 0, PARENT.sf);
+                var size = g.MeasureString(Config.NullText, font);
                 MinWidth = size.Width;
                 return size;
             }
@@ -802,25 +802,25 @@ namespace AntdUI
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureString(value, font, w - gap2, PARENT.sf);
+                            var size2 = g.MeasureString(value, font, w - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2, PARENT.sf);
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2, PARENT.sf);
+                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                     }
                 }
-                var size = g.MeasureString(value, font, 0, PARENT.sf);
+                var size = g.MeasureString(value, font);
                 MinWidth = size.Width;
                 return new Size(size.Width + gap2, size.Height);
             }
@@ -879,7 +879,7 @@ namespace AntdUI
                         }
                     }
                 }
-                var size = g.MeasureString(value, font, 0, PARENT.sf);
+                var size = g.MeasureString(value, font);
                 SortWidth = COLUMN.SortOrder ? (int)(size.Height * .8F) : 0;
                 MinWidth = size.Width + gap2 + SortWidth;
 

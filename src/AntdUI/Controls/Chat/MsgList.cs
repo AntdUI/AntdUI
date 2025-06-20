@@ -191,7 +191,7 @@ namespace AntdUI.Chat
                         }
                         else
                         {
-                            var badgesize = g.MeasureString(it.Badge, font_time);
+                            var badgesize = g.MeasureString(it.Badge, font_time).Size(4, 2);
                             Rectangle rect_badge;
                             if (badgesize.Width > badgesize.Height)
                             {
@@ -303,7 +303,7 @@ namespace AntdUI.Chat
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
 

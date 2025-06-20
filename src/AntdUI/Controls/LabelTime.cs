@@ -67,14 +67,14 @@ namespace AntdUI
         string show_tmp = "";
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
+            var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
             string[] time = GTime();
             show_tmp = string.Join("", time);
             using (var brush_sub = new SolidBrush(ForeColor.rgba(.8F)))
             using (var font = new Font(Font.FontFamily, rect.Height * .72F, FontStyle.Bold, GraphicsUnit.Pixel))
             {
-                var size = g.MeasureString(time[0], font, 10000, s_f_l);
+                var size = g.MeasureString(time[0], font);
                 var rect_time = new Rectangle(rect.X, rect.Y, size.Width, rect.Height);
                 g.String(time[1], font, ForeColor, rect_time, s_f_l);
                 int h2 = rect_time.Height / 2, r = rect_time.Width + (int)(size.Height * .24F), w2 = rect.Width - r;
@@ -86,7 +86,7 @@ namespace AntdUI
                         Size size1 = g.MeasureString(time[2], font_sub), size2 = g.MeasureString(time[3], font_sub);
                         g.String(time[2], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y, w2, h2), s_f_r1);
                         g.String(time[3], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y + h2, w2, h2), s_f_r2);
-                        Width = r + (size1.Width > size2.Width ? size1.Width : size2.Width);
+                        Width = r + (size1.Width > size2.Width ? size1.Width : size2.Width) + Padding.Horizontal;
                     }
                 }
                 else

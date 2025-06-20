@@ -120,7 +120,7 @@ namespace AntdUI
         /// <summary>
         /// 悬浮文本颜色
         /// </summary>
-        [Description("激活文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮文本颜色"), Category("外观"), DefaultValue(null)]
         public Color? ForeHover { get; set; }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var dir = new Dictionary<int, int[]>(items.Count);
-                    int txtHeight = g.MeasureString(Config.NullText, Font, 0, sf).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
+                    int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
                     Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
@@ -1011,7 +1011,7 @@ namespace AntdUI
         [Category("外观"), Description("文本")]
         public string Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID }) ?? _text;
             set
             {
                 if (_text == value) return;
@@ -1019,6 +1019,9 @@ namespace AntdUI
                 PARENT?.LoadLayout();
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         Image? icon;
         /// <summary>

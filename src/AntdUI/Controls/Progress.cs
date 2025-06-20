@@ -562,7 +562,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_c = Helper.SF_ALL(), s_r = Helper.SF_ALL(lr: StringAlignment.Far), s_l = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly StringFormat s_c = Helper.SF_NoWrap(), s_r = Helper.SF_NoWrap(lr: StringAlignment.Far), s_l = Helper.SF_NoWrap(lr: StringAlignment.Near);
         protected override void OnPaint(PaintEventArgs e)
         {
             var rect_t = ClientRectangle;

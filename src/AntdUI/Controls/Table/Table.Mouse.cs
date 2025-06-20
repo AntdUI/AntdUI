@@ -1102,10 +1102,10 @@ namespace AntdUI
         }
         protected override void OnLostFocus(EventArgs e)
         {
-            base.OnLostFocus(e);
             focused = false;
             if (LostFocusClearSelection) SelectedIndex = -1;
             CloseTip(true);
+            base.OnLostFocus(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -1154,7 +1154,7 @@ namespace AntdUI
             subForm?.IClose();
             subForm = null;
             CloseTip();
-            ScrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
         protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);

@@ -1,5 +1,22 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.6` 2025-06-20
+
+- ➕ Table GetColumnRealIndex
+- ➕ Input IconRatioRight
+- ➕ FlowPanel/GridPanel/StackPanel 背景，边框，设计器边框
+- ➕ TabHeader 多标签页头
+- ✍️ Table Summary 移除列复选框
+- ✍️ LabelTime 适配 Padding
+- ✍️ InputNumber 失去焦点顺序
+- ✍️ 优化 Input Round 图标边距
+- ✍️ BackImage 错位
+- ✍️ Canvas DrawText 错位 补全省略
+- ✍️ Label AutoEllipsis
+- ✍️ Measure Text
+- ✍️ Button DialogResult
+- ✍️ 补充 Tag
+
 ### `2.0.5` 2025-06-17
 
 - ✍️ Table 列拖拽错位

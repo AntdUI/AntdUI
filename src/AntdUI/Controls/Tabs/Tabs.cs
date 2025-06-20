@@ -779,8 +779,40 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            style.MouseWheel(e.Delta);
+            MouseWheelCore(e);
             base.OnMouseWheel(e);
+        }
+
+        void MouseWheelCore(MouseEventArgs e)
+        {
+            if (MouseWheelCore(e.Delta) && e is HandledMouseEventArgs handled) handled.Handled = true;
+        }
+        bool MouseWheelCore(int Delta)
+        {
+            if (scroll_show)
+            {
+                if (Delta == 0) return false;
+                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                switch (alignment)
+                {
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        int oldy = _scroll_y;
+                        scroll_x = 0;
+                        scroll_y -= delta;
+                        if (oldy == _scroll_y) return false;
+                        return true;
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                    default:
+                        int oldx = _scroll_x;
+                        scroll_y = 0;
+                        scroll_x -= delta;
+                        if (oldx == _scroll_x) return false;
+                        return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

@@ -437,7 +437,7 @@ namespace AntdUI
         public static Size RenderMeasure(this ITooltip core, Canvas g, int? maxWidth, out bool multiline)
         {
             multiline = core.Text.Contains("\n");
-            int padding = (int)Math.Ceiling(20 * Config.Dpi);
+            int padding = (int)Math.Ceiling(20 * Config.Dpi), paddingx = (int)Math.Ceiling(24 * Config.Dpi);
             var font_size = g.MeasureText(core.Text, core.Font);
             if (core.CustomWidth.HasValue)
             {
@@ -457,10 +457,10 @@ namespace AntdUI
                     multiline = true;
                 }
             }
-            if (core.ArrowAlign == TAlign.None) return new Size(font_size.Width + padding, font_size.Height + padding);
+            if (core.ArrowAlign == TAlign.None) return new Size(font_size.Width + paddingx, font_size.Height + padding);
             if (core.ArrowAlign == TAlign.Bottom || core.ArrowAlign == TAlign.BL || core.ArrowAlign == TAlign.BR || core.ArrowAlign == TAlign.Top || core.ArrowAlign == TAlign.TL || core.ArrowAlign == TAlign.TR)
-                return new Size(font_size.Width + padding, font_size.Height + padding + core.ArrowSize);
-            else return new Size(font_size.Width + padding + core.ArrowSize, font_size.Height + padding);
+                return new Size(font_size.Width + paddingx, font_size.Height + padding + core.ArrowSize);
+            else return new Size(font_size.Width + paddingx + core.ArrowSize, font_size.Height + padding);
         }
 
         public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)

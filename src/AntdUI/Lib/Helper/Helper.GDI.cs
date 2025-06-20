@@ -29,6 +29,8 @@ namespace AntdUI
     {
         #region 文本布局
 
+        readonly public static StringFormat m_sf = SF_MEASURE_FONT();
+
         /// <summary>
         /// 文本布局
         /// </summary>
@@ -65,10 +67,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
-        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
-        {
-            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
-        }
+        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
 
         /// <summary>
         /// 文本布局（不换行）
@@ -87,10 +86,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
-        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
-        {
-            return new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
-        }
+        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
 
         /// <summary>
         /// 文本布局（超出省略号+不换行）
@@ -109,25 +105,6 @@ namespace AntdUI
             var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
             sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
             return sf;
-        }
-
-        public static StringFormat SF_MEASURE_FONT(StringFormat? format)
-        {
-            if (format == null)
-            {
-                var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-                sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-                return sf;
-            }
-            else
-            {
-                var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-                sf.FormatFlags = format.FormatFlags;
-                sf.Trimming = format.Trimming;
-                sf.HotkeyPrefix = format.HotkeyPrefix;
-                sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-                return sf;
-            }
         }
 
         /// <summary>
@@ -891,7 +868,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var size = g.MeasureString(badegConfig.Badge, font);
+                        var size = g.MeasureString(badegConfig.Badge, font).Size(4, 2);
                         using (var s_f = SF_NoWrap())
                         {
                             int size_badge = (int)(size.Height * 1.2F);
@@ -919,27 +896,6 @@ namespace AntdUI
             }
         }
 
-        static Rectangle PaintBadge(Rectangle rect, TAlign align, int x, int y, int w, int h)
-        {
-            switch (align)
-            {
-                case TAlign.TL:
-                case TAlign.LT: return new Rectangle(rect.X + x, rect.Y + y, w, h);
-                case TAlign.BL:
-                case TAlign.LB: return new Rectangle(rect.X + x, rect.Bottom - y - h, w, h);
-                case TAlign.BR:
-                case TAlign.RB: return new Rectangle(rect.Right - x - w, rect.Bottom - y - h, w, h);
-                case TAlign.Top: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + y, w, h);
-                case TAlign.Bottom: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Bottom - y - h, w, h);
-                case TAlign.TR:
-                case TAlign.RT: return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
-                case TAlign.Left: return new Rectangle(rect.X + x, rect.Y + (rect.Height - h) / 2, w, h);
-                case TAlign.Right: return new Rectangle(rect.Right - x - w, rect.Y + (rect.Height - h) / 2, w, h);
-                default:
-                    return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);
-            }
-        }
-
         public static void PaintBadge(this IControl control, DateBadge badge, Rectangle rect, Canvas g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get("Badge", control.ColorScheme);
@@ -956,7 +912,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    var size = g.MeasureString(badge.Content, font);
+                    var size = g.MeasureString(badge.Content, font).Size(4, 2);
                     using (var s_f = SF_NoWrap())
                     {
                         int size_badge = (int)(size.Height * 1.2F);
@@ -980,6 +936,27 @@ namespace AntdUI
                         }
                     }
                 }
+            }
+        }
+
+        static Rectangle PaintBadge(Rectangle rect, TAlign align, int x, int y, int w, int h)
+        {
+            switch (align)
+            {
+                case TAlign.TL:
+                case TAlign.LT: return new Rectangle(rect.X + x, rect.Y + y, w, h);
+                case TAlign.BL:
+                case TAlign.LB: return new Rectangle(rect.X + x, rect.Bottom - y - h, w, h);
+                case TAlign.BR:
+                case TAlign.RB: return new Rectangle(rect.Right - x - w, rect.Bottom - y - h, w, h);
+                case TAlign.Top: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + y, w, h);
+                case TAlign.Bottom: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Bottom - y - h, w, h);
+                case TAlign.TR:
+                case TAlign.RT: return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
+                case TAlign.Left: return new Rectangle(rect.X + x, rect.Y + (rect.Height - h) / 2, w, h);
+                case TAlign.Right: return new Rectangle(rect.Right - x - w, rect.Y + (rect.Height - h) / 2, w, h);
+                default:
+                    return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);
             }
         }
 

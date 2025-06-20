@@ -194,9 +194,9 @@ namespace AntdUI.Chat
                                 if (it.emoji)
                                 {
                                     if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
-                                    else g.String(it.text, font, fore, new Rectangle(it.rect.X - 20, it.rect.Y - 20, it.rect.Width + 40, it.rect.Height + 40), m_sf);
+                                    else g.String(it.text, font, fore, new Rectangle(it.rect.X - 20, it.rect.Y - 20, it.rect.Width + 40, it.rect.Height + 40));
                                 }
-                                else g.String(it.text, Font, fore, it.rect, m_sf);
+                                else g.String(it.text, Font, fore, it.rect);
                                 break;
                             case GraphemeSplitter.STRE_TYPE.SVG:
                                 using (var bmp_svg = SvgExtend.SvgToBmp(it.text))
@@ -222,7 +222,7 @@ namespace AntdUI.Chat
                     switch (it.type)
                     {
                         case GraphemeSplitter.STRE_TYPE.STR:
-                            g.String(it.text, Font, fore, it.rect, m_sf);
+                            g.String(it.text, Font, fore, it.rect);
                             break;
                         case GraphemeSplitter.STRE_TYPE.SVG:
                             using (var bmp_svg = SvgExtend.SvgToBmp(it.text))
@@ -372,21 +372,21 @@ namespace AntdUI.Chat
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            base.OnMouseLeave(e);
             ScrollBar.Leave();
             SetCursor(false);
+            base.OnMouseLeave(e);
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            base.OnLostFocus(e);
             ILeave();
+            base.OnLostFocus(e);
         }
 
         protected override void OnLeave(EventArgs e)
         {
-            base.OnLeave(e);
             ILeave();
+            base.OnLeave(e);
         }
 
         void ILeave()
@@ -404,7 +404,7 @@ namespace AntdUI.Chat
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
 
@@ -556,7 +556,6 @@ namespace AntdUI.Chat
             base.OnSizeChanged(e);
         }
 
-        StringFormat m_sf = Helper.SF_MEASURE_FONT();
         internal void ChangeList()
         {
             var rect = ClientRectangle;
@@ -634,13 +633,13 @@ namespace AntdUI.Chat
                         {
                             if (it == "\t" || it == "\n" || it == "\r\n")
                             {
-                                var sizefont = g.MeasureString(" ", Font, 10000, m_sf);
+                                var sizefont = g.MeasureString(" ", Font);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
                                 font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width * 8F), type));
                             }
                             else
                             {
-                                var sizefont = g.MeasureString(it, Font, 10000, m_sf);
+                                var sizefont = g.MeasureString(it, Font);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
                                 font_widths.Add(new CacheFont(it, false, sizefont.Width, type));
                             }
@@ -658,7 +657,7 @@ namespace AntdUI.Chat
                     {
                         if (it.emoji)
                         {
-                            var sizefont = g.MeasureString(it.text, font, 10000, m_sf);
+                            var sizefont = g.MeasureString(it.text, font);
                             if (font_height < sizefont.Height) font_height = sizefont.Height;
                             it.width = sizefont.Width;
                         }

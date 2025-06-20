@@ -597,28 +597,6 @@ namespace AntdUI
             public void SelectedIndexChanged(int i, int old) => SetRect(old, i);
             public void Dispose() => ThreadBar?.Dispose();
 
-            public void MouseWheel(int Delta)
-            {
-                if (owner != null && owner.scroll_show)
-                {
-                    if (Delta == 0) return;
-                    int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
-                    switch (owner.Alignment)
-                    {
-                        case TabAlignment.Left:
-                        case TabAlignment.Right:
-                            owner.scroll_x = 0;
-                            owner.scroll_y -= delta;
-                            break;
-                        case TabAlignment.Top:
-                        case TabAlignment.Bottom:
-                        default:
-                            owner.scroll_y = 0;
-                            owner.scroll_x -= delta;
-                            break;
-                    }
-                }
-            }
             public void MouseMove(int x, int y) { }
             public bool MouseClick(TabPage page, int i, int x, int y) => false;
             public void MouseLeave() { }
@@ -1356,28 +1334,6 @@ namespace AntdUI
                     {
                         if (item.hover_close == null) continue;
                         item.hover_close.Switch = false;
-                    }
-                }
-            }
-            public void MouseWheel(int Delta)
-            {
-                if (owner != null && owner.scroll_show)
-                {
-                    if (Delta == 0) return;
-                    int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
-                    switch (owner.Alignment)
-                    {
-                        case TabAlignment.Left:
-                        case TabAlignment.Right:
-                            owner.scroll_x = 0;
-                            owner.scroll_y -= delta;
-                            break;
-                        case TabAlignment.Top:
-                        case TabAlignment.Bottom:
-                        default:
-                            owner.scroll_y = 0;
-                            owner.scroll_x -= delta;
-                            break;
                     }
                 }
             }
@@ -2248,29 +2204,6 @@ namespace AntdUI
                     }
                 }
             }
-
-            public void MouseWheel(int Delta)
-            {
-                if (owner != null && owner.scroll_show)
-                {
-                    if (Delta == 0) return;
-                    int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
-                    switch (owner.Alignment)
-                    {
-                        case TabAlignment.Left:
-                        case TabAlignment.Right:
-                            owner.scroll_x = 0;
-                            owner.scroll_y -= delta;
-                            break;
-                        case TabAlignment.Top:
-                        case TabAlignment.Bottom:
-                        default:
-                            owner.scroll_y = 0;
-                            owner.scroll_x -= delta;
-                            break;
-                    }
-                }
-            }
         }
 
         [TypeConverter(typeof(ExpandableObjectConverter))]
@@ -2282,7 +2215,6 @@ namespace AntdUI
             bool MouseClick(TabPage page, int i, int x, int y);
             void MouseMove(int x, int y);
             void MouseLeave();
-            void MouseWheel(int delta);
             void Dispose();
 
             TabPageRect GetTabRect(int i);

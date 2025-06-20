@@ -50,7 +50,7 @@ namespace Demo
             {
                 Loading = true
             };
-            tabHeader1.AddTab(tab,true);
+            tabHeader1.AddTab(tab, true);
             AntdUI.ITask.Run(() =>
             {
                 System.Threading.Thread.Sleep(2000); // 模拟加载延时
