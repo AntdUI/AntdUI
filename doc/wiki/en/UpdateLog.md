@@ -1,5 +1,22 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.6` 2025-06-20
+
+- ➕ Table GetColumnRealIndex
+- ➕ Input IconRatioRight
+- ➕ FlowPanel/GridPanel/StackPanel Background, Borders, Designer Borders
+- ➕ TabHeader Multi Tag Page Header
+- ✍️ Table Summary Remove column checkbox
+- ✍️ LabelTime is compatible with padding
+- ✍️ InputNumber loses focus order
+- ✍️ Optimize the margin of the Input Round icon
+- ✍️ BackImage misalignment
+- ✍️ Canvas DrawText misalignment completion omission
+- ✍️ Label AutoEllipsis
+- ✍️ Measure Text
+- ✍️ Button DialogResult
+- ✍️ Add Tag attribute
+
 ### `2.0.5` 2025-06-17
 
 - ✍️ Table Column Drag and Drop Misalignment

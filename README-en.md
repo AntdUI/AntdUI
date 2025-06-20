@@ -21,15 +21,16 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 
 ### ✨ Features
 
-- 🌈 Modern design aesthetic
-- 🎨 Precision graphics and smooth animations
-- 🚀 Superior shadow effects on Winforms
-- 📦 Borderless windows preserving native window features
-- 💎 3D flip effect
-- 👚 Theme customization
+- 🌈 High quality anti aliasing text rendering
+- 🎨 Pure GDI vector graphics, comfortable dynamic effects that can be interrupted
+- 😍 Emoji breaks the black and white boundaries and adds fun
+- 💎 Superior shadow effects on Winforms
+- 📦 Borderless window with native window features
+- 👚 Theme configuration, black and white mode
+- 🌍 Internationale
 - 🦜 SVG vector graphics
 - 👓 DPI adaptation
-- 🌍 Internationale
+- 🦺 AOT Release
 
 ### 🖥 Requirements
 
@@ -52,11 +53,12 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**GridPanel**](doc/wiki/en/Control/GridPanel.md) | ❎ | ❎ |
 ➡️| [**Splitter**](doc/wiki/zh/Control/Splitter.md) | ❎ | ❎ |
 ||||
-⬇️| Navigation `6` | Animation | Disable |
+⬇️| Navigation `7` | Animation | Disable |
 ➡️| [**Breadcrumb**](doc/wiki/en/Control/Breadcrumb.md) | ✅ | ❎ |
 ➡️| [**Dropdown**](doc/wiki/en/Control/Dropdown.md) | ✅ | ✅ |
 ➡️| [**Menu**](doc/wiki/en/Control/Menu.md) | ✅ | ❎ |
 ➡️| [**PageHeader**](doc/wiki/en/Control/PageHeader.md) | ✅ | ❎ |
+➡️| [**TabHeader**](doc/wiki/en/Control/TabHeader.md) | ✅ | ❎ |
 ➡️| [**Pagination**](doc/wiki/en/Control/Pagination.md) | ✅ | ✅ |
 ➡️| [**Steps**](doc/wiki/en/Control/Steps.md) | ❎ | ❎ |
 ||||

@@ -42,7 +42,7 @@
 [![Splitter](Icon/Splitter.png)](Control/Splitter.md)
 
 
-### 导航 `6`
+### 导航 `7`
 
 #### [Breadcrumb 面包屑](Control/Breadcrumb.md)
 [![Breadcrumb](Icon/Breadcrumb.png)](Control/Breadcrumb.md)
@@ -55,6 +55,9 @@
 
 #### [PageHeader 页头](Control/PageHeader.md)
 [![PageHeader](Icon/PageHeader.png)](Control/PageHeader.md)
+
+#### [TabHeader 多标签页头](Control/TabHeader.md)
+[![TabHeader](Icon/TabHeader.png)](Control/TabHeader.md)
 
 #### [Pagination 分页](Control/Pagination.md)
 [![Pagination](Icon/Pagination.png)](Control/Pagination.md)

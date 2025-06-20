@@ -120,7 +120,7 @@ namespace AntdUI
         /// <summary>
         /// 悬浮文本颜色
         /// </summary>
-        [Description("激活文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮文本颜色"), Category("外观"), DefaultValue(null)]
         public Color? ForeHover { get; set; }
 
         /// <summary>
@@ -1011,7 +1011,7 @@ namespace AntdUI
         [Category("外观"), Description("文本")]
         public string Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID }) ?? _text;
             set
             {
                 if (_text == value) return;
@@ -1019,6 +1019,9 @@ namespace AntdUI
                 PARENT?.LoadLayout();
             }
         }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
 
         Image? icon;
         /// <summary>
