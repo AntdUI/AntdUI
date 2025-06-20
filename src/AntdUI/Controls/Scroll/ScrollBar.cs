@@ -785,6 +785,12 @@ namespace AntdUI
 
         #region 滚动
 
+        public bool MouseWheelX(MouseEventArgs e)
+        {
+            bool result = MouseWheelX(e.Delta);
+            if (result && e is HandledMouseEventArgs handled) handled.Handled = true;
+            return result;
+        }
         public bool MouseWheelX(int Delta)
         {
             if (Delta == 0) return false;
@@ -798,6 +804,13 @@ namespace AntdUI
             }
             return false;
         }
+
+        public bool MouseWheelY(MouseEventArgs e)
+        {
+            bool result = MouseWheelY(e.Delta);
+            if (result && e is HandledMouseEventArgs handled) handled.Handled = true;
+            return result;
+        }
         public bool MouseWheelY(int Delta)
         {
             if (Delta == 0) return false;
@@ -810,6 +823,13 @@ namespace AntdUI
                 return true;
             }
             return false;
+        }
+
+        public bool MouseWheel(MouseEventArgs e)
+        {
+            bool result = MouseWheel(e.Delta);
+            if (result && e is HandledMouseEventArgs handled) handled.Handled = true;
+            return result;
         }
         public bool MouseWheel(int Delta)
         {

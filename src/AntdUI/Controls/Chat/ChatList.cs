@@ -372,21 +372,21 @@ namespace AntdUI.Chat
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            base.OnMouseLeave(e);
             ScrollBar.Leave();
             SetCursor(false);
+            base.OnMouseLeave(e);
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            base.OnLostFocus(e);
             ILeave();
+            base.OnLostFocus(e);
         }
 
         protected override void OnLeave(EventArgs e)
         {
-            base.OnLeave(e);
             ILeave();
+            base.OnLeave(e);
         }
 
         void ILeave()
@@ -404,7 +404,7 @@ namespace AntdUI.Chat
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
 

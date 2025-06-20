@@ -1269,7 +1269,7 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar.MouseWheel(e.Delta);
+            ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
         protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);

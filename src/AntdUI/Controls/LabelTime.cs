@@ -67,7 +67,7 @@ namespace AntdUI
         string show_tmp = "";
         protected override void OnPaint(PaintEventArgs e)
         {
-            var rect = ClientRectangle;
+            var rect = ClientRectangle.DeflateRect(Padding);
             var g = e.Graphics.High();
             string[] time = GTime();
             show_tmp = string.Join("", time);
@@ -86,7 +86,7 @@ namespace AntdUI
                         Size size1 = g.MeasureString(time[2], font_sub), size2 = g.MeasureString(time[3], font_sub);
                         g.String(time[2], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y, w2, h2), s_f_r1);
                         g.String(time[3], font_sub, brush_sub, new Rectangle(rect.X + r, rect.Y + h2, w2, h2), s_f_r2);
-                        Width = r + (size1.Width > size2.Width ? size1.Width : size2.Width);
+                        Width = r + (size1.Width > size2.Width ? size1.Width : size2.Width) + Padding.Horizontal;
                     }
                 }
                 else

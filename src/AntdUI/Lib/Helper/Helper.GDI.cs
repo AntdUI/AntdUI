@@ -868,7 +868,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var size = g.MeasureString(badegConfig.Badge, font);
+                        var size = g.MeasureString(badegConfig.Badge, font).Size(4, 2);
                         using (var s_f = SF_NoWrap())
                         {
                             int size_badge = (int)(size.Height * 1.2F);
@@ -896,27 +896,6 @@ namespace AntdUI
             }
         }
 
-        static Rectangle PaintBadge(Rectangle rect, TAlign align, int x, int y, int w, int h)
-        {
-            switch (align)
-            {
-                case TAlign.TL:
-                case TAlign.LT: return new Rectangle(rect.X + x, rect.Y + y, w, h);
-                case TAlign.BL:
-                case TAlign.LB: return new Rectangle(rect.X + x, rect.Bottom - y - h, w, h);
-                case TAlign.BR:
-                case TAlign.RB: return new Rectangle(rect.Right - x - w, rect.Bottom - y - h, w, h);
-                case TAlign.Top: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + y, w, h);
-                case TAlign.Bottom: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Bottom - y - h, w, h);
-                case TAlign.TR:
-                case TAlign.RT: return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
-                case TAlign.Left: return new Rectangle(rect.X + x, rect.Y + (rect.Height - h) / 2, w, h);
-                case TAlign.Right: return new Rectangle(rect.Right - x - w, rect.Y + (rect.Height - h) / 2, w, h);
-                default:
-                    return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);
-            }
-        }
-
         public static void PaintBadge(this IControl control, DateBadge badge, Rectangle rect, Canvas g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get("Badge", control.ColorScheme);
@@ -933,7 +912,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    var size = g.MeasureString(badge.Content, font);
+                    var size = g.MeasureString(badge.Content, font).Size(4, 2);
                     using (var s_f = SF_NoWrap())
                     {
                         int size_badge = (int)(size.Height * 1.2F);
@@ -957,6 +936,27 @@ namespace AntdUI
                         }
                     }
                 }
+            }
+        }
+
+        static Rectangle PaintBadge(Rectangle rect, TAlign align, int x, int y, int w, int h)
+        {
+            switch (align)
+            {
+                case TAlign.TL:
+                case TAlign.LT: return new Rectangle(rect.X + x, rect.Y + y, w, h);
+                case TAlign.BL:
+                case TAlign.LB: return new Rectangle(rect.X + x, rect.Bottom - y - h, w, h);
+                case TAlign.BR:
+                case TAlign.RB: return new Rectangle(rect.Right - x - w, rect.Bottom - y - h, w, h);
+                case TAlign.Top: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + y, w, h);
+                case TAlign.Bottom: return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Bottom - y - h, w, h);
+                case TAlign.TR:
+                case TAlign.RT: return new Rectangle(rect.Right - x - w, rect.Y + y, w, h);
+                case TAlign.Left: return new Rectangle(rect.X + x, rect.Y + (rect.Height - h) / 2, w, h);
+                case TAlign.Right: return new Rectangle(rect.Right - x - w, rect.Y + (rect.Height - h) / 2, w, h);
+                default:
+                    return new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);
             }
         }
 

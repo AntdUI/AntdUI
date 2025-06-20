@@ -1067,6 +1067,11 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 获取表头真实索引
+        /// </summary>
+        public int GetColumnRealIndex(Column column) => column.INDEX_REAL;
+
+        /// <summary>
         /// 获取区域
         /// </summary>
         /// <param name="row">行</param>

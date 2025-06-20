@@ -311,6 +311,27 @@ namespace AntdUI
             }
         }
 
+        float? iconratioRight;
+        /// <summary>
+        /// 右图标比例
+        /// </summary>
+        [Description("右图标比例"), Category("外观"), DefaultValue(null)]
+        public float? IconRatioRight
+        {
+            get => iconratioRight;
+            set
+            {
+                if (iconratioRight == value) return;
+                iconratioRight = value;
+                if (HasSuffix)
+                {
+                    CalculateRect();
+                    Invalidate();
+                }
+                OnPropertyChanged(nameof(IconRatioRight));
+            }
+        }
+
         float icongap = .25F;
         /// <summary>
         /// 图标与文字间距比例
@@ -1335,11 +1356,11 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
-            base.OnLostFocus(e);
             HasFocus = false;
             CaretInfo.Show = false;
             if (LostFocusClearSelection) SelectionLength = 0;
             ExtraMouseDown = false;
+            base.OnLostFocus(e);
         }
 
         #endregion

@@ -792,8 +792,8 @@ namespace AntdUI.Core
             if (originWidth == originHeight)
             {
                 if (rect.Width == rect.Height) g.Image(image, rect);
-                else if (rect.Width > rect.Height) g.Image(image, new RectangleF(0, (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
-                else g.Image(image, new RectangleF((rect.Width - rect.Height) / 2, 0, rect.Height, rect.Height));
+                else if (rect.Width > rect.Height) g.Image(image, new RectangleF(rect.X, rect.Y + (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
+                else g.Image(image, new RectangleF(rect.X + (rect.Width - rect.Height) / 2, rect.Y, rect.Height, rect.Height));
                 return;
             }
             float destWidth = rect.Width, destHeight = rect.Height;
@@ -816,8 +816,8 @@ namespace AntdUI.Core
             if (originWidth == originHeight)
             {
                 if (rect.Width == rect.Height) g.Image(image, rect);
-                else if (rect.Width > rect.Height) g.Image(image, new RectangleF((rect.Width - rect.Height) / 2, 0, rect.Height, rect.Height));
-                else g.Image(image, new RectangleF(0, (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
+                else if (rect.Width > rect.Height) g.Image(image, new RectangleF(rect.X + (rect.Width - rect.Height) / 2, rect.Y, rect.Height, rect.Height));
+                else g.Image(image, new RectangleF(rect.X, rect.Y + (rect.Height - rect.Width) / 2, rect.Width, rect.Width));
                 return;
             }
             float destWidth = rect.Width, destHeight = rect.Height;

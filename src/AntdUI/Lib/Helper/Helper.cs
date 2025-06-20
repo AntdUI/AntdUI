@@ -40,6 +40,24 @@ namespace AntdUI
         /// <param name="size">SizeF</param>
         public static Size Size(this SizeF size, float p) => new Size((int)Math.Ceiling(size.Width + p), (int)Math.Ceiling(size.Height + p));
 
+        public static Size Size(this Size size, int p)
+        {
+            if (p > 0)
+            {
+                var s = (int)(p * Config.Dpi);
+                size.Width += s;
+                size.Height += s;
+            }
+            return size;
+        }
+
+        public static Size Size(this Size size, int w, int h)
+        {
+            if (w > 0) size.Width += (int)(w * Config.Dpi);
+            if (h > 0) size.Height += (int)(h * Config.Dpi);
+            return size;
+        }
+
         public static Color ToColor(float alpha, Color color) => ToColor((int)alpha, color);
 
         public static Color ToColorN(float val, Color color) => ToColor((int)(val * color.A), color);

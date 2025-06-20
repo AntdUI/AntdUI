@@ -538,8 +538,8 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
-            base.OnLostFocus(e);
             HasFocus = false;
+            base.OnLostFocus(e);
         }
 
         #endregion

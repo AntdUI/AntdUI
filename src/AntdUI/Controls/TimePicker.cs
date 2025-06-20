@@ -169,7 +169,12 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
+            ILostFocus();
             base.OnLostFocus(e);
+        }
+
+        void ILostFocus()
+        {
             ExpandDrop = false;
             if (IsHandleCreated)
             {

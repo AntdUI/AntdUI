@@ -189,13 +189,21 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (MouseWheelCore(e.Delta) && e is HandledMouseEventArgs handled) handled.Handled = true;
+            base.OnMouseWheel(e);
+        }
+        bool MouseWheelCore(int Delta)
+        {
             if (ScrollYShow && autoscroll)
             {
-                if (e.Delta == 0) return;
-                int delta = e.Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                if (Delta == 0) return false;
+                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                var old = scrolly;
                 ScrollY -= delta;
+                if (old == scrolly) return false;
+                return true;
             }
-            base.OnMouseWheel(e);
+            return false;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)

@@ -432,7 +432,12 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
+            ILostFocus();
             base.OnLostFocus(e);
+        }
+
+        void ILostFocus()
+        {
             if (IsHandleCreated)
             {
                 if (IsTextEmpty)
@@ -451,6 +456,7 @@ namespace AntdUI
             if (ReadOnly || !wheelModifyEnabled) return;
             if (e.Delta > 0) Value = currentValue + Increment;
             else Value = currentValue - Increment;
+            if (e is HandledMouseEventArgs handled) handled.Handled = true;
         }
 
         #endregion
