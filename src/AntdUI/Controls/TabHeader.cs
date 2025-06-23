@@ -1008,7 +1008,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Category("外观"), Description("文本")]
+        [Category("外观"), Description("文本"), Localizable(true)]
         public string Text
         {
             get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID }) ?? _text;

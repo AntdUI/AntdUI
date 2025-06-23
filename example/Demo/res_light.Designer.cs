@@ -392,15 +392,6 @@ namespace Demo {
         }
         
         /// <summary>
-        ///   查找类似 &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;120&quot; height=&quot;20&quot;&gt;&lt;mask id=&quot;icons&quot;&gt;&lt;rect width=&quot;120&quot; height=&quot;20&quot; rx=&quot;3&quot; fill=&quot;#fff&quot;&gt;&lt;/rect&gt;&lt;/mask&gt; &lt;g mask=&quot;url(#icons)&quot;&gt;&lt;path fill=&quot;#555555&quot; d=&quot;M0 0h62v20H0z&quot;&gt;&lt;/path&gt;&lt;path fill=&quot;#1e9fff&quot; d=&quot;M62 0h58v20H62z&quot;&gt;&lt;/path&gt;&lt;/g&gt;&lt;g fill=&quot;#fff&quot; text-anchor=&quot;middle&quot; font-family=&quot;DejaVu Sans,Verdana,Geneva,sans-serif&quot; font-size=&quot;11&quot;&gt;&lt;text x=&quot;31&quot; y=&quot;15&quot; fill=&quot;#010101&quot; fill-opacity=&quot;.3&quot;&gt;version&lt;/text&gt;&lt;text x=&quot;31&quot; y=&quot;14&quot; fill=&quot;#ffffff&quot;&gt;version&lt;/text&gt;&lt;text x=&quot;91&quot; y=&quot;15&quot; fill=&quot;#0 [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        internal static string Shield {
-            get {
-                return ResourceManager.GetString("Shield", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 &lt;svg t=&quot;1744710055284&quot; class=&quot;icon&quot; viewBox=&quot;0 0 1024 1024&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; p-id=&quot;2678&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;&lt;path d=&quot;M102 409.542c-10.237 0-20.474-3.905-28.284-11.716-15.621-15.621-15.621-40.947 0-56.568 59.201-59.201 128.208-105.043 205.103-136.254C353.087 174.86 431.541 159.576 512 159.576c80.46 0 158.913 15.284 233.182 45.428 76.896 31.21 145.902 77.053 205.103 136.254 15.621 15.621 15.621 40.948 0 56.568-15.621 15.622-40.947 15.621-56.568 0C791.667 295.777 656.104 239 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Singal {

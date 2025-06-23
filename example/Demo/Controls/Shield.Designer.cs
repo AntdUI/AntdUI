@@ -16,19 +16,21 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Drawing;
+
 namespace Demo.Controls
 {
     partial class Shield
     {
-        /// <summary> 
-        /// 必需的设计器变量。
+        /// <summary>
+        ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// 清理所有正在使用的资源。
+        /// <summary>
+        ///  Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -38,96 +40,184 @@ namespace Demo.Controls
             base.Dispose(disposing);
         }
 
-        #region 组件设计器生成的代码
+        #region Windows Form Designer generated code
 
-        /// <summary> 
-        /// 设计器支持所需的方法 - 不要修改
-        /// 使用代码编辑器修改此方法的内容。
-        /// </summary>
         private void InitializeComponent()
         {
+            header1 = new AntdUI.PageHeader();
             shield1 = new AntdUI.Shield();
             shield2 = new AntdUI.Shield();
             shield3 = new AntdUI.Shield();
             shield4 = new AntdUI.Shield();
+            shield5 = new AntdUI.Shield();
+            shield6 = new AntdUI.Shield();
+            shield7 = new AntdUI.Shield();
+            shield8 = new AntdUI.Shield();
+            flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
+            // 
+            // header1
+            // 
+            header1.Description = "展示徽章图标。";
+            header1.Dock = System.Windows.Forms.DockStyle.Top;
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Shield.Description";
+            header1.LocalizationText = "Shield.Text";
+            header1.Location = new Point(0, 0);
+            header1.Name = "header1";
+            header1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
+            header1.Size = new Size(740, 74);
+            header1.TabIndex = 4;
+            header1.Text = "Shield 徽章";
+            header1.UseTitleFont = true;
             // 
             // shield1
             // 
-            shield1.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 134);
-            shield1.Location = new System.Drawing.Point(436, 18);
-            shield1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            shield1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield1.Color = Color.FromArgb(0, 126, 198);
+            shield1.Label = "AntdUI";
+            shield1.Location = new Point(0, 0);
+            shield1.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
             shield1.Name = "shield1";
-            shield1.Padding = new System.Windows.Forms.Padding(5);
             shield1.Radius = 0;
-            shield1.Size = new System.Drawing.Size(160, 55);
-            shield1.StatusColor = System.Drawing.Color.FromArgb(93, 176, 186);
-            shield1.StatusText = "Apache 2.0";
-            shield1.SubjectColor = System.Drawing.Color.FromArgb(84, 84, 84);
-            shield1.SubjectText = "Licenses";
+            shield1.Size = new Size(108, 28);
             shield1.TabIndex = 0;
-            shield1.Text = "shield1";
+            shield1.Text = "v2.0.6";
             // 
             // shield2
             // 
-            shield2.Location = new System.Drawing.Point(13, 26);
+            shield2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield2.Color = Color.FromArgb(247, 70, 88);
+            shield2.Label = "QQ群";
+            shield2.LocalizationLabel = "Shield.qq";
+            shield2.Location = new Point(118, 0);
+            shield2.LogoSvg = "QqOutlined";
+            shield2.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
             shield2.Name = "shield2";
-            shield2.Padding = new System.Windows.Forms.Padding(5);
-            shield2.Size = new System.Drawing.Size(119, 38);
-            shield2.StatusColor = System.Drawing.Color.FromArgb(17, 130, 195);
-            shield2.StatusText = "V2.0.6";
-            shield2.SubjectColor = System.Drawing.Color.FromArgb(84, 84, 84);
-            shield2.SubjectText = "AntdUI";
-            shield2.TabIndex = 1;
-            shield2.Text = "shield2";
+            shield2.Radius = 0;
+            shield2.Size = new Size(157, 28);
+            shield2.TabIndex = 0;
+            shield2.Text = "328884096";
             // 
             // shield3
             // 
-            shield3.Location = new System.Drawing.Point(138, 26);
+            shield3.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield3.Label = "downloads";
+            shield3.Location = new Point(582, 0);
+            shield3.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
             shield3.Name = "shield3";
-            shield3.Padding = new System.Windows.Forms.Padding(5);
-            shield3.Size = new System.Drawing.Size(154, 39);
-            shield3.StatusColor = System.Drawing.Color.FromArgb(76, 205, 27);
-            shield3.StatusText = "Apache 2.0";
-            shield3.SubjectColor = System.Drawing.Color.FromArgb(84, 84, 84);
-            shield3.SubjectText = "Licenses";
-            shield3.TabIndex = 2;
-            shield3.Text = "shield3";
+            shield3.Radius = 0;
+            shield3.Size = new Size(119, 28);
+            shield3.TabIndex = 0;
+            shield3.Text = "61k";
             // 
             // shield4
             // 
-            shield4.Location = new System.Drawing.Point(309, 31);
+            shield4.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield4.Color = Color.FromArgb(22, 119, 255);
+            shield4.Label = "AntDesign";
+            shield4.Location = new Point(436, 0);
+            shield4.LogoSvg = "AntDesignOutlined";
+            shield4.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
             shield4.Name = "shield4";
-            shield4.Padding = new System.Windows.Forms.Padding(5);
             shield4.Radius = 0;
-            shield4.Size = new System.Drawing.Size(120, 29);
-            shield4.StatusColor = System.Drawing.Color.FromArgb(17, 130, 195);
-            shield4.StatusText = "V2.0.6";
-            shield4.SubjectColor = System.Drawing.Color.FromArgb(84, 84, 84);
-            shield4.SubjectText = "AntdUI";
-            shield4.TabIndex = 3;
-            shield4.Text = "shield4";
+            shield4.Size = new Size(136, 28);
+            shield4.TabIndex = 0;
+            shield4.Text = "5.0";
+            // 
+            // shield5
+            // 
+            shield5.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield5.Color = Color.FromArgb(78, 177, 186);
+            shield5.Label = "license";
+            shield5.Location = new Point(285, 0);
+            shield5.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            shield5.Name = "shield5";
+            shield5.Radius = 0;
+            shield5.Size = new Size(141, 28);
+            shield5.TabIndex = 0;
+            shield5.Text = "Apache 2.0";
+            // 
+            // shield6
+            // 
+            shield6.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield6.Color = Color.FromArgb(0, 126, 198);
+            shield6.Font = new Font("Microsoft YaHei UI", 12F);
+            shield6.Label = "flat style";
+            shield6.Location = new Point(14, 149);
+            shield6.Name = "shield6";
+            shield6.ShadowOffsetY = 2;
+            shield6.Size = new Size(157, 34);
+            shield6.TabIndex = 0;
+            shield6.Text = "you like";
+            // 
+            // shield7
+            // 
+            shield7.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield7.Color = Color.BlueViolet;
+            shield7.Font = new Font("Microsoft YaHei UI", 12F);
+            shield7.Location = new Point(208, 149);
+            shield7.Name = "shield7";
+            shield7.ShadowOffsetY = 2;
+            shield7.Size = new Size(147, 34);
+            shield7.TabIndex = 0;
+            shield7.Text = "just the message";
+            // 
+            // shield8
+            // 
+            shield8.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            shield8.Bold = true;
+            shield8.Font = new Font("Microsoft YaHei UI", 12F);
+            shield8.Label = "style";
+            shield8.Location = new Point(14, 206);
+            shield8.Name = "shield8";
+            shield8.Radius = 0;
+            shield8.Size = new Size(178, 34);
+            shield8.TabIndex = 0;
+            shield8.Text = "for-the-badge";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            flowLayoutPanel1.Controls.Add(shield1);
+            flowLayoutPanel1.Controls.Add(shield2);
+            flowLayoutPanel1.Controls.Add(shield5);
+            flowLayoutPanel1.Controls.Add(shield4);
+            flowLayoutPanel1.Controls.Add(shield3);
+            flowLayoutPanel1.Location = new Point(14, 80);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(712, 64);
+            flowLayoutPanel1.TabIndex = 0;
             // 
             // Shield
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(shield4);
-            Controls.Add(shield3);
-            Controls.Add(shield2);
-            Controls.Add(shield1);
-            Font = new System.Drawing.Font("Microsoft YaHei UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 134);
-            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Controls.Add(flowLayoutPanel1);
+            Controls.Add(shield7);
+            Controls.Add(shield8);
+            Controls.Add(shield6);
+            Controls.Add(header1);
+            Font = new Font("Microsoft YaHei UI", 10F);
             Name = "Shield";
-            Size = new System.Drawing.Size(653, 231);
+            Size = new Size(740, 514);
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
+        private AntdUI.PageHeader header1;
+        private AntdUI.Button button1;
         private AntdUI.Shield shield1;
         private AntdUI.Shield shield2;
         private AntdUI.Shield shield3;
         private AntdUI.Shield shield4;
+        private AntdUI.Shield shield5;
+        private AntdUI.Shield shield6;
+        private AntdUI.Shield shield7;
+        private AntdUI.Shield shield8;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

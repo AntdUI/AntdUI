@@ -5,7 +5,7 @@
 <h1>AntdUI</h1>
 
 [![NuGet](https://img.shields.io/nuget/v/AntdUI.svg?style=flat-square&label=AntdUI&logo=nuget)](https://www.nuget.org/packages/AntdUI)
-[![QQGroup](https://img.shields.io/badge/QQ群-328884096-f74658?style=flat-square&logo=tencentqq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
+[![QQGroup](https://img.shields.io/badge/QQ群-328884096-f74658?style=flat-square&logo=qq)](https://qm.qq.com/cgi-bin/qm/qr?k=ZfuHy4LqYC57DYTWAUWkQD9EjdVfvx3y&jump_from=webapi&authKey=4sAgZN0XlFHx+4MW9PdkiGgg435QfKcQdu5lKi1Fp4PP0O+DL6NaKAcV8ybCLM97)
 [![Download](https://img.shields.io/nuget/dt/antdui?style=flat-square)](https://www.nuget.org/packages/AntdUI)
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
@@ -111,9 +111,10 @@
 ➡️| **MsgList** 好友消息列表 | ✅ | ❎ |
 ➡️| **ChatList** 气泡聊天列表 | ✅ | ❎ |
 ||||
-⬇️| 其他 `4` | 动画 | 禁用 |
+⬇️| 其他 `5` | 动画 | 禁用 |
 ➡️| [**Battery** 电量](doc/wiki/zh/Control/Battery.md) | ✅ | ❎ |
 ➡️| [**Signal** 信号强度](doc/wiki/zh/Control/Signal.md) | ✅ | ❎ |
+➡️| [**Shield** 徽章](doc/wiki/zh/Control/Shield.md) | ❎ | ❎ |
 ➡️| [**ContextMenuStrip** 右键菜单](doc/wiki/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |
 ➡️| **Image3D** 图片3D | ✅ | ❎ |
 
