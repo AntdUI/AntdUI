@@ -80,6 +80,11 @@ namespace AntdUI
         static Svg.SvgDocument? SvgDocument(string svg)
         {
             if (svg.StartsWith("<svg")) return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
+            else if (svg.Contains("svg+xml;base64,"))
+            {
+                var xml = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(svg.Substring(svg.IndexOf("base64,") + 7)));
+                return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(xml);
+            }
             else if (SvgDb.Custom.TryGetValue(svg, out var rsvg)) return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(rsvg);
             return null;
         }

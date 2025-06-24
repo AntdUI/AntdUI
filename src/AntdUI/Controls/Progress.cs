@@ -447,27 +447,45 @@ namespace AntdUI
 
         #region 任务栏
 
-        ContainerControl? ownerForm;
+        object? ownerTmp;
         /// <summary>
         /// 窗口对象
         /// </summary>
         [Description("窗口对象"), Category("任务栏"), DefaultValue(null)]
-        public ContainerControl? ContainerControl
-        {
-            get => ownerForm;
-            set => ownerForm = value;
-        }
+        public ContainerControl? ContainerControl { get; set; }
 
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            if (ownerForm == null) ownerForm = Parent.FindPARENT();
             ITask.Run(() =>
             {
                 Thread.Sleep(100);
                 canTaskbar = true;
                 if (showInTaskbar) ShowTaskbar();
             });
+        }
+
+        bool GetOwner(out ContainerControl? owner)
+        {
+            if (ownerTmp is ContainerControl tmp)
+            {
+                owner = tmp;
+                return true;
+            }
+            else
+            {
+                owner = ContainerControl ?? Parent.FindPARENT();
+                if (owner == null)
+                {
+                    ownerTmp = 1;
+                    return false;
+                }
+                else
+                {
+                    ownerTmp = owner;
+                    return true;
+                }
+            }
         }
 
         bool showInTaskbar = false;
@@ -485,7 +503,7 @@ namespace AntdUI
                 if (canTaskbar)
                 {
                     if (showInTaskbar) ShowTaskbar();
-                    else if (ownerForm != null) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
+                    else if (GetOwner(out var owner)) TaskbarProgressState(owner!, ThumbnailProgressState.NoProgress);
                 }
                 OnPropertyChanged(nameof(ShowInTaskbar));
             }
@@ -494,21 +512,20 @@ namespace AntdUI
         bool canTaskbar = false;
         void ShowTaskbar(bool sl = false)
         {
-            if (canTaskbar)
+            if (canTaskbar && GetOwner(out var owner))
             {
-                if (ownerForm == null) return;
                 if (state == TType.None)
                 {
                     if (_value == 0 && loading)
                     {
-                        TaskbarProgressValue(ownerForm, 0);
-                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Indeterminate);
+                        TaskbarProgressValue(owner!, 0);
+                        TaskbarProgressState(owner!, ThumbnailProgressState.Indeterminate);
                     }
                     else
                     {
-                        if (sl && old_state == ThumbnailProgressState.Indeterminate) TaskbarProgressState(ownerForm, ThumbnailProgressState.NoProgress);
-                        TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
-                        TaskbarProgressValue(ownerForm, (ulong)(_value * 100));
+                        if (sl && old_state == ThumbnailProgressState.Indeterminate) TaskbarProgressState(owner!, ThumbnailProgressState.NoProgress);
+                        TaskbarProgressState(owner!, ThumbnailProgressState.Normal);
+                        TaskbarProgressValue(owner!, (ulong)(_value * 100));
                     }
                 }
                 else
@@ -516,16 +533,16 @@ namespace AntdUI
                     switch (state)
                     {
                         case TType.Error:
-                            TaskbarProgressState(ownerForm, ThumbnailProgressState.Error);
+                            TaskbarProgressState(owner!, ThumbnailProgressState.Error);
                             break;
                         case TType.Warn:
-                            TaskbarProgressState(ownerForm, ThumbnailProgressState.Paused);
+                            TaskbarProgressState(owner!, ThumbnailProgressState.Paused);
                             break;
                         default:
-                            TaskbarProgressState(ownerForm, ThumbnailProgressState.Normal);
+                            TaskbarProgressState(owner!, ThumbnailProgressState.Normal);
                             break;
                     }
-                    TaskbarProgressValue(ownerForm, (ulong)(_value * 100));
+                    TaskbarProgressValue(owner!, (ulong)(_value * 100));
                 }
             }
         }

@@ -196,6 +196,9 @@
 #### [Signal 信号强度](Control/Signal.md)
 [![Signal](Icon/Signal.png)](Control/Signal.md)
 
+#### [Shield 徽章](Control/Shield.md)
+[![Shield](Icon/Shield.png)](Control/Shield.md)
+
 #### [ContextMenuStrip 右键菜单](Control/ContextMenuStrip.md)
 [![ContextMenuStrip](Icon/ContextMenuStrip.png)](Control/ContextMenuStrip.md)
 

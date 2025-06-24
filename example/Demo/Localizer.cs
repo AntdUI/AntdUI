@@ -671,6 +671,14 @@ namespace Demo
                 case "Spin.btnWindow":
                     return "Entire window";
 
+                //Shield ----------------------------
+                case "Shield.Text":
+                    return "Shield";
+                case "Shield.Description":
+                    return "Concise, consistent, and legible badges.";
+                case "Shield.qq":
+                    return "QQ Group";
+
                 #endregion
 
                 case "Loading":
