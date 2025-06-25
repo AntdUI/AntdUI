@@ -196,6 +196,9 @@
 #### [Signal](Control/Signal.md)
 [![Signal](Icon/Signal.png)](Control/Signal.md)
 
+#### [Shield](Control/Shield.md)
+[![Shield](Icon/Shield.png)](Control/Shield.md)
+
 #### [ContextMenuStrip](Control/ContextMenuStrip.md)
 [![ContextMenuStrip](Icon/ContextMenuStrip.png)](Control/ContextMenuStrip.md)
 
