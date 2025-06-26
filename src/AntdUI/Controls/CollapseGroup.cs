@@ -32,7 +32,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("ItemClick")]
-    public class CollapseGroup : IControl
+    public class CollapseGroup : IControl, ICollapse
     {
         #region 属性
 
@@ -313,7 +313,7 @@ namespace AntdUI
             }
         }
 
-        void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush, float radius)
+        public static void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush, float radius)
         {
             if (radius > 0)
             {
@@ -531,6 +531,11 @@ namespace AntdUI
             ScrollBar.Dispose();
             base.Dispose(disposing);
         }
+
+        void ICollapse.ChangeList()
+        {
+            ChangeList();
+        }
     }
 
     public class CollapseGroupItemCollection : iCollection<CollapseGroupItem>
@@ -566,7 +571,12 @@ namespace AntdUI
         }
     }
 
-    public class CollapseGroupItem
+    public interface ICollapseItem
+    {
+        string Text { get; set; }
+    }
+
+    public class CollapseGroupItem : ICollapseItem
     {
         public CollapseGroupItem() { }
         public CollapseGroupItem(string text)
@@ -742,25 +752,19 @@ namespace AntdUI
         public override string? ToString() => text;
     }
 
+    public interface ICollapse
+    {
+        bool IsHandleCreated { get; }
+        void SetCursor(bool val);
+        void IUSelect();
+        void ChangeList();
+        void Invalidate();
+    }
     public class CollapseGroupSubCollection : iCollection<CollapseGroupSub>
     {
-        public CollapseGroupSubCollection(CollapseGroup it)
-        {
-            BindData(it);
-        }
         public CollapseGroupSubCollection(CollapseGroupItem it)
         {
             BindData(it);
-        }
-
-        internal CollapseGroupSubCollection BindData(CollapseGroup it)
-        {
-            action = render =>
-            {
-                if (render) it.ChangeList();
-                it.Invalidate();
-            };
-            return this;
         }
 
         internal CollapseGroupSubCollection BindData(CollapseGroupItem it)
@@ -774,7 +778,249 @@ namespace AntdUI
             return this;
         }
     }
-    public class CollapseGroupSub
+    public class CollapseGroupButtonCollection : iCollection<CollapseGroupButton>
+    {
+        Collapse? PARENT {  get; set; }
+        CollapseItem? PARENTITEM {  get; set; }
+        public CollapseGroupButtonCollection(CollapseItem it)
+        {
+            BindData(it);
+        }
+
+        internal CollapseGroupButtonCollection BindData(CollapseItem it)
+        {
+            PARENT = it?.PARENT;
+            PARENTITEM = it;
+            action = render =>
+            {
+                if (it?.PARENT == null) return;
+                if (render) it.PARENT.ChangeList();
+                it.PARENT.Invalidate();
+            };
+            return this;
+        }
+        public override void Add(CollapseGroupButton item)
+        {
+            base.Add(item);
+
+            item.PARENT = this.PARENT;
+            item.PARENTITEM= this.PARENTITEM;
+
+        }
+    }
+    public class CollapseGroupButton : CollapseGroupSub
+    {
+        /// <summary>
+        /// Checked 属性值更改时发生
+        /// </summary>
+        [Description("Checked 属性值更改时发生"), Category("行为")]
+        public event CollapseSwitchCheckedChangedEventHandler? CheckedChanged;
+
+        public CollapseGroupButton():base() { }
+        public CollapseGroupButton(string text) : base(text) { }
+
+        internal ITask? ThreadHover, ThreadCheck, ThreadClick;
+        public CollapseGroupButton(string text, Image? icon) : base(text, icon) { }
+        internal bool AnimationClick = false;
+        internal float AnimationClickValue = 0;
+        internal bool AnimationCheck = false;
+        internal float AnimationCheckValue = 0;
+        internal bool hasFocus = false;
+        public override bool Select
+        {
+            get => base.Select;
+            set
+            {
+                if (select == value || PARENT==null || PARENTITEM==null) return;
+                if (value)
+                {
+                    ((Collapse)PARENT).IUSelect(PARENTITEM as CollapseItem);
+                }
+                select = value;
+                Invalidate();
+            }
+        }
+
+        bool switchMode = false;
+        [Description("Switch切换模式"), Category("行为"), DefaultValue(false)]
+        public bool SwitchMode
+        {
+            get => switchMode;
+            set
+            {
+                if (switchMode == value) return;
+                //if (value)
+                //{
+                //    if (PARENT is Collapse)
+                //        ((Collapse)PARENT).IUSelect(PARENTITEM as CollapseItem);
+                //    else
+                //        PARENT?.IUSelect();
+                //}
+                switchMode = value;
+                Invalidate();
+            }
+        }
+        string? _checkedText, _unCheckedText;
+
+        [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? CheckedText
+        {
+            get =>  _checkedText;
+            set
+            {
+                if (_checkedText == value) return;
+                _checkedText = value;
+                if (_checked) Invalidate();
+            }
+        }
+
+        [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? UnCheckedText
+        {
+            get =>  _unCheckedText;
+            set
+            {
+                if (_unCheckedText == value) return;
+                _unCheckedText = value;
+                if (!_checked) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 波浪大小
+        /// </summary>
+        [Description("波浪大小"), Category("外观"), DefaultValue(0)]
+        public int WaveSize { get; set; } = 0;
+        bool _checked = false;
+        [Description("勾选状态"), Category("行为"), DefaultValue(false)]
+        public bool Checked
+        {
+            get => _checked;
+            set
+            {
+                if (_checked == value || PARENT==null || PARENTITEM==null) return;
+
+                _checked = value;
+                try
+                {
+                    ThreadCheck?.Dispose();
+                    if (PARENT.IsHandleCreated && Config.HasAnimation(nameof(Switch)))
+                    {
+                        AnimationCheck = true;
+                        if (value)
+                        {
+                            ThreadCheck = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(0.1F);
+                                if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationCheck = false;
+                                Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadCheck = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(-0.1F);
+                                if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationCheck = false;
+                                Invalidate();
+                            });
+                        }
+                    }
+                    else AnimationCheckValue = value ? 1F : 0F;
+                }
+                finally
+                {
+                    Invalidate();
+                    CheckedChanged?.Invoke(this, new CollapseSwitchCheckedChangedEventArgs(this, (CollapseItem)PARENTITEM, value));
+                    Invalidate();
+                }
+            }
+        }
+
+        bool _mouseHover = false;
+       internal bool ExtraMouseHover
+        {
+            get => _mouseHover;
+            set
+            {
+                if (_mouseHover == value) return;
+                _mouseHover = value;
+                var enabled = Enabled;
+                PARENT?.SetCursor(value && enabled);
+                if (enabled)
+                {
+                    if (PARENT == null) return;
+                    if (Config.HasAnimation(nameof(Switch)))
+                    {
+                        ThreadHover?.Dispose();
+                        AnimationHover = true;
+                        if (value)
+                        {
+                            ThreadHover = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationHoverValue = AnimationHoverValue.Calculate(0.1F);
+                                if (AnimationHoverValue > 1) { AnimationHoverValue = 1F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationHover = false;
+                                Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadHover = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationHoverValue = AnimationHoverValue.Calculate(-0.1F);
+                                if (AnimationHoverValue <= 0) { AnimationHoverValue = 0F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationHover = false;
+                                Invalidate();
+                            });
+                        }
+                    }
+                    else AnimationHoverValue = 255;
+                    Invalidate();
+                }
+            }
+        }
+
+        internal override void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
+        {
+            bool emptyIcon = string.IsNullOrEmpty(IconSvg) && Icon == null;
+            bool emptyText =SwitchMode?string.IsNullOrEmpty(Checked? CheckedText:UnCheckedText): string.IsNullOrEmpty(Text);
+            if (emptyIcon) icon_size = 0;
+            if (emptyText) font_height = 0;
+
+            rect = rect_read;
+            int sp = (int)(font_height * .25F), t_x = rect_read.Y + (emptyIcon ? 0 : ((rect_read.Height - (font_height + icon_size + sp)) / 2));
+
+            ico_rect = new Rectangle(rect_read.X + 2, rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
+            txt_rect = new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2) - 2, rect_read.Width - icon_size, rect_read.Height);
+
+            if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
+            Show = true;
+
+        }
+        internal bool Contains(int x, int y) => rect.Contains(x, y);
+    }
+    public class CollapseGroupSub: ICollapseItem
     {
         public CollapseGroupSub() { }
         public CollapseGroupSub(string text)
@@ -908,8 +1154,8 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate() => PARENT?.Invalidate();
-        void Invalidates()
+      protected  void Invalidate() => PARENT?.Invalidate();
+       protected void Invalidates()
         {
             if (PARENT == null) return;
             PARENT.ChangeList();
@@ -965,26 +1211,30 @@ namespace AntdUI
             }
         }
 
-        bool select = false;
+       protected bool select = false;
         [Description("激活状态"), Category("行为"), DefaultValue(false)]
-        public bool Select
+        public virtual bool Select
         {
             get => select;
             set
             {
                 if (select == value) return;
-                if (value) PARENT?.IUSelect();
+                if (value)
+                {
+                    PARENT?.IUSelect();
+                }
                 select = value;
                 Invalidate();
             }
         }
 
-        internal CollapseGroup? PARENT { get; set; }
+      
+        internal ICollapse? PARENT { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public CollapseGroupItem? PARENTITEM { get; set; }
+        public ICollapseItem? PARENTITEM { get; set; }
 
-        internal void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
+        internal virtual void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
         {
             rect = rect_read;
             int sp = (int)(font_height * .25F), t_x = rect_read.Y + ((rect_read.Height - (font_height + icon_size + sp)) / 2);
@@ -992,6 +1242,7 @@ namespace AntdUI
             ico_rect = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
             if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
             Show = true;
+
         }
 
         internal bool Show { get; set; }
@@ -1013,6 +1264,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
+     
         ITask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }

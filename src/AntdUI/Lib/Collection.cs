@@ -113,14 +113,14 @@ namespace AntdUI
 
         #region 添加
 
-        public void Add(T item)
+        public virtual void Add(T item)
         {
             list.Add(item);
             PropertyChanged(item);
             action_add?.Invoke(item);
             action?.Invoke(true);
         }
-        public int Add(object? value)
+        public virtual int Add(object? value)
         {
             if (value is T item)
             {

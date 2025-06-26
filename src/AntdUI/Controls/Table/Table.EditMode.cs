@@ -249,7 +249,7 @@ namespace AntdUI
             switch (EditInputStyle)
             {
                 case TEditInputStyle.Full:
-                    int wave = (int)((4 + 1 / 2F) * Config.Dpi), wave2 = wave * 2;
+                    int wave = (int)((4 + 1 / 2F) * Config.Dpi), wave2 = wave * 2 + 1;//需要多1个DPI才刚好够单元格宽度
                     var inputFull = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - wave, cell.RECT.Y - sy - wave, cell.RECT.Width + wave2, cell.RECT.Height + wave2));
                     inputFull.Radius = 0;
                     return inputFull;

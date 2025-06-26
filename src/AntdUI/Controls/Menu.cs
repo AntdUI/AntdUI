@@ -109,6 +109,22 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Round));
             }
         }
+        bool focusedMark = false;
+        /// <summary>
+        /// 焦点标识块
+        /// </summary>
+        [Description("绘制焦点标识块"), Category("外观"), DefaultValue(false)]
+        public bool FocusedMark
+        {
+            get => focusedMark;
+            set
+            {
+                if (focusedMark == value) return;
+                focusedMark = value;
+                Invalidate();
+                OnPropertyChanged(nameof(FocusedMark));
+            }
+        }
 
         /// <summary>
         /// 色彩模式
@@ -880,7 +896,7 @@ namespace AntdUI
             {
                 if (it.Select)
                 {
-                    if (it.CanExpand)
+                    if (it.CanExpand && string.IsNullOrEmpty(it.Text) == false)//无文本简洁窄模式下，箭头会跟图标重叠，所以需要隐藏
                     {
                         if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
                         using (var pen = new Pen(fore_active, 2F))
@@ -891,7 +907,7 @@ namespace AntdUI
                     }
                     else PaintBack(g, back_active, it.rect, radius);
                 }
-                else if (it.CanExpand)
+                else if (it.CanExpand && string.IsNullOrEmpty(it.Text) == false)//无文本简洁窄模式下，箭头会跟图标重叠，所以需要隐藏
                 {
                     using (var pen = new Pen(fore_enabled, 2F))
                     {
@@ -909,12 +925,18 @@ namespace AntdUI
             using (var brush = new SolidBrush(fore))
             {
                 g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                if (FocusedMark) //增加焦点块
+                {
+                    int fh = it.rect.Height - (it.rect.Height / 3);
+                    Rectangle rectFocused = new Rectangle(0, it.rect.Top + (it.rect.Height - fh) / 2, 6, fh);
+                    g.Fill(brush, rectFocused);
+                }
             }
             PaintIcon(g, it, fore);
         }
         void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
         {
-            if (it.CanExpand)
+            if (it.CanExpand && string.IsNullOrEmpty(it.Text) == false)//无文本简洁窄模式下，箭头会跟图标重叠，所以需要隐藏
             {
                 if (mode == TMenuMode.Inline)
                 {
@@ -1565,6 +1587,11 @@ namespace AntdUI
         /// </summary>
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
+        /// <summary>
+        /// 用户定义数据1
+        /// </summary>
+        [Description("用户定义数据1"), Category("数据"), DefaultValue(null)]
+        public object? Tag1 { get; set; }
 
         internal MenuItemCollection? items;
         /// <summary>

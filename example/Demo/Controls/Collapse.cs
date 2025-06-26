@@ -16,6 +16,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -28,5 +29,15 @@ namespace Demo.Controls
             form = _form;
             InitializeComponent();
         }
+        private void collapse1_ButtonClickChanged(object sender, AntdUI.CollapseButtonClickEventArgs e)
+        {
+            AntdUI.Notification.info(form, e.Parent.Text, e.Value.Text, AntdUI.TAlignFrom.Top, Font);
+        }
+
+        private void switchButton_CheckedChanged(object sender, AntdUI.CollapseSwitchCheckedChangedEventArgs e)
+        {
+            AntdUI.Notification.info(form, e.Parent.Text,e.Checked? e.Value.CheckedText:e.Value.UnCheckedText, AntdUI.TAlignFrom.Top, Font);
+        }
     }
+
 }
