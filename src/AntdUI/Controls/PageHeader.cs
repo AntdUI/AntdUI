@@ -690,14 +690,12 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect_ = ClientRectangle;
-            if (rect_.Width == 0 || rect_.Height == 0) return;
-            var rect = rect_.PaddingRect(Padding, 0, 0, hasr, 0);
-            var g = e.Graphics.High();
+            var g = e.Canvas;
+            var rect = e.Rect.PaddingRect(Padding, 0, 0, hasr, 0);
 
-            backExtend.BrushEx(rect_, g);
+            backExtend.BrushEx(e.Rect, g);
 
             #region 显示颜色
 
@@ -711,20 +709,19 @@ namespace AntdUI
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    IPaint(g, rect_, rect, MeasureString(g, Text, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
+                    IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
                 }
             }
-            else IPaint(g, rect_, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
-            this.PaintBadge(g);
+            else IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Config.Dpi), margin = (int)(dividerMargin * Config.Dpi);
                 using (var brush = dividerColor.Brush(Colour.Split.Get("PageHeader", ColorScheme)))
                 {
-                    g.Fill(brush, new Rectangle(rect_.X + margin, rect_.Bottom - thickness, rect_.Width - margin * 2, thickness));
+                    g.Fill(brush, new Rectangle(e.Rect.X + margin, e.Rect.Bottom - thickness, e.Rect.Width - margin * 2, thickness));
                 }
             }
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void IPaint(Canvas g, Rectangle rect, Rectangle rect_real, Size size, float ratio, Font? fontTitle, Color fore, Color forebase, Color foreSecondary, Color fillsecondary)

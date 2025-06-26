@@ -400,11 +400,11 @@ namespace AntdUI
 
         bool init = false;
         internal StringFormat stringLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             init = true;
-            var rect = ClientRectangle.PaddingRect(Padding);
-            var g = e.Graphics.High();
+            var rect = e.Rect.PaddingRect(Padding);
+            var g = e.Canvas;
             var rect_read = ReadRectangle;
             float _radius = round ? rect_read.Height : radius * Config.Dpi;
             using (var path = Path(rect_read, _radius))
@@ -477,8 +477,7 @@ namespace AntdUI
                     PaintValue(g, r, rect_color);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintValue(Canvas g, float r, RectangleF rect_color)

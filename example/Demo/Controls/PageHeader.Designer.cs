@@ -85,6 +85,7 @@ namespace Demo.Controls
             // 
             // button1
             // 
+            button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.Dock = DockStyle.Right;
             button1.LocalizationText = "PageHeader.Type";
             button1.Location = new Point(657, 0);

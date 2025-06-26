@@ -21,7 +21,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -399,9 +398,9 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             var rect_read = ReadRectangle;
             if (rect_read.Width == 0 || rect_read.Height == 0) return;
             if (rotate == TRotate.Clockwise_90)
@@ -409,7 +408,7 @@ namespace AntdUI
                 using (var rotationMatrix = new Matrix())
                 {
                     rotationMatrix.RotateAt(90, new PointF(Width / 2, Height / 2));
-                    e.Graphics.Transform = rotationMatrix;
+                    e.Graphics!.Transform = rotationMatrix;
                 }
             }
             else if (rotate == TRotate.CounterClockwise_90)
@@ -417,7 +416,7 @@ namespace AntdUI
                 using (var rotationMatrix = new Matrix())
                 {
                     rotationMatrix.RotateAt(-90, new PointF(Width / 2, Height / 2));
-                    e.Graphics.Transform = rotationMatrix;
+                    e.Graphics!.Transform = rotationMatrix;
                 }
             }
 
@@ -436,8 +435,7 @@ namespace AntdUI
                     g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

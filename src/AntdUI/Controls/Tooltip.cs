@@ -95,13 +95,12 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             MaximumSize = MinimumSize = this.RenderMeasure(g, null, out var multiline);
-            this.Render(g, rect, multiline, s_c, s_l);
-            base.OnPaint(e);
+            this.Render(g, e.Rect, multiline, s_c, s_l);
+            base.OnDraw(e);
         }
 
         #endregion

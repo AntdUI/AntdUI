@@ -683,17 +683,15 @@ namespace AntdUI
         #region 渲染
 
         public Menu() { ScrollBar = new ScrollBar(this); }
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
-            if (scroll_show) g.SetClip(new Rectangle(rect.X, rect.Y, rect_r.Right - rect_r.Height, rect.Height));
+            var g = e.Canvas;
+            if (scroll_show) g.SetClip(new Rectangle(e.Rect.X, e.Rect.Y, rect_r.Right - rect_r.Height, e.Rect.Height));
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color = Colour.TextBase.Get("Menu", ColorScheme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", ColorScheme), back_hover, back_active;
@@ -713,7 +711,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu", ColorScheme)))
             {
-                PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
+                PaintItems(g, e.Rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
             if (scroll_show)
@@ -729,8 +727,7 @@ namespace AntdUI
                 SvgExtend.GetImgExtend(g, "EllipsisOutlined", rect_r_ico, color_fore);
             }
             ScrollBar.Paint(g, scroll_color);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintItems(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)

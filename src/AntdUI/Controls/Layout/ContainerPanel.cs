@@ -210,7 +210,6 @@ namespace AntdUI
                         g.Draw(borderColor ?? Colour.Text.Get("Panel", ColorScheme), Config.Dpi, DashStyle.Dash, path);
                     }
                 }
-                this.PaintBadge(g);
             }
         }
 

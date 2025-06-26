@@ -510,17 +510,15 @@ namespace AntdUI
 
         string? bmpcode;
         Bitmap? bmp;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            if (_rect.Width == 0 || _rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var rect = _rect.PaddingRect(Padding);
-            var g = e.Graphics.High();
+            var rect = e.Rect.PaddingRect(Padding);
+            var g = e.Canvas;
             int len = items.Count;
             var image = items[selectIndex].Img;
             float _radius = radius * Config.Dpi;
@@ -582,8 +580,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
         Bitmap PaintBmpVertical(CarouselItemCollection items, CarouselRectPanel select_range, Rectangle rect, float radius)
         {

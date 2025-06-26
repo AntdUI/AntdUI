@@ -100,24 +100,20 @@ namespace AntdUI.Chat
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float sy = ScrollBar.Value, radius = Config.Dpi * 8F;
             g.TranslateTransform(0, -sy);
-
-            foreach (var it in items) PaintItem(g, it, rect, sy, radius);
-
+            foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius);
             g.ResetTransform();
             ScrollBar.Paint(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         StringFormat SFL = Helper.SF(tb: StringAlignment.Near);

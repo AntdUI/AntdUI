@@ -414,27 +414,22 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width > 0 && rect.Height > 0)
+            var g = e.Canvas;
+            var rect_read = ReadRectangle;
+            float _radius = radius * Config.Dpi;
+            using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
             {
-                var g = e.Graphics.High();
-                var rect_read = ReadRectangle;
-                float _radius = radius * Config.Dpi;
-                using (var path = DrawShadow(g, _radius, rect, rect_read))
+                using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get("Panel", ColorScheme)))
                 {
-                    using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get("Panel", ColorScheme)))
-                    {
-                        g.Fill(brush, path);
-                    }
-                    if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get("Panel", ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
+                    g.Fill(brush, path);
                 }
-                if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get("Panel", ColorScheme), ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
-                this.PaintBadge(g);
-                base.OnPaint(e);
+                if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
+                if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get("Panel", ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
             }
+            if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get("Panel", ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
+            base.OnDraw(e);
         }
 
         Bitmap? shadow_temp;

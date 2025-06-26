@@ -338,14 +338,14 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_f = Helper.SF_NoWrap();
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             if (buttons.Length < 2)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
             if (Enabled)
             {
@@ -460,8 +460,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #endregion
@@ -780,13 +779,13 @@ namespace AntdUI
         int GetSizeChangerWidth(string placeholder)
         {
             if (sizeChangerWidth > 0) return (int)(sizeChangerWidth * Config.Dpi);
-            int wsize = (int)(4 * Config.Dpi) * 2;
+            int wsize = (int)(5 * Config.Dpi) * 2;
             if (pageSizeOptions == null || pageSizeOptions.Length == 0)
             {
                 return Helper.GDI(g =>
                 {
                     var size = g.MeasureString(placeholder, Font);
-                    return size.Width + wsize + (int)Math.Ceiling(size.Height * 0.6F);
+                    return size.Width + wsize + size.Height;
                 });
             }
             else
@@ -794,7 +793,7 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var size = g.MeasureString(placeholder, Font);
-                    return size.Width + wsize + (int)Math.Ceiling(size.Height * 1.32F);
+                    return size.Width + wsize + (int)Math.Ceiling(size.Height * 1.8F);
                 });
             }
         }

@@ -65,10 +65,10 @@ namespace AntdUI
         }
 
         string show_tmp = "";
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle.DeflateRect(Padding);
-            var g = e.Graphics.High();
+            var g = e.Canvas;
+            var rect = e.Rect.DeflateRect(Padding);
             string[] time = GTime();
             show_tmp = string.Join("", time);
             using (var brush_sub = new SolidBrush(ForeColor.rgba(.8F)))
@@ -98,8 +98,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         readonly StringFormat s_f_l = Helper.SF_NoWrap(StringAlignment.Center, StringAlignment.Far),

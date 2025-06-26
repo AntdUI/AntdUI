@@ -323,14 +323,14 @@ namespace AntdUI
         #region 渲染
 
         StringFormat s_l = Helper.SF_ALL(lr: StringAlignment.Near);
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float r = radius * Config.Dpi;
             using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get("Collapse", ColorScheme)))
             using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get("Collapse", ColorScheme)))
@@ -514,8 +514,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)

@@ -333,9 +333,9 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             var rect_read = ReadRectangle;
             if (backImage != null) g.Image(rect_read, backImage, backFit, radius, false);
             float _radius = radius * Config.Dpi;
@@ -389,8 +389,7 @@ namespace AntdUI
 
                 PaintText(g, Text, _fore, rect_read);
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

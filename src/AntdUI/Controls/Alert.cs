@@ -235,10 +235,10 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             var rect = DisplayRectangle;
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             bool hasText = string.IsNullOrEmpty(Text);
             if (icon == TType.None)
             {
@@ -366,8 +366,7 @@ namespace AntdUI
                     if (borWidth > 0) g.Draw(bor_color, borWidth * Config.Dpi, path);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

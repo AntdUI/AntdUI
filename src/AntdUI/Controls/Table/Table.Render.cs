@@ -27,32 +27,26 @@ namespace AntdUI
 {
     partial class Table
     {
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
-            var rect = ClientRectangle;
+            var g = e.Canvas;
             if (rows == null)
             {
-                if (Empty) PaintEmpty(g, rect, 0);
-                base.OnPaint(e);
+                if (Empty) PaintEmpty(g, e.Rect, 0);
+                base.OnDraw(e);
                 return;
             }
-            try
+            if (columnfont == null)
             {
-                if (columnfont == null)
+                using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
-                    using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
-                    {
-                        PaintTable(g, rows, rect, column_font);
-                    }
+                    PaintTable(g, rows, e.Rect, column_font);
                 }
-                else PaintTable(g, rows, rect, columnfont);
-                if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, rect, rows[0].RECT.Height);
             }
-            catch { }
+            else PaintTable(g, rows, e.Rect, columnfont);
+            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, e.Rect, rows[0].RECT.Height);
             ScrollBar.Paint(g);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintTable(Canvas g, RowTemplate[] rows, Rectangle rect, Font column_font)
@@ -657,11 +651,11 @@ namespace AntdUI
                 if (CellPaintBegin == null) PaintItemCore(g, columnIndex, it, enable, fore);
                 else
                 {
-                    var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex);
+                    var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN);
                     CellPaintBegin(this, arge);
                     if (!arge.Handled) PaintItemCore(g, columnIndex, it, enable, fore);
                 }
-                CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex));
+                CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN));
             }
             catch { }
             g.Restore(state);

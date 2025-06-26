@@ -144,92 +144,19 @@ namespace AntdUI
 
         #endregion
 
-        #region 布局
-
-        bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
-        public bool PauseLayout
-        {
-            get => pauseLayout;
-            set
-            {
-                if (pauseLayout == value) return;
-                pauseLayout = value;
-                if (!value)
-                {
-                    ChangeItems();
-                    Invalidate();
-                }
-                OnPropertyChanged(nameof(PauseLayout));
-            }
-        }
-
-        Rectangle[] hs = new Rectangle[0];
-        internal void ChangeItems()
-        {
-            if ((items == null || items.Count == 0) || pauseLayout) return;
-            var _rect = ClientRectangle.PaddingRect(Padding);
-            if (_rect.Width == 0 || _rect.Height == 0) return;
-            var rect = _rect.PaddingRect(Margin);
-            hs = Helper.GDI(g =>
-            {
-                var hs = new List<Rectangle>(items.Count);
-                var size_t = g.MeasureString(Config.NullText, Font);
-                int sp = (int)(4 * Config.Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Config.Dpi);
-                int x = 0, tmpx = 0;
-                foreach (BreadcrumbItem it in items)
-                {
-                    it.PARENT = this;
-
-                    if (it.Text == null || string.IsNullOrEmpty(it.Text))
-                    {
-                        var Rect = new Rectangle(rect.X + x, y, imgsize + sp2, h);
-                        if (it.HasIcon)
-                        {
-                            it.Rect = it.RectText = Rect;
-                            it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
-                        }
-                        else it.Rect = it.RectText = Rect;
-                    }
-                    else
-                    {
-                        var size = g.MeasureText(it.Text, Font);
-                        if (it.HasIcon)
-                        {
-                            int imgw = imgsize + sp2;
-                            var Rect = new Rectangle(rect.X + x, y, size.Width + sp + imgsize + sp2, h);
-                            it.Rect = Rect;
-                            it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
-                            it.RectText = new Rectangle(it.RectImg.Right + sp, Rect.Y, Rect.Width - imgw - sp2, Rect.Height);
-                        }
-                        else it.Rect = it.RectText = new Rectangle(rect.X + x, y, size.Width + sp2, h);
-                    }
-                    x += it.Rect.Width + _gap;
-
-                    if (tmpx > 0)
-                        hs.Add(new Rectangle(tmpx - _gap + sp, y, _gap, h));
-
-                    tmpx = x;
-                }
-                return hs.ToArray();
-            });
-        }
-
-        #endregion
-
         #endregion
 
         #region 渲染
 
         readonly StringFormat s_f = Helper.SF_ALL();
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float _radius = radius * Config.Dpi;
             using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get("Breadcrumb", ColorScheme)))
             using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get("Breadcrumb", ColorScheme)))
@@ -264,16 +191,90 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         bool PaintImg(Canvas g, BreadcrumbItem it, Color color, string? svg, Image? bmp)
         {
             int count = 0;
-            if (bmp != null) { g.Image(bmp, it.RectImg); count++; }
+            if (bmp != null)
+            {
+                g.Image(bmp, it.RectImg);
+                count++;
+            }
             if (svg != null && g.GetImgExtend(svg, it.RectImg, color)) count++;
             return count == 0;
+        }
+
+        #endregion
+
+        #region 布局
+
+        bool pauseLayout = false;
+        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        public bool PauseLayout
+        {
+            get => pauseLayout;
+            set
+            {
+                if (pauseLayout == value) return;
+                pauseLayout = value;
+                if (!value)
+                {
+                    ChangeItems();
+                    Invalidate();
+                }
+                OnPropertyChanged(nameof(PauseLayout));
+            }
+        }
+
+        Rectangle[] hs = new Rectangle[0];
+        internal void ChangeItems()
+        {
+            if ((items == null || items.Count == 0) || pauseLayout) return;
+            var _rect = ClientRectangle.PaddingRect(Padding);
+            if (_rect.Width == 0 || _rect.Height == 0) return;
+            var rect = _rect.PaddingRect(Margin);
+            hs = Helper.GDI(g =>
+            {
+                var hs = new List<Rectangle>(items.Count);
+                var size_t = g.MeasureString(Config.NullText, Font);
+                int sp = (int)(4 * Config.Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Config.Dpi);
+                int x = 0, tmpx = 0;
+                foreach (var it in items)
+                {
+                    it.PARENT = this;
+
+                    if (it.Text == null || string.IsNullOrEmpty(it.Text))
+                    {
+                        var Rect = new Rectangle(rect.X + x, y, imgsize + sp2, h);
+                        if (it.HasIcon)
+                        {
+                            it.Rect = it.RectText = Rect;
+                            it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
+                        }
+                        else it.Rect = it.RectText = Rect;
+                    }
+                    else
+                    {
+                        var size = g.MeasureText(it.Text, Font);
+                        if (it.HasIcon)
+                        {
+                            var Rect = new Rectangle(rect.X + x, y, imgsize + sp + size.Width + sp2, h);
+                            it.Rect = Rect;
+                            it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
+                            it.RectText = new Rectangle(it.RectImg.Right + sp, Rect.Y, size.Width, Rect.Height);
+                        }
+                        else it.Rect = it.RectText = new Rectangle(rect.X + x, y, size.Width + sp2, h);
+                    }
+                    x += it.Rect.Width + _gap;
+
+                    if (tmpx > 0) hs.Add(new Rectangle(tmpx - _gap + sp, y, _gap, h));
+
+                    tmpx = x;
+                }
+                return hs.ToArray();
+            });
         }
 
         #endregion

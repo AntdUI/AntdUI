@@ -282,10 +282,10 @@ namespace AntdUI
         #region 渲染
 
         internal Rectangle rect_read;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             var padding = Padding;
-            var _rect = ClientRectangle.PaddingRect(padding);
+            var _rect = e.Rect.PaddingRect(padding);
             if (_rect.Width == 0 || _rect.Height == 0) return;
             int LineSize = (int)(lineSize * Config.Dpi), DotS = (int)((dotSizeActive > dotSize ? dotSizeActive : dotSize) * Config.Dpi), DotS2 = DotS * 2;
             if (align == TAlignMini.Top || align == TAlignMini.Bottom)
@@ -312,10 +312,9 @@ namespace AntdUI
             var enabled = Enabled;
             Color color = enabled ? fill ?? Colour.InfoBorder.Get("Slider", ColorScheme) : Colour.FillTertiary.Get("Slider", ColorScheme), color_dot = enabled ? fill ?? Colour.InfoBorder.Get("Slider", ColorScheme) : Colour.SliderHandleColorDisabled.Get("Slider", ColorScheme), color_hover = FillHover ?? Colour.InfoHover.Get("Slider", ColorScheme), color_active = FillActive ?? Colour.Primary.Get("Slider", ColorScheme);
 
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             IPaint(g, _rect, enabled, color, color_dot, color_hover, color_active);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         internal virtual void IPaint(Canvas g, Rectangle rect, bool enabled, Color color, Color color_dot, Color color_hover, Color color_active)
@@ -380,7 +379,7 @@ namespace AntdUI
             }
             else if (ExtraMouseDotHover)
             {
-                using (var brush_shadow = new SolidBrush(color_active.rgba(.2F)))
+                using (var brush_shadow = new SolidBrush(color_active.rgba(0.2F)))
                 {
                     g.FillEllipse(brush_shadow, RectDot(rect, rect_read, prog, DotSizeActive + LineSize * 3));
                 }

@@ -616,7 +616,7 @@ namespace AntdUI
 
     public class TablePaintEventArgs : EventArgs
     {
-        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index)
+        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column)
         {
             g = canvas;
             Rect = rect;
@@ -624,6 +624,7 @@ namespace AntdUI
             Record = record;
             RowIndex = rowIndex;
             Index = index;
+            Column = column;
         }
 
         /// <summary>
@@ -652,6 +653,11 @@ namespace AntdUI
         public int Index { get; private set; }
 
         /// <summary>
+        /// 表头
+        /// </summary>
+        public Column Column { get; private set; }
+
+        /// <summary>
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
@@ -659,7 +665,7 @@ namespace AntdUI
 
     public class TablePaintBeginEventArgs : TablePaintEventArgs
     {
-        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index) : base(canvas, rect, rectreal, record, rowIndex, index) { }
+        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
 
         /// <summary>
         /// 是否处理
@@ -940,6 +946,33 @@ namespace AntdUI
     }
 
     #endregion
+
+    #endregion
+
+    #region 渲染
+
+    public class DrawEventArgs : EventArgs
+    {
+        public DrawEventArgs(Canvas canvas, Rectangle rect)
+        {
+            Canvas = canvas;
+            Rect = rect;
+        }
+
+        public Canvas Canvas { get; private set; }
+        public Rectangle Rect { get; private set; }
+
+        public Graphics? Graphics
+        {
+            get
+            {
+                if (Canvas is Core.CanvasGDI gdi) return gdi.g;
+                return null;
+            }
+        }
+    }
+
+    public delegate void DrawEventHandler(object sender, DrawEventArgs e);
 
     #endregion
 

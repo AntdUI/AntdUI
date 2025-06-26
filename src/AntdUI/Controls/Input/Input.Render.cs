@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -37,17 +36,12 @@ namespace AntdUI
             if (TakePaint == null) base.Invalidate();
             else TakePaint();
         }
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            if (_rect.Width > 0 && _rect.Height > 0)
-            {
-                var g = e.Graphics.High();
-                Rectangle rect = _rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
-                IPaint(g, rect, rect_read);
-                this.PaintBadge(g);
-                base.OnPaint(e);
-            }
+            var g = e.Canvas;
+            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
+            IPaint(g, rect, rect_read);
+            base.OnDraw(e);
         }
 
         internal void IPaint(Canvas g, Rectangle rect, Rectangle rect_read)

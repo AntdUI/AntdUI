@@ -252,11 +252,11 @@ namespace AntdUI
         #region 渲染
 
         bool init = false;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             init = true;
-            var g = e.Graphics.High();
-            var rect = ClientRectangle.PaddingRect(Padding);
+            var g = e.Canvas;
+            var rect = e.Rect.PaddingRect(Padding);
             var rect_read = ReadRectangle;
             bool enabled = Enabled;
             using (var path = rect_read.RoundPath(rect_read.Height))
@@ -345,8 +345,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
         internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
         {

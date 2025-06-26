@@ -117,27 +117,24 @@ namespace AntdUI.Chat
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             int sy = ScrollBar.Value, radius = (int)Math.Ceiling(IconRadius * Config.Dpi);
             g.TranslateTransform(0, -sy);
             using (var font_text = new Font(Font.FontFamily, Font.Size * .9F))
             using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
             {
-                foreach (var it in items) PaintItem(g, it, rect, sy, font_text, font_time, radius);
+                foreach (var it in items) PaintItem(g, it, e.Rect, sy, font_text, font_time, radius);
             }
-
             g.ResetTransform();
             ScrollBar.Paint(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         StringFormat SFBage = Helper.SF();

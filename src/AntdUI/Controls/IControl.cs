@@ -655,6 +655,33 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 渲染
+
+        [Description("渲染 时发生"), Category("行为")]
+        public event DrawEventHandler? Draw;
+        [Description("渲染背景 时发生"), Category("行为")]
+        public event DrawEventHandler? DrawBg;
+        protected virtual void OnDrawBg(DrawEventArgs e) => DrawBg?.Invoke(this, e);
+        protected virtual void OnDraw(DrawEventArgs e) => Draw?.Invoke(this, e);
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            var rect = ClientRectangle;
+            if (rect.Width == 0 || rect.Height == 0) return;
+            base.OnPaint(e);
+            var g = e.Graphics.High();
+            try
+            {
+                var args = new DrawEventArgs(g, rect);
+                OnDrawBg(args);
+                OnDraw(args);
+            }
+            catch { }
+            this.PaintBadge(g);
+        }
+
+        #endregion
     }
 
     public enum ControlType
