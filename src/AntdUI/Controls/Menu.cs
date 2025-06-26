@@ -109,22 +109,12 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Round));
             }
         }
-        bool focusedMark = false;
+
         /// <summary>
         /// 焦点标识块
         /// </summary>
         [Description("绘制焦点标识块"), Category("外观"), DefaultValue(false)]
-        public bool FocusedMark
-        {
-            get => focusedMark;
-            set
-            {
-                if (focusedMark == value) return;
-                focusedMark = value;
-                Invalidate();
-                OnPropertyChanged(nameof(FocusedMark));
-            }
-        }
+        public bool FocusedMark { get; set; }
 
         /// <summary>
         /// 色彩模式
@@ -352,109 +342,6 @@ namespace AntdUI
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
         }
-
-        /// <summary>
-        /// 获取选中项索引
-        /// </summary>
-        public int GetSelectIndex(MenuItem item)
-        {
-            if (items != null) return items.IndexOf(item);
-            else return -1;
-        }
-
-        /// <summary>
-        /// 选中菜单
-        /// </summary>
-        /// <param name="item">项</param>
-        /// <param name="focus">设置焦点</param>
-        public void Select(MenuItem item, bool focus = true)
-        {
-            if (items == null || items.Count == 0) return;
-            IUSelect(items);
-            Select(item, focus, items);
-        }
-        void Select(MenuItem item, bool focus, MenuItemCollection items)
-        {
-            foreach (var it in items)
-            {
-                if (it == item)
-                {
-                    it.Select = true;
-                    tmpAM = true;
-                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(it));
-                    if (SelectEx(it.PARENTITEM) > 0)
-                    {
-                        ChangeList();
-                        Invalidate();
-                    }
-                    tmpAM = false;
-                    if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
-                    return;
-                }
-                else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
-            }
-        }
-
-        internal bool tmpAM = false;
-        int SelectEx(MenuItem? it)
-        {
-            int count = 0;
-            if (it == null) return count;
-            if (it.Expand) it.Select = true;
-            else
-            {
-                count++;
-                it.Expand = it.Select = true;
-            }
-            count += SelectEx(it.PARENTITEM);
-            return count;
-        }
-
-        /// <summary>
-        /// 移除菜单
-        /// </summary>
-        /// <param name="item">项</param>
-        public void Remove(MenuItem item)
-        {
-            if (items == null || items.Count == 0) return;
-            Remove(item, items);
-        }
-        void Remove(MenuItem item, MenuItemCollection items)
-        {
-            foreach (var it in items)
-            {
-                if (it == item)
-                {
-                    items.Remove(it);
-                    return;
-                }
-                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
-            }
-        }
-
-        #region 事件
-
-        /// <summary>
-        /// Select 属性值更改时发生
-        /// </summary>
-        [Description("Select 属性值更改时发生"), Category("行为")]
-        public event SelectEventHandler? SelectChanged;
-
-        /// <summary>
-        /// Select 属性值更改前发生
-        /// </summary>
-        [Description("Select 属性值更改前发生"), Category("行为")]
-        public event SelectBoolEventHandler? SelectChanging;
-
-        bool IsCanChang(MenuItem it)
-        {
-            bool pass = false;
-            if (SelectChanging == null) pass = true;
-            else if (SelectChanging(this, new MenuSelectEventArgs(it))) pass = true;
-            return pass;
-        }
-
-        #endregion
 
         #endregion
 
@@ -896,7 +783,7 @@ namespace AntdUI
             {
                 if (it.Select)
                 {
-                    if (it.CanExpand && string.IsNullOrEmpty(it.Text) == false)//无文本简洁窄模式下，箭头会跟图标重叠，所以需要隐藏
+                    if (it.CanExpand)
                     {
                         if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
                         using (var pen = new Pen(fore_active, 2F))
@@ -907,7 +794,7 @@ namespace AntdUI
                     }
                     else PaintBack(g, back_active, it.rect, radius);
                 }
-                else if (it.CanExpand && string.IsNullOrEmpty(it.Text) == false)//无文本简洁窄模式下，箭头会跟图标重叠，所以需要隐藏
+                else if (it.CanExpand)
                 {
                     using (var pen = new Pen(fore_enabled, 2F))
                     {
@@ -936,7 +823,7 @@ namespace AntdUI
         }
         void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
         {
-            if (it.CanExpand && string.IsNullOrEmpty(it.Text) == false)//无文本简洁窄模式下，箭头会跟图标重叠，所以需要隐藏
+            if (it.CanExpand)
             {
                 if (mode == TMenuMode.Inline)
                 {
@@ -955,10 +842,7 @@ namespace AntdUI
                     }
                 }
             }
-            using (var brush = new SolidBrush(fore))
-            {
-                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
-            }
+            g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
             PaintIcon(g, it, fore);
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
@@ -1362,6 +1246,113 @@ namespace AntdUI
 
         #endregion
 
+        #region 方法
+
+        /// <summary>
+        /// 获取选中项索引
+        /// </summary>
+        public int GetSelectIndex(MenuItem item)
+        {
+            if (items != null) return items.IndexOf(item);
+            else return -1;
+        }
+
+        /// <summary>
+        /// 选中菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        /// <param name="focus">设置焦点</param>
+        public void Select(MenuItem item, bool focus = true)
+        {
+            if (items == null || items.Count == 0) return;
+            IUSelect(items);
+            Select(item, focus, items);
+        }
+        void Select(MenuItem item, bool focus, MenuItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    it.Select = true;
+                    tmpAM = true;
+                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(it));
+                    if (SelectEx(it.PARENTITEM) > 0)
+                    {
+                        ChangeList();
+                        Invalidate();
+                    }
+                    tmpAM = false;
+                    if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
+            }
+        }
+
+        internal bool tmpAM = false;
+        int SelectEx(MenuItem? it)
+        {
+            int count = 0;
+            if (it == null) return count;
+            if (it.Expand) it.Select = true;
+            else
+            {
+                count++;
+                it.Expand = it.Select = true;
+            }
+            count += SelectEx(it.PARENTITEM);
+            return count;
+        }
+
+        /// <summary>
+        /// 移除菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        public void Remove(MenuItem item)
+        {
+            if (items == null || items.Count == 0) return;
+            Remove(item, items);
+        }
+        void Remove(MenuItem item, MenuItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    items.Remove(it);
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
+            }
+        }
+
+        #endregion
+
+        #region 事件
+
+        /// <summary>
+        /// Select 属性值更改时发生
+        /// </summary>
+        [Description("Select 属性值更改时发生"), Category("行为")]
+        public event SelectEventHandler? SelectChanged;
+
+        /// <summary>
+        /// Select 属性值更改前发生
+        /// </summary>
+        [Description("Select 属性值更改前发生"), Category("行为")]
+        public event SelectBoolEventHandler? SelectChanging;
+
+        bool IsCanChang(MenuItem it)
+        {
+            bool pass = false;
+            if (SelectChanging == null) pass = true;
+            else if (SelectChanging(this, new MenuSelectEventArgs(it))) pass = true;
+            return pass;
+        }
+
+        #endregion
+
         #region 子窗口
 
         TooltipForm? tooltipForm;
@@ -1587,11 +1578,6 @@ namespace AntdUI
         /// </summary>
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
-        /// <summary>
-        /// 用户定义数据1
-        /// </summary>
-        [Description("用户定义数据1"), Category("数据"), DefaultValue(null)]
-        public object? Tag1 { get; set; }
 
         internal MenuItemCollection? items;
         /// <summary>
@@ -1869,6 +1855,16 @@ namespace AntdUI
                 badgeOffsetY = value;
                 if (badge != null || badgeSvg != null) Invalidate();
             }
+        }
+
+        #endregion
+
+        #region 方法
+
+        public void Remove()
+        {
+            if (PARENTITEM == null) PARENT?.Items.Remove(this);
+            else PARENTITEM.items?.Remove(this);
         }
 
         #endregion

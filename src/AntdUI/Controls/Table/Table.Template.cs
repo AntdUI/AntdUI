@@ -325,7 +325,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             public void SetSize(Rectangle _rect, int check_size)
@@ -334,11 +334,10 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
-                MinWidth = size.Width;
-                return size;
+                MinWidth = font_size.Width;
+                return font_size;
             }
 
             public bool NoTitle { get; set; }
@@ -433,7 +432,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             public void SetSize(Rectangle _rect, int check_size)
@@ -442,11 +441,10 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
-                MinWidth = size.Width;
-                return size;
+                MinWidth = font_size.Width;
+                return font_size;
             }
 
             public bool AutoCheck { get; set; }
@@ -638,7 +636,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
 
@@ -649,11 +647,10 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
             }
 
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
-                MinWidth = size.Width;
-                return size;
+                MinWidth = font_size.Width;
+                return font_size;
             }
 
             public bool AutoCheck { get; set; }
@@ -673,7 +670,7 @@ namespace AntdUI
             public TCellSort(Table table, ColumnSort column) : base(table, column, null, null)
             { }
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
             }
             public void SetSize(Rectangle _rect, int sort_size, int sort_ico_size)
@@ -684,11 +681,10 @@ namespace AntdUI
             }
             public Rectangle RECT_ICO { get; set; }
 
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
-                var size = g.MeasureString(Config.NullText, font);
-                MinWidth = size.Width;
-                return size;
+                MinWidth = font_size.Width;
+                return font_size;
             }
 
 
@@ -788,13 +784,13 @@ namespace AntdUI
             /// </summary>
             public string? value { get; set; }
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
                 RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
             }
 
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
                 if (COLUMN.LineBreak)
                 {
@@ -845,21 +841,21 @@ namespace AntdUI
 
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
                 if (COLUMN.SortOrder)
                 {
                     int size;
                     if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
-                    else size = (int)(_rect.Height * .27F);
+                    else size = (int)(font_size.Height * .6F);
                     int size2 = size * 2, icon_sp = (int)(size * .34F), y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
                     rect_up = new Rectangle(_rect.Right - size2, y, size, size);
                     rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
                 }
             }
 
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
                 if (COLUMN.ColBreak)
                 {
@@ -962,11 +958,11 @@ namespace AntdUI
             public int MinWidth { get; set; }
 
             internal int offsetx = 0, offsety = 0;
-            public bool CONTAIN(int x, int y) => RECT.Contains(x - offsetx, y - offsety);
+            public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x - offsetx, y - offsety);
 
-            public abstract void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2);
-            public abstract Size GetSize(Canvas g, Font font, int width, int gap, int gap2);
+            public abstract void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2);
+            public abstract Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2);
 
             #endregion
         }
@@ -993,7 +989,7 @@ namespace AntdUI
             /// </summary>
             public IList<ICell> Value { get; set; }
 
-            public override void SetSize(Canvas g, Font font, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = RECT_REAL = _rect;
                 int rx = _rect.X + ox, sp = gap / 2;
@@ -1024,7 +1020,7 @@ namespace AntdUI
             }
 
             Size[] SIZES = new Size[0];
-            public override Size GetSize(Canvas g, Font font, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
             {
                 int w = 0, h = 0, sp = gap / 2;
                 var sizes = new List<Size>(Value.Count);

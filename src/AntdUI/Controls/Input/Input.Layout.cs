@@ -322,16 +322,29 @@ namespace AntdUI
                 for (int i = 0; i < cache_font.Length; i++)
                 {
                     var it = cache_font[i];
-                    if (it.ret && i > 0)
+                    if (it.ret)
                     {
-                        var it_up = cache_font[i - 1];
-                        carets.Add(new CacheCaret
+                        if (i > 0)
                         {
-                            index = tmp,
-                            i = i,
-                            x = it_up.rect.Right,
-                            y = it_up.rect.Y
-                        });
+                            var it_up = cache_font[i - 1];
+                            carets.Add(new CacheCaret
+                            {
+                                index = tmp,
+                                i = i,
+                                x = it_up.rect.Right,
+                                y = it_up.rect.Y
+                            });
+                        }
+                        else
+                        {
+                            carets.Add(new CacheCaret
+                            {
+                                index = tmp,
+                                i = i + 1,
+                                x = it.rect.X,
+                                y = it.rect.Y
+                            });
+                        }
                     }
                     else
                     {

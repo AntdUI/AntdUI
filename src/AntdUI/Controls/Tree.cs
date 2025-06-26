@@ -943,6 +943,28 @@ namespace AntdUI
             foreach (var it in items) IUSelect(it);
         }
 
+        /// <summary>
+        /// 移除菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        public void Remove(TreeItem item)
+        {
+            if (items == null || items.Count == 0) return;
+            Remove(item, items);
+        }
+        void Remove(TreeItem item, TreeItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    items.Remove(it);
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
+            }
+        }
+
         #region 集合操作
 
         /// <summary>
@@ -1524,6 +1546,16 @@ namespace AntdUI
                 back = value;
                 Invalidate();
             }
+        }
+
+        #endregion
+
+        #region 方法
+
+        public void Remove()
+        {
+            if (PARENTITEM == null) PARENT?.Items.Remove(this);
+            else PARENTITEM.items?.Remove(this);
         }
 
         #endregion

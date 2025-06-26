@@ -23,7 +23,6 @@ using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AntdUI
 {
@@ -235,32 +234,8 @@ namespace AntdUI
                 }
             }
         }
-        public void IUSelect()
-        {
-            if (items == null || items.Count == 0) return;
-            foreach (var it in items)
-            {
-                if (it.Buttons != null && it.Buttons.Count > 0)
-                {
-                    foreach (var btn in it.Buttons) btn.Select = false;
-                }
-            }
-        }
-        public void IUSelect(CollapseItem item)
-        {
-            if (item.Buttons == null || item.Buttons.Count == 0) return;
-            foreach (var btn in item.Buttons)
-            {
-                btn.Select = false;
 
-            }
-        }
-        public void ChangeList()
-        {
-            LoadLayout();
-        }
-
-        internal void LoadLayout(bool r = true)
+        public void LoadLayout(bool r = true)
         {
             if (IsHandleCreated)
             {
@@ -277,90 +252,88 @@ namespace AntdUI
 
         internal void LoadLayout(Rectangle rect, CollapseItemCollection items)
         {
-            var size = Helper.GDI(g => g.MeasureString(Config.NullText, Font));
-            int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
-                content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
-            int title_height = size.Height + gap_y * 2;
-            int full_count = 0, useh = 0, full_h = 0;
-            foreach (var it in items)
+            Helper.GDI(g =>
             {
-                if (it.Full) full_count++;
-            }
-            if (full_count > 0)
-            {
+                var size = g.MeasureString(Config.NullText, Font);
+                int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
+                    content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
+                int title_height = size.Height + gap_y * 2;
+                int full_count = 0, useh = 0, full_h = 0;
                 foreach (var it in items)
                 {
-                    if (!it.Full)
-                    {
-                        useh += title_height + gap;
-                        if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
-                        else if (it.Expand) useh += content_y * 2 + it.Height;
-                    }
+                    if (it.Full) full_count++;
                 }
-                full_h = (rect.Height - useh) / full_count;
-            }
-            foreach (var it in items)
-            {
-                int y = rect.Y + use_x;
-
-                Rectangle rectButtons = it.RectTitle = new Rectangle(rect.X, y, rect.Width, title_height);
-                it.RectArrow = new Rectangle(rect.X + gap_x, y + gap_y, size.Height, size.Height);
-                it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
-                OnExpandingChanged(it, it.Expand, rectButtons.Location);
-                if (it.Buttons != null && it.Buttons.Count > 0)
+                if (full_count > 0)
                 {
-                    int bx = rectButtons.Right;
-                    foreach (var btn in it.Buttons)
+                    foreach (var it in items)
                     {
-                        btn.PARENT = this;
-                        btn.PARENTITEM = it;
-                        int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
-                        int space = (rectButtons.Height - height) / 2;
-                        bx -= space;
-                        Helper.GDI(g =>
+                        if (!it.Full)
                         {
-                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
-                            string? text = btn.SwitchMode ? (btn.Checked ? btn?.CheckedText : btn?.UnCheckedText) : btn?.Text;
+                            useh += title_height + gap;
+                            if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
+                            else if (it.Expand) useh += content_y * 2 + it.Height;
+                        }
+                    }
+                    full_h = (rect.Height - useh) / full_count;
+                }
+                foreach (var it in items)
+                {
+                    int y = rect.Y + use_x;
+                    Rectangle rectButtons = it.RectTitle = new Rectangle(rect.X, y, rect.Width, title_height);
+                    it.RectArrow = new Rectangle(rect.X + gap_x, y + gap_y, size.Height, size.Height);
+                    it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
+                    OnExpandingChanged(it, it.Expand, rectButtons.Location);
+                    if (it.buttons != null && it.buttons.Count > 0)
+                    {
+                        int bx = rectButtons.Right;
+                        foreach (var btn in it.buttons)
+                        {
+                            btn.PARENT = this;
+                            btn.PARENTITEM = it;
+                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
+                            int space = (rectButtons.Height - height) / 2;
+                            bx -= space;
 
-                            var size = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                            int width = btn.SwitchMode ? size.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size.Width + 4;
+                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                            string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+
+                            var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                            int width = btn.SwitchMode ? size_btn.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size_btn.Width + 4;
                             if (width < height) width = btn.SwitchMode ? height * 4 : height;
                             Rectangle rectItem = new Rectangle(bx - width, rectButtons.Top + ((rectButtons.Height - height) / 2), width, height);
                             btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - 8);
                             bx -= (width + space);
-                        });
-
+                        }
                     }
-                }
-                Rectangle Rect;
-                if (it.Full)
-                {
-                    if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
-                    else if (it.Expand)
+                    Rectangle Rect;
+                    if (it.Full)
                     {
-                        it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
-                        it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
-                        it.SetSize();
+                        if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
+                        else if (it.Expand)
+                        {
+                            it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
+                            it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
+                            it.SetSize();
+                        }
+                        else it.Rect = Rect = it.RectTitle;
                     }
-                    else it.Rect = Rect = it.RectTitle;
-                }
-                else
-                {
-                    if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
-                    else if (it.Expand)
+                    else
                     {
-                        it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
-                        it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
-                        it.SetSize();
+                        if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
+                        else if (it.Expand)
+                        {
+                            it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
+                            it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
+                            it.SetSize();
+                        }
+                        else it.Rect = Rect = it.RectTitle;
                     }
-                    else it.Rect = Rect = it.RectTitle;
+                    use_x += Rect.Height + gap;
                 }
-                use_x += Rect.Height + gap;
-
-            }
+            });
         }
 
-        readonly StringFormat s_c = Helper.SF(tb: StringAlignment.Near, lr: StringAlignment.Center);//, s_l = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly StringFormat s_c = Helper.SF(tb: StringAlignment.Near, lr: StringAlignment.Center);
 
         #endregion
 
@@ -624,19 +597,19 @@ namespace AntdUI
         }
         void PaintButtons(Canvas g, CollapseItem item, SolidBrush fore)
         {
+            if (item.buttons == null) return;
             using (var fore_active = new SolidBrush(Colour.Primary.Get("CollapseGroup", ColorScheme)))
             using (var hover = new SolidBrush(Colour.FillSecondary.Get("CollapseGroup", ColorScheme)))
             using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("CollapseGroup", ColorScheme)))
             using (var active = new SolidBrush(Colour.PrimaryBg.Get("CollapseGroup", ColorScheme)))
             {
-                foreach (CollapseGroupButton btn in item.Buttons)
+                foreach (var btn in item.buttons)
                 {
                     if (btn.Show == false) continue;
                     if (!btn.SwitchMode)
                     {
                         if (btn.Enabled)
                         {
-
                             if (btn.Select)
                             {
                                 CollapseGroup.PaintBack(g, btn, active, radius);
@@ -668,7 +641,6 @@ namespace AntdUI
                                 if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore.Color);
                                 g.String(btn.Text, Font, fore, btn.txt_rect, s_c);
                             }
-
                         }
                         else
                         {
@@ -716,13 +688,11 @@ namespace AntdUI
                                 else if (btn.ExtraMouseHover) g.Fill(colorhover, path);
                                 var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                                 g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
-
                             }
                             else
                             {
                                 var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
                                 g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
-
                             }
 
                             // 绘制文本
@@ -777,15 +747,14 @@ namespace AntdUI
                     item.MDown = true;
                     return;
                 }
-
-                foreach (var btn in item.Buttons)
+                if (item.buttons == null) continue;
+                foreach (var btn in item.buttons)
                 {
                     if (btn.Contains(e.X, e.Y))
                     {
                         item.MDown = true;
                         return;
                     }
-
                 }
             }
             base.OnMouseDown(e);
@@ -798,13 +767,11 @@ namespace AntdUI
             {
                 if (item.MDown)
                 {
-                    if (item.Contains(e.X, e.Y))
-                    {
-                        item.Expand = !item.Expand;
-                    }
+                    if (item.Contains(e.X, e.Y)) item.Expand = !item.Expand;
                     else
                     {
-                        foreach (var btn in item.Buttons)
+                        if (item.buttons == null) continue;
+                        foreach (var btn in item.buttons)
                         {
                             if (btn.Contains(e.X, e.Y))
                             {
@@ -815,20 +782,16 @@ namespace AntdUI
                                     return;
 
                                 }
-
                                 btn.Select = true;
-
                                 OnButtonClickChanged(item, btn);
-
                                 break;
                             }
                         }
                     }
-
-                item.MDown = false;
-                return;
+                    item.MDown = false;
+                    return;
+                }
             }
-        }
             base.OnMouseUp(e);
         }
 
@@ -842,14 +805,13 @@ namespace AntdUI
                     SetCursor(true);
                     return;
                 }
-
-                foreach (var btn in item.Buttons)
+                if (item.buttons == null) continue;
+                foreach (var btn in item.buttons)
                 {
                     if (btn.Contains(e.X, e.Y))
                     {
                         btn.hasFocus = btn.AnimationHover = true;
-                        if (btn.SwitchMode)
-                            btn.ExtraMouseHover = true;
+                        if (btn.SwitchMode) btn.ExtraMouseHover = true;
                         else
                         {
                             SetCursor(true);
@@ -863,11 +825,9 @@ namespace AntdUI
                         {
                             btn.AnimationHover = false;
                             if (btn.SwitchMode) btn.ExtraMouseHover = false;
-
                         }
                     }
                 }
-
             }
             SetCursor(false);
             base.OnMouseMove(e);
@@ -875,252 +835,279 @@ namespace AntdUI
 
         #endregion
 
+        #region 方法
+
+        public void IUSelect()
+        {
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items)
+            {
+                if (it.buttons != null && it.buttons.Count > 0)
+                {
+                    foreach (var btn in it.buttons) btn.Select = false;
+                }
+            }
+        }
+        public void IUSelect(CollapseItem item)
+        {
+            if (item.buttons == null || item.buttons.Count == 0) return;
+            foreach (var btn in item.buttons) btn.Select = false;
+        }
+
+        #endregion
+
         #region 设计器
 
         internal class CollapseDesigner : ParentControlDesigner
-    {
-        public new Collapse Control => (Collapse)base.Control;
-
-        protected override bool GetHitTest(Point point)
         {
-            var point_ = Control.PointToClient(point);
-            foreach (var tab in Control.Items)
+            public new Collapse Control => (Collapse)base.Control;
+
+            protected override bool GetHitTest(Point point)
             {
-                if (tab.Contains(point_.X, point_.Y)) return true;
+                var point_ = Control.PointToClient(point);
+                foreach (var tab in Control.Items)
+                {
+                    if (tab.Contains(point_.X, point_.Y)) return true;
+                }
+                return base.GetHitTest(point);
             }
-            return base.GetHitTest(point);
+        }
+
+        #endregion
+    }
+
+    public class CollapseItemCollection : iCollection<CollapseItem>
+    {
+        public CollapseItemCollection(Collapse it)
+        {
+            BindData(it);
+        }
+
+        internal CollapseItemCollection BindData(Collapse it)
+        {
+            action = render =>
+            {
+                if (render) it.LoadLayout(false);
+                it.Invalidate();
+            };
+            action_add = item =>
+            {
+                item.PARENT = it;
+                item.Location = new Point(-item.Width, -item.Height);
+                it.Controls.Add(item);
+            };
+            action_del = (item, index) =>
+            {
+                it.Controls.Remove(item);
+            };
+            return this;
         }
     }
 
-    #endregion
-}
-
-public class CollapseItemCollection : iCollection<CollapseItem>
-{
-    public CollapseItemCollection(Collapse it)
+    [ToolboxItem(false)]
+    [Designer(typeof(IControlDesigner))]
+    public class CollapseItem : ScrollableControl, ICollapseItem
     {
-        BindData(it);
-    }
-
-    internal CollapseItemCollection BindData(Collapse it)
-    {
-        action = render =>
+        public CollapseItem()
         {
-            if (render) it.LoadLayout(false);
-            it.Invalidate();
-        };
-        action_add = item =>
+            SetStyle(
+               ControlStyles.AllPaintingInWmPaint |
+               ControlStyles.OptimizedDoubleBuffer |
+               ControlStyles.ResizeRedraw |
+               ControlStyles.DoubleBuffer |
+               ControlStyles.SupportsTransparentBackColor |
+               ControlStyles.ContainerControl |
+               ControlStyles.UserPaint, true);
+            UpdateStyles();
+        }
+
+        protected override Size DefaultSize => new Size(100, 60);
+
+        #region 属性
+
+        #region 展开
+
+        ITask? ThreadExpand;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category("外观"), Description("展开进度"), DefaultValue(0F)]
+        internal float ExpandProg { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category("外观"), Description("展开状态"), DefaultValue(false)]
+        internal bool ExpandThread { get; set; }
+
+        bool expand = false;
+        /// <summary>
+        /// 是否展开
+        /// </summary>
+        [Category("外观"), Description("是否展开"), DefaultValue(false)]
+        public bool Expand
         {
-            item.PARENT = it;
-            item.Location = new Point(-item.Width, -item.Height);
-            it.Controls.Add(item);
-        };
-        action_del = (item, index) =>
-        {
-            it.Controls.Remove(item);
-        };
-        return this;
-    }
-}
-
-[ToolboxItem(false)]
-[Designer(typeof(IControlDesigner))]
-public class CollapseItem : ScrollableControl, ICollapseItem
-{
-    public CollapseItem()
-    {
-        SetStyle(
-           ControlStyles.AllPaintingInWmPaint |
-           ControlStyles.OptimizedDoubleBuffer |
-           ControlStyles.ResizeRedraw |
-           ControlStyles.DoubleBuffer |
-           ControlStyles.SupportsTransparentBackColor |
-           ControlStyles.ContainerControl |
-           ControlStyles.UserPaint, true);
-        UpdateStyles();
-    }
-
-    protected override Size DefaultSize => new Size(100, 60);
-
-    #region 属性
-
-    #region 展开
-
-    ITask? ThreadExpand;
-
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    [Category("外观"), Description("展开进度"), DefaultValue(0F)]
-    internal float ExpandProg { get; set; }
-
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    [Category("外观"), Description("展开状态"), DefaultValue(false)]
-    internal bool ExpandThread { get; set; }
-
-    bool expand = false;
-    /// <summary>
-    /// 是否展开
-    /// </summary>
-    [Category("外观"), Description("是否展开"), DefaultValue(false)]
-    public bool Expand
-    {
-        get => expand;
-        set
-        {
-            if (expand == value) return;
-            expand = value;
-            PARENT?.OnExpandChanged(this, expand);
-            if (value) PARENT?.UniqueOne(this);
-            if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
+            get => expand;
+            set
             {
-                Location = new Point(-Width, -Height);
-                ThreadExpand?.Dispose();
-                float oldval = -1;
-                if (ThreadExpand?.Tag is float oldv) oldval = oldv;
-                ExpandThread = true;
-                var t = Animation.TotalFrames(10, 200);
-                if (value)
+                if (expand == value) return;
+                expand = value;
+                PARENT?.OnExpandChanged(this, expand);
+                if (value) PARENT?.UniqueOne(this);
+                if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
                 {
-                    ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
+                    Location = new Point(-Width, -Height);
+                    ThreadExpand?.Dispose();
+                    float oldval = -1;
+                    if (ThreadExpand?.Tag is float oldv) oldval = oldv;
+                    ExpandThread = true;
+                    var t = Animation.TotalFrames(10, 200);
+                    if (value)
                     {
-                        ExpandProg = val;
-                        PARENT.LoadLayout();
-                    }, () =>
+                        ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
+                        {
+                            ExpandProg = val;
+                            PARENT.LoadLayout();
+                        }, () =>
+                        {
+                            ExpandProg = 1F;
+                            ExpandThread = false;
+                            PARENT.LoadLayout();
+                        });
+                    }
+                    else
                     {
-                        ExpandProg = 1F;
-                        ExpandThread = false;
-                        PARENT.LoadLayout();
-                    });
+                        ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
+                        {
+                            ExpandProg = val;
+                            PARENT.LoadLayout();
+                        }, () =>
+                        {
+                            ExpandProg = 1F;
+                            ExpandThread = false;
+                            PARENT.LoadLayout();
+                        });
+                    }
                 }
                 else
                 {
-                    ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                    {
-                        ExpandProg = val;
-                        PARENT.LoadLayout();
-                    }, () =>
-                    {
-                        ExpandProg = 1F;
-                        ExpandThread = false;
-                        PARENT.LoadLayout();
-                    });
+                    PARENT?.LoadLayout();
+                    if (!value) Location = new Point(-Width, -Height);
                 }
             }
-            else
+        }
+
+        bool full = false;
+        /// <summary>
+        /// 是否铺满剩下空间
+        /// </summary>
+        [Category("外观"), Description("是否铺满剩下空间"), DefaultValue(false)]
+        public bool Full
+        {
+            get => full;
+            set
             {
+                if (full == value) return;
+                full = value;
                 PARENT?.LoadLayout();
-                if (!value) Location = new Point(-Width, -Height);
             }
         }
-    }
 
-    bool full = false;
-    /// <summary>
-    /// 是否铺满剩下空间
-    /// </summary>
-    [Category("外观"), Description("是否铺满剩下空间"), DefaultValue(false)]
-    public bool Full
-    {
-        get => full;
-        set
+        #region Buttons
+
+        internal CollapseGroupButtonCollection? buttons;
+        /// <summary>
+        /// 获取折叠项中所有按钮项的集合
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("按钮集合"), Category("外观")]
+        public CollapseGroupButtonCollection Buttons
         {
-            if (full == value) return;
-            full = value;
+            get
+            {
+                buttons ??= new CollapseGroupButtonCollection(this);
+                return buttons;
+            }
+            set => buttons = value.BindData(this);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 国际化
+
+        string text = "";
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue("")]
+        public override string Text
+        {
+            get => this.GetLangIN(LocalizationText, text);
+            set
+            {
+                if (text == value) return;
+                base.Text = text = value;
+                if (PARENT == null) return;
+                if (PARENT.IsHandleCreated) PARENT.LoadLayout();
+            }
+        }
+
+        [Description("文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationText { get; set; }
+
+        #endregion
+
+        #endregion
+
+        #region 坐标
+
+        internal bool MDown = false;
+        public Rectangle Rect = new Rectangle(-10, -10, 0, 0);
+        public Rectangle RectArrow, RectCcntrol, RectTitle, RectText;
+        internal bool Contains(int x, int y)
+        {
+            if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
+            return RectArrow.Contains(x, y);
+        }
+
+        #endregion
+
+        #region 变更
+
+        internal Collapse? PARENT;
+        protected override void OnTextChanged(EventArgs e)
+        {
             PARENT?.LoadLayout();
+            base.OnTextChanged(e);
         }
-    }
 
-    #region Buttons
-
-    internal CollapseGroupButtonCollection? buttons;
-    /// <summary>
-    /// 获取折叠项中所有按钮项的集合
-    /// </summary>
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-    [Description("按钮集合"), Category("外观")]
-    public CollapseGroupButtonCollection Buttons
-    {
-        get
+        protected override void OnVisibleChanged(EventArgs e)
         {
-            buttons ??= new CollapseGroupButtonCollection(this);
-            return buttons;
+            PARENT?.LoadLayout();
+            base.OnVisibleChanged(e);
         }
-        set => buttons = value.BindData(this);
-    }
-    #endregion
-    #endregion
 
-    #region 国际化
-
-    string text = "";
-    /// <summary>
-    /// 文本
-    /// </summary>
-    [Description("文本"), Category("外观"), DefaultValue("")]
-    public override string Text
-    {
-        get => this.GetLangIN(LocalizationText, text);
-        set
+        protected override void OnSizeChanged(EventArgs e)
         {
-            if (text == value) return;
-            base.Text = text = value;
-            if (PARENT == null) return;
-            if (PARENT.IsHandleCreated) PARENT.LoadLayout();
+            if (canset) PARENT?.LoadLayout();
+            base.OnSizeChanged(e);
         }
-    }
 
-    [Description("文本"), Category("国际化"), DefaultValue(null)]
-    public string? LocalizationText { get; set; }
-
-    #endregion
-
-    #endregion
-
-    #region 坐标
-
-    internal bool MDown = false;
-    public Rectangle Rect = new Rectangle(-10, -10, 0, 0);
-    public Rectangle RectArrow, RectCcntrol, RectTitle, RectText;
-    internal bool Contains(int x, int y) => RectArrow.Contains(x, y);
-
-    #endregion
-
-    #region 变更
-
-    internal Collapse? PARENT;
-    protected override void OnTextChanged(EventArgs e)
-    {
-        PARENT?.LoadLayout();
-        base.OnTextChanged(e);
-    }
-
-    protected override void OnVisibleChanged(EventArgs e)
-    {
-        PARENT?.LoadLayout();
-        base.OnVisibleChanged(e);
-    }
-
-    protected override void OnSizeChanged(EventArgs e)
-    {
-        if (canset) PARENT?.LoadLayout();
-        base.OnSizeChanged(e);
-    }
-
-    bool canset = true;
-    public void SetSize()
-    {
-        if (InvokeRequired)
+        bool canset = true;
+        public void SetSize()
         {
-            Invoke(new Action(SetSize));
-            return;
+            if (InvokeRequired)
+            {
+                Invoke(new Action(SetSize));
+                return;
+            }
+            canset = false;
+            Size = RectCcntrol.Size;
+            Location = RectCcntrol.Location;
+            canset = true;
         }
-        canset = false;
-        Size = RectCcntrol.Size;
-        Location = RectCcntrol.Location;
-        canset = true;
+
+        #endregion
+
+        public override string ToString() => Text;
     }
-
-    #endregion
-
-    public override string ToString() => Text;
-}
 }

@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -222,10 +222,6 @@ namespace AntdUI
     public class MenuSelectEventArgs : VEventArgs<MenuItem>
     {
         public MenuSelectEventArgs(MenuItem value) : base(value) { }
-        /// <summary>
-        /// 用户数据
-        /// </summary>
-        public object Tag { get; set; }
     }
 
 
@@ -669,11 +665,8 @@ namespace AntdUI
 
     public class TablePaintBeginEventArgs : TablePaintEventArgs
     {
-        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column col) : base(canvas, rect, rectreal, record, rowIndex, index) { Column = col; }
-        /// <summary>
-        /// 当前绘制的表头
-        /// </summary>
-        public Column Column { get; protected set; }
+        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
+
         /// <summary>
         /// 是否处理
         /// </summary>
@@ -834,11 +827,8 @@ namespace AntdUI
         public bool Expand { get; private set; }
     }
 
-
-    /// <summary>
-    /// Collapse 展开/折叠状态已更改事件
-    /// </summary>
     public delegate void CollapseExpandEventHandler(object sender, CollapseExpandEventArgs e);
+
     public class CollapseExpandingEventArgs : VEventArgs<CollapseItem>
     {
         public CollapseExpandingEventArgs(CollapseItem value, bool expand, Point location) : base(value)
@@ -850,9 +840,11 @@ namespace AntdUI
         public bool Expand { get; private set; }
         public Point Location { get; private set; }
 
-    }  /// <summary>
-       /// Collapse 类型展开/折叠进行时事件
-       /// </summary>
+    }
+
+    /// <summary>
+    /// Collapse 类型展开/折叠进行时事件
+    /// </summary>
     public delegate void CollapseExpandingEventHandler(object sender, CollapseExpandingEventArgs e);
 
     public class CollapseButtonClickEventArgs : VEventArgs<CollapseGroupButton>
@@ -863,22 +855,23 @@ namespace AntdUI
         }
 
         public CollapseItem Parent { get; private set; }
-    }  /// <summary>
-       /// CollapseItem.Button单击事件
-       /// </summary>
+    }
+
+    /// <summary>
+    /// CollapseItem.Button单击事件
+    /// </summary>
     public delegate void CollapseButtonClickEventHandler(object sender, CollapseButtonClickEventArgs e);
+
     public class CollapseSwitchCheckedChangedEventArgs : CollapseButtonClickEventArgs
     {
-        public CollapseSwitchCheckedChangedEventArgs(CollapseGroupButton switchItem, CollapseItem parent,bool _checked) : base(switchItem,parent) { Checked = _checked; }
+        public CollapseSwitchCheckedChangedEventArgs(CollapseGroupButton switchItem, CollapseItem parent, bool _checked) : base(switchItem, parent) { Checked = _checked; }
 
         public bool Checked { get; private set; }
 
     }
 
-    /// <summary>
-    /// Bool 类型事件
-    /// </summary>
     public delegate void CollapseSwitchCheckedChangedEventHandler(object sender, CollapseSwitchCheckedChangedEventArgs e);
+
     #endregion
 
     #region Tree
@@ -1036,17 +1029,29 @@ namespace AntdUI
         {
             Value = value;
         }
+
         public T Value { get; private set; }
+
+        /// <summary>
+        /// 用户数据
+        /// </summary>
+        public object? Tag { get; set; }
     }
 
 
     public class VMEventArgs<T> : MouseEventArgs
     {
-        public T Item { get; private set; }
         public VMEventArgs(T item, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         {
             Item = item;
         }
+
+        public T Item { get; private set; }
+
+        /// <summary>
+        /// 用户数据
+        /// </summary>
+        public object? Tag { get; set; }
     }
 
     #endregion

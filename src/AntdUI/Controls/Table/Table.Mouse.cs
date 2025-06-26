@@ -428,8 +428,9 @@ namespace AntdUI
                     {
                         //点击排序
                         SortMode sortMode = SortMode.NONE;
-                        if (col.rect_up.Contains(r_x, r_y)) sortMode = SortMode.ASC;
-                        else if (col.rect_down.Contains(r_x, r_y)) sortMode = SortMode.DESC;
+                        int r_x_f = r_x - col.offsetx, r_y_f = r_y - col.offsety;
+                        if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
+                        else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
                         else
                         {
                             sortMode = col.COLUMN.SortMode + 1;
@@ -630,13 +631,13 @@ namespace AntdUI
                                 }
                             }
                         }
-                        if (cel.SortWidth > 0) SetCursor(true);
-                        else if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(r_x, r_y)) SetCursor(true);
+                        if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(r_x, r_y)) SetCursor(true);
                         else if (ColumnDragSort && cel.COLUMN.DragSort)
                         {
                             SetCursor(CursorType.SizeAll);
                             return;
                         }
+                        else if (cel.COLUMN.SortOrder) SetCursor(true);
                         else SetCursor(false);
                     }
                     else
