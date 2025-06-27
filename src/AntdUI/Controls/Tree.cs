@@ -253,6 +253,38 @@ namespace AntdUI
         [Browsable(false)]
         public ScrollBar ScrollBar;
 
+        bool empty = true;
+        [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]
+        public bool Empty
+        {
+            get => empty;
+            set
+            {
+                if (empty == value) return;
+                empty = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Empty));
+            }
+        }
+
+        string? emptyText;
+        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? EmptyText
+        {
+            get => emptyText;
+            set
+            {
+                if (emptyText == value) return;
+                emptyText = value;
+                Invalidate();
+                OnPropertyChanged(nameof(EmptyText));
+            }
+        }
+
+        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        public Image? EmptyImage { get; set; }
+
         #endregion
 
         #region 事件
@@ -437,6 +469,7 @@ namespace AntdUI
         {
             if (items == null || items.Count == 0)
             {
+                if (Empty) PaintEmpty(e.Canvas, e.Rect, 0);
                 base.OnDraw(e);
                 return;
             }
@@ -456,7 +489,7 @@ namespace AntdUI
             ScrollBar.Paint(g);
             base.OnDraw(e);
         }
-
+        void PaintEmpty(Canvas g, Rectangle rect, int offset) => g.PaintEmpty(rect, Font, fore ?? Colour.Text.Get("Tree", ColorScheme), EmptyText, EmptyImage, offset);
         void PaintItem(Canvas g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
             foreach (var it in items)

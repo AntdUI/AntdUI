@@ -261,5 +261,9 @@ namespace AntdUI
         public static void ClearEmptyImageSvg() => EmptyImageSvg = null;
 
         #endregion
+
+        #region 空白Image
+        public static Image? EmptyImage { get; set; }
+        #endregion
     }
 }

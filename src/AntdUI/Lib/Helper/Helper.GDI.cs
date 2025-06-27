@@ -1010,7 +1010,8 @@ namespace AntdUI
                     rect.Height -= offset;
                 }
                 string emptytext = text ?? Localization.Get("NoData", "暂无数据");
-                if (Config.EmptyImageSvg != null)
+                image ??= Config.EmptyImage;
+                if (Config.EmptyImageSvg != null && image == null)
                 {
                     var size = g.MeasureString(emptytext, font);
                     int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
