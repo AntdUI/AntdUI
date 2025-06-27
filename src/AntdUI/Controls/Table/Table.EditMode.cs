@@ -246,16 +246,30 @@ namespace AntdUI
 
         Input CreateInput(CELL cell, int sx, int sy, bool multiline, object? value)
         {
+            int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height);
+            int bor = (int)(1 * Config.Dpi), wave = (int)((4 + 1 / 2F) * Config.Dpi), wave2 = wave * 2, sps = (int)(texth * .4F), sps2 = sps * 2;
+            int h = texth + sps2 + wave2, ry = cell.RECT.Y, rh = cell.RECT.Height;
             switch (EditInputStyle)
             {
                 case TEditInputStyle.Full:
-                    int wave = (int)((4 + 1 / 2F) * Config.Dpi), wave2 = wave * 2;
-                    var inputFull = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - wave, cell.RECT.Y - sy - wave, cell.RECT.Width + wave2, cell.RECT.Height + wave2));
+                    if (h > cell.RECT.Height)
+                    {
+                        rh = h - wave2;
+                        ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
+                        if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh - wave;
+                    }
+                    var inputFull = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - wave, ry - sy - wave, cell.RECT.Width + wave2 + bor, rh + wave2 + bor));
                     inputFull.Radius = 0;
                     return inputFull;
                 case TEditInputStyle.Default:
                 default:
-                    return CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, cell.RECT.Y - sy, cell.RECT.Width, cell.RECT.Height));
+                    if (h > cell.RECT.Height)
+                    {
+                        rh = h;
+                        ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
+                        if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
+                    }
+                    return CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh));
             }
         }
         Input CreateInput(bool multiline, object? value, Rectangle rect)

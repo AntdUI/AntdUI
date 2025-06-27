@@ -21,7 +21,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -299,27 +298,24 @@ namespace AntdUI
         #region 渲染
 
         Bitmap? run;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            if (_rect.Width == 0 || _rect.Height == 0) return;
             if (image == null)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
-            var rect = _rect.PaddingRect(Padding);
+            var g = e.Canvas;
+            var rect = e.Rect.PaddingRect(Padding);
             float _radius = radius * Config.Dpi;
             FillRect(g, rect, back, _radius, round);
             if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);
             else
             {
-                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);
                 g.Image(rect, image, imageFit, _radius, round);
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

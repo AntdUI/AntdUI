@@ -612,14 +612,14 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_f = Helper.SF_ALL();
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float _radius = radius * Config.Dpi;
             using (var path = Rect.RoundPath(_radius, Round))
             {
@@ -712,8 +712,7 @@ namespace AntdUI
                     it.PaintBadge(Font, it.Rect, g, ColorScheme);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         bool PaintItem(Canvas g, SegmentedItem it, int i, float _radius, ref int _hover)

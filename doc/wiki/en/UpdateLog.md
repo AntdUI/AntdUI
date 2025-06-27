@@ -1,5 +1,26 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.7` 2025-06-27 🌵
+
+- ➕ Shield
+- ➕ Collapse Button / Switch
+- ➕ Draw / DrawBg
+- ➕ Config EmptyImage
+- ➕ Tree Empty
+- ✍️ Table border margin
+- ✍️ Table AutoSizeColumnsMode. Fill Layout
+- ✍️ Table Stack Head Interaction Area
+- ✍️ Table editing mode text height is not enough
+- ✍️ Table Paint Open Column
+- ✍️ Collapse Buttons respond to mouse movement
+- ✍️ The icon on the right side of Input is not displayed
+- ✍️ Input Refactoring Keyboard
+- ✍️ Input fallback interaction
+- ✍️ Tree completion method
+- ✍️ Steps icon SVG color
+- ✍️ Breadrumb layout
+- ✍️ Pagination layout
+
 ### `2.0.6` 2025-06-20
 
 - ➕ Table GetColumnRealIndex

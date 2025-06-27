@@ -226,11 +226,11 @@ namespace AntdUI
         #region 渲染
 
         bool init = false;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             init = true;
-            var rect = ClientRectangle.DeflateRect(Padding);
-            var g = e.Graphics.High();
+            var g = e.Canvas;
+            var rect = e.Rect.DeflateRect(Padding);
             var enabled = Enabled;
             if (string.IsNullOrWhiteSpace(Text))
             {
@@ -250,8 +250,7 @@ namespace AntdUI
                     g.DrawText(Text, Font, brush, text_rect, stringFormat);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

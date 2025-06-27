@@ -32,7 +32,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("ItemClick")]
-    public class CollapseGroup : IControl
+    public class CollapseGroup : IControl, ICollapse
     {
         #region 属性
 
@@ -106,7 +106,7 @@ namespace AntdUI
             {
                 if (columnCount == value) return;
                 columnCount = value;
-                ChangeList();
+                LoadLayout();
                 Invalidate();
                 OnPropertyChanged(nameof(ColumnCount));
             }
@@ -139,7 +139,7 @@ namespace AntdUI
                 pauseLayout = value;
                 if (!value)
                 {
-                    ChangeList();
+                    LoadLayout();
                     Invalidate();
                 }
                 OnPropertyChanged(nameof(PauseLayout));
@@ -158,42 +158,46 @@ namespace AntdUI
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            ChangeList();
+            LoadLayout();
             base.OnSizeChanged(e);
         }
 
-        internal void ChangeList()
+        public void LoadLayout(bool r = true)
         {
-            var _rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0 || (_rect.Width == 0 || _rect.Height == 0)) return;
-            var rect = ClientRectangle.DeflateRect(Padding);
-            int y = rect.Y;
-            Helper.GDI(g =>
+            if (IsHandleCreated)
             {
-                var size = g.MeasureString(Config.NullText, Font);
-                int gap = (int)(4 * Config.Dpi), csize = (rect.Width - (gap * (columnCount - 1))) / columnCount, icon_size = csize / 2, height = size.Height + gap * 2;
-                foreach (var it in items)
+                var _rect = ClientRectangle;
+                if (pauseLayout || items == null || items.Count == 0 || (_rect.Width == 0 || _rect.Height == 0)) return;
+                var rect = ClientRectangle.DeflateRect(Padding);
+                int y = rect.Y;
+                Helper.GDI(g =>
                 {
-                    it.PARENT = this;
-                    it.SetRect(g, new Rectangle(rect.X, y, rect.Width, height), size.Height, gap);
-                    y += height;
-                    if (it.CanExpand)
+                    var size = g.MeasureString(Config.NullText, Font);
+                    int gap = (int)(4 * Config.Dpi), csize = (rect.Width - (gap * (columnCount - 1))) / columnCount, icon_size = csize / 2, height = size.Height + gap * 2;
+                    foreach (var it in items)
                     {
-                        int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, ref y, size.Height, csize, icon_size, gap);
-                        it.SubY = y_item;
-                        it.SubHeight = y - y_item;
-                        if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                        it.PARENT = this;
+                        it.SetRect(g, new Rectangle(rect.X, y, rect.Width, height), size.Height, gap);
+                        y += height;
+                        if (it.CanExpand)
                         {
-                            it.ExpandHeight = y - y_item;
-                            y = y_item + (int)(it.ExpandHeight * it.ExpandProg);
+                            int y_item = y;
+                            ChangeList(g, rect, it, it.Sub, ref y, size.Height, csize, icon_size, gap);
+                            it.SubY = y_item;
+                            it.SubHeight = y - y_item;
+                            if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                            {
+                                it.ExpandHeight = y - y_item;
+                                y = y_item + (int)(it.ExpandHeight * it.ExpandProg);
+                            }
+                            else if (!it.Expand) y = y_item;
                         }
-                        else if (!it.Expand) y = y_item;
                     }
-                }
-            });
-            ScrollBar.SetVrSize(0, y);
-            ScrollBar.SizeChange(_rect);
+                });
+                ScrollBar.SetVrSize(0, y);
+                ScrollBar.SizeChange(_rect);
+                if (r) Invalidate();
+            }
         }
 
         void ChangeList(Canvas g, Rectangle rect, CollapseGroupItem Parent, CollapseGroupSubCollection items, ref int y, int font_height, int csize, int icon_size, int gap)
@@ -226,16 +230,14 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, true, true);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
@@ -245,12 +247,11 @@ namespace AntdUI
             using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("CollapseGroup", ColorScheme)))
             using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("CollapseGroup", ColorScheme)))
             {
-                PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextQuaternary, _radius);
+                PaintItem(g, e.Rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextQuaternary, _radius);
             }
             g.ResetTransform();
             ScrollBar.Paint(g);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintItem(Canvas g, Rectangle rect, int sx, int sy, CollapseGroupItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brush_TextQuaternary, float radius)
@@ -316,7 +317,7 @@ namespace AntdUI
             }
         }
 
-        void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush, float radius)
+        public static void PaintBack(Canvas g, CollapseGroupSub sub, SolidBrush brush, float radius)
         {
             if (radius > 0)
             {
@@ -349,16 +350,6 @@ namespace AntdUI
                 else if (item.Expand) g.DrawLines(pen, item.arr_rect.TriangleLines(1, .4F));
                 else g.DrawLines(pen, item.arr_rect.TriangleLines(-1, .4F));
             }
-        }
-
-        void PaintArrow(Canvas g, CollapseGroupItem item, Pen pen, int sx, int sy, float rotate)
-        {
-            int size = item.arr_rect.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
-            g.RotateTransform(rotate);
-            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .4F));
-            g.ResetTransform();
-            g.TranslateTransform(-sx, -sy);
         }
 
         #endregion
@@ -470,18 +461,6 @@ namespace AntdUI
             }
         }
 
-        public void IUSelect()
-        {
-            if (items == null || items.Count == 0) return;
-            foreach (var it in items)
-            {
-                if (it.items != null && it.items.Count > 0)
-                {
-                    foreach (var sub in it.items) sub.Select = false;
-                }
-            }
-        }
-
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
@@ -529,11 +508,29 @@ namespace AntdUI
 
         #endregion
 
+        #region 方法
+
+        public void IUSelect()
+        {
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items)
+            {
+                if (it.items != null && it.items.Count > 0)
+                {
+                    foreach (var sub in it.items) sub.Select = false;
+                }
+            }
+        }
+
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
             ScrollBar.Dispose();
             base.Dispose(disposing);
         }
+
+        void ICollapse.LoadLayout(bool r) => LoadLayout(r);
     }
 
     public class CollapseGroupItemCollection : iCollection<CollapseGroupItem>
@@ -551,7 +548,7 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.ChangeList();
+                if (render) it.LoadLayout();
                 it.Invalidate();
             };
             return this;
@@ -562,14 +559,19 @@ namespace AntdUI
             action = render =>
             {
                 if (it.PARENT == null) return;
-                if (render) it.PARENT.ChangeList();
+                if (render) it.PARENT.LoadLayout();
                 it.PARENT.Invalidate();
             };
             return this;
         }
     }
 
-    public class CollapseGroupItem
+    public interface ICollapseItem
+    {
+        string Text { get; set; }
+    }
+
+    public class CollapseGroupItem : ICollapseItem
     {
         public CollapseGroupItem() { }
         public CollapseGroupItem(string text)
@@ -713,7 +715,7 @@ namespace AntdUI
         void Invalidates()
         {
             if (PARENT == null) return;
-            PARENT.ChangeList();
+            PARENT.LoadLayout();
             PARENT.Invalidate();
         }
 
@@ -745,25 +747,19 @@ namespace AntdUI
         public override string? ToString() => text;
     }
 
+    public interface ICollapse
+    {
+        bool IsHandleCreated { get; }
+        void SetCursor(bool val);
+        void IUSelect();
+        void LoadLayout(bool r = true);
+        void Invalidate();
+    }
     public class CollapseGroupSubCollection : iCollection<CollapseGroupSub>
     {
-        public CollapseGroupSubCollection(CollapseGroup it)
-        {
-            BindData(it);
-        }
         public CollapseGroupSubCollection(CollapseGroupItem it)
         {
             BindData(it);
-        }
-
-        internal CollapseGroupSubCollection BindData(CollapseGroup it)
-        {
-            action = render =>
-            {
-                if (render) it.ChangeList();
-                it.Invalidate();
-            };
-            return this;
         }
 
         internal CollapseGroupSubCollection BindData(CollapseGroupItem it)
@@ -771,13 +767,255 @@ namespace AntdUI
             action = render =>
             {
                 if (it.PARENT == null) return;
-                if (render) it.PARENT.ChangeList();
+                if (render) it.PARENT.LoadLayout();
                 it.PARENT.Invalidate();
             };
             return this;
         }
     }
-    public class CollapseGroupSub
+    public class CollapseGroupButtonCollection : iCollection<CollapseGroupButton>
+    {
+        Collapse? PARENT { get; set; }
+        CollapseItem? PARENTITEM { get; set; }
+        public CollapseGroupButtonCollection(CollapseItem it)
+        {
+            BindData(it);
+        }
+
+        internal CollapseGroupButtonCollection BindData(CollapseItem it)
+        {
+            PARENT = it?.PARENT;
+            PARENTITEM = it;
+            action = render =>
+            {
+                if (it?.PARENT == null) return;
+                if (render) it.PARENT.LoadLayout();
+                it.PARENT.Invalidate();
+            };
+            return this;
+        }
+
+        public override void Add(CollapseGroupButton item)
+        {
+            base.Add(item);
+
+            item.PARENT = PARENT;
+            item.PARENTITEM = PARENTITEM;
+        }
+    }
+
+    public class CollapseGroupButton : CollapseGroupSub
+    {
+        /// <summary>
+        /// Checked 属性值更改时发生
+        /// </summary>
+        [Description("Checked 属性值更改时发生"), Category("行为")]
+        public event CollapseSwitchCheckedChangedEventHandler? CheckedChanged;
+
+        public CollapseGroupButton() : base() { }
+        public CollapseGroupButton(string text) : base(text) { }
+
+        internal ITask? ThreadHover, ThreadCheck, ThreadClick;
+        public CollapseGroupButton(string text, Image? icon) : base(text, icon) { }
+        internal bool AnimationClick = false;
+        internal float AnimationClickValue = 0;
+        internal bool AnimationCheck = false;
+        internal float AnimationCheckValue = 0;
+        internal bool hasFocus = false;
+        public override bool Select
+        {
+            get => base.Select;
+            set
+            {
+                if (select == value || PARENT == null || PARENTITEM == null) return;
+                if (value && PARENT is Collapse collapse && PARENTITEM is CollapseItem collapseItem) collapse.IUSelect(collapseItem);
+                select = value;
+                Invalidate();
+            }
+        }
+
+        bool switchMode = false;
+        [Description("Switch切换模式"), Category("行为"), DefaultValue(false)]
+        public bool SwitchMode
+        {
+            get => switchMode;
+            set
+            {
+                if (switchMode == value) return;
+                switchMode = value;
+                Invalidate();
+            }
+        }
+        string? _checkedText, _unCheckedText;
+
+        [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? CheckedText
+        {
+            get => _checkedText;
+            set
+            {
+                if (_checkedText == value) return;
+                _checkedText = value;
+                if (_checked) Invalidate();
+            }
+        }
+
+        [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? UnCheckedText
+        {
+            get => _unCheckedText;
+            set
+            {
+                if (_unCheckedText == value) return;
+                _unCheckedText = value;
+                if (!_checked) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 波浪大小
+        /// </summary>
+        [Description("波浪大小"), Category("外观"), DefaultValue(0)]
+        public int WaveSize { get; set; } = 0;
+        bool _checked = false;
+        [Description("勾选状态"), Category("行为"), DefaultValue(false)]
+        public bool Checked
+        {
+            get => _checked;
+            set
+            {
+                if (_checked == value || PARENT == null || PARENTITEM == null) return;
+                _checked = value;
+                try
+                {
+                    ThreadCheck?.Dispose();
+                    if (PARENT.IsHandleCreated && Config.HasAnimation(nameof(Switch)))
+                    {
+                        AnimationCheck = true;
+                        if (value)
+                        {
+                            ThreadCheck = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(0.1F);
+                                if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationCheck = false;
+                                Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadCheck = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationCheckValue = AnimationCheckValue.Calculate(-0.1F);
+                                if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationCheck = false;
+                                Invalidate();
+                            });
+                        }
+                    }
+                    else AnimationCheckValue = value ? 1F : 0F;
+                }
+                finally
+                {
+                    if (PARENTITEM is CollapseItem collapse) CheckedChanged?.Invoke(this, new CollapseSwitchCheckedChangedEventArgs(this, collapse, value));
+                }
+            }
+        }
+
+        bool _mouseHover = false;
+        internal bool ExtraMouseHover
+        {
+            get => _mouseHover;
+            set
+            {
+                if (_mouseHover == value) return;
+                _mouseHover = value;
+                var enabled = Enabled;
+                PARENT?.SetCursor(value && enabled);
+                if (enabled)
+                {
+                    if (PARENT == null) return;
+                    if (Config.HasAnimation(nameof(Switch)))
+                    {
+                        ThreadHover?.Dispose();
+                        AnimationHover = true;
+                        if (value)
+                        {
+                            ThreadHover = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationHoverValue = AnimationHoverValue.Calculate(0.1F);
+                                if (AnimationHoverValue > 1) { AnimationHoverValue = 1F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationHover = false;
+                                Invalidate();
+                            });
+                        }
+                        else
+                        {
+                            ThreadHover = new ITask((Collapse)this.PARENT, () =>
+                            {
+                                AnimationHoverValue = AnimationHoverValue.Calculate(-0.1F);
+                                if (AnimationHoverValue <= 0) { AnimationHoverValue = 0F; return false; }
+                                Invalidate();
+                                return true;
+                            }, 10, () =>
+                            {
+                                AnimationHover = false;
+                                Invalidate();
+                            });
+                        }
+                    }
+                    else AnimationHoverValue = 255;
+                    Invalidate();
+                }
+            }
+        }
+
+        internal override void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
+        {
+            bool emptyIcon = string.IsNullOrEmpty(IconSvg) && Icon == null;
+            bool emptyText = SwitchMode ? string.IsNullOrEmpty(Checked ? CheckedText : UnCheckedText) : string.IsNullOrEmpty(Text);
+            if (emptyIcon) icon_size = 0;
+            if (emptyText) font_height = 0;
+
+            rect = rect_read;
+            int sp = (int)(font_height * .25F), t_x = rect_read.Y + (emptyIcon ? 0 : ((rect_read.Height - (font_height + icon_size + sp)) / 2));
+
+            ico_rect = new Rectangle(rect_read.X + 2, rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
+            txt_rect = new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2) - 2, rect_read.Width - icon_size, rect_read.Height);
+
+            if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
+            Show = true;
+
+        }
+        internal bool Contains(int x, int y)
+        {
+            if (rect.Contains(x, y))
+            {
+                Hover = true;
+                return true;
+            }
+            else
+            {
+                Hover = false;
+                return false;
+            }
+        }
+    }
+    public class CollapseGroupSub : ICollapseItem
     {
         public CollapseGroupSub() { }
         public CollapseGroupSub(string text)
@@ -911,11 +1149,11 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate() => PARENT?.Invalidate();
-        void Invalidates()
+        protected void Invalidate() => PARENT?.Invalidate();
+        protected void Invalidates()
         {
             if (PARENT == null) return;
-            PARENT.ChangeList();
+            PARENT.LoadLayout();
             PARENT.Invalidate();
         }
 
@@ -968,26 +1206,30 @@ namespace AntdUI
             }
         }
 
-        bool select = false;
+        protected bool select = false;
         [Description("激活状态"), Category("行为"), DefaultValue(false)]
-        public bool Select
+        public virtual bool Select
         {
             get => select;
             set
             {
                 if (select == value) return;
-                if (value) PARENT?.IUSelect();
+                if (value)
+                {
+                    PARENT?.IUSelect();
+                }
                 select = value;
                 Invalidate();
             }
         }
 
-        internal CollapseGroup? PARENT { get; set; }
+
+        internal ICollapse? PARENT { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public CollapseGroupItem? PARENTITEM { get; set; }
+        public ICollapseItem? PARENTITEM { get; set; }
 
-        internal void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
+        internal virtual void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
         {
             rect = rect_read;
             int sp = (int)(font_height * .25F), t_x = rect_read.Y + ((rect_read.Height - (font_height + icon_size + sp)) / 2);
@@ -995,6 +1237,7 @@ namespace AntdUI
             ico_rect = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
             if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
             Show = true;
+
         }
 
         internal bool Show { get; set; }
@@ -1016,6 +1259,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
+
         ITask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }

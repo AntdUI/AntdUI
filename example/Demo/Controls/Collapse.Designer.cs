@@ -16,6 +16,8 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using Demo.Properties;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -45,6 +47,14 @@ namespace Demo.Controls
 
         private void InitializeComponent()
         {
+            AntdUI.CollapseGroupButton collapseGroupButton1 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton2 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton3 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton4 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton5 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton6 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton7 = new AntdUI.CollapseGroupButton();
+            AntdUI.CollapseGroupButton collapseGroupButton8 = new AntdUI.CollapseGroupButton();
             header1 = new AntdUI.PageHeader();
             collapse1 = new AntdUI.Collapse();
             collapseItem1 = new AntdUI.CollapseItem();
@@ -99,9 +109,27 @@ namespace Demo.Controls
             collapse1.Name = "collapse1";
             collapse1.Size = new Size(723, 448);
             collapse1.TabIndex = 0;
+            collapse1.ButtonClickChanged += new AntdUI.CollapseButtonClickEventHandler(collapse1_ButtonClickChanged);
             // 
             // collapseItem1
             // 
+            collapseGroupButton7.IconSvg = "";
+            collapseGroupButton7.Name = "SWITCH";
+            collapseGroupButton7.SwitchMode = true;
+            collapseGroupButton7.Checked = true;
+            collapseGroupButton7.CheckedText = "启用";
+            collapseGroupButton7.UnCheckedText = "停用";
+            collapseGroupButton7.CheckedChanged += new AntdUI.CollapseSwitchCheckedChangedEventHandler(switchButton_CheckedChanged);
+            collapseGroupButton1.IconSvg = "";
+            collapseGroupButton1.Name = "ADD";
+            collapseGroupButton1.Select = true;
+            collapseGroupButton1.Text = "+";
+            collapseGroupButton2.IconSvg = "";
+            collapseGroupButton2.Name = "DEL";
+            collapseGroupButton2.Text = "-";
+            collapseItem1.Buttons.Add(collapseGroupButton7);
+            collapseItem1.Buttons.Add(collapseGroupButton1);
+            collapseItem1.Buttons.Add(collapseGroupButton2);
             collapseItem1.Controls.Add(label1);
             collapseItem1.Location = new Point(-702, -48);
             collapseItem1.Name = "collapseItem1";
@@ -121,6 +149,24 @@ namespace Demo.Controls
             // 
             // collapseItem2
             // 
+            collapseGroupButton3.IconSvg = "StepForwardOutlined";
+            collapseGroupButton3.Name = "Last";
+            collapseGroupButton3.Text = "最前";
+            collapseGroupButton4.IconSvg = "CaretRightOutlined";
+            collapseGroupButton4.Name = "Next";
+            collapseGroupButton4.Text = "前进";
+            collapseGroupButton5.IconSvg = "CaretLeftOutlined";
+            collapseGroupButton5.Name = "Back";
+            collapseGroupButton5.Text = "后退";
+            collapseGroupButton6.IconSvg = "StepBackwardOutlined";
+            collapseGroupButton6.Name = "First";
+            collapseGroupButton6.Select = true;
+            collapseGroupButton6.Text = "最后";
+
+            collapseItem2.Buttons.Add(collapseGroupButton3);
+            collapseItem2.Buttons.Add(collapseGroupButton4);
+            collapseItem2.Buttons.Add(collapseGroupButton5);
+            collapseItem2.Buttons.Add(collapseGroupButton6);
             collapseItem2.Controls.Add(label2);
             collapseItem2.Location = new Point(-702, -48);
             collapseItem2.Name = "collapseItem2";
@@ -140,6 +186,14 @@ namespace Demo.Controls
             // 
             // collapseItem3
             // 
+            collapseGroupButton8.IconSvg = "";
+            collapseGroupButton8.Name = "SWITCH";
+            collapseGroupButton8.SwitchMode = true;
+            collapseGroupButton8.Checked = true;
+            collapseGroupButton8.CheckedText = "ON";
+            collapseGroupButton8.UnCheckedText = "OFF";
+            collapseGroupButton8.CheckedChanged += new AntdUI.CollapseSwitchCheckedChangedEventHandler(switchButton_CheckedChanged);
+            collapseItem3.Buttons.Add(collapseGroupButton8);
             collapseItem3.Controls.Add(label3);
             collapseItem3.Location = new Point(-702, -48);
             collapseItem3.Name = "collapseItem3";
@@ -284,6 +338,7 @@ namespace Demo.Controls
             collapseItem6.ResumeLayout(false);
             ResumeLayout(false);
         }
+
 
         #endregion
 

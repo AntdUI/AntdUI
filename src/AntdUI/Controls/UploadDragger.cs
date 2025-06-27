@@ -351,10 +351,10 @@ namespace AntdUI
 
         readonly StringFormat s_f = Helper.SF_Ellipsis();
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
+            var g = e.Canvas;
             var rect = DisplayRectangle;
-            var g = e.Graphics.High();
             float _radius = radius * Config.Dpi;
             using (var path = rect.RoundPath(_radius))
             {
@@ -443,8 +443,7 @@ namespace AntdUI
                     else g.Draw(borderColor ?? Colour.BorderColor.Get("UploadDragger", ColorScheme), borw, borderStyle, path);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         public override Rectangle ReadRectangle => DisplayRectangle;

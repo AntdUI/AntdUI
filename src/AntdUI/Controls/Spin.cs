@@ -105,12 +105,12 @@ namespace AntdUI
 
         #endregion
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle.PaddingRect(Padding);
+            var rect = e.Rect.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0) return;
             config.Text = this.GetLangI(LocalizationText, text);
-            spin_core.Paint(e.Graphics.High(), rect, config, this);
+            spin_core.Paint(e.Canvas, rect, config, this);
         }
 
         protected override void Dispose(bool disposing)

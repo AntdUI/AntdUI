@@ -418,10 +418,10 @@ namespace AntdUI
 
         #endregion
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            PaintBack(e.Graphics.High());
-            base.OnPaint(e);
+            PaintBack(e.Canvas);
+            base.OnDraw(e);
         }
     }
 }

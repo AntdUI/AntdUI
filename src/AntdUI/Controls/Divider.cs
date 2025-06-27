@@ -20,7 +20,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -148,12 +147,11 @@ namespace AntdUI
         #endregion
 
         readonly StringFormat s_f_all = Helper.SF_ALL(), s_f = Helper.SF_Ellipsis();
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            var rect = _rect.PaddingRect(Margin);
+            var rect = e.Rect.PaddingRect(Margin);
             if (rect.Width == 0 || rect.Height == 0) return;
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             using (var brush = color.Brush(Colour.Split.Get("Divider", ColorScheme)))
             {
                 if (Text != null)
@@ -202,7 +200,7 @@ namespace AntdUI
                                 float f_h = (rect.Height - size.Height) / 2 - f_margin - font_margin;
                                 g.Fill(brush, new RectangleF(x, rect.Y, thickness, f_h));
                                 g.Fill(brush, new RectangleF(x, rect.Y + f_h + size.Height + (f_margin + font_margin) * 2F, thickness, f_h));
-                                g.DrawText(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider", ColorScheme), _rect, s_f);
+                                g.DrawText(text_, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider", ColorScheme), e.Rect, s_f);
                                 break;
                         }
                     }
@@ -247,7 +245,7 @@ namespace AntdUI
                                 float f_w = (rect.Width - size.Width) / 2 - f_margin - font_margin;
                                 g.Fill(brush, new RectangleF(rect.X, y, f_w, thickness));
                                 g.Fill(brush, new RectangleF(rect.X + f_w + size.Width + (f_margin + font_margin) * 2F, y, f_w, thickness));
-                                g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider", ColorScheme), _rect, s_f_all);
+                                g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get("Divider", ColorScheme), e.Rect, s_f_all);
                                 break;
                         }
                     }
@@ -258,8 +256,7 @@ namespace AntdUI
                     else g.Fill(brush, new RectangleF(rect.X, rect.Y + (rect.Height - thickness) / 2, rect.Width, thickness));
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
     }
 }

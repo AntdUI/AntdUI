@@ -25,7 +25,7 @@ namespace AntdUI.Core
 {
     public class CanvasGDI : Canvas
     {
-        Graphics g;
+        public Graphics g;
         public CanvasGDI(Graphics gdi)
         {
             g = gdi;

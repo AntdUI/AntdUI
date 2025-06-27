@@ -19,7 +19,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -190,12 +189,11 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             var size = g.MeasureString("100%", Font);
-            var rect = new Rectangle((_rect.Width - size.Width) / 2, (_rect.Height - size.Height) / 2, size.Width, size.Height);
+            var rect = new Rectangle((e.Rect.Width - size.Width) / 2, (e.Rect.Height - size.Height) / 2, size.Width, size.Height);
             float _radius = radius * Config.Dpi;
             using (var path_pain = rect.RoundPath(_radius))
             {
@@ -213,13 +211,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (ShowText)
-                    {
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Battery", ColorScheme)))
-                        {
-                            g.String("100%", Font, brush, rect, c);
-                        }
-                    }
+                    if (ShowText) g.String("100%", Font, fore ?? Colour.Text.Get("Battery", ColorScheme), rect, c);
                 }
                 else
                 {
@@ -237,7 +229,7 @@ namespace AntdUI
                     }
                     if (_value > 0)
                     {
-                        using (var bmp = new Bitmap(_rect.Width, _rect.Height))
+                        using (var bmp = new Bitmap(e.Rect.Width, e.Rect.Height))
                         {
                             using (var g2 = Graphics.FromImage(bmp).High())
                             {
@@ -250,20 +242,13 @@ namespace AntdUI
                                 g2.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
                                 g2.Fill(Brushes.Transparent, new RectangleF(rect.X + _w, 0, rect.Width, bmp.Height));
                             }
-                            g.Image(bmp, _rect);
+                            g.Image(bmp, e.Rect);
                         }
                     }
-                    if (ShowText)
-                    {
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get("Battery", ColorScheme)))
-                        {
-                            g.String(_value + "%", Font, brush, rect, c);
-                        }
-                    }
+                    if (ShowText) g.String(_value + "%", Font, fore ?? Colour.Text.Get("Battery", ColorScheme), rect, c);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         StringFormat c = Helper.SF();

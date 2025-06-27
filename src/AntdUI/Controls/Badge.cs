@@ -20,7 +20,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -197,10 +196,10 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle.PaddingRect(Padding);
-            var g = e.Graphics.High();
+            var rect = e.Rect.PaddingRect(Padding);
+            var g = e.Canvas;
             if (has_text)
             {
                 var size = g.MeasureString(Config.NullText, Font);
@@ -234,8 +233,7 @@ namespace AntdUI
                     g.DrawText(Text, Font, brush, new Rectangle(rect.X + _gap + size.Height, rect.Y, rect.Width - size.Height, rect.Height), s_f);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

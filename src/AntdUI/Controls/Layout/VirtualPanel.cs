@@ -935,40 +935,41 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
+            var g = e.Canvas;
             if (items == null || items.Count == 0 || isEmpty)
             {
-                if (Empty) e.Graphics.High().PaintEmpty(ClientRectangle, Font, Colour.Text.Get("VirtualPanel", ColorScheme), EmptyText, EmptyImage);
-                base.OnPaint(e);
-                return;
+                if (Empty) e.Canvas.PaintEmpty(e.Rect, Font, Colour.Text.Get("VirtualPanel", ColorScheme), EmptyText, EmptyImage);
             }
-            var g = e.Graphics.High();
-            int sy = ScrollBar.Value;
-            var rect = ClientRectangle;
-            rect.Offset(0, sy);
-            g.TranslateTransform(0, -sy);
-            int r = (int)(radius * Config.Dpi);
-            foreach (var it in items)
+            else
             {
-                if (it.SHOW)
+                int sy = ScrollBar.Value;
+                var rect = e.Rect;
+                rect.Offset(0, sy);
+                g.TranslateTransform(0, -sy);
+                int r = (int)(radius * Config.Dpi);
+                foreach (var it in items)
                 {
-                    it.SHOW_RECT = rect.Contains(rect.X, it.RECT.Y) || rect.Contains(rect.X, it.RECT.Bottom);
-                    if (it.SHOW_RECT)
+                    if (it.SHOW)
                     {
-                        var state = g.Save();
-                        if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
-                        g.TranslateTransform(it.RECT.X, it.RECT.Y);
-                        it.Paint(g, new VirtualPanelArgs(this, new Rectangle(0, 0, it.RECT.Width, it.RECT.Height), r));
-                        g.Restore(state);
+                        it.SHOW_RECT = rect.Contains(rect.X, it.RECT.Y) || rect.Contains(rect.X, it.RECT.Bottom);
+                        if (it.SHOW_RECT)
+                        {
+                            var state = g.Save();
+                            if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
+                            g.TranslateTransform(it.RECT.X, it.RECT.Y);
+                            it.Paint(g, new VirtualPanelArgs(this, new Rectangle(0, 0, it.RECT.Width, it.RECT.Height), r));
+                            g.Restore(state);
+                        }
                     }
+                    else it.SHOW_RECT = false;
                 }
-                else it.SHOW_RECT = false;
+                g.ResetTransform();
+                ScrollBar.Paint(g);
+                if (Config.HasAnimation(nameof(VirtualPanel)) && BlurBar != null) _event.SetWait();
             }
-            g.ResetTransform();
-            ScrollBar.Paint(g);
-            if (Config.HasAnimation(nameof(VirtualPanel)) && BlurBar != null) _event.SetWait();
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 模糊标题

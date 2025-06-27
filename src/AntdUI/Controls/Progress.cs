@@ -580,13 +580,11 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_c = Helper.SF_NoWrap(), s_r = Helper.SF_NoWrap(lr: StringAlignment.Far), s_l = Helper.SF_NoWrap(lr: StringAlignment.Near);
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect_t = ClientRectangle;
-            if (rect_t.Width == 0 || rect_t.Height == 0) return;
-            var rect = rect_t.PaddingRect(Padding);
+            var g = e.Canvas;
+            var rect = e.Rect.PaddingRect(Padding);
             if (rect.Width == 0 || rect.Height == 0) return;
-            var g = e.Graphics.High();
             Color color;
             switch (state)
             {
@@ -616,18 +614,17 @@ namespace AntdUI
                     PaintShapeMini(g, rect, color);
                     break;
                 case TShapeProgress.Steps:
-                    PaintShapeSteps(g, rect_t, rect, color);
+                    PaintShapeSteps(g, e.Rect, rect, color);
                     break;
                 case TShapeProgress.Round:
-                    PaintShapeRound(g, rect_t, rect, color, true);
+                    PaintShapeRound(g, e.Rect, rect, color, true);
                     break;
                 case TShapeProgress.Default:
                 default:
-                    PaintShapeRound(g, rect_t, rect, color, false);
+                    PaintShapeRound(g, e.Rect, rect, color, false);
                     break;
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintShapeMini(Canvas g, Rectangle rect, Color color)

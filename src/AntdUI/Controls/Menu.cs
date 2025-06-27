@@ -111,6 +111,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 焦点标识块
+        /// </summary>
+        [Description("绘制焦点标识块"), Category("外观"), DefaultValue(false)]
+        public bool FocusedMark { get; set; }
+
+        /// <summary>
         /// 色彩模式
         /// </summary>
         [Obsolete("use ColorScheme"), Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
@@ -336,109 +342,6 @@ namespace AntdUI
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
             Invalidate();
         }
-
-        /// <summary>
-        /// 获取选中项索引
-        /// </summary>
-        public int GetSelectIndex(MenuItem item)
-        {
-            if (items != null) return items.IndexOf(item);
-            else return -1;
-        }
-
-        /// <summary>
-        /// 选中菜单
-        /// </summary>
-        /// <param name="item">项</param>
-        /// <param name="focus">设置焦点</param>
-        public void Select(MenuItem item, bool focus = true)
-        {
-            if (items == null || items.Count == 0) return;
-            IUSelect(items);
-            Select(item, focus, items);
-        }
-        void Select(MenuItem item, bool focus, MenuItemCollection items)
-        {
-            foreach (var it in items)
-            {
-                if (it == item)
-                {
-                    it.Select = true;
-                    tmpAM = true;
-                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(it));
-                    if (SelectEx(it.PARENTITEM) > 0)
-                    {
-                        ChangeList();
-                        Invalidate();
-                    }
-                    tmpAM = false;
-                    if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
-                    return;
-                }
-                else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
-            }
-        }
-
-        internal bool tmpAM = false;
-        int SelectEx(MenuItem? it)
-        {
-            int count = 0;
-            if (it == null) return count;
-            if (it.Expand) it.Select = true;
-            else
-            {
-                count++;
-                it.Expand = it.Select = true;
-            }
-            count += SelectEx(it.PARENTITEM);
-            return count;
-        }
-
-        /// <summary>
-        /// 移除菜单
-        /// </summary>
-        /// <param name="item">项</param>
-        public void Remove(MenuItem item)
-        {
-            if (items == null || items.Count == 0) return;
-            Remove(item, items);
-        }
-        void Remove(MenuItem item, MenuItemCollection items)
-        {
-            foreach (var it in items)
-            {
-                if (it == item)
-                {
-                    items.Remove(it);
-                    return;
-                }
-                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
-            }
-        }
-
-        #region 事件
-
-        /// <summary>
-        /// Select 属性值更改时发生
-        /// </summary>
-        [Description("Select 属性值更改时发生"), Category("行为")]
-        public event SelectEventHandler? SelectChanged;
-
-        /// <summary>
-        /// Select 属性值更改前发生
-        /// </summary>
-        [Description("Select 属性值更改前发生"), Category("行为")]
-        public event SelectBoolEventHandler? SelectChanging;
-
-        bool IsCanChang(MenuItem it)
-        {
-            bool pass = false;
-            if (SelectChanging == null) pass = true;
-            else if (SelectChanging(this, new MenuSelectEventArgs(it))) pass = true;
-            return pass;
-        }
-
-        #endregion
 
         #endregion
 
@@ -683,17 +586,15 @@ namespace AntdUI
         #region 渲染
 
         public Menu() { ScrollBar = new ScrollBar(this); }
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
-            if (scroll_show) g.SetClip(new Rectangle(rect.X, rect.Y, rect_r.Right - rect_r.Height, rect.Height));
+            var g = e.Canvas;
+            if (scroll_show) g.SetClip(new Rectangle(e.Rect.X, e.Rect.Y, rect_r.Right - rect_r.Height, e.Rect.Height));
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
             Color scroll_color = Colour.TextBase.Get("Menu", ColorScheme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get("Menu", ColorScheme), back_hover, back_active;
@@ -713,7 +614,7 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get("Menu", ColorScheme)))
             {
-                PaintItems(g, rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
+                PaintItems(g, e.Rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
             }
             g.ResetTransform();
             if (scroll_show)
@@ -729,8 +630,7 @@ namespace AntdUI
                 SvgExtend.GetImgExtend(g, "EllipsisOutlined", rect_r_ico, color_fore);
             }
             ScrollBar.Paint(g, scroll_color);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintItems(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
@@ -912,6 +812,12 @@ namespace AntdUI
             using (var brush = new SolidBrush(fore))
             {
                 g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                if (FocusedMark) //增加焦点块
+                {
+                    int fh = it.rect.Height - (it.rect.Height / 3);
+                    Rectangle rectFocused = new Rectangle(0, it.rect.Top + (it.rect.Height - fh) / 2, 6, fh);
+                    g.Fill(brush, rectFocused);
+                }
             }
             PaintIcon(g, it, fore);
         }
@@ -936,10 +842,7 @@ namespace AntdUI
                     }
                 }
             }
-            using (var brush = new SolidBrush(fore))
-            {
-                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
-            }
+            g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
             PaintIcon(g, it, fore);
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
@@ -1339,6 +1242,113 @@ namespace AntdUI
             }
             mdown = null;
             return false;
+        }
+
+        #endregion
+
+        #region 方法
+
+        /// <summary>
+        /// 获取选中项索引
+        /// </summary>
+        public int GetSelectIndex(MenuItem item)
+        {
+            if (items != null) return items.IndexOf(item);
+            else return -1;
+        }
+
+        /// <summary>
+        /// 选中菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        /// <param name="focus">设置焦点</param>
+        public void Select(MenuItem item, bool focus = true)
+        {
+            if (items == null || items.Count == 0) return;
+            IUSelect(items);
+            Select(item, focus, items);
+        }
+        void Select(MenuItem item, bool focus, MenuItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    it.Select = true;
+                    tmpAM = true;
+                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(it));
+                    if (SelectEx(it.PARENTITEM) > 0)
+                    {
+                        ChangeList();
+                        Invalidate();
+                    }
+                    tmpAM = false;
+                    if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
+            }
+        }
+
+        internal bool tmpAM = false;
+        int SelectEx(MenuItem? it)
+        {
+            int count = 0;
+            if (it == null) return count;
+            if (it.Expand) it.Select = true;
+            else
+            {
+                count++;
+                it.Expand = it.Select = true;
+            }
+            count += SelectEx(it.PARENTITEM);
+            return count;
+        }
+
+        /// <summary>
+        /// 移除菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        public void Remove(MenuItem item)
+        {
+            if (items == null || items.Count == 0) return;
+            Remove(item, items);
+        }
+        void Remove(MenuItem item, MenuItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    items.Remove(it);
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
+            }
+        }
+
+        #endregion
+
+        #region 事件
+
+        /// <summary>
+        /// Select 属性值更改时发生
+        /// </summary>
+        [Description("Select 属性值更改时发生"), Category("行为")]
+        public event SelectEventHandler? SelectChanged;
+
+        /// <summary>
+        /// Select 属性值更改前发生
+        /// </summary>
+        [Description("Select 属性值更改前发生"), Category("行为")]
+        public event SelectBoolEventHandler? SelectChanging;
+
+        bool IsCanChang(MenuItem it)
+        {
+            bool pass = false;
+            if (SelectChanging == null) pass = true;
+            else if (SelectChanging(this, new MenuSelectEventArgs(it))) pass = true;
+            return pass;
         }
 
         #endregion
@@ -1845,6 +1855,16 @@ namespace AntdUI
                 badgeOffsetY = value;
                 if (badge != null || badgeSvg != null) Invalidate();
             }
+        }
+
+        #endregion
+
+        #region 方法
+
+        public void Remove()
+        {
+            if (PARENTITEM == null) PARENT?.Items.Remove(this);
+            else PARENTITEM.items?.Remove(this);
         }
 
         #endregion

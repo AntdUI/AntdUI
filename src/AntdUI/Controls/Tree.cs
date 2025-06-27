@@ -253,6 +253,38 @@ namespace AntdUI
         [Browsable(false)]
         public ScrollBar ScrollBar;
 
+        bool empty = true;
+        [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]
+        public bool Empty
+        {
+            get => empty;
+            set
+            {
+                if (empty == value) return;
+                empty = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Empty));
+            }
+        }
+
+        string? emptyText;
+        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? EmptyText
+        {
+            get => emptyText;
+            set
+            {
+                if (emptyText == value) return;
+                emptyText = value;
+                Invalidate();
+                OnPropertyChanged(nameof(EmptyText));
+            }
+        }
+
+        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        public Image? EmptyImage { get; set; }
+
         #endregion
 
         #region 事件
@@ -433,16 +465,15 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, true, true);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                if (Empty) e.Canvas.PaintEmpty(e.Rect, Font, fore ?? Colour.Text.Get("Tree", ColorScheme), EmptyText, EmptyImage, 0);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
             float _radius = radius * Config.Dpi;
@@ -452,14 +483,12 @@ namespace AntdUI
             using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("Tree", ColorScheme)))
             using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get("Tree", ColorScheme)))
             {
-                PaintItem(g, rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                PaintItem(g, e.Rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
             g.ResetTransform();
             ScrollBar.Paint(g);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
-
         void PaintItem(Canvas g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
             foreach (var it in items)
@@ -944,6 +973,28 @@ namespace AntdUI
             if (clear) selectItem = null;
             if (items == null || items.Count == 0) return;
             foreach (var it in items) IUSelect(it);
+        }
+
+        /// <summary>
+        /// 移除菜单
+        /// </summary>
+        /// <param name="item">项</param>
+        public void Remove(TreeItem item)
+        {
+            if (items == null || items.Count == 0) return;
+            Remove(item, items);
+        }
+        void Remove(TreeItem item, TreeItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it == item)
+                {
+                    items.Remove(it);
+                    return;
+                }
+                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
+            }
         }
 
         #region 集合操作
@@ -1527,6 +1578,16 @@ namespace AntdUI
                 back = value;
                 Invalidate();
             }
+        }
+
+        #endregion
+
+        #region 方法
+
+        public void Remove()
+        {
+            if (PARENTITEM == null) PARENT?.Items.Remove(this);
+            else PARENTITEM.items?.Remove(this);
         }
 
         #endregion

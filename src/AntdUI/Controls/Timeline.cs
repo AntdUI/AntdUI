@@ -179,16 +179,14 @@ namespace AntdUI
 
         readonly StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             g.TranslateTransform(0, -ScrollBar.Value);
             Color color_fore = fore ?? Colour.Text.Get("Timeline", ColorScheme);
             using (var brush_split = new SolidBrush(Colour.Split.Get("Timeline", ColorScheme)))
@@ -244,8 +242,7 @@ namespace AntdUI
             }
             g.ResetTransform();
             ScrollBar.Paint(g);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         bool PaintIcon(Canvas g, TimelineItem it, Color fore)

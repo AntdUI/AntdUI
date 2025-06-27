@@ -23,7 +23,6 @@ using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -469,15 +468,13 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            if (_rect.Width == 0 || _rect.Height == 0) return;
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float _radius = radius * Config.Dpi;
 
             var rect = ReadRectangle;
-            if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+            if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);
             FillRect(g, rect, back, _radius, round);
 
             if (PaintImage(g, rect, _radius)) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get("Avatar", ColorScheme), rect, stringCenter);
@@ -501,8 +498,7 @@ namespace AntdUI
                     g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

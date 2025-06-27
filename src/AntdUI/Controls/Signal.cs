@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -163,12 +162,10 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var _rect = ClientRectangle;
-            if (_rect.Width == 0 || _rect.Height == 0) return;
-            var rect = _rect.PaddingRect(Padding);
-            var g = e.Graphics.High();
+            var g = e.Canvas;
+            var rect = e.Rect.PaddingRect(Padding);
             int dot_size = rect.Width > rect.Height ? rect.Height : rect.Width;
             var rect_dot = new Rectangle(rect.X + (rect.Width - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
             if (styleLine)
@@ -378,8 +375,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #endregion

@@ -513,13 +513,12 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_c = Helper.SF_ALL(), s_f = Helper.SF_NoWrap();
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0 || !_tabMenuVisible) return;
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             style.Paint(this, g, items);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintBadge(Canvas g, TabPage page, Rectangle rect)

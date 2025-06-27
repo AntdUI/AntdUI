@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
@@ -34,7 +35,7 @@ namespace AntdUI
     [DefaultProperty("Items")]
     [DefaultEvent("ExpandChanged")]
     [Designer(typeof(CollapseDesigner))]
-    public class Collapse : IControl
+    public class Collapse : IControl, ICollapse
     {
         #region 属性
 
@@ -233,7 +234,8 @@ namespace AntdUI
                 }
             }
         }
-        internal void LoadLayout(bool r = true)
+
+        public void LoadLayout(bool r = true)
         {
             if (IsHandleCreated)
             {
@@ -250,61 +252,88 @@ namespace AntdUI
 
         internal void LoadLayout(Rectangle rect, CollapseItemCollection items)
         {
-            var size = Helper.GDI(g => g.MeasureString(Config.NullText, Font));
-            int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
-                content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
-            int title_height = size.Height + gap_y * 2;
-            int full_count = 0, useh = 0, full_h = 0;
-            foreach (var it in items)
+            Helper.GDI(g =>
             {
-                if (it.Full) full_count++;
-            }
-            if (full_count > 0)
-            {
+                var size = g.MeasureString(Config.NullText, Font);
+                int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
+                    content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
+                int title_height = size.Height + gap_y * 2;
+                int full_count = 0, useh = 0, full_h = 0;
                 foreach (var it in items)
                 {
-                    if (!it.Full)
-                    {
-                        useh += title_height + gap;
-                        if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
-                        else if (it.Expand) useh += content_y * 2 + it.Height;
-                    }
+                    if (it.Full) full_count++;
                 }
-                full_h = (rect.Height - useh) / full_count;
-            }
-            foreach (var it in items)
-            {
-                int y = rect.Y + use_x;
-                it.RectTitle = new Rectangle(rect.X, y, rect.Width, title_height);
-                it.RectArrow = new Rectangle(rect.X + gap_x, y + gap_y, size.Height, size.Height);
-                it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
+                if (full_count > 0)
+                {
+                    foreach (var it in items)
+                    {
+                        if (!it.Full)
+                        {
+                            useh += title_height + gap;
+                            if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
+                            else if (it.Expand) useh += content_y * 2 + it.Height;
+                        }
+                    }
+                    full_h = (rect.Height - useh) / full_count;
+                }
+                foreach (var it in items)
+                {
+                    int y = rect.Y + use_x;
+                    Rectangle rectButtons = it.RectTitle = new Rectangle(rect.X, y, rect.Width, title_height);
+                    it.RectArrow = new Rectangle(rect.X + gap_x, y + gap_y, size.Height, size.Height);
+                    it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
+                    OnExpandingChanged(it, it.Expand, rectButtons.Location);
+                    if (it.buttons != null && it.buttons.Count > 0)
+                    {
+                        int bx = rectButtons.Right;
+                        foreach (var btn in it.buttons)
+                        {
+                            btn.PARENT = this;
+                            btn.PARENTITEM = it;
+                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
+                            int space = (rectButtons.Height - height) / 2;
+                            bx -= space;
 
-                Rectangle Rect;
-                if (it.Full)
-                {
-                    if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
-                    else if (it.Expand)
-                    {
-                        it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
-                        it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
-                        it.SetSize();
+                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                            string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+
+                            var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                            int width = btn.SwitchMode ? size_btn.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size_btn.Width + 4;
+                            if (width < height) width = btn.SwitchMode ? height * 4 : height;
+                            Rectangle rectItem = new Rectangle(bx - width, rectButtons.Top + ((rectButtons.Height - height) / 2), width, height);
+                            btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - 8);
+                            bx -= (width + space);
+                        }
                     }
-                    else it.Rect = Rect = it.RectTitle;
-                }
-                else
-                {
-                    if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
-                    else if (it.Expand)
+                    Rectangle Rect;
+                    if (it.Full)
                     {
-                        it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
-                        it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
-                        it.SetSize();
+                        if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
+                        else if (it.Expand)
+                        {
+                            it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
+                            it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
+                            it.SetSize();
+                        }
+                        else it.Rect = Rect = it.RectTitle;
                     }
-                    else it.Rect = Rect = it.RectTitle;
+                    else
+                    {
+                        if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
+                        else if (it.Expand)
+                        {
+                            it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
+                            it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
+                            it.SetSize();
+                        }
+                        else it.Rect = Rect = it.RectTitle;
+                    }
+                    use_x += Rect.Height + gap;
                 }
-                use_x += Rect.Height + gap;
-            }
+            });
         }
+
+        readonly StringFormat s_c = Helper.SF(tb: StringAlignment.Near, lr: StringAlignment.Center);
 
         #endregion
 
@@ -316,21 +345,35 @@ namespace AntdUI
         [Description("Expand 属性值更改时发生"), Category("行为")]
         public event CollapseExpandEventHandler? ExpandChanged;
 
+        /// <summary>
+        /// Expanding 属性值更改时发生
+        /// </summary>
+        [Description("Expanding 属性值更改时发生"), Category("行为")]
+        public event CollapseExpandingEventHandler? ExpandingChanged;
+
+        /// <summary>
+        /// CollapseItem上的按件单击时发生
+        /// </summary>
+        [Description("CollapseItem上的按件单击时发生"), Category("行为")]
+        public event CollapseButtonClickEventHandler? ButtonClickChanged;
+
         internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand));
+        internal void OnExpandingChanged(CollapseItem value, bool expand, Point location) => ExpandingChanged?.Invoke(this, new CollapseExpandingEventArgs(value, expand, location));
+        internal void OnButtonClickChanged(CollapseItem value, CollapseGroupButton button) => ButtonClickChanged?.Invoke(this, new CollapseButtonClickEventArgs(button, value));
 
         #endregion
 
         #region 渲染
 
         StringFormat s_l = Helper.SF_ALL(lr: StringAlignment.Near);
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             float r = radius * Config.Dpi;
             using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get("Collapse", ColorScheme)))
             using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get("Collapse", ColorScheme)))
@@ -436,6 +479,7 @@ namespace AntdUI
                                     }
                                     PaintItem(g, item, forebrush, pen_arr);
                                 }
+
                             }
                         }
                     }
@@ -514,8 +558,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
@@ -525,6 +568,8 @@ namespace AntdUI
             else PaintArrow(g, item, pen_arr, -90F);
 
             g.String(item.Text, Font, fore, item.RectText, s_l);
+
+            PaintButtons(g, item, fore);
         }
 
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore)
@@ -534,8 +579,141 @@ namespace AntdUI
             else PaintArrow(g, item, fore, -90F);
 
             g.String(item.Text, Font, fore, item.RectText, s_l);
-        }
 
+            PaintButtons(g, item, fore);
+        }
+        internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color, CollapseGroupButton btn)
+        {
+            if (btn.AnimationClick || true)
+            {
+                float alpha = 100 * (1F - btn.AnimationClickValue),
+                    maxw = rect_read.Width + ((rect.Width - rect_read.Width) * btn.AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * btn.AnimationClickValue);
+                using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
+                {
+                    path_click.AddPath(path, false);
+                    g.Fill(Helper.ToColor(alpha, color), path_click);
+                }
+            }
+        }
+        void PaintButtons(Canvas g, CollapseItem item, SolidBrush fore)
+        {
+            if (item.buttons == null) return;
+            using (var fore_active = new SolidBrush(Colour.Primary.Get("Button", ColorScheme)))
+            using (var hover = new SolidBrush(Colour.FillSecondary.Get("Button", ColorScheme)))
+            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("Button", ColorScheme)))
+            using (var active = new SolidBrush(Colour.PrimaryBg.Get("Button", ColorScheme)))
+            {
+                foreach (var btn in item.buttons)
+                {
+                    if (btn.Show == false) continue;
+                    if (!btn.SwitchMode)
+                    {
+                        if (btn.Enabled)
+                        {
+                            if (btn.Select)
+                            {
+                                CollapseGroup.PaintBack(g, btn, active, radius);
+                                if (btn.AnimationHover)
+                                {
+                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
+                                    {
+                                        CollapseGroup.PaintBack(g, btn, brush, radius);
+                                    }
+                                }
+                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
+
+                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore_active.Color);
+                                g.String(btn.Text, Font, fore_active, btn.txt_rect, s_c);
+                            }
+                            else
+                            {
+                                if (btn.AnimationHover)
+                                {
+                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
+                                    {
+                                        CollapseGroup.PaintBack(g, btn, brush, radius);
+                                    }
+                                }
+                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
+
+                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore.Color);
+                                g.String(btn.Text, Font, fore, btn.txt_rect, s_c);
+                            }
+                        }
+                        else
+                        {
+                            if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, brush_TextQuaternary.Color);
+                            g.String(btn.Text, Font, brush_TextQuaternary, btn.txt_rect, s_c);
+                        }
+                    }
+                    else
+                    {
+                        var rect_read = btn.rect;
+                        bool enabled = btn.Enabled;
+                        using (var path = rect_read.RoundPath(rect_read.Height))
+                        {
+                            Color _color = btn.Back ?? Colour.Primary.Get("Switch", ColorScheme);
+                            PaintClick(g, path, rect_read, rect_read, _color, btn);
+                            if (enabled && btn.hasFocus && btn.WaveSize > 0)
+                            {
+                                float wave = (btn.WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                                using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
+                                {
+                                    g.Draw(Colour.PrimaryBorder.Get("Switch", ColorScheme), wave, path_focus);
+                                }
+                            }
+                            using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch", ColorScheme)))
+                            {
+                                g.Fill(brush, path);
+                                if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, brush.Color), path);
+                                else if (btn.ExtraMouseHover) g.Fill(brush, path);
+                            }
+                            int gap = (int)(3 * Config.Dpi), gap2 = gap * 2;
+                            if (btn.AnimationCheck)
+                            {
+                                var alpha = 255 * btn.AnimationCheckValue;
+                                g.Fill(Helper.ToColor(alpha, _color), path);
+                                var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * btn.AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
+                                g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+
+                            }
+                            else if (btn.Checked)
+                            {
+                                var colorhover = Colour.PrimaryHover.Get("Switch", ColorScheme);
+                                g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
+                                if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, colorhover), path);
+                                else if (btn.ExtraMouseHover) g.Fill(colorhover, path);
+                                var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
+                                g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                            }
+                            else
+                            {
+                                var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
+                                g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                            }
+
+                            // 绘制文本
+                            string? textToRender = btn.Checked ? btn.CheckedText : btn.UnCheckedText;
+                            if (textToRender != null)
+                            {
+                                Color _fore = btn.Fore ?? Colour.PrimaryColor.Get("Switch", ColorScheme);
+                                using (var brush = new SolidBrush(_fore))
+                                {
+                                    var textSize = g.MeasureString(textToRender, Font);
+                                    var textRect = btn.Checked
+                                        ? new Rectangle(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
+                                        : new Rectangle(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
+                                    g.String(textToRender, Font, brush, textRect);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         void PaintArrow(Canvas g, CollapseItem item, Pen pen, float rotate)
         {
             var rect_arr = item.RectArrow;
@@ -569,6 +747,15 @@ namespace AntdUI
                     item.MDown = true;
                     return;
                 }
+                if (item.buttons == null) continue;
+                foreach (var btn in item.buttons)
+                {
+                    if (btn.Contains(e.X, e.Y))
+                    {
+                        item.MDown = true;
+                        return;
+                    }
+                }
             }
             base.OnMouseDown(e);
         }
@@ -581,8 +768,32 @@ namespace AntdUI
                 if (item.MDown)
                 {
                     if (item.Contains(e.X, e.Y)) item.Expand = !item.Expand;
+                    else
+                    {
+                        if (item.buttons == null) continue;
+                        foreach (var btn in item.buttons)
+                        {
+                            if (btn.Contains(e.X, e.Y))
+                            {
+                                if (btn.SwitchMode)
+                                {
+                                    btn.Checked = !btn.Checked;
+                                    Invalidate();
+                                    item.MDown = false;
+                                    return;
+                                }
+
+                                btn.Select = true;
+
+                                OnButtonClickChanged(item, btn);
+
+                                item.MDown = false;
+                                return;
+                            }
+                        }
+                    }
                     item.MDown = false;
-                    return;
+                    break;
                 }
             }
             base.OnMouseUp(e);
@@ -598,9 +809,53 @@ namespace AntdUI
                     SetCursor(true);
                     return;
                 }
+                if (item.buttons == null) continue;
+                foreach (var btn in item.buttons)
+                {
+                    if (btn.Contains(e.X, e.Y))
+                    {
+                        btn.hasFocus = btn.AnimationHover = true;
+                        if (btn.SwitchMode) btn.ExtraMouseHover = true;
+                        else
+                        {
+                            SetCursor(true);
+                            Invalidate();
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        if (btn.AnimationHover)
+                        {
+                            btn.AnimationHover = false;
+                            if (btn.SwitchMode) btn.ExtraMouseHover = false;
+                        }
+                    }
+                }
             }
             SetCursor(false);
             base.OnMouseMove(e);
+        }
+
+        #endregion
+
+        #region 方法
+
+        public void IUSelect()
+        {
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items)
+            {
+                if (it.buttons != null && it.buttons.Count > 0)
+                {
+                    foreach (var btn in it.buttons) btn.Select = false;
+                }
+            }
+        }
+        public void IUSelect(CollapseItem item)
+        {
+            if (item.buttons == null || item.buttons.Count == 0) return;
+            foreach (var btn in item.buttons) btn.Select = false;
         }
 
         #endregion
@@ -655,7 +910,7 @@ namespace AntdUI
 
     [ToolboxItem(false)]
     [Designer(typeof(IControlDesigner))]
-    public class CollapseItem : ScrollableControl
+    public class CollapseItem : ScrollableControl, ICollapseItem
     {
         public CollapseItem()
         {
@@ -759,6 +1014,26 @@ namespace AntdUI
             }
         }
 
+        #region Buttons
+
+        internal CollapseGroupButtonCollection? buttons;
+        /// <summary>
+        /// 获取折叠项中所有按钮项的集合
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("按钮集合"), Category("外观")]
+        public CollapseGroupButtonCollection Buttons
+        {
+            get
+            {
+                buttons ??= new CollapseGroupButtonCollection(this);
+                return buttons;
+            }
+            set => buttons = value.BindData(this);
+        }
+
+        #endregion
+
         #endregion
 
         #region 国际化
@@ -790,9 +1065,13 @@ namespace AntdUI
         #region 坐标
 
         internal bool MDown = false;
-        internal Rectangle Rect = new Rectangle(-10, -10, 0, 0);
-        internal Rectangle RectArrow, RectCcntrol, RectTitle, RectText;
-        internal bool Contains(int x, int y) => RectTitle.Contains(x, y);
+        public Rectangle Rect = new Rectangle(-10, -10, 0, 0);
+        public Rectangle RectArrow, RectCcntrol, RectTitle, RectText;
+        internal bool Contains(int x, int y)
+        {
+            if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
+            return RectArrow.Contains(x, y);
+        }
 
         #endregion
 

@@ -1179,11 +1179,11 @@ namespace AntdUI
         #region 渲染
 
         bool init = false;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
             init = true;
-            var g = e.Graphics.High();
-            Rectangle rect = ClientRectangle.PaddingRect(Padding), rect_read = ReadRectangle;
+            var g = e.Canvas;
+            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = ReadRectangle;
             if (rect_read.Width == 0 || rect_read.Height == 0) return;
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
@@ -1378,8 +1378,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

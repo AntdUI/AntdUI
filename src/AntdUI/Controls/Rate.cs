@@ -155,19 +155,19 @@ namespace AntdUI
         #region 渲染
 
         Bitmap? icon, icon_active;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle.PaddingRect(Padding);
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (count < 1)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
+            var g = e.Canvas;
+            var rect = e.Rect.PaddingRect(Padding);
             int size = rect.Height;
-            var g = e.Graphics.High();
 
             var character = Character;
+
             #region 初始化位图
 
             if (icon == null || icon.Width != size)
@@ -224,6 +224,7 @@ namespace AntdUI
             }
 
             #endregion
+
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];
@@ -260,8 +261,7 @@ namespace AntdUI
                 }
                 else g.Image(icon, it.rect_i);
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #endregion

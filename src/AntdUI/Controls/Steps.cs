@@ -315,16 +315,14 @@ namespace AntdUI
         readonly StringFormat stringLeft = Helper.SF(lr: StringAlignment.Near);
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
             if (items == null || items.Count == 0)
             {
-                base.OnPaint(e);
+                base.OnDraw(e);
                 return;
             }
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             Color color_fore = fore ?? Colour.Text.Get("Steps", ColorScheme);
             using (var brush_fore = new SolidBrush(color_fore))
             using (var brush_primarybg = new SolidBrush(Colour.PrimaryBg.Get("Steps", ColorScheme)))
@@ -382,7 +380,7 @@ namespace AntdUI
                                     g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                                     g.DrawText(it.Description, font_description, brush_fore, it.description_rect, stringLeft);
 
-                                    ccolor = brush_fore.Color;
+                                    ccolor = brush_primary.Color;
                                     break;
                             }
                         }
@@ -392,7 +390,7 @@ namespace AntdUI
                             g.DrawText(it.Title, Font, brush_fore, it.title_rect, stringLeft);
                             g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
                             g.DrawText(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
-                            ccolor = brush_fore.Color;
+                            ccolor = brush_primary.Color;
                         }
                         else
                         {
@@ -437,8 +435,7 @@ namespace AntdUI
                     }
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         bool PaintIcon(Canvas g, StepsItem it, Color fore)

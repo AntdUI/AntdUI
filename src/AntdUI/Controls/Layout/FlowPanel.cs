@@ -131,12 +131,12 @@ namespace AntdUI
             base.OnHandleCreated(e);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            base.OnPaint(e);
-            var g = e.Graphics.High();
+            var g = e.Canvas;
             PaintBack(g);
             ScrollBar?.Paint(g);
+            base.OnDraw(e);
         }
 
         #region Index 排序

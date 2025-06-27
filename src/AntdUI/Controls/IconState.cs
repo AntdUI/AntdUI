@@ -19,7 +19,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -83,10 +82,10 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
-            if (state == TType.None) this.PaintBadge(g);
+            var g = e.Canvas;
+            if (state == TType.None) base.OnDraw(e);
             else
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
@@ -116,9 +115,8 @@ namespace AntdUI
                     default:
                         break;
                 }
-                this.PaintBadge(g);
+                base.OnDraw(e);
             }
-            base.OnPaint(e);
         }
 
         #endregion

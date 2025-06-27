@@ -1379,11 +1379,13 @@ namespace AntdUI
                 //case 0x0286:
                 //    break;
                 case 0x100://WM_KEYDOWN
+                case 0x0104://WM_SYSKEYDOWN
                     if (HandKeyDown(GetKeyBoard(m.WParam.ToInt32()))) return;
                     break;
-                case 0x101://WM_KEYUP
-                    if (HandKeyUp(GetKeyBoard(m.WParam.ToInt32()))) return;
-                    break;
+                //case 0x101://WM_KEYUP
+                //case 0x0105://WM_SYSKEYUP
+                //    if (HandKeyUp(GetKeyBoard(m.WParam.ToInt32()))) return;
+                //    break;
                 case Win32.WM_IME_STARTCOMPOSITION:
                     m_hIMC = Win32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);

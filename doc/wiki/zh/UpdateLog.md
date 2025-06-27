@@ -1,5 +1,26 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.7` 2025-06-27 🌵
+
+- ➕ Shield
+- ➕ Collapse Button / Switch
+- ➕ Draw / DrawBg
+- ➕ Config EmptyImage
+- ➕ Tree Empty
+- ✍️ Table 边框边距
+- ✍️ Table AutoSizeColumnsMode.Fill 布局
+- ✍️ Table 堆栈头交互区域
+- ✍️ Table 编辑模式文本高度不够
+- ✍️ Table Paint 开放 Column
+- ✍️ Collapse Buttons 响应鼠标移动
+- ✍️ Input 右侧图标不显示
+- ✍️ Input 重构键盘
+- ✍️ Input 回退交互
+- ✍️ Tree 补全方法
+- ✍️ Steps 图标SVG色彩
+- ✍️ Breadcrumb 布局
+- ✍️ Pagination 布局
+
 ### `2.0.6` 2025-06-20
 
 - ➕ Table GetColumnRealIndex

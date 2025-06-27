@@ -432,10 +432,9 @@ namespace AntdUI
 
         StringFormat s_f = Helper.SF();
         StringFormat s_f_L, s_f_R;
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
-            var rect = ClientRectangle;
+            var g = e.Canvas;
             var rect_read = ReadRectangle;
 
             var _radius = radius * Config.Dpi;
@@ -529,8 +528,7 @@ namespace AntdUI
             if (showType == 1 && calendar_month != null) PrintMonth(g, rect_read, _radius, calendar_month);
             else if (showType == 2 && calendar_year != null) PrintYear(g, rect_read, _radius, calendar_year);
             else if (calendar_day != null) PrintDay(g, rect_read, _radius, calendar_day);
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         #region 渲染帮助

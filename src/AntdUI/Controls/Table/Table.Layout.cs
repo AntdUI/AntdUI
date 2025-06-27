@@ -66,7 +66,7 @@ namespace AntdUI
 
         void LoadLayout(Rectangle rect_t)
         {
-            var rect = LayoutDesign(rect_t);
+            var rect = LayoutDesign(rect_t.PaddingRect(Padding, borderWidth));
             ScrollBar.SizeChange(rect);
         }
 
@@ -257,6 +257,7 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var dpi = Config.Dpi;
+                var font_size = g.MeasureString(Config.NullText, Font);
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
                 gap = (int)(_gap * dpi), gap2 = gap * 2, gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
                 split = (int)(BorderCellWidth * dpi), split2 = split / 2, sp2 = split * 2,
@@ -282,7 +283,7 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                var text_size = it.GetSize(g, columnfont ?? Font, rect.Width, gap, gap2);
+                                var text_size = it.GetSize(g, columnfont ?? Font, font_size, rect.Width, gap, gap2);
                                 if (it.COLUMN is ColumnSort) read_width_cell[cel_i].value = -2;
                                 else if (it.COLUMN is ColumnCheck check && check.NoTitle) read_width_cell[cel_i].value = -1;
                                 else
@@ -309,7 +310,7 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    var text_size = it.GetSize(g, Font, rect.Width, gap, gap2);
+                                    var text_size = it.GetSize(g, Font, font_size, rect.Width, gap, gap2);
                                     int width = text_size.Width;
                                     if (it.ROW.CanExpand && _rows[0].cells[cel_i].INDEX == KeyTreeINDEX) width += (treesize + gapTree2) * (it.ROW.ExpandDepth + 1) - treesize / 2;
                                     if (max_height < text_size.Height) max_height = text_size.Height;
@@ -350,16 +351,8 @@ namespace AntdUI
                     }
                 }
 
-                if (bordered)
-                {
-                    rect_read.Width = rect.Width - sp2;
-                    rect_read.Height = rect.Height - sp2;
-                }
-                else
-                {
-                    rect_read.Width = rect.Width;
-                    rect_read.Height = rect.Height;
-                }
+                rect_read.Width = rect.Width;
+                rect_read.Height = rect.Height;
 
                 var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
 
@@ -402,7 +395,7 @@ namespace AntdUI
                             else if (it is TCellSort sort) sort.SetSize(_rect, sort_size, sort_ico_size);
                             else if (it is TCellColumn column)
                             {
-                                it.SetSize(g, Font, _rect, ox, gap, gap2);
+                                it.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
                                 if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                                 {
                                     column.COLUMN.SortOrder = false;
@@ -416,7 +409,7 @@ namespace AntdUI
                                     if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
                                 }
                             }
-                            else it.SetSize(g, Font, _rect, ox, gap, gap2);
+                            else it.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
 
                             if (x < _rect.Right) x = _rect.Right;
                             if (y < _rect.Bottom) y = _rect.Bottom;
@@ -425,6 +418,9 @@ namespace AntdUI
                         use_y += row.Height;
                     }
                 }
+
+                x -= rect_read.X;
+                y -= rect_read.Y;
 
                 #endregion
 
@@ -439,9 +435,9 @@ namespace AntdUI
                 var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
-                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y + split;
+                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y;
 
-                rect_divider = new Rectangle(rect_read.X + split2, rect_read.Y + split2, rect_read.Width, rect_read.Height);
+                rect_divider = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height);
 
                 var MoveHeaders = new List<MoveHeader>();
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
@@ -666,18 +662,26 @@ namespace AntdUI
         {
             int use_width = rect.Width;
             float max_width = 0;
+            Dictionary<int, float> col_width_tmp = new Dictionary<int, float>(col_width.Count);
             foreach (var it in read_width)
             {
-                if (tmpcol_width.TryGetValue(it.Key, out var tw)) max_width += tw;
+                if (tmpcol_width.TryGetValue(it.Key, out var tw))
+                {
+                    max_width += tw;
+                    col_width_tmp.Add(it.Key, tw);
+                }
                 else if (col_width.TryGetValue(it.Key, out var value))
                 {
+                    float _value = 0;
                     if (value is int val_int)
                     {
-                        if (val_int == -1) max_width += it.Value.value;
-                        else if (val_int == -2) max_width += it.Value.minvalue;
-                        else max_width += val_int;
+                        if (val_int == -1) _value = it.Value.value;
+                        else if (val_int == -2) _value = it.Value.minvalue;
+                        else _value = val_int;
                     }
-                    if (value is float val_float) max_width += rect.Width * val_float;
+                    if (value is float val_float) _value = rect.Width * val_float;
+                    max_width += _value;
+                    col_width_tmp.Add(it.Key, _value);
                 }
                 else if (it.Value.value == -1F)
                 {
@@ -718,7 +722,7 @@ namespace AntdUI
             }
             else
             {
-                var fill_count = new List<int>();
+                var fill_count = new List<int>(col_width.Count);
                 foreach (var it in read_width)
                 {
                     if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
@@ -748,12 +752,16 @@ namespace AntdUI
                 {
                     if (AutoSizeColumnsMode == ColumnsMode.Fill)
                     {
+                        int fill_wi = 0;
+                        foreach (var it in col_width_tmp) fill_wi += (int)Math.Round(it.Value);
+                        sum_wi -= fill_wi;
+                        int tw = rect_read.Width - fill_wi;
                         //填充
                         var percentage = new Dictionary<int, int>(width_cell.Count);
                         foreach (var it in width_cell)
                         {
-                            if (tmpcol_width.TryGetValue(it.Key, out _) || col_width.TryGetValue(it.Key, out _)) percentage.Add(it.Key, it.Value);
-                            else percentage.Add(it.Key, (int)Math.Round(rect_read.Width * (it.Value * 1.0) / sum_wi));
+                            if (col_width_tmp.TryGetValue(it.Key, out _)) percentage.Add(it.Key, it.Value);
+                            else percentage.Add(it.Key, (int)Math.Round(tw * (it.Value * 1.0 / sum_wi)));
                         }
                         width_cell = percentage;
                     }

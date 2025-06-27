@@ -24,29 +24,26 @@ namespace AntdUI
 {
     partial class Input
     {
-        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        protected override bool IsInputKey(Keys keyData)
         {
-            bool result = base.ProcessCmdKey(ref msg, keyData);
-            switch (keyData)
+            if ((keyData & Keys.Alt) != Keys.Alt)
             {
-                case Keys.Tab:
-                    if (AcceptsTab) return true;
-                    break;
-                case Keys.Left:
-                case Keys.Left | Keys.Shift:
-                case Keys.Right:
-                case Keys.Right | Keys.Shift:
-                    if (HandShortcutKeys) return true;
-                    break;
-                case Keys.Up:
-                case Keys.Up | Keys.Shift:
-                case Keys.Down:
-                case Keys.Down | Keys.Shift:
-                    if (HandShortcutKeys) return multiline;
-                    break;
+                switch (keyData & Keys.KeyCode)
+                {
+                    case Keys.Tab:
+                        return Multiline && AcceptsTab && ((keyData & Keys.Control) == 0);
+                    case Keys.Escape:
+                    case Keys.Up:
+                    case Keys.Down:
+                        return Multiline;
+                    case Keys.Back:
+                        return !readOnly;
+                }
             }
-            return result;
+            return true;
         }
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData) => false;
 
         public bool HandKeyBoard(Keys key)
         {
@@ -122,6 +119,26 @@ namespace AntdUI
             {
                 switch (key)
                 {
+                    case Keys.Tab:
+                        if (AcceptsTab) return ProcessShortcutKeys(ShortcutKeys.Tab);
+                        break;
+                    case Keys.Left:
+                        return ProcessShortcutKeys(ShortcutKeys.Left);
+                    case Keys.Left | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.LeftShift);
+                    case Keys.Up:
+                        return ProcessShortcutKeys(ShortcutKeys.Up);
+                    case Keys.Up | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.UpShift);
+                    case Keys.Right:
+                        return ProcessShortcutKeys(ShortcutKeys.Right);
+                    case Keys.Right | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.RightShift);
+                    case Keys.Down:
+                        return ProcessShortcutKeys(ShortcutKeys.Down);
+                    case Keys.Down | Keys.Shift:
+                        return ProcessShortcutKeys(ShortcutKeys.DownShift);
+
                     case Keys.Back:
                         return ProcessShortcutKeys(ShortcutKeys.Back);
                     case Keys.Delete:
@@ -166,33 +183,9 @@ namespace AntdUI
             }
             return false;
         }
+
         bool HandKeyUp(Keys key)
         {
-            if (OnVerifyKeyboard(key))
-            {
-                switch (key)
-                {
-                    case Keys.Tab:
-                        return ProcessShortcutKeys(ShortcutKeys.Tab);
-
-                    case Keys.Left:
-                        return ProcessShortcutKeys(ShortcutKeys.Left);
-                    case Keys.Left | Keys.Shift:
-                        return ProcessShortcutKeys(ShortcutKeys.LeftShift);
-                    case Keys.Up:
-                        return ProcessShortcutKeys(ShortcutKeys.Up);
-                    case Keys.Up | Keys.Shift:
-                        return ProcessShortcutKeys(ShortcutKeys.UpShift);
-                    case Keys.Right:
-                        return ProcessShortcutKeys(ShortcutKeys.Right);
-                    case Keys.Right | Keys.Shift:
-                        return ProcessShortcutKeys(ShortcutKeys.RightShift);
-                    case Keys.Down:
-                        return ProcessShortcutKeys(ShortcutKeys.Down);
-                    case Keys.Down | Keys.Shift:
-                        return ProcessShortcutKeys(ShortcutKeys.DownShift);
-                }
-            }
             return false;
         }
 
@@ -502,14 +495,16 @@ namespace AntdUI
             else if (selectionStart > 0)
             {
                 AddHistoryRecord();
-                int start = selectionStart - 1;
+                int start = selectionStart - 1, pos = CurrentPosIndex - 1;
                 var texts = new List<string>(cache_font.Length);
                 foreach (var it in cache_font)
                 {
                     if (start != it.i) texts.Add(it.text);
                 }
                 Text = string.Join("", texts);
-                SetSelectionStart(start);
+                SetSelectionStart(start, false);
+                if (start == 0) SetCaretPostion(0);
+                else SetCaretPostion(pos);
             }
         }
 

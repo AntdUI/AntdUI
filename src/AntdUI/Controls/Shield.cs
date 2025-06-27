@@ -220,10 +220,10 @@ namespace AntdUI
 
         #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
-            var _rect = ClientRectangle.DeflateRect(Padding);
+            var g = e.Canvas;
+            var _rect = e.Rect.DeflateRect(Padding);
             if (label == null)
             {
                 var size = g.MeasureString(Text, Font);
@@ -279,8 +279,7 @@ namespace AntdUI
                     PaintFore(g, Text, Font, fore ?? System.Drawing.Color.White, rect_r, Bold);
                 }
             }
-            this.PaintBadge(g);
-            base.OnPaint(e);
+            base.OnDraw(e);
         }
 
         void PaintBack(Canvas g, Rectangle rect_l, Rectangle rect_r)

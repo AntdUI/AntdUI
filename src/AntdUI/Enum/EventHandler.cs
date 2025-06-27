@@ -616,7 +616,7 @@ namespace AntdUI
 
     public class TablePaintEventArgs : EventArgs
     {
-        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index)
+        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column)
         {
             g = canvas;
             Rect = rect;
@@ -624,6 +624,7 @@ namespace AntdUI
             Record = record;
             RowIndex = rowIndex;
             Index = index;
+            Column = column;
         }
 
         /// <summary>
@@ -652,6 +653,11 @@ namespace AntdUI
         public int Index { get; private set; }
 
         /// <summary>
+        /// 表头
+        /// </summary>
+        public Column Column { get; private set; }
+
+        /// <summary>
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
@@ -659,7 +665,7 @@ namespace AntdUI
 
     public class TablePaintBeginEventArgs : TablePaintEventArgs
     {
-        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index) : base(canvas, rect, rectreal, record, rowIndex, index) { }
+        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
 
         /// <summary>
         /// 是否处理
@@ -821,10 +827,50 @@ namespace AntdUI
         public bool Expand { get; private set; }
     }
 
-    /// <summary>
-    /// Color 类型事件
-    /// </summary>
     public delegate void CollapseExpandEventHandler(object sender, CollapseExpandEventArgs e);
+
+    public class CollapseExpandingEventArgs : VEventArgs<CollapseItem>
+    {
+        public CollapseExpandingEventArgs(CollapseItem value, bool expand, Point location) : base(value)
+        {
+            Expand = expand;
+            Location = location;
+        }
+
+        public bool Expand { get; private set; }
+        public Point Location { get; private set; }
+
+    }
+
+    /// <summary>
+    /// Collapse 类型展开/折叠进行时事件
+    /// </summary>
+    public delegate void CollapseExpandingEventHandler(object sender, CollapseExpandingEventArgs e);
+
+    public class CollapseButtonClickEventArgs : VEventArgs<CollapseGroupButton>
+    {
+        public CollapseButtonClickEventArgs(CollapseGroupButton value, CollapseItem parent) : base(value)
+        {
+            Parent = parent;
+        }
+
+        public CollapseItem Parent { get; private set; }
+    }
+
+    /// <summary>
+    /// CollapseItem.Button单击事件
+    /// </summary>
+    public delegate void CollapseButtonClickEventHandler(object sender, CollapseButtonClickEventArgs e);
+
+    public class CollapseSwitchCheckedChangedEventArgs : CollapseButtonClickEventArgs
+    {
+        public CollapseSwitchCheckedChangedEventArgs(CollapseGroupButton switchItem, CollapseItem parent, bool _checked) : base(switchItem, parent) { Checked = _checked; }
+
+        public bool Checked { get; private set; }
+
+    }
+
+    public delegate void CollapseSwitchCheckedChangedEventHandler(object sender, CollapseSwitchCheckedChangedEventArgs e);
 
     #endregion
 
@@ -943,6 +989,33 @@ namespace AntdUI
 
     #endregion
 
+    #region 渲染
+
+    public class DrawEventArgs : EventArgs
+    {
+        public DrawEventArgs(Canvas canvas, Rectangle rect)
+        {
+            Canvas = canvas;
+            Rect = rect;
+        }
+
+        public Canvas Canvas { get; private set; }
+        public Rectangle Rect { get; private set; }
+
+        public Graphics? Graphics
+        {
+            get
+            {
+                if (Canvas is Core.CanvasGDI gdi) return gdi.g;
+                return null;
+            }
+        }
+    }
+
+    public delegate void DrawEventHandler(object sender, DrawEventArgs e);
+
+    #endregion
+
     #region 基础
 
     public class StringsEventArgs : VEventArgs<string[]>
@@ -956,17 +1029,29 @@ namespace AntdUI
         {
             Value = value;
         }
+
         public T Value { get; private set; }
+
+        /// <summary>
+        /// 用户数据
+        /// </summary>
+        public object? Tag { get; set; }
     }
 
 
     public class VMEventArgs<T> : MouseEventArgs
     {
-        public T Item { get; private set; }
         public VMEventArgs(T item, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         {
             Item = item;
         }
+
+        public T Item { get; private set; }
+
+        /// <summary>
+        /// 用户数据
+        /// </summary>
+        public object? Tag { get; set; }
     }
 
     #endregion
