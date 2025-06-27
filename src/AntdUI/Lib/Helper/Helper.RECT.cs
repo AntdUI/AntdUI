@@ -593,6 +593,81 @@ namespace AntdUI
         /// <param name="align">方向</param>
         /// <param name="arrow_size">三角大小</param>
         /// <param name="rect">全局区域</param>
+        public static PointF[] AlignLines(this TAlign align, float arrow_size, RectangleF rect)
+        {
+            if (align == TAlign.Top)
+            {
+                //↑上
+                float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+            else if (align == TAlign.Bottom)
+            {
+                //↓ 下
+                float x = rect.X + rect.Width / 2F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.Left || align == TAlign.LT || align == TAlign.LB)
+            {
+                //← 左
+                float x = rect.X + rect.Width, y = rect.Y + rect.Height / 2F;
+                return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+            }
+            else if (align == TAlign.Right || align == TAlign.RT || align == TAlign.RB)
+            {
+                //→ 右
+                float x = rect.X - arrow_size, y = rect.Y + rect.Height / 2F;
+                return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+
+            #region 下
+
+            else if (align == TAlign.BL)
+            {
+                //↙ 下左
+                float x = rect.X + arrow_size * 3F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.BR)
+            {
+                //↘ 下右
+                float x = rect.X + rect.Width - arrow_size * 3F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+
+            #endregion
+
+            #region 上
+
+            else if (align == TAlign.TL)
+            {
+                //↖ 上左
+                float x = rect.X + arrow_size * 3F, y = rect.Y + rect.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+            else if (align == TAlign.TR)
+            {
+                //↗ 上右
+                float x = rect.X + rect.Width - arrow_size * 3F, y = rect.Y + rect.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+
+            #endregion
+
+            else
+            {
+                //↑上
+                float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+        }
+
+        /// <summary>
+        /// 得到三角绘制区域
+        /// </summary>
+        /// <param name="align">方向</param>
+        /// <param name="arrow_size">三角大小</param>
+        /// <param name="rect">全局区域</param>
         /// <param name="rect_read">内容区域</param>
         public static PointF[] AlignLines(this TAlign align, float arrow_size, RectangleF rect, RectangleF rect_read)
         {

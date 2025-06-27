@@ -250,8 +250,12 @@ namespace AntdUI
 
         #region 空白图
 
+        public static Image? EmptyImage { get; set; }
+
         public static float EmptyImageRatio = 2.98F;
+
         internal static string[]? EmptyImageSvg;
+
         /// <summary>
         /// 设置空白图片
         /// </summary>
@@ -260,10 +264,6 @@ namespace AntdUI
         public static void SetEmptyImageSvg(string light, string dark) => EmptyImageSvg = new string[] { light, dark };
         public static void ClearEmptyImageSvg() => EmptyImageSvg = null;
 
-        #endregion
-
-        #region 空白Image
-        public static Image? EmptyImage { get; set; }
         #endregion
     }
 }

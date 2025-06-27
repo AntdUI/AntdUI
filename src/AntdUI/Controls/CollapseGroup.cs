@@ -1001,7 +1001,19 @@ namespace AntdUI
             Show = true;
 
         }
-        internal bool Contains(int x, int y) => rect.Contains(x, y);
+        internal bool Contains(int x, int y)
+        {
+            if (rect.Contains(x, y))
+            {
+                Hover = true;
+                return true;
+            }
+            else
+            {
+                Hover = false;
+                return false;
+            }
+        }
     }
     public class CollapseGroupSub : ICollapseItem
     {

@@ -182,29 +182,31 @@ namespace AntdUI
                 Invalidate();
             }
         }
-        public virtual bool MouseDown(Point e)
+        public virtual bool MouseDown(Point e) => MouseDown(e.X, e.Y);
+        public virtual bool MouseDown(int x, int y)
         {
-            if (Show && Rect.Contains(e))
+            if (Show && Rect.Contains(x, y))
             {
-                if (!Slider.Contains(e))
+                if (!Slider.Contains(x, y))
                 {
-                    float y = (e.Y - Slider.Height / 2F) / Rect.Height;
-                    Value = y * VrValue;
+                    float Y = (y - Slider.Height / 2F) / Rect.Height;
+                    Value = Y * VrValue;
                 }
                 ShowDown = true;
                 return false;
             }
             return true;
         }
-        public virtual bool MouseDown(Point e, Action<float> cal)
+        public virtual bool MouseDown(Point e, Action<float> cal) => MouseDown(e.X, e.Y, cal);
+        public virtual bool MouseDown(int x, int y, Action<float> cal)
         {
-            if (Show && Rect.Contains(e))
+            if (Show && Rect.Contains(x, y))
             {
-                if (!Slider.Contains(e))
+                if (!Slider.Contains(x, y))
                 {
-                    float y = (e.Y - Slider.Height / 2F) / Rect.Height;
+                    float Y = (y - Slider.Height / 2F) / Rect.Height;
                     var old_value = val;
-                    Value = y * VrValue;
+                    Value = Y * VrValue;
                     if (old_value != val) cal(val);
                 }
                 ShowDown = true;
@@ -213,7 +215,8 @@ namespace AntdUI
             return true;
         }
 
-        public virtual bool MouseUp(Point e)
+        public virtual bool MouseUp(Point e) => MouseUp(e.X, e.Y);
+        public virtual bool MouseUp(int x, int y)
         {
             if (ShowDown)
             {
@@ -223,16 +226,17 @@ namespace AntdUI
             return true;
         }
 
-        public virtual bool MouseMove(Point e)
+        public virtual bool MouseMove(Point e) => MouseMove(e.X, e.Y);
+        public virtual bool MouseMove(int x, int y)
         {
             if (ShowDown)
             {
                 Hover = true;
-                float y = (e.Y - Slider.Height / 2F) / Rect.Height;
-                Value = y * VrValue;
+                float Y = (y - Slider.Height / 2F) / Rect.Height;
+                Value = Y * VrValue;
                 return false;
             }
-            else if (Show && Rect.Contains(e))
+            else if (Show && Rect.Contains(x, y))
             {
                 Hover = true;
                 return false;
@@ -241,18 +245,19 @@ namespace AntdUI
             return true;
         }
 
-        public virtual bool MouseMove(Point e, Action<float> cal)
+        public virtual bool MouseMove(Point e, Action<float> cal) => MouseMove(e.X, e.Y, cal);
+        public virtual bool MouseMove(int x, int y, Action<float> cal)
         {
             if (ShowDown)
             {
                 Hover = true;
-                float y = (e.Y - Slider.Height / 2F) / Rect.Height;
+                float Y = (y - Slider.Height / 2F) / Rect.Height;
                 var old_value = val;
-                Value = y * VrValue;
+                Value = Y * VrValue;
                 if (old_value != val) cal(val);
                 return false;
             }
-            else if (Show && Rect.Contains(e))
+            else if (Show && Rect.Contains(x, y))
             {
                 Hover = true;
                 return false;

@@ -469,7 +469,7 @@ namespace AntdUI
         {
             if (items == null || items.Count == 0)
             {
-                if (Empty) PaintEmpty(e.Canvas, e.Rect, 0);
+                if (Empty) e.Canvas.PaintEmpty(e.Rect, Font, fore ?? Colour.Text.Get("Tree", ColorScheme), EmptyText, EmptyImage, 0);
                 base.OnDraw(e);
                 return;
             }
@@ -489,7 +489,6 @@ namespace AntdUI
             ScrollBar.Paint(g);
             base.OnDraw(e);
         }
-        void PaintEmpty(Canvas g, Rectangle rect, int offset) => g.PaintEmpty(rect, Font, fore ?? Colour.Text.Get("Tree", ColorScheme), EmptyText, EmptyImage, offset);
         void PaintItem(Canvas g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
             foreach (var it in items)

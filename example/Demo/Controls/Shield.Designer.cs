@@ -83,7 +83,7 @@ namespace Demo.Controls
             shield1.Radius = 0;
             shield1.Size = new Size(108, 28);
             shield1.TabIndex = 0;
-            shield1.Text = "v2.0.6";
+            shield1.Text = "v2.0.7";
             // 
             // shield2
             // 

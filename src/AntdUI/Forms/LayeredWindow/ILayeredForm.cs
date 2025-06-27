@@ -106,50 +106,50 @@ namespace AntdUI
         public Rectangle TargetRect => target_rect;
         public Rectangle TargetRectXY => new Rectangle(0, 0, target_rect.Width, target_rect.Height);
 
-        public void SetRect(Rectangle rect)
+        public virtual void SetRect(Rectangle rect)
         {
             target_rect.X = rect.X;
             target_rect.Y = rect.Y;
             target_rect.Width = rect.Width;
             target_rect.Height = rect.Height;
         }
-        public void SetSize(Size size)
+        public virtual void SetSize(Size size)
         {
             target_rect.Width = size.Width;
             target_rect.Height = size.Height;
         }
-        public void SetSize(int w, int h)
+        public virtual void SetSize(int w, int h)
         {
             target_rect.Width = w;
             target_rect.Height = h;
         }
-        public void SetSize(int size)
+        public virtual void SetSize(int size)
         {
             target_rect.Width = target_rect.Height = size;
         }
-        public void SetSizeW(int w)
+        public virtual void SetSizeW(int w)
         {
             target_rect.Width = w;
         }
-        public void SetSizeH(int h)
+        public virtual void SetSizeH(int h)
         {
             target_rect.Height = h;
         }
 
-        public void SetLocation(Point point)
+        public virtual void SetLocation(Point point)
         {
             target_rect.X = point.X;
             target_rect.Y = point.Y;
         }
-        public void SetLocationX(int x)
+        public virtual void SetLocationX(int x)
         {
             target_rect.X = x;
         }
-        public void SetLocationY(int y)
+        public virtual void SetLocationY(int y)
         {
             target_rect.Y = y;
         }
-        public void SetLocation(int x, int y)
+        public virtual void SetLocation(int x, int y)
         {
             target_rect.X = x;
             target_rect.Y = y;

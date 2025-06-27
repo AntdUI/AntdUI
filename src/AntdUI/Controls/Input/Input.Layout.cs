@@ -640,7 +640,7 @@ namespace AntdUI
                                     {
                                         if (has_suffix)
                                         {
-                                            int icon_size = (int)(read_height * iconratioRight ?? iconratio);
+                                            int icon_size = (int)(read_height * (iconratioRight ?? iconratio));
                                             RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_size, icon_size);
                                         }
                                         else RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width);

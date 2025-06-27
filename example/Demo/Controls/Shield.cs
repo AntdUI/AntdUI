@@ -22,16 +22,12 @@ namespace Demo.Controls
 {
     public partial class Shield : UserControl
     {
-
         Form form;
         public Shield(Form _form)
         {
             form = _form;
             InitializeComponent();
-        }
-        public Shield()
-        {
-            InitializeComponent();
+            shield1.Text = "v" + shield1.ProductVersion;
         }
     }
 }

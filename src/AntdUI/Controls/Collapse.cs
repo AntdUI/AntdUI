@@ -598,10 +598,10 @@ namespace AntdUI
         void PaintButtons(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.buttons == null) return;
-            using (var fore_active = new SolidBrush(Colour.Primary.Get("CollapseGroup", ColorScheme)))
-            using (var hover = new SolidBrush(Colour.FillSecondary.Get("CollapseGroup", ColorScheme)))
-            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("CollapseGroup", ColorScheme)))
-            using (var active = new SolidBrush(Colour.PrimaryBg.Get("CollapseGroup", ColorScheme)))
+            using (var fore_active = new SolidBrush(Colour.Primary.Get("Button", ColorScheme)))
+            using (var hover = new SolidBrush(Colour.FillSecondary.Get("Button", ColorScheme)))
+            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get("Button", ColorScheme)))
+            using (var active = new SolidBrush(Colour.PrimaryBg.Get("Button", ColorScheme)))
             {
                 foreach (var btn in item.buttons)
                 {
@@ -779,17 +779,21 @@ namespace AntdUI
                                 {
                                     btn.Checked = !btn.Checked;
                                     Invalidate();
+                                    item.MDown = false;
                                     return;
-
                                 }
+
                                 btn.Select = true;
+
                                 OnButtonClickChanged(item, btn);
-                                break;
+
+                                item.MDown = false;
+                                return;
                             }
                         }
                     }
                     item.MDown = false;
-                    return;
+                    break;
                 }
             }
             base.OnMouseUp(e);

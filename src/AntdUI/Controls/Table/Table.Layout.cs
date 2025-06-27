@@ -66,7 +66,7 @@ namespace AntdUI
 
         void LoadLayout(Rectangle rect_t)
         {
-            var rect = LayoutDesign(rect_t);
+            var rect = LayoutDesign(rect_t.PaddingRect(Padding, borderWidth));
             ScrollBar.SizeChange(rect);
         }
 
@@ -351,16 +351,8 @@ namespace AntdUI
                     }
                 }
 
-                if (bordered)
-                {
-                    rect_read.Width = rect.Width - sp2;
-                    rect_read.Height = rect.Height - sp2;
-                }
-                else
-                {
-                    rect_read.Width = rect.Width;
-                    rect_read.Height = rect.Height;
-                }
+                rect_read.Width = rect.Width;
+                rect_read.Height = rect.Height;
 
                 var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
 
@@ -427,6 +419,9 @@ namespace AntdUI
                     }
                 }
 
+                x -= rect_read.X;
+                y -= rect_read.Y;
+
                 #endregion
 
                 List<Rectangle> _dividerHs = new List<Rectangle>(), _dividers = new List<Rectangle>();
@@ -440,9 +435,9 @@ namespace AntdUI
                 var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
-                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y + split;
+                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_read.Height = last.RECT.Bottom - rect.Y;
 
-                rect_divider = new Rectangle(rect_read.X + split2, rect_read.Y + split2, rect_read.Width, rect_read.Height);
+                rect_divider = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height);
 
                 var MoveHeaders = new List<MoveHeader>();
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
