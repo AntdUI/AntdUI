@@ -509,6 +509,21 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg width=&quot;196px&quot; height=&quot;116px&quot; viewBox=&quot;0 0 196 116&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;
+        ///    &lt;title&gt;编组 7&lt;/title&gt;
+        ///    &lt;defs&gt;
+        ///        &lt;path d=&quot;M5.84,3.5 L2.16,3.5 C2.0715,3.5 2,3.517875 2,3.54 L2,4.46 C2,4.482125 2.0715,4.5 2.16,4.5 L5.84,4.5 C5.9285,4.5 6,4.482125 6,4.46 L6,3.54 C6,3.517875 5.9285,3.5 5.84,3.5 Z&quot; id=&quot;path-1&quot;&gt;&lt;/path&gt;
+        ///    &lt;/defs&gt;
+        ///    &lt;g id=&quot;组件骨架图更新_202311&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;
+        ///        &lt;g id=&quot; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Transfer {
+            get {
+                return ResourceManager.GetString("Transfer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 96 92&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-1302.000000, -3974.000000)&quot;&gt;&lt;g id=&quot;Tree&quot; transform=&quot;translate(1302.000000, 3974.000000)&quot;&gt;&lt;g id=&quot;编组-15&quot;&gt;&lt;g id=&quot;编组-12&quot; transform=&quot;translate(0.000000, 4.556962)&quot;&gt;&lt;rect id=&quot;矩形&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;9.11392405&quot; height=&quot;6.07594937&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M7.36230459,4.76344426 L4.61669573,1.58717625 C4.53810644,1.49625892 4.38678025,1 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Tree {

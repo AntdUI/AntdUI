@@ -823,6 +823,45 @@ namespace AntdUI
 
         public static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height) => AlignPoint(align, rect.Location, rect.Size, width, height);
 
+        public static T ValueBlend<T>(T start, T end, double t)
+           where T : struct
+        {
+            if (typeof(T) == typeof(float))
+            {
+                float s = Convert.ToSingle(start);
+                float e = Convert.ToSingle(end);
+                return (T)(object)(s + (e - s) * (float)t);
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double s = Convert.ToDouble(start);
+                double e = Convert.ToDouble(end);
+                return (T)(object)(s + (e - s) * t);
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                int s = Convert.ToInt32(start);
+                int e = Convert.ToInt32(end);
+                return (T)(object)(s + (int)Math.Round((e - s) * t));
+            }
+            else if (typeof(T) == typeof(Color))
+            {
+                Color startColor = (Color)(object)start;
+                Color endColor = (Color)(object)end;
+
+                return (T)(object)Color.FromArgb(
+                    (int)Math.Round(startColor.A + (endColor.A - startColor.A) * t),
+                    (int)Math.Round(startColor.R + (endColor.R - startColor.R) * t),
+                    (int)Math.Round(startColor.G + (endColor.G - startColor.G) * t),
+                    (int)Math.Round(startColor.B + (endColor.B - startColor.B) * t)
+                );
+            }
+            else
+            {
+                throw new NotSupportedException($"Type {typeof(T)} is not supported by ValueBlend.");
+            }
+        }
+
         #endregion
     }
 }
