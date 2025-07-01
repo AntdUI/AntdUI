@@ -533,7 +533,7 @@ namespace AntdUI
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 if (it.HasIcon) icon_count++;
-                it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
+                it.SetRect(Mode == TMenuMode.InlineNoText ? 0 : depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
                     int size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
