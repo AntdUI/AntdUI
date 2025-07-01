@@ -352,11 +352,13 @@ namespace AntdUI
                         {
                             var size = g.MeasureText(it.Text, Font, 0, sf);
                             int tabWidth;
-                            if (it.HasIcon) {
+                            if (it.HasIcon)
+                            {
                                 if (it.ShowClose) tabWidth = size.Width + paddx2 + gap2 + ico_size + close_size;
                                 else tabWidth = size.Width + paddx2 + gap2 + ico_size;
                             }
-                            else {
+                            else
+                            {
                                 if (it.ShowClose) tabWidth = size.Width + paddx2 + gap + close_size;
                                 else tabWidth = size.Width + paddx2;
                             }
@@ -380,11 +382,13 @@ namespace AntdUI
                                 int max = (int)Math.Round(mw * dirb[i]);
                                 if (dir[i][1] > max)
                                 {
-                                    if (it.HasIcon) {
+                                    if (it.HasIcon)
+                                    {
                                         if (it.ShowClose) dir[i][0] = max - (paddx2 + gap2 + ico_size + close_size);
                                         else dir[i][0] = max - (paddx2 + gap2 + ico_size);
                                     }
-                                    else {
+                                    else
+                                    {
                                         if (it.ShowClose) dir[i][0] = max - (paddx2 + gap + close_size);
                                         else dir[i][0] = max - paddx2;
                                     }
@@ -416,7 +420,7 @@ namespace AntdUI
                                     var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
                                     it.RectText = _rect_text;
                                     it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                    
+
                                     if (it.ShowClose)
                                     {
                                         var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
@@ -428,7 +432,7 @@ namespace AntdUI
                                 else
                                 {
                                     var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
-                                    
+
                                     if (it.ShowClose)
                                     {
                                         var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
@@ -468,7 +472,7 @@ namespace AntdUI
                                     var _rect_text = new Rectangle(_rect.X + paddx, _rect.Y, textSize[0], _rect.Height);
                                     it.RectText = _rect_text;
                                     it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                    
+
                                     if (it.ShowClose)
                                     {
                                         var _rect_close = new Rectangle(_rect.X + paddx + gap + textSize[0], close_y, close_size, close_size);
@@ -660,7 +664,7 @@ namespace AntdUI
         void DrawCloseButton(Canvas g, TagTabItem tab, Color color, int radius)
         {
             if (!tab.ShowClose) return;
-            
+
             if (tab.HoverClose)
             {
                 using (var path = tab.RectClose.RoundPath(radius))

@@ -27,14 +27,6 @@ namespace AntdUI
 {
     partial class Table
     {
-        // 替代全表Invalidate()，只重绘变化的区域 
-        public void InvalidateRow(int rowIndex) 
-        { 
-            if (rows == null || rowIndex < 0 || rowIndex >= rows.Length) return; 
-            var row = rows[rowIndex]; 
-            if (row.SHOW) Invalidate(new Rectangle(0, row.RECT.Y - ScrollBar.ValueY, Width, row.RECT.Height)); 
-        }
-
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
@@ -75,6 +67,7 @@ namespace AntdUI
                         clipath = Helper.RoundPath(rect_divider, _radius, true, true, false, false);
                         g.SetClip(clipath);
                     }
+                    else g.SetClip(rect_divider);
                     if (fixedHeader)
                     {
                         int showIndex = 0;
@@ -90,10 +83,7 @@ namespace AntdUI
                             else
                             {
                                 int y = it.RECT.Y - sy, b = it.RECT.Bottom - sy;
-                                // 严格判断行是否在可视区域内
-                                it.SHOW = it.ShowExpand && it.Type == RowType.None && 
-                                         (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || 
-                                          it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
+                                it.SHOW = it.ShowExpand && it.Type == RowType.None && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
                                 if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
                             }
                             showIndex++;
@@ -142,10 +132,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                // 严格判断行是否在可视区域内
-                                it.SHOW = it.ShowExpand && it.Type == RowType.None && 
-                                         (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || 
-                                          it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
+                                it.SHOW = it.ShowExpand && (it.Type == RowType.None || it.Type == RowType.Column) && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
                                 if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
                             }
                             showIndex++;
@@ -196,6 +183,7 @@ namespace AntdUI
                         clipath = Helper.RoundPath(rect_divider, _radius);
                         g.SetClip(clipath);
                     }
+                    else g.SetClip(rect_divider);
                     rows[0].SHOW = false;
                     int showIndex = 0;
                     for (int index_r = 1; index_r < rows.Length; index_r++)

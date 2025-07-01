@@ -600,17 +600,17 @@ namespace AntdUI
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            
+
             // 确定滚动方向和步长
             int scrollDelta = e.Delta > 0 ? -1 : 1;
-            
+
             // 检查鼠标是否在源列表区域
             if (sourceRect.Contains(e.Location))
             {
                 // 计算最大滚动偏移量
                 int visibleItems = (sourceRect.Height - 80) / ItemHeight; // 减去标题、搜索框和全选区域的高度
                 int maxScrollOffset = Math.Max(0, sourceFilteredItems.Count - visibleItems);
-                
+
                 // 更新滚动偏移量
                 sourceScrollOffset = Math.Max(0, Math.Min(maxScrollOffset, sourceScrollOffset + scrollDelta));
                 Invalidate();
@@ -621,7 +621,7 @@ namespace AntdUI
                 // 计算最大滚动偏移量
                 int visibleItems = (targetRect.Height - 80) / ItemHeight; // 减去标题、搜索框和全选区域的高度
                 int maxScrollOffset = Math.Max(0, targetFilteredItems.Count - visibleItems);
-                
+
                 // 更新滚动偏移量
                 targetScrollOffset = Math.Max(0, Math.Min(maxScrollOffset, targetScrollOffset + scrollDelta));
                 Invalidate();
@@ -727,12 +727,12 @@ namespace AntdUI
             // 计算列表区域
             Rectangle rect = isSource ? sourceRect : targetRect;
             int contentTop = rect.Y + 40; // 标题高度
-            
+
             // 如果显示搜索框，检查是否点击了搜索框
             //if (ShowSearch)
             //{
             //    var searchRect = new Rectangle(rect.X + 10, contentTop, rect.Width - 20, 30);
-                
+
             //    if (searchRect.Contains(location))
             //    {
             //        // 弹出输入框让用户输入搜索文本
@@ -748,7 +748,7 @@ namespace AntdUI
             //            // 添加到控件并聚焦
             //            Controls.Add(inputBox);
             //            inputBox.Focus();
-                        
+
             //            // 添加文本变更事件处理
             //            inputBox.TextChanged += (sender, e) =>
             //            {
@@ -760,14 +760,14 @@ namespace AntdUI
             //                {
             //                    targetSearchText = inputBox.Text;
             //                }
-                            
+
             //                // 应用过滤
             //                ApplyFilter();
-                            
+
             //                // 触发搜索事件
             //                OnSearch(new SearchEventArgs(inputBox.Text, isSource));
             //            };
-                        
+
             //            // 添加失去焦点事件处理
             //            inputBox.LostFocus += (sender, e) =>
             //            {
@@ -776,25 +776,25 @@ namespace AntdUI
             //                Invalidate();
             //            };
             //        }
-                    
+
             //        return;
             //    }
-                
+
             //    contentTop += 40;
             //}
-            
+
             // 如果显示全选复选框，检查是否点击了全选复选框
             if (ShowSelectAll)
             {
                 var checkboxRect = new Rectangle(rect.X + 10, contentTop, 20, 20);
                 var checkboxTextRect = new Rectangle(rect.X + 35, contentTop, rect.Width - 45, 20);
                 var selectAllRect = new Rectangle(rect.X + 10, contentTop, rect.Width - 20, 20);
-                
+
                 if (selectAllRect.Contains(location))
                 {
                     // 切换全选状态
                     bool newSelectAllState = isSource ? !sourceSelectAll : !targetSelectAll;
-                    
+
                     // 更新全选状态
                     if (isSource)
                     {
@@ -814,35 +814,35 @@ namespace AntdUI
                             item.Selected = newSelectAllState;
                         }
                     }
-                    
+
                     Invalidate();
                     return;
                 }
-                
+
                 contentTop += 30;
             }
-            
+
             // 计算列表区域
             int listHeight = rect.Height - (contentTop - rect.Y) - 10;
             var listRect = new Rectangle(rect.X + 10, contentTop, rect.Width - 20, listHeight);
             int visibleItems = listHeight / ItemHeight;
-            
+
             // 计算滚动条
             bool showScrollbar = items.Count * ItemHeight > listHeight;
             int scrollbarWidth = showScrollbar ? 6 : 0;
-            
+
             // 检查点击是否在列表项区域内
             if (location.X >= listRect.X && location.X <= listRect.Right - scrollbarWidth)
             {
                 // 计算点击的项索引
                 int clickedIndex = scrollOffset + (location.Y - listRect.Y) / ItemHeight;
-                
+
                 // 确保索引有效
                 if (clickedIndex >= 0 && clickedIndex < items.Count)
                 {
                     // 切换选中状态
                     items[clickedIndex].Selected = !items[clickedIndex].Selected;
-                    
+
                     // 更新全选状态
                     if (isSource)
                     {
@@ -852,7 +852,7 @@ namespace AntdUI
                     {
                         targetSelectAll = items.All(i => i.Selected);
                     }
-                    
+
                     Invalidate();
                 }
             }
@@ -1178,7 +1178,7 @@ namespace AntdUI
             var buttonBackColor = ButtonBackColor ?? Style.Db.FillTertiary;
             var buttonBackHover = ButtonBackHover ?? Style.Db.FillSecondary;
             var buttonBackActive = ButtonBackActive ?? Style.Db.TextQuaternary;
-;
+            ;
             var buttonBackDisable = ButtonBackDisable ?? Color.FromArgb(50, Style.Db.Text);
 
             // 绘制向右按钮

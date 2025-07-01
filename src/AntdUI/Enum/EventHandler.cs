@@ -872,14 +872,14 @@ namespace AntdUI
 
     public delegate void CollapseSwitchCheckedChangedEventHandler(object sender, CollapseSwitchCheckedChangedEventArgs e);
 
-    public class CollapseEditChangedEventArgs:VEventArgs<object>
+    public class CollapseEditChangedEventArgs : VEventArgs<object>
     {
         public CollapseEditChangedEventArgs(Collapse parent, CollapseItem parentItem, object value) : base(value)
         {
             Parent = parent;
             ParentItem = parentItem;
         }
-        public Collapse Parent {  get; private set; }
+        public Collapse Parent { get; private set; }
         public CollapseItem ParentItem { get; private set; }
 
     }

@@ -21,7 +21,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
@@ -294,7 +293,7 @@ namespace AntdUI
                             int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
                             int space = (rectButtons.Height - height) / 2;
                             bx -= space;
-                            int? width= btn.Width;
+                            int? width = btn.Width;
                             if (width == null)
                             {
                                 bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
@@ -309,7 +308,7 @@ namespace AntdUI
                             btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - 8);
                             bx -= (width.Value + space);
                         }
-                     
+
                     }
                     Rectangle Rect;
                     if (it.Full)
@@ -612,7 +611,7 @@ namespace AntdUI
                 foreach (var btn in item.buttons)
                 {
                     if (btn.Show == false) continue;
-                    if (btn.EditType!= EButtonEditTypes.Switch)
+                    if (btn.EditType != EButtonEditTypes.Switch)
                     {
                         if (btn.EditType == EButtonEditTypes.Input || btn.EditType == EButtonEditTypes.Custom) continue;
 
@@ -783,7 +782,7 @@ namespace AntdUI
                                     return;
                                 }
                                 btn.AnimationClick = false;
-                               if(btn.EditType!= EButtonEditTypes.Button) btn.Select = true;
+                                if (btn.EditType != EButtonEditTypes.Button) btn.Select = true;
 
                                 OnButtonClickChanged(item, btn);
 
@@ -847,7 +846,7 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             foreach (var it in items)
             {
-               IUSelect(it);
+                IUSelect(it);
             }
         }
         public void IUSelect(CollapseItem item)
@@ -860,7 +859,7 @@ namespace AntdUI
         }
         #endregion
 
-            #region 设计器
+        #region 设计器
 
         internal class CollapseDesigner : ParentControlDesigner
         {
@@ -995,7 +994,7 @@ namespace AntdUI
                     PARENT?.LoadLayout();
                     if (!value) Location = new Point(-Width, -Height);
                 }
-            
+
             }
         }
 

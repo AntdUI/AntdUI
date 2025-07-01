@@ -16,19 +16,12 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AntdUI
 {
     public enum TButtonDisplayStyle
     {
-        //None = 0,
+        Default = 0,
         Text = 1,
-        Image = 2,
-        ImageAndText = 3
+        Image = 2
     }
 }

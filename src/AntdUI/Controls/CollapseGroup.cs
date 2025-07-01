@@ -811,24 +811,24 @@ namespace AntdUI
         /// <summary>
         /// 默认：CheckButton
         /// </summary>
-        Default=0,
+        Default = 0,
 
         /// <summary>
         /// 开关模式。同等于SwitchMode=true
         /// </summary>
-        Switch=1,
+        Switch = 1,
         /// <summary>
         /// 文本编辑模式
         /// </summary>
-        Input=2,
+        Input = 2,
         /// <summary>
         /// 自定义继承自IControl的编辑器
         /// </summary>
-        Custom=3,
+        Custom = 3,
         /// <summary>
         /// 正常按钮，按下后弹起
         /// </summary>
-        Button=4,
+        Button = 4,
     }
     [DefaultEvent(nameof(TextChanged))]
     [DefaultProperty(nameof(EditType))]
@@ -888,7 +888,7 @@ namespace AntdUI
             set
             {
                 if (m_editType == value) return;
-               
+
                 m_editType = value;
                 Invalidate();
                 OnCreateEdit();
@@ -962,7 +962,7 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                if (PARENT == null || PARENTITEM == null) return; 
+                if (PARENT == null || PARENTITEM == null) return;
                 try
                 {
                     ThreadCheck?.Dispose();
@@ -971,7 +971,7 @@ namespace AntdUI
                         AnimationCheck = true;
                         if (value)
                         {
-                            ThreadCheck = new ITask((Collapse)this.PARENT, () =>
+                            ThreadCheck = new ITask((Collapse)PARENT, () =>
                             {
                                 AnimationCheckValue = AnimationCheckValue.Calculate(0.1F);
                                 if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
@@ -985,7 +985,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            ThreadCheck = new ITask((Collapse)this.PARENT, () =>
+                            ThreadCheck = new ITask((Collapse)PARENT, () =>
                             {
                                 AnimationCheckValue = AnimationCheckValue.Calculate(-0.1F);
                                 if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
@@ -1026,7 +1026,7 @@ namespace AntdUI
                         AnimationHover = true;
                         if (value)
                         {
-                            ThreadHover = new ITask((Collapse)this.PARENT, () =>
+                            ThreadHover = new ITask((Collapse)PARENT, () =>
                             {
                                 AnimationHoverValue = AnimationHoverValue.Calculate(0.1F);
                                 if (AnimationHoverValue > 1) { AnimationHoverValue = 1F; return false; }
@@ -1040,7 +1040,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            ThreadHover = new ITask((Collapse)this.PARENT, () =>
+                            ThreadHover = new ITask((Collapse)PARENT, () =>
                             {
                                 AnimationHoverValue = AnimationHoverValue.Calculate(-0.1F);
                                 if (AnimationHoverValue <= 0) { AnimationHoverValue = 0F; return false; }
@@ -1075,9 +1075,9 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (Edit != null && PARENT !=null)
+                    if (Edit != null && PARENT != null)
                     {
-                        ((Collapse)PARENT).Invoke(new Action(() => { Edit.Location = rect.Location;Edit.Height = rect.Height; }));
+                        ((Collapse)PARENT).Invoke(new Action(() => { Edit.Location = rect.Location; Edit.Height = rect.Height; }));
 
                     }
 
@@ -1093,7 +1093,7 @@ namespace AntdUI
                 if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
             }
 
-                Show = true;
+            Show = true;
 
         }
         internal bool Contains(int x, int y)
@@ -1109,75 +1109,78 @@ namespace AntdUI
                 return false;
             }
         }
-      
+
         internal void OnCreateEdit()
         {
-            if (PARENT == null || PARENTITEM == null) return;
-            Collapse parent = (Collapse)PARENT;
-            if (Edit != null)
+            if (PARENT is Collapse parent)
             {
-                if (parent.Controls.Contains(Edit)) parent.Controls.Remove(Edit);
-                Edit.TextChanged -= edit_TextChanged;
-                Edit.Click -= edit_GotFocus;
-                Edit.Dispose();
-                Edit = null;
-            }
-            switch (EditType)
-            {
-                case EButtonEditTypes.Input:
-                    Input input = new Input()
-                    {
-                        Location = rect.Location,
-                        TabIndex = parent.Controls.Count,
-                        Size = rect.Size,
-                        PrefixSvg = this.IconSvg,
-                        PrefixFore = this.Fore,
-                        PlaceholderText = this.Text,
-                        Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                        IconRatio =ico_rect.Height==0|| rect.Height == 0 ? 1f : ico_rect.Height / rect.Height,
-                    };
-                   
-                    Edit = input;
-                    break;
-
-                case EButtonEditTypes.Custom:
-                    if (CustomInputEdit != null)
-                    {
-                        CollapseCustomInputEditEventArgs args = new CollapseCustomInputEditEventArgs();
-                        CustomInputEdit(this, args);
-                        if (args.Edit != null && args.Edit is IControl)
+                if (Edit != null)
+                {
+                    if (parent.Controls.Contains(Edit)) parent.Controls.Remove(Edit);
+                    Edit.TextChanged -= edit_TextChanged;
+                    Edit.Click -= edit_GotFocus;
+                    Edit.Dispose();
+                    Edit = null;
+                }
+                switch (EditType)
+                {
+                    case EButtonEditTypes.Input:
+                        Input input = new Input()
                         {
-                            args.Edit.Location = rect.Location;
-                            args.Edit.Size = rect.Size;
-                            args.Edit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-                            Edit = args.Edit;
+                            Location = rect.Location,
+                            TabIndex = parent.Controls.Count,
+                            Size = rect.Size,
+                            PrefixSvg = IconSvg,
+                            PrefixFore = Fore,
+                            PlaceholderText = Text,
+                            Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                            IconRatio = ico_rect.Height == 0 || rect.Height == 0 ? 1f : ico_rect.Height / rect.Height,
+                        };
+
+                        Edit = input;
+                        break;
+
+                    case EButtonEditTypes.Custom:
+                        if (CustomInputEdit != null)
+                        {
+                            CollapseCustomInputEditEventArgs args = new CollapseCustomInputEditEventArgs();
+                            CustomInputEdit(this, args);
+                            if (args.Edit != null && args.Edit is IControl)
+                            {
+                                args.Edit.Location = rect.Location;
+                                args.Edit.Size = rect.Size;
+                                args.Edit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                                Edit = args.Edit;
+                            }
                         }
-                    }
-                    break;
-                default:
-                    break;
-            }
+                        break;
+                    default:
+                        break;
+                }
 
-            if (Edit != null)
+                if (Edit != null)
+                {
+                    Edit.TextChanged += edit_TextChanged;
+                    Edit.Click += edit_GotFocus;
+                    if (Select) Edit.Focus();
+                    parent.Controls.Add(Edit);
+                }
+            }
+        }
+
+        private void edit_GotFocus(object? sender, EventArgs e)
+        {
+            if (PARENT is Collapse parent && PARENTITEM is CollapseItem item) parent.IUSelect(item);
+        }
+
+        private void edit_TextChanged(object? sender, EventArgs e)
+        {
+            if (TextChanged == null) return;
+            if (PARENT is Collapse parent && PARENTITEM is CollapseItem item)
             {
-                Edit.TextChanged += edit_TextChanged;
-                Edit.Click += edit_GotFocus;
-                if (Select) Edit.Focus();
-                parent.Controls.Add(Edit);
-                
+                if (sender is Input input) TextChanged(this, new CollapseEditChangedEventArgs(parent, item, input.Text));
+                else if (sender is IControl control) TextChanged(this, new CollapseEditChangedEventArgs(parent, item, control.Text));
             }
-        }
-
-        private void edit_GotFocus(object sender, EventArgs e)
-        {
-            if (PARENT == null || PARENTITEM == null) return;
-            
-            ((Collapse)PARENT).IUSelect((CollapseItem)this.PARENTITEM);
-        }
-
-        private void edit_TextChanged(object sender, EventArgs e)
-        {
-           if(TextChanged != null) TextChanged(this,new CollapseEditChangedEventArgs(PARENT==null || !(PARENT is Collapse)?null: (Collapse)PARENT, PARENTITEM == null || !(PARENTITEM is CollapseItem) ? null : (CollapseItem)PARENTITEM, ((IControl)sender).Text));
         }
     }
     public class CollapseGroupSub : ICollapseItem

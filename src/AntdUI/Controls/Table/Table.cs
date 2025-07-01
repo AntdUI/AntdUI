@@ -82,11 +82,7 @@ namespace AntdUI
                 ScrollBar.Clear();
                 ExtractHeaderFixed();
                 ExtractData();
-                if (LoadLayout())
-                {
-                    // 数据源改变时，需要重绘整个表格
-                    Invalidate();
-                }
+                if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(DataSource));
             }
         }
@@ -482,17 +478,7 @@ namespace AntdUI
             {
                 if (rowSelectedBg == value) return;
                 rowSelectedBg = value;
-                if (selectedIndex.Length > 0 && rows != null)
-                {
-                    foreach (int index in selectedIndex)
-                    {
-                        InvalidateRow(index);
-                    }
-                }
-                else if (selectedIndex.Length > 0)
-                {
-                    Invalidate();
-                }
+                if (selectedIndex.Length > 0) Invalidate();
                 OnPropertyChanged(nameof(RowSelectedBg));
             }
         }
@@ -510,17 +496,7 @@ namespace AntdUI
             {
                 if (rowSelectedFore == value) return;
                 rowSelectedFore = value;
-                if (selectedIndex.Length > 0 && rows != null)
-                {
-                    foreach (int index in selectedIndex)
-                    {
-                        InvalidateRow(index);
-                    }
-                }
-                else if (selectedIndex.Length > 0)
-                {
-                    Invalidate();
-                }
+                if (selectedIndex.Length > 0) Invalidate();
                 OnPropertyChanged(nameof(RowSelectedFore));
             }
         }
@@ -642,21 +618,7 @@ namespace AntdUI
             {
                 if (SetIndex(value))
                 {
-                    // 优化：只重绘变化的行
-                    if (rows != null)
-                    {
-                        // 重绘之前选中的行
-                        foreach (var idx in selectedIndex)
-                        {
-                            if (idx >= 0 && idx < rows.Length) InvalidateRow(idx);
-                        }
-                        // 重绘新选中的行
-                        if (value >= 0 && value < rows.Length) InvalidateRow(value);
-                    }
-                    else
-                    {
-                        Invalidate();
-                    }
+                    Invalidate();
                     OnPropertyChanged(nameof(SelectedIndex));
                     SelectIndexChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -675,32 +637,8 @@ namespace AntdUI
             set
             {
                 if (selectedIndex == value) return;
-                
-                // 优化：只重绘变化的行
-                if (rows != null)
-                {
-                    // 保存旧的选中行索引，用于后面重绘
-                    var oldSelectedIndex = selectedIndex;
-                    selectedIndex = value;
-                    
-                    // 重绘之前选中的行
-                    foreach (var idx in oldSelectedIndex)
-                    {
-                        if (idx >= 0 && idx < rows.Length) InvalidateRow(idx);
-                    }
-                    
-                    // 重绘新选中的行
-                    foreach (var idx in selectedIndex)
-                    {
-                        if (idx >= 0 && idx < rows.Length) InvalidateRow(idx);
-                    }
-                }
-                else
-                {
-                    selectedIndex = value;
-                    Invalidate();
-                }
-                
+                selectedIndex = value;
+                Invalidate();
                 OnPropertyChanged(nameof(SelectedIndexs));
                 SelectIndexChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -840,11 +778,7 @@ namespace AntdUI
             ExtractHeaderFixed();
             if (dataSource == null || dataSource is DataTable || dataSource is IList) ExtractData();
             base.Refresh();
-            if (LoadLayout())
-            {
-                // 全部展开或折叠时，需要重绘整个表格
-                Invalidate();
-            }
+            if (LoadLayout()) Invalidate();
         }
 
         /// <summary>
@@ -1280,11 +1214,7 @@ namespace AntdUI
                     rows_Expand.Clear();
                 }
             }
-            if (LoadLayout())
-            {
-                // 全部展开或折叠时，需要重绘整个表格
-                Invalidate();
-            }
+            if (LoadLayout()) Invalidate();
         }
 
         /// <summary>
@@ -1309,23 +1239,7 @@ namespace AntdUI
                 }
                 else return;
             }
-            if (LoadLayout())
-            {
-                if (rows != null)
-                {
-                    // 查找对应的行索引并只重绘该行
-                    for (int i = 0; i < rows.Length; i++)
-                    {
-                        if (rows[i].RECORD == record)
-                        {
-                            InvalidateRow(i);
-                            return;
-                        }
-                    }
-                }
-                // 如果找不到对应的行或rows为空，则重绘整个表格
-                Invalidate();
-            }
+            if (LoadLayout()) Invalidate();
         }
 
         #endregion

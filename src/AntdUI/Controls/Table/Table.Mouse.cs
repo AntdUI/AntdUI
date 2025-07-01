@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -113,8 +113,7 @@ namespace AntdUI
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
                             else rows_Expand.Add(cell.ROW.RECORD);
                             ExpandChanged?.Invoke(this, new TableExpandEventArgs(cell.ROW.RECORD, !cell.ROW.Expand));
-                            LoadLayout();
-                            InvalidateRow(i_row);
+                            if (LoadLayout()) Invalidate();
                             return;
                         }
                         MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, i_row, i_cel, column);
@@ -597,9 +596,7 @@ namespace AntdUI
                     foreach (RowTemplate it in rows)
                     {
                         if (it.IsColumn) continue;
-                        bool oldHover = it.Hover;
                         it.Hover = false;
-                        if (oldHover) InvalidateRow(it.INDEX);
                         foreach (var cel_tmp in it.cells)
                         {
                             if (cel_tmp is TCellSort sort) sort.Hover = false;
@@ -654,15 +651,11 @@ namespace AntdUI
                                     sort.Hover = sort.Contains(r_x, r_y);
                                     if (sort.Hover) countmove++;
                                 }
-                                bool oldHover = rows[i].Hover;
                                 rows[i].Hover = true;
-                                if (!oldHover) InvalidateRow(i);
                             }
                             else
                             {
-                                bool oldHover = rows[i].Hover;
                                 rows[i].Hover = false;
-                                if (oldHover) InvalidateRow(i);
                                 foreach (var cel_tmp in rows[i].cells)
                                 {
                                     if (cel_tmp is TCellSort sort) sort.Hover = false;
@@ -1136,9 +1129,7 @@ namespace AntdUI
             if (rows == null || inEditMode) return;
             foreach (var it in rows)
             {
-                bool oldHover = it.Hover;
                 it.Hover = false;
-                if (oldHover) InvalidateRow(it.INDEX);
                 foreach (var cel in it.cells)
                 {
                     if (cel is TCellSort sort) sort.Hover = false;

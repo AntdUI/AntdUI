@@ -34,6 +34,10 @@ namespace AntdUI
         /// <summary>
         /// 水平模式
         /// </summary>
-        Horizontal
+        Horizontal,
+        /// <summary>
+        /// 内嵌模式（无文本）
+        /// </summary>
+        InlineNoText
     }
 }

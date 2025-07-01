@@ -54,6 +54,12 @@ namespace AntdUI
         [Description("自动宽度"), Category("外观"), DefaultValue(false)]
         public bool AutoWidth { get; set; }
 
+        /// <summary>
+        /// 是否可以拖动位置
+        /// </summary>
+        [Description("是否可以拖动位置"), Category("行为"), DefaultValue(true)]
+        public bool DragMove { get; set; } = true;
+
         #endregion
 
         public LabelTime()
@@ -138,6 +144,11 @@ namespace AntdUI
                 now.ToString("MM-dd"),
                 ddd
             };
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (DragMove && Parent is PageHeader header) header.IMouseDown(e);
         }
     }
 }

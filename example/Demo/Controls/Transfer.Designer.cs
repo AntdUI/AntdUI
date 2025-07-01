@@ -30,130 +30,104 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new AntdUI.Panel();
-            this.transfer1 = new AntdUI.Transfer();
-            this.panel2 = new AntdUI.Panel();
-            this.btn_reload = new AntdUI.Button();
-            this.label_target = new AntdUI.Label();
-            this.label_source = new AntdUI.Label();
-            //this.label2 = new AntdUI.Label();
-            //this.switch_search = new AntdUI.Switch();
-            this.label1 = new AntdUI.Label();
-            this.switch_oneWay = new AntdUI.Switch();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
+            panel1 = new AntdUI.Panel();
+            transfer1 = new AntdUI.Transfer();
+            panel2 = new AntdUI.Panel();
+            btn_reload = new AntdUI.Button();
+            label_target = new AntdUI.Label();
+            label_source = new AntdUI.Label();
+            label1 = new AntdUI.Label();
+            switch_oneWay = new AntdUI.Switch();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
+            SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.transfer1);
-            this.panel1.Location = new System.Drawing.Point(20, 100);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(760, 380);
-            this.panel1.TabIndex = 0;
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.Controls.Add(transfer1);
+            panel1.Location = new Point(20, 100);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(760, 380);
+            panel1.TabIndex = 0;
             // 
             // transfer1
             // 
-            this.transfer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.transfer1.Location = new System.Drawing.Point(20, 50);
-            this.transfer1.Name = "transfer1";
-            this.transfer1.Size = new System.Drawing.Size(720, 310);
-            this.transfer1.SourceTitle = "源列表";
-            this.transfer1.TabIndex = 0;
-            this.transfer1.TargetTitle = "目标列表";
+            transfer1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            transfer1.Location = new Point(20, 50);
+            transfer1.MinimumSize = new Size(300, 200);
+            transfer1.Name = "transfer1";
+            transfer1.Size = new Size(720, 310);
+            transfer1.TabIndex = 0;
             // 
             // panel2
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.btn_reload);
-            this.panel2.Controls.Add(this.label_target);
-            this.panel2.Controls.Add(this.label_source);
-            //this.panel2.Controls.Add(this.label2);
-            //this.panel2.Controls.Add(this.switch_search);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.switch_oneWay);
-            this.panel2.Location = new System.Drawing.Point(20, 20);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(760, 70);
-            this.panel2.TabIndex = 1;
+            panel2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel2.Controls.Add(btn_reload);
+            panel2.Controls.Add(label_target);
+            panel2.Controls.Add(label_source);
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(switch_oneWay);
+            panel2.Location = new Point(20, 20);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(760, 70);
+            panel2.TabIndex = 1;
             // 
             // btn_reload
             // 
-            this.btn_reload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_reload.Location = new System.Drawing.Point(650, 30);
-            this.btn_reload.Name = "btn_reload";
-            this.btn_reload.Size = new System.Drawing.Size(90, 30);
-            this.btn_reload.TabIndex = 6;
-            this.btn_reload.Text = "重新加载";
-            this.btn_reload.Click += new System.EventHandler(this.btn_reload_Click);
+            btn_reload.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btn_reload.BorderWidth = 1F;
+            btn_reload.Location = new Point(650, 30);
+            btn_reload.Name = "btn_reload";
+            btn_reload.Size = new Size(90, 30);
+            btn_reload.TabIndex = 6;
+            btn_reload.Text = "重新加载";
+            btn_reload.Click += btn_reload_Click;
             // 
             // label_target
             // 
-            this.label_target.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_target.Location = new System.Drawing.Point(520, 30);
-            this.label_target.Name = "label_target";
-            this.label_target.Size = new System.Drawing.Size(120, 30);
-            this.label_target.TabIndex = 5;
-            this.label_target.Text = "目标列表: 0项";
-            this.label_target.TextAlign = ContentAlignment.TopRight;
+            label_target.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label_target.Location = new Point(520, 30);
+            label_target.Name = "label_target";
+            label_target.Size = new Size(120, 30);
+            label_target.TabIndex = 5;
+            label_target.Text = "目标列表: 0项";
+            label_target.TextAlign = ContentAlignment.TopRight;
             // 
             // label_source
             // 
-            this.label_source.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_source.Location = new System.Drawing.Point(400, 30);
-            this.label_source.Name = "label_source";
-            this.label_source.Size = new System.Drawing.Size(120, 30);
-            this.label_source.TabIndex = 4;
-            this.label_source.Text = "源列表: 10项";
-            this.label_source.TextAlign = ContentAlignment.TopRight;
-            // 
-            // label2
-            // 
-            //this.label2.Location = new System.Drawing.Point(180, 30);
-            //this.label2.Name = "label2";
-            //this.label2.Size = new System.Drawing.Size(80, 30);
-            //this.label2.TabIndex = 3;
-            //this.label2.Text = "显示搜索框:";
-            // 
-            // switch_search
-            // 
-            //this.switch_search.Location = new System.Drawing.Point(260, 30);
-            //this.switch_search.Name = "switch_search";
-            //this.switch_search.Size = new System.Drawing.Size(50, 30);
-            //this.switch_search.TabIndex = 2;
+            label_source.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            label_source.Location = new Point(400, 30);
+            label_source.Name = "label_source";
+            label_source.Size = new Size(120, 30);
+            label_source.TabIndex = 4;
+            label_source.Text = "源列表: 10项";
+            label_source.TextAlign = ContentAlignment.TopRight;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(20, 30);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 30);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "单向模式:";
+            label1.Location = new Point(20, 30);
+            label1.Name = "label1";
+            label1.Size = new Size(80, 30);
+            label1.TabIndex = 1;
+            label1.Text = "单向模式:";
             // 
             // switch_oneWay
             // 
-            this.switch_oneWay.Location = new System.Drawing.Point(100, 30);
-            this.switch_oneWay.Name = "switch_oneWay";
-            this.switch_oneWay.Size = new System.Drawing.Size(50, 30);
-            this.switch_oneWay.TabIndex = 0;
+            switch_oneWay.Location = new Point(100, 30);
+            switch_oneWay.Name = "switch_oneWay";
+            switch_oneWay.Size = new Size(50, 30);
+            switch_oneWay.TabIndex = 0;
             // 
             // Transfer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
-            this.Name = "Transfer";
-            this.Size = new System.Drawing.Size(800, 500);
-            this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.ResumeLayout(false);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
+            Name = "Transfer";
+            Size = new Size(800, 500);
+            panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

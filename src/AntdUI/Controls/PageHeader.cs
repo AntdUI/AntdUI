@@ -1208,6 +1208,7 @@ namespace AntdUI
             base.OnMouseLeave(e);
         }
 
+        internal void IMouseDown(MouseEventArgs e) => OnMouseDown(e);
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
