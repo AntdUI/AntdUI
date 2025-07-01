@@ -257,7 +257,22 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Shape));
             }
         }
-
+        /// <summary>
+        /// 指定显示图像还是文本
+        /// </summary>
+        TButtonDisplayStyle displayStyle = TButtonDisplayStyle.ImageAndText;
+        [Description("指定显示图像还是文本"), Category("外观"), DefaultValue(TButtonDisplayStyle.ImageAndText)]
+        public TButtonDisplayStyle DisplayStyle
+        {
+            get => displayStyle;
+            set
+            {
+                if (displayStyle == value) return;
+                displayStyle = value;
+                Invalidate();
+                OnPropertyChanged(nameof(DisplayStyle));
+            }
+        }
         TTypeMini type = TTypeMini.Default;
         /// <summary>
         /// 类型
@@ -1504,6 +1519,9 @@ namespace AntdUI
             }
             bool has_loading = loading && LoadingValue > -1;
             var font_size = g.MeasureText(text ?? Config.NullText, Font);
+            bool show_icon = displayStyle == TButtonDisplayStyle.Image || displayStyle == TButtonDisplayStyle.ImageAndText;
+            bool show_text = displayStyle == TButtonDisplayStyle.Text || displayStyle == TButtonDisplayStyle.ImageAndText;
+            text = show_text ? text : null;
             if (text == null)
             {
                 //没有文字
@@ -1532,7 +1550,7 @@ namespace AntdUI
                 if (textMultiLine && font_size.Width > rect_read.Width) font_size.Width = rect_read.Width;
                 bool has_left = has_loading || HasIcon, has_right = showArrow;
                 Rectangle rect_text;
-                if (has_left || has_right)
+                if ((has_left || has_right) && show_icon)
                 {
                     if (has_left && has_right)
                     {
@@ -1578,7 +1596,10 @@ namespace AntdUI
                     rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                     PaintTextAlign(rect_read, ref rect_text);
                 }
-                g.DrawText(text, Font, color, rect_text, stringFormat);
+                if (show_text)
+                {
+                    g.DrawText(text, Font, color, rect_text, stringFormat);
+                }
             }
         }
 
