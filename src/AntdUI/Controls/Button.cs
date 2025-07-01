@@ -270,7 +270,7 @@ namespace AntdUI
             {
                 if (displayStyle == value) return;
                 displayStyle = value;
-                Invalidate();
+                if (BeforeAutoSize()) Invalidate();
                 OnPropertyChanged(nameof(DisplayStyle));
             }
         }
@@ -2218,8 +2218,10 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var font_size = g.MeasureText(Text ?? Config.NullText, Font);
+                    var show_icon = displayStyle == TButtonDisplayStyle.Default || displayStyle == TButtonDisplayStyle.Image;
+                    var show_text = (displayStyle == TButtonDisplayStyle.Default || displayStyle == TButtonDisplayStyle.Text) ? Text : null;
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
-                    if (Shape == TShape.Circle || string.IsNullOrEmpty(Text))
+                    if (Shape == TShape.Circle || string.IsNullOrEmpty(show_text))
                     {
                         int s = font_size.Height + wave + gap;
                         return new Size(s, s);
@@ -2230,7 +2232,7 @@ namespace AntdUI
                         if (joinMode > 0) m = 0;
                         else if (joinLeft || joinRight) m = 0;
                         bool has_icon = (loading && LoadingValue > -1) || HasIcon;
-                        if (has_icon || showArrow)
+                        if ((has_icon || showArrow) && show_icon)
                         {
                             if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
                             {
