@@ -65,5 +65,11 @@ namespace Demo.Controls
             }
         }
         private void switch4_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => menu3.Collapsed = e.Value;
+        private void switch5_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            menu2.Flatten = e.Value;
+            menu2.Width = e.Value ? 58 : 251;
+        } 
+     
     }
 }

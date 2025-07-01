@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
@@ -293,17 +294,22 @@ namespace AntdUI
                             int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
                             int space = (rectButtons.Height - height) / 2;
                             bx -= space;
+                            int? width= btn.Width;
+                            if (width == null)
+                            {
+                                bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                                string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
 
-                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
-                            string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+                                var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                                width = btn.SwitchMode ? size_btn.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size_btn.Width + 4;
+                            }
 
-                            var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                            int width = btn.SwitchMode ? size_btn.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size_btn.Width + 4;
                             if (width < height) width = btn.SwitchMode ? height * 4 : height;
-                            Rectangle rectItem = new Rectangle(bx - width, rectButtons.Top + ((rectButtons.Height - height) / 2), width, height);
+                            Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
                             btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - 8);
-                            bx -= (width + space);
+                            bx -= (width.Value + space);
                         }
+                     
                     }
                     Rectangle Rect;
                     if (it.Full)
@@ -606,41 +612,33 @@ namespace AntdUI
                 foreach (var btn in item.buttons)
                 {
                     if (btn.Show == false) continue;
-                    if (!btn.SwitchMode)
+                    if (btn.EditType!= EButtonEditTypes.Switch)
                     {
+                        if (btn.EditType == EButtonEditTypes.Input || btn.EditType == EButtonEditTypes.Custom) continue;
+
                         if (btn.Enabled)
                         {
-                            if (btn.Select)
+                            if (btn.Select || btn.AnimationClick) CollapseGroup.PaintBack(g, btn, active, radius);
+                            if (btn.AnimationHover)
                             {
-                                CollapseGroup.PaintBack(g, btn, active, radius);
-                                if (btn.AnimationHover)
+                                using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
                                 {
-                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
-                                    {
-                                        CollapseGroup.PaintBack(g, btn, brush, radius);
-                                    }
+                                    CollapseGroup.PaintBack(g, btn, brush, radius);
                                 }
-                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
-
-                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore_active.Color);
-                                g.String(btn.Text, Font, fore_active, btn.txt_rect, s_c);
                             }
-                            else
+                            else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
+                            else if (btn.AnimationClick)
                             {
-                                if (btn.AnimationHover)
+                                var rect_read = btn.rect;
+                                using (var path = rect_read.RoundPath(rect_read.Height))
                                 {
-                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
-                                    {
-                                        CollapseGroup.PaintBack(g, btn, brush, radius);
-                                    }
+                                    Color _color = btn.Back ?? active.Color;
+                                    PaintClick(g, path, rect_read, rect_read, _color, btn);
                                 }
-                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
-
-                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore.Color);
-                                g.String(btn.Text, Font, fore, btn.txt_rect, s_c);
                             }
+                            if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, (btn.Select || btn.AnimationClick ? fore_active : fore).Color);
+                            g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
                         }
                         else
                         {
@@ -753,6 +751,8 @@ namespace AntdUI
                     if (btn.Contains(e.X, e.Y))
                     {
                         item.MDown = true;
+                        btn.AnimationClick = true;
+                        Invalidate(btn.rect);
                         return;
                     }
                 }
@@ -782,8 +782,8 @@ namespace AntdUI
                                     item.MDown = false;
                                     return;
                                 }
-
-                                btn.Select = true;
+                                btn.AnimationClick = false;
+                               if(btn.EditType!= EButtonEditTypes.Button) btn.Select = true;
 
                                 OnButtonClickChanged(item, btn);
 
@@ -830,6 +830,7 @@ namespace AntdUI
                             btn.AnimationHover = false;
                             if (btn.SwitchMode) btn.ExtraMouseHover = false;
                         }
+                        btn.AnimationClick = false;
                     }
                 }
             }
@@ -846,21 +847,20 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             foreach (var it in items)
             {
-                if (it.buttons != null && it.buttons.Count > 0)
-                {
-                    foreach (var btn in it.buttons) btn.Select = false;
-                }
+               IUSelect(it);
             }
         }
         public void IUSelect(CollapseItem item)
         {
             if (item.buttons == null || item.buttons.Count == 0) return;
-            foreach (var btn in item.buttons) btn.Select = false;
+            foreach (var btn in item.buttons)
+            {
+                btn.Select = false;
+            }
         }
-
         #endregion
 
-        #region 设计器
+            #region 设计器
 
         internal class CollapseDesigner : ParentControlDesigner
         {
@@ -995,6 +995,7 @@ namespace AntdUI
                     PARENT?.LoadLayout();
                     if (!value) Location = new Point(-Width, -Height);
                 }
+            
             }
         }
 
@@ -1070,7 +1071,11 @@ namespace AntdUI
         internal bool Contains(int x, int y)
         {
             if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
-            return RectArrow.Contains(x, y);
+            foreach (var btn in buttons)
+            {
+                if (btn.Contains(x, y)) return false;
+            }
+            return RectTitle.Contains(x, y);
         }
 
         #endregion

@@ -109,12 +109,50 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Round));
             }
         }
-
+        bool focusedMark = false;
         /// <summary>
         /// 焦点标识块
         /// </summary>
         [Description("绘制焦点标识块"), Category("外观"), DefaultValue(false)]
-        public bool FocusedMark { get; set; }
+        public bool FocusedMark
+        {
+            get => focusedMark;
+            set
+            {
+                if (focusedMark == value) return;
+                focusedMark = value;
+                Invalidate();
+                OnPropertyChanged(nameof(FocusedMark));
+            }
+        }
+
+        bool flatten = false;
+
+        /// <summary>
+        /// Inline模式下，无文本的平展模式
+        /// </summary>
+        [Description("Inline模式下，无文本的平展模式"), Category("外观"), DefaultValue(false)]
+        public bool Flatten
+        {
+            get
+            {
+                if (Collapsed || Mode!= TMenuMode.Inline) return false;
+                return flatten;
+            }
+            set
+            {
+                if (flatten == value) return;
+                int width = this.Width;
+                flatten = value;
+                indent=!value;
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
+                OnPropertyChanged(nameof(Flatten));
+            }
+        }
 
         /// <summary>
         /// 色彩模式
@@ -194,12 +232,26 @@ namespace AntdUI
         /// </summary>
         [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Hover)]
         public Trigger Trigger { get; set; } = Trigger.Hover;
-
+        bool indent = false;
         /// <summary>
         /// 常规缩进
         /// </summary>
         [Description("常规缩进"), Category("外观"), DefaultValue(false)]
-        public bool Indent { get; set; }
+        public bool Indent
+        {
+            get { return indent; }
+            set
+            {
+                if (indent == value) return; 
+                indent = value;
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
+                OnPropertyChanged(nameof(Indent));
+            }
+        }
 
         bool unique = false;
         /// <summary>
@@ -511,6 +563,7 @@ namespace AntdUI
         int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, ref int icon_count, int height, int icon_size, int gap, int sp, int depth)
         {
             int collapsedWidth = 0, i = 0;
+            if (!Indent) depth = 0;
             foreach (var it in items)
             {
                 it.Index = i;
@@ -811,7 +864,7 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                if (!Flatten) g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
                 if (FocusedMark) //增加焦点块
                 {
                     int fh = it.rect.Height - (it.rect.Height / 3);
@@ -819,6 +872,7 @@ namespace AntdUI
                     g.Fill(brush, rectFocused);
                 }
             }
+
             PaintIcon(g, it, fore);
         }
         void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
@@ -842,7 +896,7 @@ namespace AntdUI
                     }
                 }
             }
-            g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
+            if (!Flatten) g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
             PaintIcon(g, it, fore);
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
@@ -1039,6 +1093,7 @@ namespace AntdUI
                     if (collapsed)
                     {
                         int i = 0, hoveindex = -1;
+                        
                         foreach (var it in items)
                         {
                             if (it.show)
@@ -1075,16 +1130,7 @@ namespace AntdUI
                                 }
                                 else if (it.Text != null)
                                 {
-                                    if (tooltipForm == null)
-                                    {
-                                        tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
-                                        {
-                                            Font = it.Font ?? Font,
-                                            ArrowAlign = TAlign.Right,
-                                        });
-                                        tooltipForm.Show(this);
-                                    }
-                                    else tooltipForm.SetText(rect, it.Text);
+                                    ShowTooltip(it, rect);
                                 }
                             }
                         }
@@ -1139,13 +1185,32 @@ namespace AntdUI
             }
             else ILeave();
         }
-
+        private void ShowTooltip(MenuItem it,Rectangle rect)
+        {
+            if (it.Text == null) return;
+            if (tooltipForm == null)
+            {
+                tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = it.Font ?? Font,
+                    ArrowAlign = TAlign.Right,
+                });
+                tooltipForm.Show(this);
+            }
+            else tooltipForm.SetText(rect, it.Text);
+        }
         void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
         {
             if (it.show)
             {
                 if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
                 {
+                    if(flatten)
+                    {
+                        Point location = PointToScreen(it.rect.Location);
+                        location.Y += it.rect.Height / 2;
+                        ShowTooltip(it,new Rectangle(location,new Size(it.rect.Width,rect_r.Height)));
+                    }
                     hand++;
                 }
                 if (change) count++;
@@ -1962,7 +2027,12 @@ namespace AntdUI
                     ico_rect = new Rectangle(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
                     txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
                 }
-                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (int)(ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+                if (PARENT!=null && PARENT.Flatten)
+                {
+                    arr_rect = new Rectangle(_rect.Right - ico_rect.Height+4, _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+                }
+                else
+                    arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (int)(ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
             }
             else
             {

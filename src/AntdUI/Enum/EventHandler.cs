@@ -872,6 +872,27 @@ namespace AntdUI
 
     public delegate void CollapseSwitchCheckedChangedEventHandler(object sender, CollapseSwitchCheckedChangedEventArgs e);
 
+    public class CollapseEditChangedEventArgs:VEventArgs<object>
+    {
+        public CollapseEditChangedEventArgs(Collapse parent, CollapseItem parentItem, object value) : base(value)
+        {
+            Parent = parent;
+            ParentItem = parentItem;
+        }
+        public Collapse Parent {  get; private set; }
+        public CollapseItem ParentItem { get; private set; }
+
+    }
+    public delegate void CollapseEditChangedEventHandler(object sender, CollapseEditChangedEventArgs e);
+
+    public class CollapseCustomInputEditEventArgs : EventArgs
+    {
+        public CollapseCustomInputEditEventArgs() { }
+
+        public IControl Edit { get; set; }
+    }
+    public delegate void CollapseCustomInputEditEventHandler(object sender, CollapseCustomInputEditEventArgs e);
+
     #endregion
 
     #region Tree

@@ -34,6 +34,23 @@ namespace Demo.Controls
             AntdUI.Notification.info(form, e.Parent.Text, e.Value.Text, AntdUI.TAlignFrom.Top, Font);
         }
 
+        private void edit1_TextChanged(object sender, AntdUI.CollapseEditChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Value==null?string.Empty:e.Value.ToString())) return;
+            AntdUI.Notification.info(form, e.Parent.Text, e.Value.ToString(), AntdUI.TAlignFrom.Top, Font);
+        }
+
+        private void CollapseGroupButton11_CustomInputEdit(object sender, AntdUI.CollapseCustomInputEditEventArgs e)
+        {
+            AntdUI.Select select = new AntdUI.Select() {
+                TabIndex = 0,
+                PrefixSvg= "DiffOutlined",
+                PlaceholderText="Ë÷Òý",
+            };
+            select.Items.AddRange(new object[] { 100,200,300,400,500});
+            e.Edit = select;
+        }
+
         private void switchButton_CheckedChanged(object sender, AntdUI.CollapseSwitchCheckedChangedEventArgs e)
         {
             AntdUI.Notification.info(form, e.Parent.Text,e.Checked? e.Value.CheckedText:e.Value.UnCheckedText, AntdUI.TAlignFrom.Top, Font);
