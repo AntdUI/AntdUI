@@ -27,6 +27,14 @@ namespace AntdUI
 {
     partial class Table
     {
+        // 替代全表Invalidate()，只重绘变化的区域 
+        public void InvalidateRow(int rowIndex) 
+        { 
+            if (rows == null || rowIndex < 0 || rowIndex >= rows.Length) return; 
+            var row = rows[rowIndex]; 
+            if (row.SHOW) Invalidate(new Rectangle(0, row.RECT.Y - ScrollBar.ValueY, Width, row.RECT.Height)); 
+        }
+
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
@@ -82,7 +90,10 @@ namespace AntdUI
                             else
                             {
                                 int y = it.RECT.Y - sy, b = it.RECT.Bottom - sy;
-                                it.SHOW = it.ShowExpand && it.Type == RowType.None && (rect_read.Contains(rect_read.X, y) || rect_read.Contains(rect_read.X, b) || (it.RECT.Height > rect_read.Height && rect_read.Y > y && rect_read.Bottom < b));
+                                // 严格判断行是否在可视区域内
+                                it.SHOW = it.ShowExpand && it.Type == RowType.None && 
+                                         (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || 
+                                          it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
                                 if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
                             }
                             showIndex++;
@@ -131,7 +142,10 @@ namespace AntdUI
                             }
                             else
                             {
-                                it.SHOW = it.ShowExpand && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
+                                // 严格判断行是否在可视区域内
+                                it.SHOW = it.ShowExpand && it.Type == RowType.None && 
+                                         (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || 
+                                          it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
                                 if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
                             }
                             showIndex++;
