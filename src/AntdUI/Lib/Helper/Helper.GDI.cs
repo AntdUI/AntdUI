@@ -798,7 +798,10 @@ namespace AntdUI
         {
             PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color, dot);
         }
-
+        internal static void PaintIconReset(this Canvas g, Rectangle rect, Color color, float dot)
+        {
+            PaintIconCore(g, rect, SvgDb.IcoStar, color, dot);
+        }
         /// <summary>
         /// 绘制带圆背景的镂空图标
         /// </summary>

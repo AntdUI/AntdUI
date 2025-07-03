@@ -1170,7 +1170,8 @@ namespace AntdUI
                     if (mode == TMenuMode.InlineNoText)
                     {
                         Point location = PointToScreen(it.rect.Location);
-                        location.Y += it.rect.Height / 2;
+                        location.Y += (it.rect.Height / 2);
+                        location.Y -= ScrollBar.Value;
                         ShowTooltip(it, new Rectangle(location, new Size(it.rect.Width, rect_r.Height)));
                     }
                     hand++;
