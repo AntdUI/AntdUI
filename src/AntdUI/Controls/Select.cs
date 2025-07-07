@@ -209,6 +209,7 @@ namespace AntdUI
             if (obj is SelectItem it)
             {
                 selectedValue = it.Tag;
+                if (string.IsNullOrEmpty(it.IconSvg) == false) PrefixSvg = it.IconSvg;
                 Text = it.Text;
             }
             else

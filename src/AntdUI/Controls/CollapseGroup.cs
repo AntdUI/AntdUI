@@ -920,6 +920,8 @@ namespace AntdUI
         [Browsable(false)]
         public IControl? Edit { get; protected set; } = null;
 
+        [Description("工具提示内容"), Category("外观"), DefaultValue(null)]
+        public string? Tooltip { get; set; }
         string? _checkedText, _unCheckedText;
 
         [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
@@ -1065,7 +1067,7 @@ namespace AntdUI
             bool emptyText = SwitchMode ? string.IsNullOrEmpty(Checked ? CheckedText : UnCheckedText) : string.IsNullOrEmpty(Text);
             if (emptyIcon) icon_size = 0;
             if (emptyText) font_height = 0;
-
+            
             rect = rect_read;
             if (EditType == EButtonEditTypes.Input || EditType == EButtonEditTypes.Custom)
             {
@@ -1077,18 +1079,15 @@ namespace AntdUI
                 {
                     if (Edit != null && PARENT != null)
                     {
-                        ((Collapse)PARENT).Invoke(new Action(() => { Edit.Location = rect.Location; Edit.Height = rect.Height; }));
-
+                        ((Collapse)PARENT).Invoke(new Action(() => { Edit.Location = rect.Location; Edit.Height = rect.Height; Edit.Refresh(); PARENT.Invalidate(); }));
                     }
-
                 }
             }
             else
             {
-                int sp = (int)(font_height * .25F), t_x = rect_read.Y + (emptyIcon ? 0 : ((rect_read.Height - (font_height + icon_size + sp)) / 2));
-
-                ico_rect = new Rectangle(rect_read.X + 2, rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
-                txt_rect = new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2) - 2, rect_read.Width - icon_size, rect_read.Height);
+                //int sp = (int)(font_height * .25F), t_x = rect_read.Y + (emptyIcon ? 0 : ((rect_read.Height - (font_height + icon_size + sp)) / 2));
+                ico_rect =emptyIcon?Rectangle.Empty: new Rectangle(emptyText == false? rect_read.X + (int)(2*Config.Dpi):(rect_read.X +((rect_read.Height - icon_size) / 2)), rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
+                txt_rect =emptyText?Rectangle.Empty: new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2), rect_read.Width - icon_size, rect_read.Height);
 
                 if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
             }
@@ -1118,7 +1117,6 @@ namespace AntdUI
                 {
                     if (parent.Controls.Contains(Edit)) parent.Controls.Remove(Edit);
                     Edit.TextChanged -= edit_TextChanged;
-                    Edit.Click -= edit_GotFocus;
                     Edit.Dispose();
                     Edit = null;
                 }
@@ -1148,7 +1146,7 @@ namespace AntdUI
                             if (args.Edit != null && args.Edit is IControl)
                             {
                                 args.Edit.Location = rect.Location;
-                                args.Edit.Size = rect.Size;
+                                args.Edit.Size = new Size(this.Width ?? args.Edit.Width, rect.Size.Height);
                                 args.Edit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                                 Edit = args.Edit;
                             }
@@ -1161,16 +1159,10 @@ namespace AntdUI
                 if (Edit != null)
                 {
                     Edit.TextChanged += edit_TextChanged;
-                    Edit.Click += edit_GotFocus;
                     if (Select) Edit.Focus();
                     parent.Controls.Add(Edit);
                 }
             }
-        }
-
-        private void edit_GotFocus(object? sender, EventArgs e)
-        {
-            if (PARENT is Collapse parent && PARENTITEM is CollapseItem item) parent.IUSelect(item);
         }
 
         private void edit_TextChanged(object? sender, EventArgs e)

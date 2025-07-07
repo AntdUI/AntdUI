@@ -64,7 +64,7 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Columns));
             }
         }
-
+       
         object? dataSource;
         /// <summary>
         /// 数据数组
@@ -1800,6 +1800,20 @@ namespace AntdUI
         /// </summary>
         public string? MaxWidth { get; set; }
 
+        protected bool readOnly = false;
+        /// <summary>
+        /// 只读
+        /// </summary>
+        public bool ReadOnly
+        {
+            get => readOnly; set
+            {
+                if (readOnly == value) return;
+
+                readOnly = value;
+                if (!value && PARENT?.EditMode == TEditMode.None) PARENT.EditMode = TEditMode.DoubleClick;
+            }
+        }
         /// <summary>
         /// 设置列最大宽度
         /// </summary>
@@ -2030,7 +2044,20 @@ namespace AntdUI
         /// 用户定义数据
         /// </summary>
         public object? Tag { get; set; }
-
+        /// <summary>
+        /// 用户筛选选项
+        /// </summary>
+        public FilterOption? Filter { get; set; }
+        /// <summary>
+        /// 设置默认筛选选项
+        /// </summary>
+        /// <param name="type">数据类型</param>
+        /// <returns></returns>
+        public Column SetDefaultFilter(Type type)
+        {
+            Filter = new FilterOption(type);
+            return this;
+        }
         #region 内部
 
         internal Table? PARENT { get; set; }

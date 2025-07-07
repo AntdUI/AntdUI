@@ -232,6 +232,11 @@ namespace AntdUI
         {
             if (config.Content is Control control)
             {
+                if (config.OnClosing != null)
+                {
+                    config.OnClosing.Invoke(config, e);
+                    if (e.Cancel) return;
+                }
                 if (control.IsDisposed)
                 {
                     form?.Dispose();

@@ -840,7 +840,7 @@ namespace AntdUI
         {
             if (it.CanExpand)
             {
-                if (mode == TMenuMode.Inline)
+                if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText)
                 {
                     using (var pen = new Pen(fore, 2F))
                     {
@@ -1990,13 +1990,13 @@ namespace AntdUI
                     ico_rect = new Rectangle(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
                     txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
                 }
-                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (int)(ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (PARENT?.Mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
             }
             else
             {
                 if (indent || depth > 1) txt_rect = new Rectangle(_rect.X + (gap * (depth + 1)), _rect.Y, _rect.Width - (gap * 2), _rect.Height);
                 else txt_rect = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
-                arr_rect = new Rectangle(_rect.Right - icon_size - (int)(icon_size * 0.9F), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                arr_rect = new Rectangle(_rect.Right - icon_size - (PARENT?.Mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
             }
             Show = true;
         }
@@ -2053,5 +2053,12 @@ namespace AntdUI
         internal Rectangle ico_rect { get; set; }
 
         public override string? ToString() => Text;
+
+
+        public void UpdateText(string newText)
+        {
+            Text = newText;
+            Invalidate();
+        }
     }
 }

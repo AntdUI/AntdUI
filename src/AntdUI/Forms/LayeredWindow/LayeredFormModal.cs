@@ -119,7 +119,8 @@ namespace AntdUI
                             Type = btn.Type,
                             BackColor = btn.Back,
                             ForeColor = btn.Fore,
-                            Tag = btn.Tag
+                            Tag = btn
+                            
                         };
                         config.OnButtonStyle?.Invoke(btn.Name, _btn);
                         panel_main.Controls.Add(_btn);
@@ -148,7 +149,19 @@ namespace AntdUI
                                     System.Threading.Thread.Sleep(10);
                                     BeginInvoke(() =>
                                     {
-                                        if (IsHandleCreated && !IsDisposed) Close();
+                                        if (IsHandleCreated && !IsDisposed)
+                                        {
+                                            if (btn.Tag is Modal.Btn)
+                                            {
+                                                Modal.Btn btnResult = (Modal.Btn)btn.Tag;
+                                                if (btnResult.DialogResult != DialogResult.None)
+                                                {
+                                                    DialogResult = btnResult.DialogResult;
+                                                    return;
+                                                }
+                                            }
+                                            Close();
+                                        }
                                     });
                                 }
                                 else if (DisableCancel && btn_no != null)

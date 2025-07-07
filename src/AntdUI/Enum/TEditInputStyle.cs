@@ -21,6 +21,7 @@ namespace AntdUI
     public enum TEditInputStyle
     {
         Default,
-        Full
+        Full,
+        Excel,
     }
 }

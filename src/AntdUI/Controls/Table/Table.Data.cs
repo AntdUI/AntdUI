@@ -26,7 +26,7 @@ namespace AntdUI
 {
     partial class Table
     {
-        TempTable? dataTmp = null;
+        internal TempTable? dataTmp = null;
         bool dataOne = true;
         void ExtractData()
         {
@@ -418,7 +418,7 @@ namespace AntdUI
             else fixedColumnL = fixedColumnR = null;
         }
 
-        class TempTable
+       internal class TempTable
         {
             public TempTable(TempiColumn[] _columns, IRow[] _rows, IRow[]? _summary)
             {
@@ -430,17 +430,28 @@ namespace AntdUI
             /// 表头 - 列
             /// </summary>
             public TempiColumn[] columns { get; set; }
+
+            protected IRow[] _rowsCache;
             /// <summary>
             /// 数据 - 行
             /// </summary>
-            public IRow[] rows { get; set; }
+            public IRow[] rows { get { if (rowsFilter != null) return rowsFilter; return _rowsCache; } set { _rowsCache = value; } }
+            /// <summary>
+            /// 所有行缓存
+            /// </summary>
+            public IRow[] RowsCache => _rowsCache;
+            /// <summary>
+            /// 数据 - 行已筛选
+            /// </summary>
+            public IRow[]? rowsFilter { get; set; }
+            public void ClearFilter() { rowsFilter = null; }
             /// <summary>
             /// 数据 - 行
             /// </summary>
             public IRow[]? summary { get; set; }
         }
 
-        class TempiColumn
+       internal class TempiColumn
         {
             public TempiColumn(int index, DataColumn dataColumn)
             {

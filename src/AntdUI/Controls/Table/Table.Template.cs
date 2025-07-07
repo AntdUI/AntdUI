@@ -841,6 +841,7 @@ namespace AntdUI
 
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
+            internal Rectangle rect_filter { get; set; }
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
@@ -852,6 +853,11 @@ namespace AntdUI
                     int size2 = size * 2, icon_sp = (int)(size * .34F), y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
                     rect_up = new Rectangle(_rect.Right - size2, y, size, size);
                     rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
+                }
+                if (COLUMN.Filter != null)
+                {
+                    int size = RECT.Height - gap2 > 20 ? 20 : RECT.Height - gap2;
+                    rect_filter = new Rectangle(_rect.Right - rect_up.Width - size - (rect_up.Width > 0 ? gap2 : 4 * (int)Config.Dpi), _rect.Y + (RECT.Height - size) / 2, size, size);
                 }
             }
 
@@ -960,7 +966,6 @@ namespace AntdUI
             internal int offsetx = 0, offsety = 0;
             public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x - offsetx, y - offsety);
-
             public abstract void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2);
             public abstract Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2);
 

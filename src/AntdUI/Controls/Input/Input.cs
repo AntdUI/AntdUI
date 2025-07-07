@@ -630,7 +630,7 @@ namespace AntdUI
             }
             else if (cache_font != null)
             {
-                if (selectionStart > cache_font.Length) SelectionStart = cache_font.Length;
+                SelectionStart = cache_font.Length;
             }
             Invalidate();
             if (changed)

@@ -23,6 +23,7 @@ using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using Vanara.PInvoke;
 
 namespace AntdUI
 {
@@ -179,6 +180,11 @@ namespace AntdUI
         /// </summary>
         [Description("只保持一个展开"), Category("外观"), DefaultValue(false)]
         public bool Unique { get; set; }
+        /// <summary>
+        /// 展开/折叠的动画速度
+        /// </summary>
+        [Description("展开/折叠的动画速度"), Category("行为"), DefaultValue(100)]
+        public int AnimationSpeed { get; set; } = 100;
 
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding);
 
@@ -206,6 +212,12 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
         #endregion
 
         #region 布局
@@ -286,11 +298,12 @@ namespace AntdUI
                     if (it.buttons != null && it.buttons.Count > 0)
                     {
                         int bx = rectButtons.Right;
+                        int gapW = (int)(4 * Config.Dpi);
                         foreach (var btn in it.buttons)
                         {
                             btn.PARENT = this;
                             btn.PARENTITEM = it;
-                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
+                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
                             int space = (rectButtons.Height - height) / 2;
                             bx -= space;
                             int? width = btn.Width;
@@ -300,15 +313,14 @@ namespace AntdUI
                                 string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
 
                                 var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                                width = btn.SwitchMode ? size_btn.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size_btn.Width + 4;
+                                width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Config.Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
                             }
 
                             if (width < height) width = btn.SwitchMode ? height * 4 : height;
                             Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
-                            btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - 8);
+                            btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - (int)(8 * Config.Dpi));
                             bx -= (width.Value + space);
                         }
-
                     }
                     Rectangle Rect;
                     if (it.Full)
@@ -797,7 +809,14 @@ namespace AntdUI
             }
             base.OnMouseUp(e);
         }
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
 
+            tooltipForm?.Close();
+            tooltipForm = null;
+
+        }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (items == null || items.Count == 0) return;
@@ -820,10 +839,19 @@ namespace AntdUI
                             SetCursor(true);
                             Invalidate();
                         }
+                        if (string.IsNullOrEmpty(btn.Tooltip) == false)
+                        {
+                            Point location = PointToScreen(btn.rect.Location);
+                            //location.Y += btn.rect.Height;
+                            ShowTooltip(btn, new Rectangle(location, new Size(btn.rect.Width, btn.rect.Height)));
+                        }
                         return;
                     }
                     else
                     {
+                        //tooltipForm?.Close();
+                        //tooltipForm = null;
+
                         if (btn.AnimationHover)
                         {
                             btn.AnimationHover = false;
@@ -837,6 +865,21 @@ namespace AntdUI
             base.OnMouseMove(e);
         }
 
+        TooltipForm? tooltipForm;
+        void ShowTooltip(CollapseGroupButton btn, Rectangle rect)
+        {
+            if (btn.Tooltip == null) return;
+            if (tooltipForm == null)
+            {
+                tooltipForm = new TooltipForm(this, rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = this.Font,
+                    ArrowAlign = TAlign.Bottom,
+                });
+                tooltipForm.Show(this);
+            }
+            else tooltipForm.SetText(rect, btn.Tooltip);
+        }
         #endregion
 
         #region 方法
@@ -961,7 +1004,7 @@ namespace AntdUI
                     float oldval = -1;
                     if (ThreadExpand?.Tag is float oldv) oldval = oldv;
                     ExpandThread = true;
-                    var t = Animation.TotalFrames(10, 200);
+                    var t = Animation.TotalFrames(10, PARENT.AnimationSpeed < 10 ? 10 : PARENT.AnimationSpeed);
                     if (value)
                     {
                         ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>

@@ -35,7 +35,7 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("name", "姓名"){ Filter=new AntdUI.FilterOption()}.SetFixed().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -47,8 +47,9 @@ namespace Demo.Controls
                         return value;
                     }
                 },
-                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(int)),
+                new AntdUI.Column("date", "日期", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(DateTime)),
+                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(string)),
                 new AntdUI.Column("tag", "Tag"),
                 new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
@@ -126,8 +127,16 @@ namespace Demo.Controls
             if (e.Value) table1.Columns[7].Width = "120";
             else table1.Columns[7].Width = null;
             table1.Columns[7].LineBreak = e.Value;
+            table1.Columns[7].ReadOnly = e.Value;
         }
-
+        private void checkEditFullMode_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            table1.EditInputStyle = e.Value ? AntdUI.TEditInputStyle.Excel : AntdUI.TEditInputStyle.Full;
+        }
+        private void checkDoubleEdit_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            table1.EditMode = e.Value ? AntdUI.TEditMode.DoubleClick : AntdUI.TEditMode.None;
+        }
         #endregion
 
         #region 点击/双击
@@ -139,7 +148,7 @@ namespace Demo.Controls
                 if (e.RowIndex > 0 && e.ColumnIndex == 6) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = e.Rect });
                 else if (e.RowIndex > 0 && e.ColumnIndex == 8)
                 {
-                    var tag = data[9];
+                    var tag = data[8];
                     if (tag.value is AntdUI.CellTag[] tags)
                     {
                         if (tags.Length == 1)
@@ -164,7 +173,7 @@ namespace Demo.Controls
             {
                 if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
                     new AntdUI.Modal.TextLine(data[2].value.ToString(),AntdUI.Style.Db.Primary),
-                    new AntdUI.Modal.TextLine(data[8].value.ToString(),6,AntdUI.Style.Db.TextSecondary)
+                    new AntdUI.Modal.TextLine(data[11].value.ToString(),6,AntdUI.Style.Db.TextSecondary)
                 }, AntdUI.TType.Error)
                 {
                     CancelText = null,
@@ -214,7 +223,8 @@ namespace Demo.Controls
                 new AntdUI.AntItem("online", new AntdUI.CellBadge(AntdUI.TState.Success, "在线")),
                     new AntdUI.AntItem("enable",false),
                     new AntdUI.AntItem("age",(int)Math.Round((now - birthday_TigerHu).TotalDays / 365)),
-                    new AntdUI.AntItem("address", "西湖区湖底公园" + (start+1) + "号"),
+                    new AntdUI.AntItem("date",DateTime.Now.Date.AddYears(-new System.Random().Next(DateTime.Now.Second))),
+                    new AntdUI.AntItem("address", (new System.Random().Next(DateTime.Now.Second)>5?"东湖": "西湖")+"区湖底公园" + (start+1) + "号"),
                     new AntdUI.AntItem("tag"),
                     new AntdUI.AntItem("imgs",new AntdUI.CellImage[] {
                         new AntdUI.CellImage(Properties.Resources.img1){ BorderWidth=4,BorderColor=Color.BlueViolet},
@@ -233,7 +243,8 @@ namespace Demo.Controls
                     new AntdUI.AntItem("online",new AntdUI.CellBadge(AntdUI.TState.Processing, "处置")),
                     new AntdUI.AntItem("enable",false),
                     new AntdUI.AntItem("age",(int)Math.Round((now - birthday_DanielWu).TotalDays / 365)),
-                    new AntdUI.AntItem("address", "西湖区湖底公园" + (start + 1+1) + "号"),
+                    new AntdUI.AntItem("date",DateTime.Now.Date.AddYears(-new System.Random().Next(DateTime.Now.Second))),
+                    new AntdUI.AntItem("address",(new System.Random().Next(DateTime.Now.Second)>5?"东湖": "西湖")+"区湖底公园" + (start + 1+1) + "号"),
                     new AntdUI.AntItem("tag",new AntdUI.CellTag[]{ new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }),
                     new AntdUI.AntItem("imgs"),
                     new AntdUI.AntItem("btns", new AntdUI.CellLink[] {
@@ -325,7 +336,8 @@ namespace Demo.Controls
                 new AntdUI.AntItem("online", _online),
                 new AntdUI.AntItem("enable", start % 2 == 0),
                 new AntdUI.AntItem("age", age),
-                new AntdUI.AntItem("address", "西湖区湖底公园" + id + "号"),
+                new AntdUI.AntItem("date",DateTime.Now.Date.AddYears(-new System.Random().Next(DateTime.Now.Second))),
+                new AntdUI.AntItem("address", (new System.Random().Next(DateTime.Now.Second)>5?"东湖": "西湖")+"区湖底公园" + id + "号"),
                 new AntdUI.AntItem("tag"),
                 new AntdUI.AntItem("imgs", _imgs),
                 new AntdUI.AntItem("btns", _btns),

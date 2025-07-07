@@ -51,6 +51,8 @@ namespace Demo.Controls
             panel1 = new AntdUI.Panel();
             checkAddressLineBreak = new AntdUI.Checkbox();
             checkVisibleHeader = new AntdUI.Checkbox();
+            checkDoubleEdit = new AntdUI.Checkbox();
+            checkEditFullMode = new AntdUI.Checkbox();
             checkEnableHeaderResizing = new AntdUI.Checkbox();
             checkSortOrder = new AntdUI.Checkbox();
             checkSetRowStyle = new AntdUI.Checkbox();
@@ -107,7 +109,9 @@ namespace Demo.Controls
             // 
             // panel1
             // 
-            panel1.Back = Color.Transparent;
+            panel1.Back = Color.Transparent; 
+            panel1.Controls.Add(checkEditFullMode);
+            panel1.Controls.Add(checkDoubleEdit);
             panel1.Controls.Add(checkAddressLineBreak);
             panel1.Controls.Add(checkVisibleHeader);
             panel1.Controls.Add(checkEnableHeaderResizing);
@@ -134,7 +138,7 @@ namespace Demo.Controls
             checkAddressLineBreak.Name = "checkAddressLineBreak";
             checkAddressLineBreak.Size = new Size(99, 43);
             checkAddressLineBreak.TabIndex = 8;
-            checkAddressLineBreak.Text = "地址换行";
+            checkAddressLineBreak.Text = "地址换行/只读";
             checkAddressLineBreak.CheckedChanged += checkAddressLineBreak_CheckedChanged;
             // 
             // checkVisibleHeader
@@ -143,12 +147,38 @@ namespace Demo.Controls
             checkVisibleHeader.Checked = true;
             checkVisibleHeader.Dock = DockStyle.Left;
             checkVisibleHeader.LocalizationText = "Table.{id}";
-            checkVisibleHeader.Location = new Point(776, 0);
+            checkVisibleHeader.Location = new Point(806, 0);
             checkVisibleHeader.Name = "checkVisibleHeader";
             checkVisibleHeader.Size = new Size(99, 43);
             checkVisibleHeader.TabIndex = 7;
             checkVisibleHeader.Text = "显示表头";
             checkVisibleHeader.CheckedChanged += checkVisibleHeader_CheckedChanged;
+            // 
+            // checkDoubleEdit
+            // 
+            checkDoubleEdit.AutoSizeMode = AntdUI.TAutoSize.Width;
+            checkDoubleEdit.Checked = false;
+            checkDoubleEdit.Dock = DockStyle.Left;
+            checkDoubleEdit.LocalizationText = "Table.{id}";
+            checkDoubleEdit.Location = new Point(885+12, 0);
+            checkDoubleEdit.Name = "checkDoubleEdit";
+            checkDoubleEdit.Size = new Size(120, 43);
+            checkDoubleEdit.TabIndex = 9;
+            checkDoubleEdit.Text = "启用编辑 (双击)";
+            checkDoubleEdit.CheckedChanged += checkDoubleEdit_CheckedChanged;
+            // 
+            // checkEditFullMode
+            // 
+            checkEditFullMode.AutoSizeMode = AntdUI.TAutoSize.Width;
+            checkEditFullMode.Checked = false;
+            checkEditFullMode.Dock = DockStyle.Left;
+            checkEditFullMode.LocalizationText = "Table.{id}";
+            checkEditFullMode.Location = new Point(885+120+12, 0);
+            checkEditFullMode.Name = "checkEditFullMode";
+            checkEditFullMode.Size = new Size(99, 43);
+            checkEditFullMode.TabIndex = 10;
+            checkEditFullMode.Text = "切换编辑风格";
+            checkEditFullMode.CheckedChanged += checkEditFullMode_CheckedChanged;
             // 
             // checkEnableHeaderResizing
             // 
@@ -276,6 +306,8 @@ namespace Demo.Controls
         private AntdUI.Checkbox checkBordered;
         private AntdUI.Checkbox checkSortOrder;
         private AntdUI.Checkbox checkVisibleHeader;
+        private AntdUI.Checkbox checkDoubleEdit;
+        private AntdUI.Checkbox checkEditFullMode;
         private AntdUI.Panel panel_main;
         private AntdUI.Checkbox checkAddressLineBreak;
     }
