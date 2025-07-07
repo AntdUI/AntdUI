@@ -144,6 +144,35 @@ namespace AntdUI
             }
         }
 
+        public bool SetSwitch(bool value, ref int hand, ref int count)
+        {
+            if (enable)
+            {
+                if (value) hand++;
+                if (_switch == value) return _switch;
+                if (Config.HasAnimation(key)) Switch = value;
+                else
+                {
+                    _switch = value;
+                    count++;
+                }
+                return _switch;
+            }
+            else
+            {
+                if (_switch)
+                {
+                    if (Config.HasAnimation(key)) Switch = false;
+                    else
+                    {
+                        _switch = false;
+                        count++;
+                    }
+                }
+                return false;
+            }
+        }
+
         public int MaxValue { get; set; } = 255;
         public int Value { get; private set; }
         public bool Animation { get; private set; }

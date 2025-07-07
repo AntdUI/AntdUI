@@ -17,13 +17,8 @@
 // QQ: 17379620
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Design;
-using System.Windows.Forms;
 using System.Linq;
 
 namespace AntdUI
@@ -63,7 +58,7 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
                 return;
             }
-            filterColumns= filterColumns.OrderBy(c => c.Filter.FilterIndex).ToArray();//按筛选优化级排序
+            filterColumns = filterColumns.OrderBy(c => c.Filter.FilterIndex).ToArray();//按筛选优化级排序
 
             List<IRow> rows = new List<IRow>();
             foreach (var col in filterColumns)
@@ -99,17 +94,16 @@ namespace AntdUI
         /// <summary>
         /// 更新筛选视图
         /// </summary>
-        internal List<IRow> UpdateFilter(FilterOption option, List<IRow>? foundSource,bool first)
+        internal List<IRow> UpdateFilter(FilterOption option, List<IRow>? foundSource, bool first)
         {
             List<IRow> list = new List<IRow>();
             IRow[]? source;
-            if(foundSource != null && foundSource.Count > 0)
+            if (foundSource != null && foundSource.Count > 0)
             {
                 source = new IRow[foundSource.Count];
                 foundSource.CopyTo(source, 0);
             }
-           else
-                source=first && option.Enabled || option.ActiveSource == FilterSource.DataSource ? dataTmp?.RowsCache : dataTmp?.rows;
+            else source = first && option.Enabled || option.ActiveSource == FilterSource.DataSource ? dataTmp?.RowsCache : dataTmp?.rows;
 
             if (source == null || source.Length == 0 || option.Key == null || option.FilterValues == null) return list;
             foreach (var value in option.FilterValues)
@@ -183,8 +177,6 @@ namespace AntdUI
     /// </summary>
     public class FilterOption
     {
-        internal const string SVG_FILTER_NORMAL = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M844.653714 121.904762C889.831619 121.904762 926.47619 159.061333 926.47619 204.897524c0 19.139048-6.534095 37.692952-18.480761 52.516571L654.409143 572.001524V926.47619l-69.485714-31.987809V527.043048L844.653714 204.897524H179.346286l255.951238 328.289524V825.539048l-74.044953-34.084572V571.977143L115.175619 256.365714a83.772952 83.772952 0 0 1 13.409524-116.565333A81.115429 81.115429 0 0 1 179.370667 121.904762h665.307428z\"></path></svg>";
-        internal const string SVG_FILTER_ENABLED = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M825.6 117.333333H198.4C157.866667 117.333333 123.733333 151.466667 123.733333 192v4.266667c0 14.933333 6.4 32 17.066667 42.666666l256 302.933334v251.733333c0 12.8 6.4 23.466667 17.066667 27.733333l162.133333 81.066667 2.133333 2.133333c21.333333 8.533333 42.666667-6.4 42.666667-29.866666V541.866667l256-302.933334c27.733333-32 23.466667-78.933333-8.533333-104.533333-8.533333-10.666667-25.6-17.066667-42.666667-17.066667z\"></path></svg>";
         /// <summary>
         /// 实例化筛选
         /// </summary>
@@ -265,10 +257,6 @@ namespace AntdUI
             this.UpdateFilter();
         }
 
-        internal void UpdateFilter()
-        {
-            Table?.UpdateFilter();
-        }
+        internal void UpdateFilter() => Table?.UpdateFilter();
     }
-
 }

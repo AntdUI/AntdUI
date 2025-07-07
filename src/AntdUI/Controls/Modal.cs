@@ -518,10 +518,12 @@ namespace AntdUI
             /// 背景颜色
             /// </summary>
             public Color? Back { get; set; }
+
             /// <summary>
             /// 是否执行回调
             /// </summary>
             public DialogResult DialogResult { get; set; } = DialogResult.None;
+
             /// <summary>
             /// 用户定义数据
             /// </summary>

@@ -16,12 +16,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AntdUI
 {
     /// <summary>
@@ -50,31 +44,31 @@ namespace AntdUI
         /// <summary>
         /// 等于
         /// </summary>
-        Equal=0,
+        Equal = 0,
         /// <summary>
         /// 不等于
         /// </summary>
-        NotEqual=1,
+        NotEqual = 1,
         /// <summary>
         /// 大于
         /// </summary>
-        Greater =2,
+        Greater = 2,
         /// <summary>
         /// 小于
         /// </summary>
-        Less=3,
+        Less = 3,
         /// <summary>
         /// 存在...
         /// </summary>
-        Contain=4,
+        Contain = 4,
         /// <summary>
         /// 不存在...
         /// </summary>
-        NotContain=5,
+        NotContain = 5,
         /// <summary>
         /// 不启用
         /// </summary>
-        None=6,
+        None = 6,
     }
 
 }

@@ -821,7 +821,7 @@ namespace AntdUI
         /// </summary>
         public bool Cancel { get; set; }
     }
-   
+
     #endregion
 
     #region Tabs

@@ -120,7 +120,6 @@ namespace AntdUI
                             BackColor = btn.Back,
                             ForeColor = btn.Fore,
                             Tag = btn
-                            
                         };
                         config.OnButtonStyle?.Invoke(btn.Name, _btn);
                         panel_main.Controls.Add(_btn);
@@ -151,9 +150,8 @@ namespace AntdUI
                                     {
                                         if (IsHandleCreated && !IsDisposed)
                                         {
-                                            if (btn.Tag is Modal.Btn)
+                                            if (btn.Tag is Modal.Btn btnResult)
                                             {
-                                                Modal.Btn btnResult = (Modal.Btn)btn.Tag;
                                                 if (btnResult.DialogResult != DialogResult.None)
                                                 {
                                                     DialogResult = btnResult.DialogResult;
@@ -183,12 +181,8 @@ namespace AntdUI
             {
                 if (butt_h > 0)
                 {
-                    //if (btn_no == null) AcceptButton = CancelButton = btn_ok;
-                    //else
-                    {
-                        AcceptButton = btn_ok;
-                        CancelButton = btn_no;
-                    }
+                    AcceptButton = btn_ok;
+                    CancelButton = btn_no;
                 }
                 else
                 {

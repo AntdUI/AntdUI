@@ -429,14 +429,14 @@ namespace AntdUI
                 i++;
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
-                it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
-                if (expand)
+                if (it.Visible)
                 {
-                    if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
-                    else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
-                }
-                if (it.Show && it.Visible)
-                {
+                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
+                    if (expand)
+                    {
+                        if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
+                        else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
+                    }
                     y += height + gapI;
                     if (it.ICanExpand)
                     {
@@ -493,7 +493,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
+                it.show = IsShowRect(rect, sx, sy, it);
                 if (it.show)
                 {
                     PaintItem(g, it, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
@@ -505,6 +505,26 @@ namespace AntdUI
                         g.Restore(state);
                     }
                 }
+                else ShowFalse(it.items);
+            }
+        }
+        bool IsShowRect(Rectangle rect, int sx, int sy, TreeItem it)
+        {
+            if (it.Show && it.Visible)
+            {
+                bool inVisibleX = (it.rect.X <= (sx + rect.Width)) && (it.rect.Right >= sx),
+                    inVisibleY = (it.rect.Y <= (sy + rect.Height)) && ((it.Expand ? it.rect.Bottom + (int)Math.Ceiling(it.SubHeight) : it.rect.Bottom) >= sy);
+                if (inVisibleY && inVisibleX) return true;
+            }
+            return false;
+        }
+        void ShowFalse(TreeItemCollection? items)
+        {
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items)
+            {
+                it.show = false;
+                ShowFalse(it.items);
             }
         }
 
@@ -966,6 +986,24 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置全部 Visible
+        /// </summary>
+        public void VisibleAll(bool value = true)
+        {
+            if (items == null || items.Count == 0) return;
+            VisibleAll(value, items);
+        }
+        public void VisibleAll(bool value, TreeItemCollection items)
+        {
+            foreach (var it in items)
+            {
+                if (it.items == null || it.items.Count == 0) continue;
+                it.Visible = value;
+                VisibleAll(value, it.items);
+            }
+        }
+
+        /// <summary>
         /// 取消全部选择
         /// </summary>
         public void USelect(bool clear = true)
@@ -1112,10 +1150,9 @@ namespace AntdUI
             }
         }
 
-        public void Focus(TreeItem item)
+        public void Focus(TreeItem item, int gap = 0, bool force = false)
         {
-            if (ScrollBar.ShowY) ScrollBar.ValueY = item.rect.Y - (int)(_gap * Config.Dpi);
-            Invalidate();
+            if (ScrollBar.ShowY && (force || !item.show)) ScrollBar.ValueY = item.rect.Y - gap - (int)(_gap * Config.Dpi);
         }
 
         #endregion
@@ -1692,49 +1729,49 @@ namespace AntdUI
         internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
-            int x = _rect.X + gap + (depth_gap * depth), y = _rect.Y + (_rect.Height - icon_size) / 2;
+            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (_rect.Height - icon_size) / 2, ui = icon_size + gap;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
-                x += icon_size + gap;
+                usew += ui;
+                x += ui;
             }
 
             if (checkable)
             {
                 check_rect = new Rectangle(x, y, icon_size, icon_size);
-                x += icon_size + gap;
+                usew += ui;
+                x += ui;
             }
 
-            int xicon = x;
             if (HasIcon)
             {
                 ico_rect = new Rectangle(x, y, icon_size, icon_size);
-                x += icon_size + gap;
+                usew += ui;
+                x += ui;
             }
-
             var size = g.MeasureText(Text, font);
             int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y + (_rect.Height - txt_h) / 2;
             if (subTitle == null)
             {
+                usew += txt_w;
                 if (blockNode)
                 {
                     int rw = _rect.Width - x - gap;
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     if (rw < txt_w) rw = txt_w;
                     rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
-                    rect_all = new Rectangle(xicon, rect.Y, _rect.Width - xicon - gap, rect.Height);
                 }
                 else
                 {
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     rect = txt_rect;
-                    if (HasIcon) rect_all = new Rectangle(xicon, txt_y, txt_w + icon_size + gap, txt_h);
-                    else rect_all = rect;
                 }
             }
             else
             {
                 var sizesub = g.MeasureText(SubTitle, font);
+                usew += txt_w + sizesub.Width + gap;
                 if (blockNode)
                 {
                     int rw = _rect.Width - x - gap;
@@ -1743,17 +1780,15 @@ namespace AntdUI
                     txt_w += sizesub.Width;
                     if (rw < txt_w) rw = txt_w;
                     rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
-                    rect_all = new Rectangle(xicon, rect.Y, _rect.Width - xicon - gap, rect.Height);
                 }
                 else
                 {
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
                     rect = new Rectangle(x, txt_y, txt_w + sizesub.Width, txt_h);
-                    if (HasIcon) rect_all = new Rectangle(xicon, txt_y, txt_w + sizesub.Width + icon_size + gap, txt_h);
-                    else rect_all = rect;
                 }
             }
+            rect_all = new Rectangle(tmpx, rect.Y, usew, rect.Height);
             Show = true;
         }
         internal Rectangle rect_all { get; set; }
@@ -1774,7 +1809,7 @@ namespace AntdUI
                     Hover = true;
                     return TreeCType.Check;
                 }
-                else if (rect_all.Contains(x + sx, y + sy))
+                else if (rect_all.Contains(x + sx, y + sy) || rect.Contains(x + sx, y + sy))
                 {
                     Hover = true;
                     return TreeCType.Item;
@@ -1798,24 +1833,25 @@ namespace AntdUI
             if (actual || PARENT == null) return Rect(type, 0, 0);
             else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBar.ValueY);
         }
-        public Rectangle Rect(string type = "", int sx = 0, int sy = 0)
+        public Rectangle Rect(int x, int y) => Rect("", x, y);
+        public Rectangle Rect(string type, int x = 0, int y = 0)
         {
-            if (sx > 0 || sy > 0)
+            if (x > 0 || y > 0)
             {
                 switch (type)
                 {
                     case "Text":
-                        return new Rectangle(txt_rect.X - sx, txt_rect.Y - sy, txt_rect.Width, txt_rect.Height);
+                        return new Rectangle(txt_rect.X - x, txt_rect.Y - y, txt_rect.Width, txt_rect.Height);
                     case "SubTitle":
-                        return new Rectangle(subtxt_rect.X - sx, subtxt_rect.Y - sy, subtxt_rect.Width, subtxt_rect.Height);
+                        return new Rectangle(subtxt_rect.X - x, subtxt_rect.Y - y, subtxt_rect.Width, subtxt_rect.Height);
                     case "Checked":
-                        return new Rectangle(check_rect.X - sx, check_rect.Y - sy, check_rect.Width, check_rect.Height);
+                        return new Rectangle(check_rect.X - x, check_rect.Y - y, check_rect.Width, check_rect.Height);
                     case "Icon":
-                        return new Rectangle(ico_rect.X - sx, ico_rect.Y - sy, ico_rect.Width, ico_rect.Height);
+                        return new Rectangle(ico_rect.X - x, ico_rect.Y - y, ico_rect.Width, ico_rect.Height);
                     case "Arrow":
-                        return new Rectangle(arrow_rect.X - sx, arrow_rect.Y - sy, arrow_rect.Width, arrow_rect.Height);
+                        return new Rectangle(arrow_rect.X - x, arrow_rect.Y - y, arrow_rect.Width, arrow_rect.Height);
                     default:
-                        return new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height);
+                        return new Rectangle(rect.X - x, rect.Y - y, rect.Width, rect.Height);
                 }
             }
             switch (type)

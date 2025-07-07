@@ -1067,7 +1067,7 @@ namespace AntdUI
             bool emptyText = SwitchMode ? string.IsNullOrEmpty(Checked ? CheckedText : UnCheckedText) : string.IsNullOrEmpty(Text);
             if (emptyIcon) icon_size = 0;
             if (emptyText) font_height = 0;
-            
+
             rect = rect_read;
             if (EditType == EButtonEditTypes.Input || EditType == EButtonEditTypes.Custom)
             {
@@ -1086,8 +1086,8 @@ namespace AntdUI
             else
             {
                 //int sp = (int)(font_height * .25F), t_x = rect_read.Y + (emptyIcon ? 0 : ((rect_read.Height - (font_height + icon_size + sp)) / 2));
-                ico_rect =emptyIcon?Rectangle.Empty: new Rectangle(emptyText == false? rect_read.X + (int)(2*Config.Dpi):(rect_read.X +((rect_read.Height - icon_size) / 2)), rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
-                txt_rect =emptyText?Rectangle.Empty: new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2), rect_read.Width - icon_size, rect_read.Height);
+                ico_rect = emptyIcon ? Rectangle.Empty : new Rectangle(emptyText == false ? rect_read.X + (int)(2 * Config.Dpi) : (rect_read.X + ((rect_read.Height - icon_size) / 2)), rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
+                txt_rect = emptyText ? Rectangle.Empty : new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2), rect_read.Width - icon_size, rect_read.Height);
 
                 if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
             }

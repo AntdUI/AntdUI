@@ -31,7 +31,7 @@ namespace AntdUI
         readonly int ArrowSize = 8;
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28, btn_size = 24;//260
         int offy = 0;
-        Color Value, ValueNAlpha, ValueHue, ValueDefault=Color.Empty;
+        Color Value, ValueNAlpha, ValueHue, ValueDefault = Color.Empty;
         Action<Color> action;
         TColorMode mode;
         PointF[]? rect_arrow;
@@ -145,7 +145,7 @@ namespace AntdUI
             SetSize(r_w, r_h);
             rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
 
-            Location =new Point(TargetRect.Location.X-control.WaveSize,TargetRect.Y);//有缺口，位置需要偏移
+            Location = new Point(TargetRect.Location.X - control.WaveSize, TargetRect.Y);//有缺口，位置需要偏移
             Size = TargetRect.Size;
 
             var rect_input = new Rectangle(rect_colors_big.X + 4, yb + line_h + gap, rect_colors_big.Width - 8, panel_color);
@@ -462,7 +462,7 @@ namespace AntdUI
                 {
                     if (PARENT is ColorPicker color && color.HasValue)
                     {
-                        color.Value= ValueDefault;
+                        color.Value = ValueDefault;
                         Print();
                     }
                 }
@@ -620,14 +620,14 @@ namespace AntdUI
                     {
                         using (var path = rect_reset.RoundPath(Radius2))
                         {
-                            if(ValueDefault!=Color.Empty)
+                            if (ValueDefault != Color.Empty)
                             {
                                 using (SolidBrush brush = new SolidBrush(hover_reset ? Color.FromArgb(200, ValueDefault) : ValueDefault))
-                                { 
+                                {
                                     g.Fill(brush, path);
                                 }
                             }
-                        
+
                             g.Draw(hover_close ? Colour.BorderColor.Get("ColorPicker", ColorScheme) : Colour.Split.Get("ColorPicker", ColorScheme), Config.Dpi, path);
                         }
                         g.PaintIconReset(rect_reset, Colour.TextTertiary.Get("ColorPicker", ColorScheme), .8F);

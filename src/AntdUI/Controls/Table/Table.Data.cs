@@ -418,40 +418,53 @@ namespace AntdUI
             else fixedColumnL = fixedColumnR = null;
         }
 
-       internal class TempTable
+        internal class TempTable
         {
             public TempTable(TempiColumn[] _columns, IRow[] _rows, IRow[]? _summary)
             {
                 columns = _columns;
-                rows = _rows;
+                _rowsCache = _rows;
                 summary = _summary;
             }
+
             /// <summary>
             /// 表头 - 列
             /// </summary>
             public TempiColumn[] columns { get; set; }
 
-            protected IRow[] _rowsCache;
+            IRow[] _rowsCache;
             /// <summary>
             /// 数据 - 行
             /// </summary>
-            public IRow[] rows { get { if (rowsFilter != null) return rowsFilter; return _rowsCache; } set { _rowsCache = value; } }
+            public IRow[] rows
+            {
+                get
+                {
+                    if (rowsFilter == null) return _rowsCache;
+                    return rowsFilter;
+                }
+                set => _rowsCache = value;
+            }
+
             /// <summary>
             /// 所有行缓存
             /// </summary>
             public IRow[] RowsCache => _rowsCache;
+
             /// <summary>
             /// 数据 - 行已筛选
             /// </summary>
             public IRow[]? rowsFilter { get; set; }
-            public void ClearFilter() { rowsFilter = null; }
+
+            public void ClearFilter() => rowsFilter = null;
+
             /// <summary>
             /// 数据 - 行
             /// </summary>
             public IRow[]? summary { get; set; }
         }
 
-       internal class TempiColumn
+        internal class TempiColumn
         {
             public TempiColumn(int index, DataColumn dataColumn)
             {

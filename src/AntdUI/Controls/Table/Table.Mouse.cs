@@ -79,11 +79,6 @@ namespace AntdUI
                                 }
                             }
                         }
-                        if (focusedFilter != null)
-                        {
-                            //设置响应按下状态
-                            return;
-                        }
                         cellMouseDown = new DownCellTMP<CELL>(it, cell, i_row, i_cel, e.Clicks > 1);
                         if (!cellMouseDown.doubleClick && cell.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                         {
@@ -102,7 +97,6 @@ namespace AntdUI
                             };
                             return;
                         }
-                       
                     }
                     else
                     {
@@ -115,7 +109,6 @@ namespace AntdUI
                             };
                             return;
                         }
-                        
                         if (cell.ROW.CanExpand && cell.ROW.RECORD != null && cell.ROW.RectExpand.Contains(r_x, r_y))
                         {
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
@@ -130,7 +123,7 @@ namespace AntdUI
             }
         }
 
-        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c, Column column)
+        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c, Column? column)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, e.Clicks > 1);
             if (cell is Template template)
@@ -237,36 +230,6 @@ namespace AntdUI
                     return;
                 }
             }
-            if (focusedFilter != null && focusedColumn !=null)
-            {
-                IList<object>? customSource = null;
-                Font? fnt = null;
-                int filterHeight = 0;
-                if (FilterPopupBegin != null)
-                {
-                    TableFilterPopupBeginEventArgs arg = new TableFilterPopupBeginEventArgs(focusedColumn);
-                    FilterPopupBegin(this, arg);
-                    if (arg.Cancel) return;
-                    customSource = arg.CustomSource;
-                    fnt = arg.Font;
-                    filterHeight = arg.Height;
-                }
-                cellMouseDown = null;
-                dragBody = null;
-                inEditMode = true;
-                if (fnt == null) fnt = this.Font;
-                FilterControl editor = new FilterControl(this, focusedFilter.COLUMN, customSource);
-                if(filterHeight>0) editor.Height = filterHeight;
-                editor.Font= fnt;
-                Point location = PointToScreen(focusedFilter.rect_filter.Location);
-                location.X -= (focusedColumn.Fixed ? 0 : ScrollBar.ValueX);
-                if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusedColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
-                location.X += focusedFilter.rect_filter.Width / 2;
-                location.Y += focusedFilter.rect_filter.Height;
-                AntdUI.Popover.open(new AntdUI.Popover.Config(this, editor) { Font = fnt, CustomPoint = new Rectangle(location, Size.Empty), Padding = new Size(6, 6), OnClosing = filter_PopupEndEventMethod });
-
-                return;
-            }
             if (dragBody != null)
             {
                 bool hand = dragBody.hand;
@@ -358,7 +321,7 @@ namespace AntdUI
             }
         }
 
-        private void filter_PopupEndEventMethod(object sender, CancelEventArgs e)
+        void filter_PopupEndEventMethod(object sender, CancelEventArgs e)
         {
             if (FilterPopupEnd != null)
             {
@@ -367,11 +330,15 @@ namespace AntdUI
                 FilterControl? editor = config.Control as FilterControl;
                 if (editor == null) return;
 
-                TableFilterPopupEndEventArgs arg = new TableFilterPopupEndEventArgs(config, editor.Option);
+                var arg = new TableFilterPopupEndEventArgs(config, editor.Option);
                 FilterPopupEnd(sender, arg);
                 e.Cancel = arg.Cancel;
             }
-            if (e.Cancel == false) { inEditMode = false; focusedColumn = null; focusedFilter = null; OnMouseLeave(null); }
+            if (e.Cancel == false)
+            {
+                inEditMode = false;
+                OnMouseLeave(EventArgs.Empty);
+            }
         }
 
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
@@ -477,44 +444,82 @@ namespace AntdUI
                             }
                         }
                     }
-                    else if (it.row.IsColumn && it.cell.COLUMN.SortOrder && it.cell is TCellColumn col)
+                    else if (it.row.IsColumn && it.cell is TCellColumn col)
                     {
-                        //点击排序
-                        SortMode sortMode = SortMode.NONE;
-                        int r_x_f = r_x - col.offsetx, r_y_f = r_y - col.offsety;
-                        if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
-                        else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
-                        else
+                        if (it.cell.COLUMN.Filter != null && col.rect_filter.Contains(r_x - col.offsetx, r_y - col.offsety))
                         {
-                            sortMode = col.COLUMN.SortMode + 1;
-                            if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
-                        }
-                        if (col.COLUMN.SetSortMode(sortMode))
-                        {
-                            foreach (var item in it.row.cells)
+                            //点击筛选
+                            var focusColumn = it.cell.COLUMN;
+                            IList<object>? customSource = null;
+                            Font? fnt = null;
+                            int filterHeight = 0;
+                            if (FilterPopupBegin != null)
                             {
-                                if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
+                                var arg = new TableFilterPopupBeginEventArgs(focusColumn);
+                                FilterPopupBegin(this, arg);
+                                if (arg.Cancel) return;
+                                customSource = arg.CustomSource;
+                                fnt = arg.Font;
+                                filterHeight = arg.Height;
                             }
-                            var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
-                            if (result) Invalidate();
+                            if (fnt == null) fnt = Font;
+                            var editor = new FilterControl(this, focusColumn, customSource)
+                            {
+                                Font = fnt
+                            };
+                            if (filterHeight > 0) editor.Height = filterHeight;
+                            Point location = PointToScreen(col.rect_filter.Location);
+                            location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
+                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
+                            location.X += col.rect_filter.Width / 2;
+                            location.Y += col.rect_filter.Height;
+                            Popover.open(new Popover.Config(this, editor)
+                            {
+                                Font = fnt,
+                                CustomPoint = new Rectangle(location, Size.Empty),
+                                Padding = new Size(6, 6),
+                                OnClosing = filter_PopupEndEventMethod
+                            });
+                        }
+                        else if (it.cell.COLUMN.SortOrder)
+                        {
+                            //点击排序
+                            SortMode sortMode = SortMode.NONE;
+                            int r_x_f = r_x - col.offsetx, r_y_f = r_y - col.offsety;
+                            if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
+                            else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
                             else
                             {
-                                Invalidate();
-                                switch (sortMode)
+                                sortMode = col.COLUMN.SortMode + 1;
+                                if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
+                            }
+                            if (col.COLUMN.SetSortMode(sortMode))
+                            {
+                                foreach (var item in it.row.cells)
                                 {
-                                    case SortMode.ASC:
-                                        SortDataASC(col.COLUMN);
-                                        break;
-                                    case SortMode.DESC:
-                                        SortDataDESC(col.COLUMN);
-                                        break;
-                                    case SortMode.NONE:
-                                    default:
-                                        SortData = null;
-                                        break;
+                                    if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
                                 }
-                                LoadLayout();
-                                SortRows?.Invoke(this, new IntEventArgs(it.i_cel));
+                                var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
+                                if (result) Invalidate();
+                                else
+                                {
+                                    Invalidate();
+                                    switch (sortMode)
+                                    {
+                                        case SortMode.ASC:
+                                            SortDataASC(col.COLUMN);
+                                            break;
+                                        case SortMode.DESC:
+                                            SortDataDESC(col.COLUMN);
+                                            break;
+                                        case SortMode.NONE:
+                                        default:
+                                            SortData = null;
+                                            break;
+                                    }
+                                    LoadLayout();
+                                    SortRows?.Invoke(this, new IntEventArgs(it.i_cel));
+                                }
                             }
                         }
                     }
@@ -555,7 +560,7 @@ namespace AntdUI
                     subForm = null;
                     var rect = btn.cell.Rect;
                     rect.Offset(-offset_xi, -offset_y);
-                    subForm = new LayeredFormSelectDown(this, btn.cell, rect, btn.cell.DropDownItems);
+                    subForm = new LayeredFormSelectDown(this, btn.cell.DropDownItems, btn.cell, rect);
                     subForm.Show(this);
                 }
 
@@ -576,27 +581,6 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (focusedColumn != null)
-            {
-                if (rows == null || inEditMode) return;
-                var cel_sel = CellContains(rows, false, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
-                if (cel_sel != null)
-                {
-                    if (cel_sel is TCellColumn)
-                    {
-                        var cel = (TCellColumn)cel_sel;
-                        int sx = cel.COLUMN.Fixed ? 0 : ScrollBar.ValueX;
-                        //右固定列较多时，有问题，未响应正确的筛选区域
-                        if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(cel.COLUMN))) sx = showFixedColumnR ? _gap : _gap*2;
-                        focusedFilter = cel.rect_filter.Contains(sx + e.X, e.Y) ? cel : null;
-                    }
-                    else focusedFilter = null;
-                    SetCursor(focusedFilter == null);
-
-                    Invalidate();
-                    if (focusedFilter != null) return;
-                }
-            }
             if (moveheaders.Length > 0)
             {
                 foreach (var item in moveheaders)
@@ -626,16 +610,6 @@ namespace AntdUI
                 var cel_sel = CellContains(rows, false, xr, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel != null)
                 {
-                    if (cel_sel is TCellColumn)
-                    {
-                        var cel = (TCellColumn)cel_sel;
-                        int sx = cel.COLUMN.Fixed ? 0 : ScrollBar.ValueX;
-                        if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(cel.COLUMN))) sx = showFixedColumnR ? _gap : _gap * 2;
-                        focusedFilter = cel.rect_filter.Contains(sx + e.X, e.Y) ? cel : null;
-                    }
-                    else focusedFilter = null;
-                    SetCursor(focusedFilter != null);
-
                     var it = cells[i_cel];
                     if (it.COLUMN.INDEX_REAL == dragHeader.i) dragHeader.im = -1;
                     else dragHeader.im = it.COLUMN.INDEX_REAL;
@@ -648,10 +622,8 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-           
-            if (dragBody != null && focusedFilter == null)
+            if (dragBody != null)
             {
-                focusedColumn = null;
                 SetCursor(CursorType.SizeAll);
                 dragBody.hand = true;
                 dragBody.xr = e.Y - dragBody.x;
@@ -662,16 +634,6 @@ namespace AntdUI
                 var cel_sel = CellContains(rows, false, e.X, yr, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel != null)
                 {
-                    if (cel_sel is TCellColumn)
-                    {
-                        var cel = (TCellColumn)cel_sel;
-                        int sx = cel.COLUMN.Fixed ? 0 : ScrollBar.ValueX;
-                        if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(cel.COLUMN))) sx = showFixedColumnR ? _gap : _gap * 2;
-                        focusedFilter = cel.rect_filter.Contains(sx + e.X, e.Y) ? cel : null;
-                    }
-                    else focusedFilter = null;
-                    SetCursor(focusedFilter != null);
-
                     if (i_row == dragBody.i) dragBody.im = -1;
                     else dragBody.im = i_row;
                     Invalidate();
@@ -683,10 +645,8 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-          
-            if (focusedFilter==null && ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
+            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
             {
-                focusedColumn = null;
                 if (rows == null || inEditMode) return;
                 var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel == null)
@@ -735,6 +695,7 @@ namespace AntdUI
                             SetCursor(CursorType.SizeAll);
                             return;
                         }
+                        else if (cel.COLUMN.Filter != null && cel.rect_filter.Contains(r_x - cel.offsetx, r_y - cel.offsetx)) SetCursor(true);
                         else if (cel.COLUMN.SortOrder) SetCursor(true);
                         else SetCursor(false);
                     }
@@ -919,18 +880,15 @@ namespace AntdUI
             var moveid = i_row + "_" + i_cel;
             if (oldmove2 == moveid) return;
             oldmove2 = moveid;
-            focusedColumn = column;
             CellHover(this, new TableHoverEventArgs(cel.ROW.RECORD, i_row, i_cel, column, new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height), e));
         }
         void MouseMoveCell(MouseEventArgs? e)
         {
             if (CellHover == null || oldmove2 == null) return;
             oldmove2 = null;
-            focusedColumn = null;
             CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
         }
-        TCellColumn? focusedFilter;
-        Column? focusedColumn;
+
         string? oldmove, oldmove2;
         TooltipForm? tooltipForm;
         void CloseTip(bool clear = false)
@@ -966,7 +924,6 @@ namespace AntdUI
                             i_row = tmp.i_row;
                             i_cel = tmp.i_cel;
                             column = tmp.col;
-                            focusedColumn=tmp.cell.COLUMN;
                             return tmp.cell;
                         }
                     }
@@ -984,7 +941,6 @@ namespace AntdUI
                             i_row = tmp.i_row;
                             i_cel = tmp.i_cel;
                             column = tmp.col;
-                            focusedColumn = tmp.cell.COLUMN;
                             return tmp.cell;
                         }
                     }

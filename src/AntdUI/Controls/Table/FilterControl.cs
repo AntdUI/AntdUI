@@ -20,10 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -40,7 +37,9 @@ namespace AntdUI
         public const string SVG_FILTER_CLEAR = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M789.312 128c23.616 0 42.688 19.072 42.688 42.688v192c0 7.488-3.84 14.08-9.728 17.92a39.808 39.808 0 0 1-12.288 11.328L716.48 448 552.32 446.912l194.24-116.544V213.312H149.312v117.312l214.016 128.576A42.688 42.688 0 0 1 384 498.56a38.656 38.656 0 0 1 0.256 4.736v324.48H298.88V519.936L86.016 392.128a42.56 42.56 0 0 1-12.672-11.584 21.888 21.888 0 0 1-9.344-17.92v-192C64 147.136 83.072 128 106.688 128h682.624z\"></path><path d=\"M902.960461 556.92179l-147.07821 147.07821 147.07821 147.07821-67.882251 67.882251L688 771.882251 540.92179 918.960461 473.039539 851.07821l147.07821-147.07821L473.039539 556.92179l67.882251-67.882251L688 636.117749 835.07821 489.039539l67.882251 67.882251z\" fill=\"#FF5151\"></path></svg>";
         private const string CHECKED_ALL = "(全选)";
         private const string BLANK_FIELD = "(空白)";
+
         #region Ctor
+
         public FilterControl(Table table, Column currentColumn, IList<object>? customSource)
         {
             if (table == null) throw new ArgumentNullException(nameof(table));
@@ -52,7 +51,7 @@ namespace AntdUI
             _column = currentColumn;
             if (Option.Table == null) Option.Table = table;
             if (Option.Column == null) Option.Column = currentColumn;
-            inputSearch.PlaceholderText=$"搜索 {currentColumn.Title}";
+            inputSearch.PlaceholderText = $"搜索 {currentColumn.Title}";
             CustomSource = customSource;
             RowsCache = table?.dataTmp?.RowsCache;
             segmentedSource.SelectIndex = (int)Option.ActiveSource + 1;
@@ -61,7 +60,7 @@ namespace AntdUI
 
             InitFilterEditor();
         }
-      
+
         protected void InitFilterEditor()
         {
             InitConditions();
@@ -77,7 +76,7 @@ namespace AntdUI
             {
                 items.Add(new SelectItem(condition) { IconSvg = GetConditionIconSvg(condition), Text = null, SubText = GetConditionText(condition) });
             }
-            items.RemoveAt(items.Count-1); // 移除 None 条件
+            items.RemoveAt(items.Count - 1); // 移除 None 条件
             selectCondition.Items.AddRange(items.ToArray());
             selectCondition.SelectedIndex = (int)Option.Condition;
             selectCondition.SelectedIndexChanged += SelectCondition_SelectedIndexChanged;
@@ -346,30 +345,34 @@ namespace AntdUI
             ItemFilterEnabled.Enabled = Option.Enabled;
 
         }
-        private string beforeText = string.Empty;
-        private void Edit_TextChanged(object sender, EventArgs e)
-        {
-            Input edit = sender as Input;
-            if (beforeText == edit.Text) return;
-            beforeText = edit.Text;
 
-            Option.FilterValues = new List<object> { edit.Text };
-            Option.UpdateFilter();
-            ItemFilterEnabled.Enabled = Option.Enabled;
+        string beforeText = string.Empty;
+        void Edit_TextChanged(object? sender, EventArgs e)
+        {
+            if (sender is Input edit)
+            {
+                if (beforeText == edit.Text) return;
+                beforeText = edit.Text;
+
+                Option.FilterValues = new List<object> { edit.Text };
+                Option.UpdateFilter();
+                ItemFilterEnabled.Enabled = Option.Enabled;
+            }
 
         }
-        private bool beforeState = false;
-        private void EditChecked_CheckedChanged(object sender, BoolEventArgs e)
+
+        bool beforeState = false;
+        void EditChecked_CheckedChanged(object sender, BoolEventArgs e)
         {
             if (beforeState == e.Value) return;
             beforeState = e.Value;
             Option.FilterValues = new List<object> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
-
         }
+
         decimal beforeVal = 0;
-        private void Edit_ValueChanged(object sender, DecimalEventArgs e)
+        void Edit_ValueChanged(object sender, DecimalEventArgs e)
         {
             if (beforeVal == e.Value) return;
             beforeVal = e.Value;
@@ -378,8 +381,9 @@ namespace AntdUI
             ItemFilterEnabled.Enabled = Option.Enabled;
 
         }
+
         DateTime? beforeDate = DateTime.MinValue;
-        private void EditDate_ValueChanged(object sender, DateTimeNEventArgs e)
+        void EditDate_ValueChanged(object sender, DateTimeNEventArgs e)
         {
             if (beforeDate == e.Value) return;
 
@@ -389,14 +393,14 @@ namespace AntdUI
             ItemFilterEnabled.Enabled = Option.Enabled;
 
         }
-        private int beforeIndex = -1;
-        private void segmentedSource_SelectIndexChanged(object sender, IntEventArgs e)
+
+        int beforeIndex = -1;
+        void segmentedSource_SelectIndexChanged(object sender, IntEventArgs e)
         {
             if (beforeIndex == e.Value) return;
             beforeIndex = e.Value;
             if (e.Value == 0)
             {
-
                 Option.ClearFilter();
                 ItemFilterEnabled.Enabled = false;
                 Form? frm = this.FindForm();
@@ -407,9 +411,7 @@ namespace AntdUI
                 Option.ActiveSource = (FilterSource)(e.Value - 1);
                 InitFilterValues(Option.ActiveSource, CustomSource);
                 Option.UpdateFilter();
-
             }
-           
         }
     }
 }

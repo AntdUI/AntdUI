@@ -183,16 +183,15 @@ namespace AntdUI
             // 
             // FilterControl
             // 
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             Controls.Add(gridPanel1);
             Name = "FilterControl";
-            Padding = new System.Windows.Forms.Padding(4);
             Size = new System.Drawing.Size(303, 390);
             gridPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
+
         private Segmented segmentedSource;
         private GridPanel gridPanel1;
         private System.Windows.Forms.Panel flowPanelConditionEdit;

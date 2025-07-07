@@ -533,7 +533,7 @@ namespace AntdUI
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 if (it.HasIcon) icon_count++;
-                it.SetRect(Mode == TMenuMode.InlineNoText ? 0 : depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
+                it.SetRect(mode == TMenuMode.InlineNoText ? 0 : depth, Indent, mode, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
                     int size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
@@ -1974,7 +1974,7 @@ namespace AntdUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? PARENTITEM { get; set; }
 
-        internal void SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap)
+        internal void SetRect(int depth, bool indent, TMenuMode mode, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
@@ -1990,13 +1990,13 @@ namespace AntdUI
                     ico_rect = new Rectangle(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
                     txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
                 }
-                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (PARENT?.Mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
             }
             else
             {
                 if (indent || depth > 1) txt_rect = new Rectangle(_rect.X + (gap * (depth + 1)), _rect.Y, _rect.Width - (gap * 2), _rect.Height);
                 else txt_rect = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
-                arr_rect = new Rectangle(_rect.Right - icon_size - (PARENT?.Mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                arr_rect = new Rectangle(_rect.Right - icon_size - (mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
             }
             Show = true;
         }

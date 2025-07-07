@@ -25,7 +25,7 @@ namespace AntdUI
 {
     public abstract class ILayeredShadowForm : ILayeredFormOpacityDown
     {
-        int shadow = 0, shadow2 = 0;
+        public int shadow = 0, shadow2 = 0;
         bool ShadowEnabled = Config.ShadowEnabled;
         public ILayeredShadowForm()
         {
@@ -40,117 +40,29 @@ namespace AntdUI
 
         public TAlign CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, ref bool Inverted, bool Collision = false)
         {
-            var point = control.PointToScreen(Point.Empty);
-            var size = control.ClientSize;
-            var rect = control.ReadRectangle;
-            int padd = 0, width = TargetRect.Width, height = TargetRect.Height, tmpArrowSize = DropDownArrow ? ArrowSize : 0;
-            if (control is Button button) padd = (int)((button.WaveSize + button.BorderWidth) * Config.Dpi);
-            else if (control is Input input) padd = (int)((input.WaveSize + input.BorderWidth) * Config.Dpi);
-            else if (control is ColorPicker colorPicker) padd = (int)((colorPicker.WaveSize + colorPicker.BorderWidth) * Config.Dpi);
-            else if (control is Switch _switch) padd = (int)(_switch.WaveSize * Config.Dpi);
-            else if (control is Panel panel) padd = (int)(panel.BorderWidth * Config.Dpi);
-            else if (control is Alert alert) padd = (int)(alert.BorderWidth * Config.Dpi);
-            else if (control is Avatar avatar) padd = (int)(avatar.BorderWidth * Config.Dpi);
-            else if (control is ContainerPanel containerPanel) padd = (int)(containerPanel.BorderWidth * Config.Dpi);
-            else if (control is Tag tag) padd = (int)(tag.BorderWidth * Config.Dpi);
-            switch (Placement)
-            {
-                case TAlignFrom.Top:
-                    Inverted = true;
-                    return CLocationTop(point, size, rect, width, height, padd, tmpArrowSize, Collision);
-                case TAlignFrom.TL:
-                    Inverted = true;
-                    return CLocationTL(point, size, rect, width, height, padd, tmpArrowSize, Collision);
-                case TAlignFrom.TR:
-                    Inverted = true;
-                    return CLocationTR(point, size, rect, width, height, padd, tmpArrowSize, Collision);
-                case TAlignFrom.Bottom:
-                    return CLocationBottom(point, size, rect, width, height, padd, tmpArrowSize, Collision);
-                case TAlignFrom.BR:
-                    return CLocationBR(point, size, rect, width, height, padd, tmpArrowSize, Collision);
-                case TAlignFrom.BL:
-                default:
-                    return CLocationBL(point, size, rect, width, height, padd, tmpArrowSize, Collision);
-            }
-        }
-
-        TAlign CLocationTop(Point point, Size size, Rectangle rect, int width, int height, int padd, int ArrowSize, bool Collision = false)
-        {
-            base.SetLocation(point.X + (size.Width - width) / 2, point.Y - height + rect.Y + padd - ArrowSize);
-            return TAlign.Top;
-        }
-        TAlign CLocationTL(Point point, Size size, Rectangle rect, int width, int height, int padd, int ArrowSize, bool Collision = false)
-        {
-            int x = point.X + rect.X, y = point.Y - height + rect.Y + padd - ArrowSize;
+            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
+            calculateCoordinate.Auto(Placement, ref Inverted, Collision, out var align, out int x, out int y);
             SetLocationX(x);
             base.SetLocationY(y);
-            if (Collision)
-            {
-                var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                if (x > (screen.X + screen.Width) - TargetRect.Width)
-                {
-                    x = point.X + (rect.X + rect.Width) - width + shadow2;
-                    SetLocationX(x);
-                    return TAlign.TR;
-                }
-            }
-            return TAlign.TL;
+            return align;
         }
-        TAlign CLocationTR(Point point, Size size, Rectangle rect, int width, int height, int padd, int ArrowSize, bool Collision = false)
+        public TAlign CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, ref bool Inverted, bool Collision = false)
         {
-            int x = point.X + (rect.X + rect.Width) - width + shadow2, y = point.Y - height + rect.Y + padd - ArrowSize;
+            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
+            calculateCoordinate.Auto(Placement, ref Inverted, Collision, out var align, out int x, out int y);
             SetLocationX(x);
             base.SetLocationY(y);
-            if (Collision)
-            {
-                var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                if (x < 0)
-                {
-                    x = point.X + rect.X;
-                    SetLocationX(x);
-                    return TAlign.TL;
-                }
-            }
-            return TAlign.TR;
+            return align;
         }
-        TAlign CLocationBottom(Point point, Size size, Rectangle rect, int width, int height, int padd, int ArrowSize, bool Collision = false)
+        public TAlign CLocation(ILayeredShadowForm control, Rectangle rect, bool DropDownArrow, int ArrowSize, ref bool Inverted)
         {
-            base.SetLocation(point.X + (size.Width - width) / 2, point.Y + rect.Bottom - padd + ArrowSize);
-            return TAlign.Bottom;
-        }
-        TAlign CLocationBR(Point point, Size size, Rectangle rect, int width, int height, int padd, int ArrowSize, bool Collision = false)
-        {
-            int x = point.X + (rect.X + rect.Width) - width + shadow2, y = point.Y + rect.Bottom - padd + ArrowSize;
-            SetLocationX(x);
-            base.SetLocationY(y);
-            if (Collision)
-            {
-                var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                if (x < 0)
-                {
-                    x = point.X + rect.X;
-                    SetLocationX(x);
-                    return TAlign.BL;
-                }
-            }
-            return TAlign.BR;
-        }
-        TAlign CLocationBL(Point point, Size size, Rectangle rect, int width, int height, int padd, int ArrowSize, bool Collision = false)
-        {
-            int x = point.X + rect.X, y = point.Y + rect.Bottom - padd + ArrowSize;
-            SetLocationX(x);
-            base.SetLocationY(y);
-            if (Collision)
-            {
-                var screen = Screen.FromPoint(TargetRect.Location).WorkingArea;
-                if (x > (screen.X + screen.Width) - TargetRect.Width)
-                {
-                    x = point.X + (rect.X + rect.Width) - width + shadow2;
-                    SetLocationX(x);
-                    return TAlign.BR;
-                }
-            }
-            return TAlign.BL;
+            var trect = control.TargetRect;
+            var screen = Screen.FromPoint(trect.Location).WorkingArea;
+            int x = trect.X + trect.Width - rect.X - control.shadow + (DropDownArrow ? ArrowSize : 0), y = trect.Y + rect.Y + control.shadow;
+            if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + control.shadow;
+            if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + control.shadow;
+            SetLocation(x, y);
+            return TAlign.LT;
         }
 
         #endregion
@@ -251,11 +163,17 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0F)]
-        public float Radius { get; set; }
+        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        public int Radius { get; set; }
 
         public abstract void PrintContent(Canvas g, Rectangle rect);
         public abstract void PrintBg(Canvas g, Rectangle rect, GraphicsPath path);
+        public void PrintAndClear()
+        {
+            shadow_temp?.Dispose();
+            shadow_temp = null;
+            Print();
+        }
 
         public override Bitmap PrintBit()
         {
@@ -292,5 +210,265 @@ namespace AntdUI
         }
 
         SafeBitmap? shadow_temp;
+    }
+
+    public class CalculateCoordinate
+    {
+        public CalculateCoordinate(IControl control, Rectangle drop, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
+        {
+            var point = control.PointToScreen(Point.Empty);
+            var size = control.ClientSize;
+            sx = point.X;
+            sy = point.Y;
+            cw = size.Width;
+            ch = size.Height;
+            crect = control.ReadRectangle;
+            padd = GetPadding(control);
+            dw = drop.Width;
+            dh = drop.Height;
+            arrow = ArrowSize;
+            shadow = Shadow;
+            shadow2 = Shadow2;
+            creal = rect_real;
+        }
+
+        /// <summary>
+        /// 屏幕坐标X（控件）
+        /// </summary>
+        public int sx { get; set; }
+
+        /// <summary>
+        /// 屏幕坐标Y（控件）
+        /// </summary>
+        public int sy { get; set; }
+
+        /// <summary>
+        /// 控件宽度
+        /// </summary>
+        public int cw { get; set; }
+
+        /// <summary>
+        /// 控件高度
+        /// </summary>
+        public int ch { get; set; }
+
+        /// <summary>
+        /// 控件真实容器
+        /// </summary>
+        public Rectangle crect { get; set; }
+
+        /// <summary>
+        /// 控件边距
+        /// </summary>
+        public int padd { get; set; }
+
+        /// <summary>
+        /// 下拉宽度
+        /// </summary>
+        public int dw { get; set; }
+
+        /// <summary>
+        /// 下拉高度
+        /// </summary>
+        public int dh { get; set; }
+        public int arrow { get; set; }
+        public int shadow { get; set; }
+        public int shadow2 { get; set; }
+
+        /// <summary>
+        /// 内容区域
+        /// </summary>
+        public Rectangle? creal { get; set; }
+
+        int GetPadding(IControl control)
+        {
+            if (control is Button button) return (int)((button.WaveSize + button.BorderWidth) * Config.Dpi);
+            else if (control is Input input) return (int)((input.WaveSize + input.BorderWidth) * Config.Dpi);
+            else if (control is ColorPicker colorPicker) return (int)((colorPicker.WaveSize + colorPicker.BorderWidth) * Config.Dpi);
+            else if (control is Switch _switch) return (int)(_switch.WaveSize * Config.Dpi);
+            else if (control is Panel panel) return (int)(panel.BorderWidth * Config.Dpi);
+            else if (control is Alert alert) return (int)(alert.BorderWidth * Config.Dpi);
+            else if (control is Avatar avatar) return (int)(avatar.BorderWidth * Config.Dpi);
+            else if (control is Tag tag) return (int)(tag.BorderWidth * Config.Dpi);
+            else if (control is Table table) return (int)(table.BorderWidth * Config.Dpi);
+            else if (control is ContainerPanel containerPanel) return (int)(containerPanel.BorderWidth * Config.Dpi);
+            return 0;
+        }
+
+        #region 方向
+
+        /// <summary>
+        /// 居中X
+        /// </summary>
+        public int CenterX()
+        {
+            if (creal.HasValue) return sx + creal.Value.X + (creal.Value.Width - dw) / 2 + shadow;
+            return sx + (cw - dw) / 2;
+        }
+
+        /// <summary>
+        /// 左X ←
+        /// </summary>
+        public int LeftX()
+        {
+            if (creal.HasValue) return sx + creal.Value.X + crect.X;
+            return sx + crect.X;
+        }
+
+        /// <summary>
+        /// 右X →
+        /// </summary>
+        public int RightX()
+        {
+            if (creal.HasValue) return sx + creal.Value.X + creal.Value.Width - dw + shadow2;
+            return sx + (crect.X + crect.Width) - dw + shadow2;
+        }
+
+        /// <summary>
+        /// 上Y ↑
+        /// </summary>
+        public int TopY()
+        {
+            if (creal.HasValue) return sy - dh + creal.Value.Y + crect.Y + padd - arrow;
+            return sy - dh + crect.Y + padd - arrow;
+        }
+
+        /// <summary>
+        /// 下Y ↓
+        /// </summary>
+        public int BottomY()
+        {
+            if (creal.HasValue) return sy + creal.Value.Bottom - padd + arrow;
+            return sy + crect.Bottom - padd + arrow;
+        }
+
+        #endregion
+
+        public void Auto(TAlignFrom Placement, ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            switch (Placement)
+            {
+                case TAlignFrom.Top:
+                    Top(ref Inverted, Collision, out align, out x, out y);
+                    break;
+                case TAlignFrom.TL:
+                    TL(ref Inverted, Collision, out align, out x, out y);
+                    break;
+                case TAlignFrom.TR:
+                    TR(ref Inverted, Collision, out align, out x, out y);
+                    break;
+                case TAlignFrom.Bottom:
+                    Bottom(ref Inverted, Collision, out align, out x, out y);
+                    break;
+                case TAlignFrom.BR:
+                    BR(ref Inverted, Collision, out align, out x, out y);
+                    break;
+                case TAlignFrom.BL:
+                default:
+                    BL(ref Inverted, Collision, out align, out x, out y);
+                    break;
+            }
+        }
+
+        public void Top(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            align = TAlign.Bottom;
+            x = CenterX();
+            y = TopY();
+            Inverted = true;
+            if (Collision)
+            {
+                var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (y < screen.Top)
+                {
+                    Inverted = false;
+                    y = BottomY();
+                    align = TAlign.Top;
+                }
+            }
+        }
+
+        public void TL(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            align = TAlign.BL;
+            x = LeftX();
+            y = TopY();
+            Inverted = true;
+            if (Collision)
+            {
+                var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x + dw > screen.Right)
+                {
+                    x = RightX();
+                    align = TAlign.BR;
+                }
+            }
+        }
+
+        public void TR(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            align = TAlign.BR;
+            x = RightX();
+            y = TopY();
+            Inverted = true;
+            if (Collision)
+            {
+                var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x < screen.Left)
+                {
+                    x = LeftX();
+                    align = TAlign.BL;
+                }
+            }
+        }
+
+        public void Bottom(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            align = TAlign.Top;
+            x = CenterX();
+            y = BottomY();
+            if (Collision)
+            {
+                var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (y + dh > screen.Bottom)
+                {
+                    Inverted = true;
+                    y = TopY();
+                    align = TAlign.Bottom;
+                }
+            }
+        }
+
+        public void BR(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            align = TAlign.TR;
+            x = RightX();
+            y = BottomY();
+            if (Collision)
+            {
+                var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x < screen.Left)
+                {
+                    x = LeftX();
+                    align = TAlign.TL;
+                }
+            }
+        }
+
+        public void BL(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        {
+            align = TAlign.TL;
+            x = LeftX();
+            y = BottomY();
+            if (Collision)
+            {
+                var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x + dw > screen.Right)
+                {
+                    x = RightX();
+                    align = TAlign.TR;
+                }
+            }
+        }
     }
 }

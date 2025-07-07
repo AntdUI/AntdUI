@@ -64,7 +64,7 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Columns));
             }
         }
-       
+
         object? dataSource;
         /// <summary>
         /// 数据数组
@@ -1800,20 +1800,11 @@ namespace AntdUI
         /// </summary>
         public string? MaxWidth { get; set; }
 
-        protected bool readOnly = false;
         /// <summary>
         /// 只读
         /// </summary>
-        public bool ReadOnly
-        {
-            get => readOnly; set
-            {
-                if (readOnly == value) return;
+        public bool ReadOnly { get; set; }
 
-                readOnly = value;
-                if (!value && PARENT?.EditMode == TEditMode.None) PARENT.EditMode = TEditMode.DoubleClick;
-            }
-        }
         /// <summary>
         /// 设置列最大宽度
         /// </summary>
@@ -1925,6 +1916,8 @@ namespace AntdUI
             return this;
         }
 
+        #region 排序
+
         bool sortorder = false;
         /// <summary>
         /// 启用排序
@@ -1973,6 +1966,43 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        #endregion
+
+        #region 筛选
+
+        /// <summary>
+        /// 存在筛选
+        /// </summary>
+        public bool HasFilter { get; private set; }
+
+        FilterOption? filter { get; set; }
+        /// <summary>
+        /// 用户筛选选项
+        /// </summary>
+        public FilterOption? Filter
+        {
+            get => filter;
+            set
+            {
+                filter = value;
+                if (filter == null) HasFilter = false;
+                else HasFilter = true;
+            }
+        }
+
+        /// <summary>
+        /// 设置默认筛选选项
+        /// </summary>
+        /// <param name="type">数据类型</param>
+        /// <returns></returns>
+        public Column SetDefaultFilter(Type type)
+        {
+            Filter = new FilterOption(type);
+            return this;
+        }
+
+        #endregion
 
         /// <summary>
         /// 列可拖拽
@@ -2044,20 +2074,7 @@ namespace AntdUI
         /// 用户定义数据
         /// </summary>
         public object? Tag { get; set; }
-        /// <summary>
-        /// 用户筛选选项
-        /// </summary>
-        public FilterOption? Filter { get; set; }
-        /// <summary>
-        /// 设置默认筛选选项
-        /// </summary>
-        /// <param name="type">数据类型</param>
-        /// <returns></returns>
-        public Column SetDefaultFilter(Type type)
-        {
-            Filter = new FilterOption(type);
-            return this;
-        }
+
         #region 内部
 
         internal Table? PARENT { get; set; }

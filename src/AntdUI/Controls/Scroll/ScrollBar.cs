@@ -49,6 +49,16 @@ namespace AntdUI
             else EnabledX = true;
             Init();
         }
+        public ScrollBar(ILayeredForm control, TAMode colorScheme)
+        {
+            Back = false;
+            ColorScheme = colorScheme;
+            OnInvalidate = ChangeSize = () => control.Print();
+            Invalidate = rect => OnInvalidate?.Invoke();
+            EnabledY = true;
+            EnabledX = false;
+            Init();
+        }
 
         #endregion
 
@@ -668,19 +678,21 @@ namespace AntdUI
 
         #region 按下
 
-        Point old;
+        int oldX, oldY;
         bool SliderDownX = false;
         float SliderX = 0;
-        public bool MouseDownX(Point e)
+        public bool MouseDownX(Point e) => MouseDownX(e.X, e.Y);
+        public bool MouseDownX(int X, int Y)
         {
-            if (EnabledX && ShowX && RectX.Contains(e))
+            if (EnabledX && ShowX && RectX.Contains(X, Y))
             {
-                old = e;
+                oldX = X;
+                oldY = Y;
                 var slider = RectSliderFullX();
-                if (slider.Contains(e)) SliderX = slider.X;
+                if (slider.Contains(X, Y)) SliderX = slider.X;
                 else
                 {
-                    float read = RectX.Width - (showY ? SIZE : 0), x = (e.X - slider.Width / 2F) / read;
+                    float read = RectX.Width - (showY ? SIZE : 0), x = (X - slider.Width / 2F) / read;
                     ValueX = (int)Math.Round(x * maxX);
                     SliderX = RectSliderFullX().X;
                 }
@@ -693,16 +705,18 @@ namespace AntdUI
 
         bool SliderDownY = false;
         float SliderY = 0;
-        public bool MouseDownY(Point e)
+        public bool MouseDownY(Point e) => MouseDownY(e.X, e.Y);
+        public bool MouseDownY(int X, int Y)
         {
-            if (EnabledY && ShowY && RectY.Contains(e))
+            if (EnabledY && ShowY && RectY.Contains(X, Y))
             {
-                old = e;
+                oldX = X;
+                oldY = Y;
                 var slider = RectSliderFullY();
-                if (slider.Contains(e)) SliderY = slider.Y;
+                if (slider.Contains(X, Y)) SliderY = slider.Y;
                 else
                 {
-                    float read = RectY.Height - (showX ? SIZE : 0), y = (e.Y - slider.Height / 2F) / read;
+                    float read = RectY.Height - (showX ? SIZE : 0), y = (Y - slider.Height / 2F) / read;
                     ValueY = (int)Math.Round(y * maxY);
                     SliderY = RectSliderFullY().Y;
                 }
@@ -717,7 +731,8 @@ namespace AntdUI
 
         #region 移动
 
-        public bool MouseMoveX(Point e)
+        public bool MouseMoveX(Point e) => MouseMoveX(e.X, e.Y);
+        public bool MouseMoveX(int X, int Y)
         {
             if (EnabledX && !SliderDownY)
             {
@@ -725,11 +740,11 @@ namespace AntdUI
                 {
                     HoverX = true;
                     var slider = RectSliderFullX();
-                    float read = RectX.Width - (showY ? SIZE : 0), x = SliderX + e.X - old.X;
+                    float read = RectX.Width - (showY ? SIZE : 0), x = SliderX + X - oldX;
                     ValueX = (int)(x / (read - slider.Width) * (maxX - RectX.Width));
                     return false;
                 }
-                else if (ShowX && RectX.Contains(e))
+                else if (ShowX && RectX.Contains(X, Y))
                 {
                     HoverX = true;
                     return false;
@@ -738,7 +753,8 @@ namespace AntdUI
             }
             return true;
         }
-        public bool MouseMoveY(Point e)
+        public bool MouseMoveY(Point e) => MouseMoveY(e.X, e.Y);
+        public bool MouseMoveY(int X, int Y)
         {
             if (EnabledY && !SliderDownX)
             {
@@ -746,11 +762,11 @@ namespace AntdUI
                 {
                     HoverY = true;
                     var slider = RectSliderFullY();
-                    float read = RectY.Height - (showX ? SIZE : 0), y = SliderY + e.Y - old.Y;
+                    float read = RectY.Height - (showX ? SIZE : 0), y = SliderY + Y - oldY;
                     ValueY = (int)(y / (read - slider.Height) * (maxY - RectY.Height));
                     return false;
                 }
-                else if (ShowY && RectY.Contains(e))
+                else if (ShowY && RectY.Contains(X, Y))
                 {
                     HoverY = true;
                     return false;
@@ -950,15 +966,17 @@ namespace AntdUI
             else SetVrSize(len, oldy);
         }
 
-        public bool MouseDown(Point e)
+        public bool MouseDown(Point e) => MouseDown(e.X, e.Y);
+        public bool MouseDown(int X, int Y)
         {
-            if (EnabledY) return MouseDownY(e);
-            return MouseDownX(e);
+            if (EnabledY) return MouseDownY(X, Y);
+            return MouseDownX(X, Y);
         }
-        public bool MouseMove(Point e)
+        public bool MouseMove(Point e) => MouseMove(e.X, e.Y);
+        public bool MouseMove(int X, int Y)
         {
-            if (EnabledY) return MouseMoveY(e);
-            return MouseMoveX(e);
+            if (EnabledY) return MouseMoveY(X, Y);
+            return MouseMoveX(X, Y);
         }
         public bool MouseUp()
         {

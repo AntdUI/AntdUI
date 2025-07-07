@@ -266,11 +266,11 @@ namespace AntdUI
                 case TEditInputStyle.Excel:
                     if (h > cell.RECT.Height)
                     {
-                        rh = h-bor;
+                        rh = h - bor;
                         ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
                         if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
                     }
-                    var inputExcel = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - bor, ry - sy - bor, cell.RECT.Width + bor*2, rh + bor*2));
+                    var inputExcel = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - bor, ry - sy - bor, cell.RECT.Width + bor * 2, rh + bor * 2));
                     inputExcel.WaveSize = 0;
                     inputExcel.Radius = 0;
                     inputExcel.BorderWidth = 2.5f;
@@ -285,8 +285,8 @@ namespace AntdUI
                         ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
                         if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
                     }
-                    var input= CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh));
-                    input.ReadOnly=cell.COLUMN.ReadOnly;
+                    var input = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh));
+                    input.ReadOnly = cell.COLUMN.ReadOnly;
                     if (input.ReadOnly) input.BackColor = AntdUI.Style.Db.BorderSecondary;
                     return input;
             }

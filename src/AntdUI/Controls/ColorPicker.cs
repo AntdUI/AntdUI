@@ -229,6 +229,11 @@ namespace AntdUI
                 OnPropertyChanged(nameof(ShowSymbol));
             }
         }
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue("")]
         public override string Text
         {
             get => base.Text;

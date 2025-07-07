@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -302,6 +301,10 @@ namespace AntdUI
                         g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                         g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                     }
+                    if (column.COLUMN.HasFilter)
+                    {
+                        g.GetImgExtend("FilterFilled", column.rect_filter, column.COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
+                    }
                     if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                     else
                     {
@@ -313,19 +316,6 @@ namespace AntdUI
                             }
                         }
                         else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
-
-                        if (column.COLUMN.Filter != null && column.COLUMN.Filter.Enabled)
-                        {
-                            g.GetImgExtend(column.COLUMN.Filter.Enabled ? FilterOption.SVG_FILTER_ENABLED : FilterOption.SVG_FILTER_NORMAL, column.rect_filter, column.COLUMN.Filter.Enabled && column.COLUMN != focusedColumn ? Colour.PrimaryActive.Get("Table", ColorScheme) : Colour.Primary.Get("Table", ColorScheme));
-                        }
-                        else
-                        {
-                            if (focusedColumn == column.COLUMN && focusedColumn.Filter != null)
-                            {
-                                g.GetImgExtend(focusedColumn.Filter.Enabled ? FilterOption.SVG_FILTER_ENABLED : FilterOption.SVG_FILTER_NORMAL, column.rect_filter, focusedColumn.Filter.Enabled ? focusedFilter != null ? Colour.PrimaryActive.Get("Table", ColorScheme) : Colour.Primary.Get("Table", ColorScheme) : focusedFilter != null ? Colour.TextSecondary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-
-                            }
-                        }
                     }
                 }
                 if (dragHeader == null) return;
@@ -398,6 +388,11 @@ namespace AntdUI
                         g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                         g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                     }
+                    if (column.COLUMN.HasFilter)
+                    {
+                        g.GetImgExtend("FilterFilled", column.rect_filter, column.COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
+                    }
+
                     if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                     else
                     {
@@ -409,19 +404,6 @@ namespace AntdUI
                             }
                         }
                         else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
-
-                        if (column.COLUMN.Filter != null && column.COLUMN.Filter.Enabled)
-                        {
-                            g.GetImgExtend(column.COLUMN.Filter.Enabled ? FilterOption.SVG_FILTER_ENABLED : FilterOption.SVG_FILTER_NORMAL, column.rect_filter, column.COLUMN.Filter.Enabled && column.COLUMN == focusedColumn ? Colour.PrimaryActive.Get("Table", ColorScheme) : Colour.Primary.Get("Table", ColorScheme));
-                        }
-                        else
-                        {
-                            if (focusedColumn == column.COLUMN && focusedColumn.Filter != null)
-                            {
-                                g.GetImgExtend(focusedColumn.Filter.Enabled ? FilterOption.SVG_FILTER_ENABLED : FilterOption.SVG_FILTER_NORMAL, column.rect_filter, focusedColumn.Filter.Enabled ? focusedFilter != null ? Colour.PrimaryActive.Get("Table", ColorScheme) : Colour.Primary.Get("Table", ColorScheme) : focusedFilter != null ? Colour.TextSecondary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-
-                            }
-                        }
                     }
                     g.Restore(state);
                     state = g.Save();
@@ -846,7 +828,7 @@ namespace AntdUI
                         showFixedColumnR = true;
                         int w = last.RECT.Right - first.RECT.Left;
 
-                        var rect_Fixed = new Rectangle(rect_read.Width - w, rect_read.Y, w + (ScrollBar.ShowY ? ScrollBar.SIZE : 0), rect_read.Height);
+                        var rect_Fixed = new Rectangle(rect_read.Width - w, rect_read.Y, w + (ScrollBar.ShowY ? ScrollBar.SIZE : 0) + borsize, rect_read.Height);
 
                         GraphicsPath? clipath = null;
 
