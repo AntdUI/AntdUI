@@ -237,7 +237,7 @@ namespace AntdUI
         #endregion
 
         bool switchClose = true, switchDispose = true;
-        public void IClose(bool isdispose = false)
+        public virtual void IClose(bool isdispose = false)
         {
             try
             {

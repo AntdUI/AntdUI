@@ -816,7 +816,6 @@ namespace AntdUI
     {
         public ObjectItem(object item, int index, Rectangle rect, Rectangle rect_text) : base(item)
         {
-            Show = true;
             Item = item;
             Text = item.ToString() ?? string.Empty;
             ID = index;
@@ -826,7 +825,7 @@ namespace AntdUI
 
         public ObjectItem(GroupSelectItem item, int index, Rectangle rect, Rectangle rect_text) : base(item)
         {
-            Show = Group = true;
+            Group = true;
             Item = item;
             Text = item.Title;
             ID = index;
@@ -860,14 +859,12 @@ namespace AntdUI
             ForeSub = item.ForeSub;
             BackActive = item.BackActive;
             BackActiveExtend = item.BackActiveExtend;
-            Show = true;
         }
 
         public ObjectItem(Rectangle rect) : base(-1)
         {
             ID = -1;
             Item = Rect = rect;
-            Show = true;
         }
 
         public object Item { get; set; }
@@ -884,10 +881,9 @@ namespace AntdUI
         public Rectangle RectOnline { get; set; }
 
         public bool Hover { get; set; }
-        public bool Show { get; set; }
         public bool Group { get; set; }
 
-        public bool ShowAndID => ID == -1 || !Show;
+        public bool ShowAndID => ID == -1;
         public bool NoIndex { get; set; }
 
         public Rectangle Rect { get; set; }

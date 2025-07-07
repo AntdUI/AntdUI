@@ -168,7 +168,7 @@ namespace AntdUI
             Init();
         }
 
-        LayeredFormSelectDown? lay;
+        SubLayeredForm? lay;
 
         #region 子
 
@@ -383,10 +383,7 @@ namespace AntdUI
                 using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid, ColorScheme)))
                 using (var brush_split = new SolidBrush(Colour.Split.Get(keyid, ColorScheme)))
                 {
-                    foreach (var it in GetItems())
-                    {
-                        if (it.Show) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                    }
+                    foreach (var it in GetItems()) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
                     g.ResetTransform();
                     ScrollBar.Paint(g);
                 }
@@ -515,7 +512,7 @@ namespace AntdUI
             int size = it.RectArrow.Width, size_arrow = size / 2;
             g.TranslateTransform(it.RectArrow.X + size_arrow, it.RectArrow.Y + size_arrow);
             g.RotateTransform(-90F);
-            using (var pen = new Pen(color, 2F))
+            using (var pen = new Pen(color, Config.Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, it.RectArrow.Width, it.RectArrow.Height).TriangleLines(-1, .7F));
@@ -707,9 +704,9 @@ namespace AntdUI
         int hoveindex = -1, hoveindexold = -1;
         protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
         {
+            hoveindex = -1;
             if (ScrollBar.MouseMove(x, y) && OnTouchMove(x, y))
             {
-                hoveindex = -1;
                 int count = 0, hand = 0, sy = ScrollBar.Value;
                 if (CloseIcon)
                 {
@@ -798,7 +795,7 @@ namespace AntdUI
                 {
                     foreach (var it in Items)
                     {
-                        if (it.Show && it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
+                        if (it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
                         {
                             if (it.RectClose.Contains(x, y + sy) && PARENT is Select select && select.DropDownClose(it.Item))
                             {
@@ -813,7 +810,7 @@ namespace AntdUI
                 {
                     foreach (var it in Items)
                     {
-                        if (it.Show && it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
+                        if (it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
                         {
                             if (OnClick(it)) return;
                         }
@@ -829,7 +826,6 @@ namespace AntdUI
                 selectedValue = it.Item;
                 OnCall(it);
                 IClose();
-                CloseSub();
                 return true;
             }
             else
@@ -878,9 +874,14 @@ namespace AntdUI
                 subForm.Show(this);
             }
         }
+        public override void IClose(bool isdispose = false)
+        {
+            CloseSub();
+            IClose(isdispose);
+        }
         void CloseSub()
         {
-            LayeredFormSelectDown item = this;
+            var item = this;
             while (item.lay is LayeredFormSelectDown form)
             {
                 if (item == form) return;

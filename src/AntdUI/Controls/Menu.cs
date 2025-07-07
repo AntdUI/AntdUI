@@ -973,11 +973,8 @@ namespace AntdUI
                                 {
                                     if (subForm == null)
                                     {
-                                        var _rect = RectangleToScreen(ClientRectangle);
-                                        var Rect = item.Rect;
-                                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                                         select_x = 0;
-                                        subForm = new LayeredFormMenuDown(this, radius, rect, item.items);
+                                        subForm = new LayeredFormMenuDown(this, radius, item.Rect, item.items);
                                         subForm.Show(this);
                                     }
                                     else { subForm.IClose(); subForm = null; }
@@ -1040,9 +1037,7 @@ namespace AntdUI
                                 {
                                     if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
                                 }
-                                var _rect = RectangleToScreen(ClientRectangle);
-                                var rect = new Rectangle(_rect.X + rect_r.X, _rect.Y + rect_r.Y, rect_r.Width, rect_r.Height);
-                                subForm = new LayeredFormMenuDown(this, radius, rect, list);
+                                subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
                                 subForm.Show(this);
                             }
                             foreach (var it in items) it.Hover = false;
@@ -1081,18 +1076,20 @@ namespace AntdUI
                             tooltipForm = null;
                             if (hoveindex > -1)
                             {
-                                var _rect = RectangleToScreen(ClientRectangle);
                                 var it = items[hoveindex];
                                 if (it == null) return;
-                                var Rect = it.Rect;
-                                var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                                 if (it.items != null && it.items.Count > 0)
                                 {
                                     select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
+                                    subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
                                     subForm.Show(this);
                                 }
-                                else if (it.Text != null) ShowTooltip(it, rect);
+                                else if (it.Text != null)
+                                {
+                                    var _rect = RectangleToScreen(ClientRectangle);
+                                    var rect = new Rectangle(_rect.X + it.Rect.X, _rect.Y + it.Rect.Y, it.Rect.Width, it.Rect.Height);
+                                    ShowTooltip(it, rect);
+                                }
                             }
                         }
                     }
@@ -1126,15 +1123,12 @@ namespace AntdUI
                             tooltipForm = null;
                             if (hoveindex > -1)
                             {
-                                var _rect = RectangleToScreen(ClientRectangle);
                                 var it = items[hoveindex];
                                 if (it == null) return;
-                                var Rect = it.Rect;
-                                var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                                 if (Trigger == Trigger.Hover && it.items != null && it.items.Count > 0)
                                 {
                                     select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
+                                    subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
                                     subForm.Show(this);
                                 }
                             }

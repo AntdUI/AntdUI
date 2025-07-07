@@ -65,7 +65,7 @@ namespace AntdUI
 
         }
 
-        LayeredFormSelectMultipleCheck? lay;
+        SubLayeredForm? lay;
 
         float tmpItemHeight = 0F;
         public LayeredFormSelectMultipleCheck(SelectMultiple control, int sx, LayeredFormSelectMultipleCheck parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
@@ -735,6 +735,21 @@ namespace AntdUI
             {
                 subForm = new LayeredFormSelectMultipleCheck(select, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
+            }
+        }
+        public override void IClose(bool isdispose = false)
+        {
+            CloseSub();
+            IClose(isdispose);
+        }
+        void CloseSub()
+        {
+            var item = this;
+            while (item.lay is LayeredFormSelectMultipleCheck form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
             }
         }
 
