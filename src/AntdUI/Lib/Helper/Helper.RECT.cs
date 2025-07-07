@@ -598,68 +598,172 @@ namespace AntdUI
             if (align == TAlign.Top)
             {
                 //↑上
-                float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height;
-                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+                float x = rect.X + rect.Width / 2F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
             }
             else if (align == TAlign.Bottom)
             {
                 //↓ 下
-                float x = rect.X + rect.Width / 2F, y = rect.Y - arrow_size;
-                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
             }
-            else if (align == TAlign.Left || align == TAlign.LT || align == TAlign.LB)
+            else if (align == TAlign.Left)
             {
                 //← 左
-                float x = rect.X + rect.Width, y = rect.Y + rect.Height / 2F;
-                return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
-            }
-            else if (align == TAlign.Right || align == TAlign.RT || align == TAlign.RB)
-            {
-                //→ 右
                 float x = rect.X - arrow_size, y = rect.Y + rect.Height / 2F;
                 return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
             }
-
-            #region 下
+            else if (align == TAlign.Right)
+            {
+                //→ 右
+                float x = rect.X + rect.Width, y = rect.Y + rect.Height / 2F;
+                return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+            }
+            else if (align == TAlign.LT)
+            {
+                //↖ 左上
+                float x = rect.X - arrow_size, y = rect.Y + arrow_size * 3F;
+                return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.RT)
+            {
+                //↗ 右上
+                float x = rect.X + rect.Width, y = rect.Y + arrow_size * 3F;
+                return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+            }
+            else if (align == TAlign.LB)
+            {
+                //↙ 左下
+                float x = rect.X - arrow_size, y = rect.Y + rect.Height - arrow_size * 3F;
+                return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.RB)
+            {
+                //↘ 右下
+                float x = rect.X + rect.Width, y = rect.Y + rect.Height - arrow_size * 3F;
+                return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+            }
 
             else if (align == TAlign.BL)
             {
                 //↙ 下左
-                float x = rect.X + arrow_size * 3F, y = rect.Y - arrow_size;
-                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                float x = rect.X + arrow_size * 3F, y = rect.Y + rect.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
             }
             else if (align == TAlign.BR)
             {
                 //↘ 下右
-                float x = rect.X + rect.Width - arrow_size * 3F, y = rect.Y - arrow_size;
-                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
-            }
-
-            #endregion
-
-            #region 上
-
-            else if (align == TAlign.TL)
-            {
-                //↖ 上左
-                float x = rect.X + arrow_size * 3F, y = rect.Y + rect.Height;
-                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
-            }
-            else if (align == TAlign.TR)
-            {
-                //↗ 上右
                 float x = rect.X + rect.Width - arrow_size * 3F, y = rect.Y + rect.Height;
                 return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
             }
 
-            #endregion
+            else if (align == TAlign.TL)
+            {
+                //↖ 上左
+                float x = rect.X + arrow_size * 3F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.TR)
+            {
+                //↗ 上右
+                float x = rect.X + rect.Width - arrow_size * 3F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
 
             else
             {
                 //↑上
-                float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height;
-                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+                float x = rect.X + rect.Width / 2F, y = rect.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
             }
+        }
+        public static PointF[] AlignLines(this TAlign align, float arrow_size, RectangleF rect, float itemSize)
+        {
+            if (itemSize > 0)
+            {
+                if (align == TAlign.Top)
+                {
+                    //↑上
+                    float x = rect.X + rect.Width / 2F, y = rect.Y - arrow_size;
+                    return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+                else if (align == TAlign.Bottom)
+                {
+                    //↓ 下
+                    float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height;
+                    return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+                }
+                else if (align == TAlign.Left)
+                {
+                    //← 左
+                    float x = rect.X - arrow_size, y = rect.Y + rect.Height / 2F;
+                    return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+                else if (align == TAlign.Right)
+                {
+                    //→ 右
+                    float x = rect.X + rect.Width, y = rect.Y + rect.Height / 2F;
+                    return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+                }
+                else if (align == TAlign.LT)
+                {
+                    //↖ 左上
+                    float x = rect.X - arrow_size, y = rect.Y + itemSize;
+                    return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+                else if (align == TAlign.RT)
+                {
+                    //↗ 右上
+                    float x = rect.X + rect.Width, y = rect.Y + itemSize;
+                    return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+                }
+                else if (align == TAlign.LB)
+                {
+                    //↙ 左下
+                    float x = rect.X - arrow_size, y = rect.Y + rect.Height - itemSize;
+                    return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+                else if (align == TAlign.RB)
+                {
+                    //↘ 右下
+                    float x = rect.X + rect.Width, y = rect.Y + rect.Height - itemSize;
+                    return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+                }
+
+                else if (align == TAlign.BL)
+                {
+                    //↙ 下左
+                    float x = rect.X + itemSize, y = rect.Y + rect.Height;
+                    return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+                }
+                else if (align == TAlign.BR)
+                {
+                    //↘ 下右
+                    float x = rect.X + rect.Width - itemSize, y = rect.Y + rect.Height;
+                    return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+                }
+
+                else if (align == TAlign.TL)
+                {
+                    //↖ 上左
+                    float x = rect.X + itemSize, y = rect.Y - arrow_size;
+                    return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+                else if (align == TAlign.TR)
+                {
+                    //↗ 上右
+                    float x = rect.X + rect.Width - itemSize, y = rect.Y - arrow_size;
+                    return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+
+                else
+                {
+                    //↑上
+                    float x = rect.X + rect.Width / 2F, y = rect.Y - arrow_size;
+                    return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+                }
+            }
+            return AlignLines(align, arrow_size, rect);
         }
 
         /// <summary>
@@ -822,6 +926,45 @@ namespace AntdUI
         public static Point AlignPoint(this TAlign align, Rectangle rect, Rectangle size) => AlignPoint(align, rect.Location, rect.Size, size.Width, size.Height);
 
         public static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height) => AlignPoint(align, rect.Location, rect.Size, width, height);
+
+        public static T ValueBlend<T>(T start, T end, double t)
+           where T : struct
+        {
+            if (typeof(T) == typeof(float))
+            {
+                float s = Convert.ToSingle(start);
+                float e = Convert.ToSingle(end);
+                return (T)(object)(s + (e - s) * (float)t);
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double s = Convert.ToDouble(start);
+                double e = Convert.ToDouble(end);
+                return (T)(object)(s + (e - s) * t);
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                int s = Convert.ToInt32(start);
+                int e = Convert.ToInt32(end);
+                return (T)(object)(s + (int)Math.Round((e - s) * t));
+            }
+            else if (typeof(T) == typeof(Color))
+            {
+                Color startColor = (Color)(object)start;
+                Color endColor = (Color)(object)end;
+
+                return (T)(object)Color.FromArgb(
+                    (int)Math.Round(startColor.A + (endColor.A - startColor.A) * t),
+                    (int)Math.Round(startColor.R + (endColor.R - startColor.R) * t),
+                    (int)Math.Round(startColor.G + (endColor.G - startColor.G) * t),
+                    (int)Math.Round(startColor.B + (endColor.B - startColor.B) * t)
+                );
+            }
+            else
+            {
+                throw new NotSupportedException($"Type {typeof(T)} is not supported by ValueBlend.");
+            }
+        }
 
         #endregion
     }

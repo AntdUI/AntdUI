@@ -906,11 +906,8 @@ namespace AntdUI
                         {
                             var objs = new List<SelectItem>(items.Count);
                             foreach (var item in items) objs.Add(new SelectItem(item.Text, item));
-                            subForm = new LayeredFormSelectDown(this, 6, objs.ToArray(), SelectedTab, rect_r);
-                            subForm.Disposed += (a, b) =>
-                            {
-                                subForm = null;
-                            };
+                            subForm = new LayeredFormSelectDown(this, objs.ToArray(), 6, SelectedTab, rect_r);
+                            subForm.Disposed += (a, b) => subForm = null;
                             subForm.MouseLeave += (a, b) =>
                             {
                                 if (a is LayeredFormSelectDown form) form.IClose();

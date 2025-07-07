@@ -48,6 +48,7 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             colorPicker3 = new AntdUI.ColorPicker();
+            colorPicker2 = new AntdUI.ColorPicker();
             colorPicker1 = new AntdUI.ColorPicker();
             flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
@@ -72,6 +73,7 @@ namespace Demo.Controls
             flowLayoutPanel1.AutoScroll = true;
             flowLayoutPanel1.Controls.Add(colorPicker3);
             flowLayoutPanel1.Controls.Add(colorPicker1);
+            flowLayoutPanel1.Controls.Add(colorPicker2);
             flowLayoutPanel1.Dock = DockStyle.Fill;
             flowLayoutPanel1.Location = new Point(0, 74);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -86,6 +88,22 @@ namespace Demo.Controls
             colorPicker3.Size = new Size(47, 47);
             colorPicker3.TabIndex = 26;
             colorPicker3.Value = Color.FromArgb(22, 119, 255);
+            // 
+            // colorPicker2
+            // 
+            colorPicker2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            colorPicker2.Location = new Point(3, 3);
+            colorPicker2.Name = "colorPicker2";
+            colorPicker2.Size = new Size(128, 128);
+            colorPicker2.TabIndex = 26;
+            colorPicker2.Value = Color.FromArgb(22, 119, 255);
+            colorPicker2.Round = true;
+            colorPicker2.ShowClose = true;
+            colorPicker2.ShowReset = true;
+            colorPicker2.AllowClear = true;
+            colorPicker2.ShowText = false;
+            colorPicker2.ShowSymbol = true;
+            colorPicker2.Text = "C";
             // 
             // colorPicker1
             // 
@@ -114,6 +132,7 @@ namespace Demo.Controls
         private AntdUI.PageHeader header1;
         private FlowLayoutPanel flowLayoutPanel1;
         private AntdUI.ColorPicker colorPicker3;
+        private AntdUI.ColorPicker colorPicker2;
         private AntdUI.ColorPicker colorPicker1;
     }
 }

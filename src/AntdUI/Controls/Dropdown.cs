@@ -252,7 +252,7 @@ namespace AntdUI
                     }
                     else objs = new List<object>(0);
                     Expand = true;
-                    subForm = new LayeredFormSelectDown(this, Radius, objs);
+                    subForm = new LayeredFormSelectDown(this, objs);
                     subForm.Disposed += (a, b) =>
                     {
                         select_x = 0;

@@ -23,21 +23,20 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormMenuDown : ILayeredFormOpacityDown, SubLayeredForm
+    internal class LayeredFormMenuDown : ILayeredShadowForm, SubLayeredForm
     {
         #region 初始化
 
-        internal float Radius = 0;
-        TAMode Theme;
+        TAMode ColorScheme;
         bool isdark = false;
         List<OMenuItem> Items;
         Color? backColor, BackHover, BackActive, foreColor, ForeActive;
 
-        ScrollY? scrollY;
-        public LayeredFormMenuDown(Menu control, int radius, Rectangle rect_read, IList<MenuItem> items)
+        ScrollBar ScrollBar;
+        public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items)
         {
             MessageCloseMouseLeave = true;
-            Theme = control.ColorScheme;
+            ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
             PARENT = control;
@@ -49,99 +48,53 @@ namespace AntdUI
             BackHover = control.BackHover;
             BackActive = control.BackActive;
             Radius = (int)(radius * Config.Dpi);
-            Items = new List<OMenuItem>(items.Count);
-            Init(control, rect_read, items);
+            ScrollBar = new ScrollBar(this, ColorScheme);
+            var point = control.PointToScreen(Point.Empty);
+            Items = LoadLayout(items, point);
+            if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow, ref Inverted);
+            else
+            {
+                var screen = Screen.FromPoint(point).WorkingArea;
+                int x = point.X + control.Width - rect.X - shadow, y = point.Y + rect.Y + shadow;
+                if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + shadow;
+                if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + shadow;
+                SetLocation(x, y);
+            }
+            Init();
         }
 
-        public LayeredFormMenuDown(Menu parent, int sx, LayeredFormMenuDown control, float radius, Rectangle rect_read, MenuItemCollection items)
+        SubLayeredForm? lay;
+
+        public LayeredFormMenuDown(Menu control, int sx, LayeredFormMenuDown parent, int radius, float itemHeight, Rectangle rect, MenuItemCollection items)
         {
-            Theme = parent.ColorScheme;
-            isdark = Config.IsDark || parent.ColorScheme == TAMode.Dark;
-            parent.Parent.SetTopMost(Handle);
+            ColorScheme = control.ColorScheme;
+            isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
+            control.Parent.SetTopMost(Handle);
             select_x = sx;
-            PARENT = parent;
-            Font = control.Font;
-            backColor = control.backColor;
-            foreColor = control.foreColor;
-            ForeActive = control.ForeActive;
-            BackHover = control.BackHover;
-            BackActive = control.BackActive;
+            PARENT = control;
+            Font = parent.Font;
+            lay = parent;
+            backColor = parent.backColor;
+            foreColor = parent.foreColor;
+            ForeActive = parent.ForeActive;
+            BackHover = parent.BackHover;
+            BackActive = parent.BackActive;
             Radius = radius;
-            control.Disposed += (a, b) => { Dispose(); };
-            Items = new List<OMenuItem>(items.Count);
-            Init(control, rect_read, items);
+            parent.Disposed += (a, b) => Dispose();
+            ScrollBar = new ScrollBar(this, ColorScheme);
+            Items = LoadLayout(items, control.PointToScreen(Point.Empty));
+
+            CLocation(parent, rect, false, 0, ref Inverted);
+            Init();
         }
 
         public override string name => nameof(Menu);
 
         public ILayeredForm? SubForm() => subForm;
         LayeredFormMenuDown? subForm;
-        void Init(Control control, Rectangle rect_read, IList<MenuItem> items)
+        void Init()
         {
             if (OS.Win7OrLower) Select();
-            int y = 10, w = rect_read.Width, count = 0;
-            OMenuItem? oMenuItem = null;
-            Helper.GDI(g =>
-            {
-                var size = g.MeasureString(Config.NullText, Font);
-                int gap = (int)(4 * Config.Dpi), gap_y = (int)(5 * Config.Dpi), gap_x = (int)(12 * Config.Dpi),
-                gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
-                text_height = size.Height, item_height = text_height + gap_y2;
-                y += gap;
-
-                #region AutoWidth
-
-                int b_w = size.Width + gap_x2;
-                bool ui_icon = false, ui_arrow = false;
-                foreach (var it in items)
-                {
-                    if (it.Visible)
-                    {
-                        if (it.Text != null)
-                        {
-                            var size2 = g.MeasureText(it.Text, Font);
-                            if (size2.Width > b_w) b_w = size2.Width;
-                        }
-                        if (it.HasIcon) ui_icon = true;
-                        if (it.CanExpand) ui_arrow = true;
-                    }
-                }
-                if (ui_icon)
-                {
-                    if (ui_icon) b_w += text_height;
-                    else b_w += gap_y;
-                }
-                if (ui_arrow) b_w += gap_y2;
-                w = b_w + gap_x2 + gap2;
-
-                #endregion
-
-                foreach (var it in items)
-                {
-                    if (it.Visible)
-                    {
-                        Rectangle rect = new Rectangle(10 + gap, y, w - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
-                        var item = new OMenuItem(it, rect, gap_y, rect_text);
-                        Items.Add(item);
-                        if (it.Select) oMenuItem = item;
-                        y += item_height;
-                        count++;
-                    }
-                }
-                var vr = item_height * count;
-                y = 10 + gap_y2 + vr;
-            });
-            int h = y + 10;
-            if (control is LayeredFormMenuDown)
-            {
-                var point = control.PointToScreen(Point.Empty);
-                InitPoint(point.X + rect_read.Width, point.Y + rect_read.Y - 10, w + 20, h);
-            }
-            else
-            {
-                if (control is Menu menu && menu.Mode == TMenuMode.Horizontal) InitPoint(rect_read.X - 10, Config.ShadowEnabled ? rect_read.Bottom : rect_read.Bottom - 10, w + 20, h);
-                else InitPoint(Config.ShadowEnabled ? rect_read.Right : rect_read.Right - 10, rect_read.Y, w + 20, h);
-            }
             KeyCall = keys =>
             {
                 int _select_x = -1;
@@ -153,7 +106,6 @@ namespace AntdUI
                         IClose();
                         return true;
                     }
-                    if (nodata) return false;
                     if (keys == Keys.Enter)
                     {
                         if (hoveindex > -1)
@@ -209,94 +161,40 @@ namespace AntdUI
                 }
                 return false;
             };
-            if (oMenuItem != null) FocusItem(oMenuItem, false);
         }
-
-        void InitPoint(int x, int y, int w, int h)
-        {
-            var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
-            if (x < screen.X) x = screen.X;
-            else if (x > (screen.X + screen.Width) - w) x = screen.X + screen.Width - w;
-
-            if (h > screen.Height)
-            {
-                int gap_y = (int)(4 * Config.Dpi), vr = h, height = screen.Height;
-                scrollY = new ScrollY(this);
-                scrollY.Rect = new Rectangle(w - gap_y - scrollY.SIZE, 10 + gap_y, scrollY.SIZE, height - 20 - gap_y * 2);
-                scrollY.Show = true;
-                scrollY.SetVrSize(vr, height);
-                h = height;
-            }
-
-            if (y < screen.Y) y = screen.Y;
-            else if (y > (screen.Y + screen.Height) - h) y = screen.Y + screen.Height - h;
-
-            SetLocation(x, y);
-            SetSize(w, h);
-        }
-
-        public void FocusItem(OMenuItem it, bool print = true)
-        {
-            if (it.SetHover(true))
-            {
-                if (scrollY != null && scrollY.Show) scrollY.Value = it.Rect.Y - it.Rect.Height;
-                if (print) Print();
-            }
-        }
-
-        /// <summary>
-        /// 是否显示暂无数据
-        /// </summary>
-        bool nodata = false;
 
         #endregion
 
         #region 渲染
 
         StringFormat sf = Helper.SF(lr: StringAlignment.Near);
-        public override Bitmap PrintBit()
+        public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            var rect = TargetRectXY;
-            var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay(true))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
-                using (var path = rect_read.RoundPath(Radius))
+                g.Fill(brush, path);
+            }
+        }
+        public override void PrintContent(Canvas g, Rectangle rect)
+        {
+            if (ScrollBar.ShowY) g.TranslateTransform(0, -ScrollBar.ValueY);
+            if (foreColor.HasValue)
+            {
+                using (var brush = new SolidBrush(foreColor.Value))
                 {
-                    DrawShadow(g, rect);
-                    g.Fill(backColor ?? Colour.BgElevated.Get("Menu", Theme), path);
-                    if (nodata) g.PaintEmpty(rect_read, Font, Color.FromArgb(180, Colour.Text.Get("Menu", Theme)));
-                    else
-                    {
-                        g.SetClip(rect_read);
-                        if (scrollY != null && scrollY.Show) g.TranslateTransform(0, -scrollY.Value);
-                        if (foreColor.HasValue)
-                        {
-                            using (var brush = new SolidBrush(foreColor.Value))
-                            {
-                                foreach (var it in Items)
-                                {
-                                    if (it.Show) DrawItem(g, brush, it);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            using (var brush = new SolidBrush(Colour.Text.Get("Menu", Theme)))
-                            {
-                                foreach (var it in Items)
-                                {
-                                    if (it.Show) DrawItem(g, brush, it);
-                                }
-                            }
-                        }
-                        g.ResetClip();
-                        g.ResetTransform();
-                        scrollY?.Paint(g);
-                    }
+                    foreach (var it in Items) DrawItem(g, brush, it);
                 }
             }
-            return original_bmp;
+            else
+            {
+                using (var brush = new SolidBrush(Colour.Text.Get("Menu", ColorScheme)))
+                {
+                    foreach (var it in Items) DrawItem(g, brush, it);
+                }
+            }
+            g.ResetClip();
+            g.ResetTransform();
+            ScrollBar.Paint(g);
         }
 
         void DrawItem(Canvas g, SolidBrush brush, OMenuItem it)
@@ -309,9 +207,9 @@ namespace AntdUI
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.Primary.Get("Menu", Theme), path);
+                            g.Fill(BackActive ?? Colour.Primary.Get("Menu", ColorScheme), path);
                         }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", ColorScheme)))
                         {
                             g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
                         }
@@ -323,7 +221,7 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
+                                g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", ColorScheme), path);
                             }
                         }
                         g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
@@ -336,9 +234,9 @@ namespace AntdUI
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu", Theme), path);
+                            g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu", ColorScheme), path);
                         }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", Theme)))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get("Menu", ColorScheme)))
                         {
                             g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
                         }
@@ -349,7 +247,7 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", Theme), path);
+                                g.Fill(BackHover ?? Colour.FillTertiary.Get("Menu", ColorScheme), path);
                             }
                         }
                         g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
@@ -365,18 +263,18 @@ namespace AntdUI
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.Primary.Get("Menu", Theme), path);
+                            g.Fill(BackActive ?? Colour.Primary.Get("Menu", ColorScheme), path);
                         }
                     }
                     else
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu", Theme), path);
+                            g.Fill(BackActive ?? Colour.PrimaryBg.Get("Menu", ColorScheme), path);
                         }
                     }
                 }
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu", Theme)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get("Menu", ColorScheme)))
                 {
                     g.DrawText(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, sf);
                 }
@@ -391,36 +289,103 @@ namespace AntdUI
         }
         void PaintArrow(Canvas g, OMenuItem item, Color color)
         {
-            int size = item.arr_rect.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.arr_rect.X + size_arrow, item.arr_rect.Y + size_arrow);
+            int size = item.RectArrow.Width, size_arrow = size / 2;
+            g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
             g.RotateTransform(-90F);
-            using (var pen = new Pen(color, 2F))
+            using (var pen = new Pen(color, Config.Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arr_rect.Width, item.arr_rect.Height).TriangleLines(-1, .2F));
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .7F));
             }
             g.ResetTransform();
         }
 
-        SafeBitmap? shadow_temp;
-        /// <summary>
-        /// 绘制阴影
-        /// </summary>
-        /// <param name="g">GDI</param>
-        /// <param name="rect">客户区域</param>
-        void DrawShadow(Canvas g, Rectangle rect)
+        #endregion
+
+        #region 布局
+
+        int tmp_padd = 0;
+        List<OMenuItem> LoadLayout(IList<MenuItem> items, Point point) => Helper.GDI(g => LoadLayout(g, items, point));
+        List<OMenuItem> LoadLayout(Canvas g, IList<MenuItem> items, Point point)
         {
-            if (Config.ShadowEnabled)
+            var text_height = g.MeasureString(Config.NullText, Font).Height;
+
+            int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(12 * Config.Dpi), gap_y = (int)(5 * Config.Dpi),
+            icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
+            gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+
+            tmp_padd = padd;
+
+            #region 计算最大区域
+
+            int maxw = ItemMaxWidth(g, items, text_height, icon_size, icon_gap), maxwr = maxw + gap_x2;
+
+            int y = 0, sy = 0, count = 0;
+            var lists = new List<OMenuItem>(items.Count);
+            foreach (var it in items)
             {
-                if (shadow_temp == null)
+                if (it.Visible)
                 {
-                    shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
+                    var rect = new Rectangle(padd, padd + y, maxwr, item_height);
+                    int ux = gap_x, uw = gap_x2;
+                    var item = new OMenuItem(it, rect);
+                    if (it.HasIcon)
                     {
-                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
+                        int tmp = icon_size + icon_gap;
+                        item.RectIcon = new Rectangle(rect.X + ux, rect.Y + icon_xy, icon_size, icon_size);
+                        ux += tmp;
+                        uw += tmp;
                     }
+                    if (it.CanExpand)
+                    {
+                        item.RectArrow = new Rectangle(rect.Right - gap_x - icon_size, rect.Y + icon_xy, icon_size, icon_size);
+                        uw += icon_size + icon_gap;
+                    }
+                    item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
+                    if (it.Select && sy == 0) sy = y;
+                    y += item_height;
+                    lists.Add(item);
+                    count++;
                 }
-                g.Image(shadow_temp.Bitmap, rect, .2F);
+            }
+
+            #endregion
+
+            int maxh = item_height * count + padd2;
+            int h = maxh, w = maxw + padd2 + gap_x2;
+
+            var screen = Screen.FromPoint(point).WorkingArea;
+            if (h > screen.Height - shadow2)
+            {
+                h = screen.Height - shadow2;
+                ScrollBar.SizeChange(new Rectangle(0, 0, w, h));
+                ScrollBar.SetVrSize(0, maxh);
+                if (sy > 0) ScrollBar.ValueY = sy;
+            }
+
+            SetSize(w, h);
+            return lists;
+        }
+        int ItemMaxWidth(Canvas g, IList<MenuItem> items, int text_height, int icon_size, int icon_gap)
+        {
+            int tmp = 0;
+            foreach (var it in items)
+            {
+                int tmp2 = g.MeasureText(it.Text, Font).Width;
+                if (it.HasIcon) tmp2 += icon_size + icon_gap;
+                if (it.items != null && it.items.Count > 0) tmp2 += icon_size + icon_gap;
+
+                if (tmp2 > tmp) tmp = tmp2;
+            }
+            return tmp;
+        }
+
+        public void FocusItem(OMenuItem item)
+        {
+            if (item.SetHover(true))
+            {
+                if (ScrollBar.ShowY) ScrollBar.ValueY = item.Rect.Y - item.Rect.Height;
+                Print();
             }
         }
 
@@ -430,37 +395,38 @@ namespace AntdUI
 
         internal int select_x = 0;
         int hoveindex = -1, hoveindexold = -1;
-
-        protected override void OnMouseUp(MouseEventArgs e)
+        bool down = false;
+        protected override void OnMouseDown(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (RunAnimation) return;
-            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
-            foreach (var it in Items)
+            if (ScrollBar.MouseDown(x, y))
             {
-                if (it.Show && it.Val.Enabled && it.Contains(e.X, e.Y + y, out _))
-                {
-                    if (OnClick(it)) return;
-                }
+                OnTouchDown(x, y);
+                down = true;
             }
-            base.OnMouseUp(e);
         }
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (RunAnimation) return;
-            base.OnMouseMove(e);
-            hoveindex = -1;
-            int y = (scrollY != null && scrollY.Show) ? (int)scrollY.Value : 0;
-            int count = 0;
-            for (int i = 0; i < Items.Count; i++)
+            if (ScrollBar.MouseMove(x, y) && OnTouchMove(x, y))
             {
-                var it = Items[i];
-                if (it.Show && it.Val.Enabled)
+                hoveindex = -1;
+                int count = 0, hand = 0, sy = ScrollBar.Value;
+                for (int i = 0; i < Items.Count; i++)
                 {
-                    if (it.Contains(e.X, e.Y + y, out var change)) hoveindex = i;
-                    if (change) count++;
+                    var it = Items[i];
+                    if (it.Val.Enabled)
+                    {
+                        if (it.Contains(x, y + sy, out var change))
+                        {
+                            hand++;
+                            hoveindex = i;
+                        }
+                        if (change) count++;
+                    }
                 }
+                if (count > 0) Print();
+                SetCursor(hand > 0);
             }
-            if (count > 0) Print();
+            else SetCursor(false);
             if (hoveindexold == hoveindex) return;
             hoveindexold = hoveindex;
             subForm?.IClose();
@@ -472,12 +438,28 @@ namespace AntdUI
                 if (it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
             }
         }
-
-        protected override void OnMouseWheel(MouseEventArgs e)
+        protected override void OnMouseUp(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            scrollY?.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
+            if (ScrollBar.MouseUp() && OnTouchUp() && down)
+            {
+                down = false;
+                int sy = ScrollBar.Value;
+                foreach (var it in Items)
+                {
+                    if (it.Val.Enabled && it.Contains(x, y + sy, out _))
+                    {
+                        if (OnClick(it)) return;
+                    }
+                }
+            }
+            else down = false;
         }
+
+        protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta)
+        {
+            if (delta != 0) ScrollBar.MouseWheel(delta);
+        }
+        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         bool OnClick(OMenuItem it)
         {
@@ -501,12 +483,24 @@ namespace AntdUI
 
         void OpenDown(OMenuItem it)
         {
+            var rect = new Rectangle(it.Rect.X + tmp_padd, it.Rect.Y - ScrollBar.ValueY - tmp_padd, it.Rect.Width, it.Rect.Height);
             if (PARENT is Menu menu)
             {
-                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, new Rectangle(it.Rect.X, it.Rect.Y - 0, it.Rect.Width, it.Rect.Height), it.Sub);
+                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, tmp_padd + it.Rect.Height / 2F, rect, it.Sub);
                 subForm.Show(this);
             }
         }
+        public override void IClosing()
+        {
+            var item = this;
+            while (item.lay is LayeredFormMenuDown form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
+            }
+        }
+
 
         #endregion
 
@@ -514,19 +508,11 @@ namespace AntdUI
 
         internal class OMenuItem
         {
-            public OMenuItem(MenuItem _val, Rectangle rect, int gap_y, Rectangle rect_text)
+            public OMenuItem(MenuItem _val, Rectangle rect)
             {
                 Sub = _val.Sub;
                 if (_val.CanExpand) has_sub = true;
                 Rect = rect;
-                if (_val.HasIcon)
-                {
-                    RectIcon = new Rectangle(rect_text.X, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new Rectangle(rect_text.X + gap_y + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y, rect_text.Height);
-                }
-                else RectText = rect_text;
-                arr_rect = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
-                Show = true;
                 Val = _val;
             }
 
@@ -541,9 +527,8 @@ namespace AntdUI
             public Rectangle RectIcon { get; set; }
 
             public bool Hover { get; set; }
-            public bool Show { get; set; }
 
-            internal Rectangle arr_rect { get; set; }
+            internal Rectangle RectArrow { get; set; }
 
             public Rectangle Rect { get; set; }
             internal bool SetHover(bool val)

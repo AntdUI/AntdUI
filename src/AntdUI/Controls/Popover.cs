@@ -17,6 +17,7 @@
 // QQ: 17379620
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -159,6 +160,11 @@ namespace AntdUI
             /// 控件显示后回调
             /// </summary>
             public Action? OnControlLoad { get; set; }
+
+            /// <summary>
+            /// 控件关闭前回调
+            /// </summary>
+            public Action<object, CancelEventArgs>? OnClosing { get; set; }
 
             /// <summary>
             /// 自动关闭时间（秒）0等于不关闭

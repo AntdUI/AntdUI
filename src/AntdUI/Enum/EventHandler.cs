@@ -562,6 +562,11 @@ namespace AntdUI
             Input.Dispose();
             input.Location = point;
             input.Size = size;
+            if (Column != null)
+            {
+                input.ReadOnly = Column.ReadOnly;
+                if (input.ReadOnly) input.BackColor = AntdUI.Style.Db.BorderSecondary;
+            }
             Input = input;
         }
 
@@ -761,6 +766,61 @@ namespace AntdUI
         /// </summary>
         public Column? Column { get; private set; }
     }
+    public class TableFilterPopupBeginEventArgs : EventArgs
+    {
+        public TableFilterPopupBeginEventArgs(Column column)
+        {
+            Column = column;
+        }
+
+        /// <summary>
+        /// 筛选列
+        /// </summary>
+        public Column Column { get; private set; }
+        /// <summary>
+        /// 筛选选项
+        /// </summary>
+        public FilterOption? Option { get { return Column.Filter; } }
+        /// <summary>
+        /// 当前列的自定义数据源
+        /// </summary>
+        public System.Collections.Generic.IList<object>? CustomSource { get; set; }
+        /// <summary>
+        /// 筛选栏字体
+        /// </summary>
+        public Font? Font { get; set; } = null;
+        /// <summary>
+        /// 筛选栏高度
+        /// </summary>
+        public int Height { get; set; } = 0;
+        /// <summary>
+        /// 是否取消弹出
+        /// </summary>
+        public bool Cancel { get; set; }
+    }
+
+    public class TableFilterPopupEndEventArgs : EventArgs
+    {
+        public TableFilterPopupEndEventArgs(Popover.Config config, FilterOption option)
+        {
+            Config = config;
+            Option = option;
+        }
+
+        /// <summary>
+        /// 参数
+        /// </summary>
+        public Popover.Config Config { get; private set; }
+
+        /// <summary>
+        /// 当前列的自定义数据源
+        /// </summary>
+        public FilterOption Option { get; private set; }
+        /// <summary>
+        /// 是否取消关闭
+        /// </summary>
+        public bool Cancel { get; set; }
+    }
 
     #endregion
 
@@ -871,6 +931,27 @@ namespace AntdUI
     }
 
     public delegate void CollapseSwitchCheckedChangedEventHandler(object sender, CollapseSwitchCheckedChangedEventArgs e);
+
+    public class CollapseEditChangedEventArgs : VEventArgs<object>
+    {
+        public CollapseEditChangedEventArgs(Collapse parent, CollapseItem parentItem, object value) : base(value)
+        {
+            Parent = parent;
+            ParentItem = parentItem;
+        }
+        public Collapse Parent { get; private set; }
+        public CollapseItem ParentItem { get; private set; }
+
+    }
+    public delegate void CollapseEditChangedEventHandler(object sender, CollapseEditChangedEventArgs e);
+
+    public class CollapseCustomInputEditEventArgs : EventArgs
+    {
+        public CollapseCustomInputEditEventArgs() { }
+
+        public IControl Edit { get; set; }
+    }
+    public delegate void CollapseCustomInputEditEventHandler(object sender, CollapseCustomInputEditEventArgs e);
 
     #endregion
 

@@ -179,6 +179,11 @@ namespace AntdUI
         /// </summary>
         [Description("只保持一个展开"), Category("外观"), DefaultValue(false)]
         public bool Unique { get; set; }
+        /// <summary>
+        /// 展开/折叠的动画速度
+        /// </summary>
+        [Description("展开/折叠的动画速度"), Category("行为"), DefaultValue(100)]
+        public int AnimationSpeed { get; set; } = 100;
 
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding);
 
@@ -206,6 +211,12 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 超出文字提示配置
+        /// </summary>
+        [Browsable(false)]
+        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
         #endregion
 
         #region 布局
@@ -286,23 +297,28 @@ namespace AntdUI
                     if (it.buttons != null && it.buttons.Count > 0)
                     {
                         int bx = rectButtons.Right;
+                        int gapW = (int)(4 * Config.Dpi);
                         foreach (var btn in it.buttons)
                         {
                             btn.PARENT = this;
                             btn.PARENTITEM = it;
-                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : 4);
+                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
                             int space = (rectButtons.Height - height) / 2;
                             bx -= space;
+                            int? width = btn.Width;
+                            if (width == null)
+                            {
+                                bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                                string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
 
-                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
-                            string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+                                var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                                width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Config.Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                            }
 
-                            var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                            int width = btn.SwitchMode ? size_btn.Width * 3 : (emptyIcon ? 8 : rectButtons.Height) + size_btn.Width + 4;
                             if (width < height) width = btn.SwitchMode ? height * 4 : height;
-                            Rectangle rectItem = new Rectangle(bx - width, rectButtons.Top + ((rectButtons.Height - height) / 2), width, height);
-                            btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - 8);
-                            bx -= (width + space);
+                            Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
+                            btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - (int)(8 * Config.Dpi));
+                            bx -= (width.Value + space);
                         }
                     }
                     Rectangle Rect;
@@ -606,41 +622,33 @@ namespace AntdUI
                 foreach (var btn in item.buttons)
                 {
                     if (btn.Show == false) continue;
-                    if (!btn.SwitchMode)
+                    if (btn.EditType != EButtonEditTypes.Switch)
                     {
+                        if (btn.EditType == EButtonEditTypes.Input || btn.EditType == EButtonEditTypes.Custom) continue;
+
                         if (btn.Enabled)
                         {
-                            if (btn.Select)
+                            if (btn.Select || btn.AnimationClick) CollapseGroup.PaintBack(g, btn, active, radius);
+                            if (btn.AnimationHover)
                             {
-                                CollapseGroup.PaintBack(g, btn, active, radius);
-                                if (btn.AnimationHover)
+                                using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
                                 {
-                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
-                                    {
-                                        CollapseGroup.PaintBack(g, btn, brush, radius);
-                                    }
+                                    CollapseGroup.PaintBack(g, btn, brush, radius);
                                 }
-                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
-
-                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore_active.Color);
-                                g.String(btn.Text, Font, fore_active, btn.txt_rect, s_c);
                             }
-                            else
+                            else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
+                            else if (btn.AnimationClick)
                             {
-                                if (btn.AnimationHover)
+                                var rect_read = btn.rect;
+                                using (var path = rect_read.RoundPath(rect_read.Height))
                                 {
-                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
-                                    {
-                                        CollapseGroup.PaintBack(g, btn, brush, radius);
-                                    }
+                                    Color _color = btn.Back ?? active.Color;
+                                    PaintClick(g, path, rect_read, rect_read, _color, btn);
                                 }
-                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
-
-                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, fore.Color);
-                                g.String(btn.Text, Font, fore, btn.txt_rect, s_c);
                             }
+                            if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, (btn.Select || btn.AnimationClick ? fore_active : fore).Color);
+                            g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
                         }
                         else
                         {
@@ -753,6 +761,8 @@ namespace AntdUI
                     if (btn.Contains(e.X, e.Y))
                     {
                         item.MDown = true;
+                        btn.AnimationClick = true;
+                        Invalidate(btn.rect);
                         return;
                     }
                 }
@@ -782,8 +792,8 @@ namespace AntdUI
                                     item.MDown = false;
                                     return;
                                 }
-
-                                btn.Select = true;
+                                btn.AnimationClick = false;
+                                if (btn.EditType != EButtonEditTypes.Button) btn.Select = true;
 
                                 OnButtonClickChanged(item, btn);
 
@@ -798,7 +808,14 @@ namespace AntdUI
             }
             base.OnMouseUp(e);
         }
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
 
+            tooltipForm?.Close();
+            tooltipForm = null;
+
+        }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (items == null || items.Count == 0) return;
@@ -821,15 +838,25 @@ namespace AntdUI
                             SetCursor(true);
                             Invalidate();
                         }
+                        if (string.IsNullOrEmpty(btn.Tooltip) == false)
+                        {
+                            Point location = PointToScreen(btn.rect.Location);
+                            //location.Y += btn.rect.Height;
+                            ShowTooltip(btn, new Rectangle(location, new Size(btn.rect.Width, btn.rect.Height)));
+                        }
                         return;
                     }
                     else
                     {
+                        //tooltipForm?.Close();
+                        //tooltipForm = null;
+
                         if (btn.AnimationHover)
                         {
                             btn.AnimationHover = false;
                             if (btn.SwitchMode) btn.ExtraMouseHover = false;
                         }
+                        btn.AnimationClick = false;
                     }
                 }
             }
@@ -837,6 +864,21 @@ namespace AntdUI
             base.OnMouseMove(e);
         }
 
+        TooltipForm? tooltipForm;
+        void ShowTooltip(CollapseGroupButton btn, Rectangle rect)
+        {
+            if (btn.Tooltip == null) return;
+            if (tooltipForm == null)
+            {
+                tooltipForm = new TooltipForm(this, rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = this.Font,
+                    ArrowAlign = TAlign.Bottom,
+                });
+                tooltipForm.Show(this);
+            }
+            else tooltipForm.SetText(rect, btn.Tooltip);
+        }
         #endregion
 
         #region 方法
@@ -846,18 +888,17 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             foreach (var it in items)
             {
-                if (it.buttons != null && it.buttons.Count > 0)
-                {
-                    foreach (var btn in it.buttons) btn.Select = false;
-                }
+                IUSelect(it);
             }
         }
         public void IUSelect(CollapseItem item)
         {
             if (item.buttons == null || item.buttons.Count == 0) return;
-            foreach (var btn in item.buttons) btn.Select = false;
+            foreach (var btn in item.buttons)
+            {
+                btn.Select = false;
+            }
         }
-
         #endregion
 
         #region 设计器
@@ -962,7 +1003,7 @@ namespace AntdUI
                     float oldval = -1;
                     if (ThreadExpand?.Tag is float oldv) oldval = oldv;
                     ExpandThread = true;
-                    var t = Animation.TotalFrames(10, 200);
+                    var t = Animation.TotalFrames(10, PARENT.AnimationSpeed < 10 ? 10 : PARENT.AnimationSpeed);
                     if (value)
                     {
                         ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
@@ -995,6 +1036,7 @@ namespace AntdUI
                     PARENT?.LoadLayout();
                     if (!value) Location = new Point(-Width, -Height);
                 }
+
             }
         }
 
@@ -1070,7 +1112,11 @@ namespace AntdUI
         internal bool Contains(int x, int y)
         {
             if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
-            return RectArrow.Contains(x, y);
+            foreach (var btn in buttons)
+            {
+                if (btn.Contains(x, y)) return false;
+            }
+            return RectTitle.Contains(x, y);
         }
 
         #endregion

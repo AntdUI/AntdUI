@@ -13,11 +13,12 @@
 		<Description>Winform UI library use Ant Design 5.0</Description>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Version>2.0.7</Version>
+		<Version>2.0.9</Version>
 		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
 		<RepositoryUrl>https://gitee.com/AntdUI/AntdUI</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>AntdUI;Winform;WinformUI;AntDesign;UI;Control;Ant;界面库;控件;</PackageTags>
@@ -26,7 +27,6 @@
 		<PackageProjectUrl>https://gitee.com/AntdUI</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-		<SignAssembly>False</SignAssembly>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

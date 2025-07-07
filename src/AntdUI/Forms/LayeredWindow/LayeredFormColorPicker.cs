@@ -31,19 +31,20 @@ namespace AntdUI
         readonly int ArrowSize = 8;
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28, btn_size = 24;//260
         int offy = 0;
-        Color Value, ValueNAlpha, ValueHue;
+        Color Value, ValueNAlpha, ValueHue, ValueDefault = Color.Empty;
         Action<Color> action;
         TColorMode mode;
         PointF[]? rect_arrow;
-        bool AllowClear = false, ShowClose = false;
+        bool AllowClear = false, ShowClose = false, ShowReset = false;
         TAMode ColorScheme;
-        public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
+        public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Color clrDefault, Action<Color> _action)
         {
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
             AllowClear = control.AllowClear;
             ShowClose = control.ShowClose;
-            Font = control.Font;
+            ShowReset = control.ShowReset;
+            Font = control.Font.Size > 15f ? new Font(control.Font.Name, 15f, control.Font.Unit) : control.Font;//字体过大时, 编辑器文本超出编辑框
             mode = control.Mode;
             MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
             color_alpha = Value = control.Value;
@@ -54,6 +55,7 @@ namespace AntdUI
             Radius = control.Radius * Config.Dpi;
             Radius2 = Radius * 0.75F;
             PARENT = control;
+            ValueDefault = clrDefault;
             action = _action;
             int colors_h = 160;
             if (Config.Dpi != 1F)
@@ -95,9 +97,10 @@ namespace AntdUI
             }
             int y = 10;
 
-            if (AllowClear || ShowClose)
+            if (AllowClear || ShowClose || ShowReset)
             {
                 if (AllowClear) rect_btn = new Rectangle(10 + w - gap - btn_size, y + gap, btn_size, btn_size);
+                if (ShowReset) rect_reset = new Rectangle(10 + w - (btn_size + gap) * 2, y + gap, btn_size, btn_size);
                 if (ShowClose) rect_close = new Rectangle(10 + gap, y + gap, btn_size, btn_size);
                 offy = btn_size + line_h + line_h / 2;
                 y += offy;
@@ -142,7 +145,7 @@ namespace AntdUI
             SetSize(r_w, r_h);
             rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
 
-            Location = TargetRect.Location;
+            Location = new Point(TargetRect.Location.X - control.WaveSize, TargetRect.Y);//有缺口，位置需要偏移
             Size = TargetRect.Size;
 
             var rect_input = new Rectangle(rect_colors_big.X + 4, yb + line_h + gap, rect_colors_big.Width - 8, panel_color);
@@ -455,6 +458,14 @@ namespace AntdUI
                     }
                 }
                 else if (ShowClose && rect_close.Contains(e.Location)) IClose();
+                else if (ShowReset && rect_reset.Contains(e.Location))
+                {
+                    if (PARENT is ColorPicker color && color.HasValue)
+                    {
+                        color.Value = ValueDefault;
+                        Print();
+                    }
+                }
             }
             base.OnMouseDown(e);
         }
@@ -478,6 +489,15 @@ namespace AntdUI
                 if (hover != hover_close)
                 {
                     hover_close = hover;
+                    count++;
+                }
+            }
+            if (ShowReset)
+            {
+                var hover = rect_reset.Contains(e.X, e.Y);
+                if (hover != hover_reset)
+                {
+                    hover_reset = hover;
                     count++;
                 }
             }
@@ -549,8 +569,8 @@ namespace AntdUI
 
         #region 渲染
 
-        bool hover_btn = false, hover_close = false;
-        Rectangle rect_btn, rect_close;
+        bool hover_btn = false, hover_close = false, hover_reset;
+        Rectangle rect_btn, rect_close, rect_reset;
 
         public override Bitmap PrintBit()
         {
@@ -596,6 +616,22 @@ namespace AntdUI
                         g.PaintIconClose(rect_close, Colour.TextTertiary.Get("ColorPicker", ColorScheme), .8F);
                     }
 
+                    if (ShowReset)
+                    {
+                        using (var path = rect_reset.RoundPath(Radius2))
+                        {
+                            if (ValueDefault != Color.Empty)
+                            {
+                                using (SolidBrush brush = new SolidBrush(hover_reset ? Color.FromArgb(200, ValueDefault) : ValueDefault))
+                                {
+                                    g.Fill(brush, path);
+                                }
+                            }
+
+                            g.Draw(hover_close ? Colour.BorderColor.Get("ColorPicker", ColorScheme) : Colour.Split.Get("ColorPicker", ColorScheme), Config.Dpi, path);
+                        }
+                        g.PaintIconReset(rect_reset, Colour.TextTertiary.Get("ColorPicker", ColorScheme), .8F);
+                    }
                     #region 调色板
 
                     using (var bmp = new Bitmap(rect_colors.Width, rect_colors.Height))

@@ -1801,6 +1801,11 @@ namespace AntdUI
         public string? MaxWidth { get; set; }
 
         /// <summary>
+        /// 只读
+        /// </summary>
+        public bool ReadOnly { get; set; }
+
+        /// <summary>
         /// 设置列最大宽度
         /// </summary>
         public Column SetMaxWidth(string? value = null)
@@ -1911,6 +1916,8 @@ namespace AntdUI
             return this;
         }
 
+        #region 排序
+
         bool sortorder = false;
         /// <summary>
         /// 启用排序
@@ -1959,6 +1966,43 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        #endregion
+
+        #region 筛选
+
+        /// <summary>
+        /// 存在筛选
+        /// </summary>
+        public bool HasFilter { get; private set; }
+
+        FilterOption? filter { get; set; }
+        /// <summary>
+        /// 用户筛选选项
+        /// </summary>
+        public FilterOption? Filter
+        {
+            get => filter;
+            set
+            {
+                filter = value;
+                if (filter == null) HasFilter = false;
+                else HasFilter = true;
+            }
+        }
+
+        /// <summary>
+        /// 设置默认筛选选项
+        /// </summary>
+        /// <param name="type">数据类型</param>
+        /// <returns></returns>
+        public Column SetDefaultFilter(Type type)
+        {
+            Filter = new FilterOption(type);
+            return this;
+        }
+
+        #endregion
 
         /// <summary>
         /// 列可拖拽

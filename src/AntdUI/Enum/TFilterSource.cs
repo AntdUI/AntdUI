@@ -19,25 +19,56 @@
 namespace AntdUI
 {
     /// <summary>
-    /// 菜单模式
+    /// 筛选数据源
     /// </summary>
-    public enum TMenuMode
+    public enum FilterSource
     {
         /// <summary>
-        /// 内嵌模式
+        /// 当前筛选结果集
         /// </summary>
-        Inline,
+        Current = 0,
         /// <summary>
-        /// 垂直模式
+        /// 先从当前筛选结果集获取数据源，如果没有数据则从原始数据源获取
         /// </summary>
-        Vertical,
+        CurrentFirst = 1,
         /// <summary>
-        /// 水平模式
+        /// 始终从原始数据源获取数据
         /// </summary>
-        Horizontal,
-        /// <summary>
-        /// 内嵌模式（无文本）
-        /// </summary>
-        InlineNoText
+        DataSource = 2,
     }
+    /// <summary>
+    /// 筛选条件
+    /// </summary>
+    public enum FilterConditions
+    {
+        /// <summary>
+        /// 等于
+        /// </summary>
+        Equal = 0,
+        /// <summary>
+        /// 不等于
+        /// </summary>
+        NotEqual = 1,
+        /// <summary>
+        /// 大于
+        /// </summary>
+        Greater = 2,
+        /// <summary>
+        /// 小于
+        /// </summary>
+        Less = 3,
+        /// <summary>
+        /// 存在...
+        /// </summary>
+        Contain = 4,
+        /// <summary>
+        /// 不存在...
+        /// </summary>
+        NotContain = 5,
+        /// <summary>
+        /// 不启用
+        /// </summary>
+        None = 6,
+    }
+
 }

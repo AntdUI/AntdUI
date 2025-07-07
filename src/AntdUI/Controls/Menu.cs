@@ -195,11 +195,26 @@ namespace AntdUI
         [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Hover)]
         public Trigger Trigger { get; set; } = Trigger.Hover;
 
+        bool indent = false;
         /// <summary>
         /// 常规缩进
         /// </summary>
         [Description("常规缩进"), Category("外观"), DefaultValue(false)]
-        public bool Indent { get; set; }
+        public bool Indent
+        {
+            get { return indent; }
+            set
+            {
+                if (indent == value) return;
+                indent = value;
+                if (IsHandleCreated)
+                {
+                    ChangeList();
+                    Invalidate();
+                }
+                OnPropertyChanged(nameof(Indent));
+            }
+        }
 
         bool unique = false;
         /// <summary>
@@ -518,13 +533,13 @@ namespace AntdUI
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
                 if (it.HasIcon) icon_count++;
-                it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
+                it.SetRect(mode == TMenuMode.InlineNoText ? 0 : depth, Indent, mode, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap);
                 if (it.Visible)
                 {
                     int size = g.MeasureText(it.Text, it.Font ?? Font).Width + gap * 4 + icon_size + it.arr_rect.Width;
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + sp;
-                    if (mode == TMenuMode.Inline && it.CanExpand)
+                    if ((mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText) && it.CanExpand)
                     {
                         if (!collapsed)
                         {
@@ -811,7 +826,7 @@ namespace AntdUI
         {
             using (var brush = new SolidBrush(fore))
             {
-                g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                if (mode != TMenuMode.InlineNoText) g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
                 if (FocusedMark) //增加焦点块
                 {
                     int fh = it.rect.Height - (it.rect.Height / 3);
@@ -825,7 +840,7 @@ namespace AntdUI
         {
             if (it.CanExpand)
             {
-                if (mode == TMenuMode.Inline)
+                if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText)
                 {
                     using (var pen = new Pen(fore, 2F))
                     {
@@ -842,8 +857,12 @@ namespace AntdUI
                     }
                 }
             }
-            g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
-            PaintIcon(g, it, fore);
+            if (mode == TMenuMode.InlineNoText) PaintIcon(g, it, fore);
+            else
+            {
+                g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
+                PaintIcon(g, it, fore);
+            }
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
         {
@@ -954,11 +973,8 @@ namespace AntdUI
                                 {
                                     if (subForm == null)
                                     {
-                                        var _rect = RectangleToScreen(ClientRectangle);
-                                        var Rect = item.Rect;
-                                        var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                                         select_x = 0;
-                                        subForm = new LayeredFormMenuDown(this, radius, rect, item.items);
+                                        subForm = new LayeredFormMenuDown(this, radius, item.Rect, item.items);
                                         subForm.Show(this);
                                     }
                                     else { subForm.IClose(); subForm = null; }
@@ -1021,9 +1037,7 @@ namespace AntdUI
                                 {
                                     if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
                                 }
-                                var _rect = RectangleToScreen(ClientRectangle);
-                                var rect = new Rectangle(_rect.X + rect_r.X, _rect.Y + rect_r.Y, rect_r.Width, rect_r.Height);
-                                subForm = new LayeredFormMenuDown(this, radius, rect, list);
+                                subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
                                 subForm.Show(this);
                             }
                             foreach (var it in items) it.Hover = false;
@@ -1062,34 +1076,24 @@ namespace AntdUI
                             tooltipForm = null;
                             if (hoveindex > -1)
                             {
-                                var _rect = RectangleToScreen(ClientRectangle);
                                 var it = items[hoveindex];
                                 if (it == null) return;
-                                var Rect = it.Rect;
-                                var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                                 if (it.items != null && it.items.Count > 0)
                                 {
                                     select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
+                                    subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
                                     subForm.Show(this);
                                 }
                                 else if (it.Text != null)
                                 {
-                                    if (tooltipForm == null)
-                                    {
-                                        tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
-                                        {
-                                            Font = it.Font ?? Font,
-                                            ArrowAlign = TAlign.Right,
-                                        });
-                                        tooltipForm.Show(this);
-                                    }
-                                    else tooltipForm.SetText(rect, it.Text);
+                                    var _rect = RectangleToScreen(ClientRectangle);
+                                    var rect = new Rectangle(_rect.X + it.Rect.X, _rect.Y + it.Rect.Y, it.Rect.Width, it.Rect.Height);
+                                    ShowTooltip(it, rect);
                                 }
                             }
                         }
                     }
-                    else if (mode == TMenuMode.Inline)
+                    else if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText)
                     {
                         foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
                     }
@@ -1119,15 +1123,12 @@ namespace AntdUI
                             tooltipForm = null;
                             if (hoveindex > -1)
                             {
-                                var _rect = RectangleToScreen(ClientRectangle);
                                 var it = items[hoveindex];
                                 if (it == null) return;
-                                var Rect = it.Rect;
-                                var rect = new Rectangle(_rect.X + Rect.X, _rect.Y + Rect.Y, Rect.Width, Rect.Height);
                                 if (Trigger == Trigger.Hover && it.items != null && it.items.Count > 0)
                                 {
                                     select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, rect, it.items);
+                                    subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
                                     subForm.Show(this);
                                 }
                             }
@@ -1139,6 +1140,20 @@ namespace AntdUI
             }
             else ILeave();
         }
+        void ShowTooltip(MenuItem it, Rectangle rect)
+        {
+            if (it.Text == null) return;
+            if (tooltipForm == null)
+            {
+                tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = it.Font ?? Font,
+                    ArrowAlign = TAlign.Right,
+                });
+                tooltipForm.Show(this);
+            }
+            else tooltipForm.SetText(rect, it.Text);
+        }
 
         void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
         {
@@ -1146,6 +1161,13 @@ namespace AntdUI
             {
                 if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
                 {
+                    if (mode == TMenuMode.InlineNoText)
+                    {
+                        Point location = PointToScreen(it.rect.Location);
+                        location.Y += (it.rect.Height / 2);
+                        location.Y -= ScrollBar.Value;
+                        ShowTooltip(it, new Rectangle(location, new Size(it.rect.Width, rect_r.Height)));
+                    }
                     hand++;
                 }
                 if (change) count++;
@@ -1946,7 +1968,7 @@ namespace AntdUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? PARENTITEM { get; set; }
 
-        internal void SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap)
+        internal void SetRect(int depth, bool indent, TMenuMode mode, Rectangle _rect, int icon_size, int gap)
         {
             Depth = depth;
             rect = _rect;
@@ -1962,13 +1984,13 @@ namespace AntdUI
                     ico_rect = new Rectangle(_rect.X + gap, _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
                     txt_rect = new Rectangle(ico_rect.X + ico_rect.Width + gap, _rect.Y, _rect.Width - (ico_rect.Width + gap * 2), _rect.Height);
                 }
-                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (int)(ico_rect.Height * 0.9F), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
+                arr_rect = new Rectangle(_rect.Right - ico_rect.Height - (mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - ico_rect.Height) / 2, ico_rect.Height, ico_rect.Height);
             }
             else
             {
                 if (indent || depth > 1) txt_rect = new Rectangle(_rect.X + (gap * (depth + 1)), _rect.Y, _rect.Width - (gap * 2), _rect.Height);
                 else txt_rect = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - (gap * 2), _rect.Height);
-                arr_rect = new Rectangle(_rect.Right - icon_size - (int)(icon_size * 0.9F), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
+                arr_rect = new Rectangle(_rect.Right - icon_size - (mode == TMenuMode.InlineNoText ? -(int)(4 * Config.Dpi) : (int)(ico_rect.Height * 0.9F)), _rect.Y + (_rect.Height - icon_size) / 2, icon_size, icon_size);
             }
             Show = true;
         }
@@ -2025,5 +2047,12 @@ namespace AntdUI
         internal Rectangle ico_rect { get; set; }
 
         public override string? ToString() => Text;
+
+
+        public void UpdateText(string newText)
+        {
+            Text = newText;
+            Invalidate();
+        }
     }
 }

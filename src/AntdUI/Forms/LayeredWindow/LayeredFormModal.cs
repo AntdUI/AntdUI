@@ -119,7 +119,7 @@ namespace AntdUI
                             Type = btn.Type,
                             BackColor = btn.Back,
                             ForeColor = btn.Fore,
-                            Tag = btn.Tag
+                            Tag = btn
                         };
                         config.OnButtonStyle?.Invoke(btn.Name, _btn);
                         panel_main.Controls.Add(_btn);
@@ -148,7 +148,18 @@ namespace AntdUI
                                     System.Threading.Thread.Sleep(10);
                                     BeginInvoke(() =>
                                     {
-                                        if (IsHandleCreated && !IsDisposed) Close();
+                                        if (IsHandleCreated && !IsDisposed)
+                                        {
+                                            if (btn.Tag is Modal.Btn btnResult)
+                                            {
+                                                if (btnResult.DialogResult != DialogResult.None)
+                                                {
+                                                    DialogResult = btnResult.DialogResult;
+                                                    return;
+                                                }
+                                            }
+                                            Close();
+                                        }
                                     });
                                 }
                                 else if (DisableCancel && btn_no != null)
@@ -170,12 +181,8 @@ namespace AntdUI
             {
                 if (butt_h > 0)
                 {
-                    if (btn_no == null) AcceptButton = CancelButton = btn_ok;
-                    else
-                    {
-                        AcceptButton = btn_ok;
-                        CancelButton = btn_no;
-                    }
+                    AcceptButton = btn_ok;
+                    CancelButton = btn_no;
                 }
                 else
                 {

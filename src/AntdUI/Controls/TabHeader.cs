@@ -99,6 +99,7 @@ namespace AntdUI
         [Description("拖拽排序"), Category("行为"), DefaultValue(false)]
         public bool DragSort { get; set; }
 
+
         Color? fore;
         /// <summary>
         /// 文字颜色
@@ -351,8 +352,16 @@ namespace AntdUI
                         {
                             var size = g.MeasureText(it.Text, Font, 0, sf);
                             int tabWidth;
-                            if (it.HasIcon) tabWidth = size.Width + paddx2 + gap2 + ico_size + close_size;
-                            else tabWidth = size.Width + paddx2 + gap + close_size;
+                            if (it.HasIcon)
+                            {
+                                if (it.ShowClose) tabWidth = size.Width + paddx2 + gap2 + ico_size + close_size;
+                                else tabWidth = size.Width + paddx2 + gap2 + ico_size;
+                            }
+                            else
+                            {
+                                if (it.ShowClose) tabWidth = size.Width + paddx2 + gap + close_size;
+                                else tabWidth = size.Width + paddx2;
+                            }
                             dir.Add(i, new[] { size.Width, tabWidth, size.Width });
                             txtTW += tabWidth;
                         }
@@ -373,8 +382,16 @@ namespace AntdUI
                                 int max = (int)Math.Round(mw * dirb[i]);
                                 if (dir[i][1] > max)
                                 {
-                                    if (it.HasIcon) dir[i][0] = max - (paddx2 + gap2 + ico_size + close_size);
-                                    else dir[i][0] = max - (paddx2 + gap + close_size);
+                                    if (it.HasIcon)
+                                    {
+                                        if (it.ShowClose) dir[i][0] = max - (paddx2 + gap2 + ico_size + close_size);
+                                        else dir[i][0] = max - (paddx2 + gap2 + ico_size);
+                                    }
+                                    else
+                                    {
+                                        if (it.ShowClose) dir[i][0] = max - (paddx2 + gap + close_size);
+                                        else dir[i][0] = max - paddx2;
+                                    }
                                     dir[i][1] = max;
                                 }
                             }
@@ -401,31 +418,46 @@ namespace AntdUI
                                 {
                                     it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
                                     var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
-                                    var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
                                     it.RectText = _rect_text;
                                     it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                    it.RectClose = _rect_close;
-                                    it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+
+                                    if (it.ShowClose)
+                                    {
+                                        var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
+                                        it.RectClose = _rect_close;
+                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                    }
                                     it.ShowIcon = true;
                                 }
                                 else
                                 {
                                     var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
-                                    var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
-                                    if (_rect_close.X < _rect_text.X - gap)
+
+                                    if (it.ShowClose)
                                     {
-                                        it.ShowIcon = false;
-                                        _rect_close.X = _rect.X + (_rect.Width - close_size) / 2;
-                                        it.RectClose = _rect_close;
-                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                        var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
+                                        if (_rect_close.X < _rect_text.X - gap)
+                                        {
+                                            it.ShowIcon = false;
+                                            _rect_close.X = _rect.X + (_rect.Width - close_size) / 2;
+                                            it.RectClose = _rect_close;
+                                            it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                        }
+                                        else
+                                        {
+                                            it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
+                                            it.RectText = _rect_text;
+                                            it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
+                                            it.RectClose = _rect_close;
+                                            it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                            it.ShowIcon = true;
+                                        }
                                     }
                                     else
                                     {
                                         it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
                                         it.RectText = _rect_text;
                                         it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                        it.RectClose = _rect_close;
-                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
                                         it.ShowIcon = true;
                                     }
                                 }
@@ -440,11 +472,15 @@ namespace AntdUI
                                     var _rect_text = new Rectangle(_rect.X + paddx, _rect.Y, textSize[0], _rect.Height);
                                     it.RectText = _rect_text;
                                     it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                    var _rect_close = new Rectangle(_rect.X + paddx + gap + textSize[0], close_y, close_size, close_size);
-                                    it.RectClose = _rect_close;
-                                    it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+
+                                    if (it.ShowClose)
+                                    {
+                                        var _rect_close = new Rectangle(_rect.X + paddx + gap + textSize[0], close_y, close_size, close_size);
+                                        it.RectClose = _rect_close;
+                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                    }
                                 }
-                                else
+                                else if (it.ShowClose)
                                 {
                                     var _rect_close = new Rectangle(_rect.X + (_rect.Width - close_size) / 2, close_y, close_size, close_size);
                                     it.RectClose = _rect_close;
@@ -627,6 +663,8 @@ namespace AntdUI
         /// <param name="tab"></param>
         void DrawCloseButton(Canvas g, TagTabItem tab, Color color, int radius)
         {
+            if (!tab.ShowClose) return;
+
             if (tab.HoverClose)
             {
                 using (var path = tab.RectClose.RoundPath(radius))
@@ -687,7 +725,7 @@ namespace AntdUI
             {
                 if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
                 {
-                    bool hoveClose = it.RectClose.Contains(x, y);
+                    bool hoveClose = it.ShowClose && it.RectClose.Contains(x, y);
                     if (hoveClose) hand++;
                     if (it.Hover == true && it.HoverClose == hoveClose) continue;
                     it.Hover = true;
@@ -805,7 +843,7 @@ namespace AntdUI
                     for (int i = 0; i < items.Count; i++)
                     {
                         var it = items[i];
-                        if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
+                        if (it.Visible && it.Enabled && it.ShowClose && it.Rect.Contains(x, y))
                         {
                             // 触发标签关闭事件
                             var args = new TabCloseEventArgs(it, mdownindex);
@@ -820,7 +858,7 @@ namespace AntdUI
                 }
                 return;
             }
-            if (mdown.RectClose.Contains(x, y))
+            if (mdown.ShowClose && mdown.RectClose.Contains(x, y))
             {
                 // 触发标签关闭事件
                 var args = new TabCloseEventArgs(mdown, mdownindex);
@@ -1062,6 +1100,25 @@ namespace AntdUI
 
         public bool Hover { get; set; }
         public bool HoverClose { get; set; }
+
+
+
+        bool showClose = true;
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        [Description("是否显示关闭"), Category("外观"), DefaultValue(true)]
+        public bool ShowClose
+        {
+            get => showClose;
+            set
+            {
+                if (showClose == value) return;
+                showClose = value;
+                PARENT?.LoadLayout();
+            }
+        }
+
 
         bool visible = true;
         /// <summary>

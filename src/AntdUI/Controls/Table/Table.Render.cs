@@ -67,6 +67,7 @@ namespace AntdUI
                         clipath = Helper.RoundPath(rect_divider, _radius, true, true, false, false);
                         g.SetClip(clipath);
                     }
+                    else g.SetClip(rect_divider);
                     if (fixedHeader)
                     {
                         int showIndex = 0;
@@ -82,7 +83,7 @@ namespace AntdUI
                             else
                             {
                                 int y = it.RECT.Y - sy, b = it.RECT.Bottom - sy;
-                                it.SHOW = it.ShowExpand && it.Type == RowType.None && (rect_read.Contains(rect_read.X, y) || rect_read.Contains(rect_read.X, b) || (it.RECT.Height > rect_read.Height && rect_read.Y > y && rect_read.Bottom < b));
+                                it.SHOW = it.ShowExpand && it.Type == RowType.None && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
                                 if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
                             }
                             showIndex++;
@@ -131,7 +132,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                it.SHOW = it.ShowExpand && it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
+                                it.SHOW = it.ShowExpand && (it.Type == RowType.None || it.Type == RowType.Column) && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
                                 if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
                             }
                             showIndex++;
@@ -182,6 +183,7 @@ namespace AntdUI
                         clipath = Helper.RoundPath(rect_divider, _radius);
                         g.SetClip(clipath);
                     }
+                    else g.SetClip(rect_divider);
                     rows[0].SHOW = false;
                     int showIndex = 0;
                     for (int index_r = 1; index_r < rows.Length; index_r++)
@@ -299,6 +301,10 @@ namespace AntdUI
                         g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                         g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                     }
+                    if (column.COLUMN.HasFilter)
+                    {
+                        g.GetImgExtend("FilterFilled", column.rect_filter, column.COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
+                    }
                     if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                     else
                     {
@@ -382,6 +388,11 @@ namespace AntdUI
                         g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                         g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
                     }
+                    if (column.COLUMN.HasFilter)
+                    {
+                        g.GetImgExtend("FilterFilled", column.rect_filter, column.COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
+                    }
+
                     if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
                     else
                     {
@@ -817,7 +828,7 @@ namespace AntdUI
                         showFixedColumnR = true;
                         int w = last.RECT.Right - first.RECT.Left;
 
-                        var rect_Fixed = new Rectangle(rect_read.Width - w, rect_read.Y, w + (ScrollBar.ShowY ? ScrollBar.SIZE : 0), rect_read.Height);
+                        var rect_Fixed = new Rectangle(rect_read.Width - w, rect_read.Y, w + (ScrollBar.ShowY ? ScrollBar.SIZE : 0) + borsize, rect_read.Height);
 
                         GraphicsPath? clipath = null;
 

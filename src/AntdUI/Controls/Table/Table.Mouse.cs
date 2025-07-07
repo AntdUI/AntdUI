@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -113,8 +114,7 @@ namespace AntdUI
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
                             else rows_Expand.Add(cell.ROW.RECORD);
                             ExpandChanged?.Invoke(this, new TableExpandEventArgs(cell.ROW.RECORD, !cell.ROW.Expand));
-                            LoadLayout();
-                            Invalidate();
+                            if (LoadLayout()) Invalidate();
                             return;
                         }
                         MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, i_row, i_cel, column);
@@ -123,7 +123,7 @@ namespace AntdUI
             }
         }
 
-        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c, Column column)
+        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c, Column? column)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, e.Clicks > 1);
             if (cell is Template template)
@@ -321,6 +321,26 @@ namespace AntdUI
             }
         }
 
+        void filter_PopupEndEventMethod(object sender, CancelEventArgs e)
+        {
+            if (FilterPopupEnd != null)
+            {
+                Popover.Config? config = sender as Popover.Config;
+                if (config == null) return;
+                FilterControl? editor = config.Control as FilterControl;
+                if (editor == null) return;
+
+                var arg = new TableFilterPopupEndEventArgs(config, editor.Option);
+                FilterPopupEnd(sender, arg);
+                e.Cancel = arg.Cancel;
+            }
+            if (e.Cancel == false)
+            {
+                inEditMode = false;
+                OnMouseLeave(EventArgs.Empty);
+            }
+        }
+
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
@@ -424,44 +444,82 @@ namespace AntdUI
                             }
                         }
                     }
-                    else if (it.row.IsColumn && it.cell.COLUMN.SortOrder && it.cell is TCellColumn col)
+                    else if (it.row.IsColumn && it.cell is TCellColumn col)
                     {
-                        //点击排序
-                        SortMode sortMode = SortMode.NONE;
-                        int r_x_f = r_x - col.offsetx, r_y_f = r_y - col.offsety;
-                        if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
-                        else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
-                        else
+                        if (it.cell.COLUMN.Filter != null && col.rect_filter.Contains(r_x - col.offsetx, r_y - col.offsety))
                         {
-                            sortMode = col.COLUMN.SortMode + 1;
-                            if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
-                        }
-                        if (col.COLUMN.SetSortMode(sortMode))
-                        {
-                            foreach (var item in it.row.cells)
+                            //点击筛选
+                            var focusColumn = it.cell.COLUMN;
+                            IList<object>? customSource = null;
+                            Font? fnt = null;
+                            int filterHeight = 0;
+                            if (FilterPopupBegin != null)
                             {
-                                if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
+                                var arg = new TableFilterPopupBeginEventArgs(focusColumn);
+                                FilterPopupBegin(this, arg);
+                                if (arg.Cancel) return;
+                                customSource = arg.CustomSource;
+                                fnt = arg.Font;
+                                filterHeight = arg.Height;
                             }
-                            var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
-                            if (result) Invalidate();
+                            if (fnt == null) fnt = Font;
+                            var editor = new FilterControl(this, focusColumn, customSource)
+                            {
+                                Font = fnt
+                            };
+                            if (filterHeight > 0) editor.Height = filterHeight;
+                            Point location = PointToScreen(col.rect_filter.Location);
+                            location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
+                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
+                            location.X += col.rect_filter.Width / 2;
+                            location.Y += col.rect_filter.Height;
+                            Popover.open(new Popover.Config(this, editor)
+                            {
+                                Font = fnt,
+                                CustomPoint = new Rectangle(location, Size.Empty),
+                                Padding = new Size(6, 6),
+                                OnClosing = filter_PopupEndEventMethod
+                            });
+                        }
+                        else if (it.cell.COLUMN.SortOrder)
+                        {
+                            //点击排序
+                            SortMode sortMode = SortMode.NONE;
+                            int r_x_f = r_x - col.offsetx, r_y_f = r_y - col.offsety;
+                            if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
+                            else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
                             else
                             {
-                                Invalidate();
-                                switch (sortMode)
+                                sortMode = col.COLUMN.SortMode + 1;
+                                if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
+                            }
+                            if (col.COLUMN.SetSortMode(sortMode))
+                            {
+                                foreach (var item in it.row.cells)
                                 {
-                                    case SortMode.ASC:
-                                        SortDataASC(col.COLUMN);
-                                        break;
-                                    case SortMode.DESC:
-                                        SortDataDESC(col.COLUMN);
-                                        break;
-                                    case SortMode.NONE:
-                                    default:
-                                        SortData = null;
-                                        break;
+                                    if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
                                 }
-                                LoadLayout();
-                                SortRows?.Invoke(this, new IntEventArgs(it.i_cel));
+                                var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
+                                if (result) Invalidate();
+                                else
+                                {
+                                    Invalidate();
+                                    switch (sortMode)
+                                    {
+                                        case SortMode.ASC:
+                                            SortDataASC(col.COLUMN);
+                                            break;
+                                        case SortMode.DESC:
+                                            SortDataDESC(col.COLUMN);
+                                            break;
+                                        case SortMode.NONE:
+                                        default:
+                                            SortData = null;
+                                            break;
+                                    }
+                                    LoadLayout();
+                                    SortRows?.Invoke(this, new IntEventArgs(it.i_cel));
+                                }
                             }
                         }
                     }
@@ -502,7 +560,7 @@ namespace AntdUI
                     subForm = null;
                     var rect = btn.cell.Rect;
                     rect.Offset(-offset_xi, -offset_y);
-                    subForm = new LayeredFormSelectDown(this, btn.cell, rect, btn.cell.DropDownItems);
+                    subForm = new LayeredFormSelectDown(this, btn.cell.DropDownItems, btn.cell, rect);
                     subForm.Show(this);
                 }
 
@@ -637,6 +695,7 @@ namespace AntdUI
                             SetCursor(CursorType.SizeAll);
                             return;
                         }
+                        else if (cel.COLUMN.Filter != null && cel.rect_filter.Contains(r_x - cel.offsetx, r_y - cel.offsetx)) SetCursor(true);
                         else if (cel.COLUMN.SortOrder) SetCursor(true);
                         else SetCursor(false);
                     }

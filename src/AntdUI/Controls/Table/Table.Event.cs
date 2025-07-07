@@ -253,5 +253,30 @@ namespace AntdUI
         /// </summary>
         [Description("展开改变时发生"), Category("行为")]
         public event ExpandEventHandler? ExpandChanged;
+
+        /// <summary>
+        /// Table的列筛选关闭前的处理事件
+        /// </summary>
+        /// <param name="sender">Table</param>
+        /// <param name="e">事件参数</param>
+        public delegate void TableFilterPopupEndEventHandler(object sender, TableFilterPopupEndEventArgs e);
+        /// <summary>
+        /// Table的列筛选弹出前的数据处理事件
+        /// </summary>
+        /// <param name="sender">Table</param>
+        /// <param name="e">事件参数</param>
+        public delegate void TableFilterPopupBeginEventHandler(object sender, TableFilterPopupBeginEventArgs e);
+
+        /// <summary>
+        /// 筛选窗口弹出前发生
+        /// </summary>
+        [Description("筛选窗口弹出前发生"), Category("行为")]
+        public event TableFilterPopupBeginEventHandler? FilterPopupBegin;
+        /// <summary>
+        /// 筛选窗口关闭前发生
+        /// </summary>
+        [Description("筛选窗口关闭前发生"), Category("行为")]
+        public event TableFilterPopupEndEventHandler? FilterPopupEnd;
+
     }
 }

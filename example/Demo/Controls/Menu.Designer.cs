@@ -96,6 +96,7 @@ namespace Demo.Controls
             tableLayoutPanel1 = new TableLayoutPanel();
             panel2 = new System.Windows.Forms.Panel();
             switch4 = new AntdUI.Switch();
+            switch5 = new AntdUI.Switch();
             menu3 = new AntdUI.Menu();
             switch3 = new AntdUI.Switch();
             panel1 = new System.Windows.Forms.Panel();
@@ -187,15 +188,20 @@ namespace Demo.Controls
             menuItem9.Select = true;
             menuItem10.Select = true;
             menuItem10.Text = "Option 1";
+            menuItem10.IconSvg = "CheckCircleOutlined";
+            menuItem11.IconSvg = "ClockCircleOutlined";
             menuItem11.Text = "Option 2";
             menuItem9.Sub.Add(menuItem10);
             menuItem9.Sub.Add(menuItem11);
             menuItem9.Text = "Item 1";
+            menuItem9.IconSvg = "MenuOutlined";
             menuItem13.Text = "Option 3";
             menuItem14.Text = "Option 4";
             menuItem12.Sub.Add(menuItem13);
             menuItem12.Sub.Add(menuItem14);
             menuItem12.Text = "Item 2";
+            menuItem12.IconSvg = "InfoCircleOutlined";
+            menuItem12.Expand = false;
             menuItem8.Sub.Add(menuItem9);
             menuItem8.Sub.Add(menuItem12);
             menuItem8.Text = "Navigation One";
@@ -274,6 +280,18 @@ namespace Demo.Controls
             switch4.UnCheckedText = "展开";
             switch4.CheckedChanged += switch4_CheckedChanged;
             // 
+            // switch5
+            // 
+            switch5.CheckedText = "平展";
+            switch5.LocalizationCheckedText = "Menu.flatten";
+            switch5.LocalizationUnCheckedText = "Menu.normal";
+            switch5.Location = new Point(267, 91);
+            switch5.Name = "switch5";
+            switch5.Size = new Size(84, 33);
+            switch5.TabIndex = 5;
+            switch5.UnCheckedText = "缩进";
+            switch5.CheckedChanged += switch5_CheckedChanged;
+            // 
             // menu3
             // 
             menu3.Dock = DockStyle.Left;
@@ -335,7 +353,8 @@ namespace Demo.Controls
             switch3.CheckedChanged += switch3_CheckedChanged;
             // 
             // panel1
-            // 
+            //
+            panel1.Controls.Add(switch5);
             panel1.Controls.Add(switch2);
             panel1.Controls.Add(switch1);
             panel1.Controls.Add(menu2);
@@ -411,6 +430,7 @@ namespace Demo.Controls
         private AntdUI.Switch switch1;
         private AntdUI.Switch switch2;
         private AntdUI.Switch switch4;
+        private AntdUI.Switch switch5;
         private AntdUI.Switch switch3;
     }
 }

@@ -1,5 +1,32 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.9` 2025-07-07
+
+- ➕ Table 支持数据列筛选功能 (BETA)
+- ➕ Transfer 穿梭框组件 (BETA)
+- ➕ Table Column ReadOnly 只读属性
+- ➕ Table 编辑模式 Excel样式
+- ➕ Collapse GroupButton Tooltip属性，支持工具提示
+- ➕ Collapse AnimationSpeed 调整动画速度
+- ➕ Modal Btn增加 DialogResult 回调
+- ➕ ColorPicker ShowSymbol属性，增加恢复颜色设置的功能
+- ➕ Menu Flatten 属性, 实现菜单的平展/收缩, 并在平展模式下显示工具提示
+- ➕ Menu InlineNoText
+- ➕ Button DisplayStyle
+- ➕ LabelTime DragMove
+- ✍️ Table 内容超出
+- ✍️ Menu 弹出下拉宽度不够
+- ✍️ Menu Mode InlineNoText，子菜单不显示箭头
+- ✍️ Menu Mode InlineNoText 错位
+- ✍️ Modal CancelButton事件
+- ✍️ Collapse GroupButton Edit 事件响应
+- ✍️ Collapse GroupButton 响应细节
+- ✍️ Collapse GroupButton Text 为空时，Icon不居中
+- ✍️ Input 获得焦点后光标移到文本末尾
+- ✍️ Input 空格被过滤
+- ✍️ Tree 交互
+- ✍️ 重构下拉
+
 ### `2.0.7` 2025-06-27 🌵
 
 - ➕ Shield

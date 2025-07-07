@@ -24,91 +24,100 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormSelectDown : ILayeredFormOpacityDown, SubLayeredForm
+    internal class LayeredFormSelectDown : ILayeredShadowForm, SubLayeredForm
     {
-        #region 变量
-
-        internal ScrollY scrollY;
-
-        /// <summary>
-        /// 是否显示暂无数据
-        /// </summary>
-        bool nodata = false;
-
-        #endregion
+        TAMode ColorScheme;
+        string keyid;
+        int MaxCount = 0, select_x = 0;
+        Size DPadding;
+        bool ClickEnd = false, CloseIcon = false, DropNoMatchClose = false;
+        List<ObjectItem> Items;
+        IList<object> ItemOS;
+        object? selectedValue;
 
         #region 初始化
 
-        int MaxCount = 0;
-        Size DPadding;
-        internal float Radius = 0;
-        bool ClickEnd = false, CloseIcon = false, DropNoMatchClose = false;
-        object? selectedValue;
-        int r_w = 0;
-        List<ObjectItem> Items;
-        ObjectItem[]? ItemsSearch;
-        string keyid;
-        public override string name => keyid;
-        TAMode ColorScheme;
-        TAlign DropDownTextAlign = TAlign.Left;
         public LayeredFormSelectDown(Select control, IList<object> items, string filtertext)
         {
-            keyid = "Select";
+            keyid = nameof(AntdUI.Select);
+            PARENT = control;
+            Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
-            PARENT = control;
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
+            selectedValue = control.SelectedValue;
             ClickEnd = control.ClickEnd;
             CloseIcon = control.CloseIcon;
             DropNoMatchClose = control.DropDownEmptyClose;
-            select_x = 0;
-            scrollY = new ScrollY(this);
             MaxCount = control.MaxCount;
-            Font = control.Font;
-            selectedValue = control.SelectedValue;
-            Radius = (int)(control.DropDownRadius ?? control.radius * Config.Dpi);
             DPadding = control.DropDownPadding;
-            DropDownTextAlign = control.DropDownTextAlign;
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
-            Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items, filtertext);
+            ItemOS = items;
+            sf = Helper.SF(control.DropDownTextAlign);
+
+            float dpi = Config.Dpi;
+            if (dpi == 1F) Radius = control.DropDownRadius ?? control.radius;
+            else
+            {
+                ArrowSize = (int)(8 * dpi);
+                Radius = (int)(control.DropDownRadius ?? control.radius * dpi);
+            }
+            Items = LoadLayout(control.ListAutoWidth, control.ReadRectangle.Width, ItemOS, filtertext, true);
+
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            Init();
         }
-        public LayeredFormSelectDown(Dropdown control, int radius, IList<object> items)
+        public LayeredFormSelectDown(Dropdown control, IList<object> items)
         {
-            keyid = "Dropdown";
+            keyid = nameof(Dropdown);
+            PARENT = control;
+            Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
-            PARENT = control;
-            ClickEnd = control.ClickEnd;
-            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
-            select_x = 0;
-            scrollY = new ScrollY(this);
-            MaxCount = control.MaxCount;
-            Font = control.Font;
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
-            Radius = (int)(control.DropDownRadius ?? radius * Config.Dpi);
+            ClickEnd = control.ClickEnd;
+            MaxCount = control.MaxCount;
             DPadding = control.DropDownPadding;
-            DropDownTextAlign = control.DropDownTextAlign;
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
-            Init(control, control.Placement, control.DropDownArrow, control.ListAutoWidth, control.ReadRectangle, items);
+            ItemOS = items;
+            sf = Helper.SF(control.DropDownTextAlign);
+
+            float dpi = Config.Dpi;
+            if (dpi == 1F) Radius = control.DropDownRadius ?? control.Radius;
+            else
+            {
+                ArrowSize = (int)(8 * dpi);
+                Radius = (int)(control.DropDownRadius ?? control.Radius * dpi);
+            }
+            Items = LoadLayout(control.ListAutoWidth, control.ReadRectangle.Width, ItemOS, null, true);
+
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            Init();
         }
-        public LayeredFormSelectDown(Tabs control, int radius, IList<object> items, object? sValue, Rectangle rect_ctls)
+        public LayeredFormSelectDown(Tabs control, IList<object> items, int radius, object? sValue, Rectangle rect)
         {
-            keyid = "Tabs";
+            keyid = nameof(Tabs);
+            PARENT = control;
+            Font = control.Font;
             ColorScheme = control.ColorScheme;
             MessageCloseMouseLeave = true;
             control.Parent.SetTopMost(Handle);
-            PARENT = control;
-            ClickEnd = false;
-            select_x = 0;
-            scrollY = new ScrollY(this);
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
             MaxCount = 7;
-            Font = control.Font;
-            selectedValue = sValue;
-            Radius = (int)(radius * Config.Dpi);
             DPadding = new Size(12, 5);
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
+            selectedValue = sValue;
+            ItemOS = items;
+            sf = Helper.SF(TAlign.Left);
+
+            float dpi = Config.Dpi;
+            if (dpi == 1F) Radius = radius;
+            else
+            {
+                ArrowSize = (int)(8 * dpi);
+                Radius = (int)(radius * dpi);
+            }
+            Items = LoadLayout(true, 0, ItemOS, null, true);
             TAlignFrom align;
             switch (control.Alignment)
             {
@@ -125,229 +134,134 @@ namespace AntdUI
                     align = TAlignFrom.BR;
                     break;
             }
-            Init(control, align, false, true, rect_ctls, items);
+            CLocation(control, align, rect, false, ArrowSize, ref Inverted, true);
+            Init();
         }
-        public LayeredFormSelectDown(Table control, ICell cell, Rectangle rect, IList<object> items)
+        public LayeredFormSelectDown(Table control, IList<object> items, ICell cell, Rectangle rect)
         {
-            keyid = "Table";
+            keyid = nameof(Table);
+            PARENT = control;
+            Font = control.Font;
             ColorScheme = control.ColorScheme;
             Tag = cell;
             MessageCloseMouseLeave = true;
             control.Parent.SetTopMost(Handle);
-            PARENT = control;
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
+            selectedValue = cell.DropDownValue;
             ClickEnd = cell.DropDownClickEnd;
-            select_x = 0;
-            scrollY = new ScrollY(this);
             MaxCount = cell.DropDownMaxCount;
-            Font = control.Font;
-            selectedValue = cell.DropDownValue;
-            Radius = (int)(cell.DropDownRadius ?? control.Radius * Config.Dpi);
             DPadding = cell.DropDownPadding;
-            DropDownTextAlign = cell.DropDownTextAlign;
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
-            Init(control, cell.DropDownPlacement, cell.DropDownArrow, true, rect, items, "");
-        }
+            ItemOS = items;
+            sf = Helper.SF(cell.DropDownTextAlign);
 
-        #region 子项
-
-        LayeredFormSelectDown? lay;
-        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
-        {
-            keyid = "Select";
-            ColorScheme = control.ColorScheme;
-            ClickEnd = control.ClickEnd;
-            DropNoMatchClose = control.DropDownEmptyClose;
-            selectedValue = control.SelectedValue;
-            scrollY = new ScrollY(this);
-            DPadding = control.DropDownPadding;
-            DropDownTextAlign = control.DropDownTextAlign;
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
-            InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
-        }
-        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
-        {
-            keyid = "Dropdown";
-            ColorScheme = control.ColorScheme;
-            ClickEnd = control.ClickEnd;
-            scrollY = new ScrollY(this);
-            DPadding = control.DropDownPadding;
-            DropDownTextAlign = control.DropDownTextAlign;
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
-            InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
-        }
-        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown ocontrol, float radius, Rectangle rect_read, IList<object> items, int sel = -1)
-        {
-            keyid = "Table";
-            Tag = cell;
-            ColorScheme = control.ColorScheme;
-            ClickEnd = cell.DropDownClickEnd;
-            scrollY = new ScrollY(this);
-            selectedValue = cell.DropDownValue;
-            Radius = (int)(cell.DropDownRadius ?? control.Radius * Config.Dpi);
-            DPadding = cell.DropDownPadding;
-            DropDownTextAlign = cell.DropDownTextAlign;
-            sf = Helper.SF(DropDownTextAlign);
-            Items = new List<ObjectItem>(items.Count);
-            InitObj(control, sx, ocontrol, radius, rect_read, items, sel);
-        }
-
-        void InitObj(Control parent, int sx, LayeredFormSelectDown control, float radius, Rectangle rect_read, IList<object> items, int sel)
-        {
-            if (OS.Win7OrLower) Select();
-            lay = control;
-            parent.Parent.SetTopMost(Handle);
-            select_x = sx;
-            PARENT = parent;
-            Font = control.Font;
-            Radius = radius;
-
-            control.Disposed += (a, b) => { Dispose(); };
-
-            Init(control, TAlignFrom.BL, false, true, rect_read, items);
-
-            if (sel > -1)
+            float dpi = Config.Dpi;
+            if (dpi == 1F) Radius = cell.DropDownRadius ?? control.Radius;
+            else
             {
-                try
-                {
-                    hoveindex = sel;
-                    Items[hoveindex].SetHover(true);
-                }
-                catch { }
+                ArrowSize = (int)(8 * dpi);
+                Radius = (int)(cell.DropDownRadius ?? control.Radius * dpi);
             }
+            Items = LoadLayout(true, 0, ItemOS, null, true);
+
+            var tmpAlign = CLocation(control, cell.DropDownPlacement, rect, cell.DropDownArrow, ArrowSize, ref Inverted, true);
+            if (cell.DropDownArrow) ArrowAlign = tmpAlign;
+            Init();
+        }
+
+        SubLayeredForm? lay;
+
+        #region 子
+
+        float tmpItemHeight = 0F;
+        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        {
+            select_x = sx;
+            keyid = nameof(AntdUI.Select);
+            PARENT = control;
+            Font = control.Font;
+            lay = parent;
+            control.Parent.SetTopMost(Handle);
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
+            selectedValue = control.SelectedValue;
+            ClickEnd = parent.ClickEnd;
+            CloseIcon = parent.CloseIcon;
+            DropNoMatchClose = control.DropDownEmptyClose;
+            DPadding = parent.DPadding;
+            ItemOS = items;
+            sf = Helper.SF(control.DropDownTextAlign);
+
+            Radius = radius;
+            ArrowSize = arrowSize;
+
+            control.Disposed += (a, b) => Dispose();
+
+            Items = LoadLayout(true, 0, ItemOS, null, true);
+            tmpItemHeight = itemHeight;
+            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
+            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            Init();
+        }
+        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        {
+            select_x = sx;
+            keyid = nameof(Dropdown);
+            PARENT = control;
+            Font = control.Font;
+            lay = parent;
+            control.Parent.SetTopMost(Handle);
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
+            selectedValue = control.SelectedValue;
+            ClickEnd = parent.ClickEnd;
+            CloseIcon = parent.CloseIcon;
+            DPadding = parent.DPadding;
+            ItemOS = items;
+            sf = Helper.SF(control.DropDownTextAlign);
+
+            Radius = radius;
+            ArrowSize = arrowSize;
+
+            control.Disposed += (a, b) => Dispose();
+
+            Items = LoadLayout(true, 0, ItemOS, null, true);
+            tmpItemHeight = itemHeight;
+            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
+            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            Init();
+        }
+        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        {
+            select_x = sx;
+            keyid = nameof(Table);
+            PARENT = control;
+            Font = control.Font;
+            lay = parent;
+            Tag = cell;
+            control.Parent.SetTopMost(Handle);
+            ScrollBar = new ScrollBar(this, control.ColorScheme);
+            selectedValue = cell.DropDownValue;
+            ClickEnd = parent.ClickEnd;
+            CloseIcon = parent.CloseIcon;
+            DPadding = parent.DPadding;
+            ItemOS = items;
+            sf = Helper.SF(cell.DropDownTextAlign);
+
+            Radius = radius;
+            ArrowSize = arrowSize;
+
+            control.Disposed += (a, b) => Dispose();
+
+            Items = LoadLayout(true, 0, ItemOS, null, true);
+            tmpItemHeight = itemHeight;
+            var tmpAlign = CLocation(parent, rect, cell.DropDownArrow, ArrowSize, ref Inverted);
+            if (cell.DropDownArrow) ArrowAlign = tmpAlign;
+            Init();
         }
 
         #endregion
 
-        TAlign ArrowAlign = TAlign.None;
-        int ArrowSize = 8;
-        public ILayeredForm? SubForm() => subForm;
-        LayeredFormSelectDown? subForm;
-        void Init(Control control, TAlignFrom Placement, bool ShowArrow, bool ListAutoWidth, Rectangle rect_read, IList<object> items, string? filtertext = null)
+        void Init()
         {
             if (OS.Win7OrLower) Select();
-            int y = 10, w = rect_read.Width;
-            r_w = w;
-            var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromRectangle(new Rectangle(point, control.Size)).WorkingArea;
-            int r_h;
-            if (items.Count > 0)
-            {
-                Helper.GDI(g =>
-                {
-                    var size = g.MeasureString(Config.NullText, Font);
-                    int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
-                    gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
-                    text_height = size.Height, item_height = text_height + gap_y2;
-                    y += gap;
-                    if (ListAutoWidth)
-                    {
-                        int b_w = size.Width + gap_x2;
-                        bool ui_online = false, ui_icon = false, ui_arrow = false;
-                        foreach (var obj in items) InitReadList(g, obj, ref b_w, ref ui_online, ref ui_icon, ref ui_arrow);
-                        if (ui_icon || ui_online)
-                        {
-                            if (ui_icon && ui_online) b_w += text_height + gap_y2;
-                            else if (ui_icon) b_w += text_height;
-                            else b_w += gap_y;
-                        }
-                        if (ui_arrow) b_w += gap_y2;
-                        else if (CloseIcon) b_w += text_height;
-                        w = r_w = b_w + gap_x2 + gap2;
-                    }
-                    else sf.Trimming = StringTrimming.EllipsisCharacter;
-                    sf.FormatFlags = StringFormatFlags.NoWrap;
-
-                    int selY = -1;
-                    int item_count = 0, divider_count = 0;
-                    for (int i = 0; i < items.Count; i++) ReadList(items[i], i, w, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref selY);
-                    var vr = (item_height * item_count) + (gap_y * divider_count);
-                    if (MaxCount > 0)
-                    {
-                        if (Items.Count > MaxCount)
-                        {
-                            y = 10 + gap2 + (item_height * MaxCount);
-                            scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                            scrollY.Show = true;
-                            scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                            if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap);
-                        }
-                        else y = 10 + gap2 + vr;
-                    }
-                    else
-                    {
-                        int ry = 10 + gap2 + vr;
-                        if (control is LayeredFormSelectDown)
-                        {
-                            if (ry > screen.Height)
-                            {
-                                MaxCount = (int)Math.Floor(screen.Height / (item_height * 1.0));
-                                if (MaxCount < 1) MaxCount = 1;
-                                y = 10 + gap2 + (item_height * MaxCount);
-                                scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                                scrollY.Show = true;
-                                scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                                if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap);
-                            }
-                            else y = 10 + gap2 + vr;
-                        }
-                        else if (ry > (screen.Height - point.Y))
-                        {
-                            int sh;
-                            if (ShowArrow) sh = point.Y + control.Height + 20 + ArrowSize + gap2;
-                            else sh = point.Y + control.Height + 20 + gap2;
-
-                            MaxCount = (int)Math.Floor((screen.Height - sh) / (item_height * 1.0)) - 1;
-                            if (MaxCount < 1) MaxCount = 1;
-                            y = 10 + gap2 + (item_height * MaxCount);
-                            scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                            scrollY.Show = true;
-                            scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                            if (selY > -1) scrollY.val = scrollY.SetValue(selY - 10 - gap);
-                        }
-                        else y = 10 + gap2 + vr;
-                    }
-                });
-                if (filtertext == null || string.IsNullOrEmpty(filtertext)) r_h = y + 10;
-                else r_h = TextChangeCore(filtertext);
-            }
-            else
-            {
-                nodata = true;
-                if (DropNoMatchClose)
-                {
-                    IClose();
-                    return;
-                }
-                if (ListAutoWidth) r_w = w = (int)(136 * Config.Dpi);
-                else
-                {
-                    int er = (int)(136 * Config.Dpi);
-                    if (w < er) r_w = w = er;
-                }
-                r_h = (int)(100 * Config.Dpi);
-            }
-            SetSize(w + 20, r_h);
-            if (control is LayeredFormSelectDown)
-            {
-                int rx = point.X + rect_read.Width, ry = point.Y + rect_read.Y - 10;
-                if ((rx > screen.Right - TargetRect.Width) || ((LayeredFormSelectDown)control).ShowLeft)
-                {
-                    rx = point.X - r_w + 10;
-                    ShowLeft = true;
-                }
-                if (ry > screen.Bottom - TargetRect.Height) ry = screen.Bottom - TargetRect.Height;
-                SetLocation(rx, ry);
-            }
-            else
-            {
-                int ry = point.Y + rect_read.Y;
-                if (ry > screen.Bottom - TargetRect.Height) Placement = TAlignFrom.Top;
-                MyPoint(point, Placement, ShowArrow, rect_read);
-            }
-
             KeyCall = keys =>
             {
                 int _select_x = -1;
@@ -430,65 +344,57 @@ namespace AntdUI
             };
         }
 
-        void MyPoint(Point point, TAlignFrom Placement, bool ShowArrow, Rectangle rect_read) => CLocation(point, Placement, ShowArrow, 10, r_w + 20, TargetRect.Height, rect_read, ref Inverted, ref ArrowAlign);
+        #endregion
 
-        void MyPoint()
-        {
-            if (PARENT is Select select) MyPoint(select.PointToScreen(Point.Empty), select.Placement, select.DropDownArrow, select.ReadRectangle);
-            else if (PARENT is Dropdown dropdown) MyPoint(dropdown.PointToScreen(Point.Empty), dropdown.Placement, dropdown.DropDownArrow, dropdown.ReadRectangle);
-        }
+        #region 参数
+
+        public override string name => keyid;
+
+        TAlign ArrowAlign = TAlign.None;
+        int ArrowSize = 8;
+        ScrollBar ScrollBar;
+        bool nodata = false;
+
+        public ILayeredForm? SubForm() => subForm;
+        LayeredFormSelectDown? subForm;
 
         #endregion
 
         #region 渲染
 
         StringFormat sf;
-
-        public override Bitmap PrintBit()
+        public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            var rect = TargetRectXY;
-            var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
-                using (var path = rect_read.RoundPath(Radius))
+                g.Fill(brush, path);
+                if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, tmpItemHeight));
+            }
+        }
+        public override void PrintContent(Canvas g, Rectangle rect)
+        {
+            if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)));
+            else
+            {
+                g.TranslateTransform(0, -ScrollBar.Value);
+                using (var brush = new SolidBrush(Colour.Text.Get(keyid, ColorScheme)))
+                using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(keyid, ColorScheme)))
+                using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
+                using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid, ColorScheme)))
+                using (var brush_split = new SolidBrush(Colour.Split.Get(keyid, ColorScheme)))
                 {
-                    DrawShadow(g, rect);
-                    using (var brush = new SolidBrush(Colour.BgElevated.Get(keyid, ColorScheme)))
-                    {
-                        g.Fill(brush, path);
-                        if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, rect_read));
-                    }
-                    if (nodata) g.PaintEmpty(rect_read, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)));
-                    else
-                    {
-                        g.SetClip(path);
-                        g.TranslateTransform(0, -scrollY.Value);
-                        using (var brush = new SolidBrush(Colour.Text.Get(keyid, ColorScheme)))
-                        using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(keyid, ColorScheme)))
-                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
-                        using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid, ColorScheme)))
-                        using (var brush_split = new SolidBrush(Colour.Split.Get(keyid, ColorScheme)))
-                        {
-                            foreach (var it in GetItems())
-                            {
-                                if (it.Show) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                            }
-                        }
-                        g.ResetTransform();
-                        g.ResetClip();
-                        scrollY.Paint(g);
-                    }
+                    foreach (var it in GetItems()) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                    g.ResetTransform();
+                    ScrollBar.Paint(g);
                 }
             }
-            return original_bmp;
         }
 
         void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
         {
             if (it.ID == -1) g.Fill(brush_split, it.Rect);
             else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
-            else if (selectedValue == it.Val || it.Val is SelectItem item && item.Tag == selectedValue)
+            else if (selectedValue == it.Item || it.Item is SelectItem item && item.Tag == selectedValue)
             {
                 using (var path = it.Rect.RoundPath(Radius))
                 {
@@ -531,7 +437,7 @@ namespace AntdUI
                     g.FillEllipse(brush_online, it.RectOnline);
                 }
             }
-            if (it.has_sub) DrawArrow(g, it, Colour.TextBase.Get(keyid, ColorScheme));
+            if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(keyid, ColorScheme));
             else if (CloseIcon)
             {
                 if (it.HoverClose)
@@ -540,12 +446,11 @@ namespace AntdUI
                     {
                         g.Fill(Colour.FillSecondary.Get(keyid, ColorScheme), path);
                     }
-                    g.PaintIconClose(it.RectCloseIcon, Colour.Text.Get(keyid, ColorScheme));
+                    g.PaintIconClose(it.RectClose, Colour.Text.Get(keyid, ColorScheme), .7F);
                 }
-                else g.PaintIconClose(it.RectCloseIcon, Colour.TextTertiary.Get(keyid, ColorScheme));
+                else g.PaintIconClose(it.RectClose, Colour.TextTertiary.Get(keyid, ColorScheme), .7F);
             }
         }
-
         void DrawTextIconSelect(Canvas g, ObjectItem it)
         {
             using (var font = new Font(Font, FontStyle.Bold))
@@ -602,39 +507,183 @@ namespace AntdUI
                 }
             }
         }
-        void DrawArrow(Canvas g, ObjectItem item, Color color)
+        void DrawArrow(Canvas g, ObjectItem it, Color color)
         {
-            int size = item.RectArrow.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
+            int size = it.RectArrow.Width, size_arrow = size / 2;
+            g.TranslateTransform(it.RectArrow.X + size_arrow, it.RectArrow.Y + size_arrow);
             g.RotateTransform(-90F);
-            using (var pen = new Pen(color, 2F))
+            using (var pen = new Pen(color, Config.Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .2F));
+                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, it.RectArrow.Width, it.RectArrow.Height).TriangleLines(-1, .7F));
             }
             g.ResetTransform();
-            g.TranslateTransform(0, -scrollY.Value);
+            g.TranslateTransform(0, -ScrollBar.Value);
         }
 
-        SafeBitmap? shadow_temp;
-        /// <summary>
-        /// 绘制阴影
-        /// </summary>
-        /// <param name="g">GDI</param>
-        /// <param name="rect">客户区域</param>
-        void DrawShadow(Canvas g, Rectangle rect)
+        #endregion
+
+        #region 布局
+
+        int tmpW = 0, tmp_padd = 0;
+        List<ObjectItem> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => Helper.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
+        List<ObjectItem> LoadLayout(Canvas g, bool autoWidth, int width, IList<object> items, bool init)
         {
-            if (Config.ShadowEnabled)
+            var text_height = g.MeasureString(Config.NullText, Font).Height;
+            if (items.Count > 0)
             {
-                if (shadow_temp == null)
+                nodata = false;
+                int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+                icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
+                gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+
+                tmp_padd = padd;
+
+                #region 计算最大区域
+
+                int maxw, maxwr;
+                if (autoWidth)
                 {
-                    shadow_temp?.Dispose();
-                    using (var path = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20).RoundPath(Radius))
-                    {
-                        shadow_temp = path.PaintShadow(rect.Width, rect.Height);
-                    }
+                    maxw = ItemMaxWidth(g, items, text_height, icon_size, icon_gap);
+                    maxwr = maxw + gap_x2;
                 }
-                g.Image(shadow_temp.Bitmap, rect, .2F);
+                else
+                {
+                    maxwr = width - padd2;
+                    maxw = maxwr - gap_x2;
+                    sf.Trimming = StringTrimming.EllipsisCharacter;
+                }
+                sf.FormatFlags = StringFormatFlags.NoWrap;
+
+                int item_count = 0, divider_count = 0, y = 0, sy = 0;
+                var lists = new List<ObjectItem>(items.Count);
+                for (int i = 0; i < items.Count; i++)
+                {
+                    var value = items[i];
+                    if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+                    {
+                        item_count++;
+                        var rect = new Rectangle(padd, padd + y, maxwr, item_height);
+                        lists.Add(new ObjectItem(group, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
+                        y += item_height;
+                        for (int j = 0; j < group.Sub.Count; j++) lists.Add(ItemC(group.Sub[j], j, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                    }
+                    else lists.Add(ItemC(value, i, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
+                }
+
+                #endregion
+
+                int maxh = item_height * item_count + padd2;
+                if (divider_count > 0) maxh += divider_count * (padd2 + sp);
+                int h = maxh, w = maxw + padd2 + gap_x2;
+                if (MaxCount > 0 && item_count > MaxCount)
+                {
+                    if (autoWidth) w += ScrollBar.SIZE - padd;
+                    h = item_height * MaxCount + padd2;
+                    ScrollBar.SizeChange(new Rectangle(0, 0, w, h));
+                    ScrollBar.SetVrSize(0, maxh);
+                    if (sy > 0) ScrollBar.ValueY = sy;
+                }
+                if (init) tmpW = w;
+                SetSize(w, h);
+                return lists;
+            }
+            else
+            {
+                nodata = true;
+                if (DropNoMatchClose) IClose();
+                else SetSize(width, text_height * 5);
+                return new List<ObjectItem>(0);
+            }
+        }
+        int ItemMaxWidth(Canvas g, IList<object> items, int text_height, int icon_size, int icon_gap)
+        {
+            int tmp = 0;
+            foreach (var item in items)
+            {
+                int tmp2 = ItemMaxWidth(g, item, text_height, icon_size, icon_gap);
+                if (tmp2 > tmp) tmp = tmp2;
+            }
+            return tmp;
+        }
+        int ItemMaxWidth(Canvas g, object obj, int text_height, int icon_size, int icon_gap)
+        {
+            if (obj is SelectItem it)
+            {
+                int tmp = g.MeasureText(it.Text + it.SubText, Font).Width;
+                if (it.Online > -1) tmp += icon_size;
+                if (it.Icon != null || it.IconSvg != null) tmp += icon_size + icon_gap;
+                if (it.Sub != null && it.Sub.Count > 0) tmp += icon_size + icon_gap;
+                else if (CloseIcon) tmp += text_height + icon_gap;
+                return tmp;
+            }
+            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0) return ItemMaxWidth(g, group.Sub, text_height, icon_size, icon_gap);
+            else if (obj is DividerSelectItem) return 0;
+            else
+            {
+                var text = obj.ToString();
+                if (text == null) return 0;
+                var size = g.MeasureText(text, Font);
+                return size.Width;
+            }
+        }
+        ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
+        {
+            ObjectItem item;
+            if (value is DividerSelectItem)
+            {
+                divider_count++;
+                item = new ObjectItem(new Rectangle(padd, padd2 + y, maxwr, sp));
+                y += padd2 + sp;
+            }
+            else
+            {
+                item_count++;
+                var rect = new Rectangle(padd, padd + y, maxwr, item_height);
+                if (value is SelectItem it)
+                {
+                    int ux = gap_x, uw = gap_x2;
+                    item = new ObjectItem(it, i, rect) { NoIndex = no_id };
+                    if (it.Online > -1)
+                    {
+                        int dot_xy = (item_height - icon_gap) / 2;
+                        item.RectOnline = new Rectangle(rect.X + ux + icon_gap / 2, rect.Y + dot_xy, icon_gap, icon_gap);
+                        ux += icon_size;
+                        uw += icon_size;
+                    }
+                    if (item.HasIcon)
+                    {
+                        int tmp = icon_size + icon_gap;
+                        item.RectIcon = new Rectangle(rect.X + ux, rect.Y + icon_xy, icon_size, icon_size);
+                        ux += tmp;
+                        uw += tmp;
+                    }
+                    if (item.HasSub)
+                    {
+                        item.RectArrow = new Rectangle(rect.Right - gap_x - icon_size, rect.Y + icon_xy, icon_size, icon_size);
+                        uw += icon_size + icon_gap;
+                    }
+                    else if (CloseIcon)
+                    {
+                        int dot_xy = (item_height - text_height) / 2;
+                        item.RectClose = new Rectangle(rect.Right - gap_x - text_height + dot_xy, rect.Y + dot_xy, text_height, text_height);
+                        uw += text_height;
+                    }
+                    item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
+                }
+                else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                if (selectedValue == item.Tag) sy = y;
+                y += item_height;
+            }
+            return item;
+        }
+
+        public void FocusItem(ObjectItem item)
+        {
+            if (item.SetHover(true))
+            {
+                if (ScrollBar.ShowY) ScrollBar.ValueY = item.Rect.Y - item.Rect.Height;
+                Print();
             }
         }
 
@@ -642,60 +691,23 @@ namespace AntdUI
 
         #region 鼠标
 
-        internal int select_x = 0;
-        int hoveindex = -1, hoveindexold = -1;
         bool down = false;
-        protected override void OnMouseDown(MouseEventArgs e)
+        protected override void OnMouseDown(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (scrollY.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(x, y))
             {
-                OnTouchDown(e.X, e.Y);
+                OnTouchDown(x, y);
                 down = true;
             }
-            base.OnMouseDown(e);
         }
-        protected override void OnMouseUp(MouseEventArgs e)
+
+        int hoveindex = -1, hoveindexold = -1;
+        protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (scrollY.MouseUp(e.Location) && OnTouchUp() && down)
+            if (ScrollBar.MouseMove(x, y) && OnTouchMove(x, y))
             {
-                if (RunAnimation) return;
-                int sy = (int)scrollY.Value;
-                if (CloseIcon)
-                {
-                    foreach (var it in Items)
-                    {
-                        if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
-                        {
-                            if (it.RectClose.Contains(e.X, e.Y + sy) && PARENT is Select select && select.DropDownClose(it.Val))
-                            {
-                                IClose();
-                                return;
-                            }
-                            else if (OnClick(it)) return;
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var it in Items)
-                    {
-                        if (it.Show && it.Enable && it.ID > -1 && it.Contains(e.X, e.Y, 0, sy, out _))
-                        {
-                            if (OnClick(it)) return;
-                        }
-                    }
-                }
-            }
-            down = false;
-            base.OnMouseUp(e);
-        }
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (RunAnimation) return;
-            hoveindex = -1;
-            if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
-            {
-                int count = 0, sy = (int)scrollY.Value;
+                hoveindex = -1;
+                int count = 0, hand = 0, sy = ScrollBar.Value;
                 if (CloseIcon)
                 {
                     for (int i = 0; i < Items.Count; i++)
@@ -703,17 +715,22 @@ namespace AntdUI
                         var it = Items[i];
                         if (it.Enable)
                         {
-                            if (it.has_sub)
+                            if (it.HasSub)
                             {
-                                if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
+                                if (it.Contains(x, y, 0, sy, out var change))
+                                {
+                                    if (!it.Group) hand++;
+                                    hoveindex = i;
+                                }
                                 if (change) count++;
                             }
                             else
                             {
-                                if (it.Contains(e.X, e.Y, 0, sy, out var change))
+                                if (it.Contains(x, y, 0, sy, out var change))
                                 {
+                                    if (!it.Group) hand++;
                                     hoveindex = i;
-                                    bool hover = it.RectArrow.Contains(e.X, e.Y + sy);
+                                    bool hover = it.RectClose.Contains(x, y + sy);
                                     if (it.HoverClose == hover)
                                     {
                                         if (change) count++;
@@ -742,14 +759,19 @@ namespace AntdUI
                         var it = Items[i];
                         if (it.Enable)
                         {
-                            if (it.Contains(e.X, e.Y, 0, sy, out var change)) hoveindex = i;
+                            if (it.Contains(x, y, 0, sy, out var change))
+                            {
+                                if (!it.Group) hand++;
+                                hoveindex = i;
+                            }
                             if (change) count++;
                         }
                     }
                 }
                 if (count > 0) Print();
+                SetCursor(hand > 0);
             }
-            base.OnMouseMove(e);
+            else SetCursor(false);
             if (hoveindexold == hoveindex) return;
             hoveindexold = hoveindex;
             subForm?.IClose();
@@ -763,15 +785,47 @@ namespace AntdUI
             }
         }
 
+        protected override void OnMouseUp(MouseButtons button, int clicks, int x, int y, int delta)
+        {
+            if (ScrollBar.MouseUp() && OnTouchUp() && down)
+            {
+                down = false;
+                int sy = ScrollBar.Value;
+                if (CloseIcon)
+                {
+                    foreach (var it in Items)
+                    {
+                        if (it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
+                        {
+                            if (it.RectClose.Contains(x, y + sy) && PARENT is Select select && select.DropDownClose(it.Item))
+                            {
+                                IClose();
+                                return;
+                            }
+                            else if (OnClick(it)) return;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var it in Items)
+                    {
+                        if (it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
+                        {
+                            if (OnClick(it)) return;
+                        }
+                    }
+                }
+            }
+            else down = false;
+        }
         bool OnClick(ObjectItem it)
         {
             if (!ClickEnd || it.Sub == null || it.Sub.Count == 0)
             {
-                selectedValue = it.Val;
+                selectedValue = it.Item;
                 OnCall(it);
-                down = false;
                 IClose();
-                CloseSub();
                 return true;
             }
             else
@@ -785,7 +839,6 @@ namespace AntdUI
             }
             return false;
         }
-
         void OnCall(ObjectItem it)
         {
             if (PARENT is Select select)
@@ -793,37 +846,37 @@ namespace AntdUI
                 if (select_x == 0 && it.NoIndex)
                 {
                     if (select.DropDownChange()) select.DropDownChange(it.ID);
-                    else select.DropDownChange(select_x, it.ID, it.Val);
+                    else select.DropDownChange(select_x, it.ID, it.Item);
                 }
-                else select.DropDownChange(select_x, it.ID, it.Val);
+                else select.DropDownChange(select_x, it.ID, it.Item);
             }
-            else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Val);
+            else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Item);
             else if (PARENT is Tabs tabs) tabs.MouseChangeIndex(it.ID);
-            else if (Tag is ICell table) table.DropDownValueChanged?.Invoke(it.Val);
+            else if (Tag is ICell table) table.DropDownValueChanged?.Invoke(it.Item);
         }
 
         void OpenDown(ObjectItem it, IList<object> sub, int tag = -1)
         {
+            var rect = new Rectangle(it.Rect.X + tmp_padd, it.Rect.Y - ScrollBar.ValueY - tmp_padd, it.Rect.Width, it.Rect.Height);
             if (PARENT is Select select)
             {
-                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
             }
             else if (PARENT is Dropdown dropdown)
             {
-                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
             }
             else if (PARENT is Table table && Tag is ICell cell)
             {
-                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, new Rectangle(it.Rect.X, (int)(it.Rect.Y - scrollY.Value), it.Rect.Width, it.Rect.Height), sub, tag);
+                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
             }
         }
-
-        void CloseSub()
+        public override void IClosing()
         {
-            LayeredFormSelectDown item = this;
+            var item = this;
             while (item.lay is LayeredFormSelectDown form)
             {
                 if (item == form) return;
@@ -832,407 +885,114 @@ namespace AntdUI
             }
         }
 
-        #region 滚动条
-
-        protected override void OnMouseWheel(MouseEventArgs e)
+        protected override void OnMouseLeave(EventArgs e)
         {
             if (RunAnimation) return;
-            scrollY.MouseWheel(e.Delta);
-            base.OnMouseWheel(e);
+            ScrollBar.Leave();
+            SetCursor(false);
+            Print();
+            base.OnMouseLeave(e);
         }
-        protected override bool OnTouchScrollY(int value) => scrollY.MouseWheelCore(value);
 
-        #endregion
-
-        #endregion
-
-        #region 布局
-
-        /// <summary>
-        /// 计算坐标
-        /// </summary>
-        /// <param name="value">值</param>
-        /// <param name="i">序号</param>
-        /// <param name="width">宽度</param>
-        /// <param name="item_height">项高度</param>
-        /// <param name="text_height">字体高度</param>
-        /// <param name="gap"></param>
-        /// <param name="gap2"></param>
-        /// <param name="gap_x"></param>
-        /// <param name="gap_x2"></param>
-        /// <param name="gap_y"></param>
-        /// <param name="gap_y2"></param>
-        /// <param name="sp">分割线大小</param>
-        /// <param name="item_count">项数量</param>
-        /// <param name="divider_count">分隔线数量</param>
-        /// <param name="y">Y</param>
-        /// <param name="select_y">选中序号</param>
-        void ReadList(object value, int i, int width, int item_height, int text_height, int gap, int gap2, int gap_x, int gap_x2, int gap_y, int gap_y2, int sp, ref int item_count, ref int divider_count, ref int y, ref int select_y, bool NoIndex = true)
+        protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (value is DividerSelectItem)
-            {
-                divider_count++;
-                Items.Add(new ObjectItem(new Rectangle(10 + gap_y, y + (gap_y - sp) / 2, width - gap_y2, sp)));
-                y += gap_y;
-            }
-            else
-            {
-                item_count++;
-                Rectangle rect = new Rectangle(10 + gap, y, width - gap2, item_height), rect_text = new Rectangle(rect.X + gap_x, rect.Y + gap_y, rect.Width - gap_x2, text_height);
-                if (value is SelectItem it)
-                {
-                    Items.Add(new ObjectItem(it, i, rect, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
-                    if (selectedValue == it.Tag) select_y = y;
-                    y += item_height;
-                }
-                else if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
-                {
-                    Items.Add(new ObjectItem(group, i, rect, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2));
-                    if (selectedValue == value) select_y = y;
-                    y += item_height;
-                    foreach (var item in group.Sub) ReadList(item, i, width, item_height, text_height, gap, gap2, gap_x, gap_x2, gap_y, gap_y2, sp, ref item_count, ref divider_count, ref y, ref select_y, false);
-                }
-                else
-                {
-                    Items.Add(new ObjectItem(value, i, rect, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2) { NoIndex = NoIndex });
-                    if (selectedValue == value) select_y = y;
-                    y += item_height;
-                }
-            }
+            if (delta != 0) ScrollBar.MouseWheel(delta);
         }
-
-        void InitReadList(Canvas g, object obj, ref int btext, ref bool ui_online, ref bool ui_icon, ref bool ui_arrow)
-        {
-            if (obj is SelectItem it)
-            {
-                string text = it.Text + it.SubText;
-                var size = g.MeasureText(text, Font);
-                if (size.Width > btext) btext = size.Width;
-                if (it.Online > -1) ui_online = true;
-                if (it.Icon != null) ui_icon = true;
-                else if (it.IconSvg != null) ui_icon = true;
-                if (it.Sub != null && it.Sub.Count > 0) ui_arrow = true;
-            }
-            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
-            {
-                foreach (var item in group.Sub) InitReadList(g, item, ref btext, ref ui_online, ref ui_icon, ref ui_arrow);
-            }
-            else if (obj is DividerSelectItem)
-            {
-            }
-            else
-            {
-                var text = obj.ToString();
-                if (text == null) return;
-                var size = g.MeasureText(text, Font);
-                if (size.Width > btext) btext = size.Width;
-            }
-        }
-
-        public void FocusItem(ObjectItem item)
-        {
-            if (item.SetHover(true))
-            {
-                if (scrollY.Show) scrollY.Value = item.Rect.Y - item.Rect.Height;
-                Print();
-            }
-        }
+        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         #endregion
 
         #region 筛选
 
-        internal void TextChange(string val)
+        ObjectItem[]? ItemsSearch;
+
+        #region 主动搜索
+
+        /// <summary>
+        /// 搜索指定文本
+        /// </summary>
+        /// <param name="search"></param>
+        public void TextChange(string search)
         {
-            ItemsSearch = null;
-            int count = 0;
-            if (string.IsNullOrEmpty(val))
-            {
-                nodata = false;
-                foreach (var it in Items)
-                {
-                    if (!it.Show)
-                    {
-                        it.Show = true;
-                        count++;
-                    }
-                }
-            }
-            else
-            {
-                int showcount = 0;
-                var listSearch = new List<ItemSearchWeigth<ObjectItem>>(Items.Count);
-                for (int i = 0; i < Items.Count; i++)
-                {
-                    var it = Items[i];
-                    if (it.ID > -1)
-                    {
-                        int score = it.Contains(val, out var select);
-                        if (score > 0)
-                        {
-                            listSearch.Add(new ItemSearchWeigth<ObjectItem>(score, it));
-                            showcount++;
-                            if (select)
-                            {
-                                it.Hover = true;
-                                hoveindex = i;
-                                count++;
-                            }
-                            if (!it.Show)
-                            {
-                                it.Show = true;
-                                count++;
-                            }
-                        }
-                        else
-                        {
-                            if (it.Show)
-                            {
-                                it.Show = false;
-                                count++;
-                            }
-                        }
-                    }
-                }
-                ItemsSearch = listSearch.SearchWeightSortArray();
-                nodata = showcount == 0;
-                if (DropNoMatchClose && nodata)
-                {
-                    IClose();
-                    return;
-                }
-            }
-            if (count > 0)
-            {
-                int height;
-                if (nodata)
-                {
-                    height = (int)(100 * Config.Dpi);
-                    SetSizeH(height);
-                }
-                else
-                {
-                    scrollY.val = 0;
-                    int y = 10, w = r_w, list_count = 0;
-                    Helper.GDI(g =>
-                    {
-                        var size = g.MeasureString(Config.NullText, Font);
-                        int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
-                        gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
-                        text_height = size.Height, item_height = text_height + gap_y2;
-                        y += gap;
-                        foreach (var it in GetItems())
-                        {
-                            if (it.ID > -1 && it.Show)
-                            {
-                                list_count++;
-                                Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
-                                rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                                it.SetRectAuto(rect_bg, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2);
-                                y += item_height;
-                            }
-                        }
-                        var vr = item_height * list_count;
-                        if (list_count > MaxCount)
-                        {
-                            y = 10 + gap2 + (item_height * MaxCount);
-                            scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                            scrollY.Show = true;
-                            scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                        }
-                        else
-                        {
-                            y = 10 + gap2 + vr;
-                            scrollY.Show = false;
-                        }
-                        y += 10;
-                        SetSizeH(y);
-                    });
-                    height = y;
-                }
-                SetSizeH(height);
-                MyPoint();
-                shadow_temp?.Dispose();
-                shadow_temp = null;
-                Print();
-            }
+            Items = LoadLayout(false, tmpW, ItemOS, search);
+            PrintAndClear();
         }
 
-        internal void TextChange(IList<object> items)
+        /// <summary>
+        /// 搜索放入自己的结果
+        /// </summary>
+        /// <param name="items"></param>
+        public void TextChange(IList<object> items)
         {
-            ItemsSearch = null;
-            int selY = -1, y_ = 0;
-            int item_count = 0, divider_count = 0;
-            Items.Clear();
-            for (int i = 0; i < items.Count; i++) ReadList(items[i], i, 20, 10, 10, 0, 0, 0, 0, 0, 0, 1, ref item_count, ref divider_count, ref y_, ref selY);
-            int count = 0;
-            if (items.Count == 0)
-            {
-                nodata = false;
-                foreach (var it in Items)
-                {
-                    if (!it.Show)
-                    {
-                        it.Show = true;
-                        count++;
-                    }
-                }
-            }
+            Items = LoadLayout(false, tmpW, items, null);
+            PrintAndClear();
+        }
+
+        #endregion
+
+        IList<object> SearchList(IList<object> items, string? search)
+        {
+            if (search == null || string.IsNullOrEmpty(search)) return items;
             else
             {
-                var listSearch = new List<ObjectItem>(Items.Count);
-                for (int i = 0; i < Items.Count; i++)
+                object? select = null;
+                var listSearch = new List<ItemSearchWeigth<object>>(items.Count);
+                SearchList(items, search, ref listSearch, ref select);
+                return listSearch.SearchWeightSort() ?? new List<object>(0);
+            }
+        }
+        void SearchList(IList<object> items, string search, ref List<ItemSearchWeigth<object>> listSearch, ref object? select)
+        {
+            foreach (var it in items)
+            {
+                if (it is DividerSelectItem) continue;
+                else if (it is SelectItem selectItem)
                 {
-                    var it = Items[i];
-                    if (it.ID > -1)
+                    string pinyin = selectItem.Text + selectItem.SubText;
+                    var PY = new string[] {
+                        pinyin.ToLower(),
+                        Pinyin.GetPinyin(pinyin).ToLower(),
+                        Pinyin.GetInitials(pinyin).ToLower()
+                    };
+                    int score = Helper.SearchContains(search, pinyin, PY, out bool select_item);
+                    if (score > 0)
                     {
-                        listSearch.Add(it);
-                        it.Show = true;
-                        count++;
+                        listSearch.Add(new ItemSearchWeigth<object>(score, it));
+                        if (select_item) select = select_item;
                     }
                 }
-                ItemsSearch = listSearch.ToArray();
-                nodata = listSearch.Count == 0;
-                if (DropNoMatchClose && nodata)
+                else if (it is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                 {
-                    IClose();
-                    return;
-                }
-            }
-            if (count > 0)
-            {
-                int height;
-                if (nodata)
-                {
-                    height = (int)(100 * Config.Dpi);
-                    SetSizeH(height);
+                    string pinyin = group.Title;
+                    var PY = new string[] {
+                        pinyin.ToLower(),
+                        Pinyin.GetPinyin(pinyin).ToLower(),
+                        Pinyin.GetInitials(pinyin).ToLower()
+                    };
+                    int score = Helper.SearchContains(search, pinyin, PY, out bool select_item);
+                    if (score > 0)
+                    {
+                        listSearch.Add(new ItemSearchWeigth<object>(score, it));
+                        if (select_item) select = select_item;
+                    }
+                    SearchList(group.Sub, search, ref listSearch, ref select);
                 }
                 else
                 {
-                    scrollY.val = 0;
-                    int y = 10, w = r_w, list_count = 0;
-                    Helper.GDI(g =>
+                    var pinyin = it.ToString();
+                    if (pinyin == null) continue;
+                    var PY = new string[] {
+                        pinyin.ToLower(),
+                        Pinyin.GetPinyin(pinyin).ToLower(),
+                        Pinyin.GetInitials(pinyin).ToLower()
+                    };
+                    int score = Helper.SearchContains(search, pinyin, PY, out bool select_item);
+                    if (score > 0)
                     {
-                        var size = g.MeasureString(Config.NullText, Font);
-                        int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
-                        gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
-                        text_height = size.Height, item_height = text_height + gap_y2;
-                        y += gap;
-                        foreach (var it in GetItems())
-                        {
-                            if (it.ID > -1 && it.Show)
-                            {
-                                list_count++;
-                                Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
-                                rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                                it.SetRectAuto(rect_bg, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2);
-                                y += item_height;
-                            }
-                        }
-                        var vr = item_height * list_count;
-                        if (list_count > MaxCount)
-                        {
-                            y = 10 + gap2 + (item_height * MaxCount);
-                            scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                            scrollY.Show = true;
-                            scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                        }
-                        else
-                        {
-                            y = 10 + gap2 + vr;
-                            scrollY.Show = false;
-                        }
-                        y += 10;
-                        SetSizeH(y);
-                    });
-                    height = y;
-                }
-                SetSizeH(height);
-                if (InvokeRequired) Invoke(MyPoint);
-                else MyPoint();
-                shadow_temp?.Dispose();
-                shadow_temp = null;
-                Print();
-            }
-        }
-        internal int TextChangeCore(string val)
-        {
-            ItemsSearch = null;
-            if (string.IsNullOrEmpty(val))
-            {
-                nodata = false;
-                foreach (var it in Items) it.Show = true;
-            }
-            else
-            {
-                int showcount = 0;
-                var listSearch = new List<ItemSearchWeigth<ObjectItem>>(Items.Count);
-                for (int i = 0; i < Items.Count; i++)
-                {
-                    var it = Items[i];
-                    if (it.ID > -1)
-                    {
-                        int score = it.Contains(val, out var select);
-                        if (score > 0)
-                        {
-                            listSearch.Add(new ItemSearchWeigth<ObjectItem>(score, it));
-                            showcount++;
-                            if (select)
-                            {
-                                it.Hover = true;
-                                hoveindex = i;
-                            }
-                            it.Show = true;
-                        }
-                        else it.Show = false;
+                        listSearch.Add(new ItemSearchWeigth<object>(score, it));
+                        if (select_item) select = select_item;
                     }
                 }
-                ItemsSearch = listSearch.SearchWeightSortArray();
-                nodata = showcount == 0;
-                if (DropNoMatchClose && nodata)
-                {
-                    IClose();
-                    return 1;
-                }
-            }
-            if (nodata) return (int)(100 * Config.Dpi);
-            else
-            {
-                scrollY.val = 0;
-                int y = 10, w = r_w, list_count = 0;
-                Helper.GDI(g =>
-                {
-                    var size = g.MeasureString(Config.NullText, Font);
-                    int sp = (int)Config.Dpi, gap = (int)(4 * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi), gap_x = (int)(DPadding.Width * Config.Dpi),
-                    gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2,
-                    text_height = size.Height, item_height = text_height + gap_y2;
-                    y += gap;
-                    foreach (var it in GetItems())
-                    {
-                        if (it.ID > -1 && it.Show)
-                        {
-                            list_count++;
-                            Rectangle rect_bg = new Rectangle(10 + gap, y, w - gap2, item_height),
-                            rect_text = new Rectangle(rect_bg.X + gap_x, rect_bg.Y + gap_y, rect_bg.Width - gap_x2, text_height);
-                            it.SetRectAuto(rect_bg, rect_text, CloseIcon, gap_x, gap_x2, gap_y, gap_y2);
-                            y += item_height;
-                        }
-                    }
-                    var vr = item_height * list_count;
-                    if (list_count > MaxCount)
-                    {
-                        y = 10 + gap2 + (item_height * MaxCount);
-                        scrollY.Rect = new Rectangle(w - gap, 10 + gap, 20, (item_height * MaxCount));
-                        scrollY.Show = true;
-                        scrollY.SetVrSize(vr, scrollY.Rect.Height);
-                    }
-                    else
-                    {
-                        y = 10 + gap2 + vr;
-                        scrollY.Show = false;
-                    }
-                });
-                return y + 10;
             }
         }
 

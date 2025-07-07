@@ -686,8 +686,8 @@ namespace AntdUI
                 return;
             }
             Expand = true;
-            if (CheckMode) subForm = new LayeredFormSelectMultipleCheck(this, ReadRectangle, list, filtertext);
-            else subForm = new LayeredFormSelectMultiple(this, ReadRectangle, list, filtertext);
+            if (CheckMode) subForm = new LayeredFormSelectMultipleCheck(this, list, filtertext);
+            else subForm = new LayeredFormSelectMultiple(this, list, filtertext);
             subForm.Disposed += (a, b) =>
             {
                 select_x = 0;

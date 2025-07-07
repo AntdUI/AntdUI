@@ -96,6 +96,8 @@ namespace Demo.Controls
             table1.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
             table1.CellImpactHeight = false;
             table1.Dock = DockStyle.Fill;
+            table1.EditMode = AntdUI.TEditMode.DoubleClick;
+            table1.EditInputStyle = AntdUI.TEditInputStyle.Full;
             table1.GapCell = 6;
             table1.Location = new Point(4, 43);
             table1.Name = "table1";

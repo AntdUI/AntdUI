@@ -35,7 +35,7 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("name", "姓名"){ Filter=new AntdUI.FilterOption()}.SetFixed().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -47,11 +47,12 @@ namespace Demo.Controls
                         return value;
                     }
                 },
-                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("age", "年龄", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(int)),
+                new AntdUI.Column("date", "日期", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(DateTime)),
                 new AntdUI.Column("tag", "Tag"),
                 new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("address", "住址"){ Width="full", Fixed=true}.SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(string)),
+                new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetFixed(true).SetLocalizationTitleID("Table.Column."),
             };
 
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
@@ -108,7 +109,7 @@ namespace Demo.Controls
 
         void checkSortOrder_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
-            if (table1.Columns != null) table1.Columns[6].SortOrder = table1.Columns[7].SortOrder = e.Value;
+            if (table1.Columns != null) table1.Columns[6].SortOrder = table1.Columns[5].SortOrder = table1.Columns[7].SortOrder = e.Value;
         }
 
         void checkEnableHeaderResizing_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
@@ -136,8 +137,8 @@ namespace Demo.Controls
         {
             if (e.Record is TestClass data)
             {
-                if (e.RowIndex > 0 && e.ColumnIndex == 6) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = e.Rect });
-                else if (e.RowIndex > 0 && e.ColumnIndex == 8)
+                if (e.RowIndex > 0 && e.ColumnIndex == 11) AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "演示一下能弹出自定义") { Offset = e.Rect });
+                else if (e.RowIndex > 0 && e.ColumnIndex == 9)
                 {
                     if (data.tag == null) data.tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) };
                     else
@@ -246,7 +247,8 @@ namespace Demo.Controls
                 else _online = new AntdUI.CellBadge(AntdUI.TState.Default, "常规");
                 _name = name;
                 _age = age;
-                _address = "西湖区湖底公园" + id + "号";
+                _date = DateTime.Now.Date.AddYears(-age);
+                _address = (new System.Random().Next(DateTime.Now.Second) > 5 ? "东湖" : "西湖") + "区湖底公园" + id + "号";
                 _enable = start % 2 == 0;
                 if (start == 1)
                 {
@@ -374,6 +376,17 @@ namespace Demo.Controls
                 {
                     if (_age == value) return;
                     _age = value;
+                    OnPropertyChanged();
+                }
+            }
+            DateTime _date;
+            public DateTime date
+            {
+                get => _date;
+                set
+                {
+                    if (_date == value) return;
+                    _date = value;
                     OnPropertyChanged();
                 }
             }

@@ -67,7 +67,12 @@ namespace AntdUI
         /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
-        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
+        public static StringFormat SF(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            return sf;
+        }
 
         /// <summary>
         /// 文本布局（不换行）
@@ -77,7 +82,7 @@ namespace AntdUI
         public static StringFormat SF_NoWrap(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
         {
             var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr };
-            sf.FormatFlags |= StringFormatFlags.NoWrap;
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces | StringFormatFlags.NoWrap;
             return sf;
         }
 
@@ -86,7 +91,12 @@ namespace AntdUI
         /// </summary>
         /// <param name="tb">垂直（上下）</param>
         /// <param name="lr">水平（前后）</param>
-        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center) => new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
+        public static StringFormat SF_Ellipsis(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
+        {
+            var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            return sf;
+        }
 
         /// <summary>
         /// 文本布局（超出省略号+不换行）
@@ -96,7 +106,7 @@ namespace AntdUI
         public static StringFormat SF_ALL(StringAlignment tb = StringAlignment.Center, StringAlignment lr = StringAlignment.Center)
         {
             var sf = new StringFormat(StringFormat.GenericTypographic) { LineAlignment = tb, Alignment = lr, Trimming = StringTrimming.EllipsisCharacter };
-            sf.FormatFlags |= StringFormatFlags.NoWrap;
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces | StringFormatFlags.NoWrap;
             return sf;
         }
 
@@ -788,7 +798,10 @@ namespace AntdUI
         {
             PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color, dot);
         }
-
+        internal static void PaintIconReset(this Canvas g, Rectangle rect, Color color, float dot)
+        {
+            PaintIconCore(g, rect, SvgDb.IcoStar, color, dot);
+        }
         /// <summary>
         /// 绘制带圆背景的镂空图标
         /// </summary>

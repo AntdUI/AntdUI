@@ -841,17 +841,28 @@ namespace AntdUI
 
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
+            public Rectangle rect_filter { get; set; }
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
             {
                 RECT = _rect;
-                if (COLUMN.SortOrder)
+                if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
                     int size;
                     if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
                     else size = (int)(font_size.Height * .6F);
-                    int size2 = size * 2, icon_sp = (int)(size * .34F), y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
-                    rect_up = new Rectangle(_rect.Right - size2, y, size, size);
-                    rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
+                    int size2 = size * 2, icon_sp = (int)(size * .34F), use_r = 0;
+                    if (COLUMN.HasFilter)
+                    {
+                        int tmp = size + icon_sp;
+                        rect_filter = new Rectangle(_rect.Right - use_r - size2, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        use_r = tmp + icon_sp;
+                    }
+                    if (COLUMN.SortOrder)
+                    {
+                        int y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
+                        rect_up = new Rectangle(_rect.Right - use_r - size2, y, size, size);
+                        rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
+                    }
                 }
             }
 
@@ -876,7 +887,12 @@ namespace AntdUI
                     }
                 }
                 var size = g.MeasureString(value, font);
-                SortWidth = COLUMN.SortOrder ? (int)(size.Height * .8F) : 0;
+                if (COLUMN.SortOrder || COLUMN.HasFilter)
+                {
+                    if (COLUMN.SortOrder && COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.8F);
+                    else if (COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.34F);
+                    else SortWidth = (int)(size.Height * .8F);
+                }
                 MinWidth = size.Width + gap2 + SortWidth;
 
                 return new Size(size.Width + gap2 + SortWidth, size.Height);

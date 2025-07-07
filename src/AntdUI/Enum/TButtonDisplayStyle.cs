@@ -18,10 +18,10 @@
 
 namespace AntdUI
 {
-    public enum TEditInputStyle
+    public enum TButtonDisplayStyle
     {
-        Default,
-        Full,
-        Excel,
+        Default = 0,
+        Text = 1,
+        Image = 2
     }
 }

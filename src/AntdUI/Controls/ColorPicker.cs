@@ -38,6 +38,7 @@ namespace AntdUI
         public ColorPicker() : base(ControlType.Select)
         {
             base.BackColor = Color.Transparent;
+            base.Text = string.Empty;
         }
 
         #region 属性
@@ -212,6 +213,38 @@ namespace AntdUI
             }
         }
 
+        bool showSymbol = false;
+        /// <summary>
+        /// 显示自定义符号(长度<4)
+        /// </summary>
+        [Description("显示自定义符号(长度<4)"), Category("值"), DefaultValue(false)]
+        public bool ShowSymbol
+        {
+            get => showSymbol && !string.IsNullOrEmpty(Text);
+            set
+            {
+                if (showSymbol == value) return;
+                showSymbol = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ShowSymbol));
+            }
+        }
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category("外观"), DefaultValue("")]
+        public override string Text
+        {
+            get => base.Text;
+            set
+            {
+                if (base.Text == value) return;
+
+                if (string.IsNullOrEmpty(value) == false && value.Length > 3) value = value.Substring(0, 3);
+                base.Text = value;
+            }
+        }
         /// <summary>
         /// 禁用透明度
         /// </summary>
@@ -240,6 +273,11 @@ namespace AntdUI
         [Description("显示关闭按钮"), Category("行为"), DefaultValue(false)]
         public bool ShowClose { get; set; }
 
+        /// <summary>
+        /// 显示还原按钮
+        /// </summary>
+        [Description("显示还原按钮"), Category("行为"), DefaultValue(false)]
+        public bool ShowReset { get; set; }
         bool hasvalue = false;
         /// <summary>
         /// 是否包含值
@@ -475,6 +513,20 @@ namespace AntdUI
                     int size_colorw = (int)(rect_read.Width * .75F);
                     var rect_color = new RectangleF(rect_read.X + (rect_read.Width - size_colorw) / 2F, rect_read.Y + (rect_read.Height - size_color) / 2F, size_colorw, size_color);
                     PaintValue(g, r, rect_color);
+                }
+                if (showSymbol)
+                {
+                    //允许显示自定义符号，如0~9, A~Z,?...
+                    StringFormat stringFormat = new StringFormat();
+                    stringFormat.Alignment = StringAlignment.Center;
+                    stringFormat.LineAlignment = StringAlignment.Center;
+                    var rect_color = new RectangleF(rect_read.X + (rect_read.Width - size_color) / 2F, rect_read.Y + (rect_read.Height - size_color) / 2F, size_color, size_color);
+                    using (var brush = new SolidBrush(_fore))
+                    {
+                        g.String(Text, Font, brush, rect_color, stringFormat);
+                    }
+                    stringFormat.Dispose();
+
                 }
             }
             base.OnDraw(e);
@@ -806,7 +858,7 @@ namespace AntdUI
             ExtraMouseDown = true;
             if (subForm == null)
             {
-                subForm = new LayeredFormColorPicker(this, ReadRectangle, color =>
+                subForm = new LayeredFormColorPicker(this, ReadRectangle, Value, color =>
                 {
                     Value = color;
                 });

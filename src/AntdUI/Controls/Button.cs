@@ -258,6 +258,23 @@ namespace AntdUI
             }
         }
 
+        TButtonDisplayStyle displayStyle = TButtonDisplayStyle.Default;
+        /// <summary>
+        /// 指定显示图像还是文本
+        /// </summary>
+        [Description("指定显示图像还是文本"), Category("外观"), DefaultValue(TButtonDisplayStyle.Default)]
+        public TButtonDisplayStyle DisplayStyle
+        {
+            get => displayStyle;
+            set
+            {
+                if (displayStyle == value) return;
+                displayStyle = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(DisplayStyle));
+            }
+        }
+
         TTypeMini type = TTypeMini.Default;
         /// <summary>
         /// 类型
@@ -1504,7 +1521,7 @@ namespace AntdUI
             }
             bool has_loading = loading && LoadingValue > -1;
             var font_size = g.MeasureText(text ?? Config.NullText, Font);
-            if (text == null)
+            if (text == null || displayStyle == TButtonDisplayStyle.Image)
             {
                 //没有文字
                 var rect = GetIconRectCenter(font_size, rect_read);
@@ -1530,53 +1547,75 @@ namespace AntdUI
             else
             {
                 if (textMultiLine && font_size.Width > rect_read.Width) font_size.Width = rect_read.Width;
-                bool has_left = has_loading || HasIcon, has_right = showArrow;
                 Rectangle rect_text;
-                if (has_left || has_right)
+                if (displayStyle == TButtonDisplayStyle.Default)
                 {
-                    if (has_left && has_right)
+                    bool has_left = has_loading || HasIcon, has_right = showArrow;
+                    if (has_left || has_right)
                     {
-                        rect_text = RectAlignLR(g, textLine, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
-
-                        if (has_loading)
+                        if (has_left && has_right)
                         {
-                            float loading_size = rect_l.Height * .14F;
-                            using (var brush = new Pen(color, loading_size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
-                            }
-                        }
-                        else PaintIcon(g, color, rect_l, true, enabled);
+                            rect_text = RectAlignLR(g, textLine, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
-                        PaintTextArrow(g, rect_r, color);
-                    }
-                    else if (has_left)
-                    {
-                        rect_text = RectAlignL(g, textLine, textMultiLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
-                        if (has_loading)
-                        {
-                            float loading_size = rect_l.Height * .14F;
-                            using (var brush = new Pen(color, loading_size))
+                            if (has_loading)
                             {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
+                                float loading_size = rect_l.Height * .14F;
+                                using (var brush = new Pen(color, loading_size))
+                                {
+                                    brush.StartCap = brush.EndCap = LineCap.Round;
+                                    g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
+                                }
                             }
+                            else PaintIcon(g, color, rect_l, true, enabled);
+
+                            PaintTextArrow(g, rect_r, color);
                         }
-                        else PaintIcon(g, color, rect_l, true, enabled);
+                        else if (has_left)
+                        {
+                            rect_text = RectAlignL(g, textLine, textMultiLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                            if (has_loading)
+                            {
+                                float loading_size = rect_l.Height * .14F;
+                                using (var brush = new Pen(color, loading_size))
+                                {
+                                    brush.StartCap = brush.EndCap = LineCap.Round;
+                                    g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
+                                }
+                            }
+                            else PaintIcon(g, color, rect_l, true, enabled);
+                        }
+                        else
+                        {
+                            rect_text = RectAlignR(g, textLine, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
+
+                            PaintTextArrow(g, rect_r, color);
+                        }
                     }
                     else
                     {
-                        rect_text = RectAlignR(g, textLine, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
-
-                        PaintTextArrow(g, rect_r, color);
+                        int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
+                        rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                        PaintTextAlign(rect_read, ref rect_text);
                     }
                 }
                 else
                 {
-                    int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
-                    rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
-                    PaintTextAlign(rect_read, ref rect_text);
+                    if (has_loading)
+                    {
+                        rect_text = RectAlignL(g, textLine, textMultiLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                        float loading_size = rect_l.Height * .14F;
+                        using (var brush = new Pen(color, loading_size))
+                        {
+                            brush.StartCap = brush.EndCap = LineCap.Round;
+                            g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
+                        }
+                    }
+                    else
+                    {
+                        int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
+                        rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                        PaintTextAlign(rect_read, ref rect_text);
+                    }
                 }
                 g.DrawText(text, Font, color, rect_text, stringFormat);
             }
@@ -2180,7 +2219,7 @@ namespace AntdUI
                 {
                     var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     int gap = (int)(20 * Config.Dpi), wave = (int)(WaveSize * Config.Dpi);
-                    if (Shape == TShape.Circle || string.IsNullOrEmpty(Text))
+                    if (Shape == TShape.Circle || string.IsNullOrEmpty(Text) || displayStyle == TButtonDisplayStyle.Image)
                     {
                         int s = font_size.Height + wave + gap;
                         return new Size(s, s);
@@ -2190,7 +2229,7 @@ namespace AntdUI
                         int m = wave * 2;
                         if (joinMode > 0) m = 0;
                         else if (joinLeft || joinRight) m = 0;
-                        bool has_icon = (loading && LoadingValue > -1) || HasIcon;
+                        bool show_icon = displayStyle == TButtonDisplayStyle.Default, has_icon = (loading && LoadingValue > -1) || (HasIcon && show_icon);
                         if (has_icon || showArrow)
                         {
                             if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))

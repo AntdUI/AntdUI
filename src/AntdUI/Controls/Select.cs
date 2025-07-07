@@ -209,6 +209,7 @@ namespace AntdUI
             if (obj is SelectItem it)
             {
                 selectedValue = it.Tag;
+                if (string.IsNullOrEmpty(it.IconSvg) == false) PrefixSvg = it.IconSvg;
                 Text = it.Text;
             }
             else
@@ -813,81 +814,63 @@ namespace AntdUI
 
     internal class ObjectItem : SelectItem
     {
-        public ObjectItem(object _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
+        public ObjectItem(object item, int index, Rectangle rect, Rectangle rect_text) : base(item)
         {
-            Show = true;
-            Val = _val;
-            Text = _val.ToString() ?? string.Empty;
-            ID = _i;
-            SetRectBase(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
-            string pinyin = Text;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
+            Item = item;
+            Text = item.ToString() ?? string.Empty;
+            ID = index;
+            Rect = rect;
+            RectText = rect_text;
         }
 
-        public ObjectItem(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
+        public ObjectItem(GroupSelectItem item, int index, Rectangle rect, Rectangle rect_text) : base(item)
         {
-            Show = Group = true;
-            Val = _val;
-            Text = _val.Title;
-            ID = _i;
-            SetRectBase(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
-            string pinyin = Text;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
+            Group = true;
+            Item = item;
+            Text = item.Title;
+            ID = index;
+            Rect = rect;
+            RectText = rect_text;
         }
 
-        public ObjectItem(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2) : this(_val)
+        public ObjectItem(SelectItem item, int index, Rectangle rect) : this(item)
         {
-            ID = _i;
-            SetRect(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
+            ID = index;
+            Rect = rect;
         }
 
-        public ObjectItem(SelectItem _val) : base(_val)
+        public ObjectItem(SelectItem item) : base(item)
         {
-            Val = _val;
-            Online = _val.Online;
-            OnlineCustom = _val.OnlineCustom;
-            Icon = _val.Icon;
-            IconSvg = _val.IconSvg;
-            Text = _val.Text;
-            SubText = _val.SubText;
-            Enable = _val.Enable;
-            Sub = _val.Sub;
-            if (Sub != null && Sub.Count > 0) has_sub = true;
-            Tag = _val.Tag;
-            TagBack = _val.TagBack;
-            TagBackExtend = _val.TagBackExtend;
-            TagFore = _val.TagFore;
-            Fore = _val.Fore;
-            ForeSub = _val.ForeSub;
-            BackActive = _val.BackActive;
-            BackActiveExtend = _val.BackActiveExtend;
-            string pinyin = _val.Text + _val.SubText;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
-            Show = true;
+            Item = item;
+            Online = item.Online;
+            OnlineCustom = item.OnlineCustom;
+            Icon = item.Icon;
+            IconSvg = item.IconSvg;
+            Text = item.Text;
+            SubText = item.SubText;
+            Enable = item.Enable;
+            Sub = item.Sub;
+            if (Sub != null && Sub.Count > 0) HasSub = true;
+            Tag = item.Tag;
+            TagBack = item.TagBack;
+            TagBackExtend = item.TagBackExtend;
+            TagFore = item.TagFore;
+            Fore = item.Fore;
+            ForeSub = item.ForeSub;
+            BackActive = item.BackActive;
+            BackActiveExtend = item.BackActiveExtend;
         }
 
         public ObjectItem(Rectangle rect) : base(-1)
         {
             ID = -1;
-            Rect = rect;
-            Show = true;
-            PY = new string[0];
+            Item = Rect = rect;
         }
-        public object Val { get; set; }
 
-        internal bool has_sub { get; set; }
+        public object Item { get; set; }
+        public int ID { get; set; }
+
+        public bool HasSub { get; set; }
 
         /// <summary>
         /// 是否包含图标
@@ -897,74 +880,19 @@ namespace AntdUI
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }
 
-        string[] PY { get; set; }
-        public int Contains(string val, out bool select) => Helper.SearchContains(val, Text, PY, out select);
-
-        public int ID { get; set; }
-
         public bool Hover { get; set; }
-        public bool Show { get; set; }
-        internal bool Group { get; set; }
-        internal bool NoIndex { get; set; }
+        public bool Group { get; set; }
 
-        internal bool ShowAndID => ID == -1 || !Show;
+        public bool ShowAndID => ID == -1;
+        public bool NoIndex { get; set; }
 
-        internal Rectangle RectArrow { get; set; }
-        internal Rectangle RectClose { get; set; }
-        internal Rectangle RectCloseIcon { get; set; }
-        internal bool HoverClose { get; set; }
         public Rectangle Rect { get; set; }
+        public Rectangle RectText { get; set; }
+        public Rectangle RectArrow { get; set; }
+        public Rectangle RectClose { get; set; }
+        public bool HoverClose { get; set; }
 
-        internal void SetRectAuto(Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
-        {
-            if (Val is SelectItem) SetRect(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
-            else SetRectBase(rect, rect_text, closeIcon, gap_x, gap_x2, gap_y, gap_y2);
-        }
-
-        internal void SetRect(Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
-        {
-            Rect = rect;
-            if (Online > -1 || HasIcon)
-            {
-                if (Online > -1 && HasIcon)
-                {
-                    RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-                    RectIcon = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new Rectangle(rect_text.X + gap_y + gap_y2 + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height - gap_y - gap_y2, rect_text.Height);
-                }
-                else if (Online > -1)
-                {
-                    RectOnline = new Rectangle(rect_text.X - gap_y / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-                    RectText = new Rectangle(rect_text.X + gap_y2, rect_text.Y, rect_text.Width - gap_y2, rect_text.Height);
-                }
-                else
-                {
-                    RectIcon = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
-                }
-            }
-            else RectText = rect_text;
-            RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
-            if (closeIcon)
-            {
-                RectClose = new Rectangle(RectArrow.X + gap_y, RectArrow.Y + gap_y, RectArrow.Width - gap_y2, RectArrow.Height - gap_y2);
-                RectCloseIcon = new Rectangle(RectClose.X + gap_y, RectClose.Y + gap_y, RectClose.Width - gap_y2, RectClose.Height - gap_y2);
-            }
-        }
-
-        internal void SetRectBase(Rectangle rect, Rectangle rect_text, bool closeIcon, int gap_x, int gap_x2, int gap_y, int gap_y2)
-        {
-            Rect = rect;
-            RectText = rect_text;
-            RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
-            if (closeIcon)
-            {
-                RectClose = new Rectangle(RectArrow.X + gap_y, RectArrow.Y + gap_y, RectArrow.Width - gap_y2, RectArrow.Height - gap_y2);
-                RectCloseIcon = new Rectangle(RectClose.X + gap_y, RectClose.Y + gap_y, RectClose.Width - gap_y2, RectClose.Height - gap_y2);
-            }
-        }
-
-        internal bool SetHover(bool val)
+        public bool SetHover(bool val)
         {
             bool change = false;
             if (val)
@@ -979,7 +907,7 @@ namespace AntdUI
             }
             return change;
         }
-        internal bool Contains(int x, int y, int sx, int sy, out bool change)
+        public bool Contains(int x, int y, int sx, int sy, out bool change)
         {
             if (ID > -1 && Rect.Contains(x + sx, y + sy))
             {
@@ -992,105 +920,72 @@ namespace AntdUI
                 return false;
             }
         }
-
-        public Rectangle RectText { get; set; }
     }
 
     internal class ObjectItemCheck : SelectItem
     {
-        public ObjectItemCheck(object _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
+        public ObjectItemCheck(object item, int index, Rectangle rect, Rectangle rect_text, Rectangle rect_check) : base(item)
         {
             Show = true;
-            Val = _val;
-            Text = _val.ToString() ?? string.Empty;
-            ID = _i;
-            SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
-            string pinyin = Text;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
+            Item = item;
+            Text = item.ToString() ?? string.Empty;
+            ID = index;
+            Rect = rect;
+            RectText = rect_text;
+            RectCheck = rect_check;
         }
 
-        public ObjectItemCheck(GroupSelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2) : base(_val)
+        public ObjectItemCheck(GroupSelectItem item, int index, Rectangle rect, Rectangle rect_text) : base(item)
         {
             Show = Group = true;
-            Val = _val;
-            Text = _val.Title;
-            ID = _i;
-            SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
-            string pinyin = Text;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
+            Item = item;
+            Text = item.Title;
+            ID = index;
+            Rect = rect;
+            RectText = rect_text;
         }
 
-        public ObjectItemCheck(SelectItem _val, int _i, Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2) : this(_val)
+        public ObjectItemCheck(SelectItem item, int index, Rectangle rect, Rectangle rect_check) : this(item)
         {
-            Sub = _val.Sub;
-            if (Sub != null && Sub.Count > 0) has_sub = true;
-            Show = true;
-            Val = _val;
-            Online = _val.Online;
-            OnlineCustom = _val.OnlineCustom;
-            Icon = _val.Icon;
-            IconSvg = _val.IconSvg;
-            Text = _val.Text;
-            SubText = _val.SubText;
-            Enable = _val.Enable;
-            ID = _i;
-            SetRect(rect, rect_text, gap_x, gap_x2, gap_y, gap_y2);
-            string pinyin = _val.Text + _val.SubText;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
+            ID = index;
+            Rect = rect;
+            RectCheck = rect_check;
         }
 
-        public ObjectItemCheck(SelectItem _val) : base(_val)
+        public ObjectItemCheck(SelectItem item) : base(item)
         {
-            Val = _val;
-            Online = _val.Online;
-            OnlineCustom = _val.OnlineCustom;
-            Icon = _val.Icon;
-            IconSvg = _val.IconSvg;
-            Text = _val.Text;
-            SubText = _val.SubText;
-            Enable = _val.Enable;
-            Sub = _val.Sub;
-            if (Sub != null && Sub.Count > 0) has_sub = true;
-            Tag = _val.Tag;
-            TagBack = _val.TagBack;
-            TagBackExtend = _val.TagBackExtend;
-            TagFore = _val.TagFore;
-            Fore = _val.Fore;
-            ForeSub = _val.ForeSub;
-            BackActive = _val.BackActive;
-            BackActiveExtend = _val.BackActiveExtend;
-            string pinyin = _val.Text + _val.SubText;
-            PY = new string[] {
-                pinyin.ToLower(),
-                Pinyin.GetPinyin(pinyin).ToLower(),
-                Pinyin.GetInitials(pinyin).ToLower()
-            };
+            Item = item;
+            Online = item.Online;
+            OnlineCustom = item.OnlineCustom;
+            Icon = item.Icon;
+            IconSvg = item.IconSvg;
+            Text = item.Text;
+            SubText = item.SubText;
+            Enable = item.Enable;
+            Sub = item.Sub;
+            if (Sub != null && Sub.Count > 0) HasSub = true;
+            Tag = item.Tag;
+            TagBack = item.TagBack;
+            TagBackExtend = item.TagBackExtend;
+            TagFore = item.TagFore;
+            Fore = item.Fore;
+            ForeSub = item.ForeSub;
+            BackActive = item.BackActive;
+            BackActiveExtend = item.BackActiveExtend;
             Show = true;
         }
 
         public ObjectItemCheck(Rectangle rect) : base(-1)
         {
             ID = -1;
-            Rect = rect;
+            Item = Rect = rect;
             Show = true;
-            PY = new string[0];
         }
 
-        public object Val { get; set; }
+        public object Item { get; set; }
+        public int ID { get; set; }
 
-        internal bool has_sub { get; set; }
+        public bool HasSub { get; set; }
 
         /// <summary>
         /// 是否包含图标
@@ -1099,70 +994,22 @@ namespace AntdUI
 
         public Rectangle RectIcon { get; set; }
         public Rectangle RectOnline { get; set; }
-        public Rectangle RectCheck { get; set; }
-
-        string[] PY { get; set; }
-        public bool Contains(string val)
-        {
-            foreach (var pinyin in PY)
-            {
-                if (pinyin.Contains(val)) return true;
-            }
-            return false;
-        }
-
-        public int ID { get; set; }
 
         public bool Hover { get; set; }
         public bool Show { get; set; }
-        internal bool Group { get; set; }
-        internal bool NoIndex { get; set; }
+        public bool Group { get; set; }
 
-        internal bool ShowAndID => ID == -1 || !Show;
+        public bool ShowAndID => ID == -1 || !Show;
+        public bool NoIndex { get; set; }
 
         public Rectangle Rect { get; set; }
+        public Rectangle RectCheck { get; set; }
+        public Rectangle RectText { get; set; }
+        public Rectangle RectArrow { get; set; }
+        public Rectangle RectClose { get; set; }
+        public bool HoverClose { get; set; }
 
-        internal void SetRect(Rectangle rect, Rectangle rect_text, int gap_x, int gap_x2, int gap_y, int gap_y2)
-        {
-            Rect = rect;
-            if (Val is SelectItem)
-            {
-                if (Online > -1 || HasIcon)
-                {
-                    RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-                    int x = rect.X + rect_text.Height + gap_x;
-                    if (Online > -1 && HasIcon)
-                    {
-                        RectOnline = new Rectangle(x + (rect_text.Height - gap_y) / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-                        RectIcon = new Rectangle(x + rect_text.Height, rect_text.Y, rect_text.Height, rect_text.Height);
-                        RectText = new Rectangle(x + gap_x / 2 + rect_text.Height * 2, rect_text.Y, rect_text.Width - x - rect_text.Height, rect_text.Height);
-                    }
-                    else if (Online > -1)
-                    {
-                        RectOnline = new Rectangle(x + (rect_text.Height - gap_y) / 2, rect_text.Y + (rect_text.Height - gap_y) / 2, gap_y, gap_y);
-                        RectText = new Rectangle(x + gap_x / 2 + rect_text.Height, rect_text.Y, rect_text.Width - x, rect_text.Height);
-                    }
-                    else
-                    {
-                        RectIcon = new Rectangle(x, rect_text.Y, rect_text.Height, rect_text.Height);
-                        RectText = new Rectangle(x + gap_x / 2 + rect_text.Height, rect_text.Y, rect_text.Width - x, rect_text.Height);
-                    }
-                }
-                else
-                {
-                    RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-                    RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
-                }
-                RectArrow = new Rectangle(Rect.Right - Rect.Height - gap_y, Rect.Y, Rect.Height, Rect.Height);
-            }
-            else
-            {
-                RectCheck = new Rectangle(rect.X + gap_x / 2, rect_text.Y, rect_text.Height, rect_text.Height);
-                RectText = new Rectangle(rect_text.X + rect_text.Height, rect_text.Y, rect_text.Width - rect_text.Height, rect_text.Height);
-            }
-        }
-
-        internal bool SetHover(bool val)
+        public bool SetHover(bool val)
         {
             bool change = false;
             if (val)
@@ -1177,7 +1024,7 @@ namespace AntdUI
             }
             return change;
         }
-        internal bool Contains(int x, int y, int sx, int sy, out bool change)
+        public bool Contains(int x, int y, int sx, int sy, out bool change)
         {
             if (ID > -1 && Rect.Contains(x + sx, y + sy))
             {
@@ -1190,8 +1037,5 @@ namespace AntdUI
                 return false;
             }
         }
-
-        public Rectangle RectText { get; set; }
-        public Rectangle RectArrow { get; set; }
     }
 }
