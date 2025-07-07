@@ -704,9 +704,9 @@ namespace AntdUI
         int hoveindex = -1, hoveindexold = -1;
         protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            hoveindex = -1;
             if (ScrollBar.MouseMove(x, y) && OnTouchMove(x, y))
             {
+                hoveindex = -1;
                 int count = 0, hand = 0, sy = ScrollBar.Value;
                 if (CloseIcon)
                 {
@@ -876,7 +876,6 @@ namespace AntdUI
         }
         public override void IClosing()
         {
-            return;
             var item = this;
             while (item.lay is LayeredFormSelectDown form)
             {

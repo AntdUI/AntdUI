@@ -1,5 +1,32 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.9` 2025-07-07
+
+- ➕ Table supports data column filtering function (BETA)
+- ➕ Transfer Shuttle Box Component (BETA)
+- ➕ Table Column Reads read-only property
+- ➕ Table editing mode Excel style
+- ➕ Collapse GroupButton Tooltip property, supports tooltips
+- ➕ Collapse AnimationSpeed adjusts animation speed
+- ➕ Modal Btn adds DialogResult callback
+- ➕ ColorPicker ShowSymbol property, adding the ability to restore color settings
+- ➕ The Menu Flatten property enables the flattening/shrinking of menus and displays tooltips in flattened mode
+- ➕ Menu InlineNoText
+- ➕ Button DisplayStyle
+- ➕ LabelTime DragMove
+- ✍️ Table content exceeds
+- ✍️ The width of the dropdown menu pop-up is insufficient
+- ✍️ Menu Mode InlineNoText， Submenus do not display arrows
+- ✍️ Menu Mode InlineNoText misalignment
+- ✍️ Modal CancelButton event
+- ✍️ Collapse GroupButton Edit Event Response
+- ✍️ Collapse GroupButton Response Details
+- ✍️ When Collapse GroupButton Text is empty, Icon is not centered
+- ✍️ Input: Move the cursor to the end of the text after obtaining focus
+- ✍️ Input spaces are filtered
+- ✍️ Tree interaction
+- ✍️ Refactoring dropdown
+
 ### `2.0.7` 2025-06-27 🌵
 
 - ➕ Shield

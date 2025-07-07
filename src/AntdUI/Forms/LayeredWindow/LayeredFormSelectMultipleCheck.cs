@@ -616,9 +616,9 @@ namespace AntdUI
         }
         protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            hoveindex = -1;
             if (ScrollBar.MouseMove(x, y) && OnTouchMove(x, y))
             {
+                hoveindex = -1;
                 int count = 0, hand = 0, sy = ScrollBar.Value;
                 for (int i = 0; i < Items.Count; i++)
                 {
