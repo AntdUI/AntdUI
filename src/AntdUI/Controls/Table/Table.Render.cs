@@ -319,41 +319,44 @@ namespace AntdUI
                     }
                 }
                 if (dragHeader == null) return;
-                foreach (var column in row.cells)
+                if (dragHeader.enable)
                 {
-                    int index = column.COLUMN.INDEX_REAL;
-                    if (dragHeader.i == index)
+                    foreach (var column in row.cells)
                     {
-                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
+                        int index = column.COLUMN.INDEX_REAL;
+                        if (dragHeader.i == index)
                         {
-                            if (radius > 0)
+                            using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
                             {
-                                if (column.INDEX == 0)
+                                if (radius > 0)
                                 {
-                                    using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                    if (column.INDEX == 0)
                                     {
-                                        g.Fill(brush, path);
+                                        using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
                                     }
-                                }
-                                else if (column.INDEX == row.cells.Length - 1)
-                                {
-                                    using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                    else if (column.INDEX == row.cells.Length - 1)
                                     {
-                                        g.Fill(brush, path);
+                                        using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
                                     }
+                                    else g.Fill(brush, column.RECT);
                                 }
                                 else g.Fill(brush, column.RECT);
                             }
-                            else g.Fill(brush, column.RECT);
                         }
-                    }
-                    if (dragHeader.im == index)
-                    {
-                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
+                        if (dragHeader.im == index)
                         {
-                            int sp = (int)(2 * Config.Dpi);
-                            if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                            else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
+                            {
+                                int sp = (int)(2 * Config.Dpi);
+                                if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                                else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            }
                         }
                     }
                 }
@@ -411,41 +414,44 @@ namespace AntdUI
                 }
                 g.Restore(state);
                 if (dragHeader == null) return;
-                foreach (var column in row.cells)
+                if (dragHeader.enable)
                 {
-                    int index = column.COLUMN.INDEX_REAL;
-                    if (dragHeader.i == index)
+                    foreach (var column in row.cells)
                     {
-                        using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
+                        int index = column.COLUMN.INDEX_REAL;
+                        if (dragHeader.i == index)
                         {
-                            if (radius > 0)
+                            using (var brush = new SolidBrush(Colour.FillSecondary.Get("Table", ColorScheme)))
                             {
-                                if (column.INDEX == 0)
+                                if (radius > 0)
                                 {
-                                    using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                    if (column.INDEX == 0)
                                     {
-                                        g.Fill(brush, path);
+                                        using (var path = Helper.RoundPath(column.RECT, radius, true, false, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
                                     }
-                                }
-                                else if (column.INDEX == row.cells.Length - 1)
-                                {
-                                    using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                    else if (column.INDEX == row.cells.Length - 1)
                                     {
-                                        g.Fill(brush, path);
+                                        using (var path = Helper.RoundPath(column.RECT, radius, false, true, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
                                     }
+                                    else g.Fill(brush, column.RECT);
                                 }
                                 else g.Fill(brush, column.RECT);
                             }
-                            else g.Fill(brush, column.RECT);
                         }
-                    }
-                    if (dragHeader.im == index)
-                    {
-                        using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
+                        if (dragHeader.im == index)
                         {
-                            int sp = (int)(2 * Config.Dpi);
-                            if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
-                            else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            using (var brush_split = new SolidBrush(Colour.BorderColor.Get("Table", ColorScheme)))
+                            {
+                                int sp = (int)(2 * Config.Dpi);
+                                if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                                else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
+                            }
                         }
                     }
                 }
@@ -708,7 +714,7 @@ namespace AntdUI
                 g.SetClip(it.RECT, CombineMode.Intersect);
                 g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
             }
-            if (dragHeader != null && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
+            if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
             {
                 using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))

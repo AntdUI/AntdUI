@@ -516,6 +516,12 @@ namespace Demo
                     return "VisibleHeader";
                 case "Table.checkAddressLineBreak":
                     return "AddressLineBreak";
+                case "Table.checkFilter":
+                    return "Filter";
+                case "Table.selectEditMode":
+                    return "EditMode";
+                case "Table.selectEditStyle":
+                    return "EditStyle";
                 case "Table.Column.name":
                     return "Name";
                 case "Table.Column.checkTitle":
@@ -530,10 +536,38 @@ namespace Demo
                     return "Age";
                 case "Table.Column.address":
                     return "Address";
+                case "Table.Column.date":
+                    return "Date";
                 case "Table.Column.imgs":
                     return "Imgs";
                 case "Table.Column.btns":
                     return "Action";
+                case "Table.Data.Name1":
+                    return "John Brown";
+                case "Table.Data.Name2":
+                    return "Jim Green";
+                case "Table.Data.Name3":
+                    return "Joe Black";
+                case "Table.Data.Online.Default":
+                    return "Default";
+                case "Table.Data.Online":
+                    return "Online";
+                case "Table.Data.Online.Processing":
+                    return "Processing";
+                case "Table.Data.Online.Error":
+                    return "Error";
+                case "Table.Data.Online.Warn":
+                    return "Warn";
+                case "Table.Data.Address1":
+                    return "London, Park Lane no.1";
+                case "Table.Data.Address2":
+                    return "New York No.1 Lake Park";
+                case "Table.Data.Address3":
+                    return "London No. 1 Lake Park";
+                case "Table.Data.Address4":
+                    return "Sydney No. 1 Lake Park";
+                case "Table.Data.AddressNum":
+                    return "London, Park Lane no.";
 
                 //Tabs ----------------------------
                 case "Tabs.Text":

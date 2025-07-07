@@ -889,16 +889,15 @@ namespace AntdUI
                 var size = g.MeasureString(value, font);
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
-                    if (COLUMN.SortOrder && COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.8F);
-                    else if (COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.34F);
-                    else SortWidth = (int)(size.Height * .8F);
+                    if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = (int)(size.Height * 1.8F);
+                    else SFWidth = (int)(size.Height * .8F);
                 }
-                MinWidth = size.Width + gap2 + SortWidth;
+                MinWidth = size.Width + gap2 + SFWidth;
 
-                return new Size(size.Width + gap2 + SortWidth, size.Height);
+                return new Size(size.Width + gap2 + SFWidth, size.Height);
             }
 
-            public int SortWidth = 0;
+            public int SFWidth = 0;
             public override string ToString() => value;
         }
 

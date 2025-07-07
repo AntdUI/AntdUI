@@ -90,11 +90,7 @@ namespace AntdUI
                         }
                         if (ColumnDragSort && cell.COLUMN.DragSort)
                         {
-                            dragHeader = new DragHeader
-                            {
-                                i = cell.COLUMN.INDEX_REAL,
-                                x = e.X
-                            };
+                            dragHeader = new DragHeader(e.X, e.Y, cell.COLUMN.INDEX_REAL, e.X);
                             return;
                         }
                     }
@@ -102,11 +98,7 @@ namespace AntdUI
                     {
                         if (cell.COLUMN is ColumnSort sort && cell.CONTAIN_REAL(r_x, r_y))
                         {
-                            dragBody = new DragHeader
-                            {
-                                i = cell.ROW.INDEX,
-                                x = e.Y
-                            };
+                            dragBody = new DragHeader(e.X, e.Y, cell.ROW.INDEX, e.Y);
                             return;
                         }
                         if (cell.ROW.CanExpand && cell.ROW.RECORD != null && cell.ROW.RectExpand.Contains(r_x, r_y))
@@ -202,7 +194,7 @@ namespace AntdUI
             if (dragHeader != null)
             {
                 bool hand = dragHeader.hand;
-                if (hand && dragHeader.im != -1)
+                if (hand && dragHeader.enable && dragHeader.im != -1)
                 {
                     //执行排序
                     if (columns == null) return;
@@ -233,7 +225,7 @@ namespace AntdUI
             if (dragBody != null)
             {
                 bool hand = dragBody.hand;
-                if (hand && dragBody.im != -1)
+                if (hand && dragBody.enable && dragBody.im != -1)
                 {
                     //执行排序
                     if (rows == null) return;
@@ -599,6 +591,7 @@ namespace AntdUI
             }
             if (dragHeader != null)
             {
+                dragHeader.SetEnable(e.X, e.Y);
                 SetCursor(CursorType.SizeAll);
                 dragHeader.hand = true;
                 dragHeader.xr = e.X - dragHeader.x;
@@ -624,6 +617,7 @@ namespace AntdUI
             }
             if (dragBody != null)
             {
+                dragBody.SetEnable(e.X, e.Y);
                 SetCursor(CursorType.SizeAll);
                 dragBody.hand = true;
                 dragBody.xr = e.Y - dragBody.x;
@@ -690,13 +684,9 @@ namespace AntdUI
                             }
                         }
                         if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(r_x, r_y)) SetCursor(true);
-                        else if (ColumnDragSort && cel.COLUMN.DragSort)
-                        {
-                            SetCursor(CursorType.SizeAll);
-                            return;
-                        }
                         else if (cel.COLUMN.Filter != null && cel.rect_filter.Contains(r_x - cel.offsetx, r_y - cel.offsetx)) SetCursor(true);
                         else if (cel.COLUMN.SortOrder) SetCursor(true);
+                        else if (ColumnDragSort && cel.COLUMN.DragSort) SetCursor(CursorType.SizeAll);
                         else SetCursor(false);
                     }
                     else

@@ -495,7 +495,7 @@ namespace AntdUI
             return this;
         }
 
-        public CellButton SetArrow(float value = 1F)
+        public CellButton SetArrowProg(float value = 1F)
         {
             ArrowProg = value;
             return this;

@@ -791,11 +791,7 @@ namespace AntdUI
                         SelectedIndex = i;
                         if (DragSort)
                         {
-                            dragHeader = new Table.DragHeader
-                            {
-                                i = i,
-                                x = x
-                            };
+                            dragHeader = new Table.DragHeader(e.X, e.Y, i, x);
                             return;
                         }
                         return;

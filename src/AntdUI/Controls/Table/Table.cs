@@ -1988,6 +1988,7 @@ namespace AntdUI
                 filter = value;
                 if (filter == null) HasFilter = false;
                 else HasFilter = true;
+                Invalidate();
             }
         }
 

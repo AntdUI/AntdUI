@@ -63,6 +63,22 @@ namespace AntdUI
 
         internal class DragHeader
         {
+            public DragHeader(int ox, int oy, int _i, int _x)
+            {
+                _ox = ox;
+                _oy = oy;
+                i = _i;
+                x = _x;
+            }
+            public int _ox { get; set; }
+            public int _oy { get; set; }
+            public void SetEnable(int x, int y)
+            {
+                if (x == _ox && y == _oy) return;
+                enable = true;
+            }
+
+            public bool enable { get; set; }
             public int x { get; set; }
             public int xr { get; set; }
             public int i { get; set; }

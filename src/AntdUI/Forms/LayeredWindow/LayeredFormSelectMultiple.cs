@@ -206,6 +206,7 @@ namespace AntdUI
         }
         bool IFNextSelect(int start)
         {
+            if (start > Items.Count - 1) return false;
             var it = Items[start];
             if (selectedValue.Contains(it.Item) || it.Item is SelectItem item && selectedValue.Contains(item.Tag)) return true;
             else return false;
