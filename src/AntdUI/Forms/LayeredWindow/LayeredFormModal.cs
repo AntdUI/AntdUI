@@ -183,8 +183,8 @@ namespace AntdUI
             {
                 if (butt_h > 0)
                 {
-                    if (btn_no == null) AcceptButton = CancelButton = btn_ok;
-                    else
+                    //if (btn_no == null) AcceptButton = CancelButton = btn_ok;
+                    //else
                     {
                         AcceptButton = btn_ok;
                         CancelButton = btn_no;
