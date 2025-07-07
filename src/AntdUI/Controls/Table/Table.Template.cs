@@ -850,16 +850,17 @@ namespace AntdUI
                     int size;
                     if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
                     else size = (int)(font_size.Height * .6F);
-                    int size2 = size * 2, icon_sp = (int)(size * .34F), use_r = size2;
+                    int size2 = size * 2, icon_sp = (int)(size * .34F), use_r = 0;
                     if (COLUMN.HasFilter)
                     {
-                        rect_filter = new Rectangle(_rect.Right - use_r, _rect.Y + (_rect.Height - size) / 2, size, size);
-                        use_r += size + icon_sp;
+                        int tmp = size + icon_sp;
+                        rect_filter = new Rectangle(_rect.Right - use_r - size2, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        use_r = tmp + icon_sp;
                     }
                     if (COLUMN.SortOrder)
                     {
                         int y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
-                        rect_up = new Rectangle(_rect.Right - use_r, y, size, size);
+                        rect_up = new Rectangle(_rect.Right - use_r - size2, y, size, size);
                         rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
                     }
                 }
@@ -889,6 +890,7 @@ namespace AntdUI
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
                     if (COLUMN.SortOrder && COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.8F);
+                    else if (COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.34F);
                     else SortWidth = (int)(size.Height * .8F);
                 }
                 MinWidth = size.Width + gap2 + SortWidth;

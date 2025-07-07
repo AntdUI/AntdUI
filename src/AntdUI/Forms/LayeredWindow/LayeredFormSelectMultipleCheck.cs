@@ -482,7 +482,7 @@ namespace AntdUI
                         var rect = new Rectangle(padd, padd + y, maxwr, item_height);
                         lists.Add(new ObjectItemCheck(group, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
                         y += item_height;
-                        for (int j = 0; j < group.Sub.Count; j++) lists.Add(ItemC(group.Sub[j], j, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, true));
+                        for (int j = 0; j < group.Sub.Count; j++) lists.Add(ItemC(group.Sub[j], j, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
                     }
                     else lists.Add(ItemC(value, i, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
                 }
@@ -542,7 +542,7 @@ namespace AntdUI
                 return size.Width + text_height + icon_gap;
             }
         }
-        ObjectItemCheck ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = false)
+        ObjectItemCheck ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
         {
             ObjectItemCheck item;
             if (value is DividerSelectItem)
@@ -737,12 +737,7 @@ namespace AntdUI
                 subForm.Show(this);
             }
         }
-        public override void IClose(bool isdispose = false)
-        {
-            CloseSub();
-            IClose(isdispose);
-        }
-        void CloseSub()
+        public override void IClosing()
         {
             var item = this;
             while (item.lay is LayeredFormSelectMultipleCheck form)

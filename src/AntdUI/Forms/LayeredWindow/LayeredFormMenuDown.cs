@@ -490,12 +490,7 @@ namespace AntdUI
                 subForm.Show(this);
             }
         }
-        public override void IClose(bool isdispose = false)
-        {
-            CloseSub();
-            IClose(isdispose);
-        }
-        void CloseSub()
+        public override void IClosing()
         {
             var item = this;
             while (item.lay is LayeredFormMenuDown form)

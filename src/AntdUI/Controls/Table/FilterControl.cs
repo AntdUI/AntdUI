@@ -42,9 +42,6 @@ namespace AntdUI
 
         public FilterControl(Table table, Column currentColumn, IList<object>? customSource)
         {
-            if (table == null) throw new ArgumentNullException(nameof(table));
-            if (currentColumn == null) throw new ArgumentNullException(nameof(currentColumn));
-
             InitializeComponent();
 
             _table = table;
