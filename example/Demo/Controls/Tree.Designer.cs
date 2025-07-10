@@ -74,6 +74,7 @@ namespace Demo.Controls
             tree1.Name = "tree1";
             tree1.Size = new Size(328, 328);
             tree1.TabIndex = 0;
+            tree1.NodeMouseClick += tree1_NodeMouseClick;
             // 
             // tree2
             // 

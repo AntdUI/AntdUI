@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -36,6 +37,8 @@ namespace Demo.Controls
         {
             base.OnLoad(e);
             tree1.PauseLayout = tree2.PauseLayout = tree3.PauseLayout = true;
+            var it_loading = new AntdUI.TreeItem("¼ÓÔØ¶¯»­,µã»÷ÔÝÍ£") { Expand = true, Loading = true, IconSvg = "PlayCircleOutlined" };
+            tree1.Items.Add(it_loading);
             AntdUI.ITask.Run(() =>
             {
                 var random = new Random();
@@ -147,6 +150,12 @@ namespace Demo.Controls
                 }).ContinueWith(action => tree3.PauseLayout = false);
             }
             else e.Item.IconSvg = Properties.Resources.icon_folder;
+        }
+
+
+        private void tree1_NodeMouseClick(object sender, AntdUI.TreeSelectEventArgs e)
+        {
+            tree1.Items.First().Loading = !tree1.Items.First().Loading;
         }
     }
 }
