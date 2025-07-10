@@ -371,7 +371,7 @@ namespace AntdUI
                 if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, tmpItemHeight));
             }
         }
-        public override void PrintContent(Canvas g, Rectangle rect)
+        public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
             if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)));
             else
@@ -384,7 +384,7 @@ namespace AntdUI
                 using (var brush_split = new SolidBrush(Colour.Split.Get(keyid, ColorScheme)))
                 {
                     foreach (var it in GetItems()) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                    g.ResetTransform();
+                    g.Restore(state);
                     ScrollBar.Paint(g);
                 }
             }

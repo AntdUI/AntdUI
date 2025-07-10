@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -36,7 +35,7 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column.").SetDefaultFilter(),
+                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -48,9 +47,9 @@ namespace Demo.Controls
                         return value;
                     }
                 },
-                new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(int)),
-                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column.").SetDefaultFilter(),
-                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetDefaultFilter(typeof(DateTime)).SetDisplayFormat("D"),
+                new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("tag", "Tag"),
                 new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
@@ -72,59 +71,12 @@ namespace Demo.Controls
             foreach (var it in editStyle) editStyles.Add(new AntdUI.SelectItem(it));
             editStyles.RemoveAt(0);
             selectEditStyle.Items.AddRange(editStyles.ToArray());
-            table1.CellPaintBegin += Table1_CellPaintBegin;
             table1.FilterPopupEnd += Table1_FilterPopupEnd;
             table1.FilterDataChanged += Table1_FilterDataChanged;
         }
 
-
         #region 示例
-        private void Table1_CellPaintBegin(object sender, AntdUI.TablePaintBeginEventArgs e)
-        {
-            if (e.Column == table1.Columns["name"])
-            {
-                TestClass item = e.Record as TestClass;
-                if (item.name == "吴彦祖")
-                {
-                    //仅设置当前单元格的样式
-                    e.CellFont = new Font(table1.Font, FontStyle.Bold);
-                    e.CellFore = Color.Green;
-                    e.CellBack = new System.Drawing.Drawing2D.LinearGradientBrush(e.Rect, Color.Transparent, Color.FromArgb(100, AntdUI.Style.Db.PrimaryActive), 90f);
-                }
-            }
-            else if (e.Column == table1.Columns["tag"])
-            {
-                //自定义单元格绘制示例 (进度条)
-                TestClass item = e.Record as TestClass;
-                if (item.id == -1) return;
-                if (item.age < 1) return;
-                RectangleF rect = e.Rect;
-                rect.Offset(1, 1);
-                rect.Inflate(-1, -1);
-                rect.Width = ((float)item.age / 100) * e.Rect.Width; //test
-                using (System.Drawing.Drawing2D.LinearGradientBrush brush = new System.Drawing.Drawing2D.LinearGradientBrush(rect, Color.LightYellow, Color.YellowGreen, 0, true))
-                {
-                    e.g.Fill(brush, rect);
-                }
 
-            }
-        }
-
-        private void Table1_FilterPopupEnd(object sender, AntdUI.TableFilterPopupEndEventArgs e)
-        {
-            AntdUI.Notification.info(form, "筛选结果", $"共筛选到 {(e.Records == null ? 0 : e.Records.Length)} 条结果。", AntdUI.TAlignFrom.Top);
-        }
-
-        private void Table1_FilterDataChanged(object sender, AntdUI.TableFilterDataChangedEventArgs e)
-        {
-            if (e.Records == null || e.Records.Length == 0)
-            {
-                table1.Summary = null;
-                return;
-            }
-
-            table1.Summary=GetPageSummaryData(e.Records);
-        }
         void checkFixedHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             table1.FixedHeader = e.Value;
@@ -342,29 +294,31 @@ namespace Demo.Controls
             DateTime birthday_DanielWu = new DateTime(1974, 9, 30);//数据来源：https://baike.baidu.com/link?url=zk3KO7qvnfny-fZ2QfgQ2-lZleCeNUaCfketfcE6Ur5p_LowHOhlttu0c4tEXDKN673QcgpSRRRUmymic58Rf5NiUpsMJrctl1SXaR2RXuu
 
             list.Add(new TestClass(start, 0, AntdUI.Localization.Get("Table.Data.Name1", "胡彦斌"), (int)Math.Round((now - birthday_TigerHu).TotalDays / 365)));
-            list.Add(new TestClass(start + 1, 1, AntdUI.Localization.Get("Table.Data.Name2", "吴彦祖"), 18)
+            list.Add(new TestClass(start + 1, 1, AntdUI.Localization.Get("Table.Data.Name2", "吴彦祖"), (int)Math.Round((now - birthday_DanielWu).TotalDays / 365))
             {
                 tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }
             });
             for (int i = 2; i < pageSize; i++)
             {
                 int index = start + i;
-                list.Add(new TestClass(index, i, AntdUI.Localization.Get("Table.Data.Name3", "胡彦祖"), new Random().Next(88) + index));
+                list.Add(new TestClass(index, i, AntdUI.Localization.Get("Table.Data.Name3", "胡彦祖"), 20 + index));
             }
             return list;
         }
-        object GetPageSummaryData(object[]? source)
+
+        object GetPageSummaryData(object[] source)
         {
             // if (BatchCurrent == null) return null;
             if (source == null) return null;
-
             int totalAge = 0;
-            foreach (TestClass item in source)
+            foreach (TestClass item in source) totalAge += item.age;
+            return new
             {
-                totalAge += item.age;
-            }
-            return new TestClass(-1, -1, "平均年龄", totalAge/source.Length);
+                name = "平均年龄",
+                age = totalAge / source.Length
+            };
         }
+
         void pagination1_ValueChanged(object sender, AntdUI.PagePageEventArgs e)
         {
             table1.DataSource = GetPageData(e.Current, e.PageSize);
@@ -375,6 +329,21 @@ namespace Demo.Controls
         }
 
         #endregion
+        
+        void Table1_FilterPopupEnd(object sender, AntdUI.TableFilterPopupEndEventArgs e)
+        {
+            AntdUI.Notification.info(form, "筛选结果", $"共筛选到 {(e.Records == null ? 0 : e.Records.Length)} 条结果。", AntdUI.TAlignFrom.Top);
+        }
+        
+        void Table1_FilterDataChanged(object sender, AntdUI.TableFilterDataChangedEventArgs e)
+        {
+            if (e.Records == null || e.Records.Length == 0)
+            {
+                table1.Summary = null;
+                return;
+            }
+            table1.Summary = GetPageSummaryData(e.Records);
+        }
 
         public class TestColumn : AntdUI.TemplateColumn
         {
@@ -386,14 +355,6 @@ namespace Demo.Controls
         {
             public TestClass(int index, int start, string name, int age)
             {
-                if(index==-1)
-                {
-                    id = -1;
-                    _name = name;
-                    _age = age;
-                    return;
-                }
-
                 id = (index + 1);
                 if (start == 1) _online = new AntdUI.CellBadge(AntdUI.TState.Success, AntdUI.Localization.Get("Table.Data.Online", "在线"));
                 else if (start == 2) _online = new AntdUI.CellBadge(AntdUI.TState.Processing, AntdUI.Localization.Get("Table.Data.Online.Processing", "处置"));
@@ -402,7 +363,7 @@ namespace Demo.Controls
                 else _online = new AntdUI.CellBadge(AntdUI.TState.Default, AntdUI.Localization.Get("Table.Data.Online.Default", "常规"));
                 _name = name;
                 _age = age;
-                if (age != 18) _date = DateTime.Now.AddYears(-age);//测试空日期
+                _date = DateTime.Now.Date.AddYears(-age);
 
                 _address = AntdUI.Localization.GetLangI("Table.Data.Address" + id, null);
                 if (_address == null) _address = AntdUI.Localization.GetLangI("Table.Data.AddressNum", null);
@@ -465,10 +426,10 @@ namespace Demo.Controls
                 else _btns = new AntdUI.CellLink[] { new AntdUI.CellLink("delete", "Delete") };
             }
 
-            public int? id { get; set; }
+            public int id { get; set; }
 
-            bool? _check;
-            public bool? check
+            bool _check = false;
+            public bool check
             {
                 get => _check;
                 set
@@ -479,8 +440,8 @@ namespace Demo.Controls
                 }
             }
 
-            bool? _radio;
-            public bool? radio
+            bool _radio = false;
+            public bool radio
             {
                 get => _radio;
                 set
@@ -491,8 +452,8 @@ namespace Demo.Controls
                 }
             }
 
-            bool? _checkTitle;
-            public bool? checkTitle
+            bool _checkTitle = false;
+            public bool checkTitle
             {
                 get => _checkTitle;
                 set
@@ -503,8 +464,8 @@ namespace Demo.Controls
                 }
             }
 
-            string? _name;
-            public string? name
+            string _name;
+            public string name
             {
                 get => _name;
                 set
@@ -515,8 +476,8 @@ namespace Demo.Controls
                 }
             }
 
-            AntdUI.CellBadge? _online;
-            public AntdUI.CellBadge? online
+            AntdUI.CellBadge _online;
+            public AntdUI.CellBadge online
             {
                 get => _online;
                 set
@@ -526,8 +487,8 @@ namespace Demo.Controls
                 }
             }
 
-            bool? _enable;
-            public bool? enable
+            bool _enable = false;
+            public bool enable
             {
                 get => _enable;
                 set
@@ -549,8 +510,8 @@ namespace Demo.Controls
                     OnPropertyChanged();
                 }
             }
-            DateTime? _date;
-            public DateTime? date
+            DateTime _date;
+            public DateTime date
             {
                 get => _date;
                 set
@@ -561,8 +522,8 @@ namespace Demo.Controls
                 }
             }
 
-            string? _address;
-            public string? address
+            string _address;
+            public string address
             {
                 get => _address;
                 set
@@ -573,8 +534,8 @@ namespace Demo.Controls
                 }
             }
 
-            AntdUI.CellTag[]? _tag;
-            public AntdUI.CellTag[]? tag
+            AntdUI.CellTag[] _tag;
+            public AntdUI.CellTag[] tag
             {
                 get => _tag;
                 set
@@ -584,8 +545,8 @@ namespace Demo.Controls
                 }
             }
 
-            AntdUI.CellImage[]? _imgs;
-            public AntdUI.CellImage[]? imgs
+            AntdUI.CellImage[] _imgs;
+            public AntdUI.CellImage[] imgs
             {
                 get => _imgs;
                 set
@@ -595,8 +556,8 @@ namespace Demo.Controls
                 }
             }
 
-            AntdUI.CellLink[]? _btns;
-            public AntdUI.CellLink[]? btns
+            AntdUI.CellLink[] _btns;
+            public AntdUI.CellLink[] btns
             {
                 get => _btns;
                 set

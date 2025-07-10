@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -99,9 +98,7 @@ namespace AntdUI
             set
             {
                 summary = value;
-
-                ExtractData(false);//会设置dataTmp，清除筛选
-
+                if (ExtractDataSummary()) ExtractData();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(Summary));
             }
@@ -1999,10 +1996,8 @@ namespace AntdUI
         /// 设置默认筛选选项 (string)
         /// </summary>
         /// <returns></returns>
-        public Column SetDefaultFilter()
-        {
-          return SetDefaultFilter(typeof(string));
-        }
+        public Column SetDefaultFilter() => SetDefaultFilter(typeof(string));
+
         /// <summary>
         /// 设置默认筛选选项
         /// </summary>
@@ -2013,13 +2008,16 @@ namespace AntdUI
             Filter = new FilterOption(type);
             return this;
         }
+
         #endregion
 
         #region 格式化
+
         /// <summary>
         /// 格式化显示（如日期：D, yyyy-MM-dd, dd MMM yyyy..., 数字格式化：C, D5, P2, 0.###...）
         /// </summary>
         public string? DisplayFormat { get; set; }
+
         /// <summary>
         /// 设置格式化显示
         /// 建议非string类型需要时设置
@@ -2030,6 +2028,7 @@ namespace AntdUI
             DisplayFormat = format;
             return this;
         }
+
         /// <summary>
         /// 返回格式化的字符串
         /// </summary>
@@ -2037,11 +2036,10 @@ namespace AntdUI
         /// <returns></returns>
         public string? GetDisplayText(object? value)
         {
-            if (value == null || value == DBNull.Value)
-                return string.Empty;
+            if (value == null || value == DBNull.Value) return null;
             else
             {
-                if (string.IsNullOrEmpty(this.DisplayFormat)) return value?.ToString();
+                if (DisplayFormat == null || string.IsNullOrEmpty(DisplayFormat)) return value?.ToString();
                 try
                 {
                     if (DisplayFormat.Contains("{0:")) return string.Format(DisplayFormat, value);
@@ -2050,7 +2048,9 @@ namespace AntdUI
                 catch { return value?.ToString(); }
             }
         }
+
         #endregion
+
         /// <summary>
         /// 列可拖拽
         /// </summary>

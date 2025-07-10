@@ -778,7 +778,7 @@ namespace AntdUI
             {
                 value = column.GetDisplayText(txt);
             }
-            
+
             /// <summary>
             /// 值
             /// </summary>

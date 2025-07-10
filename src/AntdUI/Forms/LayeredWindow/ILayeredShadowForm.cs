@@ -166,7 +166,7 @@ namespace AntdUI
         [Description("圆角"), Category("外观"), DefaultValue(0)]
         public int Radius { get; set; }
 
-        public abstract void PrintContent(Canvas g, Rectangle rect);
+        public abstract void PrintContent(Canvas g, Rectangle rect, GraphicsState state);
         public abstract void PrintBg(Canvas g, Rectangle rect, GraphicsPath path);
         public void PrintAndClear()
         {
@@ -179,7 +179,7 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            using (var g = Graphics.FromImage(original_bmp).HighLay())
             {
                 if (ShadowEnabled)
                 {
@@ -195,16 +195,12 @@ namespace AntdUI
                         g.Image(shadow_temp.Bitmap, rect, .2F);
                         PrintBg(g, rect_read, path);
                     }
-                    using (var bmp = new Bitmap(rect_read.Width, rect_read.Height))
-                    {
-                        using (var g2 = Graphics.FromImage(bmp).High())
-                        {
-                            PrintContent(g2, new Rectangle(0, 0, rect_read.Width, rect_read.Height));
-                        }
-                        g.Image(bmp, rect_read);
-                    }
+                    g.SetClip(rect_read);
+                    g.TranslateTransform(shadow, shadow);
+                    var state = g.Save();
+                    PrintContent(g, new Rectangle(0, 0, rect_read.Width, rect_read.Height), state);
                 }
-                else PrintContent(g, rect);
+                else PrintContent(g, rect, g.Save());
             }
             return original_bmp;
         }

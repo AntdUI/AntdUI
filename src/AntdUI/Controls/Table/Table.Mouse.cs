@@ -319,9 +319,7 @@ namespace AntdUI
             {
                 Popover.Config? config = sender as Popover.Config;
                 if (config == null) return;
-
                 var arg = new TableFilterPopupEndEventArgs(config.Tag is FilterOption ? (FilterOption)config.Tag : null, FilterList());
-                
                 FilterPopupEnd(sender, arg);
                 e.Cancel = arg.Cancel;
             }
@@ -465,11 +463,11 @@ namespace AntdUI
                             if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
                             location.X += col.rect_filter.Width / 2;
                             location.Y += col.rect_filter.Height;
-                            Rectangle? rectScreen = Screen.PrimaryScreen?.Bounds;
+                            Rectangle? rectScreen = Screen.FromPoint(location).WorkingArea;
                             TAlign align = TAlign.Bottom;
                             if (rectScreen.HasValue)
                             {
-                                if (location.X -(editor.Width/2)< rectScreen.Value.Left)
+                                if (location.X - (editor.Width / 2) < rectScreen.Value.Left)
                                 {
                                     align = TAlign.Right;
                                     location.X = editor.Width / 2;
@@ -477,7 +475,7 @@ namespace AntdUI
                                 else if (location.X + editor.Width > rectScreen.Value.Right)
                                 {
                                     align = TAlign.Left;
-                                    location.X = rectScreen.Value.Right- editor.Width / 2;
+                                    location.X = rectScreen.Value.Right - editor.Width / 2;
                                 }
                                 else if (location.Y + editor.Height > rectScreen.Value.Bottom)
                                 {
@@ -485,8 +483,10 @@ namespace AntdUI
                                     location.Y = locaionOrigin.Y;
                                 }
                             }
+
                             Popover.open(new Popover.Config(this, editor)
                             {
+                                Dpi = (fnt.Size / 9F) * Config.Dpi,
                                 Tag = focusColumn.Filter,
                                 ArrowAlign = align,
                                 Font = fnt,

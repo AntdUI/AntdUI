@@ -34,11 +34,11 @@ namespace AntdUI
         private Bitmap bitmap;
         private BitmapData bitmapData;
 
-        public UnsafeBitmap(Bitmap bitmap, bool lockBitmap = false, ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
+        public UnsafeBitmap(Bitmap bmp, bool lockBitmap = false, ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
         {
-            this.bitmap = bitmap;
-            Width = bitmap.Width;
-            Height = bitmap.Height;
+            bitmap = bmp;
+            Width = bmp.Width;
+            Height = bmp.Height;
 
             if (lockBitmap)
             {

@@ -64,34 +64,7 @@ namespace AntdUI
                 Dispose();
             });
         }
-        public ITask(Func<int, bool> action, int interval, int max, int add, Action? end = null)
-        {
-            bool ok = true;
-            IsRun = true;
-            task = Run(() =>
-            {
-                int val = 0;
-                while (true)
-                {
-                    if (token.Wait())
-                    {
-                        ok = false;
-                        return;
-                    }
-                    else
-                    {
-                        val += add;
-                        if (val > max) val = 0;
-                        if (action(val)) Thread.Sleep(interval);
-                        else return;
-                    }
-                }
-            }).ContinueWith(action =>
-            {
-                if (ok && end != null) end();
-                Dispose();
-            });
-        }
+
         /// <summary>
         /// 循环任务
         /// </summary>

@@ -673,21 +673,24 @@ namespace AntdUI
         public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
 
         /// <summary>
-        /// 是否已处理
+        /// 是否处理
         /// </summary>
         public bool Handled { get; set; }
+
         /// <summary>
         /// 单元格前景色
         /// </summary>
-        public Color? CellFore { get; set; } = null;
+        public SolidBrush? CellFore { get; set; }
+
         /// <summary>
         /// 单元格背景笔刷 (支持常用SolidBrush, HatchBrush, TextureBrush,LinearGradientBrush...)
         /// </summary>
-        public Brush? CellBack { get; set; } = null;
+        public Brush? CellBack { get; set; }
+
         /// <summary>
         /// 单元格字体
         /// </summary>
-        public Font? CellFont { get; set; } = null;
+        public Font? CellFont { get; set; }
     }
 
     public class TableSortModeEventArgs : EventArgs
@@ -840,6 +843,7 @@ namespace AntdUI
         /// </summary>
         public bool Cancel { get; set; }
     }
+
     #endregion
 
     #region Tabs

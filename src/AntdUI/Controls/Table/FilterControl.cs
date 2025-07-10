@@ -57,6 +57,7 @@ namespace AntdUI
 
             InitFilterEditor();
         }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -89,9 +90,10 @@ namespace AntdUI
             if (type == null) type = typeof(string);
             if (type == typeof(decimal) || type == typeof(double) || type == typeof(float) || type == typeof(int) || type == typeof(short) || type == typeof(long))
             {
-                InputNumber edit = new InputNumber();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new InputNumber {
+                    Margin=new Padding(0),
+                    Dock = DockStyle.Fill
+                };
                 edit.DecimalPlaces = type == typeof(int) || type == typeof(short) || type == typeof(long) ? 0 : 7;
                 try
                 {
@@ -100,7 +102,7 @@ namespace AntdUI
                 catch { }
                 edit.ValueChanged += Edit_ValueChanged;
                 edit.TextChanged += Edit_TextChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                tablePanel.Controls.Add(edit, 1, 0);
                 foreach (SelectItem item in selectCondition.Items)
                 {
                     FilterConditions condition = (FilterConditions)item.Tag;
@@ -109,9 +111,11 @@ namespace AntdUI
             }
             else if (type == typeof(DateTime))
             {
-                DatePicker edit = new DatePicker();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new DatePicker
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
                 try
                 {
                     edit.Value = Option.FilterValues != null && Option.FilterValues.Count == 1 ? Convert.ToDateTime(Option.FilterValues[0]) : null;
@@ -119,7 +123,7 @@ namespace AntdUI
                 catch { }
                 edit.ValueChanged += EditDate_ValueChanged;
                 edit.TextChanged += Edit_TextChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                tablePanel.Controls.Add(edit, 1, 0);
                 foreach (SelectItem item in selectCondition.Items)
                 {
                     FilterConditions condition = (FilterConditions)item.Tag;
@@ -128,9 +132,11 @@ namespace AntdUI
             }
             else if (type == typeof(bool))
             {
-                Switch edit = new Switch();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new Switch
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
                 edit.CheckedText = "是";
                 edit.UnCheckedText = "否";
                 try
@@ -139,7 +145,7 @@ namespace AntdUI
                 }
                 catch { }
                 edit.CheckedChanged += EditChecked_CheckedChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                tablePanel.Controls.Add(edit, 1, 0);
                 foreach (SelectItem item in selectCondition.Items)
                 {
                     FilterConditions condition = (FilterConditions)item.Tag;
@@ -148,14 +154,16 @@ namespace AntdUI
             }
             else
             {
-                Input edit = new Input();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new Input
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
 #pragma warning disable CS8601 // 引用类型赋值可能为 null。
                 edit.Text = Option.FilterValues != null && Option.FilterValues.Count == 1 && Option.FilterValues[0] != DBNull.Value ? Option.FilterValues[0].ToString() : string.Empty;
 #pragma warning restore CS8601 // 引用类型赋值可能为 null。
                 edit.TextChanged += Edit_TextChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                tablePanel.Controls.Add(edit, 1, 0);
             }
         }
 
@@ -255,10 +263,18 @@ namespace AntdUI
             }
         }
         #endregion
+
         #region Properties
         public FilterOption Option { get { return FocusedColumn.Filter; } }
-        protected IControl? Edit { get { if (flowPanelConditionEdit.Controls.Count == 0) return null; return flowPanelConditionEdit.Controls[0] as IControl; } }
-        protected AntdUI.Table.IRow[]? RowsCache { get; set; }
+        protected IControl? Edit
+        {
+            get
+            {
+                if (tablePanel.Controls.Count == 0) return null;
+                return tablePanel.Controls[tablePanel.Controls.Count - 1] as IControl;
+            }
+        }
+        protected Table.IRow[]? RowsCache { get; set; }
         protected Table _table;
         protected IList<object>? CustomSource { get; set; }
         protected bool EditLocked { get; set; } = true;
@@ -271,6 +287,7 @@ namespace AntdUI
         public Column FocusedColumn { get => _column; }
 
         #endregion
+
         private void treeList_CheckedChanged(object sender, TreeCheckedEventArgs e)
         {
             if (EditLocked) return;
@@ -390,10 +407,11 @@ namespace AntdUI
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
         }
+
         decimal beforeValue = 0;
         void Edit_ValueChanged(object sender, DecimalEventArgs e)
         {
-            if(beforeValue==e.Value) return;
+            if (beforeValue == e.Value) return;
             beforeValue = e.Value;
             Option.FilterValues = new List<object> { e.Value };
             Option.UpdateFilter();
@@ -406,7 +424,6 @@ namespace AntdUI
             if (e.Value != null) Option.FilterValues = new List<object> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
-
         }
 
         int beforeIndex = -1;
@@ -418,7 +435,7 @@ namespace AntdUI
             {
                 Option.ClearFilter();
                 ItemFilterEnabled.Enabled = false;
-                Form? frm = this.FindForm();
+                Form? frm = FindForm();
                 if (frm != null) frm.Close();
             }
             else

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
@@ -652,7 +651,7 @@ namespace AntdUI
                 if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
                 if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
             }
-            
+
         }
 
         internal RectangleF PaintBlock(RectangleF rect)
@@ -1325,17 +1324,18 @@ namespace AntdUI
                 ThreadLoading?.Dispose();
                 if (loading)
                 {
-                    ThreadLoading = new ITask(i =>
+                    if (PARENT == null) Invalidate();
+                    else
                     {
-                        AnimationLoadingWaveValue += 1;
-                        if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
-                        AnimationLoadingValue = i;
-                        Invalidate();
-                        return loading;
-                    }, 10, 360, 10, () =>
-                    {
-                        Invalidate();
-                    });
+                        ThreadLoading = new ITask(PARENT, i =>
+                        {
+                            AnimationLoadingWaveValue += 1;
+                            if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
+                            AnimationLoadingValue = i;
+                            Invalidate();
+                            return loading;
+                        }, 10, 360, 10, () => Invalidate());
+                    }
                 }
                 else Invalidate();
             }

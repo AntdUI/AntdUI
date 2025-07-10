@@ -175,7 +175,7 @@ namespace AntdUI
                 g.Fill(brush, path);
             }
         }
-        public override void PrintContent(Canvas g, Rectangle rect)
+        public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
             if (ScrollBar.ShowY) g.TranslateTransform(0, -ScrollBar.ValueY);
             if (foreColor.HasValue)
@@ -192,8 +192,7 @@ namespace AntdUI
                     foreach (var it in Items) DrawItem(g, brush, it);
                 }
             }
-            g.ResetClip();
-            g.ResetTransform();
+            g.Restore(state);
             ScrollBar.Paint(g);
         }
 
