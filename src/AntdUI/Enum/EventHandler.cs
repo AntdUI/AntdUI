@@ -673,9 +673,21 @@ namespace AntdUI
         public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
 
         /// <summary>
-        /// 是否处理
+        /// 是否已处理
         /// </summary>
         public bool Handled { get; set; }
+        /// <summary>
+        /// 单元格前景色
+        /// </summary>
+        public Color? CellFore { get; set; } = null;
+        /// <summary>
+        /// 单元格背景笔刷 (支持常用SolidBrush, HatchBrush, TextureBrush,LinearGradientBrush...)
+        /// </summary>
+        public Brush? CellBack { get; set; } = null;
+        /// <summary>
+        /// 单元格字体
+        /// </summary>
+        public Font? CellFont { get; set; } = null;
     }
 
     public class TableSortModeEventArgs : EventArgs
@@ -799,29 +811,35 @@ namespace AntdUI
         public bool Cancel { get; set; }
     }
 
-    public class TableFilterPopupEndEventArgs : EventArgs
+    public class TableFilterDataChangedEventArgs : EventArgs
     {
-        public TableFilterPopupEndEventArgs(Popover.Config config, FilterOption option)
+        public TableFilterDataChangedEventArgs()
+        { }
+        public TableFilterDataChangedEventArgs(object[]? records)
         {
-            Config = config;
-            Option = option;
+            Records = records;
         }
 
         /// <summary>
-        /// 参数
+        /// 筛选后的记录
         /// </summary>
-        public Popover.Config Config { get; private set; }
-
+        public object[]? Records { get; internal set; }
+    }
+    public class TableFilterPopupEndEventArgs : TableFilterDataChangedEventArgs
+    {
+        public TableFilterPopupEndEventArgs(FilterOption? option, object[]? records) : base(records)
+        {
+            Option = option;
+        }
         /// <summary>
-        /// 当前列的自定义数据源
+        /// 当前筛选参数
         /// </summary>
-        public FilterOption Option { get; private set; }
+        public FilterOption? Option { get; internal set; }
         /// <summary>
-        /// 是否取消关闭
+        /// 是否取消弹出
         /// </summary>
         public bool Cancel { get; set; }
     }
-
     #endregion
 
     #region Tabs

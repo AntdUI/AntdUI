@@ -670,15 +670,24 @@ namespace AntdUI
                 {
                     var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN);
                     CellPaintBegin(this, arge);
-                    if (!arge.Handled) PaintItemCore(g, columnIndex, it, enable, fore);
+                    if (!arge.Handled)
+                    {
+                        Color foreBefore = fore.Color;
+                        if (arge.CellFore != null) fore.Color = arge.CellFore.Value;
+                        PaintItemCore(g, columnIndex, it, enable, fore, arge.CellBack, arge.CellFont);
+                        if (arge.CellFore != null) fore.Color = foreBefore;
+                    }
                 }
                 CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN));
             }
             catch { }
             g.Restore(state);
         }
-
         void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, SolidBrush fore)
+        {
+            PaintItemCore(g, columnIndex, it, enable, fore, null, null);
+        }
+        void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, SolidBrush fore, Brush? back, Font? font)
         {
             if (it is TCellCheck check) PaintCheck(g, check, enable);
             else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
@@ -707,12 +716,21 @@ namespace AntdUI
             else if (it is Template template)
             {
                 g.SetClip(it.RECT, CombineMode.Intersect);
-                foreach (var item in template.Value) item.Paint(g, Font, enable, fore);
+
+                foreach (var item in template.Value) item.Paint(g, font == null ? Font : font, enable, fore);
+                if (font != null) font.Dispose();
             }
             else if (it is TCellText text)
             {
                 g.SetClip(it.RECT, CombineMode.Intersect);
-                g.String(text.value, Font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
+
+                g.String(text.value, font == null ? Font : font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
+                if (font != null) font.Dispose();
+                if (back != null)
+                {
+                    using (back)
+                    { g.Fill(back, it.RECT); }
+                }
             }
             if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)

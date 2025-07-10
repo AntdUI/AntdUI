@@ -111,7 +111,7 @@ namespace AntdUI
             segmentedSource.Location = new System.Drawing.Point(3, 3);
             segmentedSource.Name = "segmentedSource";
             segmentedSource.SelectIndex = 2;
-            segmentedSource.Size = new System.Drawing.Size(289, 50);
+            segmentedSource.Size = new System.Drawing.Size(297, 56);
             segmentedSource.TabIndex = 4;
             segmentedSource.Text = "segmented2";
             // 
@@ -123,10 +123,10 @@ namespace AntdUI
             gridPanel1.Controls.Add(selectCondition);
             gridPanel1.Controls.Add(segmentedSource);
             gridPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridPanel1.Location = new System.Drawing.Point(4, 4);
+            gridPanel1.Location = new System.Drawing.Point(0, 0);
             gridPanel1.Name = "gridPanel1";
-            gridPanel1.Size = new System.Drawing.Size(295, 382);
-            gridPanel1.Span = "100%;20% 80%;100%;100%;- 56 48 48 100%";
+            gridPanel1.Size = new System.Drawing.Size(303, 390);
+            gridPanel1.Span = "100%;18% 82%;100%;100%;- 16% 12% 12% 60%";
             gridPanel1.TabIndex = 0;
             gridPanel1.Text = "gridPanel1";
             // 
@@ -138,11 +138,11 @@ namespace AntdUI
             treeItem1.Select = true;
             treeItem1.Text = "全选";
             treeList.Items.Add(treeItem1);
-            treeList.Location = new System.Drawing.Point(3, 155);
+            treeList.Location = new System.Drawing.Point(3, 159);
             treeList.Multiple = true;
             treeList.Name = "treeList";
             treeList.SelectItem = treeItem1;
-            treeList.Size = new System.Drawing.Size(289, 224);
+            treeList.Size = new System.Drawing.Size(297, 228);
             treeList.TabIndex = 2;
             treeList.Text = "tree1";
             treeList.CheckedChanged += treeList_CheckedChanged;
@@ -151,10 +151,10 @@ namespace AntdUI
             // 
             inputSearch.AllowClear = true;
             inputSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            inputSearch.Location = new System.Drawing.Point(3, 107);
+            inputSearch.Location = new System.Drawing.Point(3, 112);
             inputSearch.Name = "inputSearch";
             inputSearch.PlaceholderText = "搜索";
-            inputSearch.Size = new System.Drawing.Size(289, 42);
+            inputSearch.Size = new System.Drawing.Size(297, 41);
             inputSearch.TabIndex = 1;
             inputSearch.TextChanged += inputSearch_TextChanged;
             // 
@@ -162,23 +162,23 @@ namespace AntdUI
             // 
             flowPanelConditionEdit.BackColor = System.Drawing.Color.Transparent;
             flowPanelConditionEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-            flowPanelConditionEdit.Location = new System.Drawing.Point(62, 59);
+            flowPanelConditionEdit.Location = new System.Drawing.Point(58, 65);
             flowPanelConditionEdit.Name = "flowPanelConditionEdit";
-            flowPanelConditionEdit.Size = new System.Drawing.Size(230, 42);
+            flowPanelConditionEdit.Size = new System.Drawing.Size(242, 41);
             flowPanelConditionEdit.TabIndex = 0;
             flowPanelConditionEdit.Text = "flowPanel1";
             // 
             // selectCondition
             // 
             selectCondition.Dock = System.Windows.Forms.DockStyle.Fill;
-            selectCondition.IconRatio = 1.25F;
+            selectCondition.IconRatio = 1F;
             selectCondition.IconRatioRight = 0F;
             selectCondition.List = true;
             selectCondition.ListAutoWidth = true;
-            selectCondition.Location = new System.Drawing.Point(3, 59);
+            selectCondition.Location = new System.Drawing.Point(3, 65);
             selectCondition.MaxCount = 8;
             selectCondition.Name = "selectCondition";
-            selectCondition.Size = new System.Drawing.Size(53, 42);
+            selectCondition.Size = new System.Drawing.Size(49, 41);
             selectCondition.TabIndex = 3;
             // 
             // FilterControl

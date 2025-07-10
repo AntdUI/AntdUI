@@ -28,10 +28,13 @@ namespace AntdUI
     {
         internal TempTable? dataTmp = null;
         bool dataOne = true;
-        void ExtractData()
+        void ExtractData(bool reset=true)
         {
-            dataOne = true;
-            dataTmp = null;
+            if (reset)
+            {
+                dataOne = true;
+                dataTmp = null;
+            }
             if (columns != null)
             {
                 // 重置复选状态
@@ -42,9 +45,34 @@ namespace AntdUI
             }
             if (dataSource == null)
             {
+                dataTmp = null;
                 rows_Expand.Clear();
                 // 空数据
                 ScrollBar.ValueX = ScrollBar.ValueY = 0;
+                return;
+            }
+            if (reset == false && dataTmp != null && dataTmp.rowsFilter != null)//只刷新汇总
+            {
+                if (summary != null)
+                {
+                    if (dataSource is DataTable table)
+                    {
+                        if (table.Columns.Count > 0 && table.Rows.Count > 0)
+                        {
+                            var columns = new List<TempiColumn>(table.Columns.Count);
+                            for (int i = 0; i < table.Columns.Count; i++) columns.Add(new TempiColumn(i, table.Columns[i]));
+                            var _columns = columns.ToArray();
+                            dataTmp.summary = ExtractSummary(_columns);
+                        }
+                    }
+                    else if (dataSource is IList list)
+                    {
+                        var columns = new TempiColumn[0];
+                        var rows = new List<IRow>(list.Count + 1);
+                        for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
+                        dataTmp.summary = ExtractSummary(columns);
+                    }
+                }
                 return;
             }
             if (dataSource is BindingSource bindingSource)
@@ -454,7 +482,11 @@ namespace AntdUI
             /// <summary>
             /// 数据 - 行已筛选
             /// </summary>
-            public IRow[]? rowsFilter { get; set; }
+            public IRow[]? rowsFilter
+            {
+                get;
+                set;
+            }
 
             public void ClearFilter() => rowsFilter = null;
 

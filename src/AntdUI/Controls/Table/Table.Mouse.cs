@@ -319,10 +319,9 @@ namespace AntdUI
             {
                 Popover.Config? config = sender as Popover.Config;
                 if (config == null) return;
-                FilterControl? editor = config.Control as FilterControl;
-                if (editor == null) return;
 
-                var arg = new TableFilterPopupEndEventArgs(config, editor.Option);
+                var arg = new TableFilterPopupEndEventArgs(config.Tag is FilterOption ? (FilterOption)config.Tag : null, FilterList());
+                
                 FilterPopupEnd(sender, arg);
                 e.Cancel = arg.Cancel;
             }
@@ -461,12 +460,35 @@ namespace AntdUI
                             };
                             if (filterHeight > 0) editor.Height = filterHeight;
                             Point location = PointToScreen(col.rect_filter.Location);
+                            Point locaionOrigin = location;
                             location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
                             if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
                             location.X += col.rect_filter.Width / 2;
                             location.Y += col.rect_filter.Height;
+                            Rectangle? rectScreen = Screen.PrimaryScreen?.Bounds;
+                            TAlign align = TAlign.Bottom;
+                            if (rectScreen.HasValue)
+                            {
+                                if (location.X -(editor.Width/2)< rectScreen.Value.Left)
+                                {
+                                    align = TAlign.Right;
+                                    location.X = editor.Width / 2;
+                                }
+                                else if (location.X + editor.Width > rectScreen.Value.Right)
+                                {
+                                    align = TAlign.Left;
+                                    location.X = rectScreen.Value.Right- editor.Width / 2;
+                                }
+                                else if (location.Y + editor.Height > rectScreen.Value.Bottom)
+                                {
+                                    align = TAlign.Top;
+                                    location.Y = locaionOrigin.Y;
+                                }
+                            }
                             Popover.open(new Popover.Config(this, editor)
                             {
+                                Tag = focusColumn.Filter,
+                                ArrowAlign = align,
                                 Font = fnt,
                                 CustomPoint = new Rectangle(location, Size.Empty),
                                 Padding = new Size(6, 6),

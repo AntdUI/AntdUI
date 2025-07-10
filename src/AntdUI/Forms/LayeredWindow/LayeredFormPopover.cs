@@ -234,7 +234,7 @@ namespace AntdUI
             {
                 if (config.OnClosing != null)
                 {
-                    config.OnClosing.Invoke(config, e);
+                    config.OnClosing(config, e);
                     if (e.Cancel) return;
                 }
                 if (control.IsDisposed)

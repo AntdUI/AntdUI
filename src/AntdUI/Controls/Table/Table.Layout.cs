@@ -876,7 +876,7 @@ namespace AntdUI
                 return tmp;
             }
             else if (column is TemplateColumn tc) return tc.CreateCell(this, tc, prop, ov, ref processing, value);
-            else return new TCellText(this, column, prop, ov, value.ToString());
+            else return new TCellText(this, column, prop, ov, value);
         }
 
         RowTemplate AddRows(ref List<RowTemplate> rows, CELL[] cells, int row_i, object? record)

@@ -774,11 +774,11 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="txt">文本</param>
-            public TCellText(Table table, Column column, PropertyDescriptor? prop, object? ov, string? txt) : base(table, column, prop, ov)
+            public TCellText(Table table, Column column, PropertyDescriptor? prop, object? ov, object? txt) : base(table, column, prop, ov)
             {
-                value = txt;
+                value = column.GetDisplayText(txt);
             }
-
+            
             /// <summary>
             /// 值
             /// </summary>
