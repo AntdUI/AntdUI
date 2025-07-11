@@ -30,5 +30,4 @@ namespace AntdUI
         Last,
         All
     }
-
 }

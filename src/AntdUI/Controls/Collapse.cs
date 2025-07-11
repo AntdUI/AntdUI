@@ -916,7 +916,7 @@ namespace AntdUI
             {
                 tooltipForm = new TooltipForm(this, rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
                 {
-                    Font = this.Font,
+                    Font = Font,
                     ArrowAlign = TAlign.Bottom,
                 });
                 tooltipForm.Show(this);

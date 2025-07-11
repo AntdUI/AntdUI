@@ -445,81 +445,132 @@ namespace AntdUI
         }
 
         bool ScrollXShow = false, ScrollYShow = false, ScrollYDown = false;
+
+        #region 滚动动画
+
+        string? oldtmp;
         void ScrollIFTo(Rectangle r)
-        {
-            if (SpeedScrollTo)
-            {
-                if (ScrollYShow)
-                {
-                    int y = CaretInfo.Y - scrolly;
-                    if (y < rect_text.Y) ScrollY = r.Y;
-                    else if (y + CaretInfo.Height > rect_text.Height) ScrollY = r.Bottom;
-                }
-                else if (ScrollXShow)
-                {
-                    int x = CaretInfo.X - scrollx;
-                    if (x < rect_text.X) ScrollX = r.X;
-                    else if (x + CaretInfo.Width > rect_text.Width) ScrollX = r.Right;
-                }
-                else ScrollX = ScrollY = 0;
-            }
-            ITask.Run(() => ScrollTo(r));
-        }
-        void ScrollTo(Rectangle r)
         {
             if (ScrollYShow)
             {
-                int tosize = CaretInfo.Height;
-                int count = 0;
-                while (true)
+                string tmp = r.Y.ToString() + lineheight.ToString();
+                if (tmp == oldtmp) return;
+                oldtmp = tmp;
+                int caretY = CaretInfo.Y - ScrollY, threshold = (int)(rect_text.Height * 0.3f);
+                // 判断是否超出阈值，是则直接跳转
+                if (caretY < rect_text.Y - threshold || caretY + CaretInfo.Height > rect_text.Bottom + threshold)
                 {
-                    int y = CaretInfo.Y - scrolly;
-                    if (y < rect_text.Y)
-                    {
-                        int value = ScrollY - tosize;
-                        ScrollY = value;
-                        if (ScrollY != value) return;
-                        count++;
-                        SleepGear(count);
-                    }
-                    else if (y + CaretInfo.Height > rect_text.Bottom)
-                    {
-                        int value = ScrollY + tosize;
-                        ScrollY = value;
-                        if (ScrollY != value) return;
-                        count++;
-                        SleepGear(count);
-                    }
-                    else return;
+                    // 直接跳转逻辑
+                    if (caretY < rect_text.Y) ScrollY = r.Y - rect_text.Y;
+                    else if (caretY + CaretInfo.Height > rect_text.Bottom) ScrollY = r.Bottom - rect_text.Height + CaretInfo.Height;
+                    return;
                 }
+                // 未超出阈值，使用动画滚动
+                ITask.Run(() => ScrollToY(r));
             }
             else if (ScrollXShow)
             {
-                int tosize = r.Width;
-                int count = 0;
-                while (true)
+                string tmp = r.X.ToString() + cache_font?.Length.ToString();
+                if (tmp == oldtmp) return;
+                oldtmp = tmp;
+                int caretX = CaretInfo.X - ScrollX, threshold = (int)(rect_text.Width * 0.3f);
+                // 判断是否超出阈值，是则直接跳转
+                if (caretX < rect_text.X - threshold || caretX + CaretInfo.Width > rect_text.Right + threshold)
                 {
-                    int x = CaretInfo.X - scrollx;
-                    if (x < rect_text.X)
-                    {
-                        int value = ScrollX - tosize;
-                        ScrollX = value;
-                        if (ScrollX != value) return;
-                        count++;
-                        SleepGear(count);
-                    }
-                    else if (x + CaretInfo.Width > rect_text.Right)
-                    {
-                        int value = ScrollX + tosize;
-                        ScrollX = value;
-                        if (ScrollX != value) return;
-                        count++;
-                        SleepGear(count);
-                    }
-                    else return;
+                    if (caretX < rect_text.X) ScrollX = r.X - rect_text.X;
+                    else if (caretX + CaretInfo.Width > rect_text.Right) ScrollX = r.Right - rect_text.Width + CaretInfo.Width;
+                    return;
                 }
+                // 未超出阈值，使用动画滚动
+                ITask.Run(() => ScrollToX(r));
             }
-            else ScrollX = ScrollY = 0;
+            else
+            {
+                oldtmp = null;
+                ScrollX = ScrollY = 0;
+            }
+        }
+
+        void ScrollToY(Rectangle r)
+        {
+            int stepSize = CaretInfo.Height, count = 0;
+            int caretY = CaretInfo.Y - ScrollY;
+            if (caretY < rect_text.Y) ScrollToYUP(r, stepSize, ref count);
+            else if (caretY + CaretInfo.Height > rect_text.Bottom) ScrollToYDOWN(r, stepSize, ref count);
+            else return;
+        }
+        void ScrollToYUP(Rectangle r, int stepSize, ref int count)
+        {
+            while (true)
+            {
+                int caretY = CaretInfo.Y - ScrollY;
+                if (caretY < rect_text.Y)
+                {
+                    int targetY = ScrollY - stepSize;
+                    ScrollY = targetY;
+                    if (ScrollY == targetY) count++;
+                    else return;
+                    SleepGear(count);
+                }
+                else return;
+            }
+        }
+        void ScrollToYDOWN(Rectangle r, int stepSize, ref int count)
+        {
+            while (true)
+            {
+                int caretY = CaretInfo.Y - ScrollY;
+                if (caretY + CaretInfo.Height > rect_text.Bottom)
+                {
+                    int targetY = ScrollY + stepSize;
+                    ScrollY = targetY;
+                    if (ScrollY == targetY) count++;
+                    else return;
+                    SleepGear(count);
+                }
+                else return;
+            }
+        }
+
+        void ScrollToX(Rectangle r)
+        {
+            int stepSize = CaretInfo.Height, count = 0;
+            int caretX = CaretInfo.X - ScrollX;
+            if (caretX < rect_text.X) ScrollToXUP(r, stepSize, ref count);
+            else if (caretX + CaretInfo.Width > rect_text.Right) ScrollToXDOWN(r, stepSize, ref count);
+            else return;
+        }
+        void ScrollToXUP(Rectangle r, int stepSize, ref int count)
+        {
+            while (true)
+            {
+                int caretX = CaretInfo.X - ScrollX;
+                if (caretX < rect_text.X)
+                {
+                    int targetX = ScrollX - stepSize;
+                    ScrollX = targetX;
+                    if (ScrollX == targetX) count++;
+                    else return;
+                    SleepGear(count);
+                }
+                else return;
+            }
+        }
+        void ScrollToXDOWN(Rectangle r, int stepSize, ref int count)
+        {
+            while (true)
+            {
+                int caretX = CaretInfo.X - ScrollX;
+                if (caretX + CaretInfo.Width > rect_text.Right)
+                {
+                    int targetX = ScrollX + stepSize;
+                    ScrollX = targetX;
+                    if (ScrollX == targetX) count++;
+                    else return;
+                    SleepGear(count);
+                }
+                else return;
+            }
         }
 
         void SleepGear(int count)
@@ -529,6 +580,8 @@ namespace AntdUI
             else if (count > 3) System.Threading.Thread.Sleep(30);
             else System.Threading.Thread.Sleep(50);
         }
+
+        #endregion
 
         object? SyncScrollObj;
         public Input SyncScroll(Input input)

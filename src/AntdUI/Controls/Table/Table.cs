@@ -729,11 +729,13 @@ namespace AntdUI
                 OnPropertyChanged(nameof(EditMode));
             }
         }
+
         /// <summary>
         /// 编辑模式下的默认文本选择动作
         /// </summary>
         [Description("编辑模式下的默认文本选择动作"), Category("行为"), DefaultValue(TEditSelection.Last)]
-        public TEditSelection EditSelection { get; set; }
+        public TEditSelection EditSelection { get; set; } = TEditSelection.Last;
+
         /// <summary>
         /// 编辑模式输入框样式
         /// </summary>
@@ -2078,7 +2080,7 @@ namespace AntdUI
                 try
                 {
                     if (DisplayFormat.Contains("{0:")) return string.Format(DisplayFormat, value);
-                    return string.Format("{0:" + this.DisplayFormat + "}", value);
+                    return string.Format("{0:" + DisplayFormat + "}", value);
                 }
                 catch { return value?.ToString(); }
             }

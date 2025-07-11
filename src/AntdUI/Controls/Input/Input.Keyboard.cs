@@ -278,51 +278,35 @@ namespace AntdUI
                     if (HandShortcutKeys) return multiline;
                     break;
                 case ShortcutKeys.Home:
-                    SpeedScrollTo = true;
                     ProcessHomeKey(false, false);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.End:
-                    SpeedScrollTo = true;
                     ProcessEndKey(false, false);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.HomeControl:
-                    SpeedScrollTo = true;
                     ProcessHomeKey(true, false);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.EndControl:
-                    SpeedScrollTo = true;
                     ProcessEndKey(true, false);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.HomeShift:
-                    SpeedScrollTo = true;
                     ProcessHomeKey(false, true);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.EndShift:
-                    SpeedScrollTo = true;
                     ProcessEndKey(false, true);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.HomeControlShift:
-                    SpeedScrollTo = true;
                     ProcessHomeKey(true, true);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.EndControlShift:
-                    SpeedScrollTo = true;
                     ProcessEndKey(true, true);
-                    SpeedScrollTo = false;
                     if (HandShortcutKeys) return true;
                     break;
                 //========================================================
@@ -368,7 +352,6 @@ namespace AntdUI
                 case ShortcutKeys.PageUp:
                     if (ScrollYShow && cache_font != null)
                     {
-                        SpeedScrollTo = true;
                         SelectionLength = 0;
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
                         if (caret == null) SetSelectionStart(0);
@@ -377,14 +360,12 @@ namespace AntdUI
                             SetSelectionStart(caret.i, false);
                             SetCaretPostion(caret.index);
                         }
-                        SpeedScrollTo = false;
                         if (HandShortcutKeys) return true;
                     }
                     break;
                 case ShortcutKeys.PageDown:
                     if (ScrollYShow && cache_font != null)
                     {
-                        SpeedScrollTo = true;
                         SelectionLength = 0;
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
                         if (caret == null) SetSelectionStart(cache_font.Length);
@@ -393,7 +374,6 @@ namespace AntdUI
                             SetSelectionStart(caret.i, false);
                             SetCaretPostion(caret.index);
                         }
-                        SpeedScrollTo = false;
                         if (HandShortcutKeys) return true;
                     }
                     break;

@@ -159,7 +159,7 @@ namespace AntdUI
             set
             {
                 if (selectedIndex == value) return;
-                TerminateExpand = true;
+                filtertext = null;
                 if (items == null || items.Count == 0 || value == -1) ChangeValueNULL();
                 else
                 {
@@ -183,7 +183,7 @@ namespace AntdUI
             set
             {
                 if (selectedValue == value) return;
-                TerminateExpand = true;
+                filtertext = null;
                 if (value == null || items == null || items.Count == 0) ChangeValueNULL();
                 else SetChangeValue(items, value);
                 if (_list) Invalidate();
@@ -289,22 +289,9 @@ namespace AntdUI
             SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));
         }
 
-        internal void DropDownChange(int i)
+        internal void DropDownChange(int x, object value)
         {
-            selectedIndexX = 0;
-            if (items == null || items.Count == 0) ChangeValueNULL();
-            else ChangeValue(i, items[i]);
-            OnPropertyChanged(nameof(SelectedIndex));
-            OnPropertyChanged(nameof(SelectedValue));
-            ExpandDrop = false;
-            select_x = 0;
-            subForm = null;
-        }
-
-        internal bool DropDownChange() => SelectedIndexsChanged == null;
-        internal void DropDownChange(int x, int y, object value)
-        {
-            ChangeValue(x, y, value);
+            ChangeValue(x, items?.IndexOf(value) ?? -1, value);
             OnPropertyChanged(nameof(SelectedIndex));
             OnPropertyChanged(nameof(SelectedValue));
             ExpandDrop = false;
@@ -331,7 +318,7 @@ namespace AntdUI
         /// <summary>
         /// 多层树结构更改时发生
         /// </summary>
-        [Description("多层树结构更改时发生"), Category("行为")]
+        [Description("多层树结构更改时发生"), Category("行为"), Obsolete("use SelectedValueChanged")]
         public event IntXYEventHandler? SelectedIndexsChanged;
 
         /// <summary>
@@ -354,24 +341,18 @@ namespace AntdUI
         [Description("控制筛选 Text更改时发生"), Category("行为")]
         public event FilterEventHandler? FilterChanged;
 
-        string filtertext = "";
-        bool TerminateExpand = false;
+        string? filtertext;
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
             if (HasFocus)
             {
-                if (TerminateExpand)
-                {
-                    TerminateExpand = false;
-                    return;
-                }
+                if (filtertext == Text) return;
                 filtertext = Text;
-
                 if (FilterChanged == null)
                 {
-                    ExpandDrop = true;
                     if (expandDrop) subForm?.TextChange(Text);
+                    else ExpandDrop = true;
                 }
                 else
                 {
@@ -591,7 +572,7 @@ namespace AntdUI
         {
             if (selectedIndex > -1 || selectedValue != null || !isempty)
             {
-                TerminateExpand = true;
+                filtertext = null;
                 ChangeValueNULL();
                 Invalidate();
             }
@@ -814,34 +795,30 @@ namespace AntdUI
 
     internal class ObjectItem : SelectItem
     {
-        public ObjectItem(object item, int index, Rectangle rect, Rectangle rect_text) : base(item)
+        public ObjectItem(object item, Rectangle rect, Rectangle rect_text) : base(item)
         {
-            Item = item;
+            Tag = item;
             Text = item.ToString() ?? string.Empty;
-            ID = index;
             Rect = rect;
             RectText = rect_text;
         }
 
-        public ObjectItem(GroupSelectItem item, int index, Rectangle rect, Rectangle rect_text) : base(item)
+        public ObjectItem(GroupSelectItem item, Rectangle rect, Rectangle rect_text) : base(item)
         {
             Group = true;
-            Item = item;
+            Tag = item;
             Text = item.Title;
-            ID = index;
             Rect = rect;
             RectText = rect_text;
         }
 
-        public ObjectItem(SelectItem item, int index, Rectangle rect) : this(item)
+        public ObjectItem(SelectItem item, Rectangle rect) : this(item)
         {
-            ID = index;
             Rect = rect;
         }
 
         public ObjectItem(SelectItem item) : base(item)
         {
-            Item = item;
             Online = item.Online;
             OnlineCustom = item.OnlineCustom;
             Icon = item.Icon;
@@ -863,12 +840,9 @@ namespace AntdUI
 
         public ObjectItem(Rectangle rect) : base(-1)
         {
-            ID = -1;
-            Item = Rect = rect;
+            SID = false;
+            Tag = Rect = rect;
         }
-
-        public object Item { get; set; }
-        public int ID { get; set; }
 
         public bool HasSub { get; set; }
 
@@ -883,7 +857,7 @@ namespace AntdUI
         public bool Hover { get; set; }
         public bool Group { get; set; }
 
-        public bool ShowAndID => ID == -1;
+        public bool SID { get; set; } = true;
         public bool NoIndex { get; set; }
 
         public Rectangle Rect { get; set; }
@@ -909,7 +883,7 @@ namespace AntdUI
         }
         public bool Contains(int x, int y, int sx, int sy, out bool change)
         {
-            if (ID > -1 && Rect.Contains(x + sx, y + sy))
+            if (SID && Rect.Contains(x + sx, y + sy))
             {
                 change = SetHover(true);
                 return true;
@@ -924,37 +898,33 @@ namespace AntdUI
 
     internal class ObjectItemCheck : SelectItem
     {
-        public ObjectItemCheck(object item, int index, Rectangle rect, Rectangle rect_text, Rectangle rect_check) : base(item)
+        public ObjectItemCheck(object item, Rectangle rect, Rectangle rect_text, Rectangle rect_check) : base(item)
         {
             Show = true;
-            Item = item;
+            Tag = item;
             Text = item.ToString() ?? string.Empty;
-            ID = index;
             Rect = rect;
             RectText = rect_text;
             RectCheck = rect_check;
         }
 
-        public ObjectItemCheck(GroupSelectItem item, int index, Rectangle rect, Rectangle rect_text) : base(item)
+        public ObjectItemCheck(GroupSelectItem item, Rectangle rect, Rectangle rect_text) : base(item)
         {
             Show = Group = true;
-            Item = item;
+            Tag = item;
             Text = item.Title;
-            ID = index;
             Rect = rect;
             RectText = rect_text;
         }
 
-        public ObjectItemCheck(SelectItem item, int index, Rectangle rect, Rectangle rect_check) : this(item)
+        public ObjectItemCheck(SelectItem item, Rectangle rect, Rectangle rect_check) : this(item)
         {
-            ID = index;
             Rect = rect;
             RectCheck = rect_check;
         }
 
         public ObjectItemCheck(SelectItem item) : base(item)
         {
-            Item = item;
             Online = item.Online;
             OnlineCustom = item.OnlineCustom;
             Icon = item.Icon;
@@ -977,13 +947,10 @@ namespace AntdUI
 
         public ObjectItemCheck(Rectangle rect) : base(-1)
         {
-            ID = -1;
-            Item = Rect = rect;
+            SID = false;
+            Tag = Rect = rect;
             Show = true;
         }
-
-        public object Item { get; set; }
-        public int ID { get; set; }
 
         public bool HasSub { get; set; }
 
@@ -999,7 +966,7 @@ namespace AntdUI
         public bool Show { get; set; }
         public bool Group { get; set; }
 
-        public bool ShowAndID => ID == -1 || !Show;
+        public bool SID { get; set; } = true;
         public bool NoIndex { get; set; }
 
         public Rectangle Rect { get; set; }
@@ -1026,7 +993,7 @@ namespace AntdUI
         }
         public bool Contains(int x, int y, int sx, int sy, out bool change)
         {
-            if (ID > -1 && Rect.Contains(x + sx, y + sy))
+            if (SID && Rect.Contains(x + sx, y + sy))
             {
                 change = SetHover(true);
                 return true;

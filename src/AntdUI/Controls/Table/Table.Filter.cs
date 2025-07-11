@@ -33,7 +33,7 @@ namespace AntdUI
             get
             {
                 List<Column> columns = new List<Column>();
-                foreach (var col in this.Columns)
+                foreach (var col in Columns)
                 {
                     if (col.Filter != null && col.Filter.Enabled) columns.Add(col);
                 }
@@ -317,10 +317,11 @@ namespace AntdUI
                 FilterValues = null;
             }
             FilterIndex = -1;
-            if (update) this.UpdateFilter();
+            if (update) UpdateFilter();
         }
 
         internal void UpdateFilter() => Table?.UpdateFilter();
+
         /// <summary>
         /// 外部应用筛选
         /// </summary>
@@ -330,8 +331,9 @@ namespace AntdUI
         public bool Apply(Column column, FilterConditions condition, object filterValue)
         {
             object[] filterValues = new object[] { filterValue };
-            return this.Apply(column, condition, filterValues);
+            return Apply(column, condition, filterValues);
         }
+
         /// <summary>
         /// 外部应用筛选
         /// </summary>
@@ -341,19 +343,19 @@ namespace AntdUI
         /// <returns></returns>
         public bool Apply(Column column, FilterConditions condition, object[] filterValues)
         {
-            if ((column == null && this.Column == null) || condition == FilterConditions.None) return false;
+            if ((column == null && Column == null) || condition == FilterConditions.None) return false;
 
             if (column != null)
             {
-                this.Column = column;
-                this.Table = column.PARENT;
+                Column = column;
+                Table = column.PARENT;
             }
-            this.Condition = condition;
+            Condition = condition;
             List<object> list = new List<object>();
             list.AddRange(filterValues);
-            this.FilterValues = list;
-            this.UpdateFilter();
-            return this.Enabled;
+            FilterValues = list;
+            UpdateFilter();
+            return Enabled;
         }
     }
 }

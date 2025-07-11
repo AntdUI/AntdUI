@@ -1529,14 +1529,15 @@ namespace AntdUI
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged;
 
-        internal void MouseChangeIndex(int index)
+        internal void MouseChangeIndex(TabPage page)
         {
+            if (items == null) return;
+            int index = items.IndexOf(page);
             if (TabClick == null)
             {
                 SelectedIndex = index;
                 return;
             }
-            if (items == null) return;
             var args = new TabsItemEventArgs(items[index], index, style, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
             TabClick(this, args);
             if (args.Cancel) return;

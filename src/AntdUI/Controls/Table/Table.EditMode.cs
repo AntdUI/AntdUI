@@ -246,66 +246,82 @@ namespace AntdUI
 
         Input CreateInput(CELL cell, int sx, int sy, bool multiline, object? value)
         {
-            int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height);
-            int bor = (int)(1 * Config.Dpi), wave = (int)((4 + 1 / 2F) * Config.Dpi), wave2 = wave * 2, sps = (int)(texth * .4F), sps2 = sps * 2;
-            int h = texth + sps2 + wave2, ry = cell.RECT.Y, rh = cell.RECT.Height;
             switch (EditInputStyle)
             {
                 case TEditInputStyle.Full:
-                    if (EditAutoHeight && h > cell.RECT.Height)
-                    {
-                        rh = h - wave2;
-                        ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
-                        if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh - wave;
-                    }
-                    var inputFull = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - wave, ry - sy - wave, cell.RECT.Width + wave2 + bor, rh + wave2 + bor));
-                    SetInput(cell.COLUMN, inputFull);
+                    var inputFull = CreateInput(multiline, value, cell.COLUMN, RectInput(cell, sx, sy, 1F, 4));
+                    inputFull.Radius = 0;
                     return inputFull;
                 case TEditInputStyle.Excel:
-                    if (EditAutoHeight && h > cell.RECT.Height)
-                    {
-                        rh = h - bor;
-                        ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
-                        if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
-                    }
-                    var inputExcel = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - bor, ry - sy - bor, cell.RECT.Width + bor * 2, rh + bor * 2));
-                    SetInput(cell.COLUMN, inputExcel);
+                    var inputExcel = CreateInput(multiline, value, cell.COLUMN, RectInput(cell, sx, sy, 2.5F, 0));
+                    inputExcel.WaveSize = 0;
+                    inputExcel.Radius = 0;
+                    inputExcel.BorderWidth = 2.5F;
                     return inputExcel;
                 case TEditInputStyle.Default:
                 default:
-                    if (EditAutoHeight && h > cell.RECT.Height)
-                    {
-                        rh = h;
-                        ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
-                        if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
-                    }
-                    var input = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh));
-                    SetInput(cell.COLUMN, input);
-                    return input;
+                    return CreateInput(multiline, value, cell.COLUMN, RectInputDefault(cell, sx, sy, 1F, 4));
             }
         }
-        Input CreateInput(bool multiline, object? value, Rectangle rect)
+
+        Rectangle RectInput(CELL cell, int sx, int sy, float borwidth, int wavesize)
         {
+            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = cell.RECT.Y, rh = cell.RECT.Height;
+            if (EditAutoHeight)
+            {
+                int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
+                if (h > cell.RECT.Height)
+                {
+                    rh = h - bor2;
+                    ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
+                    if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh - bor;
+                }
+            }
+            return new Rectangle(cell.RECT.X - sx - bor, ry - sy - bor, cell.RECT.Width + bor2, rh + bor2);
+        }
+        Rectangle RectInputDefault(CELL cell, int sx, int sy, float borwidth, int wavesize)
+        {
+            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = cell.RECT.Y, rh = cell.RECT.Height;
+            if (EditAutoHeight)
+            {
+                int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
+                if (h > cell.RECT.Height)
+                {
+                    rh = h;
+                    ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
+                    if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
+                }
+            }
+            return new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh);
+        }
+        Input CreateInput(bool multiline, object? value, Column column, Rectangle rect)
+        {
+            Input input;
             if (value is CellText text)
             {
-                return new Input
+                input = new Input
                 {
                     Multiline = multiline,
                     Location = rect.Location,
                     Size = rect.Size,
-                    Text = text.Text ?? ""
+                    Text = text.Text ?? "",
+                    ReadOnly = column.ReadOnly
                 };
             }
             else
             {
-                return new Input
+                input = new Input
                 {
                     Multiline = multiline,
                     Location = rect.Location,
                     Size = rect.Size,
-                    Text = value?.ToString() ?? ""
+                    Text = value?.ToString() ?? "",
+                    ReadOnly = column.ReadOnly
                 };
             }
+            if (input.ReadOnly) input.BackColor = Style.Db.BorderSecondary;
+            if (EditSelection == TEditSelection.All) input.SelectAll();
+            return input;
         }
         void ShowInput(Input input, Action<bool, string> call)
         {

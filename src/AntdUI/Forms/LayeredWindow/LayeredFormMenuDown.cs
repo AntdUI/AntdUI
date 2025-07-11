@@ -288,6 +288,7 @@ namespace AntdUI
         }
         void PaintArrow(Canvas g, OMenuItem item, Color color)
         {
+            var state = g.Save();
             int size = item.RectArrow.Width, size_arrow = size / 2;
             g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
             g.RotateTransform(-90F);
@@ -296,7 +297,7 @@ namespace AntdUI
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .7F));
             }
-            g.ResetTransform();
+            g.Restore(state);
         }
 
         #endregion
@@ -454,10 +455,7 @@ namespace AntdUI
             else down = false;
         }
 
-        protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta)
-        {
-            if (delta != 0) ScrollBar.MouseWheel(delta);
-        }
+        protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta) => ScrollBar.MouseWheel(delta);
         protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         bool OnClick(OMenuItem it)
@@ -491,12 +489,15 @@ namespace AntdUI
         }
         public override void IClosing()
         {
-            var item = this;
-            while (item.lay is LayeredFormMenuDown form)
+            if (select_x == 0)
             {
-                if (item == form) return;
-                form.IClose();
-                item = form;
+                var item = this;
+                while (item.lay is LayeredFormMenuDown form)
+                {
+                    if (item == form) return;
+                    form.IClose();
+                    item = form;
+                }
             }
         }
 
