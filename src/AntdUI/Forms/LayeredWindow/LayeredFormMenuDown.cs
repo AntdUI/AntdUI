@@ -170,7 +170,7 @@ namespace AntdUI
         StringFormat sf = Helper.SF(lr: StringAlignment.Near);
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(backColor ?? Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
             }

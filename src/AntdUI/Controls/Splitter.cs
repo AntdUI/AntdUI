@@ -87,6 +87,22 @@ namespace AntdUI
         [Description("滑块大小"), Category("行为"), DefaultValue(20)]
         public int SplitterSize { get; set; } = 20;
 
+        int? splitterWidth;
+        /// <summary>
+        /// 确定拆分器的粗细
+        /// </summary>
+        [Description("确定拆分器的粗细"), Category("布局"), DefaultValue(4)]
+        public new int SplitterWidth
+        {
+            get => splitterWidth ?? base.SplitterWidth;
+            set
+            {
+                if (base.SplitterWidth == value) return;
+                base.SplitterWidth = value;
+                if (!IsHandleCreated) splitterWidth = value;
+            }
+        }
+
         Color? splitterBack;
         /// <summary>
         /// 滑块背景
@@ -586,5 +602,11 @@ namespace AntdUI
         }
 
         #endregion
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            if (splitterWidth.HasValue) base.SplitterWidth = splitterWidth.Value;
+        }
     }
 }
