@@ -1185,6 +1185,7 @@ namespace AntdUI
             {
                 SelectionStart = 0;
                 SelectionLength = cache_font.Length;
+                selectionStart = selectionLength;//默认移到尾部
             }
         }
 

@@ -24,4 +24,11 @@ namespace AntdUI
         Click,
         DoubleClick
     }
+
+    public enum TEditSelection
+    {
+        Last,
+        All
+    }
+
 }

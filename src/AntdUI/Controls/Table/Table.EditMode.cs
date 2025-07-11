@@ -259,9 +259,7 @@ namespace AntdUI
                         if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh - wave;
                     }
                     var inputFull = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - wave, ry - sy - wave, cell.RECT.Width + wave2 + bor, rh + wave2 + bor));
-                    inputFull.Radius = 0;
-                    inputFull.ReadOnly = cell.COLUMN.ReadOnly;
-                    if (inputFull.ReadOnly) inputFull.BackColor = AntdUI.Style.Db.BorderSecondary;
+                    SetInput(cell.COLUMN, inputFull);
                     return inputFull;
                 case TEditInputStyle.Excel:
                     if (EditAutoHeight && h > cell.RECT.Height)
@@ -271,11 +269,7 @@ namespace AntdUI
                         if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
                     }
                     var inputExcel = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx - bor, ry - sy - bor, cell.RECT.Width + bor * 2, rh + bor * 2));
-                    inputExcel.WaveSize = 0;
-                    inputExcel.Radius = 0;
-                    inputExcel.BorderWidth = 2.5f;
-                    inputExcel.ReadOnly = cell.COLUMN.ReadOnly;
-                    if (inputExcel.ReadOnly) inputExcel.BackColor = AntdUI.Style.Db.BorderSecondary;
+                    SetInput(cell.COLUMN, inputExcel);
                     return inputExcel;
                 case TEditInputStyle.Default:
                 default:
@@ -286,8 +280,7 @@ namespace AntdUI
                         if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
                     }
                     var input = CreateInput(multiline, value, new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh));
-                    input.ReadOnly = cell.COLUMN.ReadOnly;
-                    if (input.ReadOnly) input.BackColor = AntdUI.Style.Db.BorderSecondary;
+                    SetInput(cell.COLUMN, input);
                     return input;
             }
         }

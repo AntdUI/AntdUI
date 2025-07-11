@@ -564,8 +564,7 @@ namespace AntdUI
             input.Size = size;
             if (Column != null)
             {
-                input.ReadOnly = Column.ReadOnly;
-                if (input.ReadOnly) input.BackColor = AntdUI.Style.Db.BorderSecondary;
+                Table.SetInput(Column, input);
             }
             Input = input;
         }

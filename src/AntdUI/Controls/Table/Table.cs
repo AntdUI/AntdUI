@@ -729,7 +729,11 @@ namespace AntdUI
                 OnPropertyChanged(nameof(EditMode));
             }
         }
-
+        /// <summary>
+        /// 编辑模式下的默认文本选择动作
+        /// </summary>
+        [Description("编辑模式下的默认文本选择动作"), Category("行为"), DefaultValue(TEditSelection.Last)]
+        public TEditSelection EditSelection { get; set; }
         /// <summary>
         /// 编辑模式输入框样式
         /// </summary>

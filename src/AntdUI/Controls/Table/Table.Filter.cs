@@ -321,5 +321,39 @@ namespace AntdUI
         }
 
         internal void UpdateFilter() => Table?.UpdateFilter();
+        /// <summary>
+        /// 外部应用筛选
+        /// </summary>
+        /// <param name="column">筛选列</param>
+        /// <param name="condition">条件</param>
+        /// <param name="filterValues">单个筛选值</param>
+        public bool Apply(Column column, FilterConditions condition, object filterValue)
+        {
+            object[] filterValues = new object[] { filterValue };
+            return this.Apply(column, condition, filterValues);
+        }
+        /// <summary>
+        /// 外部应用筛选
+        /// </summary>
+        /// <param name="column">筛选列</param>
+        /// <param name="condition">条件</param>
+        /// <param name="filterValues">筛选值</param>
+        /// <returns></returns>
+        public bool Apply(Column column, FilterConditions condition, object[] filterValues)
+        {
+            if ((column == null && this.Column == null) || condition == FilterConditions.None) return false;
+
+            if (column != null)
+            {
+                this.Column = column;
+                this.Table = column.PARENT;
+            }
+            this.Condition = condition;
+            List<object> list = new List<object>();
+            list.AddRange(filterValues);
+            this.FilterValues = list;
+            this.UpdateFilter();
+            return this.Enabled;
+        }
     }
 }
