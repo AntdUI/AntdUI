@@ -51,7 +51,6 @@ namespace AntdUI
         [Description("Checked 属性值更改时发生"), Category("行为")]
         public event CheckEventHandler? CheckedChanged;
 
-
         public class CheckStateEventArgs : EventArgs
         {
             public CheckStateEventArgs(ColumnCheck column, CheckState value)
@@ -138,16 +137,6 @@ namespace AntdUI
         public delegate bool EndEditEventHandler(object sender, TableEndEditEventArgs e);
 
         /// <summary>
-        /// 绘制单元格时发生
-        /// </summary>
-        public delegate void CellPaintEventHandler(object sender, TablePaintEventArgs e);
-
-        /// <summary>
-        /// 绘制单元格之前发生
-        /// </summary>
-        public delegate void CellPaintBeginEventHandler(object sender, TablePaintBeginEventArgs e);
-
-        /// <summary>
         /// 编辑后事件
         /// </summary>
         public delegate void EndEditCompleteEventHandler(object sender, ITableEventArgs e);
@@ -165,18 +154,6 @@ namespace AntdUI
         public event BeginEditInputStyleEventHandler? CellBeginEditInputStyle;
 
         /// <summary>
-        /// 绘制单元格时发生
-        /// </summary>
-        [Description("绘制单元格时发生"), Category("行为")]
-        public event CellPaintEventHandler? CellPaint;
-
-        /// <summary>
-        /// 绘制单元格之前发生
-        /// </summary>
-        [Description("绘制单元格之前发生"), Category("行为")]
-        public event CellPaintBeginEventHandler? CellPaintBegin;
-
-        /// <summary>
         /// 编辑后发生
         /// </summary>
         [Description("编辑后发生"), Category("行为")]
@@ -187,6 +164,45 @@ namespace AntdUI
         /// </summary>
         [Description("编辑完成后发生"), Category("行为")]
         public event EndEditCompleteEventHandler? CellEditComplete;
+
+        #endregion
+
+        #region 绘制
+
+        /// <summary>
+        /// 绘制单元格时发生
+        /// </summary>
+        public delegate void CellPaintEventHandler(object sender, TablePaintEventArgs e);
+        public delegate void CellPaintRowEventHandler(object sender, TablePaintRowEventArgs e);
+
+        /// <summary>
+        /// 绘制单元格之前发生
+        /// </summary>
+        public delegate void CellPaintBeginEventHandler(object sender, TablePaintBeginEventArgs e);
+
+        /// <summary>
+        /// 绘制行时发生
+        /// </summary>
+        [Description("绘制行时发生"), Category("行为")]
+        public event CellPaintRowEventHandler? RowPaint;
+
+        /// <summary>
+        /// 绘制行前发生
+        /// </summary>
+        [Description("绘制行前发生"), Category("行为")]
+        public event CellPaintRowEventHandler? RowPaintBegin;
+
+        /// <summary>
+        /// 绘制单元格时发生
+        /// </summary>
+        [Description("绘制单元格时发生"), Category("行为")]
+        public event CellPaintEventHandler? CellPaint;
+
+        /// <summary>
+        /// 绘制单元格之前发生
+        /// </summary>
+        [Description("绘制单元格之前发生"), Category("行为")]
+        public event CellPaintBeginEventHandler? CellPaintBegin;
 
         #endregion
 
@@ -254,6 +270,8 @@ namespace AntdUI
         [Description("展开改变时发生"), Category("行为")]
         public event ExpandEventHandler? ExpandChanged;
 
+        #region 筛选
+
         /// <summary>
         /// Table的列筛选关闭前的处理事件
         /// </summary>
@@ -292,5 +310,7 @@ namespace AntdUI
         /// </summary>
         [Description("筛选数据变更后发生"), Category("行为")]
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
+
+        #endregion
     }
 }

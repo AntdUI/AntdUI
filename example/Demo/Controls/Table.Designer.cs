@@ -108,6 +108,9 @@ namespace Demo.Controls
             table1.CellClick += table1_CellClick;
             table1.CellButtonClick += table1_CellButtonClick;
             table1.CellBeginEdit += table1_CellBeginEdit;
+            table1.RowPaint += table1_RowPaint;
+            table1.FilterPopupEnd += table1_FilterPopupEnd;
+            table1.FilterDataChanged += table1_FilterDataChanged;
             // 
             // panel1
             // 
@@ -140,7 +143,7 @@ namespace Demo.Controls
             selectEditStyle.List = true;
             selectEditStyle.ListAutoWidth = true;
             selectEditStyle.LocalizationPlaceholderText = "Table.{id}";
-            selectEditStyle.Location = new Point(1098, 0);
+            selectEditStyle.Location = new Point(1092, 0);
             selectEditStyle.Name = "selectEditStyle";
             selectEditStyle.PlaceholderText = "编辑风格";
             selectEditStyle.Size = new Size(100, 43);

@@ -71,8 +71,6 @@ namespace Demo.Controls
             foreach (var it in editStyle) editStyles.Add(new AntdUI.SelectItem(it));
             editStyles.RemoveAt(0);
             selectEditStyle.Items.AddRange(editStyles.ToArray());
-            table1.FilterPopupEnd += Table1_FilterPopupEnd;
-            table1.FilterDataChanged += Table1_FilterDataChanged;
         }
 
         #region 示例
@@ -218,7 +216,7 @@ namespace Demo.Controls
 
         #endregion
 
-        #region 点击/双击
+        #region 事件
 
         void table1_CellClick(object sender, AntdUI.TableClickEventArgs e)
         {
@@ -250,35 +248,81 @@ namespace Demo.Controls
         {
             if (e.Record is TestClass data)
             {
-                if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
-                    new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
-                    new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
-                }, AntdUI.TType.Error)
+                if (e.Btn.Id == "download")
                 {
-                    CancelText = null,
-                    OkType = AntdUI.TTypeMini.Error,
-                    OkText = "删除"
-                }) == DialogResult.OK)
-                {
-                    table1.Spin(AntdUI.Localization.Get("Loading2", "正在加载中..."), config =>
+                    e.Btn.Enabled = false;
+                    tmpRowIndex = e.RowIndex;
+                    tmpProg = 0;
+                    AntdUI.ITask.Run(() =>
                     {
-                        System.Threading.Thread.Sleep(1000);
-                        for (int i = 0; i < 101; i++)
+                        for (int i = 0; i < 600; i++)
                         {
-                            config.Value = i / 100F;
-                            config.Text = AntdUI.Localization.Get("Processing", "处理中") + " " + i + "%";
-                            System.Threading.Thread.Sleep(20);
+                            System.Threading.Thread.Sleep(2);
+                            tmpProg = i / 600F;
+                            table1.Invalidate(tmpRowIndex);
                         }
-                        System.Threading.Thread.Sleep(1000);
-                        config.Value = null;
-                        config.Text = AntdUI.Localization.Get("PleaseWait", "请耐心等候...");
-                        System.Threading.Thread.Sleep(2000);
+                        System.Threading.Thread.Sleep(800);
                     }, () =>
                     {
-                        System.Diagnostics.Debug.WriteLine("加载结束");
+                        tmpRowIndex = -1;
+                        tmpProg = 0;
+                        e.Btn.Enabled = true;
                     });
                 }
+                else
+                {
+                    if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
+                        new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
+                        new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
+                    }, AntdUI.TType.Error)
+                    {
+                        CancelText = null,
+                        OkType = AntdUI.TTypeMini.Error,
+                        OkText = "删除"
+                    }) == DialogResult.OK)
+                    {
+                        table1.Spin(AntdUI.Localization.Get("Loading2", "正在加载中..."), config =>
+                        {
+                            System.Threading.Thread.Sleep(1000);
+                            for (int i = 0; i < 101; i++)
+                            {
+                                config.Value = i / 100F;
+                                config.Text = AntdUI.Localization.Get("Processing", "处理中") + " " + i + "%";
+                                System.Threading.Thread.Sleep(20);
+                            }
+                            System.Threading.Thread.Sleep(1000);
+                            config.Value = null;
+                            config.Text = AntdUI.Localization.Get("PleaseWait", "请耐心等候...");
+                            System.Threading.Thread.Sleep(2000);
+                        }, () =>
+                        {
+                            System.Diagnostics.Debug.WriteLine("加载结束");
+                        });
+                    }
+                }
             }
+        }
+
+        int tmpRowIndex = -1;
+        float tmpProg = 0F;
+        void table1_RowPaint(object sender, AntdUI.TablePaintRowEventArgs e)
+        {
+            if (tmpRowIndex == e.RowIndex && tmpProg > 0) e.g.Fill(AntdUI.Style.rgba(AntdUI.Style.Db.SuccessBorder, tmpProg), new Rectangle(e.Rect.X, e.Rect.Y, (int)(e.Rect.Width * tmpProg), e.Rect.Height));
+        }
+
+        void table1_FilterPopupEnd(object sender, AntdUI.TableFilterPopupEndEventArgs e)
+        {
+            AntdUI.Notification.info(form, "筛选结果", $"共筛选到 {(e.Records == null ? 0 : e.Records.Length)} 条结果。", AntdUI.TAlignFrom.Top);
+        }
+
+        void table1_FilterDataChanged(object sender, AntdUI.TableFilterDataChangedEventArgs e)
+        {
+            if (e.Records == null || e.Records.Length == 0)
+            {
+                table1.Summary = null;
+                return;
+            }
+            table1.Summary = GetPageSummaryData(e.Records);
         }
 
         #endregion
@@ -308,7 +352,6 @@ namespace Demo.Controls
 
         object GetPageSummaryData(object[] source)
         {
-            // if (BatchCurrent == null) return null;
             if (source == null) return null;
             int totalAge = 0;
             foreach (TestClass item in source) totalAge += item.age;
@@ -329,21 +372,6 @@ namespace Demo.Controls
         }
 
         #endregion
-        
-        void Table1_FilterPopupEnd(object sender, AntdUI.TableFilterPopupEndEventArgs e)
-        {
-            AntdUI.Notification.info(form, "筛选结果", $"共筛选到 {(e.Records == null ? 0 : e.Records.Length)} 条结果。", AntdUI.TAlignFrom.Top);
-        }
-        
-        void Table1_FilterDataChanged(object sender, AntdUI.TableFilterDataChangedEventArgs e)
-        {
-            if (e.Records == null || e.Records.Length == 0)
-            {
-                table1.Summary = null;
-                return;
-            }
-            table1.Summary = GetPageSummaryData(e.Records);
-        }
 
         public class TestColumn : AntdUI.TemplateColumn
         {
@@ -420,7 +448,7 @@ namespace Demo.Controls
                 else if (start == 6)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("delete", "Download", AntdUI.TTypeMini.Success).SetIcon("DownloadOutlined")
+                        new AntdUI.CellButton("download", "Download", AntdUI.TTypeMini.Success).SetIcon("DownloadOutlined")
                     };
                 }
                 else _btns = new AntdUI.CellLink[] { new AntdUI.CellLink("delete", "Delete") };

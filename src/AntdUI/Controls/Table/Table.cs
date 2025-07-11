@@ -736,6 +736,12 @@ namespace AntdUI
         [Description("编辑模式输入框样式"), Category("行为"), DefaultValue(TEditInputStyle.Default)]
         public TEditInputStyle EditInputStyle { get; set; } = TEditInputStyle.Default;
 
+        /// <summary>
+        /// 编辑模式自动高度
+        /// </summary>
+        [Description("编辑模式自动高度"), Category("行为"), DefaultValue(false)]
+        public bool EditAutoHeight { get; set; }
+
         #endregion
 
         bool pauseLayout = false;
@@ -1283,6 +1289,31 @@ namespace AntdUI
             }
             var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out mode);
             return cell;
+        }
+
+        #endregion
+
+        #region 渲染
+
+        public void Invalidate(int row)
+        {
+            if (ThreadState == null)
+            {
+                if (rows == null) return;
+                var rect = rows[row].RECT;
+                int sy = ScrollBar.ValueY;
+                Invalidate(new Rectangle(rect.X, rect.Y - sy, rect.Width, rect.Height));
+            }
+        }
+        public void Invalidate(int row, int column)
+        {
+            if (ThreadState == null)
+            {
+                if (rows == null) return;
+                var rect = rows[row].cells[column].RECT;
+                int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+                Invalidate(new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height));
+            }
         }
 
         #endregion

@@ -554,6 +554,7 @@ namespace AntdUI
         /// </summary>
         void PaintBg(Canvas g, RowTemplate row)
         {
+            RowPaintBegin?.Invoke(this, new TablePaintRowEventArgs(g, row.RECT, row.RECORD, row.INDEX));
             if (dragBody != null)
             {
                 if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), row.RECT);
@@ -572,6 +573,7 @@ namespace AntdUI
                 if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get("Table", ColorScheme)), row.RECT);
                 else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table", ColorScheme), row.RECT);
             }
+            RowPaint?.Invoke(this, new TablePaintRowEventArgs(g, row.RECT, row.RECORD, row.INDEX));
         }
 
         #region 单元格

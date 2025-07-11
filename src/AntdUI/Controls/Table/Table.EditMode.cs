@@ -252,7 +252,7 @@ namespace AntdUI
             switch (EditInputStyle)
             {
                 case TEditInputStyle.Full:
-                    if (h > cell.RECT.Height)
+                    if (EditAutoHeight && h > cell.RECT.Height)
                     {
                         rh = h - wave2;
                         ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
@@ -264,7 +264,7 @@ namespace AntdUI
                     if (inputFull.ReadOnly) inputFull.BackColor = AntdUI.Style.Db.BorderSecondary;
                     return inputFull;
                 case TEditInputStyle.Excel:
-                    if (h > cell.RECT.Height)
+                    if (EditAutoHeight && h > cell.RECT.Height)
                     {
                         rh = h - bor;
                         ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
@@ -279,7 +279,7 @@ namespace AntdUI
                     return inputExcel;
                 case TEditInputStyle.Default:
                 default:
-                    if (h > cell.RECT.Height)
+                    if (EditAutoHeight && h > cell.RECT.Height)
                     {
                         rh = h;
                         ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;

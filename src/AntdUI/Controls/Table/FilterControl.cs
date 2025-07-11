@@ -90,8 +90,9 @@ namespace AntdUI
             if (type == null) type = typeof(string);
             if (type == typeof(decimal) || type == typeof(double) || type == typeof(float) || type == typeof(int) || type == typeof(short) || type == typeof(long))
             {
-                var edit = new InputNumber {
-                    Margin=new Padding(0),
+                var edit = new InputNumber
+                {
+                    Margin = new Padding(0),
                     Dock = DockStyle.Fill
                 };
                 edit.DecimalPlaces = type == typeof(int) || type == typeof(short) || type == typeof(long) ? 0 : 7;

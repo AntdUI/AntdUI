@@ -693,6 +693,37 @@ namespace AntdUI
         public Font? CellFont { get; set; }
     }
 
+    public class TablePaintRowEventArgs : EventArgs
+    {
+        public TablePaintRowEventArgs(Canvas canvas, Rectangle rect, object? record, int rowIndex)
+        {
+            g = canvas;
+            Rect = rect;
+            Record = record;
+            RowIndex = rowIndex;
+        }
+
+        /// <summary>
+        /// 画板
+        /// </summary>
+        public Canvas g { get; private set; }
+
+        /// <summary>
+        /// 区域
+        /// </summary>
+        public Rectangle Rect { get; private set; }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        /// <summary>
+        /// 行序号
+        /// </summary>
+        public int RowIndex { get; private set; }
+    }
+
     public class TableSortModeEventArgs : EventArgs
     {
         public TableSortModeEventArgs(SortMode sortMode, Column column)

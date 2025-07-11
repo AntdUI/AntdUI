@@ -108,6 +108,7 @@ namespace Demo.Controls
             table1.CellClick += table1_CellClick;
             table1.CellButtonClick += table1_CellButtonClick;
             table1.CellBeginEdit += table1_CellBeginEdit;
+            table1.RowPaint += table1_RowPaint;
             // 
             // panel1
             // 
