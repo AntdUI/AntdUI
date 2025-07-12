@@ -28,17 +28,44 @@ namespace AntdUI
 
         public static Theme.IColor Db;
         static Style() { Db = new Theme.IColor(); }
+
+        /// <summary>
+        /// 取色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="control">控件名称</param>
         public static Color Get(this Colour id, string control)
         {
             string key = id.ToString() + control;
             if (colors.TryGetValue(key, out var color)) return color;
             return Get(id);
         }
+
+        /// <summary>
+        /// 取色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="control">控件名称</param>
+        /// <param name="mode">色彩模式</param>
         public static Color Get(this Colour id, string control, TAMode mode)
         {
             string key = id.ToString() + control;
             if (colors.TryGetValue(key, out var color)) return color;
             return Get(id, mode);
+        }
+
+        /// <summary>
+        /// 取色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="control">控件名称</param>
+        /// <param name="symbol">颜色代号</param>
+        /// <param name="mode">色彩模式</param>
+        public static Color Get(this Colour id, string control, string symbol, TAMode mode)
+        {
+            string key = symbol + control;
+            if (colors.TryGetValue(key, out var color)) return color;
+            return Get(id, control, mode);
         }
 
         public static Color Get(this Colour id)
@@ -47,6 +74,12 @@ namespace AntdUI
             if (colors.TryGetValue(key, out var color)) return color;
             return GetSystem(id, Config.Mode);
         }
+
+        /// <summary>
+        /// 取色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="mode">色彩模式</param>
         public static Color Get(this Colour id, TAMode mode)
         {
             string key = id.ToString();
@@ -60,6 +93,12 @@ namespace AntdUI
                     return GetSystem(id, Config.Mode);
             }
         }
+
+        /// <summary>
+        /// 取色（系统）
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="mode">色彩模式</param>
         public static Color GetSystem(this Colour id, TMode mode)
         {
             switch (mode)
@@ -222,6 +261,12 @@ namespace AntdUI
         }
 
         static Dictionary<string, Color> colors = new Dictionary<string, Color>();
+
+        /// <summary>
+        /// 设置颜色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="value">颜色值</param>
         public static void Set(this Colour id, Color value)
         {
             string key = id.ToString();
@@ -229,9 +274,28 @@ namespace AntdUI
             else colors.Add(key, value);
         }
 
+        /// <summary>
+        /// 设置颜色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="value">颜色值</param>
+        /// <param name="control">控件名称</param>
         public static void Set(this Colour id, Color value, string control)
         {
             string key = id.ToString() + control;
+            if (colors.ContainsKey(key)) colors[key] = value;
+            else colors.Add(key, value);
+        }
+
+        /// <summary>
+        /// 设置颜色
+        /// </summary>
+        /// <param name="symbol">颜色代号</param>
+        /// <param name="value">颜色值</param>
+        /// <param name="control">控件名称</param>
+        public static void Set(string symbol, Color value, string control)
+        {
+            string key = symbol + control;
             if (colors.ContainsKey(key)) colors[key] = value;
             else colors.Add(key, value);
         }

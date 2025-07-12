@@ -53,9 +53,8 @@ namespace AntdUI
                     control.Parent = this;
                     control.BackColor = Colour.BgElevated.Get("Popover");
                     control.ForeColor = Colour.Text.Get("Popover");
-                    int w = (int)Math.Round(control.Width * dpi) + 2;
-                    control.Width = w;
-
+                    Helper.DpiAuto(config.Dpi ?? Config.Dpi, control);
+                    int w = control.Width;
                     int h;
                     if (_config.Title == null)
                     {
@@ -73,7 +72,6 @@ namespace AntdUI
                         }
                     }
                     tempContent = new Bitmap(control.Width, control.Height);
-                    Helper.DpiAuto(Config.Dpi, control);
                     control.Size = new Size(tempContent.Width, tempContent.Height);
                     control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
                     SetSize(w + paddingx2, h + paddingy2);
@@ -234,7 +232,7 @@ namespace AntdUI
             {
                 if (config.OnClosing != null)
                 {
-                    config.OnClosing.Invoke(config, e);
+                    config.OnClosing(config, e);
                     if (e.Cancel) return;
                 }
                 if (control.IsDisposed)

@@ -1,5 +1,26 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.10` 2025-07-12
+
+- ➕ Table EditSelection 属性，用于编辑时可默认全选
+- ➕ Table EditAutoHeight
+- ➕ Table RowPaint 事件
+- ➕ Table Column DisplayFormat 属性，支持数值的格式化显示
+- ➕ Table Column.Filter Apply函数，用于外部执行筛选
+- ➕ Collapse UniqueFull
+- ➕ Splitter SplitterWidth 未生效
+- ➕ Tree Loading 状态
+- ✍️ Select 下拉错位
+- ✍️ Select 筛选后值异常
+- ✍️ SelectMultiple 超出索引
+- ✍️ Input 滚动动画
+- ✍️ SliderRange 色卡对齐
+- ✍️ 下拉弹窗 低质量
+- ✍️ Table 丰富 CellPaintBegin 事件参数
+- ✍️ Table 优化筛选功能，新增筛选结果变化事件FilterDataChanged，优化设置Summary时会清除筛选的问题
+- ✍️ Table 调整鼠标交互
+- ✍️ Divider 垂直文本
+
 ### `2.0.9` 2025-07-07
 
 - ➕ Table 支持数据列筛选功能 (BETA)

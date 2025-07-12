@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -634,8 +635,23 @@ namespace AntdUI
             }
             else g.DrawText(item.Text, Font, fore, item.txt_rect, s_c);
             if (item.SubTitle != null) g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
-            if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
-            if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
+            if (item.Loading)
+            {
+                float loading_size = item.ico_rect.Height * .14F;
+                var bor3 = 3F * Config.Dpi;
+                g.DrawEllipse(Colour.Fill.Get("Tree"), bor3, item.ico_rect);
+                using (var pen = new Pen(color, loading_size))
+                {
+                    pen.StartCap = pen.EndCap = LineCap.Round;
+                    g.DrawArc(pen, item.ico_rect, item.AnimationLoadingValue, 100);
+                }
+            }
+            else
+            {
+                if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
+                if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
+            }
+
         }
 
         internal RectangleF PaintBlock(RectangleF rect)
@@ -1289,11 +1305,47 @@ namespace AntdUI
                 Invalidates();
             }
         }
+        #region 加载动画
+        ITask? ThreadLoading;
+        bool loading = false;
+        public float AnimationLoadingValue = 0;
+        float AnimationLoadingWaveValue = 0;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                ThreadLoading?.Dispose();
+                if (loading)
+                {
+                    if (PARENT == null) Invalidate();
+                    else
+                    {
+                        ThreadLoading = new ITask(PARENT, i =>
+                        {
+                            AnimationLoadingWaveValue += 1;
+                            if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
+                            AnimationLoadingValue = i;
+                            Invalidate();
+                            return loading;
+                        }, 10, 360, 10, () => Invalidate());
+                    }
+                }
+                else Invalidate();
+            }
+        }
 
+        #endregion
         /// <summary>
         /// 是否包含图片
         /// </summary>
-        internal bool HasIcon => iconSvg != null || Icon != null;
+        internal bool HasIcon => iconSvg != null || Icon != null || loading;
 
         /// <summary>
         /// 名称

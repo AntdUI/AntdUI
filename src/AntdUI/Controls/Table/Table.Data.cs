@@ -56,6 +56,42 @@ namespace AntdUI
             else ExtractData(dataSource);
         }
 
+        bool ExtractDataSummary()
+        {
+            if (dataTmp == null || dataTmp.rowsFilter == null) return true;
+            if (columns != null)
+            {
+                // 重置复选状态
+                foreach (var item in columns)
+                {
+                    if (item is ColumnCheck check) check.CheckState = CheckState.Unchecked;
+                }
+            }
+            if (summary == null)
+            {
+                dataTmp.summary = null;
+                return false;
+            }
+            if (dataSource is DataTable table)
+            {
+                if (table.Columns.Count > 0 && table.Rows.Count > 0)
+                {
+                    var columns = new List<TempiColumn>(table.Columns.Count);
+                    for (int i = 0; i < table.Columns.Count; i++) columns.Add(new TempiColumn(i, table.Columns[i]));
+                    var _columns = columns.ToArray();
+                    dataTmp.summary = ExtractSummary(_columns);
+                }
+            }
+            else if (dataSource is IList list)
+            {
+                var columns = new TempiColumn[0];
+                var rows = new List<IRow>(list.Count + 1);
+                for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
+                dataTmp.summary = ExtractSummary(columns);
+            }
+            return false;
+        }
+
         void ExtractData(object? dataSource)
         {
             if (dataSource is DataTable table)

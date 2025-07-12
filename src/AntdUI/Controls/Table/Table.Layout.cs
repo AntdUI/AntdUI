@@ -404,8 +404,7 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    if (column.COLUMN.SortOrder) column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2 - column.SortWidth, _rect.Height);
-                                    else column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height);
+                                    column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2 - column.SFWidth, _rect.Height);
                                     if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
                                 }
                             }
@@ -877,7 +876,7 @@ namespace AntdUI
                 return tmp;
             }
             else if (column is TemplateColumn tc) return tc.CreateCell(this, tc, prop, ov, ref processing, value);
-            else return new TCellText(this, column, prop, ov, value.ToString());
+            else return new TCellText(this, column, prop, ov, value);
         }
 
         RowTemplate AddRows(ref List<RowTemplate> rows, CELL[] cells, int row_i, object? record)

@@ -30,11 +30,11 @@ namespace AntdUI
         TAMode ColorScheme;
         int MaxCount = 0, MaxChoiceCount = 0;
         Size DPadding;
-        bool DropNoMatchClose = false;
+        bool DropNoMatchClose = false, AutoWidth = true;
         List<ObjectItem> Items;
         IList<object> ItemOS;
         List<object> selectedValue;
-        public LayeredFormSelectMultiple(SelectMultiple control, IList<object> items, string filtertext)
+        public LayeredFormSelectMultiple(SelectMultiple control, IList<object> items, string? filtertext)
         {
             PARENT = control;
             Font = control.Font;
@@ -47,6 +47,7 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             MaxChoiceCount = control.MaxChoiceCount;
             DPadding = control.DropDownPadding;
+            AutoWidth = control.ListAutoWidth;
             ItemOS = items;
             sf = Helper.SF(control.DropDownTextAlign);
 
@@ -57,7 +58,7 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(control.radius * dpi);
             }
-            Items = LoadLayout(control.ListAutoWidth, control.ReadRectangle.Width, ItemOS, filtertext, true);
+            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS, filtertext, true);
 
             var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
@@ -76,14 +77,14 @@ namespace AntdUI
                     if (hoveindex > -1)
                     {
                         var it = Items[hoveindex];
-                        if (it.ID != -1) { OnClick(it); return true; }
+                        if (it.SID) { OnClick(it); return true; }
                     }
                 }
                 else if (keys == Keys.Up)
                 {
                     hoveindex--;
                     if (hoveindex < 0) hoveindex = Items.Count - 1;
-                    while (Items[hoveindex].ShowAndID)
+                    while (!Items[hoveindex].SID)
                     {
                         hoveindex--;
                         if (hoveindex < 0) hoveindex = Items.Count - 1;
@@ -99,7 +100,7 @@ namespace AntdUI
                     {
                         hoveindex++;
                         if (hoveindex > Items.Count - 1) hoveindex = 0;
-                        while (Items[hoveindex].ShowAndID)
+                        while (!Items[hoveindex].SID)
                         {
                             hoveindex++;
                             if (hoveindex > Items.Count - 1) hoveindex = 0;
@@ -142,7 +143,7 @@ namespace AntdUI
                 if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, tmpItemHeight));
             }
         }
-        public override void PrintContent(Canvas g, Rectangle rect)
+        public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
             if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.Get(name, ColorScheme)));
             else
@@ -161,7 +162,7 @@ namespace AntdUI
                         {
                             var it = Items[i];
                             //判断下一个是不是连续的
-                            if (selectedValue.Contains(it.Item) || it.Item is SelectItem item && selectedValue.Contains(item.Tag))
+                            if (selectedValue.Contains(it.Tag))
                             {
                                 if (it.Group)
                                 {
@@ -199,22 +200,21 @@ namespace AntdUI
                         foreach (var it in Items) DrawItemR(g, brush, brush_back_hover, brush_split, it);
                     }
                 }
-                g.ResetTransform();
-                g.ResetClip();
+                g.Restore(state);
                 ScrollBar.Paint(g);
             }
         }
         bool IFNextSelect(int start)
         {
+            if (start > Items.Count - 1) return false;
             var it = Items[start];
-            if (selectedValue.Contains(it.Item) || it.Item is SelectItem item && selectedValue.Contains(item.Tag)) return true;
+            if (selectedValue.Contains(it.Tag)) return true;
             else return false;
         }
 
         void DrawItemSelect(Canvas g, SolidBrush subbrush, SolidBrush brush_split, ObjectItem it, bool TL, bool TR, bool BR, bool BL)
         {
-            if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else
+            if (it.SID)
             {
                 using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
                 {
@@ -239,31 +239,62 @@ namespace AntdUI
                     }
                 }
             }
+            else g.Fill(brush_split, it.Rect);
         }
 
         void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItem it)
         {
-            if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
-            else
+            if (it.SID)
             {
-                if (it.SubText != null)
-                {
-                    var size = g.MeasureText(it.Text, Font);
-                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
-                    else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
-                }
-                if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) DrawTextIcon(g, it, subbrush, null);
+                if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
                 else
                 {
-                    if (it.Hover)
+                    if (it.SubText != null)
                     {
-                        using (var path = it.Rect.RoundPath(Radius))
+                        var size = g.MeasureText(it.Text, Font);
+                        var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                        if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
+                        else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
+                    }
+                    if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) DrawTextIcon(g, it, subbrush, null);
+                    else
+                    {
+                        if (it.Hover)
                         {
-                            g.Fill(brush_back_hover, path);
+                            using (var path = it.Rect.RoundPath(Radius))
+                            {
+                                g.Fill(brush_back_hover, path);
+                            }
+                        }
+                        DrawTextIcon(g, it, brush, it.Fore);
+                    }
+                    if (it.Online.HasValue)
+                    {
+                        using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
+                        {
+                            g.FillEllipse(brush_online, it.RectOnline);
                         }
                     }
+                }
+            }
+            else g.Fill(brush_split, it.Rect);
+        }
+        void DrawItemR(Canvas g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItem it)
+        {
+            if (it.SID)
+            {
+                if (selectedValue.Contains(it.Tag))
+                {
+                    using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
+                    {
+                        g.Fill(brush_back, it.Rect);
+                    }
+                    DrawTextIconSelect(g, it);
+                    g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get(name, ColorScheme), .46F);
+                }
+                else
+                {
+                    if (it.Hover) g.Fill(brush_back_hover, it.Rect);
                     DrawTextIcon(g, it, brush, it.Fore);
                 }
                 if (it.Online.HasValue)
@@ -274,31 +305,7 @@ namespace AntdUI
                     }
                 }
             }
-        }
-        void DrawItemR(Canvas g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_split, ObjectItem it)
-        {
-            if (it.ID == -1) g.Fill(brush_split, it.Rect);
-            else if (selectedValue.Contains(it.Item) || it.Item is SelectItem item && selectedValue.Contains(item.Tag))
-            {
-                using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
-                {
-                    g.Fill(brush_back, it.Rect);
-                }
-                DrawTextIconSelect(g, it);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get(name, ColorScheme), .46F);
-            }
-            else
-            {
-                if (it.Hover) g.Fill(brush_back_hover, it.Rect);
-                DrawTextIcon(g, it, brush, it.Fore);
-            }
-            if (it.Online.HasValue)
-            {
-                using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
-                {
-                    g.FillEllipse(brush_online, it.RectOnline);
-                }
-            }
+            else g.Fill(brush_split, it.Rect);
         }
 
         void DrawTextIconSelect(Canvas g, ObjectItem it)
@@ -389,18 +396,17 @@ namespace AntdUI
 
                 int item_count = 0, divider_count = 0, y = 0, sy = 0;
                 var lists = new List<ObjectItem>(items.Count);
-                for (int i = 0; i < items.Count; i++)
+                foreach (var value in items)
                 {
-                    var value = items[i];
                     if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                     {
                         item_count++;
                         var rect = new Rectangle(padd, padd + y, maxwr, item_height);
-                        lists.Add(new ObjectItem(group, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
+                        lists.Add(new ObjectItem(group, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
                         y += item_height;
-                        for (int j = 0; j < group.Sub.Count; j++) lists.Add(ItemC(group.Sub[j], j, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                        foreach (var sub in group.Sub) lists.Add(ItemC(sub, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
                     }
-                    else lists.Add(ItemC(value, i, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
+                    else lists.Add(ItemC(value, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
                 }
 
                 #endregion
@@ -416,6 +422,7 @@ namespace AntdUI
                     ScrollBar.SetVrSize(0, maxh);
                     if (sy > 0) ScrollBar.ValueY = sy;
                 }
+                else ScrollBar.SetVrSize(0, 0);
                 if (init) tmpW = w;
                 SetSize(w, h);
                 return lists;
@@ -423,8 +430,11 @@ namespace AntdUI
             else
             {
                 nodata = true;
+                int w = width;
+                if (autoWidth) w = (int)(g.MeasureText(Localization.Get("NoData", "暂无数据"), Font).Width * 1.6F);
+                if (init) tmpW = w;
                 if (DropNoMatchClose) IClose();
-                else SetSize(width, text_height * 5);
+                else SetSize(w, text_height * 5);
                 return new List<ObjectItem>(0);
             }
         }
@@ -458,7 +468,7 @@ namespace AntdUI
                 return size.Width;
             }
         }
-        ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
+        ObjectItem ItemC(object value, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
         {
             ObjectItem item;
             if (value is DividerSelectItem)
@@ -474,7 +484,7 @@ namespace AntdUI
                 if (value is SelectItem it)
                 {
                     int ux = gap_x, uw = gap_x2;
-                    item = new ObjectItem(it, i, rect) { NoIndex = no_id };
+                    item = new ObjectItem(it, rect) { NoIndex = no_id };
                     if (it.Online > -1)
                     {
                         int dot_xy = (item_height - icon_gap) / 2;
@@ -496,7 +506,7 @@ namespace AntdUI
                     }
                     item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
                 }
-                else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                else item = new ObjectItem(value, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
                 if (sy == 0 && selectedValue.Contains(item.Tag)) sy = y;
                 y += item_height;
             }
@@ -557,7 +567,7 @@ namespace AntdUI
                 int sy = ScrollBar.Value;
                 foreach (var it in Items)
                 {
-                    if (it.Enable && it.ID > -1 && it.Contains(x, y, 0, sy, out _))
+                    if (it.Enable && it.SID && it.Contains(x, y, 0, sy, out _))
                     {
                         OnClick(it);
                         return;
@@ -569,13 +579,12 @@ namespace AntdUI
 
         void OnClick(ObjectItem it)
         {
-            if (it.Group && it.Item is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+            if (it.Group && it.Tag is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
             {
                 int count = 0;
                 foreach (var item in group.Sub)
                 {
-                    var value = ReadValue(item);
-                    if (selectedValue.Contains(value))
+                    if (selectedValue.Contains(item))
                     {
                         count++;
                         break;
@@ -585,39 +594,28 @@ namespace AntdUI
                 {
                     foreach (var item in group.Sub)
                     {
-                        var value = ReadValue(item);
-                        if (selectedValue.Contains(value)) selectedValue.Remove(value);
+                        if (selectedValue.Contains(item)) selectedValue.Remove(item);
                     }
                 }
                 else
                 {
                     foreach (var item in group.Sub)
                     {
-                        var value = ReadValue(item);
-                        if (!selectedValue.Contains(value)) selectedValue.Add(value);
+                        if (!selectedValue.Contains(item)) selectedValue.Add(item);
                     }
                 }
             }
-            else if (selectedValue.Contains(ReadValue(it.Item))) selectedValue.Remove(ReadValue(it.Item));
+            else if (selectedValue.Contains(it.Tag)) selectedValue.Remove(it.Tag);
             else
             {
                 if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) return;
-                selectedValue.Add(ReadValue(it.Item));
+                selectedValue.Add(it.Tag);
             }
             if (PARENT is SelectMultiple select) select.SelectedValue = selectedValue.ToArray();
             Print();
         }
 
-        object ReadValue(object obj)
-        {
-            if (obj is SelectItem it) return it.Tag;
-            return obj;
-        }
-
-        protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta)
-        {
-            if (delta != 0) ScrollBar.MouseWheel(delta);
-        }
+        protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta) => ScrollBar.MouseWheel(delta);
         protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
         #endregion
@@ -645,8 +643,6 @@ namespace AntdUI
 
         #region 筛选
 
-        ObjectItem[]? ItemsSearch;
-
         #region 主动搜索
 
         /// <summary>
@@ -655,7 +651,7 @@ namespace AntdUI
         /// <param name="search"></param>
         public override void TextChange(string search)
         {
-            Items = LoadLayout(false, tmpW, ItemOS, search);
+            Items = LoadLayout(AutoWidth, tmpW, ItemOS, search);
             PrintAndClear();
         }
 
@@ -665,7 +661,7 @@ namespace AntdUI
         /// <param name="items"></param>
         public void TextChange(IList<object> items)
         {
-            Items = LoadLayout(false, tmpW, items, null);
+            Items = LoadLayout(AutoWidth, tmpW, items, null);
             PrintAndClear();
         }
 
@@ -735,12 +731,6 @@ namespace AntdUI
                     }
                 }
             }
-        }
-
-        IList<ObjectItem> GetItems()
-        {
-            if (ItemsSearch == null) return Items;
-            else return ItemsSearch;
         }
 
         #endregion

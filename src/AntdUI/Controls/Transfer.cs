@@ -1091,7 +1091,7 @@ namespace AntdUI
             var scrollbarRect = new Rectangle(listRect.Right - scrollbarWidth, listRect.Y, scrollbarWidth, listRect.Height);
             int thumbHeight = showScrollbar ? Math.Max(30, (int)((float)listHeight / totalHeight * listHeight)) : 0;
             int maxScrollOffset = Math.Max(0, items.Count - visibleItems);
-            int currentScrollOffset = Math.Min(maxScrollOffset, Math.Max(0, isSource ? this.sourceScrollOffset : this.targetScrollOffset));
+            int currentScrollOffset = Math.Min(maxScrollOffset, Math.Max(0, isSource ? sourceScrollOffset : targetScrollOffset));
             int thumbY = showScrollbar ? scrollbarRect.Y + (int)((float)currentScrollOffset / maxScrollOffset * (scrollbarRect.Height - thumbHeight)) : 0;
             var thumbRect = new Rectangle(scrollbarRect.X, thumbY, scrollbarRect.Width, thumbHeight);
 

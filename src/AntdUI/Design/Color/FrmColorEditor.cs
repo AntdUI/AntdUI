@@ -47,10 +47,7 @@ namespace AntdUI.Design
 
             input1.Text = Value.ToHex();
             input1.TextChanged += input1_TextChanged;
-            action = val =>
-            {
-                input1.Text = val.ToHex();
-            };
+            action = val => input1.Text = val.ToHex();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -605,7 +602,7 @@ namespace AntdUI.Design
 
         #endregion
 
-        private void input1_TextChanged(object sender, System.EventArgs e)
+        private void input1_TextChanged(object? sender, EventArgs e)
         {
             bmp_colors?.Dispose();
             bmp_colors = null;

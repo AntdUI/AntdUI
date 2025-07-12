@@ -774,9 +774,9 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="txt">文本</param>
-            public TCellText(Table table, Column column, PropertyDescriptor? prop, object? ov, string? txt) : base(table, column, prop, ov)
+            public TCellText(Table table, Column column, PropertyDescriptor? prop, object? ov, object? txt) : base(table, column, prop, ov)
             {
-                value = txt;
+                value = column.GetDisplayText(txt);
             }
 
             /// <summary>
@@ -889,16 +889,15 @@ namespace AntdUI
                 var size = g.MeasureString(value, font);
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
-                    if (COLUMN.SortOrder && COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.8F);
-                    else if (COLUMN.HasFilter) SortWidth = (int)(size.Height * 1.34F);
-                    else SortWidth = (int)(size.Height * .8F);
+                    if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = (int)(size.Height * 1.8F);
+                    else SFWidth = (int)(size.Height * .8F);
                 }
-                MinWidth = size.Width + gap2 + SortWidth;
+                MinWidth = size.Width + gap2 + SFWidth;
 
-                return new Size(size.Width + gap2 + SortWidth, size.Height);
+                return new Size(size.Width + gap2 + SFWidth, size.Height);
             }
 
-            public int SortWidth = 0;
+            public int SFWidth = 0;
             public override string ToString() => value;
         }
 

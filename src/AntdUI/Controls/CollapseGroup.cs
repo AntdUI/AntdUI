@@ -1146,7 +1146,7 @@ namespace AntdUI
                             if (args.Edit != null && args.Edit is IControl)
                             {
                                 args.Edit.Location = rect.Location;
-                                args.Edit.Size = new Size(this.Width ?? args.Edit.Width, rect.Size.Height);
+                                args.Edit.Size = new Size(Width ?? args.Edit.Width, rect.Size.Height);
                                 args.Edit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                                 Edit = args.Edit;
                             }

@@ -58,6 +58,11 @@ namespace AntdUI
             InitFilterEditor();
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            EditLocked = false; //InputNumber会触发一次TextChanged事件
+        }
         protected void InitFilterEditor()
         {
             InitConditions();
@@ -85,9 +90,11 @@ namespace AntdUI
             if (type == null) type = typeof(string);
             if (type == typeof(decimal) || type == typeof(double) || type == typeof(float) || type == typeof(int) || type == typeof(short) || type == typeof(long))
             {
-                InputNumber edit = new InputNumber();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new InputNumber
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
                 edit.DecimalPlaces = type == typeof(int) || type == typeof(short) || type == typeof(long) ? 0 : 7;
                 try
                 {
@@ -95,26 +102,42 @@ namespace AntdUI
                 }
                 catch { }
                 edit.ValueChanged += Edit_ValueChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                edit.TextChanged += Edit_TextChanged;
+                tablePanel.Controls.Add(edit, 1, 0);
+                foreach (SelectItem item in selectCondition.Items)
+                {
+                    FilterConditions condition = (FilterConditions)item.Tag;
+                    if (condition == FilterConditions.Contain || condition == FilterConditions.NotContain) item.Enable = false;
+                }
             }
             else if (type == typeof(DateTime))
             {
-                DatePicker edit = new DatePicker();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new DatePicker
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
                 try
                 {
                     edit.Value = Option.FilterValues != null && Option.FilterValues.Count == 1 ? Convert.ToDateTime(Option.FilterValues[0]) : null;
                 }
                 catch { }
                 edit.ValueChanged += EditDate_ValueChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                edit.TextChanged += Edit_TextChanged;
+                tablePanel.Controls.Add(edit, 1, 0);
+                foreach (SelectItem item in selectCondition.Items)
+                {
+                    FilterConditions condition = (FilterConditions)item.Tag;
+                    if (condition == FilterConditions.Contain || condition == FilterConditions.NotContain) item.Enable = false;
+                }
             }
             else if (type == typeof(bool))
             {
-                Switch edit = new Switch();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new Switch
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
                 edit.CheckedText = "是";
                 edit.UnCheckedText = "否";
                 try
@@ -123,18 +146,25 @@ namespace AntdUI
                 }
                 catch { }
                 edit.CheckedChanged += EditChecked_CheckedChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                tablePanel.Controls.Add(edit, 1, 0);
+                foreach (SelectItem item in selectCondition.Items)
+                {
+                    FilterConditions condition = (FilterConditions)item.Tag;
+                    item.Enable = condition == FilterConditions.Equal || condition == FilterConditions.NotEqual;
+                }
             }
             else
             {
-                Input edit = new Input();
-                edit.TabIndex = 0;
-                edit.Dock = DockStyle.Fill;
+                var edit = new Input
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill
+                };
 #pragma warning disable CS8601 // 引用类型赋值可能为 null。
                 edit.Text = Option.FilterValues != null && Option.FilterValues.Count == 1 && Option.FilterValues[0] != DBNull.Value ? Option.FilterValues[0].ToString() : string.Empty;
 #pragma warning restore CS8601 // 引用类型赋值可能为 null。
                 edit.TextChanged += Edit_TextChanged;
-                flowPanelConditionEdit.Controls.Add(edit);
+                tablePanel.Controls.Add(edit, 1, 0);
             }
         }
 
@@ -173,29 +203,26 @@ namespace AntdUI
                     object? value = row[FocusedColumn.Key];
                     if (blankFlag == false) blankFlag = value == null || value == DBNull.Value;
 
-                    values.Add(value);
+                    if (values.Contains(value) == false) values.Add(value);
 
                 }
             }
-            EditLocked = true;
-            try
+
+            List<TreeItem> items = new List<TreeItem>();
+            items.Add(CreateItem(CHECKED_ALL, enabled));
+            foreach (var val in values)
             {
-                List<TreeItem> items = new List<TreeItem>();
-                items.Add(CreateItem(CHECKED_ALL, enabled));
-                foreach (var val in values)
-                {
-                    if (blankFlag && Option.AllowNull == false && (val == null || val == DBNull.Value)) continue;
-                    items.Add(CreateItem(val, enabled));
-                }
-                if (blankFlag && Option.AllowNull) items.Add(CreateItem(BLANK_FIELD, enabled));
-                treeList.Items.AddRange(items.ToArray());
-                UpdateCheckedStateAll();
+                if (blankFlag && Option.AllowNull == false && (val == null || val == DBNull.Value)) continue;
+                items.Add(CreateItem(val, enabled));
             }
-            finally { EditLocked = false; }
+            treeList.Items.AddRange(items.ToArray());
+            UpdateCheckedStateAll();
+
         }
         private TreeItem CreateItem(object val, bool enabled)
         {
-            TreeItem item = new TreeItem(val == null || val == DBNull.Value ? "" : val.ToString());
+            string? text = val == null || val == DBNull.Value ? BLANK_FIELD : FocusedColumn?.GetDisplayText(val);
+            TreeItem item = new TreeItem(text);
             item.Checked = enabled == false || (Option.FilterValues != null && Option.FilterValues.Contains(val));
             item.Tag = val;
             return item;
@@ -237,13 +264,21 @@ namespace AntdUI
             }
         }
         #endregion
+
         #region Properties
         public FilterOption Option { get { return FocusedColumn.Filter; } }
-        protected IControl? Edit { get { if (flowPanelConditionEdit.Controls.Count == 0) return null; return flowPanelConditionEdit.Controls[0] as IControl; } }
-        protected AntdUI.Table.IRow[]? RowsCache { get; set; }
+        protected IControl? Edit
+        {
+            get
+            {
+                if (tablePanel.Controls.Count == 0) return null;
+                return tablePanel.Controls[tablePanel.Controls.Count - 1] as IControl;
+            }
+        }
+        protected Table.IRow[]? RowsCache { get; set; }
         protected Table _table;
         protected IList<object>? CustomSource { get; set; }
-        protected bool EditLocked { get; set; } = false;
+        protected bool EditLocked { get; set; } = true;
         /// <summary>
         /// Table视图控件
         /// </summary>
@@ -253,6 +288,7 @@ namespace AntdUI
         public Column FocusedColumn { get => _column; }
 
         #endregion
+
         private void treeList_CheckedChanged(object sender, TreeCheckedEventArgs e)
         {
             if (EditLocked) return;
@@ -263,6 +299,7 @@ namespace AntdUI
                 {
                     foreach (var item in treeList.Items)
                     {
+                        if (item.Visible == false) continue;
                         UpdateCheckedState(item, e.Value);
                     }
                     ItemFilterEnabled.Enabled = false;
@@ -279,7 +316,7 @@ namespace AntdUI
         private void UpdateCheckedStateAll()
         {
             var checkedList = treeList.Items.Where(c => c.Checked).ToList();
-            treeList.Items[0].CheckState = checkedList.Count == 0 ? CheckState.Unchecked : checkedList.Count == treeList.Items.Count - 1 ? CheckState.Checked : CheckState.Indeterminate;
+            treeList.Items[0].CheckState = checkedList.Count == 0 ? CheckState.Unchecked : checkedList.Count > treeList.Items.Count - 1 ? CheckState.Checked : CheckState.Indeterminate;
 
         }
         private void UpdateCheckedState(TreeItem parentItem, bool checkedState)
@@ -297,16 +334,10 @@ namespace AntdUI
             foreach (var item in treeList.Items)
             {
                 if (item.Text == CHECKED_ALL) continue;
-                if (item.Checked && item.Text == BLANK_FIELD)
+
+                if (item.Checked)
                 {
-                    Option.FilterValues.Add(DBNull.Value);
-                }
-                else
-                {
-                    if (item.Checked)
-                    {
-                        Option.FilterValues.Add(item.Tag);
-                    }
+                    Option.FilterValues.Add(item.Tag);
                 }
             }
             Option.Condition = Option.FilterValues.Count > 0 ? FilterConditions.Equal : (FilterConditions)selectCondition.SelectedIndex;
@@ -324,8 +355,9 @@ namespace AntdUI
             }
 
             var list = treeList.Items.Where(c => c.Text?.IndexOf(inputSearch.Text, StringComparison.OrdinalIgnoreCase) == -1).ToList();
-            foreach (var item in treeList.Items)
+            for (int i = 1; i < treeList.Items.Count; i++)
             {
+                var item = treeList.Items[i];
                 item.Visible = !list.Contains(item);
 
             }
@@ -334,18 +366,30 @@ namespace AntdUI
         private void SelectCondition_SelectedIndexChanged(object sender, IntEventArgs e)
         {
             FilterConditions condition = (FilterConditions)e.Value;
-            if (beforeCondition == condition) return;
+            if (beforeCondition == Option.Condition) return;
             beforeCondition = condition;
 
             Option.Condition = condition;
-            Option.UpdateFilter();
-            ItemFilterEnabled.Enabled = Option.Enabled;
-
+            Edit_TextChanged(Edit, e);
         }
 
         string beforeText = string.Empty;
         void Edit_TextChanged(object? sender, EventArgs e)
         {
+            if (EditLocked) return;
+            if (sender is InputNumber editNum)
+            {
+                decimal num;
+                if (decimal.TryParse(editNum.Text, out num)) Edit_ValueChanged(sender, new DecimalEventArgs(num));
+                return;
+            }
+            if (sender is DatePicker editDate)
+            {
+                DateTime date;
+                if (DateTime.TryParse(editDate.Text, out date)) EditDate_ValueChanged(sender, new DateTimeNEventArgs(date));
+                return;
+            }
+
             if (sender is Input edit)
             {
                 if (beforeText == edit.Text) return;
@@ -358,49 +402,41 @@ namespace AntdUI
 
         }
 
-        bool beforeState = false;
         void EditChecked_CheckedChanged(object sender, BoolEventArgs e)
         {
-            if (beforeState == e.Value) return;
-            beforeState = e.Value;
             Option.FilterValues = new List<object> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
         }
 
-        decimal beforeVal = 0;
+        decimal beforeValue = 0;
         void Edit_ValueChanged(object sender, DecimalEventArgs e)
         {
-            if (beforeVal == e.Value) return;
-            beforeVal = e.Value;
+            if (beforeValue == e.Value) return;
+            beforeValue = e.Value;
             Option.FilterValues = new List<object> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
 
         }
 
-        DateTime? beforeDate = DateTime.MinValue;
         void EditDate_ValueChanged(object sender, DateTimeNEventArgs e)
         {
-            if (beforeDate == e.Value) return;
-
-            beforeDate = e.Value;
             if (e.Value != null) Option.FilterValues = new List<object> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
-
         }
 
         int beforeIndex = -1;
         void segmentedSource_SelectIndexChanged(object sender, IntEventArgs e)
         {
-            if (beforeIndex == e.Value) return;
+            if (EditLocked || beforeIndex == e.Value) return;
             beforeIndex = e.Value;
             if (e.Value == 0)
             {
                 Option.ClearFilter();
                 ItemFilterEnabled.Enabled = false;
-                Form? frm = this.FindForm();
+                Form? frm = FindForm();
                 if (frm != null) frm.Close();
             }
             else

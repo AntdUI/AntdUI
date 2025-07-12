@@ -98,7 +98,7 @@ namespace AntdUI
             set
             {
                 summary = value;
-                ExtractData();
+                if (ExtractDataSummary()) ExtractData();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(Summary));
             }
@@ -731,10 +731,22 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 编辑模式下的默认文本选择动作
+        /// </summary>
+        [Description("编辑模式下的默认文本选择动作"), Category("行为"), DefaultValue(TEditSelection.Last)]
+        public TEditSelection EditSelection { get; set; } = TEditSelection.Last;
+
+        /// <summary>
         /// 编辑模式输入框样式
         /// </summary>
         [Description("编辑模式输入框样式"), Category("行为"), DefaultValue(TEditInputStyle.Default)]
         public TEditInputStyle EditInputStyle { get; set; } = TEditInputStyle.Default;
+
+        /// <summary>
+        /// 编辑模式自动高度
+        /// </summary>
+        [Description("编辑模式自动高度"), Category("行为"), DefaultValue(false)]
+        public bool EditAutoHeight { get; set; }
 
         #endregion
 
@@ -1283,6 +1295,31 @@ namespace AntdUI
             }
             var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out mode);
             return cell;
+        }
+
+        #endregion
+
+        #region 渲染
+
+        public void Invalidate(int row)
+        {
+            if (ThreadState == null)
+            {
+                if (rows == null) return;
+                var rect = rows[row].RECT;
+                int sy = ScrollBar.ValueY;
+                Invalidate(new Rectangle(rect.X, rect.Y - sy, rect.Width, rect.Height));
+            }
+        }
+        public void Invalidate(int row, int column)
+        {
+            if (ThreadState == null)
+            {
+                if (rows == null) return;
+                var rect = rows[row].cells[column].RECT;
+                int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+                Invalidate(new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height));
+            }
         }
 
         #endregion
@@ -1988,8 +2025,15 @@ namespace AntdUI
                 filter = value;
                 if (filter == null) HasFilter = false;
                 else HasFilter = true;
+                Invalidate();
             }
         }
+
+        /// <summary>
+        /// 设置默认筛选选项 (string)
+        /// </summary>
+        /// <returns></returns>
+        public Column SetDefaultFilter() => SetDefaultFilter(typeof(string));
 
         /// <summary>
         /// 设置默认筛选选项
@@ -2000,6 +2044,46 @@ namespace AntdUI
         {
             Filter = new FilterOption(type);
             return this;
+        }
+
+        #endregion
+
+        #region 格式化
+
+        /// <summary>
+        /// 格式化显示（如日期：D, yyyy-MM-dd, dd MMM yyyy..., 数字格式化：C, D5, P2, 0.###...）
+        /// </summary>
+        public string? DisplayFormat { get; set; }
+
+        /// <summary>
+        /// 设置格式化显示
+        /// 建议非string类型需要时设置
+        /// </summary>
+        /// <param name="format">string.Format格式化。如日期：D, yyyy-MM-dd, dd MMM yyyy..., 数字格式化：C, D5, P2, 0.###...</param>
+        public Column SetDisplayFormat(string format)
+        {
+            DisplayFormat = format;
+            return this;
+        }
+
+        /// <summary>
+        /// 返回格式化的字符串
+        /// </summary>
+        /// <param name="value">数据</param>
+        /// <returns></returns>
+        public string? GetDisplayText(object? value)
+        {
+            if (value == null || value == DBNull.Value) return null;
+            else
+            {
+                if (DisplayFormat == null || string.IsNullOrEmpty(DisplayFormat)) return value?.ToString();
+                try
+                {
+                    if (DisplayFormat.Contains("{0:")) return string.Format(DisplayFormat, value);
+                    return string.Format("{0:" + DisplayFormat + "}", value);
+                }
+                catch { return value?.ToString(); }
+            }
         }
 
         #endregion

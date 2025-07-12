@@ -179,6 +179,13 @@ namespace AntdUI
         /// </summary>
         [Description("只保持一个展开"), Category("外观"), DefaultValue(false)]
         public bool Unique { get; set; }
+
+        /// <summary>
+        /// 一个展开铺满
+        /// </summary>
+        [Description("一个展开铺满"), Category("外观"), DefaultValue(false)]
+        public bool UniqueFull { get; set; }
+
         /// <summary>
         /// 展开/折叠的动画速度
         /// </summary>
@@ -267,86 +274,123 @@ namespace AntdUI
             {
                 var size = g.MeasureString(Config.NullText, Font);
                 int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
-                    content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_x = 0;
+                    content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_y = 0;
                 int title_height = size.Height + gap_y * 2;
                 int full_count = 0, useh = 0, full_h = 0;
-                foreach (var it in items)
-                {
-                    if (it.Full) full_count++;
-                }
-                if (full_count > 0)
+                if (Unique && UniqueFull)
                 {
                     foreach (var it in items)
                     {
-                        if (!it.Full)
+                        if (it.Expand) full_count++;
+                        else
                         {
                             useh += title_height + gap;
                             if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
                             else if (it.Expand) useh += content_y * 2 + it.Height;
                         }
                     }
-                    full_h = (rect.Height - useh) / full_count;
-                }
-                foreach (var it in items)
-                {
-                    int y = rect.Y + use_x;
-                    Rectangle rectButtons = it.RectTitle = new Rectangle(rect.X, y, rect.Width, title_height);
-                    it.RectArrow = new Rectangle(rect.X + gap_x, y + gap_y, size.Height, size.Height);
-                    it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
-                    OnExpandingChanged(it, it.Expand, rectButtons.Location);
-                    if (it.buttons != null && it.buttons.Count > 0)
+                    if (full_count > 0)
                     {
-                        int bx = rectButtons.Right;
-                        int gapW = (int)(4 * Config.Dpi);
-                        foreach (var btn in it.buttons)
+                        full_h = rect.Height - useh;
+                        foreach (var it in items)
                         {
-                            btn.PARENT = this;
-                            btn.PARENTITEM = it;
-                            int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
-                            int space = (rectButtons.Height - height) / 2;
-                            bx -= space;
-                            int? width = btn.Width;
-                            if (width == null)
-                            {
-                                bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
-                                string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
-
-                                var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                                width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Config.Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
-                            }
-
-                            if (width < height) width = btn.SwitchMode ? height * 4 : height;
-                            Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
-                            btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - (int)(8 * Config.Dpi));
-                            bx -= (width.Value + space);
+                            int y = rect.Y + use_y;
+                            use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Expand, y);
                         }
-                    }
-                    Rectangle Rect;
-                    if (it.Full)
-                    {
-                        if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
-                        else if (it.Expand)
-                        {
-                            it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
-                            it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
-                            it.SetSize();
-                        }
-                        else it.Rect = Rect = it.RectTitle;
                     }
                     else
                     {
-                        if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
-                        else if (it.Expand)
+                        foreach (var it in items)
                         {
-                            it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
-                            it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
-                            it.SetSize();
+                            int y = rect.Y + use_y;
+                            use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
                         }
-                        else it.Rect = Rect = it.RectTitle;
                     }
-                    use_x += Rect.Height + gap;
+                }
+                else
+                {
+                    foreach (var it in items)
+                    {
+                        if (it.Full) full_count++;
+                    }
+                    if (full_count > 0)
+                    {
+                        foreach (var it in items)
+                        {
+                            if (!it.Full)
+                            {
+                                useh += title_height + gap;
+                                if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
+                                else if (it.Expand) useh += content_y * 2 + it.Height;
+                            }
+                        }
+                        full_h = (rect.Height - useh) / full_count;
+                    }
+                    foreach (var it in items)
+                    {
+                        int y = rect.Y + use_y;
+                        use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
+                    }
                 }
             });
+        }
+        int LoadLayout(Canvas g, CollapseItem it, Rectangle rect, Size size, int title_height, int gap, int gap_x, int gap_y, int content_x, int content_y, int full_h, bool full, int y)
+        {
+            Rectangle rectButtons = it.RectTitle = new Rectangle(rect.X, y, rect.Width, title_height);
+            it.RectArrow = new Rectangle(rect.X + gap_x, y + gap_y, size.Height, size.Height);
+            it.RectText = new Rectangle(rect.X + gap_x + size.Height + gap_y / 2, y + gap_y, rect.Width - (gap_x * 2 - size.Height - gap_y / 2), size.Height);
+            OnExpandingChanged(it, it.Expand, rectButtons.Location);
+            if (it.buttons != null && it.buttons.Count > 0)
+            {
+                int bx = rectButtons.Right;
+                int gapW = (int)(4 * Config.Dpi);
+                foreach (var btn in it.buttons)
+                {
+                    btn.PARENT = this;
+                    btn.PARENTITEM = it;
+                    int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
+                    int space = (rectButtons.Height - height) / 2;
+                    bx -= space;
+                    int? width = btn.Width;
+                    if (width == null)
+                    {
+                        bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                        string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+
+                        var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                        width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Config.Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                    }
+
+                    if (width < height) width = btn.SwitchMode ? height * 4 : height;
+                    Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
+                    btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - (int)(8 * Config.Dpi));
+                    bx -= (width.Value + space);
+                }
+            }
+            Rectangle Rect;
+            if (full)
+            {
+                if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((full_h - title_height) * it.ExpandProg));
+                else if (it.Expand)
+                {
+                    it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
+                    it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
+                    it.SetSize();
+                }
+                else it.Rect = Rect = it.RectTitle;
+            }
+            else
+            {
+                if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
+                else if (it.Expand)
+                {
+                    it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
+                    it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
+                    it.SetSize();
+                }
+                else it.Rect = Rect = it.RectTitle;
+            }
+            return Rect.Height + gap;
         }
 
         readonly StringFormat s_c = Helper.SF(tb: StringAlignment.Near, lr: StringAlignment.Center);
@@ -872,7 +916,7 @@ namespace AntdUI
             {
                 tooltipForm = new TooltipForm(this, rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
                 {
-                    Font = this.Font,
+                    Font = Font,
                     ArrowAlign = TAlign.Bottom,
                 });
                 tooltipForm.Show(this);

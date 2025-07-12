@@ -242,6 +242,7 @@ namespace AntdUI
             if (cache_font == null)
             {
                 TextTotalLine = 0;
+                oldtmp = null;
                 ScrollXShow = ScrollYShow = false;
                 scrollx = scrolly = ScrollXMin = ScrollXMax = ScrollYMax = 0;
                 if (ModeRange)
@@ -400,6 +401,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    oldtmp = null;
                     ScrollYShow = false;
                     ScrollY = 0;
                     if (textalign == HorizontalAlignment.Right) ScrollXShow = last.rect.Right < rect.Right;

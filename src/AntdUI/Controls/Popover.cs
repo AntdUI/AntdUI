@@ -210,6 +210,8 @@ namespace AntdUI
             /// 获取焦点
             /// </summary>
             public bool Focus { get; set; } = true;
+
+            public float? Dpi { get; set; }
         }
 
         /// <summary>

@@ -681,12 +681,7 @@ namespace AntdUI
         public int SelectionStart
         {
             get => selectionStart;
-            set
-            {
-                SpeedScrollTo = true;
-                SetSelectionStart(value);
-                SpeedScrollTo = false;
-            }
+            set => SetSelectionStart(value);
         }
 
         void SetSelectionStart(int value, bool caret = true)
@@ -1185,6 +1180,7 @@ namespace AntdUI
             {
                 SelectionStart = 0;
                 SelectionLength = cache_font.Length;
+                SetCaretPostion(cache_font.Length + 1);
             }
         }
 
@@ -1250,11 +1246,9 @@ namespace AntdUI
                 len++;
                 return true;
             });
-            SpeedScrollTo = true;
             SetSelectionStart(offset + len);
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
-            SpeedScrollTo = false;
         }
 
         /// <summary>
@@ -1590,8 +1584,6 @@ namespace AntdUI
                 Invalidate();
             }
         }
-
-        bool SpeedScrollTo = false;
 
         void OnImeStartPrivate(IntPtr hIMC)
         {

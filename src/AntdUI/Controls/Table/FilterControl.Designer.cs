@@ -52,16 +52,16 @@ namespace AntdUI
             SegmentedItem segmentedItem4 = new SegmentedItem();
             TreeItem treeItem1 = new TreeItem();
             segmentedSource = new Segmented();
-            gridPanel1 = new GridPanel();
             treeList = new Tree();
             inputSearch = new Input();
-            flowPanelConditionEdit = new System.Windows.Forms.Panel();
             selectCondition = new Select();
-            gridPanel1.SuspendLayout();
+            tablePanel = new System.Windows.Forms.TableLayoutPanel();
+            tablePanel.SuspendLayout();
             SuspendLayout();
             // 
             // segmentedSource
             // 
+            segmentedSource.Dock = System.Windows.Forms.DockStyle.Top;
             segmentedSource.Full = true;
             segmentedSource.IconRatio = 1F;
             segmentedItem1.Badge = null;
@@ -108,41 +108,28 @@ namespace AntdUI
             segmentedSource.Items.Add(segmentedItem2);
             segmentedSource.Items.Add(segmentedItem3);
             segmentedSource.Items.Add(segmentedItem4);
-            segmentedSource.Location = new System.Drawing.Point(3, 3);
+            segmentedSource.Location = new System.Drawing.Point(0, 0);
+            segmentedSource.Margin = new System.Windows.Forms.Padding(2);
             segmentedSource.Name = "segmentedSource";
             segmentedSource.SelectIndex = 2;
-            segmentedSource.Size = new System.Drawing.Size(289, 50);
+            segmentedSource.Size = new System.Drawing.Size(180, 40);
             segmentedSource.TabIndex = 4;
-            segmentedSource.Text = "segmented2";
-            // 
-            // gridPanel1
-            // 
-            gridPanel1.Controls.Add(treeList);
-            gridPanel1.Controls.Add(inputSearch);
-            gridPanel1.Controls.Add(flowPanelConditionEdit);
-            gridPanel1.Controls.Add(selectCondition);
-            gridPanel1.Controls.Add(segmentedSource);
-            gridPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridPanel1.Location = new System.Drawing.Point(4, 4);
-            gridPanel1.Name = "gridPanel1";
-            gridPanel1.Size = new System.Drawing.Size(295, 382);
-            gridPanel1.Span = "100%;20% 80%;100%;100%;- 56 48 48 100%";
-            gridPanel1.TabIndex = 0;
-            gridPanel1.Text = "gridPanel1";
             // 
             // treeList
             // 
             treeList.Checkable = true;
+            treeList.Dock = System.Windows.Forms.DockStyle.Fill;
             treeItem1.Checked = true;
             treeItem1.CheckState = System.Windows.Forms.CheckState.Checked;
             treeItem1.Select = true;
             treeItem1.Text = "全选";
             treeList.Items.Add(treeItem1);
-            treeList.Location = new System.Drawing.Point(3, 155);
+            treeList.Location = new System.Drawing.Point(0, 108);
+            treeList.Margin = new System.Windows.Forms.Padding(0);
             treeList.Multiple = true;
             treeList.Name = "treeList";
             treeList.SelectItem = treeItem1;
-            treeList.Size = new System.Drawing.Size(289, 224);
+            treeList.Size = new System.Drawing.Size(180, 132);
             treeList.TabIndex = 2;
             treeList.Text = "tree1";
             treeList.CheckedChanged += treeList_CheckedChanged;
@@ -150,53 +137,60 @@ namespace AntdUI
             // inputSearch
             // 
             inputSearch.AllowClear = true;
-            inputSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            inputSearch.Location = new System.Drawing.Point(3, 107);
+            inputSearch.Dock = System.Windows.Forms.DockStyle.Top;
+            inputSearch.Location = new System.Drawing.Point(0, 74);
+            inputSearch.Margin = new System.Windows.Forms.Padding(0);
             inputSearch.Name = "inputSearch";
             inputSearch.PlaceholderText = "搜索";
-            inputSearch.Size = new System.Drawing.Size(289, 42);
+            inputSearch.Size = new System.Drawing.Size(180, 34);
             inputSearch.TabIndex = 1;
             inputSearch.TextChanged += inputSearch_TextChanged;
             // 
-            // flowPanelConditionEdit
-            // 
-            flowPanelConditionEdit.BackColor = System.Drawing.Color.Transparent;
-            flowPanelConditionEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-            flowPanelConditionEdit.Location = new System.Drawing.Point(62, 59);
-            flowPanelConditionEdit.Name = "flowPanelConditionEdit";
-            flowPanelConditionEdit.Size = new System.Drawing.Size(230, 42);
-            flowPanelConditionEdit.TabIndex = 0;
-            flowPanelConditionEdit.Text = "flowPanel1";
-            // 
             // selectCondition
             // 
-            selectCondition.Dock = System.Windows.Forms.DockStyle.Fill;
-            selectCondition.IconRatio = 1.25F;
+            selectCondition.IconRatio = 1F;
             selectCondition.IconRatioRight = 0F;
             selectCondition.List = true;
             selectCondition.ListAutoWidth = true;
-            selectCondition.Location = new System.Drawing.Point(3, 59);
+            selectCondition.Location = new System.Drawing.Point(0, 0);
+            selectCondition.Margin = new System.Windows.Forms.Padding(0);
             selectCondition.MaxCount = 8;
             selectCondition.Name = "selectCondition";
-            selectCondition.Size = new System.Drawing.Size(53, 42);
+            selectCondition.Size = new System.Drawing.Size(34, 34);
             selectCondition.TabIndex = 3;
+            // 
+            // tablePanel
+            // 
+            tablePanel.ColumnCount = 2;
+            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            tablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tablePanel.Controls.Add(selectCondition, 0, 0);
+            tablePanel.Dock = System.Windows.Forms.DockStyle.Top;
+            tablePanel.Location = new System.Drawing.Point(0, 40);
+            tablePanel.Name = "tablePanel";
+            tablePanel.RowCount = 1;
+            tablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tablePanel.Size = new System.Drawing.Size(180, 34);
+            tablePanel.TabIndex = 5;
             // 
             // FilterControl
             // 
-            Controls.Add(gridPanel1);
+            Controls.Add(treeList);
+            Controls.Add(inputSearch);
+            Controls.Add(tablePanel);
+            Controls.Add(segmentedSource);
             Name = "FilterControl";
-            Size = new System.Drawing.Size(303, 390);
-            gridPanel1.ResumeLayout(false);
+            Size = new System.Drawing.Size(180, 240);
+            tablePanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
         private Segmented segmentedSource;
-        private GridPanel gridPanel1;
-        private System.Windows.Forms.Panel flowPanelConditionEdit;
         private Select selectCondition;
         private Input inputSearch;
         private Tree treeList;
+        private System.Windows.Forms.TableLayoutPanel tablePanel;
     }
 }

@@ -33,7 +33,7 @@ namespace AntdUI
             get
             {
                 List<Column> columns = new List<Column>();
-                foreach (var col in this.Columns)
+                foreach (var col in Columns)
                 {
                     if (col.Filter != null && col.Filter.Enabled) columns.Add(col);
                 }
@@ -46,50 +46,71 @@ namespace AntdUI
                 return null;
             }
         }
+
+        /// <summary>
+        /// 获取筛选数据
+        /// </summary>
+        /// <returns>筛选后的数据对象数组（注意：返回的是原始数据对象的引用）</returns>
+        public object[]? FilterList()
+        {
+            if (dataTmp == null || dataTmp.rowsFilter == null) return null;
+            List<object> data = new List<object>(dataTmp.rowsFilter.Length);
+            foreach (var row in dataTmp.rowsFilter) data.Add(row.record);
+            return data.ToArray();
+        }
+
         /// <summary>
         /// 更新筛选视图
         /// </summary>
         public void UpdateFilter()
         {
+            if (dataTmp == null) return;
             Column[]? filterColumns = FilterColumns;
-            if (filterColumns == null || filterColumns.Length == 0)
+            if (filterColumns == null || filterColumns.Length == 0) dataTmp.rowsFilter = null;
+            else
             {
-                dataTmp.rowsFilter = null;
-                if (LoadLayout()) Invalidate();
-                return;
-            }
-            filterColumns = filterColumns.OrderBy(c => c.Filter.FilterIndex).ToArray();//按筛选优化级排序
-
-            List<IRow> rows = new List<IRow>();
-            foreach (var col in filterColumns)
-            {
-                if (col.Visible == false || col.Filter == null || col.Filter.Enabled == false) continue;
-                bool firstFilter = col == filterColumns[0];
-                List<IRow> found = UpdateFilter(col.Filter, rows, firstFilter);//AND, 结果中筛选，可能需要支持 OR
-                if (firstFilter)
+                filterColumns = filterColumns.OrderBy(c => c.Filter?.FilterIndex).ToArray();//按筛选优化级排序
+                List<IRow> rows = new List<IRow>();
+                foreach (var col in filterColumns)
                 {
-                    if (found.Count > 0)
+                    if (col.Visible == false || col.Filter == null || col.Filter.Enabled == false) continue;
+                    bool firstFilter = col == filterColumns[0];
+                    List<IRow> found = UpdateFilter(col.Filter, rows, firstFilter);//AND, 结果中筛选，可能需要支持 OR
+                    if (firstFilter)
                     {
-                        foreach (var item in found)
+                        if (found.Count > 0)
                         {
-                            if (rows.Contains(item) == false) rows.Add(item);
+                            foreach (var item in found)
+                            {
+                                if (rows.Contains(item) == false) rows.Add(item);
+                            }
+                        }
+                    }
+                    else rows = found;
+                }
+                if (rows.Count == 0)
+                {
+                    dataTmp?.ClearFilter();
+                    // 直接清空筛选条件，不触发UpdateFilter()调用
+                    foreach (var col in filterColumns)
+                    {
+                        if (col.Filter != null)
+                        {
+                            col.Filter.FilterValues?.Clear();
+                            col.Filter.FilterValues = null;
+                            col.Filter.FilterIndex = -1;
                         }
                     }
                 }
                 else
-                    rows = found;
+                {
+                    dataTmp.rowsFilter = new IRow[rows.Count];
+                    rows.CopyTo(dataTmp.rowsFilter, 0);
+                }
             }
-            if (rows.Count == 0)
-            {
-                dataTmp?.ClearFilter();
-            }
-            else
-            {
-                dataTmp.rowsFilter = new IRow[rows.Count];
-                rows.CopyTo(dataTmp.rowsFilter, 0);
-
-            }
+            FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(FilterList()));
             if (LoadLayout()) Invalidate();
+
         }
         /// <summary>
         /// 更新筛选视图
@@ -116,10 +137,38 @@ namespace AntdUI
                         switch (option.Condition)
                         {
                             case FilterConditions.Equal:
-                                if (val.Equals(value)) list.Add(row);
+                                if (val == null || value == null)
+                                {
+                                    if (val == value) list.Add(row);
+                                }
+                                else
+                                {
+                                    if (val.GetType() == typeof(DateTime))
+                                    {
+                                        if (((DateTime)val).Date == ((DateTime)value).Date) list.Add(row);
+                                    }
+                                    else
+                                    {
+                                        if (val.Equals(value)) list.Add(row);
+                                    }
+                                }
                                 break;
                             case FilterConditions.NotEqual:
-                                if (val.Equals(value) == false) list.Add(row);
+                                if (val == null || value == null)
+                                {
+                                    if (val != value) list.Add(row);
+                                }
+                                else
+                                {
+                                    if (val.GetType() == typeof(DateTime))
+                                    {
+                                        if (((DateTime)val).Date != ((DateTime)value).Date) list.Add(row);
+                                    }
+                                    else
+                                    {
+                                        if (val.Equals(value) == false) list.Add(row);
+                                    }
+                                }
                                 break;
                             case FilterConditions.Greater:
                             case FilterConditions.Less:
@@ -132,6 +181,17 @@ namespace AntdUI
                                     else
                                     {
                                         if (val.ToString().EndsWith(value.ToString())) list.Add(row);
+                                    }
+                                }
+                                else if (val.GetType() == typeof(DateTime))
+                                {
+                                    if (option.Condition == FilterConditions.Greater)
+                                    {
+                                        if ((DateTime)val > (DateTime)value) list.Add(row);
+                                    }
+                                    else
+                                    {
+                                        if ((DateTime)val < (DateTime)value) list.Add(row);
                                     }
                                 }
                                 else
@@ -181,11 +241,13 @@ namespace AntdUI
         /// 实例化筛选
         /// </summary>
         public FilterOption() : this(typeof(string)) { }
+
         /// <summary>
         /// 实例化筛选
         /// </summary>
         /// <param name="dataType">数据类型</param>
         public FilterOption(Type dataType) : this(dataType, dataType == typeof(string) ? FilterConditions.Contain : FilterConditions.Equal) { }
+
         /// <summary>
         /// 实例化筛选
         /// </summary>
@@ -227,14 +289,15 @@ namespace AntdUI
         /// 筛选条件
         /// </summary>
         public FilterConditions Condition { get; set; } = FilterConditions.Contain;
+
         List<object>? _filterValues;
         /// <summary>
         /// 已应用的筛选值列表
         /// </summary>
-        internal List<object>? FilterValues
+        public List<object>? FilterValues
         {
             get => _filterValues;
-            set
+            internal set
             {
                 _filterValues = value;
 
@@ -246,7 +309,7 @@ namespace AntdUI
         /// <summary>
         /// 清除筛选内容
         /// </summary>
-        public void ClearFilter()
+        public void ClearFilter(bool update = true)
         {
             if (FilterValues != null)
             {
@@ -254,9 +317,45 @@ namespace AntdUI
                 FilterValues = null;
             }
             FilterIndex = -1;
-            this.UpdateFilter();
+            if (update) UpdateFilter();
         }
 
         internal void UpdateFilter() => Table?.UpdateFilter();
+
+        /// <summary>
+        /// 外部应用筛选
+        /// </summary>
+        /// <param name="column">筛选列</param>
+        /// <param name="condition">条件</param>
+        /// <param name="filterValues">单个筛选值</param>
+        public bool Apply(Column column, FilterConditions condition, object filterValue)
+        {
+            object[] filterValues = new object[] { filterValue };
+            return Apply(column, condition, filterValues);
+        }
+
+        /// <summary>
+        /// 外部应用筛选
+        /// </summary>
+        /// <param name="column">筛选列</param>
+        /// <param name="condition">条件</param>
+        /// <param name="filterValues">筛选值</param>
+        /// <returns></returns>
+        public bool Apply(Column column, FilterConditions condition, object[] filterValues)
+        {
+            if ((column == null && Column == null) || condition == FilterConditions.None) return false;
+
+            if (column != null)
+            {
+                Column = column;
+                Table = column.PARENT;
+            }
+            Condition = condition;
+            List<object> list = new List<object>();
+            list.AddRange(filterValues);
+            FilterValues = list;
+            UpdateFilter();
+            return Enabled;
+        }
     }
 }

@@ -221,17 +221,16 @@ namespace AntdUI
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectsEventHandler? SelectedValueChanged;
 
-        string filtertext = "";
-        bool TerminateExpand = false;
+        string? filtertext;
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
             if (HasFocus)
             {
-                if (TerminateExpand) { TerminateExpand = false; return; }
+                if (filtertext == Text) return;
                 filtertext = Text;
-                ExpandDrop = true;
                 if (expandDrop) subForm?.TextChange(Text);
+                else ExpandDrop = true;
             }
         }
 
@@ -243,7 +242,7 @@ namespace AntdUI
         {
             if (selectedValue.Length > 0)
             {
-                TerminateExpand = true;
+                filtertext = null;
                 SelectedValue = new object[0];
             }
             base.OnClearValue();
@@ -727,7 +726,7 @@ namespace AntdUI
         {
             if (selectedValue.Length > 0)
             {
-                TerminateExpand = true;
+                filtertext = null;
                 SelectedValue = new object[0];
             }
             base.OnClearValue();
