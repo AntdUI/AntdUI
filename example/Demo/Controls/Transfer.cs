@@ -74,7 +74,7 @@ namespace Demo.Controls
         {
             // 搜索事件处理
             string listType = e.IsSource ? "源列表" : "目标列表";
-            AntdUI.Message.info(this.FindForm(), $"{listType}搜索: {e.SearchText}");
+            AntdUI.Message.info(FindForm(), $"{listType}搜索: {e.SearchText}");
         }
 
         private void Switch_oneWay_CheckedChanged(object sender, EventArgs e)

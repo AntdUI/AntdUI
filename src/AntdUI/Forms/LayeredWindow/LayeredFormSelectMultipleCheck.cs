@@ -202,49 +202,44 @@ namespace AntdUI
                         for (int i = 0; i < Items.Count; i++)
                         {
                             var it = Items[i];
-                            if (it.Show)
+
+                            //判断下一个是不是连续的
+                            if (selectedValue.Contains(it.Tag))
                             {
-                                //判断下一个是不是连续的
-                                if (selectedValue.Contains(it.Tag))
-                                {
-                                    if (it.Group)
-                                    {
-                                        DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                                        oldsel = -1;
-                                    }
-                                    else
-                                    {
-                                        bool isn = IFNextSelect(i + 1);
-                                        if (oldsel == -1)
-                                        {
-                                            if (isn)
-                                            {
-                                                oldsel = i;
-                                                DrawItemSelect(g, brush_sub, brush_split, it, true, true, false, false);
-                                            }
-                                            else DrawItemSelect(g, brush_sub, brush_split, it, true, true, true, true);
-                                        }
-                                        else
-                                        {
-                                            if (isn) DrawItemSelect(g, brush_sub, brush_split, it, false, false, false, false);
-                                            else DrawItemSelect(g, brush_sub, brush_split, it, false, false, true, true);
-                                        }
-                                    }
-                                }
-                                else
+                                if (it.Group)
                                 {
                                     DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
                                     oldsel = -1;
                                 }
+                                else
+                                {
+                                    bool isn = IFNextSelect(i + 1);
+                                    if (oldsel == -1)
+                                    {
+                                        if (isn)
+                                        {
+                                            oldsel = i;
+                                            DrawItemSelect(g, brush_sub, brush_split, it, true, true, false, false);
+                                        }
+                                        else DrawItemSelect(g, brush_sub, brush_split, it, true, true, true, true);
+                                    }
+                                    else
+                                    {
+                                        if (isn) DrawItemSelect(g, brush_sub, brush_split, it, false, false, false, false);
+                                        else DrawItemSelect(g, brush_sub, brush_split, it, false, false, true, true);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                                oldsel = -1;
                             }
                         }
                     }
                     else
                     {
-                        foreach (var it in Items)
-                        {
-                            if (it.Show) DrawItemR(g, brush, brush_back_hover, brush_split, it);
-                        }
+                        foreach (var it in Items) DrawItemR(g, brush, brush_back_hover, brush_split, it);
                     }
                 }
                 g.Restore(state);
@@ -257,7 +252,7 @@ namespace AntdUI
             for (int i = start; i < Items.Count; i++)
             {
                 var it = Items[i];
-                if (it != null && it.Show)
+                if (it != null)
                 {
                     if (selectedValue.Contains(it.Tag)) return true;
                     else return false;
@@ -666,7 +661,7 @@ namespace AntdUI
                 int sy = ScrollBar.Value;
                 foreach (var it in Items)
                 {
-                    if (it.Show && it.Enable && it.SID && it.Contains(x, y, 0, sy, out _))
+                    if (it.Enable && it.SID && it.Contains(x, y, 0, sy, out _))
                     {
                         OnClick(it);
                         return;

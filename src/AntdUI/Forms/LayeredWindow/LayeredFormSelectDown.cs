@@ -32,7 +32,7 @@ namespace AntdUI
         Size DPadding;
         bool ClickEnd = false, CloseIcon = false, DropNoMatchClose = false, AutoWidth = true;
         List<ObjectItem> Items;
-        IList<object> ItemOS;
+        ItemIndex ItemOS;
         object? selectedValue;
 
         #region 初始化
@@ -52,7 +52,7 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -63,7 +63,7 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(control.DropDownRadius ?? control.radius * dpi);
             }
-            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS, filtertext, true);
+            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
 
             var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
@@ -82,7 +82,7 @@ namespace AntdUI
             MaxCount = control.MaxCount;
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -93,7 +93,7 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(control.DropDownRadius ?? control.Radius * dpi);
             }
-            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS, null, true);
+            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, null, true);
 
             var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
@@ -111,7 +111,7 @@ namespace AntdUI
             MaxCount = 7;
             DPadding = new Size(12, 5);
             selectedValue = sValue;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(TAlign.Left);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -122,7 +122,7 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(radius * dpi);
             }
-            Items = LoadLayout(AutoWidth, 0, ItemOS, null, true);
+            Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             TAlignFrom align;
             switch (control.Alignment)
             {
@@ -156,7 +156,7 @@ namespace AntdUI
             ClickEnd = cell.DropDownClickEnd;
             MaxCount = cell.DropDownMaxCount;
             DPadding = cell.DropDownPadding;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(cell.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -167,7 +167,7 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(cell.DropDownRadius ?? control.Radius * dpi);
             }
-            Items = LoadLayout(AutoWidth, 0, ItemOS, null, true);
+            Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
 
             var tmpAlign = CLocation(control, cell.DropDownPlacement, rect, cell.DropDownArrow, ArrowSize, ref Inverted, true);
             if (cell.DropDownArrow) ArrowAlign = tmpAlign;
@@ -193,7 +193,7 @@ namespace AntdUI
             CloseIcon = parent.CloseIcon;
             DropNoMatchClose = control.DropDownEmptyClose;
             DPadding = parent.DPadding;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -202,7 +202,7 @@ namespace AntdUI
 
             control.Disposed += (a, b) => Dispose();
 
-            Items = LoadLayout(AutoWidth, 0, ItemOS, null, true);
+            Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
             var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
@@ -221,7 +221,7 @@ namespace AntdUI
             ClickEnd = parent.ClickEnd;
             CloseIcon = parent.CloseIcon;
             DPadding = parent.DPadding;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -230,7 +230,7 @@ namespace AntdUI
 
             control.Disposed += (a, b) => Dispose();
 
-            Items = LoadLayout(AutoWidth, 0, ItemOS, null, true);
+            Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
             var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
@@ -250,7 +250,7 @@ namespace AntdUI
             ClickEnd = parent.ClickEnd;
             CloseIcon = parent.CloseIcon;
             DPadding = parent.DPadding;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(cell.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
 
@@ -259,7 +259,7 @@ namespace AntdUI
 
             control.Disposed += (a, b) => Dispose();
 
-            Items = LoadLayout(AutoWidth, 0, ItemOS, null, true);
+            Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
             var tmpAlign = CLocation(parent, rect, cell.DropDownArrow, ArrowSize, ref Inverted);
             if (cell.DropDownArrow) ArrowAlign = tmpAlign;
@@ -570,15 +570,20 @@ namespace AntdUI
                 var lists = new List<ObjectItem>(items.Count);
                 foreach (var value in items)
                 {
+                    int index = ItemOS[value];
                     if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                     {
                         item_count++;
                         var rect = new Rectangle(padd, padd + y, maxwr, item_height);
-                        lists.Add(new ObjectItem(group, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
+                        lists.Add(new ObjectItem(group, index, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
                         y += item_height;
-                        foreach (var sub in group.Sub) lists.Add(ItemC(sub, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                        for (int i = 0; i < group.Sub.Count; i++)
+                        {
+                            var sub = group.Sub[i];
+                            lists.Add(ItemC(sub, i, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                        }
                     }
-                    else lists.Add(ItemC(value, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
+                    else lists.Add(ItemC(value, index, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
                 }
 
                 #endregion
@@ -641,13 +646,13 @@ namespace AntdUI
                 return size.Width;
             }
         }
-        ObjectItem ItemC(object value, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
+        ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
         {
             ObjectItem item;
             if (value is DividerSelectItem)
             {
                 divider_count++;
-                item = new ObjectItem(new Rectangle(padd, padd2 + y, maxwr, sp));
+                item = new ObjectItem(i, new Rectangle(padd, padd2 + y, maxwr, sp));
                 y += padd2 + sp;
             }
             else
@@ -657,7 +662,7 @@ namespace AntdUI
                 if (value is SelectItem it)
                 {
                     int ux = gap_x, uw = gap_x2;
-                    item = new ObjectItem(it, rect) { NoIndex = no_id };
+                    item = new ObjectItem(it, i, rect) { NoIndex = no_id };
                     if (it.Online > -1)
                     {
                         int dot_xy = (item_height - icon_gap) / 2;
@@ -685,7 +690,7 @@ namespace AntdUI
                     }
                     item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
                 }
-                else item = new ObjectItem(value, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
                 if (selectedValue == item.Tag) sy = y;
                 y += item_height;
             }
@@ -855,7 +860,7 @@ namespace AntdUI
         }
         void OnCall(ObjectItem it)
         {
-            if (PARENT is Select select) select.DropDownChange(select_x, it.Tag);
+            if (PARENT is Select select) select.DropDownChange(select_x, it.I, it.Tag);
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Tag);
             else if (PARENT is Tabs tabs)
             {
@@ -921,7 +926,7 @@ namespace AntdUI
         /// <param name="search"></param>
         public void TextChange(string search)
         {
-            Items = LoadLayout(AutoWidth, tmpW, ItemOS, search);
+            Items = LoadLayout(AutoWidth, tmpW, ItemOS.List, search);
             PrintAndClear();
         }
 
