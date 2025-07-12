@@ -1,5 +1,26 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.10` 2025-07-12
+
+- ➕ Table EditSelection property, used to select all by default when editing
+- ➕ Table EditAutoHeight
+- ➕ Table RowPaint Events
+- ➕ Table Column Display Format property, supports formatted display of numerical values
+- ➕ Table Column. Filter Apply function, used for external filtering execution
+- ➕ Collapse UniqueFull
+- ➕ Spliter SpliterWidth not in effect
+- ➕ Tree Loading Status
+- ✍️ Select drop-down misalignment
+- ✍️ Abnormal value after Select filtering
+- ✍️ SelectMultiple exceeds index
+- ✍️ Input scrolling animation
+- ✍️ Slider Range color card alignment
+- ✍️ Low quality dropdown pop-up window
+- ✍️ Table enriches CellPaintBegin event parameters
+- ✍️ Table optimization filtering function, new filtering result change event FilterDataChanged, optimization setting Summary will clear filtering issues
+- ✍️ Table Adjusting Mouse Interaction
+- ✍️ Diver Vertical Text
+
 ### `2.0.9` 2025-07-07
 
 - ➕ Table supports data column filtering function (BETA)
