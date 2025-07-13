@@ -184,9 +184,9 @@ namespace AntdUI
             public string text { get; set; }
             public Rectangle rect { get; set; }
             public bool ret { get; set; }
+            public bool hide { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
-            internal bool show { get; set; }
 
             #region 样式
 
@@ -265,10 +265,9 @@ namespace AntdUI
                     int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
                     {
-                        it.show = false;
                         if (it.text == "\n" || it.text == "\r\n")
                         {
-                            it.ret = true;
+                            it.hide = it.ret = true;
                             it.line = line;
                             line++;
                             usey += lineHeight;
@@ -276,10 +275,12 @@ namespace AntdUI
                             it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                             continue;
                         }
+                        else if (it.text == " " || it.text == "\t") it.hide = true;
                         else
                         {
                             if (it.text == "\r")
                             {
+                                it.hide = true;
                                 it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                                 continue;
                             }
@@ -443,7 +444,6 @@ namespace AntdUI
                     for (int i = 0; i < cache_font.Length; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                         usex += it.width;
                         i_l.Add(i);
@@ -454,7 +454,6 @@ namespace AntdUI
                     for (int i = 0; i < tabindex; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                         usex += it.width;
                         i_l.Add(i);
@@ -466,7 +465,6 @@ namespace AntdUI
                     for (int i = tabindex + 1; i < cache_font.Length; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
                         user += it.width;
                         i_r.Add(i);
@@ -478,7 +476,6 @@ namespace AntdUI
                     for (int i = tabindex + 1; i < cache_font.Length; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
                         user += it.width;
                         i_r.Add(i);
@@ -539,7 +536,6 @@ namespace AntdUI
             {
                 foreach (var it in cache_font)
                 {
-                    it.show = true;
                     it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                     usex += it.width;
                 }
