@@ -683,7 +683,43 @@ namespace AntdUI
         /// </summary>
         [Description("多选行"), Category("行为"), DefaultValue(false)]
         public bool MultipleRows { get; set; }
+        /// <summary>
+        /// 返回当前树表格字段名
+        /// </summary>
+        public string KeyTreeCurrent
+        {
+            get
+            {
+                foreach (Column col in Columns)
+                {
+                    if (col.KeyTree != null && string.IsNullOrEmpty(col.KeyTree) == false) return col.KeyTree;
+                }
+                return string.Empty;
+            }
+        }
 
+        /// <summary>
+        /// 当前视图的数据行数
+        /// </summary>
+        public int DisplayRowCount
+        {
+            get
+            {
+                if (dataTmp == null) return 0;
+                int count = dataTmp.rows.Length;
+                string keyTree = KeyTreeCurrent;
+                if (string.IsNullOrEmpty(keyTree) == false)
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        var value_tree = dataTmp.rows[i][keyTree];
+                        if (value_tree is IList<AntItem[]> list_tree) count += list_tree.Count;
+                    }
+                }
+
+                return count;
+            }
+        }
         #endregion
 
         /// <summary>
@@ -748,6 +784,11 @@ namespace AntdUI
         [Description("编辑模式自动高度"), Category("行为"), DefaultValue(false)]
         public bool EditAutoHeight { get; set; }
 
+        /// <summary>
+        /// 树表格的箭头样式
+        /// </summary>
+        [Description("树表格的箭头样式"), Category("行为"), DefaultValue(TKeyTreeStyle.Button)]
+        public TKeyTreeStyle KeyTreeArrowStyle { get; set; } = TKeyTreeStyle.Button;
         #endregion
 
         bool pauseLayout = false;
@@ -1592,6 +1633,44 @@ namespace AntdUI
         /// <param name="title">显示文字</param>
         /// <param name="align">对齐方式</param>
         public ColumnSwitch(string key, string title, ColumnAlign align) : base(key, title, align) { }
+
+        /// <summary>
+        /// 点击时自动改变选中状态
+        /// </summary>
+        public bool AutoCheck { get; set; } = true;
+        public Column SetAutoCheck(bool value = false)
+        {
+            AutoCheck = value;
+            return this;
+        }
+
+        public Func<bool, object?, int, int, bool>? Call { get; set; }
+
+        /// <summary>
+        /// 插槽
+        /// </summary>
+        public new Func<object?, object, int, object?>? Render { get; }
+    }
+
+    /// <summary>
+    /// 图标表头
+    /// </summary>
+    public class ColumnIcon : Column
+    {
+        /// <summary>
+        /// 开关表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        public ColumnIcon(string key, string title) : base(key, title) { }
+
+        /// <summary>
+        /// 开关表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        /// <param name="align">对齐方式</param>
+        public ColumnIcon(string key, string title, ColumnAlign align) : base(key, title, align) { }
 
         /// <summary>
         /// 点击时自动改变选中状态

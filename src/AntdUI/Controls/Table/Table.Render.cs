@@ -687,6 +687,28 @@ namespace AntdUI
                             PaintItemCore(g, columnIndex, it, enable, arge.CellFont ?? Font, arge.CellFore ?? fore);
                         }
                     }
+                    else
+                    {
+                        //还需要绘制树箭头
+                        if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
+                        {
+                            using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
+                            {
+                                if (KeyTreeArrowStyle == TKeyTreeStyle.Button)
+                                {
+                                    g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
+                                    g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
+                                }
+                                Color foreColor = fore.Color;
+                                fore.Color = Colour.TextTertiary.Get("Table", ColorScheme);
+                                if (KeyTreeArrowStyle == TKeyTreeStyle.ArrowFill)
+                                    PaintArrowFill(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                                else
+                                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                                fore.Color = foreColor;
+                            }
+                        }
+                    }
                 }
                 CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN));
             }
@@ -735,9 +757,18 @@ namespace AntdUI
             {
                 using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
                 {
-                    g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
-                    g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
-                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    if (KeyTreeArrowStyle == TKeyTreeStyle.Button)
+                    {
+                        g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
+                        g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
+                    }
+                    Color foreColor = fore.Color;
+                    fore.Color = Colour.TextTertiary.Get("Table", ColorScheme);
+                    if (KeyTreeArrowStyle == TKeyTreeStyle.ArrowFill)
+                        PaintArrowFill(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    else
+                        PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    fore.Color = foreColor;
                 }
             }
         }
@@ -757,7 +788,15 @@ namespace AntdUI
             }
             g.Restore(state);
         }
-
+        void PaintArrowFill(Canvas g, RowTemplate item, SolidBrush brush, float ArrowProg)
+        {
+            var rect_arr = item.RectExpand;
+            int size_arrow = rect_arr.Width / 2;
+            g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
+            g.RotateTransform(-90F + ArrowProg);
+            g.FillPolygon(brush, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .8F));
+            g.ResetTransform();
+        }
         #endregion
 
         #region 浮动列

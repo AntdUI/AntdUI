@@ -16,35 +16,31 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace AntdUI
 {
     /// <summary>
-    /// 步骤状态
+    /// 树表格的箭头样式
     /// </summary>
-    public enum TStepState
-    {
-        Wait,
-        Process,
-        Finish,
-        Error
-    }
-    /// <summary>
-    /// 里程碑类型
-    /// </summary>
-    public enum TMilestoneType
+    public enum TKeyTreeStyle
     {
         /// <summary>
-        /// 精确到天：2025-7-12
+        /// 默认按钮
         /// </summary>
-        Day = 0,
+        Button = 0,
         /// <summary>
-        /// 仅显示时间：10:50:25
+        /// 下拉箭头
         /// </summary>
-        Time = 1,
+        Arrow = 1,
         /// <summary>
-        /// 显示完整时间：2025-7-12 10:50:25
+        /// 下拉箭头（三角填充）
         /// </summary>
-        Full = 2,
+        ArrowFill = 2,
     }
- 
+
 }
