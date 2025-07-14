@@ -280,9 +280,9 @@ namespace AntdUI
 
         int rightGap = 0;
         /// <summary>
-        /// 新增按钮边距比例
+        /// 右侧边距
         /// </summary>
-        [Description("新增按钮边距比例"), Category("外观"), DefaultValue(.148F)]
+        [Description("右侧边距"), Category("外观"), DefaultValue(0)]
         public int RightGap
         {
             get => rightGap;

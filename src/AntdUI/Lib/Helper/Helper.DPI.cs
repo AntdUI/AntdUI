@@ -118,6 +118,10 @@ namespace AntdUI
                 if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
             }
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
+            else if (control is TabHeader tabHeader)
+            {
+                if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
+            }
             DpiLSS(dpi, control);
         }
 

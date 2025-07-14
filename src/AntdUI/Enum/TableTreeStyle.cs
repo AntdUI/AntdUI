@@ -16,18 +16,12 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AntdUI
 {
     /// <summary>
     /// 树表格的箭头样式
     /// </summary>
-    public enum TKeyTreeStyle
+    public enum TableTreeStyle
     {
         /// <summary>
         /// 默认按钮
@@ -42,5 +36,4 @@ namespace AntdUI
         /// </summary>
         ArrowFill = 2,
     }
-
 }

@@ -28,6 +28,7 @@ namespace AntdUI
         Finish,
         Error
     }
+
     /// <summary>
     /// 里程碑类型
     /// </summary>
@@ -46,5 +47,4 @@ namespace AntdUI
         /// </summary>
         Full = 2,
     }
- 
 }

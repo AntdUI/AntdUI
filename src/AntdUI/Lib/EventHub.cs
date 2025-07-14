@@ -78,6 +78,10 @@ namespace AntdUI
         /// </summary>
         LANG = 3,
         /// <summary>
+        /// 主题主色调 改变
+        /// </summary>
+        THEME_PRIMARY = 20,
+        /// <summary>
         /// Window 状态改变
         /// </summary>
         WINDOW_STATE = 70,

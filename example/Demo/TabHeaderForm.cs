@@ -27,9 +27,6 @@ namespace Demo
             InitializeComponent();
             tabHeader1.AddTab("关于", "SlackSquareFilled");
             tabHeader1.AddTab(new AntdUI.TagTabItem("关于"));
-
-            //测试 右侧编剧
-            this.tabHeader1.RightGap = 130;
         }
 
         private void button1_Click(object sender, EventArgs e)

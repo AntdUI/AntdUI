@@ -568,7 +568,7 @@ namespace AntdUI
             }
             if (checkable)
             {
-                using (var path_check = Helper.RoundPath(item.check_rect, check_radius, false))
+                using (var path_check = Helper.RoundPath(item.check_rect, check_radius))
                 {
                     var bor2 = 2F * Config.Dpi;
                     if (item.Enabled)

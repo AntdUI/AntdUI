@@ -22,11 +22,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
-using Vanara.PInvoke;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace AntdUI
 {
@@ -379,7 +376,7 @@ namespace AntdUI
                 {
                     #region 计算
 
-                    it.TitleSize = g.MeasureText(string.IsNullOrEmpty(it.GetTitle)?"T":it.GetTitle, Font);
+                    it.TitleSize = g.MeasureText(string.IsNullOrEmpty(it.GetTitle) ? "T" : it.GetTitle, Font);
                     if (it.showSub) it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
                     if (it.showDescription) it.DescriptionSize = g.MeasureText(it.Description, font_description);
 
@@ -790,7 +787,7 @@ namespace AntdUI
         {
             get
             {
-               return Localization.GetLangIN(LocalizationTitle, title, new string?[] { "{id}", ID });
+                return Localization.GetLangIN(LocalizationTitle, title, new string?[] { "{id}", ID });
             }
             set
             {

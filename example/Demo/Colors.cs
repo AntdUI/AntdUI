@@ -23,17 +23,25 @@ using System.Windows.Forms;
 
 namespace Demo
 {
-    public partial class Colors : AntdUI.BaseForm
+    public partial class Colors : BaseForm
     {
         public Colors()
         {
             InitializeComponent();
-            CCC();
+            Generate();
         }
-        void CCC()
+
+        int padd = 20;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            padd = colorPanel1.Margin.Top;
+        }
+
+        void Generate()
         {
             var colors = panel_primary.Back.Value.GenerateColors();
-            panel11.Back = panel_primary.Back.Value.shade();
+            panel11.Back = panel_primary.Back.Value.GenerateDark()[5];
             color_dark.TextDesc = "#" + panel11.Back.Value.ToHex();
             int i = 1;
             foreach (var color in colors)
@@ -52,7 +60,8 @@ namespace Demo
                 i++;
             }
         }
-        private void label15_Click(object sender, EventArgs e)
+
+        void label15_Click(object sender, EventArgs e)
         {
             using (var dialog = new ColorDialog
             {
@@ -63,35 +72,35 @@ namespace Demo
                 {
                     panel_primary.Back = dialog.Color;
                     color_primary.TextDesc = textBox1.Text = "#" + dialog.Color.ToHex();
-                    CCC();
+                    Generate();
                 }
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        void textBox1_TextChanged(object sender, EventArgs e)
         {
             panel_primary.Back = textBox1.Text.ToColor();
             color_primary.TextDesc = "#" + panel_primary.Back.Value.ToHex();
-            CCC();
+            Generate();
         }
 
-        private void ColorPanel_MouseEnter(object sender, EventArgs e)
+        void ColorPanel_MouseEnter(object sender, EventArgs e)
         {
-            if (sender is ColorPanel panel)
-            {
-                panel.Margin = new Padding(0);
-            }
+            if (sender is ColorPanel panel) panel.Margin = new Padding(0);
         }
 
-        private void ColorPanel_MouseLeave(object sender, EventArgs e)
+        void ColorPanel_MouseLeave(object sender, EventArgs e)
         {
-            if (sender is ColorPanel panel)
-            {
-                panel.Margin = new Padding(0, 20, 0, 0);
-            }
+            if (sender is ColorPanel panel) panel.Margin = new Padding(0, padd, 0, 0);
         }
 
-        private void ColorPanel_Click(object sender, EventArgs e)
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            foreach (ColorPanel panel in tablePanel.Controls) panel.Margin = new Padding(0, padd, 0, 0);
+            base.OnMouseLeave(e);
+        }
+
+        void ColorPanel_Click(object sender, EventArgs e)
         {
             if (sender is ColorPanel panel)
             {
