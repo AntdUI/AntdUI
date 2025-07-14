@@ -278,6 +278,23 @@ namespace AntdUI
             }
         }
 
+        int rightGap = 0;
+        /// <summary>
+        /// 新增按钮边距比例
+        /// </summary>
+        [Description("新增按钮边距比例"), Category("外观"), DefaultValue(.148F)]
+        public int RightGap
+        {
+            get => rightGap;
+            set
+            {
+                if (rightGap == value) return;
+                rightGap = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(RightGap));
+            }
+        }
+
         #endregion
 
         #region 数据
@@ -338,7 +355,7 @@ namespace AntdUI
                 {
                     var dir = new Dictionary<int, int[]>(items.Count);
                     int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
-                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width, crect.Height - offset);
+                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
                     ico_size = (int)(txtHeight * tabIconRatio), close_size = (int)(txtHeight * tabCloseRatio), close_i_size = (int)(txtHeight * TabCloseIconRatio),
