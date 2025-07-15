@@ -60,7 +60,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
 
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             if (OS.Win7OrLower) Select();
 

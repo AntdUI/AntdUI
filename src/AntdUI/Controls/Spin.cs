@@ -340,7 +340,6 @@ namespace AntdUI
         Spin.Config config;
         public SpinForm(Control _control, Form? _parent, Spin.Config _config)
         {
-            maxalpha = 255;
             control = _control;
             parent = _parent;
             Font = _control.Font;

@@ -65,7 +65,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
 
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -95,7 +95,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, null, true);
 
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -139,7 +139,7 @@ namespace AntdUI
                     align = TAlignFrom.BR;
                     break;
             }
-            CLocation(control, align, rect, false, ArrowSize, ref Inverted, true);
+            CLocation(control, align, rect, false, ArrowSize, true);
             Init();
         }
         public LayeredFormSelectDown(Table control, IList<object> items, ICell cell, Rectangle rect)
@@ -169,7 +169,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
 
-            var tmpAlign = CLocation(control, cell.DropDownPlacement, rect, cell.DropDownArrow, ArrowSize, ref Inverted, true);
+            var tmpAlign = CLocation(control, cell.DropDownPlacement, rect, cell.DropDownArrow, ArrowSize, true);
             if (cell.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -204,7 +204,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -232,7 +232,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -261,7 +261,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, cell.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(parent, rect, cell.DropDownArrow, ArrowSize);
             if (cell.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -860,7 +860,7 @@ namespace AntdUI
         }
         void OnCall(ObjectItem it)
         {
-            if (PARENT is Select select) select.DropDownChange(select_x, it.I, it.Tag);
+            if (PARENT is Select select) select.DropDownChange(select_x, it.I, it.Tag, it.Text);
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Tag);
             else if (PARENT is Tabs tabs)
             {

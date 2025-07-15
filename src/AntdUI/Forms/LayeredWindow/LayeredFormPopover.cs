@@ -36,7 +36,6 @@ namespace AntdUI
         Form? form = null;
         public LayeredFormPopover(Popover.Config _config)
         {
-            maxalpha = 255;
             config = _config;
             topMost = config.Control.SetTopMost(Handle);
             Font = config.Font ?? config.Control.Font;

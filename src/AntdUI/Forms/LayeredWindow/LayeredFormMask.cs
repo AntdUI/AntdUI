@@ -27,7 +27,7 @@ namespace AntdUI
         int Radius = 0, Bor = 0;
         bool HasBor = false;
         Form form;
-        public LayeredFormMask(Form _form)
+        public LayeredFormMask(Form _form) : base(240)
         {
             form = _form;
             TopMost = _form.TopMost;

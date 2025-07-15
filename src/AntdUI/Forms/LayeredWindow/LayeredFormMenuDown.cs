@@ -51,7 +51,7 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
             Items = LoadLayout(items, point);
-            if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow, ref Inverted);
+            if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow);
             else
             {
                 var screen = Screen.FromPoint(point).WorkingArea;
@@ -84,7 +84,7 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             Items = LoadLayout(items, control.PointToScreen(Point.Empty));
 
-            CLocation(parent, rect, false, 0, ref Inverted);
+            CLocation(parent, rect, false, 0);
             Init();
         }
 

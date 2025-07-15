@@ -143,7 +143,7 @@ namespace AntdUI
 
             int r_w = w + 20, r_h = h + 20;
             SetSize(r_w, r_h);
-            rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
+            rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref ArrowAlign, true);
 
             Location = new Point(TargetRect.Location.X - control.WaveSize, TargetRect.Y);//有缺口，位置需要偏移
             Size = TargetRect.Size;

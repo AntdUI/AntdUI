@@ -222,7 +222,7 @@ namespace AntdUI
         Func<int, Rectangle?> call;
         int i = 0;
         internal bool topMost = false;
-        public LayeredFormTour(Tour.Config _config, Func<int, Rectangle?> _call)
+        public LayeredFormTour(Tour.Config _config, Func<int, Rectangle?> _call) : base(240)
         {
             config = _config;
             call = _call;

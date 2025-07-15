@@ -272,12 +272,12 @@ namespace AntdUI
             ChangeValue(items.IndexOf(val), val);
         }
 
-        internal void DropDownChange(int x, int y, object value)
+        internal void DropDownChange(int x, int y, object value, string text)
         {
             selectedIndexX = x;
             selectedIndex = y;
             selectedValue = value;
-            Text = value.ToString() ?? "";
+            Text = text;
             SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
             SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
             SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));

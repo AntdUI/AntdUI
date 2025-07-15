@@ -158,7 +158,7 @@ namespace AntdUI
 
             SetSize(r_w, r_h);
             t_h = r_h;
-            CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, 10, r_w, r_h, rect_read, ref ArrowAlign);
             if (OS.Win7OrLower) Select();
         }
 

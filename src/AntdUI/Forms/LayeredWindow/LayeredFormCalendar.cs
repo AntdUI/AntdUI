@@ -154,7 +154,7 @@ namespace AntdUI
                 int t_time_w = t_time * 3;
                 rect_buttonok = new Rectangle(t_x + shadow + t_one_width, rect_button.Y, t_time_w, t_button);
             }
-            CLocation(point, _control.Placement, _control.DropDownArrow, shadow, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, shadow, r_w, r_h, rect_read, ref ArrowAlign);
             t_h = r_h;
             if (OS.Win7OrLower) Select();
         }

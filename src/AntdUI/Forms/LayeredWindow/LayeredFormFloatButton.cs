@@ -31,7 +31,6 @@ namespace AntdUI
         int BadgeSize = 6, ShadowXY;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
-            maxalpha = 255;
             config = _config;
             TopMost = config.TopMost;
             if (!config.TopMost) config.Form.SetTopMost(Handle);

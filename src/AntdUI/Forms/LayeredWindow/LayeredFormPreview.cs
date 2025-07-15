@@ -34,7 +34,6 @@ namespace AntdUI
         Preview.Config config;
         public LayeredFormPreview(Preview.Config _config)
         {
-            maxalpha = 255;
             config = _config;
             form = _config.Form;
             Font = form.Font;
