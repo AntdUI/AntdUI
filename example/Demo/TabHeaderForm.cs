@@ -27,6 +27,12 @@ namespace Demo
             InitializeComponent();
             tabHeader1.AddTab("关于", "SlackSquareFilled");
             tabHeader1.AddTab(new AntdUI.TagTabItem("关于"));
+            this.tabHeader1.TabSelectedItemChanged += TabHeader1_TabSelectedItemChanged;
+        }
+
+        private void TabHeader1_TabSelectedItemChanged(object sender, AntdUI.TabChangedEventArgs e)
+        {
+            AntdUI.Message.open(this, "select value :" + e.Value.Text);
         }
 
         private void button1_Click(object sender, EventArgs e)

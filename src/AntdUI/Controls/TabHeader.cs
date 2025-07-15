@@ -331,6 +331,23 @@ namespace AntdUI
             }
         }
 
+        TagTabItem? _selectItem = null;
+        [Description("选中选项"), Category("数据"), DefaultValue(0)]
+        public TagTabItem? SelectedItem
+        {
+            get => _selectItem;
+            set
+            {
+                if (_selectItem == value || value is null) return;
+                _selectItem = value;
+                Invalidate();
+                if (items == null) return;
+                //获取Index
+                var index = items.IndexOf(value);
+                TabSelectedItemChanged?.Invoke(this, new TabChangedEventArgs(value, index));
+            }
+        }
+
         #endregion
 
         #endregion
@@ -806,6 +823,7 @@ namespace AntdUI
                         mdownindex = i;
                         mdown = it;
                         SelectedIndex = i;
+                        SelectedItem = it;
                         if (DragSort)
                         {
                             dragHeader = new Table.DragHeader(e.X, e.Y, i, x);
@@ -865,6 +883,7 @@ namespace AntdUI
                             items.Remove(it);
                             // 如果关闭的是当前选中标签，自动选择下一个标签
                             if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
+                            SelectedItem = items[SelectedIndex];
                             return;
                         }
                     }
@@ -880,6 +899,7 @@ namespace AntdUI
                 items.Remove(mdown);
                 // 如果关闭的是当前选中标签，自动选择下一个标签
                 if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
+                SelectedItem = items[SelectedIndex];
             }
         }
 
@@ -935,6 +955,7 @@ namespace AntdUI
         {
             if (items == null) return;
             SelectedIndex = items.IndexOf(item);
+            SelectedItem = item;
         }
 
         /// <summary>
@@ -1000,8 +1021,22 @@ namespace AntdUI
         /// <summary>
         /// 点击添加按钮
         /// </summary>
+        [Description("添加选项事件")]
         public event EventHandler? AddClick;
+        /// <summary>
+        /// 序列号变动事件
+        /// </summary>
+        [Description("序列号变动事件")]
         public event EventHandler<TabChangedEventArgs>? TabChanged;
+        /// <summary>
+        /// 选项选中事件
+        /// </summary>
+        [Description("选项选中事件")]
+        public event EventHandler<TabChangedEventArgs>? TabSelectedItemChanged;
+        /// <summary>
+        /// 选项关闭事件
+        /// </summary>
+        [Description("选项关闭事件")]
         public event EventHandler<TabCloseEventArgs>? TabClosing;
 
         #endregion
