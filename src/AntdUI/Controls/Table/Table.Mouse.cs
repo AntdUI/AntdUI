@@ -451,7 +451,7 @@ namespace AntdUI
                                 fnt = arg.Font;
                                 filterHeight = arg.Height;
                             }
-                            if (fnt == null) fnt = Font;
+                            fnt ??= Font;
                             var editor = new FilterControl(this, focusColumn, customSource)
                             {
                                 Font = fnt

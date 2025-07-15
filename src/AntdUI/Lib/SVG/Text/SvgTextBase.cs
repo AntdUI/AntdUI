@@ -302,7 +302,7 @@ namespace AntdUI.Svg
 
             if (_path == null || IsPathDirty || nodes.Count() == 1)
             {
-                renderer = (renderer ?? SvgRenderer.FromNull());
+                renderer ??= SvgRenderer.FromNull();
                 SetPath(new TextDrawingState(renderer, this));
             }
             return _path;
@@ -458,11 +458,7 @@ namespace AntdUI.Svg
 
         protected void RaiseChange(object sender, StringArg s)
         {
-            var handler = Change;
-            if (handler != null)
-            {
-                handler(sender, s);
-            }
+            Change?.Invoke(sender, s);
         }
 
         private class FontBoundable : ISvgBoundable
@@ -692,8 +688,6 @@ namespace AntdUI.Svg
                     if (lastIndividualChar > renderChar)
                     {
                         var charBounds = font.MeasureCharacters(Renderer, value.Substring(renderChar, Math.Min(lastIndividualChar + 1, value.Length) - renderChar));
-                        PointF pathPoint;
-                        float rotation;
                         float halfWidth;
                         for (int i = renderChar; i < lastIndividualChar; i++)
                         {
@@ -711,7 +705,7 @@ namespace AntdUI.Svg
                                 halfWidth = charBounds[i - renderChar].Width / 2;
                                 if (pathStats.OffsetOnPath(xPos + halfWidth))
                                 {
-                                    pathStats.LocationAngleAtOffset(xPos + halfWidth, out pathPoint, out rotation);
+                                    pathStats.LocationAngleAtOffset(xPos + halfWidth, out PointF pathPoint, out float rotation);
                                     pathPoint = new PointF((float)(pathPoint.X - halfWidth * Math.Cos(rotation * Math.PI / 180) - (float)pathScale * yPos * Math.Sin(rotation * Math.PI / 180)),
                                                            (float)(pathPoint.Y - halfWidth * Math.Sin(rotation * Math.PI / 180) + (float)pathScale * yPos * Math.Cos(rotation * Math.PI / 180)));
                                     xTextStart = xTextStart.Equals(Current.X) ? pathPoint.X : xTextStart;

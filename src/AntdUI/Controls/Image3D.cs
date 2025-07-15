@@ -118,7 +118,7 @@ namespace AntdUI
                                     var cube = new Cube(bmpo.Width, bmpo.Height, 1);
                                     if (prog > 90)
                                     {
-                                        prog = prog - 180;
+                                        prog -= 180;
                                         cube.RotateX = prog;
                                         cube.calcCube(_rect.Location);
                                         var bmp = cube.ToBitmap(bmpo2);
@@ -143,7 +143,7 @@ namespace AntdUI
                                     var cube = new Cube(bmpo.Width, bmpo.Height, 1);
                                     if (prog > 90)
                                     {
-                                        prog = prog - 180;
+                                        prog -= 180;
                                         cube.RotateY = prog;
                                         cube.calcCube(_rect.Location);
                                         var bmp = cube.ToBitmap(bmpo2);

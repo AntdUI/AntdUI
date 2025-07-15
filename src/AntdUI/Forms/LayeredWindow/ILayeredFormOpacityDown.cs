@@ -112,7 +112,7 @@ namespace AntdUI
                     var bmp = new Bitmap(rect.Width, rect.Height);
                     using (var g = Graphics.FromImage(bmp))
                     {
-                        if (bmp_tmp == null) bmp_tmp = PrintBit();
+                        bmp_tmp ??= PrintBit();
                         if (bmp_tmp == null) return;
                         lock (bmp_tmp)
                         {
@@ -139,7 +139,7 @@ namespace AntdUI
                     var bmp = new Bitmap(rect.Width, rect.Height);
                     using (var g = Graphics.FromImage(bmp))
                     {
-                        if (bmp_tmp == null) bmp_tmp = PrintBit();
+                        bmp_tmp ??= PrintBit();
                         if (bmp_tmp == null) return;
                         lock (bmp_tmp)
                         {

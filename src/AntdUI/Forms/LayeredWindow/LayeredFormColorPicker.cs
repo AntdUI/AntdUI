@@ -640,7 +640,7 @@ namespace AntdUI
                         {
                             PaintColors(g2, new Rectangle(0, 0, bmp.Width, bmp.Height));
                         }
-                        if (colors_mouse == null) colors_mouse = GetColorsPoint(bmp);
+                        colors_mouse ??= GetColorsPoint(bmp);
                         g.Image(bmp, rect_colors);
                     }
                     using (var path = rect_colors.RoundPath(Radius))

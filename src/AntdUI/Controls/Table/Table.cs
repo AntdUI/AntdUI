@@ -48,7 +48,7 @@ namespace AntdUI
         {
             get
             {
-                if (columns == null) columns = new ColumnCollection();
+                columns ??= new ColumnCollection();
                 columns.table = this;
                 return columns;
             }

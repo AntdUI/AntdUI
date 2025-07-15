@@ -442,7 +442,7 @@ namespace AntdUI
                     if (it.ICanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
+                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
                         it.SubY = y_item - gapI / 2;
                         it.SubHeight = y - y_item;
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)

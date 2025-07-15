@@ -257,7 +257,7 @@ namespace AntdUI.Design
             base.OnPaint(e);
         }
 
-        readonly static Color[] colors = new Color[] {
+        static readonly Color[] colors = new Color[] {
             "#f44336".ToColor(),
             "#e91e63".ToColor(),
             "#9c27b0".ToColor(),

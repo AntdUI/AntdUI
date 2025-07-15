@@ -13,7 +13,7 @@ namespace AntdUI.Svg
         [SvgAttribute("visibility")]
         public virtual bool Visible
         {
-            get { return (Attributes["visibility"] == null) ? true : (bool)Attributes["visibility"]; }
+            get { return (Attributes["visibility"] == null) || (bool)Attributes["visibility"]; }
             set { Attributes["visibility"] = value; }
         }
 

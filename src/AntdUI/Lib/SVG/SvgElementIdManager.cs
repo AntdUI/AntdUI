@@ -85,8 +85,7 @@ namespace AntdUI.Svg
                 var newID = EnsureValidId(element.ID, autoForceUniqueID);
                 if (autoForceUniqueID && newID != element.ID)
                 {
-                    if (logElementOldIDNewID != null)
-                        logElementOldIDNewID(element, element.ID, newID);
+                    logElementOldIDNewID?.Invoke(element, element.ID, newID);
                     element.ForceUniqueID(newID);
                     result = true;
                 }
@@ -143,8 +142,7 @@ namespace AntdUI.Svg
                 {
                     var match = regex.Match(id);
 
-                    int number;
-                    if (match.Success && int.TryParse(match.Value.Substring(1), out number))
+                    if (match.Success && int.TryParse(match.Value.Substring(1), out int number))
                     {
                         id = regex.Replace(id, "#" + (number + 1));
                     }
@@ -177,20 +175,12 @@ namespace AntdUI.Svg
 
         protected void OnAdded(SvgElement element)
         {
-            var handler = ElementAdded;
-            if (handler != null)
-            {
-                handler(_document, new SvgElementEventArgs { Element = element });
-            }
+            ElementAdded?.Invoke(_document, new SvgElementEventArgs { Element = element });
         }
 
         protected void OnRemoved(SvgElement element)
         {
-            var handler = ElementRemoved;
-            if (handler != null)
-            {
-                handler(_document, new SvgElementEventArgs { Element = element });
-            }
+            ElementRemoved?.Invoke(_document, new SvgElementEventArgs { Element = element });
         }
 
     }

@@ -58,10 +58,10 @@ namespace AntdUI.Svg
                 return false;
 
             // Always match if either value is String.Empty (wildcard)
-            if (indicator.Name == String.Empty)
+            if (indicator.Name == string.Empty)
                 return false;
 
-            return String.Compare(indicator.Name, Name) == 0;
+            return string.Compare(indicator.Name, Name) == 0;
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace AntdUI.Svg
         /// </summary>
         internal SvgAttributeAttribute()
         {
-            _name = String.Empty;
+            _name = string.Empty;
         }
 
         /// <summary>

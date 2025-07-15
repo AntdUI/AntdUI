@@ -71,8 +71,8 @@ namespace AntdUI
             float dpi = Config.Dpi;
             if (dpi != 1F)
             {
-                doc.Width = doc.Width * dpi;
-                doc.Height = doc.Height * dpi;
+                doc.Width *= dpi;
+                doc.Height *= dpi;
             }
             return doc.Draw();
         }

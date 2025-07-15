@@ -80,8 +80,6 @@ namespace AntdUI.Svg
             EnsureDictionaries();
 
             RectangleF bounds;
-            SvgGlyph glyph;
-            SvgKern kern;
             GraphicsPath path;
             SvgGlyph prevGlyph = null;
             Matrix scaleMatrix;
@@ -94,8 +92,8 @@ namespace AntdUI.Svg
 
             for (int i = 0; i < text.Length; i++)
             {
-                if (!_glyphs.TryGetValue(text.Substring(i, 1), out glyph)) glyph = _font.Descendants().OfType<SvgMissingGlyph>().First();
-                if (prevGlyph != null && _kerning.TryGetValue(prevGlyph.GlyphName + "|" + glyph.GlyphName, out kern))
+                if (!_glyphs.TryGetValue(text.Substring(i, 1), out SvgGlyph glyph)) glyph = _font.Descendants().OfType<SvgMissingGlyph>().First();
+                if (prevGlyph != null && _kerning.TryGetValue(prevGlyph.GlyphName + "|" + glyph.GlyphName, out SvgKern kern))
                 {
                     xPos -= kern.Kerning * _emScale;
                 }
@@ -129,8 +127,8 @@ namespace AntdUI.Svg
 
         private void EnsureDictionaries()
         {
-            if (_glyphs == null) _glyphs = _font.Descendants().OfType<SvgGlyph>().ToDictionary(g => g.Unicode ?? g.GlyphName ?? g.ID);
-            if (_kerning == null) _kerning = _font.Descendants().OfType<SvgKern>().ToDictionary(k => k.Glyph1 + "|" + k.Glyph2);
+            _glyphs ??= _font.Descendants().OfType<SvgGlyph>().ToDictionary(g => g.Unicode ?? g.GlyphName ?? g.ID);
+            _kerning ??= _font.Descendants().OfType<SvgKern>().ToDictionary(k => k.Glyph1 + "|" + k.Glyph2);
         }
 
         public void Dispose()

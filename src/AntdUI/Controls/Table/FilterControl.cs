@@ -379,14 +379,12 @@ namespace AntdUI
             if (EditLocked) return;
             if (sender is InputNumber editNum)
             {
-                decimal num;
-                if (decimal.TryParse(editNum.Text, out num)) Edit_ValueChanged(sender, new DecimalEventArgs(num));
+                if (decimal.TryParse(editNum.Text, out var num)) Edit_ValueChanged(sender, new DecimalEventArgs(num));
                 return;
             }
             if (sender is DatePicker editDate)
             {
-                DateTime date;
-                if (DateTime.TryParse(editDate.Text, out date)) EditDate_ValueChanged(sender, new DateTimeNEventArgs(date));
+                if (DateTime.TryParse(editDate.Text, out var date)) EditDate_ValueChanged(sender, new DateTimeNEventArgs(date));
                 return;
             }
 

@@ -91,12 +91,7 @@ namespace AntdUI.Svg.Transforms
 
         protected void OnTransformChanged()
         {
-            var handler = TransformChanged;
-            if (handler != null)
-            {
-                //make a copy of the current value to avoid collection changed exceptions
-                handler(this, new AttributeEventArgs { Attribute = "transform", Value = Clone() });
-            }
+            TransformChanged?.Invoke(this, new AttributeEventArgs { Attribute = "transform", Value = Clone() });
         }
 
         public object Clone()

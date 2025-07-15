@@ -538,7 +538,7 @@ namespace AntdUI
         /// </summary>
         public void UseAdmin()
         {
-            if (fileDrop == null) fileDrop = new FileDropHandler(this);
+            fileDrop ??= new FileDropHandler(this);
         }
 
         protected override void OnDragEnter(DragEventArgs e)

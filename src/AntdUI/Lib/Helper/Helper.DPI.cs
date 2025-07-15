@@ -103,11 +103,11 @@ namespace AntdUI
             {
                 foreach (ColumnStyle it in tableLayout.ColumnStyles)
                 {
-                    if (it.SizeType == SizeType.Absolute) it.Width = it.Width * dpi;
+                    if (it.SizeType == SizeType.Absolute) it.Width *= dpi;
                 }
                 foreach (RowStyle it in tableLayout.RowStyles)
                 {
-                    if (it.SizeType == SizeType.Absolute) it.Height = it.Height * dpi;
+                    if (it.SizeType == SizeType.Absolute) it.Height *= dpi;
                 }
             }
             else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1) tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));

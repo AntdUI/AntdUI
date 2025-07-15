@@ -29,7 +29,7 @@ namespace AntdUI
     {
         #region 文本布局
 
-        readonly public static StringFormat m_sf = SF_MEASURE_FONT();
+        public static readonly StringFormat m_sf = SF_MEASURE_FONT();
 
         /// <summary>
         /// 文本布局

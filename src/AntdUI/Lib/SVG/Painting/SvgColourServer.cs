@@ -66,7 +66,7 @@ namespace AntdUI.Svg
                 return c.Name;
 
             // Return the hex value
-            return String.Format("#{0}", c.ToArgb().ToString("x").Substring(2));
+            return string.Format("#{0}", c.ToArgb().ToString("x").Substring(2));
         }
 
         public override bool Equals(object? obj)

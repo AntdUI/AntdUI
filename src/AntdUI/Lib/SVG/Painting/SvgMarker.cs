@@ -25,10 +25,7 @@ namespace AntdUI.Svg
         {
             get
             {
-                if (_markerElement == null)
-                {
-                    _markerElement = (SvgVisualElement)Children.FirstOrDefault(x => x is SvgVisualElement);
-                }
+                _markerElement ??= (SvgVisualElement)Children.FirstOrDefault(x => x is SvgVisualElement);
                 return _markerElement;
             }
         }

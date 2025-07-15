@@ -44,7 +44,7 @@ namespace AntdUI
         {
             get
             {
-                if (currentLanguage == null) currentLanguage = Thread.CurrentThread.CurrentUICulture.Name;
+                currentLanguage ??= Thread.CurrentThread.CurrentUICulture.Name;
                 return currentLanguage;
             }
         }

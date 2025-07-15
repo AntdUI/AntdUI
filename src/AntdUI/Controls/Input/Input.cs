@@ -618,7 +618,7 @@ namespace AntdUI
 
         void SetText(string value, bool changed = true)
         {
-            if (value is null) value = "";
+            value ??= "";
             if (_text == value) return;
             _text = value;
             isempty = string.IsNullOrEmpty(_text);

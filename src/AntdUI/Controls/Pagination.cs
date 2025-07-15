@@ -603,7 +603,7 @@ namespace AntdUI
                     {
                         if (i == min)
                         {
-                            min = min * 10;
+                            min *= 10;
                             var size_font = g.MeasureString((i + 1).ToString(), Font);
                             if (size_font.Width > rect.Height)
                             {

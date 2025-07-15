@@ -76,7 +76,7 @@ namespace AntdUI
             {
                 try
                 {
-                    if (bmp_tmp == null) bmp_tmp = PrintBit();
+                    bmp_tmp ??= PrintBit();
                     if (bmp_tmp == null) return;
                     if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
                 }

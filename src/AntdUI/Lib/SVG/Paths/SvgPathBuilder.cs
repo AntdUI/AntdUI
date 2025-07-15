@@ -65,12 +65,10 @@ namespace AntdUI.Svg
                     break;
                 case 'a':
                 case 'A':
-                    bool size;
-                    bool sweep;
 
                     while (parser.TryGetFloat(out coords[0]) && parser.TryGetFloat(out coords[1]) &&
-                           parser.TryGetFloat(out coords[2]) && parser.TryGetBool(out size) &&
-                           parser.TryGetBool(out sweep) && parser.TryGetFloat(out coords[3]) &&
+                           parser.TryGetFloat(out coords[2]) && parser.TryGetBool(out bool size) &&
+                           parser.TryGetBool(out bool sweep) && parser.TryGetFloat(out coords[3]) &&
                            parser.TryGetFloat(out coords[4]))
                     {
                         // A|a rx ry x-axis-rotation large-arc-flag sweep-flag x y
