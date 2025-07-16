@@ -318,7 +318,7 @@ namespace AntdUI
 
                 var carets = new List<CacheCaret>(cache_font.Length + 2)
                 {
-                    new CacheCaret { x = rect_text.X, y = rect_text.Y, i = 0,index=0 }
+                    new CacheCaret { x = cache_font[0].rect.X, y = rect_text.Y, i = 0,index=0 }
                 };
                 int tmp = 1;
                 for (int i = 0; i < cache_font.Length; i++)

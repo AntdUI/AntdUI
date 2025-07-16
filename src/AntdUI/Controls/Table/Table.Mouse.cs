@@ -43,7 +43,7 @@ namespace AntdUI
                 base.OnMouseDown(e);
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
-                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out _, out _, out _, out int i_row, out int i_cel, out var column, out int mode);
+                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cell == null) return;
                 else
                 {
@@ -79,7 +79,7 @@ namespace AntdUI
                                 }
                             }
                         }
-                        cellMouseDown = new DownCellTMP<CELL>(it, cell, i_row, i_cel, e.Clicks > 1);
+                        cellMouseDown = new DownCellTMP<CELL>(it, cell, i_row, i_cel, offset_x, offset_xi, offset_y, e.Clicks > 1);
                         if (!cellMouseDown.doubleClick && cell.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                         {
                             if (e.Button == MouseButtons.Left && cell.CONTAIN_REAL(r_x, r_y))
@@ -109,15 +109,15 @@ namespace AntdUI
                             if (LoadLayout()) Invalidate();
                             return;
                         }
-                        MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, i_row, i_cel, column);
+                        MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, offset_x, offset_xi, offset_y, i_row, i_cel, column);
                     }
                 }
             }
         }
 
-        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int i_r, int i_c, Column? column)
+        void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int offset_x, int offset_xi, int offset_y, int i_r, int i_c, Column? column)
         {
-            cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, e.Clicks > 1);
+            cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, offset_x, offset_xi, offset_y, e.Clicks > 1);
             if (cell is Template template)
             {
                 if (e.Button == MouseButtons.Left)
@@ -130,9 +130,9 @@ namespace AntdUI
                             {
                                 if (btn_template.Rect.Contains(x, y))
                                 {
-                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, cellMouseDown.doubleClick);
+                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, offset_x, offset_xi, offset_y, cellMouseDown.doubleClick);
                                     btn_template.ExtraMouseDown = true;
-                                    CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, column, e));
+                                    CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, column, RealRect(btn_template.Rect, offset_xi, offset_y), e));
                                     return;
                                 }
                             }
@@ -150,8 +150,8 @@ namespace AntdUI
                             {
                                 if (btn_template.Rect.Contains(x, y))
                                 {
-                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, cellMouseDown.doubleClick);
-                                    CellButtonDown(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, column, e));
+                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, i_r, i_c, offset_x, offset_xi, offset_y, cellMouseDown.doubleClick);
+                                    CellButtonDown(this, new TableButtonEventArgs(btn_template, it.RECORD, i_r, i_c, column, RealRect(btn_template.Rect, offset_xi, offset_y), e));
                                     return;
                                 }
                             }
@@ -306,7 +306,7 @@ namespace AntdUI
                     if (btnMDown == null) return;
                     if (btnMDown.cell.ExtraMouseDown)
                     {
-                        CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, e));
+                        CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, RealRect(btnMDown), e));
                         btnMDown.cell.ExtraMouseDown = false;
                     }
                 }
@@ -333,11 +333,11 @@ namespace AntdUI
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
-            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel)) MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y, null);
+            if (cel_sel == null || (it.i_row != i_row || it.i_cel != i_cel)) MouseUpBtn(it, btn, e, r_x, r_y, offset_x, offset_xi, offset_y, null);
             else
             {
                 if (selectedIndex.Length == 1) SelectedIndex = it.i_row;
-                if (MouseUpBtn(it, btn, e, r_x, r_y, offset_xi, offset_y, column)) return;
+                if (MouseUpBtn(it, btn, e, r_x, r_y, offset_x, offset_xi, offset_y, column)) return;
                 if (e.Button == MouseButtons.Left)
                 {
                     if (it.cell is TCellCheck checkCell)
@@ -541,12 +541,12 @@ namespace AntdUI
                 bool enterEdit = false;
                 if (it.doubleClick)
                 {
-                    CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, column, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
+                    CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, column, RealRect(cel_sel.RECT, offset_xi, offset_y), e));
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
                 }
                 else
                 {
-                    CellClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, column, new Rectangle(cel_sel.RECT.X - offset_x, cel_sel.RECT.Y - offset_y, cel_sel.RECT.Width, cel_sel.RECT.Height), e));
+                    CellClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, i_row, i_cel, column, RealRect(cel_sel.RECT, offset_xi, offset_y), e));
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
                 }
                 if (enterEdit)
@@ -560,7 +560,7 @@ namespace AntdUI
                 }
             }
         }
-        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y, int offset_xi, int offset_y, Column? column)
+        bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, int r_x, int r_y, int offset_x, int offset_xi, int offset_y, Column? column)
         {
             if (btn == null) return false;
             btn.cell.ExtraMouseDown = false;
@@ -578,12 +578,12 @@ namespace AntdUI
                     subForm.Show(this);
                 }
 
-                var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, e);
+                var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, RealRect(btn.cell.Rect, offset_xi, offset_y), e);
                 CellButtonUp?.Invoke(this, arge);
                 CellButtonClick?.Invoke(this, arge);
                 return true;
             }
-            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, e));
+            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, column, RealRect(btn.cell.Rect, offset_xi, offset_y), e));
             return false;
         }
         LayeredFormSelectDown? subForm;
@@ -682,7 +682,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    MouseMoveCell(cel_sel, i_row, i_cel, column, offset_x, offset_y, e);
+                    MouseMoveCell(cel_sel, i_row, i_cel, column, offset_x, offset_xi, offset_y, e);
                     if (mode > 0)
                     {
                         for (int i = 1; i < rows.Length; i++)
@@ -820,7 +820,7 @@ namespace AntdUI
                         else
                         {
                             var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = new Rectangle(_rect.X + btn_template.Rect.X - offset_xi, _rect.Y + btn_template.Rect.Y - offset_y, btn_template.Rect.Width, btn_template.Rect.Height);
+                            var rect = RealRect(btn_template.Rect, offset_xi, offset_y);
                             if (tooltipForm == null)
                             {
                                 tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, TooltipConfig ?? new TooltipConfig
@@ -839,7 +839,7 @@ namespace AntdUI
                         else
                         {
                             var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = new Rectangle(_rect.X + img_template.Rect.X - offset_xi, _rect.Y + img_template.Rect.Y - offset_y, img_template.Rect.Width, img_template.Rect.Height);
+                            var rect = RealRect(img_template.Rect, offset_xi, offset_y);
                             if (tooltipForm == null)
                             {
                                 tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, TooltipConfig ?? new TooltipConfig
@@ -868,7 +868,7 @@ namespace AntdUI
                         if (!string.IsNullOrEmpty(text))
                         {
                             var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = new Rectangle(_rect.X + cel.RECT.X - offset_xi, _rect.Y + cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
+                            var rect = RealRect(cel.RECT, offset_xi, offset_y);
                             if (tooltipForm == null)
                             {
                                 tooltipForm = new TooltipForm(this, rect, text, TooltipConfig ?? new TooltipConfig
@@ -886,13 +886,13 @@ namespace AntdUI
             return false;
         }
 
-        void MouseMoveCell(CELL cel, int i_row, int i_cel, Column? column, int offset_x, int offset_y, MouseEventArgs e)
+        void MouseMoveCell(CELL cel, int i_row, int i_cel, Column? column, int offset_x, int offset_xi, int offset_y, MouseEventArgs e)
         {
             if (CellHover == null) return;
             var moveid = i_row + "_" + i_cel;
             if (oldmove2 == moveid) return;
             oldmove2 = moveid;
-            CellHover(this, new TableHoverEventArgs(cel.ROW.RECORD, i_row, i_cel, column, new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height), e));
+            CellHover(this, new TableHoverEventArgs(cel.ROW.RECORD, i_row, i_cel, column, RealRect(cel.RECT, offset_xi, offset_y), e));
         }
         void MouseMoveCell(MouseEventArgs? e)
         {
@@ -1101,12 +1101,15 @@ namespace AntdUI
         DownCellTMP<CellLink>? btnMouseDown;
         class DownCellTMP<T>
         {
-            public DownCellTMP(RowTemplate _row, T _cell, int _i_row, int _i_cel, bool _doubleClick)
+            public DownCellTMP(RowTemplate _row, T _cell, int _i_row, int _i_cel, int _offset_x, int _offset_xi, int _offset_y, bool _doubleClick)
             {
                 row = _row;
                 cell = _cell;
                 i_row = _i_row;
                 i_cel = _i_cel;
+                offset_x = _offset_x;
+                offset_xi = _offset_xi;
+                offset_y = _offset_y;
                 doubleClick = _doubleClick;
             }
             public bool doubleClick { get; set; }
@@ -1114,7 +1117,13 @@ namespace AntdUI
             public RowTemplate row { get; set; }
             public int i_row { get; set; }
             public int i_cel { get; set; }
+            public int offset_x { get; set; }
+            public int offset_xi { get; set; }
+            public int offset_y { get; set; }
         }
+
+        Rectangle RealRect(DownCellTMP<CellLink> link) => RealRect(link.cell.Rect, link.offset_xi, link.offset_y);
+        Rectangle RealRect(Rectangle rect, int ox, int oy) => new Rectangle(rect.X - ox, rect.Y - oy, rect.Width, rect.Height);
 
         #endregion
 

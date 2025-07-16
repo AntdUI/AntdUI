@@ -58,7 +58,7 @@ namespace AntdUI
                 int x = point.X + control.Width - rect.X - shadow, y = point.Y + rect.Y + shadow;
                 if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + shadow;
                 if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + shadow;
-                SetLocation(x, y);
+                SetLocationO(x, y);
             }
             Init();
         }

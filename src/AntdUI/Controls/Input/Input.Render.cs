@@ -193,6 +193,7 @@ namespace AntdUI
 
         void PaintText(Canvas g, Color _fore, int w, int h)
         {
+            var state = g.Save();
             if (multiline) g.SetClip(rect_text);
             else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
             else g.SetClip(new Rectangle(rect_text.X, 0, rect_text.Width, Height));
@@ -204,9 +205,9 @@ namespace AntdUI
                     g.DrawText(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
-            g.ResetClip();
             if (CaretInfo.Show && CaretInfo.Flag)
             {
+                g.ResetClip();
                 if (multiline) g.SetClip(new Rectangle(0, rect_text.Y, w, rect_text.Height));
                 else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
                 else g.SetClip(new Rectangle(0, 0, w, Height));
@@ -216,12 +217,12 @@ namespace AntdUI
                 {
                     g.Fill(brush, CaretInfo.Rect);
                 }
-                g.ResetTransform();
-                g.ResetClip();
             }
+            g.Restore(state);
         }
         void PaintText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
         {
+            var state = g.Save();
             g.TranslateTransform(-ScrollX, -ScrollY);
             var tmp = PCSText(g, _fore, w, h, cache_font);
             if (styles != null)
@@ -233,7 +234,7 @@ namespace AntdUI
             }
             PaintTextSelected(g, cache_font);
             PaintText(g, _fore, cache_font, tmp);
-            g.ResetTransform();
+            g.Restore(state);
         }
         List<CacheFont> PCSText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
         {

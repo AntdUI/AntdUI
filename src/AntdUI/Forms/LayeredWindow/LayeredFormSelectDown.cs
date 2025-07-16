@@ -604,7 +604,7 @@ namespace AntdUI
                 else if (animateConfig.Inverted)
                 {
                     var tr = TargetRect;
-                    SetLocationY(tr.Y - (h - tr.Height) - shadow);
+                    SetLocationY(tr.Y - (h - (tr.Height - shadow2)));
                 }
                 SetSize(w, h);
                 return lists;
@@ -618,7 +618,7 @@ namespace AntdUI
                 else if (animateConfig.Inverted)
                 {
                     var tr = TargetRect;
-                    SetLocationY(tr.Y - (h - tr.Height) - shadow);
+                    SetLocationY(tr.Y - (h - (tr.Height - shadow2)));
                 }
                 if (DropNoMatchClose) IClose();
                 else SetSize(w, h);

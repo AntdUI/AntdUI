@@ -367,6 +367,7 @@ namespace AntdUI
         {
             Value = value;
         }
+
         /// <summary>
         /// 数值
         /// </summary>
@@ -387,18 +388,22 @@ namespace AntdUI
         /// 原始行
         /// </summary>
         public object? Record { get; private set; }
+
         /// <summary>
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
+
         /// <summary>
         /// 列序号
         /// </summary>
         public int ColumnIndex { get; private set; }
+
         /// <summary>
         /// 表头
         /// </summary>
         public Column? Column { get; private set; }
+
         /// <summary>
         /// 表格区域
         /// </summary>
@@ -424,55 +429,38 @@ namespace AntdUI
         /// 原始行
         /// </summary>
         public object? Record { get; private set; }
+
         /// <summary>
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
+
         /// <summary>
         /// 列序号
         /// </summary>
         public int ColumnIndex { get; private set; }
+
         /// <summary>
         /// 表头
         /// </summary>
         public Column? Column { get; private set; }
+
         /// <summary>
         /// 表格区域
         /// </summary>
         public Rectangle? Rect { get; private set; }
     }
-    public class TableButtonEventArgs : MouseEventArgs
+    public class TableButtonEventArgs : TableClickEventArgs
     {
-        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column? column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, rect, e)
         {
             Btn = btn;
-            Record = record;
-            RowIndex = rowIndex;
-            ColumnIndex = columnIndex;
-            Column = column;
         }
 
         /// <summary>
         /// 触发按钮
         /// </summary>
         public CellLink Btn { get; private set; }
-
-        /// <summary>
-        /// 原始行
-        /// </summary>
-        public object? Record { get; private set; }
-        /// <summary>
-        /// 行序号
-        /// </summary>
-        public int RowIndex { get; private set; }
-        /// <summary>
-        /// 列序号
-        /// </summary>
-        public int ColumnIndex { get; private set; }
-        /// <summary>
-        /// 表头
-        /// </summary>
-        public Column? Column { get; private set; }
     }
     public class TableEventArgs : ITableEventArgs
     {

@@ -42,16 +42,14 @@ namespace AntdUI
         {
             var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
             calculateCoordinate.Auto(Placement, animateConfig, Collision, out var align, out int x, out int y);
-            SetLocationX(x);
-            base.SetLocationY(y);
+            SetLocation(x - shadow, y);
             return align;
         }
         public TAlign CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
             var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
             calculateCoordinate.Auto(Placement, animateConfig, Collision, out var align, out int x, out int y);
-            SetLocationX(x);
-            base.SetLocationY(y);
+            SetLocation(x - shadow, y);
             return align;
         }
         public TAlign CLocation(ILayeredShadowForm control, Rectangle rect, bool DropDownArrow, int ArrowSize)
@@ -61,7 +59,7 @@ namespace AntdUI
             int x = trect.X + trect.Width - rect.X - control.shadow + (DropDownArrow ? ArrowSize : 0), y = trect.Y + rect.Y + control.shadow;
             if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + control.shadow;
             if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + control.shadow;
-            SetLocation(x, y);
+            SetLocation(x - shadow, y - shadow);
             return TAlign.LT;
         }
 
@@ -73,7 +71,7 @@ namespace AntdUI
         {
             if (ShadowEnabled)
             {
-                base.SetLocation(rect.X - shadow, rect.Y - shadow);
+                SetLocation(rect.X - shadow, rect.Y - shadow);
                 base.SetSize(rect.Width + shadow2, rect.Height + shadow2);
             }
             else base.SetRect(rect);
@@ -104,25 +102,21 @@ namespace AntdUI
             else base.SetSizeH(h);
         }
 
-        public override void SetLocation(Point point)
+        public void SetLocationO(Point point) => SetLocationO(point.X, point.Y);
+        public void SetLocationOX(int x)
         {
-            if (ShadowEnabled) base.SetLocation(point.X - shadow, point.Y - shadow);
-            else base.SetLocation(point);
+            if (ShadowEnabled) SetLocationX(x - shadow);
+            else SetLocationX(x);
         }
-        public override void SetLocationX(int x)
+        public void SetLocationOY(int y)
         {
-            if (ShadowEnabled) base.SetLocationX(x - shadow);
-            else base.SetLocationX(x);
+            if (ShadowEnabled) SetLocationY(y - shadow);
+            else SetLocationY(y);
         }
-        public override void SetLocationY(int y)
+        public void SetLocationO(int x, int y)
         {
-            if (ShadowEnabled) base.SetLocationY(y - shadow);
-            else base.SetLocationY(y);
-        }
-        public override void SetLocation(int x, int y)
-        {
-            if (ShadowEnabled) base.SetLocation(x - shadow, y - shadow);
-            else base.SetLocation(x, y);
+            if (ShadowEnabled) SetLocation(x - shadow, y - shadow);
+            else SetLocation(x, y);
         }
 
         #endregion
@@ -200,7 +194,14 @@ namespace AntdUI
                     var state = g.Save();
                     PrintContent(g, new Rectangle(0, 0, rect_read.Width, rect_read.Height), state);
                 }
-                else PrintContent(g, rect, g.Save());
+                else
+                {
+                    using (var path = rect.RoundPath(Radius))
+                    {
+                        PrintBg(g, rect, path);
+                    }
+                    PrintContent(g, rect, g.Save());
+                }
             }
             return original_bmp;
         }
@@ -299,7 +300,7 @@ namespace AntdUI
         public int CenterX()
         {
             if (creal.HasValue) return sx + creal.Value.X + (creal.Value.Width - dw) / 2 + shadow;
-            return sx + (cw - dw) / 2;
+            return (sx + (cw - dw) / 2) + shadow;
         }
 
         /// <summary>

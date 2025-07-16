@@ -1138,7 +1138,7 @@ namespace AntdUI
                     var _row = rows[row];
                     var cel = _row.cells[column];
                     CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _, out _);
-                    return new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
+                    return RealRect(cel.RECT, offset_xi, offset_y);
                 }
                 catch { }
             }
