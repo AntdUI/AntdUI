@@ -601,17 +601,27 @@ namespace AntdUI
                 }
                 else ScrollBar.SetVrSize(0, 0);
                 if (init) tmpW = w;
+                else if (animateConfig.Inverted)
+                {
+                    var tr = TargetRect;
+                    SetLocationY(tr.Y - (h - tr.Height) - shadow);
+                }
                 SetSize(w, h);
                 return lists;
             }
             else
             {
                 nodata = true;
-                int w = width;
+                int w = width, h = text_height * 5;
                 if (autoWidth) w = (int)(g.MeasureText(Localization.Get("NoData", "暂无数据"), Font).Width * 1.6F);
                 if (init) tmpW = w;
+                else if (animateConfig.Inverted)
+                {
+                    var tr = TargetRect;
+                    SetLocationY(tr.Y - (h - tr.Height) - shadow);
+                }
                 if (DropNoMatchClose) IClose();
-                else SetSize(w, text_height * 5);
+                else SetSize(w, h);
                 return new List<ObjectItem>(0);
             }
         }
