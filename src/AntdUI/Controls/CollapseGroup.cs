@@ -895,6 +895,22 @@ namespace AntdUI
             }
         }
 
+        bool visible = true;
+        /// <summary>
+        /// 是否可见
+        /// </summary>
+        [Description("是否可见"), Category("行为"), DefaultValue(true)]
+        public bool Visible
+        {
+            get => visible;
+            set
+            {
+                if (visible == value) return;
+                visible = value;
+                Invalidate();
+            }
+        }
+        internal override bool Show { get => Visible; set => base.Show = Visible = value; }
         bool switchMode = false;
         //[Obsolete("请使用EditType")]
         [Browsable(false)]
@@ -1400,7 +1416,7 @@ namespace AntdUI
 
         }
 
-        internal bool Show { get; set; }
+        internal virtual bool Show { get; set; }
         internal Rectangle rect { get; set; }
 
         internal bool Contains(int x, int y, int sx, int sy)

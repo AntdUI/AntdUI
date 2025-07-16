@@ -665,7 +665,7 @@ namespace AntdUI
             {
                 foreach (var btn in item.buttons)
                 {
-                    if (btn.Show == false) continue;
+                    if (btn.Show == false || btn.Visible==false) continue;
                     if (btn.EditType != EButtonEditTypes.Switch)
                     {
                         if (btn.EditType == EButtonEditTypes.Input || btn.EditType == EButtonEditTypes.Custom) continue;
@@ -691,7 +691,8 @@ namespace AntdUI
                                 }
                             }
                             if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, (btn.Select || btn.AnimationClick ? fore_active : fore).Color);
+
+                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, btn.Select || btn.AnimationClick ? fore_active.Color : btn.Fore ?? fore.Color);
                             g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
                         }
                         else
