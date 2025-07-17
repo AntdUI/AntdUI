@@ -32,6 +32,7 @@ namespace AntdUI
         #region 鼠标按下
 
         int shift_index = -1;
+        CELL? cellFocused;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
@@ -44,7 +45,7 @@ namespace AntdUI
                 base.OnMouseDown(e);
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
-                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
+                var cell = cellFocused = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cell == null) return;
                 else
                 {

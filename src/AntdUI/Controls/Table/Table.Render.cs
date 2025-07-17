@@ -703,6 +703,32 @@ namespace AntdUI
 
         void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, Font font, SolidBrush fore)
         {
+            switch (CellFocusedStyle)
+            {
+                case TableCellFocusedStyle.None:
+                    break;
+                default:
+                    if (cellFocused != null && it == cellFocused)
+                    {
+                        bool solid = CellFocusedStyle == TableCellFocusedStyle.Solid;
+                        if (solid)
+                        {
+                            SolidBrush brush = new SolidBrush(CellFocusedColor ?? Colour.BgBase.Get("Table", ColorScheme));
+                            using (brush)
+                            {
+                                g.Fill(brush, it.RECT);
+                            }
+                        }
+                        Pen pen = new Pen(Colour.PrimaryActive.Get("Table", ColorScheme), (solid ? 2 : 1) * Config.Dpi);
+                        pen.Alignment = PenAlignment.Inset;
+                        pen.DashStyle = solid ? DashStyle.Solid : DashStyle.Dash;
+                        using (pen)
+                        {
+                            g.Draw(pen, it.RECT);
+                        }
+                    }
+                    break;
+            }
             if (it is TCellCheck check) PaintCheck(g, check, enable);
             else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);

@@ -104,6 +104,7 @@ namespace Demo.Controls
             table1.Location = new Point(4, 43);
             table1.Name = "table1";
             table1.Radius = 6;
+            table1.CellFocusedStyle = AntdUI.TableCellFocusedStyle.Solid;
             table1.Size = new Size(1292, 519);
             table1.TabIndex = 2;
             table1.CellClick += table1_CellClick;
