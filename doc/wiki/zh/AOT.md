@@ -133,4 +133,4 @@ var data = System.Text.Json.JsonSerializer.Deserialize(json_string, SourceGenera
 
 #### Table 显示空白
 
-Demo有表格AOT示例，并且在发布页面也可以下载AOT生成后的exe，支持MVVM，AOT不支持反射。[example/Demo/Controls/TableAOT.cs](https://gitee.com/antdui/AntdUI/blob/main/example/Demo/Controls/TableAOT.cs#L77)
+Demo有表格AOT示例，并且在发布页面也可以下载AOT生成后的exe，支持MVVM，AOT不支持反射。[example/Demo/Controls/TableAOT.cs](https://gitee.com/AntdUI/AntdUI/blob/main/example/Demo/Controls/TableAOT.cs#L348)

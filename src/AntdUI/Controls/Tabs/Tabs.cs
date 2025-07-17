@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -1054,7 +1055,7 @@ namespace AntdUI
                     {
                         case TabAlignment.Left:
                         case TabAlignment.Right:
-                            int sizeLR2 = (int)(size * .6F);
+                            int sizeLR2 = (int)(size *  .6F);
                             if (scroll_max != scroll_y)
                             {
                                 if (scroll_y > 0) return new Rectangle(rect.X, rect.Y + sizeLR2, rect.Width, rect.Height - sizeLR2 * 2);

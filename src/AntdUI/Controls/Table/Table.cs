@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -906,7 +907,6 @@ namespace AntdUI
         public int ScrollLine(object record, bool force = false)
         {
             if (rows == null || !ScrollBar.ShowY) return 0;
-
             foreach (var row in rows)
             {
                 if (row.RECORD == record)
@@ -918,6 +918,7 @@ namespace AntdUI
             }
             return 0;
         }
+
         int ScrollLine(int i, RowTemplate[] rows, bool force = false)
         {
             if (!ScrollBar.ShowY) return 0;
@@ -2205,7 +2206,7 @@ namespace AntdUI
         /// <summary>
         /// 设置标题列样式
         /// </summary>
-        public Column SetColStyle(Color? back, Color? fore = null) => SetStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
+        public Column SetColStyle(Color? back, Color? fore = null) => SetColStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
 
         /// <summary>
         /// 设置标题列样式

@@ -50,6 +50,7 @@ namespace AntdUI.Design
         }
 
         #endregion
+
         private Input input1;
     }
 }

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -216,7 +217,7 @@ namespace AntdUI
             get
             {
                 var cp = base.CreateParams;
-                cp.ExStyle |= 0x08000000 | 0x00080000;
+                cp.ExStyle |= 0x00080000 | 0x08000000;
                 cp.Parent = IntPtr.Zero;
                 return cp;
             }

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -910,7 +911,13 @@ namespace AntdUI
                 Invalidate();
             }
         }
-        internal override bool Show { get => Visible; set => base.Show = Visible = value; }
+
+        internal override bool Show
+        {
+            get => Visible;
+            set => base.Show = Visible = value;
+        }
+
         bool switchMode = false;
         //[Obsolete("请使用EditType")]
         [Browsable(false)]
@@ -1413,7 +1420,6 @@ namespace AntdUI
             ico_rect = new Rectangle(rect_read.X + (rect_read.Width - icon_size) / 2, t_x, icon_size, icon_size);
             if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);
             Show = true;
-
         }
 
         internal virtual bool Show { get; set; }

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -817,40 +818,12 @@ namespace AntdUI
                     if (tipcel is CellLink btn_template)
                     {
                         if (btn_template.Tooltip == null) CloseTip();
-                        else
-                        {
-                            var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = RealRect(btn_template.Rect, offset_xi, offset_y);
-                            if (tooltipForm == null)
-                            {
-                                tooltipForm = new TooltipForm(this, rect, btn_template.Tooltip, TooltipConfig ?? new TooltipConfig
-                                {
-                                    Font = Font,
-                                    ArrowAlign = TAlign.Top,
-                                });
-                                tooltipForm.Show(this);
-                            }
-                            else tooltipForm.SetText(rect, btn_template.Tooltip);
-                        }
+                        else OpenTip(RealRectScreen(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
                     }
                     else if (tipcel is CellImage img_template)
                     {
                         if (img_template.Tooltip == null) CloseTip();
-                        else
-                        {
-                            var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = RealRect(img_template.Rect, offset_xi, offset_y);
-                            if (tooltipForm == null)
-                            {
-                                tooltipForm = new TooltipForm(this, rect, img_template.Tooltip, TooltipConfig ?? new TooltipConfig
-                                {
-                                    Font = Font,
-                                    ArrowAlign = TAlign.Top,
-                                });
-                                tooltipForm.Show(this);
-                            }
-                            else tooltipForm.SetText(rect, img_template.Tooltip);
-                        }
+                        else OpenTip(RealRectScreen(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
                     }
                 }
                 return hand > 0;
@@ -858,30 +831,11 @@ namespace AntdUI
             else if (ShowTip)
             {
                 var moveid = cel.INDEX + "_" + cel.ROW.INDEX;
-                if (oldmove != moveid)
-                {
-                    CloseTip();
-                    oldmove = moveid;
-                    if (!cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1)
-                    {
-                        var text = cel.ToString();
-                        if (!string.IsNullOrEmpty(text))
-                        {
-                            var _rect = RectangleToScreen(ClientRectangle);
-                            var rect = RealRect(cel.RECT, offset_xi, offset_y);
-                            if (tooltipForm == null)
-                            {
-                                tooltipForm = new TooltipForm(this, rect, text, TooltipConfig ?? new TooltipConfig
-                                {
-                                    Font = Font,
-                                    ArrowAlign = TAlign.Top,
-                                });
-                                tooltipForm.Show(this);
-                            }
-                            else tooltipForm.SetText(rect, text);
-                        }
-                    }
-                }
+                if (oldmove == moveid) return false;
+                oldmove = moveid;
+                var text = cel.ToString();
+                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRectScreen(cel.RECT, offset_xi, offset_y), text);
+                else CloseTip(false);
             }
             return false;
         }
@@ -901,14 +855,31 @@ namespace AntdUI
             CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
         }
 
+        #region Tip
+
         string? oldmove, oldmove2;
-        TooltipForm? tooltipForm;
-        void CloseTip(bool clear = false)
+        TooltipForm? toolTip;
+        void CloseTip(bool clear = true)
         {
-            tooltipForm?.IClose();
-            tooltipForm = null;
+            toolTip?.IClose();
+            toolTip = null;
             if (clear) oldmove = null;
         }
+        void OpenTip(Rectangle rect, string tooltip)
+        {
+            if (toolTip == null)
+            {
+                toolTip = new TooltipForm(this, rect, tooltip, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = Font,
+                    ArrowAlign = TAlign.Top,
+                });
+                toolTip.Show(this);
+            }
+            else toolTip.SetText(rect, tooltip);
+        }
+
+        #endregion
 
         #endregion
 
@@ -1124,6 +1095,8 @@ namespace AntdUI
 
         Rectangle RealRect(DownCellTMP<CellLink> link) => RealRect(link.cell.Rect, link.offset_xi, link.offset_y);
         Rectangle RealRect(Rectangle rect, int ox, int oy) => new Rectangle(rect.X - ox, rect.Y - oy, rect.Width, rect.Height);
+        Rectangle RealRectScreen(Rectangle rect, int ox, int oy) => RealRect(RectangleToScreen(ClientRectangle), rect, ox, oy);
+        Rectangle RealRect(Rectangle client_rect, Rectangle rect, int ox, int oy) => new Rectangle(client_rect.X + rect.X - ox, client_rect.Y + rect.Y - oy, rect.Width, rect.Height);
 
         #endregion
 
@@ -1185,7 +1158,7 @@ namespace AntdUI
         {
             focused = false;
             if (LostFocusClearSelection) SelectedIndex = -1;
-            CloseTip(true);
+            CloseTip();
             base.OnLostFocus(e);
         }
 
@@ -1194,14 +1167,14 @@ namespace AntdUI
             base.OnMouseLeave(e);
             ScrollBar.Leave();
             ILeave();
-            CloseTip(true);
+            CloseTip();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
             ScrollBar.Leave();
             ILeave();
-            CloseTip(true);
+            CloseTip();
         }
 
         void ILeave()

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -665,101 +666,103 @@ namespace AntdUI
             {
                 foreach (var btn in item.buttons)
                 {
-                    if (btn.Show == false || btn.Visible==false) continue;
-                    if (btn.EditType != EButtonEditTypes.Switch)
+                    if (btn.Show && btn.Visible)
                     {
-                        if (btn.EditType == EButtonEditTypes.Input || btn.EditType == EButtonEditTypes.Custom) continue;
-
-                        if (btn.Enabled)
+                        if (btn.EditType != EButtonEditTypes.Switch)
                         {
-                            if (btn.Select || btn.AnimationClick) CollapseGroup.PaintBack(g, btn, active, radius);
-                            if (btn.AnimationHover)
-                            {
-                                using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
-                                {
-                                    CollapseGroup.PaintBack(g, btn, brush, radius);
-                                }
-                            }
-                            else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
-                            else if (btn.AnimationClick)
-                            {
-                                var rect_read = btn.rect;
-                                using (var path = rect_read.RoundPath(rect_read.Height))
-                                {
-                                    Color _color = btn.Back ?? active.Color;
-                                    PaintClick(g, path, rect_read, rect_read, _color, btn);
-                                }
-                            }
-                            if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                            if (btn.EditType == EButtonEditTypes.Input || btn.EditType == EButtonEditTypes.Custom) continue;
 
-                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, btn.Select || btn.AnimationClick ? fore_active.Color : btn.Fore ?? fore.Color);
-                            g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
-                        }
-                        else
-                        {
-                            if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                            if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, brush_TextQuaternary.Color);
-                            g.String(btn.Text, Font, brush_TextQuaternary, btn.txt_rect, s_c);
-                        }
-                    }
-                    else
-                    {
-                        var rect_read = btn.rect;
-                        bool enabled = btn.Enabled;
-                        using (var path = rect_read.RoundPath(rect_read.Height))
-                        {
-                            Color _color = btn.Back ?? Colour.Primary.Get("Switch", ColorScheme);
-                            PaintClick(g, path, rect_read, rect_read, _color, btn);
-                            if (enabled && btn.hasFocus && btn.WaveSize > 0)
+                            if (btn.Enabled)
                             {
-                                float wave = (btn.WaveSize * Config.Dpi / 2), wave2 = wave * 2;
-                                using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
+                                if (btn.Select || btn.AnimationClick) CollapseGroup.PaintBack(g, btn, active, radius);
+                                if (btn.AnimationHover)
                                 {
-                                    g.Draw(Colour.PrimaryBorder.Get("Switch", ColorScheme), wave, path_focus);
+                                    using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
+                                    {
+                                        CollapseGroup.PaintBack(g, btn, brush, radius);
+                                    }
                                 }
-                            }
-                            using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch", ColorScheme)))
-                            {
-                                g.Fill(brush, path);
-                                if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, brush.Color), path);
-                                else if (btn.ExtraMouseHover) g.Fill(brush, path);
-                            }
-                            int gap = (int)(3 * Config.Dpi), gap2 = gap * 2;
-                            if (btn.AnimationCheck)
-                            {
-                                var alpha = 255 * btn.AnimationCheckValue;
-                                g.Fill(Helper.ToColor(alpha, _color), path);
-                                var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * btn.AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                                g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                                else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
+                                else if (btn.AnimationClick)
+                                {
+                                    var rect_read = btn.rect;
+                                    using (var path = rect_read.RoundPath(rect_read.Height))
+                                    {
+                                        Color _color = btn.Back ?? active.Color;
+                                        PaintClick(g, path, rect_read, rect_read, _color, btn);
+                                    }
+                                }
+                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
 
-                            }
-                            else if (btn.Checked)
-                            {
-                                var colorhover = Colour.PrimaryHover.Get("Switch", ColorScheme);
-                                g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
-                                if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, colorhover), path);
-                                else if (btn.ExtraMouseHover) g.Fill(colorhover, path);
-                                var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                                g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, btn.Select || btn.AnimationClick ? fore_active.Color : btn.Fore ?? fore.Color);
+                                g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
                             }
                             else
                             {
-                                var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                                g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                                if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
+                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, brush_TextQuaternary.Color);
+                                g.String(btn.Text, Font, brush_TextQuaternary, btn.txt_rect, s_c);
                             }
-
-                            // 绘制文本
-                            string? textToRender = btn.Checked ? btn.CheckedText : btn.UnCheckedText;
-                            if (textToRender != null)
+                        }
+                        else
+                        {
+                            var rect_read = btn.rect;
+                            bool enabled = btn.Enabled;
+                            using (var path = rect_read.RoundPath(rect_read.Height))
                             {
-                                Color _fore = btn.Fore ?? Colour.PrimaryColor.Get("Switch", ColorScheme);
-                                using (var brush = new SolidBrush(_fore))
+                                Color _color = btn.Back ?? Colour.Primary.Get("Switch", ColorScheme);
+                                PaintClick(g, path, rect_read, rect_read, _color, btn);
+                                if (enabled && btn.hasFocus && btn.WaveSize > 0)
                                 {
-                                    var textSize = g.MeasureString(textToRender, Font);
-                                    var textRect = btn.Checked
-                                        ? new Rectangle(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
-                                        : new Rectangle(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
-                                    g.String(textToRender, Font, brush, textRect);
+                                    float wave = (btn.WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                                    using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
+                                    {
+                                        g.Draw(Colour.PrimaryBorder.Get("Switch", ColorScheme), wave, path_focus);
+                                    }
+                                }
+                                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch", ColorScheme)))
+                                {
+                                    g.Fill(brush, path);
+                                    if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, brush.Color), path);
+                                    else if (btn.ExtraMouseHover) g.Fill(brush, path);
+                                }
+                                int gap = (int)(3 * Config.Dpi), gap2 = gap * 2;
+                                if (btn.AnimationCheck)
+                                {
+                                    var alpha = 255 * btn.AnimationCheckValue;
+                                    g.Fill(Helper.ToColor(alpha, _color), path);
+                                    var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * btn.AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
+                                    g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+
+                                }
+                                else if (btn.Checked)
+                                {
+                                    var colorhover = Colour.PrimaryHover.Get("Switch", ColorScheme);
+                                    g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
+                                    if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, colorhover), path);
+                                    else if (btn.ExtraMouseHover) g.Fill(colorhover, path);
+                                    var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
+                                    g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                                }
+                                else
+                                {
+                                    var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
+                                    g.FillEllipse(enabled ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
+                                }
+
+                                // 绘制文本
+                                string? textToRender = btn.Checked ? btn.CheckedText : btn.UnCheckedText;
+                                if (textToRender != null)
+                                {
+                                    Color _fore = btn.Fore ?? Colour.PrimaryColor.Get("Switch", ColorScheme);
+                                    using (var brush = new SolidBrush(_fore))
+                                    {
+                                        var textSize = g.MeasureString(textToRender, Font);
+                                        var textRect = btn.Checked
+                                            ? new Rectangle(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
+                                            : new Rectangle(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
+                                        g.String(textToRender, Font, brush, textRect);
+                                    }
                                 }
                             }
                         }
