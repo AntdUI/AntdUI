@@ -100,7 +100,7 @@ namespace AntdUI
                         {
                             ThreadHover?.Dispose();
                             AnimationHover = true;
-                            var t = Animation.TotalFrames(20, 200);
+                            var t = Animation.TotalFrames(20, 100);
                             if (value)
                             {
                                 ThreadHover = new ITask((i) =>
@@ -706,7 +706,7 @@ namespace AntdUI
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
-                        var t = Animation.TotalFrames(20, 200);
+                        var t = Animation.TotalFrames(20, 100);
                         if (value)
                         {
                             ThreadHover = new ITask((i) =>

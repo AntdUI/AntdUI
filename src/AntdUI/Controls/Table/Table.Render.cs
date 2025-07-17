@@ -94,9 +94,12 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintBgRowFrontStyle(g, it);
-                        foreach (var it in shows) PaintBgRowItem(g, it.row);
-
+                        foreach (var it in shows)//减少重复foreach
+                        {
+                            //PaintBgRowFrontStyle(g, it);
+                            //PaintBgRowItem(g, it.row);
+                            PaintBgRowItemFrontStyle(g, it.row);
+                        }
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows) PaintBg(g, it.row);
@@ -148,9 +151,10 @@ namespace AntdUI
                             }
                         }
                         g.TranslateTransform(-sx, 0);
-                        foreach (var it in showsNoColumn) PaintBgRowFrontStyle(g, it);
-                        foreach (var it in showsNoColumn) PaintBgRowItem(g, it.row);
-
+                        foreach (var it in showsNoColumn)//减少重复foreach
+                        {
+                            PaintBgRowItemFrontStyle(g, it.row);
+                        }
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows)
@@ -584,6 +588,14 @@ namespace AntdUI
         void PaintBgRowItem(Canvas g, RowTemplate row)
         {
             foreach (var cel in row.cells) PaintItemBg(g, cel);
+        }
+        void PaintBgRowItemFrontStyle(Canvas g, RowTemplate row)
+        {
+            foreach (var cel in row.cells)
+            {
+                if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue) g.Fill(cel.COLUMN.Style.BackColor.Value, cel.RECT);
+                PaintItemBg(g, cel);
+            }
         }
 
         /// <summary>

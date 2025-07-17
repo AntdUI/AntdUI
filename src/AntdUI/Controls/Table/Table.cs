@@ -897,6 +897,27 @@ namespace AntdUI
             return ScrollLine(i, rows, force);
         }
 
+        /// <summary>
+        /// 滚动到指定行
+        /// </summary>
+        /// <param name="record">行对象</param>
+        /// <param name="force">是否强制滚动</param>
+        /// <returns>返回滚动量</returns>
+        public int ScrollLine(object record, bool force = false)
+        {
+            if (rows == null || !ScrollBar.ShowY) return 0;
+
+            foreach (var row in rows)
+            {
+                if (row.RECORD == record)
+                {
+                    int i = Array.IndexOf(rows, row);
+                    if (i < 0) return 0;
+                    return ScrollLine(i, rows, force);
+                }
+            }
+            return 0;
+        }
         int ScrollLine(int i, RowTemplate[] rows, bool force = false)
         {
             if (!ScrollBar.ShowY) return 0;
