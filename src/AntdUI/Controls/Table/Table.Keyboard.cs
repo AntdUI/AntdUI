@@ -80,16 +80,42 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Left:
+                    int x = 50;
+                    try
+                    {
+                        if (cellFocused != null && cellFocused.INDEX > 0)
+                        {
+                            cellFocused = cellFocused?.ROW.cells[cellFocused.INDEX - 1];
+                            x = (fixedColumnR != null && fixedColumnR.Contains(cellFocused.INDEX)) ? 0 : cellFocused.RECT.Width;
+
+                            Invalidate();
+                        }
+                    }
+                    catch { }
+
                     if (ScrollBar.ShowX)
                     {
-                        ScrollBar.ValueX -= 50;
+                        ScrollBar.ValueX -= x;
                         if (HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.Right:
+                    int xr = 50;
+                    try
+                    {
+                        if (cellFocused != null && cellFocused.INDEX + 1 < cellFocused?.ROW.cells.Length)
+                        {
+                            cellFocused = cellFocused?.ROW.cells[cellFocused.INDEX + 1];
+                            xr = (fixedColumnL != null && fixedColumnL.Contains(cellFocused.INDEX)) || cellFocused.RECT.Right < Width ? 0 : cellFocused.RECT.Width;
+
+                            Invalidate();
+                        }
+                    }
+                    catch { }
+
                     if (ScrollBar.ShowX)
                     {
-                        ScrollBar.ValueX += 50;
+                        ScrollBar.ValueX += xr;
                         if (HandShortcutKeys) return true;
                     }
                     break;

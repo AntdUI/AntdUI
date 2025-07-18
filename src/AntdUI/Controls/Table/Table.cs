@@ -362,6 +362,10 @@ namespace AntdUI
         /// 当前获得焦点的列
         /// </summary>
         public Column? FocusedColumn => cellFocused?.COLUMN;
+        /// <summary>
+        /// 当前获得焦点的行
+        /// </summary>
+        public object? FocusedRow => cellFocused?.ROW.RECORD;
 
         #endregion
 

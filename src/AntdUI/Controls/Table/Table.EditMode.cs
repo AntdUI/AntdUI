@@ -316,7 +316,7 @@ namespace AntdUI
                     Multiline = multiline,
                     Location = rect.Location,
                     Size = rect.Size,
-                    Text = value?.ToString() ?? "",
+                    Text = column.GetDisplayText(value) ?? string.Empty,
                     ReadOnly = column.ReadOnly
                 };
             }

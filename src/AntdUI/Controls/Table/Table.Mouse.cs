@@ -33,6 +33,7 @@ namespace AntdUI
 
         int shift_index = -1;
         CELL? cellFocused;
+     
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
@@ -40,6 +41,8 @@ namespace AntdUI
             if (ClipboardCopy) Focus();
             subForm?.IClose();
             subForm = null;
+            toolTip?.IClose();
+            toolTip = null;
             if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
@@ -120,6 +123,7 @@ namespace AntdUI
                         }
                         MouseDownRow(e, it, it.cells[i_cel], r_x, r_y, offset_x, offset_xi, offset_y, i_row, i_cel, column);
                     }
+                    if (cellFocused != null && CellFocusedStyle != TableCellFocusedStyle.None) Invalidate(cellFocused.ROW.RECT);//同行切换单元格时，及时刷新
                 }
             }
         }
