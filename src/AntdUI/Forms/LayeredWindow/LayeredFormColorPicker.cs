@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -143,7 +144,7 @@ namespace AntdUI
 
             int r_w = w + 20, r_h = h + 20;
             SetSize(r_w, r_h);
-            rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign, true);
+            rect_arrow = CLocation(control.PointToScreen(Point.Empty), control.Placement, control.DropDownArrow, ArrowSize, 10, r_w, r_h, rect_read, ref ArrowAlign, true);
 
             Location = new Point(TargetRect.Location.X - control.WaveSize, TargetRect.Y);//有缺口，位置需要偏移
             Size = TargetRect.Size;
@@ -640,7 +641,7 @@ namespace AntdUI
                         {
                             PaintColors(g2, new Rectangle(0, 0, bmp.Width, bmp.Height));
                         }
-                        if (colors_mouse == null) colors_mouse = GetColorsPoint(bmp);
+                        colors_mouse ??= GetColorsPoint(bmp);
                         g.Image(bmp, rect_colors);
                     }
                     using (var path = rect_colors.RoundPath(Radius))

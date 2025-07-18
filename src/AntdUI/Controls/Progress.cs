@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -803,7 +804,7 @@ namespace AntdUI
 
                     var sizef = g.MeasureString(Config.NullText, Font);
                     int pro_h = (int)(sizef.Height * valueratio);
-                    rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                    rect.Y += (rect.Height - pro_h) / 2;
                     rect.Height = pro_h;
                     PaintProgress(g, _radius, rect, _back, color);
 
@@ -839,7 +840,7 @@ namespace AntdUI
                     {
                         var sizef = g.MeasureString(Config.NullText, Font);
                         int pro_h = (int)(sizef.Height * valueratio);
-                        rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                        rect.Y += (rect.Height - pro_h) / 2;
                         rect.Height = pro_h;
                         PaintProgress(g, _radius, rect, _back, color);
                     }
@@ -848,7 +849,7 @@ namespace AntdUI
                         var sizef = g.MeasureString(showtmp, Font);
                         int pro_h = (int)(sizef.Height * valueratio), size_font_w = (int)Math.Ceiling(sizef.Width + sizef.Height * .2F);
                         var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
-                        rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                        rect.Y += (rect.Height - pro_h) / 2;
                         rect.Height = pro_h;
                         rect.Width -= size_font_w;
                         if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
@@ -867,7 +868,7 @@ namespace AntdUI
                 int pro_h = (int)(sizef.Height * valueratio), ico_size = (int)(sizef.Height * (iconratio + 0.1F));
                 int size_font_w = pro_h + ico_size;
                 var rect_rext = new Rectangle(rect.Right - size_font_w, rect_t.Y, size_font_w, rect_t.Height);
-                rect.Y = rect.Y + (rect.Height - pro_h) / 2;
+                rect.Y += (rect.Height - pro_h) / 2;
                 rect.Height = pro_h;
                 rect.Width -= size_font_w;
                 if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
@@ -1117,7 +1118,7 @@ namespace AntdUI
         void MarkFullscreenWindow(IntPtr hwnd, [MarshalAs(UnmanagedType.Bool)] bool fFullscreen);
 
         // ITaskbarList3
-        void SetProgressValue(IntPtr hwnd, UInt64 ullCompleted, UInt64 ullTotal);
+        void SetProgressValue(IntPtr hwnd, ulong ullCompleted, ulong ullTotal);
         void SetProgressState(IntPtr hwnd, ThumbnailProgressState tbpFlags);
     }
 

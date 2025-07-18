@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -48,7 +49,7 @@ namespace AntdUI
         {
             get
             {
-                if (columns == null) columns = new ColumnCollection();
+                columns ??= new ColumnCollection();
                 columns.table = this;
                 return columns;
             }
@@ -338,6 +339,29 @@ namespace AntdUI
         /// </summary>
         [Description("排序大小"), Category("外观"), DefaultValue(null)]
         public int? SortOrderSize { get; set; }
+
+        /// <summary>
+        /// 焦点列样式
+        /// </summary>
+        [Description("焦点列样式"), Category("外观"), DefaultValue(null)]
+        public TableCellFocusedStyle? CellFocusedStyle { get; set; }
+
+        /// <summary>
+        /// 焦点列背景色
+        /// </summary>
+        [Description("焦点列背景色"), Category("外观"), DefaultValue(null)]
+        public Color? CellFocusedBg { get; set; }
+
+        /// <summary>
+        /// 焦点列边框色
+        /// </summary>
+        [Description("焦点列边框色"), Category("外观"), DefaultValue(null)]
+        public Color? CellFocusedBorder { get; set; }
+
+        /// <summary>
+        /// 当前获得焦点的列
+        /// </summary>
+        public Column? FocusedColumn => cellFocused?.COLUMN;
 
         #endregion
 
@@ -684,6 +708,41 @@ namespace AntdUI
         [Description("多选行"), Category("行为"), DefaultValue(false)]
         public bool MultipleRows { get; set; }
 
+        /// <summary>
+        /// 返回当前树表格字段名
+        /// </summary>
+        public string? KeyTreeCurrent
+        {
+            get
+            {
+                foreach (Column col in Columns)
+                {
+                    if (col.KeyTree != null && !string.IsNullOrEmpty(col.KeyTree)) return col.KeyTree;
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 当前视图的数据行数
+        /// </summary>
+        public int DisplayRowCount
+        {
+            get
+            {
+                if (dataTmp == null) return 0;
+                int count = dataTmp.rows.Length;
+                var keyTree = KeyTreeCurrent;
+                if (keyTree == null) return count;
+                for (int i = 0; i < count; i++)
+                {
+                    var value_tree = dataTmp.rows[i][keyTree];
+                    if (value_tree is IList list) count += list.Count;
+                }
+                return count;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -747,6 +806,12 @@ namespace AntdUI
         /// </summary>
         [Description("编辑模式自动高度"), Category("行为"), DefaultValue(false)]
         public bool EditAutoHeight { get; set; }
+
+        /// <summary>
+        /// 树表格的箭头样式
+        /// </summary>
+        [Description("树表格的箭头样式"), Category("行为"), DefaultValue(TableTreeStyle.Button)]
+        public TableTreeStyle TreeArrowStyle { get; set; } = TableTreeStyle.Button;
 
         #endregion
 
@@ -854,6 +919,27 @@ namespace AntdUI
         {
             if (rows == null || !ScrollBar.ShowY) return 0;
             return ScrollLine(i, rows, force);
+        }
+
+        /// <summary>
+        /// 滚动到指定行
+        /// </summary>
+        /// <param name="record">行对象</param>
+        /// <param name="force">是否强制滚动</param>
+        /// <returns>返回滚动量</returns>
+        public int ScrollLine(object record, bool force = false)
+        {
+            if (rows == null || !ScrollBar.ShowY) return 0;
+            foreach (var row in rows)
+            {
+                if (row.RECORD == record)
+                {
+                    int i = Array.IndexOf(rows, row);
+                    if (i < 0) return 0;
+                    return ScrollLine(i, rows, force);
+                }
+            }
+            return 0;
         }
 
         int ScrollLine(int i, RowTemplate[] rows, bool force = false)
@@ -1097,7 +1183,7 @@ namespace AntdUI
                     var _row = rows[row];
                     var cel = _row.cells[column];
                     CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _, out _);
-                    return new Rectangle(cel.RECT.X - offset_x, cel.RECT.Y - offset_y, cel.RECT.Width, cel.RECT.Height);
+                    return RealRect(cel.RECT, offset_xi, offset_y);
                 }
                 catch { }
             }
@@ -2143,7 +2229,7 @@ namespace AntdUI
         /// <summary>
         /// 设置标题列样式
         /// </summary>
-        public Column SetColStyle(Color? back, Color? fore = null) => SetStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
+        public Column SetColStyle(Color? back, Color? fore = null) => SetColStyle(new Table.CellStyleInfo { BackColor = back, ForeColor = fore });
 
         /// <summary>
         /// 设置标题列样式

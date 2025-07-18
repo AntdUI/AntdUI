@@ -11,12 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -98,7 +98,7 @@ namespace AntdUI
                     if (rows != null && selectedIndex.Length > 0)
                     {
                         var it = rows[selectedIndex[0]];
-                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, new Rectangle(it.RECT.X - ScrollBar.ValueX, it.RECT.Y - ScrollBar.ValueY, it.RECT.Width, it.RECT.Height), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
                     }
                     break;
             }

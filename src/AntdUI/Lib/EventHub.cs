@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -77,6 +78,10 @@ namespace AntdUI
         /// 语言 改变
         /// </summary>
         LANG = 3,
+        /// <summary>
+        /// 主题主色调 改变
+        /// </summary>
+        THEME_PRIMARY = 20,
         /// <summary>
         /// Window 状态改变
         /// </summary>

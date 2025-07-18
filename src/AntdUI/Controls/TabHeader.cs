@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -278,6 +279,23 @@ namespace AntdUI
             }
         }
 
+        int rightGap = 0;
+        /// <summary>
+        /// 右侧边距
+        /// </summary>
+        [Description("右侧边距"), Category("外观"), DefaultValue(0)]
+        public int RightGap
+        {
+            get => rightGap;
+            set
+            {
+                if (rightGap == value) return;
+                rightGap = value;
+                LoadLayout();
+                OnPropertyChanged(nameof(RightGap));
+            }
+        }
+
         #endregion
 
         #region 数据
@@ -314,6 +332,23 @@ namespace AntdUI
             }
         }
 
+        TagTabItem? _selectItem = null;
+        [Description("选中选项"), Category("数据"), DefaultValue(0)]
+        public TagTabItem? SelectedItem
+        {
+            get => _selectItem;
+            set
+            {
+                if (_selectItem == value || value is null) return;
+                _selectItem = value;
+                Invalidate();
+                if (items == null) return;
+                //获取Index
+                var index = items.IndexOf(value);
+                TabSelectedItemChanged?.Invoke(this, new TabChangedEventArgs(value, index));
+            }
+        }
+
         #endregion
 
         #endregion
@@ -338,7 +373,7 @@ namespace AntdUI
                 {
                     var dir = new Dictionary<int, int[]>(items.Count);
                     int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
-                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width, crect.Height - offset);
+                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
                     ico_size = (int)(txtHeight * tabIconRatio), close_size = (int)(txtHeight * tabCloseRatio), close_i_size = (int)(txtHeight * TabCloseIconRatio),
@@ -789,6 +824,7 @@ namespace AntdUI
                         mdownindex = i;
                         mdown = it;
                         SelectedIndex = i;
+                        SelectedItem = it;
                         if (DragSort)
                         {
                             dragHeader = new Table.DragHeader(e.X, e.Y, i, x);
@@ -848,6 +884,7 @@ namespace AntdUI
                             items.Remove(it);
                             // 如果关闭的是当前选中标签，自动选择下一个标签
                             if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
+                            SelectedItem = items[SelectedIndex];
                             return;
                         }
                     }
@@ -863,6 +900,7 @@ namespace AntdUI
                 items.Remove(mdown);
                 // 如果关闭的是当前选中标签，自动选择下一个标签
                 if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
+                SelectedItem = items[SelectedIndex];
             }
         }
 
@@ -918,6 +956,7 @@ namespace AntdUI
         {
             if (items == null) return;
             SelectedIndex = items.IndexOf(item);
+            SelectedItem = item;
         }
 
         /// <summary>
@@ -983,8 +1022,22 @@ namespace AntdUI
         /// <summary>
         /// 点击添加按钮
         /// </summary>
+        [Description("添加选项事件")]
         public event EventHandler? AddClick;
+        /// <summary>
+        /// 序列号变动事件
+        /// </summary>
+        [Description("序列号变动事件")]
         public event EventHandler<TabChangedEventArgs>? TabChanged;
+        /// <summary>
+        /// 选项选中事件
+        /// </summary>
+        [Description("选项选中事件")]
+        public event EventHandler<TabChangedEventArgs>? TabSelectedItemChanged;
+        /// <summary>
+        /// 选项关闭事件
+        /// </summary>
+        [Description("选项关闭事件")]
         public event EventHandler<TabCloseEventArgs>? TabClosing;
 
         #endregion

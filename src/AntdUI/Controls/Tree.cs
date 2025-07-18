@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -442,7 +443,7 @@ namespace AntdUI
                     if (it.ICanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand ? it.Expand : false);
+                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
                         it.SubY = y_item - gapI / 2;
                         it.SubHeight = y - y_item;
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
@@ -568,7 +569,7 @@ namespace AntdUI
             }
             if (checkable)
             {
-                using (var path_check = Helper.RoundPath(item.check_rect, check_radius, false))
+                using (var path_check = Helper.RoundPath(item.check_rect, check_radius))
                 {
                     var bor2 = 2F * Config.Dpi;
                     if (item.Enabled)

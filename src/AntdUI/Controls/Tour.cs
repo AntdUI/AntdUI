@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -222,7 +223,7 @@ namespace AntdUI
         Func<int, Rectangle?> call;
         int i = 0;
         internal bool topMost = false;
-        public LayeredFormTour(Tour.Config _config, Func<int, Rectangle?> _call)
+        public LayeredFormTour(Tour.Config _config, Func<int, Rectangle?> _call) : base(240)
         {
             config = _config;
             call = _call;

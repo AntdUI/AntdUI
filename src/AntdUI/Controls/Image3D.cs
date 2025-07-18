@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -118,7 +119,7 @@ namespace AntdUI
                                     var cube = new Cube(bmpo.Width, bmpo.Height, 1);
                                     if (prog > 90)
                                     {
-                                        prog = prog - 180;
+                                        prog -= 180;
                                         cube.RotateX = prog;
                                         cube.calcCube(_rect.Location);
                                         var bmp = cube.ToBitmap(bmpo2);
@@ -143,7 +144,7 @@ namespace AntdUI
                                     var cube = new Cube(bmpo.Width, bmpo.Height, 1);
                                     if (prog > 90)
                                     {
-                                        prog = prog - 180;
+                                        prog -= 180;
                                         cube.RotateY = prog;
                                         cube.calcCube(_rect.Location);
                                         var bmp = cube.ToBitmap(bmpo2);

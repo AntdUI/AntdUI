@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -94,8 +95,7 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
-                        foreach (var it in shows) PaintBgRowFrontStyle(g, it);
-                        foreach (var it in shows) PaintBgRowItem(g, it.row);
+                        foreach (var it in shows) PaintItemBgRowStyle(g, it.row);
 
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
@@ -148,8 +148,7 @@ namespace AntdUI
                             }
                         }
                         g.TranslateTransform(-sx, 0);
-                        foreach (var it in showsNoColumn) PaintBgRowFrontStyle(g, it);
-                        foreach (var it in showsNoColumn) PaintBgRowItem(g, it.row);
+                        foreach (var it in showsNoColumn) PaintItemBgRowStyle(g, it.row);
 
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
@@ -209,7 +208,7 @@ namespace AntdUI
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintBgRowItem(g, it.row);
+                    foreach (var it in shows) PaintItemBgRow(g, it.row);
 
                     g.ResetTransform();
                     g.TranslateTransform(0, -sy);
@@ -541,13 +540,6 @@ namespace AntdUI
                 if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table", ColorScheme)), row.row.RECT);
             }
         }
-        void PaintBgRowFrontStyle(Canvas g, StyleRow row)
-        {
-            foreach (var cel in row.row.cells)
-            {
-                if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue) g.Fill(cel.COLUMN.Style.BackColor.Value, cel.RECT);
-            }
-        }
 
         /// <summary>
         /// 渲染背景行
@@ -579,9 +571,20 @@ namespace AntdUI
         #region 单元格
 
         /// <summary>
-        /// 渲染背景行
+        /// 渲染单元格背景
         /// </summary>
-        void PaintBgRowItem(Canvas g, RowTemplate row)
+        void PaintItemBgRowStyle(Canvas g, RowTemplate row)
+        {
+            foreach (var cel in row.cells)
+            {
+                if (cel.COLUMN.Style != null && cel.COLUMN.Style.BackColor.HasValue) g.Fill(cel.COLUMN.Style.BackColor.Value, cel.RECT);
+                PaintItemBg(g, cel);
+            }
+        }
+        /// <summary>
+        /// 渲染单元格背景
+        /// </summary>
+        void PaintItemBgRow(Canvas g, RowTemplate row)
         {
             foreach (var cel in row.cells) PaintItemBg(g, cel);
         }
@@ -672,7 +675,11 @@ namespace AntdUI
                 {
                     var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN);
                     CellPaintBegin(this, arge);
-                    if (!arge.Handled)
+                    if (arge.Handled)
+                    {
+                        if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
+                    }
+                    else
                     {
                         if (arge.CellBack != null)
                         {
@@ -696,6 +703,7 @@ namespace AntdUI
 
         void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, Font font, SolidBrush fore)
         {
+            PaintItemFocus(g, it, enable);
             if (it is TCellCheck check) PaintCheck(g, check, enable);
             else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
@@ -731,14 +739,64 @@ namespace AntdUI
                 g.String(text.value, font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
             }
             if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
-            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex)
+            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
+        }
+        void PaintItemFocus(Canvas g, CELL it, bool enable)
+        {
+            if (cellFocused == null) return;
+            if (it == cellFocused)
             {
-                using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius, false))
+                var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
+                if (style == TableCellFocusedStyle.None) return;
+                switch (style)
                 {
-                    g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
-                    g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
-                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    case TableCellFocusedStyle.Solid:
+                        g.Fill(CellFocusedBg ?? Colour.BgBase.Get("Table", ColorScheme), it.RECT);
+                        using (var pen = PaintItemFocus(it, false, (int)(Config.Dpi * 2), out var rect))
+                        {
+                            g.Draw(pen, rect);
+                        }
+                        break;
+                    case TableCellFocusedStyle.Dash:
+                        using (var pen = PaintItemFocus(it, true, (int)(Config.Dpi), out var rect))
+                        {
+                            g.Draw(pen, rect);
+                        }
+                        break;
                 }
+            }
+        }
+        Pen PaintItemFocus(CELL it, bool dash, int bor, out RectangleF rect)
+        {
+            float bor2 = bor / 2F, divider = dividerHs.Length > 0 ? dividerHs[0].Width : 0;
+            rect = new RectangleF(it.RECT.X + bor2 + divider, it.RECT.Y + bor2, it.RECT.Width - bor - divider, it.RECT.Height - bor);
+            var pen = new Pen(CellFocusedBorder ?? Colour.PrimaryActive.Get("Table", ColorScheme), bor);
+            if (dash)
+            {
+                pen.Alignment = PenAlignment.Inset;
+                pen.DashStyle = DashStyle.Dash;
+            }
+            return pen;
+        }
+        void PaintItemArrow(Canvas g, CELL it, bool enable, SolidBrush fore)
+        {
+            switch (TreeArrowStyle)
+            {
+                case TableTreeStyle.Button:
+                    using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius))
+                    {
+                        g.Fill(Colour.BgBase.Get("Table", ColorScheme), path_check);
+                        g.Draw(Colour.BorderColor.Get("Table", ColorScheme), check_border, path_check);
+                        PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    }
+                    break;
+                case TableTreeStyle.Arrow:
+                    PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    break;
+                case TableTreeStyle.ArrowFill:
+                default:
+                    PaintArrowFill(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
+                    break;
             }
         }
 
@@ -746,16 +804,26 @@ namespace AntdUI
 
         void PaintArrow(Canvas g, RowTemplate item, SolidBrush color, int ArrowProg)
         {
-            int size = item.RectExpand.Width, size_arrow = size / 2;
-            var state = g.Save();
-            g.TranslateTransform(item.RectExpand.X + size_arrow, item.RectExpand.Y + size_arrow);
-            g.RotateTransform(-90F + ArrowProg);
+            var rect = PaintArrow(g, item, ArrowProg, out var state);
             using (var pen = new Pen(color, check_border * 2))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectExpand.Width, item.RectExpand.Height).TriangleLines(-1, .6F));
+                g.DrawLines(pen, rect.TriangleLines(-1, .6F));
             }
             g.Restore(state);
+        }
+        void PaintArrowFill(Canvas g, RowTemplate item, SolidBrush brush, float ArrowProg)
+        {
+            g.FillPolygon(brush, PaintArrow(g, item, ArrowProg, out var state).TriangleLines(-1, 0.8F));
+            g.Restore(state);
+        }
+        Rectangle PaintArrow(Canvas g, RowTemplate item, float ArrowProg, out GraphicsState state)
+        {
+            state = g.Save();
+            int size_arrow = item.RectExpand.Width / 2;
+            g.TranslateTransform(item.RectExpand.X + size_arrow, item.RectExpand.Y + size_arrow);
+            g.RotateTransform(-90F + ArrowProg);
+            return new Rectangle(-size_arrow, -size_arrow, item.RectExpand.Width, item.RectExpand.Height);
         }
 
         #endregion
@@ -808,8 +876,7 @@ namespace AntdUI
                     else
                     {
                         PaintBgRowFront(g, row);
-                        PaintBgRowFrontStyle(g, row);
-                        PaintBgRowItem(g, row.row);
+                        PaintItemBgRowStyle(g, row.row);
                         PaintBg(g, row.row);
                     }
                 }
@@ -898,8 +965,7 @@ namespace AntdUI
                                 g.ResetTransform();
                                 g.TranslateTransform(-sFixedR, -sy);
 
-                                PaintBgRowFrontStyle(g, row);
-                                PaintBgRowItem(g, row.row);
+                                PaintItemBgRowStyle(g, row.row);
 
                                 g.ResetTransform();
                                 g.TranslateTransform(0, -sy);
@@ -993,11 +1059,7 @@ namespace AntdUI
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sFixedB);
-                        foreach (var row in shows)
-                        {
-                            PaintBgRowFrontStyle(g, row);
-                            PaintBgRowItem(g, row.row);
-                        }
+                        foreach (var row in shows) PaintItemBgRowStyle(g, row.row);
 
                         g.ResetTransform();
                         g.TranslateTransform(0, -sFixedB);
@@ -1068,7 +1130,7 @@ namespace AntdUI
                     foreach (var row in shows)
                     {
                         PaintBgRowFront(g, row);
-                        PaintBgRowItem(g, row.row);
+                        PaintItemBgRow(g, row.row);
                         foreach (int fixedIndex in fixedColumnL) PaintItemFixed(g, row.row.cells[fixedIndex], row.row.ENABLE, row.row.ENABLE ? fore : foreEnable, row.style);
                     }
                     g.ResetTransform();
@@ -1265,7 +1327,7 @@ namespace AntdUI
 
         void PaintCheck(Canvas g, TCellColumn check, ColumnCheck columnCheck)
         {
-            using (var path_check = Helper.RoundPath(check.RECT_REAL, check_radius, false))
+            using (var path_check = Helper.RoundPath(check.RECT_REAL, check_radius))
             {
                 if (columnCheck.AnimationCheck)
                 {
@@ -1317,7 +1379,7 @@ namespace AntdUI
         }
         void PaintCheck(Canvas g, TCellCheck check, bool enable)
         {
-            using (var path = Helper.RoundPath(check.RECT_REAL, check_radius, false))
+            using (var path = Helper.RoundPath(check.RECT_REAL, check_radius))
             {
                 if (enable)
                 {

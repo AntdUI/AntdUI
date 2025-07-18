@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -103,11 +104,11 @@ namespace AntdUI
             {
                 foreach (ColumnStyle it in tableLayout.ColumnStyles)
                 {
-                    if (it.SizeType == SizeType.Absolute) it.Width = it.Width * dpi;
+                    if (it.SizeType == SizeType.Absolute) it.Width *= dpi;
                 }
                 foreach (RowStyle it in tableLayout.RowStyles)
                 {
-                    if (it.SizeType == SizeType.Absolute) it.Height = it.Height * dpi;
+                    if (it.SizeType == SizeType.Absolute) it.Height *= dpi;
                 }
             }
             else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1) tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
@@ -118,6 +119,10 @@ namespace AntdUI
                 if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
             }
             else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
+            else if (control is TabHeader tabHeader)
+            {
+                if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
+            }
             DpiLSS(dpi, control);
         }
 

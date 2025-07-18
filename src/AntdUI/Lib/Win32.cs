@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -301,37 +302,37 @@ namespace AntdUI
         }
 
         [DllImport("user32.dll", SetLastError = true)]
-        extern static IntPtr GetClipboardData(uint uFormat);
+        static extern IntPtr GetClipboardData(uint uFormat);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        extern static IntPtr GlobalLock(IntPtr hMem);
+        static extern IntPtr GlobalLock(IntPtr hMem);
 
         [DllImport("Kernel32.dll", SetLastError = true)]
-        extern static int GlobalSize(IntPtr hMem);
+        static extern int GlobalSize(IntPtr hMem);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        extern static bool GlobalUnlock(IntPtr hMem);
+        static extern bool GlobalUnlock(IntPtr hMem);
 
         /// <summary>
         /// 打开剪切板
         /// </summary>
         /// <param name="hWndNewOwner"></param>
         [DllImport("user32.dll")]
-        extern static bool OpenClipboard(IntPtr hWndNewOwner);
+        static extern bool OpenClipboard(IntPtr hWndNewOwner);
 
         /// <summary>
         /// 关闭剪切板
         /// </summary>
         [DllImport("user32.dll")]
-        extern static bool CloseClipboard();
+        static extern bool CloseClipboard();
 
         /// <summary>
         /// 清空剪贴板
         /// </summary>
         /// <returns></returns>
         [DllImport("user32.dll")]
-        extern static bool EmptyClipboard();
+        static extern bool EmptyClipboard();
 
         /// <summary>
         /// 设置剪切板内容
@@ -339,7 +340,7 @@ namespace AntdUI
         /// <param name="uFormat"></param>
         /// <param name="hMem"></param>
         [DllImport("user32.dll")]
-        extern static IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+        static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
         #endregion
     }

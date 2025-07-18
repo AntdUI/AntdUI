@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -32,7 +33,7 @@ namespace AntdUI
         Size DPadding;
         bool DropNoMatchClose = false, AutoWidth = true;
         List<ObjectItem> Items;
-        IList<object> ItemOS;
+        ItemIndex ItemOS;
         List<object> selectedValue;
         public LayeredFormSelectMultiple(SelectMultiple control, IList<object> items, string? filtertext)
         {
@@ -48,7 +49,7 @@ namespace AntdUI
             MaxChoiceCount = control.MaxChoiceCount;
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
-            ItemOS = items;
+            ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
 
             float dpi = Config.Dpi;
@@ -58,9 +59,9 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(control.radius * dpi);
             }
-            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS, filtertext, true);
+            Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
 
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             if (OS.Win7OrLower) Select();
 
@@ -398,15 +399,20 @@ namespace AntdUI
                 var lists = new List<ObjectItem>(items.Count);
                 foreach (var value in items)
                 {
+                    int index = ItemOS[value];
                     if (value is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                     {
                         item_count++;
                         var rect = new Rectangle(padd, padd + y, maxwr, item_height);
-                        lists.Add(new ObjectItem(group, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
+                        lists.Add(new ObjectItem(group, index, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)));
                         y += item_height;
-                        foreach (var sub in group.Sub) lists.Add(ItemC(sub, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                        for (int i = 0; i < group.Sub.Count; i++)
+                        {
+                            var sub = group.Sub[i];
+                            lists.Add(ItemC(sub, i, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                        }
                     }
-                    else lists.Add(ItemC(value, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
+                    else lists.Add(ItemC(value, index, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
                 }
 
                 #endregion
@@ -468,13 +474,13 @@ namespace AntdUI
                 return size.Width;
             }
         }
-        ObjectItem ItemC(object value, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
+        ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
         {
             ObjectItem item;
             if (value is DividerSelectItem)
             {
                 divider_count++;
-                item = new ObjectItem(new Rectangle(padd, padd2 + y, maxwr, sp));
+                item = new ObjectItem(i, new Rectangle(padd, padd2 + y, maxwr, sp));
                 y += padd2 + sp;
             }
             else
@@ -484,7 +490,7 @@ namespace AntdUI
                 if (value is SelectItem it)
                 {
                     int ux = gap_x, uw = gap_x2;
-                    item = new ObjectItem(it, rect) { NoIndex = no_id };
+                    item = new ObjectItem(it, i, rect) { NoIndex = no_id };
                     if (it.Online > -1)
                     {
                         int dot_xy = (item_height - icon_gap) / 2;
@@ -506,7 +512,7 @@ namespace AntdUI
                     }
                     item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
                 }
-                else item = new ObjectItem(value, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
                 if (sy == 0 && selectedValue.Contains(item.Tag)) sy = y;
                 y += item_height;
             }
@@ -651,7 +657,7 @@ namespace AntdUI
         /// <param name="search"></param>
         public override void TextChange(string search)
         {
-            Items = LoadLayout(AutoWidth, tmpW, ItemOS, search);
+            Items = LoadLayout(AutoWidth, tmpW, ItemOS.List, search);
             PrintAndClear();
         }
 

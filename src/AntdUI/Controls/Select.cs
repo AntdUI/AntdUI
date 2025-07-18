@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -271,27 +272,16 @@ namespace AntdUI
             }
             ChangeValue(items.IndexOf(val), val);
         }
-        void ChangeValue(int x, int y, object obj)
+
+        internal void DropDownChange(int x, int y, object value, string text)
         {
             selectedIndexX = x;
             selectedIndex = y;
-            if (obj is SelectItem it)
-            {
-                selectedValue = it.Tag;
-                Text = it.Text;
-            }
-            else
-            {
-                selectedValue = obj;
-                Text = obj.ToString() ?? "";
-            }
+            selectedValue = value;
+            Text = text;
             SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
+            SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
             SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));
-        }
-
-        internal void DropDownChange(int x, object value)
-        {
-            ChangeValue(x, items?.IndexOf(value) ?? -1, value);
             OnPropertyChanged(nameof(SelectedIndex));
             OnPropertyChanged(nameof(SelectedValue));
             ExpandDrop = false;
@@ -302,8 +292,7 @@ namespace AntdUI
         internal bool DropDownClose(object value)
         {
             if (ClosedItem == null) return false;
-            if (value is SelectItem it) ClosedItem(this, new ObjectNEventArgs(it.Tag));
-            else ClosedItem(this, new ObjectNEventArgs(value));
+            ClosedItem(this, new ObjectNEventArgs(value));
             return true;
         }
 
@@ -401,10 +390,7 @@ namespace AntdUI
             }
         }
 
-        public override bool HasSuffix
-        {
-            get => showicon;
-        }
+        public override bool HasSuffix => showicon;
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
@@ -598,7 +584,7 @@ namespace AntdUI
     public class DividerSelectItem : ISelectItem
     {
     }
-    public class SelectItem : ISelectItem
+    public class SelectItem : ISelectItem, iSelectItem
     {
         public SelectItem(int online, Image? ico, string text, object tag) : this(text, tag)
         {
@@ -741,6 +727,88 @@ namespace AntdUI
 
         public override string ToString() => Text;
     }
+
+    internal interface iSelectItem
+    {
+        /// <summary>
+        /// 在线状态
+        /// </summary>
+        int? Online { get; set; }
+        /// <summary>
+        /// 在线自定义颜色
+        /// </summary>
+        Color? OnlineCustom { get; set; }
+
+        Image? Icon { get; set; }
+
+        string? IconSvg { get; set; }
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        string Text { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        bool Enable { get; set; }
+
+        /// <summary>
+        /// 子文本
+        /// </summary>
+        string? SubText { get; set; }
+
+        /// <summary>
+        /// 子选项
+        /// </summary>
+        IList<object>? Sub { get; set; }
+
+        object Tag { get; set; }
+
+        #region 主题
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        Color? Fore { get; set; }
+
+        /// <summary>
+        /// 子文字颜色
+        /// </summary>
+        Color? ForeSub { get; set; }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        Color? BackActive { get; set; }
+
+        /// <summary>
+        /// 激活背景渐变色
+        /// </summary>
+        string? BackActiveExtend { get; set; }
+
+        #endregion
+
+        #region 标签
+
+        /// <summary>
+        /// 标签文字颜色
+        /// </summary>
+        Color? TagFore { get; set; }
+
+        /// <summary>
+        /// 标签背景颜色
+        /// </summary>
+        Color? TagBack { get; set; }
+
+        /// <summary>
+        /// 标签背景渐变色
+        /// </summary>
+        string? TagBackExtend { get; set; }
+
+        #endregion
+    }
+
     public class GroupSelectItem : ISelectItem
     {
         public GroupSelectItem(string title)
@@ -793,18 +861,20 @@ namespace AntdUI
         public new T Value { get; set; }
     }
 
-    internal class ObjectItem : SelectItem
+    internal class ObjectItem : iSelectItem
     {
-        public ObjectItem(object item, Rectangle rect, Rectangle rect_text) : base(item)
+        public ObjectItem(object item, int i, Rectangle rect, Rectangle rect_text)
         {
+            I = i;
             Tag = item;
             Text = item.ToString() ?? string.Empty;
             Rect = rect;
             RectText = rect_text;
         }
 
-        public ObjectItem(GroupSelectItem item, Rectangle rect, Rectangle rect_text) : base(item)
+        public ObjectItem(GroupSelectItem item, int i, Rectangle rect, Rectangle rect_text)
         {
+            I = i;
             Group = true;
             Tag = item;
             Text = item.Title;
@@ -812,13 +882,10 @@ namespace AntdUI
             RectText = rect_text;
         }
 
-        public ObjectItem(SelectItem item, Rectangle rect) : this(item)
+        public ObjectItem(SelectItem item, int i, Rectangle rect)
         {
+            I = i;
             Rect = rect;
-        }
-
-        public ObjectItem(SelectItem item) : base(item)
-        {
             Online = item.Online;
             OnlineCustom = item.OnlineCustom;
             Icon = item.Icon;
@@ -838,11 +905,95 @@ namespace AntdUI
             BackActiveExtend = item.BackActiveExtend;
         }
 
-        public ObjectItem(Rectangle rect) : base(-1)
+        public ObjectItem(int i, Rectangle rect)
         {
+            I = i;
+            Text = null!;
             SID = false;
             Tag = Rect = rect;
         }
+
+        #region 属性
+
+        /// <summary>
+        /// 在线状态
+        /// </summary>
+        public int? Online { get; set; }
+        /// <summary>
+        /// 在线自定义颜色
+        /// </summary>
+        public Color? OnlineCustom { get; set; }
+
+        public Image? Icon { get; set; }
+
+        public string? IconSvg { get; set; }
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        public string Text { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; } = true;
+
+        /// <summary>
+        /// 子文本
+        /// </summary>
+        public string? SubText { get; set; }
+
+        /// <summary>
+        /// 子选项
+        /// </summary>
+        public IList<object>? Sub { get; set; }
+
+        public object Tag { get; set; }
+
+        #region 主题
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        public Color? Fore { get; set; }
+
+        /// <summary>
+        /// 子文字颜色
+        /// </summary>
+        public Color? ForeSub { get; set; }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        public Color? BackActive { get; set; }
+
+        /// <summary>
+        /// 激活背景渐变色
+        /// </summary>
+        public string? BackActiveExtend { get; set; }
+
+        #endregion
+
+        #region 标签
+
+        /// <summary>
+        /// 标签文字颜色
+        /// </summary>
+        public Color? TagFore { get; set; }
+
+        /// <summary>
+        /// 标签背景颜色
+        /// </summary>
+        public Color? TagBack { get; set; }
+
+        /// <summary>
+        /// 标签背景渐变色
+        /// </summary>
+        public string? TagBackExtend { get; set; }
+
+        #endregion
+
+        #endregion
 
         public bool HasSub { get; set; }
 
@@ -859,6 +1010,7 @@ namespace AntdUI
 
         public bool SID { get; set; } = true;
         public bool NoIndex { get; set; }
+        public int I { get; set; }
 
         public Rectangle Rect { get; set; }
         public Rectangle RectText { get; set; }
@@ -896,11 +1048,10 @@ namespace AntdUI
         }
     }
 
-    internal class ObjectItemCheck : SelectItem
+    internal class ObjectItemCheck : iSelectItem
     {
-        public ObjectItemCheck(object item, Rectangle rect, Rectangle rect_text, Rectangle rect_check) : base(item)
+        public ObjectItemCheck(object item, Rectangle rect, Rectangle rect_text, Rectangle rect_check)
         {
-            Show = true;
             Tag = item;
             Text = item.ToString() ?? string.Empty;
             Rect = rect;
@@ -908,22 +1059,16 @@ namespace AntdUI
             RectCheck = rect_check;
         }
 
-        public ObjectItemCheck(GroupSelectItem item, Rectangle rect, Rectangle rect_text) : base(item)
+        public ObjectItemCheck(GroupSelectItem item, Rectangle rect, Rectangle rect_text)
         {
-            Show = Group = true;
+            Group = true;
             Tag = item;
             Text = item.Title;
             Rect = rect;
             RectText = rect_text;
         }
 
-        public ObjectItemCheck(SelectItem item, Rectangle rect, Rectangle rect_check) : this(item)
-        {
-            Rect = rect;
-            RectCheck = rect_check;
-        }
-
-        public ObjectItemCheck(SelectItem item) : base(item)
+        public ObjectItemCheck(SelectItem item, Rectangle rect, Rectangle rect_check)
         {
             Online = item.Online;
             OnlineCustom = item.OnlineCustom;
@@ -942,15 +1087,98 @@ namespace AntdUI
             ForeSub = item.ForeSub;
             BackActive = item.BackActive;
             BackActiveExtend = item.BackActiveExtend;
-            Show = true;
+            Rect = rect;
+            RectCheck = rect_check;
         }
 
-        public ObjectItemCheck(Rectangle rect) : base(-1)
+        public ObjectItemCheck(Rectangle rect)
         {
+            Text = null!;
             SID = false;
             Tag = Rect = rect;
-            Show = true;
         }
+
+        #region 属性
+
+        /// <summary>
+        /// 在线状态
+        /// </summary>
+        public int? Online { get; set; }
+        /// <summary>
+        /// 在线自定义颜色
+        /// </summary>
+        public Color? OnlineCustom { get; set; }
+
+        public Image? Icon { get; set; }
+
+        public string? IconSvg { get; set; }
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        public string Text { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; } = true;
+
+        /// <summary>
+        /// 子文本
+        /// </summary>
+        public string? SubText { get; set; }
+
+        /// <summary>
+        /// 子选项
+        /// </summary>
+        public IList<object>? Sub { get; set; }
+
+        public object Tag { get; set; }
+
+        #region 主题
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        public Color? Fore { get; set; }
+
+        /// <summary>
+        /// 子文字颜色
+        /// </summary>
+        public Color? ForeSub { get; set; }
+
+        /// <summary>
+        /// 激活背景颜色
+        /// </summary>
+        public Color? BackActive { get; set; }
+
+        /// <summary>
+        /// 激活背景渐变色
+        /// </summary>
+        public string? BackActiveExtend { get; set; }
+
+        #endregion
+
+        #region 标签
+
+        /// <summary>
+        /// 标签文字颜色
+        /// </summary>
+        public Color? TagFore { get; set; }
+
+        /// <summary>
+        /// 标签背景颜色
+        /// </summary>
+        public Color? TagBack { get; set; }
+
+        /// <summary>
+        /// 标签背景渐变色
+        /// </summary>
+        public string? TagBackExtend { get; set; }
+
+        #endregion
+
+        #endregion
 
         public bool HasSub { get; set; }
 
@@ -963,7 +1191,6 @@ namespace AntdUI
         public Rectangle RectOnline { get; set; }
 
         public bool Hover { get; set; }
-        public bool Show { get; set; }
         public bool Group { get; set; }
 
         public bool SID { get; set; } = true;
@@ -1002,6 +1229,28 @@ namespace AntdUI
             {
                 change = SetHover(false);
                 return false;
+            }
+        }
+    }
+
+    internal class ItemIndex
+    {
+        public ItemIndex(IList<object> list)
+        {
+            List = list;
+            Dir = new Dictionary<object, int>(list.Count);
+            for (int i = 0; i < list.Count; i++) Dir.Add(list[i], i);
+        }
+
+        public IList<object> List { get; private set; }
+        public Dictionary<object, int> Dir { get; private set; }
+
+        public int this[object obj]
+        {
+            get
+            {
+                if (Dir.TryGetValue(obj, out var i)) return i;
+                return -1;
             }
         }
     }

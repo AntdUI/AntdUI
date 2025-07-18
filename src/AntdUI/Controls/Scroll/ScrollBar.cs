@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -347,8 +348,12 @@ namespace AntdUI
         /// </summary>
         public void SizeChange(Rectangle rect)
         {
-            RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
-            RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
+            if (SIZE > 0)
+            {
+                RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
+                RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
+            }
+            else RectX = RectY = rect;
             SetShow(oldx, oldy);
         }
 
@@ -419,6 +424,7 @@ namespace AntdUI
         public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar", ColorScheme));
         public virtual void Paint(Canvas g, Color baseColor)
         {
+            if (SIZE == 0) return;
             if (Config.ScrollBarHide)
             {
                 if (showY && showX)

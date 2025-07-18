@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -317,7 +318,7 @@ namespace AntdUI
             {
                 SetLocationX(x);
                 alpha = _alpha;
-                if (bmp_tmp == null) bmp_tmp = PrintBit();
+                bmp_tmp ??= PrintBit();
                 if (bmp_tmp == null) return;
                 if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
             }
@@ -328,7 +329,7 @@ namespace AntdUI
             {
                 SetLocationY(y);
                 alpha = _alpha;
-                if (bmp_tmp == null) bmp_tmp = PrintBit();
+                bmp_tmp ??= PrintBit();
                 if (bmp_tmp == null) return;
                 if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
             }
@@ -338,7 +339,7 @@ namespace AntdUI
             if (TargetRect.Y != y)
             {
                 SetLocationY(y);
-                if (bmp_tmp == null) bmp_tmp = PrintBit();
+                bmp_tmp ??= PrintBit();
                 if (bmp_tmp == null) return;
                 if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
             }
@@ -349,7 +350,7 @@ namespace AntdUI
             {
                 SetLocation(x, y);
                 alpha = _alpha;
-                if (bmp_tmp == null) bmp_tmp = PrintBit();
+                bmp_tmp ??= PrintBit();
                 if (bmp_tmp == null) return;
                 if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
             }

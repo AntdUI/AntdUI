@@ -37,8 +37,7 @@ namespace AntdUI.Svg
 
         public void AddStyle(string name, string value, int specificity)
         {
-            SortedDictionary<int, string> rules;
-            if (!_styles.TryGetValue(name, out rules))
+            if (!_styles.TryGetValue(name, out SortedDictionary<int, string> rules))
             {
                 rules = new SortedDictionary<int, string>();
                 _styles[name] = rules;
@@ -208,10 +207,7 @@ namespace AntdUI.Svg
         {
             get
             {
-                if (_attributes == null)
-                {
-                    _attributes = new SvgAttributeCollection(this);
-                }
+                _attributes ??= new SvgAttributeCollection(this);
 
                 return _attributes;
             }
@@ -395,11 +391,7 @@ namespace AntdUI.Svg
             {
                 sibling = Children[index + 1];
             }
-            var handler = ChildAdded;
-            if (handler != null)
-            {
-                handler(this, new ChildAddedEventArgs { NewChild = child, BeforeSibling = sibling });
-            }
+            ChildAdded?.Invoke(this, new ChildAddedEventArgs { NewChild = child, BeforeSibling = sibling });
         }
 
         /// <summary>
@@ -455,7 +447,7 @@ namespace AntdUI.Svg
         public virtual bool ShouldWriteElement()
         {
             //Write any element who has a name.
-            return (ElementName != String.Empty);
+            return (ElementName != string.Empty);
         }
 
         /// <summary>
@@ -597,11 +589,7 @@ namespace AntdUI.Svg
 
         protected void OnContentChanged(ContentEventArgs args)
         {
-            var handler = ContentChanged;
-            if (handler != null)
-            {
-                handler(this, args);
-            }
+            ContentChanged?.Invoke(this, args);
         }
     }
 

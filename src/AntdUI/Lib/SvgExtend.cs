@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -71,8 +72,8 @@ namespace AntdUI
             float dpi = Config.Dpi;
             if (dpi != 1F)
             {
-                doc.Width = doc.Width * dpi;
-                doc.Height = doc.Height * dpi;
+                doc.Width *= dpi;
+                doc.Height *= dpi;
             }
             return doc.Draw();
         }

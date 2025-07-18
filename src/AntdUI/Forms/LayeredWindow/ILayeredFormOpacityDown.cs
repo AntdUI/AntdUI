@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -25,213 +26,59 @@ namespace AntdUI
 {
     public abstract class ILayeredFormOpacityDown : ILayeredForm
     {
-        ITask? task_start;
-        bool run_end = false, ok_end = false;
-
-        public bool Inverted = false;
+        public PushAnimateConfig animateConfig;
+        public ILayeredFormOpacityDown()
+        {
+            animateConfig = new PushAnimateConfig(this, () =>
+            {
+                RunAnimation = false;
+                LoadOK();
+            }, () => RunAnimation = true);
+        }
 
         public override bool MessageEnable => true;
 
-        Bitmap? bmp_tmp;
         public bool RunAnimation = true;
         protected override void OnLoad(EventArgs e)
         {
-            if (Config.HasAnimation(name))
-            {
-                var t = Animation.TotalFrames(10, 100);
-                if (Inverted)
-                {
-                    int _y = TargetRect.Y, _height = TargetRect.Height;
-                    task_start = new ITask((i) =>
-                    {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        int height = (int)(_height * val);
-                        SetAnimateValue(_y + (_height - height), height, val);
-                        return true;
-                    }, 10, t, () =>
-                    {
-                        DisposeTmp();
-                        alpha = 255;
-                        AnimateHeight = -1;
-                        RunAnimation = false;
-                        Print(true);
-                        LoadOK();
-                    });
-                }
-                else
-                {
-                    int _height = TargetRect.Height;
-                    task_start = new ITask((i) =>
-                    {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        int height = (int)(_height * val);
-                        SetAnimateValue((int)(_height * val), val);
-                        return true;
-                    }, 10, t, () =>
-                    {
-                        DisposeTmp();
-                        alpha = 255;
-                        AnimateHeight = -1;
-                        RunAnimation = false;
-                        Print(true);
-                        LoadOK();
-                    });
-                }
-            }
-            else
-            {
-                alpha = 255;
-                RunAnimation = false;
-                Print(true);
-                LoadOK();
-            }
+            animateConfig.Start(name);
             base.OnLoad(e);
         }
-
-        #region 设置动画参数
-
-        internal void DisposeTmp()
-        {
-            bmp_tmp?.Dispose();
-            bmp_tmp = null;
-        }
-        void SetAnimateValue(int y, int height, float alpha) => SetAnimateValue(y, height, (byte)(255 * alpha));
-        void SetAnimateValue(int height, float alpha) => SetAnimateValue(height, (byte)(255 * alpha));
-
-        void SetAnimateValue(int y, int height, byte _alpha)
-        {
-            if (AnimateY != y || AnimateHeight != height || alpha != _alpha)
-            {
-                AnimateY = y;
-                AnimateHeight = height;
-                alpha = _alpha;
-                if (height == 0) return;
-                try
-                {
-                    var rect = new Rectangle(TargetRect.X, y, TargetRect.Width, height);
-                    var bmp = new Bitmap(rect.Width, rect.Height);
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        if (bmp_tmp == null) bmp_tmp = PrintBit();
-                        if (bmp_tmp == null) return;
-                        lock (bmp_tmp)
-                        {
-                            g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
-                        }
-                    }
-                    Print(bmp, rect);
-                }
-                catch { }
-            }
-        }
-
-        int AnimateY = -1, AnimateHeight = -1;
-        void SetAnimateValue(int height, byte _alpha)
-        {
-            if (AnimateHeight != height || alpha != _alpha)
-            {
-                AnimateHeight = height;
-                alpha = _alpha;
-                if (height == 0) return;
-                try
-                {
-                    var rect = new Rectangle(TargetRect.X, TargetRect.Y, TargetRect.Width, height);
-                    var bmp = new Bitmap(rect.Width, rect.Height);
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        if (bmp_tmp == null) bmp_tmp = PrintBit();
-                        if (bmp_tmp == null) return;
-                        lock (bmp_tmp)
-                        {
-                            g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
-                        }
-                    }
-                    Print(bmp, rect);
-                }
-                catch { }
-            }
-        }
-
-        #endregion
 
         public abstract string name { get; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override bool CanLoadMessage { get; set; }
-        public virtual void LoadOK() { CanLoadMessage = true; LoadMessage(); }
+        public virtual void LoadOK()
+        {
+            CanLoadMessage = true;
+            LoadMessage();
+        }
 
+        internal void DisposeTmp() => animateConfig.DisposeBmp();
         protected override void OnClosing(CancelEventArgs e)
         {
-            task_start?.Dispose();
-            if (!ok_end)
-            {
-                e.Cancel = true;
-                if (Config.HasAnimation(name))
-                {
-                    if (!run_end)
-                    {
-                        run_end = true;
-                        RunAnimation = true;
-                        var t = Animation.TotalFrames(10, 100);
-                        if (Inverted)
-                        {
-                            int _y = TargetRect.Y, _height = TargetRect.Height;
-                            new ITask(i =>
-                            {
-                                var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                int height = (int)(_height * val);
-                                SetAnimateValue(_y + (_height - height), height, val);
-                                return true;
-                            }, 10, t, () =>
-                            {
-                                DisposeTmp();
-                                ok_end = true;
-                                IClose(true);
-                            });
-                        }
-                        else
-                        {
-                            int _height = TargetRect.Height;
-                            new ITask(i =>
-                            {
-                                var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                SetAnimateValue((int)(_height * val), val);
-                                return true;
-                            }, 10, t, () =>
-                            {
-                                DisposeTmp();
-                                ok_end = true;
-                                IClose(true);
-                            });
-                        }
-                    }
-                }
-                else
-                {
-                    ok_end = true;
-                    IClose(true);
-                }
-            }
+            if (animateConfig.End(name)) e.Cancel = true;
             base.OnClosing(e);
         }
 
         protected override void Dispose(bool disposing)
         {
-            task_start?.Dispose();
+            animateConfig.Dispose();
             base.Dispose(disposing);
         }
 
-        public void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
+        public void CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int Padding, int Width, int Height, Rectangle Rect, ref TAlign ArrowAlign, bool Collision = false)
         {
             switch (Placement)
             {
                 case TAlignFrom.Top:
-                    Inverted = true;
+                    animateConfig.Inverted = true;
                     if (DropDownArrow) ArrowAlign = TAlign.Top;
                     SetLocation((Point.X + Rect.X) + (Rect.Width - Width) / 2, Point.Y - Height + Rect.Y);
                     break;
                 case TAlignFrom.TL:
-                    Inverted = true;
+                    animateConfig.Inverted = true;
                     if (DropDownArrow) ArrowAlign = TAlign.TL;
                     int xTL = Point.X + Rect.X - Padding, yTL = Point.Y - Height + Rect.Y;
                     SetLocation(xTL, yTL);
@@ -247,7 +94,7 @@ namespace AntdUI
                     }
                     break;
                 case TAlignFrom.TR:
-                    Inverted = true;
+                    animateConfig.Inverted = true;
                     if (DropDownArrow) ArrowAlign = TAlign.TR;
                     int xTR = Point.X + (Rect.X + Rect.Width) - Width + Padding, yTR = Point.Y - Height + Rect.Y;
                     SetLocation(xTR, yTR);
@@ -300,9 +147,9 @@ namespace AntdUI
             }
         }
 
-        public PointF[]? CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref bool Inverted, ref TAlign ArrowAlign, bool Collision = false)
+        public PointF[]? CLocation(Point Point, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, int Padding, int Width, int Height, Rectangle Rect, ref TAlign ArrowAlign, bool Collision = false)
         {
-            CLocation(Point, Placement, DropDownArrow, Padding, Width, Height, Rect, ref Inverted, ref ArrowAlign, Collision);
+            CLocation(Point, Placement, DropDownArrow, Padding, Width, Height, Rect, ref ArrowAlign, Collision);
             if (Rect.Height >= Rect.Width)
             {
                 int ArrowSize2 = ArrowSize * 2;

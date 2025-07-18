@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -290,10 +291,10 @@ namespace AntdUI
 
                 LoadBadge();
 
-                hover_left.Enable = Helper.DateExceedMonth(value.AddMonths(-1), minDate, maxDate);
-                hover_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
-                hover_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
-                hover_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
+                hover_left.Enable = Helper.DateExceedMonth(value, -1, minDate, maxDate);
+                hover_right.Enable = Helper.DateExceedMonth(value,1, minDate, maxDate);
+                hover_lefts.Enable = Helper.DateExceedYear(value, -1, minDate, maxDate);
+                hover_rights.Enable = Helper.DateExceedYear(value, 1, minDate, maxDate);
             }
         }
 

@@ -72,7 +72,7 @@ namespace AntdUI.Svg.FilterEffects
         public Bitmap Apply(Image inputImage)
         {
             var bitmapSrc = inputImage as Bitmap;
-            if (bitmapSrc == null) bitmapSrc = new Bitmap(inputImage);
+            bitmapSrc ??= new Bitmap(inputImage);
 
             using (RawBitmap src = new RawBitmap(bitmapSrc))
             {

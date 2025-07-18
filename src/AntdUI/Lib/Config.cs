@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -69,6 +70,11 @@ namespace AntdUI
         /// 动画使能
         /// </summary>
         public static bool Animation { get; set; } = true;
+
+        /// <summary>
+        /// 全局默认表格单元格焦点样式
+        /// </summary>
+        public static TableCellFocusedStyle DefaultCellFocusedStyle { get; set; } = TableCellFocusedStyle.None;
 
         internal static List<string>? AnimationData;
 

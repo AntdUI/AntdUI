@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -103,6 +104,7 @@ namespace Demo.Controls
             table1.Location = new Point(4, 43);
             table1.Name = "table1";
             table1.Radius = 6;
+            table1.CellFocusedStyle = AntdUI.TableCellFocusedStyle.Solid;
             table1.Size = new Size(1292, 519);
             table1.TabIndex = 2;
             table1.CellClick += table1_CellClick;

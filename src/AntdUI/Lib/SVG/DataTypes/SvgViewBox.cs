@@ -128,7 +128,7 @@ namespace AntdUI.Svg
             var fMinX = -MinX * fScaleX;
             var fMinY = -MinY * fScaleY;
 
-            if (aspectRatio == null) aspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.xMidYMid, false);
+            aspectRatio ??= new SvgAspectRatio(SvgPreserveAspectRatio.xMidYMid, false);
             if (aspectRatio.Align != SvgPreserveAspectRatio.none)
             {
                 if (aspectRatio.Slice)

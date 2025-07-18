@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -34,7 +35,7 @@ namespace AntdUI
 
         Font FontSub;
         float radius = 0;
-        public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config)
+        public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config) : base(250)
         {
             PARENT = this;
             if (_config.TopMost)
@@ -44,7 +45,6 @@ namespace AntdUI
             }
             else _config.Control.SetTopMost(Handle);
             var point = _config.Location ?? MousePosition;
-            maxalpha = 250;
             config = _config;
             Font = config.Font ?? config.Control.Font;
             FontSub = Font;
@@ -171,10 +171,9 @@ namespace AntdUI
 
         ScrollY scrollY;
 
-        public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs)
+        public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs) : base(250)
         {
             PARENT = parent;
-            maxalpha = 250;
             config = _config;
             Font = config.Font ?? config.Control.Font;
             FontSub = Font;

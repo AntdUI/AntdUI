@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -212,7 +213,7 @@ namespace AntdUI
         #region 渲染
 
         ITaskOpacity hover_button, hover_button_up, hover_button_bottom;
-        RectangleF rect_button, rect_button_up, rect_button_bottom;
+        Rectangle rect_button, rect_button_up, rect_button_bottom;
         public InputNumber()
         {
             var key = nameof(InputNumber);
@@ -243,15 +244,15 @@ namespace AntdUI
             return false;
         }
 
-        protected override void PaintOtherBor(Canvas g, RectangleF rect_read, float _radius, Color back, Color borColor, Color borderActive)
+        protected override void PaintOtherBor(Canvas g, Rectangle rect_read, float _radius, Color back, Color borColor, Color borderActive)
         {
             if (hover_button.Animation || hover_button.Switch)
             {
                 float radius = round ? rect_read.Height / 2F : _radius;
                 int width = (int)(22 * Config.Dpi);
-                rect_button = new RectangleF(rect_read.Right - width, rect_read.Y, width, rect_read.Height);
-                rect_button_up = new RectangleF(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
-                rect_button_bottom = new RectangleF(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
+                rect_button = new Rectangle(rect_read.Right - width, rect_read.Y, width, rect_read.Height);
+                rect_button_up = new Rectangle(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
+                rect_button_bottom = new Rectangle(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
 
                 using (var path = rect_button.RoundPath(radius, false, true, true, false))
                 {
@@ -344,7 +345,12 @@ namespace AntdUI
                 bool old = hover_button.Switch;
                 hover_button.Switch = (Hover || Focus);
                 if (old == hover_button.Switch) return;
-                UR = hover_button.Switch ? (int)rect_button.Width : 0;
+                if (hover_button.Switch)
+                {
+                    if (rect_button.Width > 0) UR = rect_button.Width;
+                    else UR = (int)(22 * Config.Dpi);
+                }
+                else UR = 0;
                 CalculateRect();
             }
         }

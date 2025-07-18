@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -211,6 +212,14 @@ namespace AntdUI
             return true;
         }
 
+        public static bool DateExceedMonth(DateTime date, int num, DateTime? min, DateTime? max)
+        {
+            try
+            {
+                return DateExceedMonth(date.AddMonths(num), min, max);
+            }
+            catch { return false; }
+        }
         public static bool DateExceedMonth(DateTime date, DateTime? min, DateTime? max)
         {
             // 检查目标月份是否早于minDate所在的月份
@@ -229,6 +238,14 @@ namespace AntdUI
             return true;
         }
 
+        public static bool DateExceedYear(DateTime date, int num, DateTime? min, DateTime? max)
+        {
+            try
+            {
+                return DateExceedYear(date.AddYears(num), min, max);
+            }
+            catch { return false; }
+        }
         public static bool DateExceedYear(DateTime date, DateTime? min, DateTime? max)
         {
             if (min.HasValue && min.Value >= date) return false;

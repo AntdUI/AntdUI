@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -206,7 +207,7 @@ namespace AntdUI
         readonly Control? ocontrol = null;
         bool multiline = false;
         int? maxWidth;
-        public TooltipForm(Control control, string txt, ITooltipConfig component)
+        public TooltipForm(Control control, string txt, ITooltipConfig component) : base(240)
         {
             ocontrol = control;
             control.Parent.SetTopMost(Handle);
@@ -235,7 +236,7 @@ namespace AntdUI
             if (TargetRect.X < screen.X) SetLocationX(screen.X);
             else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
         }
-        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component)
+        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component) : base(240)
         {
             ocontrol = control;
             control.SetTopMost(Handle);

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -115,10 +116,10 @@ namespace AntdUI
                 owner = tabs;
                 rects = Helper.GDI(g =>
                 {
-                    int gap = (int)(tabs.Gap * Config.Dpi), gapI = gap / 2, xy = 0, xy2 = 0;
+                    int gap = (int)(tabs.Gap * Config.Dpi), gapI = gap / 2, xy = 0;
                     int barSize = (int)(Size * Config.Dpi), barPadding = (int)(Padding * Config.Dpi), barPadding2 = barPadding * 2;
                     var rect_list = new List<TabPageRect>(items.Count);
-                    var rect_dir = GetDir(tabs, g, items, gap, gapI, out int ico_size, out xy2);
+                    var rect_dir = GetDir(tabs, g, items, gap, gapI, out int ico_size, out int xy2);
                     switch (tabs.Alignment)
                     {
                         case TabAlignment.Bottom:
@@ -738,11 +739,11 @@ namespace AntdUI
                 owner = tabs;
                 rects = Helper.GDI(g =>
                 {
-                    int gap = (int)(tabs.Gap * Config.Dpi), gapI = gap / 2, xy = 0, xy2 = 0;
+                    int gap = (int)(tabs.Gap * Config.Dpi), gapI = gap / 2, xy = 0;
                     int cardgap = (int)(Gap * Config.Dpi);
 
                     var rect_list = new List<TabPageRect>(items.Count);
-                    var rect_dir = GetDir(tabs, g, items, gap, out int ico_size, out int close_size, out xy2);
+                    var rect_dir = GetDir(tabs, g, items, gap, out int ico_size, out int close_size, out int xy2);
 
                     switch (tabs.Alignment)
                     {
@@ -1314,7 +1315,7 @@ namespace AntdUI
                     int i = 0;
                     foreach (var item in rects)
                     {
-                        if (item.hover_close == null) item.hover_close = new ITaskOpacity(nameof(Tabs), owner);
+                        item.hover_close ??= new ITaskOpacity(nameof(Tabs), owner);
                         if (i == owner.hover_i)
                         {
                             item.hover_close.MaxValue = Colour.Text.Get("Tabs", owner.ColorScheme).A - Colour.TextQuaternary.Get("Tabs", owner.ColorScheme).A;
@@ -1475,11 +1476,11 @@ namespace AntdUI
                 owner = tabs;
                 rects = Helper.GDI(g =>
                 {
-                    int gap = (int)(tabs.Gap * Config.Dpi), gapI = gap / 2, xy = 0, xy2 = 0;
+                    int gap = (int)(tabs.Gap * Config.Dpi), gapI = gap / 2, xy = 0;
                     int cardgap = (int)(Gap * Config.Dpi);
 
                     var rect_list = new List<TabPageRect>(items.Count);
-                    var rect_dir = GetDir(tabs, g, items, gap, out int ico_size, out int close_size, out xy2);
+                    var rect_dir = GetDir(tabs, g, items, gap, out int ico_size, out int close_size, out int xy2);
                     if (closable != CloseType.none)
                     {
                         switch (tabs.Alignment)
@@ -1814,7 +1815,7 @@ namespace AntdUI
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs", owner.ColorScheme), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
-                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
+                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always);
                                             }
                                             g.Restore(state);
                                         }
@@ -1873,7 +1874,7 @@ namespace AntdUI
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs", owner.ColorScheme), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
-                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
+                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always);
                                             }
                                             g.Restore(state);
                                         }
@@ -1933,7 +1934,7 @@ namespace AntdUI
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs", owner.ColorScheme), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
-                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always ? true : false);
+                                                else PaintText(g, rects[i], owner, page, brush_fore, closable == CloseType.always);
                                             }
                                             g.Restore(state);
                                         }
@@ -1993,7 +1994,7 @@ namespace AntdUI
                                                 g.Fill(owner.hover_i == i ? brush_bg_hover : brush_bg, path);
                                                 if (bor > 0) g.Draw(border ?? Colour.BorderSecondary.Get("Tabs", owner.ColorScheme), bor, path);
                                                 if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover, true);
-                                                else PaintText(g, rects[i], owner, page, brush_fore, (closable == CloseType.always && !page.ReadOnly) ? true : false);
+                                                else PaintText(g, rects[i], owner, page, brush_fore, (closable == CloseType.always && !page.ReadOnly));
                                             }
                                             g.Restore(state);
                                         }
@@ -2179,7 +2180,7 @@ namespace AntdUI
                     int i = 0;
                     foreach (var item in rects)
                     {
-                        if (item.hover_close == null) item.hover_close = new ITaskOpacity(nameof(Tabs), owner);
+                        item.hover_close ??= new ITaskOpacity(nameof(Tabs), owner);
                         if (i == owner.hover_i)
                         {
                             item.hover_close.MaxValue = Colour.Text.Get("Tabs", owner.ColorScheme).A - Colour.TextQuaternary.Get("Tabs", owner.ColorScheme).A;

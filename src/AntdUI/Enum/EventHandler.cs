@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -367,6 +368,7 @@ namespace AntdUI
         {
             Value = value;
         }
+
         /// <summary>
         /// 数值
         /// </summary>
@@ -387,18 +389,22 @@ namespace AntdUI
         /// 原始行
         /// </summary>
         public object? Record { get; private set; }
+
         /// <summary>
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
+
         /// <summary>
         /// 列序号
         /// </summary>
         public int ColumnIndex { get; private set; }
+
         /// <summary>
         /// 表头
         /// </summary>
         public Column? Column { get; private set; }
+
         /// <summary>
         /// 表格区域
         /// </summary>
@@ -424,55 +430,38 @@ namespace AntdUI
         /// 原始行
         /// </summary>
         public object? Record { get; private set; }
+
         /// <summary>
         /// 行序号
         /// </summary>
         public int RowIndex { get; private set; }
+
         /// <summary>
         /// 列序号
         /// </summary>
         public int ColumnIndex { get; private set; }
+
         /// <summary>
         /// 表头
         /// </summary>
         public Column? Column { get; private set; }
+
         /// <summary>
         /// 表格区域
         /// </summary>
         public Rectangle? Rect { get; private set; }
     }
-    public class TableButtonEventArgs : MouseEventArgs
+    public class TableButtonEventArgs : TableClickEventArgs
     {
-        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column? column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, rect, e)
         {
             Btn = btn;
-            Record = record;
-            RowIndex = rowIndex;
-            ColumnIndex = columnIndex;
-            Column = column;
         }
 
         /// <summary>
         /// 触发按钮
         /// </summary>
         public CellLink Btn { get; private set; }
-
-        /// <summary>
-        /// 原始行
-        /// </summary>
-        public object? Record { get; private set; }
-        /// <summary>
-        /// 行序号
-        /// </summary>
-        public int RowIndex { get; private set; }
-        /// <summary>
-        /// 列序号
-        /// </summary>
-        public int ColumnIndex { get; private set; }
-        /// <summary>
-        /// 表头
-        /// </summary>
-        public Column? Column { get; private set; }
     }
     public class TableEventArgs : ITableEventArgs
     {
@@ -935,24 +924,28 @@ namespace AntdUI
 
     public class CollapseExpandEventArgs : VEventArgs<CollapseItem>
     {
-        public CollapseExpandEventArgs(CollapseItem value, bool expand) : base(value) { Expand = expand; }
+        public CollapseExpandEventArgs(CollapseItem value, bool expand, Rectangle rectTitle, Rectangle rectControl) : base(value)
+        {
+            Expand = expand;
+            RectTitle = rectTitle;
+            RectControl = rectControl;
+        }
 
         public bool Expand { get; private set; }
+        public Rectangle RectTitle { get; private set; }
+        public Rectangle RectControl { get; private set; }
     }
 
     public delegate void CollapseExpandEventHandler(object sender, CollapseExpandEventArgs e);
 
-    public class CollapseExpandingEventArgs : VEventArgs<CollapseItem>
+    public class CollapseExpandingEventArgs : CollapseExpandEventArgs
     {
-        public CollapseExpandingEventArgs(CollapseItem value, bool expand, Point location) : base(value)
+        public CollapseExpandingEventArgs(CollapseItem value, bool expand, Rectangle rectTitle, Rectangle rectControl, Point location) : base(value, expand, rectTitle, rectControl)
         {
-            Expand = expand;
             Location = location;
         }
 
-        public bool Expand { get; private set; }
         public Point Location { get; private set; }
-
     }
 
     /// <summary>

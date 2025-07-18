@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -78,8 +79,8 @@ namespace AntdUI
             if (!config.Form.IsHandleCreated) config.Mask = config.MaskClosable = false;
             if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<DialogResult>(() => open(config)));
             var frm = new LayeredFormModal(config);
-            var dialogResult = DialogResult.None;
             ModalCount++;
+            DialogResult dialogResult;
             if (config.Mask) dialogResult = frm.ShowDialog(config.Form.FormMask(frm));
             else dialogResult = frm.ShowDialog();
             ModalCount--;

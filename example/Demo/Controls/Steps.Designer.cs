@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -172,12 +173,26 @@ namespace Demo.Controls
             // 
             steps4.Current = 1;
             steps4.Dock = DockStyle.Left;
-            stepsItem11.Description = "你想干嘛";
-            stepsItem11.Title = "Step 1";
-            stepsItem12.Description = "包裹大概是被偷了";
-            stepsItem12.Title = "Step 2";
-            stepsItem13.Title = "Step 3";
-            stepsItem14.Description = "哈哈哈";
+            stepsItem11.Description = "准备发车";
+            stepsItem11.Title = "发车";
+            stepsItem11.SubTitle = "机场南站";
+            stepsItem11.MilestoneTimePoint = new System.DateTime(2025, 7, 13, 6, 30, 00);
+            stepsItem11.IconSvg = "FieldTimeOutlined";
+            stepsItem12.Description = "即将到站";
+            stepsItem12.Title = "进站";
+            stepsItem12.SubTitle = "前海站";
+            stepsItem12.MilestoneTimePoint = new System.DateTime(2025, 7, 13, 6, 55, 25);
+            stepsItem12.IconSvg = "AimOutlined";
+            stepsItem13.Title = "下一站";
+            stepsItem13.SubTitle = "南山科技园";
+            stepsItem13.MilestoneTimePoint = new System.DateTime(2025, 7, 13, 7, 15, 10);
+            stepsItem13.IconSvg = "HeatMapOutlined";
+            stepsItem13.Description = "还有一站";
+            stepsItem14.Title = "终点站";
+            stepsItem14.SubTitle = "福田CBD";
+            stepsItem14.MilestoneTimePoint = new System.DateTime(2025, 7, 13, 7, 40, 10);
+            stepsItem14.IconSvg = "CompassOutlined";
+            stepsItem14.Description = "还有两站";
             steps4.Items.Add(stepsItem11);
             steps4.Items.Add(stepsItem12);
             steps4.Items.Add(stepsItem13);
@@ -185,11 +200,15 @@ namespace Demo.Controls
             steps4.Location = new Point(222, 153);
             steps4.Name = "steps4";
             steps4.Padding = new Padding(10, 0, 0, 0);
-            steps4.Size = new Size(222, 449);
+            steps4.Size = new Size(322, 449);
             steps4.Status = AntdUI.TStepState.Wait;
             steps4.TabIndex = 34;
             steps4.Text = "steps4";
             steps4.Vertical = true;
+            steps4.MilestoneMode = true;
+            steps4.MilestoneTimeFormat = "HH:mm tt";
+            steps4.MilestoneTimelineThickness = 12;
+            steps4.MilestoneType = AntdUI.TMilestoneType.Time;
             steps4.Click += Steps_Click;
             // 
             // steps3
@@ -203,6 +222,7 @@ namespace Demo.Controls
             stepsItem17.Description = "退退退退退";
             stepsItem17.SubTitle = "￥60.0";
             stepsItem17.Title = "Step 3";
+            stepsItem18.Title = "END";
             stepsItem18.Description = "哈哈哈";
             steps3.Items.Add(stepsItem15);
             steps3.Items.Add(stepsItem16);
@@ -222,21 +242,32 @@ namespace Demo.Controls
             // 
             steps2.Current = 1;
             steps2.Dock = DockStyle.Top;
-            stepsItem19.Description = "你想干嘛";
-            stepsItem19.Title = "Step 1";
-            stepsItem20.Description = "包裹大概是被偷了";
-            stepsItem20.Title = "Step 2";
-            stepsItem21.Title = "Step 3";
-            stepsItem22.Title = "Step 4";
+            stepsItem19.Description = "正式立项";
+            stepsItem19.Title = "出发";
+            stepsItem19.IconSvg = "AntDesignOutlined";
+            stepsItem19.MilestoneTimePoint = new System.DateTime(2025, 1, 1, 10, 50, 25);
+            stepsItem20.Description = "项目开发完成";
+            stepsItem20.MilestoneTimePoint = new System.DateTime(2025, 5, 15, 16, 51, 35);
+            stepsItem20.IconSvg = "OpenAIOutlined";
+            stepsItem21.IconSvg = "CloudUploadOutlined";
+            stepsItem21.Description = "项目正式上线";
+            stepsItem21.MilestoneTimePoint = new System.DateTime(2025, 7, 15, 10, 51, 35);
+            stepsItem22.IconSvg = "DockerOutlined";
+            stepsItem22.Description = "项目完成";
+            stepsItem22.MilestoneTimePoint = new System.DateTime(2025, 12, 01, 10, 51, 35);
+            stepsItem22.Title = "到达";
+            steps2.MilestoneMode = true;
+            steps2.MilestoneTimeFormat = "yy-MM-dd";
+            steps2.MilestoneTimelineThickness = 16;
             steps2.Items.Add(stepsItem19);
             steps2.Items.Add(stepsItem20);
             steps2.Items.Add(stepsItem21);
             steps2.Items.Add(stepsItem22);
             steps2.Location = new Point(0, 77);
             steps2.Name = "steps2";
-            steps2.Padding = new Padding(10, 0, 10, 10);
-            steps2.Size = new Size(1300, 76);
-            steps2.Status = AntdUI.TStepState.Error;
+            steps2.Padding = new Padding(4, 0, 4, 4);
+            steps2.Size = new Size(1300, 108);
+            steps2.Status = AntdUI.TStepState.Process;
             steps2.TabIndex = 29;
             steps2.Text = "steps2";
             steps2.Click += Steps_Click;

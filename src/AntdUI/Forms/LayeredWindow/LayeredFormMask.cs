@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -27,7 +28,7 @@ namespace AntdUI
         int Radius = 0, Bor = 0;
         bool HasBor = false;
         Form form;
-        public LayeredFormMask(Form _form)
+        public LayeredFormMask(Form _form) : base(240)
         {
             form = _form;
             TopMost = _form.TopMost;

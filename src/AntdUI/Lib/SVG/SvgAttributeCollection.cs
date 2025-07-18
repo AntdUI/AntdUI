@@ -169,11 +169,7 @@ namespace AntdUI.Svg
 
         private void OnAttributeChanged(string attribute, object value)
         {
-            var handler = AttributeChanged;
-            if (handler != null)
-            {
-                handler(_owner, new AttributeEventArgs { Attribute = attribute, Value = value });
-            }
+            AttributeChanged?.Invoke(_owner, new AttributeEventArgs { Attribute = attribute, Value = value });
         }
     }
 
@@ -225,11 +221,7 @@ namespace AntdUI.Svg
 
         private void OnAttributeChanged(string attribute, object value)
         {
-            var handler = AttributeChanged;
-            if (handler != null)
-            {
-                handler(_owner, new AttributeEventArgs { Attribute = attribute, Value = value });
-            }
+            AttributeChanged?.Invoke(_owner, new AttributeEventArgs { Attribute = attribute, Value = value });
         }
     }
 }

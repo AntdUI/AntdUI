@@ -99,9 +99,9 @@ namespace Vanara.PInvoke
             /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
             public override int GetHashCode()
             {
-                int RotateLeft(int value, int nBits)
+                static int RotateLeft(int value, int nBits)
                 {
-                    nBits = nBits % 0x20;
+                    nBits %= 0x20;
                     return (value << nBits) | (value >> (0x20 - nBits));
                 }
                 return cxLeftWidth ^ RotateLeft(cyTopHeight, 8) ^ RotateLeft(cxRightWidth, 0x10) ^ RotateLeft(cyBottomHeight, 0x18);

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -60,7 +61,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS, filtertext, true);
 
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
 
@@ -92,7 +93,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize, ref Inverted);
+            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
@@ -202,49 +203,44 @@ namespace AntdUI
                         for (int i = 0; i < Items.Count; i++)
                         {
                             var it = Items[i];
-                            if (it.Show)
+
+                            //判断下一个是不是连续的
+                            if (selectedValue.Contains(it.Tag))
                             {
-                                //判断下一个是不是连续的
-                                if (selectedValue.Contains(it.Tag))
-                                {
-                                    if (it.Group)
-                                    {
-                                        DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                                        oldsel = -1;
-                                    }
-                                    else
-                                    {
-                                        bool isn = IFNextSelect(i + 1);
-                                        if (oldsel == -1)
-                                        {
-                                            if (isn)
-                                            {
-                                                oldsel = i;
-                                                DrawItemSelect(g, brush_sub, brush_split, it, true, true, false, false);
-                                            }
-                                            else DrawItemSelect(g, brush_sub, brush_split, it, true, true, true, true);
-                                        }
-                                        else
-                                        {
-                                            if (isn) DrawItemSelect(g, brush_sub, brush_split, it, false, false, false, false);
-                                            else DrawItemSelect(g, brush_sub, brush_split, it, false, false, true, true);
-                                        }
-                                    }
-                                }
-                                else
+                                if (it.Group)
                                 {
                                     DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
                                     oldsel = -1;
                                 }
+                                else
+                                {
+                                    bool isn = IFNextSelect(i + 1);
+                                    if (oldsel == -1)
+                                    {
+                                        if (isn)
+                                        {
+                                            oldsel = i;
+                                            DrawItemSelect(g, brush_sub, brush_split, it, true, true, false, false);
+                                        }
+                                        else DrawItemSelect(g, brush_sub, brush_split, it, true, true, true, true);
+                                    }
+                                    else
+                                    {
+                                        if (isn) DrawItemSelect(g, brush_sub, brush_split, it, false, false, false, false);
+                                        else DrawItemSelect(g, brush_sub, brush_split, it, false, false, true, true);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                                oldsel = -1;
                             }
                         }
                     }
                     else
                     {
-                        foreach (var it in Items)
-                        {
-                            if (it.Show) DrawItemR(g, brush, brush_back_hover, brush_split, it);
-                        }
+                        foreach (var it in Items) DrawItemR(g, brush, brush_back_hover, brush_split, it);
                     }
                 }
                 g.Restore(state);
@@ -257,7 +253,7 @@ namespace AntdUI
             for (int i = start; i < Items.Count; i++)
             {
                 var it = Items[i];
-                if (it != null && it.Show)
+                if (it != null)
                 {
                     if (selectedValue.Contains(it.Tag)) return true;
                     else return false;
@@ -666,7 +662,7 @@ namespace AntdUI
                 int sy = ScrollBar.Value;
                 foreach (var it in Items)
                 {
-                    if (it.Show && it.Enable && it.SID && it.Contains(x, y, 0, sy, out _))
+                    if (it.Enable && it.SID && it.Contains(x, y, 0, sy, out _))
                     {
                         OnClick(it);
                         return;

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -193,6 +194,7 @@ namespace AntdUI
 
         void PaintText(Canvas g, Color _fore, int w, int h)
         {
+            var state = g.Save();
             if (multiline) g.SetClip(rect_text);
             else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
             else g.SetClip(new Rectangle(rect_text.X, 0, rect_text.Width, Height));
@@ -204,9 +206,9 @@ namespace AntdUI
                     g.DrawText(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }
             }
-            g.ResetClip();
             if (CaretInfo.Show && CaretInfo.Flag)
             {
+                g.ResetClip();
                 if (multiline) g.SetClip(new Rectangle(0, rect_text.Y, w, rect_text.Height));
                 else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
                 else g.SetClip(new Rectangle(0, 0, w, Height));
@@ -216,38 +218,14 @@ namespace AntdUI
                 {
                     g.Fill(brush, CaretInfo.Rect);
                 }
-                g.ResetTransform();
-                g.ResetClip();
             }
+            g.Restore(state);
         }
         void PaintText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
         {
+            var state = g.Save();
             g.TranslateTransform(-ScrollX, -ScrollY);
-            if (ScrollYShow)
-            {
-                var tmp = new List<CacheFont>(cache_font.Length);
-                foreach (var it in cache_font)
-                {
-                    it.show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
-                    if (it.show) tmp.Add(it);
-                }
-                PaintText(g, _fore, cache_font, tmp);
-            }
-            else if (ScrollXShow)
-            {
-                var tmp = new List<CacheFont>(cache_font.Length);
-                foreach (var it in cache_font)
-                {
-                    it.show = it.rect.X > ScrollX - it.rect.Width && it.rect.Right < ScrollX + w + it.rect.Width;
-                    if (it.show) tmp.Add(it);
-                }
-                PaintText(g, _fore, cache_font, tmp);
-            }
-            else PaintText(g, _fore, cache_font, cache_font);
-            g.ResetTransform();
-        }
-        void PaintText(Canvas g, Color _fore, CacheFont[] cache_font, IList<CacheFont> tmp)
-        {
+            var tmp = PCSText(g, _fore, w, h, cache_font);
             if (styles != null)
             {
                 foreach (var it in tmp)
@@ -256,35 +234,100 @@ namespace AntdUI
                 }
             }
             PaintTextSelected(g, cache_font);
+            PaintText(g, _fore, cache_font, tmp);
+            g.Restore(state);
+        }
+        List<CacheFont> PCSText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
+        {
+            var tmp = new List<CacheFont>(cache_font.Length);
+            if (IsPassWord)
+            {
+                if (ScrollYShow)
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.ret) continue;
+                        bool show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
+                        if (show) tmp.Add(it);
+                    }
+                }
+                else if (ScrollXShow)
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.ret) continue;
+                        bool show = it.rect.X > ScrollX - it.rect.Width && it.rect.Right < ScrollX + w + it.rect.Width;
+                        if (show) tmp.Add(it);
+                    }
+                }
+                else
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.ret) continue;
+                        tmp.Add(it);
+                    }
+                }
+            }
+            else
+            {
+                if (ScrollYShow)
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.hide) continue;
+                        bool show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
+                        if (show) tmp.Add(it);
+                    }
+                }
+                else if (ScrollXShow)
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.hide) continue;
+                        bool show = it.rect.X > ScrollX - it.rect.Width && it.rect.Right < ScrollX + w + it.rect.Width;
+                        if (show) tmp.Add(it);
+                    }
+                }
+                else
+                {
+                    foreach (var it in cache_font)
+                    {
+                        if (it.hide) continue;
+                        tmp.Add(it);
+                    }
+                }
+            }
+            return tmp;
+        }
+        void PaintText(Canvas g, Color _fore, CacheFont[] cache_font, List<CacheFont> tmp)
+        {
             using (var fore = new SolidBrush(_fore))
             {
-                if (HasEmoji)
+                if (IsPassWord)
+                {
+                    foreach (var it in tmp) g.String(PassWordChar, it.font ?? Font, fore, it.rect);
+                }
+                else if (HasEmoji)
                 {
                     using (var font = new Font(EmojiFont, Font.Size))
                     {
                         foreach (var it in tmp)
                         {
-                            if (IsPassWord) String(g, PassWordChar, Font, it, fore);
-                            else if (it.emoji)
+                            if (it.emoji)
                             {
                                 if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
                                 else StringEmoji(g, it.text, font, it, fore);
                             }
-                            else String(g, it.text, Font, it, fore);
+                            else String(g, Font, it, fore);
                         }
                     }
                 }
                 else
                 {
-                    foreach (var it in tmp)
-                    {
-                        if (it.ret) continue;
-                        if (IsPassWord) String(g, PassWordChar, Font, it, fore);
-                        else String(g, it.text, Font, it, fore);
-                    }
+                    foreach (var it in tmp) String(g, Font, it, fore);
                 }
             }
-            g.ResetTransform();
         }
         void PaintTextSelected(Canvas g, CacheFont[] cache_font)
         {
@@ -315,10 +358,10 @@ namespace AntdUI
             }
         }
 
-        void String(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
+        void String(Canvas g, Font font, CacheFont cache, Brush brush)
         {
-            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect);
-            else g.String(text, cache.font ?? font, brush, cache.rect);
+            if (cache.fore.HasValue) g.String(cache.text, cache.font ?? font, cache.fore.Value, cache.rect);
+            else g.String(cache.text, cache.font ?? font, brush, cache.rect);
         }
 
         void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
@@ -330,7 +373,7 @@ namespace AntdUI
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }
 
-        protected virtual void PaintOtherBor(Canvas g, RectangleF rect_read, float radius, Color back, Color borderColor, Color borderActive) { }
+        protected virtual void PaintOtherBor(Canvas g, Rectangle rect_read, float radius, Color back, Color borderColor, Color borderActive) { }
 
         #region 点击动画
 

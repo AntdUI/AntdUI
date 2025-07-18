@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -23,70 +24,20 @@ namespace AntdUI
 {
     public abstract class ILayeredFormOpacity : ILayeredForm, LayeredFormAsynLoad
     {
-        ITask? task_start;
-        bool run_end = false, ok_end = false;
-        public byte maxalpha = 240;
+        public OpacityAnimateConfig animateConfig;
+        public ILayeredFormOpacity(byte maxalpha = 255)
+        {
+            animateConfig = new OpacityAnimateConfig(this, LoadOK, ClosingAnimation, maxalpha);
+        }
         protected override void OnLoad(EventArgs e)
         {
-            if (Config.HasAnimation(name))
-            {
-                if (this is SpinForm)
-                {
-                    var t = Animation.TotalFrames(10, 80);
-                    task_start = new ITask((i) =>
-                    {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        alpha = (byte)(maxalpha * val);
-                        return true;
-                    }, 10, t, () =>
-                    {
-                        alpha = maxalpha;
-                        LoadOK();
-                    });
-                }
-                else
-                {
-                    var t = Animation.TotalFrames(10, 80);
-                    task_start = new ITask((i) =>
-                    {
-                        var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                        SetAnimateValue((byte)(maxalpha * val));
-                        return true;
-                    }, 10, t, IStart);
-                }
-            }
-            else IStart();
+            animateConfig.Start(name);
             base.OnLoad(e);
         }
 
-        #region 设置动画参数
-
-        System.Drawing.Bitmap? bmp_tmp;
-        void SetAnimateValue(byte _alpha, bool isrint = false)
-        {
-            if (isrint)
-            {
-                alpha = _alpha;
-                Print(true);
-                return;
-            }
-            if (alpha == _alpha) return;
-            alpha = _alpha;
-            if (IsHandleCreated && TargetRect.Width > 0 && TargetRect.Height > 0)
-            {
-                try
-                {
-                    if (bmp_tmp == null) bmp_tmp = PrintBit();
-                    if (bmp_tmp == null) return;
-                    if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
-                }
-                catch { }
-            }
-        }
-
-        #endregion
-
         public abstract string name { get; }
+
+        public bool RunAnimation = true;
 
         /// <summary>
         /// 是否正在加载
@@ -109,53 +60,13 @@ namespace AntdUI
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            task_start?.Dispose();
-            if (!ok_end)
-            {
-                e.Cancel = true;
-                if (Config.HasAnimation(name))
-                {
-                    if (!run_end)
-                    {
-                        ClosingAnimation();
-                        run_end = true;
-                        var t = Animation.TotalFrames(10, 80);
-                        new ITask((i) =>
-                        {
-                            var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            SetAnimateValue((byte)(maxalpha * (1F - val)));
-                            return true;
-                        }, 10, t, IEnd);
-                    }
-                }
-                else IEnd();
-            }
+            if (animateConfig.End(name)) e.Cancel = true;
             base.OnClosing(e);
         }
 
-        #region 启动/结束
-
-        void IStart()
-        {
-            bmp_tmp?.Dispose();
-            bmp_tmp = null;
-            SetAnimateValue(maxalpha, true);
-            LoadOK();
-        }
-        void IEnd()
-        {
-            bmp_tmp?.Dispose();
-            bmp_tmp = null;
-            ok_end = true;
-            IClose(true);
-        }
-
-        #endregion
-
         protected override void Dispose(bool disposing)
         {
-            task_start?.Dispose();
-            task_start = null;
+            animateConfig.Dispose();
             base.Dispose(disposing);
         }
     }

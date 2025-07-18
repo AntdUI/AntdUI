@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -38,30 +39,28 @@ namespace AntdUI
 
         #region 坐标
 
-        public TAlign CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, ref bool Inverted, bool Collision = false)
+        public TAlign CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
             var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
-            calculateCoordinate.Auto(Placement, ref Inverted, Collision, out var align, out int x, out int y);
-            SetLocationX(x);
-            base.SetLocationY(y);
+            calculateCoordinate.Auto(Placement, animateConfig, Collision, out var align, out int x, out int y);
+            SetLocation(x - shadow, y);
             return align;
         }
-        public TAlign CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, ref bool Inverted, bool Collision = false)
+        public TAlign CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
             var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
-            calculateCoordinate.Auto(Placement, ref Inverted, Collision, out var align, out int x, out int y);
-            SetLocationX(x);
-            base.SetLocationY(y);
+            calculateCoordinate.Auto(Placement, animateConfig, Collision, out var align, out int x, out int y);
+            SetLocation(x - shadow, y);
             return align;
         }
-        public TAlign CLocation(ILayeredShadowForm control, Rectangle rect, bool DropDownArrow, int ArrowSize, ref bool Inverted)
+        public TAlign CLocation(ILayeredShadowForm control, Rectangle rect, bool DropDownArrow, int ArrowSize)
         {
             var trect = control.TargetRect;
             var screen = Screen.FromPoint(trect.Location).WorkingArea;
             int x = trect.X + trect.Width - rect.X - control.shadow + (DropDownArrow ? ArrowSize : 0), y = trect.Y + rect.Y + control.shadow;
             if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + control.shadow;
             if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + control.shadow;
-            SetLocation(x, y);
+            SetLocation(x - shadow, y - shadow);
             return TAlign.LT;
         }
 
@@ -73,7 +72,7 @@ namespace AntdUI
         {
             if (ShadowEnabled)
             {
-                base.SetLocation(rect.X - shadow, rect.Y - shadow);
+                SetLocation(rect.X - shadow, rect.Y - shadow);
                 base.SetSize(rect.Width + shadow2, rect.Height + shadow2);
             }
             else base.SetRect(rect);
@@ -104,25 +103,21 @@ namespace AntdUI
             else base.SetSizeH(h);
         }
 
-        public override void SetLocation(Point point)
+        public void SetLocationO(Point point) => SetLocationO(point.X, point.Y);
+        public void SetLocationOX(int x)
         {
-            if (ShadowEnabled) base.SetLocation(point.X - shadow, point.Y - shadow);
-            else base.SetLocation(point);
+            if (ShadowEnabled) SetLocationX(x - shadow);
+            else SetLocationX(x);
         }
-        public override void SetLocationX(int x)
+        public void SetLocationOY(int y)
         {
-            if (ShadowEnabled) base.SetLocationX(x - shadow);
-            else base.SetLocationX(x);
+            if (ShadowEnabled) SetLocationY(y - shadow);
+            else SetLocationY(y);
         }
-        public override void SetLocationY(int y)
+        public void SetLocationO(int x, int y)
         {
-            if (ShadowEnabled) base.SetLocationY(y - shadow);
-            else base.SetLocationY(y);
-        }
-        public override void SetLocation(int x, int y)
-        {
-            if (ShadowEnabled) base.SetLocation(x - shadow, y - shadow);
-            else base.SetLocation(x, y);
+            if (ShadowEnabled) SetLocation(x - shadow, y - shadow);
+            else SetLocation(x, y);
         }
 
         #endregion
@@ -200,7 +195,14 @@ namespace AntdUI
                     var state = g.Save();
                     PrintContent(g, new Rectangle(0, 0, rect_read.Width, rect_read.Height), state);
                 }
-                else PrintContent(g, rect, g.Save());
+                else
+                {
+                    using (var path = rect.RoundPath(Radius))
+                    {
+                        PrintBg(g, rect, path);
+                    }
+                    PrintContent(g, rect, g.Save());
+                }
             }
             return original_bmp;
         }
@@ -299,7 +301,7 @@ namespace AntdUI
         public int CenterX()
         {
             if (creal.HasValue) return sx + creal.Value.X + (creal.Value.Width - dw) / 2 + shadow;
-            return sx + (cw - dw) / 2;
+            return (sx + (cw - dw) / 2) + shadow;
         }
 
         /// <summary>
@@ -340,56 +342,56 @@ namespace AntdUI
 
         #endregion
 
-        public void Auto(TAlignFrom Placement, ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void Auto(TAlignFrom Placement, PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             switch (Placement)
             {
                 case TAlignFrom.Top:
-                    Top(ref Inverted, Collision, out align, out x, out y);
+                    Top(animate, Collision, out align, out x, out y);
                     break;
                 case TAlignFrom.TL:
-                    TL(ref Inverted, Collision, out align, out x, out y);
+                    TL(animate, Collision, out align, out x, out y);
                     break;
                 case TAlignFrom.TR:
-                    TR(ref Inverted, Collision, out align, out x, out y);
+                    TR(animate, Collision, out align, out x, out y);
                     break;
                 case TAlignFrom.Bottom:
-                    Bottom(ref Inverted, Collision, out align, out x, out y);
+                    Bottom(animate, Collision, out align, out x, out y);
                     break;
                 case TAlignFrom.BR:
-                    BR(ref Inverted, Collision, out align, out x, out y);
+                    BR(animate, Collision, out align, out x, out y);
                     break;
                 case TAlignFrom.BL:
                 default:
-                    BL(ref Inverted, Collision, out align, out x, out y);
+                    BL(animate, Collision, out align, out x, out y);
                     break;
             }
         }
 
-        public void Top(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void Top(PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             align = TAlign.Bottom;
             x = CenterX();
             y = TopY();
-            Inverted = true;
+            animate.Inverted = true;
             if (Collision)
             {
                 var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
                 if (y < screen.Top)
                 {
-                    Inverted = false;
+                    animate.Inverted = false;
                     y = BottomY();
                     align = TAlign.Top;
                 }
             }
         }
 
-        public void TL(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void TL(PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             align = TAlign.BL;
             x = LeftX();
             y = TopY();
-            Inverted = true;
+            animate.Inverted = true;
             if (Collision)
             {
                 var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
@@ -401,12 +403,12 @@ namespace AntdUI
             }
         }
 
-        public void TR(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void TR(PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             align = TAlign.BR;
             x = RightX();
             y = TopY();
-            Inverted = true;
+            animate.Inverted = true;
             if (Collision)
             {
                 var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
@@ -418,7 +420,7 @@ namespace AntdUI
             }
         }
 
-        public void Bottom(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void Bottom(PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             align = TAlign.Top;
             x = CenterX();
@@ -428,14 +430,14 @@ namespace AntdUI
                 var screen = Screen.FromPoint(new Point(x, y)).WorkingArea;
                 if (y + dh > screen.Bottom)
                 {
-                    Inverted = true;
+                    animate.Inverted = true;
                     y = TopY();
                     align = TAlign.Bottom;
                 }
             }
         }
 
-        public void BR(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void BR(PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             align = TAlign.TR;
             x = RightX();
@@ -451,7 +453,7 @@ namespace AntdUI
             }
         }
 
-        public void BL(ref bool Inverted, bool Collision, out TAlign align, out int x, out int y)
+        public void BL(PushAnimateConfig animate, bool Collision, out TAlign align, out int x, out int y)
         {
             align = TAlign.TL;
             x = LeftX();

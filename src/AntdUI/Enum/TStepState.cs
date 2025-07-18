@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -27,5 +28,24 @@ namespace AntdUI
         Process,
         Finish,
         Error
+    }
+
+    /// <summary>
+    /// 里程碑类型
+    /// </summary>
+    public enum TMilestoneType
+    {
+        /// <summary>
+        /// 精确到天：2025-7-12
+        /// </summary>
+        Day = 0,
+        /// <summary>
+        /// 仅显示时间：10:50:25
+        /// </summary>
+        Time = 1,
+        /// <summary>
+        /// 显示完整时间：2025-7-12 10:50:25
+        /// </summary>
+        Full = 2,
     }
 }

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -51,14 +52,14 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
             Items = LoadLayout(items, point);
-            if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow, ref Inverted);
+            if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow);
             else
             {
                 var screen = Screen.FromPoint(point).WorkingArea;
                 int x = point.X + control.Width - rect.X - shadow, y = point.Y + rect.Y + shadow;
                 if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + shadow;
                 if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + shadow;
-                SetLocation(x, y);
+                SetLocationO(x, y);
             }
             Init();
         }
@@ -84,7 +85,7 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             Items = LoadLayout(items, control.PointToScreen(Point.Empty));
 
-            CLocation(parent, rect, false, 0, ref Inverted);
+            CLocation(parent, rect, false, 0);
             Init();
         }
 

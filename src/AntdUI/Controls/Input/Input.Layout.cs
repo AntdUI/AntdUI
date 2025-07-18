@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -184,9 +185,9 @@ namespace AntdUI
             public string text { get; set; }
             public Rectangle rect { get; set; }
             public bool ret { get; set; }
+            public bool hide { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
-            internal bool show { get; set; }
 
             #region 样式
 
@@ -265,10 +266,9 @@ namespace AntdUI
                     int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
                     {
-                        it.show = false;
                         if (it.text == "\n" || it.text == "\r\n")
                         {
-                            it.ret = true;
+                            it.hide = it.ret = true;
                             it.line = line;
                             line++;
                             usey += lineHeight;
@@ -276,10 +276,12 @@ namespace AntdUI
                             it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                             continue;
                         }
+                        else if (it.text == " " || it.text == "\t") it.hide = true;
                         else
                         {
                             if (it.text == "\r")
                             {
+                                it.hide = true;
                                 it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                                 continue;
                             }
@@ -317,7 +319,7 @@ namespace AntdUI
 
                 var carets = new List<CacheCaret>(cache_font.Length + 2)
                 {
-                    new CacheCaret { x = rect_text.X, y = rect_text.Y, i = 0,index=0 }
+                    new CacheCaret { x = cache_font[0].rect.X, y = rect_text.Y, i = 0,index=0 }
                 };
                 int tmp = 1;
                 for (int i = 0; i < cache_font.Length; i++)
@@ -443,7 +445,6 @@ namespace AntdUI
                     for (int i = 0; i < cache_font.Length; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                         usex += it.width;
                         i_l.Add(i);
@@ -454,7 +455,6 @@ namespace AntdUI
                     for (int i = 0; i < tabindex; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                         usex += it.width;
                         i_l.Add(i);
@@ -466,7 +466,6 @@ namespace AntdUI
                     for (int i = tabindex + 1; i < cache_font.Length; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
                         user += it.width;
                         i_r.Add(i);
@@ -478,7 +477,6 @@ namespace AntdUI
                     for (int i = tabindex + 1; i < cache_font.Length; i++)
                     {
                         var it = cache_font[i];
-                        it.show = true;
                         it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
                         user += it.width;
                         i_r.Add(i);
@@ -539,7 +537,6 @@ namespace AntdUI
             {
                 foreach (var it in cache_font)
                 {
-                    it.show = true;
                     it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
                     usex += it.width;
                 }
@@ -704,7 +701,7 @@ namespace AntdUI
         void RectLR(Rectangle rect, int read_height, int sps, int sps2, int w_L, int h_L, int w_R, int h_R)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectLR(sp, sps, w_L, w_R, out int hasx, out int hasr);
+            bool round = RectLR(sp, sps, w_L, w_R, rect, out int hasx, out int hasr);
             var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
             {
@@ -741,7 +738,7 @@ namespace AntdUI
             }
             if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
-        bool RectLR(int sp, int sps, int w_L, int w_R, out int hasx, out int hasr)
+        bool RectLR(int sp, int sps, int w_L, int w_R, Rectangle rect, out int hasx, out int hasr)
         {
             if (multiline)
             {
@@ -751,8 +748,8 @@ namespace AntdUI
             }
             else if (round)
             {
-                hasx = sps + w_L;
-                hasr = w_L + w_R + (sps * 2);
+                hasx = rect.Height - sp;
+                hasr = (rect.Height - sp) * 2;
                 return true;
             }
             else
@@ -768,7 +765,7 @@ namespace AntdUI
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, out int hasx);
+            bool round = RectL(sp, sps, w, rect, out int hasx);
             int hasx2 = hasx + sps;
             var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
@@ -802,7 +799,7 @@ namespace AntdUI
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, out int hasx);
+            bool round = RectL(sp, sps, w, rect, out int hasx);
             int hasx2 = hasx + sps;
             var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
@@ -832,7 +829,7 @@ namespace AntdUI
             rect_r.Width = 0;
             if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
-        bool RectL(int sp, int sps, int w, out int hasx)
+        bool RectL(int sp, int sps, int w, Rectangle rect, out int hasx)
         {
             if (multiline)
             {
@@ -841,7 +838,7 @@ namespace AntdUI
             }
             else if (round)
             {
-                hasx = sps + w;
+                hasx = rect.Height - sp;
                 return true;
             }
             else
@@ -858,7 +855,7 @@ namespace AntdUI
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, out int hasr);
+            bool round = RectL(sp, sps, w, rect, out int hasr);
             int hasr2 = hasr + sps;
             if (HasLeft())
             {
@@ -891,7 +888,7 @@ namespace AntdUI
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, out int hasr);
+            bool round = RectL(sp, sps, w, rect, out int hasr);
             int hasr2 = hasr + sps;
             if (HasLeft())
             {

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -154,7 +155,7 @@ namespace AntdUI
                 int t_time_w = t_time * 3;
                 rect_buttonok = new Rectangle(t_x + shadow + t_one_width, rect_button.Y, t_time_w, t_button);
             }
-            CLocation(point, _control.Placement, _control.DropDownArrow, shadow, r_w, r_h, rect_read, ref Inverted, ref ArrowAlign);
+            CLocation(point, _control.Placement, _control.DropDownArrow, shadow, r_w, r_h, rect_read, ref ArrowAlign);
             t_h = r_h;
             if (OS.Win7OrLower) Select();
         }
@@ -260,14 +261,19 @@ namespace AntdUI
                 if (syear < 1) syear = 1;
                 for (int i = 0; i < 12; i++)
                 {
-                    var d_y = new DateTime(syear + i, value.Month, 1);
-                    _calendar_year.Add(new Calendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy"), minDate, maxDate));
-                    x_y++;
-                    if (x_y > 2)
+                    try
                     {
-                        y_y++;
-                        x_y = 0;
+                        var d_y = new DateTime(syear + i, value.Month, 1);
+                        _calendar_year.Add(new Calendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy"), minDate, maxDate));
+                        x_y++;
+                        if (x_y > 2)
+                        {
+                            y_y++;
+                            x_y = 0;
+                        }
                     }
+                    catch 
+                    { }
                 }
                 year_str = _calendar_year[1].date_str + "-" + _calendar_year[_calendar_year.Count - 2].date_str;
                 calendar_year = _calendar_year;
@@ -300,10 +306,10 @@ namespace AntdUI
                     });
                 }
 
-                hover_left.Enable = Helper.DateExceedMonth(value.AddMonths(-1), minDate, maxDate);
-                hover_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
-                hover_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
-                hover_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
+                hover_left.Enable = Helper.DateExceedMonth(value, -1, minDate, maxDate);
+                hover_right.Enable = Helper.DateExceedMonth(value, 1, minDate, maxDate);
+                hover_lefts.Enable = Helper.DateExceedYear(value, -1, minDate, maxDate);
+                hover_rights.Enable = Helper.DateExceedYear(value, 1, minDate, maxDate);
             }
         }
 
@@ -359,24 +365,29 @@ namespace AntdUI
             }
             if (x < 7)
             {
-                var date1 = now.AddMonths(1);
-                int day2 = 0;
-                for (int i = x; i < 7; i++)
+                try
                 {
-                    int day3 = day2 + 1;
-                    calendaris.Add(new Calendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                    x++; day2++;
-                }
-                if (y < 5)
-                {
-                    y++;
-                    for (int i = 0; i < 7; i++)
+                    var date1 = now.AddMonths(1);
+                    int day2 = 0;
+                    for (int i = x; i < 7; i++)
                     {
                         int day3 = day2 + 1;
-                        calendaris.Add(new Calendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                        day2++;
+                        calendaris.Add(new Calendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
+                        x++; day2++;
+                    }
+                    if (y < 5)
+                    {
+                        y++;
+                        for (int i = 0; i < 7; i++)
+                        {
+                            int day3 = day2 + 1;
+                            calendaris.Add(new Calendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
+                            day2++;
+                        }
                     }
                 }
+                catch
+                { }
             }
             return calendaris;
         }

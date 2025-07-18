@@ -85,7 +85,7 @@ namespace AntdUI.Svg
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="System.Single"/> to <see cref="Svg.SvgOrient"/>.
+        /// Performs an implicit conversion from <see cref="float"/> to <see cref="Svg.SvgOrient"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The result of the conversion.</returns>

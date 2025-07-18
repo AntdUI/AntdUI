@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -100,7 +101,7 @@ namespace AntdUI
                         {
                             ThreadHover?.Dispose();
                             AnimationHover = true;
-                            var t = Animation.TotalFrames(20, 200);
+                            var t = Animation.TotalFrames(20, 100);
                             if (value)
                             {
                                 ThreadHover = new ITask((i) =>
@@ -706,7 +707,7 @@ namespace AntdUI
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
-                        var t = Animation.TotalFrames(20, 200);
+                        var t = Animation.TotalFrames(20, 100);
                         if (value)
                         {
                             ThreadHover = new ITask((i) =>

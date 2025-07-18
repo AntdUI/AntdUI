@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -321,6 +322,8 @@ namespace AntdUI
 
             Colour.PrimaryHover.Set(colors[4]);
             Colour.PrimaryActive.Set(colors[6]);
+
+            EventHub.Dispatch(EventType.THEME_PRIMARY);
         }
         public static void SetSuccess(Color success)
         {
@@ -436,50 +439,29 @@ namespace AntdUI
 
         #region 生成色卡
 
-        static float warmDark = 0.5F;     // 暖色调暗收音机
-        static float warmRotate = -26;  // 暖色旋转度
-        static float coldDark = 0.55F;     // 冷色调暗收音机
-        static float coldRotate = 10;   // 冷色旋转度
-        public static Color shade(this Color shadeColor)
+        public static List<Color> Generate(this Color color)
         {
-            // 暖色和冷色会在不同的收音机中变暗，并以不同的程度旋转
-            // 暖色
-            if (shadeColor.R > shadeColor.B)
-            {
-                return shadeColor.darken(shadeColor.ToHSL().l * warmDark).spin(warmRotate).HSLToColor();
-            }
-            // 冷色
-            return shadeColor.darken(shadeColor.ToHSL().l * coldDark).spin(coldRotate).HSLToColor();
+            var hsv = color.ToHSV();
+            var patterns = new List<Color>(lightColorCount + darkColorCount);
+            for (int i = lightColorCount; i > 0; i--) patterns.Add(GenerateColor(hsv, i, true));
+            patterns.Add(color);
+            for (int i = 1; i <= darkColorCount; i++) patterns.Add(GenerateColor(hsv, i, false));
+            return patterns;
         }
-        public static HSL darken(this Color color, float amount)
+        public static List<Color> GenerateDark(this Color color) => GenerateDark(color, Color.FromArgb(20, 20, 20));
+        public static List<Color> GenerateDark(this Color color, string backgroundColor) => GenerateDark(color, backgroundColor.ToColor());
+        public static List<Color> GenerateDark(this Color color, Color bgColor)
         {
-            var hsl = color.ToHSL();
-            hsl.l -= amount / 100F;
-            hsl.l = clamp01(hsl.l);
-            return hsl;
-        }
-        static HSL spin(this HSL hsl, float amount)
-        {
-            var hue = (hsl.h + amount) % 360F;
-            hsl.h = hue < 0F ? 360F + hue : hue;
-            return hsl;
-        }
-        static float clamp01(float val)
-        {
-            return Math.Min(1F, Math.Max(0F, val));
+            var tmp = Generate(color);
+            var patterns = new List<Color>(tmp.Count);
+            foreach (var item in DarkColorMap) patterns.Add(Mix(bgColor, tmp[item[0]], item[1]));
+            return patterns;
         }
 
         public static List<Color> GenerateColors(this Color primaryColor)
         {
-            var hsv = primaryColor.ToHSV();
-            var colors = new List<Color>(lightColorCount + darkColorCount);
-            // 主色前
-            for (var i = lightColorCount; i > 0; i--) colors.Add(GenerateColor(hsv, i, true));
-            // 主色
-            colors.Add(primaryColor);
-            // 主色后
-            for (var i = 1; i <= darkColorCount; i++) colors.Add(GenerateColor(hsv, i, false));
-            return colors;
+            if (Config.Mode == TMode.Light) return Generate(primaryColor);
+            else return GenerateDark(primaryColor);
         }
 
         /// <summary>
@@ -488,21 +470,30 @@ namespace AntdUI
         /// <param name="hsv">色调/饱和度/亮度</param>
         /// <param name="i">序号</param>
         /// <param name="isLight">是否浅色</param>
-        public static Color GenerateColor(HSV hsv, int i, bool isLight)
-        {
-            // i 为index与6的相对距离
-            return HSVToColor(getHue(hsv, i, isLight), getSaturation(hsv, i, isLight), getValue(hsv, i, isLight));
-        }
+        public static Color GenerateColor(HSV hsv, int i, bool isLight) => HSVToColor(getHue(hsv, i, isLight), getSaturation(hsv, i, isLight), getValue(hsv, i, isLight));
 
         static int hueStep = 2;
         static int darkColorCount = 4, lightColorCount = 5;
         static float saturationStep = 0.16F, saturationStep2 = 0.05F;
         static float brightnessStep1 = 0.05F, brightnessStep2 = 0.15F;
+        static readonly List<int[]> DarkColorMap = new List<int[]>
+        {
+            new int[]{ 7, 15 },
+            new int[]{ 6, 25 },
+            new int[]{ 5, 30 },
+            new int[]{ 5, 45 },
+            new int[]{ 5, 65 },
+            new int[]{ 5, 85 },
+            new int[]{ 4, 90 },
+            new int[]{ 3, 95 },
+            new int[]{ 2, 97 },
+            new int[]{ 1, 98 }
+        };
         public static float getHue(HSV hsv, int i, bool isLight)
         {
-            float hue;
-            if (hsv.h >= 60 && hsv.h <= 240) hue = isLight ? hsv.h - hueStep * i : hsv.h + hueStep * i;
-            else hue = isLight ? hsv.h + hueStep * i : hsv.h - hueStep * i;
+            float hue, h = (float)Math.Round(hsv.h);
+            if (h >= 60 && h <= 240) hue = isLight ? h - hueStep * i : h + hueStep * i;
+            else hue = isLight ? h + hueStep * i : h - hueStep * i;
             if (hue < 0) hue += 360F;
             else if (hue >= 360) hue -= 360F;
             return hue;
@@ -518,15 +509,20 @@ namespace AntdUI
             if (saturation > 1) saturation = 1;
             if (isLight && i == lightColorCount && saturation > 0.1) saturation = 0.1F;
             if (saturation < 0.06) saturation = 0.06F;
-            return saturation;//保留两位小数
+            return (float)Math.Round(saturation, 2);
         }
         public static float getValue(HSV hsv, int i, bool isLight)
         {
             float value;
             if (isLight) value = hsv.v + brightnessStep1 * i;
             else value = hsv.v - brightnessStep2 * i;
-            if (value > 1) value = 1;
-            return value;
+            value = Math.Max(0F, Math.Min(1F, value));
+            return (float)Math.Round(value, 2);
+        }
+        static Color Mix(Color rgb1, Color rgb2, int amount)
+        {
+            float p = amount / 100F;
+            return Color.FromArgb((int)Math.Round((rgb2.R - rgb1.R) * p + rgb1.R), (int)Math.Round((rgb2.G - rgb1.G) * p + rgb1.G), (int)Math.Round((rgb2.B - rgb1.B) * p + rgb1.B));
         }
 
         #endregion
@@ -673,14 +669,8 @@ namespace AntdUI
 
         #endregion
 
-        public static Color rgba(int r, int g, int b, float a = 1)
-        {
-            return Color.FromArgb((int)Math.Round(255F * a), r, g, b);
-        }
-        public static Color rgba(this Color color, float a = 1)
-        {
-            return rgba(color.R, color.G, color.B, a);
-        }
+        public static Color rgba(int r, int g, int b, float a = 1) => Color.FromArgb((int)Math.Round(255F * a), r, g, b);
+        public static Color rgba(this Color color, float a = 1) => rgba(color.R, color.G, color.B, a);
         public static Color rgba(float r, float g, float b, float a = 1)
         {
             if (r < 0) r = 0F;

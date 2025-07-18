@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -74,7 +75,7 @@ namespace Demo.Controls
         {
             // 搜索事件处理
             string listType = e.IsSource ? "源列表" : "目标列表";
-            AntdUI.Message.info(this.FindForm(), $"{listType}搜索: {e.SearchText}");
+            AntdUI.Message.info(FindForm(), $"{listType}搜索: {e.SearchText}");
         }
 
         private void Switch_oneWay_CheckedChanged(object sender, EventArgs e)

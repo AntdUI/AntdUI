@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -31,7 +32,6 @@ namespace AntdUI
         int BadgeSize = 6, ShadowXY;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
-            maxalpha = 255;
             config = _config;
             TopMost = config.TopMost;
             if (!config.TopMost) config.Form.SetTopMost(Handle);
@@ -216,8 +216,10 @@ namespace AntdUI
 
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
 
+        int use_primary = 0;
         public override Bitmap PrintBit()
         {
+            use_primary = 0;
             var rect = TargetRectXY;
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
@@ -232,6 +234,7 @@ namespace AntdUI
                             switch (it.Type)
                             {
                                 case TTypeMini.Primary:
+                                    use_primary++;
                                     back = Colour.Primary.Get("FloatButton");
                                     fore = Colour.PrimaryColor.Get("FloatButton");
                                     break;
@@ -277,6 +280,7 @@ namespace AntdUI
                                 switch (it.Type)
                                 {
                                     case TTypeMini.Primary:
+                                        use_primary++;
                                         back = Colour.Primary.Get("FloatButton");
                                         back_hover = Colour.PrimaryHover.Get("FloatButton");
                                         fore = Colour.PrimaryColor.Get("FloatButton");
@@ -461,6 +465,9 @@ namespace AntdUI
             {
                 case EventType.THEME:
                     Print();
+                    break;
+                case EventType.THEME_PRIMARY:
+                    if (use_primary > 0) Print();
                     break;
             }
         }

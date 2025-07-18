@@ -41,7 +41,7 @@ namespace AntdUI.Svg.Text
 
         #endregion
 
-        static public FontFamily FromPath(string fontFilePath)
+        public static FontFamily FromPath(string fontFilePath)
         {
             string FontName = string.Empty;
             string FontSubFamily = string.Empty;
@@ -149,9 +149,9 @@ namespace AntdUI.Svg.Text
         public struct TT_TABLE_DIRECTORY
         {
             public byte[] szTag;
-            public UInt32 uCheckSum;
-            public UInt32 uOffset;
-            public UInt32 uLength;
+            public uint uCheckSum;
+            public uint uOffset;
+            public uint uLength;
             public void Initialize()
             {
                 szTag = new byte[4];
@@ -175,7 +175,7 @@ namespace AntdUI.Svg.Text
             public ushort uStringOffset;
         }
 
-        static private UInt16 ReadChar(FileStream fs, int characters)
+        private static ushort ReadChar(FileStream fs, int characters)
         {
             string[] s = new string[characters];
             byte[] buf = new byte[Convert.ToByte(s.Length)];
@@ -184,28 +184,28 @@ namespace AntdUI.Svg.Text
             return BitConverter.ToUInt16(buf, 0);
         }
 
-        static private UInt16 ReadByte(FileStream fs)
+        private static ushort ReadByte(FileStream fs)
         {
             byte[] buf = new byte[11];
             buf = ReadAndSwap(fs, buf.Length);
             return BitConverter.ToUInt16(buf, 0);
         }
 
-        static private UInt16 ReadUShort(FileStream fs)
+        private static ushort ReadUShort(FileStream fs)
         {
             byte[] buf = new byte[2];
             buf = ReadAndSwap(fs, buf.Length);
             return BitConverter.ToUInt16(buf, 0);
         }
 
-        static private UInt32 ReadULong(FileStream fs)
+        private static uint ReadULong(FileStream fs)
         {
             byte[] buf = new byte[4];
             buf = ReadAndSwap(fs, buf.Length);
             return BitConverter.ToUInt32(buf, 0);
         }
 
-        static private byte[] ReadAndSwap(FileStream fs, int size)
+        private static byte[] ReadAndSwap(FileStream fs, int size)
         {
             byte[] buf = new byte[size];
             fs.Read(buf, 0, buf.Length);

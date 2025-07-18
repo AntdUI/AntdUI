@@ -1,5 +1,28 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.12` 2025-07-18 🎨
+
+- ➕ TabHeader RightGap Right Gap Gap
+- ➕ Table KeyTreeArrowStyle Table Arrow Style
+- ➕ Table CellFocusdStyle/CellFocusdBg/CellFocusdBorder Implementation for Displaying Focus Cells
+- ➕ Table ScrollLine (object record) method, used to jump to a specified line
+- ➕ Steps Milestone Mode
+- ➕ Collapse Button Visible property
+- ✍️ Alignment 5.0 Color Algorithm
+- ✍️ FloatButton changes theme color without refreshing
+- ✍️ Optimize tab header parameters and turn off unchanged events
+- ✍️ Select SelectItem Text
+- ✍️ Select Top pops up with Y exception after filtering
+- ✍️ Table All Event Coordinates
+- ✍️ Table Tooltip misalignment
+- ✍️ Table Optimization Response Speed
+- ✍️ Input cursor position
+- ✍️ Input rounded corners with front and back border occlusion text
+- ✍️ InputNumber first masking suffix
+- ✍️ Collapse ExpandChanged supplements coordinate information
+- ✍️ ColorEditor renders multiple times
+- ✍️ Date maximum value exception
+
 ### `2.0.10` 2025-07-12
 
 - ➕ Table EditSelection property, used to select all by default when editing

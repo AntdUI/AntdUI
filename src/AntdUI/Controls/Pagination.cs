@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -603,7 +604,7 @@ namespace AntdUI
                     {
                         if (i == min)
                         {
-                            min = min * 10;
+                            min *= 10;
                             var size_font = g.MeasureString((i + 1).ToString(), Font);
                             if (size_font.Width > rect.Height)
                             {

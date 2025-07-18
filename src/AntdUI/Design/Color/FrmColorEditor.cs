@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 // SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
 // LIMITATIONS UNDER THE License.
+// GITCODE: https://gitcode.com/AntdUI/AntdUI
 // GITEE: https://gitee.com/AntdUI/AntdUI
 // GITHUB: https://github.com/AntdUI/AntdUI
 // CSDN: https://blog.csdn.net/v_132
@@ -54,12 +55,16 @@ namespace AntdUI.Design
         {
             Helper.DpiAuto(Config.Dpi, this);
             base.OnLoad(e);
+            count++;
         }
 
         #region äÖÈ¾
 
+        int count = 1;
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (count == 0) return;
+            count = 0;
             var rect = ClientRectangle;
             var g = e.Graphics.High();
             using (var brush_bg = new SolidBrush(BackColor))
@@ -257,7 +262,7 @@ namespace AntdUI.Design
             base.OnPaint(e);
         }
 
-        readonly static Color[] colors = new Color[] {
+        static readonly Color[] colors = new Color[] {
             "#f44336".ToColor(),
             "#e91e63".ToColor(),
             "#9c27b0".ToColor(),
@@ -490,6 +495,7 @@ namespace AntdUI.Design
                         action(Value);
                         bmp_alpha?.Dispose();
                         bmp_alpha = null;
+                        count++;
                         Invalidate();
                         down_colors = true;
                     }
@@ -513,6 +519,7 @@ namespace AntdUI.Design
                         bmp_colors = null;
                         bmp_alpha?.Dispose();
                         bmp_alpha = null;
+                        count++;
                         Invalidate();
                         down_hue = true;
                     }
@@ -526,6 +533,7 @@ namespace AntdUI.Design
                         else if (point_alpha > bmp_alpha_read.Width - 1) point_alpha = bmp_alpha_read.Width - 1;
                         color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).A, ValueNAlpha);
                         action(Value);
+                        count++;
                         Invalidate();
                         down_alpha = true;
                     }
@@ -548,6 +556,7 @@ namespace AntdUI.Design
                 action(Value);
                 bmp_alpha?.Dispose();
                 bmp_alpha = null;
+                count++;
                 Invalidate();
             }
             else if (down_hue && bmp_hue != null)
@@ -567,6 +576,7 @@ namespace AntdUI.Design
                 bmp_colors = null;
                 bmp_alpha?.Dispose();
                 bmp_alpha = null;
+                count++;
                 Invalidate();
             }
             else if (down_alpha && bmp_alpha_read != null)
@@ -576,6 +586,7 @@ namespace AntdUI.Design
                 else if (point_alpha > bmp_alpha_read.Width - 1) point_alpha = bmp_alpha_read.Width - 1;
                 color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).A, ValueNAlpha);
                 action(Value);
+                count++;
                 Invalidate();
             }
             base.OnMouseMove(e);
@@ -615,6 +626,7 @@ namespace AntdUI.Design
             var hsv = ValueNAlpha.ToHSV();
             hsv.s = hsv.v = 1;
             ValueHue = hsv.HSVToColor();
+            count++;
             Invalidate();
         }
     }

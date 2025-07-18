@@ -132,4 +132,4 @@ var data = System.Text.Json.JsonSerializer.Deserialize(json_string, SourceGenera
 
 #### Table shows blank
 
-The demo has table AOT examples, and the AOT generated exe can also be downloaded on the publishing page. It supports MVVM, but AOT does not support reflection. [example/Demo/Controls/TableAOT.cs](https://gitee.com/antdui/AntdUI/blob/main/example/Demo/Controls/TableAOT.cs#L77)
+The demo has table AOT examples, and the AOT generated exe can also be downloaded on the publishing page. It supports MVVM, but AOT does not support reflection. [example/Demo/Controls/TableAOT.cs](https://github.com/AntdUI/AntdUI/blob/main/example/Demo/Controls/TableAOT.cs#L348)

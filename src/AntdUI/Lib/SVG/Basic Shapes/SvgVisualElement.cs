@@ -92,8 +92,7 @@ namespace AntdUI.Svg
         {
             get
             {
-                if (_requiresSmoothRendering == null)
-                    _requiresSmoothRendering = ConvertShapeRendering2AntiAlias(ShapeRendering);
+                _requiresSmoothRendering ??= ConvertShapeRendering2AntiAlias(ShapeRendering);
 
                 return _requiresSmoothRendering.Value;
             }
