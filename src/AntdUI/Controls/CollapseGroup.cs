@@ -881,6 +881,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
         protected EButtonEditTypes m_editType = EButtonEditTypes.Default;
         [Description("编辑类型"), Category("外观"), DefaultValue(typeof(EButtonEditTypes), "Default")]
         public EButtonEditTypes EditType
@@ -937,6 +938,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
         /// <summary>
         /// 编辑器, 参考EditType
         /// </summary>

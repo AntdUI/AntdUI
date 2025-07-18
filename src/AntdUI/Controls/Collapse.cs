@@ -375,7 +375,7 @@ namespace AntdUI
                 else if (it.Expand)
                 {
                     it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, full_h);
-                    it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
+                    it.RectControl = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, full_h - (title_height + content_y * 2));
                     it.SetSize();
                 }
                 else it.Rect = Rect = it.RectTitle;
@@ -385,7 +385,7 @@ namespace AntdUI
                 if (it.ExpandThread) it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + (int)((content_y * 2 + it.Height) * it.ExpandProg));
                 else if (it.Expand)
                 {
-                    it.RectCcntrol = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
+                    it.RectControl = new Rectangle(rect.X + content_x, y + title_height + content_y, rect.Width - content_x * 2, it.Height);
                     it.Rect = Rect = new Rectangle(rect.X, y, rect.Width, title_height + content_y * 2 + it.Height);
                     it.SetSize();
                 }
@@ -418,8 +418,8 @@ namespace AntdUI
         [Description("CollapseItem上的按件单击时发生"), Category("行为")]
         public event CollapseButtonClickEventHandler? ButtonClickChanged;
 
-        internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand));
-        internal void OnExpandingChanged(CollapseItem value, bool expand, Point location) => ExpandingChanged?.Invoke(this, new CollapseExpandingEventArgs(value, expand, location));
+        internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand, value.RectTitle, value.RectControl));
+        internal void OnExpandingChanged(CollapseItem value, bool expand, Point location) => ExpandingChanged?.Invoke(this, new CollapseExpandingEventArgs(value, expand, value.RectTitle, value.RectControl, location));
         internal void OnButtonClickChanged(CollapseItem value, CollapseGroupButton button) => ButtonClickChanged?.Invoke(this, new CollapseButtonClickEventArgs(button, value));
 
         #endregion
@@ -624,6 +624,7 @@ namespace AntdUI
 
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
+            g.Fill(Color.Red, item.RectTitle);
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
             else PaintArrow(g, item, pen_arr, -90F);
@@ -1084,7 +1085,6 @@ namespace AntdUI
                     PARENT?.LoadLayout();
                     if (!value) Location = new Point(-Width, -Height);
                 }
-
             }
         }
 
@@ -1156,7 +1156,7 @@ namespace AntdUI
 
         internal bool MDown = false;
         public Rectangle Rect = new Rectangle(-10, -10, 0, 0);
-        public Rectangle RectArrow, RectCcntrol, RectTitle, RectText;
+        public Rectangle RectArrow, RectControl, RectTitle, RectText;
         internal bool Contains(int x, int y)
         {
             if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
@@ -1199,8 +1199,8 @@ namespace AntdUI
                 return;
             }
             canset = false;
-            Size = RectCcntrol.Size;
-            Location = RectCcntrol.Location;
+            Size = RectControl.Size;
+            Location = RectControl.Location;
             canset = true;
         }
 

@@ -45,10 +45,17 @@ namespace AntdUI
                 base.OnMouseDown(e);
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
-                var cell = cellFocused = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
-                if (cell == null) return;
+                var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
+                if (cell == null)
+                {
+                    cellFocused = null;
+                    return;
+                }
                 else
                 {
+                    var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
+                    if (style == TableCellFocusedStyle.None) cellFocused = null;
+                    else cellFocused = cell;
                     if (e.Button == MouseButtons.Left)
                     {
                         if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))

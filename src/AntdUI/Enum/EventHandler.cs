@@ -924,24 +924,28 @@ namespace AntdUI
 
     public class CollapseExpandEventArgs : VEventArgs<CollapseItem>
     {
-        public CollapseExpandEventArgs(CollapseItem value, bool expand) : base(value) { Expand = expand; }
+        public CollapseExpandEventArgs(CollapseItem value, bool expand, Rectangle rectTitle, Rectangle rectControl) : base(value)
+        {
+            Expand = expand;
+            RectTitle = rectTitle;
+            RectControl = rectControl;
+        }
 
         public bool Expand { get; private set; }
+        public Rectangle RectTitle { get; private set; }
+        public Rectangle RectControl { get; private set; }
     }
 
     public delegate void CollapseExpandEventHandler(object sender, CollapseExpandEventArgs e);
 
-    public class CollapseExpandingEventArgs : VEventArgs<CollapseItem>
+    public class CollapseExpandingEventArgs : CollapseExpandEventArgs
     {
-        public CollapseExpandingEventArgs(CollapseItem value, bool expand, Point location) : base(value)
+        public CollapseExpandingEventArgs(CollapseItem value, bool expand, Rectangle rectTitle, Rectangle rectControl, Point location) : base(value, expand, rectTitle, rectControl)
         {
-            Expand = expand;
             Location = location;
         }
 
-        public bool Expand { get; private set; }
         public Point Location { get; private set; }
-
     }
 
     /// <summary>

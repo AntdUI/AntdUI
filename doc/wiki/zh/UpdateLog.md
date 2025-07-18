@@ -1,5 +1,28 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.12` 2025-07-18 🎨
+
+- ➕ TabHeader RightGap 右侧间隙
+- ➕ Table KeyTreeArrowStyle 树表格箭头样式
+- ➕ Table CellFocusedStyle/CellFocusedBg/CellFocusedBorder 实现显示焦点单元格
+- ➕ Table ScrollLine (object record) 方法，用于跳转到指定行
+- ➕ Steps MilestoneMode 里程碑模式
+- ➕ Collapse Button Visible 属性
+- ✍️ 对齐 5.0 色彩算法
+- ✍️ FloatButton 修改主题色不刷新
+- ✍️ TabHeader 优化选项卡标题参数并关闭未更改事件
+- ✍️ Select SelectItem Text
+- ✍️ Select Top 弹出 筛选后Y异常
+- ✍️ Table 所有事件坐标
+- ✍️ Table Tooltip 错位
+- ✍️ Table 优化响应速度
+- ✍️ Input 光标位置
+- ✍️ Input 圆角前后缀遮挡文本
+- ✍️ InputNumber 第一次 遮挡后缀
+- ✍️ Collapse ExpandChanged 补充坐标信息
+- ✍️ ColorEditor 多次渲染
+- ✍️ Date 最大值异常
+
 ### `2.0.10` 2025-07-12
 
 - ➕ Table EditSelection 属性，用于编辑时可默认全选

@@ -212,6 +212,14 @@ namespace AntdUI
             return true;
         }
 
+        public static bool DateExceedMonth(DateTime date, int num, DateTime? min, DateTime? max)
+        {
+            try
+            {
+                return DateExceedMonth(date.AddMonths(num), min, max);
+            }
+            catch { return false; }
+        }
         public static bool DateExceedMonth(DateTime date, DateTime? min, DateTime? max)
         {
             // 检查目标月份是否早于minDate所在的月份
@@ -230,6 +238,14 @@ namespace AntdUI
             return true;
         }
 
+        public static bool DateExceedYear(DateTime date, int num, DateTime? min, DateTime? max)
+        {
+            try
+            {
+                return DateExceedYear(date.AddYears(num), min, max);
+            }
+            catch { return false; }
+        }
         public static bool DateExceedYear(DateTime date, DateTime? min, DateTime? max)
         {
             if (min.HasValue && min.Value >= date) return false;

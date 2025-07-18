@@ -343,19 +343,26 @@ namespace AntdUI
         /// <summary>
         /// 焦点列样式
         /// </summary>
-        [Description("焦点列样式"), Category("外观"), DefaultValue(TableCellFocusedStyle.None)]
-        public TableCellFocusedStyle CellFocusedStyle { get; set; } = Config.DefaultCellFocusedStyle;
+        [Description("焦点列样式"), Category("外观"), DefaultValue(null)]
+        public TableCellFocusedStyle? CellFocusedStyle { get; set; }
 
         /// <summary>
         /// 焦点列背景色
         /// </summary>
         [Description("焦点列背景色"), Category("外观"), DefaultValue(null)]
-        public Color? CellFocusedColor { get; set; }
+        public Color? CellFocusedBg { get; set; }
+
+        /// <summary>
+        /// 焦点列边框色
+        /// </summary>
+        [Description("焦点列边框色"), Category("外观"), DefaultValue(null)]
+        public Color? CellFocusedBorder { get; set; }
 
         /// <summary>
         /// 当前获得焦点的列
         /// </summary>
-        public Column? FocusedColumn { get { return cellFocused?.COLUMN; } }
+        public Column? FocusedColumn => cellFocused?.COLUMN;
+
         #endregion
 
         /// <summary>

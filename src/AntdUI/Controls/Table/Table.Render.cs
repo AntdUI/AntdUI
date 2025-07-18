@@ -703,32 +703,7 @@ namespace AntdUI
 
         void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, Font font, SolidBrush fore)
         {
-            switch (CellFocusedStyle)
-            {
-                case TableCellFocusedStyle.None:
-                    break;
-                default:
-                    if (cellFocused != null && it == cellFocused)
-                    {
-                        bool solid = CellFocusedStyle == TableCellFocusedStyle.Solid;
-                        if (solid)
-                        {
-                            SolidBrush brush = new SolidBrush(CellFocusedColor ?? Colour.BgBase.Get("Table", ColorScheme));
-                            using (brush)
-                            {
-                                g.Fill(brush, it.RECT);
-                            }
-                        }
-                        Pen pen = new Pen(Colour.PrimaryActive.Get("Table", ColorScheme), (solid ? 2 : 1) * Config.Dpi);
-                        pen.Alignment = PenAlignment.Inset;
-                        pen.DashStyle = solid ? DashStyle.Solid : DashStyle.Dash;
-                        using (pen)
-                        {
-                            g.Draw(pen, it.RECT);
-                        }
-                    }
-                    break;
-            }
+            PaintItemFocus(g, it, enable);
             if (it is TCellCheck check) PaintCheck(g, check, enable);
             else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
@@ -765,6 +740,43 @@ namespace AntdUI
             }
             if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
+        }
+        void PaintItemFocus(Canvas g, CELL it, bool enable)
+        {
+            if (cellFocused == null) return;
+            if (it == cellFocused)
+            {
+                var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
+                if (style == TableCellFocusedStyle.None) return;
+                switch (style)
+                {
+                    case TableCellFocusedStyle.Solid:
+                        g.Fill(CellFocusedBg ?? Colour.BgBase.Get("Table", ColorScheme), it.RECT);
+                        using (var pen = PaintItemFocus(it, false, (int)(Config.Dpi * 2), out var rect))
+                        {
+                            g.Draw(pen, rect);
+                        }
+                        break;
+                    case TableCellFocusedStyle.Dash:
+                        using (var pen = PaintItemFocus(it, true, (int)(Config.Dpi), out var rect))
+                        {
+                            g.Draw(pen, rect);
+                        }
+                        break;
+                }
+            }
+        }
+        Pen PaintItemFocus(CELL it, bool dash, int bor, out RectangleF rect)
+        {
+            float bor2 = bor / 2F, divider = dividerHs.Length > 0 ? dividerHs[0].Width : 0;
+            rect = new RectangleF(it.RECT.X + bor2 + divider, it.RECT.Y + bor2, it.RECT.Width - bor - divider, it.RECT.Height - bor);
+            var pen = new Pen(CellFocusedBorder ?? Colour.PrimaryActive.Get("Table", ColorScheme), bor);
+            if (dash)
+            {
+                pen.Alignment = PenAlignment.Inset;
+                pen.DashStyle = DashStyle.Dash;
+            }
+            return pen;
         }
         void PaintItemArrow(Canvas g, CELL it, bool enable, SolidBrush fore)
         {

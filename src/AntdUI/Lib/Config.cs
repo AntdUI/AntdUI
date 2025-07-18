@@ -70,6 +70,7 @@ namespace AntdUI
         /// 动画使能
         /// </summary>
         public static bool Animation { get; set; } = true;
+
         /// <summary>
         /// 全局默认表格单元格焦点样式
         /// </summary>
