@@ -39,5 +39,10 @@ namespace Demo.Controls
                 else step.Current++;
             }
         }
+
+        private void switch1_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            steps2.MilestoneCurrentCompleted = steps4.MilestoneCurrentCompleted = !e.Value;
+        }
     }
 }

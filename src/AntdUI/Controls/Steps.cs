@@ -162,6 +162,22 @@ namespace AntdUI
             }
         }
 
+        bool milestoneCurrentCompleted = false;
+        /// <summary>
+        /// 当前里程碑已完成
+        /// </summary>
+        [Description("当前里程碑已完成"), Category("外观"), DefaultValue(false)]
+        public bool MilestoneCurrentCompleted
+        {
+            get => milestoneCurrentCompleted;
+            set
+            {
+                if (milestoneCurrentCompleted == value) return;
+                milestoneCurrentCompleted = value;
+                Invalidate();
+            }
+        }
+
         string? milestoneTimeFormat;
         /// <summary>
         /// 里程碑时间点显示格式
@@ -300,7 +316,7 @@ namespace AntdUI
 
                                 if (it.showSub)
                                 {
-                                    it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, height_one);
+                                    it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width + gap, it.title_rect.Y, it.SubTitleSize.Width, height_one);
                                     tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
                                     tmp_max_wr = it.subtitle_rect.Right;
                                 }
@@ -346,7 +362,7 @@ namespace AntdUI
                                 it.title_rect = new Rectangle(it.ico_rect.Right + gap2, !milestoneMode ? y : y - it.TitleSize.Height, it.TitleSize.Width, it.TitleSize.Height);
 
                                 int tmp_max_height = it.ico_rect.Height;
-                                if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
+                                if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width + gap, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
 
                                 if (it.showDescription)
                                 {
@@ -463,32 +479,30 @@ namespace AntdUI
                     {
                         RectangleF rect = splits[sp];
                         if (sp < current) g.Fill(brush_primary, rect);
-                        else
-                        {
-                            g.Fill(brush_split, rect);
+                        else g.Fill(brush_split, rect);
 
-                            if (milestoneMode && sp == current)
+                        if (milestoneMode && (milestoneCurrentCompleted ? sp == current : sp == current - 1 && current > 0))
+                        {
+                            using (var path = new GraphicsPath())
                             {
-                                using (var path = new GraphicsPath())
+                                path.AddRectangle(rect);
+                                var alpha = 100 * (1F - AnimationLoadingValue);
+                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get("Progress", ColorScheme))))
                                 {
-                                    path.AddRectangle(rect);
-                                    var alpha = 60 * (1F - AnimationLoadingValue);
-                                    using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get("Progress", ColorScheme))))
-                                    {
-                                        var state = g.Save();
-                                        if (vertical)
-                                            g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width, rect.Height * AnimationLoadingValue));
-                                        else
-                                            g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height));
-                                        g.Fill(brush_prog, path);
-                                        g.Restore(state);
-                                    }
+                                    var state = g.Save();
+                                    if (vertical)
+                                        g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width, rect.Height * AnimationLoadingValue));
+                                    else
+                                        g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height));
+                                    g.Fill(brush_prog, path);
+                                    g.Restore(state);
                                 }
                             }
-
                         }
+
                     }
                 }
+
                 int i = 0;
                 foreach (var it in items)
                 {
