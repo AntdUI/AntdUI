@@ -624,7 +624,6 @@ namespace AntdUI
 
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
-            g.Fill(Color.Red, item.RectTitle);
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
             else PaintArrow(g, item, pen_arr, -90F);

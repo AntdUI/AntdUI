@@ -303,99 +303,73 @@ namespace AntdUI
 
         public static void SetPrimary(Color primary)
         {
-            Colour.Primary.Set(primary);
             var colors = primary.GenerateColors();
+            Colour.Primary.Set(colors[5]);
+            Colour.PrimaryBg.Set(colors[0]);
+            Colour.PrimaryBgHover.Set(colors[1]);
+            Colour.PrimaryBorder.Set(colors[2]);
+            Colour.PrimaryBorderHover.Set(colors[3]);
             if (Config.Mode == TMode.Light)
             {
-                Colour.PrimaryBg.Set(colors[0]);
-                Colour.PrimaryBgHover.Set(colors[1]);
-                Colour.PrimaryBorder.Set(colors[2]);
-                Colour.PrimaryBorderHover.Set(colors[3]);
+                Colour.PrimaryHover.Set(colors[4]);
+                Colour.PrimaryActive.Set(colors[6]);
             }
             else
             {
-                Colour.PrimaryBg.Set(colors[9]);
-                Colour.PrimaryBgHover.Set(colors[8]);
-                Colour.PrimaryBorder.Set(colors[5]);
-                Colour.PrimaryBorderHover.Set(colors[6]);
+                Colour.PrimaryHover.Set(colors[6]);
+                Colour.PrimaryActive.Set(colors[4]);
             }
-
-            Colour.PrimaryHover.Set(colors[4]);
-            Colour.PrimaryActive.Set(colors[6]);
-
             EventHub.Dispatch(EventType.THEME_PRIMARY);
         }
         public static void SetSuccess(Color success)
         {
-            Colour.Success.Set(success);
             var colors = success.GenerateColors();
-            if (Config.Mode == TMode.Light)
-            {
-                Colour.SuccessBg.Set(colors[0]);
-                Colour.SuccessHover.Set(colors[2]);
-                Colour.SuccessBorder.Set(colors[2]);
-            }
-            else
-            {
-                Colour.SuccessBg.Set(colors[9]);
-                Colour.SuccessHover.Set(colors[5]);
-                Colour.SuccessBorder.Set(colors[5]);
-            }
+            Colour.Success.Set(colors[5]);
+            Colour.SuccessBg.Set(colors[0]);
+            Colour.SuccessBorder.Set(colors[2]);
+            Colour.SuccessHover.Set(colors[3]);
             Colour.SuccessActive.Set(colors[6]);
+            if (Config.Mode == TMode.Light) Colour.SuccessActive.Set(colors[6]);
+            else Colour.SuccessActive.Set(colors[4]);
         }
         public static void SetWarning(Color warning)
         {
-            Colour.Warning.Set(warning);
             var colors = warning.GenerateColors();
-            if (Config.Mode == TMode.Light)
-            {
-                Colour.WarningBg.Set(colors[0]);
-                Colour.WarningHover.Set(colors[2]);
-                Colour.WarningBorder.Set(colors[2]);
-            }
-            else
-            {
-                Colour.WarningBg.Set(colors[9]);
-                Colour.WarningHover.Set(colors[5]);
-                Colour.WarningBorder.Set(colors[5]);
-            }
+            Colour.Warning.Set(colors[5]);
+            Colour.WarningBg.Set(colors[0]);
+            Colour.WarningBorder.Set(colors[2]);
+            Colour.WarningHover.Set(colors[3]);
             Colour.WarningActive.Set(colors[6]);
+            if (Config.Mode == TMode.Light) Colour.WarningActive.Set(colors[6]);
+            else Colour.WarningActive.Set(colors[4]);
         }
         public static void SetError(Color error)
         {
-            Colour.Error.Set(error);
             var colors = error.GenerateColors();
+            Colour.Error.Set(colors[5]);
+            Colour.ErrorBg.Set(colors[0]);
+            Colour.ErrorBorder.Set(colors[2]);
             if (Config.Mode == TMode.Light)
             {
-                Colour.ErrorBg.Set(colors[0]);
-                Colour.ErrorHover.Set(colors[2]);
-                Colour.ErrorBorder.Set(colors[2]);
+                Colour.ErrorHover.Set(colors[4]);
+                Colour.ErrorActive.Set(colors[6]);
             }
             else
             {
-                Colour.ErrorBg.Set(colors[9]);
-                Colour.ErrorHover.Set(colors[5]);
-                Colour.ErrorBorder.Set(colors[5]);
+                Colour.ErrorHover.Set(colors[6]);
+                Colour.ErrorActive.Set(colors[4]);
             }
-            Colour.ErrorActive.Set(colors[6]);
         }
         public static void SetInfo(Color info)
         {
-            Colour.Info.Set(info);
             var colors = info.GenerateColors();
-            if (Config.Mode == TMode.Light)
-            {
-                Colour.InfoBg.Set(colors[0]);
-                Colour.InfoHover.Set(colors[2]);
-                Colour.InfoBorder.Set(colors[2]);
-            }
-            else
-            {
-                Colour.InfoBg.Set(colors[9]);
-                Colour.InfoHover.Set(colors[5]);
-                Colour.InfoBorder.Set(colors[5]);
-            }
+            Colour.Info.Set(colors[5]);
+            Colour.InfoBg.Set(colors[0]);
+            Colour.InfoBorder.Set(colors[2]);
+            Colour.InfoHover.Set(colors[3]);
             Colour.InfoActive.Set(colors[6]);
+            if (Config.Mode == TMode.Light) Colour.InfoActive.Set(colors[6]);
+            else Colour.InfoActive.Set(colors[4]);
         }
 
         /// <summary>

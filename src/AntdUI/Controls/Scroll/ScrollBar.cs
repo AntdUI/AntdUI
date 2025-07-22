@@ -363,7 +363,8 @@ namespace AntdUI
         /// </summary>
         public void SetVrSize(int x, int y)
         {
-            oldx = x; oldy = y;
+            oldx = x;
+            oldy = y;
             SetShow(oldx, oldy);
         }
 
@@ -413,6 +414,7 @@ namespace AntdUI
                 maxX += SIZE;
                 maxY += SIZE;
             }
+            else if (showY) maxX += SIZE;
         }
 
         #endregion

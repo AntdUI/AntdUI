@@ -97,11 +97,11 @@ namespace AntdUI
                     hover = value;
                     if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table", PARENT.ColorScheme)).A > 0)
                     {
-                        if (Config.HasAnimation(nameof(Table)))
+                        if (Config.HasAnimation(nameof(Table)) && PARENT.AnimationTime > 0)
                         {
                             ThreadHover?.Dispose();
                             AnimationHover = true;
-                            var t = Animation.TotalFrames(20, 100);
+                            var t = Animation.TotalFrames(20, PARENT.AnimationTime);
                             if (value)
                             {
                                 ThreadHover = new ITask((i) =>
@@ -703,11 +703,11 @@ namespace AntdUI
                     if (hover == value) return;
                     hover = value;
 
-                    if (Config.HasAnimation(nameof(Table)))
+                    if (Config.HasAnimation(nameof(Table)) && PARENT.AnimationTime > 0)
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
-                        var t = Animation.TotalFrames(20, 100);
+                        var t = Animation.TotalFrames(20, PARENT.AnimationTime);
                         if (value)
                         {
                             ThreadHover = new ITask((i) =>
@@ -826,6 +826,95 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 图标文本
+        /// </summary>
+        class TCellSelect : CELL
+        {
+            /// <summary>
+            /// 普通文本
+            /// </summary>
+            /// <param name="table">表格</param>
+            /// <param name="column">表头</param>
+            /// <param name="prop">反射</param>
+            /// <param name="tag">行数据</param>
+            public TCellSelect(Table table, ColumnSelect column, PropertyDescriptor? prop, object? ov, object? tag) : base(table, column, prop, ov)
+            {
+                COLUMN = column;
+                foreach (SelectItem item in column.Items)
+                {
+                    if (item.Tag == tag || item.Tag.Equals(tag))
+                    {
+                        value = item;
+                        break;
+                    }
+                }
+
+            }
+
+            public SelectItem? value { get; set; }
+            public new ColumnSelect COLUMN { get; private set; }
+
+            internal Rectangle rect_icon = Rectangle.Empty;
+            internal Rectangle rect_text = Rectangle.Empty;
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            {
+                if (value == null) return;//有机会未获取到有效标识
+
+                RECT = _rect;
+                RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+
+                bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
+                bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
+                if (!emptyIcon)
+                {
+                    int gapIcon = gap / 2;
+                    int wh = (int)((_rect.Height - gap) * 0.65f);
+                    rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
+                    if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
+                }
+                else
+                {
+                    rect_text = RECT_REAL;
+                }
+            }
+
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            {
+                if (value == null || string.IsNullOrEmpty(value.Text)) return RECT.Size;
+                if (value.Icon != null || value.IconSvg != null) gap2 += (RECT.Height - gap);//图标间隙
+                if (COLUMN.LineBreak)
+                {
+                    if (COLUMN.Width != null)
+                    {
+                        if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
+                        {
+                            var size2 = g.MeasureString(value.Text, font, w - gap2);
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                        else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
+                        {
+                            var size2 = g.MeasureString(value.Text, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                        else if (int.TryParse(COLUMN.Width, out var i))
+                        {
+                            var size2 = g.MeasureString(value.Text, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
+                    }
+                }
+                var size = g.MeasureString(value.Text, font);
+                MinWidth = size.Width;
+                return new Size(size.Width + gap2, size.Height);
+            }
+
+            public override string? ToString() => value.Text;
+        }
+
+        /// <summary>
         /// 表头
         /// </summary>
         internal class TCellColumn : CELL
@@ -852,16 +941,17 @@ namespace AntdUI
                     if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
                     else size = (int)(font_size.Height * .6F);
                     int size2 = size * 2, icon_sp = (int)(size * .34F), use_r = 0;
+                    int scrollBarGap = (PARENT.ScrollBar.ShowY && this == ROW.cells[ROW.cells.Length - 1] ? PARENT.ScrollBar.SIZE : 0);
                     if (COLUMN.HasFilter)
                     {
                         int tmp = size + icon_sp;
-                        rect_filter = new Rectangle(_rect.Right - use_r - size2, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        rect_filter = new Rectangle(_rect.Right - use_r - size2 - scrollBarGap, _rect.Y + (_rect.Height - size) / 2, size, size);
                         use_r = tmp + icon_sp;
                     }
                     if (COLUMN.SortOrder)
                     {
                         int y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
-                        rect_up = new Rectangle(_rect.Right - use_r - size2, y, size, size);
+                        rect_up = new Rectangle(_rect.Right - use_r - size2 - scrollBarGap, y, size, size);
                         rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
                     }
                 }

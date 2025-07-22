@@ -129,7 +129,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    ThreadState?.Dispose(); ThreadState = null;
+                    ThreadState?.Dispose();
+                    ThreadState = null;
                     ScrollBar.SetVrSize(0, 0);
                     dividers = new Rectangle[0];
                     rows = null;
@@ -394,6 +395,7 @@ namespace AntdUI
                             else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
                             else if (it is TCellSwitch _switch) _switch.SetSize(_rect, switchsize);
                             else if (it is TCellSort sort) sort.SetSize(_rect, sort_size, sort_ico_size);
+                            else if (it is TCellSelect select) select.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
                             else if (it is TCellColumn column)
                             {
                                 it.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
@@ -461,7 +463,7 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, it.RECT.Height - split));
+                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, it.RECT.Height));
                                 }
                             }
                             else
@@ -469,7 +471,7 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y + split, split, rect_read.Height));
+                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, rect_read.Height));
                                 }
                             }
                             if (visibleHeader) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_read.Width, split));
@@ -845,6 +847,11 @@ namespace AntdUI
                 bool value_check = false;
                 if (value is bool check) value_check = check;
                 return new TCellSwitch(this, columnSwitch, prop, ov, value_check);
+            }
+            else if (column is ColumnSelect columnSelect)
+            {
+                //键值类型
+                return new TCellSelect(this, columnSelect, prop, ov, value);
             }
             else return AddRows(column, ref processing, ov, value, prop);
         }
