@@ -363,6 +363,11 @@ namespace AntdUI
         /// </summary>
         public Column? FocusedColumn => cellFocused?.COLUMN;
 
+        /// <summary>
+        /// 当前获得焦点的行
+        /// </summary>
+        public object? FocusedRow => cellFocused?.ROW.RECORD;
+
         #endregion
 
         /// <summary>
@@ -812,6 +817,12 @@ namespace AntdUI
         /// </summary>
         [Description("树表格的箭头样式"), Category("行为"), DefaultValue(TableTreeStyle.Button)]
         public TableTreeStyle TreeArrowStyle { get; set; } = TableTreeStyle.Button;
+
+        /// <summary>
+        /// 动画时长（ms）
+        /// </summary>
+        [Description("动画时长（ms）"), Category("行为"), DefaultValue(100)]
+        public int AnimationTime { get; set; } = 100;
 
         #endregion
 
@@ -1767,6 +1778,53 @@ namespace AntdUI
     }
 
     /// <summary>
+    /// 丰富标识列 (弃用SelectItem.SubText, Sub, Online)
+    /// </summary>
+    public class ColumnSelect : Column
+    {
+        /// <summary>
+        /// 表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        public ColumnSelect(string key, string title) : base(key, title) { }
+
+        /// <summary>
+        /// 表头
+        /// </summary>
+        /// <param name="key">绑定名称</param>
+        /// <param name="title">显示文字</param>
+        /// <param name="align">对齐方式</param>
+        public ColumnSelect(string key, string title, ColumnAlign align) : base(key, title, align) { }
+
+        /// <summary>
+        /// 列值显示类型
+        /// </summary>
+        public SelectCellType CellType { get; set; } = SelectCellType.Icon;
+
+        /// <summary>
+        /// 显示项成员 (SelectItem.Tag为值)
+        /// </summary>
+        public List<SelectItem> Items { get; set; } = new List<SelectItem>();
+        /// <summary>
+        /// 获取选择项
+        /// </summary>
+        /// <param name="val">项值</param>
+        /// <returns></returns>
+        public SelectItem? this[object? val]
+        {
+            get
+            {
+                foreach (var item in Items)
+                {
+                    if (item.Tag == val || item.Tag.Equals(val)) return item;
+                }
+                return null;
+            }
+        }
+    }
+
+    /// <summary>
     /// 表头
     /// </summary>
     public class Column
@@ -1847,6 +1905,22 @@ namespace AntdUI
                 if (visible == value) return;
                 visible = value;
                 Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 返回当前列的显示索引
+        /// </summary>
+        public int VisibleIndex
+        {
+            get
+            {
+                if (PARENT?.rows == null || PARENT.rows.Length == 0) return -1;
+                foreach (var col in PARENT.rows[0].cells)
+                {
+                    if (col.COLUMN == this) return col.INDEX;
+                }
+                return INDEX;
             }
         }
 
@@ -2248,8 +2322,8 @@ namespace AntdUI
         #region 内部
 
         internal Table? PARENT { get; set; }
-        internal int INDEX { get; set; }
-        internal int INDEX_REAL { get; set; }
+        public int INDEX { get; internal set; }
+        public int INDEX_REAL { get; internal set; }
         void Invalidate()
         {
             if (PARENT == null) return;
@@ -2371,5 +2445,23 @@ namespace AntdUI
         /// 降序
         /// </summary>
         DESC = 2
+    }
+    /// <summary>
+    /// 单元格显示类型
+    /// </summary>
+    public enum SelectCellType
+    {
+        /// <summary>
+        /// 仅图标
+        /// </summary>
+        Icon = 0,
+        /// <summary>
+        /// 仅文本
+        /// </summary>
+        Text = 1,
+        /// <summary>
+        /// 图标和文本 (如果有)
+        /// </summary>
+        Both = 2,
     }
 }

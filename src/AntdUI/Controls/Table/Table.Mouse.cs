@@ -33,6 +33,7 @@ namespace AntdUI
 
         int shift_index = -1;
         CELL? cellFocused;
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             cellMouseDown = null;
@@ -40,6 +41,7 @@ namespace AntdUI
             if (ClipboardCopy) Focus();
             subForm?.IClose();
             subForm = null;
+            CloseTip(false);
             if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
             {
                 base.OnMouseDown(e);
@@ -127,6 +129,7 @@ namespace AntdUI
         void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int offset_x, int offset_xi, int offset_y, int i_r, int i_c, Column? column)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, offset_x, offset_xi, offset_y, e.Clicks > 1);
+            if (cellFocused != null) Invalidate(cellFocused.ROW.RECT);//同行切换单元格时，及时刷新
             if (cell is Template template)
             {
                 if (e.Button == MouseButtons.Left)

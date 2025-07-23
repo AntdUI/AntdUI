@@ -80,16 +80,18 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Left:
+                    int x = KeyLeft();
                     if (ScrollBar.ShowX)
                     {
-                        ScrollBar.ValueX -= 50;
+                        ScrollBar.ValueX -= x;
                         if (HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.Right:
+                    int xr = KeyRight();
                     if (ScrollBar.ShowX)
                     {
-                        ScrollBar.ValueX += 50;
+                        ScrollBar.ValueX += xr;
                         if (HandShortcutKeys) return true;
                     }
                     break;
@@ -99,10 +101,35 @@ namespace AntdUI
                     {
                         var it = rows[selectedIndex[0]];
                         CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                        if (EditMode != TEditMode.None && cellFocused != null) EnterEditMode(selectedIndex[0], cellFocused.INDEX);
                     }
                     break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        int KeyLeft()
+        {
+            if (cellFocused == null || cellFocused.INDEX <= 0) return 50;
+            cellFocused = cellFocused.ROW.cells[cellFocused.INDEX - 1];
+            if (cellFocused == null) return 50;
+            int x = (fixedColumnR != null && fixedColumnR.Contains(cellFocused.INDEX)) ? 0 : cellFocused.RECT.Width;
+            Invalidate(cellFocused.ROW.RECT);
+            return x;
+        }
+        int KeyRight()
+        {
+            if (cellFocused == null) return 50;
+            int next = cellFocused.INDEX + 1;
+            if (next < cellFocused.ROW.cells.Length)
+            {
+                cellFocused = cellFocused?.ROW.cells[next];
+                if (cellFocused == null) return 50;
+                int x = (fixedColumnL != null && fixedColumnL.Contains(cellFocused.INDEX)) || cellFocused.RECT.Right < Width ? 0 : cellFocused.RECT.Width;
+                Invalidate(cellFocused.ROW.RECT);
+                return x;
+            }
+            return 50;
         }
     }
 }

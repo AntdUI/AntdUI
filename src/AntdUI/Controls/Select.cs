@@ -1239,7 +1239,12 @@ namespace AntdUI
         {
             List = list;
             Dir = new Dictionary<object, int>(list.Count);
-            for (int i = 0; i < list.Count; i++) Dir.Add(list[i], i);
+            for (int i = 0; i < list.Count; i++)
+            {
+                var item = list[i];
+                if (Dir.ContainsKey(item)) continue;
+                Dir.Add(item, i);
+            }
         }
 
         public IList<object> List { get; private set; }

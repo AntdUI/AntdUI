@@ -66,8 +66,8 @@ namespace Demo.Controls
             header1.Description = "屏幕边缘滑出的浮层面板。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
-            header1.LocalizationDescription = "Divider.Description";
-            header1.LocalizationText = "Divider.Text";
+            header1.LocalizationDescription = "Drawer.Description";
+            header1.LocalizationText = "Drawer.Text";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);

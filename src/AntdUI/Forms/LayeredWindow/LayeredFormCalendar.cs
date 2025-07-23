@@ -272,7 +272,7 @@ namespace AntdUI
                             x_y = 0;
                         }
                     }
-                    catch 
+                    catch
                     { }
                 }
                 year_str = _calendar_year[1].date_str + "-" + _calendar_year[_calendar_year.Count - 2].date_str;

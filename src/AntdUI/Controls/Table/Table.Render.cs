@@ -707,6 +707,7 @@ namespace AntdUI
             if (it is TCellCheck check) PaintCheck(g, check, enable);
             else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
             else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
+            else if (it is TCellSelect select) PaintSelect(g, select, enable);
             else if (it is TCellSort sort)
             {
                 if (sort.AnimationHover)
@@ -748,34 +749,34 @@ namespace AntdUI
             {
                 var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
                 if (style == TableCellFocusedStyle.None) return;
+                var state = g.Save();
+                g.SetClip(it.RECT);
                 switch (style)
                 {
                     case TableCellFocusedStyle.Solid:
                         g.Fill(CellFocusedBg ?? Colour.BgBase.Get("Table", ColorScheme), it.RECT);
-                        using (var pen = PaintItemFocus(it, false, (int)(Config.Dpi * 2), out var rect))
+                        using (var pen = PaintItemFocus(it, false, (int)(Config.Dpi * 2)))
                         {
-                            g.Draw(pen, rect);
+                            g.Draw(pen, it.RECT);
                         }
                         break;
                     case TableCellFocusedStyle.Dash:
-                        using (var pen = PaintItemFocus(it, true, (int)(Config.Dpi), out var rect))
+                        using (var pen = PaintItemFocus(it, true, (int)(Config.Dpi)))
                         {
-                            g.Draw(pen, rect);
+                            g.Draw(pen, it.RECT);
                         }
                         break;
                 }
+                g.Restore(state);
             }
         }
-        Pen PaintItemFocus(CELL it, bool dash, int bor, out RectangleF rect)
+        Pen PaintItemFocus(CELL it, bool dash, int bor)
         {
-            float bor2 = bor / 2F, divider = dividerHs.Length > 0 ? dividerHs[0].Width : 0;
-            rect = new RectangleF(it.RECT.X + bor2 + divider, it.RECT.Y + bor2, it.RECT.Width - bor - divider, it.RECT.Height - bor);
-            var pen = new Pen(CellFocusedBorder ?? Colour.PrimaryActive.Get("Table", ColorScheme), bor);
-            if (dash)
+            var pen = new Pen(CellFocusedBorder ?? Colour.PrimaryActive.Get("Table", ColorScheme), bor)
             {
-                pen.Alignment = PenAlignment.Inset;
-                pen.DashStyle = DashStyle.Dash;
-            }
+                Alignment = PenAlignment.Inset
+            };
+            if (dash) pen.DashStyle = DashStyle.Dash;
             return pen;
         }
         void PaintItemArrow(Canvas g, CELL it, bool enable, SolidBrush fore)
@@ -910,14 +911,15 @@ namespace AntdUI
                 try
                 {
                     var lastrow = shows[shows.Count - 1];
+                    int scrollBar = ScrollBar.ShowY ? ScrollBar.SIZE : 0, rectR = rect_read.Right - scrollBar;
                     CELL first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];
-                    if (sx + rect_read.Width < last.RECT.Right)
+                    if (sx + rectR < last.RECT.Right)
                     {
-                        sFixedR = last.RECT.Right - rect_read.Width;
                         showFixedColumnR = true;
-                        int w = last.RECT.Right - first.RECT.Left;
+                        sFixedR = last.RECT.Right - rectR;
+                        int w = last.RECT.Right - first.RECT.Left + scrollBar;
 
-                        var rect_Fixed = new Rectangle(rect_read.Width - w, rect_read.Y, w + (ScrollBar.ShowY ? ScrollBar.SIZE : 0) + borsize, rect_read.Height);
+                        var rect_Fixed = new Rectangle(rect_read.Right - w, rect_read.Y, w, rect_read.Height);
 
                         GraphicsPath? clipath = null;
 
@@ -1151,13 +1153,14 @@ namespace AntdUI
                 try
                 {
                     var lastrow = shows[shows.Count - 1];
+                    int scrollBar = ScrollBar.ShowY ? ScrollBar.SIZE : 0, rectR = rect_read.Right - scrollBar;
                     CELL first = lastrow.row.cells[fixedColumnR[fixedColumnR.Count - 1]], last = lastrow.row.cells[fixedColumnR[0]];
-                    if (sx + rect_read.Width < last.RECT.Right)
+                    if (sx + rectR < last.RECT.Right)
                     {
-                        int sFixedR = last.RECT.Right - rect_read.Width;
-                        int w = last.RECT.Right - first.RECT.Left;
+                        int sFixedR = last.RECT.Right - rectR;
+                        int w = last.RECT.Right - first.RECT.Left + scrollBar;
 
-                        var rect_Fixed = new Rectangle(rect_read.Width - w, rect_read.Y, w + (ScrollBar.ShowY ? ScrollBar.SIZE : 0), rect_read.Height);
+                        var rect_Fixed = new Rectangle(rect_read.Right - w, rect_read.Y, w, rect_read.Height);
 
                         GraphicsPath? clipath = null;
 
@@ -1321,7 +1324,7 @@ namespace AntdUI
 
         #endregion
 
-        #region 渲染复选框
+        #region 渲染复选/选择框
 
         #region 复选框
 
@@ -1533,6 +1536,20 @@ namespace AntdUI
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region 选择框
+
+        void PaintSelect(Canvas g, TCellSelect select, bool enable)
+        {
+            if (select.value == null) return;
+            var color = select.value.TagFore ?? fore ?? Colour.Text.Get("Select", ColorScheme);
+            if (select.value.IconSvg != null) g.GetImgExtend(select.value.IconSvg, select.rect_icon, color);
+            else if (select.value.Icon != null) g.Image(select.value.Icon, select.rect_icon);
+
+            if (select.COLUMN.CellType != SelectCellType.Icon && select.rect_text != Rectangle.Empty) g.String(select.value.Text, Font, color, select.rect_text);
         }
 
         #endregion

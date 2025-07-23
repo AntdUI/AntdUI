@@ -583,6 +583,19 @@ namespace AntdUI
         public string Value { get; private set; }
     }
 
+    public class TableEndValueEditEventArgs : ITableEventArgs
+    {
+        public TableEndValueEditEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
+        {
+            Value = value;
+        }
+
+        /// <summary>
+        /// 修改后值
+        /// </summary>
+        public object? Value { get; private set; }
+    }
+
     public class TableSetRowStyleEventArgs : EventArgs
     {
         public TableSetRowStyleEventArgs(object? record, int rowIndex, int index)

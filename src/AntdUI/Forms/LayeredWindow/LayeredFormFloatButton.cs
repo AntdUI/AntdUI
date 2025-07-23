@@ -379,26 +379,31 @@ namespace AntdUI
                     {
                         it.hover = true;
                         count++;
-                        if (it.Tooltip != null)
+                        var tooltip = it.Tooltip;
+                        if (tooltip != null)
                         {
                             var _rect = TargetRect;
                             var rect = new Rectangle(_rect.X + it.rect.X, _rect.Y + it.rect.Y, it.rect.Width, it.rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(config.Form, rect, it.Tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(config.Form, rect, tooltip, new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),
                                 });
                                 tooltipForm.Show(this);
                             }
-                            else tooltipForm.SetText(rect, it.Tooltip);
+                            else tooltipForm.SetText(rect, tooltip);
                         }
                     }
                 }
                 else
                 {
-                    if (it.hover) { it.hover = false; count++; }
+                    if (it.hover)
+                    {
+                        it.hover = false;
+                        count++;
+                    }
                 }
             }
             SetCursor(hand > 0);
@@ -413,7 +418,11 @@ namespace AntdUI
             int count = 0;
             foreach (var it in config.Btns)
             {
-                if (it.hover) { it.hover = false; count++; }
+                if (it.hover)
+                {
+                    it.hover = false;
+                    count++;
+                }
             }
             SetCursor(false);
             if (count > 0) Print();

@@ -329,10 +329,20 @@ namespace AntdUI
             /// </summary>
             public string? LocalizationText { get; set; }
 
+            string? tooltip;
             /// <summary>
-            /// 气泡的内容
+            /// 气泡提示
             /// </summary>
-            public string? Tooltip { get; set; }
+            public string? Tooltip
+            {
+                get => Localization.GetLangI(LocalizationTooltip, tooltip, new string?[] { "{id}", Name });
+                set => tooltip = value;
+            }
+
+            /// <summary>
+            /// 国际化（气泡提示）
+            /// </summary>
+            public string? LocalizationTooltip { get; set; }
 
             TTypeMini type = TTypeMini.Default;
             /// <summary>
@@ -456,6 +466,118 @@ namespace AntdUI
             internal Rectangle rect_read;
             internal Rectangle rect_icon;
             internal Bitmap? shadow_temp;
+
+            #endregion
+
+            #region 设置
+
+            public ConfigBtn SetFore(Color? value)
+            {
+                fore = value;
+                return this;
+            }
+
+            public ConfigBtn SetText(string? value, string? localization = null)
+            {
+                LocalizationText = localization;
+                text = value;
+                return this;
+            }
+
+            public ConfigBtn SetTooltip(string? value, string? localization = null)
+            {
+                LocalizationTooltip = localization;
+                tooltip = value;
+                return this;
+            }
+
+            public ConfigBtn SetType(TTypeMini value = TTypeMini.Primary)
+            {
+                type = value;
+                return this;
+            }
+
+            public ConfigBtn SetRadius(int value = 0)
+            {
+                Radius = value;
+                return this;
+            }
+
+            public ConfigBtn SetRound(bool value = false)
+            {
+                round = value;
+                return this;
+            }
+
+            public ConfigBtn SetEnabled(bool value = false)
+            {
+                enabled = value;
+                return this;
+            }
+
+            public ConfigBtn SetLoading(bool value = true, float size = .3F)
+            {
+                loading = value;
+                LoadingValue = size;
+                return this;
+            }
+
+            public ConfigBtn SetLoadingValue(float value = 0F)
+            {
+                LoadingValue = value;
+                return this;
+            }
+
+            #region 图标
+
+            public ConfigBtn SetIcon(Image? img, Size? size = null)
+            {
+                icon = img;
+                iconSize = size;
+                return this;
+            }
+
+            public ConfigBtn SetIcon(string? svg, Size? size = null)
+            {
+                iconSvg = svg;
+                iconSize = size;
+                return this;
+            }
+
+            #endregion
+
+            #region 徽标
+
+            public ConfigBtn SetBadge(string? value = " ", TAlign align = TAlign.TR)
+            {
+                badge = value;
+                badgeAlign = align;
+                return this;
+            }
+            public ConfigBtn SetBadgeSvg(string? value, TAlign align = TAlign.TR)
+            {
+                badgeSvg = value;
+                badgeAlign = align;
+                return this;
+            }
+            public ConfigBtn SetBadgeOffset(int x, int y)
+            {
+                BadgeOffsetX = x;
+                BadgeOffsetY = y;
+                return this;
+            }
+            public ConfigBtn SetBadgeSize(float value)
+            {
+                BadgeSize = value;
+                return this;
+            }
+            public ConfigBtn SetBadgeBack(Color? value)
+            {
+                BadgeBack = value;
+                return this;
+            }
+
+            #endregion
 
             #endregion
 

@@ -162,28 +162,28 @@ namespace Demo.Controls
             {
                 var dpi = AntdUI.Config.Dpi;
 
-                using (var fore = new SolidBrush(AntdUI.Style.Db.Text))
+                int x = (int)(30 * dpi);
+                using (var font_title = new Font(e.Panel.Font, FontStyle.Bold))
+                using (var font_count = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * .74F, e.Panel.Font.Style))
                 {
-                    using (var font_title = new Font(e.Panel.Font, FontStyle.Bold))
-                    using (var font_count = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * .74F, e.Panel.Font.Style))
-                    {
-                        var size = AntdUI.Helper.Size(g.MeasureString(title, font_title));
-                        g.String(title, font_title, fore, e.Rect, s_f);
+                    var size = AntdUI.Helper.Size(g.MeasureString(title, font_title));
+                    g.String(title, font_title, AntdUI.Style.Db.Text, new Rectangle(e.Rect.X + x, e.Rect.Y, e.Rect.Width, e.Rect.Height), s_f);
 
-                        var rect_count = new Rectangle(e.Rect.X + size.Width, e.Rect.Y + (e.Rect.Height - size.Height) / 2, size.Height, size.Height);
-                        using (var path = AntdUI.Helper.RoundPath(rect_count, e.Radius))
-                        {
-                            g.Fill(AntdUI.Style.Db.TagDefaultBg, path);
-                            g.Draw(AntdUI.Style.Db.DefaultBorder, 1 * dpi, path);
-                        }
-                        g.String(count, font_count, fore, rect_count, s_c);
+                    var rect_count = new Rectangle(e.Rect.X + x + size.Width + gap, e.Rect.Y + (e.Rect.Height - size.Height) / 2, size.Height, size.Height);
+                    using (var path = AntdUI.Helper.RoundPath(rect_count, e.Radius))
+                    {
+                        g.Fill(AntdUI.Style.Db.TagDefaultBg, path);
+                        g.Draw(AntdUI.Style.Db.DefaultBorder, 1 * dpi, path);
                     }
+                    g.String(count, font_count, AntdUI.Style.Db.Text, rect_count, s_c);
                 }
             }
 
+            int gap = 8;
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 var dpi = AntdUI.Config.Dpi;
+                gap = (int)(8 * dpi);
                 return new Size(e.Rect.Width, (int)(44 * dpi));
             }
         }

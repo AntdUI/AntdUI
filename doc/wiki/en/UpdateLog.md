@@ -1,6 +1,18 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
-### `2.0.12` 2025-07-18 🎨
+### `2.0.13` 2025-07-22 🎨
+
+- ➕ The Milestone CurrentCompleted property in Steps milestone mode is used to switch the flow of events
+- ➕ Table ColumnSelect， Support displaying icons+text and editing (applicable for enumeration/status)
+- ➕ Table Focus Column/Row FocusedColumn, FocusdRecord Properties
+- ✍️ Table scrollbar occlusion and floating column on the right side
+- ✍️ Table supports keyboard left/right arrow to switch focus cells
+- ✍️ Optimize cell focus and row switching display in Table
+- ✍️ Alignment 5.0 Color Algorithm
+
+### ~~`2.0.12`~~ 2025-07-18
+
+> Debug code exists, please use >= `2.0.13`
 
 - ➕ TabHeader RightGap Right Gap Gap
 - ➕ Table KeyTreeArrowStyle Table Arrow Style

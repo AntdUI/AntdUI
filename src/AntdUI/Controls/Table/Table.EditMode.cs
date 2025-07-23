@@ -79,7 +79,8 @@ namespace AntdUI
             if (rows == null) return false;
             if (cell.COLUMN.Editable)
             {
-                if (cell is TCellText cellText) return true;
+                if (cell is TCellText) return true;
+                else if (cell is TCellSelect) return true;
                 else if (cell is Template templates)
                 {
                     foreach (var template in templates.Value)
@@ -143,6 +144,43 @@ namespace AntdUI
                     });
                     Controls.Add(arge.Input);
                     arge.Input.Focus();
+                });
+            }
+            else if (cell is TCellSelect cellSelect)
+            {
+                object? value = cellSelect.value?.Tag;
+                bool isok = true;
+                if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col, column));
+                if (!isok) return;
+                inEditMode = true;
+
+                ScrollBar.OnInvalidate = () => EditModeClose();
+                BeginInvoke(() =>
+                {
+                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                    var tmp_input = CreateInput(cell, sx, sy, multiline, cellSelect.value);
+                    if (cellSelect.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
+                    else if (cellSelect.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
+                    var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
+                    CellBeginEditInputStyle?.Invoke(this, arge);
+                    if (arge.Input is Select select)
+                    {
+                        ShowSelect(select, (cf, _value) =>
+                        {
+                            bool isok_end = CellEndValueEdit?.Invoke(this, new TableEndValueEditEventArgs(_value, it.RECORD, i_row, i_col, column)) ?? true;
+                            if (isok_end && !cf)
+                            {
+                                cellSelect.value = cellSelect.COLUMN[_value];
+                                if (it.RECORD is DataRow datarow) datarow[i_col] = _value;
+                                else SetValue(cell, _value);
+                                if (multiline) LoadLayout();
+                                CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
+                            }
+                        });
+                        Controls.Add(arge.Input);
+                        arge.Input.Focus();
+                    }
+                    else arge.Input.Dispose();
                 });
             }
             else if (cell is Template templates)
@@ -298,7 +336,28 @@ namespace AntdUI
         Input CreateInput(bool multiline, object? value, Column column, Rectangle rect)
         {
             Input input;
-            if (value is CellText text)
+            if (column is ColumnSelect columnSelect)
+            {
+                Select edit = new Select
+                {
+                    Multiline = multiline,
+                    Location = rect.Location,
+                    Size = rect.Size,
+                    List = true,
+                    IconRatio = 1f,
+                    ReadOnly = column.ReadOnly,
+                };
+                if (value is SelectItem select)
+                {
+                    edit.Text = select.Text;
+                    edit.SelectedValue = select.Tag;
+                    edit.ShowIcon = select.Icon != null || select.IconSvg != null;
+                }
+                input = edit;
+                edit.Items.AddRange(columnSelect.Items.ToArray());
+                edit.SelectedValue = value;
+            }
+            else if (value is CellText text)
             {
                 input = new Input
                 {
@@ -316,7 +375,7 @@ namespace AntdUI
                     Multiline = multiline,
                     Location = rect.Location,
                     Size = rect.Size,
-                    Text = value?.ToString() ?? "",
+                    Text = column.GetDisplayText(value) ?? string.Empty,
                     ReadOnly = column.ReadOnly
                 };
             }
@@ -326,7 +385,7 @@ namespace AntdUI
         }
         void ShowInput(Input input, Action<bool, string> call)
         {
-            string old_text = input.Text;
+            string old = input.Text;
             bool isone = true;
             input.KeyPress += (a, b) =>
             {
@@ -337,7 +396,7 @@ namespace AntdUI
                         isone = false;
                         b.Handled = true;
                         ScrollBar.OnInvalidate = null;
-                        call(old_text == input.Text, input.Text);
+                        call(old == input.Text, input.Text);
                         inEditMode = false;
                         input.Dispose();
                     }
@@ -350,7 +409,7 @@ namespace AntdUI
                     isone = false;
                     input.Visible = false;
                     ScrollBar.OnInvalidate = null;
-                    call(old_text == input.Text, input.Text);
+                    call(old == input.Text, input.Text);
                     inEditMode = false;
                     Focus();
                     if (Modal.ModalCount > 0)
@@ -363,6 +422,44 @@ namespace AntdUI
                         return;
                     }
                     input.Dispose();
+                }
+            };
+        }
+        void ShowSelect(Select select, Action<bool, object?> call)
+        {
+            var old = select.SelectedValue;
+            bool isone = true;
+            select.SelectedValueChanged += (a, b) =>
+            {
+                if (isone)
+                {
+                    isone = false;
+                    ScrollBar.OnInvalidate = null;
+                    call(old == select.SelectedValue, select.SelectedValue);
+                    inEditMode = false;
+                    select.Dispose();
+                }
+            };
+            select.LostFocus += (a, b) =>
+            {
+                if (isone)
+                {
+                    isone = false;
+                    select.Visible = false;
+                    ScrollBar.OnInvalidate = null;
+                    call(old == select.SelectedValue, select.SelectedValue);
+                    inEditMode = false;
+                    Focus();
+                    if (Modal.ModalCount > 0)
+                    {
+                        ITask.Run(() =>
+                        {
+                            System.Threading.Thread.Sleep(200);
+                            BeginInvoke(() => select.Dispose());
+                        });
+                        return;
+                    }
+                    select.Dispose();
                 }
             };
         }

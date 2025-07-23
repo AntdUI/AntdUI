@@ -85,6 +85,8 @@ namespace Demo
                     return "Next";
                 case "Finish":
                     return "Finish";
+                case "Click:":
+                    return "Click:";
 
                 //Alert ----------------------------
                 case "Alert.Text":
@@ -145,6 +147,16 @@ namespace Demo
                     return "Multiple Buttons";
                 case "Button.divider6":
                     return "Shape";
+
+                //FloatButton ----------------------------
+                case "FloatButton.1":
+                    return "Search for";
+                case "FloatButton.2":
+                    return "Don't be ridiculous";
+                case "FloatButton.3":
+                    return "Help me";
+                case "FloatButton.4":
+                    return "Hopeless";
 
                 //Carousel ----------------------------
                 case "Carousel.Text":
