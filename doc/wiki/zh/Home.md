@@ -4,7 +4,8 @@
 
 中文・[English](../en/Home.md)・[更新日志](UpdateLog.md)
 
-## 入门
+## 🎯 指南
+
 - [**安装** - 界面库入门](Install.md)
 - [**DPI** - 高分辨率模糊/字体看起来不清晰](DPI.md)
 - [**配置** - 全局配置](Config.md)

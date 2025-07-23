@@ -4,7 +4,7 @@
 
 [中文](../zh/Home.md)・English・[UpdateLog](UpdateLog.md)
 
-## Introduce
+## 🎯 Guide
 
 - [**Install** - Introduction to Interface Library](Install.md)
 - [**DPI** - High resolution blur/unclear font appearance](DPI.md)
