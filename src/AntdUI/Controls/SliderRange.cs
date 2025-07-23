@@ -28,7 +28,7 @@ namespace AntdUI
     /// <summary>
     /// SliderRange 滑动范围输入条
     /// </summary>
-    /// <remarks>滑动型输入器，展示当前值和可选范围。</remarks>
+    /// <remarks>滑动型范围输入器。</remarks>
     [Description("SliderRange 滑动范围输入条")]
     [ToolboxItem(true)]
     [DefaultProperty("Value")]

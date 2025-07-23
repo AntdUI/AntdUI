@@ -40,7 +40,7 @@ namespace Demo.Controls
             btn_previous.Visible = step > 1;
             if (btn_previous.Visible)
             {
-                int w1 = (int)(label1.PSize.Width / AntdUI.Config.Dpi), w = (int)((label2.PSize.Width + btn_previous.PSize.Width + btn_next.PSize.Width) / AntdUI.Config.Dpi);
+                int w1 = label1.PSize.Width, w = (label2.PSize.Width + btn_previous.PSize.Width + btn_next.PSize.Width) - (int)(40 * AntdUI.Config.Dpi);
                 Width = w1 > w ? w1 : w;
             }
         }
