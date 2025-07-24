@@ -42,7 +42,7 @@ namespace AntdUI
             subForm?.IClose();
             subForm = null;
             CloseTip(false);
-            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
@@ -673,7 +673,7 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
+            if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
                 if (rows == null || inEditMode) return;
                 var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);

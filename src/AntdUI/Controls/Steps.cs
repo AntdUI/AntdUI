@@ -652,7 +652,7 @@ namespace AntdUI
             if (items == null || items.Count == 0 || ItemClick == null) return;
             foreach (var it in items)
             {
-                if (it.Visible && it.rect.Contains(e.Location))
+                if (it.Visible && it.rect.Contains(e.X, e.Y))
                 {
                     ItemClick(this, new StepsItemEventArgs(it, e));
                     return;
@@ -666,7 +666,7 @@ namespace AntdUI
             if (items == null || items.Count == 0 || ItemClick == null) return;
             foreach (var it in items)
             {
-                if (it.Visible && it.rect.Contains(e.Location))
+                if (it.Visible && it.rect.Contains(e.X, e.Y))
                 {
                     SetCursor(true);
                     return;
@@ -770,23 +770,6 @@ namespace AntdUI
 
         internal int ReadWidth { get; set; }
 
-        DateTime? milestoneTime;
-        /// <summary>
-        /// 里程碑的时间点
-        /// </summary>
-        [Description("里程碑时间点"), Category("数据"), DefaultValue(null)]
-        public DateTime? MilestoneTimePoint
-        {
-            get => milestoneTime;
-            set
-            {
-                if (milestoneTime == value) return;
-                milestoneTime = value;
-
-                Invalidate();
-            }
-        }
-
         /// <summary>
         /// 名称
         /// </summary>
@@ -811,6 +794,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
         /// <summary>
         /// 里程碑模式下的标题
         /// </summary>
@@ -839,6 +823,7 @@ namespace AntdUI
                 return tmp;
             }
         }
+
         [Description("标题"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationTitle { get; set; }
 
@@ -891,6 +876,23 @@ namespace AntdUI
 
         internal Size DescriptionSize { get; set; }
 
+        DateTime? milestoneTime;
+        /// <summary>
+        /// 里程碑的时间点
+        /// </summary>
+        [Description("里程碑时间点"), Category("数据"), DefaultValue(null)]
+        public DateTime? MilestoneTimePoint
+        {
+            get => milestoneTime;
+            set
+            {
+                if (milestoneTime == value) return;
+                milestoneTime = value;
+
+                Invalidate();
+            }
+        }
+
         bool visible = true;
         /// <summary>
         /// 是否显示
@@ -922,6 +924,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
         Color? fore;
         /// <summary>
         /// 时间轴前景色
@@ -944,12 +947,7 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        void Invalidate()
-        {
-            if (PARENT == null) return;
-            PARENT.ChangeList();
-            PARENT.Invalidate();
-        }
+        #region 内部
 
         internal Steps? PARENT { get; set; }
 
@@ -959,6 +957,80 @@ namespace AntdUI
         internal Rectangle subtitle_rect { get; set; }
         internal Rectangle description_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
+
+        void Invalidate()
+        {
+            if (PARENT == null) return;
+            PARENT.ChangeList();
+            PARENT.Invalidate();
+        }
+
+        #endregion
+
+        #region 设置
+
+        #region 图标
+
+        public StepsItem SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public StepsItem SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public StepsItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public StepsItem SetName(string? value)
+        {
+            Name = value;
+            return this;
+        }
+
+        public StepsItem SetTitle(string value, string? localization = null)
+        {
+            title = value;
+            LocalizationTitle = localization;
+            return this;
+        }
+
+        public StepsItem SetSubTitle(string? value, string? localization = null)
+        {
+            subTitle = value;
+            LocalizationSubTitle = localization;
+            return this;
+        }
+
+        public StepsItem SetDescription(string? value, string? localization = null)
+        {
+            description = value;
+            LocalizationDescription = localization;
+            return this;
+        }
+
+        public StepsItem SetVisible(bool value = false)
+        {
+            visible = value;
+            return this;
+        }
+
+        public StepsItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string ToString() => Title + " " + SubTitle;
     }

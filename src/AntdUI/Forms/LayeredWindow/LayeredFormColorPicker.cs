@@ -397,7 +397,7 @@ namespace AntdUI
             if (RunAnimation) return;
             if (e.Button == MouseButtons.Left)
             {
-                if (rect_colors_big.Contains(e.Location))
+                if (rect_colors_big.Contains(e.X, e.Y))
                 {
                     //顶部渐变色卡
                     if (colors_mouse != null)
@@ -413,7 +413,7 @@ namespace AntdUI
                         down_colors = true;
                     }
                 }
-                else if (rect_hue_big.Contains(e.Location))
+                else if (rect_hue_big.Contains(e.X, e.Y))
                 {
                     //色相
                     if (bmp_hue != null)
@@ -436,7 +436,7 @@ namespace AntdUI
                         down_hue = true;
                     }
                 }
-                else if (rect_alpha_big.Contains(e.Location))
+                else if (rect_alpha_big.Contains(e.X, e.Y))
                 {
                     //透明度
                     if (bmp_alpha_read != null)
@@ -450,7 +450,7 @@ namespace AntdUI
                         down_alpha = true;
                     }
                 }
-                else if (AllowClear && rect_btn.Contains(e.Location))
+                else if (AllowClear && rect_btn.Contains(e.X, e.Y))
                 {
                     if (PARENT is ColorPicker color && color.HasValue)
                     {
@@ -458,8 +458,8 @@ namespace AntdUI
                         Print();
                     }
                 }
-                else if (ShowClose && rect_close.Contains(e.Location)) IClose();
-                else if (ShowReset && rect_reset.Contains(e.Location))
+                else if (ShowClose && rect_close.Contains(e.X, e.Y)) IClose();
+                else if (ShowReset && rect_reset.Contains(e.X, e.Y))
                 {
                     if (PARENT is ColorPicker color && color.HasValue)
                     {

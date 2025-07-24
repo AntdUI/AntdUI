@@ -907,7 +907,7 @@ namespace AntdUI
         {
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
-            if (ScrollBar.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 if (scroll_show)
@@ -1015,7 +1015,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.X, e.Y))
             {
                 if (OnTouchMove(e.X, e.Y))
                 {
@@ -1502,6 +1502,12 @@ namespace AntdUI
         [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
 
+        /// <summary>
+        /// 名称
+        /// </summary>
+        [Description("名称"), Category("数据"), DefaultValue(null)]
+        public string? Name { get; set; }
+
         #region 图标
 
         Image? icon;
@@ -1890,28 +1896,19 @@ namespace AntdUI
             else PARENTITEM.items?.Remove(this);
         }
 
-        #endregion
-
-        void Invalidate() => PARENT?.Invalidate();
-        void Invalidates()
+        public void UpdateText(string newText)
         {
-            if (PARENT == null) return;
-            PARENT.ChangeList();
-            PARENT.Invalidate();
+            Text = newText;
+            Invalidate();
         }
 
-        internal float SubY { get; set; }
-        internal float SubHeight { get; set; }
+        #endregion
 
-        internal int ExpandHeight { get; set; }
-        internal float ExpandProg { get; set; }
-        internal bool ExpandThread { get; set; }
-        internal bool show { get; set; }
-        internal bool Show { get; set; }
+        #region 悬浮态
 
         bool hover = false;
         /// <summary>
-        /// 是否移动
+        /// 是否悬浮
         /// </summary>
         internal bool Hover
         {
@@ -1957,17 +1954,23 @@ namespace AntdUI
             }
         }
 
+        #endregion
+
         /// <summary>
         /// 是否选中
         /// </summary>
         [Description("是否选中"), Category("外观"), DefaultValue(false)]
         public bool Select { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MenuItem? PARENTITEM { get; set; }
+
+        #region 内部
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MenuItem? PARENTITEM { get; set; }
+        #region 布局
 
         internal void SetRect(int depth, bool indent, TMenuMode mode, Rectangle _rect, int icon_size, int gap)
         {
@@ -2047,13 +2050,160 @@ namespace AntdUI
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        public override string? ToString() => Text;
+        #endregion
 
+        internal float SubY { get; set; }
+        internal float SubHeight { get; set; }
 
-        public void UpdateText(string newText)
+        internal int ExpandHeight { get; set; }
+        internal float ExpandProg { get; set; }
+        internal bool ExpandThread { get; set; }
+        internal bool show { get; set; }
+        internal bool Show { get; set; }
+        void Invalidate() => PARENT?.Invalidate();
+        void Invalidates()
         {
-            Text = newText;
-            Invalidate();
+            if (PARENT == null) return;
+            PARENT.ChangeList();
+            PARENT.Invalidate();
         }
+
+        #endregion
+
+        #region 设置
+
+        public MenuItem SetFont(Font? value)
+        {
+            Font = value;
+            return this;
+        }
+
+        #region 图标
+
+        public MenuItem SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public MenuItem SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        public MenuItem SetIcon(Image? img, Image? hover)
+        {
+            icon = img;
+            IconActive = hover;
+            return this;
+        }
+
+        public MenuItem SetIcon(string? svg, string? hover)
+        {
+            iconSvg = svg;
+            IconActiveSvg = hover;
+            return this;
+        }
+
+        #endregion
+
+        public MenuItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public MenuItem SetName(string? value)
+        {
+            Name = value;
+            return this;
+        }
+
+        public MenuItem SetText(string? value, string? localization = null)
+        {
+            text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public MenuItem SetVisible(bool value = false)
+        {
+            visible = value;
+            return this;
+        }
+
+        public MenuItem SetEnabled(bool value = false)
+        {
+            enabled = value;
+            return this;
+        }
+
+        public MenuItem SetExpand(bool value = true)
+        {
+            expand = value;
+            return this;
+        }
+
+        public MenuItem SetSub(MenuItem value)
+        {
+            Sub.Add(value);
+            return this;
+        }
+
+        public MenuItem SetSub(params MenuItem[] value)
+        {
+            Sub.AddRange(value);
+            return this;
+        }
+
+        public MenuItem SetSub(IList<MenuItem> value)
+        {
+            Sub.AddRange(value);
+            return this;
+        }
+
+        #region 徽标
+
+        public MenuItem SetBadge(string? value = " ", TAlign align = TAlign.TR)
+        {
+            badge = value;
+            badgeAlign = align;
+            return this;
+        }
+        public MenuItem SetBadgeSvg(string? value, TAlign align = TAlign.TR)
+        {
+            badgeSvg = value;
+            badgeAlign = align;
+            return this;
+        }
+        public MenuItem SetBadgeOffset(int x, int y)
+        {
+            BadgeOffsetX = x;
+            BadgeOffsetY = y;
+            return this;
+        }
+        public MenuItem SetBadgeSize(float value)
+        {
+            BadgeSize = value;
+            return this;
+        }
+        public MenuItem SetBadgeBack(Color? value)
+        {
+            BadgeBack = value;
+            return this;
+        }
+
+        #endregion
+
+        public MenuItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
+
+        public override string? ToString() => Text;
     }
 }

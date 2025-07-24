@@ -481,7 +481,7 @@ namespace AntdUI.Design
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (rect_colors_big.Contains(e.Location))
+                if (rect_colors_big.Contains(e.X, e.Y))
                 {
                     if (bmp_colors != null)
                     {
@@ -500,7 +500,7 @@ namespace AntdUI.Design
                         down_colors = true;
                     }
                 }
-                else if (rect_hue_big.Contains(e.Location))
+                else if (rect_hue_big.Contains(e.X, e.Y))
                 {
                     if (bmp_hue != null)
                     {
@@ -524,7 +524,7 @@ namespace AntdUI.Design
                         down_hue = true;
                     }
                 }
-                else if (rect_alpha_big.Contains(e.Location))
+                else if (rect_alpha_big.Contains(e.X, e.Y))
                 {
                     if (bmp_alpha_read != null)
                     {
@@ -601,7 +601,7 @@ namespace AntdUI.Design
             {
                 for (int i = 0; i < rects_colors.Length; i++)
                 {
-                    if (rects_colors[i].Contains(e.Location))
+                    if (rects_colors[i].Contains(e.X, e.Y))
                     {
                         action(colors[i]);
                         return;

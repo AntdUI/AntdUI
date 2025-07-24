@@ -799,25 +799,25 @@ namespace AntdUI
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureString(value, font, w - gap2);
+                            var size2 = g.MeasureText(value, font, w - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                     }
                 }
-                var size = g.MeasureString(value, font);
+                var size = g.MeasureText(value, font);
                 MinWidth = size.Width;
                 return new Size(size.Width + gap2, size.Height);
             }
@@ -888,25 +888,25 @@ namespace AntdUI
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureString(value.Text, font, w - gap2);
+                            var size2 = g.MeasureText(value.Text, font, w - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureString(value.Text, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
+                            var size2 = g.MeasureText(value.Text, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value.Text, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
+                            var size2 = g.MeasureText(value.Text, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                     }
                 }
-                var size = g.MeasureString(value.Text, font);
+                var size = g.MeasureText(value.Text, font);
                 MinWidth = size.Width;
                 return new Size(size.Width + gap2, size.Height);
             }
@@ -965,19 +965,19 @@ namespace AntdUI
                     {
                         if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(width * (f / 100F)));
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)));
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureString(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi));
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
                     }
                 }
-                var size = g.MeasureString(value, font);
+                var size = g.MeasureText(value, font);
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
                     if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = (int)(size.Height * 1.8F);

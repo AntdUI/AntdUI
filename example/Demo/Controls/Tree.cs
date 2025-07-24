@@ -38,14 +38,14 @@ namespace Demo.Controls
         {
             base.OnLoad(e);
             tree1.PauseLayout = tree2.PauseLayout = tree3.PauseLayout = true;
-            var it_loading = new AntdUI.TreeItem("¼ÓÔØ¶¯»­,µã»÷ÔÝÍ£") { Expand = true, Loading = true, IconSvg = "PlayCircleOutlined" };
+            var it_loading = new AntdUI.TreeItem().SetText("¼ÓÔØ¶¯»­£¬µã»÷ÔÝÍ£", "Tree.Loading").SetExpand().SetLoading().SetIcon("PlayCircleOutlined");
             tree1.Items.Add(it_loading);
             AntdUI.ITask.Run(() =>
             {
                 var random = new Random();
                 for (int i = 0; i < random.Next(7, 20); i++)
                 {
-                    var it = new AntdUI.TreeItem("Tree1 " + (i + 1)) { Expand = true };
+                    var it = new AntdUI.TreeItem("Tree1 " + (i + 1)).SetExpand();
                     AddSub(it, 1, random);
                     tree1.Items.Add(it);
                 }
@@ -58,20 +58,12 @@ namespace Demo.Controls
                 var basepath = new DirectoryInfo(Environment.CurrentDirectory.Substring(0, 3));
                 foreach (var item in basepath.GetDirectories())
                 {
-                    var it = new AntdUI.TreeItem(item.Name)
-                    {
-                        IconSvg = Properties.Resources.icon_folder,
-                        CanExpand = true,
-                        Name = item.FullName
-                    };
+                    var it = new AntdUI.TreeItem(item.Name).SetName(item.FullName).SetIcon(Properties.Resources.icon_folder).SetCanExpand();
                     tree3.Items.Add(it);
                 }
                 foreach (var item in basepath.GetFiles())
                 {
-                    var it = new AntdUI.TreeItem(item.Name)
-                    {
-                        Name = item.FullName
-                    };
+                    var it = new AntdUI.TreeItem(item.Name).SetName(item.FullName);
                     tree3.Items.Add(it);
                 }
             }).ContinueWith(action =>
@@ -87,7 +79,7 @@ namespace Demo.Controls
                 var list = new List<AntdUI.TreeItem>();
                 for (int i = 0; i < random.Next(3, 9); i++)
                 {
-                    var its = new AntdUI.TreeItem("Sub_" + d + " " + (i + 1)) { Expand = d < 4 };
+                    var its = new AntdUI.TreeItem("Sub_" + d + " " + (i + 1)).SetExpand(d < 4);
                     if (d == 1)
                     {
                         int c = random.Next(0, 10);
@@ -122,21 +114,13 @@ namespace Demo.Controls
                         var basepath = new DirectoryInfo(e.Item.Name);
                         foreach (var item in basepath.GetDirectories())
                         {
-                            var it = new AntdUI.TreeItem(item.Name)
-                            {
-                                IconSvg = Properties.Resources.icon_folder,
-                                CanExpand = true,
-                                Name = item.FullName
-                            };
+                            var it = new AntdUI.TreeItem(item.Name).SetName(item.FullName).SetIcon(Properties.Resources.icon_folder).SetCanExpand();
                             e.Item.Sub.Add(it);
                             count++;
                         }
                         foreach (var item in basepath.GetFiles())
                         {
-                            var it = new AntdUI.TreeItem(item.Name)
-                            {
-                                Name = item.FullName
-                            };
+                            var it = new AntdUI.TreeItem(item.Name).SetName(item.FullName);
                             e.Item.Sub.Add(it);
                             count++;
                         }

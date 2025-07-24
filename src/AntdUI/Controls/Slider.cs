@@ -866,11 +866,35 @@ namespace AntdUI
 
         internal Slider? PARENT { get; set; }
 
-        void Invalidates()
+        void Invalidates() => PARENT?.Invalidate();
+
+        #region 设置
+
+        public SliderMarkItem SetFore(Color? value)
         {
-            if (PARENT == null) return;
-            PARENT.Invalidate();
+            fore = value;
+            return this;
         }
+
+        public SliderMarkItem SetText(string? value)
+        {
+            text = value;
+            return this;
+        }
+
+        public SliderMarkItem SetValue(int value)
+        {
+            _value = value;
+            return this;
+        }
+
+        public SliderMarkItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string ToString() => _value + " " + text;
     }

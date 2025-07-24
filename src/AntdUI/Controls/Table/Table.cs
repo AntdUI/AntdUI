@@ -1800,12 +1800,13 @@ namespace AntdUI
         /// <summary>
         /// 列值显示类型
         /// </summary>
-        public SelectCellType CellType { get; set; } = SelectCellType.Icon;
+        public SelectCellType CellType { get; set; } = SelectCellType.Both;
 
         /// <summary>
         /// 显示项成员 (SelectItem.Tag为值)
         /// </summary>
         public List<SelectItem> Items { get; set; } = new List<SelectItem>();
+
         /// <summary>
         /// 获取选择项
         /// </summary>
@@ -2452,16 +2453,16 @@ namespace AntdUI
     public enum SelectCellType
     {
         /// <summary>
-        /// 仅图标
+        /// 图标和文本 (如果有)
         /// </summary>
-        Icon = 0,
+        Both = 0,
         /// <summary>
         /// 仅文本
         /// </summary>
         Text = 1,
         /// <summary>
-        /// 图标和文本 (如果有)
+        /// 仅图标
         /// </summary>
-        Both = 2,
+        Icon = 2
     }
 }

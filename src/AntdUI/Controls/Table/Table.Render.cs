@@ -311,10 +311,10 @@ namespace AntdUI
                         {
                             using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
                             {
-                                g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                                g.DrawText(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
                             }
                         }
-                        else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                        else g.DrawText(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
                     }
                 }
                 if (dragHeader == null) return;
@@ -402,10 +402,10 @@ namespace AntdUI
                         {
                             using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
                             {
-                                g.String(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                                g.DrawText(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
                             }
                         }
-                        else g.String(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
+                        else g.DrawText(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
                     }
                     g.Restore(state);
                     state = g.Save();
@@ -510,8 +510,8 @@ namespace AntdUI
         {
             var state = g.Save();
             var rect = new Rectangle(column.RECT_REAL.X, rY, column.RECT_REAL.Width, rHeight);
-            if (item.ForeColor.HasValue) g.String(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(column.COLUMN, true));
-            else g.String(item.HeaderText, column_font, fore, rect, StringFormat(column.COLUMN, true));
+            if (item.ForeColor.HasValue) g.DrawText(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(column.COLUMN, true));
+            else g.DrawText(item.HeaderText, column_font, fore, rect, StringFormat(column.COLUMN, true));
             g.Restore(state);
         }
 
@@ -519,8 +519,8 @@ namespace AntdUI
         {
             var state = g.Save();
             var rect = new Rectangle(first.RECT.X, rY, last.RECT.Right - first.RECT.X, rHeight);
-            if (item.ForeColor.HasValue) g.String(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(ColumnAlign.Center));
-            else g.String(item.HeaderText, column_font, fore, rect, StringFormat(ColumnAlign.Center));
+            if (item.ForeColor.HasValue) g.DrawText(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(ColumnAlign.Center));
+            else g.DrawText(item.HeaderText, column_font, fore, rect, StringFormat(ColumnAlign.Center));
             g.Restore(state);
         }
 
@@ -737,7 +737,7 @@ namespace AntdUI
             else if (it is TCellText text)
             {
                 g.SetClip(it.RECT, CombineMode.Intersect);
-                g.String(text.value, font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
+                g.DrawText(text.value, font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
             }
             if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
@@ -1549,7 +1549,7 @@ namespace AntdUI
             if (select.value.IconSvg != null) g.GetImgExtend(select.value.IconSvg, select.rect_icon, color);
             else if (select.value.Icon != null) g.Image(select.value.Icon, select.rect_icon);
 
-            if (select.COLUMN.CellType != SelectCellType.Icon && select.rect_text != Rectangle.Empty) g.String(select.value.Text, Font, color, select.rect_text);
+            if (select.COLUMN.CellType != SelectCellType.Icon && select.rect_text != Rectangle.Empty) g.DrawText(select.value.Text, Font, color, select.rect_text);
         }
 
         #endregion

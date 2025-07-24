@@ -2101,7 +2101,7 @@ namespace AntdUI
                 var rect_read = ReadRectangle;
                 using (var path = Path(rect_read, radius * Config.Dpi))
                 {
-                    ExtraMouseHover = path.IsVisible(e.Location);
+                    ExtraMouseHover = path.IsVisible(e.X, e.Y);
                 }
             }
             base.OnMouseMove(e);
@@ -2128,7 +2128,7 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (CanClick(e.Location))
+            if (CanClick(e.X, e.Y))
             {
                 init = false;
                 Focus();
@@ -2139,11 +2139,11 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            base.OnMouseUp(e);
             if (ExtraMouseDown)
             {
-                if (CanClick(e.Location))
+                if (CanClick(e.X, e.Y))
                 {
-                    base.OnMouseUp(e);
                     if (e.Button == MouseButtons.Left)
                     {
                         ClickAnimation();
@@ -2153,7 +2153,6 @@ namespace AntdUI
                 }
                 ExtraMouseDown = false;
             }
-            else base.OnMouseUp(e);
         }
 
         #endregion
@@ -2311,7 +2310,8 @@ namespace AntdUI
             }
         }
 
-        bool CanClick(Point e)
+        bool CanClick(Point e) => CanClick(e.X, e.Y);
+        bool CanClick(int x, int y)
         {
             if (loading) return LoadingRespondClick;
             else
@@ -2321,10 +2321,10 @@ namespace AntdUI
                     var rect_read = ReadRectangle;
                     using (var path = Path(rect_read, radius * Config.Dpi))
                     {
-                        return path.IsVisible(e);
+                        return path.IsVisible(x, y);
                     }
                 }
-                else return ClientRectangle.Contains(e);
+                else return ClientRectangle.Contains(x, y);
             }
         }
 

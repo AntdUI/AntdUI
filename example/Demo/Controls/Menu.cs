@@ -80,6 +80,5 @@ namespace Demo.Controls
                 menu2.Width = (int)(251 * AntdUI.Config.Dpi);
             }
         }
-
     }
 }

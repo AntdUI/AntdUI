@@ -528,7 +528,7 @@ namespace AntdUI
         }
 
         int select_del = -1;
-        protected override bool IMouseDown(Point e)
+        protected override bool IMouseDown(int x, int y)
         {
             select_del = -1;
             if (selectedValue.Length > 0 && rect_left_dels.Length > 0)
@@ -536,28 +536,28 @@ namespace AntdUI
                 int len = selectedValue.Length > rect_left_dels.Length ? rect_left_dels.Length : selectedValue.Length;
                 for (int i = 0; i < len; i++)
                 {
-                    if (rect_left_dels[i].Contains(e)) { select_del = i; return true; }
+                    if (rect_left_dels[i].Contains(x, y)) { select_del = i; return true; }
                 }
             }
             return false;
         }
-        protected override bool IMouseMove(Point e)
+        protected override bool IMouseMove(int x, int y)
         {
             if (selectedValue.Length > 0 && rect_left_dels.Length > 0)
             {
                 int len = selectedValue.Length > rect_left_dels.Length ? rect_left_dels.Length : selectedValue.Length;
                 for (int i = 0; i < len; i++)
                 {
-                    if (rect_left_dels[i].Contains(e)) return true;
+                    if (rect_left_dels[i].Contains(x, y)) return true;
                 }
             }
             return false;
         }
-        protected override bool IMouseUp(Point e)
+        protected override bool IMouseUp(int x, int y)
         {
             if (select_del > -1)
             {
-                if (rect_left_dels[select_del].Contains(e))
+                if (rect_left_dels[select_del].Contains(x, y))
                 {
                     var tmp = new List<object>(selectedValue.Length);
                     tmp.AddRange(selectedValue);

@@ -53,7 +53,7 @@ namespace AntdUI
             }
             else
             {
-                var size = g.MeasureString(Text ?? Config.NullText, font);
+                var size = g.MeasureText(Text ?? Config.NullText, font);
                 bool has_icon = HasIcon;
                 if (has_icon || ShowArrow)
                 {

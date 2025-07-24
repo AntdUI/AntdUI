@@ -89,11 +89,7 @@ namespace AntdUI
             {
                 if (iconratio == value) return;
                 iconratio = value;
-                if (IsHandleCreated)
-                {
-                    ChangeList();
-                    Invalidate();
-                }
+                ChangeList(true);
             }
         }
 
@@ -125,8 +121,7 @@ namespace AntdUI
             {
                 if (_gap == value) return;
                 _gap = value;
-                ChangeList();
-                Invalidate();
+                ChangeList(true);
             }
         }
 
@@ -164,8 +159,7 @@ namespace AntdUI
             {
                 if (checkable == value) return;
                 checkable = value;
-                ChangeList();
-                Invalidate();
+                ChangeList(true);
             }
         }
 
@@ -187,8 +181,7 @@ namespace AntdUI
             {
                 if (blockNode == value) return;
                 blockNode = value;
-                ChangeList();
-                Invalidate();
+                ChangeList(true);
             }
         }
 
@@ -240,11 +233,7 @@ namespace AntdUI
             {
                 if (pauseLayout == value) return;
                 pauseLayout = value;
-                if (!value)
-                {
-                    ChangeList();
-                    Invalidate();
-                }
+                if (!value) ChangeList(true);
                 OnPropertyChanged(nameof(PauseLayout));
             }
         }
@@ -371,35 +360,39 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        internal void ChangeList()
+        internal void ChangeList(bool print = false)
         {
             var rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
-            int x = 0, y = 0;
-            bool has = HasSub(items);
-            Helper.GDI(g =>
+            if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return;
+            if (IsHandleCreated)
             {
-                var size = g.MeasureString(Config.NullText, Font);
-                int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Config.Dpi) : icon_size, gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
-                check_radius = icon_size * .2F;
-                if (CheckStrictly && has && items[0].PARENT == null && items[0].PARENTITEM == null)
+                int x = 0, y = 0;
+                bool has = HasSub(items);
+                Helper.GDI(g =>
                 {
-                    //新数据
-                    var dir = new List<TreeItem>();
-                    TestSub(ref dir, items);
-                    foreach (var item in dir)
+                    var size = g.MeasureString(Config.NullText, Font);
+                    int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Config.Dpi) : icon_size, gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
+                    check_radius = icon_size * .2F;
+                    if (CheckStrictly && has && items[0].PARENT == null && items[0].PARENTITEM == null)
                     {
-                        int check_count = 0;
-                        foreach (var sub in item.Sub)
-                        { if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++; }
-                        if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
-                        else item.CheckState = CheckState.Unchecked;
+                        //新数据
+                        var dir = new List<TreeItem>();
+                        TestSub(ref dir, items);
+                        foreach (var item in dir)
+                        {
+                            int check_count = 0;
+                            foreach (var sub in item.Sub)
+                            { if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++; }
+                            if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
+                            else item.CheckState = CheckState.Unchecked;
+                        }
                     }
-                }
-                ChangeList(g, rect, null, items, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
-            });
-            ScrollBar.SetVrSize(x, y);
-            ScrollBar.SizeChange(rect);
+                    ChangeList(g, rect, null, items, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
+                });
+                ScrollBar.SetVrSize(x, y);
+                ScrollBar.SizeChange(rect);
+                if (print) Invalidate();
+            }
         }
 
         bool HasSub(TreeItemCollection items)
@@ -453,6 +446,7 @@ namespace AntdUI
                         }
                         else if (!it.Expand) y = y_item;
                     }
+                    if (it.Loading && it.ThreadLoading == null) it.StartLoading(this);
                 }
             }
         }
@@ -512,7 +506,7 @@ namespace AntdUI
         }
         bool IsShowRect(Rectangle rect, int sx, int sy, TreeItem it)
         {
-            if (it.Show && it.Visible)
+            if (it.Visible)
             {
                 bool inVisibleX = (it.rect.X <= (sx + rect.Width)) && (it.rect.Right >= sx),
                     inVisibleY = (it.rect.Y <= (sy + rect.Height)) && ((it.Expand ? it.rect.Bottom + (int)Math.Ceiling(it.SubHeight) : it.rect.Bottom) >= sy);
@@ -715,7 +709,7 @@ namespace AntdUI
             base.OnMouseDown(e);
             doubleClick = e.Clicks > 1;
             MDown = null;
-            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 OnTouchDown(e.X, e.Y);
@@ -908,7 +902,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location))
+            if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y))
             {
                 if (OnTouchMove(e.X, e.Y))
                 {
@@ -1233,8 +1227,8 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.ChangeList();
-                it.Invalidate();
+                if (render) it.ChangeList(true);
+                else it.Invalidate();
             };
             return this;
         }
@@ -1244,8 +1238,8 @@ namespace AntdUI
             action = render =>
             {
                 if (it.PARENT == null) return;
-                if (render) it.PARENT.ChangeList();
-                it.PARENT.Invalidate();
+                if (render) it.PARENT.ChangeList(true);
+                else it.PARENT.Invalidate();
             };
             return this;
         }
@@ -1274,6 +1268,12 @@ namespace AntdUI
         /// </summary>
         [Description("ID"), Category("数据"), DefaultValue(null)]
         public string? ID { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        [Description("名称"), Category("数据"), DefaultValue(null)]
+        public string? Name { get; set; }
 
         Image? icon;
         /// <summary>
@@ -1306,53 +1306,11 @@ namespace AntdUI
                 Invalidates();
             }
         }
-        #region 加载动画
-        ITask? ThreadLoading;
-        bool loading = false;
-        public float AnimationLoadingValue = 0;
-        float AnimationLoadingWaveValue = 0;
-        /// <summary>
-        /// 加载状态
-        /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
-        public bool Loading
-        {
-            get => loading;
-            set
-            {
-                if (loading == value) return;
-                loading = value;
-                ThreadLoading?.Dispose();
-                if (loading)
-                {
-                    if (PARENT == null) Invalidate();
-                    else
-                    {
-                        ThreadLoading = new ITask(PARENT, i =>
-                        {
-                            AnimationLoadingWaveValue += 1;
-                            if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
-                            AnimationLoadingValue = i;
-                            Invalidate();
-                            return loading;
-                        }, 10, 360, 10, () => Invalidate());
-                    }
-                }
-                else Invalidate();
-            }
-        }
 
-        #endregion
         /// <summary>
         /// 是否包含图片
         /// </summary>
         internal bool HasIcon => iconSvg != null || Icon != null || loading;
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        [Description("名称"), Category("数据"), DefaultValue(null)]
-        public string? Name { get; set; }
 
         string? text;
         /// <summary>
@@ -1408,6 +1366,44 @@ namespace AntdUI
                 Invalidates();
             }
         }
+
+        #region 加载动画
+
+        internal ITask? ThreadLoading;
+        bool loading = false;
+        public float AnimationLoadingValue = 0;
+        float AnimationLoadingWaveValue = 0;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                ThreadLoading?.Dispose();
+                if (PARENT == null) return;
+                if (loading) StartLoading(PARENT);
+                else PARENT.Invalidate();
+            }
+        }
+
+        internal void StartLoading(Tree tree)
+        {
+            ThreadLoading = new ITask(tree, i =>
+            {
+                AnimationLoadingWaveValue += 1;
+                if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
+                AnimationLoadingValue = i;
+                Invalidate();
+                return loading;
+            }, 10, 360, 10, () => Invalidate());
+        }
+
+        #endregion
 
         /// <summary>
         /// 用户定义数据
@@ -1682,25 +1678,11 @@ namespace AntdUI
 
         #endregion
 
-        void Invalidate() => PARENT?.Invalidate();
-        void Invalidates()
-        {
-            if (PARENT == null) return;
-            PARENT.ChangeList();
-            PARENT.Invalidate();
-        }
-
-        internal float SubY { get; set; }
-        internal float SubHeight { get; set; }
-        internal float ExpandHeight { get; set; }
-        internal float ExpandProg { get; set; }
-        internal bool ExpandThread { get; set; }
-        internal bool show { get; set; }
-        internal bool Show { get; set; }
+        #region 悬浮态
 
         bool hover = false;
         /// <summary>
-        /// 是否移动
+        /// 是否悬浮
         /// </summary>
         internal bool Hover
         {
@@ -1748,6 +1730,10 @@ namespace AntdUI
             }
         }
 
+        #endregion
+
+        #region 激活态
+
         bool select = false;
         [Description("激活状态"), Category("行为"), DefaultValue(false)]
         public bool Select
@@ -1773,11 +1759,18 @@ namespace AntdUI
             Invalidate();
         }
 
+        #endregion
+
         public int Depth { get; private set; }
-        internal Tree? PARENT { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TreeItem? PARENTITEM { get; set; }
+
+        #region 内部
+
+        internal Tree? PARENT { get; set; }
+
+        #region 布局
 
         internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
@@ -1842,7 +1835,6 @@ namespace AntdUI
                 }
             }
             rect_all = new Rectangle(tmpx, rect.Y, usew, rect.Height);
-            Show = true;
         }
         internal Rectangle rect_all { get; set; }
         internal Rectangle rect { get; set; }
@@ -1923,6 +1915,143 @@ namespace AntdUI
                     return rect;
             }
         }
+
+        #endregion
+
+        internal float SubY { get; set; }
+        internal float SubHeight { get; set; }
+        internal float ExpandHeight { get; set; }
+        internal float ExpandProg { get; set; }
+        internal bool ExpandThread { get; set; }
+        internal bool show { get; set; }
+
+        void Invalidate() => PARENT?.Invalidate();
+        void Invalidates() => PARENT?.ChangeList(true);
+
+        #endregion
+
+        #region 设置
+
+        public TreeItem SetFore(Color? value)
+        {
+            fore = value;
+            return this;
+        }
+        public TreeItem SetBack(Color? value)
+        {
+            back = value;
+            return this;
+        }
+
+        #region 图标
+
+        public TreeItem SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public TreeItem SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public TreeItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public TreeItem SetName(string? value)
+        {
+            Name = value;
+            return this;
+        }
+
+        public TreeItem SetText(string? value, string? localization = null)
+        {
+            text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public TreeItem SetSubTitle(string? value, string? localization = null)
+        {
+            subTitle = value;
+            LocalizationSubTitle = localization;
+            return this;
+        }
+
+        public TreeItem SetVisible(bool value = false)
+        {
+            visible = value;
+            return this;
+        }
+
+        public TreeItem SetEnabled(bool value = false)
+        {
+            enabled = value;
+            return this;
+        }
+
+        public TreeItem SetLoading(bool value = true)
+        {
+            loading = value;
+            return this;
+        }
+
+        public TreeItem SetChecked(bool value = true)
+        {
+            Checked = value;
+            return this;
+        }
+
+        public TreeItem SetChecked(CheckState value)
+        {
+            CheckState = value;
+            return this;
+        }
+
+        public TreeItem SetCanExpand(bool value = true)
+        {
+            CanExpand = value;
+            return this;
+        }
+
+        public TreeItem SetExpand(bool value = true)
+        {
+            expand = value;
+            return this;
+        }
+
+        public TreeItem SetSub(TreeItem value)
+        {
+            Sub.Add(value);
+            return this;
+        }
+
+        public TreeItem SetSub(params TreeItem[] value)
+        {
+            Sub.AddRange(value);
+            return this;
+        }
+
+        public TreeItem SetSub(IList<TreeItem> value)
+        {
+            Sub.AddRange(value);
+            return this;
+        }
+
+        public TreeItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string? ToString() => Text;
     }

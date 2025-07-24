@@ -31,6 +31,7 @@ namespace ChatUI
             base.OnLoad(e);
             Task.Run(() =>
             {
+                Thread.Sleep(1000);
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("阿威十八式 🙌🖖🤘👋", Properties.Resources.aduskin, "AduSkin"));
                 Thread.Sleep(700);
 
@@ -39,14 +40,14 @@ namespace ChatUI
 
                 if (File.Exists("../../../../../doc/pre/banner.png") && File.Exists("../../../../../src/logo.png"))
                 {
-                    chatList.AddToBottom(new AntdUI.Chat.TextChatItem("🦄 Winform UI library use Ant Design 5.0\n" + "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes("../../../../../doc/pre/banner.png")), (Bitmap)Image.FromFile("../../../../../src/logo.png"), "AntdUI"));
+                    chatList.AddToBottom(new AntdUI.Chat.TextChatItem("🦄 Winform interface library based on the Ant Design\n" + "data:image/png;base64," + Convert.ToBase64String(File.ReadAllBytes("../../../../../doc/pre/banner.png")), (Bitmap)Image.FromFile("../../../../../src/logo.png"), "AntdUI"));
                     Thread.Sleep(700);
                 }
 
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("搭配 Nuget Tom.HttpLib 可以轻松实现GPT流式传输\n\nhttps://gitee.com/EVA-SS/HttpLib", Properties.Resources.av1, "Tom") { Me = true });
                 Thread.Sleep(700);
 
-                chatList.AddToBottom(new AntdUI.Chat.TextChatItem("估计还是因为长得帅把", Properties.Resources.av1, "Tom") { Me = true });
+                chatList.AddToBottom(new AntdUI.Chat.TextChatItem("99+个需求已通过许愿表单进入许愿池⛲啦~", Properties.Resources.av1, "Tom") { Me = true });
                 Thread.Sleep(700);
 
                 chatList.AddToBottom(new AntdUI.Chat.TextChatItem("城区这车油耗就是高，没啥说的，suv本来就不省油", Properties.Resources.aduskin, "AduSkin"));
@@ -109,7 +110,7 @@ namespace ChatUI
                 int i = 0;
                 while (run)
                 {
-                    Thread.Sleep(ran.Next(10, 200));
+                    Thread.Sleep(ran.Next(2, 100));
                     int len = ran.Next(1, 16);
 
                     if (text.Length < i + len)

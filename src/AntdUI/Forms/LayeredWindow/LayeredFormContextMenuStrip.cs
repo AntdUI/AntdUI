@@ -453,7 +453,7 @@ namespace AntdUI
         InRect? MDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (scrollY.MouseDown(e.Location))
+            if (scrollY.MouseDown(e.X, e.Y))
             {
                 OnTouchDown(e.X, e.Y);
                 select_index = -1;
@@ -478,7 +478,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (scrollY.MouseUp(e.Location) && OnTouchUp())
+            if (scrollY.MouseUp(e.X, e.Y) && OnTouchUp())
             {
                 int y = scrollY.Show ? (int)scrollY.Value : 0;
                 if (MDown == null) return;
@@ -565,7 +565,7 @@ namespace AntdUI
         int oldSub = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (scrollY.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
+            if (scrollY.MouseMove(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
                 int count = 0, hand = -1;
                 int y = scrollY.Show ? (int)scrollY.Value : 0;

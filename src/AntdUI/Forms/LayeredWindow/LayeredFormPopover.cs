@@ -356,7 +356,7 @@ namespace AntdUI
             {
                 foreach (var it in rectsContent)
                 {
-                    if (it.Text.Call != null && it.Rect.Contains(e.Location))
+                    if (it.Text.Call != null && it.Rect.Contains(e.X, e.Y))
                     {
                         SetCursor(true);
                         return;
@@ -373,7 +373,7 @@ namespace AntdUI
             {
                 foreach (var it in rectsContent)
                 {
-                    if (it.Text.Call != null && it.Rect.Contains(e.Location))
+                    if (it.Text.Call != null && it.Rect.Contains(e.X, e.Y))
                     {
                         it.Text.Call();
                         return;

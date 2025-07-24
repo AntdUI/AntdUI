@@ -57,22 +57,22 @@ namespace AntdUI
 
                     return;
                 }
-                if (is_clear && rect_r.Contains(e.Location))
+                if (is_clear && rect_r.Contains(e.X, e.Y))
                 {
                     is_clear_down = true;
                     return;
                 }
-                if (HasPrefix && rect_l.Contains(e.Location) && PrefixClick != null)
+                if (HasPrefix && rect_l.Contains(e.X, e.Y) && PrefixClick != null)
                 {
                     is_prefix_down = true;
                     return;
                 }
-                if (HasSuffix && rect_r.Contains(e.Location) && SuffixClick != null)
+                if (HasSuffix && rect_r.Contains(e.X, e.Y) && SuffixClick != null)
                 {
                     is_suffix_down = true;
                     return;
                 }
-                if (IMouseDown(e.Location)) return;
+                if (IMouseDown(e.X, e.Y)) return;
 
                 if (ScrollYShow && autoscroll && ScrollHover)
                 {
@@ -156,12 +156,12 @@ namespace AntdUI
                 bool setScroll = true;
                 if (ScrollYShow && autoscroll)
                 {
-                    ScrollHover = ScrollRect.Contains(e.Location);
+                    ScrollHover = ScrollRect.Contains(e.X, e.Y);
                     if (ScrollHover) setScroll = false;
                 }
                 if (is_clear)
                 {
-                    var hover = rect_r.Contains(e.Location);
+                    var hover = rect_r.Contains(e.X, e.Y);
                     if (hover_clear != hover)
                     {
                         hover_clear = hover;
@@ -169,20 +169,20 @@ namespace AntdUI
                     }
                     if (hover) { SetCursor(true); return; }
                 }
-                if ((HasPrefix && rect_l.Contains(e.Location) && PrefixClick != null) || (HasSuffix && rect_r.Contains(e.Location) && SuffixClick != null))
+                if ((HasPrefix && rect_l.Contains(e.X, e.Y) && PrefixClick != null) || (HasSuffix && rect_r.Contains(e.X, e.Y) && SuffixClick != null))
                 {
                     SetCursor(true);
                     return;
                 }
-                if (IMouseMove(e.Location)) SetCursor(true);
+                if (IMouseMove(e.X, e.Y)) SetCursor(true);
                 else if (CaretInfo.ReadShow)
                 {
-                    if (rect_text.Contains(e.Location)) SetCursor(true);
+                    if (rect_text.Contains(e.X, e.Y)) SetCursor(true);
                     else SetCursor(false);
                 }
                 else
                 {
-                    if (setScroll && rect_text.Contains(e.Location)) SetCursor(CursorType.IBeam);
+                    if (setScroll && rect_text.Contains(e.X, e.Y)) SetCursor(CursorType.IBeam);
                     else SetCursor(false);
                 }
             }
@@ -216,7 +216,7 @@ namespace AntdUI
             ScrollYDown = false;
             if (is_clear_down)
             {
-                if (rect_r.Contains(e.Location))
+                if (rect_r.Contains(e.X, e.Y))
                 {
                     OnClearValue();
                     ClearClick?.Invoke(this, e);
@@ -236,7 +236,7 @@ namespace AntdUI
                 is_prefix_down = is_suffix_down = false;
                 return;
             }
-            if (IMouseUp(e.Location)) return;
+            if (IMouseUp(e.X, e.Y)) return;
             if (md && mDownMove && mDownLocation != e.Location && cache_font != null)
             {
                 var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);

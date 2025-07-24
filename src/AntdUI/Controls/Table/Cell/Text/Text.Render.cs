@@ -30,8 +30,8 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            if (Fore.HasValue) g.String(Text, Font ?? font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
-            else g.String(Text, Font ?? font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
+            if (Fore.HasValue) g.DrawText(Text, Font ?? font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
+            else g.DrawText(Text, Font ?? font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
             if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);
             else if (Prefix != null) g.Image(Prefix, RectL);
 
@@ -41,7 +41,7 @@ namespace AntdUI
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, Font ?? font);
+            var size = g.MeasureText(Text, Font ?? font);
             bool has_prefix = HasPrefix, has_suffix = HasSuffix;
             if (has_prefix && has_suffix)
             {

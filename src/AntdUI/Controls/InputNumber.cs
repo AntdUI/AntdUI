@@ -359,9 +359,9 @@ namespace AntdUI
         {
             if (showcontrol)
             {
-                if (!ReadOnly && rect_button.Contains(e.Location))
+                if (!ReadOnly && rect_button.Contains(e.X, e.Y))
                 {
-                    if (rect_button_up.Contains(e.Location))
+                    if (rect_button_up.Contains(e.X, e.Y))
                     {
                         hover_button_bottom.Switch = false;
                         hover_button_up.Switch = true;
@@ -383,10 +383,10 @@ namespace AntdUI
         int downid = 0, temp_old = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (showcontrol && !ReadOnly && rect_button.Contains(e.Location))
+            if (showcontrol && !ReadOnly && rect_button.Contains(e.X, e.Y))
             {
                 if (decimal.TryParse(Text, out var _d)) Value = _d;
-                if (rect_button_up.Contains(e.Location))
+                if (rect_button_up.Contains(e.X, e.Y))
                 {
                     Value = currentValue + Increment;
                     isdownup = true;

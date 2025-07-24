@@ -322,19 +322,19 @@ namespace AntdUI
         {
             if (RunAnimation) return;
             base.OnMouseDown(e);
-            if (ShowH && rect_read_h.Contains(e.Location)) scrollY_h.MouseDown(e.Location);
-            else if (ShowM && rect_read_m.Contains(e.Location)) scrollY_m.MouseDown(e.Location);
-            else if (ShowS && rect_read_s.Contains(e.Location)) scrollY_s.MouseDown(e.Location);
+            if (ShowH && rect_read_h.Contains(e.X, e.Y)) scrollY_h.MouseDown(e.X, e.Y);
+            else if (ShowM && rect_read_m.Contains(e.X, e.Y)) scrollY_m.MouseDown(e.X, e.Y);
+            else if (ShowS && rect_read_s.Contains(e.X, e.Y)) scrollY_s.MouseDown(e.X, e.Y);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (RunAnimation) return;
-            if (scrollY_h.MouseMove(e.Location) && scrollY_m.MouseMove(e.Location) && scrollY_s.MouseMove(e.Location))
+            if (scrollY_h.MouseMove(e.X, e.Y) && scrollY_m.MouseMove(e.X, e.Y) && scrollY_s.MouseMove(e.X, e.Y))
             {
                 int count = 0, hand = 0;
-                bool _hover_button = ShowButtonNow && rect_button.Contains(e.Location),
-                 _hover_buttonok = rect_buttonok.Contains(e.Location);
+                bool _hover_button = ShowButtonNow && rect_button.Contains(e.X, e.Y),
+                 _hover_buttonok = rect_buttonok.Contains(e.X, e.Y);
 
                 if (_hover_button != hover_button.Switch) count++;
                 if (_hover_buttonok != hover_buttonok.Switch) count++;
@@ -386,11 +386,11 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (RunAnimation) return;
-            if (scrollY_h.MouseUp(e.Location) && scrollY_m.MouseUp(e.Location) && scrollY_s.MouseUp(e.Location))
+            if (scrollY_h.MouseUp(e.X, e.Y) && scrollY_m.MouseUp(e.X, e.Y) && scrollY_s.MouseUp(e.X, e.Y))
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (ShowButtonNow && rect_button.Contains(e.Location))
+                    if (ShowButtonNow && rect_button.Contains(e.X, e.Y))
                     {
                         DateNow = DateTime.Now;
                         SelDate = new TimeSpan(DateNow.Hour, DateNow.Minute, DateNow.Second);
@@ -399,7 +399,7 @@ namespace AntdUI
                         Print();
                         return;
                     }
-                    else if (rect_buttonok.Contains(e.Location))
+                    else if (rect_buttonok.Contains(e.X, e.Y))
                     {
                         action(SelDate);
                         IClose();
@@ -450,17 +450,17 @@ namespace AntdUI
             if (RunAnimation) return;
             if (e.Delta != 0)
             {
-                if (ShowH && rect_read_h.Contains(e.Location))
+                if (ShowH && rect_read_h.Contains(e.X, e.Y))
                 {
                     scrollY_h.MouseWheel(e.Delta);
                     Print();
                 }
-                else if (ShowM && rect_read_m.Contains(e.Location))
+                else if (ShowM && rect_read_m.Contains(e.X, e.Y))
                 {
                     scrollY_m.MouseWheel(e.Delta);
                     Print();
                 }
-                else if (ShowS && rect_read_s.Contains(e.Location))
+                else if (ShowS && rect_read_s.Contains(e.X, e.Y))
                 {
                     scrollY_s.MouseWheel(e.Delta);
                     Print();

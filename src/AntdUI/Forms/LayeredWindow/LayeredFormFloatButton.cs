@@ -372,7 +372,7 @@ namespace AntdUI
             int count = 0, hand = 0;
             foreach (var it in config.Btns)
             {
-                if (it.Enabled && !it.Loading && it.rect.Contains(e.Location))
+                if (it.Enabled && !it.Loading && it.rect.Contains(e.X, e.Y))
                 {
                     hand++;
                     if (!it.hover)
@@ -435,7 +435,7 @@ namespace AntdUI
             {
                 foreach (var it in config.Btns)
                 {
-                    if (it.Enabled && !it.Loading && it.rect.Contains(e.Location))
+                    if (it.Enabled && !it.Loading && it.rect.Contains(e.X, e.Y))
                     {
                         config.Call.Invoke(it);
                         return;

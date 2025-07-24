@@ -289,7 +289,7 @@ namespace AntdUI
             int hand = 0, change = 0;
             foreach (BreadcrumbItem it in items)
             {
-                bool hover = it.Rect.Contains(e.Location);
+                bool hover = it.Rect.Contains(e.X, e.Y);
                 if (it.Hover != hover)
                 {
                     it.Hover = hover;
@@ -342,7 +342,7 @@ namespace AntdUI
             for (int i = 0; i < items.Count; i++)
             {
                 var it = items[i];
-                if (it != null && it.Rect.Contains(e.Location))
+                if (it != null && it.Rect.Contains(e.X, e.Y))
                 {
                     ItemClick?.Invoke(this, new BreadcrumbItemEventArgs(it, e));
                     return;
@@ -395,18 +395,18 @@ namespace AntdUI
             }
         }
 
-        string? iconsvg;
+        string? iconSvg;
         /// <summary>
         /// 图标SVG
         /// </summary>
         [Description("图标SVG"), Category("外观"), DefaultValue(null)]
         public string? IconSvg
         {
-            get => iconsvg;
+            get => iconSvg;
             set
             {
-                if (iconsvg == value) return;
-                iconsvg = value;
+                if (iconSvg == value) return;
+                iconSvg = value;
                 Invalidates();
             }
         }
@@ -441,6 +441,8 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
+        #region 内部
+
         internal bool Hover { get; set; }
 
         internal Rectangle Rect { get; set; }
@@ -455,6 +457,47 @@ namespace AntdUI
             PARENT.ChangeItems();
             PARENT.Invalidate();
         }
+
+        #endregion
+
+        #region 设置
+
+        #region 图标
+
+        public BreadcrumbItem SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public BreadcrumbItem SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public BreadcrumbItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public BreadcrumbItem SetText(string? value, string? localization = null)
+        {
+            text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public BreadcrumbItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string? ToString() => Text;
     }

@@ -227,7 +227,7 @@ namespace AntdUI.Chat
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (ScrollBar.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 foreach (MsgItem it in Items)
@@ -251,7 +251,7 @@ namespace AntdUI.Chat
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 int count = 0, hand = 0;
