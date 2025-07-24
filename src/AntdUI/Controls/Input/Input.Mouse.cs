@@ -76,8 +76,8 @@ namespace AntdUI
 
                 if (ScrollYShow && autoscroll && ScrollHover)
                 {
-                    float y = (e.Y - ScrollSliderFull / 2F) / (ScrollRect.Height - ScrollSliderFull), VrValue = ScrollYMax + Height;
-                    ScrollY = (int)(y * VrValue);
+                    float yratio = ((e.Y - ScrollRect.Top) - ScrollSliderFull / 2) / (ScrollRect.Height - ScrollSliderFull);
+                    ScrollY = (int)(yratio * ScrollYMax);
                     ScrollYDown = true;
                     SetCursor(false);
                     Window.CanHandMessage = false;
@@ -127,8 +127,8 @@ namespace AntdUI
             base.OnMouseMove(e);
             if (ScrollYDown)
             {
-                float y = (e.Y - ScrollSliderFull / 2F) / (ScrollRect.Height - ScrollSliderFull), VrValue = ScrollYMax + ScrollRect.Height;
-                ScrollY = (int)(y * VrValue);
+                float yratio = ((e.Y - ScrollRect.Top) - ScrollSliderFull / 2) / (ScrollRect.Height - ScrollSliderFull);
+                ScrollY = (int)(yratio * ScrollYMax);
                 Window.CanHandMessage = false;
                 return;
             }

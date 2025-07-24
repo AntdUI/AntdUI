@@ -689,6 +689,7 @@ namespace AntdUI
             {
                 if (string.Join("", selectedIndex) == value.ToString()) return false;
                 selectedIndex = new int[1] { value };
+                if (cellFocused != null && rows?.Length > value) cellFocused = rows[value].cells[cellFocused.INDEX];
                 return true;
             }
         }

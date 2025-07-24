@@ -250,15 +250,12 @@ namespace AntdUI
             CustomWidth = component.CustomWidth;
             var point = control.PointToScreen(Point.Empty);
             var screen = Screen.FromPoint(point).WorkingArea;
-            maxWidth = screen.Width;
-            Helper.GDI(g =>
-            {
-                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
-            });
+            maxWidth = control.Width;
+            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline)));
             SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
             if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
             if (TargetRect.X < screen.X) SetLocationX(screen.X);
-            else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
+            else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.X + screen.Width - TargetRect.Width);
         }
 
         public override string name => nameof(Tooltip);
@@ -450,7 +447,8 @@ namespace AntdUI
             }
             else if (maxWidth.HasValue)
             {
-                int width = maxWidth.Value - padding;
+                int gap = (int)Math.Ceiling(5 * Config.Dpi);
+                int width = maxWidth.Value - (paddingx + gap * 2 * 2);
                 if (font_size.Width > width)
                 {
                     font_size = g.MeasureText(core.Text, core.Font, width);

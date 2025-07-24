@@ -446,6 +446,9 @@ namespace AntdUI
 
         Rectangle ScrollRect;
         RectangleF ScrollSlider;
+        /// <summary>
+        /// 滑块全高度（不算边距）
+        /// </summary>
         float ScrollSliderFull;
         bool scrollhover = false;
         bool ScrollHover
