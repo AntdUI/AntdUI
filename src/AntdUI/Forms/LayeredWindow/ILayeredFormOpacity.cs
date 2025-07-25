@@ -53,6 +53,7 @@ namespace AntdUI
 
         public virtual void LoadOK()
         {
+            RunAnimation = false;
             IsLoad = false;
             LoadCompleted?.Invoke();
         }

@@ -46,7 +46,7 @@ namespace AntdUI
         #region 动画
 
         ITask? task;
-        bool run_end = false, ok_end = false;
+        bool ok_end = false;
 
         public void Start(string name)
         {
@@ -74,15 +74,19 @@ namespace AntdUI
             }
             else CallStart();
         }
+
         public bool End(string name)
         {
-            if (ok_end) return false;
-            else if (run_end) return true;
+            if (ok_end)
+            {
+                CallEnd();
+                return false;
+            }
+            ok_end = true;
             task?.Dispose();
             if (Config.HasAnimation(name))
             {
                 call_end();
-                run_end = true;
                 var t = Animation.TotalFrames(10, 80);
                 task = new ITask((i) =>
                 {
@@ -113,7 +117,6 @@ namespace AntdUI
         {
             bmp_tmp?.Dispose();
             bmp_tmp = null;
-            ok_end = true;
             form.IClose(true);
         }
 

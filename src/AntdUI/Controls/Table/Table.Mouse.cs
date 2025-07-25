@@ -870,13 +870,13 @@ namespace AntdUI
 
         string? oldmove, oldmove2;
         TooltipForm? toolTip;
-        void CloseTip(bool clear = true)
+        public void CloseTip(bool clear = true)
         {
             toolTip?.IClose();
             toolTip = null;
             if (clear) oldmove = null;
         }
-        void OpenTip(Rectangle rect, string tooltip)
+        public void OpenTip(Rectangle rect, string tooltip)
         {
             if (toolTip == null)
             {

@@ -230,10 +230,12 @@ namespace AntdUI
         bool multiline = false;
         int? maxWidth;
         int arrowSize = 0, arrowX = -1;
+        public override bool MessageEnable => true;
         public TooltipForm(Control control, string txt, ITooltipConfig component) : base(240)
         {
             ocontrol = control;
             control.Parent.SetTopMost(Handle);
+            MessageCloseMouseLeave = true;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
@@ -261,13 +263,13 @@ namespace AntdUI
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
-            control.LostFocus += Control_LostFocus;
-            control.MouseLeave += Control_LostFocus;
+            control.Disposed += Control_Close;
         }
         public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = true) : base(240)
         {
             ocontrol = control;
             control.SetTopMost(Handle);
+            MessageCloseMouseLeave = true;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
@@ -283,6 +285,7 @@ namespace AntdUI
             new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
+            control.Disposed += Control_Close;
         }
 
         public override string name => nameof(Tooltip);
@@ -299,7 +302,7 @@ namespace AntdUI
             Print();
         }
 
-        private void Control_LostFocus(object? sender, EventArgs e) => IClose();
+        private void Control_Close(object? sender, EventArgs e) => IClose();
 
         #region 参数
 
@@ -360,9 +363,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            if (ocontrol == null) return;
-            ocontrol.LostFocus -= Control_LostFocus;
-            ocontrol.MouseLeave -= Control_LostFocus;
+            ocontrol.Disposed -= Control_Close;
         }
     }
 
