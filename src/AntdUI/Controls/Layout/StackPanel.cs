@@ -325,13 +325,13 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (ScrollBar != null && ScrollBar.MouseDown(e.Location)) { OnTouchDown(e.X, e.Y); return; }
+            if (ScrollBar != null && ScrollBar.MouseDown(e.X, e.Y)) { OnTouchDown(e.X, e.Y); return; }
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (ScrollBar != null && ScrollBar.MouseMove(e.Location) && OnTouchMove(e.X, e.Y)) return;
+            if (ScrollBar != null && ScrollBar.MouseMove(e.X, e.Y) && OnTouchMove(e.X, e.Y)) return;
             base.OnMouseMove(e);
         }
         protected override void OnMouseUp(MouseEventArgs e)

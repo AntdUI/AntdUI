@@ -510,7 +510,7 @@ namespace AntdUI
             if (config.CloseIcon)
             {
                 close_button.MaxValue = Colour.FillSecondary.Get("Modal").A;
-                close_button.Switch = rect_close.Contains(e.Location);
+                close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
             }
             base.OnMouseMove(e);
@@ -518,7 +518,7 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && config.CloseIcon && rect_close.Contains(e.Location))
+            if (e.Button == MouseButtons.Left && config.CloseIcon && rect_close.Contains(e.X, e.Y))
             {
                 base.OnMouseUp(e);
                 return;
@@ -529,7 +529,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && config.CloseIcon && rect_close.Contains(e.Location))
+            if (e.Button == MouseButtons.Left && config.CloseIcon && rect_close.Contains(e.X, e.Y))
             {
                 DialogResult = DialogResult.No;
                 return;

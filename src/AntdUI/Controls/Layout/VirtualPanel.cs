@@ -1114,7 +1114,7 @@ namespace AntdUI
         {
             base.OnMouseDown(e);
             MDown = null;
-            if (ScrollBar.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 OnTouchDown(e.X, e.Y);
@@ -1134,7 +1134,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.Location) && OnTouchMove(e.X, e.Y))
+            if (ScrollBar.MouseMove(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 int x = e.X, y = e.Y + ScrollBar.Value;

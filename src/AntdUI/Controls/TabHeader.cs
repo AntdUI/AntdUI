@@ -1150,8 +1150,6 @@ namespace AntdUI
         public bool Hover { get; set; }
         public bool HoverClose { get; set; }
 
-
-
         bool showClose = true;
         /// <summary>
         /// 是否显示
@@ -1167,7 +1165,6 @@ namespace AntdUI
                 PARENT?.LoadLayout();
             }
         }
-
 
         bool visible = true;
         /// <summary>
@@ -1234,6 +1231,69 @@ namespace AntdUI
         internal Rectangle RectIcon { get; set; }
         internal Rectangle RectClose { get; set; }
         internal Rectangle RectCloseIco { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        #region 图标
+
+        public TagTabItem SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public TagTabItem SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public TagTabItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public TagTabItem SetText(string value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public TagTabItem SetVisible(bool value = false)
+        {
+            visible = value;
+            return this;
+        }
+
+        public TagTabItem SetEnabled(bool value = false)
+        {
+            enabled = value;
+            return this;
+        }
+
+        public TagTabItem SetLoading(bool value = true)
+        {
+            Loading = value;
+            return this;
+        }
+
+        public TagTabItem SetShowClose(bool value = false)
+        {
+            showClose = value;
+            return this;
+        }
+
+        public TagTabItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
 
         #endregion
     }

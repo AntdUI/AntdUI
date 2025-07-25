@@ -36,93 +36,32 @@ namespace Demo.Controls
 
             menulist = new AntdUI.IContextMenuStripItem[]
             {
-            new AntdUI.ContextMenuStripItem("返回", "Alt+向左键")
-            {
-                IconSvg = svg_back
-            },
-            new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R")
-            {
-                IconSvg = svg_refresh
-            },
-            new AntdUI.ContextMenuStripItemDivider(),
-            new AntdUI.ContextMenuStripItem("另存为", "Ctrl+S")
-            {
-                IconSvg = svg_save
-            },
-            new AntdUI.ContextMenuStripItem("打印", "Ctrl+P")
-            {
-                IconSvg = svg_print
-            },
-            new AntdUI.ContextMenuStripItemDivider(),
-            new AntdUI.ContextMenuStripItem("发送标签页到你的设备")
-            {
-                IconSvg = svg_laptop
-            },
-            new AntdUI.ContextMenuStripItem("为此页面创建QR代码")
-            {
-                IconSvg = svg_qr
-            },
-            new AntdUI.ContextMenuStripItem("大声朗读", "Ctrl+Shift+U")
-            {
-                IconSvg = svg_a
-            },
-            new AntdUI.ContextMenuStripItem("翻译为 中文(简体)")
-            {
-                IconSvg = svg_fy
-            },
-            new AntdUI.ContextMenuStripItem("将页面添加到集锦")
-            {
-                Sub = new AntdUI.IContextMenuStripItem[]
-                    {
-                        new AntdUI.ContextMenuStripItem("返回", "Alt+向左键")
-                            {
-                                IconSvg = svg_back,
-                                    Sub = new AntdUI.IContextMenuStripItem[]
-                                    {
-                                        new AntdUI.ContextMenuStripItem("返回", "Alt+向左键")
-                                            {
-                                                IconSvg = svg_back
-                                            },
-                                            new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R")
-                                            {
-                                                IconSvg = svg_refresh, Checked = true
-                                            },
-                                            new AntdUI.ContextMenuStripItemDivider(),
-                                            new AntdUI.ContextMenuStripItem("另存为", "Ctrl+S")
-                                            {
-                                                IconSvg = svg_save
-                                            },
-                                            new AntdUI.ContextMenuStripItem("打印", "Ctrl+P")
-                                            {
-                                                IconSvg = svg_print
-                                            },
-                                    },
-                            },
-                            new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R")
-                            {
-                                IconSvg = svg_refresh, Checked = true
-                            },
-                            new AntdUI.ContextMenuStripItemDivider(),
-                            new AntdUI.ContextMenuStripItem("另存为", "Ctrl+S")
-                            {
-                                IconSvg = svg_save
-                            },
-                            new AntdUI.ContextMenuStripItem("打印", "Ctrl+P")
-                            {
-                                IconSvg = svg_print
-                            },
-                    },
-                    IconSvg = svg_add
-            },
-            new AntdUI.ContextMenuStripItemDivider(),
-            new AntdUI.ContextMenuStripItem("共享")
-            {
-                IconSvg = svg_share
-            },
-            new AntdUI.ContextMenuStripItem("关于")
-            {
-                IconSvg = svg_about
-            },
+                new AntdUI.ContextMenuStripItem("返回", "Alt+向左键").SetIcon(svg_back),
+                new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R").SetIcon(svg_refresh),
+                new AntdUI.ContextMenuStripItemDivider(),
+                new AntdUI.ContextMenuStripItem("另存为", "Ctrl+S").SetIcon(svg_save),
+                new AntdUI.ContextMenuStripItem("打印", "Ctrl+P").SetIcon(svg_print),
+                new AntdUI.ContextMenuStripItemDivider(),
+                new AntdUI.ContextMenuStripItem("发送标签页到你的设备").SetIcon(svg_laptop),
+                new AntdUI.ContextMenuStripItem("为此页面创建QR代码").SetIcon(svg_qr),
+                new AntdUI.ContextMenuStripItem("大声朗读", "Ctrl+Shift+U").SetIcon(svg_a),
+                new AntdUI.ContextMenuStripItem("翻译为 中文(简体)").SetIcon(svg_fy),
+                new AntdUI.ContextMenuStripItem("将页面添加到集锦").SetIcon(svg_add).SetSub(
+                    new AntdUI.ContextMenuStripItem("返回", "Alt+向左键").SetIcon(svg_back).SetSub(
+                        new AntdUI.ContextMenuStripItem("返回", "Alt+向左键").SetIcon(svg_back),
+                        new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R").SetIcon(svg_refresh),
+                        new AntdUI.ContextMenuStripItemDivider(),
+                        new AntdUI.ContextMenuStripItem("另存为", "Ctrl+S").SetIcon(svg_save),
+                        new AntdUI.ContextMenuStripItem("打印", "Ctrl+P").SetIcon(svg_print)
+                        ),
+                    new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R").SetIcon(svg_refresh),
+                    new AntdUI.ContextMenuStripItemDivider(),
+                    new AntdUI.ContextMenuStripItem("另存为", "Ctrl+S").SetIcon(svg_save),
+                    new AntdUI.ContextMenuStripItem("打印", "Ctrl+P").SetIcon(svg_print)
+                    ),
+                new AntdUI.ContextMenuStripItemDivider(),
+                new AntdUI.ContextMenuStripItem("共享").SetIcon(svg_share),
+                new AntdUI.ContextMenuStripItem("关于").SetIcon(svg_about)
             };
         }
 

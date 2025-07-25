@@ -638,7 +638,7 @@ namespace AntdUI
             }
             if (btns == null) return;
             int count = 0, hand = 0;
-            if (rect_close.Contains(e.Location))
+            if (rect_close.Contains(e.X, e.Y))
             {
                 hand++;
                 if (!hoverClose)
@@ -657,7 +657,7 @@ namespace AntdUI
             }
             if (PageSize > 1)
             {
-                if (enabledLeft && rect_left.Contains(e.Location))
+                if (enabledLeft && rect_left.Contains(e.X, e.Y))
                 {
                     hand++;
                     if (!hoverLeft)
@@ -674,7 +674,7 @@ namespace AntdUI
                         count++;
                     }
                 }
-                if (enabledRight && rect_right.Contains(e.Location))
+                if (enabledRight && rect_right.Contains(e.X, e.Y))
                 {
                     hand++;
                     if (!hoverRight)
@@ -694,7 +694,7 @@ namespace AntdUI
             }
             foreach (var it in btns)
             {
-                if (it.enabled && it.Rect.Contains(e.Location))
+                if (it.enabled && it.Rect.Contains(e.X, e.Y))
                 {
                     hand++;
                     if (!it.hover)
@@ -723,13 +723,13 @@ namespace AntdUI
             {
                 foreach (var it in btns)
                 {
-                    if (it.enabled && it.Rect.Contains(e.Location))
+                    if (it.enabled && it.Rect.Contains(e.X, e.Y))
                     {
                         it.mdown = true;
                         return;
                     }
                 }
-                if (rect_img_dpi.Contains(e.Location))
+                if (rect_img_dpi.Contains(e.X, e.Y))
                 {
                     if (rect_img_dpi.Width < Width && rect_img_dpi.Height < Height)
                     {
@@ -763,7 +763,7 @@ namespace AntdUI
             {
                 if (it.mdown)
                 {
-                    if (it.Rect.Contains(e.Location))
+                    if (it.Rect.Contains(e.X, e.Y))
                     {
                         switch (it.id)
                         {
@@ -840,13 +840,13 @@ namespace AntdUI
                     return;
                 }
             }
-            if (rect_close.Contains(e.Location))
+            if (rect_close.Contains(e.X, e.Y))
             {
                 IClose(); return;
             }
             if (PageSize > 1)
             {
-                if (enabledLeft && rect_left.Contains(e.Location))
+                if (enabledLeft && rect_left.Contains(e.X, e.Y))
                 {
                     int newIndex = SelectIndex - 1;
                     if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
@@ -859,7 +859,7 @@ namespace AntdUI
                     Print();
                     return;
                 }
-                if (enabledRight && rect_right.Contains(e.Location))
+                if (enabledRight && rect_right.Contains(e.X, e.Y))
                 {
                     int newIndex = SelectIndex + 1;
                     if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
@@ -873,7 +873,7 @@ namespace AntdUI
                     return;
                 }
             }
-            if (!rect_img_dpi.Contains(e.Location)) IClose();
+            if (!rect_img_dpi.Contains(e.X, e.Y)) IClose();
             base.OnMouseUp(e);
         }
 

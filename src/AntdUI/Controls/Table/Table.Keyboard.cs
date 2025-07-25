@@ -35,35 +35,10 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Down:
-                    if (rows != null)
-                    {
-                        if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
-                        else if (selectedIndex[selectedIndex.Length - 1] < (rows.Length - 1 - rowSummary))
-                        {
-                            int value = selectedIndex[selectedIndex.Length - 1] + 1;
-                            SelectedIndex = value;
-                            ScrollLine(value, rows);
-                        }
-                        else if (selectedIndex.Length > 1)
-                        {
-                            int value = selectedIndex[selectedIndex.Length - 1];
-                            SelectedIndex = value;
-                            ScrollLine(value, rows);
-                        }
-                        if (HandShortcutKeys) return true;
-                    }
+                    if (IKeyDown() && HandShortcutKeys) return true;
                     break;
                 case Keys.Up:
-                    if (rows != null)
-                    {
-                        if (selectedIndex.Length == 0) ScrollBar.ValueY -= 50;
-                        else if (selectedIndex[0] > 1)
-                        {
-                            SelectedIndex--;
-                            ScrollLine(selectedIndex[0], rows);
-                        }
-                        if (HandShortcutKeys) return true;
-                    }
+                    if (IKeyUp() && HandShortcutKeys) return true;
                     break;
                 case Keys.PageUp:
                     if (ScrollBar.ShowY)
@@ -80,7 +55,7 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Left:
-                    int x = KeyLeft();
+                    int x = IKeyLeft();
                     if (ScrollBar.ShowX)
                     {
                         ScrollBar.ValueX -= x;
@@ -88,7 +63,7 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Right:
-                    int xr = KeyRight();
+                    int xr = IKeyRight();
                     if (ScrollBar.ShowX)
                     {
                         ScrollBar.ValueX += xr;
@@ -97,18 +72,43 @@ namespace AntdUI
                     break;
                 case Keys.Enter:
                 case Keys.Space:
-                    if (rows != null && selectedIndex.Length > 0)
-                    {
-                        var it = rows[selectedIndex[0]];
-                        CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
-                        if (EditMode != TEditMode.None && cellFocused != null) EnterEditMode(selectedIndex[0], cellFocused.INDEX);
-                    }
+                    IKeyEnter();
                     break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        int KeyLeft()
+        bool IKeyUp()
+        {
+            if (rows == null) return false;
+            if (selectedIndex.Length == 0) ScrollBar.ValueY -= 50;
+            else if (selectedIndex[0] > 1)
+            {
+                int value = NextIndexUp(rows, selectedIndex[0] - 1);
+                SelectedIndex = value;
+                ScrollLine(value, rows);
+            }
+            return true;
+        }
+        bool IKeyDown()
+        {
+            if (rows == null) return false;
+            if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
+            else if (selectedIndex[selectedIndex.Length - 1] < (rows.Length - 1 - rowSummary))
+            {
+                int value = NextIndexDown(rows, selectedIndex[selectedIndex.Length - 1] + 1);
+                SelectedIndex = value;
+                ScrollLine(value, rows);
+            }
+            else if (selectedIndex.Length > 1)
+            {
+                int value = selectedIndex[selectedIndex.Length - 1];
+                SelectedIndex = value;
+                ScrollLine(value, rows);
+            }
+            return true;
+        }
+        int IKeyLeft()
         {
             if (cellFocused == null || cellFocused.INDEX <= 0) return 50;
             cellFocused = cellFocused.ROW.cells[cellFocused.INDEX - 1];
@@ -117,7 +117,7 @@ namespace AntdUI
             Invalidate(cellFocused.ROW.RECT);
             return x;
         }
-        int KeyRight()
+        int IKeyRight()
         {
             if (cellFocused == null) return 50;
             int next = cellFocused.INDEX + 1;
@@ -130,6 +130,42 @@ namespace AntdUI
                 return x;
             }
             return 50;
+        }
+
+        void IKeyEnter()
+        {
+            if (rows == null) return;
+            if (selectedIndex.Length > 0)
+            {
+                var it = rows[selectedIndex[0]];
+                CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                if (EditMode != TEditMode.None && cellFocused != null) EnterEditMode(selectedIndex[0], cellFocused.INDEX);
+            }
+        }
+
+        int NextIndexDown(RowTemplate[] rows, int value)
+        {
+            if (value < rows.Length - 1)
+            {
+                while (true)
+                {
+                    if (rows[value].SHOW) return value;
+                    else value++;
+                }
+            }
+            return value;
+        }
+        int NextIndexUp(RowTemplate[] rows, int value)
+        {
+            if (value > 0)
+            {
+                while (true)
+                {
+                    if (rows[value].SHOW) return value;
+                    else value--;
+                }
+            }
+            return value;
         }
     }
 }

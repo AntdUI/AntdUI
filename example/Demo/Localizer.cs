@@ -645,6 +645,8 @@ namespace Demo
                     return "Tree";
                 case "Tree.Description":
                     return "Multiple-level structure list.";
+                case "Tree.Loading":
+                    return "Load animation, click pause";
 
                 //VirtualPanel ----------------------------
                 case "VirtualPanel.Text":

@@ -131,12 +131,8 @@ namespace AntdUI
                             if (GetValue(value, _value, out var o))
                             {
                                 cellText.value = _value;
-                                if (it.RECORD is DataRow datarow)
-                                {
-                                    cellText.VALUE = cellText.value = _value;
-                                    datarow[i_col] = o;
-                                }
-                                else SetValue(cell, o);
+                                if (it.RECORD is DataRow datarow) cellText.VALUE = cellText.value = _value;
+                                SetValue(cell, o);
                                 if (multiline) LoadLayout();
                             }
                             CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
@@ -171,8 +167,7 @@ namespace AntdUI
                             if (isok_end && !cf)
                             {
                                 cellSelect.value = cellSelect.COLUMN[_value];
-                                if (it.RECORD is DataRow datarow) datarow[i_col] = _value;
-                                else SetValue(cell, _value);
+                                SetValue(cell, _value);
                                 if (multiline) LoadLayout();
                                 CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
                             }
@@ -222,11 +217,7 @@ namespace AntdUI
                                     else
                                     {
                                         text.Text = _value;
-                                        if (GetValue(value, _value, out var o))
-                                        {
-                                            if (it.RECORD is DataRow datarow) datarow[i_col] = o;
-                                            else SetValue(cell, o);
-                                        }
+                                        if (GetValue(value, _value, out var o)) SetValue(cell, o);
                                     }
                                     CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
                                 }

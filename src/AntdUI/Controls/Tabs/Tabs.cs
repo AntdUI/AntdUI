@@ -1055,7 +1055,7 @@ namespace AntdUI
                     {
                         case TabAlignment.Left:
                         case TabAlignment.Right:
-                            int sizeLR2 = (int)(size * .6F);
+                            int sizeLR2 = (int)(size * 0.6F);
                             if (scroll_max != scroll_y)
                             {
                                 if (scroll_y > 0) return new Rectangle(rect.X, rect.Y + sizeLR2, rect.Width, rect.Height - sizeLR2 * 2);

@@ -423,9 +423,9 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
-            if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.Location)) _MouseState = true;//点位在箭头矩形内
+            if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.X, e.Y)) _MouseState = true;//点位在箭头矩形内
             else if (!SplitPanelState) _MouseState = null;
-            else if (rect.Contains(e.Location))
+            else if (rect.Contains(e.X, e.Y))
             {
                 _MouseState = false;//点位在分割线内
                 initialMousePoint = e.Location;
@@ -447,7 +447,7 @@ namespace AntdUI
             if (e.Button != MouseButtons.Left) _MouseState = null;
             //鼠标在Arrow矩形里，并且不是在拖动
             Rectangle rect = SplitterRectangle, rect_arrow = ArrowRect(rect);
-            if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.Location) && _MouseState != false)
+            if (_collapsePanel != ADCollapsePanel.None && rect_arrow.Contains(e.X, e.Y) && _MouseState != false)
             {
                 SetCursor(CursorType.Hand);
                 m_bIsArrowRegion = true;
@@ -459,7 +459,7 @@ namespace AntdUI
             m_bIsArrowRegion = false;
             Invalidate();
             //鼠标在分隔栏矩形里
-            if (rect.Contains(e.Location))
+            if (rect.Contains(e.X, e.Y))
             {
                 //如果已经折叠，就不允许拖动了
                 if (_collapsePanel != ADCollapsePanel.None && !SplitPanelState) SetCursor(CursorType.Default);
@@ -526,7 +526,7 @@ namespace AntdUI
             //}
             if (Lazy) base.OnMouseUp(e);
             Invalidate();
-            if (_collapsePanel != ADCollapsePanel.None && _MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.Location))
+            if (_collapsePanel != ADCollapsePanel.None && _MouseState == true && e.Button == MouseButtons.Left && ArrowRect(SplitterRectangle).Contains(e.X, e.Y))
             {
                 SplitPanelState = !_splitPanelState;
                 SplitPanelStateChanged?.Invoke(this, new BoolEventArgs(SplitPanelState));

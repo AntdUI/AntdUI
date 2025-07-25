@@ -527,7 +527,7 @@ namespace AntdUI
         RectangleF rect_close;
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && closeIcon && rect_close.Contains(e.Location))
+            if (e.Button == MouseButtons.Left && closeIcon && rect_close.Contains(e.X, e.Y))
             {
                 bool isclose = false;
                 if (CloseChanged == null || CloseChanged(this, EventArgs.Empty)) isclose = true;
@@ -542,7 +542,7 @@ namespace AntdUI
             if (closeIcon)
             {
                 hover_close.MaxValue = Colour.Text.Get("Tag", ColorScheme).A - Colour.TextQuaternary.Get("Tag", ColorScheme).A;
-                hover_close.Switch = rect_close.Contains(e.Location);
+                hover_close.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(hover_close.Switch);
             }
             else SetCursor(false);

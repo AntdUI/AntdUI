@@ -468,21 +468,16 @@ namespace AntdUI
         {
             if (text == tooltipText && tooltipForm != null) return;
             tooltipText = text;
-            var _rect = RectangleToScreen(ClientRectangle);
-            var rect = new Rectangle(_rect.X + dot_rect.X, _rect.Y + dot_rect.Y, dot_rect.Width, dot_rect.Height);
             if (tooltipForm == null)
             {
-                tooltipForm = new TooltipForm(this, rect, tooltipText, TooltipConfig ?? new TooltipConfig
+                tooltipForm = new TooltipForm(this, dot_rect, tooltipText, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Top,
                 });
                 tooltipForm.Show(this);
             }
-            else
-            {
-                tooltipForm.SetText(rect, tooltipText);
-            }
+            else tooltipForm.SetText(dot_rect, tooltipText);
         }
 
         void CloseTips()
@@ -500,11 +495,11 @@ namespace AntdUI
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];
-                bool hover = it.rect_mouse.Contains(e.Location);
+                bool hover = it.rect_mouse.Contains(e.X, e.Y);
                 if (hover)
                 {
                     bool half = false;
-                    if (AllowHalf) half = new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height).Contains(e.Location);
+                    if (AllowHalf) half = new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height).Contains(e.X, e.Y);
                     it.Animatio(true, true, half);
                     for (int j = 0; j < rect_stars.Length; j++)
                     {
@@ -542,13 +537,13 @@ namespace AntdUI
             {
                 for (int i = 0; i < rect_stars.Length; i++)
                 {
-                    if (rect_stars[i].rect_mouse.Contains(e.Location))
+                    if (rect_stars[i].rect_mouse.Contains(e.X, e.Y))
                     {
                         float old = AllowClear ? _value : -10;
                         var it = rect_stars[i];
                         if (AllowHalf)
                         {
-                            if (new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height).Contains(e.Location))
+                            if (new Rectangle(it.rect.X, it.rect.Y, it.rect.Width / 2, it.rect.Height).Contains(e.X, e.Y))
                             {
                                 float valuef = i + 0.5F;
                                 if (valuef == old)

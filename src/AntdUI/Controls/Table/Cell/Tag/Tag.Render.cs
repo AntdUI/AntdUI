@@ -76,13 +76,13 @@ namespace AntdUI
 
                 #endregion
 
-                g.String(Text, font, _fore, Rect, Table.StringFormat(ColumnAlign.Center));
+                g.DrawText(Text, font, _fore, Rect, Table.StringFormat(ColumnAlign.Center));
             }
         }
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
         {
-            var size = g.MeasureString(Text, font);
+            var size = g.MeasureText(Text, font);
             if (Gap.HasValue)
             {
                 int sp = (int)(Gap.Value * Config.Dpi);

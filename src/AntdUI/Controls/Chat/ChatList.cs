@@ -277,7 +277,7 @@ namespace AntdUI.Chat
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (ScrollBar.MouseDown(e.Location))
+            if (ScrollBar.MouseDown(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 Focus();
@@ -289,7 +289,7 @@ namespace AntdUI.Chat
                         if (it is TextChatItem text)
                         {
                             text.SelectionLength = 0;
-                            if (e.Button == MouseButtons.Left && text.ContainsRead(e.Location, 0, scrolly))
+                            if (e.Button == MouseButtons.Left && text.ContainsRead(e.X, e.Y, 0, scrolly))
                             {
                                 oldMouseDown = e.Location;
                                 text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
@@ -319,7 +319,7 @@ namespace AntdUI.Chat
                 else mouseDown.selectionStartTemp = index;
                 Invalidate();
             }
-            else if (ScrollBar.MouseMove(e.Location))
+            else if (ScrollBar.MouseMove(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 int count = 0, hand = 0, ibeam = 0;
@@ -329,7 +329,7 @@ namespace AntdUI.Chat
                     {
                         if (it is TextChatItem text)
                         {
-                            if (text.ContainsRead(e.Location, 0, scrolly)) ibeam++;
+                            if (text.ContainsRead(e.X, e.Y, 0, scrolly)) ibeam++;
                         }
                         //if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change))
                         //{
@@ -822,6 +822,7 @@ namespace AntdUI.Chat
             }
         }
 
+        #region 布局
 
         internal int SetRect(Rectangle _rect, int y, Canvas g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size)
         {
@@ -872,10 +873,9 @@ namespace AntdUI.Chat
         internal Rectangle rect_text { get; set; }
         internal Rectangle rect_icon { get; set; }
 
-        internal bool ContainsRead(Point point, int x, int y)
-        {
-            return rect_text.Contains(new Point(point.X + x, point.Y + y));
-        }
+        internal bool ContainsRead(int x, int y, int sx, int sy) => rect_text.Contains(new Point(x + sx, y + sy));
+
+        #endregion
 
         #region 字体相关
 
@@ -917,6 +917,46 @@ namespace AntdUI.Chat
                 selectionLength = value;
                 Invalidate();
             }
+        }
+
+        #endregion
+
+        #region 设置
+
+        public TextChatItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public TextChatItem SetName(string? value)
+        {
+            _name = value;
+            return this;
+        }
+
+        public TextChatItem SetIcon(Image? img)
+        {
+            _icon = img;
+            return this;
+        }
+
+        public TextChatItem SetLoading(bool value = true)
+        {
+            loading = value;
+            return this;
+        }
+
+        public TextChatItem SetMe(bool value = true)
+        {
+            Me = value;
+            return this;
+        }
+
+        public TextChatItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
         }
 
         #endregion

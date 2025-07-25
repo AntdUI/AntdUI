@@ -261,7 +261,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (ScrollBar.MouseDown(e.Location)) OnTouchDown(e.X, e.Y);
+            if (ScrollBar.MouseDown(e.X, e.Y)) OnTouchDown(e.X, e.Y);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
@@ -273,7 +273,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.Location))
+            if (ScrollBar.MouseMove(e.X, e.Y))
             {
                 if (items == null || items.Count == 0 || ItemClick == null) return;
                 if (OnTouchMove(e.X, e.Y))
@@ -411,27 +411,6 @@ namespace AntdUI
         [Description("名称"), Category("数据"), DefaultValue(null)]
         public string? Name { get; set; }
 
-        string? description;
-        /// <summary>
-        /// 描述，可选
-        /// </summary>
-        [Description("描述，可选"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        public string? Description
-        {
-            get => Localization.GetLangI(LocalizationDescription, description, new string?[] { "{id}", ID });
-            set
-            {
-                if (description == value) return;
-                description = value;
-                Invalidates();
-            }
-        }
-
-        [Description("详情描述"), Category("国际化"), DefaultValue(null)]
-        public string? LocalizationDescription { get; set; }
-
-
         string? text;
         /// <summary>
         /// 文本
@@ -451,6 +430,26 @@ namespace AntdUI
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
+
+        string? description;
+        /// <summary>
+        /// 描述，可选
+        /// </summary>
+        [Description("描述，可选"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
+        public string? Description
+        {
+            get => Localization.GetLangI(LocalizationDescription, description, new string?[] { "{id}", ID });
+            set
+            {
+                if (description == value) return;
+                description = value;
+                Invalidates();
+            }
+        }
+
+        [Description("详情描述"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationDescription { get; set; }
 
         [Description("颜色类型"), Category("外观"), DefaultValue(TTypeMini.Primary)]
         public TTypeMini Type { get; set; } = TTypeMini.Primary;
@@ -481,12 +480,7 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        void Invalidates()
-        {
-            if (PARENT == null) return;
-            PARENT.ChangeList();
-            PARENT.Invalidate();
-        }
+        #region 内部
 
         internal Timeline? PARENT { get; set; }
 
@@ -495,6 +489,86 @@ namespace AntdUI
         internal Rectangle txt_rect { get; set; }
         internal Rectangle description_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
+
+        void Invalidates()
+        {
+            if (PARENT == null) return;
+            PARENT.ChangeList();
+            PARENT.Invalidate();
+        }
+
+        #endregion
+
+        #region 设置
+
+        public TimelineItem SetType(TTypeMini value = TTypeMini.Success)
+        {
+            Type = value;
+            return this;
+        }
+
+        public TimelineItem SetFill(Color? img)
+        {
+            Fill = img;
+            return this;
+        }
+
+        #region 图标
+
+        public TimelineItem SetIcon(Image? img)
+        {
+            Icon = img;
+            return this;
+        }
+
+        public TimelineItem SetIcon(string? svg)
+        {
+            IconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+
+        public TimelineItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public TimelineItem SetName(string? value)
+        {
+            Name = value;
+            return this;
+        }
+
+        public TimelineItem SetText(string? value, string? localization = null)
+        {
+            text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public TimelineItem SetDescription(string? value, string? localization = null)
+        {
+            description = value;
+            LocalizationDescription = localization;
+            return this;
+        }
+
+        public TimelineItem SetVisible(bool value = false)
+        {
+            visible = value;
+            return this;
+        }
+
+        public TimelineItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string? ToString() => Text;
     }

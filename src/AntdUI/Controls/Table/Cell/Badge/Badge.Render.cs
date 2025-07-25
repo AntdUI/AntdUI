@@ -55,8 +55,8 @@ namespace AntdUI
                 }
                 g.FillEllipse(brush, RectDot);
             }
-            if (Fore.HasValue) g.String(Text, font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
-            else g.String(Text, font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
+            if (Fore.HasValue) g.DrawText(Text, font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
+            else g.DrawText(Text, font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
         }
 
         public override Size GetSize(Canvas g, Font font, int gap, int gap2)
@@ -68,7 +68,7 @@ namespace AntdUI
             }
             else
             {
-                var size = g.MeasureString(Text, font);
+                var size = g.MeasureText(Text, font);
                 return new Size(size.Width + size.Height, size.Height);
             }
         }

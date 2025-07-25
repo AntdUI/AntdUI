@@ -49,12 +49,43 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 获取筛选数据
+        /// 按当前顺序返回可见的列集合
+        /// </summary>
+        public Column[]? VisibleColumns
+        {
+            get
+            {
+                if (rows == null || rows.Length == 0)
+                {
+                    return Columns.ToArray();
+                }
+                List<Column> columns = new List<Column>();
+                CELL[] cells = rows[0].cells;
+                foreach (CELL cELL in cells)
+                {
+                    if (cELL.COLUMN.Visible)
+                    {
+                        columns.Add(cELL.COLUMN);
+                    }
+                }
+
+                return columns.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 获取筛选数据 (无筛选数据时返回当前视图数据)
         /// </summary>
         /// <returns>筛选后的数据对象数组（注意：返回的是原始数据对象的引用）</returns>
         public object[]? FilterList()
         {
-            if (dataTmp == null || dataTmp.rowsFilter == null) return null;
+            if (dataTmp == null) return null;
+            if (dataTmp.rowsFilter == null || dataTmp.rowsFilter.Length == 0)
+            {
+                var list = new object[dataTmp.rows.Length];
+                for (int i = 0; i < dataTmp.rows.Length; i++) list[i] = dataTmp.rows[i].record;
+                return list;
+            }
             List<object> data = new List<object>(dataTmp.rowsFilter.Length);
             foreach (var row in dataTmp.rowsFilter) data.Add(row.record);
             return data.ToArray();

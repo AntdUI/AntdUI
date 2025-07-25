@@ -477,8 +477,8 @@ namespace AntdUI
                 {
                     var btn = buttons[i];
                     var hover = false;
-                    if (btn.enabled) hover = btn.rect.Contains(e.Location);
-                    else if ((i == 0 || i == 1) && btn.rect.Contains(e.Location))
+                    if (btn.enabled) hover = btn.rect.Contains(e.X, e.Y);
+                    else if ((i == 0 || i == 1) && btn.rect.Contains(e.X, e.Y))
                     {
                         count_no++;
                     }
@@ -522,7 +522,7 @@ namespace AntdUI
                 for (int i = 0; i < buttons.Length; i++)
                 {
                     var btn = buttons[i];
-                    if (btn.enabled && btn.rect.Contains(e.Location))
+                    if (btn.enabled && btn.rect.Contains(e.X, e.Y))
                     {
                         if (i == 0) Current = current - 1;
                         else if (i == 1) Current = current + 1;

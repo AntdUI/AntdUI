@@ -472,15 +472,15 @@ namespace AntdUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        protected override bool IMouseDown(Point e)
+        protected override bool IMouseDown(int x, int y)
         {
-            if (rect_d_l.Contains(e) || rect_d_ico.Contains(e))
+            if (rect_d_l.Contains(x, y) || rect_d_ico.Contains(x, y))
             {
                 EndFocused = false;
                 StartFocused = true;
                 StartEndFocused();
             }
-            else if (rect_d_r.Contains(e))
+            else if (rect_d_r.Contains(x, y))
             {
                 StartFocused = false;
                 EndFocused = true;

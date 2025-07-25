@@ -1121,7 +1121,7 @@ namespace AntdUI
             int hand = 0, change = 0, i = 0, hoveindex = -1;
             foreach (var it in items)
             {
-                bool hover = it.Enabled && it.Rect.Contains(e.Location);
+                bool hover = it.Enabled && it.Rect.Contains(e.X, e.Y);
                 if (it.Hover != hover)
                 {
                     it.Hover = hover;
@@ -1138,36 +1138,50 @@ namespace AntdUI
             if (change > 0) Invalidate();
             if (hoveindex == hoveindexold) return;
             hoveindexold = hoveindex;
-            if (hoveindex == -1)
-            {
-                tooltipForm?.Close();
-                tooltipForm = null;
-            }
+            if (hoveindex == -1) CloseTip();
             else
             {
-                var _rect = RectangleToScreen(ClientRectangle);
-                var it = items[hoveindex];
-                var rect = new Rectangle(_rect.X + it.Rect.X, _rect.Y + it.Rect.Y, it.Rect.Width, it.Rect.Height);
-                if (tooltipForm == null)
+                var tooltip = items[hoveindex].Tooltip;
+                if (tooltip == null)
                 {
-                    tooltipForm = new TooltipForm(this, rect, it.Tooltip, TooltipConfig ?? new TooltipConfig
-                    {
-                        Font = Font,
-                        ArrowAlign = TAlign.Right,
-                    });
-                    tooltipForm.Show(this);
+                    CloseTip();
+                    return;
                 }
-                else tooltipForm.SetText(rect, it.Tooltip);
+                var it = items[hoveindex];
+                OpenTip(it.Rect, tooltip);
             }
         }
-        TooltipForm? tooltipForm;
+
+        #region 提示
+
+        TooltipForm? toolTip;
+        void CloseTip()
+        {
+            if (toolTip == null) return;
+            toolTip?.IClose();
+            toolTip = null;
+        }
+        void OpenTip(Rectangle rect, string tooltip)
+        {
+            if (toolTip == null)
+            {
+                toolTip = new TooltipForm(this, rect, tooltip, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = Font,
+                    ArrowAlign = TAlign.Right,
+                });
+                toolTip.Show(this);
+            }
+            else toolTip.SetText(rect, tooltip);
+        }
+
+        #endregion
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
             SetCursor(false);
-            tooltipForm?.Close();
-            tooltipForm = null;
+            CloseTip();
             if (items == null || items.Count == 0) return;
             int change = 0;
             foreach (var it in items)
@@ -1185,6 +1199,7 @@ namespace AntdUI
         {
             base.OnLeave(e);
             SetCursor(false);
+            CloseTip();
             if (items == null || items.Count == 0) return;
             int change = 0;
             foreach (var it in items)
@@ -1205,7 +1220,7 @@ namespace AntdUI
             for (int i = 0; i < items.Count; i++)
             {
                 var it = items[i];
-                if (it != null && it.Enabled && it.Rect.Contains(e.Location))
+                if (it != null && it.Enabled && it.Rect.Contains(e.X, e.Y))
                 {
                     bool pass = false;
                     if (SelectIndexChanging == null) pass = true;
@@ -1336,18 +1351,18 @@ namespace AntdUI
             }
         }
 
-        string? iconsvg;
+        string? iconSvg;
         /// <summary>
         /// 图标SVG
         /// </summary>
         [Description("图标SVG"), Category("外观"), DefaultValue(null)]
         public string? IconSvg
         {
-            get => iconsvg;
+            get => iconSvg;
             set
             {
-                if (iconsvg == value) return;
-                iconsvg = value;
+                if (iconSvg == value) return;
+                iconSvg = value;
                 Invalidates();
             }
         }
@@ -1428,9 +1443,93 @@ namespace AntdUI
 
         #endregion
 
-        internal bool Hover { get; set; }
+        #region 徽标
 
-        internal bool HasEmptyText => Text == null || string.IsNullOrEmpty(Text);
+        string? badge;
+        /// <summary>
+        /// 徽标文本
+        /// </summary>
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        string? badgeSvg;
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        TAlign badgeAlign = TAlign.TR;
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        public TAlign BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标大小
+        /// </summary>
+        public float BadgeSize { get; set; } = .6F;
+
+        /// <summary>
+        /// 徽标背景颜色
+        /// </summary>
+        public Color? BadgeBack { get; set; }
+
+        bool badgeMode = false;
+        /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode == value) return;
+                badgeMode = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        public int BadgeOffsetX { get; set; }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        public int BadgeOffsetY { get; set; }
+
+        #endregion
+
+        #region 内部
+
+        #region 布局
 
         internal void SetOffset(int x, int y)
         {
@@ -1580,91 +1679,13 @@ namespace AntdUI
         internal Rectangle RectImg { get; set; }
         internal Rectangle RectText { get; set; }
 
-        internal Segmented? PARENT { get; set; }
-
-        #region 徽标
-
-        string? badge;
-        /// <summary>
-        /// 徽标文本
-        /// </summary>
-        public string? Badge
-        {
-            get => badge;
-            set
-            {
-                if (badge == value) return;
-                badge = value;
-                PARENT?.Invalidate();
-            }
-        }
-
-        string? badgeSvg;
-        /// <summary>
-        /// 徽标SVG
-        /// </summary>
-        public string? BadgeSvg
-        {
-            get => badgeSvg;
-            set
-            {
-                if (badgeSvg == value) return;
-                badgeSvg = value;
-                PARENT?.Invalidate();
-            }
-        }
-
-        TAlign badgeAlign = TAlign.TR;
-        /// <summary>
-        /// 徽标方向
-        /// </summary>
-        public TAlign BadgeAlign
-        {
-            get => badgeAlign;
-            set
-            {
-                if (badgeAlign == value) return;
-                badgeAlign = value;
-                PARENT?.Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// 徽标大小
-        /// </summary>
-        public float BadgeSize { get; set; } = .6F;
-
-        /// <summary>
-        /// 徽标背景颜色
-        /// </summary>
-        public Color? BadgeBack { get; set; }
-
-        bool badgeMode = false;
-        /// <summary>
-        /// 徽标模式（镂空）
-        /// </summary>
-        public bool BadgeMode
-        {
-            get => badgeMode;
-            set
-            {
-                if (badgeMode == value) return;
-                badgeMode = value;
-                PARENT?.Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// 徽标偏移X
-        /// </summary>
-        public int BadgeOffsetX { get; set; }
-
-        /// <summary>
-        /// 徽标偏移Y
-        /// </summary>
-        public int BadgeOffsetY { get; set; }
-
         #endregion
+
+        internal bool Hover { get; set; }
+
+        internal bool HasEmptyText => Text == null || string.IsNullOrEmpty(Text);
+
+        internal Segmented? PARENT { get; set; }
 
         void Invalidates()
         {
@@ -1672,6 +1693,91 @@ namespace AntdUI
             PARENT.ChangeItems();
             PARENT.Invalidate();
         }
+
+        #endregion
+
+        #region 设置
+
+        #region 图标
+
+        public SegmentedItem SetIcon(Image? img)
+        {
+            icon = img;
+            return this;
+        }
+
+        public SegmentedItem SetIcon(string? svg)
+        {
+            iconSvg = svg;
+            return this;
+        }
+
+        public SegmentedItem SetIcon(Image? img, Image? hover)
+        {
+            icon = img;
+            IconHover = hover;
+            return this;
+        }
+
+        public SegmentedItem SetIcon(string? svg, string? hover)
+        {
+            iconSvg = svg;
+            IconHoverSvg = hover;
+            return this;
+        }
+
+        public SegmentedItem SetIcon(Image? img, Image? hover, Image? active)
+        {
+            icon = img;
+            IconHover = hover;
+            IconActive = active;
+            return this;
+        }
+
+        public SegmentedItem SetIcon(string? svg, string? hover, string? active)
+        {
+            iconSvg = svg;
+            IconHoverSvg = hover;
+            IconActiveSvg = active;
+            return this;
+        }
+
+
+        #endregion
+
+        public SegmentedItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public SegmentedItem SetText(string? value, string? localization = null)
+        {
+            text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public SegmentedItem SetTooltip(string? value, string? localization = null)
+        {
+            tooltip = value;
+            LocalizationTooltip = localization;
+            return this;
+        }
+
+        public SegmentedItem SetEnabled(bool value = false)
+        {
+            enabled = value;
+            return this;
+        }
+
+        public SegmentedItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string? ToString() => Text;
     }

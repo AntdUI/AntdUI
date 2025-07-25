@@ -37,6 +37,7 @@ namespace AntdUI
         /// </summary>
         DataSource = 2,
     }
+
     /// <summary>
     /// 筛选条件
     /// </summary>
@@ -71,5 +72,4 @@ namespace AntdUI
         /// </summary>
         None = 6,
     }
-
 }

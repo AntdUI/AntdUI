@@ -76,8 +76,8 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(8)]
-        public int ArrowSize { get; set; } = 8;
+        [Description("箭头大小"), Category("外观"), DefaultValue(null)]
+        public int? ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
@@ -91,16 +91,28 @@ namespace AntdUI
         [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
         public int? CustomWidth { get; set; }
 
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        public Color? Back { get; set; }
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore { get; set; }
+
         #endregion
 
         #region 渲染
 
+        int arrowSize = 0;
         readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
-            MaximumSize = MinimumSize = this.RenderMeasure(g, null, out var multiline);
-            this.Render(g, e.Rect, multiline, s_c, s_l);
+            MaximumSize = MinimumSize = this.RenderMeasure(g, null, out var multiline, out _, out arrowSize);
+            this.Render(g, e.Rect, multiline, arrowSize, -1, s_c, s_l);
             base.OnDraw(e);
         }
 
@@ -166,7 +178,7 @@ namespace AntdUI
             /// <summary>
             /// 偏移量
             /// </summary>
-            public object? Offset { get; set; }
+            public Rectangle? Offset { get; set; }
 
             /// <summary>
             /// 字体
@@ -186,7 +198,7 @@ namespace AntdUI
             /// <summary>
             /// 箭头大小
             /// </summary>
-            public int ArrowSize { get; set; } = 8;
+            public int? ArrowSize { get; set; }
 
             /// <summary>
             /// 箭头方向
@@ -197,6 +209,16 @@ namespace AntdUI
             /// 自定义宽度
             /// </summary>
             public int? CustomWidth { get; set; }
+
+            /// <summary>
+            /// 背景色
+            /// </summary>
+            public Color? Back { get; set; }
+
+            /// <summary>
+            /// 前景色
+            /// </summary>
+            public Color? Fore { get; set; }
         }
 
         #endregion
@@ -204,61 +226,66 @@ namespace AntdUI
 
     internal class TooltipForm : ILayeredFormOpacity, ITooltip
     {
-        readonly Control? ocontrol = null;
+        Control ocontrol;
         bool multiline = false;
         int? maxWidth;
+        int arrowSize = 0, arrowX = -1;
+        public override bool MessageEnable => true;
         public TooltipForm(Control control, string txt, ITooltipConfig component) : base(240)
         {
             ocontrol = control;
             control.Parent.SetTopMost(Handle);
+            MessageCloseMouseLeave = true;
             Text = txt;
-            if (component.Font != null) Font = component.Font;
-            else if (Config.Font != null) Font = Config.Font;
-            else Font = control.Font;
+            Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
+            Back = component.Back;
+            Fore = component.Fore;
             var point = control.PointToScreen(Point.Empty);
             var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = screen.Width;
-            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline)));
-            if (component is Tooltip.Config config)
+            int gap = 0;
+            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            if (component is Tooltip.Config config && config.Offset.HasValue)
             {
-                if (config.Offset is RectangleF rectf) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + (int)rectf.X, point.Y + (int)rectf.Y, (int)rectf.Width, (int)rectf.Height), TargetRect.Width, TargetRect.Height));
-                else if (config.Offset is Rectangle rect) SetLocation(ArrowAlign.AlignPoint(new Rectangle(point.X + rect.X, point.Y + rect.Y, rect.Width, rect.Height), TargetRect.Width, TargetRect.Height));
-                else SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
+                var align = ArrowAlign;
+                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value) { iscreen = screen }.Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                ArrowAlign = align;
+                SetLocation(x, y);
             }
-            else SetLocation(ArrowAlign.AlignPoint(point, control.Size, TargetRect.Width, TargetRect.Height));
-            control.LostFocus += Control_LostFocus;
-            control.MouseLeave += Control_LostFocus;
-            if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
-            if (TargetRect.X < screen.X) SetLocationX(screen.X);
-            else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
+            else
+            {
+                var align = ArrowAlign;
+                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                ArrowAlign = align;
+                SetLocation(x, y);
+            }
+            control.Disposed += Control_Close;
         }
-        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component) : base(240)
+        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = true) : base(240)
         {
             ocontrol = control;
             control.SetTopMost(Handle);
+            MessageCloseMouseLeave = true;
             Text = txt;
-            if (component.Font != null) Font = component.Font;
-            else if (Config.Font != null) Font = Config.Font;
-            else Font = control.Font;
+            Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
-            var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromPoint(point).WorkingArea;
-            maxWidth = screen.Width;
-            Helper.GDI(g =>
-            {
-                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
-            });
-            SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
-            if (component.ArrowAlign == TAlign.Left || component.ArrowAlign == TAlign.Right || component.ArrowAlign == TAlign.RB || component.ArrowAlign == TAlign.RT || component.ArrowAlign == TAlign.LT || component.ArrowAlign == TAlign.LB) return;
-            if (TargetRect.X < screen.X) SetLocationX(screen.X);
-            else if (TargetRect.X > (screen.X + screen.Width) - TargetRect.Width) SetLocationX(screen.Right - TargetRect.Width);
+            Back = component.Back;
+            Fore = component.Fore;
+            if (hasmax) maxWidth = control.Width;
+            int gap = 0;
+            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            var align = ArrowAlign;
+            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            ArrowAlign = align;
+            SetLocation(x, y);
+            control.Disposed += Control_Close;
         }
 
         public override string name => nameof(Tooltip);
@@ -266,15 +293,16 @@ namespace AntdUI
         public void SetText(Rectangle rect, string text)
         {
             Text = text;
-            Helper.GDI(g =>
-            {
-                SetSize(this.RenderMeasure(g, maxWidth, out multiline));
-            });
-            SetLocation(ArrowAlign.AlignPoint(rect, TargetRect));
+            int gap = 0;
+            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            var align = ArrowAlign;
+            new CalculateCoordinate(ocontrol, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            ArrowAlign = align;
+            SetLocation(x, y);
             Print();
         }
 
-        private void Control_LostFocus(object? sender, EventArgs e) => IClose();
+        private void Control_Close(object? sender, EventArgs e) => IClose();
 
         #region 参数
 
@@ -287,8 +315,8 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(8)]
-        public int ArrowSize { get; set; } = 8;
+        [Description("箭头大小"), Category("外观"), DefaultValue(null)]
+        public int? ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
@@ -302,6 +330,18 @@ namespace AntdUI
         [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
         public int? CustomWidth { get; set; }
 
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        public Color? Back { get; set; }
+
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore { get; set; }
+
         #endregion
 
         #region 渲染
@@ -313,7 +353,7 @@ namespace AntdUI
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(original_bmp).High())
             {
-                this.Render(g, rect, multiline, s_c, s_l);
+                this.Render(g, rect, multiline, arrowSize, arrowX, s_c, s_l);
             }
             return original_bmp;
         }
@@ -323,9 +363,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            if (ocontrol == null) return;
-            ocontrol.LostFocus -= Control_LostFocus;
-            ocontrol.MouseLeave -= Control_LostFocus;
+            ocontrol.Disposed -= Control_Close;
         }
     }
 
@@ -351,8 +389,8 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(8)]
-        public int ArrowSize { get; set; } = 8;
+        [Description("箭头大小"), Category("外观"), DefaultValue(null)]
+        public int? ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
@@ -365,6 +403,18 @@ namespace AntdUI
         /// </summary>
         [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
         public int? CustomWidth { get; set; }
+
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        public Color? Back { get; set; }
+
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore { get; set; }
 
         #endregion
 
@@ -434,11 +484,14 @@ namespace AntdUI
     {
         #region 渲染
 
-        public static Size RenderMeasure(this ITooltip core, Canvas g, int? maxWidth, out bool multiline)
+        public static Size RenderMeasure(this ITooltip core, Canvas g, int? maxWidth, out bool multiline, out int gap, out int arrowSize)
         {
             multiline = core.Text.Contains("\n");
-            int padding = (int)Math.Ceiling(20 * Config.Dpi), paddingx = (int)Math.Ceiling(24 * Config.Dpi);
+            gap = (int)(3 * Config.Dpi);
+            int gap2 = gap * 2, paddingy = (int)(6 * Config.Dpi) * 2 + gap2, paddingx = (int)(8 * Config.Dpi) * 2 + gap2;
             var font_size = g.MeasureText(core.Text, core.Font);
+            if (core.ArrowSize.HasValue) arrowSize = (int)(core.ArrowSize * Config.Dpi);
+            else arrowSize = (int)(font_size.Height * 0.3F);
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
@@ -450,91 +503,97 @@ namespace AntdUI
             }
             else if (maxWidth.HasValue)
             {
-                int width = maxWidth.Value - padding;
+                int width = maxWidth.Value - paddingx;
                 if (font_size.Width > width)
                 {
                     font_size = g.MeasureText(core.Text, core.Font, width);
                     multiline = true;
                 }
             }
-            if (core.ArrowAlign == TAlign.None) return new Size(font_size.Width + paddingx, font_size.Height + padding);
-            if (core.ArrowAlign == TAlign.Bottom || core.ArrowAlign == TAlign.BL || core.ArrowAlign == TAlign.BR || core.ArrowAlign == TAlign.Top || core.ArrowAlign == TAlign.TL || core.ArrowAlign == TAlign.TR)
-                return new Size(font_size.Width + paddingx, font_size.Height + padding + core.ArrowSize);
-            else return new Size(font_size.Width + paddingx + core.ArrowSize, font_size.Height + padding);
+            switch (core.ArrowAlign)
+            {
+                case TAlign.None:
+                    return new Size(font_size.Width + paddingx, font_size.Height + paddingy);
+                case TAlign.Bottom:
+                case TAlign.BL:
+                case TAlign.BR:
+                case TAlign.Top:
+                case TAlign.TL:
+                case TAlign.TR:
+                    return new Size(font_size.Width + paddingx, font_size.Height + paddingy + arrowSize);
+                default:
+                    return new Size(font_size.Width + paddingx + arrowSize, font_size.Height + paddingy);
+            }
         }
 
-        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
+        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, int arrowSize, int arrowX, StringFormat s_c, StringFormat s_l)
         {
-            int gap = (int)Math.Ceiling(5 * Config.Dpi), padding = gap * 2, padding2 = padding * 2;
-            using (var brush = new SolidBrush(Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38)))
+            int gap = (int)(3 * Config.Dpi), paddingy = (int)(6 * Config.Dpi), paddingx = (int)(8 * Config.Dpi), gap2 = gap * 2, paddingy2 = paddingy * 2, paddingx2 = paddingx * 2;
+            int radius = (int)(core.Radius * Config.Dpi);
+            using (var brush = new SolidBrush(core.Back ?? (Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38))))
             {
                 if (core.ArrowAlign == TAlign.None)
                 {
-                    var rect_read = new Rectangle(rect.X + 5, rect.Y + 5, rect.Width - 10, rect.Height - 10);
-                    using (var path = rect_read.RoundPath(core.Radius))
+                    Rectangle rect_shadow = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - gap2, rect.Height - gap2),
+                        rect_text = new Rectangle(rect_shadow.X + paddingx, rect_shadow.Y + paddingy, rect_shadow.Width - paddingx2, rect_shadow.Height - paddingy2);
+                    using (var path = rect_shadow.RoundPath(radius))
                     {
-                        DrawShadow(core, g, rect, rect_read, 3, path);
+                        DrawShadow(core, g, radius, rect, rect_shadow, path);
                         g.Fill(brush, path);
                     }
-                    RenderText(core, g, rect_read, multiline, padding, padding2, s_c, s_l);
+                    g.DrawText(core.Text, core.Font, core.Fore ?? Color.White, rect_text, multiline ? s_l : s_c);
                 }
                 else
                 {
-                    Rectangle rect_text;
+                    int arrows2 = arrowSize / 2;
+                    Rectangle rectf, rect_shadow;
                     switch (core.ArrowAlign.AlignMini())
                     {
                         case TAlignMini.Top:
-                            rect_text = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - core.ArrowSize);
+                            rect_shadow = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - gap2, rect.Height - gap2 - arrowSize);
+                            rectf = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - arrows2);
                             break;
                         case TAlignMini.Bottom:
-                            rect_text = new Rectangle(rect.X, rect.Y + core.ArrowSize, rect.Width, rect.Height - core.ArrowSize);
+                            rect_shadow = new Rectangle(rect.X + gap, rect.Y + gap + arrowSize, rect.Width - gap2, rect.Height - gap2 - arrowSize);
+                            rectf = new Rectangle(rect.X, rect.Y + arrows2, rect.Width, rect.Height - arrows2);
                             break;
                         case TAlignMini.Left:
                             //左
-                            rect_text = new Rectangle(rect.X, rect.Y, rect.Width - core.ArrowSize, rect.Height);
+                            rect_shadow = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - gap2 - arrowSize, rect.Height - gap2);
+                            rectf = new Rectangle(rect.X, rect.Y, rect.Width - arrows2, rect.Height);
                             break;
                         default:
                             //右
-                            rect_text = new Rectangle(rect.X + core.ArrowSize, rect.Y, rect.Width - core.ArrowSize, rect.Height);
+                            rect_shadow = new Rectangle(rect.X + gap + arrowSize, rect.Y + gap, rect.Width - gap2 - arrowSize, rect.Height - gap2);
+                            rectf = new Rectangle(rect.X + arrows2, rect.Y, rect.Width - arrows2, rect.Height);
                             break;
                     }
-                    var rect_read = new Rectangle(rect_text.X + gap, rect_text.Y + gap, rect_text.Width - padding, rect_text.Height - padding);
-                    using (var path = rect_read.RoundPath(core.Radius))
+                    var rect_text = new Rectangle(rect_shadow.X + paddingx, rect_shadow.Y + paddingy, rect_shadow.Width - paddingx2, rect_shadow.Height - paddingy2);
+                    using (var path = rect_shadow.RoundPath(radius))
                     {
-                        DrawShadow(core, g, rect, rect_read, 3, path);
+                        DrawShadow(core, g, radius, rectf, rect_shadow, path);
                         g.Fill(brush, path);
+                        if (arrowX > -1) g.FillPolygon(brush, core.ArrowAlign.AlignLines(arrowSize, rect, rect_shadow, arrowX));
+                        else g.FillPolygon(brush, core.ArrowAlign.AlignLines(arrowSize, rect, rect_shadow));
                     }
-                    g.FillPolygon(brush, core.ArrowAlign.AlignLines(core.ArrowSize, rect, rect_read));
-                    RenderText(core, g, rect_text, multiline, padding, padding2, s_c, s_l);
+                    g.DrawText(core.Text, core.Font, core.Fore ?? Color.White, rect_text, multiline ? s_l : s_c);
                 }
             }
         }
 
-        static void RenderText(ITooltip core, Canvas g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
+        static void DrawShadow(this ITooltip core, Canvas g, int radius, Rectangle rect, Rectangle rect_shadow, GraphicsPath path2)
         {
-            if (multiline) g.DrawText(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
-            else g.DrawText(core.Text, core.Font, Brushes.White, rect, s_c);
-        }
-
-        static void DrawShadow(this ITooltip core, Canvas _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
-        {
-            using (var bmp = new Bitmap(brect.Width, brect.Height))
+            using (var path = rect.RoundPath(radius))
             {
-                using (var g = Graphics.FromImage(bmp).HighLay())
+                path.AddPath(path2, false);
+                Color ct = Color.Transparent, ctb = Color.FromArgb(120, 0, 0, 0);
+                using (var brush = new PathGradientBrush(path))
                 {
-                    int size2 = size * 2;
-                    using (var path = new Rectangle(rect.X - size, rect.Y - size + 2, rect.Width + size2, rect.Height + size2).RoundPath(core.Radius))
-                    {
-                        path.AddPath(path2, false);
-                        using (var brush = new PathGradientBrush(path))
-                        {
-                            brush.CenterColor = Color.Black;
-                            brush.SurroundColors = new Color[] { Color.Transparent };
-                            g.Fill(brush, path);
-                        }
-                    }
+                    brush.CenterPoint = new PointF(rect.Width / 2F, rect.Height / 2F);
+                    brush.CenterColor = ctb;
+                    brush.SurroundColors = new Color[] { ct };
+                    g.Fill(brush, path);
                 }
-                _g.Image(bmp, brect);
             }
         }
 
@@ -545,9 +604,11 @@ namespace AntdUI
     {
         public Font? Font { get; set; }
         public int Radius { get; set; } = 6;
-        public int ArrowSize { get; set; } = 8;
+        public int? ArrowSize { get; set; }
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
         public int? CustomWidth { get; set; }
+        public Color? Back { get; set; }
+        public Color? Fore { get; set; }
     }
 
     internal interface ITooltipConfig
@@ -565,7 +626,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        int ArrowSize { get; set; }
+        int? ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
@@ -576,6 +637,16 @@ namespace AntdUI
         /// 设定宽度
         /// </summary>
         int? CustomWidth { get; set; }
+
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        Color? Back { get; set; }
+
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        Color? Fore { get; set; }
     }
 
     internal interface ITooltip
@@ -598,7 +669,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头大小
         /// </summary>
-        int ArrowSize { get; set; }
+        int? ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
@@ -609,6 +680,16 @@ namespace AntdUI
         /// 设定宽度
         /// </summary>
         int? CustomWidth { get; set; }
+
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        Color? Back { get; set; }
+
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        Color? Fore { get; set; }
     }
 
     #endregion

@@ -362,7 +362,7 @@ namespace AntdUI
         {
             base.OnMouseDown(e);
             MDown = null;
-            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
                 int y = ScrollBar.ValueY;
@@ -392,7 +392,7 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location))
+            if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y))
             {
                 int hand = 0;
                 if (items == null || items.Count == 0) return;

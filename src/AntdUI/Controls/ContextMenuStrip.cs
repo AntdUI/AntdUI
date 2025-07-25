@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -36,6 +37,7 @@ namespace AntdUI
         /// <param name="items">内容</param>
         public static Form? open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0) => open(new Config(control, call, items, sleep));
 
+        static ConcurrentDictionary<NotifyIcon, Form> dic = new ConcurrentDictionary<NotifyIcon, Form>();
         /// <summary>
         /// ContextMenuStrip 右键菜单
         /// </summary>
@@ -45,11 +47,16 @@ namespace AntdUI
         /// <param name="items">内容</param>
         public static Form? open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
         {
-            return open(new Config(control, call, items, sleep)
+            var form = open(new Config(control, call, items, sleep)
             {
                 TopMost = true,
                 Align = TAlign.TL
             });
+            if (form == null) return form;
+            if (dic.TryRemove(notifyIcon, out var find)) find.Close();
+            dic.TryAdd(notifyIcon, form);
+            form.FormClosed += (a, b) => dic.TryRemove(notifyIcon, out _);
+            return form;
         }
 
         /// <summary>
@@ -141,6 +148,11 @@ namespace AntdUI
         /// <summary>
         /// 右键菜单项
         /// </summary>
+        public ContextMenuStripItem() { }
+
+        /// <summary>
+        /// 右键菜单项
+        /// </summary>
         /// <param name="text">文本</param>
         public ContextMenuStripItem(string text)
         {
@@ -163,13 +175,13 @@ namespace AntdUI
         /// </summary>
         public string? ID { get; set; }
 
-        string _text;
+        string? _text;
         /// <summary>
         /// 文本
         /// </summary>
-        public string Text
+        public string? Text
         {
-            get => Localization.GetLangIN(LocalizationText, _text, new string?[] { "{id}", ID });
+            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID });
             set => _text = value;
         }
 
@@ -208,6 +220,8 @@ namespace AntdUI
         /// </summary>
         public string? IconSvg { get; set; }
 
+        internal bool HasIcon => IconSvg != null || Icon != null;
+
         /// <summary>
         /// 使能
         /// </summary>
@@ -227,6 +241,72 @@ namespace AntdUI
         /// 用户定义数据
         /// </summary>
         public object? Tag { get; set; }
+
+        #region 设置
+
+        public ContextMenuStripItem SetFore(Color? value)
+        {
+            Fore = value;
+            return this;
+        }
+        public ContextMenuStripItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public ContextMenuStripItem SetText(string value, string? localization = null)
+        {
+            Text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public ContextMenuStripItem SetSubText(string value, string? localization = null)
+        {
+            SubText = value;
+            LocalizationSubText = localization;
+            return this;
+        }
+
+        #region 图标
+
+        public ContextMenuStripItem SetIcon(Image? img)
+        {
+            Icon = img;
+            return this;
+        }
+
+        public ContextMenuStripItem SetIcon(string? svg)
+        {
+            IconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public ContextMenuStripItem SetEnabled(bool value = false)
+        {
+            Enabled = value;
+            return this;
+        }
+        public ContextMenuStripItem SetChecked(bool value = true)
+        {
+            Checked = value;
+            return this;
+        }
+        public ContextMenuStripItem SetSub(params IContextMenuStripItem[] value)
+        {
+            Sub = value;
+            return this;
+        }
+        public ContextMenuStripItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
     }
 
     /// <summary>

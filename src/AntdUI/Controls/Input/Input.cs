@@ -1211,8 +1211,12 @@ namespace AntdUI
                     int start = selectionStartTemp, end = selectionLength, end_temp = start + end;
                     if (ismax && (cache_font.Length - end + text.Length) > MaxLength)
                     {
-                        text = text.Substring(0, end);
-                        if (text.Length == 0) return;
+                        if (MaxLength > cache_font.Length)
+                        {
+                            text = text.Substring(0, end);
+                            if (text.Length == 0) return;
+                        }
+                        else text = string.Empty;
                     }
                     AddHistoryRecord();
                     var texts = new List<string>(end);
@@ -1230,8 +1234,12 @@ namespace AntdUI
                     int start = selectionStart - 1;
                     if (ismax && (cache_font.Length + text.Length) > MaxLength)
                     {
-                        text = text.Substring(0, MaxLength - cache_font.Length);
-                        if (text.Length == 0) return;
+                        if (MaxLength > cache_font.Length)
+                        {
+                            text = text.Substring(0, MaxLength - cache_font.Length);
+                            if (text.Length == 0) return;
+                        }
+                        else return;
                     }
                     AddHistoryRecord();
                     var texts = new List<string>(cache_font.Length);
@@ -1426,9 +1434,9 @@ namespace AntdUI
 
         protected virtual void IBackSpaceKey() { }
 
-        protected virtual bool IMouseDown(Point e) => false;
-        protected virtual bool IMouseMove(Point e) => false;
-        protected virtual bool IMouseUp(Point e) => false;
+        protected virtual bool IMouseDown(int x, int y) => false;
+        protected virtual bool IMouseMove(int x, int y) => false;
+        protected virtual bool IMouseUp(int x, int y) => false;
 
         /// <summary>
         /// 清空值

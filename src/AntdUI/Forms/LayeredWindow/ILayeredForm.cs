@@ -237,7 +237,8 @@ namespace AntdUI
 
         #endregion
 
-        bool switchClose = true, switchDispose = true;
+        bool switchClose = true;
+        int countClose = 0;
         public virtual void IClosing() { }
         public void IClose(bool isdispose = false)
         {
@@ -248,14 +249,15 @@ namespace AntdUI
                     Invoke(() => IClose(isdispose));
                     return;
                 }
-                if (switchClose) Close();
-                switchClose = false;
+                if (countClose > 2) isdispose = true;
                 if (isdispose)
                 {
                     IClosing();
-                    if (switchDispose) Dispose();
-                    switchDispose = false;
+                    Dispose();
+                    return;
                 }
+                //countClose++;
+                Close();
             }
             catch { }
         }

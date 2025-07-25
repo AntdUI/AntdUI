@@ -886,12 +886,7 @@ namespace AntdUI
                             SetCursor(true);
                             Invalidate();
                         }
-                        if (string.IsNullOrEmpty(btn.Tooltip) == false)
-                        {
-                            Point location = PointToScreen(btn.rect.Location);
-                            //location.Y += btn.rect.Height;
-                            ShowTooltip(btn, new Rectangle(location, new Size(btn.rect.Width, btn.rect.Height)));
-                        }
+                        if (string.IsNullOrEmpty(btn.Tooltip) == false) ShowTooltip(btn);
                         return;
                     }
                     else
@@ -913,19 +908,19 @@ namespace AntdUI
         }
 
         TooltipForm? tooltipForm;
-        void ShowTooltip(CollapseGroupButton btn, Rectangle rect)
+        void ShowTooltip(CollapseGroupButton btn)
         {
             if (btn.Tooltip == null) return;
             if (tooltipForm == null)
             {
-                tooltipForm = new TooltipForm(this, rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
+                tooltipForm = new TooltipForm(this, btn.rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Bottom,
                 });
                 tooltipForm.Show(this);
             }
-            else tooltipForm.SetText(rect, btn.Tooltip);
+            else tooltipForm.SetText(btn.rect, btn.Tooltip);
         }
         #endregion
 
@@ -1139,8 +1134,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 base.Text = text = value;
-                if (PARENT == null) return;
-                if (PARENT.IsHandleCreated) PARENT.LoadLayout();
+                PARENT?.LoadLayout();
             }
         }
 

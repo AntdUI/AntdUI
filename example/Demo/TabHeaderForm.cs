@@ -32,12 +32,8 @@ namespace Demo
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var tab = new AntdUI.TagTabItem(DateTime.Now.ToString(), "TikTokFilled")
-            {
-                Loading = true
-            };
+            var tab = new AntdUI.TagTabItem(DateTime.Now.ToString(), "TikTokFilled").SetLoading(true);
             tabHeader1.AddTab(tab);
-
             AntdUI.ITask.Run(() =>
             {
                 System.Threading.Thread.Sleep(2000); // 模拟加载延时
@@ -47,10 +43,7 @@ namespace Demo
 
         private void tabHeader1_AddClick(object sender, EventArgs e)
         {
-            var tab = new AntdUI.TagTabItem("苹果", "AppleFilled")
-            {
-                Loading = true
-            };
+            var tab = new AntdUI.TagTabItem("苹果", "AppleFilled").SetLoading(true);
             tabHeader1.AddTab(tab, true);
             AntdUI.ITask.Run(() =>
             {

@@ -844,7 +844,7 @@ namespace AntdUI
                 {
                     for (int i = 0; i < dot_list.Length; i++)
                     {
-                        if (dot_list[i].rect_fill.Contains(e.Location))
+                        if (dot_list[i].rect_fill.Contains(e.X, e.Y))
                         {
                             SetSelectIndex(dot_list[i].i);
                             return;
@@ -989,6 +989,28 @@ namespace AntdUI
         /// </summary>
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
+
+        #region 设置
+
+        public CarouselItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public CarouselItem SetImage(Image? value)
+        {
+            img = value;
+            return this;
+        }
+
+        public CarouselItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
     }
 
     internal class CarouselRectPanel

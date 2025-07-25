@@ -42,7 +42,7 @@ namespace AntdUI
             subForm?.IClose();
             subForm = null;
             CloseTip(false);
-            if (ScrollBar.MouseDownY(e.Location) && ScrollBar.MouseDownX(e.Location))
+            if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 base.OnMouseDown(e);
                 if (rows == null) return;
@@ -99,6 +99,10 @@ namespace AntdUI
                                 return;
                             }
                         }
+
+                        if (cell is TCellColumn cellColumn && (cellColumn.rect_up.Contains(r_x - offset_x, r_y - offset_xi) ||
+                            cellColumn.rect_down.Contains(r_x - offset_x, r_y - offset_xi) ||
+                            (cell.COLUMN.Filter != null && cellColumn.rect_filter.Contains(r_x - offset_x, r_y - offset_xi)))) return;
                         if (ColumnDragSort && cell.COLUMN.DragSort)
                         {
                             dragHeader = new DragHeader(e.X, e.Y, cell.COLUMN.INDEX_REAL, e.X);
@@ -673,7 +677,7 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-            if (ScrollBar.MouseMoveY(e.Location) && ScrollBar.MouseMoveX(e.Location) && OnTouchMove(e.X, e.Y))
+            if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
                 if (rows == null || inEditMode) return;
                 var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
@@ -829,12 +833,12 @@ namespace AntdUI
                     if (tipcel is CellLink btn_template)
                     {
                         if (btn_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRectScreen(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
+                        else OpenTip(RealRect(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
                     }
                     else if (tipcel is CellImage img_template)
                     {
                         if (img_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRectScreen(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
+                        else OpenTip(RealRect(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
                     }
                 }
                 return hand > 0;
@@ -845,7 +849,7 @@ namespace AntdUI
                 if (oldmove == moveid) return false;
                 oldmove = moveid;
                 var text = cel.ToString();
-                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRectScreen(cel.RECT, offset_xi, offset_y), text);
+                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRect(cel.RECT_REAL, offset_xi, offset_y), text);
                 else CloseTip(false);
             }
             return false;
@@ -870,13 +874,13 @@ namespace AntdUI
 
         string? oldmove, oldmove2;
         TooltipForm? toolTip;
-        void CloseTip(bool clear = true)
+        public void CloseTip(bool clear = true)
         {
             toolTip?.IClose();
             toolTip = null;
             if (clear) oldmove = null;
         }
-        void OpenTip(Rectangle rect, string tooltip)
+        public void OpenTip(Rectangle rect, string tooltip)
         {
             if (toolTip == null)
             {
@@ -1106,8 +1110,6 @@ namespace AntdUI
 
         Rectangle RealRect(DownCellTMP<CellLink> link) => RealRect(link.cell.Rect, link.offset_xi, link.offset_y);
         Rectangle RealRect(Rectangle rect, int ox, int oy) => new Rectangle(rect.X - ox, rect.Y - oy, rect.Width, rect.Height);
-        Rectangle RealRectScreen(Rectangle rect, int ox, int oy) => RealRect(RectangleToScreen(ClientRectangle), rect, ox, oy);
-        Rectangle RealRect(Rectangle client_rect, Rectangle rect, int ox, int oy) => new Rectangle(client_rect.X + rect.X - ox, client_rect.Y + rect.Y - oy, rect.Width, rect.Height);
 
         #endregion
 

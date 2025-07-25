@@ -285,7 +285,7 @@ namespace AntdUI
             }
             else
             {
-                var font_size = g.MeasureString(btn.Text ?? Config.NullText, font);
+                var font_size = g.MeasureText(btn.Text ?? Config.NullText, font);
                 bool has_left = btn.HasIcon, has_right = btn.ShowArrow;
                 Rectangle rect_text;
                 if (has_left || has_right)
@@ -315,7 +315,7 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(color))
                 {
-                    g.String(btn.Text, font, brush, rect_text, btn.stringFormat);
+                    g.DrawText(btn.Text, font, brush, rect_text, btn.stringFormat);
                 }
             }
         }
@@ -459,10 +459,10 @@ namespace AntdUI
 
         internal static void PaintLink(Canvas g, Font font, Rectangle rect_read, CellLink link, bool enable, TAMode colorScheme)
         {
-            if (link.ExtraMouseDown) g.String(link.Text, font, Colour.PrimaryActive.Get("Button", colorScheme), rect_read, link.stringFormat);
-            else if (link.AnimationHover) g.String(link.Text, font, Colour.Primary.Get("Button", colorScheme).BlendColors(link.AnimationHoverValue, Colour.PrimaryHover.Get("Button", colorScheme)), rect_read, link.stringFormat);
-            else if (link.ExtraMouseHover) g.String(link.Text, font, Colour.PrimaryHover.Get("Button", colorScheme), rect_read, link.stringFormat);
-            else g.String(link.Text, font, ((enable && link.Enabled) ? Colour.Primary.Get("Button", colorScheme) : Colour.TextQuaternary.Get("Button", colorScheme)), rect_read, link.stringFormat);
+            if (link.ExtraMouseDown) g.DrawText(link.Text, font, Colour.PrimaryActive.Get("Button", colorScheme), rect_read, link.stringFormat);
+            else if (link.AnimationHover) g.DrawText(link.Text, font, Colour.Primary.Get("Button", colorScheme).BlendColors(link.AnimationHoverValue, Colour.PrimaryHover.Get("Button", colorScheme)), rect_read, link.stringFormat);
+            else if (link.ExtraMouseHover) g.DrawText(link.Text, font, Colour.PrimaryHover.Get("Button", colorScheme), rect_read, link.stringFormat);
+            else g.DrawText(link.Text, font, ((enable && link.Enabled) ? Colour.Primary.Get("Button", colorScheme) : Colour.TextQuaternary.Get("Button", colorScheme)), rect_read, link.stringFormat);
         }
     }
 }

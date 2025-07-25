@@ -978,19 +978,19 @@ namespace AntdUI
         {
             if (RunAnimation) return;
             base.OnMouseDown(e);
-            if (left_buttons != null && rect_read_left.Contains(e.X, e.Y)) if (!scrollY_left.MouseDown(e.Location)) return;
+            if (left_buttons != null && rect_read_left.Contains(e.X, e.Y)) if (!scrollY_left.MouseDown(e.X, e.Y)) return;
             if (ShowTime)
             {
-                if (rect_read_h.Contains(e.X, e.Y)) scrollY_h.MouseDown(e.Location);
-                else if (rect_read_m.Contains(e.X, e.Y)) scrollY_m.MouseDown(e.Location);
-                else if (rect_read_s.Contains(e.X, e.Y)) scrollY_s.MouseDown(e.Location);
+                if (rect_read_h.Contains(e.X, e.Y)) scrollY_h.MouseDown(e.X, e.Y);
+                else if (rect_read_m.Contains(e.X, e.Y)) scrollY_m.MouseDown(e.X, e.Y);
+                else if (rect_read_s.Contains(e.X, e.Y)) scrollY_s.MouseDown(e.X, e.Y);
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (RunAnimation) return;
-            if (scrollY_left.MouseMove(e.Location) && scrollY_h.MouseMove(e.Location) && scrollY_m.MouseMove(e.Location) && scrollY_s.MouseMove(e.Location))
+            if (scrollY_left.MouseMove(e.X, e.Y) && scrollY_h.MouseMove(e.X, e.Y) && scrollY_m.MouseMove(e.X, e.Y) && scrollY_s.MouseMove(e.X, e.Y))
             {
                 int count = 0, hand = 0;
                 bool _hover_lefts = rect_lefts.Contains(e.X, e.Y),
@@ -1144,10 +1144,10 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (RunAnimation) return;
-            scrollY_left.MouseUp(e.Location);
-            scrollY_h.MouseUp(e.Location);
-            scrollY_m.MouseUp(e.Location);
-            scrollY_s.MouseUp(e.Location);
+            scrollY_left.MouseUp(e.X, e.Y);
+            scrollY_h.MouseUp(e.X, e.Y);
+            scrollY_m.MouseUp(e.X, e.Y);
+            scrollY_s.MouseUp(e.X, e.Y);
             if (e.Button == MouseButtons.Left)
             {
                 if (rect_lefts.Contains(e.X, e.Y))

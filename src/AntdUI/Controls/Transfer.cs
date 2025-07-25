@@ -348,7 +348,7 @@ namespace AntdUI
             bool refresh = false;
 
             // 检查源列表悬停
-            if (sourceRect.Contains(e.Location))
+            if (sourceRect.Contains(e.X, e.Y))
             {
                 if (!hover_source_btn)
                 {
@@ -383,7 +383,7 @@ namespace AntdUI
             }
 
             // 检查目标列表悬停
-            if (targetRect.Contains(e.Location))
+            if (targetRect.Contains(e.X, e.Y))
             {
                 if (!hover_target_btn)
                 {
@@ -418,7 +418,7 @@ namespace AntdUI
             }
 
             // 检查向右按钮悬停
-            if (toRightRect.Contains(e.Location))
+            if (toRightRect.Contains(e.X, e.Y))
             {
                 if (!hover_to_right_btn)
                 {
@@ -453,7 +453,7 @@ namespace AntdUI
             }
 
             // 检查向左按钮悬停
-            if (toLeftRect.Contains(e.Location) && !OneWay)
+            if (toLeftRect.Contains(e.X, e.Y) && !OneWay)
             {
                 if (!hover_to_left_btn)
                 {
@@ -496,7 +496,7 @@ namespace AntdUI
             if (e.Button == MouseButtons.Left)
             {
                 // 向右按钮点击
-                if (toRightRect.Contains(e.Location))
+                if (toRightRect.Contains(e.X, e.Y))
                 {
                     active_to_right_btn = true;
                     active_to_right?.Dispose();
@@ -512,7 +512,7 @@ namespace AntdUI
                 }
 
                 // 向左按钮点击
-                if (toLeftRect.Contains(e.Location) && !OneWay)
+                if (toLeftRect.Contains(e.X, e.Y) && !OneWay)
                 {
                     active_to_left_btn = true;
                     active_to_left?.Dispose();
@@ -528,13 +528,13 @@ namespace AntdUI
                 }
 
                 // 处理源列表项点击
-                if (sourceRect.Contains(e.Location))
+                if (sourceRect.Contains(e.X, e.Y))
                 {
                     HandleListItemClick(e.Location, sourceFilteredItems, sourceScrollOffset, true);
                 }
 
                 // 处理目标列表项点击
-                if (targetRect.Contains(e.Location))
+                if (targetRect.Contains(e.X, e.Y))
                 {
                     HandleListItemClick(e.Location, targetFilteredItems, targetScrollOffset, false);
                 }
@@ -565,7 +565,7 @@ namespace AntdUI
                     refresh = true;
 
                     // 执行向右移动操作
-                    if (toRightRect.Contains(e.Location))
+                    if (toRightRect.Contains(e.X, e.Y))
                     {
                         MoveSelectedItemsToRight();
                     }
@@ -588,7 +588,7 @@ namespace AntdUI
                     refresh = true;
 
                     // 执行向左移动操作
-                    if (toLeftRect.Contains(e.Location) && !OneWay)
+                    if (toLeftRect.Contains(e.X, e.Y) && !OneWay)
                     {
                         MoveSelectedItemsToLeft();
                     }
@@ -606,7 +606,7 @@ namespace AntdUI
             int scrollDelta = e.Delta > 0 ? -1 : 1;
 
             // 检查鼠标是否在源列表区域
-            if (sourceRect.Contains(e.Location))
+            if (sourceRect.Contains(e.X, e.Y))
             {
                 // 计算最大滚动偏移量
                 int visibleItems = (sourceRect.Height - 80) / ItemHeight; // 减去标题、搜索框和全选区域的高度
@@ -617,7 +617,7 @@ namespace AntdUI
                 Invalidate();
             }
             // 检查鼠标是否在目标列表区域
-            else if (targetRect.Contains(e.Location))
+            else if (targetRect.Contains(e.X, e.Y))
             {
                 // 计算最大滚动偏移量
                 int visibleItems = (targetRect.Height - 80) / ItemHeight; // 减去标题、搜索框和全选区域的高度

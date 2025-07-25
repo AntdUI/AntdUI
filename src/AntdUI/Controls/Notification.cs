@@ -536,7 +536,7 @@ namespace AntdUI
             if (config.CloseIcon)
             {
                 close_button.MaxValue = Colour.FillSecondary.Get("Notification", TAMode.Auto).A;
-                close_button.Switch = rect_close.Contains(e.Location);
+                close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
                 if (close_button.Switch)
                 {
@@ -544,13 +544,13 @@ namespace AntdUI
                     return;
                 }
             }
-            if (config.Link != null) SetCursor(rect_link_text.Contains(e.Location));
+            if (config.Link != null) SetCursor(rect_link_text.Contains(e.X, e.Y));
             base.OnMouseMove(e);
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (config.Link != null && rect_link_text.Contains(e.Location))
+            if (config.Link != null && rect_link_text.Contains(e.X, e.Y))
             {
                 if (!config.Link.Call()) return;
             }
