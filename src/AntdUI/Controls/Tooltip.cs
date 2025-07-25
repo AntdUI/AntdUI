@@ -90,7 +90,16 @@ namespace AntdUI
         /// </summary>
         [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
         public int? CustomWidth { get; set; }
-
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        public Color? Back { get; set; }
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore { get; set; }
         #endregion
 
         #region 渲染
@@ -197,6 +206,14 @@ namespace AntdUI
             /// 自定义宽度
             /// </summary>
             public int? CustomWidth { get; set; }
+            /// <summary>
+            /// 背景色
+            /// </summary>
+            public Color? Back { get; set; }
+            /// <summary>
+            /// 前景色
+            /// </summary>
+            public Color? Fore { get; set; }
         }
 
         #endregion
@@ -219,6 +236,8 @@ namespace AntdUI
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
+            Back = component.Back;
+            Fore = component.Fore;
             var point = control.PointToScreen(Point.Empty);
             var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = screen.Width;
@@ -248,6 +267,8 @@ namespace AntdUI
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
             CustomWidth = component.CustomWidth;
+            Back= component.Back;
+            Fore= component.Fore;
             var point = control.PointToScreen(Point.Empty);
             var screen = Screen.FromPoint(point).WorkingArea;
             maxWidth = control.Width;
@@ -299,6 +320,16 @@ namespace AntdUI
         [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
         public int? CustomWidth { get; set; }
 
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        public Color? Back { get; set; }
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore { get; set; }
         #endregion
 
         #region 渲染
@@ -363,6 +394,17 @@ namespace AntdUI
         [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
         public int? CustomWidth { get; set; }
 
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        public Color? Back { get; set; }
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        public Color? Fore { get; set; }
+
         #endregion
 
         readonly Dictionary<Control, string> dic = new Dictionary<Control, string>();
@@ -399,6 +441,8 @@ namespace AntdUI
         }
 
         readonly List<Control> dic_in = new List<Control>();
+        private Color? back;
+
         private void Control_Leave(object? sender, EventArgs e)
         {
             if (sender != null && sender is Control obj)
@@ -464,7 +508,7 @@ namespace AntdUI
         public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, StringFormat s_c, StringFormat s_l)
         {
             int gap = (int)Math.Ceiling(5 * Config.Dpi), padding = gap * 2, padding2 = padding * 2;
-            using (var brush = new SolidBrush(Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38)))
+            using (var brush = new SolidBrush(core.Back ?? (Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38))))
             {
                 if (core.ArrowAlign == TAlign.None)
                 {
@@ -510,8 +554,11 @@ namespace AntdUI
 
         static void RenderText(ITooltip core, Canvas g, Rectangle rect, bool multiline, int padding, int padding2, StringFormat s_c, StringFormat s_l)
         {
-            if (multiline) g.DrawText(core.Text, core.Font, Brushes.White, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
-            else g.DrawText(core.Text, core.Font, Brushes.White, rect, s_c);
+            using (SolidBrush brush = new SolidBrush(core.Fore ?? Color.White))
+            {
+                if (multiline) g.DrawText(core.Text, core.Font, brush, new Rectangle(rect.X + padding, rect.Y + padding, rect.Width - padding2, rect.Height - padding2), s_l);
+                else g.DrawText(core.Text, core.Font, brush, rect, s_c);
+            }
         }
 
         static void DrawShadow(this ITooltip core, Canvas _g, Rectangle brect, Rectangle rect, int size, GraphicsPath path2)
@@ -546,6 +593,8 @@ namespace AntdUI
         public int ArrowSize { get; set; } = 8;
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
         public int? CustomWidth { get; set; }
+        public Color? Back {  get; set; }
+        public Color? Fore { get; set; }
     }
 
     internal interface ITooltipConfig
@@ -574,6 +623,14 @@ namespace AntdUI
         /// 设定宽度
         /// </summary>
         int? CustomWidth { get; set; }
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        Color? Back {  get; set; }
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        Color? Fore {  get; set; }
     }
 
     internal interface ITooltip
@@ -607,6 +664,14 @@ namespace AntdUI
         /// 设定宽度
         /// </summary>
         int? CustomWidth { get; set; }
+        /// <summary>
+        /// 背景色
+        /// </summary>
+        Color? Back { get; set; }
+        /// <summary>
+        /// 前景色
+        /// </summary>
+        Color? Fore { get; set; }
     }
 
     #endregion
