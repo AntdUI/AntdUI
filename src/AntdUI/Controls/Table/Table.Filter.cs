@@ -47,6 +47,7 @@ namespace AntdUI
                 return null;
             }
         }
+
         /// <summary>
         /// 按当前顺序返回可见的列集合
         /// </summary>
@@ -71,6 +72,7 @@ namespace AntdUI
                 return columns.ToArray();
             }
         }
+
         /// <summary>
         /// 获取筛选数据 (无筛选数据时返回当前视图数据)
         /// </summary>

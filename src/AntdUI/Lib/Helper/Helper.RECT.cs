@@ -842,6 +842,74 @@ namespace AntdUI
                 return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
             }
         }
+        public static PointF[] AlignLines(this TAlign align, float arrow_size, RectangleF rect, RectangleF rect_read, int ox)
+        {
+            if (align == TAlign.Top)
+            {
+                //↑上
+                float x = ox, y = rect_read.Y + rect_read.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+            else if (align == TAlign.Bottom)
+            {
+                //↓ 下
+                float x = ox, y = rect_read.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.Left || align == TAlign.LT || align == TAlign.LB)
+            {
+                //← 左
+                float x = rect_read.X + rect_read.Width, y = rect.Height / 2F;
+                return new PointF[] { new PointF(x, y - arrow_size), new PointF(x, y + arrow_size), new PointF(x + arrow_size, y) };
+            }
+            else if (align == TAlign.Right || align == TAlign.RT || align == TAlign.RB)
+            {
+                //→ 右
+                float x = rect_read.X - arrow_size, y = rect.Height / 2F;
+                return new PointF[] { new PointF(x, y), new PointF(x + arrow_size, y - arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+
+            #region 下
+
+            else if (align == TAlign.BL)
+            {
+                //↙ 下左
+                float x = rect_read.X + arrow_size * 3F, y = rect_read.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+            else if (align == TAlign.BR)
+            {
+                //↘ 下右
+                float x = rect_read.X + rect_read.Width - arrow_size * 3F, y = rect_read.Y - arrow_size;
+                return new PointF[] { new PointF(x, y), new PointF(x - arrow_size, y + arrow_size), new PointF(x + arrow_size, y + arrow_size) };
+            }
+
+            #endregion
+
+            #region 上
+
+            else if (align == TAlign.TL)
+            {
+                //↖ 上左
+                float x = rect_read.X + arrow_size * 3F, y = rect_read.Y + rect_read.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+            else if (align == TAlign.TR)
+            {
+                //↗ 上右
+                float x = rect_read.X + rect_read.Width - arrow_size * 3F, y = rect_read.Y + rect_read.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+
+            #endregion
+
+            else
+            {
+                //↑上
+                float x = rect.Width / 2F, y = rect_read.Y + rect_read.Height;
+                return new PointF[] { new PointF(x - arrow_size, y), new PointF(x + arrow_size, y), new PointF(x, y + arrow_size) };
+            }
+        }
 
         #endregion
 
@@ -923,8 +991,6 @@ namespace AntdUI
                     return new Point(point.X + (size.Width - width) / 2, point.Y - height);
             }
         }
-
-        public static Point AlignPoint(this TAlign align, Rectangle rect, Rectangle size) => AlignPoint(align, rect.Location, rect.Size, size.Width, size.Height);
 
         public static Point AlignPoint(this TAlign align, Rectangle rect, int width, int height) => AlignPoint(align, rect.Location, rect.Size, width, height);
 

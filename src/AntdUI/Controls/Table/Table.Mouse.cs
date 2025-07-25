@@ -829,12 +829,12 @@ namespace AntdUI
                     if (tipcel is CellLink btn_template)
                     {
                         if (btn_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRectScreen(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
+                        else OpenTip(RealRect(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
                     }
                     else if (tipcel is CellImage img_template)
                     {
                         if (img_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRectScreen(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
+                        else OpenTip(RealRect(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
                     }
                 }
                 return hand > 0;
@@ -845,7 +845,7 @@ namespace AntdUI
                 if (oldmove == moveid) return false;
                 oldmove = moveid;
                 var text = cel.ToString();
-                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRectScreen(cel.RECT, offset_xi, offset_y), text);
+                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRect(cel.RECT_REAL, offset_xi, offset_y), text);
                 else CloseTip(false);
             }
             return false;
@@ -870,52 +870,26 @@ namespace AntdUI
 
         string? oldmove, oldmove2;
         TooltipForm? toolTip;
-        /// <summary>
-        /// 关闭工具提示
-        /// </summary>
-        /// <param name="clear">清除所有</param>
-        public void CloseTip(bool clear = true)
+        void CloseTip(bool clear = true)
         {
             toolTip?.IClose();
             toolTip = null;
-            if (clear)
-            {
-                oldmove = null;
-                for (int i = Application.OpenForms.Count - 1; i > -1; i--)
-                {
-                    Form? frm = Application.OpenForms[i];
-                    if (frm != null && frm is TooltipForm) ((TooltipForm)frm).IClose(true);//强制消除所有未消失的
-                }
-            }
+            if (clear) oldmove = null;
         }
-        /// <summary>
-        /// 显示工具提示
-        /// </summary>
-        /// <param name="rect">Table位置</param>
-        /// <param name="tooltip">提示内容</param>
-        public void OpenTip(Rectangle rect, string tooltip)
-        {
-            OpenTip(rect, tooltip, TooltipConfig ?? new TooltipConfig() { Font = this.Font, ArrowAlign = TAlign.Top, });
-        }
-        /// <summary>
-        /// 显示工具提示
-        /// </summary>
-        /// <param name="rect">Table位置</param>
-        /// <param name="tooltip">提示内容</param>
-        /// '<param name="config">配置</param>
-        public void OpenTip(Rectangle rect, string tooltip,TooltipConfig config)
+        void OpenTip(Rectangle rect, string tooltip)
         {
             if (toolTip == null)
             {
-                toolTip = new TooltipForm(this, rect, tooltip, config);
+                toolTip = new TooltipForm(this, rect, tooltip, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = Font,
+                    ArrowAlign = TAlign.Top,
+                });
                 toolTip.Show(this);
             }
-            else
-            {
-                toolTip.Fore = config.Fore;
-                toolTip.SetText(rect, tooltip);
-            }
+            else toolTip.SetText(rect, tooltip);
         }
+
         #endregion
 
         #endregion
@@ -1132,15 +1106,6 @@ namespace AntdUI
 
         Rectangle RealRect(DownCellTMP<CellLink> link) => RealRect(link.cell.Rect, link.offset_xi, link.offset_y);
         Rectangle RealRect(Rectangle rect, int ox, int oy) => new Rectangle(rect.X - ox, rect.Y - oy, rect.Width, rect.Height);
-        /// <summary>
-        /// 将当前区域转换成屏幕上的区域
-        /// </summary>
-        /// <param name="rect">ROW/CELL区域</param>
-        /// <param name="ox">X轴偏移量</param>
-        /// <param name="oy">Y轴偏移量</param>
-        /// <returns></returns>
-        public Rectangle RealRectScreen(Rectangle rect, int ox, int oy) => RealRect(RectangleToScreen(ClientRectangle), rect, ox, oy);
-        Rectangle RealRect(Rectangle client_rect, Rectangle rect, int ox, int oy) => new Rectangle(client_rect.X + rect.X - ox, client_rect.Y + rect.Y - oy, rect.Width, rect.Height);
 
         #endregion
 

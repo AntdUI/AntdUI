@@ -468,21 +468,16 @@ namespace AntdUI
         {
             if (text == tooltipText && tooltipForm != null) return;
             tooltipText = text;
-            var _rect = RectangleToScreen(ClientRectangle);
-            var rect = new Rectangle(_rect.X + dot_rect.X, _rect.Y + dot_rect.Y, dot_rect.Width, dot_rect.Height);
             if (tooltipForm == null)
             {
-                tooltipForm = new TooltipForm(this, rect, tooltipText, TooltipConfig ?? new TooltipConfig
+                tooltipForm = new TooltipForm(this, dot_rect, tooltipText, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Top,
                 });
                 tooltipForm.Show(this);
             }
-            else
-            {
-                tooltipForm.SetText(rect, tooltipText);
-            }
+            else tooltipForm.SetText(dot_rect, tooltipText);
         }
 
         void CloseTips()

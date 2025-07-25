@@ -382,18 +382,16 @@ namespace AntdUI
                         var tooltip = it.Tooltip;
                         if (tooltip != null)
                         {
-                            var _rect = TargetRect;
-                            var rect = new Rectangle(_rect.X + it.rect.X, _rect.Y + it.rect.Y, it.rect.Width, it.rect.Height);
                             if (tooltipForm == null)
                             {
-                                tooltipForm = new TooltipForm(config.Form, rect, tooltip, new TooltipConfig
+                                tooltipForm = new TooltipForm(this, it.rect, tooltip, new TooltipConfig
                                 {
                                     Font = Font,
                                     ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),
-                                });
+                                }, false);
                                 tooltipForm.Show(this);
                             }
-                            else tooltipForm.SetText(rect, tooltip);
+                            else tooltipForm.SetText(it.rect, tooltip);
                         }
                     }
                 }

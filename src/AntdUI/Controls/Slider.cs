@@ -153,8 +153,7 @@ namespace AntdUI
             var text = ValueFormatChanged == null ? Value.ToString() : ValueFormatChanged.Invoke(this, new IntEventArgs(Value));
             if (text == tooltipText && tooltipForm != null) return;
             tooltipText = text;
-            var _rect = RectangleToScreen(ClientRectangle);
-            var rect = new Rectangle(_rect.X + (int)dot_rect.X, _rect.Y + (int)dot_rect.Y, (int)dot_rect.Width, (int)dot_rect.Height);
+            var rect = new Rectangle((int)dot_rect.X, (int)dot_rect.Y, (int)dot_rect.Width, (int)dot_rect.Height);
             if (tooltipForm == null)
             {
                 tooltipForm = new TooltipForm(this, rect, tooltipText, new TooltipConfig

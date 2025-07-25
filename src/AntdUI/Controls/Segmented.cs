@@ -1147,10 +1147,8 @@ namespace AntdUI
                     CloseTip();
                     return;
                 }
-                var _rect = RectangleToScreen(ClientRectangle);
                 var it = items[hoveindex];
-                var rect = new Rectangle(_rect.X + it.Rect.X, _rect.Y + it.Rect.Y, it.Rect.Width, it.Rect.Height);
-                OpenTip(rect, tooltip);
+                OpenTip(it.Rect, tooltip);
             }
         }
 
