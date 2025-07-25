@@ -1,5 +1,23 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.14` 2025-07-25
+
+- ➕ Table supports emojis
+- ➕ Table supports keyboard up/down keys to switch focus cells
+- ➕ Table VisibleColumns retrieves visible columns in the current order
+- ✍️ ContextMenuStrip Refactoring
+- ✍️ Tooltip concurrency does not disappear
+- ✍️ Exception in assigning values to sorted Table Data
+- ✍️ Table optimization click sorting/drag interaction
+- ✍️ Tooltip text position and collision formula
+- ✍️ Table optimization: Filter List ()
+- ✍️ OpenTip is publicly available, and CloseTip is used for external control ToolTip
+- ✍️ Input Y scrollbar not following hand
+- ✍️ Input MaxLength exception
+- ✍️ Button Loading MouseUp not responding
+- ✍️ Tree initialization loading does not respond
+- ✍️ Rich item extension setting method
+
 ### `2.0.13` 2025-07-22 🎨
 
 - ➕ The Milestone CurrentCompleted property in Steps milestone mode is used to switch the flow of events

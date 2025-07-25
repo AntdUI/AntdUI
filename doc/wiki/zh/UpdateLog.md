@@ -1,5 +1,23 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.14` 2025-07-25
+
+- ➕ Table 支持 Emoji
+- ➕ Table 支持键盘上/下键切换焦点单元格
+- ➕ Table VisibleColumns 按当前顺序获取可见的列
+- ✍️ ContextMenuStrip 重构
+- ✍️ Tooltip 并发不消失
+- ✍️ Table DataTable 数据排序后赋值异常
+- ✍️ Table 优化 点击排序/拖动交互
+- ✍️ Tooltip 文本位置和碰撞公式
+- ✍️ Table 优化 FilterList()
+- ✍️ Table 公开 OpenTip, CloseTip 用于外部控制ToolTip
+- ✍️ Input Y滚动条不跟手
+- ✍️ Input MaxLength 异常
+- ✍️ Button Loading MouseUp 不响应
+- ✍️ Tree 初始化 Loading 不响应
+- ✍️ 丰富项扩展设置方法
+
 ### `2.0.13` 2025-07-22 🎨
 
 - ➕ Steps 里程碑模式 MilestoneCurrentCompleted 属性，用于切换事件流向
