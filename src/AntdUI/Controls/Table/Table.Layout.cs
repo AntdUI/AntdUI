@@ -1150,9 +1150,10 @@ namespace AntdUI
                 if (cel.VALUE is AntItem arow) arow.value = value;
                 else if (cel.ROW.RECORD is System.Data.DataRow datarow)
                 {
-                    datarow[cel.INDEX] = cel.VALUE = value;
+                    int col = cel.COLUMN.INDEX_REAL, row = cel.ROW.INDEX_REAL;
+                    datarow[col] = cel.VALUE = value;
                     if (dataTmp == null) return;
-                    dataTmp.rows[cel.ROW.INDEX - 1].SetValue(cel.INDEX, value);
+                    dataTmp.rows[row].SetValue(col, value);
                 }
             }
             else cel.PROPERTY.SetValue(cel.VALUE, value);

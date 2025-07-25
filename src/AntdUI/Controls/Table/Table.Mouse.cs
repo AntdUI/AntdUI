@@ -99,6 +99,10 @@ namespace AntdUI
                                 return;
                             }
                         }
+
+                        if (cell is TCellColumn cellColumn && (cellColumn.rect_up.Contains(r_x - offset_x, r_y - offset_xi) ||
+                            cellColumn.rect_down.Contains(r_x - offset_x, r_y - offset_xi) ||
+                            (cell.COLUMN.Filter != null && cellColumn.rect_filter.Contains(r_x - offset_x, r_y - offset_xi)))) return;
                         if (ColumnDragSort && cell.COLUMN.DragSort)
                         {
                             dragHeader = new DragHeader(e.X, e.Y, cell.COLUMN.INDEX_REAL, e.X);
