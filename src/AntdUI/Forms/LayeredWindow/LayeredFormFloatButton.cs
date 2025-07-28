@@ -388,7 +388,7 @@ namespace AntdUI
                                 {
                                     Font = Font,
                                     ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),
-                                }, false);
+                                });
                                 tooltipForm.Show(this);
                             }
                             else tooltipForm.SetText(it.rect, tooltip);

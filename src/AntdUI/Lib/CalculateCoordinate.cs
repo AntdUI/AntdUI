@@ -93,7 +93,7 @@ namespace AntdUI
         /// 内容区域
         /// </summary>
         public Rectangle? creal { get; set; }
-        public Rectangle? iscreen { get; set; }
+        public Rectangle? screen { get; set; }
 
         int GetPadding(IControl control)
         {
@@ -106,9 +106,20 @@ namespace AntdUI
             else if (control is Avatar avatar) return (int)(avatar.BorderWidth * Config.Dpi);
             else if (control is Tag tag) return (int)(tag.BorderWidth * Config.Dpi);
             else if (control is Table table) return (int)(table.BorderWidth * Config.Dpi);
+            else if (control is Tabs tab) return (int)(tab.Gap * Config.Dpi);
             else if (control is ContainerPanel containerPanel) return (int)(containerPanel.BorderWidth * Config.Dpi);
             return 0;
         }
+
+        #region 设置
+
+        public CalculateCoordinate SetScreen(Rectangle? value)
+        {
+            screen = value;
+            return this;
+        }
+
+        #endregion
 
         #region 方向
 
@@ -291,8 +302,8 @@ namespace AntdUI
             inverted = true;
             if (collision)
             {
-                var screen = iscreen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (y < screen.Y)
+                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (y < screenArea.Y)
                 {
                     inverted = false;
                     y = BottomY();
@@ -309,8 +320,8 @@ namespace AntdUI
             inverted = true;
             if (collision)
             {
-                var screen = iscreen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (x + dw > screen.Right)
+                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x + dw > screenArea.Right)
                 {
                     x = R();
                     align = TAlign.BR;
@@ -326,8 +337,8 @@ namespace AntdUI
             inverted = true;
             if (collision)
             {
-                var screen = iscreen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (x < screen.X)
+                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x < screenArea.X)
                 {
                     x = L();
                     align = TAlign.BL;
@@ -342,8 +353,8 @@ namespace AntdUI
             y = BottomY();
             if (collision)
             {
-                var screen = iscreen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (y + dh > screen.Bottom)
+                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (y + dh > screenArea.Bottom)
                 {
                     inverted = true;
                     y = TopY();
@@ -359,8 +370,8 @@ namespace AntdUI
             y = BottomY();
             if (collision)
             {
-                var screen = iscreen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (x < screen.X)
+                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x < screenArea.X)
                 {
                     x = L();
                     align = TAlign.TL;
@@ -375,8 +386,8 @@ namespace AntdUI
             y = BottomY();
             if (collision)
             {
-                var screen = iscreen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (x + dw > screen.Right)
+                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                if (x + dw > screenArea.Right)
                 {
                     x = R();
                     align = TAlign.TR;
@@ -393,23 +404,23 @@ namespace AntdUI
             x = CenterX();
             y = TopY();
             align = TAlign.Top;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && y < screen.Y)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && y < screenArea.Y)
             {
                 y = BottomY();
                 align = TAlign.Bottom;
             }
             int cx = dw / 2, tsize = arrow + gap;
             arrowX = cx;
-            if (x < screen.X)
+            if (x < screenArea.X)
             {
-                arrowX = cx - (screen.X - x);
+                arrowX = cx - (screenArea.X - x);
                 if (arrowX < tsize) arrowX = tsize;
-                x = screen.X;
+                x = screenArea.X;
             }
-            else if (x > screen.Right - dw)
+            else if (x > screenArea.Right - dw)
             {
-                int rx = screen.Right - dw;
+                int rx = screenArea.Right - dw;
                 arrowX = cx - (rx - x);
                 if (arrowX > dw - tsize) arrowX = dw - tsize;
                 x = rx;
@@ -420,23 +431,23 @@ namespace AntdUI
             x = CenterX();
             y = BottomY();
             align = TAlign.Bottom;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && y + dh > screen.Bottom)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && y + dh > screenArea.Bottom)
             {
                 y = TopY();
                 align = TAlign.Top;
             }
             int cx = dw / 2, tsize = arrow + gap;
             arrowX = cx;
-            if (x < screen.X)
+            if (x < screenArea.X)
             {
-                arrowX = cx - (screen.X - x);
+                arrowX = cx - (screenArea.X - x);
                 if (arrowX < tsize) arrowX = tsize;
-                x = screen.X;
+                x = screenArea.X;
             }
-            else if (x > screen.Right - dw)
+            else if (x > screenArea.Right - dw)
             {
-                int rx = screen.Right - dw;
+                int rx = screenArea.Right - dw;
                 arrowX = cx - (rx - x);
                 if (arrowX > dw - tsize) arrowX = dw - tsize;
                 x = rx;
@@ -447,150 +458,150 @@ namespace AntdUI
             x = L();
             y = TopY();
             align = TAlign.TL;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screen.Right)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x + dw > screenArea.Right)
             {
                 x = R();
                 align = TAlign.TR;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void TR(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = R();
             y = TopY();
             align = TAlign.TR;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screen.X)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x < screenArea.X)
             {
                 x = L();
                 align = TAlign.TL;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void LT(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = Left();
             y = Y();
             align = TAlign.LT;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screen.X)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x < screenArea.X)
             {
                 x = Right();
                 align = TAlign.RT;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void Left(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = Left();
             y = CenterY();
             align = TAlign.Left;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screen.X)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x < screenArea.X)
             {
                 x = Right();
                 align = TAlign.Right;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void LB(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = Left();
             y = B();
             align = TAlign.LB;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screen.X)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x < screenArea.X)
             {
                 x = Right();
                 align = TAlign.RB;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void RT(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = Right();
             y = Y();
             align = TAlign.RT;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screen.Right)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x + dw > screenArea.Right)
             {
                 x = Left();
                 align = TAlign.LT;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void Right(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = Right();
             y = CenterY();
             align = TAlign.Right;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screen.Right)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x + dw > screenArea.Right)
             {
                 x = Left();
                 align = TAlign.Left;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void RB(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = Right();
             y = B();
             align = TAlign.RB;
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screen.Right)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x + dw > screenArea.Right)
             {
                 x = Left();
                 align = TAlign.LB;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void BL(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             align = TAlign.BL;
             x = L();
             y = BottomY();
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screen.Right)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x + dw > screenArea.Right)
             {
                 x = R();
                 align = TAlign.BR;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void BR(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             align = TAlign.BR;
             x = R();
             y = BottomY();
-            var screen = iscreen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screen.X)
+            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
+            if (collision && x < screenArea.X)
             {
                 x = L();
                 align = TAlign.BL;
             }
             arrowX = -1;
-            if (x < screen.X) x = screen.X;
-            else if (x > screen.Right - dw) x = screen.Right - dw;
+            if (x < screenArea.X) x = screenArea.X;
+            else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
 
         #endregion

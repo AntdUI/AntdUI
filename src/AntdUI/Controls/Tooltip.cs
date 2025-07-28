@@ -244,15 +244,14 @@ namespace AntdUI
             CustomWidth = component.CustomWidth;
             Back = component.Back;
             Fore = component.Fore;
-            var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromPoint(point).WorkingArea;
+            var screen = Screen.FromControl(control).WorkingArea;
             maxWidth = screen.Width;
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value) { iscreen = screen }.Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -265,7 +264,7 @@ namespace AntdUI
             }
             control.Disposed += Control_Close;
         }
-        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = true) : base(240)
+        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = false) : base(240)
         {
             ocontrol = control;
             control.SetTopMost(Handle);
@@ -278,11 +277,13 @@ namespace AntdUI
             CustomWidth = component.CustomWidth;
             Back = component.Back;
             Fore = component.Fore;
+            var screen = Screen.FromControl(control).WorkingArea;
             if (hasmax) maxWidth = control.Width;
+            else maxWidth = screen.Width;
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
             control.Disposed += Control_Close;

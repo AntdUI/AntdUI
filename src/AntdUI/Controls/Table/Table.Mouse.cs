@@ -888,7 +888,7 @@ namespace AntdUI
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Top,
-                });
+                }, true);
                 toolTip.Show(this);
             }
             else toolTip.SetText(rect, tooltip);

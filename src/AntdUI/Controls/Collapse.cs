@@ -225,6 +225,27 @@ namespace AntdUI
         [Browsable(false)]
         [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
+
+        Font? fontExpand;
+        /// <summary>
+        /// 展开后的标题字体
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Description("展开后的标题字体"), Category("外观"), DefaultValue(null)]
+        public Font? FontExpand
+        {
+            get => fontExpand;
+            set
+            {
+                if (fontExpand == value) return;
+
+                fontExpand = value;
+                Invalidate();
+
+            }
+        }
+        public override Font Font { get => base.Font; set { base.Font = value; if (value != null) fontExpand = new Font(value, FontStyle.Bold); } }
         #endregion
 
         #region 布局
@@ -364,7 +385,7 @@ namespace AntdUI
 
                     if (width < height) width = btn.SwitchMode ? height * 4 : height;
                     Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
-                    btn.SetRect(g, rectItem, Font.Height, 0, rectItem.Height - (int)(8 * Config.Dpi));
+                    btn.SetRect(g, rectItem, Font.Height, 0, GetIconSize(rectItem.Height));
                     bx -= (width.Value + space);
                 }
             }
@@ -621,15 +642,42 @@ namespace AntdUI
             }
             base.OnDraw(e);
         }
+        private int GetIconSize(int titleHeight) { return titleHeight - (int)(8 * Config.Dpi); }
 
+        void PaintItemIconText(Canvas g, CollapseItem item, SolidBrush fore)
+        {
+            Rectangle rect = item.RectText;
+            Color foreColor = fore.Color;
+            if (item.Expand) fore.Color = AntdUI.Style.Db.PrimaryActive;
+            if (item.HasIcon)
+            {
+                int height = rect.Height * 2;
+                int iconSize = GetIconSize(height);
+                int gap = (int)(6 * Config.Dpi);
+                Rectangle ico_rect = new Rectangle(rect.X, rect.Y - gap, iconSize, iconSize);
+
+                if (item.Icon != null) g.Image(item.Icon, ico_rect);
+                else if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, ico_rect, fore.Color);
+                rect.X += iconSize + gap;
+            }
+            Font fnt = Font;
+            if (item.Expand && FontExpand != null)
+            {
+                fnt = FontExpand;
+                int fs = (int)(fnt.Size - Font.Size);
+                rect.Inflate(fs, fs);
+            }
+            g.String(item.Text, fnt, fore, rect, s_l);
+            fore.Color = foreColor;
+        }
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
             else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
             else PaintArrow(g, item, pen_arr, -90F);
 
-            g.String(item.Text, Font, fore, item.RectText, s_l);
-
+            //g.String(item.Text, Font, fore, item.RectText, s_l);
+            PaintItemIconText(g, item, fore);
             PaintButtons(g, item, fore);
         }
 
@@ -639,10 +687,11 @@ namespace AntdUI
             else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
             else PaintArrow(g, item, fore, -90F);
 
-            g.String(item.Text, Font, fore, item.RectText, s_l);
+            PaintItemIconText(g, item, fore);
 
             PaintButtons(g, item, fore);
         }
+
         internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color, CollapseGroupButton btn)
         {
             if (btn.AnimationClick || true)
@@ -1143,6 +1192,46 @@ namespace AntdUI
 
         #endregion
 
+        #region Icon
+
+        Image? icon;
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [Description("图标"), Category("外观"), DefaultValue(null)]
+        public Image? Icon
+        {
+            get => icon;
+            set
+            {
+                if (icon == value) return;
+                icon = value;
+                Invalidate();
+            }
+        }
+
+        string? iconSvg;
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 是否包含图片
+        /// </summary>
+        internal bool HasIcon => iconSvg != null || Icon != null;
+
+        #endregion
         #endregion
 
         #region 坐标

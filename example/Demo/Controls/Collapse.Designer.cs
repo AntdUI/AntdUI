@@ -111,6 +111,7 @@ namespace Demo.Controls
             collapse1.Items.Add(collapseItem3);
             collapse1.Location = new Point(0, 28);
             collapse1.Name = "collapse1";
+            collapse1.FontExpand = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
             collapse1.Size = new Size(723, 448);
             collapse1.TabIndex = 0;
             collapse1.ButtonClickChanged += new AntdUI.CollapseButtonClickEventHandler(collapse1_ButtonClickChanged);
@@ -149,6 +150,7 @@ namespace Demo.Controls
             collapseItem1.Size = new Size(702, 48);
             collapseItem1.TabIndex = 0;
             collapseItem1.Text = "This is panel header 1";
+            collapseItem1.IconSvg = "PlusCircleOutlined";
             // 
             // label1
             // 
@@ -191,6 +193,7 @@ namespace Demo.Controls
             collapseItem2.Size = new Size(702, 48);
             collapseItem2.TabIndex = 1;
             collapseItem2.Text = "This is panel header 2";
+            collapseItem2.IconSvg = "AreaChartOutlined";
             // 
             // label2
             // 
@@ -226,6 +229,7 @@ namespace Demo.Controls
             collapseItem3.Size = new Size(702, 48);
             collapseItem3.TabIndex = 2;
             collapseItem3.Text = "This is panel header 3";
+            collapseItem3.IconSvg = "DotChartOutlined";
             // 
             // label3
             // 
