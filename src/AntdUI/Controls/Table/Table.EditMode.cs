@@ -40,14 +40,14 @@ namespace AntdUI
                 try
                 {
                     var _row = rows[row];
-                    var item = _row.cells[column];
+                    var item = RealCELL(_row.cells[column], rows, row, column, out var crect);
                     EditModeClose();
-                    if (CanEditMode(_row, item))
+                    if (CanEditMode(item))
                     {
                         ScrollLine(row, rows);
-                        if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, row, column, item.COLUMN, 0, ScrollBar.ValueY);
-                        else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
-                        else OnEditMode(_row, item, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);
+                        if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY);
+                        else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
+                        else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);
                         return true;
                     }
                 }
@@ -74,7 +74,7 @@ namespace AntdUI
             }
         }
 
-        bool CanEditMode(RowTemplate it, CELL cell)
+        bool CanEditMode(CELL cell)
         {
             if (rows == null) return false;
             if (cell.COLUMN.Editable)
@@ -91,7 +91,7 @@ namespace AntdUI
             }
             return false;
         }
-        void OnEditMode(RowTemplate it, CELL cell, int i_row, int i_col, Column? column, int sx, int sy)
+        void OnEditMode(RowTemplate it, CELL cell, Rectangle rect, int i_row, int i_col, Column? column, int sx, int sy)
         {
             if (rows == null) return;
             if (it.AnimationHover)
@@ -116,7 +116,7 @@ namespace AntdUI
                 BeginInvoke(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    var tmp_input = CreateInput(cell, sx, sy, multiline, value);
+                    var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                     if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -154,7 +154,7 @@ namespace AntdUI
                 BeginInvoke(() =>
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    var tmp_input = CreateInput(cell, sx, sy, multiline, cellSelect.value);
+                    var tmp_input = CreateInput(cell, sx, sy, multiline, cellSelect.value, rect);
                     if (cellSelect.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (cellSelect.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -197,7 +197,7 @@ namespace AntdUI
                         BeginInvoke(() =>
                         {
                             for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                            var tmp_input = CreateInput(cell, sx, sy, multiline, value);
+                            var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                             if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                             else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -274,55 +274,55 @@ namespace AntdUI
             return false;
         }
 
-        Input CreateInput(CELL cell, int sx, int sy, bool multiline, object? value)
+        Input CreateInput(CELL cell, int sx, int sy, bool multiline, object? value, Rectangle rect)
         {
             switch (EditInputStyle)
             {
                 case TEditInputStyle.Full:
-                    var inputFull = CreateInput(multiline, value, cell.COLUMN, RectInput(cell, sx, sy, 1F, 4));
+                    var inputFull = CreateInput(multiline, value, cell.COLUMN, RectInput(cell, rect, sx, sy, 1F, 4));
                     inputFull.Radius = 0;
                     return inputFull;
                 case TEditInputStyle.Excel:
-                    var inputExcel = CreateInput(multiline, value, cell.COLUMN, RectInput(cell, sx, sy, 2.5F, 0));
+                    var inputExcel = CreateInput(multiline, value, cell.COLUMN, RectInput(cell, rect, sx, sy, 2.5F, 0));
                     inputExcel.WaveSize = 0;
                     inputExcel.Radius = 0;
                     inputExcel.BorderWidth = 2.5F;
                     return inputExcel;
                 case TEditInputStyle.Default:
                 default:
-                    return CreateInput(multiline, value, cell.COLUMN, RectInputDefault(cell, sx, sy, 1F, 4));
+                    return CreateInput(multiline, value, cell.COLUMN, RectInputDefault(cell, rect, sx, sy, 1F, 4));
             }
         }
 
-        Rectangle RectInput(CELL cell, int sx, int sy, float borwidth, int wavesize)
+        Rectangle RectInput(CELL cell, Rectangle rect, int sx, int sy, float borwidth, int wavesize)
         {
-            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = cell.RECT.Y, rh = cell.RECT.Height;
+            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
             if (EditAutoHeight)
             {
                 int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
-                if (h > cell.RECT.Height)
+                if (h > rect.Height)
                 {
                     rh = h - bor2;
-                    ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
+                    ry = rect.Y + (rect.Height - rh) / 2;
                     if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh - bor;
                 }
             }
-            return new Rectangle(cell.RECT.X - sx - bor, ry - sy - bor, cell.RECT.Width + bor2, rh + bor2);
+            return new Rectangle(rect.X - sx - bor, ry - sy - bor, rect.Width + bor2, rh + bor2);
         }
-        Rectangle RectInputDefault(CELL cell, int sx, int sy, float borwidth, int wavesize)
+        Rectangle RectInputDefault(CELL cell, Rectangle rect, int sx, int sy, float borwidth, int wavesize)
         {
-            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = cell.RECT.Y, rh = cell.RECT.Height;
+            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
             if (EditAutoHeight)
             {
                 int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
-                if (h > cell.RECT.Height)
+                if (h > rect.Height)
                 {
                     rh = h;
-                    ry = cell.RECT.Y + (cell.RECT.Height - rh) / 2;
+                    ry = rect.Y + (rect.Height - rh) / 2;
                     if ((ry + h) - sy > rect_read.Bottom) ry = rect_read.Bottom + sy - rh;
                 }
             }
-            return new Rectangle(cell.RECT.X - sx, ry - sy, cell.RECT.Width, rh);
+            return new Rectangle(rect.X - sx, ry - sy, rect.Width, rh);
         }
         Input CreateInput(bool multiline, object? value, Column column, Rectangle rect)
         {

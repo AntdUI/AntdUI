@@ -407,13 +407,13 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
+            base.OnHandleCreated(e);
             ChangeList();
             var item = GetSelectItem(out var sub);
             if (item != null)
             {
                 foreach (var it in sub) it.Select = true;
             }
-            base.OnHandleCreated(e);
         }
 
         #region 获取选中项目

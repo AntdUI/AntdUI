@@ -291,7 +291,7 @@ namespace AntdUI
 
         public override string name => nameof(Tooltip);
 
-        public void SetText(Rectangle rect, string text)
+        public bool SetText(Rectangle rect, string text)
         {
             Text = text;
             int gap = 0;
@@ -300,7 +300,8 @@ namespace AntdUI
             new CalculateCoordinate(ocontrol, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
-            Print();
+            if (Print() == RenderResult.OK) return false;
+            else return true;
         }
 
         private void Control_Close(object? sender, EventArgs e) => IClose();
@@ -364,6 +365,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+            if (ocontrol == null) return;
             ocontrol.Disposed -= Control_Close;
         }
     }
@@ -492,7 +494,7 @@ namespace AntdUI
             int gap2 = gap * 2, paddingy = (int)(6 * Config.Dpi) * 2 + gap2, paddingx = (int)(8 * Config.Dpi) * 2 + gap2;
             var font_size = g.MeasureText(core.Text, core.Font);
             if (core.ArrowSize.HasValue) arrowSize = (int)(core.ArrowSize * Config.Dpi);
-            else arrowSize = (int)(font_size.Height * 0.3F);
+            else arrowSize = (int)(g.MeasureText(Config.NullText, core.Font).Height * 0.3F);
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);

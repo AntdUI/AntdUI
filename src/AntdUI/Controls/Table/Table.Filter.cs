@@ -74,6 +74,20 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 获取指定的列
+        /// </summary>
+        /// <param name="key">字段ID</param>
+        /// <returns></returns>
+        public Column? GetColumnByFieldKey(string key)
+        {
+            foreach (var col in Columns)
+            {
+                if (col.Key == key) return col;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 获取筛选数据 (无筛选数据时返回当前视图数据)
         /// </summary>
         /// <returns>筛选后的数据对象数组（注意：返回的是原始数据对象的引用）</returns>

@@ -244,6 +244,7 @@ namespace AntdUI
         {
             try
             {
+                if (IsDisposed) return;
                 if (InvokeRequired)
                 {
                     Invoke(() => IClose(isdispose));

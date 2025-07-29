@@ -285,7 +285,7 @@ namespace AntdUI
                 {
                     var rect_t = rect.DeflateRect(Margin);
                     LoadLayout(rect_t, items);
-                    if (r) Invalidate();
+                    if (r) Invalidate(rect_t);
                 }
             }
         }
@@ -433,15 +433,22 @@ namespace AntdUI
         [Description("Expanding 属性值更改时发生"), Category("行为")]
         public event CollapseExpandingEventHandler? ExpandingChanged;
 
+        [Obsolete("请使用ButtonClick")]
         /// <summary>
         /// CollapseItem上的按件单击时发生
         /// </summary>
         [Description("CollapseItem上的按件单击时发生"), Category("行为")]
         public event CollapseButtonClickEventHandler? ButtonClickChanged;
 
+        /// <summary>
+        /// CollapseItem上的按件单击时发生
+        /// </summary>
+        [Description("CollapseItem上的按件单击时发生"), Category("行为")]
+        public event CollapseButtonClickEventHandler? ButtonClick;
+
         internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand, value.RectTitle, value.RectControl));
         internal void OnExpandingChanged(CollapseItem value, bool expand, Point location) => ExpandingChanged?.Invoke(this, new CollapseExpandingEventArgs(value, expand, value.RectTitle, value.RectControl, location));
-        internal void OnButtonClickChanged(CollapseItem value, CollapseGroupButton button) => ButtonClickChanged?.Invoke(this, new CollapseButtonClickEventArgs(button, value));
+        internal void OnButtonClickChanged(CollapseItem value, CollapseGroupButton button) => (ButtonClick ?? ButtonClickChanged)?.Invoke(this, new CollapseButtonClickEventArgs(button, value));
 
         #endregion
 
@@ -885,7 +892,8 @@ namespace AntdUI
                                 if (btn.SwitchMode)
                                 {
                                     btn.Checked = !btn.Checked;
-                                    Invalidate();
+                                    OnButtonClickChanged(item, btn);
+                                    Invalidate(btn.rect);
                                     item.MDown = false;
                                     return;
                                 }
@@ -933,16 +941,13 @@ namespace AntdUI
                         else
                         {
                             SetCursor(true);
-                            Invalidate();
+                            Invalidate(btn.rect);
                         }
                         if (string.IsNullOrEmpty(btn.Tooltip) == false) ShowTooltip(btn);
                         return;
                     }
                     else
                     {
-                        //tooltipForm?.Close();
-                        //tooltipForm = null;
-
                         if (btn.AnimationHover)
                         {
                             btn.AnimationHover = false;
@@ -978,10 +983,7 @@ namespace AntdUI
         public void IUSelect()
         {
             if (items == null || items.Count == 0) return;
-            foreach (var it in items)
-            {
-                IUSelect(it);
-            }
+            foreach (var it in items) IUSelect(it);
         }
         public void IUSelect(CollapseItem item)
         {

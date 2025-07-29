@@ -86,8 +86,8 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
             base.OnHandleCreated(e);
+            Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
         }
 
         #region 自带图标

@@ -815,6 +815,12 @@ namespace AntdUI
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
+                        else
+                        {
+                            var size2 = g.MeasureText(value, font, width - gap2);
+                            MinWidth = size2.Width;
+                            return new Size(size2.Width + gap2, size2.Height);
+                        }
                     }
                 }
                 var size = g.MeasureText(value, font);

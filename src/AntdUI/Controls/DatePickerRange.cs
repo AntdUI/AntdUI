@@ -240,8 +240,8 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            SetText(_value);
             base.OnHandleCreated(e);
+            SetText(_value);
         }
 
         #region 自带图标

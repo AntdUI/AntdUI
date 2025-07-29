@@ -403,6 +403,7 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
+            base.OnHandleCreated(e);
             if (dotPV)
             {
                 int height = ClientRectangle.Height;
@@ -413,7 +414,6 @@ namespace AntdUI
                 int width = ClientRectangle.Width;
                 AnimationChangeValue = selectIndex * width;
             }
-            base.OnHandleCreated(e);
         }
 
         bool AnimationChangeAuto = false;

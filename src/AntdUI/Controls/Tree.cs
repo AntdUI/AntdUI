@@ -360,6 +360,12 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ChangeList();
+        }
+
         internal void ChangeList(bool print = false)
         {
             var rect = ClientRectangle;
@@ -632,13 +638,16 @@ namespace AntdUI
             if (item.SubTitle != null) g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
             if (item.Loading)
             {
-                float loading_size = item.ico_rect.Height * .14F;
-                var bor3 = 3F * Config.Dpi;
-                g.DrawEllipse(Colour.Fill.Get("Tree"), bor3, item.ico_rect);
-                using (var pen = new Pen(color, loading_size))
+                if (item.ico_rect.Height > 0)
                 {
-                    pen.StartCap = pen.EndCap = LineCap.Round;
-                    g.DrawArc(pen, item.ico_rect, item.AnimationLoadingValue, 100);
+                    float loading_size = item.ico_rect.Height * .14F;
+                    var bor3 = 3F * Config.Dpi;
+                    g.DrawEllipse(Colour.Fill.Get("Tree"), bor3, item.ico_rect);
+                    using (var pen = new Pen(color, loading_size))
+                    {
+                        pen.StartCap = pen.EndCap = LineCap.Round;
+                        g.DrawArc(pen, item.ico_rect, item.AnimationLoadingValue, 100);
+                    }
                 }
             }
             else

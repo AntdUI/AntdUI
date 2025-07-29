@@ -128,8 +128,8 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            IOnSizeChanged();
             base.OnHandleCreated(e);
+            IOnSizeChanged();
         }
 
         protected override void OnDraw(DrawEventArgs e)
