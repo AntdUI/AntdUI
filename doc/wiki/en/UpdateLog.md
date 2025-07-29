@@ -1,5 +1,24 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.15` 2025-07-29
+
+- ➕ Table FocusedCell attribute, CellFocused event
+- ➕ Table GetColumnByFieldKey(string key)
+- ➕ Table OpenTip Overloading Single Display Styles
+- ➕ Collapse FontExpand attribute
+- ➕ Collapse Collapse Item IconSvg supports displaying icons
+- ✍️ Table SelectedIndex gets incorrect after sorting
+- ✍️ Table LineBreak is invalid
+- ✍️ Table Tip Flash BUG
+- ✍️ Table Merge Cell Editing Mode Misalignment
+- ✍️ Image3D adjusts the order of shadow drawing
+- ✍️ Spin releases error again
+- ✍️ Tree not laid out after initial setup
+- ✍️ Collapse optimization performance
+- ✍️ Image3D public animation processing method RunAnimation
+- ✍️ Menu misalignment
+- ✍️ Tabs Out of Selection Misalignment
+
 ### `2.0.14` 2025-07-25
 
 - ➕ Table supports emojis

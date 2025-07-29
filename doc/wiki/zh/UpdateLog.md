@@ -1,5 +1,24 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.15` 2025-07-29
+
+- ➕ Table FocusedCell 属性，CellFocused 事件
+- ➕ Table GetColumnByFieldKey(string key)
+- ➕ Table OpenTip 重载单次显示样式
+- ➕ Collapse FontExpand 属性
+- ➕ Collapse CollapseItem IconSvg 支持显示图标
+- ✍️ Table SelectedIndex 排序后获取不正确
+- ✍️ Table LineBreak 无效
+- ✍️ Table Tip 闪BUG
+- ✍️ Table 合并单元格编辑模式错位
+- ✍️ Image3D 调整阴影绘制顺序
+- ✍️ Spin 再次释放报错
+- ✍️ Tree 初始后未布局
+- ✍️ Collapse 优化性能
+- ✍️ Image3D 公开动画处理方法 RunAnimation
+- ✍️ Menu 错位
+- ✍️ Tabs 超出选择错位
+
 ### `2.0.14` 2025-07-25
 
 - ➕ Table 支持 Emoji
