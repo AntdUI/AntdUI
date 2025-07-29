@@ -120,6 +120,12 @@ namespace AntdUI
         [Description("双击时发生"), Category("行为")]
         public event ClickEventHandler? CellDoubleClick;
 
+        /// <summary>
+        /// 单元格焦点变更后发生
+        /// </summary>
+        [Description("单元格焦点变更后发生"), Category("行为")]
+        public event ClickEventHandler? CellFocused;
+
         #region 编辑
 
         /// <summary>

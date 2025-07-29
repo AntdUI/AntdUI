@@ -322,13 +322,10 @@ namespace AntdUI
             var g = e.Canvas;
             var rect = e.Rect.PaddingRect(Padding);
             float _radius = radius * Config.Dpi;
+            if (run == null && shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);//应在绘制背景前绘制阴影，否则会影响背景色
             FillRect(g, rect, back, _radius, round);
             if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);
-            else
-            {
-                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);
-                g.Image(rect, image, imageFit, _radius, round);
-            }
+            else g.Image(rect, image, imageFit, _radius, round);
             base.OnDraw(e);
         }
 

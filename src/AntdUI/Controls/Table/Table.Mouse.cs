@@ -32,7 +32,6 @@ namespace AntdUI
         #region 鼠标按下
 
         int shift_index = -1;
-        CELL? cellFocused;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -50,14 +49,14 @@ namespace AntdUI
                 var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cell == null)
                 {
-                    cellFocused = null;
+                    FocusedCell = null;
                     return;
                 }
                 else
                 {
                     var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
-                    if (style == TableCellFocusedStyle.None) cellFocused = null;
-                    else cellFocused = cell;
+                    if (style == TableCellFocusedStyle.None) FocusedCell = null;
+                    else FocusedCell = cell;
                     if (e.Button == MouseButtons.Left)
                     {
                         if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
@@ -133,7 +132,7 @@ namespace AntdUI
         void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int offset_x, int offset_xi, int offset_y, int i_r, int i_c, Column? column)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, offset_x, offset_xi, offset_y, e.Clicks > 1);
-            if (cellFocused != null) Invalidate(cellFocused.ROW.RECT);//同行切换单元格时，及时刷新
+            if (focusedCell != null) Invalidate(focusedCell.ROW.RECT);//同行切换单元格时，及时刷新
             if (cell is Template template)
             {
                 if (e.Button == MouseButtons.Left)
