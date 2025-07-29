@@ -116,8 +116,8 @@ namespace AntdUI
             {
                 if (dataTmp == null || dataTmp.rows.Length == 0) return null;
                 if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
-                var row = dataTmp.rows[index];
-                return row;
+                if (SortData == null) return dataTmp.rows[index];
+                return dataTmp.rows[SortData[index]];
             }
         }
 
@@ -340,6 +340,8 @@ namespace AntdUI
         [Description("排序大小"), Category("外观"), DefaultValue(null)]
         public int? SortOrderSize { get; set; }
 
+        #region 焦点
+
         /// <summary>
         /// 焦点列样式
         /// </summary>
@@ -361,12 +363,30 @@ namespace AntdUI
         /// <summary>
         /// 当前获得焦点的列
         /// </summary>
-        public Column? FocusedColumn => cellFocused?.COLUMN;
+        public Column? FocusedColumn => focusedCell?.COLUMN;
 
         /// <summary>
         /// 当前获得焦点的行
         /// </summary>
-        public object? FocusedRow => cellFocused?.ROW.RECORD;
+        public object? FocusedRow => focusedCell?.ROW.RECORD;
+
+        CELL? focusedCell;
+        /// <summary>
+        /// 当前获得焦点的单元格
+        /// </summary>
+        public CELL? FocusedCell
+        {
+            get => focusedCell;
+            private set
+            {
+                if (focusedCell == value) return;
+                focusedCell = value;
+                if (value != null) CellFocused?.Invoke(this, new TableClickEventArgs(value.ROW.RECORD, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1)));
+                Invalidate();
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -689,7 +709,7 @@ namespace AntdUI
             {
                 if (string.Join("", selectedIndex) == value.ToString()) return false;
                 selectedIndex = new int[1] { value };
-                if (cellFocused != null && rows?.Length > value) cellFocused = rows[value].cells[cellFocused.INDEX];
+                if (focusedCell != null && rows?.Length > value) FocusedCell = rows[value].cells[focusedCell.INDEX];
                 return true;
             }
         }

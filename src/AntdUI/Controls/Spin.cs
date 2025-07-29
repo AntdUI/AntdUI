@@ -229,7 +229,11 @@ namespace AntdUI
                 }
                 catch (Exception e) { ex = e; }
                 if (frm.IsDisposed) return;
-                frm.Invoke(() => frm.Dispose());
+                try
+                {
+                    frm.Invoke(() => frm.Dispose());
+                }
+                catch { }
                 if (ex != null) throw ex;
             }, end);
         }

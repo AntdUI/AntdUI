@@ -244,15 +244,14 @@ namespace AntdUI
             CustomWidth = component.CustomWidth;
             Back = component.Back;
             Fore = component.Fore;
-            var point = control.PointToScreen(Point.Empty);
-            var screen = Screen.FromPoint(point).WorkingArea;
+            var screen = Screen.FromControl(control).WorkingArea;
             maxWidth = screen.Width;
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value) { iscreen = screen }.Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -265,7 +264,7 @@ namespace AntdUI
             }
             control.Disposed += Control_Close;
         }
-        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = true) : base(240)
+        public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = false) : base(240)
         {
             ocontrol = control;
             control.SetTopMost(Handle);
@@ -278,11 +277,13 @@ namespace AntdUI
             CustomWidth = component.CustomWidth;
             Back = component.Back;
             Fore = component.Fore;
+            var screen = Screen.FromControl(control).WorkingArea;
             if (hasmax) maxWidth = control.Width;
+            else maxWidth = screen.Width;
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
             control.Disposed += Control_Close;
@@ -290,7 +291,7 @@ namespace AntdUI
 
         public override string name => nameof(Tooltip);
 
-        public void SetText(Rectangle rect, string text)
+        public bool SetText(Rectangle rect, string text)
         {
             Text = text;
             int gap = 0;
@@ -299,7 +300,8 @@ namespace AntdUI
             new CalculateCoordinate(ocontrol, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
-            Print();
+            if (Print() == RenderResult.OK) return false;
+            else return true;
         }
 
         private void Control_Close(object? sender, EventArgs e) => IClose();
@@ -363,6 +365,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+            if (ocontrol == null) return;
             ocontrol.Disposed -= Control_Close;
         }
     }
@@ -491,7 +494,7 @@ namespace AntdUI
             int gap2 = gap * 2, paddingy = (int)(6 * Config.Dpi) * 2 + gap2, paddingx = (int)(8 * Config.Dpi) * 2 + gap2;
             var font_size = g.MeasureText(core.Text, core.Font);
             if (core.ArrowSize.HasValue) arrowSize = (int)(core.ArrowSize * Config.Dpi);
-            else arrowSize = (int)(font_size.Height * 0.3F);
+            else arrowSize = (int)(g.MeasureText(Config.NullText, core.Font).Height * 0.3F);
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);

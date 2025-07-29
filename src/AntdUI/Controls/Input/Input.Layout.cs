@@ -28,8 +28,8 @@ namespace AntdUI
     {
         protected override void OnHandleCreated(EventArgs e)
         {
-            FixFontWidth(true);
             base.OnHandleCreated(e);
+            FixFontWidth(true);
         }
 
         #region 确定字体宽度

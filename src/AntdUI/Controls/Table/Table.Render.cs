@@ -744,8 +744,8 @@ namespace AntdUI
         }
         void PaintItemFocus(Canvas g, CELL it, bool enable)
         {
-            if (cellFocused == null) return;
-            if (it == cellFocused)
+            if (focusedCell == null) return;
+            if (it == focusedCell)
             {
                 var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
                 if (style == TableCellFocusedStyle.None) return;

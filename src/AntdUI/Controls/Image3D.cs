@@ -89,96 +89,7 @@ namespace AntdUI
             set
             {
                 if (image == value) return;
-                if (image != null && value != null)
-                {
-                    var t = Animation.TotalFrames(Speed, Duration);
-                    float _radius = radius * Config.Dpi;
-                    ITask.Run(() =>
-                    {
-                        var _rect = ClientRectangle;
-                        var rect = _rect.PaddingRect(Padding);
-                        using (var bmpo = new Bitmap(_rect.Width, _rect.Height))
-                        using (var bmpo2 = new Bitmap(_rect.Width, _rect.Height))
-                        {
-                            using (var g = Graphics.FromImage(bmpo).High())
-                            {
-                                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                                g.Image(rect, image, imageFit, _radius, round);
-                            }
-                            using (var g = Graphics.FromImage(bmpo2).High())
-                            {
-                                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
-                                g.Image(rect, value, imageFit, _radius, round);
-                            }
-                            var images = new List<Bitmap>(t);
-                            if (Vertical)
-                            {
-                                for (int i = 0; i < t; i++)
-                                {
-                                    var prog = Animation.Animate(i + 1, t, 180, AnimationType.Ease);
-                                    var cube = new Cube(bmpo.Width, bmpo.Height, 1);
-                                    if (prog > 90)
-                                    {
-                                        prog -= 180;
-                                        cube.RotateX = prog;
-                                        cube.calcCube(_rect.Location);
-                                        var bmp = cube.ToBitmap(bmpo2);
-                                        bmp.Tag = cube.CentreX();
-                                        images.Add(bmp);
-                                    }
-                                    else
-                                    {
-                                        cube.RotateX = prog;
-                                        cube.calcCube(_rect.Location);
-                                        var bmp = cube.ToBitmap(bmpo);
-                                        bmp.Tag = cube.CentreX();
-                                        images.Add(bmp);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                for (int i = 0; i < t; i++)
-                                {
-                                    var prog = Animation.Animate(i + 1, t, 180, AnimationType.Ease);
-                                    var cube = new Cube(bmpo.Width, bmpo.Height, 1);
-                                    if (prog > 90)
-                                    {
-                                        prog -= 180;
-                                        cube.RotateY = prog;
-                                        cube.calcCube(_rect.Location);
-                                        var bmp = cube.ToBitmap(bmpo2);
-                                        bmp.Tag = cube.CentreY();
-                                        images.Add(bmp);
-                                    }
-                                    else
-                                    {
-                                        cube.RotateY = prog;
-                                        cube.calcCube(_rect.Location);
-                                        var bmp = cube.ToBitmap(bmpo);
-                                        bmp.Tag = cube.CentreY();
-                                        images.Add(bmp);
-                                    }
-                                }
-                            }
-                            for (int i = 0; i < images.Count; i++)
-                            {
-                                run = images[i];
-                                Invalidate();
-                                Thread.Sleep(Speed);
-                            }
-                        }
-                        run?.Dispose();
-                        run = null;
-                        image = value;
-                        Invalidate();
-                    });
-                }
-                else
-                {
-                    image = value;
-                    Invalidate();
-                }
+                RunAnimation(value);
             }
         }
 
@@ -296,6 +207,108 @@ namespace AntdUI
 
         #endregion
 
+        #region 动画
+
+        /// <summary>
+        /// 执行动画过渡
+        /// </summary>
+        /// <param name="value">切换到新图片</param>
+        public void RunAnimation(Image? value)
+        {
+            if (image != null && value != null)
+            {
+                var t = Animation.TotalFrames(Speed, Duration);
+                float _radius = radius * Config.Dpi;
+                ITask.Run(() =>
+                {
+                    var _rect = ClientRectangle;
+                    var rect = _rect.PaddingRect(Padding);
+                    using (var bmpo = new Bitmap(_rect.Width, _rect.Height))
+                    using (var bmpo2 = new Bitmap(_rect.Width, _rect.Height))
+                    {
+                        using (var g = Graphics.FromImage(bmpo).High())
+                        {
+                            if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+                            g.Image(rect, image, imageFit, _radius, round);
+                        }
+                        using (var g = Graphics.FromImage(bmpo2).High())
+                        {
+                            if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+                            g.Image(rect, value, imageFit, _radius, round);
+                        }
+                        var images = new List<Bitmap>(t);
+                        if (Vertical)
+                        {
+                            for (int i = 0; i < t; i++)
+                            {
+                                var prog = Animation.Animate(i + 1, t, 180, AnimationType.Ease);
+                                var cube = new Cube(bmpo.Width, bmpo.Height, 1);
+                                if (prog > 90)
+                                {
+                                    prog -= 180;
+                                    cube.RotateX = prog;
+                                    cube.calcCube(_rect.Location);
+                                    var bmp = cube.ToBitmap(bmpo2);
+                                    bmp.Tag = cube.CentreX();
+                                    images.Add(bmp);
+                                }
+                                else
+                                {
+                                    cube.RotateX = prog;
+                                    cube.calcCube(_rect.Location);
+                                    var bmp = cube.ToBitmap(bmpo);
+                                    bmp.Tag = cube.CentreX();
+                                    images.Add(bmp);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < t; i++)
+                            {
+                                var prog = Animation.Animate(i + 1, t, 180, AnimationType.Ease);
+                                var cube = new Cube(bmpo.Width, bmpo.Height, 1);
+                                if (prog > 90)
+                                {
+                                    prog -= 180;
+                                    cube.RotateY = prog;
+                                    cube.calcCube(_rect.Location);
+                                    var bmp = cube.ToBitmap(bmpo2);
+                                    bmp.Tag = cube.CentreY();
+                                    images.Add(bmp);
+                                }
+                                else
+                                {
+                                    cube.RotateY = prog;
+                                    cube.calcCube(_rect.Location);
+                                    var bmp = cube.ToBitmap(bmpo);
+                                    bmp.Tag = cube.CentreY();
+                                    images.Add(bmp);
+                                }
+                            }
+                        }
+                        for (int i = 0; i < images.Count; i++)
+                        {
+                            run = images[i];
+                            Invalidate();
+                            Thread.Sleep(Speed);
+                        }
+                    }
+                    run?.Dispose();
+                    run = null;
+                    image = value;
+                    Invalidate();
+                });
+            }
+            else
+            {
+                image = value;
+                Invalidate();
+            }
+        }
+
+        #endregion
+
         #region 渲染
 
         Bitmap? run;
@@ -309,13 +322,10 @@ namespace AntdUI
             var g = e.Canvas;
             var rect = e.Rect.PaddingRect(Padding);
             float _radius = radius * Config.Dpi;
+            if (run == null && shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);//应在绘制背景前绘制阴影，否则会影响背景色
             FillRect(g, rect, back, _radius, round);
             if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);
-            else
-            {
-                if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);
-                g.Image(rect, image, imageFit, _radius, round);
-            }
+            else g.Image(rect, image, imageFit, _radius, round);
             base.OnDraw(e);
         }
 
@@ -323,10 +333,7 @@ namespace AntdUI
 
         void FillRect(Canvas g, RectangleF rect, Color color, float radius, bool round)
         {
-            if (round)
-            {
-                g.FillEllipse(color, rect);
-            }
+            if (round) g.FillEllipse(color, rect);
             else if (radius > 0)
             {
                 using (var path = rect.RoundPath(radius))

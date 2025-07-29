@@ -194,8 +194,8 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            Text = GetNumberText(currentValue);
             base.OnHandleCreated(e);
+            Text = GetNumberText(currentValue);
         }
 
         #endregion

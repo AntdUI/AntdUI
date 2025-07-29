@@ -110,23 +110,23 @@ namespace AntdUI
         }
         int IKeyLeft()
         {
-            if (cellFocused == null || cellFocused.INDEX <= 0) return 50;
-            cellFocused = cellFocused.ROW.cells[cellFocused.INDEX - 1];
-            if (cellFocused == null) return 50;
-            int x = (fixedColumnR != null && fixedColumnR.Contains(cellFocused.INDEX)) ? 0 : cellFocused.RECT.Width;
-            Invalidate(cellFocused.ROW.RECT);
+            if (focusedCell == null || focusedCell.INDEX <= 0) return 50;
+            FocusedCell = focusedCell.ROW.cells[focusedCell.INDEX - 1];
+            if (focusedCell == null) return 50;
+            int x = (fixedColumnR != null && fixedColumnR.Contains(focusedCell.INDEX)) ? 0 : focusedCell.RECT.Width;
+            Invalidate(focusedCell.ROW.RECT);
             return x;
         }
         int IKeyRight()
         {
-            if (cellFocused == null) return 50;
-            int next = cellFocused.INDEX + 1;
-            if (next < cellFocused.ROW.cells.Length)
+            if (focusedCell == null) return 50;
+            int next = focusedCell.INDEX + 1;
+            if (next < focusedCell.ROW.cells.Length)
             {
-                cellFocused = cellFocused?.ROW.cells[next];
-                if (cellFocused == null) return 50;
-                int x = (fixedColumnL != null && fixedColumnL.Contains(cellFocused.INDEX)) || cellFocused.RECT.Right < Width ? 0 : cellFocused.RECT.Width;
-                Invalidate(cellFocused.ROW.RECT);
+                FocusedCell = focusedCell?.ROW.cells[next];
+                if (focusedCell == null) return 50;
+                int x = (fixedColumnL != null && fixedColumnL.Contains(focusedCell.INDEX)) || focusedCell.RECT.Right < Width ? 0 : focusedCell.RECT.Width;
+                Invalidate(focusedCell.ROW.RECT);
                 return x;
             }
             return 50;
@@ -139,7 +139,7 @@ namespace AntdUI
             {
                 var it = rows[selectedIndex[0]];
                 CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
-                if (EditMode != TEditMode.None && cellFocused != null) EnterEditMode(selectedIndex[0], cellFocused.INDEX);
+                if (EditMode != TEditMode.None && focusedCell != null) EnterEditMode(selectedIndex[0], focusedCell.INDEX);
             }
         }
 

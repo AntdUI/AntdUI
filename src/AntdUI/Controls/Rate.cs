@@ -491,7 +491,11 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (setvalue) { setvalue = false; return; }
+            if (setvalue)
+            {
+                setvalue = false;
+                return;
+            }
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];

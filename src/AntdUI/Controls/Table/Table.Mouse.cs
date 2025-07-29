@@ -32,7 +32,6 @@ namespace AntdUI
         #region 鼠标按下
 
         int shift_index = -1;
-        CELL? cellFocused;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -50,14 +49,14 @@ namespace AntdUI
                 var cell = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cell == null)
                 {
-                    cellFocused = null;
+                    FocusedCell = null;
                     return;
                 }
                 else
                 {
                     var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
-                    if (style == TableCellFocusedStyle.None) cellFocused = null;
-                    else cellFocused = cell;
+                    if (style == TableCellFocusedStyle.None) FocusedCell = null;
+                    else FocusedCell = cell;
                     if (e.Button == MouseButtons.Left)
                     {
                         if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
@@ -133,7 +132,7 @@ namespace AntdUI
         void MouseDownRow(MouseEventArgs e, RowTemplate it, CELL cell, int x, int y, int offset_x, int offset_xi, int offset_y, int i_r, int i_c, Column? column)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, cell, i_r, i_c, offset_x, offset_xi, offset_y, e.Clicks > 1);
-            if (cellFocused != null) Invalidate(cellFocused.ROW.RECT);//同行切换单元格时，及时刷新
+            if (focusedCell != null) Invalidate(focusedCell.ROW.RECT);//同行切换单元格时，及时刷新
             if (cell is Template template)
             {
                 if (e.Button == MouseButtons.Left)
@@ -568,10 +567,11 @@ namespace AntdUI
                 if (enterEdit)
                 {
                     EditModeClose();
-                    if (CanEditMode(it.row, cel_sel))
+                    cel_sel = RealCELL(cel_sel, rows, ref i_row, ref i_cel, ref it, out var crect);
+                    if (CanEditMode(cel_sel))
                     {
                         int val = ScrollLine(i_row, rows);
-                        OnEditMode(it.row, cel_sel, i_row, i_cel, column, offset_xi, offset_y - val);
+                        OnEditMode(it.row, cel_sel, crect, i_row, i_cel, column, offset_xi, offset_y - val);
                     }
                 }
             }
@@ -701,6 +701,7 @@ namespace AntdUI
                     MouseMoveCell(cel_sel, i_row, i_cel, column, offset_x, offset_xi, offset_y, e);
                     if (mode > 0)
                     {
+                        CloseTip(true);
                         for (int i = 1; i < rows.Length; i++)
                         {
                             rows[i].Hover = false;
@@ -880,18 +881,25 @@ namespace AntdUI
             toolTip = null;
             if (clear) oldmove = null;
         }
-        public void OpenTip(Rectangle rect, string tooltip)
+        public void OpenTip(Rectangle rect, string tooltip, TooltipConfig? config = null)
         {
             if (toolTip == null)
             {
-                toolTip = new TooltipForm(this, rect, tooltip, TooltipConfig ?? new TooltipConfig
+                toolTip = new TooltipForm(this, rect, tooltip, config ?? TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Top,
-                });
+                }, true);
                 toolTip.Show(this);
             }
-            else toolTip.SetText(rect, tooltip);
+            else
+            {
+                if (toolTip.SetText(rect, tooltip))
+                {
+                    CloseTip(false);
+                    OpenTip(rect, tooltip);
+                }
+            }
         }
 
         #endregion
@@ -1111,6 +1119,58 @@ namespace AntdUI
         Rectangle RealRect(DownCellTMP<CellLink> link) => RealRect(link.cell.Rect, link.offset_xi, link.offset_y);
         Rectangle RealRect(Rectangle rect, int ox, int oy) => new Rectangle(rect.X - ox, rect.Y - oy, rect.Width, rect.Height);
 
+        CELL RealCELL(CELL cell, RowTemplate[] rows, ref int i_row, ref int i_cel, ref DownCellTMP<CELL> it, out Rectangle rect)
+        {
+            if (CellRanges == null || CellRanges.Length == 0)
+            {
+                rect = cell.RECT;
+                return cell;
+            }
+            foreach (var range in CellRanges)
+            {
+                if (range.IsInRange(i_row - 1, i_cel))
+                {
+                    try
+                    {
+                        RowTemplate FirstRow = rows[range.FirstRow + 1], LastRow = rows[range.LastRow + 1];
+                        CELL FirstCell = FirstRow.cells[range.FirstColumn], LastCell = LastRow.cells[range.LastColumn];
+                        rect = RectMergeCells(FirstCell, LastCell, out _);
+                        i_row = range.FirstRow + 1;
+                        i_cel = range.FirstColumn;
+                        it.row = FirstRow;
+                        return FirstCell;
+                    }
+                    catch { }
+                }
+            }
+            rect = cell.RECT;
+            return cell;
+        }
+        CELL RealCELL(CELL cell, RowTemplate[] rows, int i_row, int i_cel, out Rectangle rect)
+        {
+            if (CellRanges == null || CellRanges.Length == 0)
+            {
+                rect = cell.RECT;
+                return cell;
+            }
+            foreach (var range in CellRanges)
+            {
+                if (range.IsInRange(i_row - 1, i_cel))
+                {
+                    try
+                    {
+                        RowTemplate FirstRow = rows[range.FirstRow + 1], LastRow = rows[range.LastRow + 1];
+                        CELL FirstCell = FirstRow.cells[range.FirstColumn], LastCell = LastRow.cells[range.LastColumn];
+                        rect = RectMergeCells(FirstCell, LastCell, out _);
+                        return FirstCell;
+                    }
+                    catch { }
+                }
+            }
+            rect = cell.RECT;
+            return cell;
+        }
+
         #endregion
 
         DragHeader? dragHeader;
@@ -1178,6 +1238,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             ScrollBar.Leave();
             ILeave();
             CloseTip();

@@ -37,6 +37,8 @@ namespace AntdUI
             public StyleLine() { }
             public StyleLine(Tabs tabs) { owner = tabs; }
 
+            #region 属性
+
             int size = 3;
             /// <summary>
             /// 条大小
@@ -107,6 +109,10 @@ namespace AntdUI
             [Description("条背景"), Category("样式"), DefaultValue(null)]
             [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
             public Color? Back { get; set; }
+
+            #endregion
+
+            #region 布局
 
             Rectangle rect_ful, rect_line_top;
             TabPageRect[] rects = new TabPageRect[0];
@@ -271,6 +277,52 @@ namespace AntdUI
                     return rect_list.ToArray();
                 });
             }
+            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, int gapI, out int ico_size, out int sizewh)
+            {
+                sizewh = 0;
+                var size_t = g.MeasureString(Config.NullText, owner.Font);
+                var rect_dir = new Dictionary<TabPage, Size>(items.Count);
+                foreach (var item in items)
+                {
+                    var size = g.MeasureString(item.Text, owner.Font);
+                    rect_dir.Add(item, size);
+                }
+                ico_size = (int)(size_t.Height * owner.IconRatio);
+                switch (owner.Alignment)
+                {
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        foreach (var it in rect_dir)
+                        {
+                            if (it.Key.Visible)
+                            {
+                                int w;
+                                if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap + gapI;
+                                else w = it.Value.Width + gap;
+                                if (sizewh < w) sizewh = w;
+                            }
+                        }
+                        break;
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                    default:
+                        foreach (var it in rect_dir)
+                        {
+                            if (it.Key.Visible)
+                            {
+                                int h = it.Value.Height + gap;
+                                if (sizewh < h) sizewh = h;
+                            }
+                        }
+                        break;
+                }
+
+                return owner.HandItemSize(rect_dir, ref sizewh);
+            }
+
+            #endregion
+
+            #region 渲染
 
             public void Paint(Tabs owner, Canvas g, TabCollection items)
             {
@@ -360,54 +412,6 @@ namespace AntdUI
                 else if (owner.hover_i == i) PaintText(g, rects[i], owner, page, owner.pageDown == page ? brush_active : brush_hover);
                 else PaintText(g, rects[i], owner, page, brush_fore);
             }
-
-            public TabPageRect GetTabRect(int i) => rects[i];
-
-            #region 辅助
-
-            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, int gapI, out int ico_size, out int sizewh)
-            {
-                sizewh = 0;
-                var size_t = g.MeasureString(Config.NullText, owner.Font);
-                var rect_dir = new Dictionary<TabPage, Size>(items.Count);
-                foreach (var item in items)
-                {
-                    var size = g.MeasureString(item.Text, owner.Font);
-                    rect_dir.Add(item, size);
-                }
-                ico_size = (int)(size_t.Height * owner.IconRatio);
-                switch (owner.Alignment)
-                {
-                    case TabAlignment.Left:
-                    case TabAlignment.Right:
-                        foreach (var it in rect_dir)
-                        {
-                            if (it.Key.Visible)
-                            {
-                                int w;
-                                if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap + gapI;
-                                else w = it.Value.Width + gap;
-                                if (sizewh < w) sizewh = w;
-                            }
-                        }
-                        break;
-                    case TabAlignment.Top:
-                    case TabAlignment.Bottom:
-                    default:
-                        foreach (var it in rect_dir)
-                        {
-                            if (it.Key.Visible)
-                            {
-                                int h = it.Value.Height + gap;
-                                if (sizewh < h) sizewh = h;
-                            }
-                        }
-                        break;
-                }
-
-                return owner.HandItemSize(rect_dir, ref sizewh);
-            }
-
             void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
             {
                 if (page.Enabled)
@@ -454,6 +458,8 @@ namespace AntdUI
             }
 
             #endregion
+
+            public TabPageRect GetTabRect(int i) => rects[i];
 
             #region 动画
 
@@ -612,6 +618,7 @@ namespace AntdUI
             public StyleCard() { }
             public StyleCard(Tabs tabs) { owner = tabs; }
 
+            #region 属性
 
             int radius = 6;
             /// <summary>
@@ -732,6 +739,10 @@ namespace AntdUI
                     owner?.LoadLayout();
                 }
             }
+
+            #endregion
+
+            #region 布局
 
             TabPageRect[] rects = new TabPageRect[0];
             public void LoadLayout(Tabs tabs, Rectangle rect, TabCollection items)
@@ -934,6 +945,70 @@ namespace AntdUI
                     return rect_list.ToArray();
                 });
             }
+            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
+            {
+                sizewh = 0;
+                var size_t = g.MeasureString(Config.NullText, owner.Font);
+                var rect_dir = new Dictionary<TabPage, Size>(items.Count);
+                foreach (var item in items)
+                {
+                    var size = g.MeasureString(item.Text, owner.Font);
+                    rect_dir.Add(item, size);
+                }
+                ico_size = (int)(size_t.Height * owner.IconRatio);
+                close_size = (int)(size_t.Height * (owner.IconRatio * .8F));
+                switch (owner.Alignment)
+                {
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        if (closable)
+                        {
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
+                                {
+                                    int w;
+                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
+                                    else w = it.Value.Width + gap;
+                                    w += ico_size + gap;
+                                    if (sizewh < w) sizewh = w;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
+                                {
+                                    int w;
+                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
+                                    else w = it.Value.Width + gap;
+                                    if (sizewh < w) sizewh = w;
+                                }
+                            }
+                        }
+                        break;
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                    default:
+                        foreach (var it in rect_dir)
+                        {
+                            if (it.Key.Visible)
+                            {
+                                int h = it.Value.Height + gap;
+                                if (sizewh < h) sizewh = h;
+                            }
+                        }
+                        break;
+                }
+
+                return owner.HandItemSize(rect_dir, ref sizewh);
+            }
+
+            #endregion
+
+            #region 渲染
 
             public void Paint(Tabs owner, Canvas g, TabCollection items)
             {
@@ -1168,72 +1243,6 @@ namespace AntdUI
                 }
                 catch { }
             }
-
-            public TabPageRect GetTabRect(int i) => rects[i];
-
-            #region 辅助
-
-            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
-            {
-                sizewh = 0;
-                var size_t = g.MeasureString(Config.NullText, owner.Font);
-                var rect_dir = new Dictionary<TabPage, Size>(items.Count);
-                foreach (var item in items)
-                {
-                    var size = g.MeasureString(item.Text, owner.Font);
-                    rect_dir.Add(item, size);
-                }
-                ico_size = (int)(size_t.Height * owner.IconRatio);
-                close_size = (int)(size_t.Height * (owner.IconRatio * .8F));
-                switch (owner.Alignment)
-                {
-                    case TabAlignment.Left:
-                    case TabAlignment.Right:
-                        if (closable)
-                        {
-                            foreach (var it in rect_dir)
-                            {
-                                if (it.Key.Visible)
-                                {
-                                    int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
-                                    else w = it.Value.Width + gap;
-                                    w += ico_size + gap;
-                                    if (sizewh < w) sizewh = w;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (var it in rect_dir)
-                            {
-                                if (it.Key.Visible)
-                                {
-                                    int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
-                                    else w = it.Value.Width + gap;
-                                    if (sizewh < w) sizewh = w;
-                                }
-                            }
-                        }
-                        break;
-                    case TabAlignment.Top:
-                    case TabAlignment.Bottom:
-                    default:
-                        foreach (var it in rect_dir)
-                        {
-                            if (it.Key.Visible)
-                            {
-                                int h = it.Value.Height + gap;
-                                if (sizewh < h) sizewh = h;
-                            }
-                        }
-                        break;
-                }
-
-                return owner.HandItemSize(rect_dir, ref sizewh);
-            }
-
             void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush)
             {
                 if (page.Enabled)
@@ -1273,6 +1282,8 @@ namespace AntdUI
 
             #endregion
 
+            public TabPageRect GetTabRect(int i) => rects[i];
+
             public void SelectedIndexChanged(int i, int old)
             {
                 if (owner == null) return;
@@ -1291,6 +1302,8 @@ namespace AntdUI
                     item.hover_close?.Dispose();
                 }
             }
+
+            #region 鼠标
 
             public bool MouseClick(TabPage page, int i, int x, int y)
             {
@@ -1338,6 +1351,8 @@ namespace AntdUI
                     }
                 }
             }
+
+            #endregion
         }
 
         /// <summary>
@@ -1349,6 +1364,7 @@ namespace AntdUI
             public StyleCard2() { }
             public StyleCard2(Tabs tabs) { owner = tabs; }
 
+            #region 属性
 
             int radius = 6;
             /// <summary>
@@ -1469,6 +1485,10 @@ namespace AntdUI
                     owner?.LoadLayout();
                 }
             }
+
+            #endregion
+
+            #region 布局
 
             TabPageRect[] rects = new TabPageRect[0];
             public void LoadLayout(Tabs tabs, Rectangle rect, TabCollection items)
@@ -1771,6 +1791,70 @@ namespace AntdUI
                     return rect_list.ToArray();
                 });
             }
+            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
+            {
+                sizewh = 0;
+                var size_t = g.MeasureString(Config.NullText, owner.Font);
+                var rect_dir = new Dictionary<TabPage, Size>(items.Count);
+                foreach (var item in items)
+                {
+                    var size = g.MeasureString(item.Text, owner.Font);
+                    rect_dir.Add(item, size);
+                }
+                ico_size = (int)(size_t.Height * owner.IconRatio);
+                close_size = (int)(size_t.Height * (owner.IconRatio * .8F));
+                switch (owner.Alignment)
+                {
+                    case TabAlignment.Left:
+                    case TabAlignment.Right:
+                        if (closable != CloseType.none)
+                        {
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
+                                {
+                                    int w;
+                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
+                                    else w = it.Value.Width + gap;
+                                    w += ico_size + gap;
+                                    if (sizewh < w) sizewh = w;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var it in rect_dir)
+                            {
+                                if (it.Key.Visible)
+                                {
+                                    int w;
+                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
+                                    else w = it.Value.Width + gap;
+                                    if (sizewh < w) sizewh = w;
+                                }
+                            }
+                        }
+                        break;
+                    case TabAlignment.Top:
+                    case TabAlignment.Bottom:
+                    default:
+                        foreach (var it in rect_dir)
+                        {
+                            if (it.Key.Visible)
+                            {
+                                int h = it.Value.Height + gap;
+                                if (sizewh < h) sizewh = h;
+                            }
+                        }
+                        break;
+                }
+
+                return owner.HandItemSize(rect_dir, ref sizewh);
+            }
+
+            #endregion
+
+            #region 渲染
 
             public void Paint(Tabs owner, Canvas g, TabCollection items)
             {
@@ -2036,72 +2120,6 @@ namespace AntdUI
                     }
                 }
             }
-
-            public TabPageRect GetTabRect(int i) => rects[i];
-
-            #region 辅助
-
-            Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, out int ico_size, out int close_size, out int sizewh)
-            {
-                sizewh = 0;
-                var size_t = g.MeasureString(Config.NullText, owner.Font);
-                var rect_dir = new Dictionary<TabPage, Size>(items.Count);
-                foreach (var item in items)
-                {
-                    var size = g.MeasureString(item.Text, owner.Font);
-                    rect_dir.Add(item, size);
-                }
-                ico_size = (int)(size_t.Height * owner.IconRatio);
-                close_size = (int)(size_t.Height * (owner.IconRatio * .8F));
-                switch (owner.Alignment)
-                {
-                    case TabAlignment.Left:
-                    case TabAlignment.Right:
-                        if (closable != CloseType.none)
-                        {
-                            foreach (var it in rect_dir)
-                            {
-                                if (it.Key.Visible)
-                                {
-                                    int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
-                                    else w = it.Value.Width + gap;
-                                    w += ico_size + gap;
-                                    if (sizewh < w) sizewh = w;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (var it in rect_dir)
-                            {
-                                if (it.Key.Visible)
-                                {
-                                    int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + ico_size + gap * 2;
-                                    else w = it.Value.Width + gap;
-                                    if (sizewh < w) sizewh = w;
-                                }
-                            }
-                        }
-                        break;
-                    case TabAlignment.Top:
-                    case TabAlignment.Bottom:
-                    default:
-                        foreach (var it in rect_dir)
-                        {
-                            if (it.Key.Visible)
-                            {
-                                int h = it.Value.Height + gap;
-                                if (sizewh < h) sizewh = h;
-                            }
-                        }
-                        break;
-                }
-
-                return owner.HandItemSize(rect_dir, ref sizewh);
-            }
-
             void PaintText(Canvas g, TabPageRect rects, Tabs owner, TabPage page, SolidBrush brush, bool closshow = false)
             {
                 if (page.Enabled)
@@ -2140,6 +2158,7 @@ namespace AntdUI
             }
 
             #endregion
+            public TabPageRect GetTabRect(int i) => rects[i];
 
             public void SelectedIndexChanged(int i, int old)
             {
@@ -2156,6 +2175,8 @@ namespace AntdUI
             {
                 foreach (var item in rects) item.hover_close?.Dispose();
             }
+
+            #region 鼠标
 
             public bool MouseClick(TabPage page, int i, int x, int y)
             {
@@ -2205,6 +2226,8 @@ namespace AntdUI
                     }
                 }
             }
+
+            #endregion
         }
 
         [TypeConverter(typeof(ExpandableObjectConverter))]

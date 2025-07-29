@@ -407,13 +407,13 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
+            base.OnHandleCreated(e);
             ChangeList();
             var item = GetSelectItem(out var sub);
             if (item != null)
             {
                 foreach (var it in sub) it.Select = true;
             }
-            base.OnHandleCreated(e);
         }
 
         #region 获取选中项目
@@ -1085,12 +1085,7 @@ namespace AntdUI
                                     subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
                                     subForm.Show(this);
                                 }
-                                else if (it.Text != null)
-                                {
-                                    var _rect = RectangleToScreen(ClientRectangle);
-                                    var rect = new Rectangle(_rect.X + it.Rect.X, _rect.Y + it.Rect.Y, it.Rect.Width, it.Rect.Height);
-                                    ShowTooltip(it, rect);
-                                }
+                                else if (it.Text != null) ShowTooltip(it, it.Rect);
                             }
                         }
                     }
@@ -1164,10 +1159,8 @@ namespace AntdUI
                 {
                     if (mode == TMenuMode.InlineNoText)
                     {
-                        Point location = PointToScreen(it.rect.Location);
-                        location.Y += (it.rect.Height / 2);
-                        location.Y -= ScrollBar.Value;
-                        ShowTooltip(it, new Rectangle(location, new Size(it.rect.Width, rect_r.Height)));
+                        var rect = new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - ScrollBar.Value, it.rect.Width, rect_r.Height);
+                        ShowTooltip(it, rect);
                     }
                     hand++;
                 }
