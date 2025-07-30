@@ -1449,6 +1449,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标文本
         /// </summary>
+        [Description("徽标文本"), Category("徽标"), DefaultValue(null)]
         public string? Badge
         {
             get => badge;
@@ -1464,6 +1465,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标SVG
         /// </summary>
+        [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
             get => badgeSvg;
@@ -1479,6 +1481,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标方向
         /// </summary>
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.TR)]
         public TAlign BadgeAlign
         {
             get => badgeAlign;
@@ -1493,17 +1496,20 @@ namespace AntdUI
         /// <summary>
         /// 徽标大小
         /// </summary>
+        [Description("徽标大小"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize { get; set; } = .6F;
 
         /// <summary>
         /// 徽标背景颜色
         /// </summary>
+        [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack { get; set; }
 
         bool badgeMode = false;
         /// <summary>
         /// 徽标模式（镂空）
         /// </summary>
+        [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
         public bool BadgeMode
         {
             get => badgeMode;
@@ -1518,11 +1524,13 @@ namespace AntdUI
         /// <summary>
         /// 徽标偏移X
         /// </summary>
+        [Description("徽标偏移X"), Category("徽标"), DefaultValue(0)]
         public int BadgeOffsetX { get; set; }
 
         /// <summary>
         /// 徽标偏移Y
         /// </summary>
+        [Description("徽标偏移Y"), Category("徽标"), DefaultValue(0)]
         public int BadgeOffsetY { get; set; }
 
         #endregion

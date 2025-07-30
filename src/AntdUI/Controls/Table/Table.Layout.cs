@@ -260,8 +260,9 @@ namespace AntdUI
             {
                 var dpi = Config.Dpi;
                 var font_size = g.MeasureString(Config.NullText, Font);
+                var gap = new TableGaps(_gap);
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
-                gap = (int)(_gap * dpi), gap2 = gap * 2, gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
+                 gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
                 split = (int)(BorderCellWidth * dpi), split2 = split / 2, sp2 = split * 2,
                 split_move = (int)(6F * dpi), split_move2 = split_move / 2;
 
@@ -286,7 +287,7 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                var text_size = it.GetSize(g, columnfont ?? Font, font_size, rect.Width, gap, gap2);
+                                var text_size = it.GetSize(g, columnfont ?? Font, font_size, rect.Width, gap);
                                 var readWidthCell = read_width_cell[cel_i];
                                 if (it.COLUMN is ColumnSort) readWidthCell.value = -2;
                                 else if (it.COLUMN is ColumnCheck check && check.NoTitle) readWidthCell.value = -1;
@@ -300,8 +301,20 @@ namespace AntdUI
                             }
                             if (rowHeightHeader.HasValue) row.Height = (int)(rowHeightHeader.Value * dpi);
                             else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
-                            else row.Height = (int)Math.Round(max_height) + gap2;
-                            tmp_width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
+                            else row.Height = (int)Math.Round(max_height) + gap.y2;
+                            tmp_width_cell = CalculateWidth(rect, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
+                            var del_tmp_width_cell = new List<int>(tmp_width_cell.Count);
+                            foreach (var it in tmp_width_cell)
+                            {
+                                if (col_width.TryGetValue(it.Key, out var value))
+                                {
+                                    if (value is float) del_tmp_width_cell.Add(it.Key);
+                                }
+                            }
+                            if (del_tmp_width_cell.Count > 0)
+                            {
+                                foreach (var it in del_tmp_width_cell) tmp_width_cell.Remove(it);
+                            }
                         }
                         else
                         {
@@ -311,13 +324,13 @@ namespace AntdUI
                                 it.INDEX = cel_i;
                                 if (it.COLUMN is ColumnSort || (it is TCellCheck check && check.NoTitle))
                                 {
-                                    if (max_height < gap2) max_height = gap2;
+                                    if (max_height < gap.y2) max_height = gap.y2;
                                 }
                                 else
                                 {
                                     int tmpw = rect.Width;
                                     if (tmp_width_cell.TryGetValue(cel_i, out int tv)) tmpw = tv;
-                                    var text_size = it.GetSize(g, Font, font_size, tmpw, gap, gap2);
+                                    var text_size = it.GetSize(g, Font, font_size, tmpw, gap);
                                     int width = text_size.Width;
                                     if (it.ROW.CanExpand && _rows[0].cells[cel_i].INDEX == KeyTreeINDEX) width += (treesize + gapTree2) * (it.ROW.ExpandDepth + 1) - treesize / 2;
                                     if (max_height < text_size.Height) max_height = text_size.Height;
@@ -326,7 +339,7 @@ namespace AntdUI
                             }
 
                             if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
-                            else row.Height = (int)Math.Round(max_height) + gap2;
+                            else row.Height = (int)Math.Round(max_height) + gap.y2;
                         }
                     }
                 }
@@ -361,7 +374,7 @@ namespace AntdUI
                 rect_read.Width = rect.Width;
                 rect_read.Height = rect.Height;
 
-                var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap2, check_size, sort_size, ref is_exceed);
+                var width_cell = CalculateWidth(rect, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
 
                 #endregion
 
@@ -400,10 +413,10 @@ namespace AntdUI
                             else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
                             else if (it is TCellSwitch _switch) _switch.SetSize(_rect, switchsize);
                             else if (it is TCellSort sort) sort.SetSize(_rect, sort_size, sort_ico_size);
-                            else if (it is TCellSelect select) select.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
+                            else if (it is TCellSelect select) select.SetSize(g, Font, font_size, _rect, ox, gap);
                             else if (it is TCellColumn column)
                             {
-                                it.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
+                                it.SetSize(g, Font, font_size, _rect, ox, gap);
                                 if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
                                 {
                                     column.COLUMN.SortOrder = false;
@@ -412,11 +425,11 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    column.RECT_REAL = new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2 - column.SFWidth, _rect.Height);
+                                    column.RECT_REAL = new Rectangle(_rect.X + gap.x, _rect.Y, _rect.Width - gap.x2 - column.SFWidth, _rect.Height);
                                     if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
                                 }
                             }
-                            else it.SetSize(g, Font, font_size, _rect, ox, gap, gap2);
+                            else it.SetSize(g, Font, font_size, _rect, ox, gap);
 
                             if (x < _rect.Right) x = _rect.Right;
                             if (y < _rect.Bottom) y = _rect.Bottom;
@@ -486,7 +499,7 @@ namespace AntdUI
                             for (int i = 0; i < row.cells.Length - 1; i++)
                             {
                                 var it = row.cells[i];
-                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT.Y + gap, split, it.RECT.Height - gap2));
+                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT.Y + gap.y, split, it.RECT.Height - gap.y2));
                             }
                         }
                     }

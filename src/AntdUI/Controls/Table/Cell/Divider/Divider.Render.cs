@@ -30,13 +30,13 @@ namespace AntdUI
             g.Fill(Colour.Split.Get("Divider", PARENT.PARENT.ColorScheme), Rect);
         }
 
-        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             var size = g.MeasureString(Config.NullText, font);
-            return new Size(0, size.Height - gap);
+            return new Size(0, size.Height - gap.y);
         }
 
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             Rect = new Rectangle(rect.X + (rect.Width - 1) / 2, rect.Y + (rect.Height - size.Height) / 2, 1, size.Height);
         }

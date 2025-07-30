@@ -36,8 +36,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="font">字体</param>
         /// <param name="gap">边距</param>
-        /// <param name="gap2">边距2</param>
-        public abstract Size GetSize(Canvas g, Font font, int gap, int gap2);
+        public abstract Size GetSize(Canvas g, Font font, TableGaps gap);
 
         /// <summary>
         /// 设置渲染位置坐标
@@ -48,8 +47,7 @@ namespace AntdUI
         /// <param name="size">真实区域</param>
         /// <param name="maxwidth">最大宽度</param>
         /// <param name="gap">边距</param>
-        /// <param name="gap2">边距2</param>
-        public abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2);
+        public abstract void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap);
 
         public abstract void PaintBack(Canvas g);
         public abstract void Paint(Canvas g, Font font, bool enable, SolidBrush fore);

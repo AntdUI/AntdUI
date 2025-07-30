@@ -17,6 +17,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -24,7 +25,7 @@ namespace AntdUI
 {
     partial class Table
     {
-        internal static void PaintButton(Canvas g, Font font, int gap, Rectangle rect_read, CellButton btn, bool enable, TAMode colorScheme)
+        internal static void PaintButton(Canvas g, Font font, Size gap, Rectangle rect_read, CellButton btn, bool enable, TAMode colorScheme)
         {
             float _radius = (btn.Shape == TShape.Round || btn.Shape == TShape.Circle) ? rect_read.Height : btn.Radius * Config.Dpi;
 
@@ -51,7 +52,8 @@ namespace AntdUI
 
                     if (btn.AnimationClick)
                     {
-                        float maxw = rect_read.Width + (gap * btn.AnimationClickValue), maxh = rect_read.Height + (gap * btn.AnimationClickValue),
+                        int sp = (int)(Math.Max(gap.Height, gap.Width) * Config.Dpi);
+                        float maxw = rect_read.Width + (sp * btn.AnimationClickValue), maxh = rect_read.Height + (sp * btn.AnimationClickValue),
                             alpha = 100 * (1F - btn.AnimationClickValue);
                         using (var path_click = new RectangleF(rect_read.X + (rect_read.Width - maxw) / 2F, rect_read.Y + (rect_read.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, btn.Shape))
                         {
@@ -167,7 +169,8 @@ namespace AntdUI
 
                     if (btn.AnimationClick)
                     {
-                        float maxw = rect_read.Width + (gap * btn.AnimationClickValue), maxh = rect_read.Height + (gap * btn.AnimationClickValue),
+                        int sp = (int)(Math.Max(gap.Height, gap.Width) * Config.Dpi);
+                        float maxw = rect_read.Width + (sp * btn.AnimationClickValue), maxh = rect_read.Height + (sp * btn.AnimationClickValue),
                             alpha = 100 * (1F - btn.AnimationClickValue);
                         using (var path_click = new RectangleF(rect_read.X + (rect_read.Width - maxw) / 2F, rect_read.Y + (rect_read.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, btn.Shape))
                         {

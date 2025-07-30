@@ -475,7 +475,11 @@ namespace AntdUI
                             Point location = PointToScreen(col.rect_filter.Location);
                             Point locaionOrigin = location;
                             location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
-                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
+                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn)))
+                            {
+                                int gap = (int)(_gap.Width * Config.Dpi);
+                                location.X -= (showFixedColumnR ? gap : gap * 2);
+                            }
                             location.X += col.rect_filter.Width / 2;
                             location.Y += col.rect_filter.Height;
                             Rectangle? rectScreen = Screen.FromPoint(location).WorkingArea;

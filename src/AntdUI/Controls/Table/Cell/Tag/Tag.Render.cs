@@ -80,7 +80,7 @@ namespace AntdUI
             }
         }
 
-        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             var size = g.MeasureText(Text, font);
             if (Gap.HasValue)
@@ -93,10 +93,10 @@ namespace AntdUI
                 int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
                 return new Size(size.Width + sp * 2, size.Height + sp);
             }
-            else return new Size(size.Width + gap2, size.Height + gap);
+            else return new Size(size.Width + gap.x2, size.Height + gap.y);
         }
 
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             Rect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, rect.Width, size.Height);
         }

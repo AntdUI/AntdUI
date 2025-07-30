@@ -24,11 +24,11 @@ namespace AntdUI
 {
     partial class CellButton
     {
-        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gap, Rect, this, enable, PARENT.PARENT.ColorScheme);
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gaps, Rect, this, enable, PARENT.PARENT.ColorScheme);
 
         #region GetSize
 
-        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             if (Gap.HasValue)
             {
@@ -40,7 +40,7 @@ namespace AntdUI
                 int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
                 return GetSizeCore(g, font, sp, sp * 2);
             }
-            else return GetSizeCore(g, font, gap, gap2);
+            else return GetSizeCore(g, font, gap.x, gap.x2);
         }
 
         Size GetSizeCore(Canvas g, Font font, int gap, int gap2)
@@ -194,7 +194,7 @@ namespace AntdUI
 
         internal override void Click()
         {
-            if (_mouseDown && Config.HasAnimation(nameof(Table)))
+            if (Config.HasAnimation(nameof(Table)))
             {
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;

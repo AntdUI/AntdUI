@@ -346,7 +346,7 @@ namespace Demo.Controls
             return $"{e.PageSize} / {e.Total}ฬ๕ {e.PageTotal}าณ";
         }
 
-        AntdUI.AntItem[] GetItemOne(int index, int start, string name, int age, AntdUI.CellTag[]? tag = null)
+        AntdUI.AntItem[] GetItemOne(int index, int start, string name, int age, AntdUI.CellTag[] tag = null)
         {
             int id = (index + 1);
 
@@ -369,7 +369,7 @@ namespace Demo.Controls
             if (start == 1)
             {
                 imgs = new AntdUI.CellImage[] {
-                    new AntdUI.CellImage(Properties.Resources.img1) { BorderWidth = 4, BorderColor = Color.BlueViolet },
+                    new AntdUI.CellImage(Properties.Resources.img1).SetBorder(Color.BlueViolet, 4),
                     new AntdUI.CellImage(Properties.Resources.bg1)
                 };
             }

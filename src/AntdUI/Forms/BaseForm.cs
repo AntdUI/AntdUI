@@ -219,6 +219,11 @@ namespace AntdUI
 
         protected override void OnLoad(EventArgs e)
         {
+            if (DesignMode)
+            {
+                base.OnLoad(e);
+                return;
+            }
             if (AutoHandDpi) AutoDpi(Dpi(), this);
             base.OnLoad(e);
         }
