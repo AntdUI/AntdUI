@@ -467,7 +467,6 @@ namespace AntdUI
             using (var brush_primarybg = new SolidBrush(Colour.PrimaryBg.Get("Steps", ColorScheme)))
             using (var brush_primary = new SolidBrush(Colour.Primary.Get("Steps", ColorScheme)))
             using (var brush_primary_fore = new SolidBrush(Colour.PrimaryColor.Get("Steps", ColorScheme)))
-            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Steps", ColorScheme)))
             using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Steps", ColorScheme)))
             using (var brush_fore3 = new SolidBrush(Colour.TextSecondary.Get("Steps", ColorScheme)))
             using (var brush_bg2 = new SolidBrush(Colour.FillSecondary.Get("Steps", ColorScheme)))
@@ -567,8 +566,10 @@ namespace AntdUI
                             int space = i == current ? milestoneTimelineThickness : (int)(milestoneTimelineThickness / 1.35f);
                             rect.Inflate(space, space);
 
-                            g.FillEllipse(brush_dotback, rect);
-
+                            using (var brush_dotback = new SolidBrush(BackColor != Color.Transparent ? BackColor : Colour.BgBase.Get("Steps", ColorScheme)))
+                            {
+                                g.FillEllipse(brush_dotback, rect);
+                            }
 
                             rect = it.ico_rect;
                             space = i == current ? (int)(milestoneTimelineThickness / 1.5f) : milestoneTimelineThickness / 2;

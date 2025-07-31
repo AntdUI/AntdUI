@@ -947,19 +947,17 @@ namespace AntdUI
                     int size;
                     if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
                     else size = (int)(font_size.Height * .6F);
-                    int size2 = size * 2, icon_sp = (int)(size * .34F), use_r = 0;
-                    int scrollBarGap = (PARENT.ScrollBar.ShowY && this == ROW.cells[ROW.cells.Length - 1] ? PARENT.ScrollBar.SIZE : 0);
+                    int size2 = size * 2, sp = (int)(size * .34F), use_r = 0, r = _rect.Right - (gap.x > 0 ? gap.x : sp);
                     if (COLUMN.HasFilter)
                     {
-                        int tmp = size + icon_sp;
-                        rect_filter = new Rectangle(_rect.Right - use_r - size2 - scrollBarGap, _rect.Y + (_rect.Height - size) / 2, size, size);
-                        use_r = tmp + icon_sp;
+                        rect_filter = new Rectangle(r - use_r - size, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        use_r = size + sp;
                     }
                     if (COLUMN.SortOrder)
                     {
-                        int y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
-                        rect_up = new Rectangle(_rect.Right - use_r - size2 - scrollBarGap, y, size, size);
-                        rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
+                        int y = _rect.Y + (_rect.Height - size2 + sp) / 2;
+                        rect_up = new Rectangle(r - use_r - size, y, size, size);
+                        rect_down = new Rectangle(rect_up.X, rect_up.Bottom - sp, size, size);
                     }
                 }
             }
@@ -987,8 +985,9 @@ namespace AntdUI
                 var size = g.MeasureText(value, font);
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
-                    if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = (int)(size.Height * 1.8F);
-                    else SFWidth = (int)(size.Height * .8F);
+                    int sp = (int)(size.Height * .86F);
+                    if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = sp * 2;
+                    else SFWidth = sp;
                 }
                 MinWidth = size.Width + gap.x2 + SFWidth;
 

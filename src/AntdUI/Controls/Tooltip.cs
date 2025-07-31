@@ -364,9 +364,15 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            if (IsHandleCreated)
+            {
+                try
+                {
+                    if (ocontrol != null) ocontrol.Disposed -= Control_Close;
+                }
+                catch { }
+            }
             base.Dispose(disposing);
-            if (ocontrol == null) return;
-            ocontrol.Disposed -= Control_Close;
         }
     }
 

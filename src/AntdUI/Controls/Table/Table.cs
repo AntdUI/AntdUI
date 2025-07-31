@@ -509,12 +509,6 @@ namespace AntdUI
             }
         }
 
-        /// <summary>
-        /// 默认是否展开
-        /// </summary>
-        [Description("默认是否展开"), Category("外观"), DefaultValue(false)]
-        public bool DefaultExpand { get; set; }
-
         #endregion
 
         #region 主题
@@ -792,6 +786,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        /// <summary>
+        /// 默认是否展开
+        /// </summary>
+        [Description("默认是否展开"), Category("外观"), DefaultValue(false)]
+        public bool DefaultExpand { get; set; }
 
         /// <summary>
         /// 处理快捷键
