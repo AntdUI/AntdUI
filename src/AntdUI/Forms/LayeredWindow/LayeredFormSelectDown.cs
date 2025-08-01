@@ -871,7 +871,7 @@ namespace AntdUI
         }
         void OnCall(ObjectItem it)
         {
-            if (PARENT is Select select) select.DropDownChange(select_x, it.I, it.Tag, it.Text);
+            if (PARENT is Select select) select.DropDownChange(select_x, it.I, it.Tag, it.Select, it.Text);
             else if (PARENT is Dropdown dropdown) dropdown.DropDownChange(it.Tag);
             else if (PARENT is Tabs tabs)
             {

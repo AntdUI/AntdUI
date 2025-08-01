@@ -1172,6 +1172,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             hoveindexold = -1;
             tooltipForm?.Close();
             tooltipForm = null;

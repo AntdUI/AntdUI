@@ -365,8 +365,6 @@ namespace AntdUI
 
         #region 鼠标
 
-        TooltipForm? tooltipForm;
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             int count = 0, hand = 0;
@@ -379,20 +377,7 @@ namespace AntdUI
                     {
                         it.hover = true;
                         count++;
-                        var tooltip = it.Tooltip;
-                        if (tooltip != null)
-                        {
-                            if (tooltipForm == null)
-                            {
-                                tooltipForm = new TooltipForm(this, it.rect, tooltip, new TooltipConfig
-                                {
-                                    Font = Font,
-                                    ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),
-                                });
-                                tooltipForm.Show(this);
-                            }
-                            else tooltipForm.SetText(it.rect, tooltip);
-                        }
+                        OpenTipBefore(it);
                     }
                 }
                 else
@@ -409,10 +394,67 @@ namespace AntdUI
             base.OnMouseMove(e);
         }
 
+        #region 提示
+
+        TooltipForm? toolTip;
+        FloatButton.ConfigBtn? hoveold;
+        int indexchange = 0;
+        ITask? taskTip;
+        void CloseTip()
+        {
+            hoveold = null;
+            indexchange = 0;
+            taskTip?.Dispose();
+            taskTip = null;
+
+            toolTip?.IClose();
+            toolTip = null;
+        }
+        void OpenTipBefore(FloatButton.ConfigBtn it)
+        {
+            if (it == hoveold) return;
+            hoveold = it;
+            if (indexchange > 3)
+            {
+                CloseTip();
+                indexchange = 0;
+            }
+            else indexchange++;
+            taskTip?.Dispose();
+            taskTip = new ITask(this, () =>
+            {
+                if (hoveold == it) Invoke(() => OpenTip(it));
+                return false;
+            }, 200, null, 200);
+        }
+        void OpenTip(FloatButton.ConfigBtn it)
+        {
+            var tooltip = it.Tooltip;
+            if (tooltip == null) CloseTip();
+            else
+            {
+                if (toolTip == null)
+                {
+                    toolTip = new TooltipForm(this, it.rect, tooltip, new TooltipConfig
+                    {
+                        Font = Font,
+                        ArrowAlign = config.Align.AlignMiniReverse(config.Vertical),
+                    });
+                    toolTip.Show(this);
+                }
+                else if (toolTip.SetText(it.rect, tooltip))
+                {
+                    CloseTip();
+                    OpenTip(it);
+                }
+            }
+        }
+
+        #endregion
+
         protected override void OnMouseLeave(EventArgs e)
         {
-            tooltipForm?.IClose();
-            tooltipForm = null;
+            CloseTip();
             int count = 0;
             foreach (var it in config.Btns)
             {

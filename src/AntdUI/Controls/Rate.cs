@@ -462,28 +462,28 @@ namespace AntdUI
 
         #region 提示
 
-        TooltipForm? tooltipForm;
+        TooltipForm? toolTip;
         string? tooltipText;
         void ShowTips(Rectangle dot_rect, string text)
         {
-            if (text == tooltipText && tooltipForm != null) return;
+            if (text == tooltipText && toolTip != null) return;
             tooltipText = text;
-            if (tooltipForm == null)
+            if (toolTip == null)
             {
-                tooltipForm = new TooltipForm(this, dot_rect, tooltipText, TooltipConfig ?? new TooltipConfig
+                toolTip = new TooltipForm(this, dot_rect, tooltipText, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Top,
                 });
-                tooltipForm.Show(this);
+                toolTip.Show(this);
             }
-            else tooltipForm.SetText(dot_rect, tooltipText);
+            else toolTip.SetText(dot_rect, tooltipText);
         }
 
         void CloseTips()
         {
-            tooltipForm?.IClose();
-            tooltipForm = null;
+            toolTip?.IClose();
+            toolTip = null;
         }
 
         #endregion
