@@ -549,7 +549,7 @@ namespace AntdUI
                             int size2 = ChangeList(rect, g, it, it.Sub, ref y, ref icon_count, height, icon_size, gap, sp, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
 
-                            it.SubY = y_item - sp / 2;
+                            it.SubY = rect.Y + y_item - sp / 2;
                             it.SubHeight = y - y_item;
 
                             if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
@@ -1172,6 +1172,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             hoveindexold = -1;
             tooltipForm?.Close();
             tooltipForm = null;

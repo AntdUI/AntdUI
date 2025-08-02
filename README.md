@@ -66,9 +66,9 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Checkbox**](doc/wiki/en/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker**](doc/wiki/en/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker**](doc/wiki/en/Control/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange**](doc/wiki/en/Control/DatePicker#DatePickerRange.md) | ✅ | ✅ |
+➡️| [**DatePickerRange**](doc/wiki/en/Control/DatePicker.md#datepickerrange) | ✅ | ✅ |
 ➡️| [**Input**](doc/wiki/en/Control/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber**](doc/wiki/en/Control/Input#InputNumber.md) | ✅ | ✅ |
+➡️| [**InputNumber**](doc/wiki/en/Control/Input.md#inputnumber) | ✅ | ✅ |
 ➡️| [**Radio**](doc/wiki/en/Control/Radio.md) | ✅ | ✅ |
 ➡️| [**Rate**](doc/wiki/en/Control/Rate.md) | ✅ | ❎ |
 ➡️| [**Select**](doc/wiki/en/Control/Select.md) | ✅ | ✅ |

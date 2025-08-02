@@ -403,7 +403,7 @@ namespace Demo.Controls
                 if (start == 1)
                 {
                     _imgs = new AntdUI.CellImage[] {
-                        new AntdUI.CellImage(Properties.Resources.img1) { BorderWidth = 4, BorderColor = Color.BlueViolet },
+                        new AntdUI.CellImage(Properties.Resources.img1).SetBorder(Color.BlueViolet, 4),
                         new AntdUI.CellImage(Properties.Resources.bg1)
                     };
                 }

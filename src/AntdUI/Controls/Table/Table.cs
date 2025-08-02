@@ -139,49 +139,6 @@ namespace AntdUI
             }
         }
 
-        int _gap = 12;
-        /// <summary>
-        /// 间距
-        /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(12)]
-        public int Gap
-        {
-            get => _gap;
-            set
-            {
-                if (_gap == value) return;
-                _gap = value;
-                if (LoadLayout()) Invalidate();
-                OnPropertyChanged(nameof(Gap));
-            }
-        }
-
-        int _gapTree = 12;
-        /// <summary>
-        /// 树间距
-        /// </summary>
-        [Description("树间距"), Category("外观"), DefaultValue(12)]
-        public int GapTree
-        {
-            get => _gapTree;
-            set
-            {
-                if (_gapTree == value) return;
-                _gapTree = value;
-                if (LoadLayout()) Invalidate();
-                OnPropertyChanged(nameof(GapTree));
-            }
-        }
-
-        /// <summary>
-        /// 单元格内间距
-        /// </summary>
-        [Description("单元格内间距"), Category("外观"), DefaultValue(null)]
-        public int? GapCell { get; set; }
-
-        [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
-        public bool? CellImpactHeight { get; set; }
-
         bool fixedHeader = true;
         /// <summary>
         /// 固定表头
@@ -280,6 +237,117 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 行复制
+        /// </summary>
+        [Description("行复制"), Category("行为"), DefaultValue(true)]
+        public bool ClipboardCopy { get; set; } = true;
+
+        /// <summary>
+        /// 列宽自动调整模式
+        /// </summary>
+        [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
+        public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
+
+        #region 间距
+
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(null)]
+        public int? Gap
+        {
+            get
+            {
+                if (_gap.Width == _gap.Height) return _gap.Width;
+                return null;
+            }
+            set
+            {
+                int v = value ?? 12;
+                Gaps = new Size(v, v);
+            }
+        }
+
+        Size _gap = new Size(12, 12);
+        /// <summary>
+        /// 间距
+        /// </summary>
+        [Description("间距"), Category("外观"), DefaultValue(typeof(Size), "12, 12")]
+        public Size Gaps
+        {
+            get => _gap;
+            set
+            {
+                if (_gap == value) return;
+                _gap = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(Gaps));
+            }
+        }
+
+        /// <summary>
+        /// 单元格内间距
+        /// </summary>
+        [Description("单元格内间距"), Category("外观"), DefaultValue(null)]
+        public int? GapCell { get; set; }
+
+        [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
+        public bool? CellImpactHeight { get; set; }
+
+        int _gapTree = 12;
+        /// <summary>
+        /// 树间距
+        /// </summary>
+        [Description("树间距"), Category("外观"), DefaultValue(12)]
+        public int GapTree
+        {
+            get => _gapTree;
+            set
+            {
+                if (_gapTree == value) return;
+                _gapTree = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(GapTree));
+            }
+        }
+
+        int? rowHeight;
+        /// <summary>
+        /// 行高
+        /// </summary>
+        [Description("行高"), Category("外观"), DefaultValue(null)]
+        public int? RowHeight
+        {
+            get => rowHeight;
+            set
+            {
+                if (rowHeight == value) return;
+                rowHeight = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowHeight));
+            }
+        }
+
+        int? rowHeightHeader;
+        /// <summary>
+        /// 表头行高
+        /// </summary>
+        [Description("表头行高"), Category("外观"), DefaultValue(null)]
+        public int? RowHeightHeader
+        {
+            get => rowHeightHeader;
+            set
+            {
+                if (rowHeightHeader == value) return;
+                rowHeightHeader = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowHeightHeader));
+            }
+        }
+
+        #endregion
+
         #region 大小
 
         int _checksize = 16;
@@ -340,6 +408,8 @@ namespace AntdUI
         [Description("排序大小"), Category("外观"), DefaultValue(null)]
         public int? SortOrderSize { get; set; }
 
+        #endregion
+
         #region 焦点
 
         /// <summary>
@@ -387,54 +457,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        #endregion
-
-        /// <summary>
-        /// 行复制
-        /// </summary>
-        [Description("行复制"), Category("行为"), DefaultValue(true)]
-        public bool ClipboardCopy { get; set; } = true;
-
-        /// <summary>
-        /// 列宽自动调整模式
-        /// </summary>
-        [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
-        public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
-
-        int? rowHeight;
-        /// <summary>
-        /// 行高
-        /// </summary>
-        [Description("行高"), Category("外观"), DefaultValue(null)]
-        public int? RowHeight
-        {
-            get => rowHeight;
-            set
-            {
-                if (rowHeight == value) return;
-                rowHeight = value;
-                if (LoadLayout()) Invalidate();
-                OnPropertyChanged(nameof(RowHeight));
-            }
-        }
-
-        int? rowHeightHeader;
-        /// <summary>
-        /// 表头行高
-        /// </summary>
-        [Description("表头行高"), Category("外观"), DefaultValue(null)]
-        public int? RowHeightHeader
-        {
-            get => rowHeightHeader;
-            set
-            {
-                if (rowHeightHeader == value) return;
-                rowHeightHeader = value;
-                if (LoadLayout()) Invalidate();
-                OnPropertyChanged(nameof(RowHeightHeader));
-            }
-        }
 
         #region 为空
 
@@ -486,12 +508,6 @@ namespace AntdUI
                 OnPropertyChanged(nameof(EmptyHeader));
             }
         }
-
-        /// <summary>
-        /// 默认是否展开
-        /// </summary>
-        [Description("默认是否展开"), Category("外观"), DefaultValue(false)]
-        public bool DefaultExpand { get; set; }
 
         #endregion
 
@@ -770,6 +786,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        /// <summary>
+        /// 默认是否展开
+        /// </summary>
+        [Description("默认是否展开"), Category("外观"), DefaultValue(false)]
+        public bool DefaultExpand { get; set; }
 
         /// <summary>
         /// 处理快捷键

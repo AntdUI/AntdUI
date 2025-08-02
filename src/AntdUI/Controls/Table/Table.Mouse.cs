@@ -475,7 +475,11 @@ namespace AntdUI
                             Point location = PointToScreen(col.rect_filter.Location);
                             Point locaionOrigin = location;
                             location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
-                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn))) location.X -= (showFixedColumnR ? _gap : _gap * 2);
+                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn)))
+                            {
+                                int gap = (int)(_gap.Width * Config.Dpi);
+                                location.X -= (showFixedColumnR ? gap : gap * 2);
+                            }
                             location.X += col.rect_filter.Width / 2;
                             location.Y += col.rect_filter.Height;
                             Rectangle? rectScreen = Screen.FromPoint(location).WorkingArea;
@@ -834,12 +838,12 @@ namespace AntdUI
                     if (tipcel is CellLink btn_template)
                     {
                         if (btn_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRect(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
+                        else OpenTip(btn_template.Rect, offset_xi, offset_y, btn_template.Tooltip);
                     }
                     else if (tipcel is CellImage img_template)
                     {
                         if (img_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRect(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
+                        else OpenTip(img_template.Rect, offset_xi, offset_y, img_template.Tooltip);
                     }
                 }
                 return hand > 0;
@@ -850,7 +854,7 @@ namespace AntdUI
                 if (oldmove == moveid) return false;
                 oldmove = moveid;
                 var text = cel.ToString();
-                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRect(cel.RECT_REAL, offset_xi, offset_y), text);
+                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(cel.RECT_REAL, offset_xi, offset_y, text);
                 else CloseTip(false);
             }
             return false;
@@ -877,12 +881,19 @@ namespace AntdUI
         TooltipForm? toolTip;
         public void CloseTip(bool clear = true)
         {
+            hoveold = null;
+            indexchange = 0;
+            taskTip?.Dispose();
+            taskTip = null;
+
             toolTip?.IClose();
             toolTip = null;
             if (clear) oldmove = null;
         }
+
         public void OpenTip(Rectangle rect, string tooltip, TooltipConfig? config = null)
         {
+            indexchange = 0;
             if (toolTip == null)
             {
                 toolTip = new TooltipForm(this, rect, tooltip, config ?? TooltipConfig ?? new TooltipConfig
@@ -892,14 +903,33 @@ namespace AntdUI
                 }, true);
                 toolTip.Show(this);
             }
-            else
+            else if (toolTip.SetText(rect, tooltip))
             {
-                if (toolTip.SetText(rect, tooltip))
-                {
-                    CloseTip(false);
-                    OpenTip(rect, tooltip);
-                }
+                CloseTip(false);
+                OpenTip(rect, tooltip);
             }
+        }
+
+        string? hoveold;
+        int indexchange = 0;
+        ITask? taskTip;
+        void OpenTip(Rectangle rect, int ox, int oy, string tooltip)
+        {
+            string id = (rect.X + ox) + "_" + (rect.Y + oy) + "_" + rect.Width + "_" + rect.Height + "_" + "_" + tooltip;
+            if (id == hoveold) return;
+            hoveold = id;
+            if (indexchange > 3)
+            {
+                CloseTip();
+                indexchange = 0;
+            }
+            else indexchange++;
+            taskTip?.Dispose();
+            taskTip = new ITask(this, () =>
+            {
+                Invoke(() => OpenTip(RealRect(rect, ox, oy), tooltip));
+                return false;
+            }, 200, null, 200);
         }
 
         #endregion

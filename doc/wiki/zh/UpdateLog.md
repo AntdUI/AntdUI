@@ -1,5 +1,22 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.16` 2025-08-02
+
+- ➕ Table / Segmented / FloatButton Tooltip 延迟弹出
+- ➕ Select 适配 选中值后多语言
+- ➕ Table Gaps 属性，分别调整XY间距
+- ➕ Progress 圆形下 IconSvg并支持旋转动画
+- ➕ Modal UseIconPadding
+- ➕ 支持短HEX
+- ✍️ Menu 卡点闪子菜单
+- ✍️ Menu ShowSubBack 错位
+- ✍️ Table 排序/筛选图标 位置
+- ✍️ Steps 优化里程碑绘制
+- ✍️ Tooltip 释放异常
+- ✍️ Input 前后缀布局
+- ✍️ 设计器下 窗口错位
+- ✍️ DPI 优化
+
 ### `2.0.15` 2025-07-29
 
 - ➕ Table FocusedCell 属性，CellFocused 事件

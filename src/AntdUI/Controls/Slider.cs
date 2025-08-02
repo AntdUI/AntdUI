@@ -146,30 +146,30 @@ namespace AntdUI
         [Description("Value格式化时发生"), Category("行为")]
         public event ValueFormatEventHandler? ValueFormatChanged;
 
-        TooltipForm? tooltipForm;
+        TooltipForm? toolTip;
         string? tooltipText;
         internal void ShowTips(int Value, RectangleF dot_rect)
         {
             var text = ValueFormatChanged == null ? Value.ToString() : ValueFormatChanged.Invoke(this, new IntEventArgs(Value));
-            if (text == tooltipText && tooltipForm != null) return;
+            if (text == tooltipText && toolTip != null) return;
             tooltipText = text;
             var rect = new Rectangle((int)dot_rect.X, (int)dot_rect.Y, (int)dot_rect.Width, (int)dot_rect.Height);
-            if (tooltipForm == null)
+            if (toolTip == null)
             {
-                tooltipForm = new TooltipForm(this, rect, tooltipText, new TooltipConfig
+                toolTip = new TooltipForm(this, rect, tooltipText, new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = (align == TAlignMini.Top || align == TAlignMini.Bottom) ? TAlign.Right : TAlign.Top,
                 });
-                tooltipForm.Show(this);
+                toolTip.Show(this);
             }
-            else tooltipForm.SetText(rect, tooltipText);
+            else toolTip.SetText(rect, tooltipText);
         }
 
         internal void CloseTips()
         {
-            tooltipForm?.IClose();
-            tooltipForm = null;
+            toolTip?.IClose();
+            toolTip = null;
         }
 
         TAlignMini align = TAlignMini.Left;

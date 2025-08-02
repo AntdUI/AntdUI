@@ -84,25 +84,25 @@ namespace AntdUI
             }
         }
 
-        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             if (Size.HasValue) return new Size((int)(Size.Value.Width * Config.Dpi), (int)(Size.Value.Height * Config.Dpi));
             int height = g.MeasureString(Config.NullText, font).Height;
             if (Shape == TShape.Circle)
             {
-                int size = gap2 + height;
+                int size = gap.x2 + height;
                 return new Size(size, size);
             }
             else return new Size(height * 2, height / 2);
         }
 
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             int w = rect.Width, h = size.Height;
             if (Shape == TShape.Circle)
             {
-                w = size.Width - gap2;
-                h = size.Height - gap2;
+                w = size.Width - gap.x2;
+                h = size.Height - gap.y2;
             }
             Rect = new Rectangle(rect.X + (rect.Width - w) / 2, rect.Y + (rect.Height - h) / 2, w, h);
         }

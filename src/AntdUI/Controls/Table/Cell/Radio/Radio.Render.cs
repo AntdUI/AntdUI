@@ -90,23 +90,23 @@ namespace AntdUI
         }
 
         bool nullText = false;
-        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             nullText = string.IsNullOrWhiteSpace(Text);
             if (nullText)
             {
                 var font_size = g.MeasureString(Config.NullText, Font ?? font);
-                return new Size(font_size.Height + gap, font_size.Height + gap);
+                return new Size(font_size.Height + gap.x, font_size.Height + gap.x);
             }
             else
             {
                 var font_size = g.MeasureText(Text, Font ?? font);
-                return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
+                return new Size(font_size.Width + font_size.Height + gap.x, font_size.Height + gap.x);
             }
         }
 
         Rectangle RectText, RectIcon;
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             int width = rect.Width;
             if (width > maxwidth) width = maxwidth;

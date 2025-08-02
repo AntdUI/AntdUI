@@ -242,6 +242,65 @@ namespace AntdUI
             }
         }
 
+        #region Icon
+
+        Image? icon;
+        /// <summary>
+        /// 圆形进度下的图标
+        /// </summary>
+        [Description("圆形进度下的图标"), Category("外观"), DefaultValue(null)]
+        public Image? IconCircle
+        {
+            get => icon;
+            set
+            {
+                if (icon == value) return;
+                icon = value;
+                if (shape == TShapeProgress.Circle) Invalidate();
+            }
+        }
+
+        string? iconSvg;
+        /// <summary>
+        /// 圆形进度下的图标SVG
+        /// </summary>
+        [Description("圆形进度下的图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvgCircle
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                if (shape == TShapeProgress.Circle) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 圆形图标是否旋转
+        /// </summary>
+        [Description("圆形图标是否旋转"), Category("外观"), DefaultValue(false)]
+        public bool IconCircleAngle { get; set; }
+
+        /// <summary>
+        /// 圆形图标边距
+        /// </summary>
+        [Description("圆形图标边距"), Category("外观"), DefaultValue(8)]
+        public int IconCirclePadding { get; set; } = 8;
+
+        /// <summary>
+        /// 圆形图标颜色
+        /// </summary>
+        [Description("圆形图标颜色"), Category("外观"), DefaultValue(null)]
+        public Color? IconCircleColor { get; set; }
+
+        /// <summary>
+        /// 是否包含图片
+        /// </summary>
+        internal bool HasIcon => iconSvg != null || icon != null;
+
+        #endregion
+
         float valueratio = .4F;
         /// <summary>
         /// 进度条比例
@@ -887,6 +946,32 @@ namespace AntdUI
             prog_size -= w;
             var rect_prog = new Rectangle(rect.X + (rect.Width - prog_size) / 2, rect.Y + (rect.Height - prog_size) / 2, prog_size, prog_size);
 
+            if (HasIcon)
+            {
+                int iconSize = prog_size - radius - (int)(IconCirclePadding * Config.Dpi), gap = (rect_prog.Width - iconSize) / 2;
+                if (IconCircleAngle)
+                {
+                    var state = g.Save();
+                    try
+                    {
+                        float xy = rect_prog.Width / 2F;
+                        int xy2 = -iconSize / 2;
+                        g.TranslateTransform(rect_prog.X + xy, rect_prog.Y + xy);
+                        g.RotateTransform(_value_show * 360F);
+                        var ico_rect = new Rectangle(xy2, xy2, iconSize, iconSize);
+                        if (icon != null) g.Image(icon, ico_rect);
+                        if (iconSvg != null) g.GetImgExtend(iconSvg, ico_rect, IconCircleColor ?? Color.FromArgb(30, _back));
+                    }
+                    finally { g.Restore(state); }
+                }
+                else
+                {
+                    int xy = (rect_prog.Width - iconSize) / 2;
+                    var ico_rect = new Rectangle(rect_prog.X + xy, rect_prog.Y + xy, iconSize, iconSize);
+                    if (icon != null) g.Image(icon, ico_rect);
+                    if (iconSvg != null) g.GetImgExtend(iconSvg, ico_rect, Color.FromArgb(30, _back));//增加透明度}
+                }
+            }
             g.DrawEllipse(_back, w, rect_prog);
 
             #region 进度条

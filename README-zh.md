@@ -67,9 +67,9 @@
 ➡️| [**Checkbox** 多选框](doc/wiki/zh/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker** 颜色选择器](doc/wiki/zh/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker** 日期选择框](doc/wiki/zh/Control/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange** 日期范围选择框](doc/wiki/zh/Control/DatePicker#DatePickerRange.md) | ✅ | ✅ |
+➡️| [**DatePickerRange** 日期范围选择框](doc/wiki/zh/Control/DatePicker.md#datepickerrange) | ✅ | ✅ |
 ➡️| [**Input** 输入框](doc/wiki/zh/Control/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber** 数字输入框](doc/wiki/zh/Control/Input#InputNumber.md) | ✅ | ✅ |
+➡️| [**InputNumber** 数字输入框](doc/wiki/zh/Control/Input.md#inputnumber) | ✅ | ✅ |
 ➡️| [**Radio** 单选框](doc/wiki/zh/Control/Radio.md) | ✅ | ✅ |
 ➡️| [**Rate** 评分](doc/wiki/zh/Control/Rate.md) | ✅ | ❎ |
 ➡️| [**Select** 选择器](doc/wiki/zh/Control/Select.md) | ✅ | ✅ |

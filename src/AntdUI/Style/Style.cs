@@ -679,6 +679,11 @@ namespace AntdUI
                     if (str.Length == 6) return Color.FromArgb(str.Substring(0, 2).HexToInt(), str.Substring(2, 2).HexToInt(), str.Substring(4, 2).HexToInt());
                     else if (str.Length == 8) return Color.FromArgb(str.Substring(6, 2).HexToInt(), str.Substring(0, 2).HexToInt(), str.Substring(2, 2).HexToInt(), str.Substring(4, 2).HexToInt());
                 }
+                else if (str.Length > 2)
+                {
+                    if (str.StartsWith("#")) str = str.Substring(1);
+                    return Color.FromArgb(str[0].ToString().HexToInt() * 17, str[1].ToString().HexToInt() * 17, str[2].ToString().HexToInt() * 17);
+                }
             }
             catch
             {

@@ -298,6 +298,11 @@ namespace AntdUI
             public object Content { get; set; }
 
             /// <summary>
+            /// 使用图标边距
+            /// </summary>
+            public bool UseIconPadding { get; set; } = true;
+
+            /// <summary>
             /// 消息框宽度
             /// </summary>
             public int Width { get; set; } = 416;

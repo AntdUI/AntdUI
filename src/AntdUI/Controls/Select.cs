@@ -34,7 +34,7 @@ namespace AntdUI
     [Description("Select 选择器")]
     [ToolboxItem(true)]
     [DefaultEvent("SelectedIndexChanged")]
-    public class Select : Input, SubLayeredForm
+    public class Select : Input, SubLayeredForm, IEventListener
     {
         #region 属性
 
@@ -195,9 +195,12 @@ namespace AntdUI
         int selectedIndexX = -1;
         int selectedIndex = -1;
         object? selectedValue;
+        SelectItem? selectedItem;
+
         void ChangeValueNULL()
         {
             Text = "";
+            selectedItem = null;
             selectedValue = null;
             selectedIndex = -1;
             SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
@@ -209,12 +212,14 @@ namespace AntdUI
             selectedIndex = value;
             if (obj is SelectItem it)
             {
+                selectedItem = it;
                 selectedValue = it.Tag;
                 if (string.IsNullOrEmpty(it.IconSvg) == false) PrefixSvg = it.IconSvg;
                 Text = it.Text;
             }
             else
             {
+                selectedItem = null;
                 selectedValue = obj;
                 if (obj == null) Text = "";
                 else Text = obj.ToString() ?? "";
@@ -273,10 +278,11 @@ namespace AntdUI
             ChangeValue(items.IndexOf(val), val);
         }
 
-        internal void DropDownChange(int x, int y, object value, string text)
+        internal void DropDownChange(int x, int y, object value, SelectItem? item, string text)
         {
             selectedIndexX = x;
             selectedIndex = y;
+            selectedItem = item;
             selectedValue = value;
             Text = text;
             SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
@@ -579,6 +585,26 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 语言
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            this.AddListener();
+            base.OnHandleCreated(e);
+        }
+        public void HandleEvent(EventType id, object? tag)
+        {
+            if (selectedItem == null) return;
+            switch (id)
+            {
+                case EventType.LANG:
+                    Text = selectedItem.Text;
+                    break;
+            }
+        }
+
+        #endregion
     }
 
     public class DividerSelectItem : ISelectItem
@@ -722,6 +748,127 @@ namespace AntdUI
         /// 标签背景渐变色
         /// </summary>
         public string? TagBackExtend { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        public SelectItem SetText(string value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        public SelectItem SetSubText(string? value, string? localization = null)
+        {
+            subText = value;
+            LocalizationSubText = localization;
+            return this;
+        }
+
+        public SelectItem SetEnable(bool value = false)
+        {
+            Enable = value;
+            return this;
+        }
+
+        #region Online
+
+        public SelectItem SetOnline(int? value = 1)
+        {
+            Online = value;
+            return this;
+        }
+
+        public SelectItem SetOnline(Color? value)
+        {
+            OnlineCustom = value;
+            return this;
+        }
+
+        public SelectItem SetOnline(int? value, Color? color)
+        {
+            Online = value;
+            OnlineCustom = color;
+            return this;
+        }
+
+        #endregion
+
+        #region 图标
+
+        public SelectItem SetIcon(Image? img)
+        {
+            Icon = img;
+            return this;
+        }
+
+        public SelectItem SetIcon(string? svg)
+        {
+            IconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public SelectItem SetSub(params object[] value)
+        {
+            Sub = value;
+            return this;
+        }
+
+        #region 主题
+
+        public SelectItem SetFore(Color? value)
+        {
+            Fore = value;
+            return this;
+        }
+        public SelectItem SetForeSub(Color? value)
+        {
+            ForeSub = value;
+            return this;
+        }
+
+        public SelectItem SetFore(Color? value, Color? sub)
+        {
+            Fore = value;
+            ForeSub = sub;
+            return this;
+        }
+        public SelectItem SetBackActive(Color? value)
+        {
+            BackActive = value;
+            return this;
+        }
+        public SelectItem SetBackActive(string? value)
+        {
+            BackActiveExtend = value;
+            return this;
+        }
+
+        #endregion
+
+        #region 标签
+
+        public SelectItem SetTagFore(Color? value)
+        {
+            TagFore = value;
+            return this;
+        }
+        public SelectItem SetTagBack(Color? value)
+        {
+            TagBack = value;
+            return this;
+        }
+        public SelectItem SetTagBack(string? value)
+        {
+            TagBackExtend = value;
+            return this;
+        }
+
+        #endregion
 
         #endregion
 
@@ -895,6 +1042,7 @@ namespace AntdUI
             Enable = item.Enable;
             Sub = item.Sub;
             if (Sub != null && Sub.Count > 0) HasSub = true;
+            Select = item;
             Tag = item.Tag;
             TagBack = item.TagBack;
             TagBackExtend = item.TagBackExtend;
@@ -949,6 +1097,7 @@ namespace AntdUI
         public IList<object>? Sub { get; set; }
 
         public object Tag { get; set; }
+        public SelectItem? Select { get; set; }
 
         #region 主题
 

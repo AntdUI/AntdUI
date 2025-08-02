@@ -366,7 +366,7 @@ namespace AntdUI
                 List<int> handkey = new List<int>(len), dskey = new List<int>(len);
                 var state = g.Save();
                 int rY = row.RECT.Y, rHeight = row.Height / len;
-                int i = 0, gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
+                int i = 0, gap = (int)(_gap.Width * Config.Dpi), gap2 = gap * 2;
                 foreach (var it in StackedHeaderRows)
                 {
                     foreach (var item in it.StackedColumns) PaintTableHeaderStacked(g, row, fore, column_font, ref handkey, ref dskey, rY, rHeight, item);
@@ -843,9 +843,9 @@ namespace AntdUI
 
                 #region 绘制阴影
 
-                if (_gap > 0)
+                if (_gap.Width > 0)
                 {
-                    int gap = (int)(_gap * Config.Dpi);
+                    int gap = (int)(_gap.Width * Config.Dpi);
                     var rect_show = new Rectangle(last.RECT.Right - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                     using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table", ColorScheme), Color.Transparent, 0F))
                     {
@@ -925,9 +925,9 @@ namespace AntdUI
 
                         #region 绘制阴影
 
-                        if (_gap > 0)
+                        if (_gap.Width > 0)
                         {
-                            int gap = (int)(_gap * Config.Dpi);
+                            int gap = (int)(_gap.Width * Config.Dpi);
                             var rect_show = new Rectangle(rect_Fixed.X - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 0F))
                             {
@@ -1033,9 +1033,9 @@ namespace AntdUI
 
                         #region 绘制阴影
 
-                        if (_gap > 0)
+                        if (_gap.Width > 0)
                         {
-                            int gap = (int)(_gap * Config.Dpi);
+                            int gap = (int)(_gap.Width * Config.Dpi);
                             var rect_show = new Rectangle(rect_Fixed.X, rect_Fixed.Y - gap, rect_Fixed.Width, gap * 2);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 90F))
                             {
@@ -1105,9 +1105,9 @@ namespace AntdUI
 
                     #region 绘制阴影
 
-                    if (_gap > 0)
+                    if (_gap.Width > 0)
                     {
-                        int gap = (int)(_gap * Config.Dpi);
+                        int gap = (int)(_gap.Width * Config.Dpi);
                         var rect_show = new Rectangle(rect.X + last.RECT.Right - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                         using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get("Table", ColorScheme), Color.Transparent, 0F))
                         {
@@ -1166,9 +1166,9 @@ namespace AntdUI
 
                         #region 绘制阴影
 
-                        if (_gap > 0)
+                        if (_gap.Width > 0)
                         {
-                            int gap = (int)(_gap * Config.Dpi);
+                            int gap = (int)(_gap.Width * Config.Dpi);
                             var rect_show = new Rectangle(rect_Fixed.X - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get("Table", ColorScheme), 0F))
                             {

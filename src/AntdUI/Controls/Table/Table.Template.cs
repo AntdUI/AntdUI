@@ -326,7 +326,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
             }
             public void SetSize(Rectangle _rect, int check_size)
@@ -335,7 +335,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 MinWidth = font_size.Width;
                 return font_size;
@@ -433,7 +433,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
             }
             public void SetSize(Rectangle _rect, int check_size)
@@ -442,7 +442,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
             }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 MinWidth = font_size.Width;
                 return font_size;
@@ -637,7 +637,7 @@ namespace AntdUI
 
             #endregion
 
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
             }
 
@@ -648,7 +648,7 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size2) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size2, check_size);
             }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 MinWidth = font_size.Width;
                 return font_size;
@@ -671,7 +671,7 @@ namespace AntdUI
             public TCellSort(Table table, ColumnSort column) : base(table, column, null, null)
             { }
 
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
             }
             public void SetSize(Rectangle _rect, int sort_size, int sort_ico_size)
@@ -682,7 +682,7 @@ namespace AntdUI
             }
             public Rectangle RECT_ICO { get; set; }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 MinWidth = font_size.Width;
                 return font_size;
@@ -785,13 +785,13 @@ namespace AntdUI
             /// </summary>
             public string? value { get; set; }
 
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
                 RECT = _rect;
-                RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                RECT_REAL = new Rectangle(_rect.X + gap.x + ox, _rect.Y + gap.y, _rect.Width - gap.x2, _rect.Height - gap.y2);
             }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 if (COLUMN.LineBreak)
                 {
@@ -799,33 +799,33 @@ namespace AntdUI
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureText(value, font, w - gap2);
+                            var size2 = g.MeasureText(value, font, w - gap.x2);
                             MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap.x2);
                             MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap.x2);
                             MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else
                         {
-                            var size2 = g.MeasureText(value, font, width - gap2);
+                            var size2 = g.MeasureText(value, font, width - gap.x2);
                             MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            return new Size(size2.Width + gap.x2, size2.Height);
                         }
                     }
                 }
                 var size = g.MeasureText(value, font);
                 MinWidth = size.Width;
-                return new Size(size.Width + gap2, size.Height);
+                return new Size(size.Width + gap.x2, size.Height);
             }
 
             public override string? ToString() => value;
@@ -862,20 +862,20 @@ namespace AntdUI
 
             internal Rectangle rect_icon = Rectangle.Empty;
             internal Rectangle rect_text = Rectangle.Empty;
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
                 if (value == null) return;//有机会未获取到有效标识
 
                 RECT = _rect;
-                RECT_REAL = new Rectangle(_rect.X + gap + ox, _rect.Y + gap, _rect.Width - gap2, _rect.Height - gap2);
+                RECT_REAL = new Rectangle(_rect.X + gap.x + ox, _rect.Y + gap.y, _rect.Width - gap.x2, _rect.Height - gap.y2);
 
                 bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
                 bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
                 if (!emptyIcon)
                 {
-                    int gapIcon = gap / 2;
-                    int wh = (int)((_rect.Height - gap) * 0.65f);
-                    rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
+                    int gapIcon = gap.x / 2;
+                    int wh = (int)((_rect.Height - gap.x) * 0.65f);
+                    rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap.x), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
                     if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
                 }
                 else
@@ -884,10 +884,11 @@ namespace AntdUI
                 }
             }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 if (value == null || string.IsNullOrEmpty(value.Text)) return RECT.Size;
-                if (value.Icon != null || value.IconSvg != null) gap2 += (RECT.Height - gap);//图标间隙
+                int gap2 = gap.x2;
+                if (value.Icon != null || value.IconSvg != null) gap2 += (RECT.Height - gap.x);//图标间隙
                 if (COLUMN.LineBreak)
                 {
                     if (COLUMN.Width != null)
@@ -917,7 +918,7 @@ namespace AntdUI
                 return new Size(size.Width + gap2, size.Height);
             }
 
-            public override string? ToString() => value.Text;
+            public override string? ToString() => value?.Text;
         }
 
         /// <summary>
@@ -938,7 +939,7 @@ namespace AntdUI
             public Rectangle rect_up { get; set; }
             public Rectangle rect_down { get; set; }
             public Rectangle rect_filter { get; set; }
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
                 RECT = _rect;
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
@@ -946,24 +947,22 @@ namespace AntdUI
                     int size;
                     if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
                     else size = (int)(font_size.Height * .6F);
-                    int size2 = size * 2, icon_sp = (int)(size * .34F), use_r = 0;
-                    int scrollBarGap = (PARENT.ScrollBar.ShowY && this == ROW.cells[ROW.cells.Length - 1] ? PARENT.ScrollBar.SIZE : 0);
+                    int size2 = size * 2, sp = (int)(size * .34F), use_r = 0, r = _rect.Right - (gap.x > 0 ? gap.x : sp);
                     if (COLUMN.HasFilter)
                     {
-                        int tmp = size + icon_sp;
-                        rect_filter = new Rectangle(_rect.Right - use_r - size2 - scrollBarGap, _rect.Y + (_rect.Height - size) / 2, size, size);
-                        use_r = tmp + icon_sp;
+                        rect_filter = new Rectangle(r - use_r - size, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        use_r = size + sp;
                     }
                     if (COLUMN.SortOrder)
                     {
-                        int y = _rect.Y + (_rect.Height - size2 + icon_sp) / 2;
-                        rect_up = new Rectangle(_rect.Right - use_r - size2 - scrollBarGap, y, size, size);
-                        rect_down = new Rectangle(rect_up.X, rect_up.Bottom - icon_sp, size, size);
+                        int y = _rect.Y + (_rect.Height - size2 + sp) / 2;
+                        rect_up = new Rectangle(r - use_r - size, y, size, size);
+                        rect_down = new Rectangle(rect_up.X, rect_up.Bottom - sp, size, size);
                     }
                 }
             }
 
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
                 if (COLUMN.ColBreak)
                 {
@@ -973,25 +972,26 @@ namespace AntdUI
                         {
                             var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)));
                             MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
                             var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi));
                             MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            return new Size(size2.Width + gap.x2, size2.Height);
                         }
                     }
                 }
                 var size = g.MeasureText(value, font);
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
-                    if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = (int)(size.Height * 1.8F);
-                    else SFWidth = (int)(size.Height * .8F);
+                    int sp = (int)(size.Height * .86F);
+                    if (COLUMN.SortOrder && COLUMN.HasFilter) SFWidth = sp * 2;
+                    else SFWidth = sp;
                 }
-                MinWidth = size.Width + gap2 + SFWidth;
+                MinWidth = size.Width + gap.x2 + SFWidth;
 
-                return new Size(size.Width + gap2 + SFWidth, size.Height);
+                return new Size(size.Width + gap.x2 + SFWidth, size.Height);
             }
 
             public int SFWidth = 0;
@@ -1073,8 +1073,8 @@ namespace AntdUI
             public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x - offsetx, y - offsety);
 
-            public abstract void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2);
-            public abstract Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2);
+            public abstract void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap);
+            public abstract Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap);
 
             #endregion
         }
@@ -1101,30 +1101,30 @@ namespace AntdUI
             /// </summary>
             public IList<ICell> Value { get; set; }
 
-            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, int gap, int gap2)
+            public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
                 RECT = RECT_REAL = _rect;
-                int rx = _rect.X + ox, sp = gap / 2;
+                int rx = _rect.X + ox, sp = gap.x / 2;
                 int use_x;
                 switch (COLUMN.Align)
                 {
                     case ColumnAlign.Center:
-                        use_x = rx + (_rect.Width - MinWidth + gap2) / 2;
+                        use_x = rx + (_rect.Width - MinWidth + gap.x2) / 2;
                         break;
                     case ColumnAlign.Right:
-                        use_x = _rect.Right - MinWidth + gap;
+                        use_x = _rect.Right - MinWidth + gap.x;
                         break;
                     case ColumnAlign.Left:
                     default:
-                        use_x = rx + gap;
+                        use_x = rx + gap.x;
                         break;
                 }
-                int maxwidth = _rect.Width - gap2;
+                int maxwidth = _rect.Width - gap.x2;
                 for (int i = 0; i < Value.Count; i++)
                 {
                     var it = Value[i];
                     var size = SIZES[i];
-                    it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, maxwidth, gap, gap2);
+                    it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, maxwidth, gap);
                     int w = size.Width + sp;
                     use_x += w;
                     maxwidth -= w;
@@ -1132,18 +1132,18 @@ namespace AntdUI
             }
 
             Size[] SIZES = new Size[0];
-            public override Size GetSize(Canvas g, Font font, Size font_size, int width, int gap, int gap2)
+            public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
-                int w = 0, h = 0, sp = gap / 2;
+                int w = 0, h = 0, sp = gap.x / 2;
                 var sizes = new List<Size>(Value.Count);
                 foreach (var it in Value)
                 {
-                    var size = it.GetSize(g, font, gap, gap2);
+                    var size = it.GetSize(g, font, gap);
                     sizes.Add(size);
                     w += size.Width + sp;
                     if ((PARENT.CellImpactHeight ?? it.ImpactHeight) && h < size.Height) h = size.Height;
                 }
-                MinWidth = w + gap + sp;
+                MinWidth = w + gap.x + sp;
                 SIZES = sizes.ToArray();
                 return new Size(MinWidth, h);
             }
@@ -1174,5 +1174,21 @@ namespace AntdUI
             public RowTemplate row { get; set; }
             public CellStyleInfo? style { get; set; }
         }
+    }
+
+    public class TableGaps
+    {
+        public TableGaps(Size gap)
+        {
+            x = (int)(gap.Width * Config.Dpi);
+            x2 = x * 2;
+            y = (int)(gap.Height * Config.Dpi);
+            y2 = y * 2;
+        }
+
+        public int x { get; set; }
+        public int x2 { get; set; }
+        public int y { get; set; }
+        public int y2 { get; set; }
     }
 }

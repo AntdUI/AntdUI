@@ -436,14 +436,11 @@ namespace AntdUI
         {
             Dock = control.Dock;
             Anchor = control.Anchor;
-            if (control.Visible)
-            {
-                control.Dock = DockStyle.None;
-                control.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-            }
+            Rect = new Rectangle(control.Left, control.Top, control.Width, control.Height);
         }
         public DockStyle Dock { get; set; }
         public AnchorStyles Anchor { get; set; }
+        public Rectangle Rect { get; set; }
     }
 
     public class RectTextLR

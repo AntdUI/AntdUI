@@ -701,7 +701,7 @@ namespace AntdUI
         void RectLR(Rectangle rect, int read_height, int sps, int sps2, int w_L, int h_L, int w_R, int h_R)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectLR(sp, sps, w_L, w_R, rect, out int hasx, out int hasr);
+            var round = RectLR(sp, sps, w_L, h_L, w_R, h_R, rect, out int hasx, out int hasr);
             var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
             {
@@ -725,38 +725,46 @@ namespace AntdUI
                     ul = uy;
                 }
                 else rect_text = new Rectangle(rect.X + hasx, text_y, rect.Width - hasr, read_height);
-                if (round)
-                {
-                    rect_l = new Rectangle(rect.X + icon_l_y, rect.Y + icon_l_y, w_L, h_L);
-                    rect_r = new Rectangle(rect.Right - w_R - icon_r_y, rect.Y + icon_r_y, w_R, h_R);
-                }
-                else
-                {
-                    rect_l = new Rectangle(rect.X + sps, rect.Y + icon_l_y, w_L, h_L);
-                    rect_r = new Rectangle(rect_text.Right + sp, rect.Y + icon_r_y, w_R, h_R);
-                }
+
+                if (round[0]) rect_l = new Rectangle(rect.X + icon_l_y, rect.Y + icon_l_y, w_L, h_L);
+                else rect_l = new Rectangle(rect.X + sps, rect.Y + icon_l_y, w_L, h_L);
+                if (round[1]) rect_r = new Rectangle(rect.Right - w_R - icon_r_y, rect.Y + icon_r_y, w_R, h_R);
+                else rect_r = new Rectangle(rect_text.Right + sp, rect.Y + icon_r_y, w_R, h_R);
             }
             if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
-        bool RectLR(int sp, int sps, int w_L, int w_R, Rectangle rect, out int hasx, out int hasr)
+        bool[] RectLR(int sp, int sps, int w_L, int h_L, int w_R, int h_R, Rectangle rect, out int hasx, out int hasr)
         {
             if (multiline)
             {
                 hasx = sps + w_L + sp;
                 hasr = w_L + w_R + ((sps + sp) * 2);
-                return false;
-            }
-            else if (round)
-            {
-                hasx = rect.Height - sp;
-                hasr = (rect.Height - sp) * 2;
-                return true;
+                return new bool[] { false, false };
             }
             else
             {
-                hasx = sps + w_L + sp;
-                hasr = w_L + w_R + ((sps + sp) * 2);
-                return false;
+                bool round_L = round && w_L == h_L, round_R = round && w_R == h_R;
+                if (round_L && round_R)
+                {
+                    hasx = rect.Height - sp;
+                    hasr = (rect.Height - sp) * 2;
+                }
+                else if (round_L)
+                {
+                    hasx = rect.Height - sp;
+                    hasr = w_L + w_R + ((sps + sp) * 2);
+                }
+                else if (round_R)
+                {
+                    hasx = sps + w_L + sp;
+                    hasr = w_L + w_R + ((sps + sp) * 2);
+                }
+                else
+                {
+                    hasx = sps + w_L + sp;
+                    hasr = w_L + w_R + ((sps + sp) * 2);
+                }
+                return new bool[] { round_L, round_R };
             }
         }
 
@@ -765,7 +773,7 @@ namespace AntdUI
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, rect, out int hasx);
+            bool round = RectL(sp, sps, w, rect, false, out int hasx);
             int hasx2 = hasx + sps;
             var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
@@ -799,7 +807,7 @@ namespace AntdUI
         void RectL(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, rect, out int hasx);
+            bool round = RectL(sp, sps, w, rect, true, out int hasx);
             int hasx2 = hasx + sps;
             var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
             if (multiline)
@@ -829,14 +837,14 @@ namespace AntdUI
             rect_r.Width = 0;
             if (ul > -1) UseLeftAutoHeight(read_height, ul);
         }
-        bool RectL(int sp, int sps, int w, Rectangle rect, out int hasx)
+        bool RectL(int sp, int sps, int w, Rectangle rect, bool can_round, out int hasx)
         {
             if (multiline)
             {
                 hasx = sps + w + sp;
                 return false;
             }
-            else if (round)
+            else if (round && can_round)
             {
                 hasx = rect.Height - sp;
                 return true;
@@ -855,7 +863,7 @@ namespace AntdUI
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, rect, out int hasr);
+            RectL(sp, sps, w, rect, false, out int hasr);
             int hasr2 = hasr + sps;
             if (HasLeft())
             {
@@ -879,8 +887,7 @@ namespace AntdUI
             {
                 int icon_r_y = (rect.Height - read_height) / 2;
                 rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr2, read_height);
-                if (round) rect_r = new Rectangle(rect.Right - w - icon_r_y, rect.Y + icon_r_y, w, read_height);
-                else rect_r = new Rectangle(rect_text.Right + sp, rect.Y + icon_r_y, w, read_height);
+                rect_r = new Rectangle(rect_text.Right + sp, rect.Y + icon_r_y, w, read_height);
             }
             rect_l.Width = 0;
             if (ul > -1) UseLeftAutoHeight(read_height, ul);
@@ -888,7 +895,7 @@ namespace AntdUI
         void RectR(Rectangle rect, int read_height, int sps, int sps2, int w, int h)
         {
             int ul = -1, sp = (int)(read_height * icongap);
-            bool round = RectL(sp, sps, w, rect, out int hasr);
+            bool round = RectL(sp, sps, w, rect, false, out int hasr);
             int hasr2 = hasr + sps;
             if (HasLeft())
             {

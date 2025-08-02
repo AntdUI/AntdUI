@@ -44,93 +44,46 @@ namespace AntdUI
                     form.Scale(new SizeF(dpi, dpi));
                     return;
                 }
-                var dir = DpiSuspend(control.Controls);
-                DpiLS(dpi, form);
-                DpiResume(dir, control.Controls);
+                DpiLS(dpi, form, DpiInfo(form.Controls));
             }
-            else
-            {
-                var dir = DpiSuspend(control.Controls);
-                DpiLS(dpi, control);
-                DpiResume(dir, control.Controls);
-            }
+            else DpiLS(dpi, DpiInfo(control));
         }
-
-        static Dictionary<Control, AnchorDock> DpiSuspend(Control.ControlCollection controls)
+        static Dictionary<Control, AnchorDock> DpiInfo(Control control)
+        {
+            var dir = new Dictionary<Control, AnchorDock>(control.Controls.Count + 1) {
+                {control, new AnchorDock(control) }
+            };
+            foreach (Control item in control.Controls)
+            {
+                dir.Add(item, new AnchorDock(item));
+                if (item.Controls.Count > 0) DpiInfo(ref dir, item.Controls);
+            }
+            return dir;
+        }
+        static Dictionary<Control, AnchorDock> DpiInfo(Control.ControlCollection controls)
         {
             var dir = new Dictionary<Control, AnchorDock>(controls.Count);
             foreach (Control control in controls)
             {
-                if (control is Splitter) continue;
-                if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
-                if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
+                dir.Add(control, new AnchorDock(control));
+                if (control.Controls.Count > 0) DpiInfo(ref dir, control.Controls);
             }
             return dir;
         }
-        static void DpiSuspend(ref Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
+        static void DpiInfo(ref Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
         {
             foreach (Control control in controls)
             {
-                if (control is Splitter) continue;
-                if (control.Dock != DockStyle.None || control.Anchor != (AnchorStyles.Left | AnchorStyles.Top)) dir.Add(control, new AnchorDock(control));
-                if (controls.Count > 0) DpiSuspend(ref dir, control.Controls);
+                dir.Add(control, new AnchorDock(control));
+                if (controls.Count > 0) DpiInfo(ref dir, control.Controls);
             }
         }
 
-        static void DpiResume(Dictionary<Control, AnchorDock> dir, Control.ControlCollection controls)
-        {
-            foreach (Control control in controls)
-            {
-                if (dir.TryGetValue(control, out var find))
-                {
-                    control.Dock = find.Dock;
-                    control.Anchor = find.Anchor;
-                }
-                if (controls.Count > 0) DpiResume(dir, control.Controls);
-            }
-        }
-
-        static void DpiLS(float dpi, Control control)
-        {
-            var size = new Size((int)(control.Width * dpi), (int)(control.Height * dpi));
-            var point = new Point((int)(control.Left * dpi), (int)(control.Top * dpi));
-            if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
-            if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
-            control.Padding = SetPadding(dpi, control.Padding);
-            control.Margin = SetPadding(dpi, control.Margin);
-            control.Size = size;
-            control.Location = point;
-            if (control is TableLayoutPanel tableLayout)
-            {
-                foreach (ColumnStyle it in tableLayout.ColumnStyles)
-                {
-                    if (it.SizeType == SizeType.Absolute) it.Width *= dpi;
-                }
-                foreach (RowStyle it in tableLayout.RowStyles)
-                {
-                    if (it.SizeType == SizeType.Absolute) it.Height *= dpi;
-                }
-            }
-            else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1) tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
-            else if (control is SplitContainer splitContainer)
-            {
-                splitContainer.SplitterWidth = (int)(splitContainer.SplitterWidth * dpi);
-                if (splitContainer.Panel1MinSize > 0) splitContainer.Panel1MinSize = (int)(splitContainer.Panel1MinSize * dpi);
-                if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
-            }
-            else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
-            else if (control is TabHeader tabHeader)
-            {
-                if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
-            }
-            DpiLSS(dpi, control);
-        }
-
-        static void DpiLS(float dpi, Form form)
+        static void DpiLS(float dpi, Form form, Dictionary<Control, AnchorDock> info)
         {
             if (form is Window window)
             {
-                DpiLS(dpi, window, window.sizeInit ?? window.ClientSize, out var point, out var size);
+                DpiForm(dpi, window, window.sizeInit ?? window.ClientSize, out var point, out var size);
                 Size max = window.MaximumSize, min = window.MinimumSize;
                 window.MaximumSize = window.MinimumSize = window.ClientSize = size;
                 window.Location = point;
@@ -139,13 +92,51 @@ namespace AntdUI
             }
             else
             {
-                DpiLS(dpi, form, form.ClientSize, out var point, out var size);
+                DpiForm(dpi, form, form.ClientSize, out var point, out var size);
                 form.ClientSize = size;
                 form.Location = point;
             }
+
+            DpiLS(dpi, info);
+        }
+        static void DpiLS(float dpi, Dictionary<Control, AnchorDock> info)
+        {
+            foreach (var item in info)
+            {
+                var control = item.Key;
+                if (!control.MaximumSize.IsEmpty) control.MaximumSize = new Size((int)(control.MaximumSize.Width * dpi), (int)(control.MaximumSize.Height * dpi));
+                if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
+                control.Padding = SetPadding(dpi, control.Padding);
+                control.Margin = SetPadding(dpi, control.Margin);
+                control.Size = new Size((int)(item.Value.Rect.Width * dpi), (int)(item.Value.Rect.Height * dpi));
+                control.Location = new Point((int)(item.Value.Rect.X * dpi), (int)(item.Value.Rect.Y * dpi));
+                if (control is TableLayoutPanel tableLayout)
+                {
+                    foreach (ColumnStyle it in tableLayout.ColumnStyles)
+                    {
+                        if (it.SizeType == SizeType.Absolute) it.Width *= dpi;
+                    }
+                    foreach (RowStyle it in tableLayout.RowStyles)
+                    {
+                        if (it.SizeType == SizeType.Absolute) it.Height *= dpi;
+                    }
+                }
+                else if (control is TabControl tab && tab.ItemSize.Width > 1 && tab.ItemSize.Height > 1) tab.ItemSize = new Size((int)(tab.ItemSize.Width * dpi), (int)(tab.ItemSize.Height * dpi));
+                else if (control is SplitContainer splitContainer)
+                {
+                    splitContainer.SplitterWidth = (int)(splitContainer.SplitterWidth * dpi);
+                    if (splitContainer.Panel1MinSize > 0) splitContainer.Panel1MinSize = (int)(splitContainer.Panel1MinSize * dpi);
+                    if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
+                }
+                else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
+                else if (control is TabHeader tabHeader)
+                {
+                    if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
+                }
+            }
         }
 
-        static void DpiLS(float dpi, Form form, Size csize, out Point point, out Size size)
+        static void DpiForm(float dpi, Form form, Size csize, out Point point, out Size size)
         {
             size = new Size((int)(csize.Width * dpi), (int)(csize.Height * dpi));
             var screen = Screen.FromPoint(form.Location).WorkingArea;
@@ -174,17 +165,6 @@ namespace AntdUI
             if (!form.MinimumSize.IsEmpty) form.MinimumSize = new Size((int)(form.MinimumSize.Width * dpi), (int)(form.MinimumSize.Height * dpi));
             form.Padding = SetPadding(dpi, form.Padding);
             form.Margin = SetPadding(dpi, form.Margin);
-
-            DpiLSS(dpi, form);
-        }
-
-        static void DpiLSS(float dpi, Control control)
-        {
-            if (control.Controls.Count > 0)
-            {
-                if (control is Pagination || control is Input) return;
-                foreach (Control it in control.Controls) DpiLS(dpi, it);
-            }
         }
 
         internal static Padding SetPadding(float dpi, Padding padding)

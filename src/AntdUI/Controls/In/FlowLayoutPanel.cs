@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -26,7 +27,6 @@ namespace AntdUI.In
 {
     public class FlowLayoutPanel : System.Windows.Forms.FlowLayoutPanel
     {
-        ScrollY scrollY;
         public FlowLayoutPanel()
         {
             SetStyle(
@@ -38,6 +38,26 @@ namespace AntdUI.In
             UpdateStyles();
             scrollY = new ScrollY(this);
         }
+
+        #region 属性
+
+        ScrollY scrollY;
+
+        #region 为空
+
+        [Description("是否显示空样式"), Category("外观"), DefaultValue(false)]
+        public bool Empty { get; set; }
+
+        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? EmptyText { get; set; }
+
+        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        public Image? EmptyImage { get; set; }
+
+        #endregion
+
+        #endregion
 
         #region 只为了隐藏滚动条
 
@@ -76,7 +96,9 @@ namespace AntdUI.In
         protected override void OnPaint(PaintEventArgs e)
         {
             LoadScroll();
-            if (ScrollYVisible) scrollY.Paint(e.Graphics.High());
+            var g = e.Graphics.High();
+            if (Empty && (Controls == null || Controls.Count == 0)) g.PaintEmpty(ClientRectangle, Font, Colour.Text.Get("FlowLayoutPanel"), EmptyText, EmptyImage);
+            if (ScrollYVisible) scrollY.Paint(g);
             base.OnPaint(e);
         }
 

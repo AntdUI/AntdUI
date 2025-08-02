@@ -77,12 +77,12 @@ namespace AntdUI
         /// 获取指定的列
         /// </summary>
         /// <param name="key">字段ID</param>
-        /// <returns></returns>
-        public Column? GetColumnByFieldKey(string key)
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        public Column? GetColumnByFieldKey(string key, bool ignoreCase = false)
         {
             foreach (var col in Columns)
             {
-                if (col.Key == key) return col;
+                if (col.Key.Equals(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) return col;
             }
             return null;
         }

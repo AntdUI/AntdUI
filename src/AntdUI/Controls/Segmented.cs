@@ -1113,7 +1113,6 @@ namespace AntdUI
 
         #region 鼠标
 
-        int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -1136,33 +1135,67 @@ namespace AntdUI
             }
             SetCursor(hand > 0);
             if (change > 0) Invalidate();
-            if (hoveindex == hoveindexold) return;
-            hoveindexold = hoveindex;
-            if (hoveindex == -1) CloseTip();
-            else
-            {
-                var tooltip = items[hoveindex].Tooltip;
-                if (tooltip == null)
-                {
-                    CloseTip();
-                    return;
-                }
-                var it = items[hoveindex];
-                OpenTip(it.Rect, tooltip);
-            }
+            OpenTipBefore(hoveindex);
         }
 
         #region 提示
 
+        int hoveold = -1, indexchange = 0;
+        ITask? taskTip;
         TooltipForm? toolTip;
         void CloseTip()
         {
-            if (toolTip == null) return;
+            hoveold = -1;
+            indexchange = 0;
+            taskTip?.Dispose();
+            taskTip = null;
+
             toolTip?.IClose();
             toolTip = null;
         }
+        void OpenTipBefore(int index)
+        {
+            if (index == hoveold) return;
+            hoveold = index;
+            if (indexchange > 3)
+            {
+                CloseTip();
+                indexchange = 0;
+            }
+            else indexchange++;
+            taskTip?.Dispose();
+            taskTip = new ITask(this, () =>
+            {
+                OpenTip(index);
+                return false;
+            }, 200, null, 200);
+        }
+        void OpenTip(int index)
+        {
+            if (hoveold == index)
+            {
+                if (index == -1) CloseTip();
+                else
+                {
+                    if (items == null)
+                    {
+                        CloseTip();
+                        return;
+                    }
+                    var item = items[index];
+                    var tooltip = item.Tooltip;
+                    if (tooltip == null)
+                    {
+                        CloseTip();
+                        return;
+                    }
+                    Invoke(() => OpenTip(item.Rect, tooltip));
+                }
+            }
+        }
         void OpenTip(Rectangle rect, string tooltip)
         {
+            indexchange = 0;
             if (toolTip == null)
             {
                 toolTip = new TooltipForm(this, rect, tooltip, TooltipConfig ?? new TooltipConfig
@@ -1172,7 +1205,11 @@ namespace AntdUI
                 });
                 toolTip.Show(this);
             }
-            else toolTip.SetText(rect, tooltip);
+            else if (toolTip.SetText(rect, tooltip))
+            {
+                CloseTip();
+                OpenTip(rect, tooltip);
+            }
         }
 
         #endregion
@@ -1449,6 +1486,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标文本
         /// </summary>
+        [Description("徽标文本"), Category("徽标"), DefaultValue(null)]
         public string? Badge
         {
             get => badge;
@@ -1464,6 +1502,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标SVG
         /// </summary>
+        [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
             get => badgeSvg;
@@ -1479,6 +1518,7 @@ namespace AntdUI
         /// <summary>
         /// 徽标方向
         /// </summary>
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.TR)]
         public TAlign BadgeAlign
         {
             get => badgeAlign;
@@ -1493,17 +1533,20 @@ namespace AntdUI
         /// <summary>
         /// 徽标大小
         /// </summary>
+        [Description("徽标大小"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize { get; set; } = .6F;
 
         /// <summary>
         /// 徽标背景颜色
         /// </summary>
+        [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack { get; set; }
 
         bool badgeMode = false;
         /// <summary>
         /// 徽标模式（镂空）
         /// </summary>
+        [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
         public bool BadgeMode
         {
             get => badgeMode;
@@ -1518,11 +1561,13 @@ namespace AntdUI
         /// <summary>
         /// 徽标偏移X
         /// </summary>
+        [Description("徽标偏移X"), Category("徽标"), DefaultValue(0)]
         public int BadgeOffsetX { get; set; }
 
         /// <summary>
         /// 徽标偏移Y
         /// </summary>
+        [Description("徽标偏移Y"), Category("徽标"), DefaultValue(0)]
         public int BadgeOffsetY { get; set; }
 
         #endregion

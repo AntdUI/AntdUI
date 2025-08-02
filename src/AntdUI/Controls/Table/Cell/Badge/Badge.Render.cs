@@ -59,7 +59,7 @@ namespace AntdUI
             else g.DrawText(Text, font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
         }
 
-        public override Size GetSize(Canvas g, Font font, int gap, int gap2)
+        public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             if (string.IsNullOrEmpty(Text))
             {
@@ -75,7 +75,7 @@ namespace AntdUI
 
         int TxtHeight = 0;
         Rectangle RectDot;
-        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, int gap, int gap2)
+        public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             TxtHeight = size.Height;
             int dot_size = (int)(size.Height * dotratio);
