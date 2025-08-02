@@ -1,5 +1,22 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.16` 2025-08-02
+
+- ➕ Table/Segmented/FloatButton Tooltip Delayed Pop Up
+- ➕ Select to adapt to multiple languages after selecting values
+- ➕ Table Gap attribute, adjust XY spacing separately
+- ➕ Progress circular IconSvg and support rotation animation
+- ➕ Modal UseIconPadding
+- ➕ Support short HEX
+- ✍️ Menu card flashing submenu
+- ✍️ Menu ShowSubBack misaligned
+- ✍️ Table Sorting/Filtering Icon Position
+- ✍️ Steps to optimize milestone drawing
+- ✍️ Tooltip release exception
+- ✍️ Layout of Input prefixes and suffixes
+- ✍️ Window misalignment under designer
+- ✍️ DPI optimization
+
 ### `2.0.15` 2025-07-29
 
 - ➕ Table FocusedCell attribute, CellFocused event
