@@ -588,32 +588,35 @@ namespace AntdUI
                         }
                         if (PaintIcon(g, it, !milestoneMode ? ccolor : it.ForeColor ?? Color.White, i == current))
                         {
-                            if (i == current)
+                            using (var font_Id = new Font(Font.FontFamily, Font.Size * 1.5F))
                             {
-                                switch (status)
+                                if (i == current)
                                 {
-                                    case TStepState.Finish:
-                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
-                                        break;
-                                    case TStepState.Wait:
-                                        g.FillEllipse(brush_bg2, it.ico_rect);
-                                        g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
-                                        break;
-                                    case TStepState.Error:
-                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get("Steps", ColorScheme), Colour.Error.Get("Steps", ColorScheme));
-                                        break;
-                                    case TStepState.Process:
-                                    default:
-                                        g.FillEllipse(brush_primary, it.ico_rect);
-                                        g.DrawText((i + 1).ToString(), font_description, brush_primary_fore, it.ico_rect, stringCenter);
-                                        break;
+                                    switch (status)
+                                    {
+                                        case TStepState.Finish:
+                                            g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
+                                            break;
+                                        case TStepState.Wait:
+                                            g.FillEllipse(brush_bg2, it.ico_rect);
+                                            g.DrawText((i + 1).ToString(), font_Id, brush_fore3, it.ico_rect, stringCenter);
+                                            break;
+                                        case TStepState.Error:
+                                            g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get("Steps", ColorScheme), Colour.Error.Get("Steps", ColorScheme));
+                                            break;
+                                        case TStepState.Process:
+                                        default:
+                                            g.FillEllipse(brush_primary, it.ico_rect);
+                                            g.DrawText((i + 1).ToString(), font_Id, brush_primary_fore, it.ico_rect, stringCenter);
+                                            break;
+                                    }
                                 }
-                            }
-                            else if (i < current) g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
-                            else
-                            {
-                                g.FillEllipse(brush_bg2, it.ico_rect);
-                                g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
+                                else if (i < current) g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
+                                else
+                                {
+                                    g.FillEllipse(brush_bg2, it.ico_rect);
+                                    g.DrawText((i + 1).ToString(), font_Id, brush_fore3, it.ico_rect, stringCenter);
+                                }
                             }
                         }
                         i++;

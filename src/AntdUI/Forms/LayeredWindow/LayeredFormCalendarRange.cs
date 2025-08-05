@@ -1713,6 +1713,12 @@ namespace AntdUI
                 Print();
                 return;
             }
+            else if (rect_month.Contains(x, y) || rect_month_r.Contains(x, y))
+            {
+                ShowType = TDatePicker.Month;
+                Print();
+                return;
+            }
 
 
             if (calendar_day != null)

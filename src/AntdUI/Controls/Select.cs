@@ -129,6 +129,12 @@ namespace AntdUI
         [Description("为空依旧下拉"), Category("外观"), DefaultValue(false)]
         public bool Empty { get; set; }
 
+        /// <summary>
+        /// 自动设置下拉前缀
+        /// </summary>
+        [Description("自动设置下拉前缀"), Category("外观"), DefaultValue(false)]
+        public bool AutoPrefixSvg { get; set; }
+
         #region 数据
 
         BaseCollection? items;
@@ -214,7 +220,7 @@ namespace AntdUI
             {
                 selectedItem = it;
                 selectedValue = it.Tag;
-                if (string.IsNullOrEmpty(it.IconSvg) == false) PrefixSvg = it.IconSvg;
+                if (AutoPrefixSvg) PrefixSvg = it.IconSvg;
                 Text = it.Text;
             }
             else
@@ -285,6 +291,7 @@ namespace AntdUI
             selectedItem = item;
             selectedValue = value;
             Text = text;
+            if (AutoPrefixSvg && item != null) PrefixSvg = item.IconSvg;
             SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
             SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
             SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));

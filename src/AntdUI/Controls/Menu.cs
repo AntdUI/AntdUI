@@ -1011,131 +1011,160 @@ namespace AntdUI
             return false;
         }
 
-        int hoveindexold = -1;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.X, e.Y))
+            if (ScrollBar.MouseMove(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
-                if (OnTouchMove(e.X, e.Y))
+                if (items == null || items.Count == 0) return;
+                int count = 0, hand = 0;
+                if (scroll_show)
                 {
-                    if (items == null || items.Count == 0) return;
-                    int count = 0, hand = 0;
-                    if (scroll_show)
+                    if (rect_r.Contains(e.X, e.Y))
                     {
-                        if (rect_r.Contains(e.X, e.Y))
+                        if (!hover_r)
                         {
-                            if (!hover_r)
-                            {
-                                hover_r = true;
-                                Invalidate();
-                                tooltipForm?.Close();
-                                tooltipForm = null;
-                                subForm?.Close();
-                                subForm = null;
-                                var list = new List<MenuItem>(items.Count);
-                                foreach (var it in items)
-                                {
-                                    if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
-                                }
-                                subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
-                                subForm.Show(this);
-                            }
-                            foreach (var it in items) it.Hover = false;
-                            SetCursor(true);
-                            return;
-                        }
-                        else
-                        {
-                            if (hover_r) count++;
-                            hover_r = false;
-                        }
-                    }
-                    if (collapsed)
-                    {
-                        int i = 0, hoveindex = -1;
-                        foreach (var it in items)
-                        {
-                            if (it.show)
-                            {
-                                if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
-                                {
-                                    hoveindex = i;
-                                    hand++;
-                                }
-                                if (change) count++;
-                            }
-                            i++;
-                        }
-                        if (hoveindex != hoveindexold)
-                        {
-                            hoveindexold = hoveindex;
-
+                            hover_r = true;
+                            Invalidate();
+                            CloseTooltip();
                             subForm?.Close();
                             subForm = null;
-                            tooltipForm?.Close();
-                            tooltipForm = null;
-                            if (hoveindex > -1)
+                            var list = new List<MenuItem>(items.Count);
+                            foreach (var it in items)
                             {
-                                var it = items[hoveindex];
-                                if (it == null) return;
-                                if (it.items != null && it.items.Count > 0)
-                                {
-                                    select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
-                                    subForm.Show(this);
-                                }
-                                else if (it.Text != null) ShowTooltip(it, it.Rect);
+                                if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
                             }
+                            subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
+                            subForm.Show(this);
                         }
-                    }
-                    else if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText)
-                    {
-                        foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
+                        foreach (var it in items) it.Hover = false;
+                        SetCursor(true);
+                        return;
                     }
                     else
                     {
-                        int i = 0, hoveindex = -1;
-                        foreach (var it in items)
+                        if (hover_r) count++;
+                        hover_r = false;
+                    }
+                }
+                if (collapsed)
+                {
+                    int i = 0, hoveindex = -1;
+                    foreach (var it in items)
+                    {
+                        if (it.show)
                         {
-                            if (it.show)
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
                             {
-                                if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
-                                {
-                                    hoveindex = i;
-                                    hand++;
-                                }
-                                if (change) count++;
+                                hoveindex = i;
+                                hand++;
                             }
-                            i++;
+                            if (change) count++;
                         }
-                        if (hoveindex != hoveindexold)
-                        {
-                            hoveindexold = hoveindex;
+                        i++;
+                    }
+                    if (hoveindex != hoveindexold)
+                    {
+                        hoveindexold = hoveindex;
 
-                            subForm?.Close();
-                            subForm = null;
-                            tooltipForm?.Close();
-                            tooltipForm = null;
-                            if (hoveindex > -1)
+                        subForm?.Close();
+                        subForm = null;
+                        CloseTooltip();
+                        if (hoveindex > -1)
+                        {
+                            var it = items[hoveindex];
+                            if (it == null) return;
+                            if (it.items != null && it.items.Count > 0)
                             {
-                                var it = items[hoveindex];
-                                if (it == null) return;
-                                if (Trigger == Trigger.Hover && it.items != null && it.items.Count > 0)
-                                {
-                                    select_x = 0;
-                                    subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
-                                    subForm.Show(this);
-                                }
+                                select_x = 0;
+                                subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
+                                subForm.Show(this);
+                            }
+                            else if (it.Text != null) ShowTooltip(it, it.Rect);
+                        }
+                    }
+                }
+                else if (mode == TMenuMode.Inline)
+                {
+                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
+                }
+                else if (mode == TMenuMode.InlineNoText)
+                {
+                    foreach (var it in items)
+                    {
+                        if (it.show)
+                        {
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
+                            {
+                                var rect = new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - ScrollBar.Value, it.rect.Width, rect_r.Height);
+                                ShowTooltip(it, rect);
+                                hand++;
+                            }
+                            if (change) count++;
+                            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand, true);
+                        }
+                    }
+                }
+                else
+                {
+                    int i = 0, hoveindex = -1;
+                    foreach (var it in items)
+                    {
+                        if (it.show)
+                        {
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
+                            {
+                                hoveindex = i;
+                                hand++;
+                            }
+                            if (change) count++;
+                        }
+                        i++;
+                    }
+                    if (hoveindex != hoveindexold)
+                    {
+                        hoveindexold = hoveindex;
+
+                        subForm?.Close();
+                        subForm = null;
+                        CloseTooltip();
+                        if (hoveindex > -1)
+                        {
+                            var it = items[hoveindex];
+                            if (it == null) return;
+                            if (Trigger == Trigger.Hover && it.items != null && it.items.Count > 0)
+                            {
+                                select_x = 0;
+                                subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
+                                subForm.Show(this);
                             }
                         }
                     }
-                    SetCursor(hand > 0);
-                    if (count > 0) Invalidate();
                 }
+                SetCursor(hand > 0);
+                if (count > 0) Invalidate();
             }
             else ILeave();
         }
+
+        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand, bool close_tip = false)
+        {
+            if (it.show)
+            {
+                if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
+                {
+                    hand++;
+                    return;
+                }
+                else if (close_tip) CloseTooltip();
+                if (change) count++;
+                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand);
+            }
+        }
+
+        #region 提示
+
+        int hoveindexold = -1;
         void ShowTooltip(MenuItem it, Rectangle rect)
         {
             if (it.Text == null) return;
@@ -1150,32 +1179,20 @@ namespace AntdUI
             }
             else tooltipForm.SetText(rect, it.Text);
         }
-
-        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
+        void CloseTooltip()
         {
-            if (it.show)
-            {
-                if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
-                {
-                    if (mode == TMenuMode.InlineNoText)
-                    {
-                        var rect = new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - ScrollBar.Value, it.rect.Width, rect_r.Height);
-                        ShowTooltip(it, rect);
-                    }
-                    hand++;
-                }
-                if (change) count++;
-                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand);
-            }
+            tooltipForm?.Close();
+            tooltipForm = null;
         }
+
+        #endregion
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
             if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             hoveindexold = -1;
-            tooltipForm?.Close();
-            tooltipForm = null;
+            CloseTooltip();
             ScrollBar.Leave();
             ILeave();
         }

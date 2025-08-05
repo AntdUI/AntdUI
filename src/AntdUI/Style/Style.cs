@@ -643,17 +643,20 @@ namespace AntdUI
 
         #endregion
 
-        public static Color rgba(int r, int g, int b, float a = 1) => Color.FromArgb((int)Math.Round(255F * a), r, g, b);
-        public static Color rgba(this Color color, float a = 1) => rgba(color.R, color.G, color.B, a);
-        public static Color rgba(float r, float g, float b, float a = 1)
+        public static Color rgba(int r, int g, int b, float a = 1) => Color.FromArgb((int)Math.Round(255F * rgbfloat(a)), rgbbyte(r), rgbbyte(g), rgbbyte(b));
+        public static Color rgba(this Color color, float a = 1) => rgba(color.R, color.G, color.B, rgbfloat(a));
+        public static Color rgba(float r, float g, float b, float a = 1) => Color.FromArgb((int)Math.Round(255F * rgbfloat(a)), (int)Math.Round(255F * rgbfloat(r)), (int)Math.Round(255F * rgbfloat(g)), (int)Math.Round(255F * rgbfloat(b)));
+        public static float rgbfloat(float r)
         {
-            if (r < 0) r = 0F;
-            else if (r > 1) r = 1F;
-            if (g < 0) g = 0F;
-            else if (g > 1) g = 1F;
-            if (b < 0) b = 0F;
-            else if (b > 1) b = 1F;
-            return Color.FromArgb((int)Math.Round(255F * a), (int)Math.Round(255F * r), (int)Math.Round(255F * g), (int)Math.Round(255F * b));
+            if (r < 0) return 0F;
+            else if (r > 1) return 1F;
+            else return r;
+        }
+        public static int rgbbyte(int r)
+        {
+            if (r < 0) return 0;
+            else if (r > 255) return 255;
+            else return r;
         }
 
         public static Color ToColor(this string? str)
@@ -671,18 +674,18 @@ namespace AntdUI
                 {
                     str = str.Substring(3).Trim().TrimStart('(').TrimEnd(')');
                     var arr = str.Split(new string[] { " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
-                    if (arr.Length == 3 && int.TryParse(arr[0], out int r) && int.TryParse(arr[1], out int g) && int.TryParse(arr[2], out int b)) return Color.FromArgb(r, g, b);
+                    if (arr.Length == 3 && int.TryParse(arr[0], out int r) && int.TryParse(arr[1], out int g) && int.TryParse(arr[2], out int b)) return Color.FromArgb(rgbbyte(r), rgbbyte(g), rgbbyte(b));
                 }
                 else if (str.Length > 5)
                 {
                     if (str.StartsWith("#")) str = str.Substring(1);
-                    if (str.Length == 6) return Color.FromArgb(str.Substring(0, 2).HexToInt(), str.Substring(2, 2).HexToInt(), str.Substring(4, 2).HexToInt());
-                    else if (str.Length == 8) return Color.FromArgb(str.Substring(6, 2).HexToInt(), str.Substring(0, 2).HexToInt(), str.Substring(2, 2).HexToInt(), str.Substring(4, 2).HexToInt());
+                    if (str.Length == 6) return Color.FromArgb(rgbbyte(str.Substring(0, 2).HexToInt()), rgbbyte(str.Substring(2, 2).HexToInt()), rgbbyte(str.Substring(4, 2).HexToInt()));
+                    else if (str.Length == 8) return Color.FromArgb(rgbbyte(str.Substring(6, 2).HexToInt()), rgbbyte(str.Substring(0, 2).HexToInt()), rgbbyte(str.Substring(2, 2).HexToInt()), rgbbyte(str.Substring(4, 2).HexToInt()));
                 }
                 else if (str.Length > 2)
                 {
                     if (str.StartsWith("#")) str = str.Substring(1);
-                    return Color.FromArgb(str[0].ToString().HexToInt() * 17, str[1].ToString().HexToInt() * 17, str[2].ToString().HexToInt() * 17);
+                    return Color.FromArgb(rgbbyte(str[0].ToString().HexToInt() * 17), rgbbyte(str[1].ToString().HexToInt() * 17), rgbbyte(str[2].ToString().HexToInt() * 17));
                 }
             }
             catch

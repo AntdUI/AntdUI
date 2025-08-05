@@ -160,7 +160,7 @@ namespace AntdUI
                 {
                     Font = Font,
                     ArrowAlign = (align == TAlignMini.Top || align == TAlignMini.Bottom) ? TAlign.Right : TAlign.Top,
-                });
+                }).NoMessage();
                 toolTip.Show(this);
             }
             else toolTip.SetText(rect, tooltipText);
