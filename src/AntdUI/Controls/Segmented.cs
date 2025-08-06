@@ -788,7 +788,12 @@ namespace AntdUI
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (pauseLayout || rect.Width == 0 || rect.Height == 0) return false;
+                if (items == null || items.Count == 0)
+                {
+                    _select = -1;
+                    return false;
+                }
                 return true;
             }
             return false;
@@ -1070,7 +1075,6 @@ namespace AntdUI
                     AnimationBarValue = TabSelectRect = _new.Rect;
                 }
             }
-            else _select = -1;
             if (print) Invalidate();
         }
 
@@ -1082,6 +1086,12 @@ namespace AntdUI
         {
             ChangeItems();
             base.OnSizeChanged(e);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ChangeItems();
         }
 
         protected override void OnMarginChanged(EventArgs e)

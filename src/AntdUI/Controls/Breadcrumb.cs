@@ -124,6 +124,12 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ChangeItems();
+        }
+
         protected override void OnMarginChanged(EventArgs e)
         {
             ChangeItems();

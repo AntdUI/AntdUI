@@ -86,6 +86,12 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ChangeList();
+        }
+
 
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
