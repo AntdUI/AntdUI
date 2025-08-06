@@ -42,6 +42,38 @@ namespace Demo
                 case "ItemsPerPage":
                     return "Per/Page";
 
+                case "Filter.Clean":
+                    return "Clean";
+                case "Filter.ByView":
+                    return "ByView";
+                case "Filter.Auto":
+                    return "Auto";
+                case "Filter.DataSource":
+                    return "Source";
+                case "Filter.SelectAll":
+                    return "(Select All)";
+                case "Filter.Blank":
+                    return "(Blank)";
+                case "Filter.Search":
+                    return "Search";
+                case "Filter.Width":
+                    return "200";
+
+                case "Filter.Equal":
+                    return "Equal";
+                case "Filter.NotEqual":
+                    return "NotEqual";
+                case "Filter.Greater":
+                    return "Greater";
+                case "Filter.Less":
+                    return "Less";
+                case "Filter.Contain":
+                    return "Contain";
+                case "Filter.NotContain":
+                    return "NotContain";
+                case "Filter.None":
+                    return "None";
+
                 #region DEMO
 
                 case "Overview.txt_search"://ÊäÈë¹Ø¼ü×ÖËÑË÷...

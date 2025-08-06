@@ -105,8 +105,7 @@ namespace AntdUI
             {
                 if (vertical == value) return;
                 vertical = value;
-                ChangeList();
-                Invalidate();
+                ChangeList(true);
                 OnPropertyChanged(nameof(Vertical));
             }
         }
@@ -122,8 +121,7 @@ namespace AntdUI
             {
                 if (milestoneMode == value) return;
                 milestoneMode = value;
-                ChangeList();
-                Invalidate();
+                ChangeList(true);
                 OnPropertyChanged(nameof(MilestoneMode));
             }
         }
@@ -206,8 +204,7 @@ namespace AntdUI
                 if (value < 8) value = 8;
                 else if (value > 18) value = 18;
                 milestoneTimelineThickness = value;
-                ChangeList();
-                Invalidate();
+                ChangeList(true);
                 OnPropertyChanged(nameof(MilestoneTimelineThickness));
             }
         }
@@ -254,134 +251,141 @@ namespace AntdUI
             {
                 if (pauseLayout == value) return;
                 pauseLayout = value;
-                if (!value)
-                {
-                    ChangeList();
-                    Invalidate();
-                }
+                if (!value) ChangeList(true);
                 OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
-        internal void ChangeList()
+        bool CanLayout()
         {
-            var rect = ClientRectangle.DeflateRect(Padding);
-            if (pauseLayout || items == null || items.Count == 0) return;
-            if (rect.Width == 0 || rect.Height == 0) return;
-            Helper.GDI(g =>
+            if (IsHandleCreated)
             {
-                int gap = (int)(Gap * Config.Dpi), split = (!milestoneMode ? 1 : milestoneTimelineThickness) * (int)Config.Dpi;
-                var _splits = new List<RectangleF>(items.Count);
-                using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
+                var rect = ClientRectangle;
+                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+        internal void ChangeList(bool print = false)
+        {
+            if (CanLayout())
+            {
+                var rect = ClientRectangle.DeflateRect(Padding);
+                Helper.GDI(g =>
                 {
-                    int gap2 = gap * 2;
-                    int i = 0, ri = 0, count = 0;
-                    foreach (var it in items)
+                    int gap = (int)(Gap * Config.Dpi), split = (!milestoneMode ? 1 : milestoneTimelineThickness) * (int)Config.Dpi;
+                    var _splits = new List<RectangleF>(items!.Count);
+                    using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                     {
-                        it.PARENT = this;
-                        if (it.Visible) count++;
-                    }
-                    if (vertical)
-                    {
-                        if (milestoneMode) rect.X += (int)(milestoneTimelineThickness * Config.Dpi);
-                        int t_height_one = rect.Height / count, iod = 0;
+                        int gap2 = gap * 2;
+                        int i = 0, ri = 0, count = 0;
                         foreach (var it in items)
                         {
-                            if (it.Visible)
+                            it.PARENT = this;
+                            if (it.Visible) count++;
+                        }
+                        if (vertical)
+                        {
+                            if (milestoneMode) rect.X += (int)(milestoneTimelineThickness * Config.Dpi);
+                            int t_height_one = rect.Height / count, iod = 0;
+                            foreach (var it in items)
                             {
-                                it.TitleSize = g.MeasureText(string.IsNullOrEmpty(it.GetTitle) ? "T" : it.GetTitle, Font);
-                                int ico_size = !milestoneMode ? (int)(it.TitleSize.Height * 1.6F) : (int)(milestoneTimelineThickness * 2F);
-                                if (milestoneMode && ico_size > rect.Width) ico_size = rect.Width;
-                                it.pen_w = it.TitleSize.Height * 0.136F;
-                                int width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
-
-                                if (it.showSub)
+                                if (it.Visible)
                                 {
-                                    it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
-                                    height_one += it.SubTitleSize.Height;
-                                }
-                                if (it.showDescription)
-                                {
-                                    it.DescriptionSize = g.MeasureText(it.Description, font_description);
-                                    width_ex = it.DescriptionSize.Width;
-                                }
+                                    it.TitleSize = g.MeasureText(string.IsNullOrEmpty(it.GetTitle) ? "T" : it.GetTitle, Font);
+                                    int ico_size = !milestoneMode ? (int)(it.TitleSize.Height * 1.6F) : (int)(milestoneTimelineThickness * 2F);
+                                    if (milestoneMode && ico_size > rect.Width) ico_size = rect.Width;
+                                    it.pen_w = it.TitleSize.Height * 0.136F;
+                                    int width_one = it.TitleSize.Width + gap, height_one = ico_size, width_ex = 0;
 
-                                int centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
-                                it.title_rect = new Rectangle(rect.X + gap + ico_size + (!milestoneMode ? 0 : milestoneTimelineThickness), centery - height_one / 2, it.TitleSize.Width, height_one);
-                                int read_y = it.title_rect.Y - gap - ico_size;
-
-                                it.ico_rect = new Rectangle(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2, ico_size, ico_size);
-
-                                int tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
-
-                                if (it.showSub)
-                                {
-                                    it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width + gap, it.title_rect.Y, it.SubTitleSize.Width, height_one);
-                                    tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
-                                    tmp_max_wr = it.subtitle_rect.Right;
-                                }
-                                if (it.showDescription)
-                                {
-                                    it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
-                                    if (it.description_rect.Width > tmp_max_width)
+                                    if (it.showSub)
                                     {
-                                        tmp_max_width = it.description_rect.Width;
-                                        tmp_max_wr = it.description_rect.Right;
+                                        it.SubTitleSize = g.MeasureText(it.SubTitle, Font);
+                                        height_one += it.SubTitleSize.Height;
                                     }
-                                    tmp_max_height += it.DescriptionSize.Height;
-                                }
-                                it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
+                                    if (it.showDescription)
+                                    {
+                                        it.DescriptionSize = g.MeasureText(it.Description, font_description);
+                                        width_ex = it.DescriptionSize.Width;
+                                    }
 
-                                if (ri > 0)
-                                {
-                                    var old = items[iod];
-                                    if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, !milestoneMode ? old.ico_rect.Bottom + gap : old.ico_rect.Bottom - (old.ico_rect.Height / 2), split, !milestoneMode ? it.ico_rect.Y - old.ico_rect.Bottom - gap2 : it.ico_rect.Y - old.ico_rect.Bottom - gap2 + it.ico_rect.Height));
+                                    int centery = rect.Y + t_height_one * i + t_height_one / 2;//居中X
+                                    it.title_rect = new Rectangle(rect.X + gap + ico_size + (!milestoneMode ? 0 : milestoneTimelineThickness), centery - height_one / 2, it.TitleSize.Width, height_one);
+                                    int read_y = it.title_rect.Y - gap - ico_size;
+
+                                    it.ico_rect = new Rectangle(rect.X, it.title_rect.Y + (it.title_rect.Height - ico_size) / 2, ico_size, ico_size);
+
+                                    int tmp_max_width = it.title_rect.Width, tmp_max_height = it.ico_rect.Height, tmp_max_wr = it.title_rect.Right;
+
+                                    if (it.showSub)
+                                    {
+                                        it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width + gap, it.title_rect.Y, it.SubTitleSize.Width, height_one);
+                                        tmp_max_width = it.subtitle_rect.Width + it.title_rect.Width;
+                                        tmp_max_wr = it.subtitle_rect.Right;
+                                    }
+                                    if (it.showDescription)
+                                    {
+                                        it.description_rect = new Rectangle(it.title_rect.X, it.title_rect.Y + (height_one - it.TitleSize.Height) / 2 + it.TitleSize.Height + gap / 2, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                        if (it.description_rect.Width > tmp_max_width)
+                                        {
+                                            tmp_max_width = it.description_rect.Width;
+                                            tmp_max_wr = it.description_rect.Right;
+                                        }
+                                        tmp_max_height += it.DescriptionSize.Height;
+                                    }
+                                    it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, tmp_max_wr - it.ico_rect.X + gap2, tmp_max_height + gap2);
+
+                                    if (ri > 0)
+                                    {
+                                        var old = items[iod];
+                                        if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, !milestoneMode ? old.ico_rect.Bottom + gap : old.ico_rect.Bottom - (old.ico_rect.Height / 2), split, !milestoneMode ? it.ico_rect.Y - old.ico_rect.Bottom - gap2 : it.ico_rect.Y - old.ico_rect.Bottom - gap2 + it.ico_rect.Height));
+                                    }
+                                    i++;
+                                    iod = ri;
                                 }
-                                i++;
-                                iod = ri;
+                                ri++;
                             }
-                            ri++;
                         }
-                    }
-                    else
-                    {
-                        //横向
-                        int read_width = MaxHeight(g, font_description, gap, out var maxHeight);
-                        if (milestoneMode) read_width = rect.Height;
-                        int sp = (rect.Width - read_width) / count, spline = sp - gap;
-                        int has_x = milestoneMode ? rect.X + gap / 2 : rect.X + sp / 2;
-                        count -= 1;
-                        foreach (var it in items)
+                        else
                         {
-                            if (it.Visible)
+                            //横向
+                            int read_width = MaxHeight(g, font_description, gap, out var maxHeight);
+                            if (milestoneMode) read_width = rect.Height;
+                            int sp = (rect.Width - read_width) / count, spline = sp - gap;
+                            int has_x = milestoneMode ? rect.X + gap / 2 : rect.X + sp / 2;
+                            count -= 1;
+                            foreach (var it in items)
                             {
-                                int icon_size = it.IconSize ?? (!milestoneMode ? (int)(it.TitleSize.Height * 1.6F) : (int)(milestoneTimelineThickness * 2F));
-                                if (milestoneMode && icon_size > read_width) icon_size = read_width;
-                                int y = rect.Y + (rect.Height - maxHeight) / 2;
-                                it.ico_rect = new Rectangle(has_x + (!milestoneMode ? 0 : 16), y + (it.TitleSize.Height - icon_size) / 2, icon_size, icon_size);
-                                it.title_rect = new Rectangle(it.ico_rect.Right + gap2, !milestoneMode ? y : y - it.TitleSize.Height, it.TitleSize.Width, it.TitleSize.Height);
-
-                                int tmp_max_height = it.ico_rect.Height;
-                                if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width + gap, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
-
-                                if (it.showDescription)
+                                if (it.Visible)
                                 {
-                                    it.description_rect = new Rectangle(it.title_rect.X, !milestoneMode ? it.title_rect.Bottom + gap / 2 : y + split + gap, it.DescriptionSize.Width, it.DescriptionSize.Height);
-                                    tmp_max_height += it.DescriptionSize.Height;
-                                }
+                                    int icon_size = it.IconSize ?? (!milestoneMode ? (int)(it.TitleSize.Height * 1.6F) : (int)(milestoneTimelineThickness * 2F));
+                                    if (milestoneMode && icon_size > read_width) icon_size = read_width;
+                                    int y = rect.Y + (rect.Height - maxHeight) / 2;
+                                    it.ico_rect = new Rectangle(has_x + (!milestoneMode ? 0 : 16), y + (it.TitleSize.Height - icon_size) / 2, icon_size, icon_size);
+                                    it.title_rect = new Rectangle(it.ico_rect.Right + gap2, !milestoneMode ? y : y - it.TitleSize.Height, it.TitleSize.Width, it.TitleSize.Height);
 
-                                it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, it.ReadWidth + gap2, tmp_max_height + gap2);
-                                if (spline > 0 && i < count) _splits.Add(new RectangleF(!milestoneMode ? it.rect.Right - gap : it.ico_rect.Right - (it.ico_rect.Width / 2), it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, spline + (!milestoneMode ? 0 : icon_size * 1.5F), split));
-                                has_x += it.ReadWidth + sp;
-                                i++;
+                                    int tmp_max_height = it.ico_rect.Height;
+                                    if (it.showSub) it.subtitle_rect = new Rectangle(it.title_rect.X + it.TitleSize.Width + gap, it.title_rect.Y, it.SubTitleSize.Width, it.title_rect.Height);
+
+                                    if (it.showDescription)
+                                    {
+                                        it.description_rect = new Rectangle(it.title_rect.X, !milestoneMode ? it.title_rect.Bottom + gap / 2 : y + split + gap, it.DescriptionSize.Width, it.DescriptionSize.Height);
+                                        tmp_max_height += it.DescriptionSize.Height;
+                                    }
+
+                                    it.rect = new Rectangle(it.ico_rect.X - gap, it.ico_rect.Y - gap, it.ReadWidth + gap2, tmp_max_height + gap2);
+                                    if (spline > 0 && i < count) _splits.Add(new RectangleF(!milestoneMode ? it.rect.Right - gap : it.ico_rect.Right - (it.ico_rect.Width / 2), it.ico_rect.Y + (it.ico_rect.Height - split) / 2F, spline + (!milestoneMode ? 0 : icon_size * 1.5F), split));
+                                    has_x += it.ReadWidth + sp;
+                                    i++;
+                                }
+                                ri++;
                             }
-                            ri++;
                         }
                     }
-                }
-                splits = _splits.ToArray();
-            });
-            return;
+                    splits = _splits.ToArray();
+                });
+            }
+            if (print) Invalidate();
         }
 
         int MaxHeight(Canvas g, Font font_description, int gap, out int height)
@@ -588,32 +592,35 @@ namespace AntdUI
                         }
                         if (PaintIcon(g, it, !milestoneMode ? ccolor : it.ForeColor ?? Color.White, i == current))
                         {
-                            if (i == current)
+                            using (var font_Id = new Font(Font.FontFamily, Font.Size * 1.5F))
                             {
-                                switch (status)
+                                if (i == current)
                                 {
-                                    case TStepState.Finish:
-                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
-                                        break;
-                                    case TStepState.Wait:
-                                        g.FillEllipse(brush_bg2, it.ico_rect);
-                                        g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
-                                        break;
-                                    case TStepState.Error:
-                                        g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get("Steps", ColorScheme), Colour.Error.Get("Steps", ColorScheme));
-                                        break;
-                                    case TStepState.Process:
-                                    default:
-                                        g.FillEllipse(brush_primary, it.ico_rect);
-                                        g.DrawText((i + 1).ToString(), font_description, brush_primary_fore, it.ico_rect, stringCenter);
-                                        break;
+                                    switch (status)
+                                    {
+                                        case TStepState.Finish:
+                                            g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
+                                            break;
+                                        case TStepState.Wait:
+                                            g.FillEllipse(brush_bg2, it.ico_rect);
+                                            g.DrawText((i + 1).ToString(), font_Id, brush_fore3, it.ico_rect, stringCenter);
+                                            break;
+                                        case TStepState.Error:
+                                            g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get("Steps", ColorScheme), Colour.Error.Get("Steps", ColorScheme));
+                                            break;
+                                        case TStepState.Process:
+                                        default:
+                                            g.FillEllipse(brush_primary, it.ico_rect);
+                                            g.DrawText((i + 1).ToString(), font_Id, brush_primary_fore, it.ico_rect, stringCenter);
+                                            break;
+                                    }
                                 }
-                            }
-                            else if (i < current) g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
-                            else
-                            {
-                                g.FillEllipse(brush_bg2, it.ico_rect);
-                                g.DrawText((i + 1).ToString(), font_description, brush_fore3, it.ico_rect, stringCenter);
+                                else if (i < current) g.PaintIconCore(it.ico_rect, SvgDb.IcoSuccess, brush_primary.Color, brush_primarybg.Color);
+                                else
+                                {
+                                    g.FillEllipse(brush_bg2, it.ico_rect);
+                                    g.DrawText((i + 1).ToString(), font_Id, brush_fore3, it.ico_rect, stringCenter);
+                                }
                             }
                         }
                         i++;
@@ -690,8 +697,8 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.ChangeList();
-                it.Invalidate();
+                if (render) it.ChangeList(true);
+                else it.Invalidate();
             };
             return this;
         }
@@ -959,12 +966,7 @@ namespace AntdUI
         internal Rectangle description_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        void Invalidate()
-        {
-            if (PARENT == null) return;
-            PARENT.ChangeList();
-            PARENT.Invalidate();
-        }
+        void Invalidate() => PARENT?.ChangeList(true);
 
         #endregion
 

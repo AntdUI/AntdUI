@@ -43,9 +43,6 @@ namespace AntdUI
             actionCursor = val => SetCursor(val);
         }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public virtual bool ShowLeft { get; set; } = false;
-
         protected override void OnHandleCreated(EventArgs e)
         {
             handle = Handle;
@@ -55,9 +52,6 @@ namespace AntdUI
         public Control? PARENT;
         public Func<Keys, bool>? KeyCall;
 
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public virtual bool CanLoadMessage { get; set; } = true;
         Action actionLoadMessage;
         public virtual void LoadMessage()
         {
@@ -237,7 +231,6 @@ namespace AntdUI
 
         #endregion
 
-        bool switchClose = true;
         int countClose = 0;
         public virtual void IClosing() { }
         public void IClose(bool isdispose = false)
@@ -257,24 +250,45 @@ namespace AntdUI
                     Dispose();
                     return;
                 }
-                //countClose++;
+                countClose++;
                 Close();
             }
             catch { }
         }
 
+        #region 属性
+
         /// <summary>
-        /// 点击外面关闭使能
+        /// 加载后绑定消息
         /// </summary>
-        public virtual bool MessageEnable => false;
-        public virtual bool MessageCloseSub => false;
-        public virtual bool MessageClickMe => true;
+        [Description("加载后绑定消息"), Category("行为"), DefaultValue(true)]
+        public virtual bool CanLoadMessage { get; set; } = true;
+
+        /// <summary>
+        /// 消息使能
+        /// </summary>
+        [Description("消息使能"), Category("行为"), DefaultValue(false)]
+        public virtual bool MessageEnable { get; set; }
+
+        /// <summary>
+        /// 点击子菜单关闭（true后点击子菜单不关闭）
+        /// </summary>
+        [Description("点击子菜单关闭"), Category("行为"), DefaultValue(false)]
+        public virtual bool MessageCloseSub { get; set; }
+
+        /// <summary>
+        /// 点击自己是否关闭（true 点击自己不关闭）
+        /// </summary>
+        [Description("点击自己是否关闭"), Category("行为"), DefaultValue(true)]
+        public virtual bool MessageClickMe { get; set; } = true;
 
         /// <summary>
         /// 鼠标离开关闭
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public bool MessageCloseMouseLeave { get; set; }
+        [Description("鼠标离开关闭"), Category("行为"), DefaultValue(false)]
+        public virtual bool MessageCloseMouseLeave { get; set; }
+
+        #endregion
 
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {

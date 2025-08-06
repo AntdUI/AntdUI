@@ -73,6 +73,7 @@ namespace AntdUI
 
         bool has_check = false;
         Rectangle rect_read, rect_divider;
+        public Rectangle RectRead => rect_read;
         Rectangle LayoutDesign(Rectangle rect)
         {
             rowSummary = 0;

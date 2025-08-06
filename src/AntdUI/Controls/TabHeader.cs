@@ -72,7 +72,7 @@ namespace AntdUI
             {
                 if (offsetY == value) return;
                 offsetY = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(OffsetY));
             }
         }
@@ -89,7 +89,7 @@ namespace AntdUI
             {
                 if (showAdd == value) return;
                 showAdd = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(ShowAdd));
             }
         }
@@ -183,7 +183,7 @@ namespace AntdUI
             {
                 if (tabIconRatio == value) return;
                 tabIconRatio = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(IconRatio));
             }
         }
@@ -200,7 +200,7 @@ namespace AntdUI
             {
                 if (tabCloseRatio == value) return;
                 tabCloseRatio = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(TabCloseRatio));
             }
         }
@@ -223,7 +223,7 @@ namespace AntdUI
             {
                 if (tabGapRatio == value) return;
                 tabGapRatio = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(TabGapRatio));
             }
         }
@@ -240,7 +240,7 @@ namespace AntdUI
             {
                 if (tabIconGapRatio == value) return;
                 tabIconGapRatio = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(TabIconGapRatio));
             }
         }
@@ -257,7 +257,7 @@ namespace AntdUI
             {
                 if (tabAddIconRatio == value) return;
                 tabAddIconRatio = value;
-                if (showAdd) LoadLayout();
+                if (showAdd) LoadLayout(true);
                 OnPropertyChanged(nameof(TabAddIconRatio));
             }
         }
@@ -274,7 +274,7 @@ namespace AntdUI
             {
                 if (tabAddGapRatio == value) return;
                 tabAddGapRatio = value;
-                if (showAdd) LoadLayout();
+                if (showAdd) LoadLayout(true);
                 OnPropertyChanged(nameof(TabAddGapRatio));
             }
         }
@@ -291,7 +291,7 @@ namespace AntdUI
             {
                 if (rightGap == value) return;
                 rightGap = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(RightGap));
             }
         }
@@ -361,17 +361,26 @@ namespace AntdUI
             LoadLayout();
         }
 
-        /// <summary>
-        /// 计算所有标签的布局和尺寸
-        /// </summary>
-        internal void LoadLayout(bool r = true)
+        bool CanLayout()
         {
             if (IsHandleCreated)
             {
-                if (items == null) return;
+                var rect = ClientRectangle;
+                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 计算所有标签的布局和尺寸
+        /// </summary>
+        internal void LoadLayout(bool print = false)
+        {
+            if (CanLayout())
+            {
                 Helper.GDI(g =>
                 {
-                    var dir = new Dictionary<int, int[]>(items.Count);
+                    var dir = new Dictionary<int, int[]>(items!.Count);
                     int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
                     Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
@@ -553,8 +562,8 @@ namespace AntdUI
                     }
                     return use_x;
                 });
-                if (r) Invalidate();
             }
+            if (print) Invalidate();
         }
 
         Rectangle RectAdd, RectAddIco;
@@ -850,7 +859,7 @@ namespace AntdUI
                     var source = items![dragHeader.i];
                     items.RemoveAt(dragHeader.i);
                     items.Insert(dragHeader.im, source);
-                    LoadLayout();
+                    LoadLayout(true);
                 }
                 dragHeader = null;
                 if (hand)
@@ -1011,7 +1020,7 @@ namespace AntdUI
             if (index >= 0 && index < Items.Count)
             {
                 Items.RemoveAt(index);
-                LoadLayout();
+                LoadLayout(true);
             }
         }
 
@@ -1054,8 +1063,8 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.LoadLayout(false);
-                it.Invalidate();
+                if (render) it.LoadLayout(true);
+                else it.Invalidate();
             };
             return this;
         }
@@ -1103,7 +1112,7 @@ namespace AntdUI
             {
                 if (_text == value) return;
                 _text = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1122,7 +1131,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1138,7 +1147,7 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1162,7 +1171,7 @@ namespace AntdUI
             {
                 if (showClose == value) return;
                 showClose = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1178,7 +1187,7 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 

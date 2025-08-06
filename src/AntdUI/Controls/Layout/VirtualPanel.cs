@@ -425,7 +425,11 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                if (items == null || items.Count == 0) { ScrollBar.Value = 0; return; }
+                if (items == null || items.Count == 0)
+                {
+                    ScrollBar.Value = 0;
+                    return;
+                }
                 if (pauseLayout) return;
                 var controls = new List<VirtualItem>(items.Count);
                 foreach (var it in items)

@@ -36,8 +36,8 @@ namespace AntdUI
         public const string SVG_CONTAIN = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M656.512 213.333333a42.666667 42.666667 0 0 1 42.410667 47.232l-54.826667 512A42.666667 42.666667 0 0 1 601.6 810.666667H399.530667a42.666667 42.666667 0 0 1-42.453334-47.232l54.869334-512A42.666667 42.666667 0 0 1 454.357333 213.333333h202.154667z m189.141333 194.816l71.68 1.194667-6.656 54.186667-90.496-0.512c-21.248 0-37.418667 5.632-48.512 16.981333-11.093333 11.221333-18.005333 27.946667-20.650666 50.176l-5.205334 43.989333-0.725333 8.789334-0.256 6.058666c0 34.432 17.536 51.626667 52.650667 51.626667h25.514666l13.312-0.469333 16.426667-0.853334 30.421333-2.218666 11.690667-0.938667-5.674667 54.656c-29.994667 3.114667-55.765333 4.693333-77.354666 4.693333h-20.992c-70.528 0-105.813333-32.128-105.813334-96.341333 0-8.448 0.469333-17.28 1.493334-26.496l4.992-41.002667c5.205333-41.002667 18.901333-71.850667 41.002666-92.501333 22.186667-20.650667 53.589333-31.018667 94.165334-31.018667h18.986666zM493.482667 298.666667h-58.837334L386.56 693.504h128l9.173333-0.170667c72.106667-2.944 114.048-40.96 125.696-114.005333l1.28-9.344 4.693334-38.826667 0.810666-8.789333a220.586667 220.586667 0 0 0 0.682667-16.853333c0-32.128-8.917333-56.32-26.666667-72.661334-15.914667-14.805333-39.082667-22.954667-69.461333-24.448l-10.410667-0.256h-70.144L493.482667 298.666667zM254.72 407.466667c35.2 0 61.824 8.405333 79.786667 25.173333 18.133333 16.810667 27.221333 39.125333 27.221333 66.986667l-0.085333 2.773333-0.938667 13.226667-20.992 177.194666H191.146667c-25.6 0-46.08-7.253333-61.525334-21.845333-15.36-14.506667-22.997333-33.365333-22.997333-56.490667 0-5.205333 0.213333-9.173333 0.682667-11.818666 2.986667-21.248 8.362667-38.058667 16.170666-50.517334 7.850667-12.458667 19.242667-21.461333 34.133334-27.008 14.933333-5.674667 34.474667-8.490667 58.666666-8.490666h86.016l0.512-4.181334a38.954667 38.954667 0 0 0 0.469334-7.168c0-13.312-4.437333-24.021333-13.312-32.170666-8.874667-8.192-22.741333-12.330667-41.514667-12.330667h-13.141333c-30.464 0-57.813333 0.853333-82.005334 2.517333l7.68-52.181333 21.632-1.365333 32.085334-1.621334 18.090666-0.597333 21.845334-0.085333z m-43.52 159.872c-12.970667-0.341333-23.338667 2.133333-30.976 7.466666-6.570667 4.48-10.965333 11.946667-13.098667 22.4l-0.896 5.461334-0.512 6.144c0 9.898667 2.773333 17.493333 8.32 22.826666a31.146667 31.146667 0 0 0 18.304 7.552l6.016 0.298667h89.173334l8.661333-71.68-84.992-0.469333z m332.501333-104.32c35.584 0 53.333333 17.408 53.333334 52.309333l-0.256 5.589333-0.725334 8.746667-5.162666 41.813333c-5.12 42.154667-26.026667 64.469333-62.634667 66.986667l-7.04 0.213333h-69.162667l21.504-175.658666h70.144z\"></path></svg>";
         public const string SVG_NOT_CONTAIN = "<svg viewBox=\"0 0 1024 1024\" data-spm-anchor-id=\"a313x.search_index.0.i20.6d6e3a81oSdXOG\"><path d=\"M656.512 213.333333a42.666667 42.666667 0 0 1 42.410667 47.232l-54.826667 512A42.666667 42.666667 0 0 1 601.6 810.666667H399.530667a42.666667 42.666667 0 0 1-42.453334-47.232l54.869334-512A42.666667 42.666667 0 0 1 454.357333 213.333333h202.154667z m189.141333 194.816l71.68 1.194667-6.656 54.186667-90.496-0.512c-21.248 0-37.418667 5.632-48.512 16.981333-11.093333 11.221333-18.005333 27.946667-20.650666 50.176l-5.205334 43.989333-0.725333 8.789334-0.256 6.058666c0 34.432 17.536 51.626667 52.650667 51.626667h25.514666l13.312-0.469333 16.426667-0.853334 30.421333-2.218666 11.690667-0.938667-5.674667 54.656c-29.994667 3.114667-55.765333 4.693333-77.354666 4.693333h-20.992c-70.528 0-105.813333-32.128-105.813334-96.341333 0-8.448 0.469333-17.28 1.493334-26.496l4.992-41.002667c5.205333-41.002667 18.901333-71.850667 41.002666-92.501333 22.186667-20.650667 53.589333-31.018667 94.165334-31.018667h18.986666zM493.482667 298.666667h-58.837334L386.56 693.504h128l9.173333-0.170667c72.106667-2.944 114.048-40.96 125.696-114.005333l1.28-9.344 4.693334-38.826667 0.810666-8.789333a220.586667 220.586667 0 0 0 0.682667-16.853333c0-32.128-8.917333-56.32-26.666667-72.661334-15.914667-14.805333-39.082667-22.954667-69.461333-24.448l-10.410667-0.256h-70.144L493.482667 298.666667zM254.72 407.466667c35.2 0 61.824 8.405333 79.786667 25.173333 18.133333 16.810667 27.221333 39.125333 27.221333 66.986667l-0.085333 2.773333-0.938667 13.226667-20.992 177.194666H191.146667c-25.6 0-46.08-7.253333-61.525334-21.845333-15.36-14.506667-22.997333-33.365333-22.997333-56.490667 0-5.205333 0.213333-9.173333 0.682667-11.818666 2.986667-21.248 8.362667-38.058667 16.170666-50.517334 7.850667-12.458667 19.242667-21.461333 34.133334-27.008 14.933333-5.674667 34.474667-8.490667 58.666666-8.490666h86.016l0.512-4.181334a38.954667 38.954667 0 0 0 0.469334-7.168c0-13.312-4.437333-24.021333-13.312-32.170666-8.874667-8.192-22.741333-12.330667-41.514667-12.330667h-13.141333c-30.464 0-57.813333 0.853333-82.005334 2.517333l7.68-52.181333 21.632-1.365333 32.085334-1.621334 18.090666-0.597333 21.845334-0.085333z m-43.52 159.872c-12.970667-0.341333-23.338667 2.133333-30.976 7.466666-6.570667 4.48-10.965333 11.946667-13.098667 22.4l-0.896 5.461334-0.512 6.144c0 9.898667 2.773333 17.493333 8.32 22.826666a31.146667 31.146667 0 0 0 18.304 7.552l6.016 0.298667h89.173334l8.661333-71.68-84.992-0.469333z m332.501333-104.32c35.584 0 53.333333 17.408 53.333334 52.309333l-0.256 5.589333-0.725334 8.746667-5.162666 41.813333c-5.12 42.154667-26.026667 64.469333-62.634667 66.986667l-7.04 0.213333h-69.162667l21.504-175.658666h70.144z\" data-spm-anchor-id=\"a313x.search_index.0.i19.6d6e3a81oSdXOG\" class=\"selected\" fill=\"#d81e06\"></path></svg>";
         public const string SVG_FILTER_CLEAR = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M789.312 128c23.616 0 42.688 19.072 42.688 42.688v192c0 7.488-3.84 14.08-9.728 17.92a39.808 39.808 0 0 1-12.288 11.328L716.48 448 552.32 446.912l194.24-116.544V213.312H149.312v117.312l214.016 128.576A42.688 42.688 0 0 1 384 498.56a38.656 38.656 0 0 1 0.256 4.736v324.48H298.88V519.936L86.016 392.128a42.56 42.56 0 0 1-12.672-11.584 21.888 21.888 0 0 1-9.344-17.92v-192C64 147.136 83.072 128 106.688 128h682.624z\"></path><path d=\"M902.960461 556.92179l-147.07821 147.07821 147.07821 147.07821-67.882251 67.882251L688 771.882251 540.92179 918.960461 473.039539 851.07821l147.07821-147.07821L473.039539 556.92179l67.882251-67.882251L688 636.117749 835.07821 489.039539l67.882251 67.882251z\" fill=\"#FF5151\"></path></svg>";
-        private const string CHECKED_ALL = "(全选)";
-        private const string BLANK_FIELD = "(空白)";
+
+        string CHECKED_ALL = Localization.Get("Filter.SelectAll", "(全选)"), BLANK_FIELD = Localization.Get("Filter.Blank", "(空白)");
 
         #region Ctor
 
@@ -49,14 +49,14 @@ namespace AntdUI
             _column = currentColumn;
             if (Option.Table == null) Option.Table = table;
             if (Option.Column == null) Option.Column = currentColumn;
-            inputSearch.PlaceholderText = $"搜索 {currentColumn.Title}";
+            inputSearch.PlaceholderText = Localization.Get("Filter.Search", "搜索") + " " + currentColumn.Title;
             CustomSource = customSource;
             RowsCache = table?.dataTmp?.RowsCache;
             segmentedSource.SelectIndex = (int)Option.ActiveSource + 1;
             segmentedSource.Items[0].Enabled = Option.Enabled;
             segmentedSource.Items[0].IconSvg = SVG_FILTER_CLEAR;
-
             InitFilterEditor();
+            if (int.TryParse(Localization.Get("Filter.Width", "180"), out int w)) Width = w;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -75,11 +75,8 @@ namespace AntdUI
         {
             Array conditions = Enum.GetValues(typeof(FilterConditions));
             List<SelectItem> items = new List<SelectItem>(conditions.Length);
-            foreach (FilterConditions condition in conditions)
-            {
-                items.Add(new SelectItem(condition) { IconSvg = GetConditionIconSvg(condition), Text = null, SubText = GetConditionText(condition) });
-            }
-            items.RemoveAt(items.Count - 1); // 移除 None 条件
+            foreach (FilterConditions condition in conditions) items.Add(new SelectItem(condition).SetText(GetConditionText(condition)).SetIcon(GetConditionIconSvg(condition)));
+            items.RemoveAt(items.Count - 1);
             selectCondition.Items.AddRange(items.ToArray());
             selectCondition.SelectedIndex = (int)Option.Condition;
             selectCondition.SelectedIndexChanged += SelectCondition_SelectedIndexChanged;
@@ -143,7 +140,7 @@ namespace AntdUI
                 edit.UnCheckedText = "否";
                 try
                 {
-                    edit.Checked = Option.FilterValues != null && Option.FilterValues.Count == 1 ? Convert.ToBoolean(Option.FilterValues[0]) : false;
+                    edit.Checked = Option.FilterValues != null && Option.FilterValues.Count == 1 && Convert.ToBoolean(Option.FilterValues[0]);
                 }
                 catch { }
                 edit.CheckedChanged += EditChecked_CheckedChanged;
@@ -161,7 +158,7 @@ namespace AntdUI
                     Margin = new Padding(0),
                     Dock = DockStyle.Fill
                 };
-#pragma warning disable CS8601 // 引用类型赋值可能为 null。
+#pragma warning disable CS8601 // 引用类型赋值可能为 null
                 edit.Text = Option.FilterValues != null && Option.FilterValues.Count == 1 && Option.FilterValues[0] != DBNull.Value ? Option.FilterValues[0].ToString() : string.Empty;
 #pragma warning restore CS8601 // 引用类型赋值可能为 null。
                 edit.TextChanged += Edit_TextChanged;
@@ -173,13 +170,13 @@ namespace AntdUI
         {
             treeList.Items.Clear();
             bool enabled = Option.Enabled;
-            HashSet<object> values = new HashSet<object>();
+            var values = new HashSet<object>();
             bool blankFlag = false;
             if (sourceType != FilterSource.DataSource && customSource != null && customSource.Count > 0)
             {
                 segmentedSource.Items[2].Text = "用户数据";
                 segmentedSource.SelectIndex = 2;
-                foreach (object val in customSource)
+                foreach (var val in customSource)
                 {
                     if (blankFlag == false) blankFlag = val == null || val == DBNull.Value;
                     values.Add(val);
@@ -188,29 +185,24 @@ namespace AntdUI
             else
             {
                 Table.IRow[]? source;
-                if (sourceType == FilterSource.Current)
-                    source = TableView?.dataTmp?.rowsFilter;
+                if (sourceType == FilterSource.Current) source = TableView?.dataTmp?.rowsFilter;
                 else if (sourceType == FilterSource.CurrentFirst)
                 {
                     source = TableView?.dataTmp?.rowsFilter;
                     if (source == null || source.Length == 0) source = RowsCache;
                 }
-                else
-                    source = RowsCache;
+                else source = RowsCache;
                 if (source == null) return;
 
                 foreach (var row in source)
                 {
-                    object? value = row[FocusedColumn.Key];
+                    var value = row[FocusedColumn.Key];
                     if (blankFlag == false) blankFlag = value == null || value == DBNull.Value;
-
-                    if (values.Contains(value) == false) values.Add(value);
-
+                    if (!values.Contains(value)) values.Add(value);
                 }
             }
 
-            List<TreeItem> items = new List<TreeItem>();
-            items.Add(CreateItem(CHECKED_ALL, enabled));
+            var items = new List<TreeItem>(values.Count + 1) { CreateItem(CHECKED_ALL, enabled) };
             foreach (var val in values)
             {
                 if (blankFlag && Option.AllowNull == false && (val == null || val == DBNull.Value)) continue;
@@ -248,26 +240,27 @@ namespace AntdUI
         }
         private string GetConditionText(FilterConditions condition)
         {
-            switch (condition)//未本地化
+            switch (condition)
             {
                 case FilterConditions.NotEqual:
-                    return "不等于";
+                    return Localization.Get("Filter.NotEqual", "不等于");
                 case FilterConditions.Greater:
-                    return "大于 (以...开头)";
+                    return Localization.Get("Filter.Greater", "大于 (以...开头)");
                 case FilterConditions.Less:
-                    return "小于 (以...结尾)";
+                    return Localization.Get("Filter.Less", "小于 (以...结尾)");
                 case FilterConditions.Contain:
-                    return "存在";
+                    return Localization.Get("Filter.Contain", "存在");
                 case FilterConditions.NotContain:
-                    return "不存在";
+                    return Localization.Get("Filter.NotContain", "不存在");
                 default:
-                    return "等于";
+                    return Localization.Get("Filter.Equal", "等于");
             }
         }
         #endregion
 
         #region Properties
-        public FilterOption Option { get { return FocusedColumn.Filter; } }
+
+        public FilterOption Option => FocusedColumn.Filter;
         protected IControl? Edit
         {
             get
@@ -280,13 +273,15 @@ namespace AntdUI
         protected Table _table;
         protected IList<object>? CustomSource { get; set; }
         protected bool EditLocked { get; set; } = true;
+
         /// <summary>
         /// Table视图控件
         /// </summary>
-        public Table TableView { get => _table; }
+        public Table TableView => _table;
+
         protected Column _column;
-        protected SegmentedItem ItemFilterEnabled { get { return segmentedSource.Items[0]; } }
-        public Column FocusedColumn { get => _column; }
+        protected SegmentedItem ItemFilterEnabled => segmentedSource.Items[0];
+        public Column FocusedColumn => _column;
 
         #endregion
 
@@ -363,13 +358,11 @@ namespace AntdUI
 
             }
         }
-        private FilterConditions beforeCondition = FilterConditions.None;
+
         private void SelectCondition_SelectedIndexChanged(object sender, IntEventArgs e)
         {
             FilterConditions condition = (FilterConditions)e.Value;
-            if (beforeCondition == Option.Condition) return;
-            beforeCondition = condition;
-
+            if (condition == Option.Condition) return;
             Option.Condition = condition;
             Edit_TextChanged(Edit, e);
         }

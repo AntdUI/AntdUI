@@ -51,7 +51,7 @@ namespace AntdUI
                 {
                     if (size == value) return;
                     size = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -67,7 +67,7 @@ namespace AntdUI
                 {
                     if (padding == value) return;
                     padding = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -83,7 +83,7 @@ namespace AntdUI
                 {
                     if (radius == value) return;
                     radius = value;
-                    owner?.Invalidate();
+                    owner?.Invalidate(true);
                 }
             }
 
@@ -99,7 +99,7 @@ namespace AntdUI
                 {
                     if (backsize == value) return;
                     backsize = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -648,7 +648,7 @@ namespace AntdUI
                 {
                     if (bordersize == value) return;
                     bordersize = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -720,7 +720,7 @@ namespace AntdUI
                 {
                     if (gap == value) return;
                     gap = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -736,7 +736,7 @@ namespace AntdUI
                 {
                     if (closable == value) return;
                     closable = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -1394,7 +1394,7 @@ namespace AntdUI
                 {
                     if (bordersize == value) return;
                     bordersize = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 
@@ -1466,7 +1466,7 @@ namespace AntdUI
                 {
                     if (gap == value) return;
                     gap = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
             public enum CloseType { none, always, activate }
@@ -1482,7 +1482,7 @@ namespace AntdUI
                 {
                     if (closable == value) return;
                     closable = value;
-                    owner?.LoadLayout();
+                    owner?.LoadLayout(true);
                 }
             }
 

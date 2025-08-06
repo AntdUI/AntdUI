@@ -103,7 +103,7 @@ namespace AntdUI
             {
                 if (alignment == value) return;
                 alignment = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(Alignment));
             }
         }
@@ -120,7 +120,7 @@ namespace AntdUI
             {
                 if (centered == value) return;
                 centered = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(Centered));
             }
         }
@@ -140,7 +140,7 @@ namespace AntdUI
                 bitblock_l?.Dispose();
                 bitblock_r?.Dispose();
                 bitblock_l = bitblock_r = null;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(TypExceed));
             }
         }
@@ -231,7 +231,7 @@ namespace AntdUI
                 if (type == value) return;
                 type = value;
                 style = SetType(value);
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(Type));
             }
         }
@@ -267,7 +267,7 @@ namespace AntdUI
             {
                 if (_gap == value) return;
                 _gap = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(Gap));
             }
         }
@@ -284,7 +284,7 @@ namespace AntdUI
             {
                 if (iconratio == value) return;
                 iconratio = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(IconRatio));
             }
         }
@@ -297,7 +297,7 @@ namespace AntdUI
             set
             {
                 _tabMenuVisible = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(TabMenuVisible));
             }
         }
@@ -314,7 +314,7 @@ namespace AntdUI
             {
                 if (_itemSize == value) return;
                 _itemSize = value;
-                LoadLayout();
+                LoadLayout(true);
                 OnPropertyChanged(nameof(ItemSize));
             }
         }
@@ -455,26 +455,26 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             this.AddListener();
-            LoadLayout(false);
+            LoadLayout();
             showok = true;
             ShowPage(_select);
         }
 
         protected override void OnMarginChanged(EventArgs e)
         {
-            LoadLayout(true);
+            LoadLayout();
             base.OnMarginChanged(e);
         }
 
         protected override void OnFontChanged(EventArgs e)
         {
-            LoadLayout(false);
+            LoadLayout();
             base.OnFontChanged(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            LoadLayout(false);
+            LoadLayout();
             base.OnSizeChanged(e);
         }
 
@@ -490,23 +490,24 @@ namespace AntdUI
             return false;
         }
 
-        internal void LoadLayout(bool r = true)
+        bool CanLayout()
         {
             if (IsHandleCreated)
             {
-                if (items == null) return;
-                if (_tabMenuVisible)
-                {
-                    var rect = ClientRectangle;
-                    if (rect.Width > 0 && rect.Height > 0)
-                    {
-                        var rect_t = rect.DeflateRect(Margin);
-                        style.LoadLayout(this, rect_t, items);
-                        if (r) Invalidate();
-                    }
-                }
+                var rect = ClientRectangle;
+                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+        internal void LoadLayout(bool print = false)
+        {
+            if (CanLayout())
+            {
+                if (_tabMenuVisible) style.LoadLayout(this, ClientRectangle.DeflateRect(Margin), items!);
                 else SetPadding(0, 0, 0, 0);
             }
+            if (print) Invalidate();
         }
 
         #endregion
@@ -1560,7 +1561,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.LANG:
-                    LoadLayout(false);
+                    LoadLayout(true);
                     break;
             }
         }
@@ -1579,8 +1580,8 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.LoadLayout(false);
-                it.Invalidate();
+                if (render) it.LoadLayout(true);
+                else it.Invalidate();
             };
             action_add = item =>
             {
@@ -1651,7 +1652,7 @@ namespace AntdUI
             {
                 if (icon == value) return;
                 icon = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1667,7 +1668,7 @@ namespace AntdUI
             {
                 if (iconSvg == value) return;
                 iconSvg = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1688,7 +1689,7 @@ namespace AntdUI
             {
                 if (readOnly == value) return;
                 readOnly = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1766,7 +1767,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 base.Text = text = value;
-                PARENT?.LoadLayout();
+                PARENT?.LoadLayout(true);
             }
         }
 
@@ -1800,12 +1801,12 @@ namespace AntdUI
         internal Tabs? PARENT;
         protected override void OnTextChanged(EventArgs e)
         {
-            PARENT?.LoadLayout();
+            PARENT?.LoadLayout(true);
             base.OnTextChanged(e);
         }
         protected override void OnVisibleChanged(EventArgs e)
         {
-            PARENT?.LoadLayout();
+            PARENT?.LoadLayout(true);
             base.OnVisibleChanged(e);
         }
 

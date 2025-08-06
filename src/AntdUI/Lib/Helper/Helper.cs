@@ -63,12 +63,7 @@ namespace AntdUI
 
         public static Color ToColorN(float val, Color color) => ToColor((int)(val * color.A), color);
 
-        public static Color ToColor(int alpha, Color color)
-        {
-            if (alpha > 255) alpha = 255;
-            else if (alpha < 0) alpha = 0;
-            return Color.FromArgb(alpha, color);
-        }
+        public static Color ToColor(int alpha, Color color) => Color.FromArgb(Style.rgbbyte(alpha), color);
 
         public static Form? FindPARENT(this Control? control, bool mdi = false)
         {
