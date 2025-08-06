@@ -209,7 +209,7 @@ namespace AntdUI
 
         private void Form_LSChanged(object? sender, EventArgs e)
         {
-            if (SetPoint()) Print();
+            if (SetPoint()) PrintCache();
         }
 
         #region 渲染

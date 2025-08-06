@@ -324,6 +324,7 @@ namespace AntdUI
         bool run_end = false, ok_end = false;
         protected override void OnLoad(EventArgs e)
         {
+            base.OnLoad(e);
             if (Config.HasAnimation(nameof(Drawer)))
             {
                 var t = Animation.TotalFrames(10, 100);
@@ -345,13 +346,11 @@ namespace AntdUI
                     SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
                     task_start = null;
                 }, sleep);
-                base.OnLoad(e);
             }
             else
             {
                 SetAnimateValue(end_X, end_Y, end_W, end_H, 255);
-                base.OnLoad(e);
-                ShowContent();
+                BeginInvoke(ShowContent);
             }
         }
 
@@ -410,8 +409,6 @@ namespace AntdUI
             IsLoad = false;
             LoadCompleted?.Invoke();
             config.Content.SizeChanged += Content_SizeChanged;
-            tempContent?.Dispose();
-            tempContent = null;
             config.Content.ControlEvent();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
         }
@@ -576,7 +573,7 @@ namespace AntdUI
             {
                 config.Form.LocationChanged -= Form_LocationChanged;
                 config.Form.SizeChanged -= Form_SizeChanged;
-
+                tempContent?.Dispose();
                 tempContent = new Bitmap(config.Content.Width, config.Content.Height);
                 config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
                 if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);

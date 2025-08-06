@@ -27,6 +27,7 @@ namespace AntdUI
     public abstract class ILayeredForm : Form, IMessageFilter
     {
         IntPtr? handle;
+        IntPtr memDc;
         public ILayeredForm()
         {
             SetStyle(
@@ -41,6 +42,7 @@ namespace AntdUI
             Size = new Size(0, 0);
             actionLoadMessage = LoadMessage;
             actionCursor = val => SetCursor(val);
+            memDc = Win32.CreateCompatibleDC(Win32.screenDC);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -76,11 +78,13 @@ namespace AntdUI
             FunRun = false;
             Application.RemoveMessageFilter(this);
             base.Dispose(disposing);
+            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            if (memDc == IntPtr.Zero) return;
+            Win32.DeleteDC(memDc);
+            memDc = IntPtr.Zero;
         }
 
         public virtual bool UFocus => true;
-
-        public abstract Bitmap PrintBit();
 
         public byte alpha = 10;
 
@@ -152,13 +156,21 @@ namespace AntdUI
 
         #endregion
 
+        public abstract Bitmap PrintBit();
+        public Bitmap Printmap()
+        {
+            RenderCache = false;
+            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            return PrintBit();
+        }
+
         public RenderResult Print(bool fore = false)
         {
             if (CanRender(out var handle))
             {
                 try
                 {
-                    using (var bmp = PrintBit())
+                    using (var bmp = Printmap())
                     {
                         if (bmp == null) return RenderResult.Skip;
                         return Render(handle, alpha, bmp, target_rect);
@@ -182,7 +194,22 @@ namespace AntdUI
                 else return RenderResult.Skip;
             }
         }
+        public RenderResult PrintCache(bool fore = false)
+        {
+            if (CanRender(out var handle))
+            {
+                try
+                {
+                    return Render(handle, alpha, target_rect);
+                }
+                catch { }
+                return RenderResult.Error;
+            }
+            else return RenderResult.Skip;
+        }
 
+        public bool RenderCache = false;
+        IntPtr hBitmap, oldBits;
         RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
             if (InvokeRequired)
@@ -190,11 +217,28 @@ namespace AntdUI
                 try
                 {
                     if (IsDisposed || Disposing) return RenderResult.Skip;
-                    return Invoke(() => Win32.SetBits(bmp, rect, handle, alpha));
+                    if (RenderCache) return Invoke(() => Win32.SetBits(memDc, rect, handle, alpha));
+                    RenderCache = true;
+                    return Invoke(() => Win32.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits));
                 }
                 catch { }
             }
-            return Win32.SetBits(bmp, rect, handle, alpha);
+            if (RenderCache) return Win32.SetBits(memDc, rect, handle, alpha);
+            RenderCache = true;
+            return Win32.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits);
+        }
+        RenderResult Render(IntPtr handle, byte alpha, Rectangle rect)
+        {
+            if (InvokeRequired)
+            {
+                try
+                {
+                    if (IsDisposed || Disposing) return RenderResult.Skip;
+                    return Invoke(() => Win32.SetBits(memDc, rect, handle, alpha));
+                }
+                catch { }
+            }
+            return Win32.SetBits(memDc, rect, handle, alpha);
         }
 
         Action<bool> actionCursor;

@@ -30,25 +30,41 @@ namespace AntdUI
 
         #region 初始化
 
-        static IntPtr screenDC, memDc;
+        public static IntPtr screenDC;
         static Win32()
         {
             screenDC = GetDC(IntPtr.Zero);
-            memDc = CreateCompatibleDC(screenDC);
         }
 
         ~Win32()
         {
-            DeleteDC(memDc);
             ReleaseDC(IntPtr.Zero, screenDC);
         }
 
         #endregion
 
-        public static RenderResult SetBits(Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte alpha = 255)
+        public static RenderResult SetBits(IntPtr memDc, Bitmap? bmp, Rectangle rect, IntPtr intPtr, byte alpha, out IntPtr hBitmap, out IntPtr oldBits)
         {
-            if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare) return RenderResult.Invalid;
-            IntPtr hBitmap = bmp.GetHbitmap(Color.FromArgb(0)), oldBits = SelectObject(memDc, hBitmap);
+            if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
+            {
+                hBitmap = oldBits = IntPtr.Zero;
+                return RenderResult.Invalid;
+            }
+            hBitmap = bmp.GetHbitmap(Color.FromArgb(0));
+            oldBits = SelectObject(memDc, hBitmap);
+            var r = SetBits(memDc, rect, intPtr, alpha);
+            return r;
+        }
+        public static bool Dispose(IntPtr memDc, ref IntPtr hBitmap, ref IntPtr oldBits)
+        {
+            if (hBitmap == IntPtr.Zero) return false;
+            SelectObject(memDc, oldBits);
+            DeleteObject(hBitmap);
+            hBitmap = IntPtr.Zero;
+            return true;
+        }
+        public static RenderResult SetBits(IntPtr memDc, Rectangle rect, IntPtr intPtr, byte alpha)
+        {
             try
             {
                 var srcLoc = new Win32Point(0, 0);
@@ -64,14 +80,6 @@ namespace AntdUI
                 UpdateLayeredWindow(intPtr, screenDC, ref topLoc, ref topSize, memDc, ref srcLoc, 0, ref blendFunc, ULW_ALPHA);
             }
             catch { return RenderResult.Error; }
-            finally
-            {
-                if (hBitmap != IntPtr.Zero)
-                {
-                    SelectObject(memDc, oldBits);
-                    DeleteObject(hBitmap);
-                }
-            }
             return RenderResult.OK;
         }
 
@@ -111,7 +119,7 @@ namespace AntdUI
         const byte AC_SRC_ALPHA = 1;
 
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+        public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
 
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         static extern IntPtr GetDC(IntPtr hWnd);
@@ -123,7 +131,7 @@ namespace AntdUI
         static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        static extern int DeleteDC(IntPtr hDC);
+        public static extern int DeleteDC(IntPtr hDC);
 
         [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
         static extern int DeleteObject(IntPtr hObj);

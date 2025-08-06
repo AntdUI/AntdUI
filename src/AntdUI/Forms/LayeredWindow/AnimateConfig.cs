@@ -139,7 +139,7 @@ namespace AntdUI
             {
                 try
                 {
-                    bmp_tmp ??= form.PrintBit();
+                    bmp_tmp ??= form.Printmap();
                     if (bmp_tmp == null) return;
                     if (form.Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
                 }
@@ -296,7 +296,7 @@ namespace AntdUI
                     var bmp = new Bitmap(rect.Width, rect.Height);
                     using (var g = Graphics.FromImage(bmp))
                     {
-                        bmp_tmp ??= form.PrintBit();
+                        bmp_tmp ??= form.Printmap();
                         if (bmp_tmp == null) return;
                         lock (bmp_tmp)
                         {
@@ -324,7 +324,7 @@ namespace AntdUI
                     var bmp = new Bitmap(rect.Width, rect.Height);
                     using (var g = Graphics.FromImage(bmp))
                     {
-                        bmp_tmp ??= form.PrintBit();
+                        bmp_tmp ??= form.Printmap();
                         if (bmp_tmp == null) return;
                         lock (bmp_tmp)
                         {
