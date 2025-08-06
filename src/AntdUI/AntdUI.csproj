@@ -55,7 +55,6 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Pack)' == 'true'">
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<SignAssembly>True</SignAssembly>

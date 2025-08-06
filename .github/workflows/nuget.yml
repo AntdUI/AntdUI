@@ -48,7 +48,4 @@ jobs:
       # ========== 🚀 发布到 NuGet ==========
       - name: Push
         run: |
-          dotnet nuget push \tom\*.nupkg \
-            --source https://api.nuget.org/v3/index.json \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --skip-duplicate
+          dotnet nuget push \tom\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
