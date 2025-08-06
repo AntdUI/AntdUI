@@ -141,7 +141,15 @@ namespace AntdUI
                             }
                             ITask.Run(() =>
                             {
-                                bool result = config.OnBtns?.Invoke(btn) ?? true;
+                                bool result = true;
+                                if (config.OnBtns != null)
+                                {
+                                    try
+                                    {
+                                        result = config.OnBtns(btn);
+                                    }
+                                    catch { result = false; }
+                                }
                                 btn.Loading = false;
                                 isclose = true;
                                 if (result)

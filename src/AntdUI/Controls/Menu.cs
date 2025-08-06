@@ -1055,7 +1055,8 @@ namespace AntdUI
                 }
                 else if (mode == TMenuMode.Inline)
                 {
-                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
+                    MenuItem? hove = null;
+                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand, ref hove);
                 }
                 else if (mode == TMenuMode.InlineNoText)
                 {
@@ -1070,7 +1071,7 @@ namespace AntdUI
                                 hand++;
                             }
                             if (change) count++;
-                            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand);
+                            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand, ref hove);
                         }
                     }
                     if (hove != hoveold)
@@ -1114,17 +1115,18 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
+        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand, ref MenuItem? hove)
         {
             if (it.show)
             {
                 if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
                 {
+                    hove = it;
                     hand++;
                     return;
                 }
                 if (change) count++;
-                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand);
+                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand, ref hove);
             }
         }
 

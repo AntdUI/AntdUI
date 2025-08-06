@@ -45,10 +45,7 @@ namespace AntdUI
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new FormBorderStyle FormBorderStyle
-        {
-            get => base.FormBorderStyle;
-        }
+        public new FormBorderStyle FormBorderStyle => base.FormBorderStyle;
 
         bool CanMessageFilter => DwmEnabled || shadow < 4;
 
@@ -262,7 +259,7 @@ namespace AntdUI
         int oldmargin = 0;
         void DwmArea()
         {
-            if (DwmEnabled && shadow > 0)
+            if (DwmEnabled)
             {
                 int margin;
                 if (WindowState == FormWindowState.Normal) margin = 1;
@@ -377,6 +374,7 @@ namespace AntdUI
             SetTheme();
             DisableProcessWindowsGhosting();
             HandMessage();
+            DwmArea();
         }
 
         #region 交互

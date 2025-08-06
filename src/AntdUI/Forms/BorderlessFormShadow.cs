@@ -26,7 +26,8 @@ namespace AntdUI
     internal class BorderlessFormShadow : Form
     {
         BorderlessForm form;
-        //带参构造
+        IntPtr memDc;
+
         public BorderlessFormShadow(BorderlessForm main)
         {
             form = main;
@@ -45,7 +46,16 @@ namespace AntdUI
             Icon = form.Icon;
             ShowIcon = false;
             Text = form.Text;
+            memDc = Win32.CreateCompatibleDC(Win32.screenDC);
             ISize();
+        }
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing); 
+            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            if (memDc == IntPtr.Zero) return;
+            Win32.DeleteDC(memDc);
+            memDc = IntPtr.Zero;
         }
 
         #region 无焦点窗体
@@ -109,7 +119,7 @@ namespace AntdUI
         public void OnLocationChange()
         {
             ISize();
-            Print();
+            PrintCache();
         }
 
         Rectangle shadow_rect = new Rectangle(0, 0, 0, 0), rect_read;
@@ -136,6 +146,7 @@ namespace AntdUI
 
         #region 渲染
 
+        IntPtr hBitmap, oldBits;
         public void Print()
         {
             if (IsHandleCreated && shadow_rect.Width > 0 && shadow_rect.Height > 0)
@@ -150,8 +161,25 @@ namespace AntdUI
                     using (var bmp = PrintBit())
                     {
                         if (bmp == null) return;
-                        Win32.SetBits(bmp, shadow_rect, Handle, 255);
+                        Win32.SetBits(memDc, bmp, shadow_rect, Handle, 255, out hBitmap, out oldBits);
                     }
+                }
+                catch { }
+            }
+        }
+
+        public void PrintCache()
+        {
+            if (IsHandleCreated && shadow_rect.Width > 0 && shadow_rect.Height > 0)
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(PrintCache));
+                    return;
+                }
+                try
+                {
+                    Win32.SetBits(memDc, shadow_rect, Handle, 255);
                 }
                 catch { }
             }
@@ -160,6 +188,7 @@ namespace AntdUI
         Bitmap? bitbmp = null;
         Bitmap PrintBit()
         {
+            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
             int radius = (int)(form.Radius * Config.Dpi), shadow = (int)(form.Shadow * Config.Dpi), shadow2 = shadow * 2, shadow4 = shadow * 4, shadow6 = shadow * 6;
             if (bitbmp == null)
             {
