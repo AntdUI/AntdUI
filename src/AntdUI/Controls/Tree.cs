@@ -366,20 +366,29 @@ namespace AntdUI
             ChangeList();
         }
 
-        internal void ChangeList(bool print = false)
+        bool CanLayout()
         {
-            var rect = ClientRectangle;
-            if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return;
             if (IsHandleCreated)
             {
+                var rect = ClientRectangle;
+                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+        internal void ChangeList(bool print = false)
+        {
+            if (CanLayout())
+            {
+                var rect = ClientRectangle;
                 int x = 0, y = 0;
-                bool has = HasSub(items);
+                bool has = HasSub(items!);
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Config.Dpi) : icon_size, gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
                     check_radius = icon_size * .2F;
-                    if (CheckStrictly && has && items[0].PARENT == null && items[0].PARENTITEM == null)
+                    if (CheckStrictly && has && items![0].PARENT == null && items[0].PARENTITEM == null)
                     {
                         //新数据
                         var dir = new List<TreeItem>();
@@ -393,12 +402,12 @@ namespace AntdUI
                             else item.CheckState = CheckState.Unchecked;
                         }
                     }
-                    ChangeList(g, rect, null, items, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
+                    ChangeList(g, rect, null, items!, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
                 });
                 ScrollBar.SetVrSize(x, y);
                 ScrollBar.SizeChange(rect);
-                if (print) Invalidate();
             }
+            if (print) Invalidate();
         }
 
         bool HasSub(TreeItemCollection items)

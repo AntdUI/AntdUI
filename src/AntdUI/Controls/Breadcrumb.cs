@@ -47,8 +47,7 @@ namespace AntdUI
             {
                 if (gap == value) return;
                 gap = value;
-                ChangeItems();
-                Invalidate();
+                ChangeItems(true);
                 OnPropertyChanged(nameof(Gap));
             }
         }
@@ -220,62 +219,69 @@ namespace AntdUI
             {
                 if (pauseLayout == value) return;
                 pauseLayout = value;
-                if (!value)
-                {
-                    ChangeItems();
-                    Invalidate();
-                }
+                if (!value) ChangeItems(true);
                 OnPropertyChanged(nameof(PauseLayout));
             }
         }
 
         Rectangle[] hs = new Rectangle[0];
-        internal void ChangeItems()
+        bool CanLayout()
         {
-            if ((items == null || items.Count == 0) || pauseLayout) return;
-            var _rect = ClientRectangle.PaddingRect(Padding);
-            if (_rect.Width == 0 || _rect.Height == 0) return;
-            var rect = _rect.PaddingRect(Margin);
-            hs = Helper.GDI(g =>
+            if (IsHandleCreated)
             {
-                var hs = new List<Rectangle>(items.Count);
-                var size_t = g.MeasureString(Config.NullText, Font);
-                int sp = (int)(4 * Config.Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Config.Dpi);
-                int x = 0, tmpx = 0;
-                foreach (var it in items)
+                var rect = ClientRectangle;
+                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+        internal void ChangeItems(bool print = false)
+        {
+            if (CanLayout())
+            {
+                var rect = ClientRectangle.PaddingRect(Padding).PaddingRect(Margin);
+                hs = Helper.GDI(g =>
                 {
-                    it.PARENT = this;
-
-                    if (it.Text == null || string.IsNullOrEmpty(it.Text))
+                    var hs = new List<Rectangle>(items!.Count);
+                    var size_t = g.MeasureString(Config.NullText, Font);
+                    int sp = (int)(4 * Config.Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Config.Dpi);
+                    int x = 0, tmpx = 0;
+                    foreach (var it in items)
                     {
-                        var Rect = new Rectangle(rect.X + x, y, imgsize + sp2, h);
-                        if (it.HasIcon)
-                        {
-                            it.Rect = it.RectText = Rect;
-                            it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
-                        }
-                        else it.Rect = it.RectText = Rect;
-                    }
-                    else
-                    {
-                        var size = g.MeasureText(it.Text, Font);
-                        if (it.HasIcon)
-                        {
-                            var Rect = new Rectangle(rect.X + x, y, imgsize + sp + size.Width + sp2, h);
-                            it.Rect = Rect;
-                            it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
-                            it.RectText = new Rectangle(it.RectImg.Right + sp, Rect.Y, size.Width, Rect.Height);
-                        }
-                        else it.Rect = it.RectText = new Rectangle(rect.X + x, y, size.Width + sp2, h);
-                    }
-                    x += it.Rect.Width + _gap;
+                        it.PARENT = this;
 
-                    if (tmpx > 0) hs.Add(new Rectangle(tmpx - _gap + sp, y, _gap, h));
+                        if (it.Text == null || string.IsNullOrEmpty(it.Text))
+                        {
+                            var Rect = new Rectangle(rect.X + x, y, imgsize + sp2, h);
+                            if (it.HasIcon)
+                            {
+                                it.Rect = it.RectText = Rect;
+                                it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
+                            }
+                            else it.Rect = it.RectText = Rect;
+                        }
+                        else
+                        {
+                            var size = g.MeasureText(it.Text, Font);
+                            if (it.HasIcon)
+                            {
+                                var Rect = new Rectangle(rect.X + x, y, imgsize + sp + size.Width + sp2, h);
+                                it.Rect = Rect;
+                                it.RectImg = new Rectangle(Rect.X + sp, y_img, imgsize, imgsize);
+                                it.RectText = new Rectangle(it.RectImg.Right + sp, Rect.Y, size.Width, Rect.Height);
+                            }
+                            else it.Rect = it.RectText = new Rectangle(rect.X + x, y, size.Width + sp2, h);
+                        }
+                        x += it.Rect.Width + _gap;
 
-                    tmpx = x;
-                }
-                return hs.ToArray();
-            });
+                        if (tmpx > 0) hs.Add(new Rectangle(tmpx - _gap + sp, y, _gap, h));
+
+                        tmpx = x;
+                    }
+                    return hs.ToArray();
+                });
+            }
+            if (print) Invalidate();
         }
 
         #endregion
@@ -364,8 +370,8 @@ namespace AntdUI
         {
             action = render =>
             {
-                if (render) it.ChangeItems();
-                it.Invalidate();
+                if (render) it.ChangeItems(true);
+                else it.Invalidate();
             };
             return this;
         }

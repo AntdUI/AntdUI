@@ -96,11 +96,7 @@ namespace AntdUI
             {
                 if (pauseLayout == value) return;
                 pauseLayout = value;
-                if (!value)
-                {
-                    ChangeList();
-                    Invalidate();
-                }
+                if (!value) ChangeList(true);
                 OnPropertyChanged(nameof(PauseLayout));
             }
         }
@@ -111,58 +107,71 @@ namespace AntdUI
         [Browsable(false)]
         public ScrollBar ScrollBar;
 
-        internal void ChangeList()
+        bool CanLayout()
         {
-            var rect = ClientRectangle.DeflateRect(Padding);
-            if (pauseLayout || items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
-            int y = rect.Y;
-            Helper.GDI(g =>
+            if (IsHandleCreated)
             {
-                var size_def = g.MeasureString(Config.NullText, Font);
-                int text_size = size_def.Height;
-                float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
-                int gap = (int)Math.Round(8 * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * .846D), gap_y = (int)Math.Round((Gap * Config.Dpi) ?? (text_size * .91D)), ico_size = (int)Math.Round(text_size * .636D);
-
-                int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
-                y += gap_x;
-                var _splits = new List<RectangleF>(items.Count);
-                int i = 0;
-                var font_Description = FontDescription ?? Font;
-                int gap2 = gap * 2;
-                foreach (TimelineItem it in items)
+                var rect = ClientRectangle;
+                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+        internal void ChangeList(bool print = false)
+        {
+            if (CanLayout())
+            {
+                var rect = ClientRectangle.DeflateRect(Padding);
+                int y = rect.Y;
+                Helper.GDI(g =>
                 {
-                    it.PARENT = this;
-                    it.pen_w = pen_w;
+                    var size_def = g.MeasureString(Config.NullText, Font);
+                    int text_size = size_def.Height;
+                    float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
+                    int gap = (int)Math.Round(8 * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * .846D), gap_y = (int)Math.Round((Gap * Config.Dpi) ?? (text_size * .91D)), ico_size = (int)Math.Round(text_size * .636D);
 
-                    if (it.Visible)
+                    int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
+                    y += gap_x;
+                    var _splits = new List<RectangleF>(items!.Count);
+                    int i = 0;
+                    var font_Description = FontDescription ?? Font;
+                    int gap2 = gap * 2;
+                    foreach (TimelineItem it in items)
                     {
-                        var size = g.MeasureText(it.Text, Font, max_w);
-                        int ytmp = y, htmp = size.Height;
-                        it.ico_rect = new Rectangle(rect.X + gap_x, y + (text_size - ico_size) / 2, ico_size, ico_size);
-                        it.txt_rect = new Rectangle(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
-                        if (!string.IsNullOrEmpty(it.Description))
-                        {
-                            var DescriptionSize = g.MeasureText(it.Description, font_Description, max_w);
-                            it.description_rect = new Rectangle(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
-                            y += gap * 2 + DescriptionSize.Height;
-                            htmp += DescriptionSize.Height + gap;
-                        }
-                        it.rect = new Rectangle(it.ico_rect.X - gap, ytmp - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, htmp + gap2);
-                        y += size.Height + gap_y;
+                        it.PARENT = this;
+                        it.pen_w = pen_w;
 
-                        if (i > 0)
+                        if (it.Visible)
                         {
-                            var old = items[i - 1];
-                            if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
+                            var size = g.MeasureText(it.Text, Font, max_w);
+                            int ytmp = y, htmp = size.Height;
+                            it.ico_rect = new Rectangle(rect.X + gap_x, y + (text_size - ico_size) / 2, ico_size, ico_size);
+                            it.txt_rect = new Rectangle(it.ico_rect.Right + gap_x_icon, y, size.Width, size.Height);
+                            if (!string.IsNullOrEmpty(it.Description))
+                            {
+                                var DescriptionSize = g.MeasureText(it.Description, font_Description, max_w);
+                                it.description_rect = new Rectangle(it.txt_rect.X, it.txt_rect.Bottom + gap, DescriptionSize.Width, DescriptionSize.Height);
+                                y += gap * 2 + DescriptionSize.Height;
+                                htmp += DescriptionSize.Height + gap;
+                            }
+                            it.rect = new Rectangle(it.ico_rect.X - gap, ytmp - gap, it.txt_rect.Width + ico_size + gap_x_icon + gap2, htmp + gap2);
+                            y += size.Height + gap_y;
+
+                            if (i > 0)
+                            {
+                                var old = items[i - 1];
+                                if (old != null) _splits.Add(new RectangleF(it.ico_rect.X + (ico_size - split) / 2F, old.ico_rect.Bottom + split_gap, split, it.ico_rect.Y - old.ico_rect.Bottom - (split_gap * 2F)));
+                            }
                         }
+                        i++;
                     }
-                    i++;
-                }
-                splits = _splits.ToArray();
-                y = y - gap_y + gap_x;
-            });
-            ScrollBar.SetVrSize(y);
-            ScrollBar.SizeChange(rect);
+                    splits = _splits.ToArray();
+                    y = y - gap_y + gap_x;
+                });
+                ScrollBar.SetVrSize(y);
+                ScrollBar.SizeChange(rect);
+            }
+            if (print) Invalidate();
         }
 
         RectangleF[] splits = new RectangleF[0];
@@ -357,7 +366,7 @@ namespace AntdUI
             action = render =>
             {
                 if (render) it.ChangeList();
-                it.Invalidate();
+                else it.Invalidate();
             };
             return this;
         }
