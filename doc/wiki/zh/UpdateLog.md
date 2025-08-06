@@ -1,5 +1,18 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.0.17` 2025-08-06
+
+- ➕ Layered 缓存渲染（性能优化）
+- ➕ Select AutoPrefixSvg
+- ➕ Table Filter 国际化
+- ✍️ Drawer 闪烁优化
+- ✍️ Modal OnBtns 回调异常后卡死
+- ✍️ BorderlessForm 刚启动没有阴影
+- ✍️ Tree 集合刷新
+- ✍️ Menu InlineNoText 模式下提示可能闪动
+- ✍️ Steps 扩大 Index字体
+- ✍️ DatePickerRange 点击月
+
 ### `2.0.16` 2025-08-02
 
 - ➕ Table / Segmented / FloatButton Tooltip 延迟弹出

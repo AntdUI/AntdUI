@@ -293,17 +293,9 @@ namespace AntdUI
                 {
                     var tr = form.TargetRect;
                     var rect = new Rectangle(tr.X, y, tr.Width, height);
-                    var bmp = new Bitmap(rect.Width, rect.Height);
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        bmp_tmp ??= form.Printmap();
-                        if (bmp_tmp == null) return;
-                        lock (bmp_tmp)
-                        {
-                            g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
-                        }
-                    }
-                    form.Print(bmp, rect);
+                    bmp_tmp ??= form.Printmap();
+                    if (bmp_tmp == null) return;
+                    if (form.Print(bmp_tmp, rect) == RenderResult.Invalid) bmp_tmp = null;
                 }
                 catch { }
             }
@@ -321,17 +313,9 @@ namespace AntdUI
                 {
                     var tr = form.TargetRect;
                     var rect = new Rectangle(tr.X, tr.Y, tr.Width, height);
-                    var bmp = new Bitmap(rect.Width, rect.Height);
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        bmp_tmp ??= form.Printmap();
-                        if (bmp_tmp == null) return;
-                        lock (bmp_tmp)
-                        {
-                            g.DrawImage(bmp_tmp, 0, 0, rect.Width, rect.Height);
-                        }
-                    }
-                    form.Print(bmp, rect);
+                    bmp_tmp ??= form.Printmap();
+                    if (bmp_tmp == null) return;
+                    if (form.Print(bmp_tmp, rect) == RenderResult.Invalid) bmp_tmp = null;
                 }
                 catch { }
             }

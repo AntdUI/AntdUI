@@ -361,6 +361,12 @@ namespace AntdUI
             LoadLayout();
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            LoadLayout();
+        }
+
         bool CanLayout()
         {
             if (IsHandleCreated)

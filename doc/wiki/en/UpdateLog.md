@@ -1,5 +1,18 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.0.17` 2025-08-06
+
+- ➕ Layered cache rendering (performance optimization)
+- ➕ Select AutoPrefixSvg
+- ➕ Table Filter Internationalization
+- ✍️ Drawer flicker optimization
+- ✍️ Modal OnBtns freezes after callback exception
+- ✍️ BorderlessForm just launched without shadows
+- ✍️ Tree Collection Refresh
+- ✍️ The prompt may flash in Menu InlineNoText mode
+- ✍️ Steps to Expand Index Font
+- ✍️ DatePickerRange Click Month
+
 ### `2.0.16` 2025-08-02
 
 - ➕ Table/Segmented/FloatButton Tooltip Delayed Pop Up
