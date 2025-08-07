@@ -79,7 +79,6 @@ namespace Demo.Controls
             // 
             // panel1
             // 
-            panel1.AutoScroll = true;
             panel1.Controls.Add(avatar11);
             panel1.Controls.Add(avatar10);
             panel1.Controls.Add(avatar9);

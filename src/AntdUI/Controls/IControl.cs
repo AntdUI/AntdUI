@@ -19,6 +19,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
@@ -237,6 +238,8 @@ namespace AntdUI
 
         #endregion
 
+        #region Spin 加载
+
         /// <summary>
         /// Spin 加载中
         /// </summary>
@@ -259,6 +262,8 @@ namespace AntdUI
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
         public Task Spin(Spin.Config config, Action<Spin.Config> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
+
+        #endregion
 
         #region 帮助类
 
@@ -516,6 +521,53 @@ namespace AntdUI
                 }
             }
             else base.WndProc(ref m);
+        }
+
+        #endregion
+
+        #region 鼠标悬停
+
+        ITask? taskHover;
+        TimeSpan timeHover;
+        Stopwatch hoverStopwatch = new Stopwatch();
+        int oldx = -1, oldy = -1;
+        protected virtual bool CanMouseMove { get; set; }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (CanMouseMove)
+            {
+                if (oldx == e.X && oldy == e.Y) return;
+                oldx = e.X;
+                oldy = e.Y;
+                hoverStopwatch.Reset();
+                hoverStopwatch.Start();
+                timeHover = hoverStopwatch.Elapsed + TimeSpan.FromMilliseconds(Config.MouseHoverDelay);
+                if (taskHover == null)
+                {
+                    OnMouseHover(-1, -1);
+                    taskHover = new ITask(this, () =>
+                    {
+                        if (hoverStopwatch.Elapsed < timeHover) return true;
+                        BeginInvoke(() => OnMouseHover(oldx, oldy));
+                        return false;
+                    }, Config.MouseHoverDelay, () => taskHover = null, Config.MouseHoverDelay);
+                }
+            }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            taskHover?.Dispose();
+            taskHover = null;
+            hoverStopwatch.Reset();
+            oldx = -1;
+            oldy = -1;
+        }
+
+        protected virtual void OnMouseHover(int x, int y)
+        {
         }
 
         #endregion

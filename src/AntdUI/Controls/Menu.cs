@@ -894,6 +894,8 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            CloseTip();
+            CloseDropDown();
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
             if (ScrollBar.MouseDown(e.X, e.Y))
             {
@@ -960,7 +962,7 @@ namespace AntdUI
                             {
                                 if ((mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
                                 {
-                                    if (subForm == null) ShowDropDown(item);
+                                    if (subForm == null) OpenDropDown(item);
                                     else CloseDropDown();
                                 }
                                 else item.Expand = !item.Expand;
@@ -1009,16 +1011,6 @@ namespace AntdUI
                         {
                             hover_r = true;
                             Invalidate();
-                            CloseTooltip();
-                            CloseDropDown();
-                            hoveold = null;
-                            var list = new List<MenuItem>(items.Count);
-                            foreach (var it in items)
-                            {
-                                if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
-                            }
-                            subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
-                            subForm.Show(this);
                         }
                         foreach (var it in items) it.Hover = false;
                         SetCursor(true);
@@ -1032,81 +1024,40 @@ namespace AntdUI
                 }
                 if (collapsed)
                 {
-                    MenuItem? hove = null;
                     foreach (var it in items)
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
-                            {
-                                hove = it;
-                                hand++;
-                            }
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change)) hand++;
                             if (change) count++;
                         }
-                    }
-                    if (hove != hoveold)
-                    {
-                        CloseDropDown();
-                        CloseTooltip();
-                        if (hove == null) hoveold = null;
-                        else if (ShowDropDown(hove)) ShowTooltip(hove, hove.Rect);
                     }
                 }
                 else if (mode == TMenuMode.Inline)
                 {
-                    MenuItem? hove = null;
-                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand, ref hove);
+                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
                 }
                 else if (mode == TMenuMode.InlineNoText)
                 {
-                    MenuItem? hove = null;
                     foreach (var it in items)
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
-                            {
-                                hove = it;
-                                hand++;
-                            }
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change)) hand++;
                             if (change) count++;
-                            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand, ref hove);
-                        }
-                    }
-                    if (hove != hoveold)
-                    {
-                        CloseDropDown();
-                        CloseTooltip();
-                        if (hove == null) hoveold = null;
-                        else
-                        {
-                            var rect = new Rectangle(hove.rect.X, hove.rect.Y + (hove.rect.Height / 2) - ScrollBar.Value, hove.rect.Width, rect_r.Height);
-                            ShowTooltip(hove, hove.Rect);
+                            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand);
                         }
                     }
                 }
                 else
                 {
-                    MenuItem? hove = null;
                     foreach (var it in items)
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change))
-                            {
-                                hove = it;
-                                hand++;
-                            }
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change)) hand++;
                             if (change) count++;
                         }
-                    }
-                    if (hove != hoveold)
-                    {
-                        CloseDropDown();
-                        CloseTooltip();
-                        if (hove == null) hoveold = null;
-                        else if (Trigger == Trigger.Hover) ShowDropDown(hove);
                     }
                 }
                 SetCursor(hand > 0);
@@ -1115,27 +1066,122 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand, ref MenuItem? hove)
+        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
         {
             if (it.show)
             {
                 if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
                 {
-                    hove = it;
                     hand++;
                     return;
                 }
                 if (change) count++;
-                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand, ref hove);
+                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand);
             }
         }
+
+        #region 鼠标悬浮
+
+        protected override bool CanMouseMove { get; set; } = true;
+        protected override void OnMouseHover(int x, int y)
+        {
+            CloseDropDown();
+            CloseTip();
+            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            if (scroll_show)
+            {
+                if (rect_r.Contains(x, y))
+                {
+                    var list = new List<MenuItem>(items.Count);
+                    foreach (var it in items)
+                    {
+                        if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
+                    }
+                    subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
+                    subForm.Show(this);
+                    return;
+                }
+            }
+            int sy = ScrollBar.Value;
+            if (collapsed)
+            {
+                foreach (var it in items)
+                {
+                    if (it.show && it.rect.Contains(x, y + sy))
+                    {
+                        if (OpenDropDown(it)) OpenTip(it, it.Rect);
+                        return;
+                    }
+                }
+            }
+            else if (mode == TMenuMode.Inline) return;
+            else if (mode == TMenuMode.InlineNoText)
+            {
+                foreach (var it in items) IMouseHover(it, x, y, sy);
+            }
+            else
+            {
+                foreach (var it in items)
+                {
+                    if (it.show && it.rect.Contains(x, y + sy))
+                    {
+                        if (Trigger == Trigger.Hover) OpenDropDown(it);
+                        return;
+                    }
+                }
+            }
+        }
+
+        void IMouseHover(MenuItem it, int x, int y, int sy)
+        {
+            if (it.show && it.rect.Contains(x, y + sy))
+            {
+                var rect = new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - ScrollBar.Value, it.rect.Width, rect_r.Height);
+                OpenTip(it, rect);
+                return;
+            }
+            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseHover(sub, x, y, sy);
+        }
+
+        #region Tip
+
+        TooltipForm? toolTip;
+
+        public void CloseTip()
+        {
+            toolTip?.IClose();
+            toolTip = null;
+        }
+
+        bool OpenTip(MenuItem it, Rectangle rect)
+        {
+            if (it.Text == null) return true;
+            if (toolTip == null)
+            {
+                toolTip = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = it.Font ?? Font,
+                    ArrowAlign = TAlign.Right,
+                });
+                toolTip.Show(this);
+            }
+            else if (toolTip.SetText(rect, it.Text))
+            {
+                CloseTip();
+                OpenTip(it, rect);
+            }
+            return false;
+        }
+
+        #endregion
+
+        #endregion
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
             if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
-            hoveold = null;
-            CloseTooltip();
+            CloseTip();
             ScrollBar.Leave();
             ILeave();
         }
@@ -1328,10 +1374,7 @@ namespace AntdUI
 
         #region 子窗口
 
-        TooltipForm? tooltipForm;
         ILayeredForm? subForm;
-        MenuItem? hoveold;
-
         public ILayeredForm? SubForm() => subForm;
         internal int select_x = 0;
 
@@ -1383,11 +1426,9 @@ namespace AntdUI
             return false;
         }
 
-        bool ShowDropDown(MenuItem it)
+        bool OpenDropDown(MenuItem it)
         {
-            if (it.items == null) return true;
-            if (hoveold == it) return false;
-            hoveold = it;
+            if (it.items == null || it.items.Count == 0) return true;
             select_x = 0;
             subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
             subForm.Show(this);
@@ -1398,33 +1439,6 @@ namespace AntdUI
             subForm?.Close();
             subForm = null;
         }
-
-        #region 提示
-
-        bool ShowTooltip(MenuItem it, Rectangle rect)
-        {
-            if (it.Text == null) return true;
-            if (hoveold == it) return false;
-            hoveold = it;
-            if (tooltipForm == null)
-            {
-                tooltipForm = new TooltipForm(this, rect, it.Text, TooltipConfig ?? new TooltipConfig
-                {
-                    Font = it.Font ?? Font,
-                    ArrowAlign = TAlign.Right,
-                });
-                tooltipForm.Show(this);
-            }
-            else tooltipForm.SetText(rect, it.Text);
-            return false;
-        }
-        void CloseTooltip()
-        {
-            tooltipForm?.Close();
-            tooltipForm = null;
-        }
-
-        #endregion
 
         #endregion
 

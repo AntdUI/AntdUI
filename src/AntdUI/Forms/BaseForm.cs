@@ -63,7 +63,7 @@ namespace AntdUI
                 if (dark == value) return;
                 dark = value;
                 mode = dark ? TAMode.Dark : TAMode.Light;
-                if (IsHandleCreated) DarkUI.UseImmersiveDarkMode(Handle, value);
+                if (IsHandleCreated) Win32.WindowTheme(this, value);
             }
         }
 
@@ -99,7 +99,7 @@ namespace AntdUI
                 themeConfig.Change(dark);
                 EventHub.Add(this);
             }
-            if (mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark)) DarkUI.UseImmersiveDarkMode(Handle, true);
+            if (mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark)) Win32.WindowTheme(this, true);
         }
 
         #endregion

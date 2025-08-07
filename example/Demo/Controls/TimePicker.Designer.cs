@@ -74,7 +74,6 @@ namespace Demo.Controls
             // 
             // panel1
             // 
-            panel1.AutoScroll = true;
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(divider1);
             panel1.Dock = DockStyle.Fill;

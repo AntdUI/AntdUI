@@ -245,7 +245,13 @@ namespace AntdUI
 
             }
         }
-        public override Font Font { get => base.Font; set { base.Font = value; if (value != null) fontExpand = new Font(value, FontStyle.Bold); } }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            base.OnFontChanged(e);
+            if (fontExpand == null) fontExpand = new Font(Font, FontStyle.Bold);
+        }
+
         #endregion
 
         #region 布局
@@ -916,13 +922,12 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-
-            tooltipForm?.Close();
-            tooltipForm = null;
+            CloseTip();
 
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
             if (items == null || items.Count == 0) return;
             foreach (var item in items)
             {
@@ -943,7 +948,6 @@ namespace AntdUI
                             SetCursor(true);
                             Invalidate(btn.rect);
                         }
-                        if (string.IsNullOrEmpty(btn.Tooltip) == false) ShowTooltip(btn);
                         return;
                     }
                     else
@@ -958,24 +962,63 @@ namespace AntdUI
                 }
             }
             SetCursor(false);
-            base.OnMouseMove(e);
         }
 
-        TooltipForm? tooltipForm;
-        void ShowTooltip(CollapseGroupButton btn)
+        #region 鼠标悬浮
+
+        protected override bool CanMouseMove { get; set; } = true;
+        protected override void OnMouseHover(int x, int y)
         {
-            if (btn.Tooltip == null) return;
-            if (tooltipForm == null)
+            CloseTip();
+            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            foreach (var item in items)
             {
-                tooltipForm = new TooltipForm(this, btn.rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
+                if (item.buttons == null || item.buttons.Count == 0) continue;
+                foreach (var btn in item.buttons)
+                {
+                    if (btn.rect.Contains(x, y))
+                    {
+                        OpenTip(btn);
+                        return;
+                    }
+                }
+            }
+        }
+
+        #region Tip
+
+        TooltipForm? toolTip;
+
+        public void CloseTip()
+        {
+            toolTip?.IClose();
+            toolTip = null;
+        }
+
+        bool OpenTip(CollapseGroupButton btn)
+        {
+            if (btn.Tooltip == null) CloseTip();
+            else if (toolTip == null)
+            {
+                toolTip = new TooltipForm(this, btn.rect, btn.Tooltip, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Bottom,
                 });
-                tooltipForm.Show(this);
+                toolTip.Show(this);
             }
-            else tooltipForm.SetText(btn.rect, btn.Tooltip);
+            else if (toolTip.SetText(btn.rect, btn.Tooltip))
+            {
+                CloseTip();
+                OpenTip(btn);
+            }
+            return false;
         }
+
+        #endregion
+
+        #endregion
+
         #endregion
 
         #region 方法

@@ -433,17 +433,20 @@ namespace AntdUI
         /// <summary>
         /// 当前获得焦点的列
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Column? FocusedColumn => focusedCell?.COLUMN;
 
         /// <summary>
         /// 当前获得焦点的行
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object? FocusedRow => focusedCell?.ROW.RECORD;
 
         CELL? focusedCell;
         /// <summary>
         /// 当前获得焦点的单元格
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CELL? FocusedCell
         {
             get => focusedCell;

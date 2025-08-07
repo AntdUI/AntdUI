@@ -40,7 +40,7 @@ namespace AntdUI
             if (ClipboardCopy) Focus();
             subForm?.IClose();
             subForm = null;
-            CloseTip(false);
+            CloseTip();
             if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 base.OnMouseDown(e);
@@ -687,7 +687,6 @@ namespace AntdUI
                 var cel_sel = CellContains(rows, true, e.X, e.Y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
                 if (cel_sel == null)
                 {
-                    MouseMoveCell(e);
                     foreach (RowTemplate it in rows)
                     {
                         if (it.IsColumn) continue;
@@ -702,10 +701,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    MouseMoveCell(cel_sel, i_row, i_cel, column, offset_x, offset_xi, offset_y, e);
                     if (mode > 0)
                     {
-                        CloseTip(true);
                         for (int i = 1; i < rows.Length; i++)
                         {
                             rows[i].Hover = false;
@@ -768,6 +765,26 @@ namespace AntdUI
             else ILeave();
         }
 
+        #region 鼠标悬浮
+
+        protected override bool CanMouseMove { get; set; } = true;
+        protected override void OnMouseHover(int x, int y)
+        {
+            if (x == -1 || y == -1)
+            {
+                CloseTip();
+                return;
+            }
+            if (rows == null || inEditMode) return;
+            var cel_sel = CellContains(rows, false, x, y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out var column, out int mode);
+            if (cel_sel == null) CellHover?.Invoke(this, new TableHoverEventArgs(new MouseEventArgs(MouseButtons.None, 0, x, y, 0)));
+            else
+            {
+                CellHover?.Invoke(this, new TableHoverEventArgs(cel_sel.ROW.RECORD, i_row, i_cel, column, RealRect(cel_sel.RECT, offset_xi, offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0)));
+                if (mode == 0) MouseHoverRow(cel_sel, r_x, r_y, offset_x, offset_xi, offset_y);
+            }
+        }
+
         bool MouseMoveRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y, MouseEventArgs e)
         {
             if (cel is TCellCheck checkCell)
@@ -792,7 +809,6 @@ namespace AntdUI
             }
             else if (cel is Template template)
             {
-                ICell? tipcel = null;
                 int hand = 0;
                 foreach (var item in template.Value)
                 {
@@ -801,17 +817,9 @@ namespace AntdUI
                         if (btn_template.Enabled)
                         {
                             btn_template.ExtraMouseHover = btn_template.Rect.Contains(x, y);
-                            if (btn_template.ExtraMouseHover)
-                            {
-                                hand++;
-                                tipcel = btn_template;
-                            }
+                            if (btn_template.ExtraMouseHover) hand++;
                         }
                         else btn_template.ExtraMouseHover = false;
-                    }
-                    else if (item is CellImage img_template)
-                    {
-                        if (img_template.Tooltip != null && img_template.Rect.Contains(x, y)) tipcel = img_template;
                     }
                     else if (item is CellCheckbox checkbox_template)
                     {
@@ -832,68 +840,66 @@ namespace AntdUI
                         else radio_template.ExtraMouseHover = false;
                     }
                 }
+                return hand > 0;
+            }
+            return false;
+        }
+        bool MouseHoverRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y)
+        {
+            if (cel is Template template)
+            {
+                var tipcel = MouseHoverCell(template, x, y);
                 if (tipcel == null) CloseTip();
                 else
                 {
                     if (tipcel is CellLink btn_template)
                     {
                         if (btn_template.Tooltip == null) CloseTip();
-                        else OpenTip(btn_template.Rect, offset_xi, offset_y, btn_template.Tooltip);
+                        else OpenTip(RealRect(btn_template.Rect, offset_xi, offset_y), btn_template.Tooltip);
                     }
                     else if (tipcel is CellImage img_template)
                     {
                         if (img_template.Tooltip == null) CloseTip();
-                        else OpenTip(img_template.Rect, offset_xi, offset_y, img_template.Tooltip);
+                        else OpenTip(RealRect(img_template.Rect, offset_xi, offset_y), img_template.Tooltip);
                     }
                 }
-                return hand > 0;
             }
             else if (ShowTip)
             {
-                var moveid = cel.INDEX + "_" + cel.ROW.INDEX;
-                if (oldmove == moveid) return false;
-                oldmove = moveid;
                 var text = cel.ToString();
-                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(cel.RECT_REAL, offset_xi, offset_y, text);
-                else CloseTip(false);
+                if (!string.IsNullOrEmpty(text) && !cel.COLUMN.LineBreak && cel.MinWidth > cel.RECT_REAL.Width + 1) OpenTip(RealRect(cel.RECT_REAL, offset_xi, offset_y), text);
+                else CloseTip();
             }
             return false;
         }
-
-        void MouseMoveCell(CELL cel, int i_row, int i_cel, Column? column, int offset_x, int offset_xi, int offset_y, MouseEventArgs e)
+        ICell? MouseHoverCell(Template template, int x, int y)
         {
-            if (CellHover == null) return;
-            var moveid = i_row + "_" + i_cel;
-            if (oldmove2 == moveid) return;
-            oldmove2 = moveid;
-            CellHover(this, new TableHoverEventArgs(cel.ROW.RECORD, i_row, i_cel, column, RealRect(cel.RECT, offset_xi, offset_y), e));
-        }
-        void MouseMoveCell(MouseEventArgs? e)
-        {
-            if (CellHover == null || oldmove2 == null) return;
-            oldmove2 = null;
-            CellHover(this, new TableHoverEventArgs(e ?? new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+            foreach (var item in template.Value)
+            {
+                if (item is CellLink btn_template)
+                {
+                    if (btn_template.Enabled && btn_template.Rect.Contains(x, y)) return btn_template;
+                }
+                else if (item is CellImage img_template)
+                {
+                    if (img_template.Rect.Contains(x, y)) return img_template;
+                }
+            }
+            return null;
         }
 
         #region Tip
 
-        string? oldmove, oldmove2;
         TooltipForm? toolTip;
-        public void CloseTip(bool clear = true)
-        {
-            hoveold = null;
-            indexchange = 0;
-            taskTip?.Dispose();
-            taskTip = null;
 
+        public void CloseTip()
+        {
             toolTip?.IClose();
             toolTip = null;
-            if (clear) oldmove = null;
         }
 
         public void OpenTip(Rectangle rect, string tooltip, TooltipConfig? config = null)
         {
-            indexchange = 0;
             if (toolTip == null)
             {
                 toolTip = new TooltipForm(this, rect, tooltip, config ?? TooltipConfig ?? new TooltipConfig
@@ -905,32 +911,12 @@ namespace AntdUI
             }
             else if (toolTip.SetText(rect, tooltip))
             {
-                CloseTip(false);
+                CloseTip();
                 OpenTip(rect, tooltip);
             }
         }
 
-        string? hoveold;
-        int indexchange = 0;
-        ITask? taskTip;
-        void OpenTip(Rectangle rect, int ox, int oy, string tooltip)
-        {
-            string id = (rect.X + ox) + "_" + (rect.Y + oy) + "_" + rect.Width + "_" + rect.Height + "_" + "_" + tooltip;
-            if (id == hoveold) return;
-            hoveold = id;
-            if (indexchange > 3)
-            {
-                CloseTip();
-                indexchange = 0;
-            }
-            else indexchange++;
-            taskTip?.Dispose();
-            taskTip = new ITask(this, () =>
-            {
-                Invoke(() => OpenTip(RealRect(rect, ox, oy), tooltip));
-                return false;
-            }, 200, null, 200);
-        }
+        #endregion
 
         #endregion
 
@@ -1271,14 +1257,12 @@ namespace AntdUI
             if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             ScrollBar.Leave();
             ILeave();
-            CloseTip();
         }
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
             ScrollBar.Leave();
             ILeave();
-            CloseTip();
         }
 
         void ILeave()
@@ -1294,7 +1278,8 @@ namespace AntdUI
                     else if (cel is Template template) ILeave(template);
                 }
             }
-            MouseMoveCell(null);
+            CloseTip();
+            CellHover?.Invoke(this, new TableHoverEventArgs(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
         }
 
         void ILeave(Template template)
