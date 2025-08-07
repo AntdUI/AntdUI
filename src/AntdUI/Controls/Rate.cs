@@ -460,34 +460,6 @@ namespace AntdUI
 
         #region 鼠标
 
-        #region 提示
-
-        TooltipForm? toolTip;
-        string? tooltipText;
-        void ShowTips(Rectangle dot_rect, string text)
-        {
-            if (text == tooltipText && toolTip != null) return;
-            tooltipText = text;
-            if (toolTip == null)
-            {
-                toolTip = new TooltipForm(this, dot_rect, tooltipText, TooltipConfig ?? new TooltipConfig
-                {
-                    Font = Font,
-                    ArrowAlign = TAlign.Top,
-                });
-                toolTip.Show(this);
-            }
-            else toolTip.SetText(dot_rect, tooltipText);
-        }
-
-        void CloseTips()
-        {
-            toolTip?.IClose();
-            toolTip = null;
-        }
-
-        #endregion
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -509,8 +481,6 @@ namespace AntdUI
                     {
                         if (i != j) rect_stars[j].Animatio(j < i, false, false);
                     }
-                    if (Tooltips != null && Tooltips.Length > i) ShowTips(it.rect, Tooltips[i]);
-                    else CloseTips();
                     return;
                 }
             }
@@ -525,7 +495,7 @@ namespace AntdUI
 
         void _Leave()
         {
-            CloseTips();
+            CloseTip();
             int _value_ = (int)_value;
             for (int i = 0; i < rect_stars.Length; i++)
             {
@@ -574,6 +544,59 @@ namespace AntdUI
             }
             base.OnMouseClick(e);
         }
+
+        #region 鼠标悬浮
+
+        protected override bool CanMouseMove { get; set; } = true;
+        protected override void OnMouseHover(int x, int y)
+        {
+            CloseTip();
+            if (x == -1 || y == -1) return;
+            for (int i = 0; i < rect_stars.Length; i++)
+            {
+                var it = rect_stars[i];
+                if (it.rect_mouse.Contains(x, y))
+                {
+                    if (Tooltips != null && Tooltips.Length > i) OpenTip(it.rect, Tooltips[i]);
+                    else CloseTip();
+                    return;
+                }
+            }
+            //全部都没激活
+            _Leave();
+        }
+
+        #region Tip
+
+        TooltipForm? toolTip;
+
+        public void CloseTip()
+        {
+            toolTip?.IClose();
+            toolTip = null;
+        }
+
+        void OpenTip(Rectangle rect, string text)
+        {
+            if (toolTip == null)
+            {
+                toolTip = new TooltipForm(this, rect, text, TooltipConfig ?? new TooltipConfig
+                {
+                    Font = Font,
+                    ArrowAlign = TAlign.Top,
+                });
+                toolTip.Show(this);
+            }
+            else if (toolTip.SetText(rect, text))
+            {
+                CloseTip();
+                OpenTip(rect, text);
+            }
+        }
+
+        #endregion
+
+        #endregion
 
         #endregion
 

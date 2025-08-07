@@ -377,7 +377,6 @@ namespace AntdUI
                     {
                         it.hover = true;
                         count++;
-                        OpenTipBefore(it);
                     }
                 }
                 else
@@ -394,38 +393,34 @@ namespace AntdUI
             base.OnMouseMove(e);
         }
 
-        #region 提示
 
-        TooltipForm? toolTip;
-        FloatButton.ConfigBtn? hoveold;
-        int indexchange = 0;
-        ITask? taskTip;
-        void CloseTip()
-        {
-            hoveold = null;
-            indexchange = 0;
-            taskTip?.Dispose();
-            taskTip = null;
+        #region 鼠标悬浮
 
-            toolTip?.IClose();
-            toolTip = null;
-        }
-        void OpenTipBefore(FloatButton.ConfigBtn it)
+        protected override bool CanMouseMove { get; set; } = true;
+        protected override void OnMouseHover(int x, int y)
         {
-            if (it == hoveold) return;
-            hoveold = it;
-            if (indexchange > 3)
+            if (x == -1 || y == -1)
             {
                 CloseTip();
-                indexchange = 0;
+                return;
             }
-            else indexchange++;
-            taskTip?.Dispose();
-            taskTip = new ITask(this, () =>
+            foreach (var it in config.Btns)
             {
-                if (hoveold == it) Invoke(() => OpenTip(it));
-                return false;
-            }, 200, null, 200);
+                if (it.Enabled && !it.Loading && it.rect.Contains(x, y))
+                {
+                    OpenTip(it);
+                    return;
+                }
+            }
+        }
+
+        #region Tip
+
+        TooltipForm? toolTip;
+        void CloseTip()
+        {
+            toolTip?.IClose();
+            toolTip = null;
         }
         void OpenTip(FloatButton.ConfigBtn it)
         {
@@ -449,6 +444,8 @@ namespace AntdUI
                 }
             }
         }
+
+        #endregion
 
         #endregion
 

@@ -19,6 +19,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -447,6 +448,53 @@ namespace AntdUI
             catch { }
             return count;
         }
+
+        #region 鼠标悬停
+
+        ITask? taskHover;
+        TimeSpan timeHover;
+        Stopwatch hoverStopwatch = new Stopwatch();
+        int oldx = -1, oldy = -1;
+        protected virtual bool CanMouseMove { get; set; }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (CanMouseMove)
+            {
+                if (oldx == e.X && oldy == e.Y) return;
+                oldx = e.X;
+                oldy = e.Y;
+                hoverStopwatch.Reset();
+                hoverStopwatch.Start();
+                timeHover = hoverStopwatch.Elapsed + TimeSpan.FromMilliseconds(Config.MouseHoverDelay);
+                if (taskHover == null)
+                {
+                    OnMouseHover(-1, -1);
+                    taskHover = new ITask(this, () =>
+                    {
+                        if (hoverStopwatch.Elapsed < timeHover) return true;
+                        BeginInvoke(() => OnMouseHover(oldx, oldy));
+                        return false;
+                    }, Config.MouseHoverDelay, () => taskHover = null, Config.MouseHoverDelay);
+                }
+            }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            taskHover?.Dispose();
+            taskHover = null;
+            hoverStopwatch.Reset();
+            oldx = -1;
+            oldy = -1;
+        }
+
+        protected virtual void OnMouseHover(int x, int y)
+        {
+        }
+
+        #endregion
 
         #region 触屏
 

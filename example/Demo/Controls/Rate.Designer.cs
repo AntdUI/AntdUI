@@ -74,7 +74,6 @@ namespace Demo.Controls
             // 
             // panel1
             // 
-            panel1.AutoScroll = true;
             panel1.Controls.Add(rate6);
             panel1.Controls.Add(rate5);
             panel1.Controls.Add(rate4);

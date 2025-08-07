@@ -1122,7 +1122,7 @@ namespace AntdUI
         {
             base.OnMouseMove(e);
             if (items == null || items.Count == 0) return;
-            int hand = 0, change = 0, i = 0, hoveindex = -1;
+            int hand = 0, change = 0, i = 0;
             foreach (var it in items)
             {
                 bool hover = it.Enabled && it.Rect.Contains(e.X, e.Y);
@@ -1131,91 +1131,60 @@ namespace AntdUI
                     it.Hover = hover;
                     change++;
                 }
-                if (it.Hover)
-                {
-                    if (!string.IsNullOrWhiteSpace(it.Tooltip)) hoveindex = i;
-                    hand++;
-                }
+                if (it.Hover) hand++;
                 i++;
             }
             SetCursor(hand > 0);
             if (change > 0) Invalidate();
-            OpenTipBefore(hoveindex);
         }
 
-        #region 提示
+        #region 鼠标悬浮
 
-        int hoveold = -1, indexchange = 0;
-        ITask? taskTip;
-        TooltipForm? toolTip;
-        void CloseTip()
+        protected override bool CanMouseMove { get; set; } = true;
+        protected override void OnMouseHover(int x, int y)
         {
-            hoveold = -1;
-            indexchange = 0;
-            taskTip?.Dispose();
-            taskTip = null;
-
-            toolTip?.IClose();
-            toolTip = null;
-        }
-        void OpenTipBefore(int index)
-        {
-            if (index == hoveold) return;
-            hoveold = index;
-            if (indexchange > 3)
+            CloseTip();
+            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            foreach (var it in items)
             {
-                CloseTip();
-                indexchange = 0;
-            }
-            else indexchange++;
-            taskTip?.Dispose();
-            taskTip = new ITask(this, () =>
-            {
-                OpenTip(index);
-                return false;
-            }, 200, null, 200);
-        }
-        void OpenTip(int index)
-        {
-            if (hoveold == index)
-            {
-                if (index == -1) CloseTip();
-                else
+                if (it.Enabled && it.Rect.Contains(x, y))
                 {
-                    if (items == null)
-                    {
-                        CloseTip();
-                        return;
-                    }
-                    var item = items[index];
-                    var tooltip = item.Tooltip;
-                    if (tooltip == null)
-                    {
-                        CloseTip();
-                        return;
-                    }
-                    Invoke(() => OpenTip(item.Rect, tooltip));
+                    OpenTip(it);
+                    return;
                 }
             }
         }
-        void OpenTip(Rectangle rect, string tooltip)
+
+        #region Tip
+
+        TooltipForm? toolTip;
+
+        public void CloseTip()
         {
-            indexchange = 0;
-            if (toolTip == null)
+            toolTip?.IClose();
+            toolTip = null;
+        }
+
+        void OpenTip(SegmentedItem it)
+        {
+            if (it.Tooltip == null) CloseTip();
+            else if (toolTip == null)
             {
-                toolTip = new TooltipForm(this, rect, tooltip, TooltipConfig ?? new TooltipConfig
+                toolTip = new TooltipForm(this, it.Rect, it.Tooltip, TooltipConfig ?? new TooltipConfig
                 {
                     Font = Font,
                     ArrowAlign = TAlign.Right,
                 });
                 toolTip.Show(this);
             }
-            else if (toolTip.SetText(rect, tooltip))
+            else if (toolTip.SetText(it.Rect, it.Tooltip))
             {
                 CloseTip();
-                OpenTip(rect, tooltip);
+                OpenTip(it);
             }
         }
+
+        #endregion
 
         #endregion
 

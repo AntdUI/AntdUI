@@ -90,7 +90,6 @@ namespace Demo.Controls
             // 
             // panel1
             // 
-            panel1.AutoScroll = true;
             panel1.Controls.Add(panel4);
             panel1.Controls.Add(divider3);
             panel1.Controls.Add(panel3);

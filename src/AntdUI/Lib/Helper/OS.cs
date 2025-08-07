@@ -43,6 +43,12 @@ namespace AntdUI
         /// </summary>
         public static bool Win10 => Version.Major >= 10;
 
+        public static bool Win10OrGreater(int build = -1)
+        {
+            var os = Version;
+            return os.Major >= 10 && os.Build >= build;
+        }
+
         /// <summary>
         /// 小于等于Windows 7
         /// </summary>

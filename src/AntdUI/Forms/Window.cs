@@ -106,9 +106,12 @@ namespace AntdUI
         #endregion
 
         bool rmax = false;
+        bool DwmEnabled = true;
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            if (OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
+            else DwmEnabled = false;
             SetTheme();
             DisableProcessWindowsGhosting();
             if (WindowState == FormWindowState.Maximized) rmax = true;
@@ -120,6 +123,18 @@ namespace AntdUI
             HandMessage();
             DwmArea();
             eNonclient = false;
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                if (DwmEnabled) return base.CreateParams;
+                CreateParams cp = base.CreateParams;
+                // 移除标题栏和系统菜单（按钮）
+                cp.Style &= ~0xC00000 & ~0x80000;
+                return cp;
+            }
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
@@ -165,7 +180,7 @@ namespace AntdUI
                     break;
                 case WindowMessage.WM_ACTIVATEAPP:
                 case WindowMessage.WM_NCACTIVATE:
-                    if (DarkUI.IsCompositionEnabled) InvalidateNonclient();
+                    if (DwmEnabled) InvalidateNonclient();
                     else
                     {
                         m.Result = TRUE;

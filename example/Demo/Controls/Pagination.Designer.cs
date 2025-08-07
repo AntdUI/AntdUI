@@ -70,7 +70,6 @@ namespace Demo.Controls
             // 
             // panel1
             // 
-            panel1.AutoScroll = true;
             panel1.Controls.Add(pagination2);
             panel1.Controls.Add(pagination1);
             panel1.Dock = DockStyle.Fill;

@@ -51,7 +51,7 @@ namespace AntdUI
         }
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing); 
+            base.Dispose(disposing);
             Win32.Dispose(memDc, ref hBitmap, ref oldBits);
             if (memDc == IntPtr.Zero) return;
             Win32.DeleteDC(memDc);

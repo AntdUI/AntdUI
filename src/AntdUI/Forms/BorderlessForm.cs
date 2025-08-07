@@ -267,7 +267,7 @@ namespace AntdUI
                 if (oldmargin == margin) return;
                 oldmargin = margin;
                 var v = 2;
-                DarkUI.DwmSetWindowAttribute(Handle, 2, ref v, 4);
+                Win32.DwmSetWindowAttribute(Handle, 2, ref v, 4);
                 DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
             }
         }
@@ -370,7 +370,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            if (UseDwm && OS.Version.Major >= 6) DwmEnabled = DarkUI.IsCompositionEnabled;
+            if (UseDwm && OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
             SetTheme();
             DisableProcessWindowsGhosting();
             HandMessage();

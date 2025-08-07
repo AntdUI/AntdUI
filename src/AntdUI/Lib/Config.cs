@@ -137,6 +137,11 @@ namespace AntdUI
         public static bool TouchClickEnabled { get; set; }
 
         /// <summary>
+        /// 鼠标悬停时长（毫秒）
+        /// </summary>
+        public static int MouseHoverDelay { get; set; } = 200;
+
+        /// <summary>
         /// 阴影使能
         /// </summary>
         public static bool ShadowEnabled { get; set; } = true;
