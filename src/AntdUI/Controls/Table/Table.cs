@@ -289,8 +289,8 @@ namespace AntdUI
         /// <summary>
         /// 单元格内间距
         /// </summary>
-        [Description("单元格内间距"), Category("外观"), DefaultValue(null)]
-        public int? GapCell { get; set; }
+        [Description("单元格内间距"), Category("外观"), DefaultValue(6)]
+        public int? GapCell { get; set; } = 6;
 
         [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
         public bool? CellImpactHeight { get; set; }

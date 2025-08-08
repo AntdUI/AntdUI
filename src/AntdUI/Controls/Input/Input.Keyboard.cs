@@ -54,6 +54,8 @@ namespace AntdUI
                 {
                     case Keys.Back:
                         return ProcessShortcutKeys(ShortcutKeys.Back);
+                    case Keys.Control | Keys.Back:
+                        return ProcessShortcutKeys(ShortcutKeys.BackControl);
                     case Keys.Delete:
                         return ProcessShortcutKeys(ShortcutKeys.Delete);
 
@@ -142,6 +144,8 @@ namespace AntdUI
 
                     case Keys.Back:
                         return ProcessShortcutKeys(ShortcutKeys.Back);
+                    case Keys.Back | Keys.Control:
+                        return ProcessShortcutKeys(ShortcutKeys.BackControl);
                     case Keys.Delete:
                         return ProcessShortcutKeys(ShortcutKeys.Delete);
 
@@ -210,7 +214,7 @@ namespace AntdUI
 
         internal void IKeyPress(char keyChar)
         {
-            if (keyChar < 32) return;
+            if (keyChar < 32 || keyChar == 127) return;
             if (Verify(keyChar, out var change)) EnterText(change ?? keyChar.ToString());
         }
 
@@ -235,6 +239,10 @@ namespace AntdUI
             {
                 case ShortcutKeys.Back:
                     ProcessBackSpaceKey();
+                    if (HandShortcutKeys) return true;
+                    break;
+                case ShortcutKeys.BackControl:
+                    ProcessBackSpaceKey(true);
                     if (HandShortcutKeys) return true;
                     break;
                 case ShortcutKeys.Delete:
@@ -393,6 +401,10 @@ namespace AntdUI
             /// </summary>
             Back,
             /// <summary>
+            /// BackSpace
+            /// </summary>
+            BackControl,
+            /// <summary>
             /// 删除
             /// </summary>
             Delete,
@@ -451,7 +463,7 @@ namespace AntdUI
         /// <summary>
         /// 删除文本
         /// </summary>
-        void ProcessBackSpaceKey()
+        void ProcessBackSpaceKey(bool ctrl = false)
         {
             if (ReadOnly || BanInput) return;
             if (cache_font == null)
@@ -463,30 +475,39 @@ namespace AntdUI
             {
                 int start = selectionStartTemp, end = selectionLength;
                 AddHistoryRecord();
-                int end_temp = start + end;
-                var texts = new List<string>(end);
-                foreach (var it in cache_font)
-                {
-                    if (it.i < start || it.i >= end_temp) texts.Add(it.text);
-                }
-                Text = string.Join("", texts);
-                SelectionLength = 0;
-                SetSelectionStart(start);
+                ProcessBackSpaceKey(cache_font, start, end);
             }
             else if (selectionStart > 0)
             {
                 AddHistoryRecord();
-                int start = selectionStart - 1, pos = CurrentPosIndex - 1;
-                var texts = new List<string>(cache_font.Length);
-                foreach (var it in cache_font)
+                int tmp = selectionStart - 1;
+                if (ctrl && tmp > 1) ProcessBackSpaceKey(cache_font, FindStart(cache_font, tmp - 1), tmp + 1);
+                else
                 {
-                    if (start != it.i) texts.Add(it.text);
+                    int start = tmp, pos = CurrentPosIndex - 1;
+                    var texts = new List<string>(cache_font.Length);
+                    foreach (var it in cache_font)
+                    {
+                        if (start != it.i) texts.Add(it.text);
+                    }
+                    Text = string.Join("", texts);
+                    SetSelectionStart(start, false);
+                    if (start == 0) SetCaretPostion(0);
+                    else SetCaretPostion(pos);
                 }
-                Text = string.Join("", texts);
-                SetSelectionStart(start, false);
-                if (start == 0) SetCaretPostion(0);
-                else SetCaretPostion(pos);
             }
+        }
+        void ProcessBackSpaceKey(CacheFont[] cache_font, int start, int end)
+        {
+            int end_temp = start + end;
+            var texts = new List<string>(end);
+            foreach (var it in cache_font)
+            {
+                if (it.i < start || it.i >= end_temp) texts.Add(it.text);
+            }
+            Text = string.Join("", texts);
+            SelectionLength = 0;
+            SetSelectionStart(start);
         }
 
         /// <summary>

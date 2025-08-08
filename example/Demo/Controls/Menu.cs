@@ -48,8 +48,13 @@ namespace Demo.Controls
                 else menu2.BackColor = BackColor;
             }
         }
-        private void switch2_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => menu2.Collapsed = e.Value;
 
+        private void switch2_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            menu2.Collapsed = e.Value;
+            if (e.Value) menu2.Width = menu2.CollapseWidth;
+            else menu2.Width = menu2.CollapsedWidth;
+        }
         private void switch3_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             if (e.Value)
@@ -72,7 +77,7 @@ namespace Demo.Controls
             {
                 menu2.Tag = menu2.Mode;
                 menu2.Mode = AntdUI.TMenuMode.InlineNoText;
-                menu2.Width = (int)(58 * AntdUI.Config.Dpi);
+                menu2.Width = (int)(66 * AntdUI.Config.Dpi);
             }
             else if (menu2.Tag is AntdUI.TMenuMode mode)
             {
