@@ -165,7 +165,7 @@ namespace Demo
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F);
             ForeColor = Color.Black;
-            MinimumSize = new Size(660, 400);
+            MinimumSize = new Size(1, 1);
             Name = "Overview";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AntdUI Overview";

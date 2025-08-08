@@ -29,13 +29,12 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
-
+            tabs_close.Type = AntdUI.TabType.Line;
             for (int i = 0; i < 30; i++)
             {
                 var it = new AntdUI.TabPage
                 {
-                    ReadOnly = i == 0,
-                    IconSvg = i == 0 ? "AppleFilled" : null,
+                    //ReadOnly = i == 0,
                     Text = "Tab" + (i + 1).ToString(),
                 };
                 it.Controls.Add(new AntdUI.Label

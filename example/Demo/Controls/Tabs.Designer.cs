@@ -52,6 +52,9 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             tabs3 = new AntdUI.Tabs();
+            tabPage16 = new AntdUI.TabPage();
+            tabPage17 = new AntdUI.TabPage();
+            tabPage18 = new AntdUI.TabPage();
             divider3 = new AntdUI.Divider();
             tabs_close = new AntdUI.Tabs();
             divider2 = new AntdUI.Divider();
@@ -87,9 +90,6 @@ namespace Demo.Controls
             tabPage15 = new AntdUI.TabPage();
             label15 = new AntdUI.Label();
             divider1 = new AntdUI.Divider();
-            tabPage16 = new AntdUI.TabPage();
-            tabPage17 = new AntdUI.TabPage();
-            tabPage18 = new AntdUI.TabPage();
             panel1.SuspendLayout();
             tabs3.SuspendLayout();
             tabs1.SuspendLayout();
@@ -150,7 +150,7 @@ namespace Demo.Controls
             tabs3.Cursor = Cursors.Hand;
             tabs3.Dock = DockStyle.Top;
             tabs3.Gap = 12;
-            tabs3.Location = new Point(0, 324);
+            tabs3.Location = new Point(0, 469);
             tabs3.Name = "tabs3";
             tabs3.Pages.Add(tabPage16);
             tabs3.Pages.Add(tabPage17);
@@ -160,12 +160,38 @@ namespace Demo.Controls
             tabs3.TabIndex = 3;
             tabs3.Text = "tabs3";
             // 
+            // tabPage16
+            // 
+            tabPage16.Badge = "99";
+            tabPage16.IconSvg = "AppleFilled";
+            tabPage16.Location = new Point(3, 36);
+            tabPage16.Name = "tabPage16";
+            tabPage16.Size = new Size(744, 81);
+            tabPage16.TabIndex = 0;
+            tabPage16.Text = "Tab1";
+            // 
+            // tabPage17
+            // 
+            tabPage17.Location = new Point(0, 0);
+            tabPage17.Name = "tabPage17";
+            tabPage17.Size = new Size(0, 0);
+            tabPage17.TabIndex = 1;
+            tabPage17.Text = "Tab2";
+            // 
+            // tabPage18
+            // 
+            tabPage18.Location = new Point(0, 0);
+            tabPage18.Name = "tabPage18";
+            tabPage18.Size = new Size(0, 0);
+            tabPage18.TabIndex = 2;
+            tabPage18.Text = "Tab3";
+            // 
             // divider3
             // 
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Tabs.{id}";
-            divider3.Location = new Point(0, 296);
+            divider3.Location = new Point(0, 441);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(750, 28);
@@ -174,12 +200,13 @@ namespace Demo.Controls
             // 
             // tabs_close
             // 
+            tabs_close.Alignment = TabAlignment.Left;
             tabs_close.Cursor = Cursors.Hand;
             tabs_close.Dock = DockStyle.Top;
             tabs_close.Gap = 12;
             tabs_close.Location = new Point(0, 176);
             tabs_close.Name = "tabs_close";
-            tabs_close.Size = new Size(750, 120);
+            tabs_close.Size = new Size(750, 465);
             styleCard1.Closable = true;
             styleCard1.Gap = 6;
             tabs_close.Style = styleCard1;
@@ -244,9 +271,9 @@ namespace Demo.Controls
             // 
             tabPage1.Controls.Add(label1);
             tabPage1.IconSvg = "AppleFilled";
-            tabPage1.Location = new Point(3, 38);
+            tabPage1.Location = new Point(3, 36);
             tabPage1.Name = "tabPage1";
-            tabPage1.Size = new Size(744, 79);
+            tabPage1.Size = new Size(744, 81);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Tab1";
             // 
@@ -255,7 +282,7 @@ namespace Demo.Controls
             label1.Dock = DockStyle.Fill;
             label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(744, 79);
+            label1.Size = new Size(744, 81);
             label1.TabIndex = 0;
             label1.Text = "Content of Tab Pane 1";
             label1.TextAlign = ContentAlignment.TopLeft;
@@ -537,32 +564,6 @@ namespace Demo.Controls
             divider1.Size = new Size(750, 28);
             divider1.TabIndex = 0;
             divider1.Text = "基本用法";
-            // 
-            // tabPage16
-            // 
-            tabPage16.Badge = "99";
-            tabPage16.IconSvg = "AppleFilled";
-            tabPage16.Location = new Point(3, 38);
-            tabPage16.Name = "tabPage16";
-            tabPage16.Size = new Size(744, 79);
-            tabPage16.TabIndex = 0;
-            tabPage16.Text = "Tab1";
-            // 
-            // tabPage17
-            // 
-            tabPage17.Location = new Point(0, 0);
-            tabPage17.Name = "tabPage17";
-            tabPage17.Size = new Size(0, 0);
-            tabPage17.TabIndex = 1;
-            tabPage17.Text = "Tab2";
-            // 
-            // tabPage18
-            // 
-            tabPage18.Location = new Point(0, 0);
-            tabPage18.Name = "tabPage18";
-            tabPage18.Size = new Size(0, 0);
-            tabPage18.TabIndex = 2;
-            tabPage18.Text = "Tab3";
             // 
             // Tabs
             // 

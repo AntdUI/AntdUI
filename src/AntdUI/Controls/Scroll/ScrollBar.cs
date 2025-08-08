@@ -100,12 +100,12 @@ namespace AntdUI
         /// <summary>
         /// 滚动条大小
         /// </summary>
-        public int SIZE { get; set; } = 20;
+        public int SIZE { get; set; } = 16;
 
         /// <summary>
         /// 常态下滚动条大小
         /// </summary>
-        public int SIZE_BAR { get; set; } = 8;
+        public int SIZE_BAR { get; set; } = 6;
 
         public int SIZE_MINIY { get; set; } = 30;
 
