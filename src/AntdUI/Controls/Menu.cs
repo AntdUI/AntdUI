@@ -1211,9 +1211,10 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
-            CloseDropDown();
             CloseTip();
-            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            if (x == -1 || y == -1) return;
+            CloseDropDown();
+            if (items == null || items.Count == 0) return;
             if (scroll_show)
             {
                 if (rect_r.Contains(x, y))

@@ -87,16 +87,35 @@ namespace AntdUI
                     task?.Dispose();
                     task = null;
                 }
-                font_size = null;
                 text = value;
-                Invalidate();
+                ClearFont();
                 OnTextChanged(EventArgs.Empty);
                 OnPropertyChanged(nameof(Text));
+                Invalidate();
             }
         }
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
+
+        ContentAlignment textAlign = ContentAlignment.MiddleLeft;
+        /// <summary>
+        /// 文本位置
+        /// </summary>
+        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleLeft)]
+        public ContentAlignment TextAlign
+        {
+            get => textAlign;
+            set
+            {
+                if (textAlign == value) return;
+                textAlign = value;
+                textAlign.SetAlignment(ref sf);
+                sc.LineAlignment = sf.LineAlignment;
+                Invalidate();
+                OnPropertyChanged(nameof(TextAlign));
+            }
+        }
 
         string? textTitle;
         /// <summary>
@@ -136,7 +155,7 @@ namespace AntdUI
             }
         }
 
-        bool loop = false;
+        bool loop = false, loopState = false;
         /// <summary>
         /// 文本轮播
         /// </summary>
@@ -154,6 +173,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 溢出轮播
+        /// </summary>
+        [Description("溢出轮播"), Category("外观"), DefaultValue(false)]
+        public bool LoopOverflow { get; set; }
+
+        /// <summary>
         /// 轮播文本无尽
         /// </summary>
         [Description("轮播文本无尽"), Category("外观"), DefaultValue(true)]
@@ -169,8 +194,20 @@ namespace AntdUI
 
         protected override void OnFontChanged(EventArgs e)
         {
-            font_size = null;
+            ClearFont();
             base.OnFontChanged(e);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            ClearFont();
+            base.OnSizeChanged(e);
+        }
+
+        void ClearFont()
+        {
+            font_size = null;
+            if (IsHandleCreated && loop && task == null) StartTask();
         }
 
         int loopSpeed = 10;
@@ -194,14 +231,27 @@ namespace AntdUI
         void StartTask()
         {
             task?.Dispose();
-            if (loop) task = new ITask(this, TextAnimation, LoopSpeed);
+            if (loop) task = new ITask(this, TextAnimation, LoopSpeed, EndTask);
             else Invalidate();
+        }
+
+        void EndTask()
+        {
+            task = null;
+            Invalidate();
         }
 
         bool TextAnimation()
         {
             if (font_size.HasValue && font_size.Value.Width > 0)
             {
+                if (LoopOverflow && font_size.Value.Width < DisplayRectangle.Width)
+                {
+                    loopState = true;
+                    val = 0;
+                    return false;
+                }
+                else loopState = false;
                 val += 1;
                 if (val > font_size.Value.Width)
                 {
@@ -263,7 +313,7 @@ namespace AntdUI
                             font_size = size;
                             int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
-                            g.DrawText(Text, Font, ForeColor, rect_txt, stringLeft);
+                            g.DrawText(Text, Font, ForeColor, rect_txt, sf);
                         }
                     }
                     else
@@ -275,11 +325,11 @@ namespace AntdUI
                             using (var brush = new SolidBrush(ForeColor))
                             {
                                 var rect_txt = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - (gap * 2), size_title.Height);
-                                g.DrawText(TextTitle, font_title, brush, rect_txt, stringLeft);
+                                g.DrawText(TextTitle, font_title, brush, rect_txt, sf);
 
                                 int desc_y = rect_txt.Bottom + (int)(icon_size * .33F);
                                 var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
-                                g.DrawText(Text, Font, brush, rect_txt_desc, stringLTEllipsis);
+                                g.DrawText(Text, Font, brush, rect_txt_desc, sEllipsis);
                             }
                         }
                     }
@@ -341,7 +391,7 @@ namespace AntdUI
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert", ColorScheme), "Alert", ColorScheme);
                             var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 3), rect.Height);
-                            g.DrawText(Text, Font, color, rect_txt, stringLeft);
+                            g.DrawText(Text, Font, color, rect_txt, sf);
                         }
                         else
                         {
@@ -355,11 +405,11 @@ namespace AntdUI
                                 using (var brush = new SolidBrush(color))
                                 {
                                     var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, rect_icon.Y, rect.Width - (rect_icon.Width + gap * 3), rect_icon.Height);
-                                    g.DrawText(TextTitle, font_title, brush, rect_txt, stringLeft);
+                                    g.DrawText(TextTitle, font_title, brush, rect_txt, sf);
 
                                     var desc_y = rect_txt.Bottom + (int)(icon_size * .2F);
                                     var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
-                                    g.DrawText(Text, Font, brush, rect_txt_desc, stringLTEllipsis);
+                                    g.DrawText(Text, Font, brush, rect_txt_desc, sEllipsis);
                                 }
                             }
                         }
@@ -372,9 +422,8 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        readonly StringFormat stringLTEllipsis = Helper.SF_Ellipsis(tb: StringAlignment.Near, lr: StringAlignment.Near);
-        readonly StringFormat stringCenter = Helper.SF_NoWrap();
-        readonly StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly StringFormat sEllipsis = Helper.SF_Ellipsis(tb: StringAlignment.Near, lr: StringAlignment.Near);
+        StringFormat sc = Helper.SF_NoWrap(), sf = Helper.SF_ALL(lr: StringAlignment.Near);
 
         /// <summary>
         /// 渲染文字
@@ -389,16 +438,22 @@ namespace AntdUI
             {
                 if (string.IsNullOrEmpty(TextTitle))
                 {
-                    var rect_txt = new Rectangle(rect.X - val, rect.Y, size.Width, rect.Height);
-                    g.DrawText(Text, Font, brush, rect_txt, stringCenter);
-                    if (LoopInfinite && rect.Width > size.Width)
+                    bool c = rect.Width > size.Width;
+                    if (loopState && c) g.DrawText(Text, Font, brush, rect, sf);
+                    else
                     {
-                        var maxw = rect.Width + rect_txt.Width / 2;
-                        var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
-                        while (rect_txt2.X < maxw)
+                        var rect_txt = new Rectangle(rect.X - val, rect.Y, size.Width, rect.Height);
+                        g.DrawText(Text, Font, brush, rect_txt, sc);
+                        if (LoopInfinite && c)
                         {
-                            g.DrawText(Text, Font, brush, rect_txt2, stringCenter);
-                            rect_txt2.X = rect_txt2.Right;
+                            g.DrawText(Text, Font, brush, rect_txt, sc);
+                            var maxw = rect.Width + rect_txt.Width / 2;
+                            var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
+                            while (rect_txt2.X < maxw)
+                            {
+                                g.DrawText(Text, Font, brush, rect_txt2, sc);
+                                rect_txt2.X = rect_txt2.Right;
+                            }
                         }
                     }
                 }
@@ -406,14 +461,14 @@ namespace AntdUI
                 {
                     var size_title = g.MeasureText(TextTitle, Font);
                     var rect_txt = new Rectangle(rect.X + size_title.Width - val, rect.Y, size.Width, rect.Height);
-                    g.DrawText(Text, Font, brush, rect_txt, stringCenter);
+                    g.DrawText(Text, Font, brush, rect_txt, sc);
                     if (LoopInfinite && rect.Width > size.Width)
                     {
                         var maxw = rect.Width + rect_txt.Width / 2;
                         var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
                         while (rect_txt2.X < maxw)
                         {
-                            g.DrawText(Text, Font, brush, rect_txt2, stringCenter);
+                            g.DrawText(Text, Font, brush, rect_txt2, sc);
                             rect_txt2.X = rect_txt2.Right;
                         }
                     }
@@ -424,7 +479,7 @@ namespace AntdUI
                         g.Fill(brush2, rect_icon_l);
                         g.Fill(brush2, rect_icon_l);
                     }
-                    g.DrawText(TextTitle, Font, brush, new Rectangle(rect.X, rect.Y, size_title.Width, rect.Height), stringCenter);
+                    g.DrawText(TextTitle, Font, brush, new Rectangle(rect.X, rect.Y, size_title.Width, rect.Height), sc);
                 }
             }
         }
@@ -445,14 +500,14 @@ namespace AntdUI
 
                 g.SetClip(new Rectangle(rect.X, rect_txt.Y + ((rect.Height - size.Height) / 2), rect.Width, size.Height));
 
-                g.DrawText(Text, Font, brush_fore, rect_txt, stringCenter);
+                g.DrawText(Text, Font, brush_fore, rect_txt, sc);
                 if (LoopInfinite && rect.Width > size.Width)
                 {
                     var maxw = rect.Width + rect_txt.Width / 2;
                     var rect_txt2 = new Rectangle(rect_txt.Right, rect_txt.Y, rect_txt.Width, rect_txt.Height);
                     while (rect_txt2.X < maxw)
                     {
-                        g.DrawText(Text, Font, brush_fore, rect_txt2, stringCenter);
+                        g.DrawText(Text, Font, brush_fore, rect_txt2, sc);
                         rect_txt2.X = rect_txt2.Right;
                     }
                 }
@@ -477,7 +532,7 @@ namespace AntdUI
                         g.Fill(brush, rect_icon_l);
                         g.Fill(brush, rect_icon_l);
                     }
-                    g.DrawText(TextTitle, Font, brush_fore, new Rectangle(rect_icon.Right, rect.Y, size_title.Width, rect.Height), stringCenter);
+                    g.DrawText(TextTitle, Font, brush_fore, new Rectangle(rect_icon.Right, rect.Y, size_title.Width, rect.Height), sc);
                 }
                 var rect_icon_r = new Rectangle(rect.Right - rect_icon_l.Width, rect_icon_l.Y, rect_icon_l.Width, rect_icon_l.Height);
                 using (var brush = new LinearGradientBrush(rect_icon_r, Color.Transparent, back, 0F))
@@ -521,7 +576,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.LANG:
-                    font_size = null;
+                    ClearFont();
                     break;
             }
         }
