@@ -355,7 +355,11 @@ namespace AntdUI
                 items ??= new TabCollection(this);
                 return items;
             }
-            set => items = value.BindData(this);
+            set
+            {
+                items?.Clear();
+                items = value.BindData(this);
+            }
         }
 
         [Browsable(false)]
@@ -418,16 +422,10 @@ namespace AntdUI
             if (showok)
             {
                 if (items == null) return;
-                if (items.Count > 1)
-                {
-                    for (int i = 0; i < items.Count; i++)
-                    {
-                        if (i == index) continue;
-                        items[i].SetDock(false);
-                    }
-                }
                 if (items.Count <= _select || _select < 0) return;
-                items[_select].SetDock(true);
+                var it = items[_select];
+                if (IsHandleCreated) BeginInvoke(it.BringToFront);
+                else it.BringToFront();
             }
         }
 
@@ -1586,8 +1584,21 @@ namespace AntdUI
             action_add = item =>
             {
                 item.PARENT = it;
-                item.SetDock(it.Controls.Count == 0);
-                it.Controls.Add(item);
+                bool top = it.Controls.Count == 0;
+                item.Dock = DockStyle.Fill;
+                if (it.InvokeRequired)
+                {
+                    it.Invoke(() =>
+                    {
+                        it.Controls.Add(item);
+                        if (top) item.BringToFront();
+                    });
+                }
+                else
+                {
+                    it.Controls.Add(item);
+                    if (top) item.BringToFront();
+                }
             };
             action_del = (item, index) =>
             {
@@ -1628,17 +1639,6 @@ namespace AntdUI
         }
 
         #region 属性
-
-        DockStyle dock = DockStyle.Fill;
-        /// <summary>
-        /// 定义要绑定到容器的控件边框
-        /// </summary>
-        [Category("布局"), Description("定义要绑定到容器的控件边框"), DefaultValue(DockStyle.Fill)]
-        public new DockStyle Dock
-        {
-            get => dock;
-            set => dock = value;
-        }
 
         Image? icon;
         /// <summary>
@@ -1811,21 +1811,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        public void SetDock(bool isdock)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() => SetDock(isdock)));
-                return;
-            }
-            if (isdock) base.Dock = dock;
-            else
-            {
-                base.Dock = DockStyle.None;
-                Location = new Point(-Width, -Height);
-            }
-        }
 
         public override string ToString() => Text;
     }

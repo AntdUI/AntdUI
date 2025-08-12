@@ -62,6 +62,70 @@ namespace AntdUI.Chat
         [Browsable(false)]
         public ScrollBar ScrollBar;
 
+        #region 主题
+
+        /// <summary>
+        /// 选中颜色
+        /// </summary>
+        [Description("选中颜色"), Category("外观"), DefaultValue(typeof(Color), "60, 96, 165, 250")]
+        public Color SelectionColor = Color.FromArgb(60, 96, 165, 250);
+
+        /// <summary>
+        /// 选中颜色(我)
+        /// </summary>
+        [Description("选中颜色(我)"), Category("外观"), DefaultValue(typeof(Color), "96, 165, 250")]
+        public Color SelectionColorMe = Color.FromArgb(96, 165, 250);
+
+        /// <summary>
+        /// 气泡文本颜色(对方)
+        /// </summary>
+        [Description("气泡文本颜色(对方)"), Category("外观"), DefaultValue(null)]
+        public Color? ForeBubble { get; set; }
+
+        /// <summary>
+        /// 气泡背景色(对方)
+        /// </summary>
+        [Description("气泡背景色(对方)"), Category("外观"), DefaultValue(null)]
+        public Color? BackBubble { get; set; }
+
+        /// <summary>
+        /// 气泡激活背景色(对方)
+        /// </summary>
+        [Description("气泡激活背景色(对方)"), Category("外观"), DefaultValue(null)]
+        public Color? BackActiveBubble { get; set; }
+
+        /// <summary>
+        /// 气泡文本颜色(我)
+        /// </summary>
+        [Description("气泡文本颜色(我)"), Category("外观"), DefaultValue(null)]
+        public Color? ForeBubbleMe { get; set; }
+
+        /// <summary>
+        /// 气泡背景色(我)
+        /// </summary>
+        [Description("气泡背景色(我)"), Category("外观"), DefaultValue(null)]
+        public Color? BackBubbleMe { get; set; }
+
+        /// <summary>
+        /// 气泡激活背景色(我)
+        /// </summary>
+        [Description("气泡激活背景色(我)"), Category("外观"), DefaultValue(null)]
+        public Color? BackActiveBubbleMe { get; set; }
+
+        #endregion
+
+        /// <summary>
+        /// 隐藏图标
+        /// </summary>
+        [Description("隐藏图标"), Category("外观"), DefaultValue(false)]
+        public bool IconLess { get; set; }
+
+        /// <summary>
+        /// 间隙
+        /// </summary>
+        [Description("间隙"), Category("外观"), DefaultValue(null)]
+        public int? Gap { get; set; }
+
         #endregion
 
         #region 方法
@@ -92,9 +156,39 @@ namespace AntdUI.Chat
             }
         }
 
-        public void ToBottom()
+        public void ToBottom() => ScrollBar.Value = ScrollBar.VrValueI;
+
+        /// <summary>
+        /// 滚动到指定行
+        /// </summary>
+        /// <param name="i">行</param>
+        /// <param name="force">是否强制滚动</param>
+        /// <returns>返回滚动量</returns>
+        public int ScrollLine(int i, bool force = false)
         {
-            ScrollBar.Value = ScrollBar.VrValueI;
+            if (items == null || !ScrollBar.ShowY) return 0;
+            return ScrollLine(i, items, force);
+        }
+
+        int ScrollLine(int i, ChatItemCollection items, bool force = false)
+        {
+            if (!ScrollBar.ShowY) return 0;
+            var selectRow = items[i];
+            int sy = ScrollBar.ValueY;
+            if (force)
+            {
+                ScrollBar.ValueY = items[i].rect.Y;
+                return sy - ScrollBar.ValueY;
+            }
+            else
+            {
+                if (selectRow.rect.Y < sy || selectRow.rect.Bottom > sy + Height)
+                {
+                    ScrollBar.ValueY = items[i].rect.Y;
+                    return sy - ScrollBar.ValueY;
+                }
+            }
+            return 0;
         }
 
         #endregion
@@ -111,7 +205,18 @@ namespace AntdUI.Chat
             var g = e.Canvas;
             float sy = ScrollBar.Value, radius = Config.Dpi * 8F;
             g.TranslateTransform(0, -sy);
-            foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius);
+            using (var selection = new SolidBrush(SelectionColor))
+            using (var selectionme = new SolidBrush(SelectionColorMe))
+            using (var foreBubble = new SolidBrush(ForeBubble ?? Color.Black))
+            using (var bgBubble = new SolidBrush(BackBubble ?? Color.White))
+            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get("ChatList", ColorScheme)))
+
+            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Color.White))
+            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Color.FromArgb(0, 153, 255)))
+            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Color.FromArgb(0, 134, 224)))
+            {
+                foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius, selection, selectionme, foreBubble, bgBubble, bgActiveBubble, foreBubbleme, bgBubbleme, bgActiveBubbleme);
+            }
             g.ResetTransform();
             ScrollBar.Paint(g);
             base.OnDraw(e);
@@ -119,7 +224,7 @@ namespace AntdUI.Chat
 
         StringFormat SFL = Helper.SF(tb: StringAlignment.Near);
 
-        void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius)
+        void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
         {
             it.show = it.Show && it.rect.Y > sy - rect.Height - it.rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)
@@ -134,48 +239,39 @@ namespace AntdUI.Chat
                         }
                         if (text.Me)
                         {
-                            g.Fill(Color.FromArgb(0, 153, 255), path);
-                            if (text.selectionLength > 0) g.Fill(Color.FromArgb(0, 134, 224), path);
-                            using (var brush = new SolidBrush(Color.White))
-                            {
-                                PaintItemText(g, text, brush);
-                            }
+                            g.Fill(bgbubbleme, path);
+                            if (text.selectionLength > 0) g.Fill(bgActiveBubbleme, path);
+                            PaintItemText(g, text, forebubbleme, selectionme);
                         }
                         else
                         {
-                            g.Fill(Brushes.White, path);
-                            if (text.selectionLength > 0) g.Fill(Colour.FillQuaternary.Get("ChatList", ColorScheme), path);
-                            using (var brush = new SolidBrush(Color.Black))
-                            {
-                                PaintItemText(g, text, brush);
-                            }
+                            g.Fill(bgbubble, path);
+                            if (text.selectionLength > 0) g.Fill(bgActiveBubble, path);
+                            PaintItemText(g, text, forebubble, selection);
                         }
                     }
+                    if (IconLess) return;
                     if (text.Icon != null) g.Image(text.rect_icon, text.Icon, TFit.Cover, 0, true);
-
                 }
             }
         }
 
-        void PaintItemText(Canvas g, TextChatItem text, SolidBrush fore)
+        void PaintItemText(Canvas g, TextChatItem text, SolidBrush fore, SolidBrush selection)
         {
             if (text.selectionLength > 0)
             {
                 int end = text.selectionStartTemp + text.selectionLength - 1;
                 if (end > text.cache_font.Length - 1) end = text.cache_font.Length - 1;
                 CacheFont first = text.cache_font[text.selectionStartTemp];
-                using (var brush = new SolidBrush(Color.FromArgb(text.Me ? 255 : 60, 96, 165, 250)))
+                for (int i = text.selectionStartTemp; i <= end; i++)
                 {
-                    for (int i = text.selectionStartTemp; i <= end; i++)
+                    var last = text.cache_font[i];
+                    if (i == end) g.Fill(selection, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
+                    else if (first.rect.Y != last.rect.Y || last.retun)
                     {
-                        var last = text.cache_font[i];
-                        if (i == end) g.Fill(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
-                        else if (first.rect.Y != last.rect.Y || last.retun)
-                        {
-                            last = text.cache_font[i - 1];
-                            g.Fill(brush, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
-                            first = text.cache_font[i];
-                        }
+                        last = text.cache_font[i - 1];
+                        g.Fill(selection, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
+                        first = text.cache_font[i];
                     }
                 }
             }
@@ -562,13 +658,13 @@ namespace AntdUI.Chat
             {
                 var size = g.MeasureString(Config.NullText, Font).Height;
                 int item_height = (int)Math.Ceiling(size * 1.714),
-                    gap = (int)Math.Round(item_height * .75),
+                    gap = Gap ?? (int)Math.Round(item_height * .75),
                     spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
                 y = spilt;
                 foreach (var it in items)
                 {
                     it.PARENT = this;
-                    if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height) + gap;
+                    if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap;
                 }
             });
             ScrollBar.SetVrSize(y);
@@ -824,19 +920,21 @@ namespace AntdUI.Chat
 
         #region 布局
 
-        internal int SetRect(Rectangle _rect, int y, Canvas g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size)
+        internal int SetRect(Rectangle _rect, int y, Canvas g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size, bool iconLess = false)
         {
             if (string.IsNullOrEmpty(_name))
             {
                 rect = new Rectangle(_rect.X, _rect.Y + y, _rect.Width, msglen.Height);
                 if (Me)
                 {
-                    rect_icon = new Rectangle(rect.Right - gap - image_size, rect.Y, image_size, image_size);
+                    if (iconLess) rect_icon = new Rectangle(rect.Right, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.Right - gap - image_size, rect.Y, image_size, image_size);
                     rect_read = new Rectangle(rect_icon.X - spilt - msglen.Width, rect_icon.Y, msglen.Width, msglen.Height);
                 }
                 else
                 {
-                    rect_icon = new Rectangle(rect.X + gap, rect.Y, image_size, image_size);
+                    if (iconLess) rect_icon = new Rectangle(0, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.X + gap, rect.Y, image_size, image_size);
                     rect_read = new Rectangle(rect_icon.Right + spilt, rect_icon.Y, msglen.Width, msglen.Height);
                 }
             }
@@ -846,13 +944,15 @@ namespace AntdUI.Chat
                 var size_name = g.MeasureString(_name, font).Width;
                 if (Me)
                 {
-                    rect_icon = new Rectangle(rect.Right - gap - image_size, rect.Y, image_size, image_size);
+                    if (iconLess) rect_icon = new Rectangle(rect.Right, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.Right - gap - image_size, rect.Y, image_size, image_size);
                     rect_name = new Rectangle(rect_icon.X - spilt - msglen.Width + msglen.Width - size_name, rect_icon.Y, size_name, gap);
                     rect_read = new Rectangle(rect_icon.X - spilt - msglen.Width, rect_name.Bottom, msglen.Width, msglen.Height);
                 }
                 else
                 {
-                    rect_icon = new Rectangle(rect.X + gap, rect.Y, image_size, image_size);
+                    if (iconLess) rect_icon = new Rectangle(0, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.X + gap, rect.Y, image_size, image_size);
                     rect_name = new Rectangle(rect_icon.Right + spilt, rect_icon.Y, size_name, gap);
                     rect_read = new Rectangle(rect_name.X, rect_name.Bottom, msglen.Width, msglen.Height);
                 }

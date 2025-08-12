@@ -246,7 +246,7 @@ namespace AntdUI
                         else
                         {
                             var sizeT = g.MeasureString(Config.NullText, fontTitle);
-                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - icon_size + icon_size_x;
+                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x);
                             var sizeTitle = g.MeasureText(config.Title, fontTitle, ww);
                             int h = sizeTitle.Height + gap + control.Height + butt_h;
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
@@ -295,7 +295,7 @@ namespace AntdUI
                         else
                         {
                             var sizeT = g.MeasureString(Config.NullText, fontTitle);
-                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - icon_size + icon_size_x, h;
+                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x), h;
                             var sizeTitle = g.MeasureText(config.Title, fontTitle, ww);
                             rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
@@ -355,10 +355,10 @@ namespace AntdUI
                         else
                         {
                             var sizeT = g.MeasureString(Config.NullText, fontTitle);
-                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), h;
+                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x), h;
                             if (config.UseIconPadding)
                             {
-                                wp -= icon_size + icon_size_x;
+                                wp = ww;
                                 Size sizeTitle = g.MeasureText(config.Title, fontTitle, wp), sizeContent = g.MeasureText(content, Font, wp);
                                 h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
 
@@ -372,7 +372,7 @@ namespace AntdUI
                                 Size sizeTitle = g.MeasureText(config.Title, fontTitle, wp), sizeContent = g.MeasureText(content, Font, wp);
                                 h = sizeTitle.Height + gap + sizeContent.Height + butt_h;
 
-                                rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wp - icon_size + icon_size_x, sizeTitle.Height + gap);
+                                rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
                                 rectContent = new Rectangle(paddingx, rectTitle.Bottom, wp, h - butt_h - sizeTitle.Height - gap);
 
                                 rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);

@@ -775,7 +775,7 @@ namespace AntdUI
         {
             get
             {
-                if (dataTmp == null) return 0;
+                if (dataTmp == null || dataTmp.rows.Length == 0) return 0;
                 int count = dataTmp.rows.Length;
                 var keyTree = KeyTreeCurrent;
                 if (keyTree == null) return count;
@@ -1156,7 +1156,7 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
                 return;
             }
-            if (dataTmp == null) return;
+            if (dataTmp == null || dataTmp.rows.Length == 0) return;
             var list = new List<int>(dataTmp.rows.Length);
             foreach (var it in data)
             {
@@ -1254,7 +1254,7 @@ namespace AntdUI
         /// <param name="toString">使用toString</param>
         public DataTable? ToDataTable(bool enableRender = true, bool toString = true)
         {
-            if (dataTmp == null) return null;
+            if (dataTmp == null || dataTmp.rows.Length == 0) return null;
             var dt = new DataTable();
 
             Dictionary<string, Column> dir_columns;
