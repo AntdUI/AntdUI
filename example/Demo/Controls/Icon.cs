@@ -262,7 +262,7 @@ namespace Demo.Controls
                     }
                     g.Image(bmp, rect_icon_hover);
                 }
-                else  g.Image(bmp, rect_icon);
+                else g.Image(bmp, rect_icon);
             }
 
             int sp = 4;
