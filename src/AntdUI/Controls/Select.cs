@@ -135,6 +135,12 @@ namespace AntdUI
         [Description("自动设置下拉前缀"), Category("外观"), DefaultValue(false)]
         public bool AutoPrefixSvg { get; set; }
 
+        /// <summary>
+        /// 鼠标滚轮修改值
+        /// </summary>
+        [Description("鼠标滚轮修改值"), Category("交互"), DefaultValue(true)]
+        public bool WheelModifyEnabled { get; set; } = true;
+
         #region 数据
 
         BaseCollection? items;
@@ -589,6 +595,17 @@ namespace AntdUI
                 }
                 else Focus();
             }
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+            if (ReadOnly || !WheelModifyEnabled || items == null || items.Count == 0) return;
+            int newIndex;
+            if (e.Delta > 0) newIndex = SelectedIndex <= 0 ? items.Count - 1 : SelectedIndex - 1;
+            else newIndex = SelectedIndex >= items.Count - 1 ? 0 : SelectedIndex + 1;
+            SelectedIndex = newIndex;
+            if (e is HandledMouseEventArgs handled) handled.Handled = true;
         }
 
         #endregion

@@ -846,7 +846,10 @@ namespace AntdUI
         }
         bool MouseHoverRow(CELL cel, int x, int y, int offset_x, int offset_xi, int offset_y)
         {
-            if (cel is Template template)
+            if (cel is TCellCheck) return false;
+            else if (cel is TCellRadio) return false;
+            else if (cel is TCellSwitch) return false;
+            else if (cel is Template template)
             {
                 var tipcel = MouseHoverCell(template, x, y);
                 if (tipcel == null) CloseTip();
@@ -1198,7 +1201,7 @@ namespace AntdUI
         int[]? SortData;
         List<SortModel> SortDatas(Column column)
         {
-            if (dataTmp == null) return new List<SortModel>(0);
+            if (dataTmp == null || dataTmp.rows.Length == 0) return new List<SortModel>(0);
             var list = new List<SortModel>(dataTmp.rows.Length);
             if (dataTmp.rows[0].cells.ContainsKey(column.Key))
             {

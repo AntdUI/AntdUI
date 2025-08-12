@@ -149,8 +149,12 @@ namespace AntdUI
             {
                 while (true)
                 {
-                    if (rows[value].SHOW) return value;
-                    else value++;
+                    if (value < rows.Length - 1)
+                    {
+                        if (rows[value].SHOW) return value;
+                        else value++;
+                    }
+                    else return rows.Length - 1;
                 }
             }
             return value;
@@ -161,8 +165,12 @@ namespace AntdUI
             {
                 while (true)
                 {
-                    if (rows[value].SHOW) return value;
-                    else value--;
+                    if (value > 0)
+                    {
+                        if (rows[value].SHOW) return value;
+                        else value--;
+                    }
+                    else return 0;
                 }
             }
             return value;
