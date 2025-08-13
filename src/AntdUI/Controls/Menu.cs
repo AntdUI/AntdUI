@@ -212,6 +212,23 @@ namespace AntdUI
             }
         }
 
+        float? arrowRatio;
+        /// <summary>
+        /// 箭头比例
+        /// </summary>
+        [Description("箭头比例"), Category("外观"), DefaultValue(null)]
+        public float? ArrowRatio
+        {
+            get => arrowRatio;
+            set
+            {
+                if (arrowRatio == value) return;
+                arrowRatio = value;
+                ChangeList(true);
+                OnPropertyChanged(nameof(ArrowRatio));
+            }
+        }
+
         TMenuMode mode = TMenuMode.Inline;
         /// <summary>
         /// 菜单类型
@@ -530,7 +547,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
-                    int icon_size = (int)Math.Ceiling(size.Height * iconratio);
+                    int icon_size = (int)(size.Height * iconratio);
                     int gap = (_gap.HasValue ? (int)(_gap.Value * Config.Dpi) : (int)(size.Height * .8F)), gap2 = gap * 2, sp = (_itemMargin.HasValue ? (int)(_itemMargin.Value * Config.Dpi) : (int)(size.Height * .2F)), sp2 = sp * 2, height = size.Height + gap2;
                     int inlineIndent = (_inlineIndent.HasValue ? (int)(_inlineIndent.Value * Config.Dpi) : (int)(size.Height * 1.2F)), iconsp = (icongap.HasValue ? (int)(icongap.Value * Config.Dpi) : size.Height / 2);
                     if (mode == TMenuMode.Horizontal)
@@ -547,11 +564,19 @@ namespace AntdUI
                     else
                     {
                         scroll_show = false;
-                        int yr = ChangeListY(rect, items!, ref icon_count, height, sp) + Padding.Vertical;
-                        int scx = yr > _rect.Height ? ScrollBar.SIZE : 0;
                         collapseWidth = icon_size + gap2 + Padding.Horizontal;
-                        if (mode == TMenuMode.InlineNoText) collapsedWidth = ChangeListInlineNoText(rect, g, null, items!, ref y, height, icon_size, gap, gap2, sp, sp2, iconsp, scx) + Padding.Horizontal;
-                        else collapsedWidth = ChangeList(rect, g, null, items!, ref y, height, icon_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, 0) + Padding.Horizontal;
+                        if (mode == TMenuMode.InlineNoText)
+                        {
+                            int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : (int)(icon_size * 0.85F);
+                            collapsedWidth = ChangeListInlineNoText(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, iconsp) + Padding.Horizontal;
+                        }
+                        else
+                        {
+                            int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : icon_size;
+                            int yr = ChangeListY(rect, items!, ref icon_count, height, sp) + Padding.Vertical;
+                            int scx = yr > _rect.Height ? ScrollBar.SIZE : 0;
+                            collapsedWidth = ChangeList(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, 0) + Padding.Horizontal;
+                        }
                         if (AutoCollapse)
                         {
                             if (icon_count > 0) collapsed = collapsedWidth >= _rect.Width;
@@ -581,7 +606,7 @@ namespace AntdUI
             return y;
         }
 
-        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
+        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
         {
             int collapsedWidth = 0, i = 0;
             foreach (var it in items)
@@ -590,7 +615,7 @@ namespace AntdUI
                 i++;
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
-                int uw = it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx);
+                int uw = it.SetRect(depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx);
                 if (it.Visible)
                 {
                     int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2 + scx;
@@ -601,14 +626,14 @@ namespace AntdUI
                         if (collapsed)
                         {
                             int oldy = y;
-                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
+                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
                             y = oldy;
                         }
                         else
                         {
                             int y_item = y;
-                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
+                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
 
                             it.SubY = rect.Y + y_item - sp / 2;
@@ -626,7 +651,7 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
-        int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int gap, int gap2, int sp, int sp2, int iconsp, int scx)
+        int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int iconsp)
         {
             int collapsedWidth = 0, i = 0;
             foreach (var it in items)
@@ -635,10 +660,10 @@ namespace AntdUI
                 i++;
                 it.PARENT = this;
                 it.PARENTITEM = Parent;
-                int uw = it.SetRectInlineNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, gap, gap2, sp, sp2, iconsp, scx);
+                int uw = it.SetRectInlineNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
                 if (it.Visible)
                 {
-                    int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2 + scx;
+                    int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2;
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + sp;
                     if (it.CanExpand)
@@ -646,7 +671,7 @@ namespace AntdUI
                         if (collapsed)
                         {
                             int oldy = y;
-                            int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, gap, gap2, sp, sp2, iconsp, scx);
+                            int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
                             y = oldy;
                         }
@@ -654,7 +679,7 @@ namespace AntdUI
                         {
                             int y_item = y;
 
-                            int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, gap, gap2, sp, sp2, iconsp, scx);
+                            int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
                             if (size2 > collapsedWidth) collapsedWidth = size2;
 
                             it.SubY = rect.Y + y_item - sp / 2;
@@ -916,7 +941,7 @@ namespace AntdUI
                     if (it.CanExpand)
                     {
                         if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
-                        using (var pen = new Pen(fore_active, 2F))
+                        using (var pen = new Pen(fore_active, Config.Dpi * 2))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                             g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
@@ -926,7 +951,7 @@ namespace AntdUI
                 }
                 else if (it.CanExpand)
                 {
-                    using (var pen = new Pen(fore_enabled, 2F))
+                    using (var pen = new Pen(fore_enabled, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
@@ -957,7 +982,7 @@ namespace AntdUI
             {
                 if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText)
                 {
-                    using (var pen = new Pen(fore, 2F))
+                    using (var pen = new Pen(fore, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
@@ -965,7 +990,7 @@ namespace AntdUI
                 }
                 else if (mode == TMenuMode.Vertical)
                 {
-                    using (var pen = new Pen(fore, 2F))
+                    using (var pen = new Pen(fore, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.arr_rect, .4F));
@@ -2107,7 +2132,7 @@ namespace AntdUI
 
         #region 布局
 
-        internal int SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx)
+        internal int SetRect(int depth, bool indent, Rectangle _rect, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx)
         {
             Depth = depth;
             rect = _rect;
@@ -2139,14 +2164,14 @@ namespace AntdUI
             Show = true;
             return usew;
         }
-        internal int SetRectInlineNoText(Rectangle _rect, int icon_size, int gap, int gap2, int sp, int sp2, int iconsp, int scx)
+        internal int SetRectInlineNoText(Rectangle _rect, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int iconsp)
         {
             Depth = 0;
             rect = _rect;
-            int x = gap, usew = gap2, y = (_rect.Height - icon_size) / 2;
+            int x = gap, usew = gap2;
             if (HasIcon)
             {
-                int tmp = icon_size + iconsp;
+                int tmp = icon_size + iconsp, y = (_rect.Height - icon_size) / 2;
                 ico_rect = new Rectangle(_rect.X + x, _rect.Y + y, icon_size, icon_size);
 
                 x += tmp;
@@ -2155,7 +2180,7 @@ namespace AntdUI
                 txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
             }
             else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
-            arr_rect = new Rectangle(_rect.Right - icon_size - sp - scx, _rect.Y + y, icon_size, icon_size);
+            arr_rect = new Rectangle(_rect.Right - (arrow_size - sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
             Show = true;
             return usew;
         }

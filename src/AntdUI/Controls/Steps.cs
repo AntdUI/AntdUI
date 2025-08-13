@@ -557,9 +557,9 @@ namespace AntdUI
                         else if (i < current)
                         {
                             //过
-                            g.DrawText(it.GetTitle, Font, brush_fore, it.title_rect, stringLeft);
+                            g.DrawText(it.GetTitle, Font, milestoneMode ? brush_primary : brush_fore, it.title_rect, stringLeft);
                             g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
-                            g.DrawText(it.Description, font_description, brush_fore2, it.description_rect, stringLeft);
+                            g.DrawText(it.Description, font_description, milestoneMode ? brush_fore : brush_fore2, it.description_rect, stringLeft);
                             ccolor = brush_primary.Color;
                         }
                         else

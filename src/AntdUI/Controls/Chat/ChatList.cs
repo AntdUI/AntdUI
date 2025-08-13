@@ -121,10 +121,16 @@ namespace AntdUI.Chat
         public bool IconLess { get; set; }
 
         /// <summary>
-        /// 间隙
+        /// 每项之间的间隙
         /// </summary>
-        [Description("间隙"), Category("外观"), DefaultValue(null)]
-        public int? Gap { get; set; }
+        [Description("每项之间的间隙"), Category("外观"), DefaultValue(0)]
+        public int ItemGap { get; set; }
+
+        /// <summary>
+        /// 气泡间隙
+        /// </summary>
+        [Description("气泡间隙"), Category("外观"), DefaultValue(.75F)]
+        public float BubbleGap { get; set; } = .75F;
 
         #endregion
 
@@ -658,13 +664,14 @@ namespace AntdUI.Chat
             {
                 var size = g.MeasureString(Config.NullText, Font).Height;
                 int item_height = (int)Math.Ceiling(size * 1.714),
-                    gap = Gap ?? (int)Math.Round(item_height * .75),
+                    gap = (int)Math.Round(item_height * BubbleGap),
+                    itemGap = (int)(ItemGap * Config.Dpi),
                     spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
                 y = spilt;
                 foreach (var it in items)
                 {
                     it.PARENT = this;
-                    if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap;
+                    if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
                 }
             });
             ScrollBar.SetVrSize(y);

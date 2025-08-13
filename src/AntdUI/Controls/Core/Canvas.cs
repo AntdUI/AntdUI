@@ -178,6 +178,11 @@ namespace AntdUI
         void DrawLines(Pen pen, Point[] points);
         void DrawLines(Pen pen, PointF[] points);
 
+        void DrawCurve(Pen pen, Point[] points);
+        void DrawCurve(Pen pen, PointF[] points);
+        void DrawCurve(Color color, float width, Point[] points);
+        void DrawCurve(Color color, float width, PointF[] points);
+
         #endregion
 
         #region Base

@@ -1126,6 +1126,23 @@ namespace AntdUI.Core
             }
         }
 
+        public void DrawCurve(Pen pen, Point[] points) => g.DrawCurve(pen, points);
+        public void DrawCurve(Pen pen, PointF[] points) => g.DrawCurve(pen, points);
+        public void DrawCurve(Color color, float width, Point[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawCurve(pen, points);
+            }
+        }
+        public void DrawCurve(Color color, float width, PointF[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawCurve(pen, points);
+            }
+        }
+
         #endregion
 
         #region Base
