@@ -432,38 +432,7 @@ namespace AntdUI
 
         readonly StringFormat stringLeft = Helper.SF(lr: StringAlignment.Near);
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
-        #region 动画
-        protected void OnRunAnimation()
-        {
-            ThreadLoading?.Dispose();
-            if (!animation) return;
 
-            ThreadLoading = new ITask(this, () =>
-            {
-                AnimationLoadingValue = AnimationLoadingValue.Calculate(0.01F);
-                if (AnimationLoadingValue > 1)
-                {
-                    AnimationLoadingValue = 0;
-                    Invalidate();
-                    Thread.Sleep(1000);
-                }
-                Invalidate();
-                return true;
-            }, 10, () =>
-            {
-                Invalidate();
-            });
-
-        }
-        protected override void Dispose(bool disposing)
-        {
-            ThreadLoading?.Dispose();
-
-            base.Dispose(disposing);
-        }
-        ITask? ThreadLoading;
-        float AnimationLoadingValue = 0F;
-        #endregion
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
@@ -508,7 +477,6 @@ namespace AntdUI
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -649,6 +617,39 @@ namespace AntdUI
             if (it.IconSvg != null && g.GetImgExtend(it.IconSvg, rect, fore)) count++;
             return count == 0;
         }
+
+        #region 动画
+        protected void OnRunAnimation()
+        {
+            ThreadLoading?.Dispose();
+            if (!animation) return;
+
+            ThreadLoading = new ITask(this, () =>
+            {
+                AnimationLoadingValue = AnimationLoadingValue.Calculate(0.01F);
+                if (AnimationLoadingValue > 1)
+                {
+                    AnimationLoadingValue = 0;
+                    Invalidate();
+                    Thread.Sleep(1000);
+                }
+                Invalidate();
+                return true;
+            }, 10, () =>
+            {
+                Invalidate();
+            });
+
+        }
+        protected override void Dispose(bool disposing)
+        {
+            ThreadLoading?.Dispose();
+
+            base.Dispose(disposing);
+        }
+        ITask? ThreadLoading;
+        float AnimationLoadingValue = 0F;
+        #endregion
 
         #endregion
 

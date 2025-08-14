@@ -279,6 +279,20 @@ namespace AntdUI
             }
         }
 
+        float itemGap = 0.6F;
+        [Description("项间距"), Category("外观"), DefaultValue(0.6F)]
+        public float ItemGap
+        {
+            get => itemGap;
+            set
+            {
+                if (itemGap == value) return;
+                itemGap = value;
+                ChangeItems(true);
+                OnPropertyChanged(nameof(ItemGap));
+            }
+        }
+
         Color? back;
         /// <summary>
         /// 背景颜色
@@ -807,7 +821,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size_t = g.MeasureString(Config.NullText, Font);
-                    int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * 0.6F), gap2 = gap * 2;
+                    int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * itemGap), gap2 = gap * 2;
                     if (Full)
                     {
                         int len = items.Count;

@@ -61,7 +61,7 @@ Windows 桌面右键显示设置 将缩放修改至 `100%`
 
 ### 3、HDPI 下为何设计器与编译后的布局不一致
 
-> 将每个`.Designer.cs` 中的 `AutoScaleMode` 移除/恢复默认值，移除 `AutoScaleFactor` 也不受影响
+> 将每个`.Designer.cs` 中的 `AutoScaleMode` 移除/恢复默认值，移除 `AutoScaleDimensions` 和 `AutoScaleFactor` 也不受影响
 
 ---
 
