@@ -369,6 +369,18 @@ namespace AntdUI
         internal void UpdateFilter() => Table?.UpdateFilter();
 
         /// <summary>
+        /// 外部应用筛选 (当前列)
+        /// </summary>
+        /// <param name="condition">条件</param>
+        /// <param name="filterValues">单个筛选值</param>
+        public bool Apply(FilterConditions condition, object filterValue)
+        {
+            if (Column == null) return false;
+            object[] filterValues = new object[] { filterValue };
+            return Apply(Column, condition, filterValues);
+        }
+
+        /// <summary>
         /// 外部应用筛选
         /// </summary>
         /// <param name="column">筛选列</param>
@@ -379,7 +391,17 @@ namespace AntdUI
             object[] filterValues = new object[] { filterValue };
             return Apply(column, condition, filterValues);
         }
-
+        /// <summary>
+        /// 外部应用筛选 (当前列)
+        /// </summary>
+        /// <param name="condition">条件</param>
+        /// <param name="filterValues">筛选值</param>
+        /// <returns></returns>
+        public bool Apply(FilterConditions condition, object[] filterValues)
+        {
+            if (Column == null) return false;
+            return Apply(Column, condition, filterValues);
+        }
         /// <summary>
         /// 外部应用筛选
         /// </summary>
@@ -389,13 +411,11 @@ namespace AntdUI
         /// <returns></returns>
         public bool Apply(Column column, FilterConditions condition, object[] filterValues)
         {
-            if ((column == null && Column == null) || condition == FilterConditions.None) return false;
+            if (column == null || condition == FilterConditions.None) return false;
 
-            if (column != null)
-            {
-                Column = column;
-                Table = column.PARENT;
-            }
+            Column = column;
+            Table = column.PARENT;
+
             Condition = condition;
             List<object> list = new List<object>();
             list.AddRange(filterValues);

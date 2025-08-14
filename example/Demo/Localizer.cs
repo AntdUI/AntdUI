@@ -189,6 +189,8 @@ namespace Demo
                     return "Help me";
                 case "FloatButton.4":
                     return "Hopeless";
+                case "FloatButton.Arrow":
+                    return "Expand";
 
                 //Carousel ----------------------------
                 case "Carousel.Text":

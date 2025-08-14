@@ -61,7 +61,7 @@ Windows desktop right-click display settings will change zoom to `100%`
 
 ### 3. Why is the designer and compiled layout inconsistent under HDPI
 
-> Take each one Remove/restore the default value of `AutoScaleMode` in `.Designer.cs`, and removing `AutoScaleFactor` is not affected
+> Take each one Remove/restore the default value of `AutoScaleMode` in `.Designer.cs`, and removing `AutoScaleDimensions` and `AutoScaleFactor` without affecting it
 
 ---
 

@@ -619,6 +619,8 @@ namespace AntdUI.Core
             catch { }
             return false;
         }
+        public bool Image(Image image, Rectangle destRect, Rectangle srcRect) => Image(image, destRect, srcRect, GraphicsUnit.Pixel);
+        public bool Image(Image image, RectangleF destRect, RectangleF srcRect) => Image(image, destRect, srcRect, GraphicsUnit.Pixel);
         public bool Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit)
         {
             try
@@ -664,6 +666,30 @@ namespace AntdUI.Core
                         var matrix = new ColorMatrix { Matrix33 = opacity };
                         attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
                         g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    }
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+        public bool Image(Image bmp, Rectangle destRect, Rectangle srcRect, float opacity) => Image(bmp, destRect, srcRect, opacity, GraphicsUnit.Pixel);
+        public bool Image(Image bmp, Rectangle destRect, Rectangle srcRect, float opacity, GraphicsUnit srcUnit)
+        {
+            try
+            {
+                lock (bmp)
+                {
+                    if (opacity >= 1F)
+                    {
+                        Image(bmp, destRect, srcRect, srcUnit);
+                        return true;
+                    }
+                    using (var attributes = new ImageAttributes())
+                    {
+                        var matrix = new ColorMatrix { Matrix33 = opacity };
+                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                        g.DrawImage(bmp, destRect, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, srcUnit, attributes);
                     }
                     return true;
                 }
@@ -1123,6 +1149,23 @@ namespace AntdUI.Core
             using (var pen = new Pen(color, width))
             {
                 DrawLines(pen, points);
+            }
+        }
+
+        public void DrawCurve(Pen pen, Point[] points) => g.DrawCurve(pen, points);
+        public void DrawCurve(Pen pen, PointF[] points) => g.DrawCurve(pen, points);
+        public void DrawCurve(Color color, float width, Point[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawCurve(pen, points);
+            }
+        }
+        public void DrawCurve(Color color, float width, PointF[] points)
+        {
+            using (var pen = new Pen(color, width))
+            {
+                DrawCurve(pen, points);
             }
         }
 

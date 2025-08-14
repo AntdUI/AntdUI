@@ -77,12 +77,16 @@ namespace AntdUI
 
         bool Image(Image image, Rectangle rect);
         bool Image(Image image, RectangleF rect);
+        bool Image(Image image, Rectangle destRect, Rectangle srcRect);
+        bool Image(Image image, RectangleF destRect, RectangleF srcRect);
         bool Image(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit);
         bool Image(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit srcUnit);
 
         #region 图片透明度
 
         bool Image(Image bmp, Rectangle rect, float opacity);
+        bool Image(Image bmp, Rectangle destRect, Rectangle srcRect, float opacity);
+        bool Image(Image bmp, Rectangle destRect, Rectangle srcRect, float opacity, GraphicsUnit srcUnit);
 
         #endregion
 
@@ -177,6 +181,11 @@ namespace AntdUI
 
         void DrawLines(Pen pen, Point[] points);
         void DrawLines(Pen pen, PointF[] points);
+
+        void DrawCurve(Pen pen, Point[] points);
+        void DrawCurve(Pen pen, PointF[] points);
+        void DrawCurve(Color color, float width, Point[] points);
+        void DrawCurve(Color color, float width, PointF[] points);
 
         #endregion
 

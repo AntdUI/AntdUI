@@ -887,7 +887,7 @@ namespace AntdUI
             return false;
         }
 
-        void SetCheck(TreeItem item, bool value)
+        public void SetCheck(TreeItem item, bool value)
         {
             if (item.items != null && item.items.Count > 0)
             {
@@ -899,7 +899,7 @@ namespace AntdUI
             }
         }
 
-        void SetCheckStrictly(TreeItem? item)
+        public void SetCheckStrictly(TreeItem? item)
         {
             if (item == null) return;
             int check_all_count = 0, check_count = 0;
@@ -1646,6 +1646,14 @@ namespace AntdUI
                 AnimationCheckValue = _checked ? 1F : 0F;
                 Invalidate();
             }
+        }
+
+        public void CheckedStrictly(bool value = true, bool handsub = true)
+        {
+            if (PARENT == null) return;
+            Checked = value;
+            if (handsub) PARENT.SetCheck(this, value);
+            PARENT.SetCheckStrictly(PARENTITEM);
         }
 
         #endregion

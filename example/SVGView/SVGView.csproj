@@ -1,36 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <WindowsSupportedOSPlatformVersion>5.1</WindowsSupportedOSPlatformVersion>
-    <TargetPlatformMinVersion>5.1</TargetPlatformMinVersion>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
-    <PublishTrimmed>true</PublishTrimmed>
-    <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
-    <PublishAot>true</PublishAot>
-	<OptimizationPreference>Size</OptimizationPreference>
-	<PublishLzmaCompressed>true</PublishLzmaCompressed>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<WindowsSupportedOSPlatformVersion>5.1</WindowsSupportedOSPlatformVersion>
+		<TargetPlatformMinVersion>5.1</TargetPlatformMinVersion>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<CustomResourceTypesSupport>true</CustomResourceTypesSupport>
+		<PublishTrimmed>true</PublishTrimmed>
+		<_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
+		<PublishAot>true</PublishAot>
+		<OptimizationPreference>Size</OptimizationPreference>
+		<PublishLzmaCompressed>true</PublishLzmaCompressed>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="PublishAotCompressed" Version="1.0.5" />
-    <PackageReference Include="VC-LTL" Version="5.2.2" />
-    <PackageReference Include="WinFormsComInterop" Version="0.5.0" />
-    <PackageReference Include="YY-Thunks" Version="1.1.7" />
-    <RdXmlFile Include="rd.xml" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="PublishAotCompressed" Version="1.0.5" />
+		<PackageReference Include="VC-LTL" Version="5.2.2" />
+		<PackageReference Include="WinFormsComInterop" Version="0.5.0" />
+		<PackageReference Include="YY-Thunks" Version="1.1.7" />
+		<RdXmlFile Include="rd.xml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\AntdUI\AntdUI.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\AntdUI\AntdUI.csproj" />
+	</ItemGroup>
 
 </Project>
