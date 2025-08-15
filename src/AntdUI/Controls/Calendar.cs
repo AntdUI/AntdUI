@@ -47,7 +47,6 @@ namespace AntdUI
             hover_year = new ITaskOpacity(key, this);
             hover_month = new ITaskOpacity(key, this);
             hover_button = new ITaskOpacity(key, this);
-            Date = DateNow;
 
             Culture = new CultureInfo(CultureID);
             YDR = CultureID.StartsWith("en");
@@ -77,6 +76,8 @@ namespace AntdUI
                 SundayButton = "日";
                 s_f_L = Helper.SF(lr: StringAlignment.Far); s_f_R = Helper.SF(lr: StringAlignment.Near);
             }
+
+            Date = DateNow;
         }
 
         #region 属性
@@ -438,7 +439,7 @@ namespace AntdUI
             var g = e.Canvas;
             var rect_read = ReadRectangle;
 
-            var _radius = radius * Config.Dpi;
+            int _radius = (int)(radius * Config.Dpi);
             using (var path = rect_read.RoundPath(_radius))
             {
                 g.Fill(Colour.BgElevated.Get("Calendar", ColorScheme), path);
@@ -543,7 +544,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintYear(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
+        void PrintYear(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             var color_fore = Colour.TextBase.Get("Calendar", ColorScheme);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
@@ -593,7 +594,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintMonth(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
+        void PrintMonth(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             var color_fore = Colour.TextBase.Get("Calendar", ColorScheme);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
@@ -647,7 +648,7 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_read">真实区域</param>
         /// <param name="datas">数据</param>
-        void PrintDay(Canvas g, Rectangle rect_read, float radius, List<Calendari> datas)
+        void PrintDay(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             if (rect_day_s == null) return;
             var color_fore = Colour.TextBase.Get("Calendar", ColorScheme);
@@ -688,61 +689,76 @@ namespace AntdUI
             using (var brush_error = new SolidBrush(Colour.Error.Get("Calendar", ColorScheme)))
             {
                 PaintToDayFrame(g, datas, DateNow.ToString("yyyy-MM-dd"), radius);
-
-                if (chinese)
+                if (ItemPaintBegin == null)
                 {
-                    using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
+                    if (chinese)
                     {
-                        using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get("Calendar", ColorScheme)))
+                        using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
                         {
-                            foreach (var it in datas)
+                            using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get("Calendar", ColorScheme)))
                             {
-                                using (var path = it.rect_read.RoundPath(radius))
+                                foreach (var it in datas)
                                 {
-                                    var cdate = ChineseCalendar.ChineseDate.From(it.date);
-                                    if (_value.ToString("yyyy-MM-dd") == it.date_str)
-                                    {
-                                        g.Fill(brush_active, path);
-                                        g.String(cdate.DayString, font4, brush_active_fore, it.rect_l, s_f);
-                                        g.String(it.v, Font, brush_active_fore, it.rect_f, s_f);
-                                    }
-                                    else if (it.enable)
-                                    {
-                                        if (it.hover) g.Fill(Colour.FillTertiary.Get("Calendar", ColorScheme), path);
-                                        g.String(cdate.DayString, font4, brush_fore_c, it.rect_l, s_f);
-                                        g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f, s_f);
-                                    }
-                                    else
-                                    {
-                                        g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                                        g.String(cdate.DayString, font4, brush_fore_disable, it.rect_l, s_f);
-                                        g.String(it.v, Font, brush_fore_disable, it.rect_f, s_f);
-                                    }
+                                    PaintDayChinese(g, it, radius, 0, 0, font4, brush_fore, brush_fore_c, brush_fore_disable, brush_active_fore, brush_active, brush_bg_disable);
                                 }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var it in datas)
+                        {
+                            using (var path = it.rect_read.RoundPath(radius))
+                            {
+                                PaintDay(g, it, radius, 0, 0, brush_fore, brush_fore_disable, brush_active_fore, brush_active, brush_bg_disable);
                             }
                         }
                     }
                 }
                 else
                 {
-                    foreach (var it in datas)
+                    if (chinese)
                     {
-                        using (var path = it.rect_read.RoundPath(radius))
+                        using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
                         {
-                            if (_value.ToString("yyyy-MM-dd") == it.date_str)
+                            using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get("Calendar", ColorScheme)))
                             {
-                                g.Fill(brush_active, path);
-                                g.String(it.v, Font, brush_active_fore, it.rect, s_f);
+                                foreach (var it in datas)
+                                {
+                                    var state = g.Save();
+                                    var arge = new CalendarPaintBeginEventArgs(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius);
+                                    ItemPaintBegin(this, arge);
+                                    if (arge.Handled)
+                                    {
+                                        g.Restore(state);
+                                        continue;
+                                    }
+                                    PaintDayChinese(g, it, radius, arge.OffsetX, arge.OffsetY, font4, brush_fore, brush_fore_c, brush_fore_disable, brush_active_fore, brush_active, brush_bg_disable);
+                                    g.Restore(state);
+                                    ItemPaint?.Invoke(this, new CalendarPaintEventArgs(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius));
+                                    g.Restore(state);
+                                }
                             }
-                            else if (it.enable)
+                        }
+                    }
+                    else
+                    {
+                        foreach (var it in datas)
+                        {
+                            using (var path = it.rect_read.RoundPath(radius))
                             {
-                                if (it.hover) g.Fill(Colour.FillTertiary.Get("Calendar", ColorScheme), path);
-                                g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
-                            }
-                            else
-                            {
-                                g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                                g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
+                                var state = g.Save();
+                                var arge = new CalendarPaintBeginEventArgs(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius);
+                                ItemPaintBegin(this, arge);
+                                if (arge.Handled)
+                                {
+                                    g.Restore(state);
+                                    continue;
+                                }
+                                PaintDay(g, it, radius, arge.OffsetX, arge.OffsetY, brush_fore, brush_fore_disable, brush_active_fore, brush_active, brush_bg_disable);
+                                g.Restore(state);
+                                ItemPaint?.Invoke(this, new CalendarPaintEventArgs(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius));
+                                g.Restore(state);
                             }
                         }
                     }
@@ -763,10 +779,64 @@ namespace AntdUI
             }
         }
 
+        void PaintDayChinese(Canvas g, Calendari it, int radius, int offsetx, int offsety, Font font4, SolidBrush brush_fore, SolidBrush brush_fore_c, SolidBrush brush_fore_disable, SolidBrush brush_active_fore, SolidBrush brush_active, SolidBrush brush_bg_disable)
+        {
+            using (var path = it.rect_read.RoundPath(radius))
+            {
+                var cdate = ChineseCalendar.ChineseDate.From(it.date);
+                if (_value.ToString("yyyy-MM-dd") == it.date_str)
+                {
+                    g.Fill(brush_active, path);
+                    g.TranslateTransform(offsetx, offsety);
+                    g.String(cdate.DayString, font4, brush_active_fore, it.rect_l, s_f);
+                    g.String(it.v, Font, brush_active_fore, it.rect_f, s_f);
+                }
+                else if (it.enable)
+                {
+                    if (it.hover) g.Fill(Colour.FillTertiary.Get("Calendar", ColorScheme), path);
+                    g.TranslateTransform(offsetx, offsety);
+                    g.String(cdate.DayString, font4, brush_fore_c, it.rect_l, s_f);
+                    g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f, s_f);
+                }
+                else
+                {
+                    g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                    g.TranslateTransform(offsetx, offsety);
+                    g.String(cdate.DayString, font4, brush_fore_disable, it.rect_l, s_f);
+                    g.String(it.v, Font, brush_fore_disable, it.rect_f, s_f);
+                }
+            }
+        }
+
+        void PaintDay(Canvas g, Calendari it, int radius, int offsetx, int offsety, SolidBrush brush_fore, SolidBrush brush_fore_disable, SolidBrush brush_active_fore, SolidBrush brush_active, SolidBrush brush_bg_disable)
+        {
+            using (var path = it.rect_read.RoundPath(radius))
+            {
+                if (_value.ToString("yyyy-MM-dd") == it.date_str)
+                {
+                    g.Fill(brush_active, path);
+                    g.TranslateTransform(offsetx, offsety);
+                    g.String(it.v, Font, brush_active_fore, it.rect, s_f);
+                }
+                else if (it.enable)
+                {
+                    if (it.hover) g.Fill(Colour.FillTertiary.Get("Calendar", ColorScheme), path);
+                    g.TranslateTransform(offsetx, offsety);
+                    g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
+                }
+                else
+                {
+                    g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
+                    g.TranslateTransform(offsetx, offsety);
+                    g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
+                }
+            }
+        }
+
         /// <summary>
         /// 绘制今天边框
         /// </summary>
-        internal void PaintToDayFrame(Canvas g, IList<Calendari> datas, string dateNow, float radius)
+        internal void PaintToDayFrame(Canvas g, IList<Calendari> datas, string dateNow, int radius)
         {
             foreach (var it in datas)
             {
@@ -1236,6 +1306,18 @@ namespace AntdUI
 
         [Description("日期 改变时发生"), Category("行为")]
         public event DateTimeEventHandler? DateChanged;
+
+        /// <summary>
+        /// 绘制项时发生
+        /// </summary>
+        [Description("绘制项时发生"), Category("行为")]
+        public event CalendarPaintEventHandler? ItemPaint;
+
+        /// <summary>
+        /// 绘制项之前发生
+        /// </summary>
+        [Description("绘制项之前发生"), Category("行为")]
+        public event CalendarPaintBeginEventHandler? ItemPaintBegin;
 
         #endregion
 

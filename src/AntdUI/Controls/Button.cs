@@ -564,7 +564,7 @@ namespace AntdUI
         /// 图标大小
         /// </summary>
         [Description("图标大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
-        public Size IconSize { get; set; } = new Size(0, 0);
+        public Size IconSize { get; set; }
 
         /// <summary>
         /// 悬停图标

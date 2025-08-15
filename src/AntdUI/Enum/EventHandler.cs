@@ -1127,6 +1127,65 @@ namespace AntdUI
 
     #endregion
 
+    #region Calendar
+
+    public class CalendarPaintEventArgs : EventArgs
+    {
+        public CalendarPaintEventArgs(Canvas canvas, TDatePicker type, Rectangle rect, Rectangle rectreal, DateTime date, string text, bool enable, int radius)
+        {
+            g = canvas;
+            Type = type;
+            Rect = rect;
+            RectReal = rectreal;
+            Date = date;
+            Text = text;
+            Enable = enable;
+            Radius = radius;
+        }
+
+        /// <summary>
+        /// 画板
+        /// </summary>
+        public Canvas g { get; private set; }
+
+        /// <summary>
+        /// 区域
+        /// </summary>
+        public Rectangle Rect { get; private set; }
+
+        /// <summary>
+        /// 真实区域
+        /// </summary>
+        public Rectangle RectReal { get; private set; }
+
+        public TDatePicker Type { get; private set; }
+
+        public DateTime Date { get; private set; }
+
+        public string Text { get; private set; }
+
+        public bool Enable { get; private set; }
+
+        public int Radius { get; private set; }
+    }
+    public class CalendarPaintBeginEventArgs : CalendarPaintEventArgs
+    {
+        public CalendarPaintBeginEventArgs(Canvas canvas, TDatePicker type, Rectangle rect, Rectangle rectreal, DateTime date, string text, bool enable, int radius) : base(canvas, type, rect, rectreal, date, text, enable, radius) { }
+
+        /// <summary>
+        /// 是否处理
+        /// </summary>
+        public bool Handled { get; set; }
+
+        public int OffsetX { get; set; }
+        public int OffsetY { get; set; }
+    }
+
+    public delegate void CalendarPaintEventHandler(object sender, CalendarPaintEventArgs e);
+    public delegate void CalendarPaintBeginEventHandler(object sender, CalendarPaintBeginEventArgs e);
+
+    #endregion
+
     #endregion
 
     #region 渲染

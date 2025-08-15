@@ -316,7 +316,7 @@ namespace AntdUI
         /// 图像大小
         /// </summary>
         [Description("图像大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
-        public Size ImageSize { get; set; } = new Size(0, 0);
+        public Size ImageSize { get; set; }
 
         #endregion
 

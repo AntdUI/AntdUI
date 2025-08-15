@@ -125,6 +125,23 @@ namespace AntdUI
             }
         }
 
+        bool textCenter = false;
+        /// <summary>
+        /// 文本是否居中对齐（仅在Left/Right方向生效）
+        /// </summary>
+        [Description("文本是否居中对齐（仅在Left/Right方向生效）"), Category("外观"), DefaultValue(false)]
+        public bool TextCenter
+        {
+            get => textCenter;
+            set
+            {
+                if (textCenter == value) return;
+                textCenter = value;
+                LoadLayout(true);
+                OnPropertyChanged(nameof(TextCenter));
+            }
+        }
+
         TabTypExceed typExceed = TabTypExceed.Button;
         /// <summary>
         /// 超出UI类型
