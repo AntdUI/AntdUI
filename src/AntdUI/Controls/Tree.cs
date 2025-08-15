@@ -2079,6 +2079,42 @@ namespace AntdUI
 
         #endregion
 
+        public string FullPath(string PathSeparator = "/")
+        {
+            var list = new List<string?>(Depth + 1) { Text };
+            var parent = PARENTITEM;
+            while (parent != null)
+            {
+                list.Insert(0, parent.Text);
+                parent = parent.PARENTITEM;
+            }
+            return string.Join(PathSeparator, list);
+        }
+
+        public string FullID(string PathSeparator = "/")
+        {
+            var list = new List<string?>(Depth + 1) { ID };
+            var parent = PARENTITEM;
+            while (parent != null)
+            {
+                list.Insert(0, parent.ID);
+                parent = parent.PARENTITEM;
+            }
+            return string.Join(PathSeparator, list);
+        }
+
+        public string FullName(string PathSeparator = "/")
+        {
+            var list = new List<string?>(Depth + 1) { Name };
+            var parent = PARENTITEM;
+            while (parent != null)
+            {
+                list.Insert(0, parent.Name);
+                parent = parent.PARENTITEM;
+            }
+            return string.Join(PathSeparator, list);
+        }
+
         public override string? ToString() => Text;
     }
 }

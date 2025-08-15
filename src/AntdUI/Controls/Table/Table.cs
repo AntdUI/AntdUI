@@ -80,6 +80,7 @@ namespace AntdUI
                 CellRanges = null;
                 dataSource = value;
                 SortData = null;
+                focusedCell = null;
                 ScrollBar.Clear();
                 ExtractHeaderFixed();
                 ExtractData();
@@ -240,8 +241,14 @@ namespace AntdUI
         /// <summary>
         /// 行复制
         /// </summary>
-        [Description("行复制"), Category("行为"), DefaultValue(true)]
+        [Description("行/列复制"), Category("行为"), DefaultValue(true)]
         public bool ClipboardCopy { get; set; } = true;
+
+        /// <summary>
+        /// 是否启用单元格复制
+        /// </summary>
+        [Description("是否启用单元格复制"), Category("行为"), DefaultValue(false)]
+        public bool ClipboardCopyFocusedCell { get; set; }
 
         /// <summary>
         /// 列宽自动调整模式
@@ -1091,6 +1098,27 @@ namespace AntdUI
                 {
                     var _row = rows[row];
                     var vals = _row.cells[column].ToString();
+                    if (vals == null) return false;
+                    this.ClipboardSetText(vals);
+                    return true;
+                }
+                catch { }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 复制表格数据
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="column">列</param>
+        public bool CopyData(CELL cell)
+        {
+            if (cell != null)
+            {
+                try
+                {
+                    var vals = cell.VALUE?.ToString();
                     if (vals == null) return false;
                     this.ClipboardSetText(vals);
                     return true;

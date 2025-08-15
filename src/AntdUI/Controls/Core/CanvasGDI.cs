@@ -104,11 +104,11 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), new Point(x, y), Helper.m_sf);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), new Point(x, y), null);
                     Fill(brush, path);
                 }
             }
-            else g.DrawString(text, font, brush, x, y, Helper.m_sf);
+            else g.DrawString(text, font, brush, x, y);
         }
 
         public void String(string? text, Font font, Color color, float x, float y)
@@ -126,11 +126,11 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), new PointF(x, y), Helper.m_sf);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), new PointF(x, y), null);
                     Fill(brush, path);
                 }
             }
-            else g.DrawString(text, font, brush, x, y, Helper.m_sf);
+            else g.DrawString(text, font, brush, x, y);
         }
 
 
@@ -149,11 +149,11 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), point, Helper.m_sf);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), point, null);
                     Fill(brush, path);
                 }
             }
-            else g.DrawString(text, font, brush, point, Helper.m_sf);
+            else g.DrawString(text, font, brush, point);
         }
 
 
@@ -172,11 +172,11 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), point, Helper.m_sf);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), point, null);
                     Fill(brush, path);
                 }
             }
-            else g.DrawString(text, font, brush, point, Helper.m_sf);
+            else g.DrawString(text, font, brush, point);
         }
 
         float StringPathFontSize(Font font)

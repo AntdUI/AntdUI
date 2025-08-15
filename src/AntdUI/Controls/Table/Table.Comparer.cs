@@ -26,10 +26,16 @@ namespace AntdUI
     {
         public static int Compare(string x, string y)
         {
-            if (int.TryParse(x, out var _x) && int.TryParse(y, out var _y))
+            if (int.TryParse(x, out var int_x) && int.TryParse(y, out var int_y))
             {
-                if (_x == _y) return 0;
-                else if (_x > _y) return 1;
+                if (int_x == int_y) return 0;
+                else if (int_x > int_y) return 1;
+                else return -1;
+            }
+            else if (double.TryParse(x, out var dou_x) && double.TryParse(y, out var dou_y))
+            {
+                if (dou_x == dou_y) return 0;
+                else if (dou_x > dou_y) return 1;
                 else return -1;
             }
             string fileA = x, fileB = y;
@@ -55,6 +61,11 @@ namespace AntdUI
                     {
                         if (_s1 > _s2) return 1;
                         else if (_s1 < _s2) return -1;
+                    }
+                    else if (double.TryParse(s1, out var _sd1) && double.TryParse(s2, out var _sd2))
+                    {
+                        if (_sd1 > _sd2) return 1;
+                        else if (_sd1 < _sd2) return -1;
                     }
                 }
                 else

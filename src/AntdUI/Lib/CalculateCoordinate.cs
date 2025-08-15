@@ -321,10 +321,17 @@ namespace AntdUI
             if (collision)
             {
                 var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                bool f = y < screenArea.Y;
+                if (f)
+                {
+                    inverted = false;
+                    y = BottomY();
+                    align = TAlign.TL;
+                }
                 if (x + dw > screenArea.Right)
                 {
                     x = R();
-                    align = TAlign.BR;
+                    align = f ? TAlign.TR : TAlign.BR;
                 }
             }
         }
@@ -338,10 +345,17 @@ namespace AntdUI
             if (collision)
             {
                 var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                bool f = y < screenArea.Y;
+                if (f)
+                {
+                    inverted = false;
+                    y = BottomY();
+                    align = TAlign.TR;
+                }
                 if (x < screenArea.X)
                 {
                     x = L();
-                    align = TAlign.BL;
+                    align = f ? TAlign.TL : TAlign.BL;
                 }
             }
         }
@@ -371,10 +385,17 @@ namespace AntdUI
             if (collision)
             {
                 var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                bool f = y + dh > screenArea.Bottom;
+                if (f)
+                {
+                    align = TAlign.BR;
+                    inverted = true;
+                    y = TopY();
+                }
                 if (x < screenArea.X)
                 {
                     x = L();
-                    align = TAlign.TL;
+                    align = f ? TAlign.BL : TAlign.TL;
                 }
             }
         }
@@ -387,10 +408,17 @@ namespace AntdUI
             if (collision)
             {
                 var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
+                bool f = y + dh > screenArea.Bottom;
+                if (f)
+                {
+                    align = TAlign.BL;
+                    inverted = true;
+                    y = TopY();
+                }
                 if (x + dw > screenArea.Right)
                 {
                     x = R();
-                    align = TAlign.TR;
+                    align = f ? TAlign.BR : TAlign.TR;
                 }
             }
         }

@@ -298,6 +298,11 @@ namespace AntdUI
             public object Content { get; set; }
 
             /// <summary>
+            /// 内容边距
+            /// </summary>
+            public Size ContentPadding { get; set; }
+
+            /// <summary>
             /// 使用图标边距
             /// </summary>
             public bool UseIconPadding { get; set; } = true;
