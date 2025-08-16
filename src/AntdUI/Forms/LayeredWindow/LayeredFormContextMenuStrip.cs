@@ -288,10 +288,14 @@ namespace AntdUI
 
         protected override void OnDeactivate(EventArgs e)
         {
+            base.OnDeactivate(e);
+            if (OS.Win7OrLower)
+            {
+                if (TargetRect.Contains(MousePosition)) return;
+            }
             IClose();
             subForm?.IClose();
             subForm = null;
-            base.OnDeactivate(e);
         }
 
         protected override void Dispose(bool disposing)
