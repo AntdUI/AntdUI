@@ -30,39 +30,40 @@ namespace Demo.Controls
             form = _form;
             InitializeComponent();
             button17.Items.Add(new AntdUI.SelectItem(Properties.Resources.bg1, "汉尼拔 Hannibal"));
-            dropdown1.Items.AddRange(new AntdUI.SelectItem[] {
+            dropdown1.Items.AddRange(new AntdUI.SelectItem[]
+            {
                 new AntdUI.SelectItem("one st menu item"),
                 new AntdUI.SelectItem("two nd menu item"),
-                new AntdUI.SelectItem("three rd menu item"){
-                    Sub = new List<object>{
-                        new AntdUI.SelectItem("子菜单1"){
-                            Sub=new List<object>{ new AntdUI.SelectItem("sub menu") {
-                                Sub=new List<object>{
-                                    "one st menu item","two nd menu item","three rd menu item"
+                new AntdUI.SelectItem("three rd menu item")
+                {
+                    Sub = new List<object>
+                    {
+                        new AntdUI.SelectItem("子菜单1")
+                        {
+                            Sub = new List<object>
+                            {
+                                new AntdUI.SelectItem("sub menu")
+                                {
+                                    Sub = new List<object>
+                                    {
+                                        "one st menu item",
+                                        "two nd menu item",
+                                        "three rd menu item"
+                                    }
                                 }
-                            } }
+                            }
                         },
-                        new AntdUI.SelectItem( "子菜单2")
+                        new AntdUI.SelectItem("子菜单2")
                     }
                 },
-                new AntdUI.SelectItem("four menu item"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },
-            });
-            dropdown1.Items.AddRange(new AntdUI.SelectItem[] {
-                new AntdUI.SelectItem("one st menu item"),
-                new AntdUI.SelectItem("two nd menu item"),
-                new AntdUI.SelectItem("three rd menu item"){
-                    Sub = new List<object>{
-                        new AntdUI.SelectItem("子菜单1"){
-                            Sub=new List<object>{ new AntdUI.SelectItem("sub menu") {
-                                Sub=new List<object>{
-                                    "one st menu item","two nd menu item","three rd menu item"
-                                }
-                            } }
-                        },
-                        new AntdUI.SelectItem( "子菜单2")
+                new AntdUI.SelectItem("four menu item")
+                {
+                    Sub = new List<object>
+                    {
+                        "five menu item",
+                        "six six six menu item"
                     }
                 },
-                new AntdUI.SelectItem("four menu item"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },
             });
         }
 

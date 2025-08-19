@@ -151,6 +151,16 @@ namespace AntdUI
         /// </summary>
         public class Config
         {
+            public Config(Form _form)
+            {
+                Form = _form;
+            }
+            public Config(Form _form, TType _icon, TAlignFrom _align)
+            {
+                Form = _form;
+                Align = _align;
+                Icon = _icon;
+            }
             public Config(Form _form, string _title, string _text, TType _icon, TAlignFrom _align)
             {
                 Form = _form;
@@ -236,26 +246,6 @@ namespace AntdUI
 
             public IconInfo? IconCustom { get; set; }
 
-            public Config SetIcon(TType icon = TType.Success)
-            {
-                IconCustom = null;
-                Icon = icon;
-                return this;
-            }
-
-            public Config SetIcon(string svg) => SetIcon(new IconInfo(svg));
-            public Config SetIcon(string svg, Color? fill) => SetIcon(new IconInfo(svg, fill));
-            public Config SetIcon(string svg, Color back, bool round) => SetIcon(new IconInfo(svg) { Back = back, Round = round });
-            public Config SetIcon(string svg, Color back, int radius) => SetIcon(new IconInfo(svg) { Back = back, Radius = radius });
-            public Config SetIcon(string svg, Color? fill, Color back, bool round) => SetIcon(new IconInfo(svg, fill) { Back = back, Round = round });
-            public Config SetIcon(string svg, Color? fill, Color back, int radius) => SetIcon(new IconInfo(svg, fill) { Back = back, Radius = radius });
-
-            public Config SetIcon(IconInfo iconInfo)
-            {
-                IconCustom = iconInfo;
-                return this;
-            }
-
             /// <summary>
             /// 字体
             /// </summary>
@@ -310,6 +300,148 @@ namespace AntdUI
             /// 弹出在窗口
             /// </summary>
             public bool? ShowInWindow { get; set; }
+
+            #region 设置
+
+            public Config SetID(string? value)
+            {
+                ID = value;
+                return this;
+            }
+
+            public Config SetTitle(string? value, string? localization = null)
+            {
+                title = value;
+                LocalizationTitle = localization;
+                return this;
+            }
+            public Config SetTitle(Font? value)
+            {
+                FontTitle = value;
+                return this;
+            }
+            public Config SetTitle(FontStyle? value)
+            {
+                FontStyleTitle = value;
+                return this;
+            }
+
+            public Config SetText(string? value, string? localization = null)
+            {
+                text = value;
+                LocalizationText = localization;
+                return this;
+            }
+
+            #region 图标
+
+            public Config SetIcon(TType icon = TType.Success)
+            {
+                IconCustom = null;
+                Icon = icon;
+                return this;
+            }
+
+            public Config SetIcon(string svg) => SetIcon(new IconInfo(svg));
+            public Config SetIcon(string svg, Color? fill) => SetIcon(new IconInfo(svg, fill));
+            public Config SetIcon(string svg, Color back, bool round) => SetIcon(new IconInfo(svg) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color back, int radius) => SetIcon(new IconInfo(svg) { Back = back, Radius = radius });
+            public Config SetIcon(string svg, Color? fill, Color back, bool round) => SetIcon(new IconInfo(svg, fill) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color? fill, Color back, int radius) => SetIcon(new IconInfo(svg, fill) { Back = back, Radius = radius });
+
+            public Config SetIcon(IconInfo iconInfo)
+            {
+                IconCustom = iconInfo;
+                return this;
+            }
+
+            #endregion
+
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+
+            public Config SetRadius(int value = 0)
+            {
+                Radius = value;
+                return this;
+            }
+
+            public Config SetAutoClose(int value = 0)
+            {
+                AutoClose = value;
+                return this;
+            }
+
+            public Config SetClickClose(bool value = false)
+            {
+                ClickClose = value;
+                return this;
+            }
+
+            public Config SetCloseIcon(bool value = false)
+            {
+                CloseIcon = value;
+                return this;
+            }
+
+            public Config SetTopMost(bool value = true)
+            {
+                TopMost = value;
+                return this;
+            }
+
+            public Config SetAlign(TAlignFrom value = TAlignFrom.TR)
+            {
+                Align = value;
+                return this;
+            }
+
+            public Config SetPadding(int x, int y)
+            {
+                Padding = new Size(x, y);
+                return this;
+            }
+
+            public Config SetPadding(int size)
+            {
+                Padding = new Size(size, size);
+                return this;
+            }
+
+            public Config SetPadding(Size size)
+            {
+                Padding = size;
+                return this;
+            }
+
+            public Config SetShowInWindow(bool? value = true)
+            {
+                ShowInWindow = value;
+                return this;
+            }
+
+            public Config SetOnClose(Action? value)
+            {
+                OnClose = value;
+                return this;
+            }
+
+            public Config SetLink(string text, Func<bool> call)
+            {
+                Link = new ConfigLink(text, call);
+                return this;
+            }
+
+            public Config SetLink(string text, object tag, Func<bool> call)
+            {
+                Link = new ConfigLink(text, call).SetTag(tag);
+                return this;
+            }
+
+            #endregion
         }
 
         public class ConfigLink
@@ -334,6 +466,12 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            public ConfigLink SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
         }
     }
 

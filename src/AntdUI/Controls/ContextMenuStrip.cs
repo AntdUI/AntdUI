@@ -137,6 +137,52 @@ namespace AntdUI
             /// 点击回调
             /// </summary>
             public Action<ContextMenuStripItem> Call { get; set; }
+
+            #region 设置
+
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+
+            public Config SetRadius(int value = 0)
+            {
+                Radius = value;
+                return this;
+            }
+
+            public Config SetTopMost(bool value = true)
+            {
+                TopMost = value;
+                return this;
+            }
+
+            public Config SetAlign(TAlign value = TAlign.BR)
+            {
+                Align = value;
+                return this;
+            }
+
+            public Config SetUFocus(bool value = true)
+            {
+                UFocus = value;
+                return this;
+            }
+
+            public Config SetCallSleep(int value = 100)
+            {
+                CallSleep = value;
+                return this;
+            }
+
+            public Config SetLocation(Point? value)
+            {
+                Location = value;
+                return this;
+            }
+
+            #endregion
         }
     }
 

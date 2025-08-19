@@ -152,10 +152,7 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
-                        subForm = new LayeredFormCalendarTime(this, ReadRectangle, _value, date =>
-                        {
-                            Value = date;
-                        });
+                        subForm = new LayeredFormTimePicker(this, _value, date => Value = date);
                         subForm.Disposed += (a, b) =>
                         {
                             subForm = null;
@@ -222,7 +219,7 @@ namespace AntdUI
             else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d))
             {
                 Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
-                if (subForm is LayeredFormCalendarTime _SubForm)
+                if (subForm is LayeredFormTimePicker _SubForm)
                 {
                     _SubForm.SelDate = Value;
                     _SubForm.Print();
