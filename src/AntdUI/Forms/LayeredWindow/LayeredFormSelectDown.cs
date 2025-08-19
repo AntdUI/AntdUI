@@ -418,7 +418,8 @@ namespace AntdUI
                     {
                         var size = g.MeasureText(it.Text, Font);
                         var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                        g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
+                        if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
+                        else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
                     }
                     DrawTextIconSelect(g, it);
                 }

@@ -343,11 +343,13 @@ namespace AntdUI
 
         #region 布局
 
+        Rectangle Rect;
         /// <summary>
         /// 设置容器大小
         /// </summary>
         public void SizeChange(Rectangle rect)
         {
+            Rect = rect;
             if (SIZE > 0)
             {
                 RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
@@ -700,7 +702,7 @@ namespace AntdUI
                 if (slider.Contains(X, Y)) SliderX = slider.X;
                 else
                 {
-                    float read = RectX.Width - (showY ? SIZE : 0), x = (X - slider.Width / 2F) / read;
+                    float read = RectX.Width - (showY ? SIZE : 0), x = ((X - RectY.X) - slider.Width / 2F) / read;
                     ValueX = (int)Math.Round(x * maxX);
                     SliderX = RectSliderFullX().X;
                 }
@@ -724,7 +726,7 @@ namespace AntdUI
                 if (slider.Contains(X, Y)) SliderY = slider.Y;
                 else
                 {
-                    float read = RectY.Height - (showX ? SIZE : 0), y = (Y - slider.Height / 2F) / read;
+                    float read = RectY.Height - (showX ? SIZE : 0), y = ((Y - RectY.Y) - slider.Height / 2F) / read;
                     ValueY = (int)Math.Round(y * maxY);
                     SliderY = RectSliderFullY().Y;
                 }
@@ -748,7 +750,7 @@ namespace AntdUI
                 {
                     HoverX = true;
                     var slider = RectSliderFullX();
-                    float read = RectX.Width - (showY ? SIZE : 0), x = SliderX + X - oldX;
+                    float read = RectX.Width - (showY ? SIZE : 0), x = SliderX + ((X - RectX.X) - oldX);
                     ValueX = (int)(x / (read - slider.Width) * (maxX - RectX.Width));
                     return false;
                 }
@@ -770,7 +772,7 @@ namespace AntdUI
                 {
                     HoverY = true;
                     var slider = RectSliderFullY();
-                    float read = RectY.Height - (showX ? SIZE : 0), y = SliderY + Y - oldY;
+                    float read = RectY.Height - (showX ? SIZE : 0), y = SliderY + ((Y - RectY.Y) - oldY);
                     ValueY = (int)(y / (read - slider.Height) * (maxY - RectY.Height));
                     return false;
                 }
@@ -1003,6 +1005,27 @@ namespace AntdUI
         ITask? ThreadHoverX;
         float AnimationHoverXValue = 0F;
         bool AnimationHoverX = false;
+
+        #endregion
+
+        #region 方法
+
+        public bool Contains(Point e) => Contains(e.X, e.Y);
+        public bool Contains(int X, int Y)
+        {
+            if ((EnabledX || EnabledY) && Rect.Contains(X, Y)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// 判断是否到达纵向滚动条最底部
+        /// </summary>
+        public bool IsAtBottom => showY ? valueY >= (maxY - RectY.Height) : false;
+
+        /// <summary>
+        /// 判断是否到达横向滚动条最右边
+        /// </summary>
+        public bool IsAtRight => showX ? valueX >= (maxX - RectX.Width) : false;
 
         #endregion
 
