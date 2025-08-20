@@ -165,9 +165,13 @@ namespace AntdUI
         public abstract void PrintBg(Canvas g, Rectangle rect, GraphicsPath path);
         public void PrintAndClear()
         {
+            ClearShadow();
+            Print();
+        }
+        public void ClearShadow()
+        {
             shadow_temp?.Dispose();
             shadow_temp = null;
-            Print();
         }
 
         public override Bitmap PrintBit()
@@ -322,9 +326,13 @@ namespace AntdUI
         public abstract void PrintBg(Canvas g, Rectangle rect, GraphicsPath path);
         public void PrintAndClear()
         {
+            ClearShadow();
+            Print();
+        }
+        public void ClearShadow()
+        {
             shadow_temp?.Dispose();
             shadow_temp = null;
-            Print();
         }
 
         public override Bitmap PrintBit()

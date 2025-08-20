@@ -232,7 +232,7 @@ namespace AntdUI.Chat
 
         void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
         {
-            it.show = it.Show && it.rect.Y > sy - rect.Height - it.rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
+            it.show = it.rect.Y > sy - rect.Height - it.rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
             if (it.show)
             {
                 if (it is TextChatItem text)
@@ -645,41 +645,103 @@ namespace AntdUI.Chat
 
         protected override void OnFontChanged(EventArgs e)
         {
-            ChangeList();
+            font_dir.Clear();
             base.OnFontChanged(e);
+            LoadLayout();
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            ChangeList();
             base.OnSizeChanged(e);
+            LoadLayout();
         }
 
-        internal void ChangeList()
+        protected override void OnHandleCreated(EventArgs e)
         {
-            var rect = ClientRectangle;
-            if (items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
-            int y = 0;
-            Helper.GDI(g =>
+            base.OnHandleCreated(e);
+            LoadLayout();
+        }
+
+        bool CanLayout()
+        {
+            if (IsHandleCreated)
             {
-                var size = g.MeasureString(Config.NullText, Font).Height;
-                int item_height = (int)Math.Ceiling(size * 1.714),
-                    gap = (int)Math.Round(item_height * BubbleGap),
-                    itemGap = (int)(ItemGap * Config.Dpi),
-                    spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
-                y = spilt;
-                foreach (var it in items)
+                var rect = ClientRectangle;
+                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                return true;
+            }
+            return false;
+        }
+
+        int oldy = 0;
+        internal void LoadLayout(bool print = false)
+        {
+            if (CanLayout())
+            {
+                var rect = ClientRectangle;
+                int y = Helper.GDI(g =>
                 {
-                    it.PARENT = this;
-                    if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                    int y = 0;
+                    var size = g.MeasureString(Config.NullText, Font).Height;
+                    int item_height = (int)Math.Ceiling(size * 1.714),
+                        gap = (int)Math.Round(item_height * BubbleGap),
+                        itemGap = (int)(ItemGap * Config.Dpi),
+                        spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
+                    y = spilt;
+                    foreach (var it in items!)
+                    {
+                        it.PARENT = this;
+                        if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                    }
+                    return y;
+                });
+                oldy = y;
+                ScrollBar.SetVrSize(y);
+                ScrollBar.SizeChange(rect);
+            }
+            if (print) Invalidate();
+        }
+        internal void LoadLayout(TextChatItem chatItem, bool print = false)
+        {
+            if (CanLayout())
+            {
+                int index = items!.IndexOf(chatItem);
+                if (index == items.Count - 1)
+                {
+                    var rect = ClientRectangle;
+                    int old = chatItem.rect.Height;
+                    Helper.GDI(g =>
+                    {
+                        var size = g.MeasureString(Config.NullText, Font).Height;
+                        int item_height = (int)Math.Ceiling(size * 1.714),
+                            gap = (int)Math.Round(item_height * BubbleGap),
+                            itemGap = (int)(ItemGap * Config.Dpi),
+                            spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
+
+                        int newh = chatItem.SetRect(rect, chatItem.rect.Y, g, Font, FixFontWidth(g, Font, chatItem, max_width, spilt2), size, spilt, spilt2, item_height, IconLess);
+                        if (old == newh) return;
+                        else
+                        {
+                            int y = oldy + (newh - old);
+                            oldy = y;
+                            ScrollBar.SetVrSize(y);
+                        }
+                    });
                 }
-            });
-            ScrollBar.SetVrSize(y);
-            ScrollBar.SizeChange(rect);
-            return;
+                else
+                {
+                    LoadLayout(print);
+                    return;
+                }
+            }
+            if (print) Invalidate();
         }
 
         #region 字体
+
+        Dictionary<string, Size> font_dir = new Dictionary<string, Size>();
+
+        public void ClearCache() => font_dir.Clear();
 
         internal Size FixFontWidth(Canvas g, Font Font, TextChatItem item, int max_width, int spilt)
         {
@@ -733,13 +795,13 @@ namespace AntdUI.Chat
                         {
                             if (it == "\t" || it == "\n" || it == "\r\n")
                             {
-                                var sizefont = g.MeasureString(" ", Font);
+                                var sizefont = FixFontWidth(g);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                font_widths.Add(new CacheFont(it, false, (int)Math.Ceiling(sizefont.Width * 8F), type));
+                                font_widths.Add(new CacheFont(it, false, sizefont.Width, type));
                             }
                             else
                             {
-                                var sizefont = g.MeasureString(it, Font);
+                                var sizefont = FixFontWidth(g, it);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
                                 font_widths.Add(new CacheFont(it, false, sizefont.Width, type));
                             }
@@ -798,6 +860,29 @@ namespace AntdUI.Chat
             return new Size(maxx + spilt, maxy + spilt);
         }
 
+        Size FixFontWidth(Canvas g)
+        {
+            string text = " ";
+            if (font_dir.TryGetValue(text, out var sizefont)) return sizefont;
+            else
+            {
+                var size = g.MeasureString(text, Font);
+                size.Width = (int)Math.Ceiling(size.Width * 8F);
+                font_dir.Add(text, size);
+                return size;
+            }
+        }
+        Size FixFontWidth(Canvas g, string text)
+        {
+            if (font_dir.TryGetValue(text, out var sizefont)) return sizefont;
+            else
+            {
+                var size = g.MeasureString(text, Font);
+                font_dir.Add(text, size);
+                return size;
+            }
+        }
+
         #endregion
 
         #endregion
@@ -814,8 +899,8 @@ namespace AntdUI.Chat
         {
             action = render =>
             {
-                if (render) it.ChangeList();
-                it.Invalidate();
+                if (render) it.LoadLayout(true);
+                else it.Invalidate();
             };
             return this;
         }
@@ -895,7 +980,8 @@ namespace AntdUI.Chat
             {
                 if (_text == value) return;
                 _text = value;
-                Invalidates();
+                if (loading) PARENT?.LoadLayout(this, true);
+                else Invalidates();
             }
         }
 
@@ -966,12 +1052,8 @@ namespace AntdUI.Chat
             }
             rect_text = new Rectangle(rect_read.X + spilt, rect_read.Y + spilt, msglen.Width - spilt2, msglen.Height - spilt2);
 
-            foreach (var it in cache_font)
-            {
-                it.SetOffset(rect_text.Location);
-            }
+            foreach (var it in cache_font) it.SetOffset(rect_text.X, rect_text.Y);
 
-            Show = true;
             return rect.Height;
         }
 
@@ -1068,7 +1150,8 @@ namespace AntdUI.Chat
 
         #endregion
     }
-    public class IChatItem
+
+    public abstract class IChatItem
     {
         public IChatItem() { }
 
@@ -1078,22 +1161,16 @@ namespace AntdUI.Chat
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
-        internal void Invalidate() => PARENT?.Invalidate();
-        internal void Invalidates()
-        {
-            if (PARENT == null) return;
-            PARENT.ChangeList();
-            PARENT.Invalidate();
-        }
+        public void Invalidate() => PARENT?.Invalidate();
+        public void Invalidates() => PARENT?.LoadLayout(true);
 
         internal bool show { get; set; }
-        internal bool Show { get; set; }
 
-        internal ChatList? PARENT { get; set; }
+        public ChatList? PARENT { get; set; }
 
-        internal Rectangle rect { get; set; }
+        public Rectangle rect { get; set; }
 
-        internal bool Contains(Point point, int x, int y) => rect.Contains(new Point(point.X + x, point.Y + y));
+        public bool Contains(Point point, int x, int y) => rect.Contains(new Point(point.X + x, point.Y + y));
     }
 
     internal class CacheFont
@@ -1113,10 +1190,7 @@ namespace AntdUI.Chat
             get => _rect;
             set { _rect = value; }
         }
-        internal void SetOffset(Point point)
-        {
-            _rect.Offset(point);
-        }
+        internal void SetOffset(int x, int y) => _rect.Offset(x, y);
         public bool emoji { get; set; }
         public bool retun { get; set; }
         public int width { get; set; }
