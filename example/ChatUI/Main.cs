@@ -17,6 +17,8 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Text;
+
 namespace ChatUI
 {
     public partial class Main : AntdUI.Window
@@ -108,6 +110,7 @@ namespace ChatUI
                 var ran = new Random();
                 bool run = true;
                 int i = 0;
+                var _sb = new StringBuilder();
                 while (run)
                 {
                     Thread.Sleep(ran.Next(2, 100));
@@ -121,7 +124,8 @@ namespace ChatUI
                     if (len > 0)
                     {
                         bool isbut = chatList.IsBottom;
-                        msg.Text += text.Substring(i, len);
+                        _sb.Append(text.Substring(i, len));
+                        msg.Text = _sb.ToString();
                         if (isbut) chatList.ToBottom();
                         i += len;
                     }

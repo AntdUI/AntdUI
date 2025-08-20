@@ -327,7 +327,11 @@ namespace AntdUI
                         }
                         else
                         {
-                            subForm = new LayeredFormCalendarRange(this, ReadRectangle, _value, EndFocused, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                            int bar = 0;
+                            if (EndFocused) bar = rect_d_r.X;
+                            else bar = rect_d_l.X;
+
+                            subForm = new LayeredFormDatePickerRange(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;
@@ -428,12 +432,7 @@ namespace AntdUI
                                 if (DateTime.TryParse(etext, out var date_e)) Text = date_s.ToString(Format) + '\t' + date_e.ToString(Format);
                                 else Text = date_s.ToString(Format) + '\t' + etext;
                             }
-                            if (subForm is LayeredFormCalendarRange layered_range)
-                            {
-                                layered_range.Date = date_s;
-                                layered_range.SetDateS(date_s);
-                                layered_range.Print();
-                            }
+                            if (subForm is LayeredFormDatePickerRange layered_range) layered_range.SetDateS(date_s);
                             else if (subForm is LayeredFormCalendarTimeRange layered_time) layered_time.IClose();
                             StartFocused = false;
                             EndFocused = true;
@@ -455,11 +454,9 @@ namespace AntdUI
                                 if (DateTime.TryParse(stext, out var date_s))
                                 {
                                     Text = date_s.ToString(Format) + '\t' + date_e.ToString(Format);
-                                    if (subForm is LayeredFormCalendarRange layered_range)
+                                    if (subForm is LayeredFormDatePickerRange layered_range)
                                     {
-                                        layered_range.Date = date_e;
                                         layered_range.SetDateE(date_s, date_e);
-                                        layered_range.Print();
                                     }
                                     else if (subForm is LayeredFormCalendarTimeRange layered_time) layered_time.IClose();
                                 }
@@ -613,7 +610,7 @@ namespace AntdUI
                                 return false;
                             }
                         }
-                        if (subForm is LayeredFormCalendarRange layered)
+                        if (subForm is LayeredFormDatePickerRange layered)
                         {
                             if (Placement == TAlignFrom.TR || Placement == TAlignFrom.BR) layered.SetArrow(AnimationBarValue.X - rect_d_r.X);
                             else layered.SetArrow(AnimationBarValue.X);
@@ -622,7 +619,7 @@ namespace AntdUI
                         return true;
                     }, 10, () =>
                     {
-                        if (subForm is LayeredFormCalendarRange layered)
+                        if (subForm is LayeredFormDatePickerRange layered)
                         {
                             if (Placement == TAlignFrom.TR || Placement == TAlignFrom.BR) layered.SetArrow(NewValue.X - rect_d_r.X);
                             else layered.SetArrow(NewValue.X);

@@ -36,7 +36,7 @@ namespace AntdUI
         TAMode ColorScheme;
         bool ShowTime = false, ShowH = false, ShowM = false, ShowS = false,
             ValueTimeHorizontal = false, ShowButtonToDay = true;
-        public LayeredFormDatePicker(DatePicker _control, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action = null)
+        public LayeredFormDatePicker(DatePicker _control, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action)
         {
             PARENT = control = _control;
             ColorScheme = _control.ColorScheme;
@@ -134,78 +134,13 @@ namespace AntdUI
             set
             {
                 _Date = value;
-                calendar_day = GetCalendar(value);
+                calendar_day = CalendarHelper.Day(value, minDate, maxDate);
 
-                #region 添加时间
+                if (ShowTime && calendar_time == null) calendar_time = CalendarHelper.Time(ShowH, ShowM, ShowS);
 
-                if (ShowTime && calendar_time == null)
-                {
-                    calendar_time = new List<CalendarT>(24 + 120);
-                    int count = 0;
-                    if (ShowH)
-                    {
-                        for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(count, 0, i, i));
-                        count++;
-                    }
-                    if (ShowM)
-                    {
-                        for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(count, 1, i, i));
-                        count++;
-                    }
-                    if (ShowS)
-                    {
-                        for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(count, 2, i, i));
-                        count++;
-                    }
-                }
+                calendar_month = CalendarHelper.Month(value, minDate, maxDate, Culture, MonthFormat);
 
-                #endregion
-
-                #region 添加月
-
-                var _calendar_month = new List<ItemCalendari>(12);
-                int x_m = 0, y_m = 0;
-                for (int i = 0; i < 12; i++)
-                {
-                    var d_m = new DateTime(value.Year, i + 1, 1);
-                    _calendar_month.Add(new ItemCalendari(0, x_m, y_m, d_m.ToString(MonthFormat, Culture), d_m, d_m.ToString("yyyy-MM"), minDate, maxDate));
-                    x_m++;
-                    if (x_m > 2)
-                    {
-                        y_m++;
-                        x_m = 0;
-                    }
-                }
-                calendar_month = _calendar_month;
-
-                #endregion
-
-                #region 添加年
-
-                int syear = value.Year - 1;
-                if (!value.Year.ToString().EndsWith("0"))
-                {
-                    string temp = value.Year.ToString();
-                    syear = int.Parse(temp.Substring(0, temp.Length - 1) + "0") - 1;
-                }
-                var _calendar_year = new List<ItemCalendari>(12);
-                int x_y = 0, y_y = 0;
-                if (syear < 1) syear = 1;
-                for (int i = 0; i < 12; i++)
-                {
-                    var d_y = new DateTime(syear + i, value.Month, 1);
-                    _calendar_year.Add(new ItemCalendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy"), minDate, maxDate));
-                    x_y++;
-                    if (x_y > 2)
-                    {
-                        y_y++;
-                        x_y = 0;
-                    }
-                }
-                year_str = _calendar_year[1].date_str + "-" + _calendar_year[_calendar_year.Count - 2].date_str;
-                calendar_year = _calendar_year;
-
-                #endregion
+                calendar_year = CalendarHelper.Year(value, minDate, maxDate, out year_str);
 
                 rect_left.Enable = Helper.DateExceedMonth(value.AddMonths(-1), minDate, maxDate);
                 rect_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
@@ -233,78 +168,6 @@ namespace AntdUI
         ScrollBar ScrollH, ScrollM, ScrollS;
 
         string year_str = "";
-        List<ItemCalendari> GetCalendar(DateTime now)
-        {
-            var calendaris = new List<ItemCalendari>(42);
-            int days = DateTime.DaysInMonth(now.Year, now.Month);
-            var now1 = new DateTime(now.Year, now.Month, 1);
-            int day_ = 0;
-            switch (now1.DayOfWeek)
-            {
-                case DayOfWeek.Tuesday:
-                    day_ = 1;
-                    break;
-                case DayOfWeek.Wednesday:
-                    day_ = 2;
-                    break;
-                case DayOfWeek.Thursday:
-                    day_ = 3;
-                    break;
-                case DayOfWeek.Friday:
-                    day_ = 4;
-                    break;
-                case DayOfWeek.Saturday:
-                    day_ = 5;
-                    break;
-                case DayOfWeek.Sunday:
-                    day_ = 6;
-                    break;
-            }
-            if (day_ > 0)
-            {
-                var date1 = now.AddMonths(-1);
-                int days2 = DateTime.DaysInMonth(date1.Year, date1.Month);
-                for (int i = 0; i < day_; i++)
-                {
-                    int day3 = days2 - i;
-                    calendaris.Insert(0, new ItemCalendari(0, (day_ - 1) - i, 0, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                }
-            }
-            int x = day_, y = 0;
-            for (int i = 0; i < days; i++)
-            {
-                int day = i + 1;
-                calendaris.Add(new ItemCalendari(1, x, y, day.ToString(), new DateTime(now.Year, now.Month, day), minDate, maxDate));
-                x++;
-                if (x > 6)
-                {
-                    y++;
-                    x = 0;
-                }
-            }
-            if (x < 7)
-            {
-                var date1 = now.AddMonths(1);
-                int day2 = 0;
-                for (int i = x; i < 7; i++)
-                {
-                    int day3 = day2 + 1;
-                    calendaris.Add(new ItemCalendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                    x++; day2++;
-                }
-                if (y < 5)
-                {
-                    y++;
-                    for (int i = 0; i < 7; i++)
-                    {
-                        int day3 = day2 + 1;
-                        calendaris.Add(new ItemCalendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                        day2++;
-                    }
-                }
-            }
-            return calendaris;
-        }
 
         public override string name => nameof(DatePicker);
 
@@ -409,27 +272,36 @@ namespace AntdUI
             using (var brush_fore = new SolidBrush(color_fore))
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get("DatePicker", ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get("DatePicker", ColorScheme)))
-            using (var brush_active = new SolidBrush(Colour.Primary.Get("DatePicker", ColorScheme)))
-            using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get("DatePicker", ColorScheme)))
             {
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy") == it.date_str) g.Fill(brush_active, path);
+                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy") == it.date_str)
+                        {
+                            g.Fill(Colour.Primary.Get("DatePicker", ColorScheme), path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get("DatePicker", ColorScheme), rect_div[it.id].Rect, s_f);
+                        }
                         else if (it.enable)
                         {
-                            if (rect.Hover) g.Fill(Colour.FillTertiary.Get("DatePicker", ColorScheme), path);
+                            if (rect.Hover) g.Fill(brush_bg_disable, path);
+                            g.String(it.v, Font, brush_fore, rect_div[it.id].Rect, s_f);
                         }
-                        else g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                        else
+                        {
+                            g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                            g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
+                        }
                         if (DateNow.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get("DatePicker", ColorScheme), bor, path);
                     }
                 }
-                foreach (var it in datas)
+                if (badge_list.Count > 0)
                 {
-                    g.String(it.v, Font, SolidOne(it, brush_fore, brush_fore_disable, brush_active_fore, "yyyy"), rect_div[it.id].Rect, s_f);
-                    if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, rect_div[it.id].Rect, g);
+                    foreach (var it in datas)
+                    {
+                        if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, rect_div[it.id].Rect, g);
+                    }
                 }
             }
         }
@@ -450,27 +322,36 @@ namespace AntdUI
             using (var brush_fore = new SolidBrush(color_fore))
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get("DatePicker", ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get("DatePicker", ColorScheme)))
-            using (var brush_active = new SolidBrush(Colour.Primary.Get("DatePicker", ColorScheme)))
-            using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get("DatePicker", ColorScheme)))
             {
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM") == it.date_str) g.Fill(brush_active, path);
+                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM") == it.date_str)
+                        {
+                            g.Fill(Colour.Primary.Get("DatePicker", ColorScheme), path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get("DatePicker", ColorScheme), rect_div[it.id].Rect, s_f);
+                        }
                         else if (it.enable)
                         {
-                            if (rect.Hover) g.Fill(Colour.FillTertiary.Get("DatePicker", ColorScheme), path);
+                            if (rect.Hover) g.Fill(brush_bg_disable, path);
+                            g.String(it.v, Font, brush_fore, rect_div[it.id].Rect, s_f);
                         }
-                        else g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                        else
+                        {
+                            g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                            g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
+                        }
                         if (DateNow.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get("DatePicker", ColorScheme), bor, path);
                     }
                 }
-                foreach (var it in datas)
+                if (badge_list.Count > 0)
                 {
-                    g.String(it.v, Font, SolidOne(it, brush_fore, brush_fore_disable, brush_active_fore), rect_div[it.id].Rect, s_f);
-                    if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, rect_div[it.id].Rect, g);
+                    foreach (var it in datas)
+                    {
+                        if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, rect_div[it.id].Rect, g);
+                    }
                 }
             }
         }
@@ -505,7 +386,6 @@ namespace AntdUI
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get("DatePicker", ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get("DatePicker", ColorScheme)))
             using (var brush_active = new SolidBrush(Colour.Primary.Get("DatePicker", ColorScheme)))
-            using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get("DatePicker", ColorScheme)))
             {
                 if (left_buttons != null)
                 {
@@ -514,7 +394,7 @@ namespace AntdUI
                     {
                         using (var path = it.rect_read.RoundPath(Radius))
                         {
-                            if (it.hover) g.Fill(Colour.FillTertiary.Get("DatePicker", ColorScheme), path);
+                            if (it.hover) g.Fill(brush_bg_disable, path);
                             g.String(it.v, Font, brush_fore, it.rect_text, s_f_LE);
                         }
                     }
@@ -568,7 +448,7 @@ namespace AntdUI
                                             break;
                                     }
                                 }
-                                if (it.hover) g.Fill(Colour.FillTertiary.Get("DatePicker", ColorScheme), path);
+                                if (it.hover) g.Fill(brush_bg_disable, path);
                                 g.String(it.v, Font, brush_fore, it.rect_read, s_f);
                             }
                         }
@@ -586,19 +466,30 @@ namespace AntdUI
                     var rect = rect_div[it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM-dd") == it.date_str) g.Fill(brush_active, path);
+                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM-dd") == it.date_str)
+                        {
+                            g.Fill(brush_active, path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get("DatePicker", ColorScheme), rect_div[it.id].Rect, s_f);
+                        }
                         else if (it.enable)
                         {
-                            if (rect.Hover) g.Fill(Colour.FillTertiary.Get("DatePicker", ColorScheme), path);
+                            if (rect.Hover) g.Fill(brush_bg_disable, path);
+                            g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, rect_div[it.id].Rect, s_f);
                         }
-                        else g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                        if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get("DatePicker", ColorScheme), bor, path);
+                        else
+                        {
+                            g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                            g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
+                        }
+                        if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get("DatePicker", ColorScheme), bor, path); ;
                     }
                 }
-                foreach (var it in datas)
+                if (badge_list.Count > 0)
                 {
-                    g.String(it.v, Font, SolidOneDay(it, brush_fore, brush_fore_disable, brush_active_fore), rect_div[it.id].Rect, s_f);
-                    if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, rect_div[it.id].Rect, g);
+                    foreach (var it in datas)
+                    {
+                        if (badge_list.TryGetValue(it.date_str, out var find)) control.PaintBadge(find, rect_div[it.id].Rect, g);
+                    }
                 }
 
                 if (ShowButtonToDay)
@@ -607,25 +498,6 @@ namespace AntdUI
                     else g.String(button_text, Font, brush_active, rect_button.Rect, s_f);
                 }
             }
-        }
-
-        SolidBrush SolidOne(ItemCalendari it, SolidBrush brush_fore, SolidBrush brush_fore_disable, SolidBrush brush_active_fore, string f = "yyyy-MM")
-        {
-            if (it.enable)
-            {
-                if (SelDate.HasValue && SelDate.Value.ToString(f) == it.date_str) return brush_active_fore;
-                else return brush_fore;
-            }
-            return brush_fore_disable;
-        }
-        SolidBrush SolidOneDay(ItemCalendari it, SolidBrush brush_fore, SolidBrush brush_fore_disable, SolidBrush brush_active_fore, string f = "yyyy-MM-dd")
-        {
-            if (it.enable)
-            {
-                if (SelDate.HasValue && SelDate.Value.ToString(f) == it.date_str) return brush_active_fore;
-                else if (it.t == 1) return brush_fore;
-            }
-            return brush_fore_disable;
         }
 
         #endregion
@@ -702,7 +574,7 @@ namespace AntdUI
                     }
                 }
                 rect_div = new Dictionary<string, RectCalendari>(rect_day.Count);
-                foreach (var it in rect_day) rect_div.Add(it.x + "_" + it.y, it);
+                foreach (var it in rect_day) rect_div.Add(it.id, it);
                 foreach (var it in calendar_day!) rect_div[it.id].Enable = it.enable;
 
                 #endregion
@@ -826,7 +698,7 @@ namespace AntdUI
                     }
                 }
                 rect_div = new Dictionary<string, RectCalendari>(rect_month.Count);
-                foreach (var it in rect_month) rect_div.Add(it.x + "_" + it.y, it);
+                foreach (var it in rect_month) rect_div.Add(it.id, it);
                 foreach (var it in calendar_month!) rect_div[it.id].Enable = it.enable;
 
                 #endregion
@@ -858,7 +730,7 @@ namespace AntdUI
                     }
                 }
                 rect_div = new Dictionary<string, RectCalendari>(rect_year.Count);
-                foreach (var it in rect_year) rect_div.Add(it.x + "_" + it.y, it);
+                foreach (var it in rect_year) rect_div.Add(it.id, it);
                 foreach (var it in calendar_year!) rect_div[it.id].Enable = it.enable;
 
                 #endregion
@@ -1237,6 +1109,145 @@ namespace AntdUI
         }
     }
 
+    internal class CalendarHelper
+    {
+        public static List<ItemCalendari> Day(DateTime now, DateTime? minDate, DateTime? maxDate)
+        {
+            var calendaris = new List<ItemCalendari>(42);
+            int days = DateTime.DaysInMonth(now.Year, now.Month);
+            var now1 = new DateTime(now.Year, now.Month, 1);
+            int day_ = 0;
+            switch (now1.DayOfWeek)
+            {
+                case DayOfWeek.Tuesday:
+                    day_ = 1;
+                    break;
+                case DayOfWeek.Wednesday:
+                    day_ = 2;
+                    break;
+                case DayOfWeek.Thursday:
+                    day_ = 3;
+                    break;
+                case DayOfWeek.Friday:
+                    day_ = 4;
+                    break;
+                case DayOfWeek.Saturday:
+                    day_ = 5;
+                    break;
+                case DayOfWeek.Sunday:
+                    day_ = 6;
+                    break;
+            }
+            if (day_ > 0)
+            {
+                var date1 = now.AddMonths(-1);
+                int days2 = DateTime.DaysInMonth(date1.Year, date1.Month);
+                for (int i = 0; i < day_; i++)
+                {
+                    int day3 = days2 - i;
+                    calendaris.Insert(0, new ItemCalendari(0, (day_ - 1) - i, 0, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
+                }
+            }
+            int x = day_, y = 0;
+            for (int i = 0; i < days; i++)
+            {
+                int day = i + 1;
+                calendaris.Add(new ItemCalendari(1, x, y, day.ToString(), new DateTime(now.Year, now.Month, day), minDate, maxDate));
+                x++;
+                if (x > 6)
+                {
+                    y++;
+                    x = 0;
+                }
+            }
+            if (x < 7)
+            {
+                var date1 = now.AddMonths(1);
+                int day2 = 0;
+                for (int i = x; i < 7; i++)
+                {
+                    int day3 = day2 + 1;
+                    calendaris.Add(new ItemCalendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
+                    x++; day2++;
+                }
+                if (y < 5)
+                {
+                    y++;
+                    for (int i = 0; i < 7; i++)
+                    {
+                        int day3 = day2 + 1;
+                        calendaris.Add(new ItemCalendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
+                        day2++;
+                    }
+                }
+            }
+            return calendaris;
+        }
+        public static List<CalendarT> Time(bool ShowH, bool ShowM, bool ShowS)
+        {
+            var calendar_time = new List<CalendarT>(24 + 120);
+            int count = 0;
+            if (ShowH)
+            {
+                for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(count, 0, i, i));
+                count++;
+            }
+            if (ShowM)
+            {
+                for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(count, 1, i, i));
+                count++;
+            }
+            if (ShowS)
+            {
+                for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(count, 2, i, i));
+                count++;
+            }
+            return calendar_time;
+        }
+        public static List<ItemCalendari> Month(DateTime now, DateTime? minDate, DateTime? maxDate, CultureInfo Culture, string format)
+        {
+            var calendaris = new List<ItemCalendari>(12);
+            int x_m = 0, y_m = 0;
+            for (int i = 0; i < 12; i++)
+            {
+                var d_m = new DateTime(now.Year, i + 1, 1);
+                calendaris.Add(new ItemCalendari(0, x_m, y_m, d_m.ToString(format, Culture), d_m, d_m.ToString("yyyy-MM"), minDate, maxDate));
+                x_m++;
+                if (x_m > 2)
+                {
+                    y_m++;
+                    x_m = 0;
+                }
+            }
+            return calendaris;
+        }
+        public static List<ItemCalendari> Year(DateTime now, DateTime? minDate, DateTime? maxDate, out string year_str)
+        {
+            int syear = now.Year - 1;
+            if (!now.Year.ToString().EndsWith("0"))
+            {
+                string temp = now.Year.ToString();
+                syear = int.Parse(temp.Substring(0, temp.Length - 1) + "0") - 1;
+            }
+            var calendaris = new List<ItemCalendari>(12);
+            int x_y = 0, y_y = 0;
+            if (syear < 1) syear = 1;
+            for (int i = 0; i < 12; i++)
+            {
+                var d_y = new DateTime(syear + i, now.Month, 1);
+                calendaris.Add(new ItemCalendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy"), minDate, maxDate));
+                x_y++;
+                if (x_y > 2)
+                {
+                    y_y++;
+                    x_y = 0;
+                }
+            }
+            year_str = calendaris[1].date_str + "-" + calendaris[calendaris.Count - 2].date_str;
+            return calendaris;
+        }
+    }
+
     internal class RectHover
     {
         public bool Hover { get; set; }
@@ -1290,10 +1301,13 @@ namespace AntdUI
 
     internal class RectCalendari
     {
-        public RectCalendari(int _x, int _y)
+        public RectCalendari(int x, int y)
         {
-            x = _x;
-            y = _y;
+            id = x + "_" + y;
+        }
+        public RectCalendari(string _id)
+        {
+            id = _id;
         }
 
         public bool Hover { get; set; }
@@ -1337,8 +1351,7 @@ namespace AntdUI
             return this;
         }
 
-        public int x { get; set; }
-        public int y { get; set; }
+        public string id { get; set; }
     }
 
     #region 项
