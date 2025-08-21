@@ -228,6 +228,16 @@ namespace AntdUI
 
         public void AutoDpi(float dpi, Control control) => Helper.DpiAuto(dpi, control);
 
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            if (m.Msg == 0x02E0)
+            {
+                // 低字节是水平DPI，高字节是垂直DPI
+                int newDpiX = (int)(m.WParam.ToInt64() & 0xFFFF), newDpiY = (int)(m.WParam.ToInt64() >> 16);
+            }
+            base.WndProc(ref m);
+        }
+
         #endregion
 
         #region 交互

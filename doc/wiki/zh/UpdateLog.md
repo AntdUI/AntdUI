@@ -1,5 +1,48 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.0` 2025-08-21
+
+- ➕ 原生滚动条适配深色模式
+- ➕ 新的 MouseHover 处理
+- ➕ Config MouseHoverDelay
+- ➕ Menu 布局属性 重构布局
+- ➕ Menu ArrowRatio
+- ➕ Input Ctrl+Back
+- ➕ Alert LoopOverflow、TextAlign
+- ➕ Select WheelModifyEnabled
+- ➕ Button VirtualWidth 属性
+- ➕ ChatList 主题属性
+- ➕ ChatList ScrollLine 方法
+- ➕ ChatList ItemGap
+- ➕ ChatList IsAtBottom / IsAtRight
+- ➕ Table Filter Apply重载函数
+- ➕ Table 复制焦点单元格属性 ClipboardCopyFocusedCell
+- ➕ Segmented ItemGap
+- ➕ Tree TreeItem CheckedStrictly
+- ➕ Tree TreeItem FullPath 方法
+- ➕ Modal ContentPadding
+- ➕ Calendar ItemPaint 事件
+- ➕ Tabs TextCenter
+- ✍️ Window 适配 Win7 NoAero
+- ✍️ ContextMenuStrip Win7 子菜单异常
+- ✍️ Menu 闪空白下拉
+- ✍️ Menu 优化二级菜单
+- ✍️ Table 键盘上下切换
+- ✍️ Table 空数据排序异常
+- ✍️ Table 小数点排序
+- ✍️ Table FocusedCell 切换数据未清空
+- ✍️ Pagination 初始化错位
+- ✍️ Pagination 长度0修改页数重置当前页
+- ✍️ Modal 关闭按钮错位
+- ✍️ Tabs Page 优化加载
+- ✍️ Steps 优化里程碑模式
+- ✍️ 下拉 屏幕碰撞
+- ✍️ ScrollBar 边距错位
+- ✍️ ChatList 优化 GPT 多文本性能
+- 🧹 DatePicker
+- 🧹 TimePicker
+- 🧹 DatePickerRange
+
 ### `2.0.17` 2025-08-06
 
 - ➕ Layered 缓存渲染（性能优化）

@@ -392,6 +392,7 @@ namespace AntdUI
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 g.String(year_str, font, color_fore, rect_year2.Rect, s_f);
+                g.String(year_str2, font, color_fore, rect_year2_r.Rect, s_f);
             }
 
             using (var brush_split = new SolidBrush(Colour.Split.Get("DatePicker", ColorScheme)))
@@ -430,6 +431,10 @@ namespace AntdUI
                 string yearStr = _Date.ToString(YearFormat, Culture);
                 if (rect_year2.Hover) g.String(yearStr, font, Colour.Primary.Get("DatePicker", ColorScheme), rect_year2.Rect, s_f);
                 else g.String(yearStr, font, color_fore, rect_year2.Rect, s_f);
+
+                string year2Str = _Date_R.ToString(YearFormat, Culture);
+                if (rect_year2_r.Hover) g.String(year2Str, font, Colour.Primary.Get("DatePicker", ColorScheme), rect_year2_r.Rect, s_f);
+                else g.String(year2Str, font, color_fore, rect_year2_r.Rect, s_f);
             }
 
             using (var brush_split = new SolidBrush(Colour.Split.Get("DatePicker", ColorScheme)))
@@ -719,7 +724,10 @@ namespace AntdUI
                     int rw2 = t_x + t_width * 2 + sp2, t_width2 = t_width / 2;
                     rect_rights.SetRect(rw2 - t_top, 0, t_top, t_top).SetRectArrows(sp);
 
-                    rect_year2.SetRect(t_x + (t_width - yearR_width) / 2, 0, yearR_width, t_top);
+                    int tmp = (t_width - yearR_width) / 2;
+                    rect_year2.SetRect(t_x + tmp, 0, yearR_width, t_top);
+                    rect_year2_r.SetRect(t_x + t_width + tmp, 0, yearR_width, t_top);
+
                     if (YDR)
                     {
                         rect_month.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
@@ -735,12 +743,6 @@ namespace AntdUI
 
                         rect_year_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
                         rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
-                    }
-                    if (showType == TDatePicker.Month)
-                    {
-                    }
-                    else
-                    {
                     }
                 }
                 else
@@ -1024,7 +1026,8 @@ namespace AntdUI
         int bor = 1;
         RectHover rect_lefts = new RectHover(), rect_left = new RectHover();
         RectHover rect_rights = new RectHover(), rect_right = new RectHover();
-        RectHover rect_year = new RectHover(), rect_month = new RectHover(), rect_year_r = new RectHover(), rect_month_r = new RectHover(), rect_year2 = new RectHover();
+        RectHover rect_year = new RectHover(), rect_month = new RectHover(),
+            rect_year_r = new RectHover(), rect_month_r = new RectHover(), rect_year2 = new RectHover(), rect_year2_r = new RectHover();
         RectangleF[] rects_split = new RectangleF[0];
         Rectangle rect_mon, rect_tue, rect_wed, rect_thu, rect_fri, rect_sat, rect_sun;
         Rectangle rect_mon2, rect_tue2, rect_wed2, rect_thu2, rect_fri2, rect_sat2, rect_sun2;
@@ -1080,6 +1083,7 @@ namespace AntdUI
                 }
                 else if (showType == TDatePicker.Month && (calendar_month != null && calendar_month2 != null))
                 {
+                    if (rect_year2_r.Contains(x, y, ref count)) hand++;
                     foreach (var it in calendar_month)
                     {
                         var rect = rect_div[it.id];
@@ -1243,6 +1247,12 @@ namespace AntdUI
                         {
                             if (calendar_month2 != null && calendar_month != null)
                             {
+                                if (rect_year2_r.Contains(x, y))
+                                {
+                                    ShowType = TDatePicker.Year;
+                                    Print();
+                                    return;
+                                }
                                 foreach (var it in calendar_month)
                                 {
                                     if (it.enable)
