@@ -108,7 +108,7 @@ namespace AntdUI
             {
                 if (pageSize == value) return;
                 pageSize = value;
-                if (Math.Ceiling(total * 1.0 / pageSize) < current) current = (int)Math.Ceiling(total * 1.0 / pageSize);
+                if (total > 0 && Math.Ceiling(total * 1.0 / pageSize) < current) current = (int)Math.Ceiling(total * 1.0 / pageSize);
                 ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
                 if (input_SizeChanger != null)
                 {

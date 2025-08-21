@@ -27,16 +27,16 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    public class LayeredFormDatePicker : ILayeredShadowForm
+    public class LayeredFormDatePickerRangeTime : ILayeredShadowForm
     {
         #region 初始化
 
-        DatePicker control;
+        DatePickerRange control;
         DateTime? minDate, maxDate;
         TAMode ColorScheme;
-        bool ShowTime = false, ShowH = false, ShowM = false, ShowS = false,
-            ValueTimeHorizontal = false, ShowButtonToDay = true;
-        public LayeredFormDatePicker(DatePicker _control, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action)
+        bool ShowH = false, ShowM = false, ShowS = false,
+            ValueTimeHorizontal = false;
+        public LayeredFormDatePickerRangeTime(DatePickerRange _control, bool endFocused, int bar, Action<DateTime[]> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action)
         {
             PARENT = control = _control;
             ColorScheme = _control.ColorScheme;
@@ -44,16 +44,15 @@ namespace AntdUI
             Font = _control.Font;
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
+            EndFocused = endFocused;
+            AnimationBarValue = bar;
+
             ShowH = control.Format.Contains("H");
             ShowM = control.Format.Contains("m");
             ShowS = control.Format.Contains("s");
-            ShowTime = ShowH || ShowM || ShowS;
-            ShowButtonToDay = _control.ShowButtonToDay;
             ValueTimeHorizontal = _control.ValueTimeHorizontal;
-            if (ShowTime) button_text = Localization.Get("Now", "此刻");
-            else button_text = Localization.Get("ToDay", "今天");
 
-            showType = PickerType = _control.Picker;
+            showType = _control.Picker;
             badge_action = _badge_action;
             action = _action;
             action_btns = _action_btns;
@@ -110,7 +109,8 @@ namespace AntdUI
                 Radius = (int)(_control.radius * dpi);
             }
             SelDate = _control.Value;
-            Date = SelDate ?? DateNow;
+            if (SelDate == null) Date = DateNow;
+            else Date = EndFocused ? SelDate[1] : SelDate[0];
 
             LoadLayout();
 
@@ -119,12 +119,28 @@ namespace AntdUI
             if (OS.Win7OrLower) Select();
         }
 
+        #region 箭头
+
         TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
 
+        float AnimationBarValue = 0;
+        public void SetArrow(float x)
+        {
+            if (AnimationBarValue == x) return;
+            AnimationBarValue = x;
+            if (RunAnimation) DisposeTmp();
+            else Print();
+        }
+
+        public bool EndFocused = false;
+
+        #endregion
+
         DateTime DateNow = DateTime.Now;
 
-        public DateTime? SelDate;
+        public DateTime[]? SelDate;
+        DateTime? oldTime, oldTimeStart;
 
         DateTime _Date;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -136,7 +152,7 @@ namespace AntdUI
                 _Date = value;
                 calendar_day = CalendarHelper.Day(value, minDate, maxDate);
 
-                if (ShowTime && calendar_time == null) calendar_time = CalendarHelper.Time(ShowH, ShowM, ShowS);
+                if (calendar_time == null) calendar_time = CalendarHelper.Time(ShowH, ShowM, ShowS);
 
                 calendar_month = CalendarHelper.Month(value, minDate, maxDate, Culture, MonthFormat);
 
@@ -154,7 +170,7 @@ namespace AntdUI
         /// <summary>
         /// 回调
         /// </summary>
-        Action<DateTime> action;
+        Action<DateTime[]> action;
         Action<object> action_btns;
         Func<DateTime[], List<DateBadge>?>? badge_action;
         Dictionary<string, DateBadge> badge_list = new Dictionary<string, DateBadge>();
@@ -173,7 +189,7 @@ namespace AntdUI
 
         CultureInfo Culture;
         string CultureID = Localization.Get("ID", "zh-CN"),
-            button_text, OKButton = Localization.Get("OK", "确定"),
+            button_text = Localization.Get("Now", "此刻"), OKButton = Localization.Get("OK", "确定"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
 
@@ -188,7 +204,11 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
-                if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect));
+                if (ArrowAlign != TAlign.None)
+                {
+                    if (AnimationBarValue != 0F) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, new RectangleF(rect.X + AnimationBarValue, rect.Y, rect.Width, rect.Height)));
+                    else g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect));
+                }
             }
         }
 
@@ -278,7 +298,7 @@ namespace AntdUI
                     var rect = rect_div[it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy") == it.date_str)
+                        if ((SelDate != null && oldTime == null && (EndFocused ? SelDate[1] : SelDate[0]).ToString("yyyy") == it.date_str) || (oldTime.HasValue && oldTime.Value.ToString("yyyy") == it.date_str))
                         {
                             g.Fill(Colour.Primary.Get("DatePicker", ColorScheme), path);
                             g.String(it.v, Font, Colour.PrimaryColor.Get("DatePicker", ColorScheme), rect_div[it.id].Rect, s_f);
@@ -328,7 +348,7 @@ namespace AntdUI
                     var rect = rect_div[it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM") == it.date_str)
+                        if ((SelDate != null && oldTime == null && (EndFocused ? SelDate[1] : SelDate[0]).ToString("yyyy-MM") == it.date_str) || (oldTime.HasValue && oldTime.Value.ToString("yyyy-MM") == it.date_str))
                         {
                             g.Fill(Colour.Primary.Get("DatePicker", ColorScheme), path);
                             g.String(it.v, Font, Colour.PrimaryColor.Get("DatePicker", ColorScheme), rect_div[it.id].Rect, s_f);
@@ -433,18 +453,35 @@ namespace AntdUI
                             }
                             using (var path = it.rect_read.RoundPath(Radius))
                             {
-                                if (SelDate.HasValue)
+                                if (oldTime.HasValue)
                                 {
+                                    var tmp = oldTime.Value;
                                     switch (it.rx)
                                     {
                                         case 0:
-                                            if (it.t == SelDate.Value.Hour) g.Fill(brush_bg, path);
+                                            if (it.t == tmp.Hour) g.Fill(brush_bg, path);
                                             break;
                                         case 1:
-                                            if (it.t == SelDate.Value.Minute) g.Fill(brush_bg, path);
+                                            if (it.t == tmp.Minute) g.Fill(brush_bg, path);
                                             break;
                                         case 2:
-                                            if (it.t == SelDate.Value.Second) g.Fill(brush_bg, path);
+                                            if (it.t == tmp.Second) g.Fill(brush_bg, path);
+                                            break;
+                                    }
+                                }
+                                else if (SelDate != null)
+                                {
+                                    var tmp = EndFocused ? (oldTime ?? SelDate[1]) : SelDate[0];
+                                    switch (it.rx)
+                                    {
+                                        case 0:
+                                            if (it.t == tmp.Hour) g.Fill(brush_bg, path);
+                                            break;
+                                        case 1:
+                                            if (it.t == tmp.Minute) g.Fill(brush_bg, path);
+                                            break;
+                                        case 2:
+                                            if (it.t == tmp.Second) g.Fill(brush_bg, path);
                                             break;
                                     }
                                 }
@@ -466,7 +503,7 @@ namespace AntdUI
                     var rect = rect_div[it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM-dd") == it.date_str)
+                        if ((SelDate != null && oldTime == null && (EndFocused ? SelDate[1] : SelDate[0]).ToString("yyyy-MM-dd") == it.date_str) || (oldTime.HasValue && oldTime.Value.ToString("yyyy-MM-dd") == it.date_str))
                         {
                             g.Fill(brush_active, path);
                             g.String(it.v, Font, Colour.PrimaryColor.Get("DatePicker", ColorScheme), rect_div[it.id].Rect, s_f);
@@ -492,11 +529,8 @@ namespace AntdUI
                     }
                 }
 
-                if (ShowButtonToDay)
-                {
-                    if (rect_button.Hover) g.String(button_text, Font, Colour.PrimaryActive.Get("DatePicker", ColorScheme), rect_button.Rect, s_f);
-                    else g.String(button_text, Font, brush_active, rect_button.Rect, s_f);
-                }
+                if (rect_button.Hover) g.String(button_text, Font, Colour.PrimaryActive.Get("DatePicker", ColorScheme), rect_button.Rect, s_f);
+                else g.String(button_text, Font, brush_active, rect_button.Rect, s_f);
             }
         }
 
@@ -504,7 +538,7 @@ namespace AntdUI
 
         #region 布局
 
-        TDatePicker showType, PickerType;
+        TDatePicker showType;
         TDatePicker ShowType
         {
             get => showType;
@@ -579,7 +613,7 @@ namespace AntdUI
 
                 #endregion
 
-                r_h = t_top + (ShowButtonToDay ? t_button : 0) + sp2 * 2 + item_size * 7;
+                r_h = t_top + t_button + sp2 * 2 + item_size * 7;
 
                 rect_button.SetRect(t_x + (t_width - year_width) / 2, r_h - t_button, year_width, t_button);
 
@@ -607,71 +641,73 @@ namespace AntdUI
                 #region 线
 
                 var dlist = new List<RectangleF>(3) { new RectangleF(t_x, t_top - line, t_width, line2) };
-                if (ShowTime)
+
+                #region Time
+
+                int tcount = 0;
+                if (ShowH) tcount++;
+                if (ShowM) tcount++;
+                if (ShowS) tcount++;
+                int t_time_w = t_time * tcount;
+
+                if (calendar_time != null)
                 {
-                    int tcount = 0;
-                    if (ShowH) tcount++;
-                    if (ShowM) tcount++;
-                    if (ShowS) tcount++;
-                    int t_time_w = t_time * tcount;
+                    int size_time_one = (int)(t_time * .857F), size_time_height_one = (int)(t_time_height * .93F);
 
-                    if (calendar_time != null)
+                    var rect_time = new Rectangle(rw, 0, t_time, r_h - t_button);
+                    int tmp = rect_time.Right - t_time;
+                    if (ShowH)
                     {
-                        int size_time_one = (int)(t_time * .857F), size_time_height_one = (int)(t_time_height * .93F);
-
-                        var rect_time = new Rectangle(rw, 0, t_time, r_h - t_button);
-                        int tmp = rect_time.Right - t_time;
-                        if (ShowH)
-                        {
-                            rect_read_h = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
-                            ScrollH.SizeChange(rect_read_h);
-                            tmp += t_time;
-                        }
-                        if (ShowM)
-                        {
-                            rect_read_m = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
-                            ScrollM.SizeChange(rect_read_m);
-                            tmp += t_time;
-                        }
-                        if (ShowS)
-                        {
-                            rect_read_s = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
-                            ScrollS.SizeChange(rect_read_s);
-                            tmp += t_time;
-                        }
-
-                        if (ValueTimeHorizontal)
-                        {
-                            int exceed = rect_time.Height / t_time_height;
-                            int max = t_time_height * (60 + exceed);
-                            ScrollH.SetVrSize(t_time_height * (24 + exceed));
-                            ScrollM.SetVrSize(max);
-                            ScrollS.SetVrSize(max);
-                        }
-                        else
-                        {
-                            int max = t_time_height * 60;
-                            ScrollH.SetVrSize(t_time_height * 24);
-                            ScrollM.SetVrSize(max);
-                            ScrollS.SetVrSize(max);
-                        }
-
-                        int _x = (t_time - size_time_one) / 2, _y = (t_time_height - size_time_height_one) / 2;
-                        foreach (var it in calendar_time)
-                        {
-                            it.rect = new Rectangle(rw + t_time * it.x, t_time_height * it.y, t_time, t_time_height);
-                            it.rect_read = new Rectangle(it.rect.X + _x, it.rect.Y + _y, size_time_one, size_time_height_one);
-                        }
-
-                        if (SelDate.HasValue) ScrollTime(calendar_time, SelDate.Value);
+                        rect_read_h = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
+                        ScrollH.SizeChange(rect_read_h);
+                        tmp += t_time;
+                    }
+                    if (ShowM)
+                    {
+                        rect_read_m = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
+                        ScrollM.SizeChange(rect_read_m);
+                        tmp += t_time;
+                    }
+                    if (ShowS)
+                    {
+                        rect_read_s = new Rectangle(tmp, rect_time.Y, t_time, rect_time.Height);
+                        ScrollS.SizeChange(rect_read_s);
+                        tmp += t_time;
                     }
 
-                    dlist.Add(new RectangleF(rw - line, 0, line2, r_h));
-                    rect_buttonok.SetRect(rw, rect_button.Rect.Y, t_time_w, t_button);
-                    rw += t_time_w;
+                    if (ValueTimeHorizontal)
+                    {
+                        int exceed = rect_time.Height / t_time_height;
+                        int max = t_time_height * (60 + exceed);
+                        ScrollH.SetVrSize(t_time_height * (24 + exceed));
+                        ScrollM.SetVrSize(max);
+                        ScrollS.SetVrSize(max);
+                    }
+                    else
+                    {
+                        int max = t_time_height * 60;
+                        ScrollH.SetVrSize(t_time_height * 24);
+                        ScrollM.SetVrSize(max);
+                        ScrollS.SetVrSize(max);
+                    }
+
+                    int _x = (t_time - size_time_one) / 2, _y = (t_time_height - size_time_height_one) / 2;
+                    foreach (var it in calendar_time)
+                    {
+                        it.rect = new Rectangle(rw + t_time * it.x, t_time_height * it.y, t_time, t_time_height);
+                        it.rect_read = new Rectangle(it.rect.X + _x, it.rect.Y + _y, size_time_one, size_time_height_one);
+                    }
+
+                    if (SelDate != null) ScrollTime(calendar_time, oldTime ?? (EndFocused ? SelDate[1] : SelDate[0]));
                 }
-                if (ShowButtonToDay) dlist.Add(new RectangleF(t_x, rect_button.Rect.Y - line, rw - t_x, line2));
-                else dlist.Add(new RectangleF(t_x + t_width, rect_button.Rect.Y - line, rw - t_x - t_width, line2));
+
+                dlist.Add(new RectangleF(rw - line, 0, line2, r_h));
+                rect_buttonok.SetRect(rw, rect_button.Rect.Y, t_time_w, t_button);
+                rw += t_time_w;
+
+                #endregion
+
+                dlist.Add(new RectangleF(t_x, rect_button.Rect.Y - line, rw - t_x, line2));
                 if (t_x > 0) dlist.Add(new RectangleF(t_x - line, 0, line2, r_h));
                 rects_split = dlist.ToArray();
 
@@ -786,8 +822,8 @@ namespace AntdUI
                 {
                     if (rect_left.Contains(x, y, ref count)) hand++;
                     if (rect_right.Contains(x, y, ref count)) hand++;
-                    if (ShowButtonToDay && rect_button.Contains(x, y, ref count)) hand++;
-                    if (ShowTime && rect_buttonok.Contains(x, y, ref count)) hand++;
+                    if (rect_button.Contains(x, y, ref count)) hand++;
+                    if (rect_buttonok.Contains(x, y, ref count)) hand++;
                     if (rect_year.Contains(x, y, ref count)) hand++;
                     if (rect_month.Contains(x, y, ref count)) hand++;
                     if (left_buttons != null)
@@ -870,23 +906,56 @@ namespace AntdUI
                             ShowType = TDatePicker.Month;
                             Print();
                         }
-                        else if (ShowButtonToDay && rect_button.Contains(x, y))
+                        else if (rect_button.Contains(x, y))
                         {
-                            SelDate = Date = DateNow = DateTime.Now;
-                            action(SelDate.Value);
-                            if (ShowTime && calendar_time != null)
-                            {
-                                Print();
-                                ScrollTime(calendar_time, SelDate.Value);
-                            }
-                            else IClose();
+                            //此刻
+                            oldTime = Date = DateNow = DateTime.Now;
+                            Print();
+                            ScrollTime(calendar_time!, oldTime.Value);
                         }
-                        else if (ShowTime && rect_buttonok.Contains(x, y))
+                        else if (rect_buttonok.Contains(x, y))
                         {
-                            if (SelDate.HasValue)
+                            if (SelDate == null)
                             {
-                                action(SelDate.Value);
-                                IClose();
+                                if (oldTime.HasValue)
+                                {
+                                    if (EndFocused)
+                                    {
+                                        if (oldTimeStart.HasValue)
+                                        {
+                                            if (oldTime.Value > oldTimeStart.Value) SelDate = new DateTime[] { oldTimeStart.Value, oldTime.Value };
+                                            else SelDate = new DateTime[] { oldTime.Value, oldTimeStart.Value };
+                                            action(SelDate);
+                                            IClose();
+                                        }
+                                        return;
+                                    }
+                                    oldTimeStart = oldTime;
+                                    oldTime = null;
+                                    EndFocused = true;
+                                    Print();
+                                }
+                            }
+                            else
+                            {
+                                if (EndFocused)
+                                {
+                                    if (oldTime.HasValue)
+                                    {
+                                        SelDate[1] = oldTime.Value;
+                                        action(SelDate);
+                                    }
+                                    IClose();
+                                }
+                                else
+                                {
+                                    if (oldTime.HasValue)
+                                    {
+                                        SelDate[0] = oldTime.Value;
+                                        action(SelDate);
+                                    }
+                                    IClose();
+                                }
                             }
                         }
                         else
@@ -912,22 +981,19 @@ namespace AntdUI
                                     {
                                         if (rect_div[it.id].Contains(x, y))
                                         {
-                                            if (ShowTime)
+                                            if (oldTime.HasValue) oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, oldTime.Value.Hour, oldTime.Value.Minute, oldTime.Value.Second);
+                                            else if (SelDate == null)
                                             {
-                                                if (SelDate.HasValue) SelDate = new DateTime(it.date.Year, it.date.Month, it.date.Day, SelDate.Value.Hour, SelDate.Value.Minute, SelDate.Value.Second);
-                                                else
-                                                {
-                                                    DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(it.date.Year, it.date.Month, it.date.Day, DateNow.Hour, DateNow.Minute, DateNow.Second);
-                                                }
-                                                action(SelDate.Value);
-                                                Print();
-                                                if (calendar_time != null) ScrollTime(calendar_time, SelDate.Value);
-                                                return;
+                                                DateNow = DateTime.Now;
+                                                oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, DateNow.Hour, DateNow.Minute, DateNow.Second);
                                             }
-                                            else SelDate = it.date;
-                                            action(SelDate.Value);
-                                            IClose();
+                                            else
+                                            {
+                                                var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, tmp.Hour, tmp.Minute, tmp.Second);
+                                            }
+                                            Print();
+                                            if (calendar_time != null) ScrollTime(calendar_time, oldTime.Value);
                                             return;
                                         }
                                     }
@@ -942,28 +1008,38 @@ namespace AntdUI
                                         case 1:
                                             if (it.Contains(x, y + ScrollM.Value))
                                             {
-                                                if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, SelDate.Value.Hour, it.t, SelDate.Value.Second);
-                                                else
+                                                if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, it.t, oldTime.Value.Second);
+                                                else if (SelDate == null)
                                                 {
                                                     DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, it.t, 0);
+                                                    oldTime = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, it.t, 0);
+                                                }
+                                                else
+                                                {
+                                                    var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                    oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, it.t, tmp.Second);
                                                 }
                                                 Print();
-                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, SelDate.Value);
+                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
                                                 return;
                                             }
                                             break;
                                         case 2:
                                             if (it.Contains(x, y + ScrollS.Value))
                                             {
-                                                if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, SelDate.Value.Hour, SelDate.Value.Minute, it.t);
-                                                else
+                                                if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, oldTime.Value.Minute, it.t);
+                                                else if (SelDate == null)
                                                 {
                                                     DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, 0, it.t);
+                                                    oldTime = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, 0, it.t);
+                                                }
+                                                else
+                                                {
+                                                    var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                    oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, tmp.Minute, it.t);
                                                 }
                                                 Print();
-                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, SelDate.Value);
+                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
                                                 return;
                                             }
                                             break;
@@ -971,14 +1047,19 @@ namespace AntdUI
                                         default:
                                             if (it.Contains(x, y + ScrollH.Value))
                                             {
-                                                if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, it.t, SelDate.Value.Minute, SelDate.Value.Second);
-                                                else
+                                                if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, it.t, oldTime.Value.Minute, oldTime.Value.Second);
+                                                else if (SelDate == null)
                                                 {
                                                     DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, it.t, 0, 0);
+                                                    oldTime = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, it.t, 0, 0);
+                                                }
+                                                else
+                                                {
+                                                    var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                    oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, it.t, tmp.Minute, tmp.Second);
                                                 }
                                                 Print();
-                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, SelDate.Value);
+                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
                                                 return;
                                             }
                                             break;
@@ -1005,14 +1086,7 @@ namespace AntdUI
                                         if (rect_div[it.id].Contains(x, y))
                                         {
                                             Date = it.date;
-                                            if (PickerType < ShowType) ShowType = TDatePicker.Date;
-                                            else
-                                            {
-                                                SelDate = it.date;
-                                                action(SelDate.Value);
-                                                IClose();
-                                                return;
-                                            }
+                                            ShowType = TDatePicker.Date;
                                             Print();
                                             return;
                                         }
@@ -1032,14 +1106,7 @@ namespace AntdUI
                                     if (rect_div[it.id].Contains(x, y))
                                     {
                                         Date = it.date;
-                                        if (PickerType < ShowType) ShowType = TDatePicker.Month;
-                                        else
-                                        {
-                                            SelDate = it.date;
-                                            action(SelDate.Value);
-                                            IClose();
-                                            return;
-                                        }
+                                        ShowType = TDatePicker.Month;
                                         Print();
                                         return;
                                     }
@@ -1120,487 +1187,4 @@ namespace AntdUI
             base.Dispose(disposing);
         }
     }
-
-    internal class CalendarHelper
-    {
-        public static List<ItemCalendari> Day(DateTime now, DateTime? minDate, DateTime? maxDate)
-        {
-            var calendaris = new List<ItemCalendari>(42);
-            int days = DateTime.DaysInMonth(now.Year, now.Month);
-            var now1 = new DateTime(now.Year, now.Month, 1);
-            int day_ = 0;
-            switch (now1.DayOfWeek)
-            {
-                case DayOfWeek.Tuesday:
-                    day_ = 1;
-                    break;
-                case DayOfWeek.Wednesday:
-                    day_ = 2;
-                    break;
-                case DayOfWeek.Thursday:
-                    day_ = 3;
-                    break;
-                case DayOfWeek.Friday:
-                    day_ = 4;
-                    break;
-                case DayOfWeek.Saturday:
-                    day_ = 5;
-                    break;
-                case DayOfWeek.Sunday:
-                    day_ = 6;
-                    break;
-            }
-            if (day_ > 0)
-            {
-                var date1 = now.AddMonths(-1);
-                int days2 = DateTime.DaysInMonth(date1.Year, date1.Month);
-                for (int i = 0; i < day_; i++)
-                {
-                    int day3 = days2 - i;
-                    calendaris.Insert(0, new ItemCalendari(0, (day_ - 1) - i, 0, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                }
-            }
-            int x = day_, y = 0;
-            for (int i = 0; i < days; i++)
-            {
-                int day = i + 1;
-                calendaris.Add(new ItemCalendari(1, x, y, day.ToString(), new DateTime(now.Year, now.Month, day), minDate, maxDate));
-                x++;
-                if (x > 6)
-                {
-                    y++;
-                    x = 0;
-                }
-            }
-            if (x < 7)
-            {
-                var date1 = now.AddMonths(1);
-                int day2 = 0;
-                for (int i = x; i < 7; i++)
-                {
-                    int day3 = day2 + 1;
-                    calendaris.Add(new ItemCalendari(2, x, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                    x++; day2++;
-                }
-                if (y < 5)
-                {
-                    y++;
-                    for (int i = 0; i < 7; i++)
-                    {
-                        int day3 = day2 + 1;
-                        calendaris.Add(new ItemCalendari(2, i, y, day3.ToString(), new DateTime(date1.Year, date1.Month, day3), minDate, maxDate));
-                        day2++;
-                    }
-                }
-            }
-            return calendaris;
-        }
-        public static List<CalendarT> Time(bool ShowH, bool ShowM, bool ShowS)
-        {
-            var calendar_time = new List<CalendarT>(24 + 120);
-            int count = 0;
-            if (ShowH)
-            {
-                for (int i = 0; i < 24; i++) calendar_time.Add(new CalendarT(count, 0, i, i));
-                count++;
-            }
-            if (ShowM)
-            {
-                for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(count, 1, i, i));
-                count++;
-            }
-            if (ShowS)
-            {
-                for (int i = 0; i < 60; i++) calendar_time.Add(new CalendarT(count, 2, i, i));
-                count++;
-            }
-            return calendar_time;
-        }
-        public static List<ItemCalendari> Month(DateTime now, DateTime? minDate, DateTime? maxDate, CultureInfo Culture, string format)
-        {
-            var calendaris = new List<ItemCalendari>(12);
-            int x_m = 0, y_m = 0;
-            for (int i = 0; i < 12; i++)
-            {
-                var d_m = new DateTime(now.Year, i + 1, 1);
-                calendaris.Add(new ItemCalendari(0, x_m, y_m, d_m.ToString(format, Culture), d_m, d_m.ToString("yyyy-MM"), minDate, maxDate));
-                x_m++;
-                if (x_m > 2)
-                {
-                    y_m++;
-                    x_m = 0;
-                }
-            }
-            return calendaris;
-        }
-        public static List<ItemCalendari> Year(DateTime now, DateTime? minDate, DateTime? maxDate, out string year_str)
-        {
-            int syear = now.Year - 1;
-            if (!now.Year.ToString().EndsWith("0"))
-            {
-                string temp = now.Year.ToString();
-                syear = int.Parse(temp.Substring(0, temp.Length - 1) + "0") - 1;
-            }
-            var calendaris = new List<ItemCalendari>(12);
-            int x_y = 0, y_y = 0;
-            if (syear < 1) syear = 1;
-            for (int i = 0; i < 12; i++)
-            {
-                var d_y = new DateTime(syear + i, now.Month, 1);
-                calendaris.Add(new ItemCalendari(i == 0 ? 0 : 1, x_y, y_y, d_y.ToString("yyyy"), d_y, d_y.ToString("yyyy"), minDate, maxDate));
-                x_y++;
-                if (x_y > 2)
-                {
-                    y_y++;
-                    x_y = 0;
-                }
-            }
-            year_str = calendaris[1].date_str + "-" + calendaris[calendaris.Count - 2].date_str;
-            return calendaris;
-        }
-    }
-
-    internal class RectHover
-    {
-        public bool Hover { get; set; }
-
-        public bool Enable { get; set; } = true;
-
-        public Rectangle Rect;
-        public Rectangle[] Rects = new Rectangle[0];
-
-        public bool Contains(int x, int y, ref int count)
-        {
-            if (Enable && Rect.Contains(x, y))
-            {
-                if (Hover) return true;
-                Hover = true;
-                count++;
-                return true;
-            }
-            else
-            {
-                if (Hover)
-                {
-                    Hover = false;
-                    count++;
-                }
-                return false;
-            }
-        }
-        public bool Contains(int x, int y) => Enable && Rect.Contains(x, y);
-
-        public RectHover SetRect(int x, int y, int w, int h)
-        {
-            Rect = new Rectangle(x, y, w, h);
-            return this;
-        }
-        public RectHover SetRect(Rectangle[] rect)
-        {
-            Rects = rect;
-            return this;
-        }
-
-        public RectHover SetRectArrows(int sp)
-        {
-            Rects = new Rectangle[2] {
-                new Rectangle(Rect.X - sp, Rect.Y, Rect.Width, Rect.Height),
-                new Rectangle(Rect.X + sp, Rect.Y, Rect.Width, Rect.Height)
-            };
-            return this;
-        }
-    }
-
-    internal class RectCalendari
-    {
-        public RectCalendari(int x, int y)
-        {
-            id = x + "_" + y;
-        }
-        public RectCalendari(string _id)
-        {
-            id = _id;
-        }
-
-        public bool Hover { get; set; }
-        public bool Enable { get; set; }
-
-        public bool Contains(int x, int y, ref int count)
-        {
-            if (Enable && Rect.Contains(x, y))
-            {
-                if (Hover) return true;
-                Hover = true;
-                count++;
-                return true;
-            }
-            else
-            {
-                if (Hover)
-                {
-                    Hover = false;
-                    count++;
-                }
-                return false;
-            }
-        }
-        public bool Contains(int x, int y) => Enable && Rect.Contains(x, y);
-
-        public Rectangle Rect;
-        public Rectangle RectRead;
-
-        public RectCalendari SetRect(Rectangle value, int xy, int gap)
-        {
-            RectRead = new Rectangle(value.X + xy, value.Y + xy, gap, gap);
-            Rect = value;
-            return this;
-        }
-
-        public RectCalendari SetRect(Rectangle value, int x, int w, int y, int h)
-        {
-            RectRead = new Rectangle(value.X + x, value.Y + y, w, h);
-            Rect = value;
-            return this;
-        }
-
-        public string id { get; set; }
-    }
-
-    #region 项
-
-    internal class ItemCalendari
-    {
-        public ItemCalendari(int _t, int _x, int _y, string _v, DateTime _date, string str, DateTime? min, DateTime? max)
-        {
-            id = _x + "_" + _y;
-            t = _t;
-            x = _x;
-            y = _y;
-            v = _v;
-            date = _date;
-            date_str = str;
-            enable = Helper.DateExceedRelax(_date, min, max);
-        }
-        public ItemCalendari(int _t, int _x, int _y, string _v, DateTime _date, DateTime? min, DateTime? max)
-        {
-            id = _x + "_" + _y;
-            t = _t;
-            x = _x;
-            y = _y;
-            v = _v;
-            date = _date;
-            date_str = _date.ToString("yyyy-MM-dd");
-            enable = Helper.DateExceed(_date, min, max);
-        }
-
-        public string id { get; private set; }
-        public int x { get; private set; }
-        public int y { get; private set; }
-        public int t { get; private set; }
-        public string v { get; set; }
-        public DateTime date { get; set; }
-        public string date_str { get; set; }
-        public bool enable { get; set; }
-    }
-    internal class Calendari
-    {
-        public Calendari(int _t, int _x, int _y, string _v, DateTime _date, string str, DateTime? min, DateTime? max)
-        {
-            t = _t;
-            x = _x;
-            y = _y;
-            v = _v;
-            date = _date;
-            date_str = str;
-            enable = Helper.DateExceedRelax(_date, min, max);
-        }
-        public Calendari(int _t, int _x, int _y, string _v, DateTime _date, DateTime? min, DateTime? max)
-        {
-            t = _t;
-            x = _x;
-            y = _y;
-            v = _v;
-            date = _date;
-            date_str = _date.ToString("yyyy-MM-dd");
-            enable = Helper.DateExceed(_date, min, max);
-        }
-
-        public bool hover { get; set; }
-
-        Rectangle _rect;
-        public Rectangle rect
-        {
-            get => _rect;
-            set
-            {
-                rect_read = new Rectangle(value.X + 4, value.Y + 4, value.Width - 8, value.Height - 8);
-                _rect = value;
-            }
-        }
-
-        internal void SetRect(Rectangle value, int gap)
-        {
-            int xy = (value.Width - gap) / 2;
-            rect_read = new Rectangle(value.X + xy, value.Y + xy, gap, gap);
-            _rect = value;
-        }
-
-        internal void SetRectG(Rectangle value, float gap)
-        {
-            int w = (int)(value.Width * gap), h = (int)(value.Height * gap);
-            rect_read = new Rectangle(value.X + (value.Width - w) / 2, value.Y + (value.Height - h) / 2, w, h);
-            _rect = value;
-        }
-
-        public Rectangle rect_read;
-        public Rectangle rect_f;
-        public Rectangle rect_l;
-        public int x { get; set; }
-        public int y { get; set; }
-        public int t { get; set; }
-        public string v { get; set; }
-        public DateTime date { get; set; }
-        public string date_str { get; set; }
-        public bool enable { get; set; }
-    }
-    internal class CalendarT
-    {
-        public CalendarT(int _x, int _rx, int _y, int _t)
-        {
-            x = _x;
-            rx = _rx;
-            y = _y;
-            t = _t;
-            v = _t.ToString().PadLeft(2, '0');
-        }
-
-        public bool hover { get; set; }
-        public Rectangle rect { get; set; }
-        public Rectangle rect_read { get; set; }
-
-        internal bool Contains(int x, int y, float sx, float sy, out bool change)
-        {
-            if (rect.Contains(x + (int)sx, y + (int)sy))
-            {
-                change = SetHover(true);
-                return true;
-            }
-            else
-            {
-                change = SetHover(false);
-                return false;
-            }
-        }
-        public bool Contains(int x, int y, ref int count)
-        {
-            if (rect.Contains(x, y))
-            {
-                if (hover) return true;
-                hover = true;
-                count++;
-                return true;
-            }
-            else
-            {
-                if (hover)
-                {
-                    hover = false;
-                    count++;
-                }
-                return false;
-            }
-        }
-        public bool Contains(int x, int y) => rect.Contains(x, y);
-
-        internal bool SetHover(bool val)
-        {
-            bool change = false;
-            if (val)
-            {
-                if (!hover) change = true;
-                hover = true;
-            }
-            else
-            {
-                if (hover) change = true;
-                hover = false;
-            }
-            return change;
-        }
-
-        public int x { get; set; }
-        public int rx { get; set; }
-        public int y { get; set; }
-        public int t { get; set; }
-        public string v { get; set; }
-    }
-    internal class CalendarButton
-    {
-        public CalendarButton(int _y, object _v)
-        {
-            y = _y;
-            v = _v.ToString();
-            Tag = _v;
-        }
-        public bool hover { get; set; }
-        public Rectangle rect { get; set; }
-        public Rectangle rect_read { get; set; }
-        public Rectangle rect_text { get; set; }
-
-        internal bool Contains(int x, int y, float sx, float sy, out bool change)
-        {
-            if (rect.Contains(x + (int)sx, y + (int)sy))
-            {
-                change = SetHover(true);
-                return true;
-            }
-            else
-            {
-                change = SetHover(false);
-                return false;
-            }
-        }
-        public bool Contains(int x, int y, ref int count)
-        {
-            if (rect.Contains(x, y))
-            {
-                if (hover) return true;
-                hover = true;
-                count++;
-                return true;
-            }
-            else
-            {
-                if (hover)
-                {
-                    hover = false;
-                    count++;
-                }
-                return false;
-            }
-        }
-        public bool Contains(int x, int y) => rect.Contains(x, y);
-
-        internal bool SetHover(bool val)
-        {
-            bool change = false;
-            if (val)
-            {
-                if (!hover) change = true;
-                hover = true;
-            }
-            else
-            {
-                if (hover) change = true;
-                hover = false;
-            }
-            return change;
-        }
-
-        public int y { get; set; }
-        public string? v { get; set; }
-        public object Tag { get; set; }
-    }
-
-    #endregion
 }

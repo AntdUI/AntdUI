@@ -111,7 +111,6 @@ namespace AntdUI
             get => _value;
             set
             {
-                if (_value == value) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 SetText(value);
@@ -315,9 +314,13 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
+                        int bar = 0;
+                        if (EndFocused) bar = rect_d_r.X;
+                        else bar = rect_d_l.X;
+
                         if (ShowTime)
                         {
-                            subForm = new LayeredFormCalendarTimeRange(this, ReadRectangle, _value, EndFocused, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                            subForm = new LayeredFormDatePickerRangeTime(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
                                 subForm = null;
@@ -327,10 +330,6 @@ namespace AntdUI
                         }
                         else
                         {
-                            int bar = 0;
-                            if (EndFocused) bar = rect_d_r.X;
-                            else bar = rect_d_l.X;
-
                             subForm = new LayeredFormDatePickerRange(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
                             subForm.Disposed += (a, b) =>
                             {
@@ -433,7 +432,7 @@ namespace AntdUI
                                 else Text = date_s.ToString(Format) + '\t' + etext;
                             }
                             if (subForm is LayeredFormDatePickerRange layered_range) layered_range.SetDateS(date_s);
-                            else if (subForm is LayeredFormCalendarTimeRange layered_time) layered_time.IClose();
+                            else if (subForm is LayeredFormDatePickerRangeTime layered_time) layered_time.IClose();
                             StartFocused = false;
                             EndFocused = true;
                             StartEndFocused();
@@ -458,7 +457,7 @@ namespace AntdUI
                                     {
                                         layered_range.SetDateE(date_s, date_e);
                                     }
-                                    else if (subForm is LayeredFormCalendarTimeRange layered_time) layered_time.IClose();
+                                    else if (subForm is LayeredFormDatePickerRangeTime layered_time) layered_time.IClose();
                                 }
                                 else Text = text.Substring(0, index) + '\t' + date_e.ToString(Format);
                             }
@@ -615,6 +614,11 @@ namespace AntdUI
                             if (Placement == TAlignFrom.TR || Placement == TAlignFrom.BR) layered.SetArrow(AnimationBarValue.X - rect_d_r.X);
                             else layered.SetArrow(AnimationBarValue.X);
                         }
+                        else if (subForm is LayeredFormDatePickerRangeTime layeredt)
+                        {
+                            if (Placement == TAlignFrom.TR || Placement == TAlignFrom.BR) layeredt.SetArrow(AnimationBarValue.X - rect_d_r.X);
+                            else layeredt.SetArrow(AnimationBarValue.X);
+                        }
                         Invalidate();
                         return true;
                     }, 10, () =>
@@ -623,6 +627,11 @@ namespace AntdUI
                         {
                             if (Placement == TAlignFrom.TR || Placement == TAlignFrom.BR) layered.SetArrow(NewValue.X - rect_d_r.X);
                             else layered.SetArrow(NewValue.X);
+                        }
+                        else if (subForm is LayeredFormDatePickerRangeTime layeredt)
+                        {
+                            if (Placement == TAlignFrom.TR || Placement == TAlignFrom.BR) layeredt.SetArrow(NewValue.X - rect_d_r.X);
+                            else layeredt.SetArrow(NewValue.X);
                         }
                         AnimationBarValue = NewValue;
                         AnimationBar = false;
