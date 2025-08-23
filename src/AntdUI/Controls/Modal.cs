@@ -406,26 +406,6 @@ namespace AntdUI
 
             public IconInfo? IconCustom { get; set; }
 
-            public Config SetIcon(TType icon = TType.Success)
-            {
-                IconCustom = null;
-                Icon = icon;
-                return this;
-            }
-
-            public Config SetIcon(string svg) => SetIcon(new IconInfo(svg));
-            public Config SetIcon(string svg, Color? fill) => SetIcon(new IconInfo(svg, fill));
-            public Config SetIcon(string svg, Color back, bool round) => SetIcon(new IconInfo(svg) { Back = back, Round = round });
-            public Config SetIcon(string svg, Color back, int radius) => SetIcon(new IconInfo(svg) { Back = back, Radius = radius });
-            public Config SetIcon(string svg, Color? fill, Color back, bool round) => SetIcon(new IconInfo(svg, fill) { Back = back, Round = round });
-            public Config SetIcon(string svg, Color? fill, Color back, int radius) => SetIcon(new IconInfo(svg, fill) { Back = back, Radius = radius });
-
-            public Config SetIcon(IconInfo iconInfo)
-            {
-                IconCustom = iconInfo;
-                return this;
-            }
-
             /// <summary>
             /// 确定回调
             /// </summary>
@@ -468,8 +448,228 @@ namespace AntdUI
             public void Close()
             {
                 if (Layered == null) return;
-                Layered.BeginInvoke(() => Layered?.Close());
+                Layered.BeginInvoke(Layered.Close);
             }
+
+            public void DialogResult(DialogResult result = System.Windows.Forms.DialogResult.OK)
+            {
+                if (Layered == null) return;
+                Layered.BeginInvoke(() => Layered.DialogResult = result);
+            }
+
+            #region 设置
+
+            public Config SetContentPadding(int x, int y)
+            {
+                ContentPadding = new Size(x, y);
+                return this;
+            }
+            public Config SetContentPadding(int size)
+            {
+                ContentPadding = new Size(size, size);
+                return this;
+            }
+            public Config SetContentPadding(Size size)
+            {
+                ContentPadding = size;
+                return this;
+            }
+            public Config SetUseIconPadding(bool value = false)
+            {
+                UseIconPadding = value;
+                return this;
+            }
+            public Config SetWidth(int value)
+            {
+                Width = value;
+                return this;
+            }
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetKeyboard(bool value = false)
+            {
+                Keyboard = value;
+                return this;
+            }
+            public Config SetMask(bool value = false)
+            {
+                Mask = value;
+                return this;
+            }
+            public Config SetMaskClosable(bool value = false)
+            {
+                MaskClosable = value;
+                return this;
+            }
+            public Config SetCloseIcon(bool value = true)
+            {
+                CloseIcon = value;
+                return this;
+            }
+            public Config SetDefaultFocus(bool value = true)
+            {
+                DefaultFocus = value;
+                return this;
+            }
+            public Config SetInput(Input value)
+            {
+                DefaultFocus = true;
+                value.KeyPress += (a, b) =>
+                {
+                    if (b.KeyChar == 13)
+                    {
+                        b.Handled = true;
+                        if (string.IsNullOrEmpty(value.Text)) return;
+                        DialogResult();
+                    }
+                };
+                return this;
+            }
+            public Config SetBtnHeight(int value = 0)
+            {
+                BtnHeight = value;
+                return this;
+            }
+            public Config SetPadding(int x, int y)
+            {
+                Padding = new Size(x, y);
+                return this;
+            }
+            public Config SetPadding(int size)
+            {
+                Padding = new Size(size, size);
+                return this;
+            }
+            public Config SetPadding(Size size)
+            {
+                Padding = size;
+                return this;
+            }
+
+            #region 按钮
+
+            public Config SetCancel(Font? font)
+            {
+                CancelFont = font;
+                return this;
+            }
+            public Config SetCancel(string? value)
+            {
+                CancelText = value;
+                return this;
+            }
+            public Config SetCancel(string? value, Font? font)
+            {
+                CancelText = value;
+                CancelFont = font;
+                return this;
+            }
+
+            public Config SetOk(string value, TTypeMini type)
+            {
+                OkText = value;
+                OkType = type;
+                return this;
+            }
+            public Config SetOk(Font? font)
+            {
+                OkFont = font;
+                return this;
+            }
+            public Config SetOk(string value)
+            {
+                OkText = value;
+                return this;
+            }
+            public Config SetOk(string value, Font? font)
+            {
+                OkText = value;
+                OkFont = font;
+                return this;
+            }
+            public Config SetOk(TTypeMini value = TTypeMini.Error)
+            {
+                OkType = value;
+                return this;
+            }
+            public Config SetOk(Func<Config, bool>? value)
+            {
+                OnOk = value;
+                return this;
+            }
+
+            #endregion
+
+            public Config SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+            public Config SetLoadingDisableCancel(bool value = true)
+            {
+                LoadingDisableCancel = value;
+                return this;
+            }
+            public Config SetDraggable(bool value = false)
+            {
+                Draggable = value;
+                return this;
+            }
+
+            #region 图标
+
+            public Config SetIcon(TType icon = TType.Success)
+            {
+                IconCustom = null;
+                Icon = icon;
+                return this;
+            }
+
+            public Config SetIcon(string svg) => SetIcon(new IconInfo(svg));
+            public Config SetIcon(string svg, Color? fill) => SetIcon(new IconInfo(svg, fill));
+            public Config SetIcon(string svg, Color back, bool round) => SetIcon(new IconInfo(svg) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color back, int radius) => SetIcon(new IconInfo(svg) { Back = back, Radius = radius });
+            public Config SetIcon(string svg, Color? fill, Color back, bool round) => SetIcon(new IconInfo(svg, fill) { Back = back, Round = round });
+            public Config SetIcon(string svg, Color? fill, Color back, int radius) => SetIcon(new IconInfo(svg, fill) { Back = back, Radius = radius });
+
+            public Config SetIcon(IconInfo iconInfo)
+            {
+                IconCustom = iconInfo;
+                return this;
+            }
+
+            #endregion
+
+            #region 自定义按钮
+
+            public Config SetBtns(params Btn[] value)
+            {
+                Btns = value;
+                return this;
+            }
+            public Config SetBtns(Func<Button, bool>? call, params Btn[] value)
+            {
+                Btns = value;
+                OnBtns = call;
+                return this;
+            }
+            public Config SetBtns(Func<Button, bool>? value)
+            {
+                OnBtns = value;
+                return this;
+            }
+            public Config SetButtonStyle(Action<string, Button>? value)
+            {
+                OnButtonStyle = value;
+                return this;
+            }
+
+            #endregion
+
+            #endregion
         }
 
         /// <summary>

@@ -323,13 +323,13 @@ namespace AntdUI
                 {
                     if (has_text)
                     {
-                        var font_size = g.MeasureString(Config.NullText, Font);
+                        var font_size = g.MeasureString(Config.NullText, Font).SizeEm(Font).DeflateSize(Padding);
                         font_size.Width = font_size.Height;
                         return font_size;
                     }
                     else
                     {
-                        var font_size = g.MeasureText(Text ?? Config.NullText, Font);
+                        var font_size = g.MeasureText(Text ?? Config.NullText, Font).SizeEm(Font).DeflateSize(Padding);
                         font_size.Width += font_size.Height;
                         return font_size;
                     }

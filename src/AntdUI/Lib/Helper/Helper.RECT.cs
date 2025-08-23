@@ -149,6 +149,12 @@ namespace AntdUI
             rect.Height -= padding.Vertical;
             return rect;
         }
+        public static Size DeflateSize(this Size size, Padding padding)
+        {
+            size.Width += padding.Horizontal;
+            size.Height += padding.Vertical;
+            return size;
+        }
 
         public static Rectangle DeflateRect(this Rectangle rect, Padding padding, ShadowConfig config, TAlignMini align, float borderWidth = 0F)
         {
