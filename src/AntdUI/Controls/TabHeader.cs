@@ -328,7 +328,8 @@ namespace AntdUI
                 _select = value;
                 Invalidate();
                 if (items == null) return;
-                TabChanged?.Invoke(this, new TabChangedEventArgs(items[value], value));
+                SelectedItem = items[value];
+                TabChanged?.Invoke(this, new TabChangedEventArgs(_selectItem!, value));
             }
         }
 
@@ -913,9 +914,14 @@ namespace AntdUI
                 TabClosing?.Invoke(this, args);
                 if (args.Cancel) return;
                 items.Remove(mdown);
-                // 如果关闭的是当前选中标签，自动选择下一个标签
-                if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
-                SelectedItem = items[SelectedIndex];
+                if (mdown == _selectItem)
+                {
+                    if (_select > 0 && items.Count > 0) SelectedIndex--;
+                }
+                else
+                {
+                    if (_select > 0) _select--;
+                }
             }
         }
 

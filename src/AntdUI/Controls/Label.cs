@@ -924,21 +924,22 @@ namespace AntdUI
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
                         float add = 0;
-                        if (has_prefix) add += font_size.Height;
+                        if (has_prefix) add += (int)(font_size.Height * iconratio);
                         else if (has_prefixText)
                         {
                             var font_size_prefix = g.MeasureText(Prefix, Font).Width;
                             add += font_size_prefix;
                         }
-                        if (has_suffix) add += font_size.Height;
+                        if (has_suffix) add += (int)(font_size.Height * iconratio);
                         else if (has_suffixText)
                         {
                             var font_size_suffix = g.MeasureText(Suffix, Font).Width;
                             add += font_size_suffix;
                         }
-                        return new Size((int)Math.Ceiling(font_size.Width + add), font_size.Height);
+                        var tmp = font_size.SizeEm(Font).DeflateSize(Padding);
+                        return new Size((int)Math.Ceiling(tmp.Width + add), tmp.Height);
                     }
-                    else return font_size;
+                    else return font_size.SizeEm(Font).DeflateSize(Padding);
                 });
             }
         }
