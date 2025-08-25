@@ -355,7 +355,7 @@ namespace AntdUI
             return rect_dir;
         }
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding, _padding);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, _padding);
 
         #region 数据
 
