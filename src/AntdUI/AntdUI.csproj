@@ -10,11 +10,10 @@
 		<Copyright>Copyright © Tom 2021-2025</Copyright>
 		<Product>AntdUI</Product>
 		<AssemblyTitle>Ant Design Winform UI</AssemblyTitle>
-		<Description>Winform UI library use Ant Design 5.0</Description>
+		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Version>2.1.0</Version>
-		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>

@@ -154,7 +154,7 @@ namespace AntdUI
                             if (BackSize > 0)
                             {
                                 int barBackSize = (int)(BackSize * Config.Dpi);
-                                rect_line_top = new Rectangle(rect.X, rect.Bottom - xy2, rect.Width, barBackSize);
+                                rect_line_top = new Rectangle(0, rect.Bottom - xy2, rect.Width + tabs.Margin.Horizontal, barBackSize);
                             }
                             owner.scroll_max = xy - rect.Width;
                             owner.scroll_show = xy > rect.Width;
@@ -200,7 +200,7 @@ namespace AntdUI
                             if (BackSize > 0)
                             {
                                 int barBackSize = (int)(BackSize * Config.Dpi);
-                                rect_line_top = new Rectangle(rect.X + xy2 - barBackSize, rect.Y, barBackSize, rect.Height);
+                                rect_line_top = new Rectangle(rect.X + xy2 - barBackSize, 0, barBackSize, rect.Height + tabs.Margin.Vertical);
                             }
                             owner.scroll_max = xy - rect.Height;
                             owner.scroll_show = xy > rect.Height;
@@ -241,7 +241,7 @@ namespace AntdUI
                             if (BackSize > 0)
                             {
                                 int barBackSize = (int)(BackSize * Config.Dpi);
-                                rect_line_top = new Rectangle(x, rect.Y, barBackSize, rect.Height);
+                                rect_line_top = new Rectangle(x, 0, barBackSize, rect.Height + tabs.Margin.Vertical);
                             }
                             owner.scroll_max = xy - rect.Height;
                             owner.scroll_show = xy > rect.Height;
@@ -272,7 +272,7 @@ namespace AntdUI
                             if (BackSize > 0)
                             {
                                 int barBackSize = (int)(BackSize * Config.Dpi);
-                                rect_line_top = new Rectangle(rect.Left, rect.Y + xy2 - barBackSize, rect.Width, barBackSize);
+                                rect_line_top = new Rectangle(0, rect.Y + xy2 - barBackSize, rect.Width + tabs.Margin.Horizontal, barBackSize);
                             }
                             owner.scroll_max = xy - rect.Width;
                             owner.scroll_show = xy > rect.Width;

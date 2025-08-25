@@ -734,6 +734,25 @@ namespace AntdUI
             this.PaintBadge(g);
         }
 
+        public Bitmap? DrawBitmap()
+        {
+            var rect = ClientRectangle;
+            if (rect.Width == 0 || rect.Height == 0) return null;
+            var bmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(bmp).High())
+            {
+                try
+                {
+                    var args = new DrawEventArgs(g, rect);
+                    OnDrawBg(args);
+                    OnDraw(args);
+                }
+                catch { }
+                this.PaintBadge(g);
+            }
+            return bmp;
+        }
+
         #endregion
     }
 
