@@ -880,6 +880,8 @@ namespace AntdUI
         {
             ThreadFocus?.Dispose();
             ThreadHover?.Dispose();
+            bmp_alpha?.Dispose();
+            bmp_alpha = null;
             base.Dispose(disposing);
         }
         ITask? ThreadHover;

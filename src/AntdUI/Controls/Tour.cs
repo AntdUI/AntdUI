@@ -334,7 +334,7 @@ namespace AntdUI
                 temp?.Dispose();
                 temp = PrintBmp(rect_read, rect);
             }
-            return (Bitmap)temp.Clone();
+            return new Bitmap(temp);
         }
 
         Bitmap PrintBmp(Rectangle rect_read, Rectangle rect)
