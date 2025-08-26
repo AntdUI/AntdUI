@@ -72,7 +72,8 @@ namespace AntdUI.Svg
             return new SizeF(rect.Width, Ascent(renderer));
         }
 
-        private Graphics _graphics;
+        Graphics? _graphics;
+        Bitmap? _bitmap;
         private Graphics GetGraphics(object renderer)
         {
             var provider = renderer as IGraphicsProvider;
@@ -80,20 +81,23 @@ namespace AntdUI.Svg
             {
                 if (_graphics == null)
                 {
-                    var bmp = new Bitmap(1, 1);
-                    _graphics = Graphics.FromImage(bmp);
+                    _bitmap = new Bitmap(1, 1);
+                    _graphics = Graphics.FromImage(_bitmap);
                 }
                 return _graphics;
             }
-            else
-            {
-                return provider.GetGraphics();
-            }
+            else return provider.GetGraphics();
         }
 
         public void Dispose()
         {
-            _font.Dispose();
+            _font?.Dispose();
+
+            _graphics?.Dispose();
+            _graphics = null;
+
+            _bitmap?.Dispose();
+            _bitmap = null;
         }
     }
 }

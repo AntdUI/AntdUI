@@ -124,7 +124,7 @@ namespace AntdUI
                     }
                 }
             }
-            return (Bitmap)temp.Clone();
+            return new Bitmap(temp);
         }
     }
 
