@@ -272,6 +272,23 @@ namespace AntdUI
             return rect_read.RoundPath(_radius);
         }
 
+        static Size MeasureText(Canvas g, string? text, Font font, Rectangle rect, out int txt_height, out bool multiLine)
+        {
+            var font_height = g.MeasureText(Config.NullText, font);
+            txt_height = font_height.Height;
+            multiLine = false;
+            if (text == null) return font_height;
+            else
+            {
+                var font_size = g.MeasureText(text, font);
+                if (font_size.Width > rect.Width && text.Contains("\n"))
+                {
+                    multiLine = true;
+                    return g.MeasureText(text, font, rect.Width);
+                }
+                else return font_size;
+            }
+        }
         static void PaintButton(Canvas g, Font font, CellButton btn, Color color, Rectangle rect_read)
         {
             if (string.IsNullOrEmpty(btn.Text))
@@ -288,25 +305,25 @@ namespace AntdUI
             }
             else
             {
-                var font_size = g.MeasureText(btn.Text ?? Config.NullText, font);
+                var font_size = MeasureText(g, btn.Text, font, rect_read, out int txt_height, out bool textLine);
                 bool has_left = btn.HasIcon, has_right = btn.ShowArrow;
                 Rectangle rect_text;
                 if (has_left || has_right)
                 {
                     if (has_left && has_right)
                     {
-                        rect_text = Button.RectAlignLR(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
+                        rect_text = Button.RectAlignLR(g, txt_height, textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
                         PaintButtonPaintImage(g, btn, color, rect_l);
                         PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                     else if (has_left)
                     {
-                        rect_text = Button.RectAlignL(g, btn.textLine, false, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
+                        rect_text = Button.RectAlignL(g, txt_height, textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
                         PaintButtonPaintImage(g, btn, color, rect_l);
                     }
                     else
                     {
-                        rect_text = Button.RectAlignR(g, btn.textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_r);
+                        rect_text = Button.RectAlignR(g, txt_height, textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_r);
                         PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                 }

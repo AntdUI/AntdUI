@@ -28,6 +28,7 @@ namespace AntdUI
     /// <summary>
     /// TimePicker 时间选择框
     /// </summary>
+    /// <seealso cref="Input"/>
     /// <remarks>输入或选择时间的控件。</remarks>
     [Description("TimePicker 时间选择框")]
     [ToolboxItem(true)]

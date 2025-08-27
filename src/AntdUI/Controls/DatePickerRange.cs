@@ -29,6 +29,7 @@ namespace AntdUI
     /// <summary>
     /// DatePickerRange 日期范围选择框
     /// </summary>
+    /// <seealso cref="Input"/>
     /// <remarks>输入或选择日期范围的控件。</remarks>
     [Description("DatePickerRange 日期范围选择框")]
     [ToolboxItem(true)]

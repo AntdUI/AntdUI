@@ -107,9 +107,9 @@ namespace Demo.Controls
             panel4.Controls.Add(panel5);
             panel4.Controls.Add(radio9);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 184);
+            panel4.Location = new Point(0, 180);
             panel4.Name = "panel4";
-            panel4.Size = new Size(650, 96);
+            panel4.Size = new Size(650, 90);
             panel4.TabIndex = 3;
             // 
             // panel5
@@ -126,9 +126,9 @@ namespace Demo.Controls
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.Dock = DockStyle.Left;
-            button2.Location = new Point(83, 0);
+            button2.Location = new Point(74, 0);
             button2.Name = "button2";
-            button2.Size = new Size(76, 38);
+            button2.Size = new Size(67, 38);
             button2.TabIndex = 1;
             button2.Text = "Disable";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -140,7 +140,7 @@ namespace Demo.Controls
             button1.Dock = DockStyle.Left;
             button1.Location = new Point(0, 0);
             button1.Name = "button1";
-            button1.Size = new Size(83, 38);
+            button1.Size = new Size(74, 38);
             button1.TabIndex = 0;
             button1.Text = "Uncheck";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -152,7 +152,7 @@ namespace Demo.Controls
             radio9.Checked = true;
             radio9.Location = new Point(0, 0);
             radio9.Name = "radio9";
-            radio9.Size = new Size(187, 43);
+            radio9.Size = new Size(176, 42);
             radio9.TabIndex = 0;
             radio9.Text = "Checked-Enabled";
             radio9.CheckedChanged += radio9_CheckedChanged;
@@ -163,7 +163,7 @@ namespace Demo.Controls
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Radio.{id}";
-            divider3.Location = new Point(0, 156);
+            divider3.Location = new Point(0, 152);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(650, 28);
@@ -177,9 +177,9 @@ namespace Demo.Controls
             panel3.Controls.Add(radio6);
             panel3.Controls.Add(radio5);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 106);
+            panel3.Location = new Point(0, 104);
             panel3.Name = "panel3";
-            panel3.Size = new Size(650, 50);
+            panel3.Size = new Size(650, 48);
             panel3.TabIndex = 2;
             // 
             // radio8
@@ -189,9 +189,9 @@ namespace Demo.Controls
             radio8.Dock = DockStyle.Left;
             radio8.Enabled = false;
             radio8.Fill = Color.FromArgb(100, 0, 0);
-            radio8.Location = new Point(359, 0);
+            radio8.Location = new Point(334, 0);
             radio8.Name = "radio8";
-            radio8.Size = new Size(121, 50);
+            radio8.Size = new Size(113, 48);
             radio8.TabIndex = 3;
             radio8.Text = "Option D";
             // 
@@ -200,9 +200,9 @@ namespace Demo.Controls
             radio7.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio7.Dock = DockStyle.Left;
             radio7.Fill = Color.FromArgb(150, 0, 0);
-            radio7.Location = new Point(239, 0);
+            radio7.Location = new Point(223, 0);
             radio7.Name = "radio7";
-            radio7.Size = new Size(120, 50);
+            radio7.Size = new Size(111, 48);
             radio7.TabIndex = 2;
             radio7.Text = "Option C";
             // 
@@ -211,9 +211,9 @@ namespace Demo.Controls
             radio6.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio6.Dock = DockStyle.Left;
             radio6.Fill = Color.FromArgb(200, 0, 0);
-            radio6.Location = new Point(120, 0);
+            radio6.Location = new Point(112, 0);
             radio6.Name = "radio6";
-            radio6.Size = new Size(119, 50);
+            radio6.Size = new Size(111, 48);
             radio6.TabIndex = 1;
             radio6.Text = "Option B";
             // 
@@ -224,7 +224,7 @@ namespace Demo.Controls
             radio5.Fill = Color.FromArgb(250, 0, 0);
             radio5.Location = new Point(0, 0);
             radio5.Name = "radio5";
-            radio5.Size = new Size(120, 50);
+            radio5.Size = new Size(112, 48);
             radio5.TabIndex = 0;
             radio5.Text = "Option A";
             // 
@@ -233,7 +233,7 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Radio.{id}";
-            divider2.Location = new Point(0, 78);
+            divider2.Location = new Point(0, 76);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(650, 28);
@@ -249,7 +249,7 @@ namespace Demo.Controls
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
-            panel2.Size = new Size(650, 50);
+            panel2.Size = new Size(650, 48);
             panel2.TabIndex = 1;
             // 
             // radio4
@@ -257,9 +257,9 @@ namespace Demo.Controls
             radio4.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio4.Dock = DockStyle.Left;
             radio4.Enabled = false;
-            radio4.Location = new Point(354, 0);
+            radio4.Location = new Point(330, 0);
             radio4.Name = "radio4";
-            radio4.Size = new Size(118, 50);
+            radio4.Size = new Size(110, 48);
             radio4.TabIndex = 3;
             radio4.Text = "Option 4";
             // 
@@ -267,9 +267,9 @@ namespace Demo.Controls
             // 
             radio3.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio3.Dock = DockStyle.Left;
-            radio3.Location = new Point(236, 0);
+            radio3.Location = new Point(220, 0);
             radio3.Name = "radio3";
-            radio3.Size = new Size(118, 50);
+            radio3.Size = new Size(110, 48);
             radio3.TabIndex = 2;
             radio3.Text = "Option 3";
             // 
@@ -277,9 +277,9 @@ namespace Demo.Controls
             // 
             radio2.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio2.Dock = DockStyle.Left;
-            radio2.Location = new Point(118, 0);
+            radio2.Location = new Point(110, 0);
             radio2.Name = "radio2";
-            radio2.Size = new Size(118, 50);
+            radio2.Size = new Size(110, 48);
             radio2.TabIndex = 1;
             radio2.Text = "Option 2";
             // 
@@ -289,7 +289,7 @@ namespace Demo.Controls
             radio1.Dock = DockStyle.Left;
             radio1.Location = new Point(0, 0);
             radio1.Name = "radio1";
-            radio1.Size = new Size(118, 50);
+            radio1.Size = new Size(110, 48);
             radio1.TabIndex = 0;
             radio1.Text = "Option 1";
             // 

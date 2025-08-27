@@ -25,6 +25,7 @@ namespace AntdUI
     /// <summary>
     /// 复选框
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellCheckbox : ICell
     {
         /// <summary>

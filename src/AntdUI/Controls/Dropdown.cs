@@ -29,6 +29,7 @@ namespace AntdUI
     /// <summary>
     /// Dropdown 选择器
     /// </summary>
+    /// <seealso cref="Button"/>
     /// <remarks>向下弹出的列表。</remarks>
     [Description("Dropdown 下拉菜单")]
     [ToolboxItem(true)]

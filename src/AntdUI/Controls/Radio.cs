@@ -484,17 +484,10 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    int gap = (int)(20 * Config.Dpi);
-                    if (string.IsNullOrWhiteSpace(Text))
-                    {
-                        var font_size = g.MeasureString(Config.NullText, Font);
-                        return new Size(font_size.Height + gap, font_size.Height + gap);
-                    }
-                    else
-                    {
-                        var font_size = g.MeasureText(Text, Font);
-                        return new Size(font_size.Width + font_size.Height + gap, font_size.Height + gap);
-                    }
+                    var font_size = g.MeasureString(Config.NullText, Font);
+                    int gap = (int)(font_size.Height * 1.02F);
+                    if (string.IsNullOrWhiteSpace(Text)) return new Size(font_size.Height + gap, font_size.Height + gap);
+                    else return new Size(g.MeasureText(Text, Font).Width + font_size.Height + gap, font_size.Height + gap);
                 });
             }
         }

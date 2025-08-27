@@ -107,9 +107,9 @@ namespace Demo.Controls
             panel4.Controls.Add(panel5);
             panel4.Controls.Add(checkbox9);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 184);
+            panel4.Location = new Point(0, 180);
             panel4.Name = "panel4";
-            panel4.Size = new Size(650, 96);
+            panel4.Size = new Size(650, 90);
             panel4.TabIndex = 5;
             // 
             // panel5
@@ -126,9 +126,9 @@ namespace Demo.Controls
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.Dock = DockStyle.Left;
-            button2.Location = new Point(83, 0);
+            button2.Location = new Point(74, 0);
             button2.Name = "button2";
-            button2.Size = new Size(76, 38);
+            button2.Size = new Size(67, 38);
             button2.TabIndex = 1;
             button2.Text = "Disable";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -140,7 +140,7 @@ namespace Demo.Controls
             button1.Dock = DockStyle.Left;
             button1.Location = new Point(0, 0);
             button1.Name = "button1";
-            button1.Size = new Size(83, 38);
+            button1.Size = new Size(74, 38);
             button1.TabIndex = 0;
             button1.Text = "Uncheck";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -152,7 +152,7 @@ namespace Demo.Controls
             checkbox9.Checked = true;
             checkbox9.Location = new Point(0, 0);
             checkbox9.Name = "checkbox9";
-            checkbox9.Size = new Size(187, 43);
+            checkbox9.Size = new Size(176, 42);
             checkbox9.TabIndex = 0;
             checkbox9.Text = "Checked-Enabled";
             checkbox9.CheckedChanged += checkbox9_CheckedChanged;
@@ -163,7 +163,7 @@ namespace Demo.Controls
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Checkbox.{id}";
-            divider3.Location = new Point(0, 156);
+            divider3.Location = new Point(0, 152);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(650, 28);
@@ -177,9 +177,9 @@ namespace Demo.Controls
             panel3.Controls.Add(checkbox6);
             panel3.Controls.Add(checkbox5);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 106);
+            panel3.Location = new Point(0, 104);
             panel3.Name = "panel3";
-            panel3.Size = new Size(650, 50);
+            panel3.Size = new Size(650, 48);
             panel3.TabIndex = 1;
             // 
             // checkbox8
@@ -189,9 +189,9 @@ namespace Demo.Controls
             checkbox8.Dock = DockStyle.Left;
             checkbox8.Enabled = false;
             checkbox8.Fill = Color.FromArgb(100, 0, 0);
-            checkbox8.Location = new Point(359, 0);
+            checkbox8.Location = new Point(334, 0);
             checkbox8.Name = "checkbox8";
-            checkbox8.Size = new Size(121, 50);
+            checkbox8.Size = new Size(113, 48);
             checkbox8.TabIndex = 7;
             checkbox8.Text = "Option D";
             // 
@@ -200,9 +200,9 @@ namespace Demo.Controls
             checkbox7.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox7.Dock = DockStyle.Left;
             checkbox7.Fill = Color.FromArgb(150, 0, 0);
-            checkbox7.Location = new Point(239, 0);
+            checkbox7.Location = new Point(223, 0);
             checkbox7.Name = "checkbox7";
-            checkbox7.Size = new Size(120, 50);
+            checkbox7.Size = new Size(111, 48);
             checkbox7.TabIndex = 6;
             checkbox7.Text = "Option C";
             // 
@@ -211,9 +211,9 @@ namespace Demo.Controls
             checkbox6.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox6.Dock = DockStyle.Left;
             checkbox6.Fill = Color.FromArgb(200, 0, 0);
-            checkbox6.Location = new Point(120, 0);
+            checkbox6.Location = new Point(112, 0);
             checkbox6.Name = "checkbox6";
-            checkbox6.Size = new Size(119, 50);
+            checkbox6.Size = new Size(111, 48);
             checkbox6.TabIndex = 5;
             checkbox6.Text = "Option B";
             // 
@@ -224,7 +224,7 @@ namespace Demo.Controls
             checkbox5.Fill = Color.FromArgb(250, 0, 0);
             checkbox5.Location = new Point(0, 0);
             checkbox5.Name = "checkbox5";
-            checkbox5.Size = new Size(120, 50);
+            checkbox5.Size = new Size(112, 48);
             checkbox5.TabIndex = 4;
             checkbox5.Text = "Option A";
             // 
@@ -233,7 +233,7 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Checkbox.{id}";
-            divider2.Location = new Point(0, 78);
+            divider2.Location = new Point(0, 76);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(650, 28);
@@ -249,7 +249,7 @@ namespace Demo.Controls
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
-            panel2.Size = new Size(650, 50);
+            panel2.Size = new Size(650, 48);
             panel2.TabIndex = 0;
             // 
             // checkbox4
@@ -257,9 +257,9 @@ namespace Demo.Controls
             checkbox4.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox4.Dock = DockStyle.Left;
             checkbox4.Enabled = false;
-            checkbox4.Location = new Point(354, 0);
+            checkbox4.Location = new Point(330, 0);
             checkbox4.Name = "checkbox4";
-            checkbox4.Size = new Size(118, 50);
+            checkbox4.Size = new Size(110, 48);
             checkbox4.TabIndex = 3;
             checkbox4.Text = "Option 4";
             // 
@@ -267,9 +267,9 @@ namespace Demo.Controls
             // 
             checkbox3.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox3.Dock = DockStyle.Left;
-            checkbox3.Location = new Point(236, 0);
+            checkbox3.Location = new Point(220, 0);
             checkbox3.Name = "checkbox3";
-            checkbox3.Size = new Size(118, 50);
+            checkbox3.Size = new Size(110, 48);
             checkbox3.TabIndex = 2;
             checkbox3.Text = "Option 3";
             // 
@@ -277,9 +277,9 @@ namespace Demo.Controls
             // 
             checkbox2.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkbox2.Dock = DockStyle.Left;
-            checkbox2.Location = new Point(118, 0);
+            checkbox2.Location = new Point(110, 0);
             checkbox2.Name = "checkbox2";
-            checkbox2.Size = new Size(118, 50);
+            checkbox2.Size = new Size(110, 48);
             checkbox2.TabIndex = 1;
             checkbox2.Text = "Option 2";
             // 
@@ -289,7 +289,7 @@ namespace Demo.Controls
             checkbox1.Dock = DockStyle.Left;
             checkbox1.Location = new Point(0, 0);
             checkbox1.Name = "checkbox1";
-            checkbox1.Size = new Size(118, 50);
+            checkbox1.Size = new Size(110, 48);
             checkbox1.TabIndex = 0;
             checkbox1.Text = "Option 1";
             // 

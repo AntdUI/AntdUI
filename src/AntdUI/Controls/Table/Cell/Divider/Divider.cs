@@ -22,6 +22,7 @@ namespace AntdUI
     /// <summary>
     /// 分割线
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellDivider : ICell
     {
         public override string? ToString() => null;

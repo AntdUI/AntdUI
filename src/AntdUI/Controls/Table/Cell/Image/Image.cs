@@ -24,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 图片
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellImage : ICell
     {
         /// <summary>

@@ -30,6 +30,7 @@ namespace AntdUI
     /// <summary>
     /// TabHeader 多标签页头
     /// </summary>
+    /// <seealso cref="PageHeader"/>
     [Description("TabHeader 多标签页头")]
     [DefaultProperty("SelectedIndex")]
     [DefaultEvent("TabChanged")]
