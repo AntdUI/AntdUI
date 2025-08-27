@@ -24,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 文字
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellText : ICell
     {
         /// <summary>

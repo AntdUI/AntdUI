@@ -28,6 +28,7 @@ namespace AntdUI
     /// <summary>
     /// Splitter 分隔面板
     /// </summary>
+    /// <seealso cref="SplitContainer"/>
     /// <remarks>自由切分指定区域。</remarks>
     [Description("Splitter 分隔面板")]
     [ToolboxItem(true)]

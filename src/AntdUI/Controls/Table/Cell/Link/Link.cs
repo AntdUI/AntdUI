@@ -17,7 +17,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -25,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 超链接
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellLink : ICell
     {
         /// <summary>
@@ -43,7 +43,6 @@ namespace AntdUI
 
         #region 文本
 
-        internal bool textLine = false;
         string? _text;
         /// <summary>
         /// 文本
@@ -55,8 +54,6 @@ namespace AntdUI
             {
                 if (_text == value) return;
                 _text = value;
-                if (_text == null) textLine = false;
-                else textLine = _text.Contains(Environment.NewLine);
                 OnPropertyChanged(true);
             }
         }

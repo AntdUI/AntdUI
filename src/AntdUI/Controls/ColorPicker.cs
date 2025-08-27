@@ -968,7 +968,7 @@ namespace AntdUI
                         else font_size = g.MeasureString("Transparent", Font);
                     }
                     else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font);
-                    int gap = (int)((20 + WaveSize) * Config.Dpi);
+                    int gap = (int)(font_size.Height * 1.02F) + (int)(WaveSize * Config.Dpi);
                     if (showText)
                     {
                         int s = font_size.Height + gap;

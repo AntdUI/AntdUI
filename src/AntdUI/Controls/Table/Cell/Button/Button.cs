@@ -24,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 按钮
     /// </summary>
+    /// <seealso cref="CellLink"/>
     public partial class CellButton : CellLink
     {
         /// <summary>

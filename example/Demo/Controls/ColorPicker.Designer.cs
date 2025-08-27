@@ -49,8 +49,8 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             flowLayoutPanel1 = new FlowLayoutPanel();
             colorPicker3 = new AntdUI.ColorPicker();
-            colorPicker2 = new AntdUI.ColorPicker();
             colorPicker1 = new AntdUI.ColorPicker();
+            colorPicker2 = new AntdUI.ColorPicker();
             flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -86,35 +86,34 @@ namespace Demo.Controls
             colorPicker3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             colorPicker3.Location = new Point(3, 3);
             colorPicker3.Name = "colorPicker3";
-            colorPicker3.Size = new Size(47, 47);
+            colorPicker3.Size = new Size(46, 46);
             colorPicker3.TabIndex = 26;
             colorPicker3.Value = Color.FromArgb(22, 119, 255);
-            // 
-            // colorPicker2
-            // 
-            colorPicker2.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            colorPicker2.Location = new Point(3, 3);
-            colorPicker2.Name = "colorPicker2";
-            colorPicker2.Size = new Size(128, 128);
-            colorPicker2.TabIndex = 26;
-            colorPicker2.Value = Color.FromArgb(22, 119, 255);
-            colorPicker2.Round = true;
-            colorPicker2.ShowClose = true;
-            colorPicker2.ShowReset = true;
-            colorPicker2.AllowClear = true;
-            colorPicker2.ShowText = false;
-            colorPicker2.ShowSymbol = true;
-            colorPicker2.Text = "C";
             // 
             // colorPicker1
             // 
             colorPicker1.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            colorPicker1.Location = new Point(56, 3);
+            colorPicker1.Location = new Point(55, 3);
             colorPicker1.Name = "colorPicker1";
             colorPicker1.ShowText = true;
-            colorPicker1.Size = new Size(134, 47);
+            colorPicker1.Size = new Size(125, 46);
             colorPicker1.TabIndex = 26;
             colorPicker1.Value = Color.FromArgb(22, 119, 255);
+            // 
+            // colorPicker2
+            // 
+            colorPicker2.AllowClear = true;
+            colorPicker2.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            colorPicker2.Location = new Point(186, 3);
+            colorPicker2.Name = "colorPicker2";
+            colorPicker2.Round = true;
+            colorPicker2.ShowClose = true;
+            colorPicker2.ShowReset = true;
+            colorPicker2.ShowSymbol = true;
+            colorPicker2.Size = new Size(46, 46);
+            colorPicker2.TabIndex = 26;
+            colorPicker2.Text = "C";
+            colorPicker2.Value = Color.FromArgb(22, 119, 255);
             // 
             // ColorPicker
             // 

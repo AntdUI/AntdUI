@@ -28,6 +28,7 @@ namespace AntdUI
     /// <summary>
     /// InputNumber 数字输入框
     /// </summary>
+    /// <seealso cref="Input"/>
     /// <remarks>通过鼠标或键盘，输入范围内的数值。</remarks>
     [Description("InputNumber 数字输入框")]
     [ToolboxItem(true)]

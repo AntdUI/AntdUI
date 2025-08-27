@@ -24,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 进度条
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellProgress : ICell
     {
         /// <summary>

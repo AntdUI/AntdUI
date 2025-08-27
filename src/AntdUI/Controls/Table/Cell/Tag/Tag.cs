@@ -24,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 标签
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellTag : ICell
     {
         /// <summary>

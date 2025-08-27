@@ -30,6 +30,7 @@ namespace AntdUI
     /// <summary>
     /// DatePicker 日期选择框
     /// </summary>
+    /// <seealso cref="Input"/>
     /// <remarks>输入或选择日期的控件。</remarks>
     [Description("DatePicker 日期选择框")]
     [ToolboxItem(true)]

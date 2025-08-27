@@ -28,6 +28,7 @@ namespace AntdUI
     /// <summary>
     /// SliderRange 滑动范围输入条
     /// </summary>
+    /// <seealso cref="Slider"/>
     /// <remarks>滑动型范围输入器。</remarks>
     [Description("SliderRange 滑动范围输入条")]
     [ToolboxItem(true)]

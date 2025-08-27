@@ -24,6 +24,7 @@ namespace AntdUI
     /// <summary>
     /// 徽标
     /// </summary>
+    /// <seealso cref="ICell"/>
     public partial class CellBadge : ICell
     {
         /// <summary>

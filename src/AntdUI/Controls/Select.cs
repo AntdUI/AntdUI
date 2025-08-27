@@ -30,6 +30,7 @@ namespace AntdUI
     /// <summary>
     /// Select 选择器
     /// </summary>
+    /// <seealso cref="Input"/>
     /// <remarks>下拉选择器。</remarks>
     [Description("Select 选择器")]
     [ToolboxItem(true)]

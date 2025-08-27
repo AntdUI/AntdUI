@@ -87,11 +87,11 @@ namespace Demo.Controls
             button7.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button7.IconSvg = "PoweroffOutlined";
             button7.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
-            button7.Location = new Point(371, 3);
+            button7.Location = new Point(350, 3);
             button7.Name = "button7";
             button7.Placement = AntdUI.TAlignFrom.BR;
             button7.Shape = AntdUI.TShape.Circle;
-            button7.Size = new Size(47, 47);
+            button7.Size = new Size(46, 46);
             button7.TabIndex = 0;
             button7.Type = AntdUI.TTypeMini.Primary;
             // 
@@ -117,9 +117,9 @@ namespace Demo.Controls
             panel1.Controls.Add(button3);
             panel1.Controls.Add(button8);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 129);
+            panel1.Location = new Point(0, 108);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1300, 196);
+            panel1.Size = new Size(1300, 160);
             panel1.TabIndex = 8;
             // 
             // button4
@@ -131,7 +131,7 @@ namespace Demo.Controls
             button4.Location = new Point(296, 93);
             button4.Name = "button4";
             button4.Placement = AntdUI.TAlignFrom.BR;
-            button4.Size = new Size(163, 47);
+            button4.Size = new Size(147, 46);
             button4.TabIndex = 2;
             button4.Text = "bottomRight";
             button4.Type = AntdUI.TTypeMini.Primary;
@@ -142,10 +142,10 @@ namespace Demo.Controls
             button6.DropDownArrow = true;
             button6.IconSvg = "BorderBottomOutlined";
             button6.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
-            button6.Location = new Point(171, 93);
+            button6.Location = new Point(169, 93);
             button6.Name = "button6";
             button6.Placement = AntdUI.TAlignFrom.Bottom;
-            button6.Size = new Size(121, 47);
+            button6.Size = new Size(106, 46);
             button6.TabIndex = 3;
             button6.Text = "bottom";
             button6.Type = AntdUI.TTypeMini.Primary;
@@ -156,10 +156,10 @@ namespace Demo.Controls
             button2.DropDownArrow = true;
             button2.IconSvg = "RadiusUprightOutlined";
             button2.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
-            button2.Location = new Point(328, 15);
+            button2.Location = new Point(327, 15);
             button2.Name = "button2";
             button2.Placement = AntdUI.TAlignFrom.TR;
-            button2.Size = new Size(131, 47);
+            button2.Size = new Size(116, 46);
             button2.TabIndex = 4;
             button2.Text = "topRight";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -170,10 +170,10 @@ namespace Demo.Controls
             button5.DropDownArrow = true;
             button5.IconSvg = "BorderTopOutlined";
             button5.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
-            button5.Location = new Point(187, 15);
+            button5.Location = new Point(185, 15);
             button5.Name = "button5";
             button5.Placement = AntdUI.TAlignFrom.Top;
-            button5.Size = new Size(89, 47);
+            button5.Size = new Size(75, 46);
             button5.TabIndex = 5;
             button5.Text = "top";
             button5.Type = AntdUI.TTypeMini.Primary;
@@ -186,7 +186,7 @@ namespace Demo.Controls
             button3.Items.AddRange(new object[] { "one st menu item", "two nd menu item", "three rd menu item", "four menu item", "five menu item", "six six six menu item" });
             button3.Location = new Point(14, 93);
             button3.Name = "button3";
-            button3.Size = new Size(151, 47);
+            button3.Size = new Size(135, 46);
             button3.TabIndex = 6;
             button3.Text = "bottomLeft";
             button3.Type = AntdUI.TTypeMini.Primary;
@@ -200,7 +200,7 @@ namespace Demo.Controls
             button8.Location = new Point(14, 15);
             button8.Name = "button8";
             button8.Placement = AntdUI.TAlignFrom.TL;
-            button8.Size = new Size(119, 47);
+            button8.Size = new Size(104, 46);
             button8.TabIndex = 7;
             button8.Text = "topLeft";
             button8.Type = AntdUI.TTypeMini.Primary;
@@ -210,7 +210,7 @@ namespace Demo.Controls
             divider2.Dock = DockStyle.Top;
             divider2.Font = new Font("Microsoft YaHei UI", 10F);
             divider2.LocalizationText = "Dropdown.{id}";
-            divider2.Location = new Point(0, 101);
+            divider2.Location = new Point(0, 80);
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(1300, 28);
@@ -226,7 +226,7 @@ namespace Demo.Controls
             panel4.Dock = DockStyle.Top;
             panel4.Location = new Point(0, 28);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1300, 73);
+            panel4.Size = new Size(1300, 52);
             panel4.TabIndex = 2;
             // 
             // button17
@@ -237,7 +237,7 @@ namespace Demo.Controls
             button17.Location = new Point(3, 3);
             button17.Name = "button17";
             button17.ShowArrow = true;
-            button17.Size = new Size(120, 47);
+            button17.Size = new Size(113, 46);
             button17.TabIndex = 0;
             button17.Text = "Click me";
             button17.Type = AntdUI.TTypeMini.Primary;
@@ -247,10 +247,10 @@ namespace Demo.Controls
             button19.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button19.Items.AddRange(new object[] { "菜单1", "菜单2", "菜单3" });
             button19.ListAutoWidth = false;
-            button19.Location = new Point(129, 3);
+            button19.Location = new Point(122, 3);
             button19.Name = "button19";
             button19.ShowArrow = true;
-            button19.Size = new Size(130, 47);
+            button19.Size = new Size(123, 46);
             button19.TabIndex = 0;
             button19.Text = "Hover me";
             button19.Trigger = AntdUI.Trigger.Hover;
@@ -259,9 +259,9 @@ namespace Demo.Controls
             // 
             dropdown1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             dropdown1.LocalizationText = "Dropdown.{id}";
-            dropdown1.Location = new Point(265, 3);
+            dropdown1.Location = new Point(251, 3);
             dropdown1.Name = "dropdown1";
-            dropdown1.Size = new Size(100, 47);
+            dropdown1.Size = new Size(93, 46);
             dropdown1.TabIndex = 0;
             dropdown1.Text = "多级菜单";
             dropdown1.Type = AntdUI.TTypeMini.Primary;

@@ -35,6 +35,7 @@ namespace AntdUI
     [Description("Transfer 穿梭框")]
     [ToolboxItem(true)]
     [DefaultEvent("TransferChanged")]
+    [Obsolete("[beta] Incomplete functionality, does not support DPI")]
     public class Transfer : IControl
     {
         #region 属性
