@@ -826,14 +826,26 @@ namespace AntdUI
         float check_radius = 0F, check_border = 1F;
         void AddRows(ref List<CELL> cells, ref int processing, Column column, IRow row, string key, bool summary = false)
         {
-            if (column is ColumnSort columnSort) cells.Add(new TCellSort(this, columnSort));
-            else if (row.cells.TryGetValue(key, out var ov))
+            if (summary)
             {
-                var value = OGetValue(ov, row.record, out var property, out var rv);
-                if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property, summary);
-                else AddRows(ref cells, ref processing, column, rv, column.Render?.Invoke(value, row.record, row.i), property, summary);
+                if (row.cells.TryGetValue(key, out var ov))
+                {
+                    var value = OGetValue(ov, row.record, out var property, out var rv);
+                    AddRows(ref cells, ref processing, column, rv, value, property, summary);
+                }
+                else AddRows(ref cells, ref processing, column, null, null, null, summary);
             }
-            else AddRows(ref cells, ref processing, column, null, column.Render?.Invoke(null, row.record, row.i), null, summary);
+            else
+            {
+                if (column is ColumnSort columnSort) cells.Add(new TCellSort(this, columnSort));
+                else if (row.cells.TryGetValue(key, out var ov))
+                {
+                    var value = OGetValue(ov, row.record, out var property, out var rv);
+                    if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property, summary);
+                    else AddRows(ref cells, ref processing, column, rv, column.Render?.Invoke(value, row.record, row.i), property, summary);
+                }
+                else AddRows(ref cells, ref processing, column, null, column.Render?.Invoke(null, row.record, row.i), null, summary);
+            }
         }
 
         /// <summary>

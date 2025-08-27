@@ -1821,7 +1821,8 @@ namespace AntdUI
                 expand = value;
                 if (items != null && items.Count > 0)
                 {
-                    if (value && PARENT != null && PARENT.Unique)
+                    if (PARENT == null) return;
+                    if (value && PARENT.Unique)
                     {
                         if (PARENTITEM == null)
                         {
@@ -1838,9 +1839,9 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (Config.HasAnimation(nameof(Menu)))
+                    if (((PARENT.Mode == TMenuMode.Inline && !PARENT.Collapsed) || PARENT.Mode == TMenuMode.InlineNoText) && Config.HasAnimation(nameof(Menu)))
                     {
-                        if (PARENT != null && PARENT.tmpAM)
+                        if (PARENT.tmpAM)
                         {
                             ExpandProg = 1F;
                             ArrowProg = value ? 1F : -1F;
