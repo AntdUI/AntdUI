@@ -184,6 +184,12 @@ namespace AntdUI
         [Description("轮播文本无尽"), Category("外观"), DefaultValue(true)]
         public bool LoopInfinite { get; set; } = true;
 
+        /// <summary>
+        /// 鼠标移入时暂停轮播
+        /// </summary>
+        [Description("鼠标移入时暂停轮播"), Category("外观"), DefaultValue(true)]
+        public bool LoopPauseOnMouseEnter { get; set; } = true;
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -557,13 +563,13 @@ namespace AntdUI
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            task?.Dispose();
+            if (LoopPauseOnMouseEnter) task?.Dispose();
             base.OnMouseEnter(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (loop) StartTask();
+            if (LoopPauseOnMouseEnter && loop) StartTask();
             base.OnMouseLeave(e);
         }
 

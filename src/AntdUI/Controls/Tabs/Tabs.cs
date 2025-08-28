@@ -306,6 +306,23 @@ namespace AntdUI
             }
         }
 
+        float icongap = .25F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
+        public float IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconGap));
+            }
+        }
+
         bool _tabMenuVisible = true;
         [Description("是否显示头"), Category("外观"), DefaultValue(true)]
         public bool TabMenuVisible
