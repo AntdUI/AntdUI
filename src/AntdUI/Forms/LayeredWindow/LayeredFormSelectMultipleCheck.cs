@@ -190,7 +190,8 @@ namespace AntdUI
             if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.Get(name, ColorScheme)));
             else
             {
-                g.TranslateTransform(0, -ScrollBar.Value);
+                int sy = ScrollBar.Value;
+                g.TranslateTransform(0, -sy);
                 using (var brush = new SolidBrush(Colour.Text.Get("Select", ColorScheme)))
                 using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get("Select", ColorScheme)))
                 using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get("Select", ColorScheme)))
@@ -203,7 +204,7 @@ namespace AntdUI
                         for (int i = 0; i < Items.Count; i++)
                         {
                             var it = Items[i];
-
+                            if (it.Rect.Bottom < sy || it.Rect.Top > sy + rect.Height) continue;
                             //判断下一个是不是连续的
                             if (selectedValue.Contains(it.Tag))
                             {
@@ -240,7 +241,11 @@ namespace AntdUI
                     }
                     else
                     {
-                        foreach (var it in Items) DrawItemR(g, brush, brush_back_hover, brush_split, it);
+                        foreach (var it in Items)
+                        {
+                            if (it.Rect.Bottom < sy || it.Rect.Top > sy + rect.Height) continue;
+                            DrawItemR(g, brush, brush_back_hover, brush_split, it);
+                        }
                     }
                 }
                 g.Restore(state);

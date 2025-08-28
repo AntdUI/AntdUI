@@ -42,7 +42,8 @@ namespace AntdUI
             Font = _control.Font;
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
-            EndFocused = endFocused;
+            if (_control.InteractiveReset) EndFocused = false;
+            else EndFocused = endFocused;
             AnimationBarValue = bar;
 
             showType = PickerType = _control.Picker;

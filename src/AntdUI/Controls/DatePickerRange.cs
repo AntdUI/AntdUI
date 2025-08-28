@@ -144,6 +144,12 @@ namespace AntdUI
         public bool ValueTimeHorizontal { get; set; }
 
         /// <summary>
+        /// 交互重置（是否每次都开始时间选择）
+        /// </summary>
+        [Description("交互重置（是否每次都开始时间选择）"), Category("外观"), DefaultValue(true)]
+        public bool InteractiveReset { get; set; } = true;
+
+        /// <summary>
         /// 选择器类型
         /// </summary>
         [Description("选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]

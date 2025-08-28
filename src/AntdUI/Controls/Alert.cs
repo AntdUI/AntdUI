@@ -563,21 +563,13 @@ namespace AntdUI
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            if (LoopPauseOnMouseEnter)
-            {
-                task?.Dispose();
-            }
-  
+            if (LoopPauseOnMouseEnter) task?.Dispose();
             base.OnMouseEnter(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (LoopPauseOnMouseEnter)
-            {
-                if (loop) StartTask();
-            }
-        
+            if (LoopPauseOnMouseEnter && loop) StartTask();
             base.OnMouseLeave(e);
         }
 

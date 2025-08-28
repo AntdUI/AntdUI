@@ -157,6 +157,12 @@ namespace AntdUI
 
         #region 布局
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            LoadLayout(false);
+        }
+
         protected override void OnSizeChanged(EventArgs e)
         {
             LoadLayout();

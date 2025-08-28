@@ -386,14 +386,19 @@ namespace AntdUI
             if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.Get(keyid, ColorScheme)));
             else
             {
-                g.TranslateTransform(0, -ScrollBar.Value);
+                int sy = ScrollBar.Value;
+                g.TranslateTransform(0, -sy);
                 using (var brush = new SolidBrush(Colour.Text.Get(keyid, ColorScheme)))
                 using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(keyid, ColorScheme)))
                 using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                 using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(keyid, ColorScheme)))
                 using (var brush_split = new SolidBrush(Colour.Split.Get(keyid, ColorScheme)))
                 {
-                    foreach (var it in Items) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                    foreach (var it in Items)
+                    {
+                        if (it.Rect.Bottom < sy || it.Rect.Top > sy + rect.Height) continue;
+                        DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                    }
                     g.Restore(state);
                     ScrollBar.Paint(g);
                 }
