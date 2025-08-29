@@ -659,8 +659,9 @@ namespace AntdUI
             {
                 var text = obj.ToString();
                 if (text == null) return 0;
-                var size = g.MeasureText(text, Font);
-                return size.Width;
+                var tmp = g.MeasureText(text, Font).Width;
+                if (CloseIcon) tmp += text_height + icon_gap;
+                return tmp;
             }
         }
         ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
@@ -707,7 +708,16 @@ namespace AntdUI
                     }
                     item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
                 }
-                else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                else
+                {
+                    if (CloseIcon)
+                    {
+                        int dot_xy = (item_height - text_height) / 2;
+                        var rect_close = new Rectangle(rect.Right - gap_x - text_height + dot_xy, rect.Y + dot_xy, text_height, text_height);
+                        item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2 - text_height, rect.Height)) { NoIndex = no_id, RectClose = rect_close };
+                    }
+                    else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                }
                 if (selectedValue == item.Tag) sy = y;
                 y += item_height;
             }

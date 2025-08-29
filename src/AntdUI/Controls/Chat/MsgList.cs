@@ -234,9 +234,21 @@ namespace AntdUI.Chat
                 {
                     if (it.Visible && it.Contains(e.Location, 0, ScrollBar.Value, out _))
                     {
-                        it.Select = true;
-                        // 触发ItemSelected事件
-                        OnItemSelected(it);
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            // 左键点击
+                            it.Select = true;
+                            OnItemSelected(it);
+                            // 检查是否为双击
+                            if (e.Clicks > 1)
+                            {
+                                OnItemClick(it, e);
+                                OnItemDoubleClick(it, e);
+                                return;
+                            }
+                        }
+                        // 触发通用点击事件
+                        OnItemClick(it, e);
                         return;
                     }
                 }
@@ -309,11 +321,29 @@ namespace AntdUI.Chat
 
         #region 事件
 
+        /// <summary>
+        /// 项目选中事件
+        /// </summary>
+        [Description("项目选中事件"), Category("行为")]
         public event ItemSelectedEventHandler? ItemSelected;
-        protected virtual void OnItemSelected(MsgItem selectedItem)
-        {
-            ItemSelected?.Invoke(this, new MsgItemEventArgs(selectedItem));
-        }
+
+        /// <summary>
+        /// 项目点击事件（包含鼠标信息）
+        /// </summary>
+        [Description("项目点击事件"), Category("行为")]
+        public event ItemClickEventHandler? ItemClick;
+
+        /// <summary>
+        /// 项目双击事件
+        /// </summary>
+        [Description("项目双击事件"), Category("行为")]
+        public event ItemClickEventHandler? ItemDoubleClick;
+
+        protected virtual void OnItemSelected(MsgItem selectedItem) => ItemSelected?.Invoke(this, new MsgItemEventArgs(selectedItem));
+
+        protected virtual void OnItemClick(MsgItem selectedItem, MouseEventArgs e) => ItemClick?.Invoke(this, new MsgItemClickEventArgs(selectedItem, e));
+
+        protected virtual void OnItemDoubleClick(MsgItem selectedItem, MouseEventArgs e) => ItemDoubleClick?.Invoke(this, new MsgItemClickEventArgs(selectedItem, e));
 
         #endregion
 

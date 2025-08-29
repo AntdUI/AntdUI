@@ -26,6 +26,7 @@ namespace ChatUI
         public Main()
         {
             InitializeComponent();
+            msgList.ItemClick += MsgList_ItemClick;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -134,6 +135,22 @@ namespace ChatUI
 
                 #endregion
             });
+        }
+
+        private void MsgList_ItemClick(object sender, AntdUI.MsgItemClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                e.Item.Select = true;
+                AntdUI.ContextMenuStrip.open(this, it =>
+                {
+                    AntdUI.Message.info(this, "点击内容：" + it.Text);
+                }, new AntdUI.IContextMenuStripItem[]
+                {
+                    new AntdUI.ContextMenuStripItem("标记已读").SetIcon("CheckOutlined"),
+                    new AntdUI.ContextMenuStripItem("删除此聊天").SetIcon("DeleteOutlined"),
+                });
+            }
         }
     }
 }
