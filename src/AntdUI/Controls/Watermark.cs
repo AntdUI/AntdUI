@@ -17,13 +17,12 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using Microsoft.Win32;
 
 namespace AntdUI
 {
@@ -172,7 +171,7 @@ namespace AntdUI
             {
                 // 创建新的水印窗体
                 var watermarkForm = new LayeredFormWatermark(config);
-                
+
                 // 显示水印
                 watermarkForm.Show(config.Target);
 
@@ -240,7 +239,7 @@ namespace AntdUI
                 config.Target.LocationChanged += Target_LocationChanged;
                 config.Target.SizeChanged += Target_SizeChanged;
                 config.Target.VisibleChanged += Target_VisibleChanged;
-                
+
                 // 监听父容器的移动事件
                 var parent = config.Target.Parent;
                 while (parent != null)
@@ -249,7 +248,7 @@ namespace AntdUI
                     parent.SizeChanged += Parent_SizeChanged;
                     parent = parent.Parent;
                 }
-                
+
                 // 监听Form的移动事件
                 var form = GetTopLevelForm(config.Target);
                 if (form != null)
@@ -450,8 +449,8 @@ namespace AntdUI
             var imageAttributes = new ImageAttributes();
             imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
-            g.DrawImage(config.Image, 
-                new Rectangle((int)drawX, (int)drawY, (int)imageWidth, (int)imageHeight),
+            g.DrawImage(config.Image,
+                new Rectangle((int)drawX, (int)drawY, imageWidth, imageHeight),
                 0, 0, config.Image.Width, config.Image.Height,
                 GraphicsUnit.Pixel, imageAttributes);
 
@@ -472,21 +471,21 @@ namespace AntdUI
             var contentHeight = (float)config.Height;
             var subContentHeight = 0f;
             var spacing = 4f; // 主内容和副内容之间的间距
-            
+
             if (!string.IsNullOrEmpty(config.SubContent))
             {
                 // 如果有副内容，计算实际需要的空间
                 var subFont = new Font(config.Font.FontFamily, config.Font.FontSize * 0.8f, config.Font.FontStyle);
-                
+
                 // 测量主内容文字高度
                 var mainSize = g.MeasureString(config.Content, font, config.Width, format);
-                
+
                 // 测量副内容文字高度
                 var subSize = g.MeasureString(config.SubContent, subFont, config.Width, format);
-                
+
                 // 计算总高度
                 var totalTextHeight = mainSize.Height + spacing + subSize.Height;
-                
+
                 // 如果总高度超过水印高度，则按比例缩放
                 if (totalTextHeight > config.Height)
                 {
@@ -500,7 +499,7 @@ namespace AntdUI
                     contentHeight = mainSize.Height;
                     subContentHeight = subSize.Height;
                 }
-                
+
                 subFont.Dispose();
             }
 
@@ -509,14 +508,14 @@ namespace AntdUI
             var startY = y + (config.Height - totalHeight) / 2f;
 
             // 绘制主内容
-            var mainRect = new RectangleF((float)x, startY, (float)config.Width, contentHeight);
+            var mainRect = new RectangleF(x, startY, config.Width, contentHeight);
             g.DrawString(config.Content, font, brush, mainRect, format);
 
             // 绘制副内容
             if (!string.IsNullOrEmpty(config.SubContent))
             {
                 var subFont = new Font(config.Font.FontFamily, config.Font.FontSize * 0.8f, config.Font.FontStyle);
-                var subRect = new RectangleF((float)x, startY + contentHeight + spacing, (float)config.Width, subContentHeight);
+                var subRect = new RectangleF(x, startY + contentHeight + spacing, config.Width, subContentHeight);
                 g.DrawString(config.SubContent, subFont, brush, subRect, format);
                 subFont.Dispose();
             }
@@ -532,7 +531,7 @@ namespace AntdUI
                 config.Target.LocationChanged -= Target_LocationChanged;
                 config.Target.SizeChanged -= Target_SizeChanged;
                 config.Target.VisibleChanged -= Target_VisibleChanged;
-                
+
                 // 移除父容器的事件监听
                 var parent = config.Target.Parent;
                 while (parent != null)
@@ -541,7 +540,7 @@ namespace AntdUI
                     parent.SizeChanged -= Parent_SizeChanged;
                     parent = parent.Parent;
                 }
-                
+
                 // 移除Form的事件监听
                 var form = GetTopLevelForm(config.Target);
                 if (form != null)

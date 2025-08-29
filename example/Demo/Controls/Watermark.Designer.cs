@@ -283,7 +283,7 @@ namespace Demo.Controls
             colorPicker.Location = new System.Drawing.Point(102, 106);
             colorPicker.Name = "colorPicker";
             colorPicker.ShowText = true;
-            colorPicker.Size = new System.Drawing.Size(124, 45);
+            colorPicker.Size = new System.Drawing.Size(125, 46);
             colorPicker.TabIndex = 27;
             colorPicker.Value = System.Drawing.Color.Black;
             colorPicker.ValueChanged += colorPicker_ValueChanged;
@@ -301,7 +301,6 @@ namespace Demo.Controls
             // 
             // Watermark
             // 
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             Controls.Add(panel1);
             Controls.Add(header1);
             Font = new System.Drawing.Font("Microsoft YaHei UI", 12F);

@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -1122,7 +1122,7 @@ namespace AntdUI
     /// 项目选中事件处理器
     /// </summary>
     public delegate void ItemSelectedEventHandler(object sender, MsgItemEventArgs e);
-    
+
     /// <summary>
     /// 项目点击事件处理器
     /// </summary>

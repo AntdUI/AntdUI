@@ -33,7 +33,7 @@
 
 ### 4. 提交贡献代码到自己仓库
 
-> 打开VS克隆刚刚复制的地址，选择目录，点击 **克隆** 继续
+> 打开 [Visual Studio](https://visualstudio.microsoft.com) 克隆刚刚复制的地址，选择目录，点击 **克隆** 继续
 
 ![6](Img/PR_6.png)
 

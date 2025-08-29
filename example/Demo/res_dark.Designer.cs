@@ -133,7 +133,7 @@ namespace Demo {
         }
         
         /// <summary>
-        ///   查找类似 &lt;svg viewBox=&quot;0 0 1024 1024&quot;&gt;&lt;path d=&quot;M830 194m-118 0a118 118 0 1 0 236 0 118 118 0 1 0-236 0Z&quot; fill=&quot;#91D5FF&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M840.8 716.8m-70.8 0a70.8 70.8 0 1 0 141.6 0 70.8 70.8 0 1 0-141.6 0Z&quot; fill=&quot;#91D5FF&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M287.8 470.8m-70.8 0a70.8 70.8 0 1 0 141.6 0 70.8 70.8 0 1 0-141.6 0Z&quot; fill=&quot;#91D5FF&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M595.6 428.6m-141.6 0a141.6 141.6 0 1 0 283.2 0 141.6 141.6 0 1 0-283.2 0Z&quot; fill=&quot;#1890FF&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M194 760m-118 0a118 118 0 1 0 236 0 118 118 0 1 0-236 0Z&quot; fill=&quot;#1890FF&quot;&gt;&lt; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 1024 1024&quot;&gt;&lt;path d=&quot;M428.501333 64a64 64 0 0 1 64 64v42.666667a64 64 0 0 1-64 64H128A64 64 0 0 1 64 170.666667V128A64 64 0 0 1 128 64h300.501333z&quot; fill=&quot;#29C287&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M896 305.92a64 64 0 0 1 64 64v42.666667a64 64 0 0 1-64 64H128a64 64 0 0 1-64-64v-42.666667A64 64 0 0 1 128 305.92h768z&quot; fill=&quot;#706EE7&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M584.362667 547.413333a64 64 0 0 1 64 64v42.666667a64 64 0 0 1-64 64H128a64 64 0 0 1-64-64v-42.666667a64 64 0 0 1 64-64h456.362667z&quot; fill=&quot;#29C287&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Chart {
             get {

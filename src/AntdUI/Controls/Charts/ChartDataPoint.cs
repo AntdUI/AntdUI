@@ -17,7 +17,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 

@@ -1078,6 +1078,9 @@ namespace AntdUI
             BackActiveExtend = item.BackActiveExtend;
         }
 
+        /// <summary>
+        /// 线条布局
+        /// </summary>
         public ObjectItem(int i, Rectangle rect)
         {
             I = i;

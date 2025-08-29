@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
@@ -53,15 +52,6 @@ namespace AntdUI.Controls.Charts
 
         public Chart() : base(ControlType.Default)
         {
-            base.BackColor = Color.White;
-            SetStyle(ControlStyles.AllPaintingInWmPaint |
-                    ControlStyles.OptimizedDoubleBuffer |
-                    ControlStyles.ResizeRedraw |
-                    ControlStyles.DoubleBuffer |
-                    ControlStyles.SupportsTransparentBackColor |
-                    ControlStyles.UserPaint, true);
-            UpdateStyles();
-
             // 初始化动画定时器
             animationTimer = new System.Windows.Forms.Timer();
             animationTimer.Interval = 16; // 60 FPS
@@ -76,10 +66,7 @@ namespace AntdUI.Controls.Charts
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                animationTimer?.Dispose();
-            }
+            if (disposing) animationTimer?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -304,7 +291,7 @@ namespace AntdUI.Controls.Charts
 
             // 将控件坐标转换为屏幕坐标
             var screenLocation = location;
-            
+
             // 创建tooltip配置，使用屏幕坐标
             var config = new Tooltip.Config(this, tooltipText)
             {
@@ -336,8 +323,6 @@ namespace AntdUI.Controls.Charts
                 Invalidate();
             }
         }
-
-        public event EventHandler? Disposed;
 
         #endregion
 
@@ -668,11 +653,11 @@ namespace AntdUI.Controls.Charts
             var colorBoxWidth = 15;
             var colorBoxSpacing = 10;
             var padding = 5;
-            
+
             // 计算最大文本宽度和总高度
             var maxTextWidth = 0;
             var totalHeight = padding;
-            
+
             foreach (var item in legendItems)
             {
                 var textSize = g.MeasureString(item.Label, Font);
@@ -680,17 +665,17 @@ namespace AntdUI.Controls.Charts
                 var itemHeight = Math.Max(15, (int)textSize.Height);
                 totalHeight += itemHeight + itemSpacing;
             }
-            
+
             // 减去最后一个间距
             if (legendItems.Count > 0)
             {
                 totalHeight -= itemSpacing;
             }
             totalHeight += padding;
-            
+
             // 计算总宽度：左边距 + 颜色框宽度 + 间距 + 文本宽度 + 右边距
             var totalWidth = padding + colorBoxWidth + colorBoxSpacing + maxTextWidth + padding;
-            
+
             return new Size(totalWidth, totalHeight);
         }
 
@@ -817,7 +802,7 @@ namespace AntdUI.Controls.Charts
         private void HandleMouseMove(Point location)
         {
             if (!ShowTooltip) return;
-            
+
             var chartRect = CalculateChartRect(ClientRectangle);
             if (chartRect.Contains(location))
             {
@@ -829,9 +814,9 @@ namespace AntdUI.Controls.Charts
                     {
                         HoveredPoint = point;
                         ShowTooltipInternal(point, location);
-                    PointHover?.Invoke(this, new ChartPointHoverEventArgs(point, location));
+                        PointHover?.Invoke(this, new ChartPointHoverEventArgs(point, location));
+                    }
                 }
-            }
                 else
                 {
                     // 没有找到数据点时隐藏tooltip
@@ -1195,13 +1180,13 @@ namespace AntdUI.Controls.Charts
                 var sweepAngle = (float)(Math.Abs(point.Y) / totalValue * 360 * AnimationProgress);
 
                 var color = point.Color.HasValue ? point.Color.Value : colors[i % colors.Length];
-                 using (var brush = new SolidBrush(color))
-                 using (var pen = new Pen(Color.White, 2))
-                 {
-                     var rect = new Rectangle((int)(centerX - radius), (int)(centerY - radius), (int)(radius * 2), (int)(radius * 2));
-                     g.FillPie(brush, rect, startAngle, sweepAngle);
-                     g.DrawPie(pen, rect, startAngle, sweepAngle);
-                 }
+                using (var brush = new SolidBrush(color))
+                using (var pen = new Pen(Color.White, 2))
+                {
+                    var rect = new Rectangle(centerX - radius, centerY - radius, radius * 2, radius * 2);
+                    g.FillPie(brush, rect, startAngle, sweepAngle);
+                    g.DrawPie(pen, rect, startAngle, sweepAngle);
+                }
 
                 // 绘制标签
                 if (!string.IsNullOrEmpty(point.Label))
@@ -1261,7 +1246,7 @@ namespace AntdUI.Controls.Charts
                 using (var pen = new Pen(Color.White, 2))
                 {
                     // 绘制外圆
-                    var outerRect = new Rectangle((int)(centerX - outerRadius), (int)(centerY - outerRadius), (int)(outerRadius * 2), (int)(outerRadius * 2));
+                    var outerRect = new Rectangle(centerX - outerRadius, centerY - outerRadius, outerRadius * 2, outerRadius * 2);
                     g.FillPie(brush, outerRect, startAngle, sweepAngle);
 
                     // 绘制内圆（挖空）
@@ -1495,8 +1480,8 @@ namespace AntdUI.Controls.Charts
                 using (var pen = new Pen(color, 2))
                 {
                     // 确保矩形尺寸有效
-                    var rect = new Rectangle((int)(centerX - radius), (int)(centerY - radius), radius * 2, radius * 2);
-                    
+                    var rect = new Rectangle(centerX - radius, centerY - radius, radius * 2, radius * 2);
+
                     // 检查矩形是否有效
                     if (rect.Width > 0 && rect.Height > 0)
                     {
