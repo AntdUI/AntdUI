@@ -133,6 +133,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 1024 1024&quot;&gt;&lt;path d=&quot;M428.501333 64a64 64 0 0 1 64 64v42.666667a64 64 0 0 1-64 64H128A64 64 0 0 1 64 170.666667V128A64 64 0 0 1 128 64h300.501333z&quot; fill=&quot;#29C287&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M896 305.92a64 64 0 0 1 64 64v42.666667a64 64 0 0 1-64 64H128a64 64 0 0 1-64-64v-42.666667A64 64 0 0 1 128 305.92h768z&quot; fill=&quot;#706EE7&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M584.362667 547.413333a64 64 0 0 1 64 64v42.666667a64 64 0 0 1-64 64H128a64 64 0 0 1-64-64v-42.666667a64 64 0 0 1 64-64h456.362667z&quot; fill=&quot;#29C287&quot;&gt;&lt;/path&gt;&lt;path d=&quot;M [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Chart {
+            get {
+                return ResourceManager.GetString("Chart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg viewBox=&quot;0 0 104 75&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-931.000000, -1722.000000)&quot;&gt;&lt;g id=&quot;CheckBox&quot; transform=&quot;translate(932.000000, 1722.000000)&quot;&gt;&lt;g id=&quot;3.DataEntry/Checkbox#&quot; fill-rule=&quot;nonzero&quot;&gt;&lt;g id=&quot;7.Icon/control/checkbox/Checked-&quot;&gt;&lt;g id=&quot;icon/z/checkboxChecked-Copy&quot; fill=&quot;#1677FF&quot;&gt;&lt;rect id=&quot;box&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;14&quot; height=&quot;14&quot; rx=&quot;2&quot;&gt;&lt;/rect&gt;&lt;/g&gt;&lt;g id=&quot;check&quot; trans [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Checkbox {
@@ -507,6 +516,15 @@ namespace Demo {
         internal static string Tree {
             get {
                 return ResourceManager.GetString("Tree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;svg viewBox=&quot;0 0 194 116&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;defs&gt;&lt;rect id=&quot;path-1&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;194&quot; height=&quot;116&quot; rx=&quot;6.4000001&quot;&gt;&lt;/rect&gt;&lt;/defs&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-521.000000, -5481.000000)&quot;&gt;&lt;g id=&quot;Ant-Design-5.0&quot; transform=&quot;translate(521.000000, 5481.000000)&quot;&gt;&lt;mask id=&quot;mask-2&quot; fill=&quot;white&quot;&gt;&lt;use xlink:href=&quot;#path-1&quot;&gt;&lt;/use&gt;&lt;/mask&gt;&lt;use id=&quot;蒙版&quot; fill=&quot;#1F1F1F&quot; xlink:href=&quot;#path-1&quot;&gt;&lt;/use&gt;&lt;text m [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string Watermark {
+            get {
+                return ResourceManager.GetString("Watermark", resourceCulture);
             }
         }
     }
