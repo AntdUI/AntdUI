@@ -1,5 +1,28 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.1` 2025-08-29 📊
+
+- ➕ Chart
+- ➕ Watermark
+- ➕ Chat/MsgList (chat control) message list right-click menu and click event support
+- ➕ Tabs IconGap
+- ➕ The switch attribute for pausing carousel when the Alert mouse is moved in
+- ➕ SelectDown hidden rendering
+- ➕ DatePickerRange InteractiveReset
+- ➕ Drawbitmap method for control
+- ➕ Modal Config DialogResult
+- ✍️ Select Return to CloseIcon
+- ✍️ Remove read-only SvgDb
+- ✍️ Table Summary Render takes effect
+- ✍️ CollapseGroup does not display UI
+- ✍️ Menu shakes after folding
+- ✍️ Button multi line text exception
+- ✍️ AutoSize Adjust Button/Checkbox/Radio/ColorPicker
+- ✍️ Tabs Margin
+- ✍️ Lable/Badge AutoSize has no margins
+- ✍️ TabHeader close exception
+- 🧹 Refactoring Tabs Layout
+
 ### `2.1.0` 2025-08-21
 
 - ➕ Native scrollbar adapted to dark mode

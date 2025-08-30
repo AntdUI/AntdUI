@@ -22,3 +22,4 @@ Name | Description | Type | Default Value |
 **Loop** | Text carousel | bool | false |
 **LoopSpeed** | Text carousel speed | int | 10 |
 **LoopInfinite** 🔴 | Endless carousel text | bool | true |
+**LoopPauseOnMouseEnter** 🔴 | Loop pause on mouse enter | bool | true |
