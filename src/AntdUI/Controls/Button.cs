@@ -1569,7 +1569,7 @@ namespace AntdUI
                 {
                     if (PaintIcon(g, color, rect, false, enabled) && showArrow)
                     {
-                        int size = (int)(font_size.Height * IconRatio);
+                        int size = (int)(txt_height * IconRatio);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
                         PaintTextArrow(g, rect_arrow, color);
                     }
@@ -1624,7 +1624,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
+                        int sps = (int)(txt_height * .4F), sps2 = sps * 2;
                         rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                         PaintTextAlign(rect_read, ref rect_text);
                     }
@@ -1643,7 +1643,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        int sps = (int)(font_size.Height * .4F), sps2 = sps * 2;
+                        int sps = (int)(txt_height * .4F), sps2 = sps * 2;
                         rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
                         PaintTextAlign(rect_read, ref rect_text);
                     }
@@ -1736,7 +1736,7 @@ namespace AntdUI
         }
         internal static Rectangle RectAlignLR(Canvas g, int font_Height, bool multiLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_l, out Rectangle rect_r)
         {
-            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F);
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_Height * .4F);
             if (multiLine && (iconPosition == TAlignMini.Left || iconPosition == TAlignMini.Right))
             {
                 int rw = (icon_size + sp) * 2;
@@ -1775,7 +1775,7 @@ namespace AntdUI
         }
         internal static Rectangle RectAlignR(Canvas g, int font_Height, bool multiLine, Font font, TAlignMini iconPosition, float iconratio, float icongap, Size font_size, Rectangle rect_read, out Rectangle rect_r)
         {
-            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_size.Height * .4F), rsps = icon_size + sp;
+            int icon_size = (int)(font_Height * iconratio), sp = (int)(font_Height * icongap), sps = (int)(font_Height * .4F), rsps = icon_size + sp;
             if (multiLine && (iconPosition == TAlignMini.Left || iconPosition == TAlignMini.Right))
             {
                 int rw = icon_size + sp;

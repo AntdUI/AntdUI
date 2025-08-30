@@ -355,7 +355,6 @@ namespace AntdUI
                 SetSize(form.Size);
                 SetLocation(form.Location);
                 if (_config.Radius.HasValue) Radius = _config.Radius.Value;
-                else if (_control is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
                 else HasBor = form.FormFrame(out Radius, out Bor);
             }
             else

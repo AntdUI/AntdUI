@@ -93,7 +93,7 @@ namespace AntdUI
                     var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                     SetAnimateValue((byte)(Alpha * (1F - val)));
                     return true;
-                }, 10, t, CallEnd);
+                }, 10, t, CallEnd, 0, true);
                 return true;
             }
             else CallEnd();
@@ -236,7 +236,7 @@ namespace AntdUI
                         int height = (int)(_height * val);
                         SetAnimateValue(_y + (_height - height), height, val);
                         return true;
-                    }, 10, t, CallEnd);
+                    }, 10, t, CallEnd, 0, true);
                 }
                 else
                 {
@@ -246,7 +246,7 @@ namespace AntdUI
                         var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
                         SetAnimateValue((int)(_height * val), val);
                         return true;
-                    }, 10, t, CallEnd);
+                    }, 10, t, CallEnd, 0, true);
                 }
 
                 return true;
