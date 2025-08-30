@@ -18,71 +18,54 @@
 // QQ: 17379620
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Demo.Controls
 {
     public partial class Watermark : UserControl
     {
-        private AntdUI.FormWatermark? currentWatermark = null;
         private Form form;
 
         public Watermark(Form _form)
         {
             form = _form;
             InitializeComponent();
-
+            colorPicker.Value = AntdUI.Style.Db.Text;
             inputContent2.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
+        Form currentWatermark = null;
         private void trackOpacity_ValueChanged(object sender, AntdUI.IntEventArgs e)
         {
-            var opacity = e.Value / 100.0F;
-            lblOpacity.Text = $"透明度: {e.Value}%";
-
-            // 如果当前有水印，更新透明度
-            if (currentWatermark != null)
-            {
-                //CreateWatermark();
-            }
+            label2.Text = e.Value + "%";
+            if (config == null) return;
+            config.Opacity = e.Value / 100.0F;
         }
 
         private void trackRotate_ValueChanged(object sender, AntdUI.IntEventArgs e)
         {
-            lblRotate.Text = $"旋转角度: {e.Value}°";
-
-            // 如果当前有水印，更新旋转角度
-            if (currentWatermark != null)
-            {
-                //CreateWatermark();
-            }
+            label3.Text = e.Value + "°";
+            if (config == null) return;
+            config.Rotate = e.Value;
+            config.Print();
         }
 
         private void trackGap_ValueChanged(object sender, AntdUI.IntEventArgs e)
         {
-            lblGap.Text = $"间距: {e.Value}px";
-
-            // 如果当前有水印，更新间距
-            if (currentWatermark != null)
-            {
-                //CreateWatermark();
-            }
+            label4.Text = e.Value + "px";
+            if (config == null) return;
+            config.Gap = new int[] { e.Value, e.Value };
+            config.Print();
         }
 
         private void colorPicker_ValueChanged(object sender, AntdUI.ColorEventArgs e)
         {
-            // 如果当前有水印，更新颜色
-            if (currentWatermark != null)
-            {
-                //CreateWatermark();
-            }
+            if (config == null) return;
+            config.ForeColor = e.Value;
+            config.Print();
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            ClearWatermark();
-        }
+        private void btnClear_Click(object sender, EventArgs e) => ClearWatermark();
 
         private void ClearWatermark()
         {
@@ -94,119 +77,47 @@ namespace Demo.Controls
             }
         }
 
-
-
         private void btnForm_Click(object sender, EventArgs e)
         {
-            // 清除现有水印
             ClearWatermark();
-
             try
             {
-                var config = new AntdUI.Watermark.Config(form, inputContent.Text, inputContent2.Text)
-                {
-                    Rotate = trackRotate.Value,
-                    Gap = new int[] { trackGap.Value, trackGap.Value }
-                };
-
-                // 设置字体颜色透明度
-                var opacity = trackOpacity.Value / 100.0F;
-                var alpha = (int)(opacity * 255);
-                var selectedColor = colorPicker.Value;
-                config.Font.Color = Color.FromArgb(alpha, selectedColor.R, selectedColor.G, selectedColor.B);
-
+                config = new AntdUI.Watermark.Config(form, inputContent.Text, inputContent2.Text);
+                SetWatermark(config);
                 currentWatermark = AntdUI.Watermark.open(config);
-                if (currentWatermark != null)
-                {
-                    AntdUI.Message.success(form, "窗体水印创建成功！");
-                }
-                else
-                {
-                    AntdUI.Message.error(form, "窗体水印创建失败");
-                }
+                if (currentWatermark == null) AntdUI.Message.error(form, AntdUI.Localization.Get("Watermark.btnFormFailed", "窗体水印创建失败"));
+                else AntdUI.Message.success(form, AntdUI.Localization.Get("Watermark.btnFormOK", "窗体水印创建成功！"));
             }
             catch (Exception ex)
             {
-                AntdUI.Message.error(form, $"创建窗体水印时发生错误：{ex.Message}");
+                AntdUI.Message.error(form, AntdUI.Localization.Get("Watermark.btnFormError", "创建窗体水印时发生错误：") + ex.Message);
             }
         }
 
+        AntdUI.Watermark.Config config;
         private void btnPanel_Click(object sender, EventArgs e)
         {
-            // 清除现有水印
             ClearWatermark();
-
             try
             {
-                var config = new AntdUI.Watermark.Config(panel8, inputContent.Text, inputContent2.Text)
-                {
-                    Rotate = trackRotate.Value,
-                    Gap = new int[] { trackGap.Value, trackGap.Value }
-                };
-
-                // 设置字体颜色透明度
-                var opacity = trackOpacity.Value / 100.0F;
-                var alpha = (int)(opacity * 255);
-                var selectedColor = colorPicker.Value;
-                config.Font.Color = Color.FromArgb(alpha, selectedColor.R, selectedColor.G, selectedColor.B);
-
+                config = new AntdUI.Watermark.Config(panel8, inputContent.Text, inputContent2.Text);
+                SetWatermark(config);
                 currentWatermark = AntdUI.Watermark.open(config);
-                if (currentWatermark != null)
-                {
-                    AntdUI.Message.success(form, "面板水印创建成功！");
-                }
-                else
-                {
-                    AntdUI.Message.error(form, "面板水印创建失败");
-                }
+                if (currentWatermark == null) AntdUI.Message.error(form, AntdUI.Localization.Get("Watermark.btnPanelFailed", "面板水印创建失败"));
+                else AntdUI.Message.success(form, AntdUI.Localization.Get("Watermark.btnPanelOK", "面板水印创建成功！"));
             }
             catch (Exception ex)
             {
-                AntdUI.Message.error(form, $"创建面板水印时发生错误：{ex.Message}");
+                AntdUI.Message.error(form, AntdUI.Localization.Get("Watermark.btnPanelError", "创建面板水印时发生错误：") + ex.Message);
             }
         }
 
-        private void header1_BackClick(object sender, EventArgs e)
+        AntdUI.Watermark.Config SetWatermark(AntdUI.Watermark.Config config) => config.SetRotate(trackRotate.Value).SetOpacity(trackOpacity.Value / 100.0F).SetFore(colorPicker.Value).SetGap(trackGap.Value);
+
+        protected override void DestroyHandle()
         {
-            // 清理水印
-            //ClearWatermark();
+            base.DestroyHandle();
+            ClearWatermark();
         }
-
-        //private void CreateWatermark(Image? image = null)
-        //{
-        //    // 清除现有水印
-        //    ClearWatermark();
-
-        //    try
-        //    {
-        //        var config = new AntdUI.Watermark.Config(form, inputContent.Text, inputContent2.Text)
-        //        {
-        //            Rotate = trackRotate.Value,
-        //            Gap = new int[] { trackGap.Value, trackGap.Value + 10 },
-        //            Image = image
-        //        };
-
-        //        // 设置字体颜色透明度
-        //        var opacity = trackOpacity.Value / 100.0F;
-        //        var alpha = (int)(opacity * 255);
-        //        var selectedColor = colorPicker.Value;
-        //        config.Font.Color = Color.FromArgb(alpha, selectedColor.R, selectedColor.G, selectedColor.B);
-
-        //        currentWatermark = AntdUI.Watermark.open(config);
-        //        if (currentWatermark != null)
-        //        {
-        //            var watermarkType = image != null ? "图片水印" : "文本水印";
-        //            AntdUI.Message.success(form, $"{watermarkType}创建成功！");
-        //        }
-        //        else
-        //        {
-        //            AntdUI.Message.error(form, "水印创建失败，请检查窗体状态");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        AntdUI.Message.error(form, $"创建水印时发生错误：{ex.Message}");
-        //    }
-        //}
     }
 }

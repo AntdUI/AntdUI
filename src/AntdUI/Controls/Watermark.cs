@@ -17,30 +17,86 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using Microsoft.Win32;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
 {
     /// <summary>
-    /// 水印组件
-    /// 参考Ant Design Watermark组件：https://ant.design/components/watermark-cn
+    /// Watermark 水印
     /// </summary>
+    /// <remarks>给页面的某个区域加上水印。</remarks>
     public class Watermark
     {
+        /// <summary>
+        /// 开启水印
+        /// </summary>
+        /// <param name="config">水印配置</param>
+        /// <returns>水印窗体</returns>
+        public static Form? open(Config config)
+        {
+            if (config?.Target == null || !config.Enabled) return null;
+            try
+            {
+                // 创建新的水印窗体
+                var watermarkForm = new LayeredFormWatermark(config);
+                // 显示水印
+                watermarkForm.Show(config.Target);
+                return watermarkForm;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 开启水印（简化版本）
+        /// </summary>
+        /// <param name="target">目标控件</param>
+        /// <param name="content">水印内容</param>
+        /// <param name="subContent">副内容</param>
+        /// <returns>水印窗体</returns>
+        public static Form? open(Control target, string content, string? subContent = null) => open(new Config(target, content, subContent));
+
+        #region 配置
+
         /// <summary>
         /// 水印配置类
         /// </summary>
         public class Config
         {
+            public Config(Control target, string content, string? subContent = null)
+            {
+                Target = target;
+                Content = content;
+                SubContent = subContent;
+                Offset = new int[] { Gap[0] / 2, Gap[1] / 2 };
+            }
+
             /// <summary>
             /// 目标控件
             /// </summary>
             public Control Target { get; set; }
+
+            float opacity = 0.15F;
+            /// <summary>
+            /// 透明度
+            /// </summary>
+            public float Opacity
+            {
+                get => opacity;
+                set
+                {
+                    if (opacity == value) return;
+                    opacity = value;
+                    if (lay == null) return;
+                    lay.alpha = (byte)Math.Round(255 * Style.rgbfloat(value));
+                    lay.Print();
+                }
+            }
 
             /// <summary>
             /// 水印文字内容
@@ -50,12 +106,22 @@ namespace AntdUI
             /// <summary>
             /// 副内容
             /// </summary>
-            public string SubContent { get; set; }
+            public string? SubContent { get; set; }
+
+            /// <summary>
+            /// 副内容字体大小比例
+            /// </summary>
+            public float SubFontSize { get; set; } = 0.8F;
 
             /// <summary>
             /// 水印图片
             /// </summary>
             public Image? Image { get; set; }
+
+            /// <summary>
+            /// 水印图片SVG
+            /// </summary>
+            public string? ImageSvg { get; set; }
 
             /// <summary>
             /// 水印宽度
@@ -73,11 +139,6 @@ namespace AntdUI
             public int Rotate { get; set; } = -22;
 
             /// <summary>
-            /// Z轴层级
-            /// </summary>
-            public int ZIndex { get; set; } = 9;
-
-            /// <summary>
             /// 水印间距 [x, y]
             /// </summary>
             public int[] Gap { get; set; } = new int[] { 100, 100 };
@@ -88,9 +149,19 @@ namespace AntdUI
             public int[] Offset { get; set; }
 
             /// <summary>
-            /// 字体配置
+            /// 字体
             /// </summary>
-            public FontConfig Font { get; set; } = new FontConfig();
+            public Font? Font { get; set; }
+
+            /// <summary>
+            /// 字体颜色
+            /// </summary>
+            public Color? ForeColor { get; set; }
+
+            /// <summary>
+            /// 文本对齐方式
+            /// </summary>
+            public StringAlignment TextAlign { get; set; } = StringAlignment.Center;
 
             /// <summary>
             /// 是否启用
@@ -102,307 +173,225 @@ namespace AntdUI
             /// </summary>
             public bool IsScreen { get; set; } = false;
 
-            public Config(Control target, string content, string subContent = "")
+            internal LayeredFormWatermark? lay = null;
+
+            public void Print() => lay?.Print();
+
+            #region 设置
+
+            public Config SetOpacity(float value)
             {
-                Target = target;
-                Content = content;
-                SubContent = subContent;
-                Offset = new int[] { Gap[0] / 2, Gap[1] / 2 };
+                Opacity = value;
+                return this;
             }
-        }
-
-        /// <summary>
-        /// 字体配置类
-        /// </summary>
-        public class FontConfig
-        {
-            /// <summary>
-            /// 字体颜色
-            /// </summary>
-            public Color Color { get; set; } = Color.FromArgb(38, 0, 0, 0);
-
-            /// <summary>
-            /// 字体大小
-            /// </summary>
-            public float FontSize { get; set; } = 14;
-
-            /// <summary>
-            /// 字体粗细
-            /// </summary>
-            public FontWeight FontWeight { get; set; } = FontWeight.Normal;
-
-            /// <summary>
-            /// 字体族
-            /// </summary>
-            public string FontFamily { get; set; } = "Microsoft YaHei";
-
-            /// <summary>
-            /// 字体样式
-            /// </summary>
-            public System.Drawing.FontStyle FontStyle { get; set; } = System.Drawing.FontStyle.Regular;
-
-            /// <summary>
-            /// 文本对齐方式
-            /// </summary>
-            public StringAlignment TextAlign { get; set; } = StringAlignment.Center;
-        }
-
-        /// <summary>
-        /// 字体粗细枚举
-        /// </summary>
-        public enum FontWeight
-        {
-            Normal = 400,
-            Light = 300,
-            Bold = 700
-        }
-
-        /// <summary>
-        /// 开启水印
-        /// </summary>
-        /// <param name="config">水印配置</param>
-        /// <returns>水印窗体</returns>
-        public static FormWatermark? open(Config config)
-        {
-            if (config?.Target == null || !config.Enabled)
-                return null;
-
-            try
+            public Config SetSub(string? value)
             {
-                // 创建新的水印窗体
-                var watermarkForm = new LayeredFormWatermark(config);
-
-                // 显示水印
-                watermarkForm.Show(config.Target);
-
-                return watermarkForm;
+                SubContent = value;
+                return this;
             }
-            catch
+            public Config SetSub(float value)
             {
-                return null;
+                SubFontSize = value;
+                return this;
             }
+            public Config SetImage(Image? value)
+            {
+                Image = value;
+                return this;
+            }
+            public Config SetImage(string? value)
+            {
+                ImageSvg = value;
+                return this;
+            }
+            public Config SetSize(int w, int h)
+            {
+                Width = w;
+                Height = h;
+                return this;
+            }
+            public Config SetWidth(int value)
+            {
+                Width = value;
+                return this;
+            }
+            public Config SetHeight(int value)
+            {
+                Height = value;
+                return this;
+            }
+            public Config SetRotate(int value)
+            {
+                Rotate = value;
+                return this;
+            }
+            public Config SetGap(int value)
+            {
+                Gap = new int[] { value, value };
+                return this;
+            }
+            public Config SetGap(int x, int y)
+            {
+                Gap = new int[] { x, y };
+                return this;
+            }
+            public Config SetOffset(int value)
+            {
+                Offset = new int[] { value, value };
+                return this;
+            }
+            public Config SetOffset(int x, int y)
+            {
+                Offset = new int[] { x, y };
+                return this;
+            }
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetFont(Font? value, Color? color)
+            {
+                Font = value;
+                ForeColor = color;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                ForeColor = value;
+                return this;
+            }
+            public Config SetTextAlign(StringAlignment value = StringAlignment.Near)
+            {
+                TextAlign = value;
+                return this;
+            }
+            public Config SetEnabled(bool value = false)
+            {
+                Enabled = value;
+                return this;
+            }
+            public Config SetIsScreen(bool value = true)
+            {
+                IsScreen = value;
+                return this;
+            }
+
+            #endregion
         }
 
-        /// <summary>
-        /// 开启水印（简化版本）
-        /// </summary>
-        /// <param name="target">目标控件</param>
-        /// <param name="content">水印内容</param>
-        /// <param name="subContent">副内容</param>
-        /// <returns>水印窗体</returns>
-        public static FormWatermark? open(Control target, string content, string subContent = "")
-        {
-            var config = new Config(target, content, subContent);
-            return open(config);
-        }
-    }
-
-    /// <summary>
-    /// 水印窗体接口
-    /// </summary>
-    public interface FormWatermark
-    {
-        /// <summary>
-        /// 关闭水印
-        /// </summary>
-        void Close();
+        #endregion
     }
 
     /// <summary>
     /// 水印窗体实现
     /// </summary>
-    internal class LayeredFormWatermark : ILayeredFormOpacity, FormWatermark
+    internal class LayeredFormWatermark : ILayeredFormOpacity
     {
         Watermark.Config config;
-        internal bool topMost = false;
 
-        public LayeredFormWatermark(Watermark.Config _config) : base(255)
+        public LayeredFormWatermark(Watermark.Config _config) : base((byte)Math.Round(255 * Style.rgbfloat(_config.Opacity)))
         {
             config = _config;
+            config.lay = this;
+            Font = _config.Font ?? _config.Target.Font;
             if (config.IsScreen)
             {
                 // 屏幕水印
-                var screen = Screen.PrimaryScreen.Bounds;
+                var screen = Screen.PrimaryScreen!.Bounds;
                 SetSize(screen.Width, screen.Height);
                 SetLocation(screen.X, screen.Y);
-                topMost = true;
+                TopMost = true;
             }
             else
             {
-                // 控件水印
-                UpdateWatermarkPosition();
-            }
-
-            // 监听目标控件的位置和大小变化
-            if (!config.IsScreen)
-            {
-                config.Target.LocationChanged += Target_LocationChanged;
-                config.Target.SizeChanged += Target_SizeChanged;
-                config.Target.VisibleChanged += Target_VisibleChanged;
-
-                // 监听父容器的移动事件
-                var parent = config.Target.Parent;
-                while (parent != null)
+                config.Target.SetTopMost(Handle);
+                if (config.Target is Form form)
                 {
-                    parent.LocationChanged += Parent_LocationChanged;
-                    parent.SizeChanged += Parent_SizeChanged;
-                    parent = parent.Parent;
-                }
-
-                // 监听Form的移动事件
-                var form = GetTopLevelForm(config.Target);
-                if (form != null)
-                {
-                    form.LocationChanged += Form_LocationChanged;
-                    form.SizeChanged += Form_SizeChanged;
-                }
-            }
-
-            // 监听系统事件
-            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
-        }
-
-        private void Target_LocationChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                UpdateWatermarkPosition();
-            }
-        }
-
-        private void Target_SizeChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                UpdateWatermarkPosition();
-            }
-        }
-
-        private void Parent_LocationChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                UpdateWatermarkPosition();
-            }
-        }
-
-        private void Parent_SizeChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                UpdateWatermarkPosition();
-            }
-        }
-
-        private void Form_LocationChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                UpdateWatermarkPosition();
-            }
-        }
-
-        private void Form_SizeChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                UpdateWatermarkPosition();
-            }
-        }
-
-        private void UpdateWatermarkPosition()
-        {
-            if (config.Target != null && !config.IsScreen)
-            {
-                var rect = config.Target.RectangleToScreen(config.Target.ClientRectangle);
-                SetSize(rect.Width, rect.Height);
-                SetLocation(rect.X, rect.Y);
-                Print();
-            }
-        }
-
-        private Form? GetTopLevelForm(Control control)
-        {
-            while (control != null)
-            {
-                if (control is Form form)
-                {
-                    return form;
-                }
-                control = control.Parent;
-            }
-            return null;
-        }
-
-        private void Target_VisibleChanged(object? sender, EventArgs e)
-        {
-            if (config.Target != null)
-            {
-                if (config.Target.Visible)
-                {
-                    Show();
+                    SetSize(form.Size);
+                    SetLocation(form.Location);
+                    HasBor = form.FormFrame(out Radius, out Bor);
                 }
                 else
                 {
-                    Hide();
+                    SetSize(config.Target.Size);
+                    SetLocation(config.Target.PointToScreen(Point.Empty));
+                    if (config.Target is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
                 }
             }
         }
 
-        private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
-        {
-            if (config.IsScreen)
-            {
-                var screen = Screen.PrimaryScreen.Bounds;
-                SetSize(screen.Width, screen.Height);
-                SetLocation(screen.X, screen.Y);
-                Print();
-            }
-        }
+        Func<GraphicsPath>? RenderRegion;
+        int Radius = 0, Bor = 0;
+        bool HasBor = false;
+
+        #region 渲染
 
         public override Bitmap PrintBit()
         {
             var rect = TargetRectXY;
             Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp))
+            if (config.Enabled)
             {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
-                if (!config.Enabled) return original_bmp;
-
-                var font = new Font(config.Font.FontFamily, config.Font.FontSize, config.Font.FontStyle);
-                var textColor = config.Font.Color;
-                var brush = new SolidBrush(textColor);
-
-                // 计算水印间距
-                var gapX = config.Gap[0];
-                var gapY = config.Gap[1];
-                var patternWidth = config.Width + gapX;
-                var patternHeight = config.Height + gapY;
-
-                // 计算起始偏移
-                var startX = config.Offset[0] % patternWidth;
-                var startY = config.Offset[1] % patternHeight;
-
-                // 绘制水印图案
-                for (int y = -startY; y < rect.Height; y += patternHeight)
+                using (var g = Graphics.FromImage(original_bmp).HighLay())
+                using (var brush = new SolidBrush(config.ForeColor ?? Style.Db.FillSecondary))
                 {
-                    for (int x = -startX; x < rect.Width; x += patternWidth)
+                    // 计算水印间距
+                    int gapX = (int)(config.Gap[0] * Config.Dpi), gapY = (int)(config.Gap[1] * Config.Dpi);
+                    int width = (int)(config.Width * Config.Dpi), height = (int)(config.Height * Config.Dpi), patternWidth = width + gapX, patternHeight = height + gapY;
+
+                    // 计算起始偏移
+                    int startX = (int)(config.Offset[0] * Config.Dpi) % patternWidth, startY = (int)(config.Offset[1] * Config.Dpi) % patternHeight;
+
+                    #region 移除非客户区域
+
+
+                    if (RenderRegion == null)
                     {
-                        DrawWatermarkItem(g, x, y, font, brush);
+                        if (HasBor)
+                        {
+                            Rectangle rect_read = new Rectangle(Bor, 0, rect.Width - Bor * 2, rect.Height - Bor);
+                            if (Radius > 0)
+                            {
+                                using (var path = rect_read.RoundPath(Radius))
+                                {
+                                    g.SetClip(path);
+                                }
+                            }
+                            else g.SetClip(rect_read);
+                        }
+                        else if (Radius > 0)
+                        {
+                            using (var path = rect.RoundPath(Radius))
+                            {
+                                g.SetClip(path);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var path = RenderRegion())
+                        {
+                            g.SetClip(path);
+                        }
+                    }
+
+                    #endregion
+
+                    // 绘制水印图案
+                    for (int y = -startY; y < rect.Height; y += patternHeight)
+                    {
+                        for (int x = -startX; x < rect.Width; x += patternWidth)
+                        {
+                            DrawWatermarkItem(g, x, y, width, height, Font, brush);
+                        }
                     }
                 }
-
-                font.Dispose();
-                brush.Dispose();
             }
             return original_bmp;
         }
 
-        private void DrawWatermarkItem(Graphics g, int x, int y, Font font, Brush brush)
+        void DrawWatermarkItem(Canvas g, int x, int y, int w, int h, Font font, Brush brush)
         {
             // 保存当前状态
             var state = g.Save();
@@ -410,151 +399,166 @@ namespace AntdUI
             // 设置旋转
             if (config.Rotate != 0)
             {
-                var centerX = x + config.Width / 2f;
-                var centerY = y + config.Height / 2f;
+                var centerX = x + w / 2f;
+                var centerY = y + h / 2f;
                 g.TranslateTransform(centerX, centerY);
                 g.RotateTransform(config.Rotate);
                 g.TranslateTransform(-centerX, -centerY);
             }
 
             // 绘制图片水印
-            if (config.Image != null)
-            {
-                DrawImageWatermark(g, x, y);
-            }
+            if (config.Image != null) DrawImageWatermark(g, x, y, w, h);
 
             // 绘制文字水印
-            if (!string.IsNullOrEmpty(config.Content))
-            {
-                DrawTextWatermark(g, x, y, font, brush);
-            }
+            if (!string.IsNullOrEmpty(config.Content)) DrawTextWatermark(g, x, y, w, h, font, brush);
 
             // 恢复状态
             g.Restore(state);
         }
 
-        private void DrawImageWatermark(Graphics g, int x, int y)
+        void DrawImageWatermark(Canvas g, int x, int y, int w, int h)
         {
             if (config.Image == null) return;
 
-            var imageWidth = Math.Min(config.Width, config.Image.Width);
-            var imageHeight = Math.Min(config.Height, config.Image.Height);
-            var drawX = x + (config.Width - imageWidth) / 2f;
-            var drawY = y + (config.Height - imageHeight) / 2f;
+            int imageWidth = Math.Min(w, config.Image.Width), imageHeight = Math.Min(h, config.Image.Height);
+            float drawX = x + (w - imageWidth) / 2f, drawY = y + (h - imageHeight) / 2f;
 
-            // 创建半透明图片
-            var colorMatrix = new ColorMatrix();
-            colorMatrix.Matrix33 = 0.15f; // 透明度
-
-            var imageAttributes = new ImageAttributes();
-            imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-            g.DrawImage(config.Image,
-                new Rectangle((int)drawX, (int)drawY, imageWidth, imageHeight),
-                0, 0, config.Image.Width, config.Image.Height,
-                GraphicsUnit.Pixel, imageAttributes);
-
-            imageAttributes.Dispose();
+            g.Image(config.Image, new Rectangle((int)drawX, (int)drawY, imageWidth, imageHeight));
         }
 
-        private void DrawTextWatermark(Graphics g, int x, int y, Font font, Brush brush)
+        void DrawTextWatermark(Canvas g, int x, int y, int w, int h, Font font, Brush brush)
         {
             if (string.IsNullOrEmpty(config.Content)) return;
 
-            var format = new StringFormat
+            using (var format = Helper.SF(lr: config.TextAlign))
             {
-                Alignment = config.Font.TextAlign,
-                LineAlignment = StringAlignment.Center
-            };
-
-            // 计算文字区域
-            var contentHeight = (float)config.Height;
-            var subContentHeight = 0f;
-            var spacing = 4f; // 主内容和副内容之间的间距
-
-            if (!string.IsNullOrEmpty(config.SubContent))
-            {
-                // 如果有副内容，计算实际需要的空间
-                var subFont = new Font(config.Font.FontFamily, config.Font.FontSize * 0.8f, config.Font.FontStyle);
-
-                // 测量主内容文字高度
-                var mainSize = g.MeasureString(config.Content, font, config.Width, format);
-
-                // 测量副内容文字高度
-                var subSize = g.MeasureString(config.SubContent, subFont, config.Width, format);
-
-                // 计算总高度
-                var totalTextHeight = mainSize.Height + spacing + subSize.Height;
-
-                // 如果总高度超过水印高度，则按比例缩放
-                if (totalTextHeight > config.Height)
+                // 计算文字区域
+                if (string.IsNullOrEmpty(config.SubContent))
                 {
-                    var scale = config.Height / totalTextHeight;
-                    contentHeight = mainSize.Height * scale;
-                    subContentHeight = subSize.Height * scale;
-                    spacing = spacing * scale;
+                    // 绘制主内容
+                    var mainRect = new Rectangle(x, y + (h - h) / 2, w, h);
+                    g.DrawText(config.Content, font, brush, mainRect, format);
                 }
                 else
                 {
-                    contentHeight = mainSize.Height;
-                    subContentHeight = subSize.Height;
+                    int contentHeight = h, subContentHeight = 0, spacing = (int)(4 * Config.Dpi); // 主内容和副内容之间的间距
+                    // 如果有副内容，计算实际需要的空间
+                    using (var subFont = new Font(Font.FontFamily, Font.Size * config.SubFontSize, Font.Style))
+                    {
+                        Size mainSize = g.MeasureText(config.Content, font, w, format), subSize = g.MeasureText(config.SubContent, subFont, w, format);
+
+                        // 计算总高度
+                        int totalTextHeight = mainSize.Height + spacing + subSize.Height;
+
+                        // 如果总高度超过水印高度，则按比例缩放
+                        if (totalTextHeight > h)
+                        {
+                            var scale = h / totalTextHeight;
+                            contentHeight = mainSize.Height * scale;
+                            subContentHeight = subSize.Height * scale;
+                            spacing = spacing * scale;
+                        }
+                        else
+                        {
+                            contentHeight = mainSize.Height;
+                            subContentHeight = subSize.Height;
+                        }
+                        // 计算垂直居中位置
+                        int totalHeight = contentHeight + spacing + subContentHeight, startY = y + (h - totalHeight) / 2;
+
+                        // 绘制主内容
+                        var mainRect = new Rectangle(x, startY, w, contentHeight);
+                        g.DrawText(config.Content, font, brush, mainRect, format);
+
+                        // 绘制副内容
+                        var subRect = new Rectangle(x, startY + contentHeight + spacing, w, subContentHeight);
+                        g.DrawText(config.SubContent, subFont, brush, subRect, format);
+                    }
                 }
-
-                subFont.Dispose();
             }
-
-            // 计算垂直居中位置
-            var totalHeight = contentHeight + (string.IsNullOrEmpty(config.SubContent) ? 0 : spacing + subContentHeight);
-            var startY = y + (config.Height - totalHeight) / 2f;
-
-            // 绘制主内容
-            var mainRect = new RectangleF(x, startY, config.Width, contentHeight);
-            g.DrawString(config.Content, font, brush, mainRect, format);
-
-            // 绘制副内容
-            if (!string.IsNullOrEmpty(config.SubContent))
-            {
-                var subFont = new Font(config.Font.FontFamily, config.Font.FontSize * 0.8f, config.Font.FontStyle);
-                var subRect = new RectangleF(x, startY + contentHeight + spacing, config.Width, subContentHeight);
-                g.DrawString(config.SubContent, subFont, brush, subRect, format);
-                subFont.Dispose();
-            }
-
-            format.Dispose();
         }
 
-        public new void Close()
+        #endregion
+
+        #region 坐标
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (config.IsScreen) Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            else
+            {
+                config.Target.VisibleChanged += Target_VisibleChanged;
+                var parent = config.Target.FindPARENT();
+                if (parent == null) return;
+                parent.LocationChanged += Parent_LSChanged;
+                parent.SizeChanged += Parent_LSChanged;
+
+            }
+        }
+
+        private void Parent_LSChanged(object? sender, EventArgs e)
+        {
+            var rect = TargetRect;
+            bool isPoint = true, isSize = true;
+            if (config.Target is Form form)
+            {
+                var point = form.Location;
+                var size = form.Size;
+                SetLocation(point);
+                SetSize(size);
+                isPoint = rect.X == point.X && rect.Y == point.Y;
+                isSize = rect.Width == size.Width && rect.Height == size.Height;
+            }
+            else
+            {
+                var point = config.Target.PointToScreen(Point.Empty);
+                var size = config.Target.Size;
+                SetLocation(point);
+                SetSize(size);
+                isPoint = rect.X == point.X && rect.Y == point.Y;
+                isSize = rect.Width == size.Width && rect.Height == size.Height;
+            }
+            if (isPoint && isSize) return;
+            else if (isSize) PrintCache();
+            else Print();
+        }
+
+        private void Target_VisibleChanged(object? sender, EventArgs e)
+        {
+            if (config.Target.Visible) Show();
+            else Hide();
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
+        {
+            var screen = Screen.PrimaryScreen!.Bounds;
+            SetSize(screen.Width, screen.Height);
+            SetLocation(screen.X, screen.Y);
+            Print();
+        }
+
+        #endregion
+
+        protected override void Dispose(bool disposing)
         {
             // 移除事件监听
-            if (config.Target != null && !config.IsScreen)
+            if (config.IsScreen) Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+            else
             {
-                config.Target.LocationChanged -= Target_LocationChanged;
-                config.Target.SizeChanged -= Target_SizeChanged;
                 config.Target.VisibleChanged -= Target_VisibleChanged;
-
                 // 移除父容器的事件监听
-                var parent = config.Target.Parent;
-                while (parent != null)
+                var parent = config.Target.FindPARENT();
+                if (parent != null)
                 {
-                    parent.LocationChanged -= Parent_LocationChanged;
-                    parent.SizeChanged -= Parent_SizeChanged;
-                    parent = parent.Parent;
-                }
-
-                // 移除Form的事件监听
-                var form = GetTopLevelForm(config.Target);
-                if (form != null)
-                {
-                    form.LocationChanged -= Form_LocationChanged;
-                    form.SizeChanged -= Form_SizeChanged;
+                    parent.LocationChanged -= Parent_LSChanged;
+                    parent.SizeChanged -= Parent_LSChanged;
                 }
             }
 
-            SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
-
-            base.Close();
+            base.Dispose(disposing);
         }
 
-        public override string name => "Watermark";
+        public override string name => nameof(Watermark);
     }
 }

@@ -762,6 +762,51 @@ namespace Demo
                 case "Shield.qq":
                     return "QQ Group";
 
+                //Watermark ----------------------------
+                case "Watermark.Text":
+                    return "Watermark";
+                case "Watermark.Description":
+                    return "Add specific text or patterns to the page.";
+                case "Watermark.lblContent":
+                    return "Watermark content:";
+                case "Watermark.lblSub":
+                    return "Sub content:";
+                case "Watermark.lblForeColor":
+                    return "Watermark color:";
+                case "Watermark.lblOpacity":
+                    return "Opacity:";
+                case "Watermark.lblRotate":
+                    return "Rotation angle:";
+                case "Watermark.lblGap":
+                    return "Gap:";
+
+                case "Watermark.btnForm":
+                    return "Window watermark";
+                case "Watermark.btnFormError":
+                    return "Error occurred while creating form watermark:";
+                case "Watermark.btnFormFailed":
+                    return "Form watermark creation failed";
+                case "Watermark.btnFormOK":
+                    return "Form watermark created successfully!";
+
+                case "Watermark.btnPanel":
+                    return "Panel watermark";
+                case "Watermark.btnPanelError":
+                    return "Error occurred while creating panel watermark:";
+                case "Watermark.btnPanelFailed":
+                    return "Panel watermark creation failed";
+                case "Watermark.btnPanelOK":
+                    return "Panel watermark created successfully!";
+
+                case "Watermark.btnClear":
+                    return "Clear watermark";
+
+                //Chart ----------------------------
+                case "Chart.Text":
+                    return "Chart";
+                case "Chart.Description":
+                    return "Visual chart library.";
+
                 #endregion
 
                 case "Loading":

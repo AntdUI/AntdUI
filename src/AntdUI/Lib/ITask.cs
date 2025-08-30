@@ -163,7 +163,7 @@ namespace AntdUI
         /// <param name="totalFrames">总帧数</param>
         /// <param name="end">结束回调</param>
         /// <param name="sleep">运行前睡眠</param>
-        public ITask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0)
+        public ITask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0, bool isend = false)
         {
             IsRun = true;
             bool ok = true;
@@ -185,8 +185,16 @@ namespace AntdUI
                 }
             }).ContinueWith(action =>
             {
-                if (ok) end();
-                Dispose();
+                if (isend)
+                {
+                    Dispose();
+                    end();
+                }
+                else
+                {
+                    if (ok) end();
+                    Dispose();
+                }
             });
         }
         public ITask(bool _is, int interval, int totalFrames, float cold, AnimationType type, Action<int, float> action, Action end)
