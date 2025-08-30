@@ -77,7 +77,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**TimePicker**](doc/wiki/en/Control/TimePicker.md) | ✅ | ✅ |
 ➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| Data Display `18` | Animation | Disable |
+⬇️| Data Display `19` | Animation | Disable |
 ➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
@@ -96,8 +96,9 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Tree**](doc/wiki/en/Control/Tree.md) | ✅ | ✅ |
 ➡️| [**Label**](doc/wiki/en/Control/Label.md) | ✅ | ❎ |
 ➡️| [**LabelTime**](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
+➡️| **Chart** 图表 | ✅ | ❎ |
 ||||
-⬇️| Feedback `7` | Animation | Disable |
+⬇️| Feedback `8` | Animation | Disable |
 ➡️| [**Alert**](doc/wiki/en/Control/Alert.md) | ✅ | ❎ |
 ➡️| [**Drawer**](doc/wiki/en/Control/Drawer.md) | ✅ | ❎ |
 ➡️| [**Message**](doc/wiki/en/Control/Message.md) | ✅ | ❎ |
@@ -105,6 +106,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Notification**](doc/wiki/en/Control/Notification.md) | ✅ | ❎ |
 ➡️| [**Progress**](doc/wiki/en/Control/Progress.md) | ✅ | ❎ |
 ➡️| [**Spin**](doc/wiki/en/Control/Spin.md) | ✅ | ❎ |
+➡️| **Watermark** | ✅ | ❎ |
 ⬇️| Chat `2` | Animation | Disable |
 ➡️| **MsgList** Friend message list | ✅ | ❎ |
 ➡️| **ChatList** Chat bubble list | ✅ | ❎ |

@@ -1,5 +1,28 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.1` 2025-08-29 📊
+
+- ➕ Chart 图表
+- ➕ Watermark 水印
+- ➕ Chat/MsgList (聊天控件) 消息列表右键菜单和点击事件支持
+- ➕ Tabs IconGap
+- ➕ Alert 鼠标移入时暂停轮播的开关属性
+- ➕ SelectDown 藏渲染
+- ➕ DatePickerRange InteractiveReset
+- ➕ 控件 DrawBitmap 方法
+- ➕ Modal Config DialogResult
+- ✍️ Select 回归 CloseIcon
+- ✍️ SvgDb 移除只读
+- ✍️ Table Summary Render 生效
+- ✍️ CollapseGroup 不显示UI
+- ✍️ Menu 折叠后抖动
+- ✍️ Button 多行文本异常
+- ✍️ AutoSize 调整 Button/Checkbox/Radio/ColorPicker
+- ✍️ Tabs Margin
+- ✍️ Lable/Badge AutoSize 没有边距
+- ✍️ TabHeader 关闭异常
+- 🧹 重构 Tabs 布局
+
 ### `2.1.0` 2025-08-21
 
 - ➕ 原生滚动条适配深色模式
