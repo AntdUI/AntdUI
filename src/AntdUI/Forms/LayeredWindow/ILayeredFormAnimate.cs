@@ -179,7 +179,7 @@ namespace AntdUI
             }
             int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
             var y = BottomYCore(workingArea, offset) - TargetRect.Height;
-            if (y >= 0)
+            if (y >= workingArea.Y)
             {
                 result = y;
                 return false;

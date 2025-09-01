@@ -243,7 +243,7 @@ namespace AntdUI
                 }
                 tempContent = new Bitmap(control.Width, control.Height);
                 control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
+                if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
             }
             base.OnClosing(e);
         }

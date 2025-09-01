@@ -394,7 +394,11 @@ namespace AntdUI
             else
             {
                 var cells = new Dictionary<string, object?>(len);
-                foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row)) cells.Add(it.Name, it);
+                foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row))
+                {
+                    cells.Add(it.Name, it);
+                    GetRow(row, it, ref cells);
+                }
                 return cells;
             }
         }
@@ -409,9 +413,33 @@ namespace AntdUI
             {
                 columns.Add(new TempiColumn(index, it.DisplayName ?? it.Name)); index++;
                 cells.Add(it.Name, it);
+                GetRow(row, it, ref cells);
             }
             _columns = columns.ToArray();
             return cells;
+        }
+        void GetRow(object row, PropertyDescriptor it, ref Dictionary<string, object?> cells)
+        {
+            if (it.PropertyType.IsClass)
+            {
+                if (it.PropertyType.IsArray || it.PropertyType.FullName == null) return;
+                if (it.PropertyType.FullName.StartsWith("System.") || it.PropertyType.FullName.StartsWith("AntdUI.")) return;
+                var value = it.GetValue(row);
+                if (value == null) return;
+                var list = TypeDescriptor.GetProperties(value);
+                foreach (PropertyDescriptor item in list) cells.Add(it.Name + "." + item.Name, new TableSubValue(value, item));
+            }
+        }
+        internal class TableSubValue
+        {
+            public TableSubValue(object value, PropertyDescriptor p)
+            {
+                record = value;
+                prop = p;
+            }
+
+            public object record { get; set; }
+            public PropertyDescriptor prop { get; set; }
         }
 
         bool showFixedColumnL = false, showFixedColumnR = false;

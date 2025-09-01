@@ -112,6 +112,7 @@ namespace AntdUI
             get => _value;
             set
             {
+                if (Helper.AreDateTimeArraysEqual(_value, value)) return;
                 _value = value;
                 ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
                 SetText(value);

@@ -305,6 +305,13 @@ namespace AntdUI
 
     public class BaseCollection : IList
     {
+        public BaseCollection() { }
+        public BaseCollection(int capacity) { EnsureSpace(capacity); }
+        public BaseCollection(IEnumerable<object> collection)
+        {
+            Add(collection);
+        }
+
         public Action<bool>? action;
         void PropertyChanged(object value)
         {
@@ -398,10 +405,9 @@ namespace AntdUI
 
         public void Insert(int index, object? value)
         {
-            if (value == null || index < 0 || index >= count) return;
+            if (value == null || index < 0 || (index >= count && count > 0)) return;
             var m_arrItem = EnsureSpace(1);
-            for (int i = count; i > index; i--)
-                m_arrItem[i] = m_arrItem[i - 1];
+            for (int i = count; i > index; i--) m_arrItem[i] = m_arrItem[i - 1];
             m_arrItem[index] = value;
             count++;
             PropertyChanged(value);

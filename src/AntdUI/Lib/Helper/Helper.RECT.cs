@@ -1040,5 +1040,22 @@ namespace AntdUI
         }
 
         #endregion
+
+        /// <summary>
+        /// 所有屏幕之外的位置
+        /// </summary>
+        public static Point OffScreenArea(int w, int h)
+        {
+            var allScreens = Screen.AllScreens;
+            if (allScreens.Length == 0) return new Point(-w, -h);
+            int x = 0, y = 0;
+            foreach (var screen in allScreens)
+            {
+                var bounds = screen.Bounds;
+                x = Math.Min(x, bounds.X);
+                y = Math.Min(y, bounds.Y);
+            }
+            return new Point(x - w, y - h);
+        }
     }
 }

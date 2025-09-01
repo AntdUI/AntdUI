@@ -910,7 +910,7 @@ namespace AntdUI
                         else if (rect_button.Contains(x, y))
                         {
                             //此刻
-                            oldTime = Date = DateNow = DateTime.Now;
+                            oldTime = Date = DateNow = DateTime.Parse(DateTime.Now.ToString(control.Format));
                             Print();
                             ScrollTime(calendar_time!, oldTime.Value);
                         }
