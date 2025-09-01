@@ -67,7 +67,7 @@ namespace AntdUI
                 config.Content.Tag = config.Content.Size;
                 Helper.DpiAuto(Config.Dpi, config.Content);
             }
-            config.Content.Location = new Point(-tempContent.Width * 2, -tempContent.Height * 2);
+            config.Content.Location = Helper.OffScreenArea(tempContent.Width * 2, tempContent.Height * 2);
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
             LoadContent();
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
@@ -241,7 +241,7 @@ namespace AntdUI
                 SetLocation(-end_W * 2, -end_H * 2);
                 if (task_start == null)
                 {
-                    if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
+                    if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
                     Print();
                 }
                 return;
@@ -360,7 +360,7 @@ namespace AntdUI
         void LoadContent()
         {
             var rect = Ang();
-            var hidelocation = new Point(-rect.Width * 2, -rect.Height * 2);
+            var hidelocation = Helper.OffScreenArea(rect.Width * 2, rect.Height * 2);
             if (config.Content is Form form_)
             {
                 form_.BackColor = Colour.BgElevated.Get("Drawer");
@@ -385,7 +385,7 @@ namespace AntdUI
                 {
                     config.Content.Dock = DockStyle.None;
                     config.Content.Size = size;
-                    config.Content.Location = new Point(-config.Content.Width * 2, -config.Content.Height * 2);
+                    config.Content.Location = Helper.OffScreenArea(config.Content.Width * 2, config.Content.Height * 2);
                     config.Form.Controls.Add(config.Content);
                 };
             }
@@ -576,7 +576,7 @@ namespace AntdUI
                 tempContent?.Dispose();
                 tempContent = new Bitmap(config.Content.Width, config.Content.Height);
                 config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                if (form != null) form.Location = new Point(-form.Width * 2, -form.Height * 2);
+                if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
                 e.Cancel = true;
                 if (Config.HasAnimation(nameof(Drawer)))
                 {

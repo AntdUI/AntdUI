@@ -669,7 +669,19 @@ namespace AntdUI
                 else if (ov_tree is PropertyDescriptor prop)
                 {
                     var value_tree = prop.GetValue(row.record);
+                    if (value_tree == null) return null;
                     if (value_tree is IList<object> list_tree && list_tree.Count > 0) return list_tree;
+                    else if (value_tree is IEnumerable<object> list_tree2)
+                    {
+                        int count = 0;
+                        foreach (var it in list_tree2) count++;
+                        if (count > 0)
+                        {
+                            var sub = new List<object>(count);
+                            foreach (var it in list_tree2) sub.Add(it);
+                            return sub;
+                        }
+                    }
                 }
             }
             return null;
@@ -1025,6 +1037,12 @@ namespace AntdUI
                 value = record;
                 property = prop;
                 return prop.GetValue(record);
+            }
+            else if (ov is TableSubValue subValue)
+            {
+                value = subValue.record;
+                property = subValue.prop;
+                return property.GetValue(value);
             }
             return ov;
         }
