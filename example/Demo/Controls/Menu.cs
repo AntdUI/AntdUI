@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -24,43 +24,13 @@ namespace Demo.Controls
 {
     public partial class Menu : UserControl
     {
-        private Form form;
-
+        Form form;
         public Menu(Form _form)
         {
             form = _form;
             InitializeComponent();
             var lang = AntdUI.Localization.CurrentLanguage;
             if (lang.StartsWith("en")) switch2.Width = switch4.Width = 108;
-
-            this.menu2.CustomButtonClick += Menu2_CustomButtonClick;
-        }
-
-        private void Menu2_CustomButtonClick(object sender, AntdUI.MenuCustomButtonEventArgs e)
-        {
-            if (e.Value.CustomButtonText == "✔️")
-            {
-                e.Value.CustomButtonText = "☑️";
-            }
-            else if (e.Value.CustomButtonText == "☑️")
-            {
-                e.Value.CustomButtonText = "✔️";
-            }
-            else if (e.Value.CustomButtonIconSvg == "MoreOutlined")
-            {
-                AntdUI.ContextMenuStrip.open(this, it =>
-                {
-                    AntdUI.Message.info(this.form, "点击内容：" + it.Text);
-                }, new AntdUI.IContextMenuStripItem[]
-                {
-                    new AntdUI.ContextMenuStripItem("操作 1").SetIcon("CheckOutlined"),
-                    new AntdUI.ContextMenuStripItem("操作 2").SetIcon("DeleteOutlined"),
-                });
-            }else if (e.Value.ID== "CustomButtonIcon")
-            {
-                AntdUI.Message.info(this.form, "点击内容：" + e.Value.Text);
-            }
-
         }
 
         private void switch1_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
@@ -85,7 +55,6 @@ namespace Demo.Controls
             if (e.Value) menu2.Width = menu2.CollapseWidth;
             else menu2.Width = menu2.CollapsedWidth;
         }
-
         private void switch3_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             if (e.Value)
@@ -101,9 +70,7 @@ namespace Demo.Controls
                 else menu3.BackColor = BackColor;
             }
         }
-
         private void switch4_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => menu3.Collapsed = e.Value;
-
         private void switch5_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             if (e.Value)

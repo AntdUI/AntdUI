@@ -23,7 +23,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -45,28 +44,13 @@ namespace AntdUI.Controls.Charts
     [Description("Chart 图表控件")]
     [ToolboxItem(true)]
     [DefaultProperty("ChartType")]
-    public class Chart : IControl, IEventListener
+    public class Chart : IControl
     {
-        private System.Windows.Forms.Timer? animationTimer;
         private TooltipForm? tooltipForm;
-
-        public Chart() : base(ControlType.Default)
-        {
-            // 初始化动画定时器
-            animationTimer = new System.Windows.Forms.Timer();
-            animationTimer.Interval = 16; // 60 FPS
-            animationTimer.Tick += AnimationTimer_Tick;
-
-            // 初始化工具提示
-            // tooltipForm将在需要时动态创建
-
-            // 注册主题变化事件
-            EventHub.AddListener(this);
-        }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) animationTimer?.Dispose();
+            if (disposing) animationTask?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -175,8 +159,8 @@ namespace AntdUI.Controls.Charts
         /// <summary>
         /// 动画持续时间（毫秒）
         /// </summary>
-        [Description("动画持续时间（毫秒）"), Category("行为"), DefaultValue(1000)]
-        public int AnimationDuration { get; set; } = 1000;
+        [Description("动画持续时间（毫秒）"), Category("行为"), DefaultValue(200)]
+        public int AnimationDuration { get; set; } = 200;
 
         /// <summary>
         /// 内边距
@@ -218,7 +202,7 @@ namespace AntdUI.Controls.Charts
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public float AnimationProgress { get; private set; } = 1.0f;
+        public float AnimationProgress { get; private set; } = 1F;
 
         /// <summary>
         /// 当前悬停的数据点
@@ -253,30 +237,29 @@ namespace AntdUI.Controls.Charts
 
         #region 动画和工具提示
 
-        private void AnimationTimer_Tick(object sender, EventArgs e)
-        {
-            if (EnableAnimation && Config.Animation)
-            {
-                AnimationProgress += 0.05f;
-                if (AnimationProgress >= 1.0f)
-                {
-                    AnimationProgress = 1.0f;
-                    animationTimer?.Stop();
-                }
-                Invalidate();
-            }
-        }
-
+        ITask? animationTask;
         private void StartAnimation()
         {
+            animationTask?.Dispose();
             if (EnableAnimation && Config.Animation)
             {
-                AnimationProgress = 0.0f;
-                animationTimer?.Start();
+                AnimationProgress = 0F;
+                var t = Animation.TotalFrames(10, AnimationDuration);
+                animationTask = new ITask((i) =>
+                {
+                    AnimationProgress = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    Invalidate();
+                    return true;
+                }, 10, t, () =>
+                {
+                    AnimationProgress = 1F;
+                    Invalidate();
+                });
             }
+            else AnimationProgress = 1F;
         }
 
-        private void ShowTooltipInternal(ChartDataPoint point, Point location)
+        private void ShowTooltipInternal(ChartDataPoint point, int x, int y)
         {
             if (!ShowTooltip) return;
 
@@ -284,18 +267,12 @@ namespace AntdUI.Controls.Charts
             HideTooltip();
 
             var tooltipText = $"{point.Label}\nX: {point.X:F2}\nY: {point.Y:F2}";
-            if (point.Radius > 0)
-            {
-                tooltipText += $"\nSize: {point.Radius:F2}";
-            }
-
-            // 将控件坐标转换为屏幕坐标
-            var screenLocation = location;
+            if (point.Radius > 0) tooltipText += $"\nSize: {point.Radius:F2}";
 
             // 创建tooltip配置，使用屏幕坐标
             var config = new Tooltip.Config(this, tooltipText)
             {
-                Offset = new Rectangle(screenLocation.X, screenLocation.Y, 1, 1),
+                Offset = new Rectangle(x, y, 1, 1),
                 Font = Font,
                 ArrowAlign = TAlign.Top
             };
@@ -309,19 +286,6 @@ namespace AntdUI.Controls.Charts
         {
             tooltipForm?.Close();
             tooltipForm = null;
-        }
-
-        #endregion
-
-        #region IEventListener 实现
-
-        public void HandleEvent(EventType id, object? tag)
-        {
-            if (id == EventType.THEME)
-            {
-                // 主题变化时重新绘制
-                Invalidate();
-            }
         }
 
         #endregion
@@ -360,124 +324,39 @@ namespace AntdUI.Controls.Charts
         /// <summary>
         /// 刷新图表
         /// </summary>
-        public void RefreshChart()
-        {
-            Invalidate();
-        }
-
-        /// <summary>
-        /// 导出图表为PNG图片
-        /// </summary>
-        /// <returns>图片对象</returns>
-        public Bitmap? ExportChart()
-        {
-            return ExportChart(ImageFormat.Png);
-        }
-
-        /// <summary>
-        /// 导出图表为指定格式的图片
-        /// </summary>
-        /// <param name="format">图片格式</param>
-        /// <returns>图片对象</returns>
-        public Bitmap? ExportChart(ImageFormat format)
-        {
-            try
-            {
-                var bitmap = new Bitmap(Width, Height);
-                using (var graphics = Graphics.FromImage(bitmap))
-                {
-                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-                    DrawChart(graphics, new Rectangle(0, 0, Width, Height));
-                }
-                return bitmap;
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        public void RefreshChart() => Invalidate();
 
         #endregion
 
-        #region 重写方法
+        #region 渲染
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            base.OnPaint(e);
-            var g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-            var rect = ClientRectangle;
-            if (rect.Width <= 0 || rect.Height <= 0) return;
-
-            DrawChart(g, rect);
+            base.OnDraw(e);
+            DrawChart(e.Canvas, e.Rect);
         }
-
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            base.OnMouseClick(e);
-            HandleMouseClick(e.Location);
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            if (ShowTooltip)
-            {
-                HandleMouseMove(e.Location);
-            }
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            HideTooltip();
-        }
-
-        #endregion
 
         #region 私有方法
 
-        private void DrawChart(Graphics g, Rectangle rect)
+        private void DrawChart(Canvas g, Rectangle rect)
         {
-            // 绘制背景
-            var backColor = Config.IsDark ? Color.FromArgb(30, 30, 30) : BackColor;
-            using (var brush = new SolidBrush(backColor))
-            {
-                g.FillRectangle(brush, rect);
-            }
-
             // 计算图表区域
             var chartRect = CalculateChartRect(rect);
 
             // 绘制标题
-            if (!string.IsNullOrEmpty(Title))
-            {
-                DrawTitle(g, rect, chartRect);
-            }
-
-            // 绘制图例
-            if (ShowLegend && Datasets.Count > 0)
-            {
-                DrawLegend(g, rect, chartRect);
-            }
+            DrawTitle(g, rect, chartRect);
 
             // 绘制网格
-            if (ShowGrid)
-            {
-                DrawGrid(g, chartRect);
-            }
+            if (ShowGrid) DrawGrid(g, chartRect);
 
             // 绘制坐标轴
-            if (ShowAxes)
-            {
-                DrawAxes(g, chartRect);
-            }
+            if (ShowAxes) DrawAxes(g, chartRect);
 
             // 绘制图表数据
             DrawChartData(g, chartRect);
+
+            // 绘制图例
+            if (ShowLegend && Datasets.Count > 0) DrawLegend(g, rect, chartRect);
         }
 
         private Rectangle CalculateChartRect(Rectangle rect)
@@ -516,26 +395,17 @@ namespace AntdUI.Controls.Charts
             return chartRect;
         }
 
-        private void DrawTitle(Graphics g, Rectangle rect, Rectangle chartRect)
+        private void DrawTitle(Canvas g, Rectangle rect, Rectangle chartRect)
         {
-            if (string.IsNullOrEmpty(Title)) return;
-
+            if (Title == null) return;
             var titleFont = TitleFont ?? Font;
-            var titleColor = TitleColor.HasValue ? TitleColor.Value : (Config.IsDark ? Color.White : ForeColor);
-            var titleBrush = new SolidBrush(titleColor);
-
-            var titleSize = g.MeasureString(Title, titleFont);
-            var titleX = rect.X + (rect.Width - titleSize.Width) / 2;
-            var titleY = rect.Y + 5;
-
-            g.DrawString(Title, titleFont, titleBrush, titleX, titleY);
+            var titleSize = g.MeasureString(Title, titleFont).SizeEm(titleFont);
+            g.DrawText(Title, titleFont, TitleColor ?? Style.Db.Text, new Rectangle(rect.X + (rect.Width - titleSize.Width) / 2, rect.Y, titleSize.Width, titleSize.Height));
         }
 
-        private void DrawLegend(Graphics g, Rectangle rect, Rectangle chartRect)
+        private void DrawLegend(Canvas g, Rectangle rect, Rectangle chartRect)
         {
-            if (Datasets.Count == 0) return;
-
-            var legendItems = new List<LegendItem>();
+            var legendItems = new List<LegendItem>(Datasets.Count);
             foreach (var dataset in Datasets)
             {
                 if (dataset.Visible)
@@ -555,42 +425,41 @@ namespace AntdUI.Controls.Charts
             var legendBackColor = LegendBackColor ?? (Config.IsDark ? Color.FromArgb(45, 45, 45) : Color.FromArgb(240, 240, 240));
             using (var brush = new SolidBrush(legendBackColor))
             {
-                g.FillRectangle(brush, legendRect);
+                g.Fill(brush, legendRect);
             }
 
             // 绘制图例边框
             var legendBorderColor = LegendBorderColor ?? (Config.IsDark ? Color.FromArgb(70, 70, 70) : Color.LightGray);
-            using (var pen = new Pen(legendBorderColor))
+            using (var pen = new Pen(legendBorderColor, Config.Dpi))
             {
-                g.DrawRectangle(pen, legendRect);
+                g.Draw(pen, legendRect);
             }
 
             // 绘制图例项
-            var itemSpacing = 5;
-            var currentY = legendRect.Y + 5;
+            int itemSpacing = (int)(5 * Config.Dpi), colorBoxWidth = (int)(15 * Config.Dpi), colorBoxSpacing = (int)(25 * Config.Dpi), currentY = legendRect.Y + itemSpacing;
 
             foreach (var item in legendItems)
             {
                 // 计算文本尺寸
                 var textSize = g.MeasureString(item.Label, Font);
-                var itemHeight = Math.Max(15, (int)textSize.Height); // 最小高度15像素
+                var itemHeight = Math.Max(colorBoxWidth, textSize.Height); // 最小高度15像素
 
                 // 绘制颜色框
-                var colorRect = new Rectangle(legendRect.X + 5, currentY + (itemHeight - 15) / 2, 15, 15);
+                var colorRect = new Rectangle(legendRect.X + itemSpacing, currentY + (itemHeight - colorBoxWidth) / 2, colorBoxWidth, colorBoxWidth);
                 using (var brush = new SolidBrush(item.Color))
                 {
-                    g.FillRectangle(brush, colorRect);
+                    g.Fill(brush, colorRect);
                 }
-                using (var pen = new Pen(Config.IsDark ? Color.White : Color.Black))
+                using (var pen = new Pen(Config.IsDark ? Color.White : Color.Black, Config.Dpi))
                 {
-                    g.DrawRectangle(pen, colorRect);
+                    g.Draw(pen, colorRect);
                 }
 
                 // 绘制标签
                 var textColor = Config.IsDark ? Color.White : ForeColor;
                 using (var brush = new SolidBrush(textColor))
                 {
-                    g.DrawString(item.Label, Font, brush, legendRect.X + 25, currentY + (itemHeight - textSize.Height) / 2);
+                    g.String(item.Label, Font, brush, legendRect.X + colorBoxSpacing, currentY + (itemHeight - textSize.Height) / 2);
                 }
 
                 currentY += itemHeight + itemSpacing;
@@ -599,27 +468,25 @@ namespace AntdUI.Controls.Charts
 
         private Rectangle CalculateLegendRect(Rectangle rect, Size legendSize)
         {
-            var legendWidth = legendSize.Width;
-            var legendHeight = legendSize.Height;
-            var legendX = 0;
-            var legendY = 0;
+            int itemSpacing = (int)(5 * Config.Dpi);
+            int legendWidth = legendSize.Width, legendHeight = legendSize.Height, legendX = 0, legendY = 0;
 
             switch (LegendPosition)
             {
                 case ContentAlignment.TopLeft:
-                    legendX = rect.X + 5;
-                    legendY = rect.Y + 5;
+                    legendX = rect.X + itemSpacing;
+                    legendY = rect.Y + itemSpacing;
                     break;
                 case ContentAlignment.TopCenter:
                     legendX = rect.X + (rect.Width - legendWidth) / 2;
-                    legendY = rect.Y + 5;
+                    legendY = rect.Y + itemSpacing;
                     break;
                 case ContentAlignment.TopRight:
                     legendX = rect.Right - legendWidth - 5;
-                    legendY = rect.Y + 5;
+                    legendY = rect.Y + itemSpacing;
                     break;
                 case ContentAlignment.MiddleLeft:
-                    legendX = rect.X + 5;
+                    legendX = rect.X + itemSpacing;
                     legendY = rect.Y + (rect.Height - legendHeight) / 2;
                     break;
                 case ContentAlignment.MiddleCenter:
@@ -627,50 +494,43 @@ namespace AntdUI.Controls.Charts
                     legendY = rect.Y + (rect.Height - legendHeight) / 2;
                     break;
                 case ContentAlignment.MiddleRight:
-                    legendX = rect.Right - legendWidth - 5;
+                    legendX = rect.Right - legendWidth - itemSpacing;
                     legendY = rect.Y + (rect.Height - legendHeight) / 2;
                     break;
                 case ContentAlignment.BottomLeft:
-                    legendX = rect.X + 5;
-                    legendY = rect.Bottom - legendHeight - 5;
+                    legendX = rect.X + itemSpacing;
+                    legendY = rect.Bottom - legendHeight - itemSpacing;
                     break;
                 case ContentAlignment.BottomCenter:
                     legendX = rect.X + (rect.Width - legendWidth) / 2;
-                    legendY = rect.Bottom - legendHeight - 5;
+                    legendY = rect.Bottom - legendHeight - itemSpacing;
                     break;
                 case ContentAlignment.BottomRight:
-                    legendX = rect.Right - legendWidth - 5;
-                    legendY = rect.Bottom - legendHeight - 5;
+                    legendX = rect.Right - legendWidth - itemSpacing;
+                    legendY = rect.Bottom - legendHeight - itemSpacing;
                     break;
             }
 
             return new Rectangle(legendX, legendY, legendWidth, legendHeight);
         }
 
-        private Size CalculateLegendSize(Graphics g, List<LegendItem> legendItems)
+        private Size CalculateLegendSize(Canvas g, List<LegendItem> legendItems)
         {
-            var itemSpacing = 5;
-            var colorBoxWidth = 15;
-            var colorBoxSpacing = 10;
-            var padding = 5;
+            int itemSpacing = (int)(5 * Config.Dpi), colorBoxWidth = (int)(15 * Config.Dpi), colorBoxSpacing = (int)(10 * Config.Dpi), padding = itemSpacing;
 
             // 计算最大文本宽度和总高度
-            var maxTextWidth = 0;
-            var totalHeight = padding;
+            int maxTextWidth = 0, totalHeight = padding;
 
             foreach (var item in legendItems)
             {
                 var textSize = g.MeasureString(item.Label, Font);
-                maxTextWidth = Math.Max(maxTextWidth, (int)textSize.Width);
-                var itemHeight = Math.Max(15, (int)textSize.Height);
+                maxTextWidth = Math.Max(maxTextWidth, textSize.Width);
+                var itemHeight = Math.Max(colorBoxWidth, textSize.Height);
                 totalHeight += itemHeight + itemSpacing;
             }
 
             // 减去最后一个间距
-            if (legendItems.Count > 0)
-            {
-                totalHeight -= itemSpacing;
-            }
+            if (legendItems.Count > 0) totalHeight -= itemSpacing;
             totalHeight += padding;
 
             // 计算总宽度：左边距 + 颜色框宽度 + 间距 + 文本宽度 + 右边距
@@ -681,17 +541,14 @@ namespace AntdUI.Controls.Charts
 
         private int CalculateLegendHeight()
         {
-            var itemHeight = 20;
-            var itemSpacing = 5;
+            int itemSpacing = (int)(5 * Config.Dpi), itemHeight = (int)(20 * Config.Dpi);
             var visibleCount = Datasets.Count(d => d.Visible);
             return visibleCount * (itemHeight + itemSpacing) + 10;
         }
 
-        private void DrawGrid(Graphics g, Rectangle chartRect)
+        private void DrawGrid(Canvas g, Rectangle chartRect)
         {
-            var defaultGridColor = Config.IsDark ? Color.FromArgb(60, 60, 60) : Color.LightGray;
-            var gridColor = GridColor.HasValue ? GridColor.Value : defaultGridColor;
-            using (var pen = new Pen(gridColor, 1))
+            using (var pen = new Pen(GridColor ?? Style.Db.BorderColor, Config.Dpi))
             {
                 pen.DashStyle = DashStyle.Dot;
 
@@ -713,11 +570,9 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawAxes(Graphics g, Rectangle chartRect)
+        private void DrawAxes(Canvas g, Rectangle chartRect)
         {
-            var defaultAxisColor = Config.IsDark ? Color.FromArgb(80, 80, 80) : Color.LightGray;
-            var axisColor = AxisColor.HasValue ? AxisColor.Value : defaultAxisColor;
-            using (var pen = new Pen(axisColor, 2))
+            using (var pen = new Pen(AxisColor ?? Style.Db.BorderColor, Config.Dpi * 2))
             {
                 // X轴
                 g.DrawLine(pen, chartRect.X, chartRect.Bottom, chartRect.Right, chartRect.Bottom);
@@ -726,7 +581,7 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawChartData(Graphics g, Rectangle chartRect)
+        private void DrawChartData(Canvas g, Rectangle chartRect)
         {
             switch (ChartType)
             {
@@ -781,64 +636,7 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void HandleMouseClick(Point location)
-        {
-            // 实现鼠标点击处理逻辑
-            var chartRect = CalculateChartRect(ClientRectangle);
-            if (chartRect.Contains(location))
-            {
-                var point = FindNearestDataPoint(location, chartRect);
-                if (point != null)
-                {
-                    PointClick?.Invoke(this, new ChartPointClickEventArgs(point));
-                }
-                else
-                {
-                    AreaClick?.Invoke(this, new ChartAreaClickEventArgs(location));
-                }
-            }
-        }
-
-        private void HandleMouseMove(Point location)
-        {
-            if (!ShowTooltip) return;
-
-            var chartRect = CalculateChartRect(ClientRectangle);
-            if (chartRect.Contains(location))
-            {
-                var point = FindNearestDataPointForHover(location, chartRect);
-                if (point != null)
-                {
-                    // 只有当悬停的数据点发生变化时才更新tooltip
-                    if (HoveredPoint != point)
-                    {
-                        HoveredPoint = point;
-                        ShowTooltipInternal(point, location);
-                        PointHover?.Invoke(this, new ChartPointHoverEventArgs(point, location));
-                    }
-                }
-                else
-                {
-                    // 没有找到数据点时隐藏tooltip
-                    if (HoveredPoint != null)
-                    {
-                        HoveredPoint = null;
-                        HideTooltip();
-                    }
-                }
-            }
-            else
-            {
-                // 鼠标移出图表区域时隐藏tooltip
-                if (HoveredPoint != null)
-                {
-                    HoveredPoint = null;
-                    HideTooltip();
-                }
-            }
-        }
-
-        private ChartDataPoint? FindNearestDataPointForHover(Point location, Rectangle chartRect)
+        private ChartDataPoint? FindNearestDataPointForHover(int x, int y, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return null;
 
@@ -853,7 +651,7 @@ namespace AntdUI.Controls.Charts
                     if (!point.Visible) continue;
 
                     var pointLocation = GetDataPointLocation(point, chartRect);
-                    var distance = Math.Sqrt(Math.Pow(location.X - pointLocation.X, 2) + Math.Pow(location.Y - pointLocation.Y, 2));
+                    var distance = Math.Sqrt(Math.Pow(x - pointLocation.X, 2) + Math.Pow(y - pointLocation.Y, 2));
 
                     if (distance < minDistance && distance < 10) // 10像素的悬停范围
                     {
@@ -866,7 +664,7 @@ namespace AntdUI.Controls.Charts
             return nearestPoint;
         }
 
-        private ChartDataPoint? FindNearestDataPoint(Point location, Rectangle chartRect)
+        private ChartDataPoint? FindNearestDataPoint(int x, int y, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return null;
 
@@ -883,7 +681,7 @@ namespace AntdUI.Controls.Charts
                     if (!point.Visible) continue;
 
                     var pointLocation = GetDataPointLocation(point, chartRect);
-                    var distance = Math.Sqrt(Math.Pow(location.X - pointLocation.X, 2) + Math.Pow(location.Y - pointLocation.Y, 2));
+                    var distance = Math.Sqrt(Math.Pow(x - pointLocation.X, 2) + Math.Pow(y - pointLocation.Y, 2));
 
                     if (distance < minDistance && distance < 10) // 10像素的点击范围
                     {
@@ -1022,26 +820,19 @@ namespace AntdUI.Controls.Charts
             return Datasets.Where(d => d.Visible).Max(d => d.DataPoints.Count > 0 ? d.DataPoints.Max(p => p.Y) : 0);
         }
 
-        private double GetXRange()
-        {
-            return GetMaxX() - GetMinX();
-        }
+        private double GetXRange() => GetMaxX() - GetMinX();
 
-        private double GetYRange()
-        {
-            return GetMaxY() - GetMinY();
-        }
+        private double GetYRange() => GetMaxY() - GetMinY();
 
         #endregion
 
         #region 图表绘制方法
 
-        private void DrawLineChart(Graphics g, Rectangle chartRect)
+        private void DrawLineChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 1))
@@ -1058,7 +849,7 @@ namespace AntdUI.Controls.Charts
 
                 // 绘制线条
                 var lineColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue);
-                using (var pen = new Pen(lineColor, dataset.BorderWidth))
+                using (var pen = new Pen(lineColor, dataset.BorderWidth * Config.Dpi))
                 {
                     g.DrawLines(pen, points.ToArray());
                 }
@@ -1067,20 +858,20 @@ namespace AntdUI.Controls.Charts
                 var pointColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : lineColor;
                 using (var brush = new SolidBrush(pointColor))
                 {
+                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
-                        g.FillEllipse(brush, point.X - 3, point.Y - 3, 6, 6);
+                        g.FillEllipse(brush, new Rectangle(point.X - tSize, point.Y - tSize, tSize2, tSize2));
                     }
                 }
             }
         }
 
-        private void DrawBarChart(Graphics g, Rectangle chartRect)
+        private void DrawBarChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double mx = GetMinX(), my = GetMinY(), xRange = GetMaxX() - mx, yRange = GetMaxY() - mx;
             if (xRange == 0 || yRange == 0) return;
 
             var barWidth = chartRect.Width / (Datasets.Count * 10); // 动态计算柱宽
@@ -1090,29 +881,29 @@ namespace AntdUI.Controls.Charts
             {
                 var barColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue;
                 using (var brush = new SolidBrush(barColor))
-                using (var pen = new Pen(dataset.BorderColor.HasValue ? dataset.BorderColor.Value : Color.Black, dataset.BorderWidth))
+                using (var pen = new Pen(dataset.BorderColor.HasValue ? dataset.BorderColor.Value : Color.Black, dataset.BorderWidth * Config.Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
-                        var x = chartRect.X + (float)((dataPoint.X - GetMinX()) / xRange * chartRect.Width);
-                        var barHeight = (float)((dataPoint.Y - GetMinY()) / yRange * chartRect.Height * AnimationProgress);
-                        var y = chartRect.Bottom - barHeight;
-
-                        var barRect = new RectangleF(x - barWidth / 2, y, barWidth, barHeight);
-                        g.FillRectangle(brush, barRect);
-                        g.DrawRectangle(pen, barRect.X, barRect.Y, barRect.Width, barRect.Height);
+                        var barHeight = (float)((dataPoint.Y - my) / yRange * chartRect.Height * AnimationProgress);
+                        if (barHeight > 0)
+                        {
+                            float x = chartRect.X + (float)((dataPoint.X - mx) / xRange * chartRect.Width), y = chartRect.Bottom - barHeight;
+                            var barRect = new RectangleF(x - barWidth / 2, y, barWidth, barHeight);
+                            g.Fill(brush, barRect);
+                            g.Draw(pen, barRect);
+                        }
                     }
                 }
                 datasetIndex++;
             }
         }
 
-        private void DrawAreaChart(Graphics g, Rectangle chartRect)
+        private void DrawAreaChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 1))
@@ -1140,19 +931,18 @@ namespace AntdUI.Controls.Charts
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
                 {
                     g.DrawLines(pen, points.Take(points.Count - 2).ToArray());
                 }
             }
         }
 
-        private void DrawPieChart(Graphics g, Rectangle chartRect)
+        private void DrawPieChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var centerX = chartRect.X + chartRect.Width / 2;
-            var centerY = chartRect.Y + chartRect.Height / 2;
+            int centerX = chartRect.X + chartRect.Width / 2, centerY = chartRect.Y + chartRect.Height / 2;
             var radius = Math.Min(chartRect.Width, chartRect.Height) / 2 - 20;
 
             var totalValue = 0.0;
@@ -1200,7 +990,7 @@ namespace AntdUI.Controls.Charts
                     using (var brush = new SolidBrush(labelColor))
                     {
                         var labelSize = g.MeasureString(point.Label, Font);
-                        g.DrawString(point.Label, Font, brush, labelX - labelSize.Width / 2, labelY - labelSize.Height / 2);
+                        g.String(point.Label, Font, brush, labelX - labelSize.Width / 2, labelY - labelSize.Height / 2);
                     }
                 }
 
@@ -1208,12 +998,11 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawDoughnutChart(Graphics g, Rectangle chartRect)
+        private void DrawDoughnutChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var centerX = chartRect.X + chartRect.Width / 2;
-            var centerY = chartRect.Y + chartRect.Height / 2;
+            int centerX = chartRect.X + chartRect.Width / 2, centerY = chartRect.Y + chartRect.Height / 2;
             var outerRadius = Math.Min(chartRect.Width, chartRect.Height) / 2 - 20;
             var innerRadius = outerRadius * 0.6f; // 内半径是外半径的60%
 
@@ -1274,7 +1063,7 @@ namespace AntdUI.Controls.Charts
                     using (var brush = new SolidBrush(labelColor))
                     {
                         var labelSize = g.MeasureString(point.Label, Font);
-                        g.DrawString(point.Label, Font, brush, labelX - labelSize.Width / 2, labelY - labelSize.Height / 2);
+                        g.String(point.Label, Font, brush, labelX - labelSize.Width / 2, labelY - labelSize.Height / 2);
                     }
                 }
 
@@ -1282,12 +1071,11 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawScatterChart(Graphics g, Rectangle chartRect)
+        private void DrawScatterChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible))
@@ -1297,7 +1085,7 @@ namespace AntdUI.Controls.Charts
                 var pointSize = 6;
 
                 using (var brush = new SolidBrush(pointColor))
-                using (var pen = new Pen(borderColor, dataset.BorderWidth))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
@@ -1306,18 +1094,17 @@ namespace AntdUI.Controls.Charts
 
                         var rect = new RectangleF(x - pointSize / 2, y - pointSize / 2, pointSize, pointSize);
                         g.FillEllipse(brush, rect);
-                        g.DrawEllipse(pen, rect.X, rect.Y, rect.Width, rect.Height);
+                        g.DrawEllipse(pen, rect);
                     }
                 }
             }
         }
 
-        private void DrawBubbleChart(Graphics g, Rectangle chartRect)
+        private void DrawBubbleChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             var radiusRange = GetRadiusRange();
             if (xRange == 0 || yRange == 0) return;
 
@@ -1327,7 +1114,7 @@ namespace AntdUI.Controls.Charts
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : Color.Black;
 
                 using (var brush = new SolidBrush(Color.FromArgb((int)(255 * dataset.Opacity), pointColor)))
-                using (var pen = new Pen(borderColor, dataset.BorderWidth))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
@@ -1339,7 +1126,7 @@ namespace AntdUI.Controls.Charts
 
                         var rect = new RectangleF(x - radius, y - radius, radius * 2, radius * 2);
                         g.FillEllipse(brush, rect);
-                        g.DrawEllipse(pen, rect.X, rect.Y, rect.Width, rect.Height);
+                        g.DrawEllipse(pen, rect);
                     }
                 }
             }
@@ -1351,12 +1138,11 @@ namespace AntdUI.Controls.Charts
             return Datasets.Where(d => d.Visible).Max(d => d.DataPoints.Count > 0 ? d.DataPoints.Max(p => p.Radius) : 0);
         }
 
-        private void DrawRadarChart(Graphics g, Rectangle chartRect)
+        private void DrawRadarChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var centerX = chartRect.X + chartRect.Width / 2;
-            var centerY = chartRect.Y + chartRect.Height / 2;
+            int centerX = chartRect.X + chartRect.Width / 2, centerY = chartRect.Y + chartRect.Height / 2;
             var radius = Math.Min(chartRect.Width, chartRect.Height) / 2 - 40;
 
             // 绘制雷达网格
@@ -1418,7 +1204,7 @@ namespace AntdUI.Controls.Charts
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
                 {
                     g.DrawPolygon(pen, points);
                 }
@@ -1426,20 +1212,20 @@ namespace AntdUI.Controls.Charts
                 // 绘制数据点
                 using (var brush = new SolidBrush(fillColor))
                 {
+                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
-                        g.FillEllipse(brush, point.X - 3, point.Y - 3, 6, 6);
+                        g.FillEllipse(brush, new Rectangle(point.X - tSize, point.Y - tSize, tSize2, tSize2));
                     }
                 }
             }
         }
 
-        private void DrawPolarAreaChart(Graphics g, Rectangle chartRect)
+        private void DrawPolarAreaChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var centerX = chartRect.X + chartRect.Width / 2;
-            var centerY = chartRect.Y + chartRect.Height / 2;
+            int centerX = chartRect.X + chartRect.Width / 2, centerY = chartRect.Y + chartRect.Height / 2;
             var maxRadius = Math.Min(chartRect.Width, chartRect.Height) / 2 - 40; // 增加边距避免重叠
 
             var visiblePoints = new List<ChartDataPoint>();
@@ -1502,7 +1288,7 @@ namespace AntdUI.Controls.Charts
                     using (var brush = new SolidBrush(labelColor))
                     {
                         var labelSize = g.MeasureString(point.Label, Font);
-                        g.DrawString(point.Label, Font, brush, labelX - labelSize.Width / 2, labelY - labelSize.Height / 2);
+                        g.String(point.Label, Font, brush, labelX - labelSize.Width / 2, labelY - labelSize.Height / 2);
                     }
                 }
 
@@ -1510,12 +1296,11 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawSplineChart(Graphics g, Rectangle chartRect)
+        private void DrawSplineChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 2))
@@ -1532,7 +1317,7 @@ namespace AntdUI.Controls.Charts
 
                 // 绘制样条曲线
                 var lineColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue);
-                using (var pen = new Pen(lineColor, dataset.BorderWidth))
+                using (var pen = new Pen(lineColor, dataset.BorderWidth * Config.Dpi))
                 {
                     DrawSplineCurve(g, pen, points.ToArray());
                 }
@@ -1541,29 +1326,31 @@ namespace AntdUI.Controls.Charts
                 var pointColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : lineColor;
                 using (var brush = new SolidBrush(pointColor))
                 {
+                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
-                        g.FillEllipse(brush, point.X - 3, point.Y - 3, 6, 6);
+                        g.FillEllipse(brush, new RectangleF(point.X - tSize, point.Y - tSize, tSize2, tSize2));
                     }
                 }
             }
         }
 
-        private void DrawSplineCurve(Graphics g, Pen pen, PointF[] points)
+        private void DrawSplineCurve(Canvas g, Pen pen, PointF[] points)
         {
             if (points.Length < 3) return;
 
-            var path = new GraphicsPath();
-            path.AddCurve(points, 0.5f); // 张力参数0.5
-            g.DrawPath(pen, path);
+            using (var path = new GraphicsPath())
+            {
+                path.AddCurve(points, 0.5f); // 张力参数0.5
+                g.Draw(pen, path);
+            }
         }
 
-        private void DrawSplineAreaChart(Graphics g, Rectangle chartRect)
+        private void DrawSplineAreaChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 2))
@@ -1585,32 +1372,31 @@ namespace AntdUI.Controls.Charts
                 // 绘制填充区域
                 var fillColor = dataset.FillColor ?? Color.Blue;
                 using (var brush = new SolidBrush(Color.FromArgb((int)(255 * dataset.Opacity), fillColor)))
+                using (var path = new GraphicsPath())
                 {
-                    var path = new GraphicsPath();
                     path.AddCurve(points.Take(points.Count - 2).ToArray(), 0.5f);
                     path.AddLine(points[points.Count - 3], points[points.Count - 2]);
                     path.AddLine(points[points.Count - 2], points[points.Count - 1]);
                     path.CloseFigure();
-                    g.FillPath(brush, path);
+                    g.Fill(brush, path);
                 }
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var path = new GraphicsPath())
                 {
-                    var path = new GraphicsPath();
                     path.AddCurve(points.Take(points.Count - 2).ToArray(), 0.5f);
-                    g.DrawPath(pen, path);
+                    g.Draw(pen, path);
                 }
             }
         }
 
-        private void DrawHorizontalBarChart(Graphics g, Rectangle chartRect)
+        private void DrawHorizontalBarChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             var barHeight = chartRect.Height / (Datasets.Count * 10); // 动态计算柱高
@@ -1620,7 +1406,7 @@ namespace AntdUI.Controls.Charts
             {
                 var barColor = dataset.FillColor ?? Color.Blue;
                 using (var brush = new SolidBrush(barColor))
-                using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth))
+                using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Config.Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
@@ -1629,20 +1415,19 @@ namespace AntdUI.Controls.Charts
                         var x = chartRect.X;
 
                         var barRect = new RectangleF(x, y - barHeight / 2, barWidth, barHeight);
-                        g.FillRectangle(brush, barRect);
-                        g.DrawRectangle(pen, barRect.X, barRect.Y, barRect.Width, barRect.Height);
+                        g.Fill(brush, barRect);
+                        g.Draw(pen, barRect);
                     }
                 }
                 datasetIndex++;
             }
         }
 
-        private void DrawStackedBarChart(Graphics g, Rectangle chartRect)
+        private void DrawStackedBarChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             var barWidth = chartRect.Width / 10; // 固定柱宽
@@ -1666,11 +1451,11 @@ namespace AntdUI.Controls.Charts
 
                         var barColor = dataset.FillColor ?? Color.Blue;
                         using (var brush = new SolidBrush(barColor))
-                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth))
+                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Config.Dpi))
                         {
                             var barRect = new RectangleF(x, y, barWidth, barHeight);
-                            g.FillRectangle(brush, barRect);
-                            g.DrawRectangle(pen, barRect.X, barRect.Y, barRect.Width, barRect.Height);
+                            g.Fill(brush, barRect);
+                            g.Draw(pen, barRect);
                         }
 
                         currentY = (int)y;
@@ -1679,12 +1464,11 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawStackedHorizontalBarChart(Graphics g, Rectangle chartRect)
+        private void DrawStackedHorizontalBarChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             var barHeight = chartRect.Height / 10; // 固定柱高
@@ -1708,11 +1492,11 @@ namespace AntdUI.Controls.Charts
 
                         var barColor = dataset.FillColor ?? Color.Blue;
                         using (var brush = new SolidBrush(barColor))
-                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth))
+                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Config.Dpi))
                         {
                             var barRect = new RectangleF(x, y, barWidth, barHeight);
-                            g.FillRectangle(brush, barRect);
-                            g.DrawRectangle(pen, barRect.X, barRect.Y, barRect.Width, barRect.Height);
+                            g.Fill(brush, barRect);
+                            g.Draw(pen, barRect);
                         }
 
                         currentX += (int)barWidth;
@@ -1721,12 +1505,11 @@ namespace AntdUI.Controls.Charts
             }
         }
 
-        private void DrawSteppedLineChart(Graphics g, Rectangle chartRect)
+        private void DrawSteppedLineChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 1))
@@ -1743,7 +1526,7 @@ namespace AntdUI.Controls.Charts
 
                 // 绘制阶梯线
                 var lineColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue);
-                using (var pen = new Pen(lineColor, dataset.BorderWidth))
+                using (var pen = new Pen(lineColor, dataset.BorderWidth * Config.Dpi))
                 {
                     for (int i = 0; i < points.Count - 1; i++)
                     {
@@ -1761,20 +1544,20 @@ namespace AntdUI.Controls.Charts
                 var pointColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : lineColor;
                 using (var brush = new SolidBrush(pointColor))
                 {
+                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
-                        g.FillEllipse(brush, point.X - 3, point.Y - 3, 6, 6);
+                        g.FillEllipse(brush, new Rectangle(point.X - tSize, point.Y - tSize, tSize2, tSize2));
                     }
                 }
             }
         }
 
-        private void DrawSteppedAreaChart(Graphics g, Rectangle chartRect)
+        private void DrawSteppedAreaChart(Canvas g, Rectangle chartRect)
         {
             if (Datasets.Count == 0) return;
 
-            var xRange = GetXRange();
-            var yRange = GetYRange();
+            double xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
             foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 1))
@@ -1814,10 +1597,81 @@ namespace AntdUI.Controls.Charts
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
                 {
                     g.DrawLines(pen, steppedPoints.Take(steppedPoints.Count - 2).ToArray());
                 }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region 鼠标
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            HandleMouseClick(e.X, e.Y);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (ShowTooltip) HandleMouseMove(e.X, e.Y);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            HideTooltip();
+        }
+
+        private void HandleMouseClick(int x, int y)
+        {
+            // 实现鼠标点击处理逻辑
+            var chartRect = CalculateChartRect(ClientRectangle);
+            if (chartRect.Contains(x, y))
+            {
+                var point = FindNearestDataPoint(x, y, chartRect);
+                if (point != null) PointClick?.Invoke(this, new ChartPointClickEventArgs(point));
+                else AreaClick?.Invoke(this, new ChartAreaClickEventArgs(new Point(x, y)));
+            }
+        }
+
+        private void HandleMouseMove(int x, int y)
+        {
+            if (!ShowTooltip) return;
+
+            var chartRect = CalculateChartRect(ClientRectangle);
+            if (chartRect.Contains(x, y))
+            {
+                var point = FindNearestDataPointForHover(x, y, chartRect);
+                if (point != null)
+                {
+                    // 只有当悬停的数据点发生变化时才更新tooltip
+                    if (HoveredPoint != point)
+                    {
+                        HoveredPoint = point;
+                        ShowTooltipInternal(point, x, y);
+                        PointHover?.Invoke(this, new ChartPointHoverEventArgs(point, new Point(x, y)));
+                    }
+                }
+                else
+                {
+                    // 没有找到数据点时隐藏tooltip
+                    if (HoveredPoint == null) return;
+                    HoveredPoint = null;
+                    HideTooltip();
+                }
+            }
+            else
+            {
+                // 鼠标移出图表区域时隐藏tooltip
+                if (HoveredPoint == null) return;
+                HoveredPoint = null;
+                HideTooltip();
             }
         }
 

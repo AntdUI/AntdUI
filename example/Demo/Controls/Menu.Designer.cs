@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -97,10 +97,10 @@ namespace Demo.Controls
             tableLayoutPanel1 = new TableLayoutPanel();
             panel2 = new System.Windows.Forms.Panel();
             switch4 = new AntdUI.Switch();
+            switch5 = new AntdUI.Switch();
             menu3 = new AntdUI.Menu();
             switch3 = new AntdUI.Switch();
             panel1 = new System.Windows.Forms.Panel();
-            switch5 = new AntdUI.Switch();
             switch2 = new AntdUI.Switch();
             switch1 = new AntdUI.Switch();
             divider3 = new AntdUI.Divider();
@@ -186,33 +186,23 @@ namespace Demo.Controls
             menu2.Dock = DockStyle.Left;
             menuItem8.IconSvg = "MailOutlined";
             menuItem8.Select = true;
-            menuItem9.CustomButtonIconSvg = "";
-            menuItem9.CustomButtonText = "✔️";
-            menuItem9.CustomButtonVisible = true;
-            menuItem9.IconSvg = "MenuOutlined";
             menuItem9.Select = true;
-            menuItem10.CustomButtonIconSvg = "MoreOutlined";
-            menuItem10.CustomButtonVisible = true;
-            menuItem10.IconSvg = "CheckCircleOutlined";
             menuItem10.Select = true;
             menuItem10.Text = "Option 1";
-            menuItem11.CustomButtonIcon = Properties.Resources.logo;
-            menuItem11.CustomButtonVisible = true;
+            menuItem10.IconSvg = "CheckCircleOutlined";
             menuItem11.IconSvg = "ClockCircleOutlined";
-            menuItem11.ID = "CustomButtonIcon";
             menuItem11.Text = "Option 2";
             menuItem9.Sub.Add(menuItem10);
             menuItem9.Sub.Add(menuItem11);
             menuItem9.Text = "Item 1";
-            menuItem12.CustomButtonIconSvg = "";
-            menuItem12.CustomButtonText = "";
-            menuItem12.Expand = false;
-            menuItem12.IconSvg = "InfoCircleOutlined";
+            menuItem9.IconSvg = "MenuOutlined";
             menuItem13.Text = "Option 3";
             menuItem14.Text = "Option 4";
             menuItem12.Sub.Add(menuItem13);
             menuItem12.Sub.Add(menuItem14);
             menuItem12.Text = "Item 2";
+            menuItem12.IconSvg = "InfoCircleOutlined";
+            menuItem12.Expand = false;
             menuItem8.Sub.Add(menuItem9);
             menuItem8.Sub.Add(menuItem12);
             menuItem8.Text = "Navigation One";
@@ -229,7 +219,6 @@ namespace Demo.Controls
             menuItem15.Sub.Add(menuItem17);
             menuItem15.Sub.Add(menuItem18);
             menuItem15.Text = "Navigation Two";
-            menuItem21.CustomButtonText = "";
             menuItem21.Expand = false;
             menuItem21.IconSvg = "SettingOutlined";
             menuItem22.Text = "Option 9";
@@ -292,6 +281,18 @@ namespace Demo.Controls
             switch4.UnCheckedText = "展开";
             switch4.CheckedChanged += switch4_CheckedChanged;
             // 
+            // switch5
+            // 
+            switch5.CheckedText = "平展";
+            switch5.LocalizationCheckedText = "Menu.flatten";
+            switch5.LocalizationUnCheckedText = "Menu.normal";
+            switch5.Location = new Point(267, 91);
+            switch5.Name = "switch5";
+            switch5.Size = new Size(84, 33);
+            switch5.TabIndex = 5;
+            switch5.UnCheckedText = "缩进";
+            switch5.CheckedChanged += switch5_CheckedChanged;
+            // 
             // menu3
             // 
             menu3.Dock = DockStyle.Left;
@@ -353,7 +354,7 @@ namespace Demo.Controls
             switch3.CheckedChanged += switch3_CheckedChanged;
             // 
             // panel1
-            // 
+            //
             panel1.Controls.Add(switch5);
             panel1.Controls.Add(switch2);
             panel1.Controls.Add(switch1);
@@ -364,18 +365,6 @@ namespace Demo.Controls
             panel1.Name = "panel1";
             panel1.Size = new Size(650, 460);
             panel1.TabIndex = 0;
-            // 
-            // switch5
-            // 
-            switch5.CheckedText = "平展";
-            switch5.LocalizationCheckedText = "Menu.flatten";
-            switch5.LocalizationUnCheckedText = "Menu.normal";
-            switch5.Location = new Point(267, 91);
-            switch5.Name = "switch5";
-            switch5.Size = new Size(84, 33);
-            switch5.TabIndex = 5;
-            switch5.UnCheckedText = "缩进";
-            switch5.CheckedChanged += switch5_CheckedChanged;
             // 
             // switch2
             // 
