@@ -157,7 +157,7 @@ namespace AntdUI
             {
                 case TAlign.TL:
                 case TAlign.LT:
-                    SetLocation(new Point(x + config.MarginY, y + config.MarginY));
+                    SetLocation(new Point(x + config.MarginX, y + config.MarginY));
                     break;
                 case TAlign.Top:
                     SetLocation(new Point(x + (w - TargetRect.Width) / 2, y + config.MarginY));
@@ -167,7 +167,7 @@ namespace AntdUI
                     SetLocation(new Point(x + w - config.MarginX - TargetRect.Width, y + config.MarginY));
                     break;
                 case TAlign.Left:
-                    SetLocation(new Point(x + config.MarginY, y + (h - TargetRect.Height) / 2));
+                    SetLocation(new Point(x + config.MarginX, y + (h - TargetRect.Height) / 2));
                     break;
                 case TAlign.Right:
                     SetLocation(new Point(x + w - config.MarginX - TargetRect.Width, y + (h - TargetRect.Height) / 2));
@@ -175,7 +175,7 @@ namespace AntdUI
 
                 case TAlign.BL:
                 case TAlign.LB:
-                    SetLocation(new Point(x + config.MarginY, y + h - config.MarginY - TargetRect.Height));
+                    SetLocation(new Point(x + config.MarginX, y + h - config.MarginY - TargetRect.Height));
                     break;
                 case TAlign.Bottom:
                     SetLocation(new Point(x + (w - TargetRect.Width) / 2, y + h - config.MarginY - TargetRect.Height));

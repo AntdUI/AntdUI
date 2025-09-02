@@ -580,12 +580,16 @@ namespace AntdUI
         {
             if (list.Count > 0)
             {
-                int w = rect_text.Right - list[list.Count - 1].rect.Right;
-                foreach (var it in list)
+                var last = list[list.Count - 1];
+                if (last.rect.Right < rect_text.Right)
                 {
-                    var rect_tmp = it.rect;
-                    rect_tmp.Offset(w, 0);
-                    it.rect = rect_tmp;
+                    int w = rect_text.Right - last.rect.Right;
+                    foreach (var it in list)
+                    {
+                        var rect_tmp = it.rect;
+                        rect_tmp.Offset(w, 0);
+                        it.rect = rect_tmp;
+                    }
                 }
                 list.Clear();
             }
@@ -594,12 +598,16 @@ namespace AntdUI
         {
             if (list.Count > 0)
             {
-                int w = (rect_text.Right - list[list.Count - 1].rect.Right) / 2;
-                foreach (var it in list)
+                var last = list[list.Count - 1];
+                if (last.rect.Right < rect_text.Right)
                 {
-                    var rect_tmp = it.rect;
-                    rect_tmp.Offset(w, 0);
-                    it.rect = rect_tmp;
+                    int w = (rect_text.Right - last.rect.Right) / 2;
+                    foreach (var it in list)
+                    {
+                        var rect_tmp = it.rect;
+                        rect_tmp.Offset(w, 0);
+                        it.rect = rect_tmp;
+                    }
                 }
                 list.Clear();
             }
