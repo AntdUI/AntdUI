@@ -35,7 +35,7 @@ namespace AntdUI
     [Description("Table 表格")]
     [DefaultEvent("CellClick")]
     [ToolboxItem(true)]
-    public partial class Table : IControl, IEventListener
+    public partial class Table : IControl, IEventListener, IScrollBar
     {
         #region 属性
 
@@ -57,6 +57,7 @@ namespace AntdUI
             {
                 if (columns == value) return;
                 SortHeader = null;
+                row_cache = null;
                 columns = value;
                 if (LoadLayout()) Invalidate();
                 if (value == null) return;
@@ -255,6 +256,12 @@ namespace AntdUI
         /// </summary>
         [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
         public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
+
+        /// <summary>
+        /// 虚拟行
+        /// </summary>
+        [Description("虚拟行"), Category("外观"), DefaultValue(false)]
+        public bool VirtualRow { get; set; }
 
         #region 间距
 

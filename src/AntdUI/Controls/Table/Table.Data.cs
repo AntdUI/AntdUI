@@ -31,6 +31,7 @@ namespace AntdUI
         bool dataOne = true;
         void ExtractData()
         {
+            row_cache = null;
             dataOne = true;
             dataTmp = null;
             if (columns != null)

@@ -23,10 +23,11 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    public class ScrollBar
+    public class ScrollBar : IScrollBar
     {
         #region 属性
 
+        IScrollBar? Target { get; set; }
         internal int Radius { get; set; }
         internal bool RB { get; set; }
 
@@ -79,6 +80,7 @@ namespace AntdUI
             EnabledX = enabledX;
             EnabledY = enabledY;
             Init();
+            if (control is IScrollBar scroll) Target = scroll;
         }
 
         void Init()
@@ -131,9 +133,11 @@ namespace AntdUI
             {
                 if (showY == value) return;
                 showY = value;
+                OnShowYChanged(value);
+                Target?.OnShowYChanged(value);
+                ShowYChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate(null);
                 ChangeSize?.Invoke();
-                ShowYChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -154,8 +158,10 @@ namespace AntdUI
                 }
                 if (valueY == value) return;
                 valueY = value;
-                Invalidate(null);
+                OnValueYChanged(value);
+                Target?.OnValueYChanged(value);
                 ValueYChanged?.Invoke(this, EventArgs.Empty);
+                Invalidate(null);
             }
         }
 
@@ -245,9 +251,11 @@ namespace AntdUI
             {
                 if (showX == value) return;
                 showX = value;
+                OnShowXChanged(value);
+                Target?.OnShowXChanged(value);
+                ShowXChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate(null);
                 ChangeSize?.Invoke();
-                ShowXChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -268,8 +276,10 @@ namespace AntdUI
                 }
                 if (valueX == value) return;
                 valueX = value;
-                Invalidate(null);
+                OnValueXChanged(value);
+                Target?.OnValueXChanged(value);
                 ValueXChanged?.Invoke(this, EventArgs.Empty);
+                Invalidate(null);
             }
         }
 
@@ -702,7 +712,7 @@ namespace AntdUI
                 if (slider.Contains(X, Y)) SliderX = slider.X;
                 else
                 {
-                    float read = RectX.Width - (showY ? SIZE : 0), x = ((X - RectY.X) - slider.Width / 2F) / read;
+                    float read = RectX.Width - (showY ? SIZE : 0), x = ((X - RectX.X) - slider.Width / 2F) / read;
                     ValueX = (int)Math.Round(x * maxX);
                     SliderX = RectSliderFullX().X;
                 }
@@ -1036,9 +1046,22 @@ namespace AntdUI
         public event EventHandler? ValueYChanged;
         public event EventHandler? ValueXChanged;
 
+        public virtual void OnShowXChanged(bool value) { }
+        public virtual void OnShowYChanged(bool value) { }
+        public virtual void OnValueXChanged(int value) { }
+        public virtual void OnValueYChanged(int value) { }
+
         #endregion
 
         public void Dispose()
         { ThreadHoverY?.Dispose(); ThreadHoverX?.Dispose(); }
+    }
+
+    public interface IScrollBar
+    {
+        void OnShowXChanged(bool value);
+        void OnShowYChanged(bool value);
+        void OnValueXChanged(int value);
+        void OnValueYChanged(int value);
     }
 }
