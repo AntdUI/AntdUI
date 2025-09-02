@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -229,6 +229,13 @@ namespace AntdUI
     public delegate void SelectEventHandler(object sender, MenuSelectEventArgs e);
 
     public delegate bool SelectBoolEventHandler(object sender, MenuSelectEventArgs e);
+
+    public class MenuCustomButtonEventArgs : VEventArgs<MenuItem>
+    {
+        public MenuCustomButtonEventArgs(MenuItem value) : base(value) { }
+    }
+
+    public delegate void MenuCustomButtonEventHandler(object sender, MenuCustomButtonEventArgs e);
 
     #endregion
 

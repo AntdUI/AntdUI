@@ -52,7 +52,8 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
-        Color? fore;
+        private Color? fore;
+
         /// <summary>
         /// 文字颜色
         /// </summary>
@@ -77,7 +78,8 @@ namespace AntdUI
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
-        int radius = 6;
+        private int radius = 6;
+
         /// <summary>
         /// 圆角
         /// </summary>
@@ -94,7 +96,8 @@ namespace AntdUI
             }
         }
 
-        bool round = false;
+        private bool round = false;
+
         /// <summary>
         /// 圆角样式
         /// </summary>
@@ -127,7 +130,8 @@ namespace AntdUI
             set => ColorScheme = value;
         }
 
-        int? _gap;
+        private int? _gap;
+
         /// <summary>
         /// 间距
         /// </summary>
@@ -144,7 +148,8 @@ namespace AntdUI
             }
         }
 
-        int? icongap;
+        private int? icongap;
+
         /// <summary>
         /// 图标与文字间距比例
         /// </summary>
@@ -161,7 +166,8 @@ namespace AntdUI
             }
         }
 
-        int? _itemMargin;
+        private int? _itemMargin;
+
         /// <summary>
         /// 菜单项外间距
         /// </summary>
@@ -178,7 +184,8 @@ namespace AntdUI
             }
         }
 
-        int? _inlineIndent;
+        private int? _inlineIndent;
+
         /// <summary>
         /// 缩进宽度
         /// </summary>
@@ -195,7 +202,8 @@ namespace AntdUI
             }
         }
 
-        float iconratio = 1.2F;
+        private float iconratio = 1.2F;
+
         /// <summary>
         /// 图标比例
         /// </summary>
@@ -212,7 +220,8 @@ namespace AntdUI
             }
         }
 
-        float? arrowRatio;
+        private float? arrowRatio;
+
         /// <summary>
         /// 箭头比例
         /// </summary>
@@ -229,7 +238,8 @@ namespace AntdUI
             }
         }
 
-        TMenuMode mode = TMenuMode.Inline;
+        private TMenuMode mode = TMenuMode.Inline;
+
         /// <summary>
         /// 菜单类型
         /// </summary>
@@ -252,7 +262,8 @@ namespace AntdUI
         [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Hover)]
         public Trigger Trigger { get; set; } = Trigger.Hover;
 
-        bool indent = false;
+        private bool indent = false;
+
         /// <summary>
         /// 常规缩进
         /// </summary>
@@ -269,7 +280,8 @@ namespace AntdUI
             }
         }
 
-        bool unique = false;
+        private bool unique = false;
+
         /// <summary>
         /// 只保持一个子菜单的展开
         /// </summary>
@@ -285,7 +297,7 @@ namespace AntdUI
             }
         }
 
-        void UniqueHand(MenuItemCollection? items)
+        private void UniqueHand(MenuItemCollection? items)
         {
             if (items == null) return;
             foreach (var item in items)
@@ -315,7 +327,8 @@ namespace AntdUI
         [Description("自动折叠"), Category("外观"), DefaultValue(false)]
         public bool AutoCollapse { get; set; }
 
-        bool collapsed = false;
+        private bool collapsed = false;
+
         /// <summary>
         /// 是否折叠
         /// </summary>
@@ -361,6 +374,7 @@ namespace AntdUI
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it1.rect.Y;
             Invalidate();
         }
+
         public void SelectIndex(int i1, int i2, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
@@ -380,6 +394,7 @@ namespace AntdUI
             if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it2.rect.Y;
             Invalidate();
         }
+
         public void SelectIndex(int i1, int i2, int i3, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
@@ -407,9 +422,10 @@ namespace AntdUI
             Invalidate();
         }
 
-        #endregion
+        #endregion 集合操作
 
-        MenuItemCollection? items;
+        private MenuItemCollection? items;
+
         /// <summary>
         /// 菜单集合
         /// </summary>
@@ -425,7 +441,8 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
-        bool pauseLayout = false;
+        private bool pauseLayout = false;
+
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
         {
@@ -445,7 +462,7 @@ namespace AntdUI
         [Browsable(false)]
         public ScrollBar ScrollBar;
 
-        #endregion
+        #endregion 属性
 
         #region 布局
 
@@ -474,7 +491,7 @@ namespace AntdUI
             return GetSelectItem(ref list, items);
         }
 
-        MenuItem? GetSelectItem(ref List<MenuItem> list, MenuItemCollection? items)
+        private MenuItem? GetSelectItem(ref List<MenuItem> list, MenuItemCollection? items)
         {
             if (items == null || items.Count == 0) return null;
             foreach (var it in items)
@@ -500,7 +517,7 @@ namespace AntdUI
             return null;
         }
 
-        #endregion
+        #endregion 获取选中项目
 
         protected override void OnFontChanged(EventArgs e)
         {
@@ -514,7 +531,8 @@ namespace AntdUI
             base.OnSizeChanged(e);
         }
 
-        int collapseWidth = 0, collapsedWidth = 0;
+        private int collapseWidth = 0, collapsedWidth = 0;
+
         /// <summary>
         /// 展开之前宽度
         /// </summary>
@@ -525,9 +543,10 @@ namespace AntdUI
         /// </summary>
         public int CollapsedWidth => collapsedWidth;
 
-        bool scroll_show = false, hover_r = false;
-        Rectangle rect_r, rect_r_ico;
-        bool CanLayout()
+        private bool scroll_show = false, hover_r = false;
+        private Rectangle rect_r, rect_r_ico;
+
+        private bool CanLayout()
         {
             if (IsHandleCreated)
             {
@@ -537,6 +556,7 @@ namespace AntdUI
             }
             return false;
         }
+
         internal void ChangeList(bool print = false)
         {
             if (CanLayout())
@@ -591,7 +611,7 @@ namespace AntdUI
             if (print) Invalidate();
         }
 
-        int ChangeListY(Rectangle rect, MenuItemCollection items, ref int icon_count, int height, int sp)
+        private int ChangeListY(Rectangle rect, MenuItemCollection items, ref int icon_count, int height, int sp)
         {
             int y = 0;
             foreach (var it in items)
@@ -606,7 +626,7 @@ namespace AntdUI
             return y;
         }
 
-        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
+        private int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
         {
             int collapsedWidth = 0, i = 0;
             foreach (var it in items)
@@ -619,6 +639,11 @@ namespace AntdUI
                 if (it.Visible)
                 {
                     int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2 + scx;
+                    // 为自定义按钮预留空间
+                    if (it.HasCustomButton)
+                    {
+                        size += icon_size + gap; // 按钮大小 + 间距
+                    }
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + sp;
                     if (mode == TMenuMode.Inline && it.CanExpand)
@@ -651,7 +676,8 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
-        int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int iconsp)
+
+        private int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int iconsp)
         {
             int collapsedWidth = 0, i = 0;
             foreach (var it in items)
@@ -664,6 +690,11 @@ namespace AntdUI
                 if (it.Visible)
                 {
                     int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2;
+                    // 为自定义按钮预留空间
+                    if (it.HasCustomButton)
+                    {
+                        size += icon_size + gap; // 按钮大小 + 间距
+                    }
                     if (size > collapsedWidth) collapsedWidth = size;
                     y += height + sp;
                     if (it.CanExpand)
@@ -697,7 +728,8 @@ namespace AntdUI
             }
             return collapsedWidth;
         }
-        void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gap2, int sp, int sp2, int iconsp)
+
+        private void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gap2, int sp, int sp2, int iconsp)
         {
             int i = 0;
             foreach (var it in items)
@@ -726,7 +758,7 @@ namespace AntdUI
             }
         }
 
-        void ChangeUTitle(MenuItemCollection items)
+        private void ChangeUTitle(MenuItemCollection items)
         {
             foreach (var it in items)
             {
@@ -736,11 +768,13 @@ namespace AntdUI
             }
         }
 
-        #endregion
+        #endregion 布局
 
         #region 渲染
 
-        public Menu() { ScrollBar = new ScrollBar(this); }
+        public Menu()
+        { ScrollBar = new ScrollBar(this); }
+
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
@@ -788,7 +822,7 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
-        void PaintItems(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
+        private void PaintItems(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
         {
             foreach (var it in items)
             {
@@ -807,7 +841,8 @@ namespace AntdUI
                 }
             }
         }
-        void PaintItemExpand(Canvas g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+
+        private void PaintItemExpand(Canvas g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             foreach (var it in items)
             {
@@ -830,14 +865,14 @@ namespace AntdUI
             }
         }
 
-        void PaintIt(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        private void PaintIt(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
             else PaintItem(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
             it.PaintBadge(Font, it.rect, g, ColorScheme);
         }
 
-        void PaintItemMini(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        private void PaintItemMini(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (it.Enabled)
             {
@@ -881,7 +916,7 @@ namespace AntdUI
             }
         }
 
-        void PaintItem(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        private void PaintItem(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
         {
             if (it.Enabled)
             {
@@ -961,8 +996,9 @@ namespace AntdUI
             }
         }
 
-        readonly StringFormat SL = Helper.SF_ALL(lr: StringAlignment.Near);
-        void PaintTextIcon(Canvas g, MenuItem it, Color fore)
+        private readonly StringFormat SL = Helper.SF_ALL(lr: StringAlignment.Near);
+
+        private void PaintTextIcon(Canvas g, MenuItem it, Color fore)
         {
             using (var brush = new SolidBrush(fore))
             {
@@ -975,8 +1011,10 @@ namespace AntdUI
                 }
             }
             PaintIcon(g, it, fore);
+            PaintCustomButton(g, it, fore);
         }
-        void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
+
+        private void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
         {
             if (it.CanExpand)
             {
@@ -1003,8 +1041,10 @@ namespace AntdUI
                 g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
                 PaintIcon(g, it, fore);
             }
+            PaintCustomButton(g, it, fore);
         }
-        void PaintIcon(Canvas g, MenuItem it, Color fore)
+
+        private void PaintIcon(Canvas g, MenuItem it, Color fore)
         {
             if (it.Select)
             {
@@ -1020,12 +1060,80 @@ namespace AntdUI
                 if (count > 0) return;
             }
 
-
             if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
             if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
         }
 
-        void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
+        private void PaintCustomButton(Canvas g, MenuItem it, Color fore)
+        {
+            if (!it.HasCustomButton || !it.CustomButtonVisible) return;
+
+            // 绘制自定义按钮背景（如果需要）
+            if (it.custom_btn_hover)
+            {
+                var hoverColor = Color.FromArgb(30, fore.R, fore.G, fore.B);
+                PaintBack(g, hoverColor, it.custom_btn_rect, Radius);
+            }
+            if(it.Text== "Item 2")
+            {
+
+            }
+            // 绘制自定义按钮图标
+            if (it.CustomButtonEnabled)
+            {
+                if (it.CustomButtonIcon != null)
+                {
+                    g.Image(it.CustomButtonIcon, it.custom_btn_rect);
+                }
+                else if (!string.IsNullOrEmpty(it.CustomButtonIconSvg))
+                {
+                    //g.GetImgExtend(it.CustomButtonIconSvg, it.custom_btn_rect, fore);
+
+                    using (var bmp = it.CustomButtonIconSvg.SvgToBmp(it.custom_btn_rect.Width, it.custom_btn_rect.Height, fore))
+                    {
+                        if (bmp != null) g.Image(bmp, it.custom_btn_rect);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(it.CustomButtonText))
+                {
+                    // 如果没有图标，绘制文本
+                    using (var brush = new SolidBrush(fore))
+                    {
+                        g.DrawText(it.CustomButtonText, it.Font ?? Font, brush, it.custom_btn_rect, Helper.SF_ALL());
+                    }
+                }
+            }
+            else
+            {
+                // 禁用状态，使用灰色
+                var disabledColor = Color.FromArgb(128, fore.R, fore.G, fore.B);
+                if (it.CustomButtonIcon != null)
+                {
+                    using (var attr = new System.Drawing.Imaging.ImageAttributes())
+                    {
+                        var matrix = new System.Drawing.Imaging.ColorMatrix
+                        {
+                            Matrix33 = 0.5f // 设置透明度
+                        };
+                        attr.SetColorMatrix(matrix);
+                        g.Image(it.CustomButtonIcon, it.custom_btn_rect, 0, 0, it.CustomButtonIcon.Width, it.CustomButtonIcon.Height, GraphicsUnit.Pixel, attr);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(it.CustomButtonIconSvg))
+                {
+                    g.GetImgExtend(it.CustomButtonIconSvg, it.custom_btn_rect, disabledColor);
+                }
+                else if (!string.IsNullOrEmpty(it.CustomButtonText))
+                {
+                    using (var brush = new SolidBrush(disabledColor))
+                    {
+                        g.DrawText(it.CustomButtonText, it.Font ?? Font, brush, it.custom_btn_rect, Helper.SF_ALL());
+                    }
+                }
+            }
+        }
+
+        private void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
         {
             if (Round || radius > 0)
             {
@@ -1037,11 +1145,12 @@ namespace AntdUI
             else g.Fill(color, rect);
         }
 
-        #endregion
+        #endregion 渲染
 
         #region 鼠标
 
-        MenuItem? MDown;
+        private MenuItem? MDown;
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -1062,6 +1171,7 @@ namespace AntdUI
                 }
             }
         }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -1077,14 +1187,16 @@ namespace AntdUI
             }
         }
 
-        bool IMouseDown(MenuItemCollection items, MenuItem item, int x, int y)
+        private bool IMouseDown(MenuItemCollection items, MenuItem item, int x, int y)
         {
             if (item.Visible)
             {
                 bool can = item.CanExpand;
-                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
+                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _, out bool customButtonHit))
                 {
                     MDown = item;
+                    // 记录是否点击了自定义按钮
+                    item.Tag = customButtonHit ? "CustomButtonClick" : null;
                     return true;
                 }
                 if (can && item.Expand && !collapsed)
@@ -1098,15 +1210,27 @@ namespace AntdUI
             return false;
         }
 
-        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, int x, int y, MenuItem MDown)
+        private bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, int x, int y, MenuItem MDown)
         {
             if (item.Visible)
             {
                 bool can = item.CanExpand;
                 if (MDown == item)
                 {
-                    if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
+                    if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _, out bool customButtonHit))
                     {
+                        // 检查是否是自定义按钮点击
+                        bool wasCustomButtonClick = item.Tag as string == "CustomButtonClick";
+                        item.Tag = null; // 清除标记
+
+                        if (wasCustomButtonClick && customButtonHit && item.HasCustomButton)
+                        {
+                            // 触发自定义按钮点击事件
+                            CustomButtonClick?.Invoke(this, new MenuCustomButtonEventArgs(item));
+                            Invalidate();
+                            return true;
+                        }
+
                         if (IsCanChang(item))
                         {
                             if (can)
@@ -1179,7 +1303,7 @@ namespace AntdUI
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change)) hand++;
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change, out _)) hand++;
                             if (change) count++;
                         }
                     }
@@ -1194,7 +1318,7 @@ namespace AntdUI
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change)) hand++;
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change, out _)) hand++;
                             if (change) count++;
                             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand);
                         }
@@ -1206,7 +1330,7 @@ namespace AntdUI
                     {
                         if (it.show)
                         {
-                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change)) hand++;
+                            if (it.Contains(e.X, e.Y, 0, ScrollBar.Value, out var change, out _)) hand++;
                             if (change) count++;
                         }
                     }
@@ -1217,11 +1341,11 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
+        private void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
         {
             if (it.show)
             {
-                if (it.Contains(x, y, 0, ScrollBar.Value, out var change))
+                if (it.Contains(x, y, 0, ScrollBar.Value, out var change, out bool customButtonHit))
                 {
                     hand++;
                     return;
@@ -1234,6 +1358,7 @@ namespace AntdUI
         #region 鼠标悬浮
 
         protected override bool CanMouseMove { get; set; } = true;
+
         protected override void OnMouseHover(int x, int y)
         {
             CloseTip();
@@ -1284,7 +1409,7 @@ namespace AntdUI
             }
         }
 
-        void IMouseHover(MenuItem it, int x, int y, int sy)
+        private void IMouseHover(MenuItem it, int x, int y, int sy)
         {
             if (it.show && it.rect.Contains(x, y + sy))
             {
@@ -1297,7 +1422,7 @@ namespace AntdUI
 
         #region Tip
 
-        TooltipForm? toolTip;
+        private TooltipForm? toolTip;
 
         public void CloseTip()
         {
@@ -1305,7 +1430,7 @@ namespace AntdUI
             toolTip = null;
         }
 
-        bool OpenTip(MenuItem it, Rectangle rect)
+        private bool OpenTip(MenuItem it, Rectangle rect)
         {
             if (it.Text == null) return true;
             if (toolTip == null)
@@ -1325,9 +1450,9 @@ namespace AntdUI
             return false;
         }
 
-        #endregion
+        #endregion Tip
 
-        #endregion
+        #endregion 鼠标悬浮
 
         protected override void OnMouseLeave(EventArgs e)
         {
@@ -1350,10 +1475,12 @@ namespace AntdUI
             ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
+
         protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);
+
         protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
 
-        void ILeave()
+        private void ILeave()
         {
             SetCursor(false);
             if (items == null || items.Count == 0) return;
@@ -1361,7 +1488,8 @@ namespace AntdUI
             foreach (var it in items) ILeave(it, ref count);
             if (count > 0) Invalidate();
         }
-        void ILeave(MenuItem it, ref int count)
+
+        private void ILeave(MenuItem it, ref int count)
         {
             if (it.Hover) count++;
             it.Hover = false;
@@ -1377,11 +1505,12 @@ namespace AntdUI
             IUSelect(items);
         }
 
-        void IUSelect(MenuItemCollection items)
+        private void IUSelect(MenuItemCollection items)
         {
             foreach (var it in items) IUSelect(it);
         }
-        void IUSelect(MenuItem it)
+
+        private void IUSelect(MenuItem it)
         {
             it.Select = false;
             if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IUSelect(sub);
@@ -1397,12 +1526,13 @@ namespace AntdUI
             }
             return null;
         }
-        bool IHitTest(int x, int y, MenuItem item, out MenuItem? mdown)
+
+        private bool IHitTest(int x, int y, MenuItem item, out MenuItem? mdown)
         {
             if (item.Visible)
             {
                 bool can = item.CanExpand;
-                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
+                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _, out _))
                 {
                     mdown = item;
                     return true;
@@ -1419,7 +1549,7 @@ namespace AntdUI
             return false;
         }
 
-        #endregion
+        #endregion 鼠标
 
         #region 方法
 
@@ -1443,7 +1573,8 @@ namespace AntdUI
             IUSelect(items);
             Select(item, focus, items);
         }
-        void Select(MenuItem item, bool focus, MenuItemCollection items)
+
+        private void Select(MenuItem item, bool focus, MenuItemCollection items)
         {
             foreach (var it in items)
             {
@@ -1462,7 +1593,8 @@ namespace AntdUI
         }
 
         internal bool tmpAM = false;
-        int SelectEx(MenuItem? it)
+
+        private int SelectEx(MenuItem? it)
         {
             int count = 0;
             if (it == null) return count;
@@ -1485,7 +1617,8 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             Remove(item, items);
         }
-        void Remove(MenuItem item, MenuItemCollection items)
+
+        private void Remove(MenuItem item, MenuItemCollection items)
         {
             foreach (var it in items)
             {
@@ -1498,7 +1631,7 @@ namespace AntdUI
             }
         }
 
-        #endregion
+        #endregion 方法
 
         #region 事件
 
@@ -1514,7 +1647,13 @@ namespace AntdUI
         [Description("Select 属性值更改前发生"), Category("行为")]
         public event SelectBoolEventHandler? SelectChanging;
 
-        bool IsCanChang(MenuItem it)
+        /// <summary>
+        /// 自定义按钮点击时发生
+        /// </summary>
+        [Description("自定义按钮点击时发生"), Category("行为")]
+        public event MenuCustomButtonEventHandler? CustomButtonClick;
+
+        private bool IsCanChang(MenuItem it)
         {
             bool pass = false;
             if (SelectChanging == null) pass = true;
@@ -1522,12 +1661,14 @@ namespace AntdUI
             return pass;
         }
 
-        #endregion
+        #endregion 事件
 
         #region 子窗口
 
-        ILayeredForm? subForm;
+        private ILayeredForm? subForm;
+
         public ILayeredForm? SubForm() => subForm;
+
         internal int select_x = 0;
 
         internal void DropDownChange(MenuItem value)
@@ -1543,7 +1684,8 @@ namespace AntdUI
             }
             Invalidate();
         }
-        bool IDropDownChange(MenuItemCollection items, MenuItem item, List<MenuItem> list, MenuItem value)
+
+        private bool IDropDownChange(MenuItemCollection items, MenuItem item, List<MenuItem> list, MenuItem value)
         {
             bool can = item.CanExpand;
             if (item.Enabled && item == value)
@@ -1578,7 +1720,7 @@ namespace AntdUI
             return false;
         }
 
-        bool OpenDropDown(MenuItem it)
+        private bool OpenDropDown(MenuItem it)
         {
             if (it.items == null || it.items.Count == 0) return true;
             select_x = 0;
@@ -1586,13 +1728,14 @@ namespace AntdUI
             subForm.Show(this);
             return false;
         }
-        void CloseDropDown()
+
+        private void CloseDropDown()
         {
             subForm?.Close();
             subForm = null;
         }
 
-        #endregion
+        #endregion 子窗口
 
         protected override void Dispose(bool disposing)
         {
@@ -1607,6 +1750,7 @@ namespace AntdUI
         {
             BindData(it);
         }
+
         public MenuItemCollection(MenuItem it)
         {
             BindData(it);
@@ -1621,6 +1765,7 @@ namespace AntdUI
             };
             return this;
         }
+
         internal MenuItemCollection BindData(MenuItem it)
         {
             action = render =>
@@ -1635,16 +1780,20 @@ namespace AntdUI
 
     public class MenuItem : BadgeConfig
     {
-        public MenuItem() { }
+        public MenuItem()
+        { }
+
         public MenuItem(string text)
         {
             Text = text;
         }
+
         public MenuItem(string text, Image? icon)
         {
             Text = text;
             Icon = icon;
         }
+
         public MenuItem(string text, string? icon_svg)
         {
             Text = text;
@@ -1670,7 +1819,8 @@ namespace AntdUI
 
         #region 图标
 
-        Image? icon;
+        private Image? icon;
+
         /// <summary>
         /// 图标
         /// </summary>
@@ -1686,7 +1836,8 @@ namespace AntdUI
             }
         }
 
-        string? iconSvg;
+        private string? iconSvg;
+
         /// <summary>
         /// 图标
         /// </summary>
@@ -1719,9 +1870,10 @@ namespace AntdUI
         [Description("图标激活SVG"), Category("外观"), DefaultValue(null)]
         public string? IconActiveSvg { get; set; }
 
-        #endregion
+        #endregion 图标
 
-        string? text;
+        private string? text;
+
         /// <summary>
         /// 文本
         /// </summary>
@@ -1746,7 +1898,8 @@ namespace AntdUI
         [Description("自定义字体"), Category("外观"), DefaultValue(null)]
         public Font? Font { get; set; }
 
-        bool visible = true;
+        private bool visible = true;
+
         /// <summary>
         /// 是否显示
         /// </summary>
@@ -1768,7 +1921,102 @@ namespace AntdUI
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
         public object? Tag { get; set; }
 
+        #region 自定义按钮
+
+        private string? customButtonText;
+
+        /// <summary>
+        /// 自定义按钮文本
+        /// </summary>
+        [Description("自定义按钮文本"), Category("自定义按钮"), DefaultValue(null), Localizable(true)]
+        public string? CustomButtonText
+        {
+            get => customButtonText;
+            set
+            {
+                if (customButtonText == value) return;
+                customButtonText = value;
+                Invalidates();
+            }
+        }
+
+        private string? customButtonIconSvg;
+
+        /// <summary>
+        /// 自定义按钮图标SVG
+        /// </summary>
+        [Description("自定义按钮图标SVG"), Category("自定义按钮"), DefaultValue(null)]
+        public string? CustomButtonIconSvg
+        {
+            get => customButtonIconSvg;
+            set
+            {
+                if (customButtonIconSvg == value) return;
+                customButtonIconSvg = value;
+                Invalidates();
+            }
+        }
+
+        private Image? customButtonIcon;
+
+        /// <summary>
+        /// 自定义按钮图标
+        /// </summary>
+        [Description("自定义按钮图标"), Category("自定义按钮"), DefaultValue(null)]
+        public Image? CustomButtonIcon
+        {
+            get => customButtonIcon;
+            set
+            {
+                if (customButtonIcon == value) return;
+                customButtonIcon = value;
+                Invalidates();
+            }
+        }
+
+        private bool customButtonVisible = false;
+
+        /// <summary>
+        /// 自定义按钮是否可见
+        /// </summary>
+        [Description("自定义按钮是否可见"), Category("自定义按钮"), DefaultValue(false)]
+        public bool CustomButtonVisible
+        {
+            get => customButtonVisible;
+            set
+            {
+                if (customButtonVisible == value) return;
+                customButtonVisible = value;
+                Invalidates();
+            }
+        }
+
+        private bool customButtonEnabled = true;
+
+        /// <summary>
+        /// 自定义按钮是否启用
+        /// </summary>
+        [Description("自定义按钮是否启用"), Category("自定义按钮"), DefaultValue(true)]
+        public bool CustomButtonEnabled
+        {
+            get => customButtonEnabled;
+            set
+            {
+                if (customButtonEnabled == value) return;
+                customButtonEnabled = value;
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 是否包含自定义按钮
+        /// </summary>
+        internal bool HasCustomButton => customButtonVisible && (!string.IsNullOrWhiteSpace(customButtonText) || !string.IsNullOrWhiteSpace(customButtonIconSvg) || customButtonIcon != null);
+
+        #endregion 自定义按钮
+
         internal MenuItemCollection? items;
+
         /// <summary>
         /// 获取列表中所有列表项的集合
         /// </summary>
@@ -1786,7 +2034,8 @@ namespace AntdUI
 
         #region 禁用
 
-        bool enabled = true;
+        private bool enabled = true;
+
         /// <summary>
         /// 禁用状态
         /// </summary>
@@ -1802,12 +2051,13 @@ namespace AntdUI
             }
         }
 
-        #endregion
+        #endregion 禁用
 
         #region 展开
 
-        ITask? ThreadExpand;
-        bool expand = true;
+        private ITask? ThreadExpand;
+        private bool expand = true;
+
         /// <summary>
         /// 展开
         /// </summary>
@@ -1934,11 +2184,12 @@ namespace AntdUI
             }
         }
 
-        #endregion
+        #endregion 展开
 
         #region 徽标
 
-        string? badge;
+        private string? badge;
+
         [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
@@ -1951,7 +2202,8 @@ namespace AntdUI
             }
         }
 
-        string? badgeSvg;
+        private string? badgeSvg;
+
         [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
@@ -1964,7 +2216,8 @@ namespace AntdUI
             }
         }
 
-        TAlign badgeAlign = TAlign.Right;
+        private TAlign badgeAlign = TAlign.Right;
+
         [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.Right)]
         public TAlign BadgeAlign
         {
@@ -1977,7 +2230,8 @@ namespace AntdUI
             }
         }
 
-        float badgeSize = .6F;
+        private float badgeSize = .6F;
+
         [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize
         {
@@ -1990,7 +2244,8 @@ namespace AntdUI
             }
         }
 
-        bool badgeMode = false;
+        private bool badgeMode = false;
+
         [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
         public bool BadgeMode
         {
@@ -2003,7 +2258,8 @@ namespace AntdUI
             }
         }
 
-        Color? badgeback;
+        private Color? badgeback;
+
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {
@@ -2016,7 +2272,8 @@ namespace AntdUI
             }
         }
 
-        int badgeOffsetX = 1, badgeOffsetY = 1;
+        private int badgeOffsetX = 1, badgeOffsetY = 1;
+
         /// <summary>
         /// 徽标偏移X
         /// </summary>
@@ -2047,7 +2304,7 @@ namespace AntdUI
             }
         }
 
-        #endregion
+        #endregion 徽标
 
         #region 方法
 
@@ -2063,11 +2320,12 @@ namespace AntdUI
             Invalidate();
         }
 
-        #endregion
+        #endregion 方法
 
         #region 悬浮态
 
-        bool hover = false;
+        private bool hover = false;
+
         /// <summary>
         /// 是否悬浮
         /// </summary>
@@ -2115,7 +2373,7 @@ namespace AntdUI
             }
         }
 
-        #endregion
+        #endregion 悬浮态
 
         /// <summary>
         /// 是否选中
@@ -2127,6 +2385,7 @@ namespace AntdUI
         public MenuItem? PARENTITEM { get; set; }
 
         #region 内部
+
         internal int Depth { get; set; }
         internal float ArrowProg { get; set; } = 1F;
         internal Menu? PARENT { get; set; }
@@ -2150,6 +2409,14 @@ namespace AntdUI
                 x += tmp;
                 usew += tmp;
             }
+
+            // 计算自定义按钮空间
+            int customBtnWidth = 0;
+            if (HasCustomButton)
+            {
+                customBtnWidth = icon_size + gap; // 按钮大小 + 间距
+            }
+
             if (HasIcon)
             {
                 int tmp = icon_size + iconsp;
@@ -2158,18 +2425,34 @@ namespace AntdUI
                 x += tmp;
                 usew += tmp;
 
-                txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
+                txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew - customBtnWidth, _rect.Height);
             }
-            else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
+            else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew - customBtnWidth, _rect.Height);
+
+            // 设置自定义按钮位置（在文本右侧，箭头左侧）
+            if (HasCustomButton)
+            {
+                custom_btn_rect = new Rectangle(_rect.Right - icon_size - gap - scx - customBtnWidth, _rect.Y + y, icon_size, icon_size);
+            }
+
             arr_rect = new Rectangle(_rect.Right - icon_size - gap - scx, _rect.Y + y, icon_size, icon_size);
             Show = true;
             return usew;
         }
+
         internal int SetRectInlineNoText(Rectangle _rect, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int iconsp)
         {
             Depth = 0;
             rect = _rect;
             int x = gap, usew = gap2;
+
+            // 计算自定义按钮空间
+            int customBtnWidth = 0;
+            if (HasCustomButton)
+            {
+                customBtnWidth = icon_size + gap; // 按钮大小 + 间距
+            }
+
             if (HasIcon)
             {
                 int tmp = icon_size + iconsp, y = (_rect.Height - icon_size) / 2;
@@ -2178,13 +2461,22 @@ namespace AntdUI
                 x += tmp;
                 usew += tmp;
 
-                txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
+                txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew - customBtnWidth, _rect.Height);
             }
-            else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
+            else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew - customBtnWidth, _rect.Height);
+
+            // 设置自定义按钮位置（在文本右侧，箭头左侧）
+            if (HasCustomButton)
+            {
+                int y = (_rect.Height - icon_size) / 2;
+                custom_btn_rect = new Rectangle(_rect.Right - (arrow_size - sp) - customBtnWidth, _rect.Y + y, icon_size, icon_size);
+            }
+
             arr_rect = new Rectangle(_rect.Right - (arrow_size - sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
             Show = true;
             return usew;
         }
+
         internal void SetRectNoArr(Rectangle _rect, Rectangle rect_text)
         {
             Depth = 0;
@@ -2192,19 +2484,43 @@ namespace AntdUI
             txt_rect = rect_text;
             Show = true;
         }
+
         internal Rectangle rect { get; set; }
         internal Rectangle arr_rect { get; set; }
+        internal Rectangle custom_btn_rect { get; set; }
+        internal bool custom_btn_hover { get; set; }
 
         internal bool Contains(int x, int y, int sx, int sy, out bool change)
         {
+            return Contains(x, y, sx, sy, out change, out _);
+        }
+
+        internal bool Contains(int x, int y, int sx, int sy, out bool change, out bool customButtonHit)
+        {
+            customButtonHit = false;
             if (rect.Contains(x + sx, y + sy))
             {
-                change = SetHover(true);
+                // 检查是否点击了自定义按钮区域
+                if (HasCustomButton && custom_btn_rect.Contains(x + sx, y + sy))
+                {
+                    customButtonHit = true;
+                    var btnHoverChange = custom_btn_hover != true;
+                    custom_btn_hover = true;
+                    change = SetHover(true) || btnHoverChange;
+                }
+                else
+                {
+                    var btnHoverChange = custom_btn_hover != false;
+                    custom_btn_hover = false;
+                    change = SetHover(true) || btnHoverChange;
+                }
                 return true;
             }
             else
             {
-                change = SetHover(false);
+                var btnHoverChange = custom_btn_hover != false;
+                custom_btn_hover = false;
+                change = SetHover(false) || btnHoverChange;
                 return false;
             }
         }
@@ -2227,12 +2543,12 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover;
+        private ITask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
 
-        #endregion
+        #endregion 布局
 
         internal float SubY { get; set; }
         internal float SubHeight { get; set; }
@@ -2242,10 +2558,12 @@ namespace AntdUI
         internal bool ExpandThread { get; set; }
         internal bool show { get; set; }
         internal bool Show { get; set; }
-        void Invalidate() => PARENT?.Invalidate();
-        void Invalidates() => PARENT?.ChangeList(true);
 
-        #endregion
+        private void Invalidate() => PARENT?.Invalidate();
+
+        private void Invalidates() => PARENT?.ChangeList(true);
+
+        #endregion 内部
 
         #region 设置
 
@@ -2283,7 +2601,7 @@ namespace AntdUI
             return this;
         }
 
-        #endregion
+        #endregion 图标
 
         public MenuItem SetID(string? value)
         {
@@ -2348,30 +2666,34 @@ namespace AntdUI
             badgeAlign = align;
             return this;
         }
+
         public MenuItem SetBadgeSvg(string? value, TAlign align = TAlign.TR)
         {
             badgeSvg = value;
             badgeAlign = align;
             return this;
         }
+
         public MenuItem SetBadgeOffset(int x, int y)
         {
             BadgeOffsetX = x;
             BadgeOffsetY = y;
             return this;
         }
+
         public MenuItem SetBadgeSize(float value)
         {
             BadgeSize = value;
             return this;
         }
+
         public MenuItem SetBadgeBack(Color? value)
         {
             BadgeBack = value;
             return this;
         }
 
-        #endregion
+        #endregion 徽标
 
         public MenuItem SetTag(object? value)
         {
@@ -2379,7 +2701,7 @@ namespace AntdUI
             return this;
         }
 
-        #endregion
+        #endregion 设置
 
         public override string? ToString() => Text;
     }
