@@ -369,12 +369,19 @@ namespace AntdUI
             LoadLayout();
         }
 
-        bool CanLayout()
+        bool CanLayout(out bool hd)
         {
+            hd = false;
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (rect.Width == 0 || rect.Height == 0) return false;
+                if (items == null || items.Count == 0)
+                {
+                    if (showAdd) return true;
+                    return false;
+                }
+                hd = true;
                 return true;
             }
             return false;
@@ -384,11 +391,10 @@ namespace AntdUI
         /// </summary>
         internal void LoadLayout(bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out bool hd))
             {
                 Helper.GDI(g =>
                 {
-                    var dir = new Dictionary<int, int[]>(items!.Count);
                     int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
                     Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
@@ -396,150 +402,156 @@ namespace AntdUI
                     ico_size = (int)(txtHeight * tabIconRatio), close_size = (int)(txtHeight * tabCloseRatio), close_i_size = (int)(txtHeight * TabCloseIconRatio),
                     ico_y = rect.Y + (rect.Height - ico_size) / 2, close_y = rect.Y + (rect.Height - close_size) / 2, close_ico_y = (close_size - close_i_size) / 2;
                     int use_x = rect.X, count_loading = 0;
-                    for (int i = 0; i < items.Count; i++)
+
+                    if (hd)
                     {
-                        var it = items[i];
-                        it.PARENT = this;
-                        if (it.Visible)
+                        var dir = new Dictionary<int, int[]>(items!.Count);
+
+                        for (int i = 0; i < items.Count; i++)
                         {
-                            var size = g.MeasureText(it.Text, Font, 0, sf);
-                            int tabWidth;
-                            if (it.HasIcon)
+                            var it = items[i];
+                            it.PARENT = this;
+                            if (it.Visible)
                             {
-                                if (it.ShowClose) tabWidth = size.Width + paddx2 + gap2 + ico_size + close_size;
-                                else tabWidth = size.Width + paddx2 + gap2 + ico_size;
+                                var size = g.MeasureText(it.Text, Font, 0, sf);
+                                int tabWidth;
+                                if (it.HasIcon)
+                                {
+                                    if (it.ShowClose) tabWidth = size.Width + paddx2 + gap2 + ico_size + close_size;
+                                    else tabWidth = size.Width + paddx2 + gap2 + ico_size;
+                                }
+                                else
+                                {
+                                    if (it.ShowClose) tabWidth = size.Width + paddx2 + gap + close_size;
+                                    else tabWidth = size.Width + paddx2;
+                                }
+                                dir.Add(i, new[] { size.Width, tabWidth, size.Width });
+                                txtTW += tabWidth;
                             }
-                            else
-                            {
-                                if (it.ShowClose) tabWidth = size.Width + paddx2 + gap + close_size;
-                                else tabWidth = size.Width + paddx2;
-                            }
-                            dir.Add(i, new[] { size.Width, tabWidth, size.Width });
-                            txtTW += tabWidth;
                         }
-                    }
 
-                    #region 判断超出缩进
+                        #region 判断超出缩进
 
-                    int mw = rect.Width - hasr - _hasl;
-                    if (txtTW > mw)
-                    {
-                        var dirb = new Dictionary<int, float>(items.Count);
-                        foreach (var it in dir) dirb.Add(it.Key, it.Value[1] * 1F / txtTW);
+                        int mw = rect.Width - hasr - _hasl;
+                        if (txtTW > mw)
+                        {
+                            var dirb = new Dictionary<int, float>(items.Count);
+                            foreach (var it in dir) dirb.Add(it.Key, it.Value[1] * 1F / txtTW);
+                            for (int i = 0; i < items.Count; i++)
+                            {
+                                var it = items[i];
+                                if (it.Visible)
+                                {
+                                    int max = (int)Math.Round(mw * dirb[i]);
+                                    if (dir[i][1] > max)
+                                    {
+                                        if (it.HasIcon)
+                                        {
+                                            if (it.ShowClose) dir[i][0] = max - (paddx2 + gap2 + ico_size + close_size);
+                                            else dir[i][0] = max - (paddx2 + gap2 + ico_size);
+                                        }
+                                        else
+                                        {
+                                            if (it.ShowClose) dir[i][0] = max - (paddx2 + gap + close_size);
+                                            else dir[i][0] = max - paddx2;
+                                        }
+                                        dir[i][1] = max;
+                                    }
+                                }
+                            }
+                        }
+
+                        #endregion
+
                         for (int i = 0; i < items.Count; i++)
                         {
                             var it = items[i];
                             if (it.Visible)
                             {
-                                int max = (int)Math.Round(mw * dirb[i]);
-                                if (dir[i][1] > max)
+                                var textSize = dir[i];
+                                int tabWidth = textSize[1];
+                                it.Ellipsis = textSize[2] > textSize[0];
+                                it.ShowText = textSize[0] > 0;
+                                if (it.HasIcon || it.Loading)
                                 {
-                                    if (it.HasIcon)
+                                    var _rect = new Rectangle(use_x, rect.Y, tabWidth, rect.Height);
+                                    it.Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height + border2);
+                                    int x = _rect.X + paddx;
+                                    if (it.ShowText)
                                     {
-                                        if (it.ShowClose) dir[i][0] = max - (paddx2 + gap2 + ico_size + close_size);
-                                        else dir[i][0] = max - (paddx2 + gap2 + ico_size);
+                                        it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
+                                        var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
+                                        it.RectText = _rect_text;
+                                        it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
+
+                                        if (it.ShowClose)
+                                        {
+                                            var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
+                                            it.RectClose = _rect_close;
+                                            it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                        }
+                                        it.ShowIcon = true;
                                     }
                                     else
                                     {
-                                        if (it.ShowClose) dir[i][0] = max - (paddx2 + gap + close_size);
-                                        else dir[i][0] = max - paddx2;
-                                    }
-                                    dir[i][1] = max;
-                                }
-                            }
-                        }
-                    }
+                                        var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
 
-                    #endregion
-
-                    for (int i = 0; i < items.Count; i++)
-                    {
-                        var it = items[i];
-                        if (it.Visible)
-                        {
-                            var textSize = dir[i];
-                            int tabWidth = textSize[1];
-                            it.Ellipsis = textSize[2] > textSize[0];
-                            it.ShowText = textSize[0] > 0;
-                            if (it.HasIcon || it.Loading)
-                            {
-                                var _rect = new Rectangle(use_x, rect.Y, tabWidth, rect.Height);
-                                it.Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height + border2);
-                                int x = _rect.X + paddx;
-                                if (it.ShowText)
-                                {
-                                    it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
-                                    var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
-                                    it.RectText = _rect_text;
-                                    it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-
-                                    if (it.ShowClose)
-                                    {
-                                        var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
-                                        it.RectClose = _rect_close;
-                                        it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
-                                    }
-                                    it.ShowIcon = true;
-                                }
-                                else
-                                {
-                                    var _rect_text = new Rectangle(x + ico_size + gap, _rect.Y, textSize[0], _rect.Height);
-
-                                    if (it.ShowClose)
-                                    {
-                                        var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
-                                        if (_rect_close.X < _rect_text.X - gap)
+                                        if (it.ShowClose)
                                         {
-                                            it.ShowIcon = false;
-                                            _rect_close.X = _rect.X + (_rect.Width - close_size) / 2;
-                                            it.RectClose = _rect_close;
-                                            it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                            var _rect_close = new Rectangle(x + ico_size + gap2 + textSize[0], close_y, close_size, close_size);
+                                            if (_rect_close.X < _rect_text.X - gap)
+                                            {
+                                                it.ShowIcon = false;
+                                                _rect_close.X = _rect.X + (_rect.Width - close_size) / 2;
+                                                it.RectClose = _rect_close;
+                                                it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                            }
+                                            else
+                                            {
+                                                it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
+                                                it.RectText = _rect_text;
+                                                it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
+                                                it.RectClose = _rect_close;
+                                                it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                                it.ShowIcon = true;
+                                            }
                                         }
                                         else
                                         {
                                             it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
                                             it.RectText = _rect_text;
                                             it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                            it.RectClose = _rect_close;
-                                            it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
                                             it.ShowIcon = true;
                                         }
                                     }
-                                    else
+                                    if (it.ShowIcon && it.Loading) count_loading++;
+                                }
+                                else
+                                {
+                                    var _rect = new Rectangle(use_x, rect.Y, tabWidth, rect.Height);
+                                    it.Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height + border2);
+                                    if (it.ShowText)
                                     {
-                                        it.RectIcon = new Rectangle(x, ico_y, ico_size, ico_size);
+                                        var _rect_text = new Rectangle(_rect.X + paddx, _rect.Y, textSize[0], _rect.Height);
                                         it.RectText = _rect_text;
                                         it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
-                                        it.ShowIcon = true;
-                                    }
-                                }
-                                if (it.ShowIcon && it.Loading) count_loading++;
-                            }
-                            else
-                            {
-                                var _rect = new Rectangle(use_x, rect.Y, tabWidth, rect.Height);
-                                it.Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, _rect.Height + border2);
-                                if (it.ShowText)
-                                {
-                                    var _rect_text = new Rectangle(_rect.X + paddx, _rect.Y, textSize[0], _rect.Height);
-                                    it.RectText = _rect_text;
-                                    it.RectTextFull = new Rectangle(_rect_text.X, _rect_text.Y, textSize[2], _rect_text.Height);
 
-                                    if (it.ShowClose)
+                                        if (it.ShowClose)
+                                        {
+                                            var _rect_close = new Rectangle(_rect.X + paddx + gap + textSize[0], close_y, close_size, close_size);
+                                            it.RectClose = _rect_close;
+                                            it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
+                                        }
+                                    }
+                                    else if (it.ShowClose)
                                     {
-                                        var _rect_close = new Rectangle(_rect.X + paddx + gap + textSize[0], close_y, close_size, close_size);
+                                        var _rect_close = new Rectangle(_rect.X + (_rect.Width - close_size) / 2, close_y, close_size, close_size);
                                         it.RectClose = _rect_close;
                                         it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
                                     }
                                 }
-                                else if (it.ShowClose)
-                                {
-                                    var _rect_close = new Rectangle(_rect.X + (_rect.Width - close_size) / 2, close_y, close_size, close_size);
-                                    it.RectClose = _rect_close;
-                                    it.RectCloseIco = new Rectangle(_rect_close.X + close_ico_y, _rect_close.Y + close_ico_y, close_i_size, close_i_size);
-                                }
+                                use_x += tabWidth;
                             }
-                            use_x += tabWidth;
                         }
                     }
 
@@ -894,35 +906,32 @@ namespace AntdUI
                         var it = items[i];
                         if (it.Visible && it.Enabled && it.ShowClose && it.Rect.Contains(x, y))
                         {
-                            // 触发标签关闭事件
-                            var args = new TabCloseEventArgs(it, mdownindex);
-                            TabClosing?.Invoke(this, args);
-                            if (args.Cancel) return;
-                            items.Remove(it);
-                            // 如果关闭的是当前选中标签，自动选择下一个标签
-                            if (mdownindex == items.Count) SelectedIndex = Math.Max(0, items.Count - 1);
-                            SelectedItem = items[SelectedIndex];
+                            CloseTabs(items, it);
                             return;
                         }
                     }
                 }
                 return;
             }
-            if (mdown.ShowClose && mdown.RectClose.Contains(x, y))
+            if (mdown.ShowClose && mdown.RectClose.Contains(x, y)) CloseTabs(items, mdown);
+        }
+
+        void CloseTabs(TagTabCollection items, TagTabItem item)
+        {
+            // 触发标签关闭事件
+            var args = new TabCloseEventArgs(item, mdownindex);
+            TabClosing?.Invoke(this, args);
+            if (args.Cancel) return;
+            items.Remove(item);
+            if (mdown == _selectItem)
             {
-                // 触发标签关闭事件
-                var args = new TabCloseEventArgs(mdown, mdownindex);
-                TabClosing?.Invoke(this, args);
-                if (args.Cancel) return;
-                items.Remove(mdown);
-                if (mdown == _selectItem)
-                {
-                    if (_select > 0 && items.Count > 0) SelectedIndex--;
-                }
-                else
-                {
-                    if (_select > 0) _select--;
-                }
+                if (_select > 0 && items.Count > 0) SelectedIndex--;
+                else Invalidate();
+            }
+            else
+            {
+                if (_select > 0) _select--;
+                Invalidate();
             }
         }
 
@@ -1169,7 +1178,10 @@ namespace AntdUI
         /// </summary>
         public bool HasIcon => iconSvg != null || icon != null;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Hover { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HoverClose { get; set; }
 
         bool showClose = true;

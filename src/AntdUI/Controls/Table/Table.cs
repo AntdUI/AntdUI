@@ -258,10 +258,10 @@ namespace AntdUI
         public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
 
         /// <summary>
-        /// 虚拟行
+        /// 虚拟模式
         /// </summary>
-        [Description("虚拟行"), Category("外观"), DefaultValue(false)]
-        public bool VirtualRow { get; set; }
+        [Description("虚拟模式"), Category("外观"), DefaultValue(false)]
+        public bool VirtualMode { get; set; }
 
         #region 间距
 

@@ -60,8 +60,6 @@ namespace Demo
             tabHeader1.Dock = System.Windows.Forms.DockStyle.Top;
             tabHeader1.DragSort = true;
             tabHeader1.IconSvg = "ChromeFilled";
-            tagTabItem1.Hover = false;
-            tagTabItem1.HoverClose = false;
             tagTabItem1.ShowClose = false;
             tagTabItem1.IconSvg = "WeiboSquareFilled";
             tagTabItem1.Tag = null;
