@@ -220,7 +220,7 @@ namespace AntdUI
                 if (selectItem == value) return;
                 selectItem = value;
                 if (value == null) USelect(false);
-                else Select(value);
+                else Select(value, false);
             }
         }
 
@@ -990,14 +990,162 @@ namespace AntdUI
 
         #endregion
 
+        #region 键盘
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            var r = base.ProcessCmdKey(ref msg, keyData);
+            switch (keyData)
+            {
+                case Keys.Up:
+                    if (selectItem == null)
+                    {
+                        if (items != null)
+                        {
+                            Select(items[0]);
+                            return true;
+                        }
+                    }
+                    else if (FindUp(selectItem)) return true;
+                    break;
+                case Keys.Down:
+                    if (selectItem == null)
+                    {
+                        if (items != null)
+                        {
+                            Select(items[items.Count - 1]);
+                            return true;
+                        }
+                    }
+                    else if (FindDown(selectItem)) return true;
+                    break;
+                case Keys.Left:
+                    if (selectItem != null && FindLeft(selectItem)) return true;
+                    break;
+                case Keys.Right:
+                    if (selectItem != null && FindRight(selectItem)) return true;
+                    break;
+                case Keys.Enter:
+                    if (selectItem != null)
+                    {
+                        var item = selectItem;
+                        if (item.ICanExpand) item.Expand = !item.Expand;
+                        else Select(item);
+                    }
+                    break;
+            }
+            return r;
+        }
+
+        bool FindUp(TreeItem item)
+        {
+            var p1 = item.PARENTITEM;
+            if (p1 == null)
+            {
+                int index = items!.IndexOf(item) - 1;
+                if (index >= 0)
+                {
+                    Select(items[index]);
+                    return true;
+                }
+            }
+            else
+            {
+                int index = p1.items!.IndexOf(item) - 1;
+                if (index >= 0) Select(FindUpExpand(p1.items[index]));
+                else Select(p1);
+                return true;
+            }
+            return false;
+        }
+        TreeItem FindUpExpand(TreeItem it)
+        {
+            if (it.ICanExpand && it.Expand) return FindUpExpand(it.items![it.items.Count - 1]);
+            return it;
+        }
+        bool FindDown(TreeItem item, bool canex = true)
+        {
+            if (canex && item.ICanExpand && item.Expand)
+            {
+                Select(item.items![0]);
+                return true;
+            }
+            var p1 = item.PARENTITEM;
+            if (p1 == null)
+            {
+                int index = items!.IndexOf(item) + 1;
+                if (index < items.Count)
+                {
+                    Select(items[index]);
+                    return true;
+                }
+            }
+            else
+            {
+                int index = p1.items!.IndexOf(item) + 1;
+                if (index < p1.items.Count)
+                {
+                    Select(p1.items[index]);
+                    return true;
+                }
+                else
+                {
+                    if (p1.PARENTITEM == null)
+                    {
+                        var sub = items!;
+                        int index2 = sub.Count + 1;
+                        if (index2 < sub.Count)
+                        {
+                            var r = FindDown(sub[sub.Count + 1]);
+                            if (r) return true;
+                        }
+                        else
+                        {
+                            var r = FindDown(p1, false);
+                            if (r) return true;
+                        }
+                    }
+                    else
+                    {
+                        var sub = p1.PARENTITEM.items!;
+                        int index2 = sub.Count + 1;
+                        if (index2 < sub.Count)
+                        {
+                            var r = FindDown(sub[index2]);
+                            if (r) return true;
+                        }
+                        else
+                        {
+                            var r = FindDown(p1, false);
+                            if (r) return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool FindLeft(TreeItem item)
+        {
+            if (item.ICanExpand && item.Expand) item.Expand = false;
+            return true;
+        }
+        bool FindRight(TreeItem item)
+        {
+            if (item.ICanExpand && !item.Expand) item.Expand = true;
+            return true;
+        }
+
+        #endregion
+
         #region 方法
 
         /// <summary>
         /// 选择指定项
         /// </summary>
-        public bool Select(TreeItem item) => Select(items, item);
+        public bool Select(TreeItem item, bool focus = true) => Select(items, item, focus);
 
-        bool Select(TreeItemCollection? items, TreeItem item)
+        bool Select(TreeItemCollection? items, TreeItem item, bool focus)
         {
             if (items == null || items.Count == 0) return false;
             foreach (var it in items)
@@ -1007,9 +1155,10 @@ namespace AntdUI
                     selectItem = item;
                     it.Select = true;
                     OnSelectChanged(it, TreeCType.None, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+                    if (focus) Focus(it);
                     return true;
                 }
-                if (Select(it.items, item)) return true;
+                if (Select(it.items, item, focus)) return true;
             }
             return false;
         }
