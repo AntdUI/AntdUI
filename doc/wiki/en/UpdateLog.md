@@ -1,5 +1,30 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.2` 2025-09-03
+
+- ➕ Table VirtualMode virtual mode
+- ➕ Table tree supports collections
+- ➕ Table supports nested field reflection
+- ➕ ContextMenuStrip proportional configuration
+- ➕ Collapse AutoSize
+- ➕ Label AutoSizePadding
+- ➕ Menu keyboard interaction
+- ➕ Menu FocusMode
+- ➕ Menu Custom Button
+- ➕ Tree keyboard interaction
+- ✍️ TabHeader Add button position exception
+- ✍️ Input TextAlign with multiple rows misaligned
+- ✍️ FloatButton MarginX misalignment
+- ✍️ DatePickerRange ValueChanged triggered repeatedly
+- ✍️ Select Insert empty collection cannot be inserted
+- ✍️ Notification Bottom cannot be displayed on multiple monitors
+- ✍️ Drawer/Popover multi monitor flashing window
+- ✍️ Button Vertical Multi line Text
+- ✍️ Tooltip closed
+- 🧹 Chart alignment standard
+- 🧹 Watermark alignment standard
+- 🧹 Enrich GridPanel
+
 ### `2.1.1` 2025-08-29 📊
 
 - ➕ Chart

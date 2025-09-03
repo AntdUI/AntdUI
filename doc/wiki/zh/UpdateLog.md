@@ -1,5 +1,30 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.2` 2025-09-03
+
+- ➕ Table VirtualMode 虚拟模式
+- ➕ Table 树支持集合
+- ➕ Table 支持嵌套字段反射
+- ➕ ContextMenuStrip 比例配置
+- ➕ Collapse AutoSize
+- ➕ Label AutoSizePadding
+- ➕ Menu 键盘交互
+- ➕ Menu FocusMode 焦点模式
+- ➕ Menu 自定义按钮
+- ➕ Tree 键盘交互
+- ✍️ TabHeader Add按钮位置异常
+- ✍️ Input TextAlign 多行错位
+- ✍️ FloatButton MarginX 错位
+- ✍️ DatePickerRange ValueChanged 重复触发
+- ✍️ Select Insert 空集合 无法插入
+- ✍️ Notification Bottom 多显示器无法显示
+- ✍️ Drawer/Popover 多显示器闪窗口
+- ✍️ Button 垂直多行文字
+- ✍️ ToolTip 关闭
+- 🧹 Chart 对齐标准
+- 🧹 Watermark 对齐标准
+- 🧹 丰富 GridPanel
+
 ### `2.1.1` 2025-08-29 📊
 
 - ➕ Chart 图表
