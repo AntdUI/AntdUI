@@ -40,6 +40,22 @@ namespace AntdUI
     {
         #region 属性
 
+        /// <summary>
+        /// 自动大小
+        /// </summary>
+        [Browsable(true)]
+        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                LoadLayout(false);
+            }
+        }
+
         Color? fore;
         /// <summary>
         /// 文字颜色
@@ -359,6 +375,13 @@ namespace AntdUI
                         int y = rect.Y + use_y;
                         use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
                     }
+                }
+
+                if (AutoSize)
+                {
+                    int rh = use_y + Margin.Vertical;
+                    if (InvokeRequired) BeginInvoke(() => Height = rh);
+                    else Height = rh;
                 }
             });
         }

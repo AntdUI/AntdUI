@@ -203,8 +203,8 @@ namespace AntdUI
                 var list = new List<InRect>(Items.Length);
                 int text_height = g.MeasureString(Config.NullText, Font).Height;
 
-                int split = (int)Math.Round(1 * dpi), gap = (int)(text_height * .286F), icon_size = (int)(text_height * 1.14F), icon_gap = (int)(text_height * .6F);
-                int check_size = (int)(text_height * .8F), gap_y = (int)(text_height * .432F), gap_x = (int)(text_height * .72F), gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                int split = (int)Math.Round(1 * dpi), gap = (int)(text_height * config.Gap), icon_size = (int)(text_height * config.IconRatio), icon_gap = (int)(text_height * config.IconGap);
+                int check_size = (int)(text_height * config.CheckRatio), gap_y = (int)(text_height * config.PaddRatio[1]), gap_x = (int)(text_height * config.PaddRatio[0]), gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
                 int item_height = text_height + gap_y2, icon_xy = (item_height - icon_size) / 2, check_xy = (item_height - check_size) / 2;
 
                 ItemMaxWidth(Items, out bool has_checked, out bool has_icon, out bool has_subText, out bool has_subs);

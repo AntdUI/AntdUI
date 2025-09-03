@@ -112,10 +112,10 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 焦点标识块
+        /// 焦点模式
         /// </summary>
-        [Description("绘制焦点标识块"), Category("外观"), DefaultValue(false)]
-        public bool FocusedMark { get; set; }
+        [Description("焦点模式"), Category("外观"), DefaultValue(TFocusMode.None)]
+        public TFocusMode FocusMode { get; set; } = TFocusMode.None;
 
         /// <summary>
         /// 色彩模式
@@ -347,6 +347,21 @@ namespace AntdUI
 
         #region 集合操作
 
+        MenuItem? selectItem, focusItem;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MenuItem? SelectItem
+        {
+            get => selectItem;
+            private set
+            {
+                focusItem = null;
+                if (selectItem == value) return;
+                selectItem = value;
+                if (value == null) return;
+                SelectChanged?.Invoke(this, new MenuSelectEventArgs(value));
+            }
+        }
+
         public void SelectIndex(int i1, bool focus = true)
         {
             if (items == null || items.Count == 0) return;
@@ -357,8 +372,8 @@ namespace AntdUI
             }
             var it1 = items[i1];
             it1.Select = true;
-            SelectChanged?.Invoke(this, new MenuSelectEventArgs(it1));
-            if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it1.rect.Y;
+            SelectItem = it1;
+            if (focus) Focus(it1);
             Invalidate();
         }
 
@@ -377,8 +392,8 @@ namespace AntdUI
             }
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
-            SelectChanged?.Invoke(this, new MenuSelectEventArgs(it2));
-            if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it2.rect.Y;
+            SelectItem = it2;
+            if (focus) Focus(it2);
             Invalidate();
         }
 
@@ -404,8 +419,8 @@ namespace AntdUI
             }
             var it3 = it2.Sub[i3];
             it1.Select = it2.Select = it3.Select = true;
-            SelectChanged?.Invoke(this, new MenuSelectEventArgs(it3));
-            if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it3.rect.Y;
+            SelectItem = it3;
+            if (focus) Focus(it3);
             Invalidate();
         }
 
@@ -458,6 +473,7 @@ namespace AntdUI
             var item = GetSelectItem(out var sub);
             if (item != null)
             {
+                selectItem = item;
                 foreach (var it in sub) it.Select = true;
             }
         }
@@ -733,8 +749,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                var rect = it.Rect;
-                it.ico_rect = new Rectangle(rect.X + (rect.Width - it.ico_rect.Width) / 2, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
+                it.ico_rect = new Rectangle(it.rect.X + (it.rect.Width - it.ico_rect.Width) / 2, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
                 if (it.Visible && it.CanExpand) ChangeUTitle(it.Sub);
             }
         }
@@ -900,7 +915,7 @@ namespace AntdUI
                         else
                         {
                             PaintBack(g, back_active, it.rect, radius);
-                            PaintTextIcon(g, it, fore_active);
+                            PaintTextIcon(g, it, fore_active, radius);
                         }
                     }
                     else
@@ -926,7 +941,7 @@ namespace AntdUI
                         else
                         {
                             PaintBack(g, back_active, it.rect, radius);
-                            PaintTextIcon(g, it, fore_active);
+                            PaintTextIcon(g, it, fore_active, radius);
                         }
                     }
                     else
@@ -937,6 +952,7 @@ namespace AntdUI
                     }
                 }
                 PaintCustomButton(g, it, fore, fore_active);
+                if (focusItem == it) PaintFocus(g, it, fore, radius);
             }
             else
             {
@@ -961,24 +977,37 @@ namespace AntdUI
                         g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
                     }
                 }
-                PaintTextIcon(g, it, fore_enabled);
+                PaintTextIcon(g, it, fore_enabled, radius);
             }
         }
 
         readonly StringFormat SL = Helper.SF_ALL(lr: StringAlignment.Near);
-        void PaintTextIcon(Canvas g, MenuItem it, Color fore)
+        void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius)
         {
             using (var brush = new SolidBrush(fore))
             {
                 if (mode != TMenuMode.InlineNoText) g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
-                if (FocusedMark) //增加焦点块
-                {
-                    int fh = it.rect.Height - (it.rect.Height / 3);
-                    Rectangle rectFocused = new Rectangle(0, it.rect.Top + (it.rect.Height - fh) / 2, 6, fh);
-                    g.Fill(brush, rectFocused);
-                }
+                if (focusItem == null) PaintFocus(g, it, fore, radius);
             }
             PaintIcon(g, it, fore);
+        }
+        void PaintFocus(Canvas g, MenuItem it, Color fore, float radius)
+        {
+            switch (FocusMode)
+            {
+                case TFocusMode.Line:
+                    int fh = (int)(it.rect.Height * 0.6F), fw = (int)(fh * 0.12F);
+                    g.Fill(fore, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height - fh) / 2, fw, fh));
+                    break;
+                case TFocusMode.Border:
+                    float wave = 2 * Config.Dpi, wave2 = wave * 2, r = radius + wave;
+                    var rect_focus = new RectangleF(it.rect.X - wave, it.rect.Y - wave, it.rect.Width + wave2, it.rect.Height + wave2);
+                    using (var path_focus = rect_focus.RoundPath(r))
+                    {
+                        g.Draw(Colour.PrimaryBorder.Get("Menu", ColorScheme), wave, path_focus);
+                    }
+                    break;
+            }
         }
         void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
         {
@@ -1068,6 +1097,7 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            if (FocusMode != TFocusMode.None) Focus();
             CloseTip();
             CloseDropDown();
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
@@ -1152,7 +1182,7 @@ namespace AntdUI
                                         foreach (var it in list) it.Select = true;
                                     }
                                     item.Select = true;
-                                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
+                                    SelectItem = item;
                                     Invalidate();
                                 }
                             }
@@ -1262,7 +1292,7 @@ namespace AntdUI
                     var list = new List<MenuItem>(items.Count);
                     foreach (var it in items)
                     {
-                        if (it.Rect.X > (rect_r.X - it.Rect.Width)) list.Add(it);
+                        if (it.rect.X > (rect_r.X - it.rect.Width)) list.Add(it);
                     }
                     subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
                     subForm.Show(this);
@@ -1436,6 +1466,169 @@ namespace AntdUI
 
         #endregion
 
+        #region 键盘
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            var r = base.ProcessCmdKey(ref msg, keyData);
+            switch (keyData)
+            {
+                case Keys.Up:
+                    if (selectItem == null)
+                    {
+                        if (items != null)
+                        {
+                            Select(items[0]);
+                            return true;
+                        }
+                    }
+                    else if (FindUp(focusItem ?? selectItem)) return true;
+                    break;
+                case Keys.Down:
+                    if (selectItem == null)
+                    {
+                        if (items != null)
+                        {
+                            Select(items[items.Count - 1]);
+                            return true;
+                        }
+                    }
+                    else if (FindDown(focusItem ?? selectItem)) return true;
+                    break;
+                case Keys.Left:
+                    if (selectItem != null && FindLeft(focusItem ?? selectItem)) return true;
+                    break;
+                case Keys.Right:
+                    if (selectItem != null && FindRight(focusItem ?? selectItem)) return true;
+                    break;
+                case Keys.Enter:
+                    if (selectItem != null)
+                    {
+                        var item = focusItem ?? selectItem;
+                        if (item.CanExpand) item.Expand = !item.Expand;
+                        else Select(item);
+                    }
+                    break;
+            }
+            return r;
+        }
+
+        bool FindUp(MenuItem item)
+        {
+            var p1 = item.PARENTITEM;
+            if (p1 == null)
+            {
+                int index = items!.IndexOf(item) - 1;
+                if (index >= 0)
+                {
+                    SetFocusItem(items[index]);
+                    return true;
+                }
+            }
+            else
+            {
+                int index = p1.items!.IndexOf(item) - 1;
+                if (index >= 0) SetFocusItem(FindUpExpand(p1.items[index]));
+                else SetFocusItem(p1);
+                return true;
+            }
+            return false;
+        }
+        MenuItem FindUpExpand(MenuItem it)
+        {
+            if (it.CanExpand && it.Expand) return FindUpExpand(it.items![it.items.Count - 1]);
+            return it;
+        }
+        bool FindDown(MenuItem item, bool canex = true)
+        {
+            if (canex && item.CanExpand && item.Expand)
+            {
+                SetFocusItem(item.items![0]);
+                return true;
+            }
+            var p1 = item.PARENTITEM;
+            if (p1 == null)
+            {
+                int index = items!.IndexOf(item) + 1;
+                if (index < items.Count)
+                {
+                    SetFocusItem(items[index]);
+                    return true;
+                }
+            }
+            else
+            {
+                int index = p1.items!.IndexOf(item) + 1;
+                if (index < p1.items.Count)
+                {
+                    SetFocusItem(p1.items[index]);
+                    return true;
+                }
+                else
+                {
+                    if (p1.PARENTITEM == null)
+                    {
+                        var sub = items!;
+                        int index2 = sub.Count + 1;
+                        if (index2 < sub.Count)
+                        {
+                            var r = FindDown(sub[sub.Count + 1]);
+                            if (r) return true;
+                        }
+                        else
+                        {
+                            var r = FindDown(p1, false);
+                            if (r) return true;
+                        }
+                    }
+                    else
+                    {
+                        var sub = p1.PARENTITEM.items!;
+                        int index2 = sub.Count + 1;
+                        if (index2 < sub.Count)
+                        {
+                            var r = FindDown(sub[index2]);
+                            if (r) return true;
+                        }
+                        else
+                        {
+                            var r = FindDown(p1, false);
+                            if (r) return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool FindLeft(MenuItem item)
+        {
+            if (item.CanExpand && item.Expand) item.Expand = false;
+            return true;
+        }
+        bool FindRight(MenuItem item)
+        {
+            if (item.CanExpand && !item.Expand) item.Expand = true;
+            return true;
+        }
+        void SetFocusItem(MenuItem item)
+        {
+            switch (FocusMode)
+            {
+                case TFocusMode.Line:
+                case TFocusMode.Border:
+                    focusItem = item;
+                    Invalidate();
+                    Focus(item);
+                    break;
+                default:
+                    Select(item);
+                    break;
+            }
+        }
+
+        #endregion
+
         #region 方法
 
         /// <summary>
@@ -1466,13 +1659,23 @@ namespace AntdUI
                 {
                     it.Select = true;
                     tmpAM = true;
-                    SelectChanged?.Invoke(this, new MenuSelectEventArgs(it));
+                    SelectItem = it;
                     if (SelectEx(it.PARENTITEM) > 0) ChangeList(true);
                     tmpAM = false;
-                    if (focus && ScrollBar.ShowY) ScrollBar.ValueY = it.rect.Y;
+                    Invalidate();
+                    if (focus) Focus(it);
                     return;
                 }
                 else if (it.items != null && it.items.Count > 0) Select(item, focus, it.items);
+            }
+        }
+
+        public void Focus(MenuItem menuItem, bool force = false)
+        {
+            if (ScrollBar.ShowY)
+            {
+                int sy = ScrollBar.ValueY;
+                if (force || (menuItem.rect.Y < sy || menuItem.rect.Bottom > sy + Height)) ScrollBar.ValueY = menuItem.rect.Y - Padding.Top;
             }
         }
 
@@ -1580,7 +1783,7 @@ namespace AntdUI
                             foreach (var it in list) it.Select = true;
                         }
                         item.Select = true;
-                        SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
+                        SelectItem = item;
                         Invalidate();
                     }
                 }

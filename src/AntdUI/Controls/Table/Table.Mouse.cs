@@ -117,6 +117,7 @@ namespace AntdUI
                         }
                         if (cell.ROW.CanExpand && cell.ROW.RECORD != null && cell.ROW.RectExpand.Contains(r_x, r_y))
                         {
+                            row_cache = null;
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
                             else rows_Expand.Add(cell.ROW.RECORD);
                             ExpandChanged?.Invoke(this, new TableExpandEventArgs(cell.ROW.RECORD, !cell.ROW.Expand));

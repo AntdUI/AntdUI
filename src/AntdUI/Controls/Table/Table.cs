@@ -1404,6 +1404,7 @@ namespace AntdUI
                     rows_Expand.Clear();
                 }
             }
+            row_cache = null;
             if (LoadLayout()) Invalidate();
         }
 
@@ -1429,6 +1430,7 @@ namespace AntdUI
                 }
                 else return;
             }
+            row_cache = null;
             if (LoadLayout()) Invalidate();
         }
 

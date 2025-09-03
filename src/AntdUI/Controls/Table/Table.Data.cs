@@ -177,6 +177,7 @@ namespace AntdUI
                     {
                         if (code == "add")
                         {
+                            row_cache = null;
                             if (obj is int i)
                             {
                                 var row = list[i];
@@ -274,6 +275,7 @@ namespace AntdUI
         {
             if (sender == dataSource)
             {
+                row_cache = null;
                 switch (e.ListChangedType)
                 {
                     case ListChangedType.ItemAdded:
