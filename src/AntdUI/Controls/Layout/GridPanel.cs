@@ -148,50 +148,6 @@ namespace AntdUI
             /// </summary>
             public int Gap { get; set; }
 
-            enum RV_TYPE
-            {
-                CONTROL,
-                SPRING
-            }
-
-            struct RV
-            {
-                public RV_TYPE type;
-                public object value;
-                public static implicit operator RV(int v) => new RV() { type = RV_TYPE.CONTROL, value = v };
-                public static implicit operator int(RV v) => v.value is int ? (int)v.value : 0;
-
-                public static implicit operator RV(float v) => new RV() { type = RV_TYPE.CONTROL, value = v };
-                public static implicit operator float(RV v) => v.value is float ? (float)v.value : 0;
-
-                public static implicit operator RV(RV_TYPE v) => new RV() { type = v };
-                public static implicit operator RV_TYPE(RV v) => v.type;
-                public bool I => value is int;
-                public bool F => value is float;
-            }
-
-            struct RV_F
-            {
-                public RV_TYPE type;
-                public float value;
-                public static implicit operator RV_F(float v) => new RV_F() { type = RV_TYPE.CONTROL, value = v };
-                public static implicit operator float(RV_F v) => v.value;
-
-                public static implicit operator RV_F(RV_TYPE v) => new RV_F() { type = v };
-                public static implicit operator RV_TYPE(RV_F v) => v.type;
-            }
-
-            struct RV_I
-            {
-                public RV_TYPE type;
-                public int value;
-                public static implicit operator RV_I(int v) => new RV_I() { type = RV_TYPE.CONTROL, value = v };
-                public static implicit operator int(RV_I v) => v.value;
-
-                public static implicit operator RV_I(RV_TYPE v) => new RV_I() { type = v };
-                public static implicit operator RV_TYPE(RV_I v) => v.type;
-            }
-
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 if (container is GridPanel parent && parent.IsHandleCreated)
@@ -203,90 +159,8 @@ namespace AntdUI
                         var controls = SyncMap(parent);
                         if (controls.Count > 0)
                         {
-                            string[] tmp = Span.Split('-', '\n'), rows = tmp[0].Split(';');
-                            var data = new List<List<RV_I>>(rows.Length);
-                            int i = 0;
-                            var celltmp = new Dictionary<int, RV>(rows.Length);
-                            foreach (var it in rows)
-                            {
-                                if (string.IsNullOrEmpty(it)) continue;
-                                string row = it;
-                                int index = row.IndexOf(":");
-                                if (index > -1)
-                                {
-                                    if (index == row.Length - 1) continue;
-                                    if (index > 0)
-                                    {
-                                        var value = row.Substring(0, index);
-                                        if (value.EndsWith("%") && float.TryParse(value.TrimEnd('%'), out var percentageValue)) celltmp.Add(i, percentageValue / 100F);
-                                        else if (int.TryParse(value, out var intValue)) celltmp.Add(i, (int)Math.Round(intValue * Config.Dpi));
-                                        else if (float.TryParse(value, out float floatValue)) celltmp.Add(i, floatValue);
-                                        else continue;
-
-                                        row = row.Substring(index + 1);
-                                    }
-                                    else row = row.Substring(1);
-                                }
-                                var x_tmp = GetRows(row, rect.Width);
-                                if (x_tmp.Count > 0)
-                                {
-                                    data.Add(x_tmp);
-                                    i++;
-                                }
-                            }
-                            if (tmp.Length == 2)
-                            {
-                                i = 0;
-                                foreach (var item in GetRows(tmp[1]))
-                                {
-                                    if (celltmp.ContainsKey(i))
-                                    {
-                                        i++;
-                                        continue;
-                                    }
-                                    celltmp.Add(i, item);
-                                    i++;
-                                }
-                            }
-                            int real_height = rect.Height;
-                            var cells = GetRows(celltmp, real_height, out real_height);
-                            if (data.Count > 0)
-                            {
-                                Rectangle[] rects;
-                                if (data.Count > 1)
-                                {
-                                    int rcount = data.Count - cells.Count;
-                                    var tmp_rects = new List<Rectangle>();
-                                    int hasx = 0, hasy = 0;
-                                    i = 0;
-                                    foreach (var item in data)
-                                    {
-                                        int y = cells.TryGetValue(i, out var value) ? value : real_height / rcount;
-                                        foreach (var x in item)
-                                        {
-                                            if (x.type == RV_TYPE.CONTROL) tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, y));
-                                            hasx += x;
-                                        }
-                                        hasx = 0;
-                                        hasy += y;
-                                        i++;
-                                    }
-                                    rects = tmp_rects.ToArray();
-                                }
-                                else
-                                {
-                                    var xt = data[0];
-                                    var tmp_rects = new List<Rectangle>(xt.Count);
-                                    int hasx = 0, hasy = 0;
-                                    foreach (var x in xt)
-                                    {
-                                        if (x.type == RV_TYPE.CONTROL) tmp_rects.Add(new Rectangle(rect.X + hasx, rect.Y + hasy, x, rect.Height));
-                                        hasx += x;
-                                    }
-                                    rects = tmp_rects.ToArray();
-                                }
-                                HandLayout(controls, rects, rect);
-                            }
+                            var rects = parent.ConvertToRects(rect, Span);
+                            HandLayout(controls, rects, rect);
                         }
                     }
                 }
@@ -328,101 +202,286 @@ namespace AntdUI
 
             #endregion
 
-            List<RV_I> GetRows(string cells, int value) => GetRows(GetRows(cells), value);
-            List<RV> GetRows(string cells)
+            void HandLayout(List<Control> controls, Rects[] rects, Rectangle rect)
             {
-                var arr = cells.Split(' ', ',');
-                var tmp = new List<RV>(arr.Length);
-                foreach (string it in arr)
-                {
-                    var str = it.Trim();
-                    RV tmp_rv; bool spring = false;
-                    if (str.StartsWith("S"))
-                    {
-                        spring = true;
-                        str = str.TrimStart('S');
-                    }
-
-                    if (spring && str.Length == 0) tmp_rv = 0;
-                    else if (str.EndsWith("%") && float.TryParse(str.TrimEnd('%'), out var percentageValue)) tmp_rv = percentageValue / 100F;
-                    else if (int.TryParse(str, out var intValue)) tmp_rv = (int)Math.Round(intValue * Config.Dpi);
-                    else if (float.TryParse(str, out float floatValue)) tmp_rv = floatValue;
-                    else continue;
-
-                    if (spring) tmp_rv.type = RV_TYPE.SPRING;
-                    tmp.Add(tmp_rv);
-                }
-                return tmp;
-            }
-            List<RV_I> GetRows(List<RV> tmp, int value)
-            {
-                int use = 0;
-                foreach (var it in tmp)
-                {
-                    if (it.I) use += it;
-                }
-                int real = value - use;
-                var temp = new List<RV_I>(tmp.Count);
-                foreach (var it in tmp)
-                {
-                    RV_I tmp_rv;
-                    if (it.F) tmp_rv = (int)Math.Round(real * (float)it);
-                    else if (it.I) tmp_rv = (int)it;
-                    else continue;
-                    tmp_rv.type = it.type;
-                    temp.Add(tmp_rv);
-                }
-                return temp;
-            }
-            Dictionary<int, RV_I> GetRows(Dictionary<int, RV> tmp, int value, out int real)
-            {
-                int use = 0;
-                foreach (var it in tmp)
-                {
-                    if (it.Value.I) use += it.Value;
-                }
-                real = value - use;
-                var temp = new Dictionary<int, RV_I>(tmp.Count);
-                foreach (var it in tmp)
-                {
-                    RV_I tmp_rv;
-                    if (it.Value.F) tmp_rv = (int)Math.Round(real * (float)it.Value);
-                    else if (it.Value.I) tmp_rv = (int)it.Value;
-                    else continue;
-                    tmp_rv.type = it.Value.type;
-                    temp.Add(it.Key, tmp_rv);
-                }
-                return temp;
-            }
-
-            void HandLayout(List<Control> controls, Rectangle[] rects, Rectangle rect)
-            {
-                if (rects.Length == 0 || controls.Count == 0)
-                    return;
+                if (rects.Length == 0 || controls.Count == 0) return;
                 int gap = (int)Math.Round(Gap * Config.Dpi), gap2 = gap * 2;
-                int max_len = controls.Count;
-                if (rects.Length < controls.Count)
+                int index = 0;
+                for (int i = 0; i < controls.Count; i++)
                 {
-                    max_len = rects.Length;
-                    for (int i = max_len - 1; i < controls.Count; i++) controls[i].Location = new Point(rect.Width, rect.Y);
-                }
-                for (int i = 0; i < max_len; i++)
-                {
-                    Control control = controls[i];
-                    Point point = rects[i].Location;
+                    var control = controls[i];
+                    var rect_real = rects[index];
+                    while (rect_real.IsEmpty)
+                    {
+                        index++;
+                        if (index >= rects.Length)
+                        {
+                            ClearLayout(controls, i, rect);
+                            return;
+                        }
+                        rect_real = rects[index];
+                    }
+                    Point point = rect_real.Location;
                     point.Offset(control.Margin.Left + gap, control.Margin.Top + gap);
                     control.Location = point;
-                    control.Size = new Size(rects[i].Width - control.Margin.Horizontal - gap2, rects[i].Height - control.Margin.Vertical - gap2);
+                    control.Size = new Size(rect_real.Width - control.Margin.Horizontal - gap2, rect_real.Height - control.Margin.Vertical - gap2);
+                    index++;
+                    if (index >= rects.Length)
+                    {
+                        ClearLayout(controls, i + 1, rect);
+                        return;
+                    }
                 }
             }
+
+            void ClearLayout(List<Control> controls, int si, Rectangle rect)
+            {
+                for (int i = si; i < controls.Count; i++) controls[i].Location = new Point(-rect.Width, -rect.Height);
+            }
         }
+
+        #region 核心
+
+        public Rects[] ConvertToRects(Rectangle rect, string span)
+        {
+            try
+            {
+                // 分割行定义和全局行高
+                var spanParts = span.Split(new[] { '-' }, 2, StringSplitOptions.None);
+                string rowDefinitions = spanParts[0], globalRowHeights = spanParts.Length > 1 ? spanParts[1] : "";
+
+                // 解析所有行定义
+                var rowParts = rowDefinitions.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                int totalRows = rowParts.Length;
+                if (totalRows == 0) return new Rects[0];
+
+                // 解析全局行高
+                var globalHeightValues = globalRowHeights.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                // 第一步：收集所有行的高度设置
+                var rowHeightSettings = new List<string>();
+                var columnDefinitionsList = new List<string[]>();
+
+                for (int i = 0; i < totalRows; i++)
+                {
+                    string rowPart = rowParts[i], columnPart = rowPart;
+                    string? heightStr = null;
+
+                    // 提取行内高度设置
+                    int colonIndex = rowPart.IndexOf(':');
+                    if (colonIndex > 0)
+                    {
+                        heightStr = rowPart.Substring(0, colonIndex).Trim();
+                        columnPart = rowPart.Substring(colonIndex + 1).Trim();
+                    }
+                    // 使用全局行高
+                    else if (i < globalHeightValues.Length) heightStr = globalHeightValues[i];
+                    // 默认填充
+                    else heightStr = "fill";
+
+                    rowHeightSettings.Add(heightStr);
+                    columnDefinitionsList.Add(columnPart.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+                }
+
+                // 第二步：计算所有行的实际高度
+                var rowHeights = CalculateDimensions(rowHeightSettings, rect.Height, true);
+                if (rowHeights == null) return new Rects[0];
+
+                // 预估元素数量
+                int estimatedItems = 0;
+                foreach (var cols in columnDefinitionsList) estimatedItems += cols.Length;
+                var rectsList = new List<Rects>(estimatedItems);
+
+                // 第三步：生成矩形
+                float currentY = rect.Y;
+                for (int rowIndex = 0; rowIndex < totalRows; rowIndex++)
+                {
+                    string[] columnWidths = columnDefinitionsList[rowIndex];
+                    float rowHeight = rowHeights[rowIndex];
+
+                    if (columnWidths.Length == 0)
+                    {
+                        currentY += rowHeight;
+                        continue;
+                    }
+
+                    // 计算列宽
+                    var calculatedWidths = CalculateDimensions(columnWidths, rect.Width, false);
+                    if (calculatedWidths == null)
+                    {
+                        currentY += rowHeight;
+                        continue;
+                    }
+
+                    // 生成当前行的矩形
+                    float currentX = rect.X;
+                    for (int colIndex = 0; colIndex < columnWidths.Length; colIndex++)
+                    {
+                        string widthStr = columnWidths[colIndex];
+                        float width = calculatedWidths[colIndex];
+                        bool isEmpty = widthStr.Contains("_N");
+
+                        // 确保非空位置有最小宽度
+                        if (width <= 0 && !isEmpty)
+                            width = 1;
+
+                        rectsList.Add(new Rects
+                        {
+                            x = colIndex,
+                            y = rowIndex,
+                            IsEmpty = isEmpty,
+                            Rect = new Rectangle(
+                                (int)Math.Round(currentX),
+                                (int)Math.Round(currentY),
+                                (int)Math.Round(width),
+                                (int)Math.Round(rowHeight)
+                            )
+                        });
+
+                        currentX += width;
+                    }
+
+                    currentY += rowHeight;
+                }
+
+                return rectsList.ToArray();
+            }
+            catch
+            {
+                return new Rects[0];
+            }
+        }
+
+        /// <summary>
+        /// 通用尺寸计算方法
+        /// 既可以计算行高，也可以计算列宽
+        /// </summary>
+        float[]? CalculateDimensions(IList<string> dimension, float maxValue, bool isHeight)
+        {
+            try
+            {
+                int totalItems = dimension.Count;
+                var dimensions = new float[totalItems];
+                float fixedSum = 0;
+                int fillCount = 0;
+
+                // 第一遍：计算所有固定高度和填充数量
+                for (int i = 0; i < totalItems; i++)
+                {
+                    string dimStr = dimension[i], valueStr = dimStr.Contains("_N") ? dimStr.Replace("_N", "") : dimStr;
+
+                    if (valueStr.Equals("fill", StringComparison.OrdinalIgnoreCase))
+                    {
+                        dimensions[i] = 0;
+                        fillCount++;
+                    }
+                    else
+                    {
+                        // 计算固定高度（包括百分比）
+                        float dimValue = ParseDimension(valueStr, maxValue, isHeight);
+                        dimensions[i] = dimValue;
+                        fixedSum += dimValue;
+                    }
+                }
+
+                // 计算剩余可分配空间
+                float remainingSpace = Math.Max(0, maxValue - fixedSum);
+
+                // 分配剩余空间给填充项
+                if (fillCount > 0 && remainingSpace > 0)
+                {
+                    float fillValue = remainingSpace / fillCount;
+                    for (int i = 0; i < totalItems; i++)
+                    {
+                        string dimStr = dimension[i], valueStr = dimStr.Contains("_N") ? dimStr.Replace("_N", "") : dimStr;
+
+                        if (valueStr.Equals("fill", StringComparison.OrdinalIgnoreCase)) dimensions[i] = fillValue;
+                    }
+                }
+
+                return dimensions;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 解析尺寸
+        /// </summary>
+        float ParseDimension(string dimensionStr, float maxValue, bool isHeight)
+        {
+            // 百分比处理（相对于maxValue）
+            if (dimensionStr.EndsWith("%"))
+            {
+                if (float.TryParse(dimensionStr.TrimEnd('%'), out float percentageValue)) return maxValue * (Math.Abs(percentageValue) / 100f);
+                return 0;
+            }
+
+            // int类型（仅int乘Dpi）
+            if (int.TryParse(dimensionStr, out int intValue)) return (float)Math.Round(Math.Abs(intValue) * Config.Dpi);
+
+            // float类型（直接使用）
+            if (float.TryParse(dimensionStr, out float floatValue)) return floatValue;
+
+            return 0;
+        }
+
+        public class Rects
+        {
+            /// <summary>
+            /// 第几列
+            /// </summary>
+            public int x { get; set; }
+            /// <summary>
+            /// 第几行
+            /// </summary>
+            public int y { get; set; }
+            /// <summary>
+            /// 最终坐标
+            /// </summary>
+            public Rectangle Rect { get; set; }
+            /// <summary>
+            /// 是否空位置（定义边距等空占位）
+            /// </summary>
+            public bool IsEmpty { get; set; }
+
+            public Point Location => Rect.Location;
+            public int Width => Rect.Width;
+            public int Height => Rect.Height;
+        }
+
+        #endregion
 
         #endregion
 
         protected override void OnDraw(DrawEventArgs e)
         {
-            PaintBack(e.Canvas);
             base.OnDraw(e);
+            if (PaintBack(e.Canvas))
+            {
+                if (!string.IsNullOrEmpty(Span))
+                {
+                    var rects = ConvertToRects(DisplayRectangle, Span);
+                    using (var fore = new SolidBrush(Style.Db.Text))
+                    using (var bg = new SolidBrush(Style.Db.Fill))
+                    using (var pen = new Pen(Style.Db.PrimaryBorder, Config.Dpi * 2))
+                    {
+                        int gap = (int)(3 * Config.Dpi), gap2 = gap * 2;
+                        foreach (var it in rects)
+                        {
+                            var rect = new Rectangle(it.Rect.X + gap, it.Rect.Y + gap, it.Rect.Width - gap2, it.Rect.Height - gap2);
+                            if (it.IsEmpty) e.Canvas.Fill(bg, rect);
+                            else
+                            {
+                                e.Canvas.Draw(pen, rect);
+                                e.Canvas.String(it.x + ":" + it.y, Font, fore, it.Rect);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

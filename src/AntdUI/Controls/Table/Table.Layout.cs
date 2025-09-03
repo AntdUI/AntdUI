@@ -262,7 +262,7 @@ namespace AntdUI
                 #region 处理需要的行
 
                 List<RowTemplate> rows;
-                if (VirtualRow)
+                if (VirtualMode)
                 {
                     #region 虚拟计算需要布局坐标的宽高
 
@@ -624,7 +624,7 @@ namespace AntdUI
         }
         public virtual void OnValueYChanged(int value)
         {
-            if (VirtualRow) LoadLayout();
+            if (VirtualMode) LoadLayout();
         }
 
         #region 通用循环

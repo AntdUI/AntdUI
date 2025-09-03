@@ -179,7 +179,7 @@ namespace AntdUI
 
         #region 渲染
 
-        public void PaintBack(Canvas g)
+        public bool PaintBack(Canvas g)
         {
             var rect = ReadRectangle;
             if (rect.Width > 0 && rect.Height > 0)
@@ -205,13 +205,15 @@ namespace AntdUI
 
                 if (DesignMode)
                 {
-                    if (hasBor) return;
+                    if (hasBor) return true;
                     using (var path = rect.RoundPath(radius))
                     {
                         g.Draw(borderColor ?? Colour.Text.Get("Panel", ColorScheme), Config.Dpi, DashStyle.Dash, path);
                     }
+                    return true;
                 }
             }
+            return false;
         }
 
         #endregion
