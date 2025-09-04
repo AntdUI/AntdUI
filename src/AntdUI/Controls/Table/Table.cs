@@ -57,7 +57,6 @@ namespace AntdUI
             {
                 if (columns == value) return;
                 SortHeader = null;
-                row_cache = null;
                 columns = value;
                 if (LoadLayout()) Invalidate();
                 if (value == null) return;
@@ -1016,8 +1015,41 @@ namespace AntdUI
         int ScrollLine(int i, RowTemplate[] rows, bool force = false)
         {
             if (!ScrollBar.ShowY) return 0;
-            var selectRow = rows[i];
             int sy = ScrollBar.ValueY;
+            if (VirtualMode && _RowHeight.HasValue)
+            {
+                if (dataTmp == null) return 0;
+                int len = dataTmp.rows.Length * _RowHeight.Value;
+                var prog = (_RowHeight.Value * i) * 1F / len;
+                int y = (int)Math.Round(len * prog);
+                if (force)
+                {
+                    if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                    else ScrollBar.ValueY = y;
+                    return sy - ScrollBar.ValueY;
+                }
+                else
+                {
+                    int b = y + _RowHeight.Value;
+                    if (visibleHeader && fixedHeader)
+                    {
+                        if (y - rows[0].RECT.Height < sy || b > sy + rect_read.Height)
+                        {
+                            if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                            else ScrollBar.ValueY = y;
+                            return sy - ScrollBar.ValueY;
+                        }
+                    }
+                    else if (y < sy || b > sy + rect_read.Height)
+                    {
+                        if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                        else ScrollBar.ValueY = y;
+                        return sy - ScrollBar.ValueY;
+                    }
+                }
+                return 0;
+            }
+            var selectRow = rows[i];
             if (force)
             {
                 if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
@@ -1404,7 +1436,6 @@ namespace AntdUI
                     rows_Expand.Clear();
                 }
             }
-            row_cache = null;
             if (LoadLayout()) Invalidate();
         }
 
@@ -1430,7 +1461,6 @@ namespace AntdUI
                 }
                 else return;
             }
-            row_cache = null;
             if (LoadLayout()) Invalidate();
         }
 

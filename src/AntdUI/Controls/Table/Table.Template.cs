@@ -95,7 +95,7 @@ namespace AntdUI
                 {
                     if (hover == value) return;
                     hover = value;
-                    if (SHOW && ShowV && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table", PARENT.ColorScheme)).A > 0)
+                    if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table", PARENT.ColorScheme)).A > 0)
                     {
                         if (Config.HasAnimation(nameof(Table)) && PARENT.AnimationTime > 0)
                         {
@@ -171,7 +171,6 @@ namespace AntdUI
 
             public bool Expand { get; set; }
             public bool ShowExpand { get; set; } = true;
-            public bool ShowV { get; set; } = true;
 
             internal int ExpandDepth { get; set; }
             internal int KeyTreeINDEX { get; set; } = -1;
@@ -180,7 +179,7 @@ namespace AntdUI
 
         internal class RowData
         {
-            public RowData(List<RowTemplate> row, bool processing, List<Column> columns, Dictionary<int, object> colwidth, int keytreeindex)
+            public RowData(List<RowTemplate?> row, bool processing, List<Column> columns, Dictionary<int, object> colwidth, int keytreeindex)
             {
                 Row = row.ToArray();
                 Processing = processing;
@@ -188,7 +187,7 @@ namespace AntdUI
                 ColWidth = colwidth;
                 KeyTreeIndex = keytreeindex;
             }
-            public RowTemplate[] Row { get; private set; }
+            public RowTemplate?[] Row { get; private set; }
             public bool Processing { get; private set; }
             public List<Column> Columns { get; private set; }
             public Dictionary<int, object> ColWidth { get; private set; }
@@ -300,7 +299,7 @@ namespace AntdUI
             void OnCheck()
             {
                 ThreadCheck?.Dispose();
-                if (ROW.SHOW && ROW.ShowV && PARENT.IsHandleCreated)
+                if (ROW.SHOW && PARENT.IsHandleCreated)
                 {
                     if (Config.HasAnimation(nameof(Table)))
                     {
@@ -407,7 +406,7 @@ namespace AntdUI
             void OnCheck()
             {
                 ThreadCheck?.Dispose();
-                if (ROW.SHOW && ROW.ShowV && PARENT.IsHandleCreated)
+                if (ROW.SHOW && PARENT.IsHandleCreated)
                 {
                     if (Config.HasAnimation(nameof(Table)))
                     {
@@ -513,7 +512,7 @@ namespace AntdUI
             void OnCheck()
             {
                 ThreadCheck?.Dispose();
-                if (ROW.SHOW && ROW.ShowV && PARENT.IsHandleCreated)
+                if (ROW.SHOW && PARENT.IsHandleCreated)
                 {
                     if (Config.HasAnimation(nameof(Table)))
                     {
@@ -570,7 +569,7 @@ namespace AntdUI
                 {
                     if (_mouseHover == value) return;
                     _mouseHover = value;
-                    if (ROW.SHOW && ROW.ShowV && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
+                    if (ROW.SHOW && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
@@ -620,7 +619,7 @@ namespace AntdUI
                 {
                     if (loading == value) return;
                     loading = value;
-                    if (ROW.SHOW && ROW.ShowV && PARENT.IsHandleCreated)
+                    if (ROW.SHOW && PARENT.IsHandleCreated)
                     {
                         if (loading)
                         {

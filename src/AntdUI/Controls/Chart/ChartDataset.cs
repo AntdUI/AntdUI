@@ -22,7 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 
-namespace AntdUI.Controls.Charts
+namespace AntdUI
 {
     /// <summary>
     /// 图表数据集

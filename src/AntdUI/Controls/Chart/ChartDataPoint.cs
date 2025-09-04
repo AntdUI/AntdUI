@@ -20,7 +20,7 @@
 using System.ComponentModel;
 using System.Drawing;
 
-namespace AntdUI.Controls.Charts
+namespace AntdUI
 {
     /// <summary>
     /// 图表数据点

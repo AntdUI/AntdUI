@@ -2338,7 +2338,8 @@ namespace AntdUI
         /// <summary>
         /// 自定义按钮的集合
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Description("自定义按钮的集合"), Category("外观")]
         public List<MenuButton>? Button { get; set; }
 
