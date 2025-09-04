@@ -1,6 +1,14 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.3` 2025-09-04
+
+- ➕ Table VirtualMode 虚拟模式
+- ✍️ Menu 自定义菜单设计器异常
+- ✍️ Segmented Full 精度
+
 ### `2.1.2` 2025-09-03
+
+> 因 `VirtualMode` 存在 Debug 代码，请使用 >= `2.1.3`
 
 - ➕ Table VirtualMode 虚拟模式
 - ➕ Table 树支持集合

@@ -1,6 +1,14 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.3` 2025-09-04
+
+- ➕ Table VirtualMode virtual mode
+- ✍️ Menu custom menu designer exception
+- ✍️ Segmented Full Accuracy
+
 ### `2.1.2` 2025-09-03
+
+> Due to Debug code in `VirtualMode`, please use >= `2.1.3`
 
 - ➕ Table VirtualMode virtual mode
 - ➕ Table tree supports collections
