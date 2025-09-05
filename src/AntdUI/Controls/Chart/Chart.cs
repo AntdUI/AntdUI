@@ -26,17 +26,8 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace AntdUI.Controls.Charts
+namespace AntdUI
 {
-    /// <summary>
-    /// 图例项
-    /// </summary>
-    public class LegendItem
-    {
-        public string Label { get; set; } = string.Empty;
-        public Color Color { get; set; }
-    }
-
     /// <summary>
     /// Chart 图表控件
     /// </summary>
@@ -1676,5 +1667,14 @@ namespace AntdUI.Controls.Charts
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// 图例项
+    /// </summary>
+    public class LegendItem
+    {
+        public string Label { get; set; } = string.Empty;
+        public Color Color { get; set; }
     }
 }

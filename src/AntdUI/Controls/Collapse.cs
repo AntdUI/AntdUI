@@ -73,6 +73,22 @@ namespace AntdUI
             }
         }
 
+        Color? foreActive;
+        /// <summary>
+        /// 文字激活颜色
+        /// </summary>
+        [Description("文字激活颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ForeActive
+        {
+            get => foreActive;
+            set
+            {
+                if (foreActive == value) return;
+                foreActive = value;
+            }
+        }
+
         Color? headerBg;
         /// <summary>
         /// 折叠面板头部背景
@@ -255,17 +271,9 @@ namespace AntdUI
             set
             {
                 if (fontExpand == value) return;
-
                 fontExpand = value;
                 Invalidate();
-
             }
-        }
-
-        protected override void OnFontChanged(EventArgs e)
-        {
-            base.OnFontChanged(e);
-            if (fontExpand == null) fontExpand = new Font(Font, FontStyle.Bold);
         }
 
         #endregion
@@ -278,9 +286,10 @@ namespace AntdUI
             LoadLayout(false);
         }
 
+        internal bool canset = true;
         protected override void OnSizeChanged(EventArgs e)
         {
-            LoadLayout(false);
+            if (canset) LoadLayout(false);
             base.OnSizeChanged(e);
         }
 
@@ -683,8 +692,6 @@ namespace AntdUI
         void PaintItemIconText(Canvas g, CollapseItem item, SolidBrush fore)
         {
             Rectangle rect = item.RectText;
-            Color foreColor = fore.Color;
-            if (item.Expand) fore.Color = AntdUI.Style.Db.PrimaryActive;
             if (item.HasIcon)
             {
                 int height = rect.Height * 2;
@@ -703,8 +710,8 @@ namespace AntdUI
                 int fs = (int)(fnt.Size - Font.Size);
                 rect.Inflate(fs, fs);
             }
-            g.String(item.Text, fnt, fore, rect, s_l);
-            fore.Color = foreColor;
+            if (item.Expand && foreActive.HasValue) g.String(item.Text, fnt, foreActive.Value, rect, s_l);
+            else g.String(item.Text, fnt, fore, rect, s_l);
         }
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
@@ -1158,6 +1165,7 @@ namespace AntdUI
                 if (value) PARENT?.UniqueOne(this);
                 if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
                 {
+                    if (PARENT.AutoSize) PARENT.canset = false;
                     Location = new Point(-Width, -Height);
                     ThreadExpand?.Dispose();
                     float oldval = -1;
@@ -1172,6 +1180,7 @@ namespace AntdUI
                             PARENT.LoadLayout();
                         }, () =>
                         {
+                            if (PARENT.AutoSize) PARENT.canset = true;
                             ExpandProg = 1F;
                             ExpandThread = false;
                             PARENT.LoadLayout();
@@ -1185,6 +1194,7 @@ namespace AntdUI
                             PARENT.LoadLayout();
                         }, () =>
                         {
+                            if (PARENT.AutoSize) PARENT.canset = true;
                             ExpandProg = 1F;
                             ExpandThread = false;
                             PARENT.LoadLayout();
@@ -1300,6 +1310,7 @@ namespace AntdUI
         internal bool HasIcon => iconSvg != null || Icon != null;
 
         #endregion
+
         #endregion
 
         #region 坐标

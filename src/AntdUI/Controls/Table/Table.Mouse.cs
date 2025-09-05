@@ -73,7 +73,7 @@ namespace AntdUI
                     }
                     shift_index = i_row;
                     if (dataSource is BindingSource bindingSource) bindingSource.Position = i_row - 1;
-                    var it = rows[i_row];
+                    var it = cell.ROW;
                     if (mode > 0)
                     {
                         if (moveheaders.Length > 0)
@@ -117,7 +117,6 @@ namespace AntdUI
                         }
                         if (cell.ROW.CanExpand && cell.ROW.RECORD != null && cell.ROW.RectExpand.Contains(r_x, r_y))
                         {
-                            row_cache = null;
                             if (cell.ROW.Expand) rows_Expand.Remove(cell.ROW.RECORD);
                             else rows_Expand.Add(cell.ROW.RECORD);
                             ExpandChanged?.Invoke(this, new TableExpandEventArgs(cell.ROW.RECORD, !cell.ROW.Expand));
@@ -735,7 +734,8 @@ namespace AntdUI
                         int countmove = 0;
                         for (int i = 1; i < rows.Length; i++)
                         {
-                            if (i == i_row)
+                            var row = rows[i];
+                            if (row.INDEX == i_row)
                             {
                                 if (cel_sel is TCellSort sort)
                                 {

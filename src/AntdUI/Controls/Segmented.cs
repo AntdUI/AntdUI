@@ -827,7 +827,8 @@ namespace AntdUI
                         int len = items.Count;
                         if (Vertical)
                         {
-                            int heightone = (rect.Height * 1 - (_igap * (len - 1))) / len, y = 0;
+                            float heightone = (rect.Height * 1F - (_igap * (len - 1))) / len, y = 0;
+                            int hone = (int)Math.Round(heightone);
                             switch (iconalign)
                             {
                                 case TAlignMini.Top:
@@ -835,8 +836,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t);
-                                        else it.SetRectTopFull(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_t, text_heigth, sp, g, Font);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_t);
+                                        else it.SetRectTopFull(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_t, text_heigth, sp, g, Font);
                                         y += heightone + _igap;
                                     }
                                     break;
@@ -845,8 +846,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b);
-                                        else it.SetRectBottomFull(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_b, text_heigth, sp, g, Font);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_b);
+                                        else it.SetRectBottomFull(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_b, text_heigth, sp, g, Font);
                                         y += heightone + _igap;
                                     }
                                     break;
@@ -855,8 +856,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_l);
-                                        else it.SetRectLeft(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_l, sp, gap);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_l);
+                                        else it.SetRectLeft(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_l, sp, gap);
                                         y += heightone + _igap;
                                     }
                                     break;
@@ -865,8 +866,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_r);
-                                        else it.SetRectRight(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone), imgsize_r, sp, gap);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_r);
+                                        else it.SetRectRight(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone), imgsize_r, sp, gap);
                                         y += heightone + _igap;
                                     }
                                     break;
@@ -874,7 +875,7 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        it.SetRectNone(new Rectangle(rect.X, rect.Y + y, rect.Width, heightone));
+                                        it.SetRectNone(new Rectangle(rect.X, (int)Math.Round(rect.Y + y), rect.Width, hone));
                                         y += heightone + _igap;
                                     }
                                     break;
@@ -882,7 +883,8 @@ namespace AntdUI
                         }
                         else
                         {
-                            int widthone = (rect.Width * 1 - (_igap * (len - 1))) / len, x = 0;
+                            float widthone = (rect.Width * 1F - (_igap * (len - 1))) / len, x = 0;
+                            int wone = (int)Math.Round(widthone);
                             switch (iconalign)
                             {
                                 case TAlignMini.Top:
@@ -890,8 +892,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_t);
-                                        else it.SetRectTop(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_t, text_heigth, sp);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_t);
+                                        else it.SetRectTop(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_t, text_heigth, sp);
                                         x += widthone + _igap;
                                     }
                                     break;
@@ -900,8 +902,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_b);
-                                        else it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_b, text_heigth, sp);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_b);
+                                        else it.SetRectBottom(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_b, text_heigth, sp);
                                         x += widthone + _igap;
                                     }
                                     break;
@@ -910,8 +912,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_l);
-                                        else it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_l, sp, gap);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_l);
+                                        else it.SetRectLeft(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_l, sp, gap);
                                         x += widthone + _igap;
                                     }
                                     break;
@@ -920,8 +922,8 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_r);
-                                        else it.SetRectRight(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height), imgsize_r, sp, gap);
+                                        if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_r);
+                                        else it.SetRectRight(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height), imgsize_r, sp, gap);
                                         x += widthone + _igap;
                                     }
                                     break;
@@ -929,7 +931,7 @@ namespace AntdUI
                                     foreach (var it in items)
                                     {
                                         it.PARENT = this;
-                                        it.SetRectNone(new Rectangle(rect.X + x, rect.Y, widthone, rect.Height));
+                                        it.SetRectNone(new Rectangle((int)Math.Round(rect.X + x), rect.Y, wone, rect.Height));
                                         x += widthone + _igap;
                                     }
                                     break;
