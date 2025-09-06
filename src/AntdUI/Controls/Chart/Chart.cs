@@ -644,7 +644,7 @@ namespace AntdUI
                     var pointLocation = GetDataPointLocation(point, chartRect);
                     var distance = Math.Sqrt(Math.Pow(x - pointLocation.X, 2) + Math.Pow(y - pointLocation.Y, 2));
 
-                    if (distance < minDistance && distance < 10) // 10像素的悬停范围
+                    if (distance < minDistance && distance < ChartConstants.HoverDetectionRadius) // 悬停检测范围
                     {
                         minDistance = distance;
                         nearestPoint = point;
@@ -674,7 +674,7 @@ namespace AntdUI
                     var pointLocation = GetDataPointLocation(point, chartRect);
                     var distance = Math.Sqrt(Math.Pow(x - pointLocation.X, 2) + Math.Pow(y - pointLocation.Y, 2));
 
-                    if (distance < minDistance && distance < 10) // 10像素的点击范围
+                    if (distance < minDistance && distance < ChartConstants.HoverDetectionRadius) // 点击检测范围
                     {
                         minDistance = distance;
                         nearestPoint = point;
@@ -715,6 +715,10 @@ namespace AntdUI
                 case TChartType.Pie:
                 case TChartType.Doughnut:
                     return GetPieChartPointLocation(point, chartRect);
+                case TChartType.PolarArea:
+                    return GetPolarAreaChartPointLocation(point, chartRect);
+                case TChartType.Radar:
+                    return GetRadarChartPointLocation(point, chartRect);
                 default:
                     return new Point(chartRect.X + chartRect.Width / 2, chartRect.Y + chartRect.Height / 2);
             }
@@ -787,33 +791,137 @@ namespace AntdUI
             return new Point(centerX, centerY);
         }
 
+        private Point GetPolarAreaChartPointLocation(ChartDataPoint point, Rectangle chartRect)
+        {
+            var centerX = chartRect.X + chartRect.Width / 2;
+            var centerY = chartRect.Y + chartRect.Height / 2;
+            var maxRadius = Math.Min(chartRect.Width, chartRect.Height) / 2 - 40;
+
+            // 收集所有可见的数据点
+            var visiblePoints = new List<ChartDataPoint>();
+            foreach (var dataset in Datasets.Where(d => d.Visible))
+            {
+                foreach (var p in dataset.DataPoints.Where(p => p.Visible))
+                {
+                    visiblePoints.Add(p);
+                }
+            }
+
+            if (visiblePoints.Count == 0) return new Point(centerX, centerY);
+
+            // 找到目标数据点的索引
+            var pointIndex = visiblePoints.IndexOf(point);
+            if (pointIndex == -1) return new Point(centerX, centerY);
+
+            // 计算最大数值用于半径缩放
+            var maxValue = visiblePoints.Max(p => Math.Abs(p.Y));
+            if (maxValue == 0) return new Point(centerX, centerY);
+
+            // 计算角度和半径
+            var anglePerPoint = 360.0f / visiblePoints.Count;
+            var startAngle = -90f; // 从12点钟方向开始
+            var currentAngle = startAngle + anglePerPoint * pointIndex + anglePerPoint / 2; // 扇形中心角度
+            var radius = (int)(Math.Abs(point.Y) / maxValue * maxRadius * 0.7); // 0.7是标签位置系数
+
+            var x = centerX + (int)(radius * Math.Cos(currentAngle * Math.PI / 180));
+            var y = centerY + (int)(radius * Math.Sin(currentAngle * Math.PI / 180));
+
+            return new Point(x, y);
+        }
+
+        private Point GetRadarChartPointLocation(ChartDataPoint point, Rectangle chartRect)
+        {
+            var centerX = chartRect.X + chartRect.Width / 2;
+            var centerY = chartRect.Y + chartRect.Height / 2;
+            var radius = Math.Min(chartRect.Width, chartRect.Height) / 2 - 40;
+
+            // 找到包含该数据点的数据集
+            foreach (var dataset in Datasets.Where(d => d.Visible && d.DataPoints.Count > 0))
+            {
+                var dataPoints = dataset.DataPoints.Where(p => p.Visible).ToList();
+                var pointIndex = dataPoints.IndexOf(point);
+                if (pointIndex == -1) continue;
+
+                // 计算最大值用于半径缩放
+                var maxValue = dataPoints.Max(p => Math.Abs(p.Y));
+                if (maxValue == 0) return new Point(centerX, centerY);
+
+                // 计算角度和半径
+                var angle = pointIndex * (360.0 / dataPoints.Count) - 90; // 从12点钟方向开始
+                var value = Math.Abs(point.Y) / maxValue;
+                var currentRadius = radius * value;
+                var x = centerX + (int)(currentRadius * Math.Cos(angle * Math.PI / 180));
+                var y = centerY + (int)(currentRadius * Math.Sin(angle * Math.PI / 180));
+
+                return new Point(x, y);
+            }
+
+            return new Point(centerX, centerY);
+        }
+
         private double GetMinX()
         {
             if (Datasets.Count == 0) return 0;
-            return Datasets.Where(d => d.Visible).Min(d => d.DataPoints.Count > 0 ? d.DataPoints.Min(p => p.X) : 0);
+            var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
+            if (!visibleDatasets.Any()) return 0;
+            return visibleDatasets.Min(d => d.DataPoints.Where(p => p.Visible).Min(p => p.X));
         }
 
         private double GetMaxX()
         {
-            if (Datasets.Count == 0) return 0;
-            return Datasets.Where(d => d.Visible).Max(d => d.DataPoints.Count > 0 ? d.DataPoints.Max(p => p.X) : 0);
+            if (Datasets.Count == 0) return 1; // 默认返回1而不是0，避免范围为0
+            var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
+            if (!visibleDatasets.Any()) return 1;
+            return visibleDatasets.Max(d => d.DataPoints.Where(p => p.Visible).Max(p => p.X));
         }
 
         private double GetMinY()
         {
             if (Datasets.Count == 0) return 0;
-            return Datasets.Where(d => d.Visible).Min(d => d.DataPoints.Count > 0 ? d.DataPoints.Min(p => p.Y) : 0);
+            var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
+            if (!visibleDatasets.Any()) return 0;
+            return visibleDatasets.Min(d => d.DataPoints.Where(p => p.Visible).Min(p => p.Y));
         }
 
         private double GetMaxY()
         {
-            if (Datasets.Count == 0) return 0;
-            return Datasets.Where(d => d.Visible).Max(d => d.DataPoints.Count > 0 ? d.DataPoints.Max(p => p.Y) : 0);
+            if (Datasets.Count == 0) return 1; // 默认返回1而不是0，避免范围为0
+            var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
+            if (!visibleDatasets.Any()) return 1;
+            return visibleDatasets.Max(d => d.DataPoints.Where(p => p.Visible).Max(p => p.Y));
         }
 
-        private double GetXRange() => GetMaxX() - GetMinX();
+        private double GetXRange()
+        {
+            var range = GetMaxX() - GetMinX();
+            return range == 0 ? 1.0 : range; // 避免除零错误
+        }
 
-        private double GetYRange() => GetMaxY() - GetMinY();
+        private double GetYRange()
+        {
+            var range = GetMaxY() - GetMinY();
+            return range == 0 ? 1.0 : range; // 避免除零错误
+        }
+
+        /// <summary>
+        /// 统一的DPI缩放处理方法
+        /// </summary>
+        /// <param name="value">原始值</param>
+        /// <returns>缩放后的值</returns>
+        private float GetScaledValue(float value)
+        {
+            return value * Config.Dpi;
+        }
+
+        /// <summary>
+        /// 统一的DPI缩放处理方法（整数版本）
+        /// </summary>
+        /// <param name="value">原始值</param>
+        /// <returns>缩放后的值</returns>
+        private int GetScaledValue(int value)
+        {
+            return (int)(value * Config.Dpi);
+        }
 
         #endregion
 
@@ -833,6 +941,11 @@ namespace AntdUI
                 {
                     var x = chartRect.X + (float)((dataPoint.X - GetMinX()) / xRange * chartRect.Width);
                     var y = chartRect.Bottom - (float)((dataPoint.Y - GetMinY()) / yRange * chartRect.Height * AnimationProgress);
+
+                    // 边界检查，确保点在图表区域内
+                    x = Math.Max(chartRect.Left, Math.Min(chartRect.Right, x));
+                    y = Math.Max(chartRect.Top, Math.Min(chartRect.Bottom, y));
+
                     points.Add(new Point((int)x, (int)y));
                 }
 
@@ -840,7 +953,7 @@ namespace AntdUI
 
                 // 绘制线条
                 var lineColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue);
-                using (var pen = new Pen(lineColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(lineColor, GetScaledValue(dataset.BorderWidth)))
                 {
                     g.DrawLines(pen, points.ToArray());
                 }
@@ -849,7 +962,7 @@ namespace AntdUI
                 var pointColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : lineColor;
                 using (var brush = new SolidBrush(pointColor))
                 {
-                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
+                    int tSize = GetScaledValue(ChartConstants.DefaultPointSize), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
                         g.FillEllipse(brush, new Rectangle(point.X - tSize, point.Y - tSize, tSize2, tSize2));
@@ -862,25 +975,32 @@ namespace AntdUI
         {
             if (Datasets.Count == 0) return;
 
-            double mx = GetMinX(), my = GetMinY(), xRange = GetMaxX() - mx, yRange = GetMaxY() - mx;
+            double mx = GetMinX(), my = GetMinY(), xRange = GetXRange(), yRange = GetYRange();
             if (xRange == 0 || yRange == 0) return;
 
-            var barWidth = chartRect.Width / (Datasets.Count * 10); // 动态计算柱宽
+            var barWidth = chartRect.Width / (Datasets.Count * ChartConstants.DefaultBarWidthDivisor); // 动态计算柱宽
             var datasetIndex = 0;
 
             foreach (var dataset in Datasets.Where(d => d.Visible))
             {
                 var barColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue;
                 using (var brush = new SolidBrush(barColor))
-                using (var pen = new Pen(dataset.BorderColor.HasValue ? dataset.BorderColor.Value : Color.Black, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(dataset.BorderColor.HasValue ? dataset.BorderColor.Value : Color.Black, GetScaledValue(dataset.BorderWidth)))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
                         var barHeight = (float)((dataPoint.Y - my) / yRange * chartRect.Height * AnimationProgress);
                         if (barHeight > 0)
                         {
-                            float x = chartRect.X + (float)((dataPoint.X - mx) / xRange * chartRect.Width), y = chartRect.Bottom - barHeight;
-                            var barRect = new RectangleF(x - barWidth / 2, y, barWidth, barHeight);
+                            float x = chartRect.X + (float)((dataPoint.X - mx) / xRange * chartRect.Width);
+                            float y = chartRect.Bottom - barHeight;
+
+                            // 边界检查，确保柱形图在图表区域内
+                            x = Math.Max(chartRect.Left, Math.Min(chartRect.Right - barWidth, x - barWidth / 2));
+                            y = Math.Max(chartRect.Top, Math.Min(chartRect.Bottom, y));
+                            barHeight = Math.Min(barHeight, chartRect.Bottom - y);
+
+                            var barRect = new RectangleF(x, y, barWidth, barHeight);
                             g.Fill(brush, barRect);
                             g.Draw(pen, barRect);
                         }
@@ -1664,6 +1784,36 @@ namespace AntdUI
                 HoveredPoint = null;
                 HideTooltip();
             }
+        }
+
+        #endregion
+
+        #region 配置常量
+
+        /// <summary>
+        /// 图表配置常量
+        /// </summary>
+        private static class ChartConstants
+        {
+            /// <summary>
+            /// 默认柱形图宽度除数
+            /// </summary>
+            public const int DefaultBarWidthDivisor = 10;
+
+            /// <summary>
+            /// 鼠标悬停检测半径（像素）
+            /// </summary>
+            public const int HoverDetectionRadius = 10;
+
+            /// <summary>
+            /// 默认数据点大小
+            /// </summary>
+            public const int DefaultPointSize = 3;
+
+            /// <summary>
+            /// 默认动画持续时间（毫秒）
+            /// </summary>
+            public const int DefaultAnimationDuration = 1000;
         }
 
         #endregion

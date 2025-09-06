@@ -84,8 +84,8 @@ namespace AntdUI
                 ThreadState = null;
                 if (visibleHeader && emptyHeader && columns != null && columns.Count > 0)
                 {
-                    var _rows = LayoutDesign(rect, new TempTable(new TempiColumn[0], new IRow[0], null));
-                    rows = LayoutDesign(rect, new List<RowTemplate?>(_rows.Row), _rows.Columns, _rows.ColWidth, _rows.KeyTreeIndex, out int x, out int y, out bool is_exceed);
+                    var _rows = LayoutDesign(rect, new TempTable(new TempiColumn[0], new IRow[0], null), out bool Processing, out var Columns, out var ColWidth, out int KeyTreeIndex);
+                    rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     return rect;
                 }
@@ -98,19 +98,19 @@ namespace AntdUI
             }
             else
             {
-                var _rows = LayoutDesign(rect, dataTmp);
-                if (visibleHeader && EmptyHeader && _rows.Row.Length == 0)
+                var _rows = LayoutDesign(rect, dataTmp, out bool Processing, out var Columns, out var ColWidth, out int KeyTreeIndex);
+                if (visibleHeader && EmptyHeader && _rows.Count == 0)
                 {
-                    rows = LayoutDesign(rect, new List<RowTemplate?>(_rows.Row), _rows.Columns, _rows.ColWidth, _rows.KeyTreeIndex, out int x, out int y, out bool is_exceed);
+                    rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     ThreadState?.Dispose(); ThreadState = null;
                     return rect;
                 }
-                else if (_rows.Row.Length > 0)
+                else if (_rows.Count > 0)
                 {
-                    rows = LayoutDesign(rect, new List<RowTemplate?>(_rows.Row), _rows.Columns, _rows.ColWidth, _rows.KeyTreeIndex, out int x, out int y, out bool is_exceed);
+                    rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
-                    if (_rows.Processing && Config.HasAnimation(nameof(Table)))
+                    if (Processing && Config.HasAnimation(nameof(Table)))
                     {
                         if (ThreadState == null)
                         {
@@ -140,7 +140,7 @@ namespace AntdUI
             return Rectangle.Empty;
         }
 
-        RowData LayoutDesign(Rectangle rect, TempTable dataTmp)
+        List<RowTemplate?> LayoutDesign(Rectangle rect, TempTable dataTmp, out bool Processing, out List<Column> Columns, out Dictionary<int, object> ColWidth, out int KeyTreeIndex)
         {
             int processing = 0;
             var col_width = new Dictionary<int, object>();
@@ -260,7 +260,11 @@ namespace AntdUI
             }
 
             dataOne = false;
-            return new RowData(_rows, processing > 0, _columns, col_width, KeyTreeINDEX);
+            Processing = processing > 0;
+            Columns = _columns;
+            ColWidth = col_width;
+            KeyTreeIndex = KeyTreeINDEX;
+            return _rows;
         }
 
         int? _RowHeightHeader, _RowHeight;
@@ -452,47 +456,50 @@ namespace AntdUI
                         continue;
                     }
                     rowlist.Add(row);
-                    int use_x = rect.X;
-                    row.RECT = new Rectangle(rect.X, use_y, rect_real.Width, row.Height);
-                    for (int i = 0; i < row.cells.Length; i++)
+                    if (row.ShowExpand)
                     {
-                        var it = row.cells[i];
-                        var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
-                        int ox = 0;
-                        if (row.INDEX > 0 && firstrow.cells[i].INDEX == KeyTreeINDEX)
+                        int use_x = rect.X;
+                        row.RECT = new Rectangle(rect.X, use_y, rect_real.Width, row.Height);
+                        for (int i = 0; i < row.cells.Length; i++)
                         {
-                            int xt = gapTree * row.ExpandDepth;
-                            ox = xt + (gapTree + treesize);
-                            row.RectExpand = new Rectangle(use_x + xt + split_move, use_y + (row.Height - treesize) / 2, treesize, treesize);
-                        }
-
-                        if (it is TCellCheck check) check.SetSize(_rect, check_size);
-                        else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
-                        else if (it is TCellSwitch _switch) _switch.SetSize(_rect, switchsize);
-                        else if (it is TCellSort sort) sort.SetSize(_rect, sort_size, sort_ico_size);
-                        else if (it is TCellSelect select) select.SetSize(g, Font, font_size, _rect, ox, gap);
-                        else if (it is TCellColumn column)
-                        {
-                            it.SetSize(g, Font, font_size, _rect, ox, gap);
-                            if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
+                            var it = row.cells[i];
+                            var _rect = new Rectangle(use_x, use_y, width_cell[i], row.RECT.Height);
+                            int ox = 0;
+                            if (row.INDEX > 0 && firstrow.cells[i].INDEX == KeyTreeINDEX)
                             {
-                                column.COLUMN.SortOrder = false;
-                                columnCheck.PARENT = this;
-                                column.RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                                int xt = gapTree * row.ExpandDepth;
+                                ox = xt + (gapTree + treesize);
+                                row.RectExpand = new Rectangle(use_x + xt + split_move, use_y + (row.Height - treesize) / 2, treesize, treesize);
                             }
-                            else
-                            {
-                                column.RECT_REAL = new Rectangle(_rect.X + gap.x, _rect.Y, _rect.Width - gap.x2 - column.SFWidth, _rect.Height);
-                                if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
-                            }
-                        }
-                        else it.SetSize(g, Font, font_size, _rect, ox, gap);
 
-                        if (x < _rect.Right) x = _rect.Right;
-                        if (y < _rect.Bottom) y = _rect.Bottom;
-                        use_x += width_cell[i];
+                            if (it is TCellCheck check) check.SetSize(_rect, check_size);
+                            else if (it is TCellRadio radio) radio.SetSize(_rect, check_size);
+                            else if (it is TCellSwitch _switch) _switch.SetSize(_rect, switchsize);
+                            else if (it is TCellSort sort) sort.SetSize(_rect, sort_size, sort_ico_size);
+                            else if (it is TCellSelect select) select.SetSize(g, Font, font_size, _rect, ox, gap);
+                            else if (it is TCellColumn column)
+                            {
+                                it.SetSize(g, Font, font_size, _rect, ox, gap);
+                                if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle)
+                                {
+                                    column.COLUMN.SortOrder = false;
+                                    columnCheck.PARENT = this;
+                                    column.RECT_REAL = new Rectangle(_rect.X + (_rect.Width - check_size) / 2, _rect.Y + (_rect.Height - check_size) / 2, check_size, check_size);
+                                }
+                                else
+                                {
+                                    column.RECT_REAL = new Rectangle(_rect.X + gap.x, _rect.Y, _rect.Width - gap.x2 - column.SFWidth, _rect.Height);
+                                    if (x < column.RECT_REAL.Right) x = column.RECT_REAL.Right;
+                                }
+                            }
+                            else it.SetSize(g, Font, font_size, _rect, ox, gap);
+
+                            if (x < _rect.Right) x = _rect.Right;
+                            if (y < _rect.Bottom) y = _rect.Bottom;
+                            use_x += width_cell[i];
+                        }
+                        use_y += row.Height;
                     }
-                    use_y += row.Height;
                 }
 
                 x -= rect_real.X;
