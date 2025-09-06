@@ -177,23 +177,6 @@ namespace AntdUI
             internal Rectangle RectExpand;
         }
 
-        internal class RowData
-        {
-            public RowData(List<RowTemplate?> row, bool processing, List<Column> columns, Dictionary<int, object> colwidth, int keytreeindex)
-            {
-                Row = row.ToArray();
-                Processing = processing;
-                Columns = columns;
-                ColWidth = colwidth;
-                KeyTreeIndex = keytreeindex;
-            }
-            public RowTemplate?[] Row { get; private set; }
-            public bool Processing { get; private set; }
-            public List<Column> Columns { get; private set; }
-            public Dictionary<int, object> ColWidth { get; private set; }
-            public int KeyTreeIndex { get; private set; }
-        }
-
         public interface IROW
         {
             /// <summary>

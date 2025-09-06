@@ -37,36 +37,6 @@ namespace AntdUI
     [DefaultProperty("ChartType")]
     public class Chart : IControl
     {
-        #region 配置常量
-        
-        /// <summary>
-        /// 图表配置常量
-        /// </summary>
-        private static class ChartConstants
-        {
-            /// <summary>
-            /// 默认柱形图宽度除数
-            /// </summary>
-            public const int DefaultBarWidthDivisor = 10;
-            
-            /// <summary>
-            /// 鼠标悬停检测半径（像素）
-            /// </summary>
-            public const int HoverDetectionRadius = 10;
-            
-            /// <summary>
-            /// 默认数据点大小
-            /// </summary>
-            public const int DefaultPointSize = 3;
-            
-            /// <summary>
-            /// 默认动画持续时间（毫秒）
-            /// </summary>
-            public const int DefaultAnimationDuration = 1000;
-        }
-        
-        #endregion
-        
         private TooltipForm? tooltipForm;
 
         protected override void Dispose(bool disposing)
@@ -921,18 +891,18 @@ namespace AntdUI
             return visibleDatasets.Max(d => d.DataPoints.Where(p => p.Visible).Max(p => p.Y));
         }
 
-        private double GetXRange() 
+        private double GetXRange()
         {
             var range = GetMaxX() - GetMinX();
             return range == 0 ? 1.0 : range; // 避免除零错误
         }
-        
-        private double GetYRange() 
+
+        private double GetYRange()
         {
             var range = GetMaxY() - GetMinY();
             return range == 0 ? 1.0 : range; // 避免除零错误
         }
-        
+
         /// <summary>
         /// 统一的DPI缩放处理方法
         /// </summary>
@@ -942,7 +912,7 @@ namespace AntdUI
         {
             return value * Config.Dpi;
         }
-        
+
         /// <summary>
         /// 统一的DPI缩放处理方法（整数版本）
         /// </summary>
@@ -971,11 +941,11 @@ namespace AntdUI
                 {
                     var x = chartRect.X + (float)((dataPoint.X - GetMinX()) / xRange * chartRect.Width);
                     var y = chartRect.Bottom - (float)((dataPoint.Y - GetMinY()) / yRange * chartRect.Height * AnimationProgress);
-                    
+
                     // 边界检查，确保点在图表区域内
                     x = Math.Max(chartRect.Left, Math.Min(chartRect.Right, x));
                     y = Math.Max(chartRect.Top, Math.Min(chartRect.Bottom, y));
-                    
+
                     points.Add(new Point((int)x, (int)y));
                 }
 
@@ -1024,12 +994,12 @@ namespace AntdUI
                         {
                             float x = chartRect.X + (float)((dataPoint.X - mx) / xRange * chartRect.Width);
                             float y = chartRect.Bottom - barHeight;
-                            
+
                             // 边界检查，确保柱形图在图表区域内
                             x = Math.Max(chartRect.Left, Math.Min(chartRect.Right - barWidth, x - barWidth / 2));
                             y = Math.Max(chartRect.Top, Math.Min(chartRect.Bottom, y));
                             barHeight = Math.Min(barHeight, chartRect.Bottom - y);
-                            
+
                             var barRect = new RectangleF(x, y, barWidth, barHeight);
                             g.Fill(brush, barRect);
                             g.Draw(pen, barRect);
@@ -1814,6 +1784,36 @@ namespace AntdUI
                 HoveredPoint = null;
                 HideTooltip();
             }
+        }
+
+        #endregion
+
+        #region 配置常量
+
+        /// <summary>
+        /// 图表配置常量
+        /// </summary>
+        private static class ChartConstants
+        {
+            /// <summary>
+            /// 默认柱形图宽度除数
+            /// </summary>
+            public const int DefaultBarWidthDivisor = 10;
+
+            /// <summary>
+            /// 鼠标悬停检测半径（像素）
+            /// </summary>
+            public const int HoverDetectionRadius = 10;
+
+            /// <summary>
+            /// 默认数据点大小
+            /// </summary>
+            public const int DefaultPointSize = 3;
+
+            /// <summary>
+            /// 默认动画持续时间（毫秒）
+            /// </summary>
+            public const int DefaultAnimationDuration = 1000;
         }
 
         #endregion

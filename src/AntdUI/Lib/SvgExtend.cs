@@ -70,7 +70,15 @@ namespace AntdUI
             var doc = SvgDocument(svg);
             if (doc == null) return null;
             float dpi = Config.Dpi;
-            if (dpi != 1F)
+            if (dpi == 1F) return doc.Draw();
+            Svg.SvgUnitType tw = doc.Width.Type, th = doc.Height.Type;
+            if (tw == Svg.SvgUnitType.Percentage && th == Svg.SvgUnitType.Percentage)
+            {
+                var size = doc.Bounds;
+                doc.Width = size.Width * dpi;
+                doc.Height = size.Height * dpi;
+            }
+            else
             {
                 doc.Width *= dpi;
                 doc.Height *= dpi;
