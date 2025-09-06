@@ -180,7 +180,7 @@ namespace AntdUI
         #region 子
 
         float tmpItemHeight = 0F;
-        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
         {
             select_x = sx;
             keyid = nameof(AntdUI.Select);
@@ -194,6 +194,7 @@ namespace AntdUI
             CloseIcon = parent.CloseIcon;
             DropNoMatchClose = control.DropDownEmptyClose;
             DPadding = parent.DPadding;
+            MaxCount = maxcount;
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
@@ -209,7 +210,7 @@ namespace AntdUI
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
-        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
         {
             select_x = sx;
             keyid = nameof(Dropdown);
@@ -222,6 +223,7 @@ namespace AntdUI
             ClickEnd = parent.ClickEnd;
             CloseIcon = parent.CloseIcon;
             DPadding = parent.DPadding;
+            MaxCount = maxcount;
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
@@ -237,7 +239,7 @@ namespace AntdUI
             if (control.DropDownArrow) ArrowAlign = tmpAlign;
             Init();
         }
-        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
         {
             select_x = sx;
             keyid = nameof(Table);
@@ -251,6 +253,7 @@ namespace AntdUI
             ClickEnd = parent.ClickEnd;
             CloseIcon = parent.CloseIcon;
             DPadding = parent.DPadding;
+            MaxCount = maxcount;
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(cell.DropDownTextAlign);
             sf.FormatFlags = StringFormatFlags.NoWrap;
@@ -901,17 +904,17 @@ namespace AntdUI
             var rect = new Rectangle(it.Rect.X + tmp_padd, it.Rect.Y - ScrollBar.ValueY - tmp_padd, it.Rect.Width, it.Rect.Height);
             if (PARENT is Select select)
             {
-                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
+                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
             }
             else if (PARENT is Dropdown dropdown)
             {
-                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
+                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
             }
             else if (PARENT is Table table && Tag is ICell cell)
             {
-                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, ArrowSize, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
+                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
                 subForm.Show(this);
             }
         }

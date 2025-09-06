@@ -739,6 +739,36 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            #region 设置
+
+            public Btn SetType(TTypeMini value = TTypeMini.Primary)
+            {
+                Type = value;
+                return this;
+            }
+            public Btn SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public Btn SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Btn SetDialogResult(DialogResult value = DialogResult.OK)
+            {
+                DialogResult = value;
+                return this;
+            }
+            public Btn SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+
+            #endregion
         }
 
         /// <summary>
@@ -771,6 +801,7 @@ namespace AntdUI
             /// 文字
             /// </summary>
             public string Text { get; set; }
+
             /// <summary>
             /// 间距
             /// </summary>
@@ -790,6 +821,31 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            #region 设置
+
+            public TextLine SetGap(int value)
+            {
+                Gap = value;
+                return this;
+            }
+            public TextLine SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public TextLine SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public TextLine SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+
+            #endregion
         }
     }
 
