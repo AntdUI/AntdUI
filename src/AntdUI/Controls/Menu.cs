@@ -373,6 +373,7 @@ namespace AntdUI
             var it1 = items[i1];
             it1.Select = true;
             SelectItem = it1;
+            ItemClick?.Invoke(this, new MenuItemEventArgs(it1, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
             if (focus) Focus(it1);
             Invalidate();
         }
@@ -393,6 +394,7 @@ namespace AntdUI
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
             SelectItem = it2;
+            ItemClick?.Invoke(this, new MenuItemEventArgs(it2, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
             if (focus) Focus(it2);
             Invalidate();
         }
@@ -420,6 +422,7 @@ namespace AntdUI
             var it3 = it2.Sub[i3];
             it1.Select = it2.Select = it3.Select = true;
             SelectItem = it3;
+            ItemClick?.Invoke(this, new MenuItemEventArgs(it3, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
             if (focus) Focus(it3);
             Invalidate();
         }
@@ -1094,9 +1097,11 @@ namespace AntdUI
         #region 鼠标
 
         MenuItem? MDown;
+        int mClicks = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            mClicks = e.Clicks;
             if (FocusMode != TFocusMode.None) Focus();
             CloseTip();
             CloseDropDown();
@@ -1126,7 +1131,7 @@ namespace AntdUI
                 foreach (var it in items)
                 {
                     var list = new List<MenuItem> { it };
-                    if (IMouseUp(items, it, list, e.X, e.Y, MDown)) return;
+                    if (IMouseUp(items, it, list, e.X, e.Y, MDown, e)) return;
                 }
             }
         }
@@ -1152,7 +1157,7 @@ namespace AntdUI
             return false;
         }
 
-        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, int x, int y, MenuItem MDown)
+        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, int x, int y, MenuItem MDown, MouseEventArgs e)
         {
             if (item.Visible)
             {
@@ -1183,6 +1188,7 @@ namespace AntdUI
                                     }
                                     item.Select = true;
                                     SelectItem = item;
+                                    ItemClick?.Invoke(this, new MenuItemEventArgs(item, e, mClicks));
                                     Invalidate();
                                 }
                             }
@@ -1198,7 +1204,7 @@ namespace AntdUI
                         var list_ = new List<MenuItem>(list.Count + 1);
                         list_.AddRange(list);
                         list_.Add(sub);
-                        if (IMouseUp(items, sub, list_, x, y, MDown)) return true;
+                        if (IMouseUp(items, sub, list_, x, y, MDown, e)) return true;
                     }
                 }
             }
@@ -1659,6 +1665,7 @@ namespace AntdUI
                 {
                     it.Select = true;
                     tmpAM = true;
+                    ItemClick?.Invoke(this, new MenuItemEventArgs(it, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
                     SelectItem = it;
                     if (SelectEx(it.PARENTITEM) > 0) ChangeList(true);
                     tmpAM = false;
@@ -1727,6 +1734,12 @@ namespace AntdUI
         public event SelectEventHandler? SelectChanged;
 
         /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        [Description("点击项时发生"), Category("行为")]
+        public event MenuItemEventHandler? ItemClick;
+
+        /// <summary>
         /// Select 属性值更改前发生
         /// </summary>
         [Description("Select 属性值更改前发生"), Category("行为")]
@@ -1784,6 +1797,7 @@ namespace AntdUI
                         }
                         item.Select = true;
                         SelectItem = item;
+                        ItemClick?.Invoke(this, new MenuItemEventArgs(item, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
                         Invalidate();
                     }
                 }
