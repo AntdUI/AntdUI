@@ -17,6 +17,8 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Windows.Forms;
+
 namespace AntdUI
 {
     public class MenuSelectEventArgs : VEventArgs<MenuItem>
@@ -28,6 +30,17 @@ namespace AntdUI
     public delegate void SelectEventHandler(object sender, MenuSelectEventArgs e);
 
     public delegate bool SelectBoolEventHandler(object sender, MenuSelectEventArgs e);
+
+    public class MenuItemEventArgs : VMEventArgs<MenuItem>
+    {
+        public MenuItemEventArgs(MenuItem item, MouseEventArgs e) : base(item, e) { }
+        public MenuItemEventArgs(MenuItem item, MouseEventArgs e, int click) : base(item, e, click) { }
+    }
+
+    /// <summary>
+    /// 点击事件
+    /// </summary>
+    public delegate void MenuItemEventHandler(object sender, MenuItemEventArgs e);
 
     public class MenuCustomButtonEventArgs : VEventArgs<MenuButton>
     {

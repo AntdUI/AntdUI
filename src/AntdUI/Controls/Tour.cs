@@ -113,6 +113,36 @@ namespace AntdUI
             /// </summary>
 
             public Action<Popover>? PopoverCall { get; set; }
+
+            #region 设置
+
+            public Config SetScale(float value)
+            {
+                Scale = value;
+                return this;
+            }
+            public Config SetMaskClosable(bool value = false)
+            {
+                MaskClosable = value;
+                return this;
+            }
+            public Config SetClickNext(bool value = false)
+            {
+                ClickNext = value;
+                return this;
+            }
+            public Config SetCall(Action<Result> value)
+            {
+                StepCall = value;
+                return this;
+            }
+            public Config SetStepCall(Action<Popover> value)
+            {
+                PopoverCall = value;
+                return this;
+            }
+
+            #endregion
         }
 
         public class Result
@@ -184,10 +214,7 @@ namespace AntdUI
         }
 
         internal static Action? tmpCall;
-        static void tmp_SizeChanged(object? sender, EventArgs e)
-        {
-            tmpCall?.Invoke();
-        }
+        static void tmp_SizeChanged(object? sender, EventArgs e) => tmpCall?.Invoke();
 
         static Rectangle GetControlPath(Control control, Point point, float scale)
         {

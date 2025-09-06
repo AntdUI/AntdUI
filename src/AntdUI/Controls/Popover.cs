@@ -213,6 +213,91 @@ namespace AntdUI
             public bool Focus { get; set; } = true;
 
             public float? Dpi { get; set; }
+
+            #region 设置
+
+            public Config SetOffset(Rectangle? value)
+            {
+                Offset = value;
+                return this;
+            }
+            public Config SetOffset(RectangleF value)
+            {
+                Offset = value;
+                return this;
+            }
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetAutoClose(int value)
+            {
+                AutoClose = value;
+                return this;
+            }
+            public Config SetRadius(int value = 0)
+            {
+                Radius = value;
+                return this;
+            }
+            public Config SetPadding(int x, int y)
+            {
+                Padding = new Size(x, y);
+                return this;
+            }
+            public Config SetPadding(int value)
+            {
+                Padding = new Size(value, value);
+                return this;
+            }
+            public Config SetGap(int value)
+            {
+                Gap = value;
+                return this;
+            }
+            public Config SetArrow(float value)
+            {
+                ArrowSize = value;
+                return this;
+            }
+            public Config SetArrow(TAlign value)
+            {
+                ArrowAlign = value;
+                return this;
+            }
+            public Config SetCustomPoint(Rectangle? value)
+            {
+                CustomPoint = value;
+                return this;
+            }
+            public Config SetFocus(bool value = false)
+            {
+                Focus = value;
+                return this;
+            }
+            public Config SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+            public Config SetOnControlLoad(Action? value)
+            {
+                OnControlLoad = value;
+                return this;
+            }
+            public Config SetOnClosing(Action<object, CancelEventArgs>? value)
+            {
+                OnClosing = value;
+                return this;
+            }
+            public Config SetDpi(float value)
+            {
+                Dpi = value;
+                return this;
+            }
+
+            #endregion
         }
 
         /// <summary>
@@ -245,6 +330,7 @@ namespace AntdUI
             /// 文字
             /// </summary>
             public string Text { get; set; }
+
             /// <summary>
             /// 间距
             /// </summary>
@@ -269,6 +355,36 @@ namespace AntdUI
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
+
+            #region 设置
+
+            public TextRow SetGap(int value)
+            {
+                Gap = value;
+                return this;
+            }
+            public TextRow SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public TextRow SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public TextRow SetCall(Action? value)
+            {
+                Call = value;
+                return this;
+            }
+            public TextRow SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+
+            #endregion
         }
     }
 }

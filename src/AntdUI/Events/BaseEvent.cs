@@ -224,6 +224,10 @@ namespace AntdUI
         {
             Item = item;
         }
+        public VMEventArgs(T item, MouseEventArgs e, int click) : base(e.Button, click, e.X, e.Y, e.Delta)
+        {
+            Item = item;
+        }
 
         public T Item { get; private set; }
 

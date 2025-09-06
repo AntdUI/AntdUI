@@ -168,6 +168,67 @@ namespace AntdUI
             /// 点击回调
             /// </summary>
             public Action<ConfigBtn> Call { get; set; }
+
+            #region 设置
+
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetAlign(TAlign value = TAlign.BL)
+            {
+                Align = value;
+                return this;
+            }
+            public Config SetVertical(bool value = false)
+            {
+                Vertical = value;
+                return this;
+            }
+            public Config SetSize(bool value = true)
+            {
+                TopMost = value;
+                return this;
+            }
+            public Config SetSize(int value)
+            {
+                Size = value;
+                return this;
+            }
+            public Config SetMargin(int x, int y)
+            {
+                MarginX = x;
+                MarginY = y;
+                return this;
+            }
+            public Config SetMarginX(int value)
+            {
+                MarginX = value;
+                return this;
+            }
+            public Config SetMarginY(int value)
+            {
+                MarginY = value;
+                return this;
+            }
+            public Config SetGap(int value)
+            {
+                Gap = value;
+                return this;
+            }
+            public Config SetBtns(params ConfigBtn[] value)
+            {
+                Btns = value;
+                return this;
+            }
+            public Config SetCall(Action<ConfigBtn> value)
+            {
+                Call = value;
+                return this;
+            }
+
+            #endregion
         }
 
         /// <summary>

@@ -207,6 +207,56 @@ namespace AntdUI
             /// 显示延迟
             /// </summary>
             public int DisplayDelay { get; set; } = 100;
+
+            #region 设置
+
+            public Config SetMask(bool value = false)
+            {
+                Mask = value;
+                return this;
+            }
+            public Config SetMaskClosable(bool value = false)
+            {
+                MaskClosable = value;
+                return this;
+            }
+            public Config SetPadding(int value)
+            {
+                Padding = value;
+                return this;
+            }
+            public Config SetAlign(TAlignMini value = TAlignMini.Left)
+            {
+                Align = value;
+                return this;
+            }
+            public Config SetDispose(bool value = false)
+            {
+                Dispose = value;
+                return this;
+            }
+            public Config SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+            public Config SetOnLoad(Action? value)
+            {
+                OnLoad = value;
+                return this;
+            }
+            public Config SetOnClose(Action? value)
+            {
+                OnClose = value;
+                return this;
+            }
+            public Config SetDisplayDelay(int value = 0)
+            {
+                DisplayDelay = value;
+                return this;
+            }
+
+            #endregion
         }
     }
 }
