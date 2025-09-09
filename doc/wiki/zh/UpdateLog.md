@@ -1,5 +1,22 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.4` 2025-09-09
+
+- ➕ Menu ItemClick
+- ➕ SelectItem 子项 MaxCount
+- ➕ Table Column MinWidth
+- ➕ Table ScrollColumn 方法
+- ➕ Preview 支持 GIF
+- ✍️ Table Tree 异常
+- ✍️ Table 复制单元格是类名
+- ✍️ Table AutoSizeColumnsMode.Auto 失效
+- ✍️ Table Tree 异常
+- ✍️ Table 筛选下异常
+- ✍️ 图表控件 添加极坐标和雷达图支持并优化图表计算
+- ✍️ GridPanel 行没有优先扣固定值
+- ✍️ FlowPanel/StackPanel 调整滚动条绘制顺序以避免覆盖问题
+- ✍️ Menu USelect 方法失效
+
 ### `2.1.3` 2025-09-04
 
 - ➕ Table VirtualMode 虚拟模式

@@ -1,5 +1,22 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.4` 2025-09-09
+
+- ➕ Menu ItemClick
+- ➕ SelectItem sub item MaxCount
+- ➕ Table Column MinWidth
+- ➕ Table ScrollColumn method
+- ➕ Preview supports GIF
+- ✍️ Table Tree Exception
+- ✍️ Table copying cells is a class name
+- ✍️ Table AutoSizeColumnsMode. Auto Invalid
+- ✍️ Table Tree Exception
+- ✍️ Table filtering for exceptions
+- ✍️ Add polar coordinates and radar chart support to chart controls and optimize chart calculations
+- ✍️ GridPanel rows do not prioritize fixed values for deduction
+- ✍️ FlowPanel/StackPanel adjusts the order of scrollbar drawing to avoid overlay issues
+- ✍️ Menu USelect method failed
+
 ### `2.1.3` 2025-09-04
 
 - ➕ Table VirtualMode virtual mode
