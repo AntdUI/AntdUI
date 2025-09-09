@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -123,6 +125,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            PlayGIF = false;
             form.LocationChanged -= Form_LSChanged;
             form.SizeChanged -= Form_LSChanged;
             base.Dispose(disposing);
@@ -167,7 +170,86 @@ namespace AntdUI
             }
         }
 
-        Image? Img;
+        #region 图片
+
+        Image? imgtmp;
+        Image? Img
+        {
+            get => imgtmp;
+            set
+            {
+                imgtmp = value;
+                LoadGif();
+            }
+        }
+
+        #region GIF
+
+        bool PlayGIF = true;
+        void LoadGif()
+        {
+            if (imgtmp == null) return;
+            var fd = new FrameDimension(imgtmp.FrameDimensionsList[0]);
+            int count = imgtmp.GetFrameCount(fd);
+            if (count > 1) PlayGif(imgtmp, fd, count);
+        }
+
+        void PlayGif(Image value, FrameDimension fd, int count)
+        {
+            ITask.Run(() =>
+            {
+                int[] delays = GifDelays(value, count);
+                while (PlayGIF && imgtmp == value)
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (PlayGIF && imgtmp == value)
+                        {
+                            lock (_lock)
+                            {
+                                try
+                                {
+                                    value.SelectActiveFrame(fd, i);
+                                }
+                                catch { }
+                            }
+                            Print();
+                            Thread.Sleep(Math.Max(delays[i], 10));
+                        }
+                        else
+                        {
+                            value.SelectActiveFrame(fd, 0);
+                            return;
+                        }
+                    }
+                }
+            }, () => Print());
+        }
+
+        object _lock = new object();
+        int[] GifDelays(Image value, int count)
+        {
+            int PropertyTagFrameDelay = 0x5100;
+            var propItem = value.GetPropertyItem(PropertyTagFrameDelay);
+            if (propItem != null)
+            {
+                var bytes = propItem.Value;
+                if (bytes != null)
+                {
+                    int[] delays = new int[count];
+                    for (int i = 0; i < delays.Length; i++) delays[i] = BitConverter.ToInt32(bytes, i * 4) * 10;
+                    return delays;
+                }
+            }
+            int[] delaysd = new int[count];
+            for (int i = 0; i < delaysd.Length; i++) delaysd[i] = 100;
+            return delaysd;
+        }
+
+        #endregion
+
+        #endregion
+
         int SelectIndex = 0;
         object? SelectValue;
         Size ImgSize = new Size();
@@ -191,7 +273,7 @@ namespace AntdUI
             {
                 if (list[1] is Func<int, object, Image?> call)
                 {
-                    Img?.Dispose();
+                    imgtmp?.Dispose();
                     SelectValue = data[SelectIndex];
                     Img = call.Invoke(SelectIndex, SelectValue);
                     if (Img == null)
@@ -227,7 +309,7 @@ namespace AntdUI
                                 return;
                             }
                             LoadingProgressStr = null;
-                            Img?.Dispose();
+                            imgtmp?.Dispose();
                             Img = img;
                             ImgSize = Img.Size;
                             FillScaleImg();
@@ -240,7 +322,7 @@ namespace AntdUI
                             Loading = false;
                             if ((now2 - now).TotalMilliseconds < 100)
                             {
-                                System.Threading.Thread.Sleep(100);
+                                Thread.Sleep(100);
                                 if (selectIndex == SelectIndex) Print();
                             }
                         }
@@ -354,13 +436,13 @@ namespace AntdUI
                     else g.Fill(brush, rect_read);
                 }
 
-                if (Img == null)
+                if (imgtmp == null)
                 {
                     if (LoadingProgressStr != null) PaintLoading(g, true);
                 }
                 else
                 {
-                    g.Image(Img, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
+                    g.Image(imgtmp, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
                     if (loading) PaintLoading(g);
                 }
                 using (var path = rect_panel.RoundPath(rect_panel.Height))
@@ -842,6 +924,7 @@ namespace AntdUI
             }
             if (rect_close.Contains(e.X, e.Y))
             {
+                PlayGIF = false;
                 IClose(); return;
             }
             if (PageSize > 1)

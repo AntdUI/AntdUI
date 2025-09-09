@@ -326,6 +326,8 @@ namespace AntdUI
             {
                 var row = list[i];
                 if (row == null) return;
+                var tmp = RealRowIndex(row, dataTmp.rows);
+                if (tmp.HasValue) i = tmp.Value;
                 var cells = GetRow(row, dataTmp.columns.Length);
                 if (cells.Count == 0) return;
                 int len = dataTmp.rows.Length;
@@ -347,6 +349,15 @@ namespace AntdUI
                 dataTmp.rows = ChangeList(rows);
                 if (LoadLayout()) Invalidate();
             }
+        }
+
+        int? RealRowIndex(object row, IRow[] rows)
+        {
+            for (int i = 0; i < rows.Length; i++)
+            {
+                if (rows[i].record == row) return i;
+            }
+            return null;
         }
 
         #endregion
