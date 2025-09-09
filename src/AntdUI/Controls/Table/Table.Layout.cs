@@ -49,7 +49,7 @@ namespace AntdUI
         internal RowTemplate[]? rows;
         int rowSummary = 0;
         internal List<object> rows_Expand = new List<object>();
-        Rectangle[] dividers = new Rectangle[0], dividerHs = new Rectangle[0];
+        int[][] dividers = new int[0][], dividerHs = new int[0][];
         MoveHeader[] moveheaders = new MoveHeader[0];
 
         public bool LoadLayout()
@@ -92,7 +92,7 @@ namespace AntdUI
                 else
                 {
                     ScrollBar.SetVrSize(0, 0);
-                    dividers = new Rectangle[0];
+                    dividers = new int[0][];
                     rows = null;
                 }
             }
@@ -133,7 +133,7 @@ namespace AntdUI
                     ThreadState?.Dispose();
                     ThreadState = null;
                     ScrollBar.SetVrSize(0, 0);
-                    dividers = new Rectangle[0];
+                    dividers = new int[0][];
                     rows = null;
                 }
             }
@@ -311,8 +311,7 @@ namespace AntdUI
                 var gap = new TableGaps(_gap);
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
                  gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
-                split = (int)(BorderCellWidth * dpi), split2 = split / 2, sp2 = split * 2,
-                split_move = (int)(6F * dpi), split_move2 = split_move / 2;
+                split = (int)(BorderCellWidth * dpi), split_move = (int)(6F * dpi);
 
                 check_radius = check_size * .12F * dpi;
                 check_border = check_size * .04F * dpi;
@@ -537,7 +536,7 @@ namespace AntdUI
 
                 #endregion
 
-                List<Rectangle> _dividerHs = new List<Rectangle>(), _dividers = new List<Rectangle>();
+                List<int[]> _dividerHs = new List<int[]>(firstrow.cells.Length), _dividers = new List<int[]>(_rows.Count);
                 int last_index = _rows.Count - 1;
                 var last_row = _rows[last_index];
                 while (!last_row!.ShowExpand)
@@ -561,6 +560,7 @@ namespace AntdUI
                     {
                         if (EnableHeaderResizing)
                         {
+                            int split_move2 = split_move / 2;
                             for (int i = 0; i < row.cells.Length; i++)
                             {
                                 var it = row.cells[i];
@@ -574,7 +574,7 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, it.RECT.Height));
+                                    _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, it.RECT.Height });
                                 }
                             }
                             else
@@ -582,24 +582,24 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new Rectangle(it.RECT.Right - split2, rect.Y, split, rect_real.Height));
+                                    _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, rect_real.Height });
                                 }
                             }
-                            if (visibleHeader) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_real.Width, split));
+                            if (visibleHeader) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
                         }
                         else
                         {
                             for (int i = 0; i < row.cells.Length - 1; i++)
                             {
                                 var it = row.cells[i];
-                                _dividerHs.Add(new Rectangle(it.RECT.Right - split2, it.RECT.Y + gap.y, split, it.RECT.Height - gap.y2));
+                                _dividerHs.Add(new int[] { it.RECT.Right, it.RECT.Y + gap.y, it.RECT.Height - gap.y2 });
                             }
                         }
                     }
                     else
                     {
-                        if (bordered) _dividers.Add(new Rectangle(rect.X, row.RECT.Bottom - split2, rect_real.Width, split));
-                        else _dividers.Add(new Rectangle(row.RECT.X, row.RECT.Bottom - split2, row.RECT.Width, split));
+                        if (bordered) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
+                        else _dividers.Add(new int[] { row.RECT.Bottom, row.RECT.X, row.RECT.Width });
                     }
                 }
                 if (bordered && !isempty) _dividers.RemoveAt(_dividers.Count - 1);

@@ -1006,8 +1006,11 @@ namespace AntdUI
                                 {
                                     if (it.SHOW && it.SHOW_RECT)
                                     {
+                                        var state = g.Save();
                                         if (it is VirtualShadowItem virtualShadow) DrawShadow(virtualShadow, g, r);
-                                        it.Paint(g, new VirtualPanelArgs(this, it.RECT, r));
+                                        g.TranslateTransform(it.RECT.X, it.RECT.Y);
+                                        it.Paint(g, new VirtualPanelArgs(this, new Rectangle(0, 0, it.RECT.Width, it.RECT.Height), r));
+                                        g.Restore(state);
                                     }
                                 }
                                 g.ResetTransform();
