@@ -1431,6 +1431,7 @@ namespace AntdUI
         void IUSelect(MenuItemCollection items)
         {
             foreach (var it in items) IUSelect(it);
+            SelectItem = null;
         }
         void IUSelect(MenuItem it)
         {

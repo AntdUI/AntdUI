@@ -239,7 +239,7 @@ namespace AntdUI
                         {
                             lock (_lock) { value.SelectActiveFrame(fd, i); }
                             Invalidate();
-                            Thread.Sleep(delays[i]);
+                            Thread.Sleep(Math.Max(delays[i], 10));
                         }
                         else
                         {

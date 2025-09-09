@@ -54,11 +54,10 @@ namespace AntdUI
         {
             float _radius = radius * Config.Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            int splitcellsize = (int)(BorderCellWidth * Config.Dpi);
             using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get("Table", ColorScheme)))
             using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get("Table", ColorScheme)))
             using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get("Table", ColorScheme)))
-            using (var pen_cell_split = new Pen(borderColor ?? Colour.BorderColor.Get("Table", ColorScheme), splitcellsize))
+            using (var pen_cell_split = new Pen(borderColor ?? Colour.BorderColor.Get("Table", ColorScheme), BorderCellWidth * Config.Dpi))
             {
                 StyleRow[] shows, summarys;
                 GraphicsPath? clipath = null;
@@ -224,9 +223,8 @@ namespace AntdUI
 
                 if (bordered)
                 {
-                    int splitsize = (int)(borderWidth * Config.Dpi);
-                    if (clipath == null) g.Draw(pen_cell_split.Color, splitsize, rect_divider);
-                    else g.Draw(pen_cell_split.Color, splitsize, clipath);
+                    if (clipath == null) g.Draw(pen_cell_split.Color, borderWidth * Config.Dpi, rect_divider);
+                    else g.Draw(pen_cell_split.Color, borderWidth * Config.Dpi, clipath);
                 }
 
                 clipath?.Dispose();

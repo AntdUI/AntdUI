@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 
@@ -362,10 +363,10 @@ namespace AntdUI
             {
                 int totalItems = dimension.Count;
                 var dimensions = new float[totalItems];
-                float fixedSum = 0;
+                float fixedSum = 0, percentSum = 0;
                 int fillCount = 0;
 
-                // 第一遍：计算所有固定高度和填充数量
+                // 第一遍：分离固定值、百分比和填充项
                 for (int i = 0; i < totalItems; i++)
                 {
                     string dimStr = dimension[i], valueStr = dimStr.Contains("_N") ? dimStr.Replace("_N", "") : dimStr;
@@ -375,22 +376,43 @@ namespace AntdUI
                         dimensions[i] = 0;
                         fillCount++;
                     }
+                    else if (valueStr.EndsWith("%"))
+                    {
+                        // 百分比值先标记为0，后续统一计算
+                        dimensions[i] = 0;
+                        if (float.TryParse(valueStr.TrimEnd('%'), out float percentage)) percentSum += percentage;
+                    }
                     else
                     {
-                        // 计算固定高度（包括百分比）
+                        // 固定值直接计算
                         float dimValue = ParseDimension(valueStr, maxValue, isHeight);
                         dimensions[i] = dimValue;
                         fixedSum += dimValue;
                     }
                 }
 
-                // 计算剩余可分配空间
-                float remainingSpace = Math.Max(0, maxValue - fixedSum);
+                // 计算剩余可分配空间（优先扣除固定值）
+                float remainingSpace = Math.Max(0, maxValue - fixedSum), percentBase = remainingSpace;
 
-                // 分配剩余空间给填充项
-                if (fillCount > 0 && remainingSpace > 0)
+                // 处理百分比分配
+                if (percentSum > 0 && remainingSpace > 0)
                 {
-                    float fillValue = remainingSpace / fillCount;
+                    foreach (int i in Enumerable.Range(0, totalItems))
+                    {
+                        string dimStr = dimension[i], valueStr = dimStr.Contains("_N") ? dimStr.Replace("_N", "") : dimStr;
+                        if (valueStr.EndsWith("%") && float.TryParse(valueStr.TrimEnd('%'), out float percentage)) dimensions[i] = percentBase * (percentage / 100f);
+                    }
+                }
+
+                // 处理填充项分配（剩余空间平均分配）
+                if (fillCount > 0)
+                {
+                    // 计算扣除固定值和百分比后的剩余空间
+                    float percentTotal = dimensions.Where((val, i) => dimension[i].Replace("_N", "").EndsWith("%")).Sum();
+
+                    float fillRemaining = Math.Max(0, remainingSpace - percentTotal);
+                    float fillValue = fillRemaining / fillCount;
+
                     for (int i = 0; i < totalItems; i++)
                     {
                         string dimStr = dimension[i], valueStr = dimStr.Contains("_N") ? dimStr.Replace("_N", "") : dimStr;
