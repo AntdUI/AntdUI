@@ -12,10 +12,13 @@
 - ✍️ Table AutoSizeColumnsMode. Auto Invalid
 - ✍️ Table Tree Exception
 - ✍️ Table filtering for exceptions
+- ✍️ Table content overflow
+- ✍️ Inconsistent border thickness in Table
 - ✍️ Add polar coordinates and radar chart support to chart controls and optimize chart calculations
 - ✍️ GridPanel rows do not prioritize fixed values for deduction
 - ✍️ FlowPanel/StackPanel adjusts the order of scrollbar drawing to avoid overlay issues
 - ✍️ Menu USelect method failed
+- ✍️ VirtualPanel fuzzy header
 
 ### `2.1.3` 2025-09-04
 
