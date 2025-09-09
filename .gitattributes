@@ -1,4 +1,4 @@
-﻿*.cs linguist-language=C#
+*.cs linguist-language=C#
 src/AntdUI/Lib/** linguist-language=C#
 src/AntdUI/Lib/SVG/** linguist-vendored  # https://github.com/svg-net/SVG
 src/AntdUI/Lib/Vanara/** linguist-vendored  # https://github.com/dahall/Vanara
