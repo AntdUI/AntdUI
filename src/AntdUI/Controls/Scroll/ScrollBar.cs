@@ -439,9 +439,10 @@ namespace AntdUI
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (SIZE == 0) return;
+            bool showy = showY && EnabledY, showx = showX && EnabledX;
             if (Config.ScrollBarHide)
             {
-                if (showY && showX)
+                if (showy && showx)
                 {
                     if (Back && ((hoverY || AnimationHoverY) || (hoverX || AnimationHoverX)))
                     {
@@ -479,7 +480,7 @@ namespace AntdUI
                     PaintX(g, baseColor);
                     PaintY(g, baseColor);
                 }
-                else if (showY)
+                else if (showy)
                 {
                     if (Back && (hoverY || AnimationHoverY))
                     {
@@ -498,7 +499,7 @@ namespace AntdUI
                     }
                     PaintY(g, baseColor);
                 }
-                else if (showX)
+                else if (showx)
                 {
                     if (Back && (hoverX || AnimationHoverX))
                     {
@@ -520,7 +521,7 @@ namespace AntdUI
             }
             else
             {
-                if (showY && showX)
+                if (showy && showx)
                 {
                     if (Back)
                     {
@@ -553,7 +554,7 @@ namespace AntdUI
                     PaintX(g, baseColor);
                     PaintY(g, baseColor);
                 }
-                else if (showY)
+                else if (showy)
                 {
                     if (Back)
                     {
@@ -572,7 +573,7 @@ namespace AntdUI
                     }
                     PaintY(g, baseColor);
                 }
-                else if (showX)
+                else if (showx)
                 {
                     if (Back)
                     {
