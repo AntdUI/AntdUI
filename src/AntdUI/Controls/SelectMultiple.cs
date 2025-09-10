@@ -190,6 +190,7 @@ namespace AntdUI
                 }
                 CalculateRect();
                 Invalidate();
+                Text = "";
                 SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
             }
         }
