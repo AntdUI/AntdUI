@@ -86,7 +86,11 @@ namespace AntdUI
 
                         if (dividers.Length > 0)
                         {
-                            foreach (var divider in dividers) g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
+                            for (int i = 1; i < dividers.Length; i++)
+                            {
+                                var divider = dividers[i];
+                                g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
+                            }
                         }
 
                         g.ResetTransform();
@@ -100,10 +104,9 @@ namespace AntdUI
 
                         PaintTableHeader(g, rows[0], brush_forecolumn, column_font, _radius);
 
-                        if (sy == 0 && dividers.Length > 0)
+                        if (dividers.Length > 0)
                         {
                             g.ResetTransform();
-                            g.TranslateTransform(0, -sy);
                             var divider = dividers[0];
                             g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
                             g.ResetTransform();
@@ -223,6 +226,7 @@ namespace AntdUI
 
                 if (bordered)
                 {
+                    g.ResetClip();
                     if (clipath == null) g.Draw(pen_cell_split.Color, borderWidth * Config.Dpi, rect_divider);
                     else g.Draw(pen_cell_split.Color, borderWidth * Config.Dpi, clipath);
                 }

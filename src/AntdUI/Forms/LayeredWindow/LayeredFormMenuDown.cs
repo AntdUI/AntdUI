@@ -31,7 +31,9 @@ namespace AntdUI
         TAMode ColorScheme;
         bool isdark = false;
         List<OMenuItem> Items;
+        Size DPadding;
         Color? backColor, BackHover, BackActive, foreColor, ForeActive;
+        float IconRatio = 0.7F, IconGap = 0.25F;
 
         ScrollBar ScrollBar;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items)
@@ -48,6 +50,9 @@ namespace AntdUI
             ForeActive = control.ForeActive;
             BackHover = control.BackHover;
             BackActive = control.BackActive;
+            DPadding = control.DropDownPadding;
+            IconRatio = control.DropIconRatio;
+            IconGap = control.DropIconGap;
             Radius = (int)(radius * Config.Dpi);
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
@@ -311,8 +316,8 @@ namespace AntdUI
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;
 
-            int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(12 * Config.Dpi), gap_y = (int)(5 * Config.Dpi),
-            icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
+            int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+            icon_size = (int)(text_height * IconRatio), icon_gap = (int)(text_height * IconGap), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
             gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
 
             tmp_padd = padd;
