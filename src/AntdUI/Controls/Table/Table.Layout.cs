@@ -357,7 +357,7 @@ namespace AntdUI
                             else if (rowHeightHeader.HasValue) row.Height = (int)(rowHeightHeader.Value * dpi);
                             else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
                             else row.Height = max_height + gap.y2;
-                            tmp_width_cell = CalculateWidth(rect, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
+                            tmp_width_cell = CalculateWidth(rect, false, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
                             var del_tmp_width_cell = new List<int>(tmp_width_cell.Count);
                             foreach (var it in tmp_width_cell)
                             {
@@ -460,7 +460,7 @@ namespace AntdUI
                     }
                 }
 
-                var width_cell = CalculateWidth(rect, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
+                var width_cell = CalculateWidth(rect, true, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
 
                 #endregion
 
@@ -536,7 +536,6 @@ namespace AntdUI
 
                 #endregion
 
-                List<int[]> _dividerHs = new List<int[]>(firstrow.cells.Length), _dividers = new List<int[]>(_rows.Count);
                 int last_index = _rows.Count - 1;
                 var last_row = _rows[last_index];
                 while (!last_row!.ShowExpand)
@@ -547,13 +546,19 @@ namespace AntdUI
                 var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
-                if ((rect.Y + rect.Height) > last.RECT.Bottom && !isempty) rect_real.Height = last.RECT.Bottom - rect.Y;
-
+                if (!isempty)
+                {
+                    int border = (int)(borderWidth * dpi);
+                    if ((rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + border;
+                    else rect_real.Height += border;
+                }
                 rect_divider = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height);
 
                 var MoveHeaders = new List<MoveHeader>();
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
                 foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);
+
+                List<int[]> _dividerHs = new List<int[]>(firstrow.cells.Length), _dividers = new List<int[]>(_rows.Count);
                 foreach (var row in rowlist)
                 {
                     if (row.IsColumn)
@@ -585,7 +590,6 @@ namespace AntdUI
                                     _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, rect_real.Height });
                                 }
                             }
-                            if (visibleHeader) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
                         }
                         else
                         {
@@ -595,6 +599,7 @@ namespace AntdUI
                                 _dividerHs.Add(new int[] { it.RECT.Right, it.RECT.Y + gap.y, it.RECT.Height - gap.y2 });
                             }
                         }
+                        if (visibleHeader) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
                     }
                     else
                     {
@@ -814,7 +819,7 @@ namespace AntdUI
         /// <param name="check_size">复选框大小</param>
         /// <param name="sort_size">拖拽大小</param>
         /// <param name="is_exceed">是否超出容器宽度</param>
-        Dictionary<int, int> CalculateWidth(Rectangle rect, ref Rectangle rect_read, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int gap2, int check_size, int sort_size, ref bool is_exceed)
+        Dictionary<int, int> CalculateWidth(Rectangle rect, bool change, ref Rectangle rect_read, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int gap2, int check_size, int sort_size, ref bool is_exceed)
         {
             int use_width = rect.Width;
             float max_width = 0;
@@ -921,7 +926,7 @@ namespace AntdUI
                         }
                         width_cell = percentage;
                     }
-                    else rect_read.Width = sum_wi;
+                    else if (change) rect_read.Width = sum_wi;
                 }
             }
             return width_cell;

@@ -345,6 +345,28 @@ namespace AntdUI
         [Description("鼠标右键控制"), Category("交互"), DefaultValue(true)]
         public bool MouseRightCtrl { get; set; } = true;
 
+        #region 下拉
+
+        /// <summary>
+        /// 下拉边距
+        /// </summary>
+        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
+        public Size DropDownPadding { get; set; } = new Size(12, 5);
+
+        /// <summary>
+        /// 下拉图标比例
+        /// </summary>
+        [Description("下拉图标比例"), Category("外观"), DefaultValue(0.7F)]
+        public float DropIconRatio { get; set; } = 0.7F;
+
+        /// <summary>
+        /// 下拉图标边距比例
+        /// </summary>
+        [Description("下拉图标边距比例"), Category("外观"), DefaultValue(0.25F)]
+        public float DropIconGap { get; set; } = 0.25F;
+
+        #endregion
+
         #region 集合操作
 
         MenuItem? selectItem, focusItem;
