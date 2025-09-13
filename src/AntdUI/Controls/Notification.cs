@@ -501,6 +501,11 @@ namespace AntdUI
             config.OnClose?.Invoke();
             config.OnClose = null;
             close_button.Dispose();
+            s_f.Dispose();
+            s_f_left.Dispose();
+            s_f_left_left.Dispose();
+            shadow_temp?.Dispose();
+            shadow_temp = null;
             base.Dispose(disposing);
         }
 
