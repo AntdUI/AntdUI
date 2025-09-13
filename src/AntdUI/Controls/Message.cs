@@ -658,6 +658,9 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ThreadLoading?.Dispose();
+            s_f_left.Dispose();
+            shadow_temp?.Dispose();
+            shadow_temp = null;
             base.Dispose(disposing);
         }
     }

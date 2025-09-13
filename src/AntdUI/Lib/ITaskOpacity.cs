@@ -145,6 +145,8 @@ namespace AntdUI
             }
         }
 
+        public void Clear() => _switch = _down = false;
+
         public bool SetSwitch(bool value, ref int hand, ref int count)
         {
             if (enable)

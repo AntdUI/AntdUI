@@ -1300,6 +1300,7 @@ namespace AntdUI
                 }
                 else if (hove_max.Down && rect_max.Contains(e.X, e.Y))
                 {
+                    hove_max.Clear();
                     var form = Parent.FindPARENT(MDI);
                     if (form != null)
                     {
@@ -1322,6 +1323,7 @@ namespace AntdUI
                 }
                 else if (hove_min.Down && rect_min.Contains(e.X, e.Y))
                 {
+                    hove_min.Clear();
                     var form = Parent.FindPARENT(MDI);
                     if (form != null)
                     {
