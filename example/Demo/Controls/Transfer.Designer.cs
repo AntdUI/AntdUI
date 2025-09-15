@@ -49,118 +49,142 @@ namespace Demo.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            header1 = new AntdUI.PageHeader();
             panel1 = new AntdUI.Panel();
-            transfer1 = new AntdUI.Transfer();
-            panel2 = new AntdUI.Panel();
-            btn_reload = new AntdUI.Button();
             label_target = new AntdUI.Label();
             label_source = new AntdUI.Label();
-            label1 = new AntdUI.Label();
             switch_oneWay = new AntdUI.Switch();
+            btn_reload = new AntdUI.Button();
+            label1 = new AntdUI.Label();
+            transfer1 = new AntdUI.Transfer();
             panel1.SuspendLayout();
-            panel2.SuspendLayout();
             SuspendLayout();
+            // 
+            // header1
+            // 
+            header1.Description = "双栏穿梭选择框，用于在两个区域之间移动元素。";
+            header1.Dock = System.Windows.Forms.DockStyle.Top;
+            header1.Font = new Font("Microsoft YaHei UI", 12F);
+            header1.LocalizationDescription = "Transfer.Description";
+            header1.LocalizationText = "Transfer.Text";
+            header1.Location = new Point(0, 0);
+            header1.Name = "header1";
+            header1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
+            header1.Size = new Size(800, 74);
+            header1.TabIndex = 0;
+            header1.Text = "Transfer 穿梭框";
+            header1.UseTitleFont = true;
             // 
             // panel1
             // 
-            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            panel1.Controls.Add(transfer1);
-            panel1.Location = new Point(20, 100);
+            panel1.Controls.Add(label_target);
+            panel1.Controls.Add(label_source);
+            panel1.Controls.Add(switch_oneWay);
+            panel1.Controls.Add(btn_reload);
+            panel1.Controls.Add(label1);
+            panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(760, 380);
-            panel1.TabIndex = 0;
+            panel1.Radius = 0;
+            panel1.Size = new Size(800, 36);
+            panel1.TabIndex = 1;
             // 
-            // transfer1
+            // label_target
             // 
-            transfer1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            transfer1.Location = new Point(20, 50);
-            transfer1.MinimumSize = new Size(300, 200);
-            transfer1.Name = "transfer1";
-            transfer1.Size = new Size(720, 310);
-            transfer1.TabIndex = 0;
+            label_target.AutoSizeMode = AntdUI.TAutoSize.Width;
+            label_target.BackColor = Color.Transparent;
+            label_target.Dock = System.Windows.Forms.DockStyle.Right;
+            label_target.LocalizationText = "Transfer.TargetT";
+            label_target.Location = new Point(614, 0);
+            label_target.Name = "label_target";
+            label_target.Padding = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label_target.Size = new Size(63, 36);
+            label_target.TabIndex = 5;
+            label_target.Text = "目标列表: ";
+            label_target.TextAlign = ContentAlignment.MiddleRight;
             // 
-            // panel2
+            // label_source
             // 
-            panel2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            panel2.Controls.Add(btn_reload);
-            panel2.Controls.Add(label_target);
-            panel2.Controls.Add(label_source);
-            panel2.Controls.Add(label1);
-            panel2.Controls.Add(switch_oneWay);
-            panel2.Location = new Point(20, 20);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(760, 70);
-            panel2.TabIndex = 1;
+            label_source.AutoSizeMode = AntdUI.TAutoSize.Width;
+            label_source.BackColor = Color.Transparent;
+            label_source.Dock = System.Windows.Forms.DockStyle.Right;
+            label_source.LocalizationText = "Transfer.SourceT";
+            label_source.Location = new Point(677, 0);
+            label_source.Name = "label_source";
+            label_source.Padding = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label_source.Size = new Size(51, 36);
+            label_source.TabIndex = 4;
+            label_source.Text = "源列表: ";
+            label_source.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // switch_oneWay
+            // 
+            switch_oneWay.BackColor = Color.Transparent;
+            switch_oneWay.Dock = System.Windows.Forms.DockStyle.Left;
+            switch_oneWay.Location = new Point(59, 0);
+            switch_oneWay.Name = "switch_oneWay";
+            switch_oneWay.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            switch_oneWay.Size = new Size(40, 36);
+            switch_oneWay.TabIndex = 0;
             // 
             // btn_reload
             // 
-            btn_reload.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btn_reload.AutoSizeMode = AntdUI.TAutoSize.Width;
             btn_reload.BorderWidth = 1F;
-            btn_reload.Location = new Point(650, 30);
+            btn_reload.Dock = System.Windows.Forms.DockStyle.Right;
+            btn_reload.LocalizationText = "Transfer.Reload";
+            btn_reload.Location = new Point(728, 0);
             btn_reload.Name = "btn_reload";
-            btn_reload.Size = new Size(90, 30);
+            btn_reload.Size = new Size(72, 36);
             btn_reload.TabIndex = 6;
             btn_reload.Text = "重新加载";
             btn_reload.Click += btn_reload_Click;
             // 
-            // label_target
-            // 
-            label_target.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            label_target.Location = new Point(520, 30);
-            label_target.Name = "label_target";
-            label_target.Size = new Size(120, 30);
-            label_target.TabIndex = 5;
-            label_target.Text = "目标列表: 0项";
-            label_target.TextAlign = ContentAlignment.TopRight;
-            // 
-            // label_source
-            // 
-            label_source.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            label_source.Location = new Point(400, 30);
-            label_source.Name = "label_source";
-            label_source.Size = new Size(120, 30);
-            label_source.TabIndex = 4;
-            label_source.Text = "源列表: 10项";
-            label_source.TextAlign = ContentAlignment.TopRight;
-            // 
             // label1
             // 
-            label1.Location = new Point(20, 30);
+            label1.AutoSizeMode = AntdUI.TAutoSize.Width;
+            label1.BackColor = Color.Transparent;
+            label1.Dock = System.Windows.Forms.DockStyle.Left;
+            label1.LocalizationText = "Transfer.One";
+            label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(80, 30);
+            label1.Padding = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Size = new Size(59, 36);
             label1.TabIndex = 1;
             label1.Text = "单向模式:";
             // 
-            // switch_oneWay
+            // transfer1
             // 
-            switch_oneWay.Location = new Point(100, 30);
-            switch_oneWay.Name = "switch_oneWay";
-            switch_oneWay.Size = new Size(50, 30);
-            switch_oneWay.TabIndex = 0;
+            transfer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            transfer1.Location = new Point(0, 110);
+            transfer1.MinimumSize = new Size(300, 200);
+            transfer1.Name = "transfer1";
+            transfer1.Padding = new System.Windows.Forms.Padding(8);
+            transfer1.Size = new Size(800, 390);
+            transfer1.TabIndex = 0;
             // 
             // Transfer
             // 
-            Controls.Add(panel2);
+            Controls.Add(transfer1);
             Controls.Add(panel1);
+            Controls.Add(header1);
             Name = "Transfer";
             Size = new Size(800, 500);
             panel1.ResumeLayout(false);
-            panel2.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
 
         }
 
         #endregion
 
+        private AntdUI.PageHeader header1;
         private AntdUI.Panel panel1;
-        private AntdUI.Transfer transfer1;
-        private AntdUI.Panel panel2;
         private AntdUI.Label label1;
         private AntdUI.Switch switch_oneWay;
-        //private AntdUI.Label label2;
-        //private AntdUI.Switch switch_search;
         private AntdUI.Label label_source;
         private AntdUI.Label label_target;
         private AntdUI.Button btn_reload;
+        private AntdUI.Transfer transfer1;
     }
 }

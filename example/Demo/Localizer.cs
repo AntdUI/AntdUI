@@ -801,6 +801,29 @@ namespace Demo
                 case "Watermark.btnClear":
                     return "Clear watermark";
 
+                case "Transfer.Text":
+                    return "Transfer";
+                case "Transfer.Description":
+                    return "Double column transfer choice box.";
+                case "Transfer.One":
+                    return "One Way";
+                case "Transfer.Reload":
+                    return "Reload";
+                case "Transfer.Items":
+                    return " items";
+                case "Transfer.Content":
+                    return "content";
+                case "Transfer.Option":
+                    return "option";
+                case "Transfer.Source":
+                    return "Source";
+                case "Transfer.Target":
+                    return "Target";
+                case "Transfer.SourceT":
+                    return "Source: ";
+                case "Transfer.TargetT":
+                    return "Target: ";
+
                 //Chart ----------------------------
                 case "Chart.Text":
                     return "Chart";
