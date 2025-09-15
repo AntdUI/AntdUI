@@ -27,6 +27,19 @@ namespace AntdUI
         {
             switch (keyData)
             {
+                case Keys.Control | Keys.A:// 实现全选逻辑                      
+                    if (MultipleRows && rows != null)
+                    {
+                        int rowCount = rows.Length - rowSummary; // 排除汇总行  
+                        int[] allIndexes = new int[rowCount];
+                        for (int i = 0; i < rowCount; i++)
+                        {
+                            allIndexes[i] = i + 1; // 行索引从1开始  
+                        }
+                        SelectedIndexs = allIndexes;
+                        if (HandShortcutKeys) return true;
+                    }
+                    break;
                 case Keys.Control | Keys.C:
                     if (ClipboardCopy && rows != null && !inEditMode && selectedIndex.Length > 0)
                     {
