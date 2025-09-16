@@ -256,7 +256,7 @@ namespace AntdUI
             get
             {
                 var cp = base.CreateParams;
-                cp.ExStyle |= 0x00080000 | 0x08000000;
+                cp.ExStyle |= 0x00080000 | 0x08000000 | 0x00000080;
                 cp.Parent = IntPtr.Zero;
                 return cp;
             }

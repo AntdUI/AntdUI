@@ -32,7 +32,7 @@ namespace AntdUI
             if (LoadLayout()) Invalidate();
         }
 
-        string? show_oldrect = null;
+        string? show_oldrect;
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle;
@@ -271,25 +271,6 @@ namespace AntdUI
 
         RowTemplate[] LayoutDesign(Rectangle rect, List<RowTemplate?> _rows, List<Column> _columns, Dictionary<int, object> col_width, int KeyTreeINDEX, out int _x, out int _y, out bool _is_exceed)
         {
-            if (rows != null)
-            {
-                List<object?> dir_Select = new List<object?>(rows.Length), dir_Hover = new List<object?>(1);
-                foreach (var it in rows)
-                {
-                    if (it.Select) dir_Select.Add(it.RECORD);
-                    if (it.Hover) dir_Hover.Add(it.RECORD);
-                }
-                if (dir_Select.Count > 0 || dir_Hover.Count > 0)
-                {
-                    foreach (var it in _rows)
-                    {
-                        if (it == null) continue;
-                        if (dir_Select.Contains(it.RECORD)) it.Select = true;
-                        if (dir_Hover.Contains(it.RECORD)) it.Hover = true;
-                    }
-                }
-            }
-
             #region 添加表头
 
             var _cols = new List<TCellColumn>(_columns.Count);
@@ -310,8 +291,7 @@ namespace AntdUI
                 var font_size = g.MeasureString(Config.NullText, Font);
                 var gap = new TableGaps(_gap);
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
-                 gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi),
-                split = (int)(BorderCellWidth * dpi), split_move = (int)(6F * dpi);
+                 gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi), split_move = (int)(6F * dpi);
 
                 check_radius = check_size * .12F * dpi;
                 check_border = check_size * .04F * dpi;
@@ -546,12 +526,7 @@ namespace AntdUI
                 var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
-                if (!isempty)
-                {
-                    int border = (int)(borderWidth * dpi);
-                    if ((rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + border;
-                    else rect_real.Height += border;
-                }
+                if (!isempty && (rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + (int)Math.Ceiling(borderWidth * dpi);
                 rect_divider = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height);
 
                 var MoveHeaders = new List<MoveHeader>();
@@ -1066,6 +1041,7 @@ namespace AntdUI
         {
             var row = new RowTemplate(this, cells, row_i, record);
             if (enableDir.Contains(row_i)) row.ENABLE = false;
+            if (row.INDEX_REAL == hovers) row.hover = true;
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;
@@ -1084,15 +1060,27 @@ namespace AntdUI
                     if (rows.Count > 0)
                     {
                         int t_count = rows.Count, check_count = 0;
-                        for (int row_i = 0; row_i < rows.Count; row_i++)
+                        if (VirtualMode && dataTmp != null)
                         {
-                            var tmp = rows[row_i];
-                            if (tmp == null) continue;
-                            if (tmp.Type == RowType.Summary) t_count--;
-                            else
+                            t_count = dataTmp.rows.Length;
+                            ForRow(dataTmp, 0, dataTmp.rows.Length, row =>
                             {
-                                var cell = tmp.cells[i];
-                                if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                                if (row == null) return;
+                                if (row[checkColumn.Key] is bool tmp && tmp) check_count++;
+                            });
+                        }
+                        else
+                        {
+                            for (int row_i = 0; row_i < rows.Count; row_i++)
+                            {
+                                var tmp = rows[row_i];
+                                if (tmp == null) continue;
+                                if (tmp.Type == RowType.Summary) t_count--;
+                                else
+                                {
+                                    var cell = tmp.cells[i];
+                                    if (cell is TCellCheck checkCell && checkCell.Checked) check_count++;
+                                }
                             }
                         }
                         if (t_count == check_count) checkColumn.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -1261,8 +1249,11 @@ namespace AntdUI
             }
             else if (cel is TCellCheck check)
             {
-                if (value is bool b) check.Checked = b;
-                row.Select = RowISelect(row);
+                if (value is bool b)
+                {
+                    check.Checked = b;
+                    if (b) selects.Add(row.INDEX_REAL);
+                }
                 if (cel.COLUMN is ColumnCheck checkColumn && checkColumn.NoTitle)
                 {
                     int t_count = rows.Length - 1, check_count = 0;
@@ -1284,8 +1275,11 @@ namespace AntdUI
             }
             else if (cel is TCellRadio radio)
             {
-                if (value is bool b) radio.Checked = b;
-                row.Select = RowISelect(row);
+                if (value is bool b)
+                {
+                    radio.Checked = b;
+                    if (b) selects.Add(row.INDEX_REAL);
+                }
                 Invalidate();
             }
             else if (cel is TCellSwitch _switch)
@@ -1306,20 +1300,38 @@ namespace AntdUI
             int count = 0, nocount = 0;
             bool old = pauseLayout;
             pauseLayout = true;
-            for (int i_row = 1; i_row < rows.Length; i_row++)
+            if (VirtualMode)
             {
-                var item = rows[i_row].cells[i_cel];
-                if (item.ROW.Type == RowType.Summary) continue;
-                if (item is TCellCheck checkCell)
+                if (dataTmp == null) return;
+                var index = new List<int>(dataTmp.rows.Length);
+                ForRow(dataTmp, 0, dataTmp.rows.Length, row =>
                 {
+                    if (row == null) return;
                     count++;
-                    if (checkCell.Checked != value)
+                    if (row[columnCheck.Key] is bool tmp && tmp == value) nocount++;
+                    else row.SetValue(columnCheck.Key, value);
+                    index.Add(row.i);
+                });
+                selects.Clear();
+                if (value) selects.AddRange(index);
+            }
+            else
+            {
+                for (int i_row = 1; i_row < rows.Length; i_row++)
+                {
+                    var item = rows[i_row].cells[i_cel];
+                    if (item.ROW.Type == RowType.Summary) continue;
+                    if (item is TCellCheck checkCell)
                     {
-                        checkCell.Checked = value;
-                        SetValue(item, checkCell.Checked);
-                        CheckedChanged?.Invoke(this, new TableCheckEventArgs(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN));
+                        count++;
+                        if (checkCell.Checked == value) nocount++;
+                        else
+                        {
+                            checkCell.Checked = value;
+                            SetValue(item, checkCell.Checked);
+                            CheckedChanged?.Invoke(this, new TableCheckEventArgs(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN));
+                        }
                     }
-                    else nocount++;
                 }
             }
             pauseLayout = old;
@@ -1341,23 +1353,6 @@ namespace AntdUI
                 }
             }
             else cel.PROPERTY.SetValue(cel.VALUE, value);
-        }
-
-        bool RowISelect(RowTemplate row)
-        {
-            for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
-            {
-                var cel = row.cells[cel_i];
-                if (cel is TCellCheck check)
-                {
-                    if (check.Checked) return true;
-                }
-                else if (cel is TCellRadio radio)
-                {
-                    if (radio.Checked) return true;
-                }
-            }
-            return false;
         }
 
         #endregion

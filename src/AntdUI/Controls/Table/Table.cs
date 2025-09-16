@@ -82,6 +82,8 @@ namespace AntdUI
                 SortData = null;
                 focusedCell = null;
                 ScrollBar.Clear();
+                selects.Clear();
+                hovers = -1;
                 ExtractHeaderFixed();
                 ExtractData();
                 if (LoadLayout()) Invalidate();
@@ -621,6 +623,12 @@ namespace AntdUI
         /// </summary>
         [Description("单元格边框宽度"), Category("边框"), DefaultValue(1F)]
         public float BorderCellWidth { get; set; } = 1F;
+
+        /// <summary>
+        /// 高精度边框
+        /// </summary>
+        [Description("高精度边框"), Category("边框"), DefaultValue(false)]
+        public bool BorderHigh { get; set; }
 
         #region 表头
 

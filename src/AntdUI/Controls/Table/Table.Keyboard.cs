@@ -30,13 +30,7 @@ namespace AntdUI
                 case Keys.Control | Keys.A:// 实现全选逻辑                      
                     if (MultipleRows && rows != null)
                     {
-                        int rowCount = rows.Length - rowSummary; // 排除汇总行  
-                        int[] allIndexes = new int[rowCount];
-                        for (int i = 0; i < rowCount; i++)
-                        {
-                            allIndexes[i] = i + 1; // 行索引从1开始  
-                        }
-                        SelectedIndexs = allIndexes;
+                        SelectedIndexs = SortIndex();
                         if (HandShortcutKeys) return true;
                     }
                     break;
@@ -149,12 +143,18 @@ namespace AntdUI
         void IKeyEnter()
         {
             if (rows == null) return;
-            if (selectedIndex.Length > 0)
+            try
             {
-                var it = rows[selectedIndex[0]];
-                CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, selectedIndex[0], 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
-                if (EditMode != TEditMode.None && focusedCell != null) EnterEditMode(selectedIndex[0], focusedCell.INDEX);
+                if (selectedIndex.Length > 0)
+                {
+                    int index = selectedIndex[0];
+                    if (index > rows.Length) return;
+                    var it = rows[index];
+                    CellClick?.Invoke(this, new TableClickEventArgs(it.RECORD, index, 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                    if (EditMode != TEditMode.None && focusedCell != null) EnterEditMode(index, focusedCell.INDEX);
+                }
             }
+            catch { }
         }
 
         int NextIndexDown(RowTemplate[] rows, int value)
