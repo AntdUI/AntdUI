@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -57,7 +56,7 @@ namespace AntdUI
             using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get("Table", ColorScheme)))
             using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get("Table", ColorScheme)))
             using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get("Table", ColorScheme)))
-            using (var pen_cell_split = new Pen(borderColor ?? Colour.BorderColor.Get("Table", ColorScheme), BorderCellWidth * Config.Dpi))
+            using (var pen_cell_split = new Pen(borderColor ?? Colour.BorderColor.Get("Table", ColorScheme), BorWidth(BorderCellWidth)))
             {
                 StyleRow[] shows, summarys;
                 GraphicsPath? clipath = null;
@@ -227,8 +226,8 @@ namespace AntdUI
                 if (bordered)
                 {
                     g.ResetClip();
-                    if (clipath == null) g.Draw(pen_cell_split.Color, borderWidth * Config.Dpi, rect_divider);
-                    else g.Draw(pen_cell_split.Color, borderWidth * Config.Dpi, clipath);
+                    if (clipath == null) g.Draw(pen_cell_split.Color, BorWidth(borderWidth), rect_divider);
+                    else g.Draw(pen_cell_split.Color, BorWidth(borderWidth), clipath);
                 }
 
                 clipath?.Dispose();
@@ -347,30 +346,7 @@ namespace AntdUI
         {
             if (StackedHeaderRows == null)
             {
-                foreach (TCellColumn column in row.cells)
-                {
-                    if (column.COLUMN.SortOrder)
-                    {
-                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-                    }
-                    if (column.COLUMN.HasFilter)
-                    {
-                        g.GetImgExtend("FilterFilled", column.rect_filter, column.COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-                    }
-                    if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                    else
-                    {
-                        if (column.COLUMN.ColStyle != null && column.COLUMN.ColStyle.ForeColor.HasValue)
-                        {
-                            using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
-                            {
-                                g.DrawText(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
-                            }
-                        }
-                        else g.DrawText(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
-                    }
-                }
+                foreach (TCellColumn column in row.cells) column.Print(g, ColorScheme, column_font, fore);
                 if (dragHeader == null) return;
                 if (dragHeader.enable)
                 {
@@ -439,28 +415,7 @@ namespace AntdUI
                         column.offsety = sy;
                         g.TranslateTransform(0, sy);
                     }
-                    if (column.COLUMN.SortOrder)
-                    {
-                        g.GetImgExtend("CaretUpFilled", column.rect_up, column.COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-                        g.GetImgExtend("CaretDownFilled", column.rect_down, column.COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-                    }
-                    if (column.COLUMN.HasFilter)
-                    {
-                        g.GetImgExtend("FilterFilled", column.rect_filter, column.COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", ColorScheme) : Colour.TextQuaternary.Get("Table", ColorScheme));
-                    }
-
-                    if (column.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, column, columnCheck);
-                    else
-                    {
-                        if (column.COLUMN.ColStyle != null && column.COLUMN.ColStyle.ForeColor.HasValue)
-                        {
-                            using (var brush = new SolidBrush(column.COLUMN.ColStyle.ForeColor.Value))
-                            {
-                                g.DrawText(column.value, column_font, brush, column.RECT_REAL, StringFormat(column.COLUMN, true));
-                            }
-                        }
-                        else g.DrawText(column.value, column_font, fore, column.RECT_REAL, StringFormat(column.COLUMN, true));
-                    }
+                    column.Print(g, ColorScheme, column_font, fore);
                     g.Restore(state);
                     state = g.Save();
                     i++;
@@ -588,10 +543,10 @@ namespace AntdUI
         void PaintBgRowFront(Canvas g, StyleRow row)
         {
             if (row.style != null && row.style.BackColor.HasValue) g.Fill(row.style.BackColor.Value, row.row.RECT);
-            if (selectedIndex.Contains(row.row.INDEX) || row.row.Select)
+            if (selectedIndex.Contains(row.row.INDEX) || selects.Contains(row.row.INDEX_REAL))
             {
                 g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table", ColorScheme), row.row.RECT);
-                if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table", ColorScheme)), row.row.RECT);
+                if (selectedIndex.Contains(row.row.INDEX) && selects.Contains(row.row.INDEX_REAL)) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table", ColorScheme)), row.row.RECT);
             }
         }
 
@@ -758,31 +713,11 @@ namespace AntdUI
         void PaintItemCore(Canvas g, int columnIndex, CELL it, bool enable, Font font, SolidBrush fore)
         {
             PaintItemFocus(g, it, enable);
-            if (it is TCellCheck check) PaintCheck(g, check, enable);
-            else if (it is TCellRadio radio) PaintRadio(g, radio, enable);
-            else if (it is TCellSwitch _switch) PaintSwitch(g, _switch, enable);
-            else if (it is TCellSelect select) PaintSelect(g, select, enable);
-            else if (it is TCellSort sort)
-            {
-                if (sort.AnimationHover)
-                {
-                    using (var brush = new SolidBrush(Helper.ToColorN(sort.AnimationHoverValue, Colour.FillTertiary.Get("Table", ColorScheme))))
-                    {
-                        using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
-                        {
-                            g.Fill(brush, path_sort);
-                        }
-                    }
-                }
-                else if (sort.Hover)
-                {
-                    using (var path_sort = Helper.RoundPath(sort.RECT_REAL, check_radius))
-                    {
-                        g.Fill(Colour.FillTertiary.Get("Table", ColorScheme), path_sort);
-                    }
-                }
-                SvgExtend.GetImgExtend(g, "HolderOutlined", sort.RECT_ICO, fore.Color);
-            }
+            if (it is TCellCheck check) check.Print(g, ColorScheme, font, fore, enable);
+            else if (it is TCellRadio radio) radio.Print(g, ColorScheme, font, fore, enable);
+            else if (it is TCellSwitch _switch) _switch.Print(g, ColorScheme, font, fore, enable);
+            else if (it is TCellSelect select) select.Print(g, ColorScheme, font, fore, enable);
+            else if (it is TCellSort sort) sort.Print(g, ColorScheme, font, fore, enable);
             else if (it is Template template)
             {
                 g.SetClip(it.RECT, CombineMode.Intersect);
@@ -791,7 +726,7 @@ namespace AntdUI
             else if (it is TCellText text)
             {
                 g.SetClip(it.RECT, CombineMode.Intersect);
-                g.DrawText(text.value, font, fore, text.RECT_REAL, StringFormat(text.COLUMN));
+                text.Print(g, ColorScheme, font, fore, enable);
             }
             if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get("Table", ColorScheme), it.RECT);
             if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
@@ -1416,242 +1351,14 @@ namespace AntdUI
 
         #endregion
 
-        #region 渲染复选/选择框
+        #region 复选/选择框
 
-        #region 复选框
-
-        void PaintCheck(Canvas g, TCellColumn check, ColumnCheck columnCheck)
-        {
-            using (var path_check = Helper.RoundPath(check.RECT_REAL, check_radius))
-            {
-                if (columnCheck.AnimationCheck)
-                {
-                    g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path_check);
-                    var alpha = 255 * columnCheck.AnimationCheckValue;
-                    if (columnCheck.CheckState == CheckState.Indeterminate || (columnCheck.checkStateOld == CheckState.Indeterminate && !columnCheck.Checked))
-                    {
-                        g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path_check);
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", ColorScheme)), PaintBlock(check.RECT_REAL));
-                    }
-                    else
-                    {
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", ColorScheme)), path_check);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", ColorScheme)), check_border * 2))
-                        {
-                            g.DrawLines(brush, PaintArrow(check.RECT_REAL));
-                        }
-                        if (columnCheck.Checked)
-                        {
-                            float max = check.RECT_REAL.Height + check.RECT_REAL.Height * columnCheck.AnimationCheckValue, alpha2 = 100 * (1F - columnCheck.AnimationCheckValue);
-                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox", ColorScheme))))
-                            {
-                                g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
-                            }
-                        }
-                        g.Draw(Colour.Primary.Get("Checkbox", ColorScheme), check_border, path_check);
-                    }
-                }
-                else if (columnCheck.CheckState == CheckState.Indeterminate)
-                {
-                    g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path_check);
-                    g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path_check);
-                    g.Fill(Colour.Primary.Get("Checkbox", ColorScheme), PaintBlock(check.RECT_REAL));
-                }
-                else if (columnCheck.Checked)
-                {
-                    g.Fill(Colour.Primary.Get("Checkbox", ColorScheme), path_check);
-                    using (var brush = new Pen(Colour.BgBase.Get("Checkbox", ColorScheme), check_border * 2))
-                    {
-                        g.DrawLines(brush, PaintArrow(check.RECT_REAL));
-                    }
-                }
-                else
-                {
-                    g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path_check);
-                    g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path_check);
-                }
-            }
-        }
-        void PaintCheck(Canvas g, TCellCheck check, bool enable)
-        {
-            using (var path = Helper.RoundPath(check.RECT_REAL, check_radius))
-            {
-                if (enable)
-                {
-                    if (check.AnimationCheck)
-                    {
-                        g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path);
-
-                        var alpha = 255 * check.AnimationCheckValue;
-
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", ColorScheme)), path);
-                        using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", ColorScheme)), check_border * 2))
-                        {
-                            g.DrawLines(brush, PaintArrow(check.RECT_REAL));
-                        }
-
-                        if (check.Checked)
-                        {
-                            float max = check.RECT_REAL.Height + check.RECT_REAL.Height * check.AnimationCheckValue, alpha2 = 100 * (1F - check.AnimationCheckValue);
-                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox", ColorScheme))))
-                            {
-                                g.FillEllipse(brush, new RectangleF(check.RECT_REAL.X + (check.RECT_REAL.Width - max) / 2F, check.RECT_REAL.Y + (check.RECT_REAL.Height - max) / 2F, max, max));
-                            }
-                        }
-                        g.Draw(Colour.Primary.Get("Checkbox", ColorScheme), check_border, path);
-                    }
-                    else if (check.Checked)
-                    {
-                        g.Fill(Colour.Primary.Get("Checkbox", ColorScheme), path);
-                        using (var brush = new Pen(Colour.BgBase.Get("Checkbox", ColorScheme), check_border * 2))
-                        {
-                            g.DrawLines(brush, PaintArrow(check.RECT_REAL));
-                        }
-                    }
-                    else
-                    {
-                        g.Fill(Colour.BgBase.Get("Checkbox", ColorScheme), path);
-                        g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), check_border, path);
-                    }
-                }
-                else
-                {
-                    g.Fill(Colour.FillQuaternary.Get("Checkbox", ColorScheme), path);
-                    if (check.Checked) g.DrawLines(Colour.TextQuaternary.Get("Checkbox", ColorScheme), check_border * 2, PaintArrow(check.RECT_REAL));
-                    g.Draw(Colour.BorderColorDisable.Get("Checkbox", ColorScheme), check_border, path);
-                }
-            }
-        }
-
-        #endregion
-
-        #region 单选框
-
-        void PaintRadio(Canvas g, TCellRadio radio, bool enable)
-        {
-            var dot_size = radio.RECT_REAL.Height;
-            if (enable)
-            {
-                g.FillEllipse(Colour.BgBase.Get("Radio", ColorScheme), radio.RECT_REAL);
-                if (radio.AnimationCheck)
-                {
-                    float dot = dot_size * 0.3F;
-                    using (var path = new GraphicsPath())
-                    {
-                        float dot_ant = dot_size - dot * radio.AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * radio.AnimationCheckValue;
-                        path.AddEllipse(radio.RECT_REAL);
-                        path.AddEllipse(new RectangleF(radio.RECT_REAL.X + dot_ant2, radio.RECT_REAL.Y + dot_ant2, radio.RECT_REAL.Width - dot_ant, radio.RECT_REAL.Height - dot_ant));
-                        g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Radio", ColorScheme)), path);
-                    }
-                    if (radio.Checked)
-                    {
-                        float max = radio.RECT_REAL.Height + radio.RECT_REAL.Height * radio.AnimationCheckValue, alpha2 = 100 * (1F - radio.AnimationCheckValue);
-                        g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get("Radio", ColorScheme)), new RectangleF(radio.RECT_REAL.X + (radio.RECT_REAL.Width - max) / 2F, radio.RECT_REAL.Y + (radio.RECT_REAL.Height - max) / 2F, max, max));
-                    }
-                    g.DrawEllipse(Colour.Primary.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
-                }
-                else if (radio.Checked)
-                {
-                    float dot = dot_size * 0.3F, dot2 = dot / 2F;
-                    g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get("Radio", ColorScheme)), dot, new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
-                    g.DrawEllipse(Colour.Primary.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
-                }
-                else g.DrawEllipse(Colour.BorderColor.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
-            }
-            else
-            {
-                g.FillEllipse(Colour.FillQuaternary.Get("Radio", ColorScheme), radio.RECT_REAL);
-                if (radio.Checked)
-                {
-                    float dot = dot_size / 2F, dot2 = dot / 2F;
-                    g.FillEllipse(Colour.TextQuaternary.Get("Radio", ColorScheme), new RectangleF(radio.RECT_REAL.X + dot2, radio.RECT_REAL.Y + dot2, radio.RECT_REAL.Width - dot, radio.RECT_REAL.Height - dot));
-                }
-                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio", ColorScheme), check_border, radio.RECT_REAL);
-            }
-        }
-
-        #endregion
-
-        #region 开关
-
-        void PaintSwitch(Canvas g, TCellSwitch _switch, bool enable)
-        {
-            var color = Colour.Primary.Get("Switch", ColorScheme);
-            using (var path = _switch.RECT_REAL.RoundPath(_switch.RECT_REAL.Height))
-            {
-                using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch", ColorScheme)))
-                {
-                    g.Fill(brush, path);
-                    if (_switch.AnimationHover) g.Fill(Helper.ToColorN(_switch.AnimationHoverValue, brush.Color), path);
-                    else if (_switch.ExtraMouseHover) g.Fill(brush, path);
-                }
-                float gap = (int)(2 * Config.Dpi), gap2 = gap * 2F;
-                if (_switch.AnimationCheck)
-                {
-                    var alpha = 255 * _switch.AnimationCheckValue;
-                    g.Fill(Helper.ToColor(alpha, color), path);
-                    var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + (_switch.RECT_REAL.Width - _switch.RECT_REAL.Height) * _switch.AnimationCheckValue, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
-                }
-                else if (_switch.Checked)
-                {
-                    var colorhover = Colour.PrimaryHover.Get("Switch", ColorScheme);
-                    g.Fill(color, path);
-                    if (_switch.AnimationHover) g.Fill(Helper.ToColorN(_switch.AnimationHoverValue, colorhover), path);
-                    else if (_switch.ExtraMouseHover) g.Fill(colorhover, path);
-                    var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap + _switch.RECT_REAL.Width - _switch.RECT_REAL.Height, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
-                    if (_switch.Loading)
-                    {
-                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = _switch.RECT_REAL.Height * .1F;
-                        using (var brush = new Pen(color, size))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
-                        }
-                    }
-                }
-                else
-                {
-                    var dot_rect = new RectangleF(_switch.RECT_REAL.X + gap, _switch.RECT_REAL.Y + gap, _switch.RECT_REAL.Height - gap2, _switch.RECT_REAL.Height - gap2);
-                    g.FillEllipse(enable ? Colour.BgBase.Get("Switch", ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", ColorScheme)), dot_rect);
-                    if (_switch.Loading)
-                    {
-                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = _switch.RECT_REAL.Height * .1F;
-                        using (var brush = new Pen(color, size))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, _switch.LineAngle, _switch.LineWidth * 3.6F);
-                        }
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region 选择框
-
-        void PaintSelect(Canvas g, TCellSelect select, bool enable)
-        {
-            if (select.value == null) return;
-            var color = select.value.TagFore ?? fore ?? Colour.Text.Get("Select", ColorScheme);
-            if (select.value.IconSvg != null) g.GetImgExtend(select.value.IconSvg, select.rect_icon, color);
-            else if (select.value.Icon != null) g.Image(select.value.Icon, select.rect_icon);
-
-            if (select.COLUMN.CellType != SelectCellType.Icon && select.rect_text != Rectangle.Empty) g.DrawText(select.value.Text, Font, color, select.rect_text);
-        }
-
-        #endregion
-
-        RectangleF PaintBlock(RectangleF rect)
+        internal static RectangleF PaintBlock(RectangleF rect)
         {
             float size = rect.Height * 0.2F, size2 = size * 2F;
             return new RectangleF(rect.X + size, rect.Y + size, rect.Width - size2, rect.Height - size2);
         }
-        PointF[] PaintArrow(RectangleF rect)
+        internal static PointF[] PaintArrow(RectangleF rect)
         {
             float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;
             return new PointF[] {
@@ -1776,6 +1483,12 @@ namespace AntdUI
                 path.AddRectangle(rect_divider);
                 return path;
             }
+        }
+
+        public float BorWidth(float value)
+        {
+            if (BorderHigh) return value * Config.Dpi;
+            return (int)(value * Config.Dpi);
         }
     }
 }

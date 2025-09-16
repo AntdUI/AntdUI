@@ -29,6 +29,8 @@ namespace AntdUI
     {
         internal TempTable? dataTmp = null;
         bool dataOne = true;
+        List<int> selects = new List<int>();
+        int hovers = -1;
         void ExtractData()
         {
             dataOne = true;
@@ -632,6 +634,7 @@ namespace AntdUI
             public void SetValue(int index, object? value)
             {
                 if (cells == null) return;
+
                 int i = 0;
                 foreach (var item in cells)
                 {
@@ -641,6 +644,16 @@ namespace AntdUI
                         return;
                     }
                     i++;
+                }
+            }
+            public void SetValue(string key, object? value)
+            {
+                if (cells == null) return;
+                if (cells.TryGetValue(key, out var tmp))
+                {
+                    if (tmp is PropertyDescriptor prop) prop.SetValue(record, value);
+                    else if (tmp is AntItem it) it.value = value;
+                    else cells[key] = value;
                 }
             }
         }

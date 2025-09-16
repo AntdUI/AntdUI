@@ -690,6 +690,7 @@ namespace AntdUI
                     foreach (RowTemplate it in rows)
                     {
                         if (it.IsColumn) continue;
+                        hovers = -1;
                         it.Hover = false;
                         foreach (var cel_tmp in it.cells)
                         {
@@ -701,6 +702,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    hovers = cel_sel.ROW.INDEX_REAL;
                     if (mode > 0)
                     {
                         for (int i = 1; i < rows.Length; i++)
@@ -974,6 +976,7 @@ namespace AntdUI
                 else if (it.Type == RowType.Summary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
+                    if (sethover) hovers = it.INDEX_REAL;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
                         mode = 0;
@@ -1273,6 +1276,7 @@ namespace AntdUI
         {
             SetCursor(false);
             if (rows == null || inEditMode) return;
+            hovers = -1;
             foreach (var it in rows)
             {
                 it.Hover = false;
