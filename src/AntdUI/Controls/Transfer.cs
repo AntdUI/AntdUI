@@ -67,7 +67,7 @@ namespace AntdUI
         /// 是否单向模式（只能从左到右）
         /// </summary>
         [Description("是否单向模式（只能从左到右）"), Category("行为"), DefaultValue(false)]
-        public bool OneWay { get; set; } = false;
+        public bool OneWay { get; set; }
 
         /// <summary>
         /// 列表项高度

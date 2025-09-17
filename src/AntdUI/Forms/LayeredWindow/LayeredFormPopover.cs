@@ -53,6 +53,7 @@ namespace AntdUI
                     control.Parent = this;
                     control.BackColor = Colour.BgElevated.Get("Popover");
                     control.ForeColor = Colour.Text.Get("Popover");
+                    Win32.WindowTheme(control, Config.IsDark);
                     Helper.DpiAuto(config.Dpi ?? Config.Dpi, control);
                     int w = control.Width;
                     int h;

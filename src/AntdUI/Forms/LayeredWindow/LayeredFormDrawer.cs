@@ -65,6 +65,7 @@ namespace AntdUI
             else
             {
                 config.Content.Tag = config.Content.Size;
+                Win32.WindowTheme(config.Content, Config.IsDark);
                 Helper.DpiAuto(Config.Dpi, config.Content);
             }
             config.Content.Location = Helper.OffScreenArea(tempContent.Width * 2, tempContent.Height * 2);

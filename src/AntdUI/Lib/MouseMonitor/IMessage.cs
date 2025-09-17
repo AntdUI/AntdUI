@@ -23,15 +23,9 @@ namespace AntdUI
 {
     public interface IMessage
     {
-        /// <summary>
-        /// MOUSEHOVER
-        /// </summary>
-        bool IMOUSEHOVER();
+        void IMOUSECLICK();
 
-        /// <summary>
-        /// MOUSELEAVE
-        /// </summary>
-        bool IMOUSELEAVE();
+        void IMOUSELEAVE();
 
         /// <summary>
         /// KEYDOWN

@@ -89,12 +89,20 @@ namespace AntdUI
         /// </summary>
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
-            // 处理鼠标悬停相关消息
-            if (m.Msg == MessageHookManager.WM_LBUTTONDOWN || m.Msg == MessageHookManager.WM_RBUTTONDOWN || m.Msg == MessageHookManager.WM_MBUTTONDOWN || m.Msg == MessageHookManager.WM_NCMOUSEMOVE) return msg.IMOUSEHOVER();
-            // 处理鼠标离开消息
-            else if (m.Msg == MessageHookManager.WM_MOUSELEAVE) return msg.IMOUSELEAVE();
-            // 处理键盘按键消息
-            else if (m.Msg == MessageHookManager.WM_KEYDOWN) return msg.IKEYS((Keys)(int)m.WParam);
+            switch (m.Msg)
+            {
+                case MessageHookManager.WM_LBUTTONDOWN:
+                case MessageHookManager.WM_RBUTTONDOWN:
+                case MessageHookManager.WM_MBUTTONDOWN:
+                case MessageHookManager.WM_NCMOUSEMOVE:
+                    msg.IMOUSECLICK();
+                    break;
+                case MessageHookManager.WM_MOUSELEAVE:
+                    msg.IMOUSELEAVE();
+                    break;
+                case MessageHookManager.WM_KEYDOWN:
+                    return msg.IKEYS((Keys)(int)m.WParam);
+            }
             return false;
         }
 

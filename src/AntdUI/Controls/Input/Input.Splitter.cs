@@ -173,15 +173,24 @@ namespace AntdUI
         }
         static bool ReadBase64Image(string strText, int start, int len, out int endIndex)
         {
-            if (strText.Substring(start, len) == "d" && start + 20 < strText.Length && strText.Substring(start, 11) == "data:image/")
+            if (start + 20 < strText.Length && strText.Substring(start, 11) == "data:image/")
             {
                 int tmp = strText.IndexOf(";base64,", start + 12, StringComparison.OrdinalIgnoreCase);
                 if (tmp > 0)
                 {
-                    var regex = new Regex(@"data:image/(?<type>.+?);base64,(?<data>[A-Za-z0-9+/=]+)");
+                    var regex = new Regex(@"data:image/(?<type>.+?);base64,(?<data>[A-Za-z0-9+/=]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                     var match = regex.Match(strText.Substring(start, strText.Length - start));
                     if (match.Success && match.Index == 0)
                     {
+                        if (match.Value.EndsWith("data"))
+                        {
+                            int st = start + match.Value.Length - 4;
+                            if (st + 20 < strText.Length && strText.Substring(st, 11) == "data:image/")
+                            {
+                                endIndex = match.Value.Length - 4;
+                                return true;
+                            }
+                        }
                         endIndex = match.Value.Length;
                         return true;
                     }
