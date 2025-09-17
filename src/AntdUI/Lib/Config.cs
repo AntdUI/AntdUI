@@ -186,6 +186,11 @@ namespace AntdUI
         public static bool TextRenderingHighQuality { get; set; }
 
         /// <summary>
+        /// 是否使用钩子
+        /// </summary>
+        public static bool UseHook { get; set; } = true;
+
+        /// <summary>
         /// 默认字体
         /// </summary>
         public static Font? Font { get; set; }

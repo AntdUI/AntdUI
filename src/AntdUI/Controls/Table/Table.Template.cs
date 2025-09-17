@@ -974,7 +974,7 @@ namespace AntdUI
                         g.Fill(Colour.FillTertiary.Get("Table", colorScheme), path_sort);
                     }
                 }
-                SvgExtend.GetImgExtend(g, "HolderOutlined", rect_ico, fore.Color);
+                SvgExtend.GetImgExtend(g, SvgDb.IcoTableColumnSort, rect_ico, fore.Color);
             }
 
             #endregion
@@ -1250,12 +1250,12 @@ namespace AntdUI
             {
                 if (COLUMN.SortOrder)
                 {
-                    g.GetImgExtend("CaretUpFilled", rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
-                    g.GetImgExtend("CaretDownFilled", rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
+                    g.GetImgExtend(SvgDb.IcoTableSortUp, rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
+                    g.GetImgExtend(SvgDb.IcoTableSortDown, rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
                 }
                 if (COLUMN.HasFilter)
                 {
-                    g.GetImgExtend("FilterFilled", rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
+                    g.GetImgExtend(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
                 }
                 if (COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, colorScheme, columnCheck);
                 else
