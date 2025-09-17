@@ -13,7 +13,7 @@
 		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Version>2.1.4</Version>
+		<Version>2.1.5</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>

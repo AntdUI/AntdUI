@@ -1,5 +1,23 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.5` 2025-09-17
+
+- ➕ Config UseHook `Addins development`
+- ➕ Transfer shuttle box
+- ➕ Table BorderHigh
+- ➕ Table Keyboard Select All Interaction
+- ➕ PuzzleCapcha puzzle verification code
+- ➕ Menu dropdown parameters
+- ✍️ Table Open Icon Configuration
+- ✍️ ChatList image overlap
+- ✍️ Poppover adapts to dark mode
+- ✍️ VirtualMode Table Select All
+- ✍️ Table keyboard array out of bounds
+- ✍️ Message/Notification Memory Overflow
+- ✍️ The button state was not restored after minimizing the PageHeader
+- ✍️ Table AutoSizeColumnsMode. Auto does not display on the right side
+- ✍️ SelectMultiple automatically clears search content when selecting search terms
+
 ### `2.1.4` 2025-09-09
 
 - ➕ Menu ItemClick
