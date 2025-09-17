@@ -44,6 +44,11 @@ namespace AntdUI
             IcoSuccessGhost = "CheckOutlined",
             IcoInfoGhost = "InfoOutlined",
             IcoWarnGhost = "WarningOutlined",
-            IcoErrorGhost = IcoClose;
+            IcoErrorGhost = IcoClose,
+
+            IcoTableSortUp = "CaretUpFilled",
+            IcoTableSortDown = "CaretDownFilled",
+            IcoTableFilter = "FilterFilled",
+            IcoTableColumnSort = "HolderOutlined";
     }
 }
