@@ -831,6 +831,7 @@ namespace AntdUI.Chat
             item.cache_font = font_widths.ToArray();
 
             int usex = 0, usey = 0, maxx = 0, maxy = 0;
+            int? tmpimgsize = null;
             foreach (var it in item.cache_font)
             {
                 if (it.text == "\r")
@@ -847,10 +848,19 @@ namespace AntdUI.Chat
                 }
                 else if (usex + it.width > max_width)
                 {
-                    usey += font_height;
+                    if (tmpimgsize.HasValue)
+                    {
+                        usey += tmpimgsize.Value;
+                        tmpimgsize = null;
+                    }
+                    else usey += font_height;
                     usex = 0;
                 }
-                if (it.imageHeight.HasValue) it.rect = new Rectangle(usex, usey, it.width, it.imageHeight.Value);
+                if (it.imageHeight.HasValue)
+                {
+                    it.rect = new Rectangle(usex, usey, it.width, it.imageHeight.Value);
+                    tmpimgsize = it.imageHeight.Value;
+                }
                 else it.rect = new Rectangle(usex, usey, it.width, font_height);
                 if (maxx < it.rect.Right) maxx = it.rect.Right;
                 if (maxy < it.rect.Bottom) maxy = it.rect.Bottom;

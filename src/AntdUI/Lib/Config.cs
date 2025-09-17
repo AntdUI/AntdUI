@@ -188,7 +188,7 @@ namespace AntdUI
         /// <summary>
         /// 是否使用钩子
         /// </summary>
-        public static bool UseHook { get; set; } = true;
+        public static bool UseHook { get; set; }
 
         /// <summary>
         /// 默认字体

@@ -339,7 +339,7 @@ namespace AntdUI
 
         #region 鼠标键盘消息
 
-        public bool IMOUSEHOVER()
+        public void IMOUSECLICK()
         {
             var mousePosition = MousePosition;
             if (!target_rect.Contains(mousePosition))
@@ -350,13 +350,13 @@ namespace AntdUI
                     {
                         if (MessageClickMe)
                         {
-                            if (ContainsPosition(PARENT, mousePosition)) return false;
-                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return false;
+                            if (ContainsPosition(PARENT, mousePosition)) return;
+                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return;
                         }
 
                         #region 判断内容
 
-                        if (MessageCloseSub && FunSub(PARENT, mousePosition)) return false;
+                        if (MessageCloseSub && FunSub(PARENT, mousePosition)) return;
 
                         #endregion
                     }
@@ -364,10 +364,9 @@ namespace AntdUI
                 }
                 catch { }
             }
-            return false;
         }
 
-        public bool IMOUSELEAVE()
+        public void IMOUSELEAVE()
         {
             var mousePosition = MousePosition;
             if (!target_rect.Contains(mousePosition))
@@ -376,12 +375,12 @@ namespace AntdUI
                 {
                     if (PARENT != null && PARENT.IsHandleCreated)
                     {
-                        if (ContainsPosition(PARENT, mousePosition)) return false;
-                        if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return false;
+                        if (ContainsPosition(PARENT, mousePosition)) return;
+                        if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return;
 
                         #region 判断内容
 
-                        if (MessageCloseSub && FunSub(PARENT, mousePosition)) return false;
+                        if (MessageCloseSub && FunSub(PARENT, mousePosition)) return;
 
                         #endregion
                     }
@@ -389,7 +388,6 @@ namespace AntdUI
                 }
                 catch { }
             }
-            return false;
         }
 
         public bool IKEYS(Keys keys)

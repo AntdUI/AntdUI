@@ -219,6 +219,7 @@ namespace AntdUI
                     int tmpicon = 0;
                     if (config.Content is Control control)
                     {
+                        Win32.WindowTheme(control, Config.IsDark);
                         Helper.DpiAuto(dpi, control);
                         w = control.Width + paddingx * 2 + cpaddingx2;
                         wp = control.Width + cpaddingx2;

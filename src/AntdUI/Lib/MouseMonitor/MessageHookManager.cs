@@ -50,7 +50,7 @@ namespace AntdUI
         #region 钩子常量和API
 
         private const int WH_MOUSE_LL = 14, WH_KEYBOARD_LL = 13;
-        public const int WM_LBUTTONDOWN = 0x201, WM_RBUTTONDOWN = 0x204, WM_MBUTTONDOWN = 0x207, WM_NCMOUSEMOVE = 0xa0, WM_MOUSELEAVE = 0x2a3, WM_KEYDOWN = 0x100;
+        public const int WM_LBUTTONDOWN = 0x201, WM_RBUTTONDOWN = 0x204, WM_MBUTTONDOWN = 0x207, WM_NCMOUSEMOVE = 0xa0, WM_MOUSEMOVE = 0x200, WM_MOUSELEAVE = 0x2a3, WM_KEYDOWN = 0x100;
 
         private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -75,8 +75,15 @@ namespace AntdUI
 
         #region 注册的消息处理器列表
 
-        private readonly List<IMessage> _messageHandlers = new List<IMessage>();
         private readonly object _lock = new object();
+        private List<IMessage> _messageHandlers = new List<IMessage>();
+        private IMessage[] Handlers()
+        {
+            lock (_lock)
+            {
+                return _messageHandlers.ToArray();
+            }
+        }
 
         #endregion
 
@@ -93,66 +100,53 @@ namespace AntdUI
 
         private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
+            var r = CallNextHookEx(_mouseHookHandle, nCode, wParam, lParam);
             if (nCode >= 0)
             {
-                switch (wParam.ToInt32())
+                try
                 {
-                    case WM_LBUTTONDOWN:
-                    case WM_RBUTTONDOWN:
-                    case WM_MBUTTONDOWN:
-                    case WM_NCMOUSEMOVE:
-                        lock (_lock)
-                        {
-                            int count = 0;
-                            foreach (var handler in _messageHandlers)
+                    switch (wParam.ToInt32())
+                    {
+                        case WM_LBUTTONDOWN:
+                        case WM_RBUTTONDOWN:
+                        case WM_MBUTTONDOWN:
+                        case WM_NCMOUSEMOVE:
+                            foreach (var handler in Handlers())
                             {
                                 try
                                 {
-                                    if (handler.IMOUSEHOVER()) count++;
+                                    handler.IMOUSECLICK();
                                 }
                                 catch { }
                             }
-#if NET40 || NET46 || NET48 || NET6_0
-                            if (count > 0) return (IntPtr)1;
-#else
-                            if (count > 0) return 1;
-#endif
-                        }
-                        break;
-                    case WM_MOUSELEAVE:
-                        lock (_lock)
-                        {
-                            int count = 0;
-                            foreach (var handler in _messageHandlers)
+                            break;
+                        case WM_MOUSEMOVE:
+                            foreach (var handler in Handlers())
                             {
                                 try
                                 {
-                                    if (handler.IMOUSELEAVE()) count++;
+                                    handler.IMOUSELEAVE();
                                 }
                                 catch { }
                             }
-#if NET40 || NET46 || NET48 || NET6_0
-                            if (count > 0) return (IntPtr)1;
-#else
-                            if (count > 0) return 1;
-#endif
-                        }
-                        break;
+                            break;
+                    }
                 }
+                catch
+                { }
             }
-            return CallNextHookEx(_mouseHookHandle, nCode, wParam, lParam);
+            return r;
         }
 
         private IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0 && wParam.ToInt32() == WM_KEYDOWN)
             {
-                var key = (Keys)Marshal.ReadInt32(lParam);
-
-                lock (_lock)
+                try
                 {
+                    var key = (Keys)Marshal.ReadInt32(lParam);
                     int count = 0;
-                    foreach (var handler in _messageHandlers)
+                    foreach (var handler in Handlers())
                     {
                         try
                         {
@@ -166,6 +160,7 @@ namespace AntdUI
                     if (count > 0) return 1;
 #endif
                 }
+                catch { }
             }
 
             return CallNextHookEx(_keyboardHookHandle, nCode, wParam, lParam);
