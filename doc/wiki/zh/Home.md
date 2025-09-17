@@ -108,7 +108,7 @@
 > [![Steps](Icon/Steps.png)](Control/Steps.md)
 
 
-### 导数据录入 `13`
+### 导数据录入 `15`
 
 #### [Checkbox 多选框](Control/Checkbox.md)
 
@@ -187,6 +187,12 @@
 > 输入或选择时间的控件
 
 > [![TimePicker](Icon/TimePicker.png)](Control/TimePicker.md)
+
+#### [Transfer 穿梭框](Control/Transfer.md)
+
+> 双栏穿梭选择框，用于在两个区域之间移动元素
+
+> [![Transfer](Icon/Transfer.png)](Control/Transfer.md)
 
 #### [UploadDragger 拖拽上传](Control/UploadDragger.md)
 

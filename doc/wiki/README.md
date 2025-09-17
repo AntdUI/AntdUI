@@ -47,7 +47,7 @@
 ➡️| [**Pagination** 分页](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Pagination.md) | ✅ | ✅ |
 ➡️| [**Steps** 步骤条](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Steps.md) | ❎ | ❎ |
 ||||
-⬇️| 数据录入 `13` | 动画 | 禁用 |
+⬇️| 数据录入 `15` | 动画 | 禁用 |
 ➡️| [**Checkbox** 多选框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker** 颜色选择器](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker** 日期选择框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/DatePicker.md) | ✅ | ✅ |
@@ -60,6 +60,7 @@
 ➡️| [**Slider** 滑动输入条](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Slider.md) | ✅ | ❎ |
 ➡️| [**Switch** 开关](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Switch.md) | ✅ | ✅ |
 ➡️| [**TimePicker** 时间选择框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/TimePicker.md) | ✅ | ✅ |
+➡️| [**Transfer** 穿梭框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger** 拖拽上传](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
 ⬇️| 数据展示 `18` | 动画 | 禁用 |

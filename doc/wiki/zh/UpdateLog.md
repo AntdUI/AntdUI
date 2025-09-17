@@ -1,5 +1,23 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.5` 2025-09-17
+
+- ➕ Config UseHook  `用于 Addins 开发`
+- ➕ Transfer 穿梭框
+- ➕ Table BorderHigh
+- ➕ Table 键盘全选交互
+- ➕ PuzzleCaptcha 拼图验证码
+- ➕ Menu 下拉参数
+- ✍️ Table 开放 图标配置
+- ✍️ ChatList 图片重叠
+- ✍️ Popover 适配暗色模式
+- ✍️ VirtualMode Table 全选
+- ✍️ Table 键盘数组越界
+- ✍️ Message/Notification 内存溢出
+- ✍️ PageHeader 最小化后未恢复按钮状态
+- ✍️ Table AutoSizeColumnsMode.Auto 不显示右边
+- ✍️ SelectMultiple 选择搜索项时自动清除搜索内容
+
 ### `2.1.4` 2025-09-09
 
 - ➕ Menu ItemClick

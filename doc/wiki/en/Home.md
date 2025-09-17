@@ -109,7 +109,7 @@
 > [![Steps](Icon/Steps.png)](Control/Steps.md)
 
 
-### Data Entry `13`
+### Data Entry `15`
 
 #### [Checkbox](Control/Checkbox.md)
 
@@ -188,6 +188,12 @@
 > To select/input a time.
 
 > [![TimePicker](Icon/TimePicker.png)](Control/TimePicker.md)
+
+#### [Transfer](Control/Transfer.md)
+
+> Double column transfer choice box.
+
+> [![Transfer](Icon/Transfer.png)](Control/Transfer.md)
 
 #### [UploadDragger](Control/UploadDragger.md)
 
