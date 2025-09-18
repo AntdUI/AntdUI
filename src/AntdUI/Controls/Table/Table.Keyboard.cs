@@ -27,10 +27,12 @@ namespace AntdUI
         {
             switch (keyData)
             {
-                case Keys.Control | Keys.A:// 实现全选逻辑                      
-                    if (MultipleRows && rows != null)
+                case Keys.Control | Keys.A:
+                    if (MultipleRows && dataTmp != null)
                     {
-                        SelectedIndexs = SortIndex();
+                        var list = new int[dataTmp.rows.Length];
+                        for (int i = 0; i < dataTmp.rows.Length; i++) list[i] = (i + 1);
+                        SelectedIndexs = list;
                         if (HandShortcutKeys) return true;
                     }
                     break;
