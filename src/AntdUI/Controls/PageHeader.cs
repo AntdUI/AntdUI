@@ -1189,7 +1189,7 @@ namespace AntdUI
             if (showButton)
             {
                 bool _close = rect_close.Contains(e.X, e.Y), _full = fullBox && rect_full.Contains(e.X, e.Y), _max = maximizeBox && rect_max.Contains(e.X, e.Y), _min = minimizeBox && rect_min.Contains(e.X, e.Y);
-                if (_close != hove_close.Switch || _full != hove_full.Switch || _max != hove_max.Switch || _min != hove_min.Switch)
+                if (_close != hove_close.SwitchDown || _full != hove_full.SwitchDown || _max != hove_max.SwitchDown || _min != hove_min.SwitchDown)
                 {
                     var fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
                     hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;

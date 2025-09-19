@@ -232,6 +232,7 @@ namespace AntdUI
         int arrowSize = 0, arrowX = -1;
         public TooltipForm(Control control, string txt, ITooltipConfig component) : base(240)
         {
+            PARENT = control;
             ocontrol = control;
             control.Parent.SetTopMost(Handle);
             MessageEnable = MessageCloseMouseLeave = true;

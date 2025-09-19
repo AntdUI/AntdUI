@@ -45,7 +45,7 @@ namespace AntdUI
         MessageHookManager? messageHookManager;
         public MessageHookManager InstanceHook()
         {
-            if (messageHookManager == null) messageHookManager = new MessageHookManager();
+            messageHookManager ??= new MessageHookManager();
             return messageHookManager;
         }
 

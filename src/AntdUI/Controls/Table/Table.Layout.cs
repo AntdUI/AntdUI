@@ -533,28 +533,39 @@ namespace AntdUI
                 var moveheaders_dir = new Dictionary<int, MoveHeader>(moveheaders.Length);
                 foreach (var item in moveheaders) moveheaders_dir.Add(item.i, item);
 
-                List<int[]> _dividerHs = new List<int[]>(firstrow.cells.Length), _dividers = new List<int[]>(_rows.Count);
-                foreach (var row in rowlist)
+                if (BorderCellWidth > 0)
                 {
-                    if (row.IsColumn)
+                    List<int[]> _dividerHs = new List<int[]>(firstrow.cells.Length), _dividers = new List<int[]>(_rows.Count);
+                    foreach (var row in rowlist)
                     {
-                        if (EnableHeaderResizing)
+                        if (row.IsColumn)
                         {
-                            int split_move2 = split_move / 2;
-                            for (int i = 0; i < row.cells.Length; i++)
+                            if (EnableHeaderResizing)
                             {
-                                var it = row.cells[i];
-                                MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth));
-                            }
-                        }
-                        if (bordered)
-                        {
-                            if (isempty)
-                            {
-                                for (int i = 0; i < row.cells.Length - 1; i++)
+                                int split_move2 = split_move / 2;
+                                for (int i = 0; i < row.cells.Length; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, it.RECT.Height });
+                                    MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth));
+                                }
+                            }
+                            if (bordered)
+                            {
+                                if (isempty)
+                                {
+                                    for (int i = 0; i < row.cells.Length - 1; i++)
+                                    {
+                                        var it = row.cells[i];
+                                        _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, it.RECT.Height });
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < row.cells.Length - 1; i++)
+                                    {
+                                        var it = row.cells[i];
+                                        _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, rect_real.Height });
+                                    }
                                 }
                             }
                             else
@@ -562,29 +573,26 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length - 1; i++)
                                 {
                                     var it = row.cells[i];
-                                    _dividerHs.Add(new int[] { it.RECT.Right, rect.Y, rect_real.Height });
+                                    _dividerHs.Add(new int[] { it.RECT.Right, it.RECT.Y + gap.y, it.RECT.Height - gap.y2 });
                                 }
                             }
+                            if (visibleHeader) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
                         }
                         else
                         {
-                            for (int i = 0; i < row.cells.Length - 1; i++)
-                            {
-                                var it = row.cells[i];
-                                _dividerHs.Add(new int[] { it.RECT.Right, it.RECT.Y + gap.y, it.RECT.Height - gap.y2 });
-                            }
+                            if (bordered) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
+                            else _dividers.Add(new int[] { row.RECT.Bottom, row.RECT.X, row.RECT.Width });
                         }
-                        if (visibleHeader) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
                     }
-                    else
-                    {
-                        if (bordered) _dividers.Add(new int[] { row.RECT.Bottom, rect.X, rect_real.Width });
-                        else _dividers.Add(new int[] { row.RECT.Bottom, row.RECT.X, row.RECT.Width });
-                    }
+                    if (bordered && !isempty) _dividers.RemoveAt(_dividers.Count - 1);
+                    dividerHs = _dividerHs.ToArray();
+                    dividers = _dividers.ToArray();
                 }
-                if (bordered && !isempty) _dividers.RemoveAt(_dividers.Count - 1);
-                dividerHs = _dividerHs.ToArray();
-                dividers = _dividers.ToArray();
+                else
+                {
+                    dividers = new int[0][];
+                    dividerHs = new int[0][];
+                }
                 moveheaders = MoveHeaders.ToArray();
             });
 

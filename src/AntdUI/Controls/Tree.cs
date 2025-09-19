@@ -782,12 +782,13 @@ namespace AntdUI
                     {
                         if (down == TreeCType.Check && item.Enabled)
                         {
-                            item.Checked = !item.Checked;
                             if (CheckStrictly)
                             {
-                                SetCheck(item, item.Checked);
+                                bool targetChecked = ShouldCheckTarget(item);
+                                item.CheckState = SetCheck(item, targetChecked);
                                 SetCheckStrictly(item.PARENTITEM);
                             }
+                            else item.Checked = !item.Checked;
                         }
                         else if (down == TreeCType.Arrow && can)
                         {
@@ -887,16 +888,107 @@ namespace AntdUI
             return false;
         }
 
-        public void SetCheck(TreeItem item, bool value)
+        /// <summary>
+        /// 获取当前节点是否该被选中
+        /// </summary>
+        bool ShouldCheckTarget(TreeItem item)
         {
-            if (item.items != null && item.items.Count > 0)
+            if (item.items == null || item.items.Count == 0) return !item.Checked;
+            bool hasUncheckedItem = false;
+            foreach (var sub in item.items)
             {
-                foreach (var it in item.items)
+                if (sub.items != null && sub.items.Count > 0) return ShouldCheckTarget(sub);
+                if (sub.Enabled)
                 {
-                    it.Checked = value;
-                    SetCheck(it, value);
+                    if (!sub.Checked)
+                    {
+                        hasUncheckedItem = true;
+                        return true;
+                    }
                 }
             }
+            return hasUncheckedItem;
+        }
+
+        /// <summary>
+        /// 反选节点
+        /// </summary>
+        CheckState ReverseCheck(TreeItem item)
+        {
+            // 处理叶子节点
+            if (item.items == null || item.items.Count == 0)
+            {
+                item.Checked = !item.Checked;
+                return item.CheckState;
+            }
+            bool checkChanged = false;
+            CheckState? lastState = null;
+
+            // 处理子节点
+            foreach (var sub in item.items)
+            {
+                // 检查状态是否发生变化
+                if (lastState.HasValue)
+                {
+                    if (sub.CheckState != lastState.Value) checkChanged = true;
+                }
+                else lastState = sub.CheckState;
+
+                // 递归处理子节点
+                if (sub.items != null && sub.items.Count > 0)
+                {
+                    var oldState = sub.CheckState;
+                    sub.CheckState = ReverseCheck(sub);
+                    // 检查递归调用后状态是否改变
+                    if (sub.CheckState != oldState) checkChanged = true;
+                }
+                // 对于叶子节点，切换选中状态
+                else if (sub.Enabled)
+                {
+                    bool oldChecked = sub.Checked;
+                    sub.Checked = !sub.Checked;
+                    // 检查选中状态是否改变
+                    if (sub.Checked != oldChecked) checkChanged = true;
+                }
+            }
+            // 返回适当的检查状态
+            return checkChanged ? CheckState.Indeterminate : lastState ?? CheckState.Unchecked;
+        }
+
+        public CheckState SetCheck(TreeItem item, bool value)
+        {
+            bool hasDisabledNodes = false;
+            if (item.items != null && item.items.Count > 0)
+            {
+                bool disabledCheckChanged = false;
+                CheckState? lastDisabledState = null;
+                int itemCount = item.items.Count;
+                foreach (var it in item.items)
+                {
+                    if (it.Enabled)
+                    {
+                        // 启用节点：设置状态并递归
+                        var childResult = SetCheck(it, value);
+                        it.CheckState = childResult;
+                        if (childResult == CheckState.Indeterminate) hasDisabledNodes = true;
+                    }
+                    else
+                    {
+                        itemCount--;
+                        // 检查状态是否发生变化
+                        if (lastDisabledState.HasValue)
+                        {
+                            if (it.CheckState != lastDisabledState.Value) disabledCheckChanged = true;
+                        }
+                        else lastDisabledState = it.CheckState;
+
+                        // 当前为禁用节点，检查其当前状态是否与目标一致
+                        if ((value && !it.Checked) || (!value && it.Checked)) hasDisabledNodes = true;
+                    }
+                }
+                if (itemCount == 0 && lastDisabledState.HasValue) return disabledCheckChanged ? CheckState.Indeterminate : lastDisabledState.Value;
+            }
+            return hasDisabledNodes ? CheckState.Indeterminate : (value ? CheckState.Checked : CheckState.Unchecked);
         }
 
         public void SetCheckStrictly(TreeItem? item)
@@ -1236,6 +1328,13 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 反选节点项
+        /// </summary>
+        public void ReverseCheckItem(TreeItem item)
+        {
+            if (Checkable) ReverseCheck(item);
+        }
         #region 获取项
 
         /// <summary>

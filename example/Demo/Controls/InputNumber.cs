@@ -29,16 +29,10 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
-            inputNumberWithValueFormatter.ValueFormatter = (value) =>
+            inputNumberWithValueFormatter.ValueFormatter += (sender, e) =>
             {
-                if (value % 1 == 0)
-                {
-                    return ((int)value).ToString("N0");
-                }
-                else
-                {
-                    return value.ToString($"N{inputNumberWithValueFormatter.DecimalPlaces}", CultureInfo.CurrentCulture);
-                }
+                if (e.Value % 1 == 0) return ((int)e.Value).ToString("N0");
+                else return e.Value.ToString($"N{inputNumberWithValueFormatter.DecimalPlaces}", CultureInfo.CurrentCulture);
             };
         }
     }
