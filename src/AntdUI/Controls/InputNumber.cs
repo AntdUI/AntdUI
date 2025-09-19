@@ -181,9 +181,27 @@ namespace AntdUI
         [Description("当按下箭头键时，是否持续增加/减少"), Category("行为"), DefaultValue(true)]
         public bool InterceptArrowKeys { get; set; } = true;
 
+        Func<decimal, string>? valueFormatter;
+        /// <summary>
+        /// Gets or sets a custom function to format the numeric value for display
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<decimal, string>? ValueFormatter
+        {
+            get => valueFormatter;
+            set
+            {
+                if (valueFormatter == value) return;
+                valueFormatter = value;
+                Text = GetNumberText(currentValue);
+            }
+        }
+
         string GetNumberText(decimal num)
         {
             if (Hexadecimal) return ((long)num).ToString("X", CultureInfo.InvariantCulture);
+            if (ValueFormatter != null) try { return ValueFormatter(num); } catch { }
             return num.ToString((ThousandsSeparator ? "N" : "F") + DecimalPlaces.ToString(CultureInfo.CurrentCulture), CultureInfo.CurrentCulture);
         }
 
