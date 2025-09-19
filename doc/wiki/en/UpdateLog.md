@@ -1,5 +1,16 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.6` 2025-09-19
+
+- ➕ Config DpiMode
+- ➕ InputNumber ValueFormatter Event
+- ✍️ InputNumber Rounded Corner UI Exception
+- ✍️ Tree checkbox adaptation disabled items
+- ✍️ Tooltip Hook to disable sensitivity
+- ✍️ Table Select All
+- ✍️ Menu submenu UI
+- ✍️ Pull down coordinate calculation
+
 ### `2.1.5` 2025-09-17
 
 - ➕ Config UseHook `Addins development`
