@@ -770,6 +770,7 @@ namespace AntdUI
 
         bool _multiple = false;
         TreeItem? shift_index;
+        bool _targetChecked = false;
         bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown)
         {
             bool can = item.ICanExpand;
@@ -782,11 +783,17 @@ namespace AntdUI
                     {
                         if (down == TreeCType.Check && item.Enabled)
                         {
-                            item.Checked = !item.Checked;
                             if (CheckStrictly)
                             {
-                                SetCheck(item, item.Checked);
+                                bool targetChecked = !_targetChecked;
+                                // 更新子节点并获取结果
+                                item.CheckState = SetCheck(item, targetChecked);
+                                // 更新父节点状态
                                 SetCheckStrictly(item.PARENTITEM);
+                            }
+                            else
+                            {
+                                item.Checked = !item.Checked;
                             }
                         }
                         else if (down == TreeCType.Arrow && can)
@@ -887,16 +894,37 @@ namespace AntdUI
             return false;
         }
 
-        public void SetCheck(TreeItem item, bool value)
+        public CheckState SetCheck(TreeItem item, bool value)
         {
+            _targetChecked = value;
+            bool hasDisabledNodes = false;
             if (item.items != null && item.items.Count > 0)
             {
                 foreach (var it in item.items)
                 {
-                    it.Checked = value;
-                    SetCheck(it, value);
+                    if (!it.Enabled)
+                    {
+                        // 当前为禁用节点，检查其当前状态是否与目标一致
+                        if ((value && !it.Checked) || (!value && it.Checked))
+                        {
+                            hasDisabledNodes = true;
+                        }
+                        // 禁用节点不修改状态，也不递归处理
+                    }
+                    else
+                    {
+                        // 启用节点：设置状态并递归
+                        var childResult = SetCheck(it, value);
+                        it.CheckState = childResult;
+                        if (childResult == CheckState.Indeterminate)
+                        {
+                            hasDisabledNodes = true;
+                        }
+                    }
                 }
             }
+            return hasDisabledNodes ? CheckState.Indeterminate : 
+                (value ? CheckState.Checked : CheckState.Unchecked);
         }
 
         public void SetCheckStrictly(TreeItem? item)
