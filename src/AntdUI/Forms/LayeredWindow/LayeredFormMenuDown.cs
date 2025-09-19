@@ -85,6 +85,9 @@ namespace AntdUI
             ForeActive = parent.ForeActive;
             BackHover = parent.BackHover;
             BackActive = parent.BackActive;
+            DPadding = parent.DPadding;
+            IconRatio = parent.IconRatio;
+            IconGap = parent.IconGap;
             Radius = radius;
             parent.Disposed += (a, b) => Dispose();
             ScrollBar = new ScrollBar(this, ColorScheme);

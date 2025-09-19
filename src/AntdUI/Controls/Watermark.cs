@@ -456,7 +456,7 @@ namespace AntdUI
                             var scale = h / totalTextHeight;
                             contentHeight = mainSize.Height * scale;
                             subContentHeight = subSize.Height * scale;
-                            spacing = spacing * scale;
+                            spacing *= scale;
                         }
                         else
                         {

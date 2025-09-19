@@ -17,6 +17,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -28,6 +29,11 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
+            inputNumberWithValueFormatter.ValueFormatter += (sender, e) =>
+            {
+                if (e.Value % 1 == 0) return ((int)e.Value).ToString("N0");
+                else return e.Value.ToString($"N{inputNumberWithValueFormatter.DecimalPlaces}", CultureInfo.CurrentCulture);
+            };
         }
     }
 }

@@ -767,6 +767,7 @@ namespace AntdUI
             }
             return false;
         }
+
         bool _multiple = false;
         TreeItem? shift_index;
         bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown)
@@ -787,10 +788,7 @@ namespace AntdUI
                                 item.CheckState = SetCheck(item, targetChecked);
                                 SetCheckStrictly(item.PARENTITEM);
                             }
-                            else
-                            {
-                                item.Checked = !item.Checked;
-                            }
+                            else item.Checked = !item.Checked;
                         }
                         else if (down == TreeCType.Arrow && can)
                         {
@@ -895,18 +893,18 @@ namespace AntdUI
         /// </summary>
         bool ShouldCheckTarget(TreeItem item)
         {
-            if (item.items == null || item.items.Count == 0)
-                return !item.Checked;
+            if (item.items == null || item.items.Count == 0) return !item.Checked;
             bool hasUncheckedItem = false;
             foreach (var sub in item.items)
             {
-                if (sub.items != null && sub.items.Count > 0)
-                    return ShouldCheckTarget(sub);
-                if (!sub.Enabled) continue;
-                if (!sub.Checked)
+                if (sub.items != null && sub.items.Count > 0) return ShouldCheckTarget(sub);
+                if (sub.Enabled)
                 {
-                    hasUncheckedItem = true;
-                    return true;
+                    if (!sub.Checked)
+                    {
+                        hasUncheckedItem = true;
+                        return true;
+                    }
                 }
             }
             return hasUncheckedItem;
@@ -932,22 +930,17 @@ namespace AntdUI
                 // 检查状态是否发生变化
                 if (lastState.HasValue)
                 {
-                    if (sub.CheckState != lastState.Value)
-                        checkChanged = true;
+                    if (sub.CheckState != lastState.Value) checkChanged = true;
                 }
-                else
-                {
-                    lastState = sub.CheckState;
-                }
+                else lastState = sub.CheckState;
 
                 // 递归处理子节点
                 if (sub.items != null && sub.items.Count > 0)
                 {
-                    CheckState oldState = sub.CheckState;
+                    var oldState = sub.CheckState;
                     sub.CheckState = ReverseCheck(sub);
                     // 检查递归调用后状态是否改变
-                    if (sub.CheckState != oldState)
-                        checkChanged = true;
+                    if (sub.CheckState != oldState) checkChanged = true;
                 }
                 // 对于叶子节点，切换选中状态
                 else if (sub.Enabled)
@@ -955,8 +948,7 @@ namespace AntdUI
                     bool oldChecked = sub.Checked;
                     sub.Checked = !sub.Checked;
                     // 检查选中状态是否改变
-                    if (sub.Checked != oldChecked)
-                        checkChanged = true;
+                    if (sub.Checked != oldChecked) checkChanged = true;
                 }
             }
             // 返回适当的检查状态
@@ -973,44 +965,30 @@ namespace AntdUI
                 int itemCount = item.items.Count;
                 foreach (var it in item.items)
                 {
-                    if (!it.Enabled)
+                    if (it.Enabled)
+                    {
+                        // 启用节点：设置状态并递归
+                        var childResult = SetCheck(it, value);
+                        it.CheckState = childResult;
+                        if (childResult == CheckState.Indeterminate) hasDisabledNodes = true;
+                    }
+                    else
                     {
                         itemCount--;
                         // 检查状态是否发生变化
                         if (lastDisabledState.HasValue)
                         {
-                            if (it.CheckState != lastDisabledState.Value)
-                                disabledCheckChanged = true;
+                            if (it.CheckState != lastDisabledState.Value) disabledCheckChanged = true;
                         }
-                        else
-                        {
-                            lastDisabledState = it.CheckState;
-                        }
+                        else lastDisabledState = it.CheckState;
+
                         // 当前为禁用节点，检查其当前状态是否与目标一致
-                        if ((value && !it.Checked) || (!value && it.Checked))
-                        {
-                            hasDisabledNodes = true;
-                        }
-                        // 禁用节点不修改状态，也不递归处理
-                    }
-                    else
-                    {
-                        // 启用节点：设置状态并递归
-                        var childResult = SetCheck(it, value);
-                        it.CheckState = childResult;
-                        if (childResult == CheckState.Indeterminate)
-                        {
-                            hasDisabledNodes = true;
-                        }
+                        if ((value && !it.Checked) || (!value && it.Checked)) hasDisabledNodes = true;
                     }
                 }
-                if (itemCount == 0 && lastDisabledState.HasValue)
-                {
-                    return disabledCheckChanged ? CheckState.Indeterminate : lastDisabledState.Value;
-                }
+                if (itemCount == 0 && lastDisabledState.HasValue) return disabledCheckChanged ? CheckState.Indeterminate : lastDisabledState.Value;
             }
-            return hasDisabledNodes ? CheckState.Indeterminate :
-                (value ? CheckState.Checked : CheckState.Unchecked);
+            return hasDisabledNodes ? CheckState.Indeterminate : (value ? CheckState.Checked : CheckState.Unchecked);
         }
 
         public void SetCheckStrictly(TreeItem? item)
@@ -1355,8 +1333,7 @@ namespace AntdUI
         /// </summary>
         public void ReverseCheckItem(TreeItem item)
         {
-            if (this.Checkable)
-                ReverseCheck(item);
+            if (Checkable) ReverseCheck(item);
         }
         #region 获取项
 

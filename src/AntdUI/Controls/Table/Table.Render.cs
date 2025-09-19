@@ -208,7 +208,7 @@ namespace AntdUI
                 g.ResetClip();
                 g.ResetTransform();
 
-                PaintMergeCells(g, rows, sx, sy, pen_cell_split.Color, brush_fore, brush_foreEnable);
+                PaintMergeCells(g, rows, sx, sy, pen_cell_split, brush_fore, brush_foreEnable);
 
                 #region 渲染浮动列
 
@@ -1251,21 +1251,20 @@ namespace AntdUI
 
         #region 合并
 
-        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Color split_color, SolidBrush fore, SolidBrush foreEnable)
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Pen pen_cell_split, SolidBrush fore, SolidBrush foreEnable)
         {
             if (CellRanges == null || CellRanges.Length == 0) return;
             var state = g.Save();
             if (visibleHeader && fixedHeader) g.SetClip(new Rectangle(rect_read.X, rect_read.Y + rows[0].Height, rect_read.Width, rect_read.Height));
             g.TranslateTransform(-sx, -sy);
-            int sps = (int)(BorderCellWidth * Config.Dpi), sps2 = sps * 2;
             using (var bg = new SolidBrush(Colour.BgBase.Get("Table", ColorScheme)))
             {
-                foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, split_color, fore, foreEnable, sps, sps2, it);
+                foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, pen_cell_split, fore, foreEnable, it);
             }
             g.Restore(state);
         }
 
-        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, int sps2, CellRange range)
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Pen pen_cell_split, SolidBrush fore, SolidBrush foreEnable, CellRange range)
         {
             if (range.FirstRow == range.LastRow)
             {
@@ -1273,7 +1272,7 @@ namespace AntdUI
                 {
                     if (item.INDEX_REAL == range.FirstRow)
                     {
-                        PaintMergeCells(g, bg, split_color, fore, foreEnable, sps, sps2, item.cells[range.FirstColumn], item.cells[range.LastColumn]);
+                        PaintMergeCells(g, bg, pen_cell_split, fore, foreEnable, item.cells[range.FirstColumn], item.cells[range.LastColumn]);
                         return;
                     }
                 }
@@ -1287,21 +1286,21 @@ namespace AntdUI
                     {
                         first = item.cells[range.FirstColumn];
                         if (last == null) continue;
-                        PaintMergeCells(g, bg, split_color, fore, foreEnable, sps, sps2, first, last);
+                        PaintMergeCells(g, bg, pen_cell_split, fore, foreEnable, first, last);
                         return;
                     }
                     else if (item.INDEX_REAL == range.LastRow)
                     {
                         last = item.cells[range.LastColumn];
                         if (first == null) continue;
-                        PaintMergeCells(g, bg, split_color, fore, foreEnable, sps, sps2, first, last);
+                        PaintMergeCells(g, bg, pen_cell_split, fore, foreEnable, first, last);
                         return;
                     }
                 }
             }
         }
 
-        void PaintMergeCells(Canvas g, SolidBrush bg, Color split_color, SolidBrush fore, SolidBrush foreEnable, int sps, int sps2, CELL first, CELL last)
+        void PaintMergeCells(Canvas g, SolidBrush bg, Pen pen_cell_split, SolidBrush fore, SolidBrush foreEnable, CELL first, CELL last)
         {
             var state = g.Save();
             var rect = RectMergeCells(first, last, out bool fz);
@@ -1309,21 +1308,7 @@ namespace AntdUI
             if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get("Table", ColorScheme)), rect);
             else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table", ColorScheme), rect);
 
-            if (BorderCellWidth > 1)
-            {
-                float sp2 = sps / 2F, x = rect.X - sp2, y = rect.Y - sp2, w = rect.Width + sps, h = rect.Height + sps;
-                g.Fill(split_color, new RectangleF(x, y, w, sps));
-                g.Fill(split_color, new RectangleF(x, y, sps, h));
-                g.Fill(split_color, new RectangleF(x, rect.Bottom - sp2, w, sps));
-                g.Fill(split_color, new RectangleF(rect.Right - sp2, y, sps, h));
-            }
-            else
-            {
-                g.Fill(split_color, new RectangleF(rect.X, rect.Y, rect.Width, sps));
-                g.Fill(split_color, new RectangleF(rect.X, rect.Y, sps, rect.Height));
-                g.Fill(split_color, new RectangleF(rect.X, rect.Bottom, rect.Width, sps));
-                g.Fill(split_color, new RectangleF(rect.Right, rect.Y, sps, rect.Height));
-            }
+            g.Draw(pen_cell_split, rect);
 
             #region 绘制内容
 

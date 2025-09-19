@@ -140,7 +140,7 @@ namespace Demo.Controls
 
         private void tree1_NodeMouseClick(object sender, AntdUI.TreeSelectEventArgs e)
         {
-            tree1.Items.First().Loading = !tree1.Items.First().Loading;
+            if (e.Item == tree1.Items.First()) e.Item.Loading = !e.Item.Loading;
         }
     }
 }

@@ -183,6 +183,14 @@ namespace AntdUI
 
         string GetNumberText(decimal num)
         {
+            if (ValueFormatter != null)
+            {
+                try
+                {
+                    return ValueFormatter(this, new InputNumberEventArgs(num));
+                }
+                catch { }
+            }
             if (Hexadecimal) return ((long)num).ToString("X", CultureInfo.InvariantCulture);
             return num.ToString((ThousandsSeparator ? "N" : "F") + DecimalPlaces.ToString(CultureInfo.CurrentCulture), CultureInfo.CurrentCulture);
         }
@@ -208,6 +216,13 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event DecimalEventHandler? ValueChanged;
+
+        /// <summary>
+        /// 格式化数值以供显示
+        /// Gets or sets a custom function to format the numeric value for display
+        /// </summary>
+        [Description("格式化数值以供显示"), Category("行为")]
+        public event InputNumberRtEventHandler? ValueFormatter;
 
         #endregion
 
@@ -255,11 +270,12 @@ namespace AntdUI
                 rect_button_up = new Rectangle(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
                 rect_button_bottom = new Rectangle(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
 
+                var state = g.Save();
                 using (var path = rect_button.RoundPath(radius, false, true, true, false))
                 {
+                    if (round) g.SetClip(path);
                     g.Fill(back, path);
                 }
-
                 if (hover_button.Animation)
                 {
                     using (var pen = new Pen(Helper.ToColor(hover_button.Value, borColor), Config.Dpi))
@@ -332,6 +348,7 @@ namespace AntdUI
                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
                 }
+                g.Restore(state);
             }
         }
 

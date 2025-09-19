@@ -97,10 +97,10 @@ namespace AntdUI
 
         int GetPadding(IControl control)
         {
-            if (control is Button button) return (int)((button.WaveSize + button.BorderWidth) * Config.Dpi);
-            else if (control is Input input) return (int)((input.WaveSize + input.BorderWidth) * Config.Dpi);
-            else if (control is ColorPicker colorPicker) return (int)((colorPicker.WaveSize + colorPicker.BorderWidth) * Config.Dpi);
-            else if (control is Switch _switch) return (int)(_switch.WaveSize * Config.Dpi);
+            if (control is Button button) return (int)(button.BorderWidth * Config.Dpi);
+            else if (control is Input input) return (int)(input.BorderWidth * Config.Dpi);
+            else if (control is ColorPicker colorPicker) return (int)(colorPicker.BorderWidth * Config.Dpi);
+            else if (control is Switch _switch) return (int)(Config.Dpi);
             else if (control is Panel panel) return (int)(panel.BorderWidth * Config.Dpi);
             else if (control is Alert alert) return (int)(alert.BorderWidth * Config.Dpi);
             else if (control is Avatar avatar) return (int)(avatar.BorderWidth * Config.Dpi);
@@ -128,7 +128,7 @@ namespace AntdUI
         /// </summary>
         public int CenterX()
         {
-            if (creal.HasValue) return sx + creal.Value.X + (creal.Value.Width - dw) / 2 + shadow;
+            if (creal.HasValue) return sx + creal.Value.X + (creal.Value.Width - dw) / 2;
             return (sx + (cw - dw) / 2) + shadow;
         }
 
@@ -137,7 +137,7 @@ namespace AntdUI
         /// </summary>
         public int CenterY()
         {
-            if (creal.HasValue) return sy + creal.Value.Y + (creal.Value.Height - dh) / 2 + shadow;
+            if (creal.HasValue) return sy + creal.Value.Y + (creal.Value.Height - dh) / 2;
             return (sy + (ch - dh) / 2) + shadow;
         }
 
@@ -146,7 +146,7 @@ namespace AntdUI
         /// </summary>
         public int L()
         {
-            if (creal.HasValue) return sx + creal.Value.X + crect.X;
+            if (creal.HasValue) return sx + creal.Value.X;
             return sx + crect.X;
         }
 
@@ -155,8 +155,8 @@ namespace AntdUI
         /// </summary>
         public int R()
         {
-            if (creal.HasValue) return sx + creal.Value.X + creal.Value.Width - dw + shadow2;
-            return sx + (crect.X + crect.Width) - dw + shadow2;
+            if (creal.HasValue) return sx + creal.Value.X + creal.Value.Width - dw;
+            return sx + (crect.X + crect.Width) - dw;
         }
 
         /// <summary>
@@ -164,8 +164,8 @@ namespace AntdUI
         /// </summary>
         public int TopY()
         {
-            if (creal.HasValue) return sy - dh + creal.Value.Y + crect.Y + padd - arrow;
-            return sy - dh + crect.Y + padd - arrow;
+            if (creal.HasValue) return sy - dh + creal.Value.Y + crect.Y + padd;
+            return sy - dh + crect.Y - arrow + shadow - padd;
         }
 
         /// <summary>
@@ -173,8 +173,8 @@ namespace AntdUI
         /// </summary>
         public int BottomY()
         {
-            if (creal.HasValue) return sy + creal.Value.Bottom - padd + arrow;
-            return sy + crect.Bottom - padd + arrow;
+            if (creal.HasValue) return sy + creal.Value.Bottom - padd;
+            return sy + crect.Bottom + arrow - shadow + padd;
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace AntdUI
         public int Left()
         {
             if (creal.HasValue) return sx + creal.Value.X - dw;
-            return sx - dw;
+            return sx - dw + padd;
         }
 
         /// <summary>
@@ -191,8 +191,8 @@ namespace AntdUI
         /// </summary>
         public int Right()
         {
-            if (creal.HasValue) return sx + creal.Value.Right + shadow + arrow;
-            return sx + cw;
+            if (creal.HasValue) return sx + creal.Value.Right;
+            return sx + cw - padd;
         }
 
         /// <summary>
@@ -200,8 +200,8 @@ namespace AntdUI
         /// </summary>
         public int Y()
         {
-            if (creal.HasValue) return sy + creal.Value.Y + padd - arrow;
-            return sy;
+            if (creal.HasValue) return sy + creal.Value.Y;
+            return sy + padd;
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace AntdUI
         public int B()
         {
             if (creal.HasValue) return sy + creal.Value.Bottom - dh;
-            return sy + ch - dh;
+            return sy + ch - dh - padd;
         }
 
         #endregion

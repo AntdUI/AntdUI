@@ -153,7 +153,7 @@ namespace AntdUI
                 _Date = value;
                 calendar_day = CalendarHelper.Day(value, minDate, maxDate);
 
-                if (calendar_time == null) calendar_time = CalendarHelper.Time(ShowH, ShowM, ShowS);
+                calendar_time ??= CalendarHelper.Time(ShowH, ShowM, ShowS);
 
                 calendar_month = CalendarHelper.Month(value, minDate, maxDate, Culture, MonthFormat);
 

@@ -86,7 +86,7 @@ namespace AntdUI
             set
             {
                 if (value && !enable) value = false;
-                if (_switch == value) return;
+                if (SwitchDown == value) return;
                 _switch = value;
                 if (Config.HasAnimation(key))
                 {
@@ -110,6 +110,7 @@ namespace AntdUI
                     }
                     else
                     {
+                        Down = false;
                         Thread = new ITask(control, () =>
                         {
                             Value -= prog;
@@ -126,11 +127,18 @@ namespace AntdUI
                 }
                 else
                 {
-                    Value = _switch ? MaxValue : 0;
+                    if (_switch) Value = MaxValue;
+                    else
+                    {
+                        Down = false;
+                        Value = _switch ? MaxValue : 0;
+                    }
                     action();
                 }
             }
         }
+
+        public bool SwitchDown => _down || _switch;
 
         bool _down = false;
         public bool Down
@@ -145,7 +153,12 @@ namespace AntdUI
             }
         }
 
-        public void Clear() => _switch = _down = false;
+        public void Clear()
+        {
+            Thread?.Dispose();
+            Thread = null;
+            Switch = Down = false;
+        }
 
         public bool SetSwitch(bool value, ref int hand, ref int count)
         {

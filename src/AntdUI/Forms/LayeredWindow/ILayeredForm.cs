@@ -368,25 +368,28 @@ namespace AntdUI
 
         public void IMOUSELEAVE()
         {
-            var mousePosition = MousePosition;
-            if (!target_rect.Contains(mousePosition))
+            if (MessageCloseMouseLeave)
             {
-                try
+                var mousePosition = MousePosition;
+                if (!target_rect.Contains(mousePosition))
                 {
-                    if (PARENT != null && PARENT.IsHandleCreated)
+                    try
                     {
-                        if (ContainsPosition(PARENT, mousePosition)) return;
-                        if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return;
+                        if (PARENT != null && PARENT.IsHandleCreated)
+                        {
+                            if (ContainsPosition(PARENT, mousePosition)) return;
+                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return;
 
-                        #region 判断内容
+                            #region 判断内容
 
-                        if (MessageCloseSub && FunSub(PARENT, mousePosition)) return;
+                            if (MessageCloseSub && FunSub(PARENT, mousePosition)) return;
 
-                        #endregion
+                            #endregion
+                        }
+                        IClose();
                     }
-                    IClose();
+                    catch { }
                 }
-                catch { }
             }
         }
 

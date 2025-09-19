@@ -56,6 +56,8 @@ namespace Demo.Controls
             panel1 = new System.Windows.Forms.Panel();
             panel2 = new System.Windows.Forms.Panel();
             divider1 = new AntdUI.Divider();
+            inputNumberWithValueFormatter = new AntdUI.InputNumber();
+            inputNumberWithoutValueFormatter = new AntdUI.InputNumber();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -154,6 +156,8 @@ namespace Demo.Controls
             // 
             panel2.Controls.Add(input6);
             panel2.Controls.Add(input5);
+            panel2.Controls.Add(inputNumberWithoutValueFormatter);
+            panel2.Controls.Add(inputNumberWithValueFormatter);
             panel2.Controls.Add(input4);
             panel2.Controls.Add(input2);
             panel2.Controls.Add(input3);
@@ -161,7 +165,7 @@ namespace Demo.Controls
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
-            panel2.Size = new Size(555, 162);
+            panel2.Size = new Size(555, 214);
             panel2.TabIndex = 0;
             // 
             // divider1
@@ -176,6 +180,32 @@ namespace Demo.Controls
             divider1.TabIndex = 1;
             divider1.TabStop = false;
             divider1.Text = "常规";
+            // 
+            // inputNumberWithValueFormatter
+            // 
+            inputNumberWithValueFormatter.DecimalPlaces = 2;
+            inputNumberWithValueFormatter.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
+            inputNumberWithValueFormatter.Location = new Point(244, 152);
+            inputNumberWithValueFormatter.Name = "inputNumberWithValueFormatter";
+            inputNumberWithValueFormatter.Radius = 0;
+            inputNumberWithValueFormatter.Size = new Size(220, 44);
+            inputNumberWithValueFormatter.TabIndex = 3;
+            inputNumberWithValueFormatter.Text = "10,000.00";
+            inputNumberWithValueFormatter.ThousandsSeparator = true;
+            inputNumberWithValueFormatter.Value = new decimal(new int[] { 10000, 0, 0, 0 });
+            // 
+            // inputNumberWithoutValueFormatter
+            // 
+            inputNumberWithoutValueFormatter.DecimalPlaces = 2;
+            inputNumberWithoutValueFormatter.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
+            inputNumberWithoutValueFormatter.Location = new Point(18, 152);
+            inputNumberWithoutValueFormatter.Name = "inputNumberWithoutValueFormatter";
+            inputNumberWithoutValueFormatter.Radius = 0;
+            inputNumberWithoutValueFormatter.Size = new Size(220, 44);
+            inputNumberWithoutValueFormatter.TabIndex = 3;
+            inputNumberWithoutValueFormatter.Text = "10,000.00";
+            inputNumberWithoutValueFormatter.ThousandsSeparator = true;
+            inputNumberWithoutValueFormatter.Value = new decimal(new int[] { 10000, 0, 0, 0 });
             // 
             // InputNumber
             // 
@@ -201,5 +231,7 @@ namespace Demo.Controls
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private AntdUI.Divider divider1;
+        private AntdUI.InputNumber inputNumberWithValueFormatter;
+        private AntdUI.InputNumber inputNumberWithoutValueFormatter;
     }
 }
