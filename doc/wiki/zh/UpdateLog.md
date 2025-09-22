@@ -1,5 +1,16 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.6` 2025-09-19
+
+- ➕ Config DpiMode
+- ➕ InputNumber ValueFormatter 事件
+- ✍️ InputNumber 圆角 UI 异常
+- ✍️ Tree 复选框适配禁用项
+- ✍️ Tooltip Hook 关闭敏感
+- ✍️ Table 全选
+- ✍️ Menu 子菜单UI
+- ✍️ 下拉坐标计算
+
 ### `2.1.5` 2025-09-17
 
 - ➕ Config UseHook  `用于 Addins 开发`
