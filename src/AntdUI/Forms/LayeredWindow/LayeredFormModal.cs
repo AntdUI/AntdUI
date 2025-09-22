@@ -439,6 +439,7 @@ namespace AntdUI
         protected override void DestroyHandle()
         {
             base.DestroyHandle();
+            config.Layered = null;
             btn_ok?.Dispose();
             btn_no?.Dispose();
             close_button.Dispose();

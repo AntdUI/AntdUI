@@ -718,8 +718,8 @@ namespace AntdUI
 
             #region 显示颜色
 
-            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get("PageHeader", ColorScheme), 
-                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get("PageHeader", ColorScheme), 
+            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get("PageHeader", ColorScheme),
+                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get("PageHeader", ColorScheme),
                 foreSecondary = Colour.TextSecondary.Get("PageHeader", ColorScheme),
                 fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
 

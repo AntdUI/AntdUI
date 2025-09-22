@@ -491,9 +491,9 @@ namespace AntdUI
                 config.Target.VisibleChanged += Target_VisibleChanged;
                 var parent = config.Target.FindPARENT();
                 if (parent == null) return;
+                tmp = parent;
                 parent.LocationChanged += Parent_LSChanged;
                 parent.SizeChanged += Parent_LSChanged;
-
             }
         }
 
@@ -540,6 +540,7 @@ namespace AntdUI
 
         #endregion
 
+        Form? tmp;
         protected override void Dispose(bool disposing)
         {
             // 移除事件监听
@@ -548,14 +549,10 @@ namespace AntdUI
             {
                 config.Target.VisibleChanged -= Target_VisibleChanged;
                 // 移除父容器的事件监听
-                var parent = config.Target.FindPARENT();
-                if (parent != null)
-                {
-                    parent.LocationChanged -= Parent_LSChanged;
-                    parent.SizeChanged -= Parent_LSChanged;
-                }
+                if (tmp == null) return;
+                tmp.LocationChanged -= Parent_LSChanged;
+                tmp.SizeChanged -= Parent_LSChanged;
             }
-
             base.Dispose(disposing);
         }
 

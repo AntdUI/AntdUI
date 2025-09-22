@@ -37,6 +37,12 @@ namespace AntdUI
                 }
                 return;
             }
+            if (Config.DpiMode == DpiMode.Compatible)
+            {
+                control.Scale(new SizeF(dpi, dpi));
+                DpiLS(dpi, control.Controls);
+                return;
+            }
             if (control is Form form)
             {
                 if (form.WindowState == FormWindowState.Maximized)
@@ -129,10 +135,24 @@ namespace AntdUI
                     if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
                 }
                 else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
+                else if (control is HyperlinkLabel hyperlink) hyperlink.LinkPadding = SetPadding(dpi, hyperlink.LinkPadding);
                 else if (control is TabHeader tabHeader)
                 {
                     if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
                 }
+            }
+        }
+        static void DpiLS(float dpi, Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
+                else if (control is HyperlinkLabel hyperlink) hyperlink.LinkPadding = SetPadding(dpi, hyperlink.LinkPadding);
+                else if (control is TabHeader tabHeader)
+                {
+                    if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
+                }
+                if (controls.Count > 0) DpiLS(dpi, control.Controls);
             }
         }
 

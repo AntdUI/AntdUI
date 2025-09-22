@@ -191,6 +191,11 @@ namespace AntdUI
         public static bool UseHook { get; set; }
 
         /// <summary>
+        /// DPI模式
+        /// </summary>
+        public static DpiMode DpiMode { get; set; } = DpiMode.Default;
+
+        /// <summary>
         /// 默认字体
         /// </summary>
         public static Font? Font { get; set; }
