@@ -265,9 +265,9 @@ namespace AntdUI.Controls
 
             foreach (var part in _linkParts)
             {
-                if (part.Href != null && part.Bounds.Contains(e.Location))
+                if (part.Text != null && part.Href != null && part.Bounds.Contains(e.Location))
                 {
-                    OnLinkClicked(new LinkClickedEventArgs(part.Href));
+                    OnLinkClicked(new LinkClickedEventArgs(part.Href, part.Text));
                     return;
                 }
             }
@@ -309,10 +309,11 @@ namespace AntdUI.Controls
         public class LinkClickedEventArgs : EventArgs
         {
             public string Href { get; private set; }
-
-            public LinkClickedEventArgs(string href)
+            public string Text { get; private set; }
+            public LinkClickedEventArgs(string href, string text)
             {
                 Href = href;
+                Text = text;
             }
         }
         // 定义事件委托
