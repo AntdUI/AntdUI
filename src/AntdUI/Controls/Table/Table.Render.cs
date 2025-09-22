@@ -56,7 +56,6 @@ namespace AntdUI
             using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get("Table", ColorScheme)))
             using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get("Table", ColorScheme)))
             using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get("Table", ColorScheme)))
-            using (var pen_cell_split = new Pen(borderColor ?? Colour.BorderColor.Get("Table", ColorScheme), BorWidth(BorderCellWidth)))
             {
                 StyleRow[] shows, summarys;
                 GraphicsPath? clipath = null;
@@ -83,14 +82,7 @@ namespace AntdUI
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows) PaintBg(g, it.row);
 
-                        if (dividers.Length > 0)
-                        {
-                            for (int i = 1; i < dividers.Length; i++)
-                            {
-                                var divider = dividers[i];
-                                g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
-                            }
-                        }
+                        if (dividers.Length > 0) PaintBorder(g, dividers, 1);
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
@@ -106,16 +98,12 @@ namespace AntdUI
                         if (dividers.Length > 0)
                         {
                             g.ResetTransform();
-                            var divider = dividers[0];
-                            g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
+                            PaintBorder(g, dividers[0]);
                             g.ResetTransform();
                             g.TranslateTransform(-sx, 0);
                         }
 
-                        if (dividerHs.Length > 0)
-                        {
-                            foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                        }
+                        if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
                     }
                     else
                     {
@@ -142,10 +130,7 @@ namespace AntdUI
                             else PaintBg(g, it.row);
                         }
 
-                        if (dividers.Length > 0)
-                        {
-                            foreach (var divider in dividers) g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
-                        }
+                        if (dividers.Length > 0) PaintBorder(g, dividers);
 
                         g.ResetTransform();
                         g.TranslateTransform(-sx, -sy);
@@ -159,10 +144,7 @@ namespace AntdUI
                             g.ResetTransform();
                             g.TranslateTransform(-sx, 0);
                         }
-                        if (dividerHs.Length > 0)
-                        {
-                            foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                        }
+                        if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
                     }
                 }
                 else
@@ -186,10 +168,7 @@ namespace AntdUI
                     g.TranslateTransform(0, -sy);
                     foreach (var it in shows) PaintBg(g, it.row);
 
-                    if (dividers.Length > 0)
-                    {
-                        foreach (var divider in dividers) g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
-                    }
+                    if (dividers.Length > 0) PaintBorder(g, dividers);
 
                     g.ResetTransform();
                     g.TranslateTransform(-sx, -sy);
@@ -199,35 +178,33 @@ namespace AntdUI
                         g.ResetTransform();
                         g.TranslateTransform(-sx, 0);
                     }
-                    if (dividerHs.Length > 0)
-                    {
-                        foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                    }
+                    if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
                 }
 
                 g.ResetClip();
                 g.ResetTransform();
 
-                PaintMergeCells(g, rows, sx, sy, pen_cell_split, brush_fore, brush_foreEnable);
+                PaintMergeCells(g, rows, sx, sy, brush_fore, brush_foreEnable);
 
                 #region 渲染浮动列
 
                 if (shows.Length > 0 && ScrollBar.ShowX && (fixedColumnL != null || fixedColumnR != null))
                 {
-                    PaintFixedColumnL(g, rect, rect_read, rows, shows, brush_fore, brush_foreEnable, brush_forecolumn, column_font, pen_cell_split, sx, sy, _radius);
-                    PaintFixedColumnR(g, rect, rect_read, rows, shows, brush_fore, brush_foreEnable, brush_forecolumn, column_font, pen_cell_split, sx, sy, _radius);
+                    PaintFixedColumnL(g, rect, rect_read, rows, shows, brush_fore, brush_foreEnable, brush_forecolumn, column_font, sx, sy, _radius);
+                    PaintFixedColumnR(g, rect, rect_read, rows, shows, brush_fore, brush_foreEnable, brush_forecolumn, column_font, sx, sy, _radius);
                 }
                 else showFixedColumnL = showFixedColumnR = false;
 
-                if (summarys.Length > 0) PaintFixedSummary(g, rect, rect_read, summarys, brush_fore, brush_foreEnable, brush_forecolumn, column_font, pen_cell_split, sx, sy, _radius);
+                if (summarys.Length > 0) PaintFixedSummary(g, rect, rect_read, summarys, brush_fore, brush_foreEnable, brush_forecolumn, column_font, sx, sy, _radius);
 
                 #endregion
 
                 if (bordered)
                 {
                     g.ResetClip();
-                    if (clipath == null) g.Draw(pen_cell_split.Color, BorWidth(borderWidth), rect_divider);
-                    else g.Draw(pen_cell_split.Color, BorWidth(borderWidth), clipath);
+                    var color = borderColor ?? Colour.BorderColor.Get("Table", ColorScheme);
+                    if (clipath == null) g.Draw(color, borderWidth * Config.Dpi, rect_divider);
+                    else g.Draw(color, borderWidth * Config.Dpi, clipath);
                 }
 
                 clipath?.Dispose();
@@ -820,7 +797,7 @@ namespace AntdUI
 
         #region 浮动列
 
-        void PaintFixedColumnL(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, Pen pen_cell_split, int sx, int sy, float radius)
+        void PaintFixedColumnL(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (fixedColumnL != null && sx > 0)
             {
@@ -879,37 +856,32 @@ namespace AntdUI
                     }
                 }
 
-                if (dividers.Length > 0)
-                {
-                    foreach (var divider in dividers) g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
-                }
-
-                g.ResetTransform();
                 if (fixedHeader)
                 {
+                    if (dividers.Length > 0) PaintBorder(g, dividers, 1);
+                    g.ResetTransform();
                     PaintTableBgHeader(g, rows[0], radius, 0);
                     PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
-                    if (sy == 0 && dividers.Length > 0)
+                    if (dividers.Length > 0)
                     {
                         g.ResetTransform();
-                        g.TranslateTransform(0, -sy);
-                        var divider = dividers[0];
-                        g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
-                        g.ResetTransform();
+                        PaintBorder(g, dividers[0]);
                     }
                 }
-                else g.TranslateTransform(0, bordered ? 0 : -sy);
-                if (dividerHs.Length > 0)
+                else
                 {
-                    foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
+                    if (dividers.Length > 0) PaintBorder(g, dividers);
+                    g.ResetTransform();
+                    g.TranslateTransform(0, bordered ? 0 : -sy);
                 }
+                if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
                 g.ResetTransform();
                 g.ResetClip();
                 clipath?.Dispose();
             }
             else showFixedColumnL = false;
         }
-        void PaintFixedColumnR(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, Pen pen_cell_split, int sx, int sy, float radius)
+        void PaintFixedColumnR(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (fixedColumnR != null)
             {
@@ -995,36 +967,28 @@ namespace AntdUI
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
 
-                        if (dividers.Length > 0)
-                        {
-                            foreach (var divider in dividers) g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
-                        }
-
-                        g.ResetTransform();
                         if (fixedHeader)
                         {
+                            if (dividers.Length > 0) PaintBorder(g, dividers, 1);
+                            g.ResetTransform();
+
                             PaintTableBgHeader(g, rows[0], radius, sFixedR);
                             g.TranslateTransform(-sFixedR, 0);
                             PaintTableHeader(g, rows[0], forecolumn, column_font, radius);
-                            g.ResetTransform();
-                            if (sy == 0 && dividers.Length > 0)
+                            if (dividers.Length > 0)
                             {
-                                g.TranslateTransform(0, -sy);
-                                var divider = dividers[0];
-                                g.DrawLine(pen_cell_split, divider[1], divider[0], divider[1] + divider[2], divider[0]);
                                 g.ResetTransform();
+                                PaintBorder(g, dividers[0]);
+                                g.TranslateTransform(-sFixedR, 0);
                             }
-                            g.TranslateTransform(-sFixedR, 0);
                         }
                         else
                         {
+                            if (dividers.Length > 0) PaintBorder(g, dividers);
                             g.ResetTransform();
                             g.TranslateTransform(-sFixedR, bordered ? 0 : -sy);
                         }
-                        if (dividerHs.Length > 0)
-                        {
-                            foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                        }
+                        if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
                         g.ResetTransform();
                         g.ResetClip();
                         clipath?.Dispose();
@@ -1036,7 +1000,7 @@ namespace AntdUI
             else showFixedColumnR = false;
         }
 
-        void PaintFixedSummary(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, Pen pen_cell_split, int sx, int sy, float radius)
+        void PaintFixedSummary(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (ScrollBar.ShowY)
             {
@@ -1094,16 +1058,13 @@ namespace AntdUI
 
                         g.TranslateTransform(-sx, 0);
 
-                        if (dividerHs.Length > 0)
-                        {
-                            foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                        }
+                        if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
 
                         g.ResetTransform();
                         if (fixedColumnL != null || fixedColumnR != null)
                         {
-                            PaintFixedSummaryL(g, rect, rect_read, shows, fore, foreEnable, forecolumn, column_font, pen_cell_split, sx, sFixedB, radius);
-                            PaintFixedSummaryR(g, rect, rect_read, shows, fore, foreEnable, forecolumn, column_font, pen_cell_split, sx, sFixedB, radius);
+                            PaintFixedSummaryL(g, rect, rect_read, shows, fore, foreEnable, forecolumn, column_font, sx, sFixedB, radius);
+                            PaintFixedSummaryR(g, rect, rect_read, shows, fore, foreEnable, forecolumn, column_font, sx, sFixedB, radius);
                         }
                         g.ResetClip();
                         clipath?.Dispose();
@@ -1113,7 +1074,7 @@ namespace AntdUI
             }
         }
 
-        void PaintFixedSummaryL(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, Pen pen_cell_split, int sx, int sy, float radius)
+        void PaintFixedSummaryL(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (fixedColumnL != null && sx > 0)
             {
@@ -1159,10 +1120,7 @@ namespace AntdUI
                     }
                     g.ResetTransform();
                     if (!fixedHeader) g.TranslateTransform(0, bordered ? 0 : -sy);
-                    if (dividerHs.Length > 0)
-                    {
-                        foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                    }
+                    if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
 
                     clipath?.Dispose();
                 }
@@ -1170,7 +1128,7 @@ namespace AntdUI
                 g.Restore(save);
             }
         }
-        void PaintFixedSummaryR(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, Pen pen_cell_split, int sx, int sy, float radius)
+        void PaintFixedSummaryR(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (fixedColumnR != null && ScrollBar.ShowX)
             {
@@ -1231,10 +1189,7 @@ namespace AntdUI
                         g.ResetTransform();
 
                         g.TranslateTransform(-sFixedR, 0);
-                        if (dividerHs.Length > 0)
-                        {
-                            foreach (var divider in dividerHs) g.DrawLine(pen_cell_split, divider[0], divider[1], divider[0], divider[1] + divider[2]);
-                        }
+                        if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
 
                         clipath?.Dispose();
                     }
@@ -1251,7 +1206,7 @@ namespace AntdUI
 
         #region 合并
 
-        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, Pen pen_cell_split, SolidBrush fore, SolidBrush foreEnable)
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, int sx, int sy, SolidBrush fore, SolidBrush foreEnable)
         {
             if (CellRanges == null || CellRanges.Length == 0) return;
             var state = g.Save();
@@ -1259,12 +1214,12 @@ namespace AntdUI
             g.TranslateTransform(-sx, -sy);
             using (var bg = new SolidBrush(Colour.BgBase.Get("Table", ColorScheme)))
             {
-                foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, pen_cell_split, fore, foreEnable, it);
+                foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, fore, foreEnable, it);
             }
             g.Restore(state);
         }
 
-        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, Pen pen_cell_split, SolidBrush fore, SolidBrush foreEnable, CellRange range)
+        void PaintMergeCells(Canvas g, RowTemplate[] rows, SolidBrush bg, SolidBrush fore, SolidBrush foreEnable, CellRange range)
         {
             if (range.FirstRow == range.LastRow)
             {
@@ -1272,7 +1227,7 @@ namespace AntdUI
                 {
                     if (item.INDEX_REAL == range.FirstRow)
                     {
-                        PaintMergeCells(g, bg, pen_cell_split, fore, foreEnable, item.cells[range.FirstColumn], item.cells[range.LastColumn]);
+                        PaintMergeCells(g, bg, fore, foreEnable, item.cells[range.FirstColumn], item.cells[range.LastColumn]);
                         return;
                     }
                 }
@@ -1286,21 +1241,21 @@ namespace AntdUI
                     {
                         first = item.cells[range.FirstColumn];
                         if (last == null) continue;
-                        PaintMergeCells(g, bg, pen_cell_split, fore, foreEnable, first, last);
+                        PaintMergeCells(g, bg, fore, foreEnable, first, last);
                         return;
                     }
                     else if (item.INDEX_REAL == range.LastRow)
                     {
                         last = item.cells[range.LastColumn];
                         if (first == null) continue;
-                        PaintMergeCells(g, bg, pen_cell_split, fore, foreEnable, first, last);
+                        PaintMergeCells(g, bg, fore, foreEnable, first, last);
                         return;
                     }
                 }
             }
         }
 
-        void PaintMergeCells(Canvas g, SolidBrush bg, Pen pen_cell_split, SolidBrush fore, SolidBrush foreEnable, CELL first, CELL last)
+        void PaintMergeCells(Canvas g, SolidBrush bg, SolidBrush fore, SolidBrush foreEnable, CELL first, CELL last)
         {
             var state = g.Save();
             var rect = RectMergeCells(first, last, out bool fz);
@@ -1308,7 +1263,7 @@ namespace AntdUI
             if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get("Table", ColorScheme)), rect);
             else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get("Table", ColorScheme), rect);
 
-            g.Draw(pen_cell_split, rect);
+            PaintBorder(g, rect);
 
             #region 绘制内容
 
@@ -1351,6 +1306,94 @@ namespace AntdUI
                 new PointF(rect.X+rect.Width*0.4F,rect.Y+(rect.Height-size3)),
                 new PointF(rect.X+rect.Width-size2,rect.Y+size2),
             };
+        }
+
+        #endregion
+
+        #region 边框
+
+        void PaintBorder(Canvas g, int[][] dividers) => PaintBorder(g, dividers, 0);
+        void PaintBorder(Canvas g, int[][] dividers, int s)
+        {
+            var color = borderColor ?? Colour.BorderColor.Get("Table", ColorScheme);
+            float border = BorderCellWidth * Config.Dpi;
+            if (BorderHigh)
+            {
+                var half = border / 2F;
+                for (int i = s; i < dividers.Length; i++)
+                {
+                    var divider = dividers[i];
+                    g.Fill(color, new RectangleF(divider[1], divider[0] - half, divider[2], border));
+                }
+            }
+            else
+            {
+                using (var pen = new Pen(color, border))
+                {
+                    for (int i = s; i < dividers.Length; i++)
+                    {
+                        var divider = dividers[i];
+                        g.DrawLine(pen, divider[1], divider[0], divider[1] + divider[2], divider[0]);
+                    }
+                }
+            }
+        }
+        void PaintBorder(Canvas g, int[] it)
+        {
+            var color = borderColor ?? Colour.BorderColor.Get("Table", ColorScheme);
+            float border = BorderCellWidth * Config.Dpi;
+            if (BorderHigh)
+            {
+                var half = border / 2F;
+                g.Fill(color, new RectangleF(it[1], it[0] - half, it[2], border));
+            }
+            else
+            {
+                using (var pen = new Pen(color, border))
+                {
+                    g.DrawLine(pen, it[1], it[0], it[1] + it[2], it[0]);
+                }
+            }
+        }
+        void PaintBorderH(Canvas g, int[][] dividers)
+        {
+            var color = borderColor ?? Colour.BorderColor.Get("Table", ColorScheme);
+            float border = BorderCellWidth * Config.Dpi;
+            if (BorderHigh)
+            {
+                var half = border / 2F;
+                foreach (var it in dividers)
+                {
+                    g.Fill(color, new RectangleF(it[0] - half, it[1], border, it[2]));
+                }
+            }
+            else
+            {
+                using (var pen = new Pen(color, border))
+                {
+                    foreach (var it in dividers) g.DrawLine(pen, it[0], it[1], it[0], it[1] + it[2]);
+                }
+            }
+        }
+        void PaintBorder(Canvas g, Rectangle rect)
+        {
+            var color = borderColor ?? Colour.BorderColor.Get("Table", ColorScheme);
+            float border = BorderCellWidth * Config.Dpi;
+            if (BorderHigh)
+            {
+                var half = border / 2F;
+                g.Fill(color, new RectangleF(rect.X, rect.Y - half, rect.Width, border));// 上边
+                g.Fill(color, new RectangleF(rect.X, rect.Bottom - half, rect.Width, border));// 下边
+                g.Fill(color, new RectangleF(rect.X - half, rect.Y, border, rect.Height));// 左边
+                g.Fill(color, new RectangleF(rect.Right - half, rect.Y, border, rect.Height));// 右边
+            }
+            else
+            {
+                using (var pen = new Pen(color, border))
+                {
+                    g.Draw(pen, rect);
+                }
+            }
         }
 
         #endregion
@@ -1468,12 +1511,6 @@ namespace AntdUI
                 path.AddRectangle(rect_divider);
                 return path;
             }
-        }
-
-        public float BorWidth(float value)
-        {
-            if (BorderHigh) return value * Config.Dpi;
-            return (int)(value * Config.Dpi);
         }
     }
 }
