@@ -230,6 +230,24 @@ namespace AntdUI
             }
         }
 
+        bool useForeColorDrawIcons;
+        /// <summary>
+        /// 使用前景色绘制按钮图标
+        /// </summary>
+        [Description("使用前景色绘制按钮图标"), Category("外观"), DefaultValue(false)]
+        public bool UseForeColorDrawIcons
+        {
+            get => useForeColorDrawIcons;
+            set
+            {
+                if (useForeColorDrawIcons == value) return;
+                useForeColorDrawIcons = value;
+                DisposeBmp();
+                Invalidate();
+                OnPropertyChanged(nameof(UseForeColorDrawIcons));
+            }
+        }
+
         bool cancelButton = false;
         /// <summary>
         /// 点击退出关闭
@@ -700,9 +718,10 @@ namespace AntdUI
 
             #region 显示颜色
 
-            Color fore = Colour.Text.Get("PageHeader", ColorScheme), forebase = Colour.TextBase.Get("PageHeader", ColorScheme), foreSecondary = Colour.TextSecondary.Get("PageHeader", ColorScheme),
+            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get("PageHeader", ColorScheme),
+                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get("PageHeader", ColorScheme),
+                foreSecondary = Colour.TextSecondary.Get("PageHeader", ColorScheme),
                 fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
-            if (useSystemStyleColor) forebase = ForeColor;
 
             #endregion
 
