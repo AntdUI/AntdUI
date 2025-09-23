@@ -986,6 +986,21 @@ namespace AntdUI
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            shadow_temp?.Dispose();
+            shadow_temp = null;
+            bmp_hue?.Dispose();
+            bmp_hue = null;
+            bmp_alpha?.Dispose();
+            bmp_alpha = null;
+            bmp_alpha_read?.Dispose();
+            bmp_alpha_read = null;
+            bmp_dot_12?.Dispose();
+            bmp_dot_12 = null;
+            base.Dispose(disposing);
+        }
+
         #endregion
 
         public void IProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)

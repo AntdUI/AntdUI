@@ -30,12 +30,16 @@ namespace AntdUI
         public override FloatButton.Config config { get; }
 
         int BadgeSize = 6, ShadowXY;
+        Form form;
         public LayeredFormFloatButton(FloatButton.Config _config)
         {
             config = _config;
+            var tmp = config.Target.FindPARENT();
+            if (tmp == null) throw new Exception("FloatButton need a parent Form");
+            form = tmp;
             TopMost = config.TopMost;
-            if (!config.TopMost) config.Form.SetTopMost(Handle);
-            Font = config.Font == null ? config.Form.Font : config.Font;
+            if (!config.TopMost) config.Target.SetTopMost(Handle);
+            config.Target.SetFont(config.Font, this);
 
             Helper.GDI(g =>
             {
@@ -74,8 +78,8 @@ namespace AntdUI
                 }
             });
             SetPoint();
-            config.Form.LocationChanged += Form_LSChanged;
-            config.Form.SizeChanged += Form_LSChanged;
+            form.LocationChanged += Form_LSChanged;
+            form.SizeChanged += Form_LSChanged;
         }
 
         public override string name => nameof(FloatButton);
@@ -133,20 +137,20 @@ namespace AntdUI
 
         bool SetPoint()
         {
-            if (config.Control == null)
+            if (config.Target.Value is Control control)
             {
-                var point = config.Form.Location;
-                SetPoint(point.X, point.Y, config.Form.Width, config.Form.Height);
-            }
-            else
-            {
-                if (config.Control.IsDisposed)
+                if (control.IsDisposed)
                 {
                     IClose();
                     return false;
                 }
-                var point = config.Control.PointToScreen(Point.Empty);
-                SetPoint(point.X, point.Y, config.Control.Width, config.Control.Height);
+                var point = control.PointToScreen(Point.Empty);
+                SetPoint(point.X, point.Y, control.Width, control.Height);
+            }
+            else
+            {
+                var point = form.Location;
+                SetPoint(point.X, point.Y, form.Width, form.Height);
             }
             return true;
         }
@@ -495,8 +499,8 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ThreadLoading?.Dispose();
-            config.Form.LocationChanged -= Form_LSChanged;
-            config.Form.SizeChanged -= Form_LSChanged;
+            form.LocationChanged -= Form_LSChanged;
+            form.SizeChanged -= Form_LSChanged;
             foreach (var it in config.Btns)
             {
                 it.shadow_temp?.Dispose();

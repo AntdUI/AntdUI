@@ -70,24 +70,16 @@ namespace AntdUI
         /// <param name="config">配置</param>
         public static Form? open(this Config config)
         {
-            return open(config, AntdUI.Config.IsDark);
-        }
-        /// <summary>
-        /// Popover 气泡卡片
-        /// </summary>
-        /// <param name="config">配置</param>
-        /// <param name="darkMode">是否启用深色主题</param>
-        public static Form? open(this Config config, bool darkMode)
-        {
             if (config.Control.IsHandleCreated)
             {
                 if (config.Control.InvokeRequired) return ITask.Invoke(config.Control, new Func<Form?>(() => open(config)));
-                var popover = new LayeredFormPopover(config, darkMode? TAMode.Dark: TAMode.Light);
+                var popover = new LayeredFormPopover(config);
                 popover.Show(config.Control);
                 return popover;
             }
             return null;
         }
+
         /// <summary>
         /// 配置
         /// </summary>
@@ -164,15 +156,23 @@ namespace AntdUI
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
+
             /// <summary>
             /// 背景色
             /// </summary>
 
-            public Color? Back {  get; set; }
+            public Color? Back { get; set; }
+
             /// <summary>
             /// 文本色
             /// </summary>
             public Color? Fore { get; set; }
+
+            /// <summary>
+            /// 色彩模式
+            /// </summary>
+            public TMode? ColorScheme { get; set; }
+
             /// <summary>
             /// 控件显示后回调
             /// </summary>
@@ -245,6 +245,21 @@ namespace AntdUI
             public Config SetFont(Font? value)
             {
                 Font = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetColorScheme(TMode? value)
+            {
+                ColorScheme = value;
                 return this;
             }
             public Config SetAutoClose(int value)

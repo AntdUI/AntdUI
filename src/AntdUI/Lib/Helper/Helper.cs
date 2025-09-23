@@ -72,8 +72,8 @@ namespace AntdUI
             if (control == null) return null;
             if (control is DoubleBufferForm formd)
             {
-                if (control.Tag is Form form) return form;
-                else if (control.Parent != null) return FindPARENT(control.Parent, mdi);
+                if (formd.Tag is Form form) return form;
+                else if (formd.Parent != null) return FindPARENT(formd.Parent, mdi);
                 return formd;
             }
             else if (control is Form form)
@@ -84,9 +84,36 @@ namespace AntdUI
             else if (control.Parent != null) return FindPARENT(control.Parent, mdi);
             return null;
         }
+        public static Form? FindPARENT(this Target? target, bool mdi = false)
+        {
+            if (target == null) return null;
+            if (target.Value is DoubleBufferForm formd)
+            {
+                if (formd.Tag is Form form) return form;
+                else if (formd.Parent != null) return FindPARENT(formd.Parent, mdi);
+                return formd;
+            }
+            else if (target.Value is Form form)
+            {
+                if (mdi) return form;
+                return form.ParentForm ?? form;
+            }
+            else if (target.Value is Control control) return FindPARENT(control.Parent, mdi);
+            return null;
+        }
         public static bool SetTopMost(this Control? control, IntPtr hand)
         {
             var form = control.FindPARENT();
+            if (form != null && form.TopMost || (form is LayeredFormPopover layered && layered.topMost) || (form is LayeredFormDrawer layeredDrawer && layeredDrawer.topMost) || (form is LayeredFormTour layeredTour && layeredTour.topMost))
+            {
+                SetTopMost(hand);
+                return true;
+            }
+            return false;
+        }
+        public static bool SetTopMost(this Target? target, IntPtr hand)
+        {
+            var form = target.FindPARENT();
             if (form != null && form.TopMost || (form is LayeredFormPopover layered && layered.topMost) || (form is LayeredFormDrawer layeredDrawer && layeredDrawer.topMost) || (form is LayeredFormTour layeredTour && layeredTour.topMost))
             {
                 SetTopMost(hand);

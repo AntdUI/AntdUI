@@ -54,6 +54,19 @@ namespace AntdUI
         {
             if (Config.IsDark) WindowTheme(control, "DarkMode_Explorer");
         }
+        public static void WindowTheme(Control control, TMode? colorScheme)
+        {
+            if (colorScheme.HasValue)
+            {
+                var code = colorScheme == TMode.Dark ? "DarkMode_Explorer" : "ClearMode_Explorer";
+                WindowTheme(control, code);
+            }
+            else
+            {
+                var code = Config.IsDark ? "DarkMode_Explorer" : "ClearMode_Explorer";
+                WindowTheme(control, code);
+            }
+        }
         public static void WindowTheme(Control control, bool dark)
         {
             var code = dark ? "DarkMode_Explorer" : "ClearMode_Explorer";

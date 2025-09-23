@@ -365,6 +365,12 @@ namespace AntdUI
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            IsAddMessage = false;
+            base.Dispose(disposing);
+        }
+
         #endregion
 
         protected override void OnHandleCreated(EventArgs e)

@@ -221,6 +221,30 @@ namespace AntdUI
                 rect_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
                 rect_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
                 rect_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
+
+                if (badge_action == null) return;
+                var oldval = value;
+                ITask.Run(() =>
+                {
+                    var dir = badge_action(new DateTime[] { calendar_day[0].date, calendar_day[calendar_day.Count - 1].date });
+                    if (_Date == oldval)
+                    {
+                        badge_list.Clear();
+                        if (dir == null)
+                        {
+                            if (RunAnimation) DisposeTmp();
+                            else Print();
+                            return;
+                        }
+#if NET40 || NET46 || NET48
+                        foreach (var it in dir) badge_list.Add(it.Date, it);
+#else
+                        foreach (var it in dir) badge_list.TryAdd(it.Date, it);
+#endif
+                        if (RunAnimation) DisposeTmp();
+                        else Print();
+                    }
+                });
             }
         }
 
@@ -682,7 +706,7 @@ namespace AntdUI
         void LoadLayout() => Helper.GDI(g => LoadLayout(g));
         void LoadLayout(Canvas g)
         {
-            base.ClearShadow();
+            ClearShadow();
             var size = g.MeasureString(Config.NullText, Font);
             bor = (int)(size.Height * 0.1F);
             int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;

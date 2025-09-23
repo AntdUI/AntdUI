@@ -151,43 +151,53 @@ namespace AntdUI
         /// </summary>
         public class Config
         {
-            public Config(Form _form)
+            public Config(Target target)
             {
-                Form = _form;
+                Target = target;
             }
-            public Config(Form _form, TType _icon, TAlignFrom _align)
+            public Config(Target target, TType icon, TAlignFrom _align)
             {
-                Form = _form;
+                Target = target;
                 Align = _align;
-                Icon = _icon;
+                Icon = icon;
             }
-            public Config(Form _form, string _title, string _text, TType _icon, TAlignFrom _align)
+            public Config(Target target, string title, string text, TType icon, TAlignFrom align)
             {
-                Form = _form;
-                Title = _title;
-                Text = _text;
-                Align = _align;
-                Icon = _icon;
+                Target = target;
+                Title = title;
+                Text = text;
+                Align = align;
+                Icon = icon;
             }
-            public Config(Form _form, string _title, string _text, TType _icon, TAlignFrom _align, Font? _font)
+            public Config(Target target, string title, string text, TType icon, TAlignFrom align, Font? font)
             {
-                Form = _form;
-                Font = _font;
-                Title = _title;
-                Text = _text;
-                Align = _align;
-                Icon = _icon;
+                Target = target;
+                Font = font;
+                Title = title;
+                Text = text;
+                Align = align;
+                Icon = icon;
             }
-            public Config(Form _form, string _title, string _text, TType _icon, TAlignFrom _align, Font? _font, int? autoClose)
+            public Config(Target target, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose)
             {
-                Form = _form;
-                Font = _font;
-                Title = _title;
-                Text = _text;
-                Align = _align;
-                Icon = _icon;
+                Target = target;
+                Font = font;
+                Title = title;
+                Text = text;
+                Align = align;
+                Icon = icon;
                 if (autoClose.HasValue) AutoClose = autoClose.Value;
             }
+
+            #region 窗口
+
+            public Config(Form form) : this(new Target(form)) { }
+            public Config(Form form, TType icon, TAlignFrom align) : this(new Target(form), icon, align) { }
+            public Config(Form form, string title, string text, TType icon, TAlignFrom align) : this(new Target(form), title, text, icon, align) { }
+            public Config(Form form, string title, string text, TType icon, TAlignFrom align, Font? font) : this(new Target(form), title, text, icon, align, font) { }
+            public Config(Form form, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose) : this(new Target(form), title, text, icon, align, font, autoClose) { }
+
+            #endregion
 
             /// <summary>
             /// ID
@@ -195,9 +205,15 @@ namespace AntdUI
             public string? ID { get; set; }
 
             /// <summary>
+            /// 所属目标
+            /// </summary>
+            public Target Target { get; set; }
+
+            /// <summary>
             /// 所属窗口
             /// </summary>
-            public Form Form { get; set; }
+            [Obsolete("use Target")]
+            public Control Form => Target.GetForm!;
 
             string? title;
             /// <summary>
@@ -485,13 +501,11 @@ namespace AntdUI
             config = _config;
             Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
-            else config.Form.SetTopMost(Handle);
+            else config.Target.SetTopMost(Handle);
             shadow_size = (int)(shadow_size * Config.Dpi);
-            if (config.Font != null) Font = config.Font;
-            else if (Config.Font != null) Font = Config.Font;
-            else Font = config.Form.Font;
+            config.Target.SetFontConfig(config.Font, this);
+            config.Target.SetIcon(this);
             font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
-            Icon = config.Form.Icon;
             Helper.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
             close_button = new ITaskOpacity(name, this);
         }
@@ -515,7 +529,7 @@ namespace AntdUI
 
         public bool IInit()
         {
-            if (SetPosition(config.Form, config.ShowInWindow ?? Config.ShowInWindowByNotification)) return true;
+            if (SetPosition(config.Target, config.ShowInWindow ?? Config.ShowInWindowByNotification)) return true;
             if (config.AutoClose > 0)
             {
                 ITask.Run(() =>

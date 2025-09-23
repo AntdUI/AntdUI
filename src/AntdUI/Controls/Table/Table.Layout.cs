@@ -1261,6 +1261,7 @@ namespace AntdUI
                 {
                     check.Checked = b;
                     if (b) selects.Add(row.INDEX_REAL);
+                    else selects.Remove(row.INDEX_REAL);
                 }
                 if (cel.COLUMN is ColumnCheck checkColumn && checkColumn.NoTitle)
                 {
@@ -1287,6 +1288,7 @@ namespace AntdUI
                 {
                     radio.Checked = b;
                     if (b) selects.Add(row.INDEX_REAL);
+                    else selects.Remove(row.INDEX_REAL);
                 }
                 Invalidate();
             }

@@ -135,6 +135,7 @@ namespace AntdUI
                 return null;
             });
         }
+
 #endif
 
         /// <summary>
@@ -162,6 +163,11 @@ namespace AntdUI
             /// 控件
             /// </summary>
             public Control Content { get; set; }
+
+            /// <summary>
+            /// 色彩模式
+            /// </summary>
+            public TMode? ColorScheme { get; set; }
 
             /// <summary>
             /// 是否展示遮罩
@@ -210,6 +216,11 @@ namespace AntdUI
 
             #region 设置
 
+            public Config SetColorScheme(TMode? value)
+            {
+                ColorScheme = value;
+                return this;
+            }
             public Config SetMask(bool value = false)
             {
                 Mask = value;
