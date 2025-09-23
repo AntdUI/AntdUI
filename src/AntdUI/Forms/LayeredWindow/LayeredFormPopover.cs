@@ -35,12 +35,14 @@ namespace AntdUI
 
         internal bool topMost = false;
         Form? form = null;
-        public LayeredFormPopover(Popover.Config _config)
+        protected TAMode ColorScheme { get; set; }
+
+        public LayeredFormPopover(Popover.Config _config, TAMode colorScheme = TAMode.Auto)
         {
             config = _config;
             topMost = config.Control.SetTopMost(Handle);
             Font = config.Font ?? config.Control.Font;
-
+            ColorScheme = colorScheme == TAMode.Auto ? (Config.IsDark ? TAMode.Dark : TAMode.Light) : colorScheme;
             Helper.GDI(g =>
             {
                 var dpi = Config.Dpi;
@@ -51,9 +53,9 @@ namespace AntdUI
                 if (config.Content is Control control)
                 {
                     control.Parent = this;
-                    control.BackColor = Colour.BgElevated.Get("Popover");
-                    control.ForeColor = Colour.Text.Get("Popover");
-                    Win32.WindowTheme(control, Config.IsDark);
+                    control.BackColor = config.Back ?? Colour.BgElevated.Get("Popover", ColorScheme);
+                    control.ForeColor = config.Fore ?? Colour.Text.Get("Popover", ColorScheme);
+                    Win32.WindowTheme(control, ColorScheme == TAMode.Dark);
                     Helper.DpiAuto(config.Dpi ?? Config.Dpi, control);
                     int w = control.Width;
                     int h;
@@ -284,7 +286,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    using (var brush = new SolidBrush(Colour.BgElevated.Get("Popover")))
+                    using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get("Popover", ColorScheme)))
                     {
                         g.Fill(brush, path);
                         if (config.ArrowAlign != TAlign.None) g.FillPolygon(brush, config.ArrowAlign.AlignLines(config.ArrowSize, rect, rect_read));
@@ -294,7 +296,7 @@ namespace AntdUI
 
                 if (config.Title != null || rtext)
                 {
-                    using (var brush = new SolidBrush(Colour.Text.Get("Popover")))
+                    using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get("Popover", ColorScheme)))
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {

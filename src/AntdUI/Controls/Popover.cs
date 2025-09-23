@@ -70,16 +70,24 @@ namespace AntdUI
         /// <param name="config">配置</param>
         public static Form? open(this Config config)
         {
+            return open(config, AntdUI.Config.IsDark);
+        }
+        /// <summary>
+        /// Popover 气泡卡片
+        /// </summary>
+        /// <param name="config">配置</param>
+        /// <param name="darkMode">是否启用深色主题</param>
+        public static Form? open(this Config config, bool darkMode)
+        {
             if (config.Control.IsHandleCreated)
             {
                 if (config.Control.InvokeRequired) return ITask.Invoke(config.Control, new Func<Form?>(() => open(config)));
-                var popover = new LayeredFormPopover(config);
+                var popover = new LayeredFormPopover(config, darkMode? TAMode.Dark: TAMode.Light);
                 popover.Show(config.Control);
                 return popover;
             }
             return null;
         }
-
         /// <summary>
         /// 配置
         /// </summary>
@@ -156,7 +164,15 @@ namespace AntdUI
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
+            /// <summary>
+            /// 背景色
+            /// </summary>
 
+            public Color? Back {  get; set; }
+            /// <summary>
+            /// 文本色
+            /// </summary>
+            public Color? Fore { get; set; }
             /// <summary>
             /// 控件显示后回调
             /// </summary>
