@@ -42,11 +42,21 @@ namespace AntdUI
         public int ReadY => end_Y;
         public int ReadB => end_Y + TargetRect.Height;
 
-        internal bool SetPosition(Form form, bool InWindow)
+        internal bool SetPosition(Target target, bool InWindow)
         {
             Rectangle workingArea;
-            if (InWindow || Config.ShowInWindow) workingArea = new Rectangle(form.Location, form.Size);
-            else workingArea = Screen.FromControl(form).WorkingArea;
+            if (target.Value is Form form)
+            {
+                if (InWindow || Config.ShowInWindow) workingArea = new Rectangle(form.Location, form.Size);
+                else workingArea = Screen.FromControl(form).WorkingArea;
+            }
+            else if (target.Value is Control control)
+            {
+                var point = control.PointToScreen(Point.Empty);
+                if (InWindow || Config.ShowInWindow) workingArea = new Rectangle(point, control.Size);
+                else workingArea = Screen.FromPoint(point).WorkingArea;
+            }
+            else throw new ArgumentException("Target must be Form or Control");
             key = Align.ToString() + "|" + workingArea.X + "|" + workingArea.Y + "|" + workingArea.Right + "|" + workingArea.Bottom;
             int width = TargetRect.Width, height = TargetRect.Height;
             switch (Align)
@@ -504,7 +514,7 @@ namespace AntdUI
 
         static bool Open(Notification.Config config)
         {
-            if (config.Form.IsHandleCreated)
+            if (config.Target.IsCreated(out var invoke, out var obj))
             {
                 string? key = null;
                 if (config.ID != null)
@@ -517,8 +527,9 @@ namespace AntdUI
                         return false;
                     }
                 }
+                if (obj == null) return false;
                 bool ishand = false;
-                config.Form.Invoke(new Action(() =>
+                obj.Invoke(new Action(() =>
                 {
                     var from = new NotificationFrm(config, key);
                     if (from.IInit())
@@ -529,7 +540,7 @@ namespace AntdUI
                     else
                     {
                         if (config.TopMost) from.Show();
-                        else from.Show(config.Form);
+                        else config.Target.Show(from);
                     }
                 }));
                 if (ishand)
@@ -543,7 +554,7 @@ namespace AntdUI
 
         static bool Open(Message.Config config)
         {
-            if (config.Form.IsHandleCreated)
+            if (config.Target.IsCreated(out var invoke, out var obj))
             {
                 string? key = null;
                 if (config.ID != null)
@@ -556,8 +567,9 @@ namespace AntdUI
                         return false;
                     }
                 }
+                if (obj == null) return false;
                 bool ishand = false;
-                config.Form.Invoke(new Action(() =>
+                obj.Invoke(new Action(() =>
                 {
                     var from = new MessageFrm(config, key);
                     if (from.IInit())
@@ -568,7 +580,7 @@ namespace AntdUI
                     else
                     {
                         if (config.TopMost) from.Show();
-                        else from.Show(config.Form);
+                        else config.Target.Show(from);
                     }
                 }));
                 if (ishand)

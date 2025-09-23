@@ -43,9 +43,9 @@ namespace AntdUI
                 Helper.SetTopMost(Handle);
                 MessageCloseMouseLeave = true;
             }
-            else _config.Control.SetTopMost(Handle);
+            else _config.Target.SetTopMost(Handle);
             config = _config;
-            Font = config.Font ?? config.Control.Font;
+            config.Target.SetFont(config.Font, this);
             rectsContent = LoadLayout(config.Items);
             ScrollBar = new ScrollBar(this, TAMode.Auto);
             switch (config.Align)
@@ -157,9 +157,9 @@ namespace AntdUI
         {
             PARENT = parent;
             config = _config;
-            Font = config.Font ?? config.Control.Font;
+            Font = parent.Font;
             if (_config.TopMost) Helper.SetTopMost(Handle);
-            else _config.Control.SetTopMost(Handle);
+            else _config.Target.SetTopMost(Handle);
             rectsContent = LoadLayout(subs);
             ScrollBar = new ScrollBar(this, TAMode.Auto);
             Init(point);
@@ -478,7 +478,7 @@ namespace AntdUI
                         {
                             if (resetEvent.Wait(false)) return;
                             if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
-                            config.Control.BeginInvoke(new Action(() => config.Call(item)));
+                            config.Target.BeginInvoke(new Action(() => config.Call(item)));
                         });
                     }
                     else
@@ -490,7 +490,7 @@ namespace AntdUI
                             ITask.Run(() =>
                             {
                                 Thread.Sleep(config.CallSleep);
-                                config.Control.BeginInvoke(new Action(() => config.Call(item)));
+                                config.Target.BeginInvoke(new Action(() => config.Call(item)));
                             });
                         }
                         else

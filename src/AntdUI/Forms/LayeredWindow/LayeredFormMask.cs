@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -28,6 +29,7 @@ namespace AntdUI
         int Radius = 0, Bor = 0;
         bool HasBor = false;
         Form form;
+        Control? control;
         public LayeredFormMask(Form _form) : base(240)
         {
             form = _form;
@@ -48,54 +50,113 @@ namespace AntdUI
                 Location = form.Location;
             }
         }
+        public LayeredFormMask(Form _form, Control _control) : base(240)
+        {
+            form = _form;
+            control = _control;
+            TopMost = _form.TopMost;
+            var point = _control.PointToScreen(Point.Empty);
+            SetSize(_control.Size);
+            SetLocation(point);
+            Size = _control.Size;
+            Location = point;
+            if (_control is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
+        }
 
         public override string name => "Mask";
+        Func<GraphicsPath>? RenderRegion;
 
         protected override void OnLoad(EventArgs e)
         {
-            if (form is Window window)
+            if (control == null)
             {
-                SetSize(window.Size);
-                SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
+                if (form is Window window)
+                {
+                    SetSize(window.Size);
+                    SetLocation(window.Location);
+                    Size = window.Size;
+                    Location = window.Location;
+                }
+                else
+                {
+                    SetSize(form.Size);
+                    SetLocation(form.Location);
+                    Size = form.Size;
+                    Location = form.Location;
+                }
             }
             else
             {
-                SetSize(form.Size);
-                SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
+                var point = control.PointToScreen(Point.Empty);
+                SetLocation(point);
+                SetSize(control.Size);
+                Size = control.Size;
+                Location = point;
             }
-            form.LocationChanged += Form_LSChanged;
-            form.SizeChanged += Form_LSChanged;
+            form.LocationChanged += Parent_LocationChanged;
+            form.SizeChanged += Parent_SizeChanged;
             base.OnLoad(e);
         }
 
-        private void Form_LSChanged(object? sender, EventArgs e)
+        private void Parent_LocationChanged(object? sender, EventArgs e)
         {
-            if (form is Window window)
+            if (control == null)
             {
-                SetSize(window.Size);
-                SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
+                if (form is Window window)
+                {
+                    SetLocation(window.Location);
+                    Location = window.Location;
+                }
+                else
+                {
+                    SetLocation(form.Location);
+                    Location = form.Location;
+                }
             }
             else
             {
-                SetSize(form.Size);
-                SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
+                var point = control.PointToScreen(Point.Empty);
+                SetLocation(point);
+                Location = point;
             }
-            temp?.Dispose(); temp = null;
+            PrintCache();
+        }
+        private void Parent_SizeChanged(object? sender, EventArgs e)
+        {
+            if (control == null)
+            {
+                if (form is Window window)
+                {
+                    SetSize(window.Size);
+                    SetLocation(window.Location);
+                    Size = window.Size;
+                    Location = window.Location;
+                }
+                else
+                {
+                    SetSize(form.Size);
+                    SetLocation(form.Location);
+                    Size = form.Size;
+                    Location = form.Location;
+                }
+            }
+            else
+            {
+                var point = control.PointToScreen(Point.Empty);
+                SetLocation(point);
+                SetSize(control.Size);
+                Size = control.Size;
+                Location = point;
+            }
+            temp?.Dispose();
+            temp = null;
             Print();
         }
 
         protected override void Dispose(bool disposing)
         {
-            form.LocationChanged -= Form_LSChanged;
-            form.SizeChanged -= Form_LSChanged;
+            form.LocationChanged -= Parent_LocationChanged;
+            form.SizeChanged -= Parent_SizeChanged;
             temp?.Dispose();
             temp = null;
             base.Dispose(disposing);
@@ -113,14 +174,24 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                     {
-                        if (Radius > 0)
+                        if (RenderRegion == null)
                         {
-                            using (var path = rect.RoundPath(Radius))
+                            if (Radius > 0)
+                            {
+                                using (var path = rect.RoundPath(Radius))
+                                {
+                                    g.Fill(brush, path);
+                                }
+                            }
+                            else g.Fill(brush, rect);
+                        }
+                        else
+                        {
+                            using (var path = RenderRegion())
                             {
                                 g.Fill(brush, path);
                             }
                         }
-                        else g.Fill(brush, rect);
                     }
                 }
             }

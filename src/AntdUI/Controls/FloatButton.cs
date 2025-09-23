@@ -32,6 +32,24 @@ namespace AntdUI
         /// <summary>
         /// FloatButton 悬浮按钮
         /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="btns">按钮</param>
+        /// <param name="call">回调</param>
+        public static FormFloatButton? open(Target target, ConfigBtn[] btns, Action<ConfigBtn> call) => open(new Config(target, btns, call));
+
+        /// <summary>
+        /// FloatButton 配置
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="btns">按钮</param>
+        /// <param name="call">回调</param>
+        public static Config config(Target target, ConfigBtn[] btns, Action<ConfigBtn> call) => new Config(target, btns, call);
+
+        #region 窗口
+
+        /// <summary>
+        /// FloatButton 悬浮按钮
+        /// </summary>
         /// <param name="form">所属窗口</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
@@ -40,17 +58,20 @@ namespace AntdUI
         /// <summary>
         /// FloatButton 悬浮按钮
         /// </summary>
+        /// <param name="content">所属控件</param>
+        /// <param name="btns">按钮</param>
+        /// <param name="call">回调</param>
+        public static FormFloatButton? open(Control content, ConfigBtn[] btns, Action<ConfigBtn> call) => open(new Config(content, btns, call));
+
+        /// <summary>
+        /// FloatButton 悬浮按钮
+        /// </summary>
         /// <param name="form">所属窗口</param>
         /// <param name="content">所属控件</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
-        public static FormFloatButton? open(Form form, Control content, ConfigBtn[] btns, Action<ConfigBtn> call)
-        {
-            return open(new Config(form, btns, call)
-            {
-                Control = content
-            });
-        }
+        [Obsolete]
+        public static FormFloatButton? open(Form form, Control content, ConfigBtn[] btns, Action<ConfigBtn> call) => open(new Config(content, btns, call));
 
         /// <summary>
         /// FloatButton 配置
@@ -63,17 +84,22 @@ namespace AntdUI
         /// <summary>
         /// FloatButton 配置
         /// </summary>
+        /// <param name="content">所属控件</param>
+        /// <param name="btns">按钮</param>
+        /// <param name="call">回调</param>
+        public static Config config(Control content, ConfigBtn[] btns, Action<ConfigBtn> call) => new Config(content, btns, call);
+
+        /// <summary>
+        /// FloatButton 配置
+        /// </summary>
         /// <param name="form">所属窗口</param>
         /// <param name="content">所属控件</param>
         /// <param name="btns">按钮</param>
         /// <param name="call">回调</param>
-        public static Config config(Form form, Control content, ConfigBtn[] btns, Action<ConfigBtn> call)
-        {
-            return new Config(form, btns, call)
-            {
-                Control = content
-            };
-        }
+        [Obsolete]
+        public static Config config(Form form, Control content, ConfigBtn[] btns, Action<ConfigBtn> call) => new Config(content, btns, call);
+
+        #endregion
 
         /// <summary>
         /// FloatButton 悬浮按钮
@@ -81,11 +107,11 @@ namespace AntdUI
         /// <param name="config">配置</param>
         public static FormFloatButton? open(this Config config)
         {
-            if (config.Form.IsHandleCreated)
+            if (config.Target.IsCreated(out var invoke, out var obj))
             {
-                if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<FormFloatButton?>(() => open(config)));
+                if (invoke) return ITask.Invoke(obj!, new Func<FormFloatButton?>(() => open(config)));
                 var floatButton = new LayeredFormFloatButton(config);
-                floatButton.Show(config.Form);
+                config.Target.Show(floatButton);
                 return floatButton;
             }
             return null;
@@ -97,32 +123,55 @@ namespace AntdUI
         public class Config
         {
             /// <summary>
-            /// 配置
+            /// FloatButton 配置
             /// </summary>
-            /// <param name="form">所属窗口</param>
+            /// <param name="target">目标</param>
             /// <param name="btns">按钮</param>
             /// <param name="call">回调</param>
-            public Config(Form form, ConfigBtn[] btns, Action<ConfigBtn> call)
+            public Config(Target target, ConfigBtn[] btns, Action<ConfigBtn> call)
             {
-                Form = form;
+                Target = target;
                 Btns = btns;
                 Call = call;
             }
 
             /// <summary>
+            /// FloatButton 配置
+            /// </summary>
+            /// <param name="form">所属窗口</param>
+            /// <param name="btns">按钮</param>
+            /// <param name="call">回调</param>
+            public Config(Form form, ConfigBtn[] btns, Action<ConfigBtn> call) : this(new Target(form), btns, call) { }
+
+            /// <summary>
+            /// FloatButton 配置
+            /// </summary>
+            /// <param name="control">所属控件</param>
+            /// <param name="btns">按钮</param>
+            /// <param name="call">回调</param>
+            public Config(Control control, ConfigBtn[] btns, Action<ConfigBtn> call) : this(new Target(control), btns, call) { }
+
+            /// <summary>
+            /// 所属目标
+            /// </summary>
+            public Target Target { get; set; }
+
+            /// <summary>
             /// 所属窗口
             /// </summary>
-            public Form Form { get; set; }
+            [Obsolete("use Target")]
+            public Form Form => Target.GetForm!;
+
+            /// <summary>
+            /// 所属控件
+            /// </summary>
+            [Obsolete("use Target")]
+            public Control? Control => Target.GetControl!;
 
             /// <summary>
             /// 字体
             /// </summary>
             public Font? Font { get; set; }
-
-            /// <summary>
-            /// 所属控件
-            /// </summary>
-            public Control? Control { get; set; }
 
             /// <summary>
             /// 方向

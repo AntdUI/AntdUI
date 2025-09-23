@@ -29,6 +29,8 @@ namespace AntdUI
     /// </summary>
     public static class ContextMenuStrip
     {
+        static ConcurrentDictionary<NotifyIcon, Form> dic = new ConcurrentDictionary<NotifyIcon, Form>();
+
         /// <summary>
         /// ContextMenuStrip 右键菜单
         /// </summary>
@@ -37,7 +39,6 @@ namespace AntdUI
         /// <param name="items">内容</param>
         public static Form? open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0) => open(new Config(control, call, items, sleep));
 
-        static ConcurrentDictionary<NotifyIcon, Form> dic = new ConcurrentDictionary<NotifyIcon, Form>();
         /// <summary>
         /// ContextMenuStrip 右键菜单
         /// </summary>
@@ -65,11 +66,11 @@ namespace AntdUI
         /// <param name="config">配置</param>
         public static Form? open(this Config config)
         {
-            if (config.Control.IsHandleCreated)
+            if (config.Target.IsCreated(out var invoke, out var obj))
             {
-                if (config.Control.InvokeRequired) return ITask.Invoke(config.Control, new Func<Form?>(() => open(config)));
+                if (invoke) return ITask.Invoke(obj!, new Func<Form?>(() => open(config)));
                 var frm = new LayeredFormContextMenuStrip(config);
-                frm.Show(config.Control);
+                config.Target.Show(frm);
                 return frm;
             }
             return null;
@@ -80,18 +81,28 @@ namespace AntdUI
         /// </summary>
         public class Config
         {
-            public Config(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
+            public Config(Target target, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
             {
-                Control = control;
+                Target = target;
                 Call = call;
                 Items = items;
                 CallSleep = sleep;
             }
 
+            public Config(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0) : this(new Target(control), call, items, sleep)
+            {
+            }
+
+            /// <summary>
+            /// 所属目标
+            /// </summary>
+            public Target Target { get; set; }
+
             /// <summary>
             /// 所属控件
             /// </summary>
-            public Control Control { get; set; }
+            [Obsolete("use Target")]
+            public Control Control => Target.GetControl!;
 
             /// <summary>
             /// 菜单内容

@@ -41,8 +41,10 @@ namespace AntdUI
 
             Resizable = false;
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            ShowInTaskbar = false;
             config = _config;
-            if (config.Form != null) TopMost = config.Form.TopMost;
+            config.Target.SetTopMost(Handle);
+            config.Target.SetIcon(this);
             close_button = new ITaskOpacity(nameof(AntdUI.Modal), this);
 
             #region InitializeComponent
@@ -50,16 +52,10 @@ namespace AntdUI
             SuspendLayout();
 
             int butt_h = (int)Math.Round(config.BtnHeight * Config.Dpi);
-            BackColor = Colour.BgElevated.Get("Modal");
+            BackColor = Colour.BgElevated.Get("Modal", config.ColorScheme);
             Size = new Size(416, 122 + butt_h);
-            if (config.Form == null)
-            {
-                if (config.Font != null) Font = config.Font;
-                else if (Config.Font != null) Font = Config.Font;
-            }
-            else Font = config.Font ?? Config.Font ?? config.Form.Font;
-            ForeColor = Colour.TextBase.Get("Modal");
-            ShowInTaskbar = false;
+            config.Target.SetFontConfig(config.Font, this);
+            ForeColor = Colour.TextBase.Get("Modal", config.ColorScheme);
 
             if (butt_h > 0)
             {
@@ -99,7 +95,7 @@ namespace AntdUI
                 panel_main = new Panel
                 {
                     Dock = DockStyle.Bottom,
-                    Back = Colour.BgElevated.Get("Modal"),
+                    Back = Colour.BgElevated.Get("Modal", config.ColorScheme),
                     Size = new Size(368, butt_h)
                 };
                 if (btn_no != null) panel_main.Controls.Add(btn_no);
@@ -391,14 +387,17 @@ namespace AntdUI
             ResumeLayout();
             config.Layered = this;
 
-            if (config.Form == null) StartPosition = FormStartPosition.CenterScreen;
-            else if (config.Form.WindowState == FormWindowState.Minimized || !config.Form.Visible) StartPosition = FormStartPosition.CenterScreen;
-            else
+            if (config.Target.Value is Form form)
             {
-                StartPosition = FormStartPosition.Manual;
-                Top = config.Form.Top + (config.Form.Height - Height) / 2;
-                Left = config.Form.Left + (config.Form.Width - Width) / 2;
+                if (form.WindowState == FormWindowState.Minimized || !form.Visible) StartPosition = FormStartPosition.CenterScreen;
+                else
+                {
+                    StartPosition = FormStartPosition.Manual;
+                    Top = form.Top + (form.Height - Height) / 2;
+                    Left = form.Left + (form.Width - Width) / 2;
+                }
             }
+            else StartPosition = FormStartPosition.CenterScreen;
         }
 
         /// <summary>
@@ -496,21 +495,21 @@ namespace AntdUI
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get("Modal")), path);
+                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get("Modal", config.ColorScheme)), path);
                     }
-                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal"), .6F);
+                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal", config.ColorScheme), .6F);
                 }
                 else if (close_button.Switch)
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Colour.FillSecondary.Get("Modal"), path);
+                        g.Fill(Colour.FillSecondary.Get("Modal", config.ColorScheme), path);
                     }
-                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal"), .6F);
+                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal", config.ColorScheme), .6F);
                 }
-                else g.PaintIconClose(rect_close, Colour.TextTertiary.Get("Modal"), .6F);
+                else g.PaintIconClose(rect_close, Colour.TextTertiary.Get("Modal", config.ColorScheme), .6F);
             }
-            using (var brush = new SolidBrush(Colour.Text.Get("Modal")))
+            using (var brush = new SolidBrush(Colour.Text.Get("Modal", config.ColorScheme)))
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
@@ -546,7 +545,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get("Modal").A;
+                close_button.MaxValue = Colour.FillSecondary.Get("Modal", config.ColorScheme).A;
                 close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
             }
@@ -680,9 +679,9 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    BackColor = Colour.BgElevated.Get("Modal");
-                    ForeColor = Colour.TextBase.Get("Modal");
-                    if (panel_main != null) panel_main.Back = Colour.BgElevated.Get("Modal");
+                    BackColor = Colour.BgElevated.Get("Modal", config.ColorScheme);
+                    ForeColor = Colour.TextBase.Get("Modal", config.ColorScheme);
+                    if (panel_main != null) panel_main.Back = Colour.BgElevated.Get("Modal", config.ColorScheme);
                     break;
             }
         }

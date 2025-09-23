@@ -158,6 +158,22 @@ namespace AntdUI
             public Font? Font { get; set; }
 
             /// <summary>
+            /// 背景色
+            /// </summary>
+
+            public Color? Back { get; set; }
+
+            /// <summary>
+            /// 文本色
+            /// </summary>
+            public Color? Fore { get; set; }
+
+            /// <summary>
+            /// 色彩模式
+            /// </summary>
+            public TMode? ColorScheme { get; set; }
+
+            /// <summary>
             /// 控件显示后回调
             /// </summary>
             public Action? OnControlLoad { get; set; }
@@ -229,6 +245,21 @@ namespace AntdUI
             public Config SetFont(Font? value)
             {
                 Font = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetColorScheme(TMode? value)
+            {
+                ColorScheme = value;
                 return this;
             }
             public Config SetAutoClose(int value)

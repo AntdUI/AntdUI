@@ -57,6 +57,78 @@ namespace AntdUI
         /// <summary>
         /// 叠加蒙版
         /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="form">操作对象</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        public static ILayeredFormOpacity FormMask(this Control owner, Form form, bool MaskClosable = false)
+        {
+            var tmp = owner.FindPARENT();
+            if (tmp == null) throw new System.Exception("无法找到父窗口");
+            bool isclose = false;
+            LayeredFormMask mask = new LayeredFormMask(tmp, owner);
+            if (MaskClosable)
+            {
+                try
+                {
+                    mask.Click += (s1, e1) =>
+                    {
+                        form.Close();
+                    };
+                }
+                catch { }
+            }
+            mask.Show(owner);
+            form.FormClosed += (s1, e1) =>
+            {
+                if (isclose) return;
+                isclose = true;
+                mask.IClose();
+            };
+            return mask;
+        }
+
+        /// <summary>
+        /// 叠加蒙版
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="form">操作对象</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        public static ILayeredFormOpacity FormMask(this Target target, Form form, bool MaskClosable = false)
+        {
+            bool isclose = false;
+            LayeredFormMask mask;
+            if (target.Value is Form owner) mask = new LayeredFormMask(owner);
+            else if (target.Value is Control control)
+            {
+                var tmp = control.FindPARENT();
+                if (tmp == null) throw new System.Exception("无法找到父窗口");
+                mask = new LayeredFormMask(tmp, control);
+            }
+            else throw new System.Exception("Target只能是Form或Control");
+            if (MaskClosable)
+            {
+                try
+                {
+                    mask.Click += (s1, e1) =>
+                    {
+                        form.Close();
+                    };
+                }
+                catch { }
+            }
+            target.Show(mask);
+            form.FormClosed += (s1, e1) =>
+            {
+                if (isclose) return;
+                isclose = true;
+                mask.IClose();
+            };
+            return mask;
+        }
+
+        /// <summary>
+        /// 叠加蒙版
+        /// </summary>
         /// <param name="owner">父窗口</param>
         /// <param name="form">操作对象</param>
         /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
