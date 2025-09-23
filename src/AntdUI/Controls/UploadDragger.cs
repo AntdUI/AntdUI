@@ -633,7 +633,7 @@ namespace AntdUI
 
         public FileDropHandler(Control containerControl)
         {
-            ContainerControl = containerControl ?? throw new ArgumentNullException("control", "control is null.");
+            ContainerControl = containerControl;
             if (containerControl.IsDisposed) throw new ObjectDisposedException("control");
             var status = new ChangeFilterStruct { CbSize = 8 };
 

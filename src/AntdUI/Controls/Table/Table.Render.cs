@@ -520,10 +520,13 @@ namespace AntdUI
         void PaintBgRowFront(Canvas g, StyleRow row)
         {
             if (row.style != null && row.style.BackColor.HasValue) g.Fill(row.style.BackColor.Value, row.row.RECT);
-            if (selectedIndex.Contains(row.row.INDEX) || selects.Contains(row.row.INDEX_REAL))
+            if (row.row.Type == RowType.None)
             {
-                g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table", ColorScheme), row.row.RECT);
-                if (selectedIndex.Contains(row.row.INDEX) && selects.Contains(row.row.INDEX_REAL)) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table", ColorScheme)), row.row.RECT);
+                if (selectedIndex.Contains(row.row.INDEX) || selects.Contains(row.row.INDEX_REAL))
+                {
+                    g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get("Table", ColorScheme), row.row.RECT);
+                    if (selectedIndex.Contains(row.row.INDEX) && selects.Contains(row.row.INDEX_REAL)) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get("Table", ColorScheme)), row.row.RECT);
+                }
             }
         }
 
