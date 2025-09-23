@@ -185,12 +185,7 @@ namespace AntdUI
                     var rect_read = new Rectangle(shadow, shadow, rect.Width - shadow2, rect.Height - shadow2);
                     using (var path = rect_read.RoundPath(Radius))
                     {
-                        if (shadow_temp == null)
-                        {
-                            shadow_temp?.Dispose();
-                            shadow_temp = path.PaintShadow(rect.Width, rect.Height, shadow);
-                        }
-
+                        shadow_temp ??= path.PaintShadow(rect.Width, rect.Height, shadow);
                         g.Image(shadow_temp.Bitmap, rect, .2F);
                         PrintBg(g, rect_read, path);
                     }
@@ -212,6 +207,12 @@ namespace AntdUI
         }
 
         SafeBitmap? shadow_temp;
+
+        protected override void Dispose(bool disposing)
+        {
+            ClearShadow();
+            base.Dispose(disposing);
+        }
     }
 
     public abstract class ILayeredShadowFormOpacity : ILayeredFormOpacity
@@ -346,12 +347,7 @@ namespace AntdUI
                     var rect_read = new Rectangle(shadow, shadow, rect.Width - shadow2, rect.Height - shadow2);
                     using (var path = rect_read.RoundPath(Radius))
                     {
-                        if (shadow_temp == null)
-                        {
-                            shadow_temp?.Dispose();
-                            shadow_temp = path.PaintShadow(rect.Width, rect.Height, shadow);
-                        }
-
+                        shadow_temp ??= path.PaintShadow(rect.Width, rect.Height, shadow);
                         g.Image(shadow_temp.Bitmap, rect, .2F);
                         PrintBg(g, rect_read, path);
                     }
@@ -373,5 +369,11 @@ namespace AntdUI
         }
 
         SafeBitmap? shadow_temp;
+
+        protected override void Dispose(bool disposing)
+        {
+            ClearShadow();
+            base.Dispose(disposing);
+        }
     }
 }

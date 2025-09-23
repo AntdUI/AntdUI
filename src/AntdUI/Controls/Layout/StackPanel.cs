@@ -417,6 +417,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            foreach (Control c in Controls) c.GotFocus -= Control_GotFocus;
             ScrollBar?.Dispose();
             base.Dispose(disposing);
         }

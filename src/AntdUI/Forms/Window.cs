@@ -78,6 +78,12 @@ namespace AntdUI
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            IsAddMessage = false;
+            base.Dispose(disposing);
+        }
+
         /// <summary>
         /// 确定窗体是否出现在 Windows 任务栏中
         /// </summary>

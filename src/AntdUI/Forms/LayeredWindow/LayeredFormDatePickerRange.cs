@@ -706,7 +706,7 @@ namespace AntdUI
         void LoadLayout() => Helper.GDI(g => LoadLayout(g));
         void LoadLayout(Canvas g)
         {
-            base.ClearShadow();
+            ClearShadow();
             var size = g.MeasureString(Config.NullText, Font);
             bor = (int)(size.Height * 0.1F);
             int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;

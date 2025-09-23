@@ -622,6 +622,8 @@ namespace AntdUI
             task_start?.Dispose();
             config.OnClose?.Invoke();
             config.OnClose = null;
+            shadow_temp?.Dispose();
+            shadow_temp = null;
             base.Dispose(disposing);
         }
 

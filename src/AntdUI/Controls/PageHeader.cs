@@ -395,17 +395,7 @@ namespace AntdUI
             hove_max.Dispose();
             hove_min.Dispose();
             ThreadLoading?.Dispose();
-            temp_logo?.Dispose();
-            temp_back?.Dispose();
-            temp_back_hover?.Dispose();
-            temp_back_down?.Dispose();
-            temp_full?.Dispose();
-            temp_full_restore?.Dispose();
-            temp_min?.Dispose();
-            temp_max?.Dispose();
-            temp_restore?.Dispose();
-            temp_close?.Dispose();
-            temp_close_hover?.Dispose();
+            DisposeBmp();
             base.Dispose(disposing);
         }
         ITask? ThreadLoading;
@@ -1090,6 +1080,7 @@ namespace AntdUI
             temp_max?.Dispose();
             temp_restore?.Dispose();
             temp_close?.Dispose();
+            temp_close_hover?.Dispose();
             temp_logo = null;
             temp_back = temp_back_hover = temp_back_down = null;
             temp_full = null;
@@ -1098,6 +1089,7 @@ namespace AntdUI
             temp_max = null;
             temp_restore = null;
             temp_close = null;
+            temp_close_hover = null;
         }
 
         #endregion
