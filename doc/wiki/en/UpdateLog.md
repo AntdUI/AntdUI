@@ -1,5 +1,23 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.7` 2025-09-24
+
+- ➕ HyperlinkLabel Control
+- ➕ Modal/Message/Notification/FloatButton/ContextMenuStrip Target supports richer targets
+- ➕ Popover/Modal/Drawer color mode
+- ➕ Popoover Config Back, Fore property settings
+- ➕ StackPanel RightToLeft support
+- ➕ PageHeader UseForeColorDrawIcons property
+- ✍️ DatePickerRange dropdown rendering does not activate Value
+- ✍️ Collapse fixes the issue where FontExpand. Size<Font. Size does not display
+- ✍️ DatePicker series dropdown logo
+- ✍️ Table Activation Status and Summary Column
+- ✍️ Binding moves rows without refreshing
+- ✍️ Table BorderHigh Precision
+- ✍️ Watermark memory overflow
+- ✍️ Optimize code logic and memory overflow
+- 🧹 Refactoring the scrollbar in FlowLayoutPanel
+
 ### `2.1.6` 2025-09-19
 
 - ➕ Config DpiMode
