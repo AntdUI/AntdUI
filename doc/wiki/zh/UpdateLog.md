@@ -1,5 +1,23 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.7` 2025-09-24
+
+- ➕ HyperlinkLabel 控件
+- ➕ Modal/Message/Notification/FloatButton/ContextMenuStrip Target 支持 更丰富的目标
+- ➕ Popover/Modal/Drawer 色彩模式
+- ➕ Popover Config Back, Fore属性设置
+- ➕ StackPanel RightToLeft 支持
+- ➕ PageHeader UseForeColorDrawIcons 属性
+- ✍️ DatePickerRange 下拉渲染不激活Value
+- ✍️ Collapse 修正FontExpand.Size < Font.Size时不显示的问题
+- ✍️ DatePicker 系下拉徽标
+- ✍️ Table 激活态和总结列
+- ✍️ Binding 移动行不刷新
+- ✍️ Table BorderHigh 精度
+- ✍️ Watermark 内存溢出
+- ✍️ 优化代码逻辑和内存溢出
+- 🧹 FlowLayoutPanel 重构滚动条
+
 ### `2.1.6` 2025-09-19
 
 - ➕ Config DpiMode
