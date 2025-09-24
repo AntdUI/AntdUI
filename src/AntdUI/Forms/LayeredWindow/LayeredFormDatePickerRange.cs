@@ -538,7 +538,7 @@ namespace AntdUI
                     var rect = rect_div[p + it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        switch (IfDSType(it.date))
+                        switch (IfDSType(it.date, it.date_str, "yyyy-MM-dd"))
                         {
                             case 0:
                                 if (it.enable)
@@ -604,7 +604,7 @@ namespace AntdUI
                     var rect = rect_div[p + it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        switch (IfDSType(it.date))
+                        switch (IfDSType(it.date, it.date_str, f))
                         {
                             case 0:
                                 if (it.enable)
@@ -658,18 +658,18 @@ namespace AntdUI
 
         #endregion
 
-        int IfDSType(DateTime date)
+        int IfDSType(DateTime date, string date_str, string f)
         {
             if (oldTimeHover.HasValue && oldTime.HasValue)
             {
                 bool c = oldTime.Value < oldTimeHover.Value;
-                if (date == oldTime.Value)
+                if (date_str == oldTime.Value.ToString(f))
                 {
                     if (oldTime.Value == oldTimeHover.Value) return 1;
                     if (c) return 3;// ←
                     else return 4;// →
                 }
-                else if (date == oldTimeHover.Value)
+                else if (date_str == oldTimeHover.Value.ToString(f))
                 {
                     if (oldTime.Value == oldTimeHover.Value) return 1;
                     if (c) return 4;// →
