@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace AntdUI.In
 {
-    public class FlowLayoutPanel : System.Windows.Forms.FlowLayoutPanel
+    public class FlowLayoutPanel : System.Windows.Forms.FlowLayoutPanel, IScrollBar
     {
         public FlowLayoutPanel()
         {
@@ -36,12 +36,12 @@ namespace AntdUI.In
                 ControlStyles.ResizeRedraw |
                 ControlStyles.UserPaint, true);
             UpdateStyles();
-            scrollY = new ScrollY(this);
+            ScrollBar = new ScrollBar(this);
         }
 
         #region 属性
 
-        ScrollY scrollY;
+        ScrollBar ScrollBar;
 
         #region 为空
 
@@ -71,7 +71,7 @@ namespace AntdUI.In
             {
                 if (scrollYVisible == value) return;
                 scrollYVisible = value;
-                if (!value) scrollY.SetVrSize(0, 0);
+                if (!value) ScrollBar.SetVrSize(0);
                 OnSizeChanged(EventArgs.Empty);
             }
         }
@@ -80,7 +80,7 @@ namespace AntdUI.In
             get
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
-                if (scrollYVisible) return new Rectangle(rect.X, rect.Y - VerticalScroll.Value, rect.Width - scrollY.Rect.Width, rect.Height);
+                if (scrollYVisible) rect.Width -= ScrollBar.SIZE;
                 return rect;
             }
         }
@@ -98,7 +98,7 @@ namespace AntdUI.In
             LoadScroll();
             var g = e.Graphics.High();
             if (Empty && (Controls == null || Controls.Count == 0)) g.PaintEmpty(ClientRectangle, Font, Colour.Text.Get("FlowLayoutPanel"), EmptyText, EmptyImage);
-            if (ScrollYVisible) scrollY.Paint(g);
+            if (ScrollYVisible) ScrollBar.Paint(g);
             base.OnPaint(e);
         }
 
@@ -109,11 +109,11 @@ namespace AntdUI.In
             var rect = ClientRectangle;
             if (ScrollYVisible)
             {
-                scrollY.SizeChange(rect);
+                ScrollBar.SizeChange(rect);
                 if (ScrollYVisible)
                 {
-                    scrollY.SetVrSize(VerticalScroll.Maximum, rect.Height);
-                    scrollY.Value = VerticalScroll.Value;
+                    ScrollBar.SetVrSize(VerticalScroll.Maximum);
+                    ScrollBar.Value = VerticalScroll.Value;
                 }
             }
         }
@@ -139,23 +139,37 @@ namespace AntdUI.In
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (scrollY.MouseDown(e.Location, value => { VerticalScroll.Value = (int)value; })) base.OnMouseDown(e);
+            if (ScrollBar.MouseDown(e.X, e.Y)) base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            scrollY.MouseUp(e.Location);
+            ScrollBar.MouseUp();
             base.OnMouseUp(e);
         }
         protected override void OnMouseLeave(EventArgs e)
         {
-            scrollY.Leave();
+            ScrollBar.Leave();
             base.OnMouseLeave(e);
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (scrollY.MouseMove(e.Location, value => { VerticalScroll.Value = (int)value; })) base.OnMouseMove(e);
+            if (ScrollBar.MouseMove(e.X, e.Y)) base.OnMouseMove(e);
         }
+
+        public void OnShowXChanged(bool value)
+        {
+        }
+
+        public void OnShowYChanged(bool value)
+        {
+        }
+
+        public void OnValueXChanged(int value)
+        {
+        }
+
+        public void OnValueYChanged(int value) => VerticalScroll.Value = value;
 
         private const int WM_PAINT = 0x000F;
         private const int WM_ERASEBKGND = 0x0014;

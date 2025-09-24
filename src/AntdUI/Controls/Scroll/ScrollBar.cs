@@ -33,6 +33,16 @@ namespace AntdUI
 
         #region 布局容器
 
+        public ScrollBar(FlowLayoutPanel control)
+        {
+            EnabledY = true;
+            Invalidate = rect =>
+            {
+                if (rect.HasValue) control.Invalidate(rect.Value);
+                else control.Invalidate();
+            };
+            Init();
+        }
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
         {
             ColorScheme = control.ColorScheme;
