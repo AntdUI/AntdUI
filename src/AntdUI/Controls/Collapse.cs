@@ -707,7 +707,7 @@ namespace AntdUI
             if (item.Expand && FontExpand != null)
             {
                 fnt = FontExpand;
-                int fs = (int)(fnt.Size - Font.Size);
+                int fs = fnt.Size > Font.Size ? (int)(fnt.Size - Font.Size) : 0;
                 rect.Inflate(fs, fs);
             }
             if (item.Expand && foreActive.HasValue) g.String(item.Text, fnt, foreActive.Value, rect, s_l);
