@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -193,6 +194,9 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        [Description("自动调用默认浏览器打开超链接"), Category("Behavior"), DefaultValue(typeof(bool), "False")]
+        public bool LinkAutoNavigation { get; set; }
 
         #endregion
 
@@ -406,7 +410,7 @@ namespace AntdUI
                 return;
             }
             var linkParts = new List<LinkPart>();
-            string pattern = @"<a\s+href=(\w+)>([^<]+)</a>";
+            string pattern = @"<a\s+[^>]*href=[""']?([^""'\s>]+)[""']?[^>]*>([^<]+)</a>";
 
             var matches = Regex.Matches(text, pattern);
             int lastIndex = 0;
@@ -506,7 +510,23 @@ namespace AntdUI
             if (count > 0) Invalidate();
         }
 
-        protected virtual void OnLinkClicked(LinkClickedEventArgs e) => LinkClicked?.Invoke(this, e);
+        protected virtual void OnLinkClicked(LinkClickedEventArgs e)
+        {
+            if (LinkAutoNavigation && Uri.TryCreate(e.Href, UriKind.Absolute, out _))
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = e.Href,
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+                catch { }
+            }
+            LinkClicked?.Invoke(this, e);
+        }
 
         #endregion
 
