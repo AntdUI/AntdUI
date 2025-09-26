@@ -27,6 +27,13 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
+    /// <summary>
+    /// HyperlinkLabel 超链接文本
+    /// </summary>
+    /// <remarks>超链接文本 <a></remarks>
+    [Description("HyperlinkLabel 超链接文本")]
+    [ToolboxItem(true)]
+    [DefaultProperty("Text")]
     [Designer(typeof(IControlDesigner))]
     public class HyperlinkLabel : IControl
     {
@@ -93,6 +100,9 @@ namespace AntdUI
         #region 阴影
 
         int shadow = 0;
+        /// <summary>
+        /// 阴影大小
+        /// </summary>
         [Description("阴影大小"), Category("阴影"), DefaultValue(0)]
         public int Shadow
         {
@@ -106,11 +116,17 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 阴影颜色
+        /// </summary>
         [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ShadowColor { get; set; }
 
         float shadowOpacity = 0.3F;
+        /// <summary>
+        /// 阴影透明度
+        /// </summary>
         [Description("阴影透明度"), Category("阴影"), DefaultValue(0.3F)]
         public float ShadowOpacity
         {
@@ -127,6 +143,9 @@ namespace AntdUI
         }
 
         int shadowOffsetX = 0;
+        /// <summary>
+        /// 阴影偏移X
+        /// </summary>
         [Description("阴影偏移X"), Category("阴影"), DefaultValue(0)]
         public int ShadowOffsetX
         {
@@ -141,6 +160,9 @@ namespace AntdUI
         }
 
         int shadowOffsetY = 0;
+        /// <summary>
+        /// 阴影偏移Y
+        /// </summary>
         [Description("阴影偏移Y"), Category("阴影"), DefaultValue(0)]
         public int ShadowOffsetY
         {
@@ -156,6 +178,9 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 常规状态下链接的样式
+        /// </summary>
         [Category("Appearance")]
         [Description("常规状态下链接的样式")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -169,6 +194,9 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 鼠标悬停时链接的样式
+        /// </summary>
         [Category("Appearance")]
         [Description("鼠标悬停时链接的样式")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -183,6 +211,9 @@ namespace AntdUI
         }
 
         Padding _linkPadding = new(2, 0, 2, 0);
+        /// <summary>
+        /// 链接与周围字符之间的距离
+        /// </summary>
         [Description("链接与周围字符之间的距离"), Category("Appearance"), DefaultValue(typeof(Padding), "2, 0, 2, 0")]
         public Padding LinkPadding
         {
@@ -193,6 +224,12 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
+        /// <summary>
+        /// 自动调用默认浏览器打开超链接
+        /// </summary>
+        [Description("自动调用默认浏览器打开超链接"), Category("Behavior"), DefaultValue(typeof(bool), "False")]
+        public bool LinkAutoNavigation { get; set; }
 
         #endregion
 
@@ -406,7 +443,7 @@ namespace AntdUI
                 return;
             }
             var linkParts = new List<LinkPart>();
-            string pattern = @"<a\s+href=(\w+)>([^<]+)</a>";
+            string pattern = @"<a\s+[^>]*href=[""']?([^""'\s>]+)[""']?[^>]*>([^<]+)</a>";
 
             var matches = Regex.Matches(text, pattern);
             int lastIndex = 0;
@@ -506,7 +543,23 @@ namespace AntdUI
             if (count > 0) Invalidate();
         }
 
-        protected virtual void OnLinkClicked(LinkClickedEventArgs e) => LinkClicked?.Invoke(this, e);
+        protected virtual void OnLinkClicked(LinkClickedEventArgs e)
+        {
+            if (LinkAutoNavigation && Uri.TryCreate(e.Href, UriKind.Absolute, out _))
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = e.Href,
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+                catch { }
+            }
+            LinkClicked?.Invoke(this, e);
+        }
 
         #endregion
 

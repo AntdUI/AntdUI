@@ -682,22 +682,29 @@ namespace AntdUI
 
         void ShowLayeredForm(IList<object> list)
         {
-            if (InvokeRequired)
+            try
             {
-                BeginInvoke(() => ShowLayeredForm(list));
-                return;
+                if (InvokeRequired)
+                {
+                    BeginInvoke(() => ShowLayeredForm(list));
+                    return;
+                }
+                Expand = true;
+                if (CheckMode) subForm = new LayeredFormSelectMultipleCheck(this, list, filtertext);
+                else subForm = new LayeredFormSelectMultiple(this, list, filtertext);
+                subForm.Disposed += (a, b) =>
+                {
+                    select_x = 0;
+                    subForm = null;
+                    Expand = false;
+                    ExpandDrop = false;
+                };
+                subForm.Show(this);
             }
-            Expand = true;
-            if (CheckMode) subForm = new LayeredFormSelectMultipleCheck(this, list, filtertext);
-            else subForm = new LayeredFormSelectMultiple(this, list, filtertext);
-            subForm.Disposed += (a, b) =>
+            catch
             {
-                select_x = 0;
                 subForm = null;
-                Expand = false;
-                ExpandDrop = false;
-            };
-            subForm.Show(this);
+            }
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)

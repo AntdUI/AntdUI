@@ -510,6 +510,7 @@ namespace AntdUI
                         else
                         {
                             subForm?.IClose();
+                            subForm = null;
                             expandDrop = false;
                         }
                     }
@@ -526,6 +527,7 @@ namespace AntdUI
                 else
                 {
                     subForm?.IClose();
+                    subForm = null;
                     filtertext = "";
                 }
             }
@@ -533,21 +535,28 @@ namespace AntdUI
 
         void ShowLayeredForm(IList<object> list)
         {
-            if (InvokeRequired)
+            try
             {
-                BeginInvoke(() => ShowLayeredForm(list));
-                return;
+                if (InvokeRequired)
+                {
+                    BeginInvoke(() => ShowLayeredForm(list));
+                    return;
+                }
+                Expand = true;
+                subForm = new LayeredFormSelectDown(this, list, filtertext);
+                subForm.Show(this);
+                subForm.Disposed += (a, b) =>
+                {
+                    select_x = 0;
+                    subForm = null;
+                    Expand = false;
+                    ExpandDrop = false;
+                };
             }
-            Expand = true;
-            subForm = new LayeredFormSelectDown(this, list, filtertext);
-            subForm.Disposed += (a, b) =>
+            catch
             {
-                select_x = 0;
                 subForm = null;
-                Expand = false;
-                ExpandDrop = false;
-            };
-            subForm.Show(this);
+            }
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)

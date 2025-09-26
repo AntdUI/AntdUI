@@ -127,14 +127,13 @@ namespace AntdUI
         [Description("速度"), Category("动画"), DefaultValue(400)]
         public int Duration { get; set; } = 400;
 
-
         #region 阴影
 
         int shadow = 0;
         /// <summary>
         /// 阴影大小
         /// </summary>
-        [Description("阴影"), Category("外观"), DefaultValue(0)]
+        [Description("阴影大小"), Category("阴影"), DefaultValue(0)]
         public int Shadow
         {
             get => shadow;
@@ -143,6 +142,7 @@ namespace AntdUI
                 if (shadow == value) return;
                 shadow = value;
                 Invalidate();
+                OnPropertyChanged(nameof(Shadow));
             }
         }
 
@@ -168,6 +168,7 @@ namespace AntdUI
                 else if (value > 1) value = 1;
                 shadowOpacity = value;
                 Invalidate();
+                OnPropertyChanged(nameof(ShadowOpacity));
             }
         }
 
@@ -184,6 +185,7 @@ namespace AntdUI
                 if (shadowOffsetX == value) return;
                 shadowOffsetX = value;
                 Invalidate();
+                OnPropertyChanged(nameof(ShadowOffsetX));
             }
         }
 
@@ -200,6 +202,7 @@ namespace AntdUI
                 if (shadowOffsetY == value) return;
                 shadowOffsetY = value;
                 Invalidate();
+                OnPropertyChanged(nameof(ShadowOffsetY));
             }
         }
 

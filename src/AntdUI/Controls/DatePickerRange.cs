@@ -325,26 +325,32 @@ namespace AntdUI
                         int bar = 0;
                         if (EndFocused) bar = rect_d_r.X;
                         else bar = rect_d_l.X;
-
-                        if (ShowTime)
+                        try
                         {
-                            subForm = new LayeredFormDatePickerRangeTime(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
-                            subForm.Disposed += (a, b) =>
+                            if (ShowTime)
                             {
-                                subForm = null;
-                                ExpandDrop = false;
-                            };
-                            subForm.Show(this);
+                                subForm = new LayeredFormDatePickerRangeTime(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                                subForm.Disposed += (a, b) =>
+                                {
+                                    subForm = null;
+                                    ExpandDrop = false;
+                                };
+                                subForm.Show(this);
+                            }
+                            else
+                            {
+                                subForm = new LayeredFormDatePickerRange(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                                subForm.Disposed += (a, b) =>
+                                {
+                                    subForm = null;
+                                    ExpandDrop = false;
+                                };
+                                subForm.Show(this);
+                            }
                         }
-                        else
+                        catch
                         {
-                            subForm = new LayeredFormDatePickerRange(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
-                            subForm.Disposed += (a, b) =>
-                            {
-                                subForm = null;
-                                ExpandDrop = false;
-                            };
-                            subForm.Show(this);
+                            subForm = null;
                         }
                     }
                 }
