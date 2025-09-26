@@ -46,8 +46,8 @@ namespace AntdUI
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
         {
             ColorScheme = control.ColorScheme;
-            OnInvalidate = ChangeSize = () => control.IOnSizeChanged();
-            Invalidate = rect => OnInvalidate?.Invoke();
+            ChangeSize = () => control.IOnSizeChanged();
+            Invalidate = rect => control.IOnSizeChanged();
             EnabledX = enabledX;
             EnabledY = enabledY;
             Init();
@@ -55,8 +55,8 @@ namespace AntdUI
         public ScrollBar(StackPanel control)
         {
             ColorScheme = control.ColorScheme;
-            OnInvalidate = ChangeSize = () => control.IOnSizeChanged();
-            Invalidate = rect => OnInvalidate?.Invoke();
+            ChangeSize = () => control.IOnSizeChanged();
+            Invalidate = rect => control.IOnSizeChanged();
             if (control.Vertical) EnabledY = true;
             else EnabledX = true;
             Init();
@@ -65,8 +65,8 @@ namespace AntdUI
         {
             Back = false;
             ColorScheme = colorScheme;
-            OnInvalidate = ChangeSize = () => control.Print();
-            Invalidate = rect => OnInvalidate?.Invoke();
+            ChangeSize = () => control.Print();
+            Invalidate = rect => control.Print();
             EnabledY = true;
             EnabledX = false;
             Init();
@@ -82,7 +82,6 @@ namespace AntdUI
             RB = radiusy;
             Invalidate = rect =>
             {
-                OnInvalidate?.Invoke();
                 if (rect.HasValue) control.Invalidate(rect.Value);
                 else control.Invalidate();
             };
@@ -102,7 +101,6 @@ namespace AntdUI
 
         Action? ChangeSize;
         Action<Rectangle?> Invalidate;
-        internal Action? OnInvalidate;
 
         /// <summary>
         /// 是否显示背景

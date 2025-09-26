@@ -225,6 +225,9 @@ namespace AntdUI
         }
 
         TAlignMini shadowAlign = TAlignMini.None;
+        /// <summary>
+        /// 阴影方向
+        /// </summary>
         [Description("阴影方向"), Category("阴影"), DefaultValue(TAlignMini.None)]
         public TAlignMini ShadowAlign
         {

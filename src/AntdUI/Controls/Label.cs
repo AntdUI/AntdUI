@@ -332,6 +332,9 @@ namespace AntdUI
         #region 阴影
 
         int shadow = 0;
+        /// <summary>
+        /// 阴影大小
+        /// </summary>
         [Description("阴影大小"), Category("阴影"), DefaultValue(0)]
         public int Shadow
         {
@@ -345,11 +348,17 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 阴影颜色
+        /// </summary>
         [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ShadowColor { get; set; }
 
         float shadowOpacity = 0.3F;
+        /// <summary>
+        /// 阴影透明度
+        /// </summary>
         [Description("阴影透明度"), Category("阴影"), DefaultValue(0.3F)]
         public float ShadowOpacity
         {
@@ -366,6 +375,9 @@ namespace AntdUI
         }
 
         int shadowOffsetX = 0;
+        /// <summary>
+        /// 阴影偏移X
+        /// </summary>
         [Description("阴影偏移X"), Category("阴影"), DefaultValue(0)]
         public int ShadowOffsetX
         {
@@ -380,6 +392,9 @@ namespace AntdUI
         }
 
         int shadowOffsetY = 0;
+        /// <summary>
+        /// 阴影偏移Y
+        /// </summary>
         [Description("阴影偏移Y"), Category("阴影"), DefaultValue(0)]
         public int ShadowOffsetY
         {

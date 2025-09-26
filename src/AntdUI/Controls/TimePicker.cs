@@ -153,13 +153,20 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
-                        subForm = new LayeredFormTimePicker(this, _value, date => Value = date);
-                        subForm.Disposed += (a, b) =>
+                        try
+                        {
+                            subForm = new LayeredFormTimePicker(this, _value, date => Value = date);
+                            subForm.Disposed += (a, b) =>
+                            {
+                                subForm = null;
+                                ExpandDrop = false;
+                            };
+                            subForm.Show(this);
+                        }
+                        catch
                         {
                             subForm = null;
-                            ExpandDrop = false;
-                        };
-                        subForm.Show(this);
+                        }
                     }
                 }
                 else subForm?.IClose();

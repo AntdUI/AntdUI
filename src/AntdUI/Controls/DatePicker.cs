@@ -215,13 +215,20 @@ namespace AntdUI
                 {
                     if (subForm == null)
                     {
-                        subForm = new LayeredFormDatePicker(this, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
-                        subForm.Disposed += (a, b) =>
+                        try
+                        {
+                            subForm = new LayeredFormDatePicker(this, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                            subForm.Disposed += (a, b) =>
+                            {
+                                subForm = null;
+                                ExpandDrop = false;
+                            };
+                            subForm.Show(this);
+                        }
+                        catch
                         {
                             subForm = null;
-                            ExpandDrop = false;
-                        };
-                        subForm.Show(this);
+                        }
                     }
                 }
                 else subForm?.IClose();

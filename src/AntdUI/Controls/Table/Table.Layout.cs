@@ -42,6 +42,7 @@ namespace AntdUI
                 if (show_oldrect == show_rect) return;
                 show_oldrect = show_rect;
                 LoadLayout(rect);
+                EditModeClose();
                 base.OnSizeChanged(e);
             }
         }
@@ -609,10 +610,12 @@ namespace AntdUI
         public virtual void OnShowYChanged(bool value) { }
         public virtual void OnValueXChanged(int value)
         {
+            EditModeClose();
         }
         public virtual void OnValueYChanged(int value)
         {
             if (VirtualMode) LoadLayout();
+            EditModeClose();
         }
 
         #region 通用循环

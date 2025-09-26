@@ -122,6 +122,11 @@ namespace AntdUI
         #endregion
 
         /// <summary>
+        /// 全局主题配置
+        /// </summary>
+        public static IThemeConfig? ThemeConfig { get; set; }
+
+        /// <summary>
         /// 触屏使能
         /// </summary>
         public static bool TouchEnabled { get; set; } = true;
