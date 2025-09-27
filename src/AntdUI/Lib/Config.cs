@@ -121,10 +121,18 @@ namespace AntdUI
 
         #endregion
 
+        #region 主题配置
+
         /// <summary>
         /// 全局主题配置
         /// </summary>
         public static IThemeConfig? ThemeConfig { get; set; }
+
+        public static IThemeConfig Theme() => ThemeConfig ??= new IThemeConfig();
+
+        public static void ThemeClear() => ThemeConfig = null;
+
+        #endregion
 
         /// <summary>
         /// 触屏使能

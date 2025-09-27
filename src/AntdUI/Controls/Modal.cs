@@ -135,9 +135,51 @@ namespace AntdUI
         /// <param name="config">配置</param>
         public static DialogResult open(this Config config)
         {
-            if (config.Target.Value is Form form)
+            try
             {
-                if (form.WindowState == FormWindowState.Minimized || !form.Visible)
+                if (config.Target.Value is Form form)
+                {
+                    if (form.WindowState == FormWindowState.Minimized || !form.Visible)
+                    {
+                        config.Mask = config.MaskClosable = false;
+                        var dialogResultN = DialogResult.None;
+                        ModalCount++;
+                        dialogResultN = new LayeredFormModal(config).ShowDialog();
+                        ModalCount--;
+                        return dialogResultN;
+                    }
+                    if (!form.IsHandleCreated) config.Mask = config.MaskClosable = false;
+                    if (form.InvokeRequired) return ITask.Invoke(form, new Func<DialogResult>(() => open(config)));
+                    var frm = new LayeredFormModal(config);
+                    ModalCount++;
+                    DialogResult dialogResult;
+                    if (config.Mask) dialogResult = frm.ShowDialog(form.FormMask(frm));
+                    else dialogResult = frm.ShowDialog();
+                    ModalCount--;
+                    return dialogResult;
+                }
+                else if (config.Target.Value is Control control)
+                {
+                    if (!control.Visible)
+                    {
+                        config.Mask = config.MaskClosable = false;
+                        var dialogResultN = DialogResult.None;
+                        ModalCount++;
+                        dialogResultN = new LayeredFormModal(config).ShowDialog();
+                        ModalCount--;
+                        return dialogResultN;
+                    }
+                    if (!control.IsHandleCreated) config.Mask = config.MaskClosable = false;
+                    if (control.InvokeRequired) return ITask.Invoke(control, new Func<DialogResult>(() => open(config)));
+                    var frm = new LayeredFormModal(config);
+                    ModalCount++;
+                    DialogResult dialogResult;
+                    if (config.Mask) dialogResult = frm.ShowDialog(control.FormMask(frm));
+                    else dialogResult = frm.ShowDialog();
+                    ModalCount--;
+                    return dialogResult;
+                }
+                else
                 {
                     config.Mask = config.MaskClosable = false;
                     var dialogResultN = DialogResult.None;
@@ -146,45 +188,10 @@ namespace AntdUI
                     ModalCount--;
                     return dialogResultN;
                 }
-                if (!form.IsHandleCreated) config.Mask = config.MaskClosable = false;
-                if (form.InvokeRequired) return ITask.Invoke(form, new Func<DialogResult>(() => open(config)));
-                var frm = new LayeredFormModal(config);
-                ModalCount++;
-                DialogResult dialogResult;
-                if (config.Mask) dialogResult = frm.ShowDialog(form.FormMask(frm));
-                else dialogResult = frm.ShowDialog();
-                ModalCount--;
-                return dialogResult;
             }
-            else if (config.Target.Value is Control control)
+            catch
             {
-                if (!control.Visible)
-                {
-                    config.Mask = config.MaskClosable = false;
-                    var dialogResultN = DialogResult.None;
-                    ModalCount++;
-                    dialogResultN = new LayeredFormModal(config).ShowDialog();
-                    ModalCount--;
-                    return dialogResultN;
-                }
-                if (!control.IsHandleCreated) config.Mask = config.MaskClosable = false;
-                if (control.InvokeRequired) return ITask.Invoke(control, new Func<DialogResult>(() => open(config)));
-                var frm = new LayeredFormModal(config);
-                ModalCount++;
-                DialogResult dialogResult;
-                if (config.Mask) dialogResult = frm.ShowDialog(control.FormMask(frm));
-                else dialogResult = frm.ShowDialog();
-                ModalCount--;
-                return dialogResult;
-            }
-            else
-            {
-                config.Mask = config.MaskClosable = false;
-                var dialogResultN = DialogResult.None;
-                ModalCount++;
-                dialogResultN = new LayeredFormModal(config).ShowDialog();
-                ModalCount--;
-                return dialogResultN;
+                return DialogResult.None;
             }
         }
 

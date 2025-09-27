@@ -92,6 +92,8 @@ namespace AntdUI
             return themeConfig;
         }
 
+        public void ThemeClear() => themeConfig = null;
+
         internal void SetTheme()
         {
             if (mode == TAMode.Auto)

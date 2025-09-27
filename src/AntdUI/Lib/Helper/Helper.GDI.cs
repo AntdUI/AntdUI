@@ -251,14 +251,29 @@ namespace AntdUI
             if (code != null)
             {
                 var arr = BrushEx(code);
-                if (arr.Length > 1)
-                {
-                    if (arr.Length > 2 && float.TryParse(arr[0], out float deg)) return BrushEx(rect, deg, arr, code.Contains("%"), 1);
-                    else if (arr.Length > 2 && arr[0].EndsWith("deg") && float.TryParse(arr[0].Substring(0, arr[0].Length - 3), out float deg2)) return BrushEx(rect, deg2, arr, code.Contains("%"), 1);
-                    else return BrushEx(rect, 0, arr, code.Contains("%"));
-                }
+                if (arr.Length > 1) return BrushEx(code, arr, rect);
             }
             return new SolidBrush(def);
+        }
+
+        /// <summary>
+        /// 画刷（渐变色）
+        /// </summary>
+        public static bool BrushEx(this string? code, Rectangle rect, Canvas g)
+        {
+            if (code != null)
+            {
+                var arr = BrushEx(code);
+                if (arr.Length > 1)
+                {
+                    using (var brush = BrushEx(code, arr, rect))
+                    {
+                        g.Fill(brush, rect);
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
 
         static string[] BrushEx(string code)
@@ -288,20 +303,27 @@ namespace AntdUI
             return new string[0];
         }
 
-        static LinearGradientBrush BrushEx(Rectangle rect, float deg, string[] arr, bool _in, int start = 0)
+        static LinearGradientBrush BrushEx(string code, string[] cs, Rectangle rect)
         {
-            if (arr.Length > (2 + start))
+            if (cs.Length > 2 && float.TryParse(cs[0], out float deg)) return BrushEx(rect, deg, cs, code.Contains("%"), 1);
+            else if (cs.Length > 2 && cs[0].EndsWith("deg") && float.TryParse(cs[0].Substring(0, cs[0].Length - 3), out float deg2)) return BrushEx(rect, deg2, cs, code.Contains("%"), 1);
+            else return BrushEx(rect, 0, cs, code.Contains("%"));
+        }
+
+        static LinearGradientBrush BrushEx(Rectangle rect, float deg, string[] cs, bool _in, int start = 0)
+        {
+            if (cs.Length > (2 + start))
             {
-                int len = arr.Length - start;
+                int len = cs.Length - start;
                 var colors = new List<Color>(len);
                 var positions = new List<float>(len);
-                for (int i = start; i < arr.Length; i++)
+                for (int i = start; i < cs.Length; i++)
                 {
-                    var arr2 = arr[i].Split(' ');
+                    var arr2 = cs[i].Split(' ');
                     colors.Add(arr2[0].ToColor());
                     if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) positions.Add(result / 100F);
                     else if (i == start) positions.Add(0F);
-                    else if (i == arr.Length - 1) positions.Add(1F);
+                    else if (i == cs.Length - 1) positions.Add(1F);
                 }
                 if (positions.Count != colors.Count)
                 {
@@ -327,12 +349,12 @@ namespace AntdUI
             }
             else if (_in)
             {
-                int len = arr.Length - start;
+                int len = cs.Length - start;
                 var colors = new List<Color>(len);
                 float position = -1;
-                for (int i = start; i < arr.Length; i++)
+                for (int i = start; i < cs.Length; i++)
                 {
-                    var arr2 = arr[i].Split(' ');
+                    var arr2 = cs[i].Split(' ');
                     colors.Add(arr2[0].ToColor());
                     if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) position = result / 100F;
                 }
@@ -350,38 +372,7 @@ namespace AntdUI
                 }
                 return new LinearGradientBrush(rect, colors[0], colors[colors.Count - 1], 270 + deg);
             }
-            else return new LinearGradientBrush(rect, arr[start].Trim().ToColor(), arr[start + 1].Trim().ToColor(), 270 + deg);
-        }
-
-        /// <summary>
-        /// 画刷（渐变色）
-        /// </summary>
-        public static bool BrushEx(this string? code, Rectangle rect, Canvas g)
-        {
-            if (code != null)
-            {
-                var arr = code.Split(',');
-                if (arr.Length > 1)
-                {
-                    if (arr.Length > 2 && float.TryParse(arr[0], out float deg))
-                    {
-                        using (var brush = new LinearGradientBrush(rect, arr[1].Trim().ToColor(), arr[2].Trim().ToColor(), 270 + deg))
-                        {
-                            g.Fill(brush, rect);
-                        }
-                        return true;
-                    }
-                    else
-                    {
-                        using (var brush = new LinearGradientBrush(rect, arr[0].Trim().ToColor(), arr[1].Trim().ToColor(), 270F))
-                        {
-                            g.Fill(brush, rect);
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
+            else return new LinearGradientBrush(rect, cs[start].Trim().ToColor(), cs[start + 1].Trim().ToColor(), 270 + deg);
         }
 
         public static Canvas High(this Graphics g)
