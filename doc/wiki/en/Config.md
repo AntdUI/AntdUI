@@ -24,6 +24,17 @@ bool isdark = AntdUI.Config.IsDark;
 AntdUI.Config.IsDark = true;// Set to dark mode
 ```
 
+#### Configure global switching themes 🔴
+
+> After configuration, forms that inherit [BaseForm](Form/BaseForm.md) will automatically switch themes
+
+``` csharp
+AntdUI.Config.Theme()
+.Light("#fff", "#000") // Light mode background white (#fff) | foreground black (#000)
+.Dark("#000", "#fff") // Dark mode background black (#000) | foreground white (#fff)
+.Header("#f3f3f3", "#111111"); // PageHeader header head background light color light gray (#f3f3f3) | dark background color dark gray (#111111)
+```
+
 ### Animation Off
 
 > Default animation on

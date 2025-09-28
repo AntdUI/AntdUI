@@ -99,7 +99,7 @@ namespace SVGView
             svg = first + last;
             if (more) ReId(ref svg, "fill");
             ReId(ref svg, "p-id");
-            string _tmp = svg.Replace(" >", ">").Replace("\t", "").Replace("\r", "").Replace("\n", "");
+            string _tmp = svg.Replace(" >", ">").Replace("\t", "").Replace("\r", "").Replace("\n", "").Replace("fill=\"white\"", "fill=\"#fff\"").Replace("fill=\"black\"", "fill=\"#000\"");
             while (_tmp.Contains("  ")) _tmp = _tmp.Replace("  ", " ");
             return _tmp.Replace("> <", "><").Trim();
         }

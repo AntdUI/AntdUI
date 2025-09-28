@@ -1,5 +1,17 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.8` 2025-09-28
+
+- ➕ 全局主题配置
+- ➕ PageHeader BackIcon
+- ✍️ 色卡分配符号
+- ✍️ HyperlinkLabel 超链接内容不能正常解析
+- ✍️ DatePicker/Select 下拉并发消息异常
+- ✍️ PageHeader 渐变色 对其
+- ✍️ 丰富 全局主题配置
+- ✍️ 优化 遮罩 稳定性
+- 🧹 Table 编辑模式交互逻辑
+
 ### `2.1.7` 2025-09-24
 
 - ➕ HyperlinkLabel 控件
