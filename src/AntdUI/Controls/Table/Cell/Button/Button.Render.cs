@@ -88,24 +88,24 @@ namespace AntdUI
                     switch (Type)
                     {
                         case TTypeMini.Default:
-                            if (BorderWidth > 0) _back_hover = Colour.PrimaryHover.Get("Button", PARENT.PARENT.ColorScheme);
-                            else _back_hover = Colour.FillSecondary.Get("Button", PARENT.PARENT.ColorScheme);
+                            if (BorderWidth > 0) _back_hover = Colour.PrimaryHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            else _back_hover = Colour.FillSecondary.Get(nameof(Button), PARENT.PARENT.ColorScheme);
                             break;
                         case TTypeMini.Success:
-                            _back_hover = Colour.SuccessHover.Get("Button", PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.SuccessHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
                             break;
                         case TTypeMini.Error:
-                            _back_hover = Colour.ErrorHover.Get("Button", PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.ErrorHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
                             break;
                         case TTypeMini.Info:
-                            _back_hover = Colour.InfoHover.Get("Button", PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.InfoHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
                             break;
                         case TTypeMini.Warn:
-                            _back_hover = Colour.WarningHover.Get("Button", PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.WarningHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
                             break;
                         case TTypeMini.Primary:
                         default:
-                            _back_hover = Colour.PrimaryHover.Get("Button", PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.PrimaryHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
                             break;
                     }
 

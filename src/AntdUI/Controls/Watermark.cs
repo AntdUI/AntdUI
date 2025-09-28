@@ -334,7 +334,7 @@ namespace AntdUI
             if (config.Enabled)
             {
                 using (var g = Graphics.FromImage(original_bmp).HighLay())
-                using (var brush = new SolidBrush(config.ForeColor ?? Style.Db.FillSecondary))
+                using (var brush = new SolidBrush(config.ForeColor ?? Colour.FillSecondary.Get(nameof(Watermark))))
                 {
                     // 计算水印间距
                     int gapX = (int)(config.Gap[0] * Config.Dpi), gapY = (int)(config.Gap[1] * Config.Dpi);

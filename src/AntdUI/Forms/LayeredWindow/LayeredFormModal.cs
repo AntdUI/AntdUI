@@ -52,10 +52,10 @@ namespace AntdUI
             SuspendLayout();
 
             int butt_h = (int)Math.Round(config.BtnHeight * Config.Dpi);
-            BackColor = Colour.BgElevated.Get("Modal", config.ColorScheme);
+            BackColor = Colour.BgElevated.Get(nameof(Modal), config.ColorScheme);
             Size = new Size(416, 122 + butt_h);
             config.Target.SetFontConfig(config.Font, this);
-            ForeColor = Colour.TextBase.Get("Modal", config.ColorScheme);
+            ForeColor = Colour.TextBase.Get(nameof(Modal), config.ColorScheme);
 
             if (butt_h > 0)
             {
@@ -95,7 +95,7 @@ namespace AntdUI
                 panel_main = new Panel
                 {
                     Dock = DockStyle.Bottom,
-                    Back = Colour.BgElevated.Get("Modal", config.ColorScheme),
+                    Back = Colour.BgElevated.Get(nameof(Modal), config.ColorScheme),
                     Size = new Size(368, butt_h)
                 };
                 if (btn_no != null) panel_main.Controls.Add(btn_no);
@@ -495,21 +495,21 @@ namespace AntdUI
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get("Modal", config.ColorScheme)), path);
+                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(Modal), config.ColorScheme)), path);
                     }
-                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal", config.ColorScheme), .6F);
+                    g.PaintIconClose(rect_close, Colour.Text.Get(nameof(Modal), config.ColorScheme), .6F);
                 }
                 else if (close_button.Switch)
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                     {
-                        g.Fill(Colour.FillSecondary.Get("Modal", config.ColorScheme), path);
+                        g.Fill(Colour.FillSecondary.Get(nameof(Modal), config.ColorScheme), path);
                     }
-                    g.PaintIconClose(rect_close, Colour.Text.Get("Modal", config.ColorScheme), .6F);
+                    g.PaintIconClose(rect_close, Colour.Text.Get(nameof(Modal), config.ColorScheme), .6F);
                 }
-                else g.PaintIconClose(rect_close, Colour.TextTertiary.Get("Modal", config.ColorScheme), .6F);
+                else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(nameof(Modal), config.ColorScheme), .6F);
             }
-            using (var brush = new SolidBrush(Colour.Text.Get("Modal", config.ColorScheme)))
+            using (var brush = new SolidBrush(Colour.Text.Get(nameof(Modal), config.ColorScheme)))
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
@@ -545,7 +545,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get("Modal", config.ColorScheme).A;
+                close_button.MaxValue = Colour.FillSecondary.Get(nameof(Modal), config.ColorScheme).A;
                 close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
             }
@@ -679,9 +679,9 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    BackColor = Colour.BgElevated.Get("Modal", config.ColorScheme);
-                    ForeColor = Colour.TextBase.Get("Modal", config.ColorScheme);
-                    if (panel_main != null) panel_main.Back = Colour.BgElevated.Get("Modal", config.ColorScheme);
+                    BackColor = Colour.BgElevated.Get(nameof(Modal), config.ColorScheme);
+                    ForeColor = Colour.TextBase.Get(nameof(Modal), config.ColorScheme);
+                    if (panel_main != null) panel_main.Back = Colour.BgElevated.Get(nameof(Modal), config.ColorScheme);
                     break;
             }
         }

@@ -315,10 +315,10 @@ namespace AntdUI
             {
                 var y = rect_prog.Bottom;
                 rect_prog.Offset(0, -size2);
-                g.DrawText(config.Text, font, config.Fore ?? Colour.Primary.Get("Spin"), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
+                g.DrawText(config.Text, font, config.Fore ?? Colour.Primary.Get(nameof(Spin)), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
-            g.DrawEllipse(Colour.Fill.Get("Spin"), size, rect_prog);
-            using (var brush = new Pen(config.Color ?? Colour.Primary.Get("Spin"), size))
+            g.DrawEllipse(Colour.Fill.Get(nameof(Spin)), size, rect_prog);
+            using (var brush = new Pen(config.Color ?? Colour.Primary.Get(nameof(Spin)), size))
             {
                 brush.StartCap = brush.EndCap = LineCap.Round;
                 if (config.Value.HasValue)
@@ -412,7 +412,7 @@ namespace AntdUI
             var original_bmp = new Bitmap(rect_read.Width, rect_read.Height);
             using (var g = Graphics.FromImage(original_bmp).HighLay(true))
             {
-                using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get("Spin"), .8F)))
+                using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get(nameof(Spin)), .8F)))
                 {
                     if (RenderRegion == null)
                     {

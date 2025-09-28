@@ -204,15 +204,15 @@ namespace AntdUI
             }
             var g = e.Canvas;
             g.TranslateTransform(0, -ScrollBar.Value);
-            Color color_fore = fore ?? Colour.Text.Get("Timeline", ColorScheme);
-            using (var brush_split = new SolidBrush(Colour.Split.Get("Timeline", ColorScheme)))
+            Color color_fore = fore ?? Colour.Text.Get(nameof(Timeline), ColorScheme);
+            using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(Timeline), ColorScheme)))
             {
                 foreach (var it in splits) g.Fill(brush_split, it);
             }
             var font_Description = FontDescription ?? Font;
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get("Timeline", ColorScheme)))
-            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get("Timeline", ColorScheme)))
+            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get(nameof(Timeline), ColorScheme)))
+            using (var brush_dotback = new SolidBrush(Colour.BgBase.Get(nameof(Timeline), ColorScheme)))
             {
                 foreach (var it in items)
                 {
@@ -229,23 +229,23 @@ namespace AntdUI
                                 switch (it.Type)
                                 {
                                     case TTypeMini.Error:
-                                        fill = Colour.Error.Get("Timeline", ColorScheme);
+                                        fill = Colour.Error.Get(nameof(Timeline), ColorScheme);
                                         break;
                                     case TTypeMini.Success:
-                                        fill = Colour.Success.Get("Timeline", ColorScheme);
+                                        fill = Colour.Success.Get(nameof(Timeline), ColorScheme);
                                         break;
                                     case TTypeMini.Info:
-                                        fill = Colour.Info.Get("Timeline", ColorScheme);
+                                        fill = Colour.Info.Get(nameof(Timeline), ColorScheme);
                                         break;
                                     case TTypeMini.Warn:
-                                        fill = Colour.Warning.Get("Timeline", ColorScheme);
+                                        fill = Colour.Warning.Get(nameof(Timeline), ColorScheme);
                                         break;
                                     case TTypeMini.Default:
-                                        fill = Colour.TextQuaternary.Get("Timeline", ColorScheme);
+                                        fill = Colour.TextQuaternary.Get(nameof(Timeline), ColorScheme);
                                         break;
                                     case TTypeMini.Primary:
                                     default:
-                                        fill = Colour.Primary.Get("Timeline", ColorScheme);
+                                        fill = Colour.Primary.Get(nameof(Timeline), ColorScheme);
                                         break;
                                 }
                             }

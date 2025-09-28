@@ -155,6 +155,11 @@ namespace AntdUI
             /// </summary>
             public Action<ContextMenuStripItem> Call { get; set; }
 
+            /// <summary>
+            /// 色彩模式
+            /// </summary>
+            public TAMode ColorScheme { get; set; } = TAMode.Auto;
+
             #region 设置
 
             public Config SetFont(Font? value)
@@ -225,6 +230,12 @@ namespace AntdUI
             public Config SetAlign(TAlign value = TAlign.BR)
             {
                 Align = value;
+                return this;
+            }
+
+            public Config SetColorScheme(TAMode value)
+            {
+                ColorScheme = value;
                 return this;
             }
 

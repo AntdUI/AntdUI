@@ -555,7 +555,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    g.Fill(Colour.BgElevated.Get("Notification"), path);
+                    g.Fill(Colour.BgElevated.Get(nameof(Notification)), path);
                 }
                 if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification", TAMode.Auto);
@@ -566,30 +566,30 @@ namespace AntdUI
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get("Notification")), path);
+                            g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(Notification))), path);
                         }
-                        g.PaintIconClose(rect_close, Colour.Text.Get("Notification"), .6F);
+                        g.PaintIconClose(rect_close, Colour.Text.Get(nameof(Notification)), .6F);
                     }
                     else if (close_button.Switch)
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
                         {
-                            g.Fill(Colour.FillSecondary.Get("Notification"), path);
+                            g.Fill(Colour.FillSecondary.Get(nameof(Notification)), path);
                         }
-                        g.PaintIconClose(rect_close, Colour.Text.Get("Notification"), .6F);
+                        g.PaintIconClose(rect_close, Colour.Text.Get(nameof(Notification)), .6F);
                     }
-                    else g.PaintIconClose(rect_close, Colour.TextTertiary.Get("Notification"), .6F);
+                    else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(nameof(Notification)), .6F);
                 }
-                using (var brush = new SolidBrush(Colour.TextBase.Get("Notification")))
+                using (var brush = new SolidBrush(Colour.TextBase.Get(nameof(Notification))))
                 {
                     g.DrawText(config.Title, font_title, brush, rect_title, s_f_left);
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
                 if (config.Link != null)
                 {
-                    using (var pen = new Pen(Colour.Primary.Get("Notification"), Config.Dpi))
+                    using (var pen = new Pen(Colour.Primary.Get(nameof(Notification)), Config.Dpi))
                     {
-                        g.DrawText(config.Link.Text, Font, Colour.Primary.Get("Notification"), rect_link_text, s_f);
+                        g.DrawText(config.Link.Text, Font, Colour.Primary.Get(nameof(Notification)), rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }
@@ -692,7 +692,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get("Notification", TAMode.Auto).A;
+                close_button.MaxValue = Colour.FillSecondary.Get(nameof(Notification), TAMode.Auto).A;
                 close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
                 if (close_button.Switch)

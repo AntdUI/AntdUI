@@ -28,7 +28,7 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            Color _color = Fill ?? Colour.Primary.Get("Progress", PARENT.PARENT.ColorScheme), _back = Back ?? Colour.FillSecondary.Get("Progress", PARENT.PARENT.ColorScheme);
+            Color _color = Fill ?? Colour.Primary.Get(nameof(Progress), PARENT.PARENT.ColorScheme), _back = Back ?? Colour.FillSecondary.Get(nameof(Progress), PARENT.PARENT.ColorScheme);
             if (Shape == TShape.Circle)
             {
                 float w = Radius * Config.Dpi;

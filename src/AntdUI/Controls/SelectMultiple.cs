@@ -299,7 +299,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var pen = new Pen(Colour.TextQuaternary.Get("Select", ColorScheme), 2F))
+                using (var pen = new Pen(Colour.TextQuaternary.Get(nameof(Select), ColorScheme), 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
                     g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
@@ -479,7 +479,7 @@ namespace AntdUI
         {
             if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)
             {
-                using (var brush = new SolidBrush(Colour.TagDefaultColor.Get("Select", ColorScheme)))
+                using (var brush = new SolidBrush(Colour.TagDefaultColor.Get(nameof(Select), ColorScheme)))
                 {
                     if (rect_lefts.Length > 0)
                     {
@@ -491,14 +491,14 @@ namespace AntdUI
                             {
                                 if (style == null)
                                 {
-                                    g.Fill(Colour.TagDefaultBg.Get("Select", ColorScheme), path);
+                                    g.Fill(Colour.TagDefaultBg.Get(nameof(Select), ColorScheme), path);
                                     var rect_del = rect_left_dels[i];
-                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get("Select", ColorScheme));
+                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
                                     g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                                 }
                                 else
                                 {
-                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Colour.TagDefaultBg.Get("Select", ColorScheme)))
+                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Colour.TagDefaultBg.Get(nameof(Select), ColorScheme)))
                                     {
                                         g.Fill(brushbg, path);
                                     }
@@ -514,7 +514,7 @@ namespace AntdUI
                                     else
                                     {
                                         var rect_del = rect_left_dels[i];
-                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get("Select", ColorScheme));
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
                                         g.String(style.Text, Font, brush, rect_left_txts[i], sf_center);
                                     }
                                 }

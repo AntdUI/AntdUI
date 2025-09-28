@@ -344,28 +344,28 @@ namespace AntdUI
             else
             {
                 float _radius = radius * Config.Dpi;
-                Color back, bor_color, color = Colour.Text.Get("Alert", ColorScheme);
+                Color back, bor_color, color = Colour.Text.Get(nameof(Alert), ColorScheme);
                 switch (icon)
                 {
                     case TType.Success:
-                        back = Colour.SuccessBg.Get("Alert", ColorScheme);
-                        bor_color = Colour.SuccessBorder.Get("Alert", ColorScheme);
+                        back = Colour.SuccessBg.Get(nameof(Alert), ColorScheme);
+                        bor_color = Colour.SuccessBorder.Get(nameof(Alert), ColorScheme);
                         break;
                     case TType.Info:
-                        back = Colour.InfoBg.Get("Alert", ColorScheme);
-                        bor_color = Colour.InfoBorder.Get("Alert", ColorScheme);
+                        back = Colour.InfoBg.Get(nameof(Alert), ColorScheme);
+                        bor_color = Colour.InfoBorder.Get(nameof(Alert), ColorScheme);
                         break;
                     case TType.Warn:
-                        back = Colour.WarningBg.Get("Alert", ColorScheme);
-                        bor_color = Colour.WarningBorder.Get("Alert", ColorScheme);
+                        back = Colour.WarningBg.Get(nameof(Alert), ColorScheme);
+                        bor_color = Colour.WarningBorder.Get(nameof(Alert), ColorScheme);
                         break;
                     case TType.Error:
-                        back = Colour.ErrorBg.Get("Alert", ColorScheme);
-                        bor_color = Colour.ErrorBorder.Get("Alert", ColorScheme);
+                        back = Colour.ErrorBg.Get(nameof(Alert), ColorScheme);
+                        bor_color = Colour.ErrorBorder.Get(nameof(Alert), ColorScheme);
                         break;
                     default:
-                        back = Colour.SuccessBg.Get("Alert", ColorScheme);
-                        bor_color = Colour.SuccessBorder.Get("Alert", ColorScheme);
+                        back = Colour.SuccessBg.Get(nameof(Alert), ColorScheme);
+                        bor_color = Colour.SuccessBorder.Get(nameof(Alert), ColorScheme);
                         break;
                 }
                 using (var path = rect.RoundPath(_radius))
@@ -381,7 +381,7 @@ namespace AntdUI
                             var rect_icon = new Rectangle(gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
                             g.ResetClip();
-                            g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert", ColorScheme), "Alert", ColorScheme);
+                            g.PaintIcons(icon, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
                         }
                     }
                     else
@@ -395,7 +395,7 @@ namespace AntdUI
                         {
                             int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                            g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert", ColorScheme), "Alert", ColorScheme);
+                            g.PaintIcons(icon, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
                             var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 3), rect.Height);
                             g.DrawText(Text, Font, color, rect_txt, sf);
                         }
@@ -406,7 +406,7 @@ namespace AntdUI
                                 int icon_size = (int)(sizeT.Height * 1.2F), gap = (int)(icon_size * .5F);
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
-                                g.PaintIcons(icon, rect_icon, Colour.BgBase.Get("Alert", ColorScheme), "Alert", ColorScheme);
+                                g.PaintIcons(icon, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
 
                                 using (var brush = new SolidBrush(color))
                                 {

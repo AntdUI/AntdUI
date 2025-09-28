@@ -300,12 +300,12 @@ namespace AntdUI
         private void PaintListPanel(Canvas g, Rectangle rect, Rectangle rect_com, Rectangle rect_title, Rectangle rect_checkbox, string title, List<TransferItem> items, ScrollBar scroll, bool selectAll, bool isSource)
         {
             // 获取颜色
-            Color borderColor = BorderColor ?? Colour.BorderColor.Get("Transfer", ColorScheme), foreColor = ForeColor ?? Colour.Text.Get("Transfer", ColorScheme), foreActive = ForeActive ?? Colour.Primary.Get("Transfer", ColorScheme);
+            Color borderColor = BorderColor ?? Colour.BorderColor.Get(nameof(Transfer), ColorScheme), foreColor = ForeColor ?? Colour.Text.Get(nameof(Transfer), ColorScheme), foreActive = ForeActive ?? Colour.Primary.Get(nameof(Transfer), ColorScheme);
 
             // 绘制面板边框和背景
             using (var path = rect.RoundPath(PanelRadius * Config.Dpi))
             {
-                using (var brush = new SolidBrush(Colour.FillQuaternary.Get("Transfer", ColorScheme)))
+                using (var brush = new SolidBrush(Colour.FillQuaternary.Get(nameof(Transfer), ColorScheme)))
                 {
                     g.Fill(brush, path);
                 }
@@ -380,8 +380,8 @@ namespace AntdUI
                 {
                     if (selectAll)
                     {
-                        g.Fill(Colour.Primary.Get("Transfer", ColorScheme), path);
-                        g.DrawLines(Colour.BgBase.Get("Transfer", ColorScheme), 2.6F * Config.Dpi, rect_checkbox.CheckArrow());
+                        g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
+                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Config.Dpi, rect_checkbox.CheckArrow());
                     }
                     else g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Config.Dpi, path);
                 }
@@ -398,14 +398,14 @@ namespace AntdUI
                 {
                     if (it.selected)
                     {
-                        using (var brush = new SolidBrush(BackActive ?? Colour.FillTertiary.Get("Transfer", ColorScheme)))
+                        using (var brush = new SolidBrush(BackActive ?? Colour.FillTertiary.Get(nameof(Transfer), ColorScheme)))
                         {
                             g.Fill(brush, path);
                         }
                     }
                     else if (it.Hover)
                     {
-                        using (var brush = new SolidBrush(BackHover ?? Colour.FillSecondary.Get("Transfer", ColorScheme)))
+                        using (var brush = new SolidBrush(BackHover ?? Colour.FillSecondary.Get(nameof(Transfer), ColorScheme)))
                         {
                             g.Fill(brush, path);
                         }
@@ -417,10 +417,10 @@ namespace AntdUI
                 {
                     if (it.selected)
                     {
-                        g.Fill(Colour.Primary.Get("Transfer", ColorScheme), path);
-                        g.DrawLines(Colour.BgBase.Get("Transfer", ColorScheme), 2.6F * Config.Dpi, it.rect_check.CheckArrow());
+                        g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
+                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Config.Dpi, it.rect_check.CheckArrow());
                     }
-                    else g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Config.Dpi, path);
+                    else g.Draw(Colour.BorderColor.Get(nameof(Transfer), ColorScheme), 2F * Config.Dpi, path);
                 }
 
                 // 绘制项文本
@@ -437,11 +437,11 @@ namespace AntdUI
         private void PaintOperationButtons(Canvas g)
         {
             // 获取颜色
-            var buttonForeColor = ButtonForeColor ?? Colour.Text.Get("Transfer", ColorScheme);
-            var buttonBackColor = ButtonBackColor ?? Colour.FillTertiary.Get("Transfer", ColorScheme);
-            var buttonBackHover = ButtonBackHover ?? Colour.Primary.Get("Transfer", ColorScheme);
-            var buttonBackActive = ButtonBackActive ?? Colour.PrimaryActive.Get("Transfer", ColorScheme);
-            var buttonBackDisable = ButtonBackDisable ?? Colour.FillTertiary.Get("Transfer", ColorScheme);
+            var buttonForeColor = ButtonForeColor ?? Colour.Text.Get(nameof(Transfer), ColorScheme);
+            var buttonBackColor = ButtonBackColor ?? Colour.FillTertiary.Get(nameof(Transfer), ColorScheme);
+            var buttonBackHover = ButtonBackHover ?? Colour.Primary.Get(nameof(Transfer), ColorScheme);
+            var buttonBackActive = ButtonBackActive ?? Colour.PrimaryActive.Get(nameof(Transfer), ColorScheme);
+            var buttonBackDisable = ButtonBackDisable ?? Colour.FillTertiary.Get(nameof(Transfer), ColorScheme);
 
             // 绘制向右按钮
             PaintOperationButton(g, rect_toRight, "RightOutlined", hover_to_right, buttonForeColor, buttonBackColor, buttonBackHover, buttonBackActive, buttonBackDisable);
@@ -458,17 +458,17 @@ namespace AntdUI
             {
                 g.FillEllipse(backColor, rect);
                 g.FillEllipse(backColor.BlendColors(hove.Value, backHover), rect);
-                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get("Transfer", ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(nameof(Transfer), ColorScheme));
             }
             else if (hove.Down)
             {
                 g.FillEllipse(backActive, rect);
-                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get("Transfer", ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(nameof(Transfer), ColorScheme));
             }
             else if (hove.Switch)
             {
                 g.FillEllipse(backHover, rect);
-                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get("Transfer", ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(nameof(Transfer), ColorScheme));
             }
             else if (hove.Enable)
             {
@@ -478,7 +478,7 @@ namespace AntdUI
             else
             {
                 g.FillEllipse(backDisable, rect);
-                DrawSvg(g, icon, iconRect, Colour.TextQuaternary.Get("Transfer", ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.TextQuaternary.Get(nameof(Transfer), ColorScheme));
             }
         }
 

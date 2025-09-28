@@ -48,12 +48,12 @@ namespace AntdUI
                 var bor2 = 2F * Config.Dpi;
                 if (enabled)
                 {
-                    var color = fill ?? Colour.Primary.Get("Checkbox", ColorScheme);
+                    var color = fill ?? Colour.Primary.Get(nameof(Checkbox), ColorScheme);
                     if (AnimationCheck)
                     {
                         float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
                         g.Fill(Helper.ToColor(alpha, color), path);
-                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", ColorScheme)), 2.6F * Config.Dpi))
+                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Config.Dpi))
                         {
                             g.DrawLines(pen, icon_rect.CheckArrow());
                         }
@@ -70,20 +70,20 @@ namespace AntdUI
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Colour.BgBase.Get("Checkbox", ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(nameof(Checkbox), ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
-                        if (AnimationHover) g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme).BlendColors(AnimationHoverValue, color), bor2, path);
+                        if (AnimationHover) g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme).BlendColors(AnimationHoverValue, color), bor2, path);
                         else if (ExtraMouseHover) g.Draw(color, bor2, path);
-                        else g.Draw(Colour.BorderColor.Get("Checkbox", ColorScheme), bor2, path);
+                        else g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
                     }
                 }
                 else
                 {
-                    g.Fill(Colour.FillQuaternary.Get("Checkbox", ColorScheme), path);
-                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get("Checkbox", ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
-                    g.Draw(Colour.BorderColorDisable.Get("Checkbox", ColorScheme), bor2, path);
+                    g.Fill(Colour.FillQuaternary.Get(nameof(Checkbox), ColorScheme), path);
+                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                    g.Draw(Colour.BorderColorDisable.Get(nameof(Checkbox), ColorScheme), bor2, path);
                 }
             }
         }

@@ -171,7 +171,7 @@ namespace AntdUI
             /// <summary>
             /// 色彩模式
             /// </summary>
-            public TMode? ColorScheme { get; set; }
+            public TAMode ColorScheme { get; set; } = TAMode.Auto;
 
             /// <summary>
             /// 控件显示后回调
@@ -257,7 +257,7 @@ namespace AntdUI
                 Back = value;
                 return this;
             }
-            public Config SetColorScheme(TMode? value)
+            public Config SetColorScheme(TAMode value)
             {
                 ColorScheme = value;
                 return this;

@@ -49,6 +49,8 @@ namespace AntdUI
             IcoTableSortUp = "CaretUpFilled",
             IcoTableSortDown = "CaretDownFilled",
             IcoTableFilter = "FilterFilled",
-            IcoTableColumnSort = "HolderOutlined";
+            IcoTableColumnSort = "HolderOutlined",
+
+            IcoPageHeaderBack = "ArrowLeftOutlined";
     }
 }

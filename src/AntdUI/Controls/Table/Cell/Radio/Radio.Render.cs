@@ -46,7 +46,7 @@ namespace AntdUI
             var bor2 = 2F * Config.Dpi;
             if (enabled)
             {
-                var color = fill ?? Colour.Primary.Get("Radio", ColorScheme);
+                var color = fill ?? Colour.Primary.Get(nameof(Radio), ColorScheme);
                 if (AnimationCheck)
                 {
                     float dot = dot_size * 0.3F;
@@ -72,20 +72,20 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (AnimationHover) g.DrawEllipse(Colour.BorderColor.Get("Radio", ColorScheme).BlendColors(AnimationHoverValue, color), bor2, icon_rect);
+                    if (AnimationHover) g.DrawEllipse(Colour.BorderColor.Get(nameof(Radio), ColorScheme).BlendColors(AnimationHoverValue, color), bor2, icon_rect);
                     else if (ExtraMouseHover) g.DrawEllipse(color, bor2, icon_rect);
-                    else g.DrawEllipse(Colour.BorderColor.Get("Radio", ColorScheme), bor2, icon_rect);
+                    else g.DrawEllipse(Colour.BorderColor.Get(nameof(Radio), ColorScheme), bor2, icon_rect);
                 }
             }
             else
             {
-                g.FillEllipse(Colour.FillQuaternary.Get("Radio", ColorScheme), icon_rect);
+                g.FillEllipse(Colour.FillQuaternary.Get(nameof(Radio), ColorScheme), icon_rect);
                 if (_checked)
                 {
                     float dot = dot_size / 2F, dot2 = dot / 2F;
-                    g.FillEllipse(Colour.TextQuaternary.Get("Radio", ColorScheme), new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
+                    g.FillEllipse(Colour.TextQuaternary.Get(nameof(Radio), ColorScheme), new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
                 }
-                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio", ColorScheme), bor2, icon_rect);
+                g.DrawEllipse(Colour.BorderColorDisable.Get(nameof(Radio), ColorScheme), bor2, icon_rect);
             }
         }
 

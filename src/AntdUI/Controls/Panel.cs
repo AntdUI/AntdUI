@@ -425,14 +425,14 @@ namespace AntdUI
             float _radius = radius * Config.Dpi;
             using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
             {
-                using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get("Panel", ColorScheme)))
+                using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme)))
                 {
                     g.Fill(brush, path);
                 }
                 if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get("Panel", ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
+                if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
             }
-            if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get("Panel", ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
+            if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
             base.OnDraw(e);
         }
 
@@ -452,7 +452,7 @@ namespace AntdUI
                 if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
-                    shadow_temp = path.PaintShadowO(rect_client.Width, rect_client.Height, shadowColor ?? Colour.TextBase.Get("Panel", ColorScheme), shadow);
+                    shadow_temp = path.PaintShadowO(rect_client.Width, rect_client.Height, shadowColor ?? Colour.TextBase.Get(nameof(Panel), ColorScheme), shadow);
                 }
                 using (var attributes = new ImageAttributes())
                 {
