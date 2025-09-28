@@ -246,7 +246,7 @@ namespace AntdUI
                 bool right = rightToLeft == RightToLeft.Yes;
                 PaintChecked(g, rect, enabled, icon_rect, right);
                 if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
-                using (var brush = new SolidBrush(enabled ? (fore ?? Colour.Text.Get("Radio", ColorScheme)) : Colour.TextQuaternary.Get("Radio", ColorScheme)))
+                using (var brush = new SolidBrush(enabled ? (fore ?? Colour.Text.Get(nameof(Radio), ColorScheme)) : Colour.TextQuaternary.Get(nameof(Radio), "foreDisabled", ColorScheme)))
                 {
                     g.DrawText(Text, Font, brush, text_rect, stringFormat);
                 }
@@ -266,9 +266,9 @@ namespace AntdUI
                 if (hasFocus && (rect.Height - icon_rect.Height) > bor2)
                 {
                     float wave = bor2, wave2 = wave * 2;
-                    g.DrawEllipse(Colour.PrimaryBorder.Get("Radio", ColorScheme), wave, new RectangleF(icon_rect.X - wave, icon_rect.Y - wave, icon_rect.Width + wave2, icon_rect.Height + wave2));
+                    g.DrawEllipse(Colour.PrimaryBorder.Get(nameof(Radio), ColorScheme), wave, new RectangleF(icon_rect.X - wave, icon_rect.Y - wave, icon_rect.Width + wave2, icon_rect.Height + wave2));
                 }
-                var color = fill ?? Colour.Primary.Get("Radio", ColorScheme);
+                var color = fill ?? Colour.Primary.Get(nameof(Radio), ColorScheme);
                 if (AnimationCheck)
                 {
                     float dot = dot_size * 0.3F;
@@ -294,20 +294,20 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (AnimationHover) g.DrawEllipse(Colour.BorderColor.Get("Radio", ColorScheme).BlendColors(AnimationHoverValue, color), bor2, icon_rect);
+                    if (AnimationHover) g.DrawEllipse(Colour.BorderColor.Get(nameof(Radio), ColorScheme).BlendColors(AnimationHoverValue, color), bor2, icon_rect);
                     else if (ExtraMouseHover) g.DrawEllipse(color, bor2, icon_rect);
-                    else g.DrawEllipse(Colour.BorderColor.Get("Radio", ColorScheme), bor2, icon_rect);
+                    else g.DrawEllipse(Colour.BorderColor.Get(nameof(Radio), ColorScheme), bor2, icon_rect);
                 }
             }
             else
             {
-                g.FillEllipse(Colour.FillQuaternary.Get("Radio", ColorScheme), icon_rect);
+                g.FillEllipse(Colour.FillQuaternary.Get(nameof(Radio), "bgDisabled", ColorScheme), icon_rect);
                 if (_checked)
                 {
                     float dot = dot_size / 2F, dot2 = dot / 2F;
-                    g.FillEllipse(Colour.TextQuaternary.Get("Radio", ColorScheme), new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
+                    g.FillEllipse(Colour.TextQuaternary.Get(nameof(Radio), "foreDisabled", ColorScheme), new RectangleF(icon_rect.X + dot2, icon_rect.Y + dot2, icon_rect.Width - dot, icon_rect.Height - dot));
                 }
-                g.DrawEllipse(Colour.BorderColorDisable.Get("Radio", ColorScheme), bor2, icon_rect);
+                g.DrawEllipse(Colour.BorderColorDisable.Get(nameof(Radio), "borderColorDisabled", ColorScheme), bor2, icon_rect);
             }
         }
 

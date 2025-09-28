@@ -215,7 +215,7 @@ namespace AntdUI.Chat
             using (var selectionme = new SolidBrush(SelectionColorMe))
             using (var foreBubble = new SolidBrush(ForeBubble ?? Color.Black))
             using (var bgBubble = new SolidBrush(BackBubble ?? Color.White))
-            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get("ChatList", ColorScheme)))
+            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get(nameof(ChatList), ColorScheme)))
 
             using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Color.White))
             using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Color.FromArgb(0, 153, 255)))
@@ -239,7 +239,7 @@ namespace AntdUI.Chat
                 {
                     using (var path = text.rect_read.RoundPath(radius))
                     {
-                        using (var brush = new SolidBrush(Colour.TextTertiary.Get("ChatList", ColorScheme)))
+                        using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(ChatList), ColorScheme)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
                         }

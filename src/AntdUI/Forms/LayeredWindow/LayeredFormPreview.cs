@@ -474,7 +474,7 @@ namespace AntdUI
                 {
                     // 测量文本大小
                     var size = g.MeasureText(content.Text, content.Font ?? Font);
-                    using (var brush = new SolidBrush(content.ForeColor ?? Style.Db.Text))
+                    using (var brush = new SolidBrush(content.ForeColor ?? Colour.Text.Get(nameof(Preview))))
                     using (var format = new StringFormat())
                     {
                         Rectangle textRect;
@@ -552,13 +552,13 @@ namespace AntdUI
             Color color, bg;
             if (error)
             {
-                bg = Colour.Error.Get("Preview");
-                color = Colour.ErrorColor.Get("Preview");
+                bg = Colour.Error.Get(nameof(Preview));
+                color = Colour.ErrorColor.Get(nameof(Preview));
             }
             else
             {
-                bg = Colour.Primary.Get("Preview");
-                color = Colour.PrimaryColor.Get("Preview");
+                bg = Colour.Primary.Get(nameof(Preview));
+                color = Colour.PrimaryColor.Get(nameof(Preview));
             }
             g.DrawEllipse(Color.FromArgb(220, color), bor6, rect_loading);
             if (_value > -1)
@@ -575,9 +575,9 @@ namespace AntdUI
             }
             else if (LoadingProgressStr != null)
             {
-                g.DrawEllipse(Colour.Error.Get("Preview"), bor6, rect_loading);
+                g.DrawEllipse(Colour.Error.Get(nameof(Preview)), bor6, rect_loading);
                 rect_loading.Offset(0, loading_size);
-                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get("Preview"), rect_loading, s_f);
+                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(nameof(Preview)), rect_loading, s_f);
             }
         }
 

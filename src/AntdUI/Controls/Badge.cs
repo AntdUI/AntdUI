@@ -229,7 +229,7 @@ namespace AntdUI
                         g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
                     }
                 }
-                using (var brush = fore.Brush(Colour.Text.Get("Badge", ColorScheme), Colour.TextQuaternary.Get("Badge", ColorScheme), Enabled))
+                using (var brush = fore.Brush(Colour.Text.Get(nameof(AntdUI.Badge), ColorScheme), Colour.TextQuaternary.Get(nameof(AntdUI.Badge), "foreDisabled", ColorScheme), Enabled))
                 {
                     g.DrawText(Text, Font, brush, new Rectangle(rect.X + _gap + size.Height, rect.Y, rect.Width - size.Height, rect.Height), s_f);
                 }
@@ -248,12 +248,12 @@ namespace AntdUI
         {
             switch (state)
             {
-                case TState.Success: return Colour.Success.Get("Badge", ColorScheme);
-                case TState.Error: return Colour.Error.Get("Badge", ColorScheme);
+                case TState.Success: return Colour.Success.Get(nameof(AntdUI.Badge), ColorScheme);
+                case TState.Error: return Colour.Error.Get(nameof(AntdUI.Badge), ColorScheme);
                 case TState.Primary:
-                case TState.Processing: return Colour.Primary.Get("Badge", ColorScheme);
-                case TState.Warn: return Colour.Warning.Get("Badge", ColorScheme);
-                default: return Colour.TextQuaternary.Get("Badge", ColorScheme);
+                case TState.Processing: return Colour.Primary.Get(nameof(AntdUI.Badge), ColorScheme);
+                case TState.Warn: return Colour.Warning.Get(nameof(AntdUI.Badge), ColorScheme);
+                default: return Colour.TextQuaternary.Get(nameof(AntdUI.Badge), ColorScheme);
             }
         }
 

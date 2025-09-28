@@ -648,13 +648,13 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    g.Fill(Colour.BgElevated.Get("Message"), path);
+                    g.Fill(Colour.BgElevated.Get(nameof(Message)), path);
                 }
                 if (loading)
                 {
                     var bor3 = 3F * Config.Dpi;
-                    g.DrawEllipse(Colour.Fill.Get("Message"), bor3, rect_loading);
-                    using (var pen = new Pen(Colour.Primary.Get("Message"), bor3))
+                    g.DrawEllipse(Colour.Fill.Get(nameof(Message)), bor3, rect_loading);
+                    using (var pen = new Pen(Colour.Primary.Get(nameof(Message)), bor3))
                     {
                         pen.StartCap = pen.EndCap = LineCap.Round;
                         g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
@@ -662,7 +662,7 @@ namespace AntdUI
                 }
                 else if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message", TAMode.Auto);
-                using (var brush = new SolidBrush(Colour.TextBase.Get("Message")))
+                using (var brush = new SolidBrush(Colour.TextBase.Get(nameof(Message))))
                 {
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left);
                 }

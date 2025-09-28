@@ -51,8 +51,8 @@ namespace AntdUI
                 if (config.Content is Control control)
                 {
                     control.Parent = this;
-                    control.BackColor = config.Back ?? Colour.BgElevated.Get("Popover", config.ColorScheme);
-                    control.ForeColor = config.Fore ?? Colour.Text.Get("Popover", config.ColorScheme);
+                    control.BackColor = config.Back ?? Colour.BgElevated.Get(nameof(Popover), config.ColorScheme);
+                    control.ForeColor = config.Fore ?? Colour.Text.Get(nameof(Popover), config.ColorScheme);
                     Win32.WindowTheme(control, config.ColorScheme);
                     Helper.DpiAuto(config.Dpi ?? Config.Dpi, control);
                     int w = control.Width;
@@ -284,7 +284,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get("Popover", config.ColorScheme)))
+                    using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get(nameof(Popover), config.ColorScheme)))
                     {
                         g.Fill(brush, path);
                         if (config.ArrowAlign != TAlign.None) g.FillPolygon(brush, config.ArrowAlign.AlignLines(config.ArrowSize, rect, rect_read));
@@ -294,7 +294,7 @@ namespace AntdUI
 
                 if (config.Title != null || rtext)
                 {
-                    using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get("Popover", config.ColorScheme)))
+                    using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get(nameof(Popover), config.ColorScheme)))
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {

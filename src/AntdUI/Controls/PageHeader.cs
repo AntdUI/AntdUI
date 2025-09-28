@@ -463,6 +463,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 返回图表
+        /// </summary>
+        [Description("返回图表"), Category("外观"), DefaultValue(null)]
+        public string? BackIcon { get; set; }
+
         bool showButton = false;
         /// <summary>
         /// 是否显示标题栏按钮
@@ -708,10 +714,10 @@ namespace AntdUI
 
             #region 显示颜色
 
-            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get("PageHeader", ColorScheme),
-                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get("PageHeader", ColorScheme),
-                foreSecondary = Colour.TextSecondary.Get("PageHeader", ColorScheme),
-                fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
+            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get(nameof(PageHeader), ColorScheme),
+                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get(nameof(PageHeader), ColorScheme),
+                foreSecondary = Colour.TextSecondary.Get(nameof(PageHeader), "subFore", ColorScheme),
+                fillsecondary = Colour.FillSecondary.Get(nameof(PageHeader), ColorScheme);
 
             #endregion
 
@@ -726,7 +732,7 @@ namespace AntdUI
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Config.Dpi), margin = (int)(dividerMargin * Config.Dpi);
-                using (var brush = dividerColor.Brush(Colour.Split.Get("PageHeader", ColorScheme)))
+                using (var brush = dividerColor.Brush(Colour.Split.Get(nameof(PageHeader), ColorScheme)))
                 {
                     g.Fill(brush, new Rectangle(e.Rect.X + margin, e.Rect.Bottom - thickness, e.Rect.Width - margin * 2, thickness));
                 }
@@ -866,7 +872,7 @@ namespace AntdUI
             {
                 icon_size = sHeight;
                 var rect_icon = new Rectangle(rect.X + u_x + _gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                using (var pen = new Pen(Colour.Fill.Get("PageHeader", ColorScheme), sHeight * .14F))
+                using (var pen = new Pen(Colour.Fill.Get(nameof(PageHeader), ColorScheme), sHeight * .14F))
                 using (var brush = new Pen(Color.FromArgb(170, fore), pen.Width))
                 {
                     g.DrawEllipse(pen, rect_icon);
@@ -914,18 +920,18 @@ namespace AntdUI
             var rect_close_icon = new Rectangle(rect_close.X + btn_x, rect_close.Y + btn_y, btn_size, btn_size);
             if (hove_close.Down)
             {
-                g.Fill(Colour.ErrorActive.Get("PageHeader", ColorScheme), rect_close);
+                g.Fill(Colour.ErrorActive.Get(nameof(PageHeader), ColorScheme), rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else if (hove_close.Animation)
             {
-                g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get("PageHeader", ColorScheme)), rect_close);
+                g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get(nameof(PageHeader), ColorScheme)), rect_close);
                 PrintClose(g, fore, rect_close_icon);
-                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get("PageHeader", ColorScheme)));
+                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme)));
             }
             else if (hove_close.Switch)
             {
-                g.Fill(Colour.Error.Get("PageHeader", ColorScheme), rect_close);
+                g.Fill(Colour.Error.Get(nameof(PageHeader), ColorScheme), rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else PrintClose(g, fore, rect_close_icon);
@@ -967,21 +973,21 @@ namespace AntdUI
             if (temp_back == null || temp_back.Width != rect_icon.Width)
             {
                 temp_back?.Dispose();
-                temp_back = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, color);
+                temp_back = SvgExtend.GetImgExtend(BackIcon ?? SvgDb.IcoPageHeaderBack, rect_icon, color);
             }
             if (temp_back != null) g.Image(temp_back, rect_icon);
         }
         void PrintBackHover(Canvas g, Color color, Rectangle rect_icon)
         {
             PrintBack(g, color, rect_icon);
-            g.GetImgExtend("ArrowLeftOutlined", rect_icon, Helper.ToColor(hove_back.Value, Colour.Primary.Get("PageHeader", ColorScheme)));
+            g.GetImgExtend(BackIcon ?? SvgDb.IcoPageHeaderBack, rect_icon, Helper.ToColor(hove_back.Value, Colour.Primary.Get(nameof(PageHeader), ColorScheme)));
         }
         void PrintBackHover(Canvas g, Rectangle rect_icon)
         {
             if (temp_back_hover == null || temp_back_hover.Width != rect_icon.Width)
             {
                 temp_back_hover?.Dispose();
-                temp_back_hover = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Colour.Primary.Get("PageHeader", ColorScheme));
+                temp_back_hover = SvgExtend.GetImgExtend(BackIcon ?? SvgDb.IcoPageHeaderBack, rect_icon, Colour.Primary.Get(nameof(PageHeader), ColorScheme));
             }
             if (temp_back_hover != null) g.Image(temp_back_hover, rect_icon);
         }
@@ -990,7 +996,7 @@ namespace AntdUI
             if (temp_back_down == null || temp_back_down.Width != rect_icon.Width)
             {
                 temp_back_down?.Dispose();
-                temp_back_down = SvgExtend.GetImgExtend("ArrowLeftOutlined", rect_icon, Colour.PrimaryActive.Get("PageHeader", ColorScheme));
+                temp_back_down = SvgExtend.GetImgExtend(BackIcon ?? SvgDb.IcoPageHeaderBack, rect_icon, Colour.PrimaryActive.Get(nameof(PageHeader), ColorScheme));
             }
             if (temp_back_down != null) g.Image(temp_back_down, rect_icon);
         }
@@ -1008,7 +1014,7 @@ namespace AntdUI
             if (temp_close_hover == null || temp_close_hover.Width != rect_icon.Width)
             {
                 temp_close_hover?.Dispose();
-                temp_close_hover = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get("PageHeader", ColorScheme));
+                temp_close_hover = SvgExtend.GetImgExtend(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme));
             }
             if (temp_close_hover != null) g.Image(temp_close_hover, rect_icon);
         }
@@ -1202,7 +1208,7 @@ namespace AntdUI
                 bool _close = rect_close.Contains(e.X, e.Y), _full = fullBox && rect_full.Contains(e.X, e.Y), _max = maximizeBox && rect_max.Contains(e.X, e.Y), _min = minimizeBox && rect_min.Contains(e.X, e.Y);
                 if (_close != hove_close.SwitchDown || _full != hove_full.SwitchDown || _max != hove_max.SwitchDown || _min != hove_min.SwitchDown)
                 {
-                    var fillsecondary = Colour.FillSecondary.Get("PageHeader", ColorScheme);
+                    var fillsecondary = Colour.FillSecondary.Get(nameof(PageHeader), ColorScheme);
                     hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;
                     hove_close.Switch = _close;
                     hove_full.Switch = _full;

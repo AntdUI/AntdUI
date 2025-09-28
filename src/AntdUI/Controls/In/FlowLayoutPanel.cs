@@ -97,7 +97,7 @@ namespace AntdUI.In
         {
             LoadScroll();
             var g = e.Graphics.High();
-            if (Empty && (Controls == null || Controls.Count == 0)) g.PaintEmpty(ClientRectangle, Font, Colour.Text.Get("FlowLayoutPanel"), EmptyText, EmptyImage);
+            if (Empty && (Controls == null || Controls.Count == 0)) g.PaintEmpty(ClientRectangle, Font, Colour.Text.Get(nameof(FlowLayoutPanel)), EmptyText, EmptyImage);
             if (ScrollYVisible) ScrollBar.Paint(g);
             base.OnPaint(e);
         }

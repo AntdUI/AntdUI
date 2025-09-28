@@ -603,7 +603,7 @@ namespace AntdUI
             g.TranslateTransform(left, 0);
             int _radius = (int)(radius * Config.Dpi), radiusContent = (int)(RadiusContent * Config.Dpi), border = (int)(borderWidth * Config.Dpi);
             TagTabItem? tabselect = null;
-            var color = Colour.Text.Get("TabHeader", ColorScheme);
+            var color = Colour.Text.Get(nameof(TabHeader), ColorScheme);
             for (int i = 0; i < items.Count; i++)
             {
                 var it = items[i];
@@ -622,7 +622,7 @@ namespace AntdUI
                 g.Restore(state);
                 state = g.Save();
                 var it = items[dragHeader.im];
-                using (var brush_split = new SolidBrush(Colour.BorderColor.Get("TabHeader", ColorScheme)))
+                using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(TabHeader), ColorScheme)))
                 {
                     int sp = (int)(2 * Config.Dpi);
                     if (dragHeader.last) g.Fill(brush_split, new Rectangle(left + it.Rect.Right - sp, it.Rect.Y, sp * 2, it.Rect.Height));
@@ -635,10 +635,10 @@ namespace AntdUI
             {
                 using (var path = tabselect.Rect.RoundPath(radius, true, true, false, false))
                 {
-                    g.Fill(BackActive ?? Colour.BgBase.Get("TabHeader", ColorScheme), path);
+                    g.Fill(BackActive ?? Colour.BgBase.Get(nameof(TabHeader), ColorScheme), path);
                     if (border > 0)
                     {
-                        using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get("TabHeader", ColorScheme), border))
+                        using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(nameof(TabHeader), ColorScheme), border))
                         {
                             g.Draw(pen, path);
                         }
@@ -653,7 +653,7 @@ namespace AntdUI
                 {
                     using (var path = RectAdd.RoundPath(radiusContent))
                     {
-                        g.Fill(Colour.FillSecondary.Get("TabHeader"), path);
+                        g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
                     }
                 }
                 g.PaintIconCore(RectAddIco, "PlusOutlined", color);
@@ -671,7 +671,7 @@ namespace AntdUI
             {
                 using (var path = tab.Rect.RoundPath(radius, true, true, false, false))
                 {
-                    g.Fill(BackHover ?? Colour.FillTertiary.Get("TabHeader", ColorScheme), path);
+                    g.Fill(BackHover ?? Colour.FillTertiary.Get(nameof(TabHeader), ColorScheme), path);
                 }
                 DrawText(g, tab, ForeHover ?? fore ?? color);
             }
@@ -703,7 +703,7 @@ namespace AntdUI
             {
                 if (tab.Loading)
                 {
-                    using (var pen = new Pen(Colour.Fill.Get("PageHeader", ColorScheme), tab.RectIcon.Height * .14F))
+                    using (var pen = new Pen(Colour.Fill.Get(nameof(PageHeader), ColorScheme), tab.RectIcon.Height * .14F))
                     using (var brush = new Pen(Color.FromArgb(170, color), pen.Width))
                     {
                         g.DrawEllipse(pen, tab.RectIcon);
@@ -733,7 +733,7 @@ namespace AntdUI
             {
                 using (var path = tab.RectClose.RoundPath(radius))
                 {
-                    g.Fill(Colour.FillSecondary.Get("TabHeader"), path);
+                    g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
                 }
             }
             g.PaintIconClose(tab.RectCloseIco, color);

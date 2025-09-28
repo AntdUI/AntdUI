@@ -97,7 +97,7 @@ namespace AntdUI
                 {
                     if (hover == value) return;
                     hover = value;
-                    if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get("Table", PARENT.ColorScheme)).A > 0)
+                    if (SHOW && (PARENT.RowHoverBg ?? Colour.FillSecondary.Get(nameof(Table), PARENT.ColorScheme)).A > 0)
                     {
                         if (Config.HasAnimation(nameof(Table)) && PARENT.AnimationTime > 0)
                         {
@@ -360,12 +360,12 @@ namespace AntdUI
                     {
                         if (AnimationCheck)
                         {
-                            g.Fill(Colour.BgBase.Get("Checkbox", colorScheme), path);
+                            g.Fill(Colour.BgBase.Get(nameof(Checkbox), colorScheme), path);
 
                             var alpha = 255 * AnimationCheckValue;
 
-                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", colorScheme)), path);
-                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", colorScheme)), PARENT.check_border * 2))
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), colorScheme)), path);
+                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), colorScheme)), PARENT.check_border * 2))
                             {
                                 g.DrawLines(brush, PaintArrow(RECT_REAL));
                             }
@@ -373,32 +373,32 @@ namespace AntdUI
                             if (Checked)
                             {
                                 float max = RECT_REAL.Height + RECT_REAL.Height * AnimationCheckValue, alpha2 = 100 * (1F - AnimationCheckValue);
-                                using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox", colorScheme))))
+                                using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get(nameof(Checkbox), colorScheme))))
                                 {
                                     g.FillEllipse(brush, new RectangleF(RECT_REAL.X + (RECT_REAL.Width - max) / 2F, RECT_REAL.Y + (RECT_REAL.Height - max) / 2F, max, max));
                                 }
                             }
-                            g.Draw(Colour.Primary.Get("Checkbox", colorScheme), PARENT.check_border, path);
+                            g.Draw(Colour.Primary.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path);
                         }
                         else if (Checked)
                         {
-                            g.Fill(Colour.Primary.Get("Checkbox", colorScheme), path);
-                            using (var brush = new Pen(Colour.BgBase.Get("Checkbox", colorScheme), PARENT.check_border * 2))
+                            g.Fill(Colour.Primary.Get(nameof(Checkbox), colorScheme), path);
+                            using (var brush = new Pen(Colour.BgBase.Get(nameof(Checkbox), colorScheme), PARENT.check_border * 2))
                             {
                                 g.DrawLines(brush, PaintArrow(RECT_REAL));
                             }
                         }
                         else
                         {
-                            g.Fill(Colour.BgBase.Get("Checkbox", colorScheme), path);
-                            g.Draw(Colour.BorderColor.Get("Checkbox", colorScheme), PARENT.check_border, path);
+                            g.Fill(Colour.BgBase.Get(nameof(Checkbox), colorScheme), path);
+                            g.Draw(Colour.BorderColor.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path);
                         }
                     }
                     else
                     {
-                        g.Fill(Colour.FillQuaternary.Get("Checkbox", colorScheme), path);
-                        if (Checked) g.DrawLines(Colour.TextQuaternary.Get("Checkbox", colorScheme), PARENT.check_border * 2, PaintArrow(RECT_REAL));
-                        g.Draw(Colour.BorderColorDisable.Get("Checkbox", colorScheme), PARENT.check_border, path);
+                        g.Fill(Colour.FillQuaternary.Get(nameof(Checkbox), colorScheme), path);
+                        if (Checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), colorScheme), PARENT.check_border * 2, PaintArrow(RECT_REAL));
+                        g.Draw(Colour.BorderColorDisable.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path);
                     }
                 }
             }
@@ -527,7 +527,7 @@ namespace AntdUI
                 var dot_size = RECT_REAL.Height;
                 if (enable)
                 {
-                    g.FillEllipse(Colour.BgBase.Get("Radio", colorScheme), RECT_REAL);
+                    g.FillEllipse(Colour.BgBase.Get(nameof(Radio), colorScheme), RECT_REAL);
                     if (AnimationCheck)
                     {
                         float dot = dot_size * 0.3F;
@@ -536,32 +536,32 @@ namespace AntdUI
                             float dot_ant = dot_size - dot * AnimationCheckValue, dot_ant2 = dot_ant / 2F, alpha = 255 * AnimationCheckValue;
                             path.AddEllipse(RECT_REAL);
                             path.AddEllipse(new RectangleF(RECT_REAL.X + dot_ant2, RECT_REAL.Y + dot_ant2, RECT_REAL.Width - dot_ant, RECT_REAL.Height - dot_ant));
-                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Radio", colorScheme)), path);
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Radio), colorScheme)), path);
                         }
                         if (Checked)
                         {
                             float max = RECT_REAL.Height + RECT_REAL.Height * AnimationCheckValue, alpha2 = 100 * (1F - AnimationCheckValue);
-                            g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get("Radio", colorScheme)), new RectangleF(RECT_REAL.X + (RECT_REAL.Width - max) / 2F, RECT_REAL.Y + (RECT_REAL.Height - max) / 2F, max, max));
+                            g.FillEllipse(Helper.ToColor(alpha2, Colour.Primary.Get(nameof(Radio), colorScheme)), new RectangleF(RECT_REAL.X + (RECT_REAL.Width - max) / 2F, RECT_REAL.Y + (RECT_REAL.Height - max) / 2F, max, max));
                         }
-                        g.DrawEllipse(Colour.Primary.Get("Radio", colorScheme), PARENT.check_border, RECT_REAL);
+                        g.DrawEllipse(Colour.Primary.Get(nameof(Radio), colorScheme), PARENT.check_border, RECT_REAL);
                     }
                     else if (Checked)
                     {
                         float dot = dot_size * 0.3F, dot2 = dot / 2F;
-                        g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get("Radio", colorScheme)), dot, new RectangleF(RECT_REAL.X + dot2, RECT_REAL.Y + dot2, RECT_REAL.Width - dot, RECT_REAL.Height - dot));
-                        g.DrawEllipse(Colour.Primary.Get("Radio", colorScheme), PARENT.check_border, RECT_REAL);
+                        g.DrawEllipse(Color.FromArgb(250, Colour.Primary.Get(nameof(Radio), colorScheme)), dot, new RectangleF(RECT_REAL.X + dot2, RECT_REAL.Y + dot2, RECT_REAL.Width - dot, RECT_REAL.Height - dot));
+                        g.DrawEllipse(Colour.Primary.Get(nameof(Radio), colorScheme), PARENT.check_border, RECT_REAL);
                     }
-                    else g.DrawEllipse(Colour.BorderColor.Get("Radio", colorScheme), PARENT.check_border, RECT_REAL);
+                    else g.DrawEllipse(Colour.BorderColor.Get(nameof(Radio), colorScheme), PARENT.check_border, RECT_REAL);
                 }
                 else
                 {
-                    g.FillEllipse(Colour.FillQuaternary.Get("Radio", colorScheme), RECT_REAL);
+                    g.FillEllipse(Colour.FillQuaternary.Get(nameof(Radio), colorScheme), RECT_REAL);
                     if (Checked)
                     {
                         float dot = dot_size / 2F, dot2 = dot / 2F;
-                        g.FillEllipse(Colour.TextQuaternary.Get("Radio", colorScheme), new RectangleF(RECT_REAL.X + dot2, RECT_REAL.Y + dot2, RECT_REAL.Width - dot, RECT_REAL.Height - dot));
+                        g.FillEllipse(Colour.TextQuaternary.Get(nameof(Radio), colorScheme), new RectangleF(RECT_REAL.X + dot2, RECT_REAL.Y + dot2, RECT_REAL.Width - dot, RECT_REAL.Height - dot));
                     }
-                    g.DrawEllipse(Colour.BorderColorDisable.Get("Radio", colorScheme), PARENT.check_border, RECT_REAL);
+                    g.DrawEllipse(Colour.BorderColorDisable.Get(nameof(Radio), colorScheme), PARENT.check_border, RECT_REAL);
                 }
             }
 
@@ -786,10 +786,10 @@ namespace AntdUI
 
             public void Print(Canvas g, TAMode colorScheme, Font font, SolidBrush fore, bool enable)
             {
-                var color = Colour.Primary.Get("Switch", colorScheme);
+                var color = Colour.Primary.Get(nameof(Switch), colorScheme);
                 using (var path = RECT_REAL.RoundPath(RECT_REAL.Height))
                 {
-                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Switch", colorScheme)))
+                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get(nameof(Switch), colorScheme)))
                     {
                         g.Fill(brush, path);
                         if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
@@ -801,16 +801,16 @@ namespace AntdUI
                         var alpha = 255 * AnimationCheckValue;
                         g.Fill(Helper.ToColor(alpha, color), path);
                         var dot_rect = new RectangleF(RECT_REAL.X + gap + (RECT_REAL.Width - RECT_REAL.Height) * AnimationCheckValue, RECT_REAL.Y + gap, RECT_REAL.Height - gap2, RECT_REAL.Height - gap2);
-                        g.FillEllipse(enable ? Colour.BgBase.Get("Switch", colorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", colorScheme)), dot_rect);
+                        g.FillEllipse(enable ? Colour.BgBase.Get(nameof(Switch), colorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), colorScheme)), dot_rect);
                     }
                     else if (Checked)
                     {
-                        var colorhover = Colour.PrimaryHover.Get("Switch", colorScheme);
+                        var colorhover = Colour.PrimaryHover.Get(nameof(Switch), colorScheme);
                         g.Fill(color, path);
                         if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
                         else if (ExtraMouseHover) g.Fill(colorhover, path);
                         var dot_rect = new RectangleF(RECT_REAL.X + gap + RECT_REAL.Width - RECT_REAL.Height, RECT_REAL.Y + gap, RECT_REAL.Height - gap2, RECT_REAL.Height - gap2);
-                        g.FillEllipse(enable ? Colour.BgBase.Get("Switch", colorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", colorScheme)), dot_rect);
+                        g.FillEllipse(enable ? Colour.BgBase.Get(nameof(Switch), colorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), colorScheme)), dot_rect);
                         if (Loading)
                         {
                             var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -825,7 +825,7 @@ namespace AntdUI
                     else
                     {
                         var dot_rect = new RectangleF(RECT_REAL.X + gap, RECT_REAL.Y + gap, RECT_REAL.Height - gap2, RECT_REAL.Height - gap2);
-                        g.FillEllipse(enable ? Colour.BgBase.Get("Switch", colorScheme) : Color.FromArgb(200, Colour.BgBase.Get("Switch", colorScheme)), dot_rect);
+                        g.FillEllipse(enable ? Colour.BgBase.Get(nameof(Switch), colorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), colorScheme)), dot_rect);
                         if (Loading)
                         {
                             var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -959,7 +959,7 @@ namespace AntdUI
             {
                 if (AnimationHover)
                 {
-                    using (var brush = new SolidBrush(Helper.ToColorN(AnimationHoverValue, Colour.FillTertiary.Get("Table", colorScheme))))
+                    using (var brush = new SolidBrush(Helper.ToColorN(AnimationHoverValue, Colour.FillTertiary.Get(nameof(Table), colorScheme))))
                     {
                         using (var path_sort = Helper.RoundPath(RECT_REAL, PARENT.check_radius))
                         {
@@ -971,7 +971,7 @@ namespace AntdUI
                 {
                     using (var path_sort = Helper.RoundPath(RECT_REAL, PARENT.check_radius))
                     {
-                        g.Fill(Colour.FillTertiary.Get("Table", colorScheme), path_sort);
+                        g.Fill(Colour.FillTertiary.Get(nameof(Table), colorScheme), path_sort);
                     }
                 }
                 SvgExtend.GetImgExtend(g, SvgDb.IcoTableColumnSort, rect_ico, fore.Color);
@@ -1154,7 +1154,7 @@ namespace AntdUI
             public void Print(Canvas g, TAMode colorScheme, Font font, SolidBrush fore, bool enable)
             {
                 if (value == null) return;
-                var color = value.TagFore ?? PARENT.ForeColor ?? Colour.Text.Get("Select", colorScheme);
+                var color = value.TagFore ?? PARENT.ForeColor ?? Colour.Text.Get(nameof(AntdUI.Select), colorScheme);
                 if (value.IconSvg != null) g.GetImgExtend(value.IconSvg, rect_icon, color);
                 else if (value.Icon != null) g.Image(value.Icon, rect_icon);
 
@@ -1250,12 +1250,12 @@ namespace AntdUI
             {
                 if (COLUMN.SortOrder)
                 {
-                    g.GetImgExtend(SvgDb.IcoTableSortUp, rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
-                    g.GetImgExtend(SvgDb.IcoTableSortDown, rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
+                    g.GetImgExtend(SvgDb.IcoTableSortUp, rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
+                    g.GetImgExtend(SvgDb.IcoTableSortDown, rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
                 }
                 if (COLUMN.HasFilter)
                 {
-                    g.GetImgExtend(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get("Table", colorScheme) : Colour.TextQuaternary.Get("Table", colorScheme));
+                    g.GetImgExtend(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
                 }
                 if (COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, colorScheme, columnCheck);
                 else
@@ -1277,49 +1277,49 @@ namespace AntdUI
                 {
                     if (columnCheck.AnimationCheck)
                     {
-                        g.Fill(Colour.BgBase.Get("Checkbox", colorScheme), path_check);
+                        g.Fill(Colour.BgBase.Get(nameof(Checkbox), colorScheme), path_check);
                         var alpha = 255 * columnCheck.AnimationCheckValue;
                         if (columnCheck.CheckState == CheckState.Indeterminate || (columnCheck.checkStateOld == CheckState.Indeterminate && !columnCheck.Checked))
                         {
-                            g.Draw(Colour.BorderColor.Get("Checkbox", colorScheme), PARENT.check_border, path_check);
-                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", colorScheme)), PaintBlock(RECT_REAL));
+                            g.Draw(Colour.BorderColor.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path_check);
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), colorScheme)), PaintBlock(RECT_REAL));
                         }
                         else
                         {
-                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Checkbox", colorScheme)), path_check);
-                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get("Checkbox", colorScheme)), PARENT.check_border * 2))
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), colorScheme)), path_check);
+                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), colorScheme)), PARENT.check_border * 2))
                             {
                                 g.DrawLines(brush, PaintArrow(RECT_REAL));
                             }
                             if (columnCheck.Checked)
                             {
                                 float max = RECT_REAL.Height + RECT_REAL.Height * columnCheck.AnimationCheckValue, alpha2 = 100 * (1F - columnCheck.AnimationCheckValue);
-                                using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Checkbox", colorScheme))))
+                                using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get(nameof(Checkbox), colorScheme))))
                                 {
                                     g.FillEllipse(brush, new RectangleF(RECT_REAL.X + (RECT_REAL.Width - max) / 2F, RECT_REAL.Y + (RECT_REAL.Height - max) / 2F, max, max));
                                 }
                             }
-                            g.Draw(Colour.Primary.Get("Checkbox", colorScheme), PARENT.check_border, path_check);
+                            g.Draw(Colour.Primary.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path_check);
                         }
                     }
                     else if (columnCheck.CheckState == CheckState.Indeterminate)
                     {
-                        g.Fill(Colour.BgBase.Get("Checkbox", colorScheme), path_check);
-                        g.Draw(Colour.BorderColor.Get("Checkbox", colorScheme), PARENT.check_border, path_check);
-                        g.Fill(Colour.Primary.Get("Checkbox", colorScheme), PaintBlock(RECT_REAL));
+                        g.Fill(Colour.BgBase.Get(nameof(Checkbox), colorScheme), path_check);
+                        g.Draw(Colour.BorderColor.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path_check);
+                        g.Fill(Colour.Primary.Get(nameof(Checkbox), colorScheme), PaintBlock(RECT_REAL));
                     }
                     else if (columnCheck.Checked)
                     {
-                        g.Fill(Colour.Primary.Get("Checkbox", colorScheme), path_check);
-                        using (var brush = new Pen(Colour.BgBase.Get("Checkbox", colorScheme), PARENT.check_border * 2))
+                        g.Fill(Colour.Primary.Get(nameof(Checkbox), colorScheme), path_check);
+                        using (var brush = new Pen(Colour.BgBase.Get(nameof(Checkbox), colorScheme), PARENT.check_border * 2))
                         {
                             g.DrawLines(brush, PaintArrow(RECT_REAL));
                         }
                     }
                     else
                     {
-                        g.Fill(Colour.BgBase.Get("Checkbox", colorScheme), path_check);
-                        g.Draw(Colour.BorderColor.Get("Checkbox", colorScheme), PARENT.check_border, path_check);
+                        g.Fill(Colour.BgBase.Get(nameof(Checkbox), colorScheme), path_check);
+                        g.Draw(Colour.BorderColor.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path_check);
                     }
                 }
             }

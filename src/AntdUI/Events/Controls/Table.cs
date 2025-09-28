@@ -215,7 +215,7 @@ namespace AntdUI
             if (Column != null)
             {
                 input.ReadOnly = Column.ReadOnly;
-                if (input.ReadOnly) input.BackColor = Style.Db.BorderSecondary;
+                if (input.ReadOnly) input.BackColor = Colour.BorderSecondary.Get(nameof(Table));
             }
             Input = input;
         }

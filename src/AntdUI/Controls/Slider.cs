@@ -310,7 +310,7 @@ namespace AntdUI
             }
 
             var enabled = Enabled;
-            Color color = enabled ? fill ?? Colour.InfoBorder.Get("Slider", ColorScheme) : Colour.FillTertiary.Get("Slider", ColorScheme), color_dot = enabled ? fill ?? Colour.InfoBorder.Get("Slider", ColorScheme) : Colour.SliderHandleColorDisabled.Get("Slider", ColorScheme), color_hover = FillHover ?? Colour.InfoHover.Get("Slider", ColorScheme), color_active = FillActive ?? Colour.Primary.Get("Slider", ColorScheme);
+            Color color = enabled ? fill ?? Colour.InfoBorder.Get(nameof(Slider), ColorScheme) : Colour.FillTertiary.Get(nameof(Slider), "bgDisabled", ColorScheme), color_dot = enabled ? fill ?? Colour.InfoBorder.Get(nameof(Slider), ColorScheme) : Colour.SliderHandleColorDisabled.Get(nameof(Slider), "dotDisabled", ColorScheme), color_hover = FillHover ?? Colour.InfoHover.Get(nameof(Slider), ColorScheme), color_active = FillActive ?? Colour.Primary.Get(nameof(Slider), ColorScheme);
 
             var g = e.Canvas;
             IPaint(g, _rect, enabled, color, color_dot, color_hover, color_active);
@@ -325,7 +325,7 @@ namespace AntdUI
 
             using (var path = rect_read.RoundPath(rect_read.Height / 2))
             {
-                using (var brush = new SolidBrush(trackColor ?? Colour.FillQuaternary.Get("Slider", ColorScheme)))
+                using (var brush = new SolidBrush(trackColor ?? Colour.FillQuaternary.Get(nameof(Slider), ColorScheme)))
                 {
                     g.Fill(brush, path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
@@ -347,7 +347,7 @@ namespace AntdUI
 
             #endregion
 
-            using (var brush = new SolidBrush(Colour.BgBase.Get("Slider", ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgBase.Get(nameof(Slider), ColorScheme)))
             {
                 PaintMarksEllipse(g, rect, rect_read, brush, color, LineSize);
                 PaintEllipse(g, rect, rect_read, prog, brush, color_dot, color_hover, color_active, LineSize);
@@ -415,7 +415,7 @@ namespace AntdUI
         {
             if (marks != null && marks.Count > 0)
             {
-                using (var fore = new SolidBrush(Colour.Text.Get("Slider", ColorScheme)))
+                using (var fore = new SolidBrush(Colour.Text.Get(nameof(Slider), ColorScheme)))
                 {
                     int markTextGap = (int)(MarkTextGap * Config.Dpi);
                     int size2 = LineSize, size = size2 * 2;

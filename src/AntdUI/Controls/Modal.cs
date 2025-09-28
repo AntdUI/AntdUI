@@ -483,7 +483,7 @@ namespace AntdUI
             /// <summary>
             /// 色彩模式
             /// </summary>
-            public TMode? ColorScheme { get; set; }
+            public TAMode ColorScheme { get; set; } = TAMode.Auto;
 
             /// <summary>
             /// 是否支持键盘 esc 关闭
@@ -786,7 +786,7 @@ namespace AntdUI
                 Draggable = value;
                 return this;
             }
-            public Config SetColorScheme(TMode? value)
+            public Config SetColorScheme(TAMode value)
             {
                 ColorScheme = value;
                 return this;

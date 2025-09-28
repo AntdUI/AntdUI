@@ -443,7 +443,7 @@ namespace AntdUI
 
         #region 渲染
 
-        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get("ScrollBar", ColorScheme));
+        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get(nameof(ScrollBar), ColorScheme));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (SIZE == 0) return;

@@ -299,16 +299,16 @@ namespace AntdUI
             var rect = SplitterRectangle;
             if (_collapsePanel == ADCollapsePanel.None)
             {
-                if (moving) g.Fill(SplitterBackMove ?? Style.Db.PrimaryBg, rect);
-                else g.Fill(splitterBack ?? Style.Db.FillTertiary, rect);
+                if (moving) g.Fill(SplitterBackMove ?? Colour.PrimaryBg.Get(nameof(Splitter)), rect);
+                else g.Fill(splitterBack ?? Colour.FillTertiary.Get(nameof(Splitter)), rect);
                 int size = (int)(SplitterSize * Config.Dpi);
-                if (Orientation == Orientation.Horizontal) g.Fill(Style.Db.Fill, new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y, size, rect.Height));
-                else g.Fill(Style.Db.Fill, new Rectangle(rect.X, rect.Y + (rect.Height - size) / 2, rect.Width, size));
+                if (Orientation == Orientation.Horizontal) g.Fill(Colour.Fill.Get(nameof(Splitter)), new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y, size, rect.Height));
+                else g.Fill(Colour.Fill.Get(nameof(Splitter)), new Rectangle(rect.X, rect.Y + (rect.Height - size) / 2, rect.Width, size));
             }
             else
             {
-                if (moving) g.Fill(SplitterBackMove ?? Style.Db.PrimaryBg, rect);
-                else g.Fill(splitterBack ?? Style.Db.FillTertiary, rect);
+                if (moving) g.Fill(SplitterBackMove ?? Colour.PrimaryBg.Get(nameof(Splitter)), rect);
+                else g.Fill(splitterBack ?? Colour.FillTertiary.Get(nameof(Splitter)), rect);
 
                 //计算显示图标
                 int index = 0;
@@ -322,13 +322,13 @@ namespace AntdUI
                 //绘制箭头
                 if (m_bIsArrowRegion)
                 {
-                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get("Splitter", TAMode.Auto), points);
-                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get("Splitter", TAMode.Auto));
+                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get(nameof(Splitter)), points);
+                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get(nameof(Splitter)));
                 }
                 else
                 {
-                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get("Splitter", TAMode.Auto), points);
-                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get("Splitter", TAMode.Auto));
+                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get(nameof(Splitter)), points);
+                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get(nameof(Splitter)));
                 }
             }
         }

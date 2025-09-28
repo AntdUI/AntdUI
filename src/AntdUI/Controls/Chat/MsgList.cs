@@ -162,8 +162,8 @@ namespace AntdUI.Chat
                 }
                 else
                 {
-                    if (it.Hover) g.Fill(BackHover ?? Colour.FillTertiary.Get("MsgList", ColorScheme), it.rect);
-                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get("MsgList", ColorScheme)))
+                    if (it.Hover) g.Fill(BackHover ?? Colour.FillTertiary.Get(nameof(MsgList), ColorScheme), it.rect);
+                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(MsgList), ColorScheme)))
                     {
                         try
                         {

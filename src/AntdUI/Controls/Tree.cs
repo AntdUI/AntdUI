@@ -480,7 +480,7 @@ namespace AntdUI
         {
             if (items == null || items.Count == 0)
             {
-                if (Empty) e.Canvas.PaintEmpty(e.Rect, Font, fore ?? Colour.Text.Get("Tree", ColorScheme), EmptyText, EmptyImage, 0);
+                if (Empty) e.Canvas.PaintEmpty(e.Rect, Font, fore ?? Colour.Text.Get(nameof(Tree), "emptyFore", ColorScheme), EmptyText, EmptyImage, 0);
                 base.OnDraw(e);
                 return;
             }
@@ -488,11 +488,11 @@ namespace AntdUI
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
             float _radius = radius * Config.Dpi;
-            using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get("Tree", ColorScheme)))
-            using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get("Tree", ColorScheme)))
-            using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get("Tree", ColorScheme)))
-            using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get("Tree", ColorScheme)))
-            using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get("Tree", ColorScheme)))
+            using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get(nameof(Tree), ColorScheme)))
+            using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get(nameof(Tree), ColorScheme)))
+            using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get(nameof(Tree), ColorScheme)))
+            using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(nameof(Tree), ColorScheme)))
+            using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get(nameof(Tree), "subFore", ColorScheme)))
             {
                 PaintItem(g, e.Rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
@@ -570,7 +570,7 @@ namespace AntdUI
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
-                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get("Tree", ColorScheme)))
+                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get(nameof(Tree), ColorScheme)))
                     {
                         PaintItemText(g, item, brush, brushTextTertiary);
                     }
@@ -589,45 +589,45 @@ namespace AntdUI
 
                             if (item.CheckState == CheckState.Indeterminate || (item.checkStateOld == CheckState.Indeterminate && !item.Checked))
                             {
-                                g.Draw(Colour.BorderColor.Get("Tree", ColorScheme), bor2, path_check);
-                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Tree", ColorScheme)), PaintBlock(item.check_rect));
+                                g.Draw(Colour.BorderColor.Get(nameof(Tree), ColorScheme), bor2, path_check);
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Tree), ColorScheme)), PaintBlock(item.check_rect));
                             }
                             else
                             {
                                 float dot = item.check_rect.Width * 0.3F;
 
-                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get("Tree", ColorScheme)), path_check);
-                                g.DrawLines(Helper.ToColor(alpha, Colour.BgBase.Get("Tree", ColorScheme)), 3F * Config.Dpi, PaintArrow(item.check_rect));
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Tree), ColorScheme)), path_check);
+                                g.DrawLines(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Tree), ColorScheme)), 3F * Config.Dpi, PaintArrow(item.check_rect));
 
                                 if (item.Checked)
                                 {
                                     float max = item.check_rect.Height + item.check_rect.Height * item.AnimationCheckValue, alpha2 = 100 * (1F - item.AnimationCheckValue);
-                                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get("Tree", ColorScheme))))
+                                    using (var brush = new SolidBrush(Helper.ToColor(alpha2, Colour.Primary.Get(nameof(Tree), ColorScheme))))
                                     {
                                         g.FillEllipse(brush, new RectangleF(item.check_rect.X + (item.check_rect.Width - max) / 2F, item.check_rect.Y + (item.check_rect.Height - max) / 2F, max, max));
                                     }
                                 }
-                                g.Draw(Colour.Primary.Get("Tree", ColorScheme), 2F * Config.Dpi, path_check);
+                                g.Draw(Colour.Primary.Get(nameof(Tree), ColorScheme), 2F * Config.Dpi, path_check);
                             }
                         }
                         else if (item.CheckState == CheckState.Indeterminate)
                         {
-                            g.Draw(Colour.BorderColor.Get("Tree", ColorScheme), bor2, path_check);
-                            g.Fill(Colour.Primary.Get("Tree", ColorScheme), PaintBlock(item.check_rect));
+                            g.Draw(Colour.BorderColor.Get(nameof(Tree), ColorScheme), bor2, path_check);
+                            g.Fill(Colour.Primary.Get(nameof(Tree), ColorScheme), PaintBlock(item.check_rect));
                         }
                         else if (item.Checked)
                         {
-                            g.Fill(Colour.Primary.Get("Tree", ColorScheme), path_check);
-                            g.DrawLines(Colour.BgBase.Get("Tree", ColorScheme), bor2, PaintArrow(item.check_rect));
+                            g.Fill(Colour.Primary.Get(nameof(Tree), ColorScheme), path_check);
+                            g.DrawLines(Colour.BgBase.Get(nameof(Tree), ColorScheme), bor2, PaintArrow(item.check_rect));
                         }
-                        else g.Draw(Colour.BorderColor.Get("Tree", ColorScheme), bor2, path_check);
+                        else g.Draw(Colour.BorderColor.Get(nameof(Tree), ColorScheme), bor2, path_check);
                     }
                     else
                     {
-                        g.Fill(Colour.FillQuaternary.Get("Tree", ColorScheme), path_check);
-                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Colour.TextQuaternary.Get("Tree", ColorScheme), PaintBlock(item.check_rect));
-                        else if (item.Checked) g.DrawLines(Colour.TextQuaternary.Get("Tree", ColorScheme), bor2, PaintArrow(item.check_rect));
-                        g.Draw(Colour.BorderColorDisable.Get("Tree", ColorScheme), bor2, path_check);
+                        g.Fill(Colour.FillQuaternary.Get(nameof(Tree), "bgDisabled", ColorScheme), path_check);
+                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Colour.TextQuaternary.Get(nameof(Tree), "foreDisabled", ColorScheme), PaintBlock(item.check_rect));
+                        else if (item.Checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Tree), "foreDisabled", ColorScheme), bor2, PaintArrow(item.check_rect));
+                        g.Draw(Colour.BorderColorDisable.Get(nameof(Tree), "borderColorDisabled", ColorScheme), bor2, path_check);
                     }
                 }
             }
@@ -651,7 +651,7 @@ namespace AntdUI
                 {
                     float loading_size = item.ico_rect.Height * .14F;
                     var bor3 = 3F * Config.Dpi;
-                    g.DrawEllipse(Colour.Fill.Get("Tree"), bor3, item.ico_rect);
+                    g.DrawEllipse(Colour.Fill.Get(nameof(Tree)), bor3, item.ico_rect);
                     using (var pen = new Pen(color, loading_size))
                     {
                         pen.StartCap = pen.EndCap = LineCap.Round;

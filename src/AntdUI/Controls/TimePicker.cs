@@ -116,7 +116,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var bmp = SvgDb.IcoTime.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get("TimePicker", ColorScheme)))
+                using (var bmp = SvgDb.IcoTime.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get(nameof(TimePicker), ColorScheme)))
                 {
                     if (bmp == null) return;
                     g.Image(bmp, rect_r);

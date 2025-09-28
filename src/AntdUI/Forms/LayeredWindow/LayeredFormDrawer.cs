@@ -54,8 +54,8 @@ namespace AntdUI
             padding = (int)Math.Round(config.Padding * Config.Dpi);
             Padding = new Padding(padding);
             HasBor = Helper.FormFrame(config.Form, out FrmRadius, out FrmBor);
-            config.Content.BackColor = Colour.BgElevated.Get("Drawer", config.ColorScheme);
-            config.Content.ForeColor = Colour.Text.Get("Drawer", config.ColorScheme);
+            config.Content.BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme);
+            config.Content.ForeColor = Colour.Text.Get(nameof(Drawer), config.ColorScheme);
             SetPoint();
             SetSize(start_W, start_H);
             SetLocation(start_X, start_Y);
@@ -364,7 +364,7 @@ namespace AntdUI
             var hidelocation = Helper.OffScreenArea(rect.Width * 2, rect.Height * 2);
             if (config.Content is Form form_)
             {
-                form_.BackColor = Colour.BgElevated.Get("Drawer", config.ColorScheme);
+                form_.BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme);
                 form_.FormBorderStyle = FormBorderStyle.None;
                 form_.Location = hidelocation;
                 form_.ClientSize = rect.Size;
@@ -374,7 +374,7 @@ namespace AntdUI
             {
                 form = new DoubleBufferForm(this, config.Content)
                 {
-                    BackColor = Colour.BgElevated.Get("Drawer", config.ColorScheme),
+                    BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme),
                     FormBorderStyle = FormBorderStyle.None,
                     Location = hidelocation,
                     ClientSize = rect.Size
@@ -646,7 +646,7 @@ namespace AntdUI
                 var rect_read = DrawShadow(g, rect);
                 using (var path = rect_read.RoundPath(FrmRadius))
                 {
-                    g.Fill(Colour.BgElevated.Get("Drawer", config.ColorScheme), path);
+                    g.Fill(Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme), path);
                     if (tempContent != null) g.Image(tempContent, new Rectangle(rect_read.X + padding, rect_read.Y + padding, tempContent.Width, tempContent.Height));
                 }
             }

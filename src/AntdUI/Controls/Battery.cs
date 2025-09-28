@@ -212,11 +212,11 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (ShowText) g.String("100%", Font, fore ?? Colour.Text.Get("Battery", ColorScheme), rect, c);
+                    if (ShowText) g.String("100%", Font, fore ?? Colour.Text.Get(nameof(Battery), ColorScheme), rect, c);
                 }
                 else
                 {
-                    using (var brush = new SolidBrush(back ?? Colour.FillSecondary.Get("Battery", ColorScheme)))
+                    using (var brush = new SolidBrush(back ?? Colour.FillSecondary.Get(nameof(Battery), ColorScheme)))
                     {
                         g.Fill(brush, path_pain);
                         if (dotsize > 0)
@@ -246,7 +246,7 @@ namespace AntdUI
                             g.Image(bmp, e.Rect);
                         }
                     }
-                    if (ShowText) g.String(_value + "%", Font, fore ?? Colour.Text.Get("Battery", ColorScheme), rect, c);
+                    if (ShowText) g.String(_value + "%", Font, fore ?? Colour.Text.Get(nameof(Battery), ColorScheme), rect, c);
                 }
             }
             base.OnDraw(e);
