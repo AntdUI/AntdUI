@@ -47,6 +47,7 @@ namespace Demo
         private void InitializeComponent()
         {
             btn_mode = new AntdUI.Button();
+            btn_more = new AntdUI.Dropdown();
             btn_global = new AntdUI.Dropdown();
             btn_setting = new AntdUI.Button();
             virtualPanel = new AntdUI.VirtualPanel();
@@ -61,14 +62,29 @@ namespace Demo
             btn_mode.Dock = DockStyle.Right;
             btn_mode.Ghost = true;
             btn_mode.IconSvg = "SunOutlined";
-            btn_mode.Location = new Point(1006, 0);
+            btn_mode.Location = new Point(972, 0);
             btn_mode.Name = "btn_mode";
             btn_mode.Radius = 0;
-            btn_mode.Size = new Size(50, 40);
+            btn_mode.Size = new Size(46, 40);
             btn_mode.TabIndex = 6;
             btn_mode.ToggleIconSvg = "MoonOutlined";
             btn_mode.WaveSize = 0;
             btn_mode.Click += btn_mode_Click;
+            // 
+            // btn_more
+            // 
+            btn_more.Dock = DockStyle.Right;
+            btn_more.DropDownRadius = 6;
+            btn_more.Ghost = true;
+            btn_more.IconSvg = "MoreOutlined";
+            btn_more.Location = new Point(1110, 0);
+            btn_more.Name = "btn_more";
+            btn_more.Placement = AntdUI.TAlignFrom.BR;
+            btn_more.Radius = 0;
+            btn_more.Size = new Size(46, 40);
+            btn_more.TabIndex = 9;
+            btn_more.WaveSize = 0;
+            btn_more.SelectedValueChanged += btn_more_Changed;
             // 
             // btn_global
             // 
@@ -76,11 +92,11 @@ namespace Demo
             btn_global.DropDownRadius = 6;
             btn_global.Ghost = true;
             btn_global.IconSvg = "GlobalOutlined";
-            btn_global.Location = new Point(1056, 0);
+            btn_global.Location = new Point(1018, 0);
             btn_global.Name = "btn_global";
             btn_global.Placement = AntdUI.TAlignFrom.BR;
             btn_global.Radius = 0;
-            btn_global.Size = new Size(50, 40);
+            btn_global.Size = new Size(46, 40);
             btn_global.TabIndex = 7;
             btn_global.WaveSize = 0;
             btn_global.SelectedValueChanged += btn_global_Changed;
@@ -90,10 +106,10 @@ namespace Demo
             btn_setting.Dock = DockStyle.Right;
             btn_setting.Ghost = true;
             btn_setting.IconSvg = "SettingOutlined";
-            btn_setting.Location = new Point(1106, 0);
+            btn_setting.Location = new Point(1064, 0);
             btn_setting.Name = "btn_setting";
             btn_setting.Radius = 0;
-            btn_setting.Size = new Size(50, 40);
+            btn_setting.Size = new Size(46, 40);
             btn_setting.TabIndex = 8;
             btn_setting.WaveSize = 0;
             btn_setting.Click += btn_setting_Click;
@@ -119,6 +135,7 @@ namespace Demo
             windowBar.Controls.Add(btn_mode);
             windowBar.Controls.Add(btn_global);
             windowBar.Controls.Add(btn_setting);
+            windowBar.Controls.Add(btn_more);
             windowBar.DividerMargin = 3;
             windowBar.DividerShow = true;
             windowBar.Dock = DockStyle.Top;
@@ -137,7 +154,7 @@ namespace Demo
             // 
             txt_search.Dock = DockStyle.Right;
             txt_search.LocalizationPlaceholderText = "Overview.{id}";
-            txt_search.Location = new Point(796, 0);
+            txt_search.Location = new Point(762, 0);
             txt_search.Name = "txt_search";
             txt_search.Padding = new Padding(0, 2, 0, 2);
             txt_search.PlaceholderText = "输入关键字搜索...";
@@ -150,7 +167,7 @@ namespace Demo
             // colorTheme
             // 
             colorTheme.Dock = DockStyle.Right;
-            colorTheme.Location = new Point(966, 0);
+            colorTheme.Location = new Point(932, 0);
             colorTheme.Name = "colorTheme";
             colorTheme.Padding = new Padding(5);
             colorTheme.Size = new Size(40, 40);
@@ -176,6 +193,7 @@ namespace Demo
         #endregion
 
         private AntdUI.Button btn_mode;
+        private AntdUI.Dropdown btn_more;
         private AntdUI.Dropdown btn_global;
         private AntdUI.Button btn_setting;
         private AntdUI.VirtualPanel virtualPanel;

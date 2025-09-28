@@ -24,6 +24,17 @@ bool isdark = AntdUI.Config.IsDark;
 AntdUI.Config.IsDark = true;// 设置为深色模式
 ```
 
+#### 配置全局切换主题 🔴
+
+> 配置后，继承 [BaseForm](Form/BaseForm.md) 的窗体会自动切换主题
+
+``` csharp
+AntdUI.Config.Theme()
+.Light("#fff", "#000") // 浅色模式背景 白色(#fff) | 前景 黑色(#000)
+.Dark("#000", "#fff") // 深色模式背景 黑色(#000) | 前景 白色(#fff)
+.Header("#f3f3f3", "#111111"); // PageHeader 头部背景 浅色背景色 浅灰色(#f3f3f3) | 深色背景色 深灰色(#111111)
+```
+
 ### 关闭动画
 
 > 默认开启动画

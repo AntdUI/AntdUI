@@ -1,5 +1,17 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.8` 2025-09-28
+
+- ➕ Global Theme Configuration
+- ➕ PageHeader BackIcon
+- ✍️ Colors allocation symbol
+- ✍️ HyperlinkLabel hyperlink content cannot be parsed properly
+- ✍️ DatePicker/Select dropdown concurrent message exception
+- ✍️ PageHeader gradient color for it
+- ✍️ Enrich global theme configuration
+- ✍️ Optimize mask stability
+- 🧹 Table editing mode interaction logic
+
 ### `2.1.7` 2025-09-24
 
 - ➕ HyperlinkLabel Control

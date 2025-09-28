@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.Drawing;
 
 namespace Demo
 {
@@ -26,6 +27,10 @@ namespace Demo
         public TabHeaderForm()
         {
             InitializeComponent();
+            AntdUI.Config.Theme().Header(tabHeader1, "#f3f3f3", "#111111").Call(dark =>
+            {
+                tabHeader1.BackActive = dark ? Color.Black : Color.White;
+            });
             tabHeader1.AddTab("关于", "SlackSquareFilled");
             tabHeader1.AddTab(new AntdUI.TagTabItem("关于"));
         }
