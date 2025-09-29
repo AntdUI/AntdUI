@@ -699,7 +699,10 @@ namespace AntdUI
         public Image? Icon { get; set; }
 
         public string? IconSvg { get; set; }
-
+        /// <summary>
+        /// 图标比例 (默认：0.75f)
+        /// </summary>
+        public float? IconRatio {  get; set; }
         string _text;
         /// <summary>
         /// 文本

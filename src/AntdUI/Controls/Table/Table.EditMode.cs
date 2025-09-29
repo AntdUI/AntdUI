@@ -405,7 +405,29 @@ namespace AntdUI
             if (AddEditInput(select, old, call))
             {
                 select.SelectedValueChanged += InputEdit_SelectedValueChanged;
+                select.ClosedItem += Select_ClosedItem;
+                select.LostFocus += Select_LostFocus;
                 select.Focus();
+            }
+        }
+
+        private void Select_LostFocus(object? sender, EventArgs e)
+        {
+            if (sender is Select select)
+            {
+                select.LostFocus -= Select_LostFocus;
+
+                EditModeClose();
+            }
+        }
+
+        private void Select_ClosedItem(object sender, ObjectNEventArgs e)
+        {
+            if (sender is Select select)
+            {
+                select.ClosedItem -= Select_ClosedItem;
+              
+                EditModeClose();
             }
         }
 
