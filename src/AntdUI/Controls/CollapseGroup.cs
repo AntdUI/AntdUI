@@ -919,12 +919,6 @@ namespace AntdUI
             }
         }
 
-        internal override bool Show
-        {
-            get => Visible;
-            set => base.Show = Visible = value;
-        }
-
         bool switchMode = false;
         //[Obsolete("请使用EditType")]
         [Browsable(false)]

@@ -202,7 +202,12 @@ namespace AntdUI
                     }
                 }
             }
-            return new Bitmap(temp);
+            try
+            {
+                if (temp == null) return null;
+                return new Bitmap(temp);
+            }
+            catch { return null; }
         }
 
         protected override void OnMouseClick(MouseEventArgs e)

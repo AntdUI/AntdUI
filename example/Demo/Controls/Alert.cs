@@ -28,6 +28,19 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
+            alert1.CloseIcon = true;
+            alert1.CloseChanged += Alert1_CloseChanged;
+            alert11.CloseIcon = true;
+            alert11.CloseChanged += Alert1_CloseChanged;
+            alert11.IconRatio = 2f;
+            alert11.IconSvg = "UserSwitchOutlined";
         }
+
+        private bool Alert1_CloseChanged(object sender, System.EventArgs e)
+        {
+            AntdUI.Notification.open(form,(sender as AntdUI.Alert).TextTitle, "Close Button Clicked", AntdUI.TAlignFrom.Top);
+            return false;
+        }
+
     }
 }

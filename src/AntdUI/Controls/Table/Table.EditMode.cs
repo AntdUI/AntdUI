@@ -395,7 +395,16 @@ namespace AntdUI
             if (AddEditInput(input, old, call))
             {
                 input.KeyPress += InputEdit_KeyPress;
+                input.LostFocus += Input_LostFocus;
                 input.Focus();
+            }
+        }
+
+        private void Input_LostFocus(object? sender, EventArgs e)
+        {
+            if (sender is Input edit)
+            {
+                InputEdit_KeyPress(sender, new KeyPressEventArgs((char)13));
             }
         }
 
@@ -415,9 +424,7 @@ namespace AntdUI
         {
             if (sender is Select select)
             {
-                select.LostFocus -= Select_LostFocus;
-
-                EditModeClose();
+                Select_ClosedItem(sender, new ObjectNEventArgs(select.SelectedValue));
             }
         }
 
@@ -425,8 +432,9 @@ namespace AntdUI
         {
             if (sender is Select select)
             {
+                select.SelectedValueChanged -= InputEdit_SelectedValueChanged;
                 select.ClosedItem -= Select_ClosedItem;
-              
+                select.LostFocus -= Select_LostFocus;
                 EditModeClose();
             }
         }
@@ -439,6 +447,7 @@ namespace AntdUI
                 {
                     e.Handled = true;
                     input.KeyPress -= InputEdit_KeyPress;
+                    input.LostFocus -= Input_LostFocus;
                     if (_editControls.TryGetValue(input, out var obj))
                     {
                         if (obj[1] is Action<bool, string> call)
@@ -456,6 +465,8 @@ namespace AntdUI
             if (sender is Select select)
             {
                 select.SelectedValueChanged -= InputEdit_SelectedValueChanged;
+                select.ClosedItem -= Select_ClosedItem;
+                select.LostFocus -= Select_LostFocus;
                 if (_editControls.TryGetValue(select, out var obj))
                 {
                     if (obj[1] is Action<bool, object?> call)
