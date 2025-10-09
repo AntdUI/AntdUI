@@ -649,6 +649,7 @@ namespace AntdUI
         {
             if (obj is SelectItem it)
             {
+                if (it.IconRatio.HasValue) icon_size = (int)(text_height * it.IconRatio.Value);
                 int tmp = g.MeasureText(it.Text + it.SubText, Font).Width;
                 if (it.Online > -1) tmp += icon_size;
                 if (it.Icon != null || it.IconSvg != null) tmp += icon_size + icon_gap;
@@ -682,6 +683,11 @@ namespace AntdUI
                 var rect = new Rectangle(padd, padd + y, maxwr, item_height);
                 if (value is SelectItem it)
                 {
+                    if (it.IconRatio.HasValue)
+                    {
+                        icon_size = (int)(text_height * it.IconRatio.Value);
+                        icon_xy = (item_height - icon_size) / 2;
+                    }
                     int ux = gap_x, uw = gap_x2;
                     item = new ObjectItem(it, i, rect) { NoIndex = no_id };
                     if (it.Online > -1)

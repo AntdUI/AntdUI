@@ -313,12 +313,20 @@ namespace AntdUI
                 if (rows == null) return;
                 if (OnTouchUp())
                 {
-                    if (cellMDown == null) return;
+                    if (cellMDown == null)
+                    {
+                        EditModeClose();
+                        return;
+                    }
                     MouseUpRow(rows, cellMDown, btnMDown, e);
                 }
                 else
                 {
-                    if (btnMDown == null) return;
+                    if (btnMDown == null)
+                    {
+                        EditModeClose();
+                        return;
+                    }
                     if (btnMDown.cell.ExtraMouseDown)
                     {
                         CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, RealRect(btnMDown), e));

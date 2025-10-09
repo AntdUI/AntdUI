@@ -1103,7 +1103,7 @@ namespace AntdUI
                 if (!emptyIcon)
                 {
                     int gapIcon = gap.x / 2;
-                    int wh = (int)((_rect.Height - gap.x) * 0.65f);
+                    int wh = (int)((_rect.Height - gap.x) * value.IconRatio ?? 0.7f);
                     rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap.x), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
                     if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
                 }

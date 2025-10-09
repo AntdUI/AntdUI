@@ -223,6 +223,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg width=&quot;150px&quot; height=&quot;104px&quot; viewBox=&quot;0 0 150 104&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-907.000000, -427.000000)&quot; fill-rule=&quot;nonzero&quot;&gt;&lt;g id=&quot;Typography&quot; transform=&quot;translate(907.000000, 427.000000)&quot;&gt;&lt;rect id=&quot;矩形复制-90&quot; fill=&quot;#F5F5F5&quot; x=&quot;6&quot; y=&quot;6.5&quot; width=&quot;137&quot; height=&quot;90&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#E0E0E0&quot; x=&quot;0&quot; y=&quot;18.5&quot; width=&quot;150&quot; height=&quot;1&quot;&gt;&lt;/rect&gt;&lt;rect id=&quot;矩形复制-89&quot; fill=&quot;#E0E0 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string HyperlinkLabel {
+            get {
+                return ResourceManager.GetString("HyperlinkLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg width=&quot;112px&quot; height=&quot;32px&quot; viewBox=&quot;0 0 112 32&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版&quot; transform=&quot;translate(-562.000000, -463.000000)&quot;&gt;&lt;g id=&quot;Icon&quot; transform=&quot;translate(562.000000, 463.000000)&quot;&gt;&lt;g id=&quot;smile-fill&quot;&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#000000&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;32&quot; height=&quot;32&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M16,2 C8.26875,2 2,8.26875 2,16 C2,23.73125 8.26875,30 16,30 C23.73125,30 30,23. [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Icon {

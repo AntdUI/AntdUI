@@ -17,33 +17,38 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Demo.Controls
 {
-    public partial class Select : UserControl
+    public partial class HyperlinkLabel : UserControl
     {
         Form form;
-        public Select(Form _form)
+
+        public HyperlinkLabel(Form _form)
         {
             form = _form;
             InitializeComponent();
-            select5.Items.AddRange(new AntdUI.SelectItem[] {
-                new AntdUI.SelectItem("one"){
-                    Sub = new List<object>{
-                        new AntdUI.SelectItem("�Ӳ˵�1"){
-                            Sub=new List<object>{ new AntdUI.SelectItem("sub menu") {
-                                Sub=new List<object>{
-                                    "one st menu item","two nd menu item","three rd menu item"
-                                }
-                            } }
-                        },
-                        new AntdUI.SelectItem("�Ӳ˵�2")
-                    }
-                },
-                new AntdUI.SelectItem("two"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },
-            });
+
+            // 测试样式
+            hyperlinkLabel4.NormalStyle = new AntdUI.HyperlinkLabel.LinkAppearance
+            {
+                LinkColor = AntdUI.Style.Db.Error,
+                UnderlineThickness = 1
+            };
+            hyperlinkLabel4.HoverStyle = new AntdUI.HyperlinkLabel.LinkAppearance
+            {
+                LinkColor = AntdUI.Style.Db.ErrorActive,
+                UnderlineThickness = 2
+            };
+        }
+
+        private void hyperlinkLabel_LinkClicked(object sender, AntdUI.HyperlinkLabel.LinkClickedEventArgs e)
+        {
+            if (sender == hyperlinkLabel2) AntdUI.Message.success(FindForm(), "居中链接被点击: " + e.Text);
+            else if (sender == hyperlinkLabel3) AntdUI.Message.success(FindForm(), "带徽章的链接被点击: " + e.Text);
+            else AntdUI.Message.success(form, "点击了: " + e.Text);
         }
     }
 }

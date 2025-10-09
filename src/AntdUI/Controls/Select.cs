@@ -101,6 +101,12 @@ namespace AntdUI
         public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
 
         /// <summary>
+        /// 是否允许回车键触发下拉框
+        /// </summary>
+        [Description("是否允许回车键触发下拉框"), Category("行为"), DefaultValue(true)]
+        public bool EnterDropDown { get; set; } = true;
+
+        /// <summary>
         /// 下拉为空关闭
         /// </summary>
         [Description("下拉为空关闭"), Category("行为"), DefaultValue(false)]
@@ -568,7 +574,7 @@ namespace AntdUI
                     ExpandDrop = true;
                     return true;
                 case Keys.Enter:
-                    ExpandDrop = true;
+                    if (EnterDropDown) ExpandDrop = true;
                     break;
             }
             return r;
@@ -699,6 +705,11 @@ namespace AntdUI
         public Image? Icon { get; set; }
 
         public string? IconSvg { get; set; }
+
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        public float? IconRatio { get; set; }
 
         string _text;
         /// <summary>
@@ -843,6 +854,12 @@ namespace AntdUI
         public SelectItem SetIcon(string? svg)
         {
             IconSvg = svg;
+            return this;
+        }
+
+        public SelectItem SetIconRatio(float? value)
+        {
+            IconRatio = value;
             return this;
         }
 

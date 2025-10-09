@@ -48,6 +48,7 @@ namespace Demo.Controls
         {
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
+            divider4 = new AntdUI.Divider();
             panel4 = new System.Windows.Forms.Panel();
             select8 = new AntdUI.Select();
             selectMultiple1 = new AntdUI.SelectMultiple();
@@ -67,6 +68,7 @@ namespace Demo.Controls
             select5 = new AntdUI.Select();
             select1 = new AntdUI.Select();
             divider1 = new AntdUI.Divider();
+            select9 = new AntdUI.Select();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel3.SuspendLayout();
@@ -93,6 +95,8 @@ namespace Demo.Controls
             // panel1
             // 
             panel1.AutoScroll = true;
+            panel1.Controls.Add(select9);
+            panel1.Controls.Add(divider4);
             panel1.Controls.Add(panel4);
             panel1.Controls.Add(divider3);
             panel1.Controls.Add(panel3);
@@ -104,6 +108,19 @@ namespace Demo.Controls
             panel1.Name = "panel1";
             panel1.Size = new Size(555, 480);
             panel1.TabIndex = 6;
+            // 
+            // divider4
+            // 
+            divider4.Dock = DockStyle.Top;
+            divider4.Font = new Font("Microsoft YaHei UI", 10F);
+            divider4.LocalizationText = "Select.{id}";
+            divider4.Location = new Point(0, 397);
+            divider4.Name = "divider4";
+            divider4.Orientation = AntdUI.TOrientation.Left;
+            divider4.Size = new Size(555, 28);
+            divider4.TabIndex = 6;
+            divider4.TabStop = false;
+            divider4.Text = "回车下拉框控制";
             // 
             // panel4
             // 
@@ -329,6 +346,22 @@ namespace Demo.Controls
             divider1.TabStop = false;
             divider1.Text = "常规";
             // 
+            // select9
+            // 
+            select9.DropDownArrow = true;
+            select9.EnterDropDown = false;
+            select9.Items.AddRange(new object[] { "A", "B", "C", "D", "E", "F", "G" });
+            select9.List = true;
+            select9.ListAutoWidth = true;
+            select9.LocalizationPlaceholderText = "Select.{id}";
+            select9.Location = new Point(18, 431);
+            select9.Margin = new Padding(2, 3, 2, 3);
+            select9.Name = "select9";
+            select9.PlaceholderText = "测试数据";
+            select9.Placement = AntdUI.TAlignFrom.TR;
+            select9.Size = new Size(120, 41);
+            select9.TabIndex = 7;
+            // 
             // Select
             // 
             Controls.Add(panel1);
@@ -368,5 +401,7 @@ namespace Demo.Controls
         private AntdUI.Button button4;
         private AntdUI.Select select8;
         private AntdUI.SelectMultiple selectMultiple1;
+        private AntdUI.Divider divider4;
+        private AntdUI.Select select9;
     }
 }
