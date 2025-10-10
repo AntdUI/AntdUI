@@ -127,7 +127,6 @@ namespace AntdUI
         Bitmap? bmp_tmp;
         void SetAnimateValue(byte _alpha, bool isrint = false)
         {
-            if (form == null || form.IsDisposed) return;
             if (isrint)
             {
                 form.alpha = _alpha;

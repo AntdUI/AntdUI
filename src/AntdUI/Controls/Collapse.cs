@@ -898,6 +898,7 @@ namespace AntdUI
                 if (item.buttons == null) continue;
                 foreach (var btn in item.buttons)
                 {
+                    if (!btn.Visible || !btn.Enabled) continue;
                     if (btn.Contains(e.X, e.Y))
                     {
                         item.MDown = true;
@@ -923,6 +924,7 @@ namespace AntdUI
                         if (item.buttons == null) continue;
                         foreach (var btn in item.buttons)
                         {
+                            if (!btn.Visible || !btn.Enabled) continue;
                             if (btn.Contains(e.X, e.Y))
                             {
                                 if (btn.SwitchMode)
@@ -969,6 +971,7 @@ namespace AntdUI
                 if (item.buttons == null) continue;
                 foreach (var btn in item.buttons)
                 {
+                    if (!btn.Visible || !btn.Enabled) continue;
                     if (btn.Contains(e.X, e.Y))
                     {
                         btn.hasFocus = btn.AnimationHover = true;
@@ -1006,6 +1009,7 @@ namespace AntdUI
                 if (item.buttons == null || item.buttons.Count == 0) continue;
                 foreach (var btn in item.buttons)
                 {
+                    if (!btn.Visible || !btn.Enabled) continue;
                     if (btn.rect.Contains(x, y))
                     {
                         OpenTip(btn);
@@ -1063,6 +1067,7 @@ namespace AntdUI
             if (item.buttons == null || item.buttons.Count == 0) return;
             foreach (var btn in item.buttons)
             {
+                if (!btn.Visible || !btn.Enabled) continue;
                 btn.Select = false;
             }
         }

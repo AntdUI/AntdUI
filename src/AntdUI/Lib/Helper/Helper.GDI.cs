@@ -710,42 +710,86 @@ namespace AntdUI
                     break;
             }
         }
-        internal static void PaintIcons(this Canvas g, TType icon, Rectangle rect, Colour colour, string keyid, TAMode colorScheme)
+        internal static void PaintIcons(this Canvas g, TType icon, string? svg, Rectangle rect, Colour colour, string keyid, TAMode colorScheme)
         {
-            using (var brush = new SolidBrush(Colour.BgBase.Get(keyid, colorScheme)))
+            if (svg == null)
             {
-                g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
+                using (var brush = new SolidBrush(Colour.BgBase.Get(keyid, colorScheme)))
+                {
+                    g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
+                }
+                switch (icon)
+                {
+                    case TType.Success:
+                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    case TType.Info:
+                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    case TType.Warn:
+                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    case TType.Error:
+                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                }
             }
-            switch (icon)
+            else
             {
-                case TType.Success:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
-                    break;
-                case TType.Info:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
-                    break;
-                case TType.Warn:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
-                    break;
-                case TType.Error:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
-                    break;
+                switch (icon)
+                {
+                    case TType.Success:
+                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Success.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    case TType.Info:
+                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Info.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    case TType.Warn:
+                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Warning.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    case TType.Error:
+                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Error.Get(keyid, colorScheme)))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                    default:
+                        using (var bmp = SvgExtend.GetImgExtend(svg, rect))
+                        {
+                            if (bmp == null) return;
+                            g.Image(bmp, rect);
+                        }
+                        break;
+                }
             }
         }
         internal static void PaintIconGhosts(this Canvas g, TType icon, Rectangle rect, Color color)

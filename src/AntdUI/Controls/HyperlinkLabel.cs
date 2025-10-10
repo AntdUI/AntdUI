@@ -34,22 +34,10 @@ namespace AntdUI
     [Description("HyperlinkLabel 超链接文本")]
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
+    [DefaultEvent("LinkClicked")]
     [Designer(typeof(IControlDesigner))]
     public class HyperlinkLabel : IControl
     {
-        #region 私有属性
-
-        private LinkAppearance _normalStyle = new();
-        private LinkAppearance _hoverStyle = new()
-        {
-            LinkColor = Color.Red,
-            UnderlineColor = Color.Red
-        };
-        private string _plainText = string.Empty;
-        public event LinkClickedEventHandler? LinkClicked;
-
-        #endregion
-
         #region 属性
 
         Color? fore;
@@ -94,6 +82,27 @@ namespace AntdUI
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
+
+        #endregion
+
+        #region 文本对齐
+
+        ContentAlignment textAlign = ContentAlignment.MiddleLeft;
+        /// <summary>
+        /// 文本位置
+        /// </summary>
+        [Description("文本位置"), Category("Appearance"), DefaultValue(ContentAlignment.MiddleLeft)]
+        public ContentAlignment TextAlign
+        {
+            get => textAlign;
+            set
+            {
+                if (textAlign == value) return;
+                textAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(TextAlign));
+            }
+        }
 
         #endregion
 
@@ -178,37 +187,57 @@ namespace AntdUI
 
         #endregion
 
+        LinkAppearance? normalStyle;
         /// <summary>
         /// 常规状态下链接的样式
         /// </summary>
-        [Category("Appearance")]
-        [Description("常规状态下链接的样式")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public LinkAppearance NormalStyle
+        [Description("常规状态下链接的样式"), Category("Appearance"), DefaultValue(null)]
+        public LinkAppearance? NormalStyle
         {
-            get { return _normalStyle; }
+            get
+            {
+                normalStyle ??= new LinkAppearance();
+                return normalStyle;
+            }
             set
             {
-                _normalStyle = value;
+                if (normalStyle == value) return;
+                normalStyle = value;
                 Invalidate();
+                OnPropertyChanged(nameof(NormalStyle));
             }
         }
 
+        private bool ShouldSerializeNormalStyle() => normalStyle != null && !normalStyle.IsDefault();
+
+        private void ResetNormalStyle() => normalStyle = null;
+
+        LinkAppearance? hoverStyle;
         /// <summary>
         /// 鼠标悬停时链接的样式
         /// </summary>
-        [Category("Appearance")]
-        [Description("鼠标悬停时链接的样式")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public LinkAppearance HoverStyle
+        [Description("鼠标悬停时链接的样式"), Category("Appearance"), DefaultValue(null)]
+        public LinkAppearance? HoverStyle
         {
-            get { return _hoverStyle; }
+            get
+            {
+                hoverStyle ??= new LinkAppearance();
+                return hoverStyle;
+            }
             set
             {
-                _hoverStyle = value;
+                if (hoverStyle == value) return;
+                hoverStyle = value;
                 Invalidate();
+                OnPropertyChanged(nameof(HoverStyle));
             }
         }
+
+        private bool ShouldSerializeHoverStyle() => hoverStyle != null && !hoverStyle.IsDefault();
+
+        private void ResetHoverStyle() => hoverStyle = null;
 
         Padding _linkPadding = new(2, 0, 2, 0);
         /// <summary>
@@ -260,59 +289,128 @@ namespace AntdUI
 
         void PaintText(Canvas g, string? text, Color color, Rectangle rect)
         {
-            int usex = rect.X, usey = rect.Y;
+            // 计算文本的总尺寸以支持对齐
+            var totalSize = CalculateTextSize(g, text);
+
+            // 根据 TextAlign 计算起始位置
+            int startX = rect.X, startY = rect.Y;
+
+            switch (textAlign)
+            {
+                case ContentAlignment.TopLeft:
+                    startX = rect.X;
+                    startY = rect.Y;
+                    break;
+                case ContentAlignment.TopCenter:
+                    startX = rect.X + (rect.Width - totalSize.Width) / 2;
+                    startY = rect.Y;
+                    break;
+                case ContentAlignment.TopRight:
+                    startX = rect.Right - totalSize.Width;
+                    startY = rect.Y;
+                    break;
+                case ContentAlignment.MiddleLeft:
+                    startX = rect.X;
+                    startY = rect.Y + (rect.Height - totalSize.Height) / 2;
+                    break;
+                case ContentAlignment.MiddleCenter:
+                    startX = rect.X + (rect.Width - totalSize.Width) / 2;
+                    startY = rect.Y + (rect.Height - totalSize.Height) / 2;
+                    break;
+                case ContentAlignment.MiddleRight:
+                    startX = rect.Right - totalSize.Width;
+                    startY = rect.Y + (rect.Height - totalSize.Height) / 2;
+                    break;
+                case ContentAlignment.BottomLeft:
+                    startX = rect.X;
+                    startY = rect.Bottom - totalSize.Height;
+                    break;
+                case ContentAlignment.BottomCenter:
+                    startX = rect.X + (rect.Width - totalSize.Width) / 2;
+                    startY = rect.Bottom - totalSize.Height;
+                    break;
+                case ContentAlignment.BottomRight:
+                    startX = rect.Right - totalSize.Width;
+                    startY = rect.Bottom - totalSize.Height;
+                    break;
+            }
+
+            int usex = startX, usey = startY;
 
             foreach (var part in _linkParts)
             {
                 if (part.Href == null)
                 {
                     var size = g.MeasureText(part.Text, Font);
-                    if (usex + size.Width > rect.Width)
+                    if (usex + size.Width > rect.Right && usex > startX)
                     {
-                        usex = rect.X;
+                        usex = startX;
                         usey += size.Height;
                     }
                     part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
                     g.DrawText(part.Text, Font, color, part.Bounds);
                     usex += size.Width;
                 }
-                else if (part.Hover)
+                else if (part.Hover) PaintText(g, rect, part, startX, ref usex, ref usey, Colour.PrimaryActive, hoverStyle);
+                else PaintText(g, rect, part, startX, ref usex, ref usey, Colour.Primary, normalStyle);
+            }
+        }
+        void PaintText(Canvas g, Rectangle rect, LinkPart part, int startX, ref int usex, ref int usey, Colour colour, LinkAppearance? style)
+        {
+            if (style == null)
+            {
+                var size = g.MeasureText(part.Text, Font).DeflateSize(LinkPadding);
+                if (usex + size.Width > rect.Right && usex > startX)
                 {
-                    using (var font = new Font(Font, HoverStyle.LinkStyle & ~FontStyle.Underline))
-                    {
-                        var size = g.MeasureText(part.Text, Font).DeflateSize(LinkPadding);
-                        if (usex + size.Width > rect.Width)
-                        {
-                            usex = rect.X;
-                            usey += size.Height;
-                        }
-                        part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
-                        g.DrawText(part.Text, font, HoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel)), part.Bounds);
-
-                        PaintText(g, HoverStyle, Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel)), part.Bounds);
-
-                        usex += size.Width;
-                    }
+                    usex = startX;
+                    usey += size.Height;
                 }
-                else
+                part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
+                g.DrawText(part.Text, Font, Style.Get(colour, nameof(HyperlinkLabel)), part.Bounds);
+
+                usex += size.Width;
+            }
+            else
+            {
+                using (var font = new Font(Font, style.LinkStyle & ~FontStyle.Underline))
                 {
-                    using (var font = new Font(Font, NormalStyle.LinkStyle & ~FontStyle.Underline))
+                    var size = g.MeasureText(part.Text, Font).DeflateSize(LinkPadding);
+                    if (usex + size.Width > rect.Right && usex > startX)
                     {
-                        var size = g.MeasureText(part.Text, Font).DeflateSize(LinkPadding);
-                        if (usex + size.Width > rect.Width)
-                        {
-                            usex = rect.X;
-                            usey += size.Height;
-                        }
-                        part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
-                        g.DrawText(part.Text, font, NormalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel)), part.Bounds);
-
-                        PaintText(g, NormalStyle, Style.Get(Colour.Primary, nameof(HyperlinkLabel)), part.Bounds);
-
-                        usex += size.Width;
+                        usex = startX;
+                        usey += size.Height;
                     }
+                    part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
+                    g.DrawText(part.Text, font, style.LinkColor ?? Style.Get(colour, nameof(HyperlinkLabel)), part.Bounds);
+
+                    PaintText(g, style, Style.Get(colour, nameof(HyperlinkLabel)), part.Bounds);
+
+                    usex += size.Width;
                 }
             }
+        }
+
+        private Size CalculateTextSize(Canvas g, string? text)
+        {
+            if (string.IsNullOrEmpty(text) || _linkParts.Length == 0) return Size.Empty;
+
+            int totalWidth = 0, maxHeight = 0;
+
+            foreach (var part in _linkParts)
+            {
+                Size partSize;
+                if (part.Href == null || normalStyle == null) partSize = g.MeasureText(part.Text, Font);
+                else
+                {
+                    using (var font = new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline))
+                    {
+                        partSize = g.MeasureText(part.Text, font).DeflateSize(LinkPadding);
+                    }
+                }
+                totalWidth += partSize.Width;
+                maxHeight = Math.Max(maxHeight, partSize.Height);
+            }
+            return new Size(totalWidth, maxHeight);
         }
         void PaintText(Canvas g, LinkAppearance style, Color color, Rectangle rect)
         {
@@ -325,6 +423,12 @@ namespace AntdUI
         }
 
         public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding);
+
+        #endregion
+
+        #region 事件
+
+        public event LinkClickedEventHandler? LinkClicked;
 
         #endregion
 
@@ -435,6 +539,7 @@ namespace AntdUI
         #region 私有方法
 
         LinkPart[] _linkParts = new LinkPart[0];
+        string _plainText = string.Empty;
         private void ParseText()
         {
             if (text == null)
@@ -611,6 +716,14 @@ namespace AntdUI
 
             [Description("下划线厚度（0为不显示下划线）"), DefaultValue(1)]
             public int UnderlineThickness { get; set; } = 1;
+
+            internal bool IsDefault()
+            {
+                return LinkColor == null
+                       && LinkStyle == FontStyle.Regular
+                       && UnderlineColor == null
+                       && UnderlineThickness == 1;
+            }
 
             public override string ToString() => "LinkAppearance";
         }

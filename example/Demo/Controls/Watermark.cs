@@ -24,7 +24,7 @@ namespace Demo.Controls
 {
     public partial class Watermark : UserControl
     {
-        private Form form;
+        Form form;
 
         public Watermark(Form _form)
         {

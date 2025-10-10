@@ -39,7 +39,7 @@ namespace Demo.Controls
                                 }
                             } }
                         },
-                        new AntdUI.SelectItem( "子菜单2")
+                        new AntdUI.SelectItem("子菜单2")
                     }
                 },
                 new AntdUI.SelectItem("two"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },

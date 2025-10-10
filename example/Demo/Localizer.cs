@@ -830,6 +830,22 @@ namespace Demo
                 case "Chart.Description":
                     return "Visual chart library.";
 
+                //HyperlinkLabel ----------------------------
+                case "HyperlinkLabel.Text":
+                    return "HyperlinkLabel";
+                case "HyperlinkLabel.Description":
+                    return "Hyperlink text<a>";
+                case "HyperlinkLabel.divider1":
+                    return "Basic";
+                case "HyperlinkLabel.divider2":
+                    return "Center alignment";
+                case "HyperlinkLabel.divider3":
+                    return "Link with badge";
+                case "HyperlinkLabel.divider4":
+                    return "Custom Style";
+                case "HyperlinkLabel.divider5":
+                    return "Multiple links";
+
                 #endregion
 
                 case "Loading":

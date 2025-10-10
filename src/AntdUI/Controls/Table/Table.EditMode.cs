@@ -71,9 +71,11 @@ namespace AntdUI
                 {
                     if (_editControls.TryRemove(id, out var obj))
                     {
+                        id.LostFocus -= InputEdit_LostFocus;
                         if (id is Select select)
                         {
                             select.SelectedValueChanged -= InputEdit_SelectedValueChanged;
+                            select.ClosedItem -= InputEdit_SelectedValueChanged;
                             if (obj[1] is Action<bool, object?> call)
                             {
                                 obj[1] = null;
@@ -143,7 +145,7 @@ namespace AntdUI
                     else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                     CellBeginEditInputStyle?.Invoke(this, arge);
-                    var action = new Action<bool, string>((cf, _value) =>
+                    ShowInput(arge.Input, (cf, _value) =>
                     {
                         var e = new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column);
                         arge.Call?.Invoke(e);
@@ -160,7 +162,6 @@ namespace AntdUI
                             CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
                         }
                     });
-                    ShowInput(arge.Input, action);
                 });
             }
             else if (cell is TCellSelect cellSelect)
@@ -275,6 +276,14 @@ namespace AntdUI
             else if (value is float)
             {
                 if (float.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is DateTime)
+            {
+                if (DateTime.TryParse(_value, out var v))
                 {
                     read = v;
                     return true;
@@ -395,16 +404,7 @@ namespace AntdUI
             if (AddEditInput(input, old, call))
             {
                 input.KeyPress += InputEdit_KeyPress;
-                input.LostFocus += Input_LostFocus;
                 input.Focus();
-            }
-        }
-
-        private void Input_LostFocus(object? sender, EventArgs e)
-        {
-            if (sender is Input edit)
-            {
-                InputEdit_KeyPress(sender, new KeyPressEventArgs((char)13));
             }
         }
 
@@ -414,28 +414,8 @@ namespace AntdUI
             if (AddEditInput(select, old, call))
             {
                 select.SelectedValueChanged += InputEdit_SelectedValueChanged;
-                select.ClosedItem += Select_ClosedItem;
-                select.LostFocus += Select_LostFocus;
+                select.ClosedItem += InputEdit_SelectedValueChanged;
                 select.Focus();
-            }
-        }
-
-        private void Select_LostFocus(object? sender, EventArgs e)
-        {
-            if (sender is Select select)
-            {
-                Select_ClosedItem(sender, new ObjectNEventArgs(select.SelectedValue));
-            }
-        }
-
-        private void Select_ClosedItem(object sender, ObjectNEventArgs e)
-        {
-            if (sender is Select select)
-            {
-                select.SelectedValueChanged -= InputEdit_SelectedValueChanged;
-                select.ClosedItem -= Select_ClosedItem;
-                select.LostFocus -= Select_LostFocus;
-                EditModeClose();
             }
         }
 
@@ -446,38 +426,12 @@ namespace AntdUI
                 if (e.KeyChar == 13)
                 {
                     e.Handled = true;
-                    input.KeyPress -= InputEdit_KeyPress;
-                    input.LostFocus -= Input_LostFocus;
-                    if (_editControls.TryGetValue(input, out var obj))
-                    {
-                        if (obj[1] is Action<bool, string> call)
-                        {
-                            obj[1] = null;
-                            call(((string)obj[0]!) == input.Text, input.Text);
-                        }
-                    }
                     EditModeClose();
                 }
             }
         }
-        void InputEdit_SelectedValueChanged(object? sender, ObjectNEventArgs e)
-        {
-            if (sender is Select select)
-            {
-                select.SelectedValueChanged -= InputEdit_SelectedValueChanged;
-                select.ClosedItem -= Select_ClosedItem;
-                select.LostFocus -= Select_LostFocus;
-                if (_editControls.TryGetValue(select, out var obj))
-                {
-                    if (obj[1] is Action<bool, object?> call)
-                    {
-                        obj[1] = null;
-                        call(obj[0] == select.SelectedValue, select.SelectedValue);
-                    }
-                }
-                EditModeClose();
-            }
-        }
+        void InputEdit_SelectedValueChanged(object? sender, ObjectNEventArgs e) => EditModeClose();
+        void InputEdit_LostFocus(object? sender, EventArgs e) => EditModeClose();
 
         #endregion
 
@@ -493,6 +447,7 @@ namespace AntdUI
             if (_editControls.TryAdd(input, new object?[] { txt, action }))
             {
                 Controls.Add(input);
+                input.LostFocus += InputEdit_LostFocus;
                 return true;
             }
             else input.Dispose();

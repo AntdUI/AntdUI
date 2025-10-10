@@ -223,6 +223,15 @@ namespace Demo {
         }
         
         /// <summary>
+        ///   查找类似 &lt;svg width=&quot;265px&quot; height=&quot;219px&quot; viewBox=&quot;0 0 265 219&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;defs&gt;&lt;rect id=&quot;path-1&quot; x=&quot;6&quot; y=&quot;6.5&quot; width=&quot;137&quot; height=&quot;90&quot;&gt;&lt;/rect&gt;&lt;filter x=&quot;-74.5%&quot; y=&quot;-100.0%&quot; width=&quot;248.9%&quot; height=&quot;326.7%&quot; filterUnits=&quot;objectBoundingBox&quot; id=&quot;filter-2&quot;&gt;&lt;feMorphology radius=&quot;8&quot; operator=&quot;dilate&quot; in=&quot;SourceAlpha&quot; result=&quot;shadowSpreadOuter1&quot;&gt;&lt;/feMorphology&gt;&lt;feOffset dx=&quot;0&quot; dy=&quot;12&quot; in=&quot;shadowSpreadOuter1&quot; result=&quot;shadowOffsetOuter1&quot;&gt;&lt;/feOffset&gt;&lt;feGaussianBlur stdDeviation=&quot;24&quot; in=&quot;shadowO [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string HyperlinkLabel {
+            get {
+                return ResourceManager.GetString("HyperlinkLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;svg width=&quot;112px&quot; height=&quot;32px&quot; viewBox=&quot;0 0 112 32&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;&lt;g id=&quot;组件骨架图更新&quot; stroke=&quot;none&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;&gt;&lt;g id=&quot;🎉-5.0-新版---黑&quot; transform=&quot;translate(-562.000000, -463.000000)&quot;&gt;&lt;g id=&quot;Icon&quot; transform=&quot;translate(562.000000, 463.000000)&quot;&gt;&lt;g id=&quot;smile-fill&quot;&gt;&lt;rect id=&quot;矩形&quot; fill=&quot;#000000&quot; fill-rule=&quot;nonzero&quot; opacity=&quot;0&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;32&quot; height=&quot;32&quot;&gt;&lt;/rect&gt;&lt;path d=&quot;M16,2 C8.26875,2 2,8.26875 2,16 C2,23.73125 8.26875,30 16,30 C23.73125,30 30 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Icon {
