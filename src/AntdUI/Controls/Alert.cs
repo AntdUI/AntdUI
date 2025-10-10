@@ -35,6 +35,11 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class Alert : IControl, IEventListener
     {
+        public Alert()
+        {
+            hover_close = new ITaskOpacity(nameof(Alert), this);
+        }
+
         #region 属性
 
         int radius = 6;
@@ -154,6 +159,83 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Icon));
             }
         }
+
+        #region 图标
+
+        string? iconSvg;
+        /// <summary>
+        /// 自定义图标SVG
+        /// </summary>
+        [Description("自定义图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconSvg));
+            }
+        }
+
+        bool closeIcon = false;
+        /// <summary>
+        /// 是否显示关闭图标
+        /// </summary>
+        [Description("是否显示关闭图标"), Category("行为"), DefaultValue(false)]
+        public bool CloseIcon
+        {
+            get => closeIcon;
+            set
+            {
+                if (closeIcon == value) return;
+                closeIcon = value;
+                Invalidate();
+                OnPropertyChanged(nameof(CloseIcon));
+            }
+        }
+
+        float? iconratio;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(null)]
+        public float? IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconRatio));
+            }
+        }
+
+        float? icongap;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(null)]
+        public float? IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconGap));
+            }
+        }
+
+        /// <summary>
+        /// 是否包含自定义图标
+        /// </summary>
+        public bool HasIcon => iconSvg != null;
+
+        #endregion
 
         bool loop = false, loopState = false;
         /// <summary>
@@ -290,6 +372,46 @@ namespace AntdUI
 
         #endregion
 
+        #region 事件
+
+        /// <summary>
+        /// Close时发生
+        /// </summary>
+        [Description("Close时发生"), Category("行为")]
+        public event RBoolEventHandler? CloseChanged;
+
+        #endregion
+
+        #region 鼠标
+
+        ITaskOpacity hover_close;
+        RectangleF rect_close;
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && closeIcon && rect_close.Contains(e.X, e.Y))
+            {
+                bool isclose = false;
+                if (CloseChanged == null || CloseChanged(this, EventArgs.Empty)) isclose = true;
+                if (isclose) Dispose();
+                return;
+            }
+            base.OnMouseClick(e);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (closeIcon)
+            {
+                hover_close.MaxValue = Colour.Text.Get(nameof(Alert), ColorScheme).A - Colour.TextQuaternary.Get(nameof(Alert), ColorScheme).A;
+                hover_close.Switch = rect_close.Contains(e.X, e.Y);
+                SetCursor(hover_close.Switch);
+            }
+            else SetCursor(false);
+            base.OnMouseMove(e);
+        }
+
+        #endregion
+
         #region 渲染
 
         protected override void OnDraw(DrawEventArgs e)
@@ -297,7 +419,7 @@ namespace AntdUI
             var rect = DisplayRectangle;
             var g = e.Canvas;
             bool hasText = string.IsNullOrEmpty(Text);
-            if (icon == TType.None)
+            if (icon == TType.None && !HasIcon)
             {
                 if (loop)
                 {
@@ -377,11 +499,11 @@ namespace AntdUI
                         if (font_size == null && !hasText) font_size = g.MeasureText(Text, Font);
                         if (font_size.HasValue)
                         {
-                            int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
+                            int icon_size = (int)(sizeT.Height * (iconratio ?? .86F)), gap = (int)(icon_size * (icongap ?? .4F));
                             var rect_icon = new Rectangle(gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
                             g.ResetClip();
-                            g.PaintIcons(icon, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
+                            g.PaintIcons(icon, iconSvg, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
                         }
                     }
                     else
@@ -393,20 +515,21 @@ namespace AntdUI
                         }
                         if (string.IsNullOrEmpty(TextTitle))
                         {
-                            int icon_size = (int)(sizeT.Height * .86F), gap = (int)(icon_size * .4F);
+                            int icon_size = (int)(sizeT.Height * (iconratio ?? .86F)), gap = (int)(icon_size * (icongap ?? .4F));
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                            g.PaintIcons(icon, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
+                            g.PaintIcons(icon, iconSvg, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
                             var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 3), rect.Height);
                             g.DrawText(Text, Font, color, rect_txt, sf);
+                            PaintCloseIcon(g, rect_txt, .4F);
                         }
                         else
                         {
                             using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
                             {
-                                int icon_size = (int)(sizeT.Height * 1.2F), gap = (int)(icon_size * .5F);
+                                int icon_size = (int)(sizeT.Height * (iconratio ?? 1.2F)), gap = (int)(icon_size * (icongap ?? .5F));
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
-                                g.PaintIcons(icon, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
+                                g.PaintIcons(icon, iconSvg, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
 
                                 using (var brush = new SolidBrush(color))
                                 {
@@ -416,6 +539,7 @@ namespace AntdUI
                                     var desc_y = rect_txt.Bottom + (int)(icon_size * .2F);
                                     var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
                                     g.DrawText(Text, Font, brush, rect_txt_desc, sEllipsis);
+                                    PaintCloseIcon(g, rect_txt, .7F);
                                 }
                             }
                         }
@@ -548,6 +672,19 @@ namespace AntdUI
                     g.Fill(brush, rect_icon_r);
                     g.Fill(brush, rect_icon_r);
                 }
+            }
+        }
+
+        void PaintCloseIcon(Canvas g, Rectangle rect, float ratio)
+        {
+            if (closeIcon)
+            {
+                int size = (int)(rect.Height * ratio);
+                var rect_arrow = new Rectangle(rect.Right - size, rect.Y + (rect.Height - size) / 2, size, size);
+                rect_close = rect_arrow;
+                if (hover_close.Animation) g.PaintIconClose(rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(Alert), ColorScheme).A, Colour.Text.Get(nameof(Alert), ColorScheme)));
+                else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Colour.Text.Get(nameof(Alert), ColorScheme));
+                else g.PaintIconClose(rect_arrow, Colour.TextQuaternary.Get(nameof(Alert), ColorScheme));
             }
         }
 
