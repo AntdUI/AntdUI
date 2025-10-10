@@ -457,9 +457,7 @@ namespace AntdUI
             {
                 if (items == null) return;
                 if (items.Count <= _select || _select < 0) return;
-                var it = items[_select];
-                if (IsHandleCreated) BeginInvoke(it.BringToFront);
-                else it.BringToFront();
+                for (int i = 0; i < items.Count; i++) items[i].Showed = i == _select;
             }
         }
 
@@ -1625,13 +1623,13 @@ namespace AntdUI
                     it.Invoke(() =>
                     {
                         it.Controls.Add(item);
-                        if (top) item.BringToFront();
+                        if (top) item.Showed = true;
                     });
                 }
                 else
                 {
                     it.Controls.Add(item);
-                    if (top) item.BringToFront();
+                    if (top) item.Showed = true;
                 }
             };
             action_del = (item, index) =>
@@ -1845,6 +1843,40 @@ namespace AntdUI
         }
 
         #endregion
+
+        #region 隐藏显示
+
+        bool showed = false;
+        [Description("显示的"), Category("外观"), DefaultValue(false)]
+        public bool Showed
+        {
+            get => showed;
+            set
+            {
+                if (showed == value) return;
+                showed = value;
+                ShowedChanged?.Invoke(this, EventArgs.Empty);
+                if (value)
+                {
+                    if (IsHandleCreated) BeginInvoke(BringToFront);
+                    else BringToFront();
+                }
+            }
+        }
+
+        public event EventHandler? ShowedChanged;
+
+        #endregion
+
+#if NET40 || NET46 || NET48
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public IAsyncResult BeginInvoke(Action method) => BeginInvoke(method, null);
+
+        public void Invoke(Action method) => _ = Invoke(method, null);
+        public T Invoke<T>(Func<T> method) => (T)Invoke(method, null);
+
+#endif
 
         public override string ToString() => Text;
     }

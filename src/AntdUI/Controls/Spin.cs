@@ -87,6 +87,20 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
+        [Description("加载指示符"), Category("外观"), DefaultValue(null)]
+        public Image? Indicator
+        {
+            get => config.Indicator;
+            set => config.Indicator = value;
+        }
+
+        [Description("加载指示符SVG"), Category("外观"), DefaultValue(null)]
+        public string? IndicatorSvg
+        {
+            get => config.IndicatorSvg;
+            set => config.IndicatorSvg = value;
+        }
+
         #endregion
 
         #region 动画
@@ -157,9 +171,79 @@ namespace AntdUI
             public int? Radius { get; set; }
 
             /// <summary>
+            /// 加载指示符
+            /// </summary>
+            public Image? Indicator { get; set; }
+
+            /// <summary>
+            /// 加载指示符SVG
+            /// </summary>
+            public string? IndicatorSvg { get; set; }
+
+            /// <summary>
             /// 进度
             /// </summary>
             public float? Value { get; set; }
+
+            /// <summary>
+            /// 进度速率
+            /// </summary>
+            public float? Rate { get; set; }
+
+            #region 设置
+
+            public Config SetText(string? value)
+            {
+                Text = value;
+                return this;
+            }
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public Config SetColor(Color? value)
+            {
+                Color = value;
+                return this;
+            }
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetRadius(int? value)
+            {
+                Radius = value;
+                return this;
+            }
+            public Config SetValue(float? value)
+            {
+                Value = value;
+                return this;
+            }
+            public Config SetIndicator(Image? value)
+            {
+                Indicator = value;
+                return this;
+            }
+            public Config SetIndicator(string? value)
+            {
+                IndicatorSvg = value;
+                return this;
+            }
+            public Config SetRate(float? value)
+            {
+                Rate = value;
+                return this;
+            }
+
+            #endregion
         }
 
         #region 静态方法
@@ -251,38 +335,32 @@ namespace AntdUI
 
         public void Start(IControl control)
         {
+            Stop();
             bool ProgState = false;
             thread = new ITask(control, () =>
             {
-                if (lnull) LineAngle = LineAngle.Calculate(2F);
-                else
-                {
-                    if (ProgState)
-                    {
-                        LineAngle = LineAngle.Calculate(9F);
-                        LineWidth = LineWidth.Calculate(0.6F);
-                        if (LineWidth > 75) ProgState = false;
-                    }
-                    else
-                    {
-                        LineAngle = LineAngle.Calculate(9.6F);
-                        LineWidth = LineWidth.Calculate(-0.6F);
-                        if (LineWidth < 6) ProgState = true;
-                    }
-                }
-                if (LineAngle >= 360) LineAngle = 0;
+                Animation(ref ProgState);
                 control.Invalidate();
                 return true;
             }, 10);
         }
         public void Start(ILayeredForm control)
         {
+            Stop();
             bool ProgState = false;
             thread = new ITask(control, () =>
             {
-                if (lnull) LineAngle = LineAngle.Calculate(2F);
-                else
-                {
+                Animation(ref ProgState);
+                control.Print();
+                return true;
+            }, 10);
+        }
+
+        void Animation(ref bool ProgState)
+        {
+            switch (mode)
+            {
+                case 0:
                     if (ProgState)
                     {
                         LineAngle = LineAngle.Calculate(9F);
@@ -295,16 +373,28 @@ namespace AntdUI
                         LineWidth = LineWidth.Calculate(-0.6F);
                         if (LineWidth < 6) ProgState = true;
                     }
-                }
-                if (LineAngle >= 360) LineAngle = 0;
-                control.Print();
-                return true;
-            }, 10);
+                    break;
+                case 1:
+                    LineAngle = LineAngle.Calculate(2F);
+                    break;
+                case 2:
+                default:
+                    LineAngle = LineAngle.Calculate(rate ?? 12F);
+                    break;
+            }
+            if (LineAngle >= 360) LineAngle = 0;
+        }
+
+        public void Stop()
+        {
+            thread?.Dispose();
+            thread = null;
         }
 
         readonly StringFormat s_f = Helper.SF_ALL();
 
-        bool lnull = false;
+        float? rate;
+        int mode = 0;
         public void Paint(Canvas g, Rectangle rect, Spin.Config config, Control control)
         {
             var font = config.Font ?? control.Font;
@@ -317,24 +407,40 @@ namespace AntdUI
                 rect_prog.Offset(0, -size2);
                 g.DrawText(config.Text, font, config.Fore ?? Colour.Primary.Get(nameof(Spin)), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
-            g.DrawEllipse(Colour.Fill.Get(nameof(Spin)), size, rect_prog);
-            using (var brush = new Pen(config.Color ?? Colour.Primary.Get(nameof(Spin)), size))
+            var color = config.Color ?? Colour.Primary.Get(nameof(Spin));
+            if (config.Indicator != null || config.IndicatorSvg != null)
             {
-                brush.StartCap = brush.EndCap = LineCap.Round;
-                if (config.Value.HasValue)
+                rate = config.Rate;
+                mode = 2;
+                var size22 = rprog_size / 2F;
+                g.TranslateTransform(rect_prog.X + size22, rect_prog.Y + size22);
+                g.RotateTransform(LineAngle);
+                var rect_center = new Rectangle(-size2, -size2, rprog_size, rprog_size);
+                if (config.Indicator != null) g.Image(config.Indicator, rect_center);
+                if (config.IndicatorSvg != null) g.GetImgExtend(config.IndicatorSvg, rect_center, color);
+                g.ResetTransform();
+            }
+            else
+            {
+                g.DrawEllipse(Colour.Fill.Get(nameof(Spin)), size, rect_prog);
+                using (var brush = new Pen(color, size))
                 {
-                    lnull = true;
-                    g.DrawArc(brush, rect_prog, LineAngle, config.Value.Value * 360F);
-                }
-                else
-                {
-                    lnull = false;
-                    g.DrawArc(brush, rect_prog, LineAngle, LineWidth * 3.6F);
+                    brush.StartCap = brush.EndCap = LineCap.Round;
+                    if (config.Value.HasValue)
+                    {
+                        mode = 1;
+                        g.DrawArc(brush, rect_prog, LineAngle, config.Value.Value * 360F);
+                    }
+                    else
+                    {
+                        mode = 0;
+                        g.DrawArc(brush, rect_prog, LineAngle, LineWidth * 3.6F);
+                    }
                 }
             }
         }
 
-        public void Dispose() => thread?.Dispose();
+        public void Dispose() => Stop();
     }
 
     internal class SpinForm : ILayeredFormOpacity
@@ -366,7 +472,6 @@ namespace AntdUI
             }
         }
 
-
         public override string name => nameof(Spin);
 
         Func<GraphicsPath>? RenderRegion;
@@ -376,21 +481,48 @@ namespace AntdUI
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            spin_core.Start(this);
+            control.VisibleChanged += Parent_VisibleChanged;
+            control.LocationChanged += Parent_LocationChanged;
+            control.SizeChanged += Parent_SizeChanged;
+            if (control is TabPage page) page.ShowedChanged += Parent_VisibleChanged;
             if (parent != null)
             {
+                parent.VisibleChanged += Parent_VisibleChanged;
                 parent.LocationChanged += Parent_LocationChanged;
                 parent.SizeChanged += Parent_SizeChanged;
             }
+            LoadVisible();
         }
 
+        bool visible = false;
+        void LoadVisible()
+        {
+            var tmp = GetVisible();
+            if (visible == tmp) return;
+            visible = tmp;
+            if (tmp) spin_core.Start(this);
+            else
+            {
+                spin_core.Stop();
+                Print();
+            }
+        }
+        bool GetVisible()
+        {
+            if (control is TabPage page) return page.Showed && page.Visible;
+            return control.Visible;
+        }
+
+        private void Parent_VisibleChanged(object? sender, EventArgs e) => LoadVisible();
         private void Parent_LocationChanged(object? sender, EventArgs e)
         {
+            LoadVisible();
             if (control is Form form) SetLocation(form.Location);
             else SetLocation(control.PointToScreen(Point.Empty));
         }
         private void Parent_SizeChanged(object? sender, EventArgs e)
         {
+            LoadVisible();
             if (control is Form form)
             {
                 SetSize(form.Size);
@@ -410,30 +542,33 @@ namespace AntdUI
         {
             Rectangle rect_read = TargetRectXY, rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
             var original_bmp = new Bitmap(rect_read.Width, rect_read.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay(true))
+            if (visible)
             {
-                using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get(nameof(Spin)), .8F)))
+                using (var g = Graphics.FromImage(original_bmp).HighLay(true))
                 {
-                    if (RenderRegion == null)
+                    using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get(nameof(Spin)), .8F)))
                     {
-                        if (Radius > 0)
+                        if (RenderRegion == null)
                         {
-                            using (var path = rect.RoundPath(Radius))
+                            if (Radius > 0)
+                            {
+                                using (var path = rect.RoundPath(Radius))
+                                {
+                                    g.Fill(brush, path);
+                                }
+                            }
+                            else g.Fill(brush, rect);
+                        }
+                        else
+                        {
+                            using (var path = RenderRegion())
                             {
                                 g.Fill(brush, path);
                             }
                         }
-                        else g.Fill(brush, rect);
                     }
-                    else
-                    {
-                        using (var path = RenderRegion())
-                        {
-                            g.Fill(brush, path);
-                        }
-                    }
+                    spin_core.Paint(g, rect, config, this);
                 }
-                spin_core.Paint(g, rect, config, this);
             }
             return original_bmp;
         }
@@ -443,8 +578,13 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             spin_core.Dispose();
+            control.VisibleChanged -= Parent_VisibleChanged;
+            control.LocationChanged -= Parent_LocationChanged;
+            control.SizeChanged -= Parent_SizeChanged;
+            if (control is TabPage page) page.ShowedChanged -= Parent_VisibleChanged;
             if (parent != null)
             {
+                parent.VisibleChanged -= Parent_VisibleChanged;
                 parent.LocationChanged -= Parent_LocationChanged;
                 parent.SizeChanged -= Parent_SizeChanged;
             }
