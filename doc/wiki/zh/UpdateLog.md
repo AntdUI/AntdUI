@@ -1,5 +1,21 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.9` 2025-10-11
+
+- ➕ SelectMultiple TagBordered 应用 Status 状态色
+- ➕ Button 丰富 ForeHover/ForeActive
+- ➕ Table Cell系列 国际化
+- ➕ Spin Indicator 自定义加载指示符
+- ➕ Alert IconSvg自定义图标 和 CloseChanged事件
+- ➕ Select EnterDropDown 属性 用于部分场景中是否允许回车键触发下拉框
+- ✍️ 滚动条适配 ColorScheme
+- ✍️ Spin 隐藏后依旧显示
+- ✍️ Table 编辑模式回滚失去焦点关闭
+- ✍️ Table 点击空白处退出编辑模式
+- ✍️ Collapse ItemButton.Visible=false 仍然响应 ButtonClick 事件
+- ✍️ Collapse Button 无法隐藏
+- ✍️ 渲染 释放异常
+
 ### `2.1.8` 2025-09-28
 
 - ➕ 全局主题配置
