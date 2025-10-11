@@ -88,6 +88,22 @@ namespace AntdUI
             }
         }
 
+        bool tagBordered = false;
+        /// <summary>
+        /// 是否显示勾选项的边框
+        /// </summary>
+        [Description("是否显示勾选项的边框"), Category("外观"), DefaultValue(false)]
+        public bool TagBordered
+        {
+            get => tagBordered;
+            set
+            {
+                if (tagBordered == value) return;
+                tagBordered = value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// 菜单弹出位置
         /// </summary>
@@ -475,11 +491,28 @@ namespace AntdUI
             }
         }
 
+        Color GetStatusColor(bool bg)
+        {
+            switch (Status)
+            {
+                case TType.Success:
+                    return Style.Get(bg ? Colour.SuccessBg : Colour.Success, nameof(SelectMultiple), ColorScheme);
+                case TType.Warn:
+                    return Style.Get(bg ? Colour.WarningBg : Colour.Warning, nameof(SelectMultiple), ColorScheme);
+                case TType.Error:
+                    return Style.Get(bg ? Colour.ErrorBg : Colour.Error, nameof(SelectMultiple), ColorScheme);
+                case TType.Info:
+                    return Style.Get(bg ? Colour.InfoBg : Colour.Info, nameof(SelectMultiple), ColorScheme);
+                default:
+                    return (bg ? Colour.TagDefaultBg : Colour.TagDefaultColor).Get(nameof(SelectMultiple), ColorScheme);
+            }
+        }
+
         protected override void PaintOtherBor(Canvas g, Rectangle rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
             if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)
             {
-                using (var brush = new SolidBrush(Colour.TagDefaultColor.Get(nameof(Select), ColorScheme)))
+                using (var brush = new SolidBrush(GetStatusColor(false)))
                 {
                     if (rect_lefts.Length > 0)
                     {
@@ -491,15 +524,17 @@ namespace AntdUI
                             {
                                 if (style == null)
                                 {
-                                    g.Fill(Colour.TagDefaultBg.Get(nameof(Select), ColorScheme), path);
+                                    g.Fill(GetStatusColor(true), path);
+                                    if (tagBordered) g.Draw(brush, 1f * Config.Dpi, path);
                                     var rect_del = rect_left_dels[i];
                                     if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
                                     g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                                 }
                                 else
                                 {
-                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? Colour.TagDefaultBg.Get(nameof(Select), ColorScheme)))
+                                    using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? GetStatusColor(true)))
                                     {
+                                        if (tagBordered) g.Draw(brush, 1f * Config.Dpi, path);
                                         g.Fill(brushbg, path);
                                     }
                                     if (style.TagFore.HasValue)
