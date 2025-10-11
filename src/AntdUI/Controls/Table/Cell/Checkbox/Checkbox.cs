@@ -46,14 +46,14 @@ namespace AntdUI
         /// 复选框
         /// </summary>
         /// <param name="text">文本</param>
-        public CellCheckbox(string text) { _text = text; }
+        public CellCheckbox(string? text) { _text = text; }
 
         /// <summary>
         /// 复选框
         /// </summary>
         /// <param name="text">文本</param>
         /// <param name="Checked">复选值</param>
-        public CellCheckbox(string text, bool Checked = true)
+        public CellCheckbox(string? text, bool Checked = true)
         {
             _text = text;
             _checked = Checked;
@@ -64,7 +64,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="text">文本</param>
         /// <param name="fore">文字颜色</param>
-        public CellCheckbox(string text, Color fore)
+        public CellCheckbox(string? text, Color fore)
         {
             _text = text;
             _fore = fore;
@@ -108,7 +108,7 @@ namespace AntdUI
         /// </summary>
         public string? Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text);
             set
             {
                 if (_text == value) return;
@@ -116,6 +116,11 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
+
+        /// <summary>
+        /// 国际化文本
+        /// </summary>
+        public string? LocalizationText { get; set; }
 
         Color? fill;
         /// <summary>
@@ -265,6 +270,18 @@ namespace AntdUI
 
         #region 设置
 
+        public CellCheckbox SetText(string? value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+        public CellCheckbox SetLocalizationText(string? value)
+        {
+            LocalizationText = value;
+            return this;
+        }
+
         public CellCheckbox SetText(string? value)
         {
             _text = value;
@@ -313,6 +330,6 @@ namespace AntdUI
 
         #endregion
 
-        public override string? ToString() => _text;
+        public override string? ToString() => Text;
     }
 }

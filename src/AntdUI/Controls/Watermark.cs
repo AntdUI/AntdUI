@@ -327,13 +327,13 @@ namespace AntdUI
 
         #region 渲染
 
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
             if (config.Enabled)
             {
-                using (var g = Graphics.FromImage(original_bmp).HighLay())
+                using (var g = Graphics.FromImage(rbmp).HighLay())
                 using (var brush = new SolidBrush(config.ForeColor ?? Colour.FillSecondary.Get(nameof(Watermark))))
                 {
                     // 计算水印间距
@@ -388,7 +388,7 @@ namespace AntdUI
                     }
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         void DrawWatermarkItem(Canvas g, int x, int y, int w, int h, Font font, Brush brush)

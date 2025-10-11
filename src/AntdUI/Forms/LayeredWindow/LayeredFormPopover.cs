@@ -275,12 +275,12 @@ namespace AntdUI
         readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
 
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
             var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
@@ -322,7 +322,7 @@ namespace AntdUI
                     }
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         SafeBitmap? shadow_temp;

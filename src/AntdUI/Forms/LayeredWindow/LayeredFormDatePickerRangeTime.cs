@@ -444,7 +444,7 @@ namespace AntdUI
                         }
                     }
                     g.Restore(state);
-                    ScrollButtons.Paint(g);
+                    ScrollButtons.Paint(g, ColorScheme);
                 }
                 if (calendar_time != null)
                 {
@@ -516,9 +516,9 @@ namespace AntdUI
                         }
                     }
                     g.Restore(state2);
-                    ScrollH.Paint(g);
-                    ScrollM.Paint(g);
-                    ScrollS.Paint(g);
+                    ScrollH.Paint(g, ColorScheme);
+                    ScrollM.Paint(g, ColorScheme);
+                    ScrollS.Paint(g, ColorScheme);
                     if (rect_buttonok.Hover) g.String(OKButton, Font, Colour.PrimaryActive.Get(nameof(DatePicker), ColorScheme), rect_buttonok.Rect, s_f);
                     else g.String(OKButton, Font, brush_active, rect_buttonok.Rect, s_f);
                 }

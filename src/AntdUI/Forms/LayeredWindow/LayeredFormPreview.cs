@@ -419,10 +419,10 @@ namespace AntdUI
         #endregion
 
         readonly StringFormat s_f = Helper.SF_NoWrap();
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
-            var original_bmp = new Bitmap(TargetRect.Width, TargetRect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            var rbmp = new Bitmap(TargetRect.Width, TargetRect.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                 {
@@ -541,7 +541,7 @@ namespace AntdUI
                 }
             }
 
-            return original_bmp;
+            return rbmp;
         }
 
         void PaintLoading(Canvas g, bool error = false)

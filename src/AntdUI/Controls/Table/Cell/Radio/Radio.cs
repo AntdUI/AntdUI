@@ -46,14 +46,14 @@ namespace AntdUI
         /// 单选框
         /// </summary>
         /// <param name="text">文本</param>
-        public CellRadio(string text) { _text = text; }
+        public CellRadio(string? text) { _text = text; }
 
         /// <summary>
         /// 单选框
         /// </summary>
         /// <param name="text">文本</param>
         /// <param name="Checked">复选值</param>
-        public CellRadio(string text, bool Checked = true)
+        public CellRadio(string? text, bool Checked = true)
         {
             _text = text;
             _checked = Checked;
@@ -64,7 +64,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="text">文本</param>
         /// <param name="fore">文字颜色</param>
-        public CellRadio(string text, Color fore)
+        public CellRadio(string? text, Color fore)
         {
             _text = text;
             _fore = fore;
@@ -108,7 +108,7 @@ namespace AntdUI
         /// </summary>
         public string? Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text);
             set
             {
                 if (_text == value) return;
@@ -116,6 +116,11 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
+
+        /// <summary>
+        /// 国际化文本
+        /// </summary>
+        public string? LocalizationText { get; set; }
 
         Color? fill;
         /// <summary>
@@ -264,6 +269,18 @@ namespace AntdUI
         #endregion
 
         #region 设置
+
+        public CellRadio SetText(string? value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+        public CellRadio SetLocalizationText(string? value)
+        {
+            LocalizationText = value;
+            return this;
+        }
 
         public CellRadio SetText(string? value)
         {

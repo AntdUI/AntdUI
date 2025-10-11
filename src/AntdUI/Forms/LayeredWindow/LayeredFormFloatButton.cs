@@ -221,12 +221,12 @@ namespace AntdUI
         readonly StringFormat stringCenter = Helper.SF_NoWrap();
 
         int use_primary = 0;
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             use_primary = 0;
             var rect = TargetRectXY;
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 foreach (var it in config.Btns)
                 {
@@ -333,7 +333,7 @@ namespace AntdUI
                     }
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         /// <summary>

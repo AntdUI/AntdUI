@@ -30,15 +30,20 @@ namespace AntdUI
         /// <summary>
         /// 文字
         /// </summary>
+        public CellText() { }
+
+        /// <summary>
+        /// 文字
+        /// </summary>
         /// <param name="text">文本</param>
-        public CellText(string text) { _text = text; }
+        public CellText(string? text) { _text = text; }
 
         /// <summary>
         /// 文字
         /// </summary>
         /// <param name="text">文本</param>
         /// <param name="fore">文字颜色</param>
-        public CellText(string text, Color fore)
+        public CellText(string? text, Color fore)
         {
             _text = text;
             _fore = fore;
@@ -97,7 +102,7 @@ namespace AntdUI
         /// </summary>
         public string? Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text);
             set
             {
                 if (_text == value) return;
@@ -105,6 +110,11 @@ namespace AntdUI
                 OnPropertyChanged(true);
             }
         }
+
+        /// <summary>
+        /// 国际化文本
+        /// </summary>
+        public string? LocalizationText { get; set; }
 
         #region 图标
 
@@ -199,6 +209,18 @@ namespace AntdUI
 
         #region 设置
 
+        public CellText SetText(string? value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+        public CellText SetLocalizationText(string? value)
+        {
+            LocalizationText = value;
+            return this;
+        }
+
         public CellText SetBack(Color? value)
         {
             _back = value;
@@ -242,6 +264,6 @@ namespace AntdUI
 
         #endregion
 
-        public override string? ToString() => _text;
+        public override string? ToString() => Text;
     }
 }

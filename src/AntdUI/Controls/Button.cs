@@ -53,6 +53,8 @@ namespace AntdUI
             set => base.BackColor = value;
         }
 
+        #region 前景
+
         Color? fore;
         /// <summary>
         /// 文字颜色
@@ -70,6 +72,22 @@ namespace AntdUI
                 OnPropertyChanged(nameof(ForeColor));
             }
         }
+
+        /// <summary>
+        /// 悬停文字颜色
+        /// </summary>
+        [Description("悬停文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ForeHover { get; set; }
+
+        /// <summary>
+        /// 激活文字颜色
+        /// </summary>
+        [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ForeActive { get; set; }
+
+        #endregion
 
         #region 背景
 
@@ -743,6 +761,20 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 切换悬停文字颜色
+        /// </summary>
+        [Description("切换悬停文字颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ToggleForeHover { get; set; }
+
+        /// <summary>
+        /// 切换激活文字颜色
+        /// </summary>
+        [Description("切换激活文字颜色"), Category("切换"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ToggleForeActive { get; set; }
+
         TTypeMini? typeToggle;
         /// <summary>
         /// 切换类型
@@ -996,7 +1028,8 @@ namespace AntdUI
         #region 悬停动画
 
         bool _mouseDown = false;
-        bool ExtraMouseDown
+        [Description("激活状态"), Category("行为"), DefaultValue(false)]
+        public bool ExtraMouseDown
         {
             get => _mouseDown;
             set
@@ -1012,7 +1045,8 @@ namespace AntdUI
         bool AnimationIconHover = false;
         float AnimationIconHoverValue = 0F;
         bool _mouseHover = false;
-        bool ExtraMouseHover
+        [Description("悬停状态"), Category("行为"), DefaultValue(false)]
+        public bool ExtraMouseHover
         {
             get => _mouseHover;
             set
@@ -1290,7 +1324,7 @@ namespace AntdUI
             }
             else
             {
-                GetColorConfig(out var _fore, out var _back, out var _back_hover, out var _back_active);
+                GetColorConfig(out var _fore, out var _fore_hover, out var _fore_active, out var _back, out var _back_hover, out var _back_active);
                 using (var path = Path(rect_read, _radius))
                 {
                     #region 动画
@@ -1356,9 +1390,13 @@ namespace AntdUI
                                             g.Draw(brushback, border, path);
                                         }
                                     }
+                                    PaintTextLoading(g, Text, _back, rect_read, enabled, _radius);
                                 }
-                                else g.Draw(Colour.FillTertiary.Get(nameof(Button), ColorScheme), border, path);
-                                PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                                else
+                                {
+                                    g.Draw(Colour.FillTertiary.Get(nameof(Button), ColorScheme), border, path);
+                                    PaintTextLoading(g, Text, Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                                }
                             }
                         }
                         else PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
@@ -1367,12 +1405,10 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (enabled && WaveSize > 0) PaintShadow(g, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
-
-                        #region 绘制背景
-
                         if (enabled)
                         {
+                            if (WaveSize > 0) PaintShadow(g, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
+
                             if (toggle)
                             {
                                 using (var brush = backExtendToggle.BrushEx(rect_read, _back))
@@ -1387,17 +1423,41 @@ namespace AntdUI
                                     g.Fill(brush, path);
                                 }
                             }
+
+                            if (ExtraMouseDown)
+                            {
+                                g.Fill(_back_active, path);
+
+                                PaintLoadingWave(g, path, rect_read);
+                                PaintTextLoading(g, Text, _fore_active, rect_read, enabled, _radius);
+                            }
+                            else if (AnimationHover)
+                            {
+                                g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
+
+                                PaintLoadingWave(g, path, rect_read);
+                                if (_fore == _fore_hover) PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
+                                else PaintTextLoading(g, Text, _fore.BlendColors(Helper.ToColor(AnimationHoverValue, _fore_hover)), rect_read, enabled, _radius);
+                            }
+                            else if (ExtraMouseHover)
+                            {
+                                g.Fill(_back_hover, path);
+
+                                PaintLoadingWave(g, path, rect_read);
+                                PaintTextLoading(g, Text, _fore_hover, rect_read, enabled, _radius);
+                            }
+                            else
+                            {
+                                PaintLoadingWave(g, path, rect_read);
+                                PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
+                            }
                         }
-                        else g.Fill(Colour.FillTertiary.Get(nameof(Button), "bgDisabled", ColorScheme), path);
-
-                        if (ExtraMouseDown) g.Fill(_back_active, path);
-                        else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
-                        else if (ExtraMouseHover) g.Fill(_back_hover, path);
-
-                        #endregion
-
-                        PaintLoadingWave(g, path, rect_read);
-                        PaintTextLoading(g, Text, enabled ? _fore : Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                        else
+                        {
+                            g.Fill(Colour.FillTertiary.Get(nameof(Button), "bgDisabled", ColorScheme), path);
+                            PaintLoadingWave(g, path, rect_read);
+                            PaintTextLoading(g, Text, Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                        }
                     }
                 }
             }
@@ -2041,7 +2101,7 @@ namespace AntdUI
             }
         }
 
-        void GetColorConfig(out Color Fore, out Color Back, out Color backHover, out Color backActive)
+        void GetColorConfig(out Color Fore, out Color foreHover, out Color foreActive, out Color Back, out Color backHover, out Color backActive)
         {
             if (toggle)
             {
@@ -2049,6 +2109,10 @@ namespace AntdUI
                 else GetColorConfig(type, out Fore, out Back, out backHover, out backActive);
 
                 if (foreToggle.HasValue) Fore = foreToggle.Value;
+                foreHover = foreActive = Fore;
+                if (ToggleForeHover.HasValue) foreHover = ToggleForeHover.Value;
+                if (ToggleForeActive.HasValue) foreActive = ToggleForeActive.Value;
+
                 if (backToggle.HasValue) Back = backToggle.Value;
                 if (ToggleBackHover.HasValue) backHover = ToggleBackHover.Value;
                 if (ToggleBackActive.HasValue) backActive = ToggleBackActive.Value;
@@ -2057,6 +2121,10 @@ namespace AntdUI
             }
             GetColorConfig(type, out Fore, out Back, out backHover, out backActive);
             if (fore.HasValue) Fore = fore.Value;
+            foreHover = foreActive = Fore;
+            if (ForeHover.HasValue) foreHover = ForeHover.Value;
+            if (ForeActive.HasValue) foreActive = ForeActive.Value;
+
             if (back.HasValue) Back = back.Value;
             if (BackHover.HasValue) backHover = BackHover.Value;
             if (BackActive.HasValue) backActive = BackActive.Value;

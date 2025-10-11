@@ -202,7 +202,7 @@ namespace AntdUI
                 }
             }
             g.Restore(state);
-            ScrollBar.Paint(g);
+            ScrollBar.Paint(g, ColorScheme);
         }
 
         void DrawItem(Canvas g, SolidBrush brush, OMenuItem it)

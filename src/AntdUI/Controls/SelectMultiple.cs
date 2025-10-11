@@ -103,6 +103,7 @@ namespace AntdUI
                 Invalidate();
             }
         }
+
         /// <summary>
         /// 菜单弹出位置
         /// </summary>
@@ -489,22 +490,24 @@ namespace AntdUI
                 Height = (height + Padding.Top + Padding.Vertical + pr) + y + gap;
             }
         }
+
         Color GetStatusColor(bool bg)
         {
             switch (Status)
             {
                 case TType.Success:
-                    return AntdUI.Style.Get(bg ? Colour.SuccessBg : Colour.Success, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get(bg ? Colour.SuccessBg : Colour.Success, nameof(SelectMultiple), ColorScheme);
                 case TType.Warn:
-                    return AntdUI.Style.Get(bg ? Colour.WarningBg : Colour.Warning, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get(bg ? Colour.WarningBg : Colour.Warning, nameof(SelectMultiple), ColorScheme);
                 case TType.Error:
-                    return AntdUI.Style.Get(bg ? Colour.ErrorBg : Colour.Error, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get(bg ? Colour.ErrorBg : Colour.Error, nameof(SelectMultiple), ColorScheme);
                 case TType.Info:
-                    return AntdUI.Style.Get(bg ? Colour.InfoBg : Colour.Info, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get(bg ? Colour.InfoBg : Colour.Info, nameof(SelectMultiple), ColorScheme);
                 default:
                     return (bg ? Colour.TagDefaultBg : Colour.TagDefaultColor).Get(nameof(SelectMultiple), ColorScheme);
             }
         }
+
         protected override void PaintOtherBor(Canvas g, Rectangle rect_read, float radius, Color back, Color borderColor, Color borderActive)
         {
             if (selectedValue.Length > 0 && style_left.Length == rect_lefts.Length)

@@ -637,11 +637,11 @@ namespace AntdUI
 
         #region 渲染
 
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             Rectangle rect_t = TargetRectXY, rect = HasBor ? new Rectangle(FrmBor, 0, rect_t.Width - FrmBor * 2, rect_t.Height - FrmBor) : rect_t;
-            var original_bmp = new Bitmap(rect_t.Width, rect_t.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            var rbmp = new Bitmap(rect_t.Width, rect_t.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 var rect_read = DrawShadow(g, rect);
                 using (var path = rect_read.RoundPath(FrmRadius))
@@ -650,7 +650,7 @@ namespace AntdUI
                     if (tempContent != null) g.Image(tempContent, new Rectangle(rect_read.X + padding, rect_read.Y + padding, tempContent.Width, tempContent.Height));
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         SafeBitmap? shadow_temp;

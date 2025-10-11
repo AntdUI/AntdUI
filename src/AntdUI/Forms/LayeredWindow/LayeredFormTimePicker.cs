@@ -190,9 +190,9 @@ namespace AntdUI
                     }
                 }
                 g.Restore(state2);
-                ScrollH.Paint(g);
-                ScrollM.Paint(g);
-                ScrollS.Paint(g);
+                ScrollH.Paint(g, ColorScheme);
+                ScrollM.Paint(g, ColorScheme);
+                ScrollS.Paint(g, ColorScheme);
 
                 var color_active = Colour.Primary.Get(nameof(DatePicker), ColorScheme);
 

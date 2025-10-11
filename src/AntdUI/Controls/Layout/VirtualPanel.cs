@@ -974,7 +974,7 @@ namespace AntdUI
                     else it.SHOW_RECT = false;
                 }
                 g.ResetTransform();
-                ScrollBar.Paint(g);
+                ScrollBar.Paint(g, ColorScheme);
                 if (Config.HasAnimation(nameof(VirtualPanel)) && BlurBar != null) _event.SetWait();
             }
             base.OnDraw(e);

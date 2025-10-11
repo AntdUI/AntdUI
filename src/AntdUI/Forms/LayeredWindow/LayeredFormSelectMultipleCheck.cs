@@ -250,7 +250,7 @@ namespace AntdUI
                     }
                 }
                 g.Restore(state);
-                ScrollBar.Paint(g);
+                ScrollBar.Paint(g, ColorScheme);
             }
         }
 

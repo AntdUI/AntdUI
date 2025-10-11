@@ -336,11 +336,11 @@ namespace AntdUI
         /// </summary>
         public FilterConditions Condition { get; set; } = FilterConditions.Contain;
 
-        List<object>? _filterValues;
+        List<object?>? _filterValues;
         /// <summary>
         /// 已应用的筛选值列表
         /// </summary>
-        public List<object>? FilterValues
+        public List<object?>? FilterValues
         {
             get => _filterValues;
             internal set
@@ -417,9 +417,7 @@ namespace AntdUI
             Table = column.PARENT;
 
             Condition = condition;
-            List<object> list = new List<object>();
-            list.AddRange(filterValues);
-            FilterValues = list;
+            FilterValues = new List<object?>(filterValues);
             UpdateFilter();
             return Enabled;
         }

@@ -361,7 +361,7 @@ namespace AntdUI
                         }
                     }
                     g.Restore(state);
-                    ScrollButtons.Paint(g);
+                    ScrollButtons.Paint(g, ColorScheme);
                 }
 
 
