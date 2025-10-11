@@ -48,6 +48,7 @@ namespace Demo.Controls
                         return value;
                     }
                 },
+                new AntdUI.ColumnSelect("hobby", "爱好"){Width="auto", Items=new List<AntdUI.SelectItem>(){ new AntdUI.SelectItem(EHobbies.读书.ToString(), (int)EHobbies.读书) {IconSvg= "BookOutlined" }, new AntdUI.SelectItem(EHobbies.旅游.ToString(), (int)EHobbies.旅游) { IconSvg = "GlobalOutlined" }, new AntdUI.SelectItem(EHobbies.社交.ToString(), (int)EHobbies.社交) { IconSvg = "CommentOutlined" }, new AntdUI.SelectItem(EHobbies.运动.ToString(), (int)EHobbies.运动) { IconSvg = "DribbbleOutlined" } } }.SetAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column."),
@@ -170,6 +171,7 @@ namespace Demo.Controls
                         case "name":
                             it.Filter = new AntdUI.FilterOption();
                             break;
+                        case "hobby":
                         case "age":
                             it.SetDefaultFilter(typeof(int));
                             break;
@@ -379,7 +381,13 @@ namespace Demo.Controls
             public TestColumn(string id, string title) : base(id, title) { }
             public override AntdUI.ICell GetCellValue(object value) => new AntdUI.CellTag(value.ToString(), AntdUI.TTypeMini.Success);
         }
-
+        public enum EHobbies
+        {
+            读书 = 0,
+            旅游 = 1,
+            社交 = 2,
+            运动 = 3,
+        }
         public class TestClass : AntdUI.NotifyProperty
         {
             public TestClass(int index, int start, string name, int age)
@@ -393,7 +401,7 @@ namespace Demo.Controls
                 _name = name;
                 _age = age;
                 _date = DateTime.Now.Date.AddYears(-age);
-
+                _hobby= new Random().Next(0, 3);
                 _address = AntdUI.Localization.GetLangI("Table.Data.Address" + id, null);
                 if (_address == null) _address = AntdUI.Localization.GetLangI("Table.Data.AddressNum", null);
                 if (_address == null) _address = (new Random().Next(DateTime.Now.Second) > 5 ? "东湖" : "西湖") + "区湖底公园" + id + "号";
@@ -536,6 +544,17 @@ namespace Demo.Controls
                 {
                     if (_age == value) return;
                     _age = value;
+                    OnPropertyChanged();
+                }
+            } 
+            int _hobby;
+            public int hobby
+            {
+                get => _hobby;
+                set
+                {
+                    if (_hobby == value) return;
+                    _hobby = value;
                     OnPropertyChanged();
                 }
             }
