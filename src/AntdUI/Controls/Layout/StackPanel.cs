@@ -161,7 +161,7 @@ namespace AntdUI
             var g = e.Canvas;
             PaintBack(g);
             base.OnDraw(e);
-            ScrollBar?.Paint(g);
+            ScrollBar?.Paint(g, ColorScheme);
         }
 
         #region 布局

@@ -443,7 +443,8 @@ namespace AntdUI
 
         #region 渲染
 
-        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get(nameof(ScrollBar), ColorScheme));
+        public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get(nameof(ScrollBar)));
+        public virtual void Paint(Canvas g, TAMode colorScheme) => Paint(g, Colour.TextBase.Get(nameof(ScrollBar), colorScheme));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (SIZE == 0) return;
@@ -1039,12 +1040,12 @@ namespace AntdUI
         /// <summary>
         /// 判断是否到达纵向滚动条最底部
         /// </summary>
-        public bool IsAtBottom => showY ? valueY >= (maxY - RectY.Height) : false;
+        public bool IsAtBottom => showY && valueY >= (maxY - RectY.Height);
 
         /// <summary>
         /// 判断是否到达横向滚动条最右边
         /// </summary>
-        public bool IsAtRight => showX ? valueX >= (maxX - RectX.Width) : false;
+        public bool IsAtRight => showX && valueX >= (maxX - RectX.Width);
 
         #endregion
 

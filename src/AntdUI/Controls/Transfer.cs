@@ -431,7 +431,7 @@ namespace AntdUI
             }
             g.Restore(state);
             // 绘制滚动条
-            if (scroll.Show) scroll.Paint(g);
+            if (scroll.Show) scroll.Paint(g, ColorScheme);
         }
 
         private void PaintOperationButtons(Canvas g)

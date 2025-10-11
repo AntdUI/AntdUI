@@ -379,7 +379,7 @@ namespace AntdUI
                     break;
                 case 2:
                 default:
-                    LineAngle = LineAngle.Calculate(rate ?? 12F);
+                    LineAngle = LineAngle.Calculate(rate ?? 8F);
                     break;
             }
             if (LineAngle >= 360) LineAngle = 0;
@@ -538,13 +538,13 @@ namespace AntdUI
         #region 渲染
 
         SpinCore spin_core = new SpinCore();
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             Rectangle rect_read = TargetRectXY, rect = HasBor ? new Rectangle(Bor, 0, rect_read.Width - Bor * 2, rect_read.Height - Bor) : rect_read;
-            var original_bmp = new Bitmap(rect_read.Width, rect_read.Height);
+            var rbmp = new Bitmap(rect_read.Width, rect_read.Height);
             if (visible)
             {
-                using (var g = Graphics.FromImage(original_bmp).HighLay(true))
+                using (var g = Graphics.FromImage(rbmp).HighLay(true))
                 {
                     using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get(nameof(Spin)), .8F)))
                     {
@@ -570,7 +570,7 @@ namespace AntdUI
                     spin_core.Paint(g, rect, config, this);
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         #endregion

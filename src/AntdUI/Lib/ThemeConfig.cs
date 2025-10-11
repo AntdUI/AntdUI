@@ -242,20 +242,20 @@ namespace AntdUI
 
         public IThemeConfig SetConfig(IThemeConfig config)
         {
-            if (callLight == null) callLight = config.callLight;
-            if (callDark == null) callDark = config.callDark;
-            if (oncall == null) oncall = config.oncall;
+            callLight ??= config.callLight;
+            callDark ??= config.callDark;
+            oncall ??= config.oncall;
 
             if (backLight == null) backLight = config.backLight;
             if (foreLight == null) foreLight = config.foreLight;
             if (backDark == null) backDark = config.backDark;
             if (foreDark == null) foreDark = config.foreDark;
 
-            if (pageheader == null) pageheader = config.pageheader;
+            pageheader ??= config.pageheader;
             if (headerLight == null) headerLight = config.headerLight;
             if (headerDark == null) headerDark = config.headerDark;
 
-            if (btn == null) btn = config.btn;
+            btn ??= config.btn;
 
             return this;
         }

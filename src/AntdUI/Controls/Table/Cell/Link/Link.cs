@@ -31,8 +31,14 @@ namespace AntdUI
         /// 超链接
         /// </summary>
         /// <param name="id">id</param>
+        public CellLink(string id) { Id = id; }
+
+        /// <summary>
+        /// 超链接
+        /// </summary>
+        /// <param name="id">id</param>
         /// <param name="text">文本</param>
-        public CellLink(string id, string? text) { Id = id; _text = text; }
+        public CellLink(string id, string? text) { Id = id; this.text = text; }
 
         #region 属性
 
@@ -43,20 +49,25 @@ namespace AntdUI
 
         #region 文本
 
-        string? _text;
+        string? text;
         /// <summary>
         /// 文本
         /// </summary>
         public string? Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", Id });
             set
             {
-                if (_text == value) return;
-                _text = value;
+                if (text == value) return;
+                text = value;
                 OnPropertyChanged(true);
             }
         }
+
+        /// <summary>
+        /// 国际化文本
+        /// </summary>
+        public string? LocalizationText { get; set; }
 
         internal StringFormat stringFormat = Helper.SF_NoWrap();
 
@@ -99,9 +110,15 @@ namespace AntdUI
 
         #region 设置
 
-        public CellLink SetText(string? text)
+        public CellLink SetText(string? value, string? localization = null)
         {
-            _text = text;
+            text = value;
+            LocalizationText = localization;
+            return this;
+        }
+        public CellLink SetLocalizationText(string? value)
+        {
+            LocalizationText = value;
             return this;
         }
         public CellLink SetTextAlign(ContentAlignment align = ContentAlignment.MiddleLeft)
@@ -124,6 +141,6 @@ namespace AntdUI
 
         #endregion
 
-        public override string? ToString() => _text;
+        public override string? ToString() => Text;
     }
 }

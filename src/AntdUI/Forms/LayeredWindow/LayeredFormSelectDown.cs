@@ -403,7 +403,7 @@ namespace AntdUI
                         DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
                     }
                     g.Restore(state);
-                    ScrollBar.Paint(g);
+                    ScrollBar.Paint(g, ColorScheme);
                 }
             }
         }

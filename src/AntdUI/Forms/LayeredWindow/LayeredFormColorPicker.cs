@@ -573,12 +573,12 @@ namespace AntdUI
         bool hover_btn = false, hover_close = false, hover_reset;
         Rectangle rect_btn, rect_close, rect_reset;
 
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
             var rect_read = new Rectangle(10, 10, rect.Width - 20, rect.Height - 20);
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 using (var brush_bg = new SolidBrush(Colour.BgElevated.Get(nameof(ColorPicker), ColorScheme)))
                 {
@@ -755,7 +755,7 @@ namespace AntdUI
                 }
                 foreach (var input in inputs) input.input.IPaint(g, input.rect, input.rect_read);
             }
-            return original_bmp;
+            return rbmp;
         }
 
         class InputRect

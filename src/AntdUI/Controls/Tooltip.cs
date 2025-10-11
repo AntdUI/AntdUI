@@ -351,15 +351,15 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 this.Render(g, rect, multiline, arrowSize, arrowX, s_c, s_l);
             }
-            return original_bmp;
+            return rbmp;
         }
 
         #endregion

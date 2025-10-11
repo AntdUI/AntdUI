@@ -456,8 +456,8 @@ namespace AntdUI
             if (showok)
             {
                 if (items == null) return;
-                if (items.Count <= _select || _select < 0) return;
-                for (int i = 0; i < items.Count; i++) items[i].Showed = i == _select;
+                if (items.Count <= index || index < 0) return;
+                for (int i = 0; i < items.Count; i++) items[i].Showed = i == index;
             }
         }
 

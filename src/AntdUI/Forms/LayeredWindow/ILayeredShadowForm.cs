@@ -174,11 +174,11 @@ namespace AntdUI
             shadow_temp = null;
         }
 
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).HighLay())
             {
                 if (ShadowEnabled)
                 {
@@ -203,7 +203,7 @@ namespace AntdUI
                     PrintContent(g, rect, g.Save());
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         SafeBitmap? shadow_temp;
@@ -336,11 +336,11 @@ namespace AntdUI
             shadow_temp = null;
         }
 
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).HighLay())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).HighLay())
             {
                 if (ShadowEnabled)
                 {
@@ -365,7 +365,7 @@ namespace AntdUI
                     PrintContent(g, rect, g.Save());
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         SafeBitmap? shadow_temp;

@@ -639,12 +639,12 @@ namespace AntdUI
         #region 渲染
 
         readonly StringFormat s_f_left = Helper.SF_ALL(lr: StringAlignment.Near);
-        public override Bitmap PrintBit()
+        public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
             var rect_read = rect.PaddingRect(Padding, shadow_size);
-            Bitmap original_bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(original_bmp).High())
+            Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(rbmp).High())
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
@@ -667,7 +667,7 @@ namespace AntdUI
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left);
                 }
             }
-            return original_bmp;
+            return rbmp;
         }
 
         SafeBitmap? shadow_temp;

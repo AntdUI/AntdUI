@@ -30,8 +30,13 @@ namespace AntdUI
         /// <summary>
         /// 徽标
         /// </summary>
+        public CellBadge() { }
+
+        /// <summary>
+        /// 徽标
+        /// </summary>
         /// <param name="text">文本</param>
-        public CellBadge(string text) { _text = text; }
+        public CellBadge(string? text) { _text = text; }
 
         /// <summary>
         /// 徽标
@@ -44,7 +49,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="state">状态</param>
         /// <param name="text">文本</param>
-        public CellBadge(TState state, string text)
+        public CellBadge(TState state, string? text)
         {
             _state = state;
             _text = text;
@@ -121,7 +126,7 @@ namespace AntdUI
         /// </summary>
         public string? Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text);
             set
             {
                 if (_text == value) return;
@@ -130,10 +135,26 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 国际化文本
+        /// </summary>
+        public string? LocalizationText { get; set; }
+
         #endregion
 
         #region 设置
 
+        public CellBadge SetText(string? value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+        public CellBadge SetLocalizationText(string? value)
+        {
+            LocalizationText = value;
+            return this;
+        }
         public CellBadge SetFore(Color? value)
         {
             fore = value;
@@ -159,6 +180,6 @@ namespace AntdUI
 
         #endregion
 
-        public override string? ToString() => _text;
+        public override string? ToString() => Text;
     }
 }

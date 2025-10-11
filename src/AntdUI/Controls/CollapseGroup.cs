@@ -257,7 +257,7 @@ namespace AntdUI
                 PaintItem(g, e.Rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextQuaternary, _radius);
             }
             g.ResetTransform();
-            ScrollBar.Paint(g);
+            ScrollBar.Paint(g, ColorScheme);
             base.OnDraw(e);
         }
 

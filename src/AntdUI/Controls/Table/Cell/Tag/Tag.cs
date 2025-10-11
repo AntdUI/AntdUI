@@ -30,15 +30,20 @@ namespace AntdUI
         /// <summary>
         /// 标签
         /// </summary>
+        public CellTag() { }
+
+        /// <summary>
+        /// 标签
+        /// </summary>
         /// <param name="text">文本</param>
-        public CellTag(string text) { _text = text; }
+        public CellTag(string? text) { _text = text; }
 
         /// <summary>
         /// 标签
         /// </summary>
         /// <param name="text">文本</param>
         /// <param name="type">类型</param>
-        public CellTag(string text, TTypeMini type)
+        public CellTag(string? text, TTypeMini type)
         {
             _text = text;
             _type = type;
@@ -50,7 +55,7 @@ namespace AntdUI
         /// <param name="text">文本</param>
         /// <param name="type">类型</param>
         /// <param name="gap">间隔</param>
-        public CellTag(string text, TTypeMini type, int gap)
+        public CellTag(string? text, TTypeMini type, int gap)
         {
             _text = text;
             _type = type;
@@ -119,13 +124,13 @@ namespace AntdUI
             }
         }
 
-        string _text;
+        string? _text;
         /// <summary>
         /// 文本
         /// </summary>
-        public string Text
+        public string? Text
         {
-            get => _text;
+            get => Localization.GetLangI(LocalizationText, _text);
             set
             {
                 if (_text == value) return;
@@ -135,6 +140,11 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 国际化文本
+        /// </summary>
+        public string? LocalizationText { get; set; }
+
+        /// <summary>
         /// 间距
         /// </summary>
         public int? Gap { get; set; }
@@ -142,6 +152,18 @@ namespace AntdUI
         #endregion
 
         #region 设置
+
+        public CellTag SetText(string? value, string? localization = null)
+        {
+            _text = value;
+            LocalizationText = localization;
+            return this;
+        }
+        public CellTag SetLocalizationText(string? value)
+        {
+            LocalizationText = value;
+            return this;
+        }
 
         public CellTag SetFore(Color? value)
         {
@@ -171,6 +193,6 @@ namespace AntdUI
 
         #endregion
 
-        public override string ToString() => _text;
+        public override string? ToString() => Text;
     }
 }

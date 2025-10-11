@@ -159,8 +159,8 @@ namespace AntdUI
 
         #endregion
 
-        public abstract Bitmap PrintBit();
-        public Bitmap Printmap()
+        public abstract Bitmap? PrintBit();
+        public Bitmap? Printmap()
         {
             RenderCache = false;
             Win32.Dispose(memDc, ref hBitmap, ref oldBits);

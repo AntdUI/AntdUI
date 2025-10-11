@@ -795,7 +795,7 @@ namespace AntdUI
             if (scroll_show) g.SetClip(new Rectangle(e.Rect.X, e.Rect.Y, rect_r.Right - rect_r.Height, e.Rect.Height));
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
-            Color scroll_color = Colour.TextBase.Get(nameof(Menu), ColorScheme), color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get(nameof(Menu), "foreDisabled", ColorScheme), back_hover, back_active;
+            Color color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get(nameof(Menu), "foreDisabled", ColorScheme), back_hover, back_active;
             if (Config.IsDark || ColorScheme == TAMode.Dark)
             {
                 color_fore = fore ?? Colour.Text.Get(nameof(Menu), ColorScheme);
@@ -827,7 +827,7 @@ namespace AntdUI
                 }
                 SvgExtend.GetImgExtend(g, "EllipsisOutlined", rect_r_ico, color_fore);
             }
-            ScrollBar.Paint(g, scroll_color);
+            ScrollBar.Paint(g);
             base.OnDraw(e);
         }
 

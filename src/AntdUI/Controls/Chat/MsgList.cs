@@ -134,7 +134,7 @@ namespace AntdUI.Chat
                 foreach (var it in items) PaintItem(g, it, e.Rect, sy, font_text, font_time, radius);
             }
             g.ResetTransform();
-            ScrollBar.Paint(g);
+            ScrollBar.Paint(g, ColorScheme);
             base.OnDraw(e);
         }
 
