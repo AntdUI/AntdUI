@@ -1,5 +1,21 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.9` 2025-10-11
+
+- ➕ SelectMultiple TagBordered App Status Status Color
+- ➕ Button Enhances ForeHover/ForeActive
+- ➕ Table Cell Series Internationalization
+- ➕ Spin Indicator Custom Loading Indicator
+- ➕ Alert IconSvg Custom Icon and CloseChanged Event
+- ➕ The Select EnterDropDown property determines whether the Enter key can trigger the dropdown in certain scenarios
+- ✍️ Scrollbar Adapts to ColorScheme
+- ✍️ Spin remains visible after being hidden
+- ✍️ Table editing mode rolls back and loses focus when closed
+- ✍️ Table Click the blank space to exit edit mode
+- ✍️ Collapse ItemButton.Visible=false still responds to ButtonClick events
+- ✍️ Collapse Button cannot be hidden
+- ✍️ Rendering Release Exception
+
 ### `2.1.8` 2025-09-28
 
 - ➕ Global Theme Configuration
