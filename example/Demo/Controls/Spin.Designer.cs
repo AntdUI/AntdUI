@@ -59,6 +59,7 @@ namespace Demo.Controls
             stackPanel3 = new AntdUI.StackPanel();
             btnWindow = new AntdUI.Button();
             btnControl = new AntdUI.Button();
+            buttonError = new AntdUI.Button();
             stackPanel1.SuspendLayout();
             stackPanel2.SuspendLayout();
             stackPanel3.SuspendLayout();
@@ -70,7 +71,7 @@ namespace Demo.Controls
             btnPanel.LocalizationText = "Spin.{id}";
             btnPanel.Location = new Point(3, 3);
             btnPanel.Name = "btnPanel";
-            btnPanel.Size = new Size(100, 42);
+            btnPanel.Size = new Size(93, 42);
             btnPanel.TabIndex = 1;
             btnPanel.Text = "当前容器";
             btnPanel.Type = AntdUI.TTypeMini.Primary;
@@ -183,6 +184,7 @@ namespace Demo.Controls
             // 
             // stackPanel3
             // 
+            stackPanel3.Controls.Add(buttonError);
             stackPanel3.Controls.Add(btnWindow);
             stackPanel3.Controls.Add(btnControl);
             stackPanel3.Controls.Add(btnPanel);
@@ -196,9 +198,9 @@ namespace Demo.Controls
             // 
             btnWindow.AutoSizeMode = AntdUI.TAutoSize.Width;
             btnWindow.LocalizationText = "Spin.{id}";
-            btnWindow.Location = new Point(215, 3);
+            btnWindow.Location = new Point(201, 3);
             btnWindow.Name = "btnWindow";
-            btnWindow.Size = new Size(100, 42);
+            btnWindow.Size = new Size(93, 42);
             btnWindow.TabIndex = 3;
             btnWindow.Text = "整个窗口";
             btnWindow.Type = AntdUI.TTypeMini.Primary;
@@ -208,13 +210,25 @@ namespace Demo.Controls
             // 
             btnControl.AutoSizeMode = AntdUI.TAutoSize.Width;
             btnControl.LocalizationText = "Spin.{id}";
-            btnControl.Location = new Point(109, 3);
+            btnControl.Location = new Point(102, 3);
             btnControl.Name = "btnControl";
-            btnControl.Size = new Size(100, 42);
+            btnControl.Size = new Size(93, 42);
             btnControl.TabIndex = 2;
             btnControl.Text = "上面控件";
             btnControl.Type = AntdUI.TTypeMini.Primary;
             btnControl.Click += btnControl_Click;
+            // 
+            // buttonError
+            // 
+            buttonError.AutoSizeMode = AntdUI.TAutoSize.Width;
+            buttonError.LocalizationText = "Spin.{id}";
+            buttonError.Location = new Point(300, 3);
+            buttonError.Name = "buttonError";
+            buttonError.Size = new Size(109, 42);
+            buttonError.TabIndex = 4;
+            buttonError.Text = "带错误回调";
+            buttonError.Type = AntdUI.TTypeMini.Error;
+            buttonError.Click += buttonError_Click;
             // 
             // Spin
             // 
@@ -251,5 +265,6 @@ namespace Demo.Controls
         private AntdUI.StackPanel stackPanel3;
         private AntdUI.Button btnWindow;
         private AntdUI.Button btnControl;
+        private AntdUI.Button buttonError;
     }
 }

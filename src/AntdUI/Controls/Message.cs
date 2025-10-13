@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -332,6 +332,11 @@ namespace AntdUI
             /// </summary>
             public bool? ShowInWindow { get; set; }
 
+            /// <summary>
+            /// 是否启用声音
+            /// </summary>
+            public bool EnableSound { get; set; }
+
             public void OK(string text)
             {
                 Icon = TType.Success;
@@ -462,6 +467,12 @@ namespace AntdUI
             public Config SetShowInWindow(bool? value = true)
             {
                 ShowInWindow = value;
+                return this;
+            }
+
+            public Config SetEnableSound(bool value = true)
+            {
+                EnableSound = value;
                 return this;
             }
 
@@ -613,6 +624,19 @@ namespace AntdUI
                     CloseMe();
                 }
             });
+            // 播放声音
+            if (config.EnableSound)
+            {
+                MessageType soundType = config.Icon switch
+                {
+                    TType.Success => MessageType.Information,
+                    TType.Info => MessageType.Information,
+                    TType.Warn => MessageType.Warning,
+                    TType.Error => MessageType.Error,
+                    _ => MessageType.Information
+                };
+                SystemSoundHelper.PlaySound(soundType);
+            }
             PlayAnimation();
             return false;
         }

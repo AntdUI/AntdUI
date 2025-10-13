@@ -61,17 +61,18 @@ namespace Demo.Controls
 
             #endregion
 
-            Array editMode = Enum.GetValues(typeof(AntdUI.TEditMode));
-            var editModes = new List<AntdUI.SelectItem>(editMode.Length);
-            foreach (var it in editMode) editModes.Add(new AntdUI.SelectItem(it));
-            editModes.RemoveAt(0);
-            selectEditMode.Items.AddRange(editModes.ToArray());
+            selectEditMode.Items.AddRange(EnumList("Click", "DoubleClick"));
 
-            Array editStyle = Enum.GetValues(typeof(AntdUI.TEditInputStyle));
-            var editStyles = new List<AntdUI.SelectItem>(editStyle.Length);
-            foreach (var it in editStyle) editStyles.Add(new AntdUI.SelectItem(it));
-            editStyles.RemoveAt(0);
-            selectEditStyle.Items.AddRange(editStyles.ToArray());
+            selectEditStyle.Items.AddRange(EnumList("Full", "Excel"));
+
+            selectFocusedStyle.Items.AddRange(EnumList("Dash", "Solid"));
+        }
+
+        AntdUI.SelectItem[] EnumList(params string[] data)
+        {
+            var lists = new List<AntdUI.SelectItem>(data.Length);
+            foreach (var it in data) lists.Add(new AntdUI.SelectItem(it));
+            return lists.ToArray();
         }
 
         #region Ê¾Àý
@@ -95,6 +96,11 @@ namespace Demo.Controls
         void checkBordered_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             table1.Bordered = e.Value;
+        }
+
+        void checkScrollBarAvoidHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            table1.ScrollBarAvoidHeader = e.Value;
         }
 
         #region ÆæÅ¼ÁÐ
@@ -190,9 +196,17 @@ namespace Demo.Controls
 
         void selectEditMode_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            if (e.Value is AntdUI.TEditMode v)
+            if (e.Value is string v)
             {
-                table1.EditMode = v;
+                switch (v)
+                {
+                    case "Click":
+                        table1.EditMode = AntdUI.TEditMode.Click;
+                        break;
+                    case "DoubleClick":
+                        table1.EditMode = AntdUI.TEditMode.DoubleClick;
+                        break;
+                }
                 selectEditStyle.Enabled = true;
             }
             else
@@ -204,8 +218,36 @@ namespace Demo.Controls
 
         void selectEditStyle_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            if (e.Value is AntdUI.TEditInputStyle v) table1.EditInputStyle = v;
+            if (e.Value is string v)
+            {
+                switch (v)
+                {
+                    case "Full":
+                        table1.EditInputStyle = AntdUI.TEditInputStyle.Full;
+                        break;
+                    case "Excel":
+                        table1.EditInputStyle = AntdUI.TEditInputStyle.Excel;
+                        break;
+                }
+            }
             else table1.EditInputStyle = AntdUI.TEditInputStyle.Default;
+        }
+
+        private void selectFocusedStyle_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        {
+            if (e.Value is string v)
+            {
+                switch (v)
+                {
+                    case "Dash":
+                        table1.CellFocusedStyle = AntdUI.TableCellFocusedStyle.Dash;
+                        break;
+                    case "Solid":
+                        table1.CellFocusedStyle = AntdUI.TableCellFocusedStyle.Solid;
+                        break;
+                }
+            }
+            else table1.CellFocusedStyle = AntdUI.TableCellFocusedStyle.None;
         }
 
         bool table1_CellBeginEdit(object sender, AntdUI.TableEventArgs e)

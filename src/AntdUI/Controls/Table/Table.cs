@@ -154,6 +154,7 @@ namespace AntdUI
             {
                 if (fixedHeader == value) return;
                 fixedHeader = value;
+                SetSAH();
                 Invalidate();
                 OnPropertyChanged(nameof(FixedHeader));
             }
@@ -172,6 +173,7 @@ namespace AntdUI
                 if (visibleHeader == value) return;
                 visibleHeader = value;
                 ScrollBar.RB = !value;
+                SetSAH();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(VisibleHeader));
             }
@@ -238,6 +240,30 @@ namespace AntdUI
                 Invalidate();
                 OnPropertyChanged(nameof(Radius));
             }
+        }
+
+        bool scrollBarAvoidHeader = false;
+        /// <summary>
+        /// 滚动条从表头下方开始绘制（避免遮挡表头）
+        /// </summary>
+        [Description("滚动条从表头下方开始绘制"), Category("外观"), DefaultValue(false)]
+        public bool ScrollBarAvoidHeader
+        {
+            get => scrollBarAvoidHeader;
+            set
+            {
+                if (scrollBarAvoidHeader == value) return;
+                scrollBarAvoidHeader = value;
+                SetSAH();
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(ScrollBarAvoidHeader));
+            }
+        }
+
+        void SetSAH()
+        {
+            if (scrollBarAvoidHeader && visibleHeader && fixedHeader) ScrollBar.RT = false;
+            else ScrollBar.RT = true;
         }
 
         /// <summary>

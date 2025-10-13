@@ -43,7 +43,8 @@ namespace AntdUI
             FormBorderStyle = FormBorderStyle.FixedSingle;
             ShowInTaskbar = false;
             config = _config;
-            config.Target.SetTopMost(Handle);
+            var form_tmp = config.Target.FindPARENT();
+            if (form_tmp != null && form_tmp.TopMost || (form_tmp is LayeredFormPopover layered && layered.topMost) || (form_tmp is LayeredFormDrawer layeredDrawer && layeredDrawer.topMost) || (form_tmp is LayeredFormTour layeredTour && layeredTour.topMost)) TopMost = true;
             config.Target.SetIcon(this);
             close_button = new ITaskOpacity(nameof(AntdUI.Modal), this);
 
@@ -430,6 +431,19 @@ namespace AntdUI
                 }
             }
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
+
+            if (config.EnableSound)
+            {
+                MessageType soundType = config.Icon switch
+                {
+                    TType.Success => MessageType.Information,
+                    TType.Info => MessageType.Information,
+                    TType.Warn => MessageType.Warning,
+                    TType.Error => MessageType.Error,
+                    _ => MessageType.Information
+                };
+                SystemSoundHelper.PlaySound(soundType);
+            }
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -452,6 +466,21 @@ namespace AntdUI
             stringLeft.Dispose();
             stringTL.Dispose();
             Dispose();
+
+            if (config.ManualActivateParent)
+            {
+                // 在抽屉关闭后恢复主窗体的激活/置前
+                try
+                {
+                    var owner = config.Target.Parent();
+                    if (owner != null && owner.IsHandleCreated && owner.Visible)
+                    {
+                        if (owner.InvokeRequired) owner.BeginInvoke(new Action(() => owner.Activate()));
+                        else owner.Activate();
+                    }
+                }
+                catch { }
+            }
         }
 
         DateTime old_now;
