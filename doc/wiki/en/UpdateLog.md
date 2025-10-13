@@ -1,5 +1,17 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.10` 2025-10-13
+
+- ➕ Table ScrollBarAvoidHeader scrollbar starts drawing from below the header
+- ➕ Message/Notification/Modern Enable Sound plays prompt sound
+- ➕ Spin error callback
+- ➕ TooltipComponent Open Delay
+- ➕ Modal/Drawer ManualActivateParent
+- ➕ Table. Filter ColumnSelect support
+- ✍️ Table editing mode
+- ✍️ Table. Filter failure issue
+- ✍️ Table. ColumnSelect. CellType=Both does not display IconSvg issue
+
 ### `2.1.9` 2025-10-11
 
 - ➕ SelectMultiple TagBordered App Status Status Color
