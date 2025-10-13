@@ -1,5 +1,17 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.10` 2025-10-13
+
+- ➕ Table ScrollBarAvoidHeader 滚动条从表头下方开始绘制
+- ➕ Message/Notification/Modal EnableSound 播放提示音
+- ➕ Spin 错误回调
+- ➕ TooltipComponent 开放 Delay
+- ➕ Modal/Drawer ManualActivateParent
+- ➕ Table.Filter ColumnSelect 的支持
+- ✍️ Table 编辑模式
+- ✍️ Table.Filter 失效问题
+- ✍️ Table.ColumnSelect.CellType = Both 不显示 IconSvg 的问题
+
 ### `2.1.9` 2025-10-11
 
 - ➕ SelectMultiple TagBordered 应用 Status 状态色
