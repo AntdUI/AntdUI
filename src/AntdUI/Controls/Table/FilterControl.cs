@@ -84,8 +84,35 @@ namespace AntdUI
 
         private void InitFilterEdit()
         {
+            if (FocusedColumn is ColumnSelect)
+            {
+                var edit = new Select
+                {
+                    Margin = new Padding(0),
+                    Dock = DockStyle.Fill,
+                    List = true,
+                    AutoPrefixSvg = true
+                };
+                try
+                {
+                    edit.Items.AddRange(((ColumnSelect)FocusedColumn).Items.ToArray());
+                    edit.SelectedValue = Option.FilterValues != null && Option.FilterValues.Count > 0 ? Convert.ToInt32(Option.FilterValues[0]) : null;
+
+                }
+                catch { }
+                edit.SelectedValueChanged += EditSelect_ValueChanged;
+                tablePanel.Controls.Add(edit, 1, 0);
+                foreach (SelectItem item in selectCondition.Items)
+                {
+                    FilterConditions condition = (FilterConditions)item.Tag;
+                    if (condition == FilterConditions.Contain || condition == FilterConditions.NotContain) item.Enable = false;
+                }
+                return;
+            }
+
             Type? type = FocusedColumn.Filter?.DataType;
             if (type == null) type = typeof(string);
+
             if (type == typeof(decimal) || type == typeof(double) || type == typeof(float) || type == typeof(int) || type == typeof(short) || type == typeof(long))
             {
                 var edit = new InputNumber
@@ -201,19 +228,30 @@ namespace AntdUI
             }
 
             var items = new List<TreeItem>(values.Count + 1) { CreateItem(CHECKED_ALL, enabled) };
+            ColumnSelect? editSelect = FocusedColumn is ColumnSelect ? (ColumnSelect)FocusedColumn : null;
             foreach (var val in values)
             {
                 if (blankFlag && Option.AllowNull == false && (val == null || val == DBNull.Value)) continue;
-                items.Add(CreateItem(val, enabled));
+                TreeItem item = CreateItem(val, enabled);
+                if (editSelect != null)
+                {
+                    SelectItem? it = editSelect.Items.FirstOrDefault(c => c.Tag != null && c.Tag.Equals(val));
+                    if (it != null)
+                    {
+                        item.Text = it.Text;
+                        item.IconSvg = it.IconSvg;
+                    }
+                }
+                items.Add(item);
+
             }
             treeList.Items.AddRange(items.ToArray());
             UpdateCheckedStateAll();
-
         }
         private TreeItem CreateItem(object? val, bool enabled)
         {
             var text = val == null || val == DBNull.Value ? BLANK_FIELD : FocusedColumn?.GetDisplayText(val);
-            return new TreeItem(text!)
+            return new TreeItem(text ?? "")
             {
                 Checked = enabled == false || (Option.FilterValues != null && Option.FilterValues.Contains(val)),
                 Tag = val
@@ -306,13 +344,32 @@ namespace AntdUI
                 }
                 UpdateFilterValues();
             }
-            finally { EditLocked = false; }
+            finally
+            {
+                Edit!.Text = null;
+                if (Edit is Select editSelect)
+                {
+                    editSelect.SelectedValue = null;
+                    editSelect.PrefixSvg = null;
+                }
+                EditLocked = false;
+            }
         }
         private void UpdateCheckedStateAll()
         {
             var checkedList = treeList.Items.Where(c => c.Checked).ToList();
             treeList.Items[0].CheckState = checkedList.Count == 0 ? CheckState.Unchecked : checkedList.Count > treeList.Items.Count - 1 ? CheckState.Checked : CheckState.Indeterminate;
 
+        }
+        private void ClearCheckedAll()
+        {
+            EditLocked = true;
+            foreach (var item in treeList.Items)
+            {
+                if (item.Visible == false) continue;
+                UpdateCheckedState(item, false);
+            }
+            EditLocked = false;
         }
         private void UpdateCheckedState(TreeItem parentItem, bool checkedState)
         {
@@ -328,7 +385,8 @@ namespace AntdUI
             Option.FilterValues = new List<object?>();
             foreach (var item in treeList.Items)
             {
-                if (item.Text == CHECKED_ALL) continue;
+                if (item.Text == CHECKED_ALL || item.Visible == false) continue;
+
                 if (item.Checked) Option.FilterValues.Add(item.Tag);
             }
             Option.Condition = Option.FilterValues.Count > 0 ? FilterConditions.Equal : (FilterConditions)selectCondition.SelectedIndex;
@@ -379,7 +437,27 @@ namespace AntdUI
                 Option.FilterValues = new List<object?> { edit.Text };
                 Option.UpdateFilter();
                 ItemFilterEnabled.Enabled = Option.Enabled;
+                ClearCheckedAll();
             }
+        }
+        object? beforeItem = null;
+        private void EditSelect_ValueChanged(object sender, ObjectNEventArgs e)
+        {
+            if (EditLocked || beforeItem == e.Value || e.Value == null) return;
+            beforeItem = e.Value;
+            Option.FilterValues = new List<object?> { e.Value };
+            Select edit = (Select)sender;
+            SelectItem? it = null;
+            foreach (SelectItem item in edit.Items)
+            {
+                if (item.Tag == e.Value) { it = item; break; }
+            }
+            edit.PrefixSvg = it != null ? it.IconSvg : null;
+            edit.IconRatio = it?.IconRatio ?? 0.75f;
+
+            Option.UpdateFilter();
+            ItemFilterEnabled.Enabled = Option.Enabled;
+            ClearCheckedAll();
         }
 
         void EditChecked_CheckedChanged(object sender, BoolEventArgs e)
@@ -397,7 +475,7 @@ namespace AntdUI
             Option.FilterValues = new List<object?> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
-
+            ClearCheckedAll();
         }
 
         void EditDate_ValueChanged(object sender, DateTimeNEventArgs e)
@@ -405,6 +483,7 @@ namespace AntdUI
             if (e.Value != null) Option.FilterValues = new List<object?> { e.Value };
             Option.UpdateFilter();
             ItemFilterEnabled.Enabled = Option.Enabled;
+            ClearCheckedAll();
         }
 
         int beforeIndex = -1;
