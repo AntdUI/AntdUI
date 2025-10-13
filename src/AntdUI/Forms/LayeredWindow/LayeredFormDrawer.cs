@@ -625,6 +625,21 @@ namespace AntdUI
             shadow_temp?.Dispose();
             shadow_temp = null;
             base.Dispose(disposing);
+
+            if (config.ManualActivateParent)
+            {
+                // 在抽屉关闭后恢复主窗体的激活/置前
+                try
+                {
+                    var owner = config.Form;
+                    if (owner != null && owner.IsHandleCreated && owner.Visible)
+                    {
+                        if (owner.InvokeRequired) owner.BeginInvoke(new Action(() => owner.Activate()));
+                        else owner.Activate();
+                    }
+                }
+                catch { }
+            }
         }
 
         public void IRClose()

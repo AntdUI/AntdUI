@@ -29,6 +29,7 @@ namespace AntdUI
 
         IScrollBar? Target { get; set; }
         internal int Radius { get; set; }
+        internal bool RT { get; set; } = true;
         internal bool RB { get; set; }
 
         #region 布局容器
@@ -45,7 +46,6 @@ namespace AntdUI
         }
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
         {
-            ColorScheme = control.ColorScheme;
             ChangeSize = () => control.IOnSizeChanged();
             Invalidate = rect => control.IOnSizeChanged();
             EnabledX = enabledX;
@@ -54,7 +54,6 @@ namespace AntdUI
         }
         public ScrollBar(StackPanel control)
         {
-            ColorScheme = control.ColorScheme;
             ChangeSize = () => control.IOnSizeChanged();
             Invalidate = rect => control.IOnSizeChanged();
             if (control.Vertical) EnabledY = true;
@@ -64,7 +63,6 @@ namespace AntdUI
         public ScrollBar(ILayeredForm control, TAMode colorScheme)
         {
             Back = false;
-            ColorScheme = colorScheme;
             ChangeSize = () => control.Print();
             Invalidate = rect => control.Print();
             EnabledY = true;
@@ -74,10 +72,8 @@ namespace AntdUI
 
         #endregion
 
-        TAMode ColorScheme;
         public ScrollBar(IControl control, bool enabledY = true, bool enabledX = false, int radius = 0, bool radiusy = false)
         {
-            ColorScheme = control.ColorScheme;
             Radius = radius;
             RB = radiusy;
             Invalidate = rect =>
@@ -462,7 +458,7 @@ namespace AntdUI
                                 if (Radius > 0)
                                 {
                                     float radius = Radius * Config.Dpi;
-                                    using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                    using (var path = Helper.RoundPath(RectY, radius, false, RT, RB, false))
                                     {
                                         g.Fill(brush, path);
                                     }
@@ -498,7 +494,7 @@ namespace AntdUI
                             if (Radius > 0)
                             {
                                 float radius = Radius * Config.Dpi;
-                                using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                using (var path = Helper.RoundPath(RectY, radius, false, RT, RB, false))
                                 {
                                     g.Fill(brush, path);
                                 }
@@ -540,7 +536,7 @@ namespace AntdUI
                             if (Radius > 0)
                             {
                                 float radius = Radius * Config.Dpi;
-                                using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                using (var path = Helper.RoundPath(RectY, radius, false, RT, RB, false))
                                 {
                                     g.Fill(brush, path);
                                 }
@@ -572,7 +568,7 @@ namespace AntdUI
                             if (Radius > 0)
                             {
                                 float radius = Radius * Config.Dpi;
-                                using (var path = Helper.RoundPath(RectY, radius, false, true, RB, false))
+                                using (var path = Helper.RoundPath(RectY, radius, false, RT, RB, false))
                                 {
                                     g.Fill(brush, path);
                                 }

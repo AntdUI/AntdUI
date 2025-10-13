@@ -48,6 +48,12 @@ namespace Demo.Controls
         {
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
+            panel4 = new System.Windows.Forms.Panel();
+            button9 = new AntdUI.Button();
+            button10 = new AntdUI.Button();
+            button11 = new AntdUI.Button();
+            button12 = new AntdUI.Button();
+            divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
             button5 = new AntdUI.Button();
             button6 = new AntdUI.Button();
@@ -61,6 +67,7 @@ namespace Demo.Controls
             button1 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
+            panel4.SuspendLayout();
             panel3.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -82,6 +89,8 @@ namespace Demo.Controls
             // 
             // panel1
             // 
+            panel1.Controls.Add(panel4);
+            panel1.Controls.Add(divider3);
             panel1.Controls.Add(panel3);
             panel1.Controls.Add(divider2);
             panel1.Controls.Add(panel2);
@@ -91,6 +100,70 @@ namespace Demo.Controls
             panel1.Name = "panel1";
             panel1.Size = new Size(543, 383);
             panel1.TabIndex = 6;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(button9);
+            panel4.Controls.Add(button10);
+            panel4.Controls.Add(button11);
+            panel4.Controls.Add(button12);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(0, 210);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(543, 63);
+            panel4.TabIndex = 6;
+            // 
+            // button9
+            // 
+            button9.BorderWidth = 2F;
+            button9.Location = new Point(362, 10);
+            button9.Name = "button9";
+            button9.Size = new Size(110, 40);
+            button9.TabIndex = 1;
+            button9.Text = "Info";
+            button9.Click += button9_Click;
+            // 
+            // button10
+            // 
+            button10.BorderWidth = 2F;
+            button10.Location = new Point(246, 10);
+            button10.Name = "button10";
+            button10.Size = new Size(110, 40);
+            button10.TabIndex = 1;
+            button10.Text = "Warning";
+            button10.Click += button10_Click;
+            // 
+            // button11
+            // 
+            button11.BorderWidth = 2F;
+            button11.Location = new Point(130, 9);
+            button11.Name = "button11";
+            button11.Size = new Size(110, 40);
+            button11.TabIndex = 1;
+            button11.Text = "Error";
+            button11.Click += button11_Click;
+            // 
+            // button12
+            // 
+            button12.BorderWidth = 2F;
+            button12.Location = new Point(14, 9);
+            button12.Name = "button12";
+            button12.Size = new Size(110, 40);
+            button12.TabIndex = 1;
+            button12.Text = "Success";
+            button12.Click += button12_Click;
+            // 
+            // divider3
+            // 
+            divider3.Dock = DockStyle.Top;
+            divider3.Font = new Font("Microsoft YaHei UI", 10F);
+            divider3.LocalizationText = "Message.{id}";
+            divider3.Location = new Point(0, 182);
+            divider3.Name = "divider3";
+            divider3.Orientation = AntdUI.TOrientation.Left;
+            divider3.Size = new Size(543, 28);
+            divider3.TabIndex = 5;
+            divider3.Text = "Windows 消息框声音";
             // 
             // panel3
             // 
@@ -232,6 +305,7 @@ namespace Demo.Controls
             Name = "Message";
             Size = new Size(543, 457);
             panel1.ResumeLayout(false);
+            panel4.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel2.ResumeLayout(false);
             ResumeLayout(false);
@@ -253,5 +327,11 @@ namespace Demo.Controls
         private AntdUI.Button button8;
         private AntdUI.Divider divider2;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel4;
+        private AntdUI.Button button9;
+        private AntdUI.Button button10;
+        private AntdUI.Button button11;
+        private AntdUI.Button button12;
+        private AntdUI.Divider divider3;
     }
 }

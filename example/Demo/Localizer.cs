@@ -376,6 +376,8 @@ namespace Demo
                     return "More types";
                 case "Message.divider2":
                     return "Message with loading indicator";
+                case "Message.divider3":
+                    return "System Sound";
 
                 //Modal ----------------------------
                 case "Modal.Text":
@@ -394,6 +396,8 @@ namespace Demo
                     return "Placement";
                 case "Notification.divider2":
                     return "More types";
+                case "Notification.divider3":
+                    return "System Sound";
 
                 //PageHeader ----------------------------
                 case "PageHeader.Text":
@@ -569,6 +573,10 @@ namespace Demo
                     return "EditMode";
                 case "Table.selectEditStyle":
                     return "EditStyle";
+                case "Table.selectFocusedStyle":
+                    return "FocusedStyle";
+                case "Table.checkScrollBarAvoidHeader":
+                    return "ScrollBar AvoidHeader";
                 case "Table.Column.name":
                     return "Name";
                 case "Table.Column.checkTitle":

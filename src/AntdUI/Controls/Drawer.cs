@@ -180,6 +180,11 @@ namespace AntdUI
             public bool MaskClosable { get; set; } = true;
 
             /// <summary>
+            /// 关闭后手动激活父窗口
+            /// </summary>
+            public bool ManualActivateParent { get; set; }
+
+            /// <summary>
             /// 边距
             /// </summary>
             public int Padding { get; set; } = 24;
@@ -229,6 +234,11 @@ namespace AntdUI
             public Config SetMaskClosable(bool value = false)
             {
                 MaskClosable = value;
+                return this;
+            }
+            public Config SetManualActivateParent(bool value = true)
+            {
+                ManualActivateParent = value;
                 return this;
             }
             public Config SetPadding(int value)

@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -110,6 +110,15 @@ namespace AntdUI
                 else if (_rows.Count > 0)
                 {
                     rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
+                    if (scrollBarAvoidHeader && visibleHeader && fixedHeader)
+                    {
+                        int headerHeight = rows[0].Height;
+                        if (headerHeight > 0 && rect.Height > headerHeight)
+                        {
+                            y -= headerHeight;
+                            rect = new Rectangle(rect.X, rect.Y + headerHeight, rect.Width, rect.Height - headerHeight);
+                        }
+                    }
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     if (Processing && Config.HasAnimation(nameof(Table)))
                     {

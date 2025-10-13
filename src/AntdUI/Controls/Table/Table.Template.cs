@@ -1099,17 +1099,14 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + gap.x + ox, _rect.Y + gap.y, _rect.Width - gap.x2, _rect.Height - gap.y2);
 
                 bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
-                bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
-                if (!emptyIcon)
+                if (emptyIcon) rect_text = RECT_REAL;
+                else
                 {
+                    bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
                     int gapIcon = gap.x / 2;
                     int wh = (int)((_rect.Height - gap.x) * (value.IconRatio ?? 0.75f));
                     rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap.x), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
                     if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
-                }
-                else
-                {
-                    rect_text = RECT_REAL;
                 }
             }
 
@@ -1143,8 +1140,18 @@ namespace AntdUI
                     }
                 }
                 var size = g.MeasureText(value.Text, font);
-                MinWidth = size.Width;
-                return new Size(size.Width + gap2, size.Height);
+                bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
+                if (emptyIcon)
+                {
+                    MinWidth = size.Width;
+                    return new Size(size.Width + gap2, size.Height);
+                }
+                else
+                {
+                    int wh = (int)(size.Height * ((value.IconRatio ?? 0.8f) * 2.4F));
+                    MinWidth = size.Width + wh;
+                    return new Size(size.Width + wh + gap2, size.Height);
+                }
             }
 
             #endregion

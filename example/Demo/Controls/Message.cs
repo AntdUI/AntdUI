@@ -116,5 +116,25 @@ namespace Demo.Controls
                 }));
             }, Font);
         }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a success message", AntdUI.TType.Success).SetEnableSound());
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a error message", AntdUI.TType.Error).SetEnableSound());
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a warn message", AntdUI.TType.Warn).SetEnableSound());
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            AntdUI.Message.open(new AntdUI.Message.Config(form, "Hello, Ant Design!", AntdUI.TType.Info).SetEnableSound());
+        }
     }
 }

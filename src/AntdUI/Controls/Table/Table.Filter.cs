@@ -1,4 +1,4 @@
-﻿﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -196,14 +196,8 @@ namespace AntdUI
                                     else
                                     {
                                         // 尝试进行数值类型比较
-                                        if (TryCompareAsNumeric(val, value, out bool isEqual) && isEqual)
-                                        {
-                                            list.Add(row);
-                                        }
-                                        else if (val.Equals(value))
-                                        {
-                                            list.Add(row);
-                                        }
+                                        if (TryCompareAsNumeric(val, value, out bool isEqual) && isEqual) list.Add(row);
+                                        else if (val.Equals(value)) list.Add(row);
                                     }
                                 }
                                 break;
@@ -221,14 +215,8 @@ namespace AntdUI
                                     else
                                     {
                                         // 尝试进行数值类型比较
-                                        if (TryCompareAsNumeric(val, value, out bool isEqual) && !isEqual)
-                                        {
-                                            list.Add(row);
-                                        }
-                                        else if (!val.Equals(value))
-                                        {
-                                            list.Add(row);
-                                        }
+                                        if (TryCompareAsNumeric(val, value, out bool isEqual) && !isEqual) list.Add(row);
+                                        else if (!val.Equals(value)) list.Add(row);
                                     }
                                 }
                                 break;
@@ -239,7 +227,9 @@ namespace AntdUI
                                 if (val.GetType() == typeof(string))
                                 {
                                     if (option.Condition == FilterConditions.Greater)
-                                    { if (val.ToString().StartsWith(value.ToString())) list.Add(row); }
+                                    {
+                                        if (val.ToString().StartsWith(value.ToString())) list.Add(row);
+                                    }
                                     else
                                     {
                                         if (val.ToString().EndsWith(value.ToString())) list.Add(row);
@@ -271,8 +261,7 @@ namespace AntdUI
                             default:
                                 bool emptyVal = val == null || val == DBNull.Value;
                                 bool emptyVal2 = value == null || value == DBNull.Value;
-                                if (emptyVal && emptyVal2)
-                                    list.Add(row);
+                                if (emptyVal && emptyVal2) list.Add(row);
                                 else
                                 {
                                     if (option.Condition == FilterConditions.Contain)
@@ -292,7 +281,7 @@ namespace AntdUI
             }
             return list;
         }
-        
+
         /// <summary>
         /// 尝试将两个对象作为数值进行比较
         /// </summary>
@@ -303,7 +292,7 @@ namespace AntdUI
         private static bool TryCompareAsNumeric(object val1, object val2, out bool isEqual)
         {
             isEqual = false;
-            
+
             try
             {
                 // 如果任一值已经是数值类型，直接比较
@@ -314,7 +303,7 @@ namespace AntdUI
                     isEqual = d1 == d2;
                     return true;
                 }
-                
+
                 // 尝试解析字符串为数值
                 if (val1 is string str1 && decimal.TryParse(str1, out decimal parsed1))
                 {
@@ -345,10 +334,10 @@ namespace AntdUI
                 // 解析失败，返回false
                 return false;
             }
-            
+
             return false;
         }
-        
+
         /// <summary>
         /// 判断对象是否为数值类型
         /// </summary>
@@ -423,11 +412,11 @@ namespace AntdUI
         /// </summary>
         public FilterConditions Condition { get; set; } = FilterConditions.Contain;
 
-        List<object>? _filterValues;
+        List<object?>? _filterValues;
         /// <summary>
         /// 已应用的筛选值列表
         /// </summary>
-        public List<object>? FilterValues
+        public List<object?>? FilterValues
         {
             get => _filterValues;
             internal set
@@ -504,9 +493,7 @@ namespace AntdUI
             Table = column.PARENT;
 
             Condition = condition;
-            List<object> list = new List<object>();
-            list.AddRange(filterValues);
-            FilterValues = list;
+            FilterValues = new List<object?>(filterValues);
             UpdateFilter();
             return Enabled;
         }

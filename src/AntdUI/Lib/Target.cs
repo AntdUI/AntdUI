@@ -99,6 +99,16 @@ namespace AntdUI
                 else if (Config.Font != null) form.Font = Config.Font;
             }
         }
+        public void SetFontConfig(Font? font, Form form, object user)
+        {
+            if (user is Control control) form.Font = control.Font;
+            else if (Value is Control t) form.Font = font ?? t.Font;
+            else
+            {
+                if (font != null) form.Font = font;
+                else if (Config.Font != null) form.Font = Config.Font;
+            }
+        }
         public void SetIcon(Form form)
         {
             if (Value is Form t) form.Icon = t.Icon;
@@ -122,6 +132,13 @@ namespace AntdUI
         {
             if (Value is Control t) t.BeginInvoke(action);
             else action();
+        }
+
+        public Form? Parent()
+        {
+            if (Value is Form form) return form;
+            if (Value is Control control) return control.FindPARENT();
+            return null;
         }
     }
 }

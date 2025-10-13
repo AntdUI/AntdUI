@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -414,6 +414,12 @@ namespace AntdUI
         [Description("前景色"), Category("外观"), DefaultValue(null)]
         public Color? Fore { get; set; }
 
+        /// <summary>
+        /// 延迟时间（毫秒）
+        /// </summary>
+        [Description("延迟时间（毫秒）"), Category("行为"), DefaultValue(500)]
+        public int Delay { get; set; } = 500;
+
         #endregion
 
         readonly Dictionary<Control, string> dic = new Dictionary<Control, string>();
@@ -463,7 +469,7 @@ namespace AntdUI
                 lock (dic_in) dic_in.Add(obj);
                 ITask.Run(() =>
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(Delay);
                     if (dic_in.Contains(obj))
                     {
                         obj.BeginInvoke(new Action(() =>

@@ -501,6 +501,11 @@ namespace AntdUI
             public bool MaskClosable { get; set; } = true;
 
             /// <summary>
+            /// 关闭后手动激活父窗口
+            /// </summary>
+            public bool ManualActivateParent { get; set; }
+
+            /// <summary>
             /// 是否显示关闭图标
             /// </summary>
             public bool CloseIcon { get; set; }
@@ -594,6 +599,11 @@ namespace AntdUI
             /// </summary>
             public bool Draggable { get; set; } = true;
 
+            /// <summary>
+            /// 启用声音
+            /// </summary>
+            public bool EnableSound { get; set; }
+
             #region 自定义按钮
 
             /// <summary>
@@ -670,6 +680,11 @@ namespace AntdUI
             public Config SetMaskClosable(bool value = false)
             {
                 MaskClosable = value;
+                return this;
+            }
+            public Config SetManualActivateParent(bool value = true)
+            {
+                ManualActivateParent = value;
                 return this;
             }
             public Config SetCloseIcon(bool value = true)
@@ -789,6 +804,11 @@ namespace AntdUI
             public Config SetColorScheme(TAMode value)
             {
                 ColorScheme = value;
+                return this;
+            }
+            public Config SetEnableSound(bool value = true)
+            {
+                EnableSound = value;
                 return this;
             }
 

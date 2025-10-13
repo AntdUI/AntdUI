@@ -82,9 +82,10 @@ namespace AntdUI
                                 call(obj[0] == select.SelectedValue, select.SelectedValue);
                             }
                         }
-                        else
+                        else id.KeyPress -= InputEdit_KeyPress;
+
+                        if (obj[1] != null)
                         {
-                            id.KeyPress -= InputEdit_KeyPress;
                             if (obj[1] is Action<bool, string> call)
                             {
                                 obj[1] = null;
