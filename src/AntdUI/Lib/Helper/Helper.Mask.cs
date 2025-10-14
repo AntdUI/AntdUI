@@ -33,7 +33,7 @@ namespace AntdUI
         {
             var mask = new LayeredFormMask(owner);
             if (MaskClosable) mask.SetForm(form);
-            form.Disposed += (s1, e1) => mask.IClose();
+            form.FormClosed += (s1, e1) => mask.IClose();
             mask.Show(owner);
             return mask;
         }
@@ -50,7 +50,7 @@ namespace AntdUI
             if (tmp == null) throw new System.Exception("无法找到父窗口");
             var mask = new LayeredFormMask(tmp, owner);
             if (MaskClosable) mask.SetForm(form);
-            form.Disposed += (s1, e1) => mask.IClose();
+            form.FormClosed += (s1, e1) => mask.IClose();
             mask.Show(owner);
             return mask;
         }
@@ -73,7 +73,7 @@ namespace AntdUI
             }
             else throw new System.Exception("Target只能是Form或Control");
             if (MaskClosable) mask.SetForm(form);
-            form.Disposed += (s1, e1) => mask.IClose();
+            form.FormClosed += (s1, e1) => mask.IClose();
             target.Show(mask);
             return mask;
         }
@@ -89,7 +89,7 @@ namespace AntdUI
             var mask = new LayeredFormMask(owner);
             if (MaskClosable) mask.SetForm(form);
             mask.Show(owner);
-            form.Disposed += (s1, e1) => mask.IClose();
+            form.FormClosed += (s1, e1) => mask.IClose();
             return mask;
         }
 

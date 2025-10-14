@@ -702,90 +702,99 @@ namespace AntdUI.Core
 
         public bool Image(RectangleF rect, Image image, TFit fit)
         {
-            try
+            if (rect.Width > 0 && rect.Height > 0)
             {
-                switch (fit)
+                try
                 {
-                    case TFit.Fill:
-                        g.DrawImage(image, rect);
-                        break;
-                    case TFit.None:
-                        g.DrawImage(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
-                        break;
-                    case TFit.Contain:
-                        PaintImgContain(this, image, rect);
-                        break;
-                    case TFit.Cover:
-                        PaintImgCover(this, image, rect);
-                        break;
+                    switch (fit)
+                    {
+                        case TFit.Fill:
+                            g.DrawImage(image, rect);
+                            break;
+                        case TFit.None:
+                            g.DrawImage(image, new RectangleF(rect.X + (rect.Width - image.Width) / 2, rect.Y + (rect.Height - image.Height) / 2, image.Width, image.Height));
+                            break;
+                        case TFit.Contain:
+                            PaintImgContain(this, image, rect);
+                            break;
+                        case TFit.Cover:
+                            PaintImgCover(this, image, rect);
+                            break;
+                    }
+                    return true;
                 }
-                return true;
+                catch { }
             }
-            catch { }
             return false;
         }
         public bool Image(RectangleF rect, Image image, TFit fit, float radius, bool round)
         {
-            try
+            if (rect.Width > 0 && rect.Height > 0)
             {
-                if (round || radius > 0)
+                try
                 {
-                    using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
+                    if (round || radius > 0)
                     {
-                        using (var g2 = Graphics.FromImage(bmp).High())
+                        using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
                         {
-                            PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
-                        }
-                        using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
-                        {
-                            brush.TranslateTransform(rect.X, rect.Y);
-                            if (round) g.FillEllipse(brush, rect);
-                            else
+                            using (var g2 = Graphics.FromImage(bmp).High())
                             {
-                                using (var path = rect.RoundPath(radius))
+                                PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
+                            }
+                            using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
+                            {
+                                brush.TranslateTransform(rect.X, rect.Y);
+                                if (round) g.FillEllipse(brush, rect);
+                                else
                                 {
-                                    g.FillPath(brush, path);
+                                    using (var path = rect.RoundPath(radius))
+                                    {
+                                        g.FillPath(brush, path);
+                                    }
                                 }
                             }
                         }
                     }
+                    else PaintImg(this, rect, image, fit);
+                    return true;
                 }
-                else PaintImg(this, rect, image, fit);
-                return true;
+                catch { }
             }
-            catch { }
             return false;
         }
         public bool Image(RectangleF rect, Image image, TFit fit, float radius, TShape shape)
         {
-            try
+            if (rect.Width > 0 && rect.Height > 0)
             {
-                if (shape == TShape.Circle || shape == TShape.Round || radius > 0)
+                try
                 {
-                    using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
+                    if (shape == TShape.Circle || shape == TShape.Round || radius > 0)
                     {
-                        using (var g2 = Graphics.FromImage(bmp).High())
+                        using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
                         {
-                            PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
-                        }
-                        using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
-                        {
-                            brush.TranslateTransform(rect.X, rect.Y);
-                            if (shape == TShape.Circle) g.FillEllipse(brush, rect);
-                            else
+                            using (var g2 = Graphics.FromImage(bmp).High())
                             {
-                                using (var path = rect.RoundPath(radius))
+                                PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
+                            }
+                            using (var brush = new TextureBrush(bmp, WrapMode.Clamp))
+                            {
+                                brush.TranslateTransform(rect.X, rect.Y);
+                                if (shape == TShape.Circle) g.FillEllipse(brush, rect);
+                                else
                                 {
-                                    g.FillPath(brush, path);
+                                    using (var path = rect.RoundPath(radius))
+                                    {
+                                        g.FillPath(brush, path);
+                                    }
                                 }
                             }
                         }
                     }
+                    else PaintImg(this, rect, image, fit);
+                    return true;
                 }
-                else PaintImg(this, rect, image, fit);
-                return true;
+                catch { }
             }
-            catch { }
             return false;
         }
 

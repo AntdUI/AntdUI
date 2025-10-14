@@ -752,19 +752,23 @@ namespace AntdUI
         }
         bool IMouseDown(MouseEventArgs e, TreeItem item)
         {
-            var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
-            if (down > 0)
+            try
             {
-                MDown = item;
-                return true;
-            }
-            if (item.ICanExpand && item.Expand)
-            {
-                foreach (var sub in item.Sub)
+                var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+                if (down > 0)
                 {
-                    if (IMouseDown(e, sub)) return true;
+                    MDown = item;
+                    return true;
+                }
+                if (item.ICanExpand && item.Expand)
+                {
+                    foreach (var sub in item.Sub)
+                    {
+                        if (IMouseDown(e, sub)) return true;
+                    }
                 }
             }
+            catch { }
             return false;
         }
 
@@ -772,38 +776,27 @@ namespace AntdUI
         TreeItem? shift_index;
         bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown)
         {
-            bool can = item.ICanExpand;
-            if (MDown == item)
+            try
             {
-                var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
-                if (down > 0)
+                bool can = item.ICanExpand;
+                if (MDown == item)
                 {
-                    if (e.Button == MouseButtons.Left)
+                    var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+                    if (down > 0)
                     {
-                        if (down == TreeCType.Check && item.Enabled)
+                        if (e.Button == MouseButtons.Left)
                         {
-                            if (CheckStrictly)
+                            if (down == TreeCType.Check && item.Enabled)
                             {
-                                bool targetChecked = ShouldCheckTarget(item);
-                                item.CheckState = SetCheck(item, targetChecked);
-                                SetCheckStrictly(item.PARENTITEM);
+                                if (CheckStrictly)
+                                {
+                                    bool targetChecked = ShouldCheckTarget(item);
+                                    item.CheckState = SetCheck(item, targetChecked);
+                                    SetCheckStrictly(item.PARENTITEM);
+                                }
+                                else item.Checked = !item.Checked;
                             }
-                            else item.Checked = !item.Checked;
-                        }
-                        else if (down == TreeCType.Arrow && can)
-                        {
-                            bool value = !item.Expand;
-                            if (BeforeExpand == null) item.Expand = value;
-                            else
-                            {
-                                var arge = new TreeExpandEventArgs(item, value);
-                                BeforeExpand(this, arge);
-                                if (arge.CanExpand) item.Expand = value;
-                            }
-                        }
-                        else
-                        {
-                            if (doubleClick && can)
+                            else if (down == TreeCType.Arrow && can)
                             {
                                 bool value = !item.Expand;
                                 if (BeforeExpand == null) item.Expand = value;
@@ -816,51 +809,66 @@ namespace AntdUI
                             }
                             else
                             {
-                                selectItem = item;
-                                if (Multiple && ModifierKeys.HasFlag(Keys.Shift))
+                                if (doubleClick && can)
                                 {
-                                    _multiple = true;
-                                    if (shift_index == null) item.SetSelect();
+                                    bool value = !item.Expand;
+                                    if (BeforeExpand == null) item.Expand = value;
                                     else
                                     {
-                                        if (item == shift_index) item.SetSelect();
-                                        else if (shift_index.rect.Y > item.rect.Y) SetSelects(items!, item, shift_index);
-                                        else SetSelects(items!, shift_index, item);
+                                        var arge = new TreeExpandEventArgs(item, value);
+                                        BeforeExpand(this, arge);
+                                        if (arge.CanExpand) item.Expand = value;
                                     }
-                                }
-                                else if (Multiple && ModifierKeys.HasFlag(Keys.Control))
-                                {
-                                    _multiple = true;
-                                    item.SetSelect();
                                 }
                                 else
                                 {
-                                    if (_multiple)
+                                    selectItem = item;
+                                    if (Multiple && ModifierKeys.HasFlag(Keys.Shift))
                                     {
-                                        _multiple = false;
-                                        if (item.Select) USelect(false);
-                                        item.Select = true;
+                                        _multiple = true;
+                                        if (shift_index == null) item.SetSelect();
+                                        else
+                                        {
+                                            if (item == shift_index) item.SetSelect();
+                                            else if (shift_index.rect.Y > item.rect.Y) SetSelects(items!, item, shift_index);
+                                            else SetSelects(items!, shift_index, item);
+                                        }
                                     }
-                                    else item.Select = true;
+                                    else if (Multiple && ModifierKeys.HasFlag(Keys.Control))
+                                    {
+                                        _multiple = true;
+                                        item.SetSelect();
+                                    }
+                                    else
+                                    {
+                                        if (_multiple)
+                                        {
+                                            _multiple = false;
+                                            if (item.Select) USelect(false);
+                                            item.Select = true;
+                                        }
+                                        else item.Select = true;
+                                    }
+                                    shift_index = item;
+                                    OnSelectChanged(item, down, e);
+                                    Invalidate();
                                 }
-                                shift_index = item;
-                                OnSelectChanged(item, down, e);
-                                Invalidate();
                             }
                         }
+                        if (doubleClick) OnNodeMouseDoubleClick(item, down, e);
+                        else OnNodeMouseClick(item, down, e);
                     }
-                    if (doubleClick) OnNodeMouseDoubleClick(item, down, e);
-                    else OnNodeMouseClick(item, down, e);
+                    return true;
                 }
-                return true;
-            }
-            if (can && item.Expand)
-            {
-                foreach (var sub in item.Sub)
+                if (can && item.Expand)
                 {
-                    if (IMouseUp(e, sub, MDown)) return true;
+                    foreach (var sub in item.Sub)
+                    {
+                        if (IMouseUp(e, sub, MDown)) return true;
+                    }
                 }
             }
+            catch { }
             return false;
         }
 
@@ -1017,9 +1025,13 @@ namespace AntdUI
                 if (OnTouchMove(e.X, e.Y))
                 {
                     if (items == null || items.Count == 0) return;
-                    int hand = 0;
-                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref hand);
-                    SetCursor(hand > 0);
+                    try
+                    {
+                        int hand = 0;
+                        foreach (var it in items) IMouseMove(it, e.X, e.Y, ref hand);
+                        SetCursor(hand > 0);
+                    }
+                    catch { }
                 }
             }
             else ILeave();
@@ -1059,12 +1071,16 @@ namespace AntdUI
         {
             SetCursor(false);
             if (items == null || items.Count == 0) return;
-            int count = 0;
-            foreach (var it in items)
+            try
             {
-                ILeave(it, ref count);
+                int count = 0;
+                foreach (var it in items)
+                {
+                    ILeave(it, ref count);
+                }
+                if (count > 0) Invalidate();
             }
-            if (count > 0) Invalidate();
+            catch { }
         }
         void ILeave(TreeItem item, ref int count)
         {

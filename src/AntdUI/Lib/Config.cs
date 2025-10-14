@@ -46,20 +46,12 @@ namespace AntdUI
         public static bool IsLight
         {
             get => mode == TMode.Light;
-            set
-            {
-                Mode = value ? TMode.Light : TMode.Dark;
-                EventHub.Dispatch(EventType.THEME, mode);
-            }
+            set => Mode = value ? TMode.Light : TMode.Dark;
         }
         public static bool IsDark
         {
             get => mode == TMode.Dark;
-            set
-            {
-                Mode = value ? TMode.Dark : TMode.Light;
-                EventHub.Dispatch(EventType.THEME, mode);
-            }
+            set => Mode = value ? TMode.Dark : TMode.Light;
         }
 
         #endregion
