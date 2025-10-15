@@ -59,12 +59,15 @@ namespace AntdUI
         MessageHandler? messageHandler;
         public virtual void LoadMessage()
         {
-            if (InvokeRequired)
+            if (messageHandler == null)
             {
-                Invoke(actionLoadMessage);
-                return;
+                if (InvokeRequired)
+                {
+                    Invoke(actionLoadMessage);
+                    return;
+                }
+                if (MessageEnable) messageHandler = new MessageHandler(this);
             }
-            if (MessageEnable) messageHandler = new MessageHandler(this);
         }
 
         protected override void OnLoad(EventArgs e)

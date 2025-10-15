@@ -2218,22 +2218,26 @@ namespace AntdUI
             ExtraMouseHover = false;
         }
 
+        int clicks = 1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (CanClick(e.X, e.Y))
             {
+                clicks = e.Clicks;
                 init = false;
                 Focus();
-                base.OnMouseDown(e);
                 ExtraMouseDown = true;
+                base.OnMouseDown(e);
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (clicks > 1) e = new MouseEventArgs(e.Button, clicks, e.X, e.Y, e.Delta);
             base.OnMouseUp(e);
             if (ExtraMouseDown)
             {
+                ExtraMouseDown = false;
                 if (CanClick(e.X, e.Y))
                 {
                     if (e.Button == MouseButtons.Left)
@@ -2243,7 +2247,6 @@ namespace AntdUI
                     }
                     OnMouseClick(e);
                 }
-                ExtraMouseDown = false;
             }
         }
 
@@ -2410,7 +2413,6 @@ namespace AntdUI
             }
         }
 
-        bool CanClick(Point e) => CanClick(e.X, e.Y);
         bool CanClick(int x, int y)
         {
             if (loading) return LoadingRespondClick;

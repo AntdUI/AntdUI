@@ -1638,6 +1638,33 @@ namespace AntdUI
             return cell;
         }
 
+        public Bitmap? DrawBitmap(bool full)
+        {
+            if (full && (ScrollBar.ShowX || ScrollBar.ShowY))
+            {
+                var rect = new Rectangle(0, 0, rect_read.Width, rect_read.Height);
+                if (ScrollBar.ShowX) rect.Width = ScrollBar.MaxX;
+                if (ScrollBar.ShowY) rect.Height = ScrollBar.MaxY;
+                if (rect.Width == 0 || rect.Height == 0) return null;
+                LoadLayout(rect);
+                var bmp = new Bitmap(rect.Width, rect.Height);
+                using (var g = Graphics.FromImage(bmp).High())
+                {
+                    try
+                    {
+                        var args = new DrawEventArgs(g, rect);
+                        OnDrawBg(args);
+                        OnDraw(args);
+                    }
+                    catch { }
+                    this.PaintBadge(g);
+                }
+                LoadLayout();
+                return bmp;
+            }
+            return DrawBitmap();
+        }
+
         #endregion
 
         #region 渲染

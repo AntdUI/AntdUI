@@ -224,6 +224,17 @@ namespace AntdUI
             return this;
         }
 
+        /// <summary>
+        /// 清空页面头部颜色
+        /// </summary>
+        /// <param name="header">页头</param>
+        public virtual IThemeConfig HeaderClear(PageHeader header)
+        {
+            pageheader = header;
+            headerLight = headerDark = null;
+            return this;
+        }
+
         #endregion
 
         #region 按钮

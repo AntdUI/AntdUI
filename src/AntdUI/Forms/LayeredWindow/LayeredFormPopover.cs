@@ -34,7 +34,7 @@ namespace AntdUI
         public override bool MessageCloseSub => true;
 
         internal bool topMost = false;
-        Form? form = null;
+        Form? form;
         public LayeredFormPopover(Popover.Config _config)
         {
             config = _config;
@@ -185,10 +185,7 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                if (config.Content is Control control)
-                {
-                    BeginInvoke(() => LoadContent(control));
-                }
+                if (config.Content is Control control) BeginInvoke(() => LoadContent(control));
                 else base.LoadOK();
             }
             else base.LoadOK();
@@ -203,6 +200,7 @@ namespace AntdUI
         }
 
         Bitmap? tempContent;
+        Form? parent;
         void LoadContent(Control control)
         {
             var flocation = new Point(TargetRect.Location.X + rectContent.X, TargetRect.Location.Y + rectContent.Y);
@@ -219,10 +217,17 @@ namespace AntdUI
             form.Show(this);
             form.Location = flocation;
             PARENT = form;
+            parent = control.FindPARENT();
             config.OnControlLoad?.Invoke();
             control.ControlEvent();
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
             base.LoadOK();
+            if (parent != null) parent.VisibleChanged += Parent_VisibleChanged;
+        }
+        private void Parent_VisibleChanged(object? sender, EventArgs e)
+        {
+            if (form == null) return;
+            form.Visible = parent!.Visible;
         }
 
         private void Control_Disposed(object? sender, EventArgs e) => IClose();
@@ -255,6 +260,7 @@ namespace AntdUI
             shadow_temp = null;
             tempContent?.Dispose();
             tempContent = null;
+            if (parent != null) parent.VisibleChanged -= Parent_VisibleChanged;
             if (config.Content is Control control)
             {
                 control.Disposed -= Control_Disposed;

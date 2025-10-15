@@ -297,7 +297,7 @@ namespace AntdUI.Design
         Point point_colors = Point.Empty;
         Rectangle rect_colors_big;
         Rectangle rect_colors;
-        Bitmap? bmp_colors = null;
+        Bitmap? bmp_colors;
         void PaintColors(Canvas g, Rectangle rect)
         {
             using (var brush = new SolidBrush(ValueHue))
@@ -341,7 +341,7 @@ namespace AntdUI.Design
         int point_hue = 0;
         Rectangle rect_hue_big;
         Rectangle rect_hue;
-        Bitmap? bmp_hue = null;
+        Bitmap? bmp_hue;
         void PaintHue(Canvas g, Rectangle rect)
         {
             int width = (rect.Width - 4) / 6;
@@ -423,7 +423,7 @@ namespace AntdUI.Design
         int point_alpha = 0;
         Rectangle rect_alpha_big;
         Rectangle rect_alpha;
-        Bitmap? bmp_alpha = null, bmp_alpha_read = null;
+        Bitmap? bmp_alpha, bmp_alpha_read;
         Color color_alpha = Color.White;
         void PaintAlpha(Canvas g, Rectangle rect, bool add)
         {

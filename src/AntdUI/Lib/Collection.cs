@@ -664,7 +664,7 @@ namespace AntdUI
         }
         public string key { get; set; }
 
-        object? _value = null;
+        object? _value;
         public object? value
         {
             get => _value;

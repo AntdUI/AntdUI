@@ -1089,7 +1089,7 @@ namespace AntdUI
             public new ColumnSelect COLUMN { get; private set; }
 
             #region 布局
-          
+
             Rectangle rect_icon, rect_text;
             private int GetIconSize(int height, int gap)
             {
@@ -1107,17 +1107,14 @@ namespace AntdUI
                 RECT_REAL = new Rectangle(_rect.X + gap.x + ox, _rect.Y + gap.y, _rect.Width - gap.x2, _rect.Height - gap.y2);
 
                 bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
-                bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
-                if (!emptyIcon)
+                if (emptyIcon) rect_text = RECT_REAL;
+                else
                 {
+                    bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
                     int gapIcon = gap.x / 2;
                     int wh = GetIconSize(_rect.Height, gap.x);
                     rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap.x), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
                     if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
-                }
-                else
-                {
-                    rect_text = RECT_REAL;
                 }
             }
 
@@ -1158,6 +1155,7 @@ namespace AntdUI
                 MinWidth = size.Width + iconSize;
                 return new Size(size.Width + iconSize + gap2 + gapIcon, size.Height);
             }
+
             #endregion
 
             #region 渲染

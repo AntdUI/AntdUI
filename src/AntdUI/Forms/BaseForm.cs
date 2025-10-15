@@ -84,6 +84,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 是否禁用主题
+        /// </summary>
+        [Description("是否禁用主题"), Category("外观"), DefaultValue(false)]
+        public bool DisableTheme { get; set; }
+
         internal ThemeConfig? themeConfig;
         public ThemeConfig Theme()
         {
@@ -96,6 +102,7 @@ namespace AntdUI
 
         internal void SetTheme()
         {
+            if (DisableTheme) return;
             if (mode == TAMode.Auto)
             {
                 if (themeConfig == null)
@@ -252,6 +259,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             if (DesignMode) return;
+            SetTheme();
             if (AutoHandDpi) AutoDpi(Dpi(), this);
         }
 

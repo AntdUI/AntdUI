@@ -185,7 +185,7 @@ namespace AntdUI
             }
         }
 
-        Bitmap? bitbmp = null;
+        Bitmap? bitbmp;
         Bitmap PrintBit()
         {
             Win32.Dispose(memDc, ref hBitmap, ref oldBits);

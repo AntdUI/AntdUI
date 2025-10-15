@@ -470,7 +470,7 @@ namespace AntdUI
     internal class SpinForm : ILayeredFormOpacity
     {
         Control control;
-        Form? parent = null;
+        Form? parent;
 
         Spin.Config config;
         public SpinForm(Control _control, Form? _parent, Spin.Config _config)
