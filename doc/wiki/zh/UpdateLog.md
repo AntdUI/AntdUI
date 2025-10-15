@@ -1,5 +1,18 @@
 ﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.11` 2025-10-15
+
+- ➕ Table 全幅截图 DrawBitmap(bool full)
+- ➕ Pagination SizeChangerTabStop 用于控制切换器是否可以通过Tab获取焦点
+- ✍️ Button 传递 双击到 MouseUp
+- ✍️ Modal 按钮栏颜色异常
+- ✍️ BaseForm 深色主题切换不生效
+- ✍️ Mask 无法随父窗口关闭
+- ✍️ 下拉 无动画重复Hook
+- ✍️ Tree 抑制 并发异常
+- ✍️ Table ColumnSelect 适配最佳宽度
+- ✍️ Popover 父窗口隐藏后依旧存在
+
 ### `2.1.10` 2025-10-13
 
 - ➕ Table ScrollBarAvoidHeader 滚动条从表头下方开始绘制
