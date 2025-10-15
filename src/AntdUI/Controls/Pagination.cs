@@ -233,6 +233,23 @@ namespace AntdUI
             }
         }
 
+        bool sizeChangerTabStop = true;
+        /// <summary>
+        /// 是否允许 PageSize 切换器通过 Tab 键获取焦点
+        /// </summary>
+        [Description("是否允许 PageSize 切换器通过 Tab 键获取焦点"), Category("行为"), DefaultValue(true)]
+        public bool SizeChangerTabStop
+        {
+            get => sizeChangerTabStop;
+            set
+            {
+                if (sizeChangerTabStop == value) return;
+                sizeChangerTabStop = value;
+                if (input_SizeChanger != null) input_SizeChanger.TabStop = value;
+                OnPropertyChanged(nameof(SizeChangerTabStop));
+            }
+        }
+
         int pyr = 0;
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Config.Dpi);
 
@@ -718,7 +735,8 @@ namespace AntdUI
                         Size = new Size(width, rect.Height),
                         Dock = DockStyle.Right,
                         Font = Font,
-                        BorderColor = fill
+                        BorderColor = fill,
+                        TabStop = sizeChangerTabStop
                     };
                     input_SizeChanger = input;
                 }
@@ -735,7 +753,8 @@ namespace AntdUI
                         Size = new Size(width, rect.Height),
                         Dock = DockStyle.Right,
                         Font = Font,
-                        BorderColor = fill
+                        BorderColor = fill,
+                        TabStop = sizeChangerTabStop
                     };
                     foreach (var it in pageSizeOptions) input.Items.Add(it);
                     input.SelectedValue = pageSize;

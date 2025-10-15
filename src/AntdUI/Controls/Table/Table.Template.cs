@@ -1091,6 +1091,14 @@ namespace AntdUI
             #region 布局
 
             Rectangle rect_icon, rect_text;
+            private int GetIconSize(int height, int gap)
+            {
+                if (value == null) return 0;
+                bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
+                if (emptyIcon) return 0;
+
+                return (int)((height - gap) * (value.IconRatio ?? 0.75f));
+            }
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
                 if (value == null) return;//有机会未获取到有效标识
@@ -1104,7 +1112,7 @@ namespace AntdUI
                 {
                     bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
                     int gapIcon = gap.x / 2;
-                    int wh = (int)((_rect.Height - gap.x) * (value.IconRatio ?? 0.75f));
+                    int wh = GetIconSize(_rect.Height, gap.x);
                     rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap.x), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
                     if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
                 }
@@ -1121,9 +1129,11 @@ namespace AntdUI
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
+                            int gapIcon2 = gap.x * 2;
+                            int wh = GetIconSize(RECT.Height, gap.x);
                             var size2 = g.MeasureText(value.Text, font, w - gap2);
-                            MinWidth = size2.Width;
-                            return new Size(size2.Width + gap2, size2.Height);
+                            MinWidth = size2.Width + wh;
+                            return new Size(size2.Width + wh + gap2 + gapIcon2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
@@ -1140,18 +1150,10 @@ namespace AntdUI
                     }
                 }
                 var size = g.MeasureText(value.Text, font);
-                bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
-                if (emptyIcon)
-                {
-                    MinWidth = size.Width;
-                    return new Size(size.Width + gap2, size.Height);
-                }
-                else
-                {
-                    int wh = (int)(size.Height * ((value.IconRatio ?? 0.8f) * 2.4F));
-                    MinWidth = size.Width + wh;
-                    return new Size(size.Width + wh + gap2, size.Height);
-                }
+                int gapIcon = gap.x * 2;
+                int iconSize = GetIconSize(PARENT.RowHeight ?? size.Height * 2, gap.x);
+                MinWidth = size.Width + iconSize;
+                return new Size(size.Width + iconSize + gap2 + gapIcon, size.Height);
             }
 
             #endregion

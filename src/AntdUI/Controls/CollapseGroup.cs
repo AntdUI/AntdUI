@@ -943,7 +943,7 @@ namespace AntdUI
         /// 编辑器, 参考EditType
         /// </summary>
         [Browsable(false)]
-        public IControl? Edit { get; protected set; } = null;
+        public IControl? Edit { get; protected set; }
 
         [Description("工具提示内容"), Category("外观"), DefaultValue(null)]
         public string? Tooltip { get; set; }

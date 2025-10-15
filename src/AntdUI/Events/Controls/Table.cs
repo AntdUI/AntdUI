@@ -497,7 +497,7 @@ namespace AntdUI
         /// <summary>
         /// 筛选栏字体
         /// </summary>
-        public Font? Font { get; set; } = null;
+        public Font? Font { get; set; }
         /// <summary>
         /// 筛选栏高度
         /// </summary>

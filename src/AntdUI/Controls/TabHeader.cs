@@ -334,7 +334,7 @@ namespace AntdUI
             }
         }
 
-        TagTabItem? _selectItem = null;
+        TagTabItem? _selectItem;
         [Description("选中选项"), Category("数据"), DefaultValue(0)]
         public TagTabItem? SelectedItem
         {
