@@ -1,5 +1,18 @@
 ﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.11` 2025-10-15
+
+- ➕ Table Full-Screen Screenshot DrawBitmap(bool full)
+- ➕ Pagination SizeChangerTabStop is used to control whether the switcher can receive focus via Tab
+- ✍️ Button Passes Double-Click to MouseUp
+- ✍️ Modal Button Bar Color Anomaly
+- ✍️ BaseForm Dark Theme Toggle Not Working
+- ✍️ Mask cannot be closed with the parent window
+- ✍️ Pull down No Animation Repeat Hook
+- ✍️ Tree inhibits concurrency exceptions
+- ✍️ Table ColumnSelect Optimal Width Adaptation
+- ✍️ The Popover remains visible even after the parent window is hidden
+
 ### `2.1.10` 2025-10-13
 
 - ➕ Table ScrollBarAvoidHeader scrollbar starts drawing from below the header
