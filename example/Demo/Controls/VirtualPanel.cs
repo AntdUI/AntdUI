@@ -178,58 +178,58 @@ namespace Demo.Controls
                 switch (i)
                 {
                     case 0:
-                        name = "XĞÂÃ½Ìå|ÖÖ²İÀà";
+                        name = "Xæ–°åª’ä½“|ç§è‰ç±»";
                         break;
                     case 1:
-                        name = "¿ñ³ÔºúÂÜ²·";
+                        name = "ç‹‚åƒèƒ¡èåœ";
                         break;
                     case 2:
-                        name = "Ğ¡ºìÊéÍÅ¶ÓÔËÓª»î¶¯×÷Æ·";
+                        name = "å°çº¢ä¹¦å›¢é˜Ÿè¿è¥æ´»åŠ¨ä½œå“";
                         break;
                     case 3:
                         name = "BONJOUR!CHOU";
                         break;
                     case 4:
-                        name = "¹¤ÒµÉè¼Æ";
+                        name = "å·¥ä¸šè®¾è®¡";
                         break;
                     case 5:
-                        name = "¹Å×°³¡¾°";
+                        name = "å¤è£…åœºæ™¯";
                         break;
                     case 6:
-                        name = "¹¤ÒµÉè¼Æ";
+                        name = "å·¥ä¸šè®¾è®¡";
                         break;
                     case 7:
-                        name = "ÍõÁÖÎä";
+                        name = "ç‹æ—æ­¦";
                         break;
                     case 8:
-                        name = "ÔËÓª»î¶¯/ÉÁÆÁ";
+                        name = "è¿è¥æ´»åŠ¨/é—ªå±";
                         break;
                     case 9:
-                        name = "ÁÖ±Æ±Æ";
+                        name = "æ—é€¼é€¼";
                         break;
                     case 10:
-                        name = "Æ·ÅÆ-°ü×°";
+                        name = "å“ç‰Œ-åŒ…è£…";
                         break;
                     case 11:
-                        name = "LG¨‹¿Æ»ÃĞÇ¼Ê»ú¼×ÒìÄÜ";
+                        name = "LGâ–¼ç§‘å¹»æ˜Ÿé™…æœºç”²å¼‚èƒ½";
                         break;
                     case 12:
-                        name = "BaronÖì";
+                        name = "Baronæœ±";
                         break;
                     case 13:
-                        name = "3DÈËÎï";
+                        name = "3Däººç‰©";
                         break;
                     case 14:
-                        name = "¿Æ¼¼/¿Õ¼ä¸Ğ/¸ßÇå±³¾°";
+                        name = "ç§‘æŠ€/ç©ºé—´æ„Ÿ/é«˜æ¸…èƒŒæ™¯";
                         break;
                     case 15:
-                        name = "ËáĞÔ·øÉä";
+                        name = "é…¸æ€§è¾å°„";
                         break;
                     default:
-                        name = "ÂìÒÏÉè¼Æ";
+                        name = "èš‚èšè®¾è®¡";
                         break;
                 }
-                desc = GetDesc(c, "²É¼¯") + " " + GetDesc(f, "·ÛË¿");
+                desc = GetDesc(c, "é‡‡é›†") + " " + GetDesc(f, "ç²‰ä¸");
             }
 
             string GetDesc(int v, string h)
@@ -258,7 +258,7 @@ namespace Demo.Controls
                     g.Draw(AntdUI.Style.Db.BorderColor, 1.5F * dpi, path);
                 }
 
-                #region ½¥±äÉ«
+                #region æ¸å˜è‰²
 
                 int h1 = (int)(26 * dpi), h2 = (int)(20 * dpi), h3 = h2 / 2, th = h1 + h2 + h3;
 

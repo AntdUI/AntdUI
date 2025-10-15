@@ -32,14 +32,14 @@ namespace Demo.Controls
             select5.Items.AddRange(new AntdUI.SelectItem[] {
                 new AntdUI.SelectItem("one"){
                     Sub = new List<object>{
-                        new AntdUI.SelectItem("�Ӳ˵�1"){
+                        new AntdUI.SelectItem("子菜单1"){
                             Sub=new List<object>{ new AntdUI.SelectItem("sub menu") {
                                 Sub=new List<object>{
                                     "one st menu item","two nd menu item","three rd menu item"
                                 }
                             } }
                         },
-                        new AntdUI.SelectItem("�Ӳ˵�2")
+                        new AntdUI.SelectItem("子菜单2")
                     }
                 },
                 new AntdUI.SelectItem("two"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },

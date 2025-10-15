@@ -76,7 +76,7 @@ namespace Demo
 
                 #region DEMO
 
-                case "Overview.txt_search"://ÊäÈë¹Ø¼ü×ÖËÑË÷...
+                case "Overview.txt_search"://è¾“å…¥å…³é”®å­—æœç´¢...
                     return "Keywords to search";
                 case "CopyOK":
                     return "copied";

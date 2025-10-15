@@ -36,11 +36,11 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "ĞÕÃû").SetFixed().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnCheck("checkTitle", "²»È«Ñ¡±êÌâ").SetColAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnRadio("radio", "µ¥Ñ¡").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("online", "×´Ì¬", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnSwitch("enable", "ÆôÓÃ", AntdUI.ColumnAlign.Center)
+                new AntdUI.Column("name", "å§“å").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnCheck("checkTitle", "ä¸å…¨é€‰æ ‡é¢˜").SetColAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnRadio("radio", "å•é€‰").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("online", "çŠ¶æ€", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnSwitch("enable", "å¯ç”¨", AntdUI.ColumnAlign.Center)
                 {
                     LocalizationTitle ="Table.Column.{id}",
                     Call = (value, record, i_row, i_col) => {
@@ -48,13 +48,13 @@ namespace Demo.Controls
                         return value;
                     }
                 },
-                new AntdUI.ColumnSelect("hobby", "°®ºÃ") { Items=new List<AntdUI.SelectItem>(){ new AntdUI.SelectItem(EHobbies.¶ÁÊé.ToString(), (int)EHobbies.¶ÁÊé) {IconSvg= "BookOutlined" }, new AntdUI.SelectItem(EHobbies.ÂÃÓÎ.ToString(), (int)EHobbies.ÂÃÓÎ) { IconSvg = "GlobalOutlined" }, new AntdUI.SelectItem(EHobbies.Éç½».ToString(), (int)EHobbies.Éç½») { IconSvg = "CommentOutlined" }, new AntdUI.SelectItem(EHobbies.ÔË¶¯.ToString(), (int)EHobbies.ÔË¶¯) { IconSvg = "DribbbleOutlined" } } }.SetAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("age", "ÄêÁä").SetAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("address", "×¡Ö·").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("date", "ÈÕÆÚ").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnSelect("hobby", "çˆ±å¥½") { Items=new List<AntdUI.SelectItem>(){ new AntdUI.SelectItem(EHobbies.è¯»ä¹¦.ToString(), (int)EHobbies.è¯»ä¹¦) {IconSvg= "BookOutlined" }, new AntdUI.SelectItem(EHobbies.æ—…æ¸¸.ToString(), (int)EHobbies.æ—…æ¸¸) { IconSvg = "GlobalOutlined" }, new AntdUI.SelectItem(EHobbies.ç¤¾äº¤.ToString(), (int)EHobbies.ç¤¾äº¤) { IconSvg = "CommentOutlined" }, new AntdUI.SelectItem(EHobbies.è¿åŠ¨.ToString(), (int)EHobbies.è¿åŠ¨) { IconSvg = "DribbbleOutlined" } } }.SetAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("age", "å¹´é¾„").SetAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("address", "ä½å€").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("date", "æ—¥æœŸ").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("tag", "Tag"),
-                new AntdUI.Column("imgs", "Í¼Æ¬").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("btns", "²Ù×÷").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("imgs", "å›¾ç‰‡").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("btns", "æ“ä½œ").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
             };
 
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
@@ -78,7 +78,7 @@ namespace Demo.Controls
             return lists.ToArray();
         }
 
-        #region Ê¾Àı
+        #region ç¤ºä¾‹
 
         void checkFixedHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
@@ -106,7 +106,7 @@ namespace Demo.Controls
             table1.ScrollBarAvoidHeader = e.Value;
         }
 
-        #region ÆæÅ¼ÁĞ
+        #region å¥‡å¶åˆ—
 
         void checkSetRowStyle_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
@@ -233,14 +233,14 @@ namespace Demo.Controls
 
         #endregion
 
-        #region ÊÂ¼ş
+        #region äº‹ä»¶
 
         void table1_CellClick(object sender, AntdUI.TableClickEventArgs e)
         {
             if (e.Column == null) return;
             if (e.RowIndex > 0 && e.Record is TestClass data)
             {
-                if (e.Column.Key == "online") AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "ÑİÊ¾Ò»ÏÂÄÜµ¯³ö×Ô¶¨Òå") { Offset = e.Rect });
+                if (e.Column.Key == "online") AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "æ¼”ç¤ºä¸€ä¸‹èƒ½å¼¹å‡ºè‡ªå®šä¹‰") { Offset = e.Rect });
                 else if (e.Column.Key == "tag")
                 {
                     if (data.tag == null) data.tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) };
@@ -288,32 +288,32 @@ namespace Demo.Controls
                 }
                 else
                 {
-                    if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "ÊÇ·ñÉ¾³ı", new AntdUI.Modal.TextLine[] {
+                    if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "æ˜¯å¦åˆ é™¤", new AntdUI.Modal.TextLine[] {
                         new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
                         new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
                     }, AntdUI.TType.Error)
                     {
                         CancelText = null,
                         OkType = AntdUI.TTypeMini.Error,
-                        OkText = "É¾³ı"
+                        OkText = "åˆ é™¤"
                     }) == DialogResult.OK)
                     {
-                        table1.Spin(AntdUI.Localization.Get("Loading2", "ÕıÔÚ¼ÓÔØÖĞ..."), config =>
+                        table1.Spin(AntdUI.Localization.Get("Loading2", "æ­£åœ¨åŠ è½½ä¸­..."), config =>
                         {
                             System.Threading.Thread.Sleep(1000);
                             for (int i = 0; i < 101; i++)
                             {
                                 config.Value = i / 100F;
-                                config.Text = AntdUI.Localization.Get("Processing", "´¦ÀíÖĞ") + " " + i + "%";
+                                config.Text = AntdUI.Localization.Get("Processing", "å¤„ç†ä¸­") + " " + i + "%";
                                 System.Threading.Thread.Sleep(20);
                             }
                             System.Threading.Thread.Sleep(1000);
                             config.Value = null;
-                            config.Text = AntdUI.Localization.Get("PleaseWait", "ÇëÄÍĞÄµÈºò...");
+                            config.Text = AntdUI.Localization.Get("PleaseWait", "è¯·è€å¿ƒç­‰å€™...");
                             System.Threading.Thread.Sleep(2000);
                         }, () =>
                         {
-                            System.Diagnostics.Debug.WriteLine("¼ÓÔØ½áÊø");
+                            System.Diagnostics.Debug.WriteLine("åŠ è½½ç»“æŸ");
                         });
                     }
                 }
@@ -329,7 +329,7 @@ namespace Demo.Controls
 
         void table1_FilterPopupEnd(object sender, AntdUI.TableFilterPopupEndEventArgs e)
         {
-            AntdUI.Notification.info(form, "É¸Ñ¡½á¹û", $"¹²É¸Ñ¡µ½ {(e.Records == null ? 0 : e.Records.Length)} Ìõ½á¹û¡£", AntdUI.TAlignFrom.Top);
+            AntdUI.Notification.info(form, "ç­›é€‰ç»“æœ", $"å…±ç­›é€‰åˆ° {(e.Records == null ? 0 : e.Records.Length)} æ¡ç»“æœã€‚", AntdUI.TAlignFrom.Top);
         }
 
         void table1_FilterDataChanged(object sender, AntdUI.TableFilterDataChangedEventArgs e)
@@ -344,25 +344,25 @@ namespace Demo.Controls
 
         #endregion
 
-        #region ·ÖÒ³ÓëÊı¾İ
+        #region åˆ†é¡µä¸æ•°æ®
 
         object GetPageData(int current, int pageSize)
         {
             var list = new List<TestClass>(pageSize);
             int start = Math.Abs(current - 1) * pageSize;
             DateTime now = DateTime.Now;
-            DateTime birthday_TigerHu = new DateTime(1983, 7, 4);//Êı¾İÀ´Ô´£ºhttps://baike.baidu.com/link?url=7UWQOAPtuaXDjkFQZ92-cNlijS9voNgkQEJSmPLDV73RX1RLogXTLRQdBIQ6KMO7s1nIEZDKjvCJXa_e9fOrrhA9HxRDvRbkgGvPdWYMmP7
-            DateTime birthday_DanielWu = new DateTime(1974, 9, 30);//Êı¾İÀ´Ô´£ºhttps://baike.baidu.com/link?url=zk3KO7qvnfny-fZ2QfgQ2-lZleCeNUaCfketfcE6Ur5p_LowHOhlttu0c4tEXDKN673QcgpSRRRUmymic58Rf5NiUpsMJrctl1SXaR2RXuu
+            DateTime birthday_TigerHu = new DateTime(1983, 7, 4);//æ•°æ®æ¥æºï¼šhttps://baike.baidu.com/link?url=7UWQOAPtuaXDjkFQZ92-cNlijS9voNgkQEJSmPLDV73RX1RLogXTLRQdBIQ6KMO7s1nIEZDKjvCJXa_e9fOrrhA9HxRDvRbkgGvPdWYMmP7
+            DateTime birthday_DanielWu = new DateTime(1974, 9, 30);//æ•°æ®æ¥æºï¼šhttps://baike.baidu.com/link?url=zk3KO7qvnfny-fZ2QfgQ2-lZleCeNUaCfketfcE6Ur5p_LowHOhlttu0c4tEXDKN673QcgpSRRRUmymic58Rf5NiUpsMJrctl1SXaR2RXuu
 
-            list.Add(new TestClass(start, 0, AntdUI.Localization.Get("Table.Data.Name1", "ºúÑå±ó"), (int)Math.Round((now - birthday_TigerHu).TotalDays / 365)));
-            list.Add(new TestClass(start + 1, 1, AntdUI.Localization.Get("Table.Data.Name2", "ÎâÑå×æ"), (int)Math.Round((now - birthday_DanielWu).TotalDays / 365))
+            list.Add(new TestClass(start, 0, AntdUI.Localization.Get("Table.Data.Name1", "èƒ¡å½¦æ–Œ"), (int)Math.Round((now - birthday_TigerHu).TotalDays / 365)));
+            list.Add(new TestClass(start + 1, 1, AntdUI.Localization.Get("Table.Data.Name2", "å´å½¦ç¥–"), (int)Math.Round((now - birthday_DanielWu).TotalDays / 365))
             {
                 tag = new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info) }
             });
             for (int i = 2; i < pageSize; i++)
             {
                 int index = start + i;
-                list.Add(new TestClass(index, i, AntdUI.Localization.Get("Table.Data.Name3", "ºúÑå×æ"), 20 + index));
+                list.Add(new TestClass(index, i, AntdUI.Localization.Get("Table.Data.Name3", "èƒ¡å½¦ç¥–"), 20 + index));
             }
             return list;
         }
@@ -374,7 +374,7 @@ namespace Demo.Controls
             foreach (TestClass item in source) totalAge += item.age;
             return new
             {
-                name = "Æ½¾ùÄêÁä",
+                name = "å¹³å‡å¹´é¾„",
                 age = totalAge / source.Length
             };
         }
@@ -385,7 +385,7 @@ namespace Demo.Controls
         }
         string pagination1_ShowTotalChanged(object sender, AntdUI.PagePageEventArgs e)
         {
-            return $"{e.PageSize} / {e.Total}Ìõ {e.PageTotal}Ò³";
+            return $"{e.PageSize} / {e.Total}æ¡ {e.PageTotal}é¡µ";
         }
 
         #endregion
@@ -397,28 +397,28 @@ namespace Demo.Controls
         }
         public enum EHobbies
         {
-            ¶ÁÊé = 0,
-            ÂÃÓÎ = 1,
-            Éç½» = 2,
-            ÔË¶¯ = 3,
+            è¯»ä¹¦ = 0,
+            æ—…æ¸¸ = 1,
+            ç¤¾äº¤ = 2,
+            è¿åŠ¨ = 3,
         }
         public class TestClass : AntdUI.NotifyProperty
         {
             public TestClass(int index, int start, string name, int age)
             {
                 id = (index + 1);
-                if (start == 1) _online = new AntdUI.CellBadge(AntdUI.TState.Success, AntdUI.Localization.Get("Table.Data.Online", "ÔÚÏß"));
-                else if (start == 2) _online = new AntdUI.CellBadge(AntdUI.TState.Processing, AntdUI.Localization.Get("Table.Data.Online.Processing", "´¦ÖÃ"));
-                else if (start == 3) _online = new AntdUI.CellBadge(AntdUI.TState.Error, AntdUI.Localization.Get("Table.Data.Online.Error", "ÀëÏß"));
-                else if (start == 4) _online = new AntdUI.CellBadge(AntdUI.TState.Warn, AntdUI.Localization.Get("Table.Data.Online.Warn", "ÀëÏß"));
-                else _online = new AntdUI.CellBadge(AntdUI.TState.Default, AntdUI.Localization.Get("Table.Data.Online.Default", "³£¹æ"));
+                if (start == 1) _online = new AntdUI.CellBadge(AntdUI.TState.Success, AntdUI.Localization.Get("Table.Data.Online", "åœ¨çº¿"));
+                else if (start == 2) _online = new AntdUI.CellBadge(AntdUI.TState.Processing, AntdUI.Localization.Get("Table.Data.Online.Processing", "å¤„ç½®"));
+                else if (start == 3) _online = new AntdUI.CellBadge(AntdUI.TState.Error, AntdUI.Localization.Get("Table.Data.Online.Error", "ç¦»çº¿"));
+                else if (start == 4) _online = new AntdUI.CellBadge(AntdUI.TState.Warn, AntdUI.Localization.Get("Table.Data.Online.Warn", "ç¦»çº¿"));
+                else _online = new AntdUI.CellBadge(AntdUI.TState.Default, AntdUI.Localization.Get("Table.Data.Online.Default", "å¸¸è§„"));
                 _name = name;
                 _age = age;
                 _date = DateTime.Now.Date.AddYears(-age);
                 _hobby = new Random().Next(0, 3);
                 _address = AntdUI.Localization.GetLangI("Table.Data.Address" + id, null);
                 if (_address == null) _address = AntdUI.Localization.GetLangI("Table.Data.AddressNum", null);
-                if (_address == null) _address = (new Random().Next(DateTime.Now.Second) > 5 ? "¶«ºş" : "Î÷ºş") + "Çøºşµ×¹«Ô°" + id + "ºÅ";
+                if (_address == null) _address = (new Random().Next(DateTime.Now.Second) > 5 ? "ä¸œæ¹–" : "è¥¿æ¹–") + "åŒºæ¹–åº•å…¬å›­" + id + "å·";
                 else _address += id;
 
                 _enable = start % 2 == 0;

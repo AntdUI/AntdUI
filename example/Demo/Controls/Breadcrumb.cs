@@ -32,7 +32,7 @@ namespace Demo.Controls
 
         private void breadcrumb1_ItemClick(object sender, AntdUI.BreadcrumbItemEventArgs e)
         {
-            AntdUI.Message.info(form, AntdUI.Localization.Get("Click:", "µã»÷ÁË£º") + e.Item.Text);
+            AntdUI.Message.info(form, AntdUI.Localization.Get("Click:", "ç‚¹å‡»äº†ï¼š") + e.Item.Text);
         }
     }
 }

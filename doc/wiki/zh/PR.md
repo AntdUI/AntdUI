@@ -1,4 +1,4 @@
-﻿[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
+[首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
 ## 在 [Gitee](https://gitee.com) 向 [AntdUI](https://gitee.com/AntdUI/AntdUI) 贡献
 

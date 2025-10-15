@@ -43,9 +43,9 @@ namespace Demo.Controls
             {
                 Radius = 10,
                 FontStyleTitle = FontStyle.Bold,
-                Link = new AntdUI.Notification.ConfigLink("Ç°Íù²é¿´", () =>
+                Link = new AntdUI.Notification.ConfigLink("å‰å¾€æŸ¥çœ‹", () =>
                 {
-                    MessageBox.Show("µã»÷³¬Á´½Ó");
+                    MessageBox.Show("ç‚¹å‡»è¶…é“¾æŽ¥");
                     return true;
                 })
             });

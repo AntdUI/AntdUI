@@ -58,7 +58,7 @@ namespace AntdUI.Design
             count++;
         }
 
-        #region äÖÈ¾
+        #region æ¸²æŸ“
 
         int count = 1;
         protected override void OnPaint(PaintEventArgs e)
@@ -107,7 +107,7 @@ namespace AntdUI.Design
                 rect_hue_big = new Rectangle(rect_hue.X - line_h2, rect_hue.Y - line_h2, rect_hue.Width + line_h, rect_hue.Height + line_h);
                 rect_alpha_big = new Rectangle(rect_alpha.X - line_h2, rect_alpha.Y - line_h2, rect_alpha.Width + line_h, rect_alpha.Height + line_h);
 
-                #region µ÷É«°å
+                #region è°ƒè‰²æ¿
 
                 if (bmp_colors != null && bmp_colors.Width != rect_colors.Width)
                 {
@@ -143,7 +143,7 @@ namespace AntdUI.Design
 
                 #endregion
 
-                #region É«Ïà
+                #region è‰²ç›¸
 
                 if (bmp_hue == null)
                 {
@@ -163,7 +163,7 @@ namespace AntdUI.Design
 
                 #endregion
 
-                #region Í¸Ã÷¶È
+                #region é€æ˜åº¦
 
                 if (bmp_alpha_read == null)
                 {
@@ -191,13 +191,13 @@ namespace AntdUI.Design
 
                 #endregion
 
-                #region äÖÈ¾Ö¸±ê
+                #region æ¸²æŸ“æŒ‡æ ‡
 
                 using (var brush_val = new SolidBrush(Value))
                 using (var brush_hue = new SolidBrush(ValueHue))
                 using (var pen = new Pen(Colour.BgBase.Get(), dot_bor_size))
                 {
-                    #region µ÷É«°å
+                    #region è°ƒè‰²æ¿
 
                     var _rect_colors = new Rectangle(rect_colors.X + point_colors.X - dot_size / 2, rect_colors.Y + point_colors.Y - dot_size / 2, dot_size, dot_size);
                     g.FillEllipse(brush_val, _rect_colors);
@@ -205,7 +205,7 @@ namespace AntdUI.Design
 
                     #endregion
 
-                    #region É«Ïà
+                    #region è‰²ç›¸
 
                     var _rect_hue = new Rectangle(rect_hue.X + point_hue - gap / 2, rect_hue.Y + rect_hue.Height / 2 - gap / 2, gap, gap);
 
@@ -215,7 +215,7 @@ namespace AntdUI.Design
 
                     #endregion
 
-                    #region Í¸Ã÷¶È
+                    #region é€æ˜åº¦
 
                     brush_val.Color = color_alpha;
                     var _rect_alpha = new Rectangle(rect_alpha.X + point_alpha - gap / 2, rect_alpha.Y + rect_alpha.Height / 2 - gap / 2, gap, gap);
@@ -231,7 +231,7 @@ namespace AntdUI.Design
 
                 #endregion
 
-                #region É«¿¨¼¯
+                #region è‰²å¡é›†
 
                 int gap2 = gap * 2, y = rect_alpha.Bottom + panel_color + line_h * 2 + gap, wr = (w - gap2) / gap2 - 1, windex = 0, wave = (int)Math.Ceiling(input1.WaveSize * Config.Dpi);
                 input1.Left = gap - wave;
@@ -286,12 +286,12 @@ namespace AntdUI.Design
 
         public Color Value; Color ValueNAlpha, ValueHue;
 
-        #region äÖÈ¾°ïÖú
+        #region æ¸²æŸ“å¸®åŠ©
 
         Bitmap? bmp_dot_12;
         int gap = 12;
 
-        #region È¡É«Æ÷
+        #region å–è‰²å™¨
 
         bool down_colors = false;
         Point point_colors = Point.Empty;
@@ -335,7 +335,7 @@ namespace AntdUI.Design
 
         #endregion
 
-        #region É«Ïà
+        #region è‰²ç›¸
 
         bool down_hue = false;
         int point_hue = 0;
@@ -417,7 +417,7 @@ namespace AntdUI.Design
 
         #endregion
 
-        #region Í¸Ã÷¶È
+        #region é€æ˜åº¦
 
         bool down_alpha = false;
         int point_alpha = 0;
@@ -475,7 +475,7 @@ namespace AntdUI.Design
 
         #endregion
 
-        #region Êó±ê
+        #region é¼ æ ‡
 
         protected override void OnMouseDown(MouseEventArgs e)
         {

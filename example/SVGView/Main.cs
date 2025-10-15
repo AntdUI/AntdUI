@@ -64,7 +64,7 @@ namespace SVGView
             }
         }
 
-        private void input1_TextChanged(object sender, EventArgs e)
+        void input1_TextChanged(object sender, EventArgs e)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace SVGView
             catch { }
         }
 
-        private void button2_Click(object sender, MouseEventArgs e)
+        void button2_Click(object sender, MouseEventArgs e)
         {
             try
             {

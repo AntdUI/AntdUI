@@ -50,7 +50,7 @@ namespace Demo.Controls
                     switch (id)
                     {
                         case "download":
-                            //ÎÒµã»÷ÁËÏÂÔØ°´Å¥
+                            //æˆ‘ç‚¹å‡»äº†ä¸‹è½½æŒ‰é’®
                             break;
                     }
                 }
@@ -79,7 +79,7 @@ namespace Demo.Controls
                     call(prog / 100F, prog + "%");
                 }
                 System.Threading.Thread.Sleep(500);
-                call(0.2F, "¼ÓÔØÊ§°Ü");
+                call(0.2F, "åŠ è½½å¤±è´¥");
                 return null;
             })
             {
@@ -91,7 +91,7 @@ namespace Demo.Controls
                     switch (id)
                     {
                         case "download":
-                            //ÎÒµã»÷ÁËÏÂÔØ°´Å¥
+                            //æˆ‘ç‚¹å‡»äº†ä¸‹è½½æŒ‰é’®
                             break;
                     }
                 }
@@ -102,45 +102,45 @@ namespace Demo.Controls
         {
             var imgTextList = new List<AntdUI.Preview.ImageTextContent>()
             {
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "ÂÌÂÌµÄÊ÷Ò¶(¶¥²¿¾ÓÖĞ)", Color.Green)
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "ç»¿ç»¿çš„æ ‘å¶(é¡¶éƒ¨å±…ä¸­)", Color.Green)
                 {
                     TextAlign = ContentAlignment.TopCenter
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "Î¤Ò»Ãô,ÕâÊ¢ÊÀÈçÄãËùÔ¸(¶¥²¿¾Ó×ó)", Color.Red)
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "éŸ¦ä¸€æ•,è¿™ç››ä¸–å¦‚ä½ æ‰€æ„¿(é¡¶éƒ¨å±…å·¦)", Color.Red)
                 {
                     TextAlign = ContentAlignment.TopLeft
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "Õâ½ĞÒÕÊõ(¶¥²¿¾ÓÓÒ)")
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "è¿™å«è‰ºæœ¯(é¡¶éƒ¨å±…å³)")
                 {
                     TextAlign = ContentAlignment.TopRight
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "ÂÌÂÌµÄÊ÷Ò¶(ÖĞ²¿¾ÓÖĞ)", Color.Green)
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "ç»¿ç»¿çš„æ ‘å¶(ä¸­éƒ¨å±…ä¸­)", Color.Green)
                 {
                     TextAlign = ContentAlignment.MiddleCenter
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "Î¤Ò»Ãô,ÕâÊ¢ÊÀÈçÄãËùÔ¸(ÖĞ²¿¾Ó×ó)", Color.Red)
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "éŸ¦ä¸€æ•,è¿™ç››ä¸–å¦‚ä½ æ‰€æ„¿(ä¸­éƒ¨å±…å·¦)", Color.Red)
                 {
                     TextAlign = ContentAlignment.MiddleLeft
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "Õâ½ĞÒÕÊõ(ÖĞ²¿¾ÓÓÒ)")
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "è¿™å«è‰ºæœ¯(ä¸­éƒ¨å±…å³)")
                 {
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "ÂÌÂÌµÄÊ÷Ò¶(µ×²¿¾ÓÖĞ)", Color.Green)
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg1, "ç»¿ç»¿çš„æ ‘å¶(åº•éƒ¨å±…ä¸­)", Color.Green)
                 {
                     TextAlign = ContentAlignment.BottomCenter
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "Î¤Ò»Ãô,ÕâÊ¢ÊÀÈçÄãËùÔ¸(µ×²¿¾Ó×ó)",Color.Red)
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7, "éŸ¦ä¸€æ•,è¿™ç››ä¸–å¦‚ä½ æ‰€æ„¿(åº•éƒ¨å±…å·¦)",Color.Red)
                 {
                     TextAlign = ContentAlignment.BottomLeft
                 },
-                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "Õâ½ĞÒÕÊõ(µ×²¿¾ÓÓÒ)")
+                new AntdUI.Preview.ImageTextContent(Properties.Resources.bg2, "è¿™å«è‰ºæœ¯(åº•éƒ¨å±…å³)")
                 {
                     TextAlign = ContentAlignment.BottomRight
                 },
                 new AntdUI.Preview.ImageTextContent(Properties.Resources.bg7)
                 {
-                    Text = "Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ,Õâ¸öÊÇ×Ô¶¯»»ĞĞ",
+                    Text = "è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ,è¿™ä¸ªæ˜¯è‡ªåŠ¨æ¢è¡Œ",
                     TextAlign = ContentAlignment.BottomLeft
                 }
             };

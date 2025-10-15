@@ -29,7 +29,7 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
-            button17.Items.Add(new AntdUI.SelectItem(Properties.Resources.bg1, "∫∫ƒ·∞Œ Hannibal"));
+            button17.Items.Add(new AntdUI.SelectItem(Properties.Resources.bg1, "Ê±âÂ∞ºÊãî Hannibal"));
             dropdown1.Items.AddRange(new AntdUI.SelectItem[]
             {
                 new AntdUI.SelectItem("one st menu item"),
@@ -38,7 +38,7 @@ namespace Demo.Controls
                 {
                     Sub = new List<object>
                     {
-                        new AntdUI.SelectItem("◊”≤Àµ•1")
+                        new AntdUI.SelectItem("Â≠êËèúÂçï1")
                         {
                             Sub = new List<object>
                             {
@@ -53,7 +53,7 @@ namespace Demo.Controls
                                 }
                             }
                         },
-                        new AntdUI.SelectItem("◊”≤Àµ•2")
+                        new AntdUI.SelectItem("Â≠êËèúÂçï2")
                     }
                 },
                 new AntdUI.SelectItem("four menu item")
@@ -69,7 +69,7 @@ namespace Demo.Controls
 
         private void dropdown1_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            AntdUI.Message.info(form, "“——°÷–£∫" + e.Value, Font);
+            AntdUI.Message.info(form, "Â∑≤ÈÄâ‰∏≠Ôºö" + e.Value, Font);
         }
     }
 }

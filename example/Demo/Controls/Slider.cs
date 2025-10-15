@@ -32,7 +32,7 @@ namespace Demo.Controls
 
         private string slider7_ValueFormatChanged(object sender, AntdUI.IntEventArgs e)
         {
-            return e.Value + "¡æ";
+            return e.Value + "â„ƒ";
         }
     }
 }
