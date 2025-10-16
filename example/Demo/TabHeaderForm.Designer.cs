@@ -60,18 +60,21 @@ namespace Demo
             tabHeader1.Dock = System.Windows.Forms.DockStyle.Top;
             tabHeader1.DragSort = true;
             tabHeader1.IconSvg = "ChromeFilled";
-            tagTabItem1.ShowClose = false;
             tagTabItem1.IconSvg = "WeiboSquareFilled";
+            tagTabItem1.ShowClose = false;
             tagTabItem1.Tag = null;
             tagTabItem1.Text = "🦄 首页";
             tabHeader1.Items.Add(tagTabItem1);
+            tabHeader1.LeftGap = 30;
             tabHeader1.Location = new System.Drawing.Point(0, 0);
             tabHeader1.Name = "tabHeader1";
+            tabHeader1.SelectedItem = null;
             tabHeader1.ShowAdd = true;
             tabHeader1.ShowButton = true;
             tabHeader1.ShowIcon = true;
             tabHeader1.Size = new System.Drawing.Size(830, 44);
             tabHeader1.TabIndex = 0;
+            tabHeader1.Text = "标题";
             tabHeader1.AddClick += tabHeader1_AddClick;
             // 
             // button1
@@ -87,7 +90,7 @@ namespace Demo
             // TabHeaderForm
             // 
             BackColor = System.Drawing.Color.White;
-            ClientSize = new System.Drawing.Size(830, 414);
+            ClientSize = new System.Drawing.Size(830, 542);
             Controls.Add(button1);
             Controls.Add(tabHeader1);
             Name = "TabHeaderForm";
