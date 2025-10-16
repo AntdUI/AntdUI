@@ -1,4 +1,4 @@
-﻿namespace ChatUI
+namespace ChatUI
 {
     partial class Main
     {

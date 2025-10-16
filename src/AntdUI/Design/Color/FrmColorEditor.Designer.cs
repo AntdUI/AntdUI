@@ -42,8 +42,8 @@ namespace AntdUI.Design
             // FrmColorEditor
             // 
             Controls.Add(input1);
-            MinimumSize = new System.Drawing.Size(240, 280);
             Name = "FrmColorEditor";
+            MinimumSize = new System.Drawing.Size(240, 280);
             Size = new System.Drawing.Size(240, 280);
             ResumeLayout(false);
 

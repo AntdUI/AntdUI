@@ -35,7 +35,7 @@ namespace Demo.Controls
             if (step == max)
             {
                 btn_next.LocalizationText = "Finish";
-                btn_next.Text = "Íê³É";
+                btn_next.Text = "å®Œæˆ";
             }
             btn_previous.Visible = step > 1;
             if (btn_previous.Visible)

@@ -40,7 +40,7 @@ namespace Demo.Controls
                     btn.BackExtend = "135, #6253E1, #04BEFE";
                 },
                 CancelText = null,
-                OkText = "ÖªµÀÁË"
+                OkText = "çŸ¥é“äº†"
             });
         }
 
@@ -54,10 +54,10 @@ namespace Demo.Controls
             button3.Enabled = false;
             AntdUI.Modal.open(new AntdUI.Modal.Config(form, "This is a warn message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Warn)
             {
-                Btns = new AntdUI.Modal.Btn[] { new AntdUI.Modal.Btn("°´Å¥Name", "×Ô¶¨Òå°´Å¥", AntdUI.TTypeMini.Warn) },
+                Btns = new AntdUI.Modal.Btn[] { new AntdUI.Modal.Btn("æŒ‰é’®Name", "è‡ªå®šä¹‰æŒ‰é’®", AntdUI.TTypeMini.Warn) },
                 OnBtns = btn =>
                 {
-                    MessageBox.Show("´¥·¢µÄName£º" + btn.Name);
+                    MessageBox.Show("è§¦å‘çš„Nameï¼š" + btn.Name);
                     return true;
                 },
                 OnOk = config =>

@@ -38,7 +38,7 @@ namespace Demo.Controls
         {
             base.OnLoad(e);
             tree1.PauseLayout = tree2.PauseLayout = tree3.PauseLayout = true;
-            var it_loading = new AntdUI.TreeItem().SetText("¼ÓÔØ¶¯»­£¬µã»÷ÔÝÍ£", "Tree.Loading").SetExpand().SetLoading().SetIcon("PlayCircleOutlined");
+            var it_loading = new AntdUI.TreeItem().SetText("åŠ è½½åŠ¨ç”»ï¼Œç‚¹å‡»æš‚åœ", "Tree.Loading").SetExpand().SetLoading().SetIcon("PlayCircleOutlined");
             tree1.Items.Add(it_loading);
             AntdUI.ITask.Run(() =>
             {

@@ -1,4 +1,4 @@
-﻿# 📚 AntdUI 文档
+# 📚 AntdUI 文档
 
 > 基于 [dotnet Winforms](https://github.com/dotnet/winforms) 开发的界面库
 

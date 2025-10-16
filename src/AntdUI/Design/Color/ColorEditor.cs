@@ -42,6 +42,7 @@ namespace AntdUI.Design
         }
 
         public override bool GetPaintValueSupported(ITypeDescriptorContext? context) => true;
+
         public override void PaintValue(PaintValueEventArgs e)
         {
             if (e.Value is Color color)

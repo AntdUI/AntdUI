@@ -54,7 +54,7 @@ namespace Demo.Controls
 
         private void datePicker_PresetsClickChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            AntdUI.Message.info(form, "ÒÑµã»÷£º" + e.Value, Font);
+            AntdUI.Message.info(form, "å·²ç‚¹å‡»ï¼š" + e.Value, Font);
         }
     }
 }

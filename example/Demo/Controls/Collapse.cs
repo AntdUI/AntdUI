@@ -45,8 +45,8 @@ namespace Demo.Controls
             AntdUI.Select select = new AntdUI.Select()
             {
                 TabIndex = 0,
-                PrefixText = "¶¯»­ËÙ¶È£º",
-                PlaceholderText = "<=10 ¹Ø±Õ¶¯»­",
+                PrefixText = "åŠ¨ç”»é€Ÿåº¦ï¼š",
+                PlaceholderText = "<=10 å…³é—­åŠ¨ç”»",
                 Width = 260,
             };
             select.Items.AddRange(new object[] { 10, 20, 50, 100, 200, 300, 400, 500 });

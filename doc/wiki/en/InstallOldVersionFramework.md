@@ -1,4 +1,4 @@
-﻿[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)d)
+[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)d)
 
 ### Installing old versions of Visual Studio (.NET Framework 4.0 and 4.5)
 

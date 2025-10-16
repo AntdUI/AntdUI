@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -68,9 +68,10 @@ namespace AntdUI
 
         readonly static StringFormat stringFormatCenter = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var g = e.Graphics.High();
+            base.OnDraw(e);
+            var g = e.Canvas;
             var rect = ClientRectangle.PaddingRect(Padding);
             using (var brush = new SolidBrush(ForeColor))
             {
@@ -91,7 +92,6 @@ namespace AntdUI
                 }
             }
             this.PaintBadge(g);
-            base.OnPaint(e);
         }
     }
 }

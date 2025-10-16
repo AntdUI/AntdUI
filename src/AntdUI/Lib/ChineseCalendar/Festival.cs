@@ -1,4 +1,4 @@
-﻿// THIS FILE IS PART OF ChineseCalendar PROJECT
+// THIS FILE IS PART OF ChineseCalendar PROJECT
 // THE ChineseCalendar PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MIT License.
 // COPYRIGHT (C) lpz. ALL RIGHTS RESERVED.
 // GITEE: https://gitee.com/lipz89/ChineseCalendar

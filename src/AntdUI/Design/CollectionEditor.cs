@@ -36,7 +36,6 @@ namespace AntdUI.Design
             {
                 if (value is IList list)
                 {
-                    // Use the standard .NET CollectionEditor for IList collections
                     var collectionEditor = new System.ComponentModel.Design.CollectionEditor(list.GetType());
                     return collectionEditor.EditValue(context, provider, value);
                 }

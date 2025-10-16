@@ -36,11 +36,11 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "–’√˚").SetFixed().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnCheck("checkTitle", "≤ª»´—°±ÍÃ‚").SetColAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnRadio("radio", "µ•—°").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("online", "◊¥Ã¨", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnSwitch("enable", "∆Ù”√", AntdUI.ColumnAlign.Center)
+                new AntdUI.Column("name", "ÂßìÂêç").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnCheck("checkTitle", "‰∏çÂÖ®ÈÄâÊ†áÈ¢ò").SetColAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnRadio("radio", "ÂçïÈÄâ").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("online", "Áä∂ÊÄÅ", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnSwitch("enable", "ÂêØÁî®", AntdUI.ColumnAlign.Center)
                 {
                     LocalizationTitle ="Table.Column.{id}",
                     Call = (value, record, i_row, i_col) => {
@@ -48,12 +48,12 @@ namespace Demo.Controls
                         return value;
                     }
                 },
-                new AntdUI.Column("age", "ƒÍ¡‰").SetAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("address", "◊°÷∑").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("date", "»’∆⁄").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("age", "Âπ¥ÈæÑ").SetAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("address", "‰ΩèÂùÄ").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("date", "Êó•Êúü").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("tag", "Tag"),
-                new AntdUI.Column("imgs", "Õº∆¨").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("btns", "≤Ÿ◊˜").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("imgs", "ÂõæÁâá").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("btns", "Êìç‰Ωú").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
             };
 
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
@@ -75,7 +75,7 @@ namespace Demo.Controls
             return lists.ToArray();
         }
 
-        #region  æ¿˝
+        #region Á§∫‰æã
 
         void checkFixedHeader_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
@@ -103,7 +103,7 @@ namespace Demo.Controls
             table1.ScrollBarAvoidHeader = e.Value;
         }
 
-        #region ∆Ê≈º¡–
+        #region Â•áÂÅ∂Âàó
 
         void checkSetRowStyle_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
@@ -259,14 +259,14 @@ namespace Demo.Controls
 
         #endregion
 
-        #region  ¬º˛
+        #region ‰∫ã‰ª∂
 
         void table1_CellClick(object sender, AntdUI.TableClickEventArgs e)
         {
             if (e.Column == null) return;
             if (e.RowIndex > 0 && e.Record is IList<AntdUI.AntItem> data)
             {
-                if (e.Column.Key == "online") AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "—› æ“ªœ¬ƒ‹µØ≥ˆ◊‘∂®“Â") { Offset = e.Rect });
+                if (e.Column.Key == "online") AntdUI.Popover.open(new AntdUI.Popover.Config(table1, "ÊºîÁ§∫‰∏Ä‰∏ãËÉΩÂºπÂá∫Ëá™ÂÆö‰πâ") { Offset = e.Rect });
                 else if (e.Column.Key == "tag")
                 {
                     var tag = data[e.ColumnIndex + (checkRowsDragSort.Checked ? 0 : 1)];
@@ -315,32 +315,32 @@ namespace Demo.Controls
                 }
                 else
                 {
-                    if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, " «∑Ò…æ≥˝", new AntdUI.Modal.TextLine[] {
+                    if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "ÊòØÂê¶Âà†Èô§", new AntdUI.Modal.TextLine[] {
                         new AntdUI.Modal.TextLine(data[2].value.ToString(),AntdUI.Style.Db.Primary),
                         new AntdUI.Modal.TextLine(data[8].value.ToString(),6,AntdUI.Style.Db.TextSecondary)
                     }, AntdUI.TType.Error)
                     {
                         CancelText = null,
                         OkType = AntdUI.TTypeMini.Error,
-                        OkText = "…æ≥˝"
+                        OkText = "Âà†Èô§"
                     }) == DialogResult.OK)
                     {
-                        table1.Spin(AntdUI.Localization.Get("Loading2", "’˝‘⁄º”‘ÿ÷–..."), config =>
+                        table1.Spin(AntdUI.Localization.Get("Loading2", "Ê≠£Âú®Âä†ËΩΩ‰∏≠..."), config =>
                         {
                             System.Threading.Thread.Sleep(1000);
                             for (int i = 0; i < 101; i++)
                             {
                                 config.Value = i / 100F;
-                                config.Text = AntdUI.Localization.Get("Processing", "¥¶¿Ì÷–") + " " + i + "%";
+                                config.Text = AntdUI.Localization.Get("Processing", "Â§ÑÁêÜ‰∏≠") + " " + i + "%";
                                 System.Threading.Thread.Sleep(20);
                             }
                             System.Threading.Thread.Sleep(1000);
                             config.Value = null;
-                            config.Text = AntdUI.Localization.Get("PleaseWait", "«ÎƒÕ–ƒµ»∫Ú...");
+                            config.Text = AntdUI.Localization.Get("PleaseWait", "ËØ∑ËÄêÂøÉÁ≠âÂÄô...");
                             System.Threading.Thread.Sleep(2000);
                         }, () =>
                         {
-                            System.Diagnostics.Debug.WriteLine("º”‘ÿΩ· ¯");
+                            System.Diagnostics.Debug.WriteLine("Âä†ËΩΩÁªìÊùü");
                         });
                     }
                 }
@@ -356,25 +356,25 @@ namespace Demo.Controls
 
         #endregion
 
-        #region ∑÷“≥”Î ˝æ›
+        #region ÂàÜÈ°µ‰∏éÊï∞ÊçÆ
 
         object GetPageData(int current, int pageSize)
         {
             var list = new List<AntdUI.AntItem[]>(pageSize);
             int start = Math.Abs(current - 1) * pageSize;
             DateTime now = DateTime.Now;
-            DateTime birthday_TigerHu = new DateTime(1983, 7, 4);// ˝æ›¿¥‘¥£∫https://baike.baidu.com/link?url=7UWQOAPtuaXDjkFQZ92-cNlijS9voNgkQEJSmPLDV73RX1RLogXTLRQdBIQ6KMO7s1nIEZDKjvCJXa_e9fOrrhA9HxRDvRbkgGvPdWYMmP7
-            DateTime birthday_DanielWu = new DateTime(1974, 9, 30);// ˝æ›¿¥‘¥£∫https://baike.baidu.com/link?url=zk3KO7qvnfny-fZ2QfgQ2-lZleCeNUaCfketfcE6Ur5p_LowHOhlttu0c4tEXDKN673QcgpSRRRUmymic58Rf5NiUpsMJrctl1SXaR2RXuu
+            DateTime birthday_TigerHu = new DateTime(1983, 7, 4);//Êï∞ÊçÆÊù•Ê∫êÔºöhttps://baike.baidu.com/link?url=7UWQOAPtuaXDjkFQZ92-cNlijS9voNgkQEJSmPLDV73RX1RLogXTLRQdBIQ6KMO7s1nIEZDKjvCJXa_e9fOrrhA9HxRDvRbkgGvPdWYMmP7
+            DateTime birthday_DanielWu = new DateTime(1974, 9, 30);//Êï∞ÊçÆÊù•Ê∫êÔºöhttps://baike.baidu.com/link?url=zk3KO7qvnfny-fZ2QfgQ2-lZleCeNUaCfketfcE6Ur5p_LowHOhlttu0c4tEXDKN673QcgpSRRRUmymic58Rf5NiUpsMJrctl1SXaR2RXuu
 
-            list.Add(GetItemOne(start, 0, AntdUI.Localization.Get("Table.Data.Name1", "∫˙—Â±Û"), (int)Math.Round((now - birthday_TigerHu).TotalDays / 365)));
-            list.Add(GetItemOne(start + 1, 1, AntdUI.Localization.Get("Table.Data.Name2", "Œ‚—Â◊Ê"), (int)Math.Round((now - birthday_DanielWu).TotalDays / 365),
+            list.Add(GetItemOne(start, 0, AntdUI.Localization.Get("Table.Data.Name1", "ËÉ°ÂΩ¶Êñå"), (int)Math.Round((now - birthday_TigerHu).TotalDays / 365)));
+            list.Add(GetItemOne(start + 1, 1, AntdUI.Localization.Get("Table.Data.Name2", "Âê¥ÂΩ¶Á•ñ"), (int)Math.Round((now - birthday_DanielWu).TotalDays / 365),
                 new AntdUI.CellTag[] { new AntdUI.CellTag("NICE", AntdUI.TTypeMini.Success), new AntdUI.CellTag("DEVELOPER", AntdUI.TTypeMini.Info)
                 }));
 
             for (int i = 2; i < pageSize; i++)
             {
                 int index = start + i;
-                list.Add(GetItemOne(index, i, AntdUI.Localization.Get("Table.Data.Name3", "∫˙—Â◊Ê"), 20 + index));
+                list.Add(GetItemOne(index, i, AntdUI.Localization.Get("Table.Data.Name3", "ËÉ°ÂΩ¶Á•ñ"), 20 + index));
             }
             return list;
         }
@@ -385,7 +385,7 @@ namespace Demo.Controls
         }
         string pagination1_ShowTotalChanged(object sender, AntdUI.PagePageEventArgs e)
         {
-            return $"{e.PageSize} / {e.Total}Ãı {e.PageTotal}“≥";
+            return $"{e.PageSize} / {e.Total}Êù° {e.PageTotal}È°µ";
         }
 
         AntdUI.AntItem[] GetItemOne(int index, int start, string name, int age, AntdUI.CellTag[] tag = null)
@@ -396,16 +396,16 @@ namespace Demo.Controls
             AntdUI.CellImage[] imgs = null;
             AntdUI.CellLink[] btns = null;
 
-            if (start == 1) online = new AntdUI.CellBadge(AntdUI.TState.Success, AntdUI.Localization.Get("Table.Data.Online", "‘⁄œﬂ"));
-            else if (start == 2) online = new AntdUI.CellBadge(AntdUI.TState.Processing, AntdUI.Localization.Get("Table.Data.Online.Processing", "¥¶÷√"));
-            else if (start == 3) online = new AntdUI.CellBadge(AntdUI.TState.Error, AntdUI.Localization.Get("Table.Data.Online.Error", "¿Îœﬂ"));
-            else if (start == 4) online = new AntdUI.CellBadge(AntdUI.TState.Warn, AntdUI.Localization.Get("Table.Data.Online.Warn", "¿Îœﬂ"));
-            else online = new AntdUI.CellBadge(AntdUI.TState.Default, AntdUI.Localization.Get("Table.Data.Online.Default", "≥£πÊ"));
+            if (start == 1) online = new AntdUI.CellBadge(AntdUI.TState.Success, AntdUI.Localization.Get("Table.Data.Online", "Âú®Á∫ø"));
+            else if (start == 2) online = new AntdUI.CellBadge(AntdUI.TState.Processing, AntdUI.Localization.Get("Table.Data.Online.Processing", "Â§ÑÁΩÆ"));
+            else if (start == 3) online = new AntdUI.CellBadge(AntdUI.TState.Error, AntdUI.Localization.Get("Table.Data.Online.Error", "Á¶ªÁ∫ø"));
+            else if (start == 4) online = new AntdUI.CellBadge(AntdUI.TState.Warn, AntdUI.Localization.Get("Table.Data.Online.Warn", "Á¶ªÁ∫ø"));
+            else online = new AntdUI.CellBadge(AntdUI.TState.Default, AntdUI.Localization.Get("Table.Data.Online.Default", "Â∏∏ËßÑ"));
 
 
             var address = AntdUI.Localization.GetLangI("Table.Data.Address" + id, null);
             if (address == null) address = AntdUI.Localization.GetLangI("Table.Data.AddressNum", null);
-            if (address == null) address = (new Random().Next(DateTime.Now.Second) > 5 ? "∂´∫˛" : "Œ˜∫˛") + "«¯∫˛µ◊π´‘∞" + id + "∫≈";
+            if (address == null) address = (new Random().Next(DateTime.Now.Second) > 5 ? "‰∏úÊπñ" : "Ë•øÊπñ") + "Âå∫ÊπñÂ∫ïÂÖ¨Âõ≠" + id + "Âè∑";
             else address += id;
 
             if (start == 1)
