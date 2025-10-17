@@ -1,5 +1,12 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.1.12` 2025-10-17
+
+- ✍️ Carousel 内存溢出
+- ✍️ UploadDragger 管理员只有一个能上传
+- ✍️ Table ColumnSelect 为空时无法正常选择数据
+- ✍️ Table 编辑模式 Win7 下焦点
+
 ### `2.1.11` 2025-10-15
 
 - ➕ Table 全幅截图 DrawBitmap(bool full)
