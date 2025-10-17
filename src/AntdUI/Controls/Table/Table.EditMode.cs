@@ -92,6 +92,7 @@ namespace AntdUI
                                 call(((string)obj[0]!) == id.Text, id.Text);
                             }
                         }
+                        Focus();
                         id.Dispose();
                         Controls.Remove(id);
                     }
@@ -461,6 +462,7 @@ namespace AntdUI
             if (_editControls.TryAdd(input, new object?[] { txt, action }))
             {
                 Controls.Add(input);
+                if (OS.Win7OrLower) return true;
                 input.LostFocus += InputEdit_LostFocus;
                 return true;
             }
