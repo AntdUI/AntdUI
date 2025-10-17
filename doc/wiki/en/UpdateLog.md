@@ -1,5 +1,12 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.12` 2025-10-17
+
+- ✍️ Carousel Out of Memory
+- ✍️ UploadDragger Administrator Only One Can Upload
+- ✍️ When the Table ColumnSelect is empty, data cannot be selected properly
+- ✍️ Table Edit Mode Focus in Win7
+
 ### `2.1.11` 2025-10-15
 
 - ➕ Table Full-Screen Screenshot DrawBitmap(bool full)
