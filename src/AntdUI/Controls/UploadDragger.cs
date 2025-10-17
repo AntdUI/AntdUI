@@ -651,23 +651,28 @@ namespace AntdUI
             if (ContainerControl.AllowDrop) return ContainerControl.AllowDrop = false;
             if (m.Msg == WM_DROPFILES)
             {
-                var handle = m.WParam;
-
-                var fileCount = DragQueryFile(handle, GetIndexCount, null, 0);
-
-                var fileNames = new string[fileCount];
-
-                var sb = new StringBuilder(262);
-                var charLength = sb.Capacity;
-                for (uint i = 0; i < fileCount; i++)
+                var point = Control.MousePosition;
+                var rect = ContainerControl.RectangleToScreen(ContainerControl.ClientRectangle);
+                if (rect.Contains(point))
                 {
-                    if (DragQueryFile(handle, i, sb, charLength) > 0) fileNames[i] = sb.ToString();
+                    var handle = m.WParam;
+
+                    var fileCount = DragQueryFile(handle, GetIndexCount, null, 0);
+
+                    var fileNames = new string[fileCount];
+
+                    var sb = new StringBuilder(262);
+                    var charLength = sb.Capacity;
+                    for (uint i = 0; i < fileCount; i++)
+                    {
+                        if (DragQueryFile(handle, i, sb, charLength) > 0) fileNames[i] = sb.ToString();
+                    }
+                    DragFinish(handle);
+                    ContainerControl.AllowDrop = true;
+                    ContainerControl.DoDragDrop(fileNames, DragDropEffects.All);
+                    ContainerControl.AllowDrop = false;
+                    return true;
                 }
-                DragFinish(handle);
-                ContainerControl.AllowDrop = true;
-                ContainerControl.DoDragDrop(fileNames, DragDropEffects.All);
-                ContainerControl.AllowDrop = false;
-                return true;
             }
             return false;
         }

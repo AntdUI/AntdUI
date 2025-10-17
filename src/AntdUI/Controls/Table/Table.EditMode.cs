@@ -126,7 +126,53 @@ namespace AntdUI
                 it.ThreadHover = null;
             }
             bool multiline = cell.COLUMN.LineBreak;
-            if (cell is TCellText cellText)
+            if (column is ColumnSelect columnSelect)
+            {
+                object? value = null, val = null;
+                if (cell is TCellSelect cellSelect)
+                {
+                    value = cellSelect.value?.Tag;
+                    val = cellSelect.value;
+                }
+                bool isok = true;
+                if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col, column));
+                if (!isok) return;
+                inEditMode = true;
+
+                BeginInvoke(() =>
+                {
+                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                    var tmp_input = CreateInput(cell, sx, sy, multiline, val, rect);
+                    if (columnSelect.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
+                    else if (columnSelect.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
+                    var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
+                    CellBeginEditInputStyle?.Invoke(this, arge);
+                    if (arge.Input is Select select)
+                    {
+                        ShowSelect(select, (cf, _value) =>
+                        {
+                            bool isok_end = CellEndValueEdit?.Invoke(this, new TableEndValueEditEventArgs(_value, it.RECORD, i_row, i_col, column)) ?? true;
+                            if (isok_end && !cf)
+                            {
+                                if (cell is TCellSelect cellSelect)
+                                {
+                                    cellSelect!.value = cellSelect.COLUMN[_value];
+                                    SetValue(cell, _value);
+                                    if (multiline) LoadLayout();
+                                }
+                                else
+                                {
+                                    SetValue(cell, _value);
+                                    LoadLayout();
+                                }
+                                CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
+                            }
+                        });
+                    }
+                    else arge.Input.Dispose();
+                });
+            }
+            else if (cell is TCellText cellText)
             {
                 object? value = null;
                 if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
@@ -163,39 +209,6 @@ namespace AntdUI
                             CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
                         }
                     });
-                });
-            }
-            else if (cell is TCellSelect cellSelect)
-            {
-                object? value = cellSelect.value?.Tag;
-                bool isok = true;
-                if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col, column));
-                if (!isok) return;
-                inEditMode = true;
-
-                BeginInvoke(() =>
-                {
-                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
-                    var tmp_input = CreateInput(cell, sx, sy, multiline, cellSelect.value, rect);
-                    if (cellSelect.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
-                    else if (cellSelect.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
-                    var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
-                    CellBeginEditInputStyle?.Invoke(this, arge);
-                    if (arge.Input is Select select)
-                    {
-                        ShowSelect(select, (cf, _value) =>
-                        {
-                            bool isok_end = CellEndValueEdit?.Invoke(this, new TableEndValueEditEventArgs(_value, it.RECORD, i_row, i_col, column)) ?? true;
-                            if (isok_end && !cf)
-                            {
-                                cellSelect.value = cellSelect.COLUMN[_value];
-                                SetValue(cell, _value);
-                                if (multiline) LoadLayout();
-                                CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
-                            }
-                        });
-                    }
-                    else arge.Input.Dispose();
                 });
             }
             else if (cell is Template templates)
