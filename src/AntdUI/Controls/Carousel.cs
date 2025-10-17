@@ -421,11 +421,6 @@ namespace AntdUI
         int AnimationChangeMaxWH = 0;
         float AnimationChangeValue = 0F;
         bool AnimationChange = false;
-        protected override void Dispose(bool disposing)
-        {
-            ThreadChange?.Dispose();
-            base.Dispose(disposing);
-        }
         ITask? ThreadChange;
 
         void LongTime()
@@ -445,6 +440,13 @@ namespace AntdUI
                 }
                 catch { }
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            bmp?.Dispose();
+            ThreadChange?.Dispose();
+            base.Dispose(disposing);
         }
 
         #endregion
@@ -533,6 +535,7 @@ namespace AntdUI
                         if (bmp == null || bmpcode != select_range.i)
                         {
                             bmpcode = select_range.i;
+                            bmp?.Dispose();
                             bmp = PaintBmpVertical(items, select_range, rect, _radius);
                         }
                         g.Image(bmp, rect.X, (int)(rect.Y - AnimationChangeValue), bmp.Width, bmp.Height);
@@ -543,6 +546,7 @@ namespace AntdUI
                         if (bmp == null || bmpcode != select_range.i)
                         {
                             bmpcode = select_range.i;
+                            bmp?.Dispose();
                             bmp = PaintBmpHorizontal(items, select_range, rect, _radius);
                         }
                         g.Image(bmp, (int)(rect.X - AnimationChangeValue), rect.Y, bmp.Width, bmp.Height);

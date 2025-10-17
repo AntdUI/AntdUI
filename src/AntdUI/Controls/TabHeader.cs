@@ -32,6 +32,7 @@ namespace AntdUI
     /// </summary>
     /// <seealso cref="PageHeader"/>
     [Description("TabHeader 多标签页头")]
+    [ToolboxItem(true)]
     [DefaultProperty("SelectedIndex")]
     [DefaultEvent("TabChanged")]
     public class TabHeader : PageHeader
@@ -280,6 +281,23 @@ namespace AntdUI
             }
         }
 
+        int leftGap = 0;
+        /// <summary>
+        /// 左侧边距
+        /// </summary>
+        [Description("左侧边距"), Category("外观"), DefaultValue(0)]
+        public int LeftGap
+        {
+            get => leftGap;
+            set
+            {
+                if (leftGap == value) return;
+                leftGap = value;
+                LoadLayout(true);
+                OnPropertyChanged(nameof(LeftGap));
+            }
+        }
+
         int rightGap = 0;
         /// <summary>
         /// 右侧边距
@@ -335,7 +353,8 @@ namespace AntdUI
         }
 
         TagTabItem? _selectItem;
-        [Description("选中选项"), Category("数据"), DefaultValue(0)]
+        [Browsable(false)]
+        [Description("选中选项"), Category("数据"), DefaultValue(null)]
         public TagTabItem? SelectedItem
         {
             get => _selectItem;
@@ -401,7 +420,7 @@ namespace AntdUI
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
                     ico_size = (int)(txtHeight * tabIconRatio), close_size = (int)(txtHeight * tabCloseRatio), close_i_size = (int)(txtHeight * TabCloseIconRatio),
                     ico_y = rect.Y + (rect.Height - ico_size) / 2, close_y = rect.Y + (rect.Height - close_size) / 2, close_ico_y = (close_size - close_i_size) / 2;
-                    int use_x = rect.X, count_loading = 0;
+                    int use_x = rect.X + leftGap, count_loading = 0;
 
                     if (hd)
                     {
@@ -718,6 +737,7 @@ namespace AntdUI
                     if (tab.IconSvg != null) g.GetImgExtend(tab.IconSvg, tab.RectIcon, color);
                 }
             }
+            tab.PaintBadge(Font, tab.Rect, g, ColorScheme);
         }
 
         /// <summary>
@@ -852,9 +872,10 @@ namespace AntdUI
                     {
                         mdownindex = i;
                         mdown = it;
+                        if (it.ShowClose && it.RectClose.Contains(x, y)) return;
                         SelectedIndex = i;
                         SelectedItem = it;
-                        if (DragSort)
+                        if (DragSort && items.Count > 1)
                         {
                             dragHeader = new Table.DragHeader(e.X, e.Y, i, x);
                             return;
@@ -922,17 +943,48 @@ namespace AntdUI
             var args = new TabCloseEventArgs(item, mdownindex);
             TabClosing?.Invoke(this, args);
             if (args.Cancel) return;
+
+            int closedIndex = items.IndexOf(item);
+
+            // 保存关闭前的状态
+            bool isSelectedTab = (closedIndex == _select) || (item == _selectItem);
+            int oldSelectedIndex = _select;
+            var oldSelectedItem = _selectItem;
+            int newSelectedIndex = _select;
+
+            // 如果关闭的是当前选中的标签，需要确定新的选中标签
+            if (isSelectedTab)
+            {
+                // 优先选择右侧标签，如果右侧没有则选择左侧
+                if (closedIndex < items.Count - 1) newSelectedIndex = closedIndex; // 有右侧标签，选择右侧
+                else if (closedIndex > 0) newSelectedIndex = closedIndex - 1; // 没有右侧标签但有左侧标签，选择左侧
+                else newSelectedIndex = -1; // 没有其他标签了
+            }
+            // 如果关闭的标签在当前选中标签之前，需要调整选中索引
+            else if (closedIndex < _select) newSelectedIndex = _select - 1;
+
+            // 移除标签
             items.Remove(item);
-            if (mdown == _selectItem)
+
+            // 设置新的选中索引
+            if (items.Count > 0 && newSelectedIndex >= 0 && newSelectedIndex < items.Count)
             {
-                if (_select > 0 && items.Count > 0) SelectedIndex--;
-                else Invalidate();
+                _select = newSelectedIndex;
+                // 只有在关闭当前选中标签的情况下才更新_selectItem并触发TabChanged事件
+                if (isSelectedTab)
+                {
+                    _selectItem = items[newSelectedIndex];
+                    TabChanged?.Invoke(this, new TabChangedEventArgs(_selectItem!, newSelectedIndex));
+                }
+                else _selectItem = items[newSelectedIndex]; // 如果关闭的不是当前选中标签，只需要更新索引，不触发事件
             }
-            else
+            else if (items.Count == 0)
             {
-                if (_select > 0) _select--;
-                Invalidate();
+                _select = -1;
+                _selectItem = null;
             }
+
+            Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -1095,7 +1147,7 @@ namespace AntdUI
     /// <summary>
     /// 标签页数据结构
     /// </summary>
-    public class TagTabItem
+    public class TagTabItem : BadgeConfig
     {
         public TagTabItem() : this("Text")
         { }
@@ -1248,6 +1300,119 @@ namespace AntdUI
 
         public object? Tag { get; set; }
 
+        #region 徽标
+
+        string? badge;
+        [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        string? badgeSvg;
+        [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        TAlign badgeAlign = TAlign.Right;
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.Right)]
+        public TAlign BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        float badgeSize = .6F;
+        [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
+        public float BadgeSize
+        {
+            get => badgeSize;
+            set
+            {
+                if (badgeSize == value) return;
+                badgeSize = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        bool badgeMode = false;
+        [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode == value) return;
+                badgeMode = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        Color? badgeback;
+        [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBack
+        {
+            get => badgeback;
+            set
+            {
+                if (badgeback == value) return;
+                badgeback = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        int badgeOffsetX = 1, badgeOffsetY = 1;
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        [Description("徽标偏移X"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetX
+        {
+            get => badgeOffsetX;
+            set
+            {
+                if (badgeOffsetX == value) return;
+                badgeOffsetX = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetY
+        {
+            get => badgeOffsetY;
+            set
+            {
+                if (badgeOffsetY == value) return;
+                badgeOffsetY = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        #endregion
+
         #region 内部
 
         #region 变更
@@ -1328,6 +1493,39 @@ namespace AntdUI
             Tag = value;
             return this;
         }
+
+        #region 徽标
+
+        public TagTabItem SetBadge(string? value = " ", TAlign align = TAlign.TR)
+        {
+            badge = value;
+            badgeAlign = align;
+            return this;
+        }
+        public TagTabItem SetBadgeSvg(string? value, TAlign align = TAlign.TR)
+        {
+            badgeSvg = value;
+            badgeAlign = align;
+            return this;
+        }
+        public TagTabItem SetBadgeOffset(int x, int y)
+        {
+            BadgeOffsetX = x;
+            BadgeOffsetY = y;
+            return this;
+        }
+        public TagTabItem SetBadgeSize(float value)
+        {
+            BadgeSize = value;
+            return this;
+        }
+        public TagTabItem SetBadgeBack(Color? value)
+        {
+            BadgeBack = value;
+            return this;
+        }
+
+        #endregion
 
         #endregion
     }

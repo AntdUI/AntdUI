@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Demo
@@ -32,7 +33,7 @@ namespace Demo
                 tabHeader1.BackActive = dark ? Color.Black : Color.White;
             });
             tabHeader1.AddTab("关于", "SlackSquareFilled");
-            tabHeader1.AddTab(new AntdUI.TagTabItem("关于"));
+            tabHeader1.AddTab(new AntdUI.TagTabItem("关于").SetID("about_tab").SetBadge("New").SetBadgeBack(Color.Red));
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -55,6 +56,18 @@ namespace Demo
                 System.Threading.Thread.Sleep(2000); // 模拟加载延时
                 tab.Loading = false;
             });
+        }
+
+        private void tabHeader1_TabClosing(object sender, AntdUI.TabCloseEventArgs e)
+        {
+            // 在事件处理中输出ID以便判断准确性
+            Debug.Print($"正在关闭标签，ID: {e.Value.ID ?? "未设置ID"}, 索引: {e.Index}, 文本: {e.Value.Text}");
+        }
+
+        private void tabHeader1_TabChanged(object sender, AntdUI.TabChangedEventArgs e)
+        {
+            // 在事件处理中输出ID以便判断准确性
+            Debug.Print($"切换到标签，ID: {e.Value.ID ?? "未设置ID"}, 索引: {e.Index}, 文本: {e.Value.Text}");
         }
     }
 }
