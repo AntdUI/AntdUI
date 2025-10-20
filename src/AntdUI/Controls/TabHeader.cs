@@ -96,6 +96,23 @@ namespace AntdUI
             }
         }
 
+        string? addIconSvg;
+        /// <summary>
+        /// 新增按钮Svg图标（默认 PlusOutlined）
+        /// </summary>
+        [Description("新增按钮Svg图标（默认 PlusOutlined）"), Category("外观"), DefaultValue(null)]
+        public string? AddIconSvg
+        {
+            get => addIconSvg;
+            set
+            {
+                if (addIconSvg == value) return;
+                addIconSvg = value;
+                if (showAdd) Invalidate();
+                OnPropertyChanged(nameof(AddIconSvg));
+            }
+        }
+
         /// <summary>
         /// 拖拽排序
         /// </summary>
@@ -675,7 +692,7 @@ namespace AntdUI
                         g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
                     }
                 }
-                g.PaintIconCore(RectAddIco, "PlusOutlined", color);
+                g.PaintIconCore(RectAddIco, addIconSvg ?? "PlusOutlined", color);
             }
             g.Restore(state);
         }
