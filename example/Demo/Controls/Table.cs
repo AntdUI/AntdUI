@@ -60,6 +60,11 @@ namespace Demo.Controls
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
 
+
+            // 配置焦点跳转顺序 
+            table1.ConfigureFocusNavigation(["age", "address", "date",], selectAll: true, lineBreak: true);
+
+
             #endregion
 
             selectEditMode.Items.AddRange(EnumList(typeof(AntdUI.TEditMode)));
@@ -627,6 +632,18 @@ namespace Demo.Controls
                     _btns = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        private void checkboxFocusNavigation_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (checkboxFocusNavigation.Checked)
+            {
+                table1.EnableFocusNavigation = true;
+            }
+            else
+            {
+                table1.EnableFocusNavigation = false;
             }
         }
     }

@@ -126,6 +126,13 @@ namespace AntdUI
                 it.ThreadHover?.Dispose();
                 it.ThreadHover = null;
             }
+
+            // 存储当前编辑的单元格信息
+            _currentEditRecord = it.RECORD;
+            _currentEditRowIndex = i_row;
+            _currentEditColumnIndex = i_col;
+            _currentEditColumn = column;
+
             bool multiline = cell.COLUMN.LineBreak;
             if (column is ColumnSelect columnSelect)
             {
@@ -441,6 +448,13 @@ namespace AntdUI
                 if (e.KeyChar == 13)
                 {
                     e.Handled = true;
+
+                    // 使用存储的单元格信息触发 CellEnter 事件
+                    if (_currentEditRecord != null && _currentEditColumn != null)
+                    {
+                        CellEditEnter?.Invoke(sender, new TableCellEditEnterEventArgs(_currentEditRecord, _currentEditRowIndex, _currentEditColumnIndex, _currentEditColumn));
+                    }
+
                     EditModeClose();
                 }
             }
@@ -453,6 +467,12 @@ namespace AntdUI
         #region 集合处理
 
         ConcurrentDictionary<Input, object?[]> _editControls = new ConcurrentDictionary<Input, object?[]>();
+
+        // 存储当前编辑的单元格信息
+        private object? _currentEditRecord;
+        private int _currentEditRowIndex;
+        private int _currentEditColumnIndex;
+        private Column? _currentEditColumn;
 
         /// <summary>
         /// 添加空间到编辑

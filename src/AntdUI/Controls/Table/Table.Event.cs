@@ -126,6 +126,52 @@ namespace AntdUI
         [Description("单元格焦点变更后发生"), Category("行为")]
         public event ClickEventHandler? CellFocused;
 
+        /// <summary>
+        /// 单元格输入模式下按下回车键时发生
+        /// </summary>
+        public delegate void CellEditEnterEventHandler(object sender, TableCellEditEnterEventArgs e);
+
+        /// <summary>
+        /// CellEditEnter 事件参数
+        /// </summary>
+        public class TableCellEditEnterEventArgs : EventArgs
+        {
+            public TableCellEditEnterEventArgs(object record, int rowIndex, int columnIndex, Column column)
+            {
+                Record = record;
+                RowIndex = rowIndex;
+                ColumnIndex = columnIndex;
+                Column = column;
+            }
+
+            /// <summary>
+            /// 数据对象
+            /// </summary>
+            public object Record { get; private set; }
+
+            /// <summary>
+            /// 行索引
+            /// </summary>
+            public int RowIndex { get; private set; }
+
+            /// <summary>
+            /// 列索引
+            /// </summary>
+            public int ColumnIndex { get; private set; }
+
+            /// <summary>
+            /// 列对象
+            /// </summary>
+            public Column Column { get; private set; }
+        }
+
+        /// <summary>
+        /// 单元格按下回车键时发生
+        /// </summary>
+        [Description("单元格输入模式下按下回车键时发生"), Category("行为")]
+        public event CellEditEnterEventHandler? CellEditEnter;
+      
+
         #region 编辑
 
         /// <summary>
@@ -330,5 +376,7 @@ namespace AntdUI
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
 
         #endregion
+
+
     }
 }
