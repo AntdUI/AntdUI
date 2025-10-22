@@ -1662,7 +1662,7 @@ namespace AntdUI
             Input control;
             public ICaret(Input input) { control = input; }
 
-            public Rectangle Rect = new Rectangle(-1, -1000, (int)Config.Dpi, 0);
+            public Rectangle Rect = new Rectangle(-1, -1000, Config.Dpi < 1 ? 1 : (int)Config.Dpi, 0);
 
             public Rectangle SetXY(CacheCaret[] cache_font, int i)
             {
