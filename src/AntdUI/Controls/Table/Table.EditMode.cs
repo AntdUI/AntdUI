@@ -452,6 +452,7 @@ namespace AntdUI
                     // 使用存储的单元格信息触发 CellEnter 事件
                     if (_currentEditRecord != null && _currentEditColumn != null)
                     {
+                        FocusedCell = null;
                         CellEditEnter?.Invoke(sender, new TableCellEditEnterEventArgs(_currentEditRecord, _currentEditRowIndex, _currentEditColumnIndex, _currentEditColumn));
                     }
 
