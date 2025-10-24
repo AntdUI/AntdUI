@@ -1437,8 +1437,9 @@ namespace AntdUI
                 {
                     var _row = rows[row];
                     var cel = _row.cells[column];
-                    CellContains(rows, false, 0, 0, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out _, out _);
-                    return RealRect(cel.RECT, offset_xi, offset_y);
+                    var db = CellContains(rows, false, 0, 0);
+                    if (db == null) return RealRect(cel.RECT, 0, 0);
+                    else return RealRect(cel.RECT, db.offset_xi, db.offset_y);
                 }
                 catch { }
             }
@@ -1600,8 +1601,7 @@ namespace AntdUI
         public CELL? HitTest(int x, int y)
         {
             if (rows == null) return null;
-            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out _, out _, out _, out _);
-            return cell;
+            return CellContains(rows, false, x, y)?.cell;
         }
 
         public CELL? HitTest(int x, int y, out int i_row, out int i_cel)
@@ -1611,8 +1611,18 @@ namespace AntdUI
                 i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out _, out _, out _, out _, out _, out i_row, out i_cel, out var _, out _);
-            return cell;
+            var db = CellContains(rows, false, x, y);
+            if (db == null)
+            {
+                i_row = i_cel = 0;
+                return null;
+            }
+            else
+            {
+                i_row = db.i_row;
+                i_cel = db.i_cel;
+                return db.cell;
+            }
         }
 
         public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel)
@@ -1622,8 +1632,23 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out _);
-            return cell;
+            var db = CellContains(rows, false, x, y);
+            if (db == null)
+            {
+                r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+                return null;
+            }
+            else
+            {
+                r_x = db.x;
+                r_y = db.y;
+                offset_x = db.offset_x;
+                offset_xi = db.offset_xi;
+                offset_y = db.offset_y;
+                i_row = db.i_row;
+                i_cel = db.i_cel;
+                return db.cell;
+            }
         }
 
         public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
@@ -1634,8 +1659,24 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var cell = CellContains(rows, false, x, y, out r_x, out r_y, out offset_x, out offset_xi, out offset_y, out i_row, out i_cel, out _, out mode);
-            return cell;
+            var db = CellContains(rows, false, x, y);
+            if (db == null)
+            {
+                mode = r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+                return null;
+            }
+            else
+            {
+                mode = db.mode;
+                r_x = db.x;
+                r_y = db.y;
+                offset_x = db.offset_x;
+                offset_xi = db.offset_xi;
+                offset_y = db.offset_y;
+                i_row = db.i_row;
+                i_cel = db.i_cel;
+                return db.cell;
+            }
         }
 
         public Bitmap? DrawBitmap(bool full)

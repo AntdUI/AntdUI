@@ -168,6 +168,12 @@ namespace AntdUI
         [Description("切换使能"), Category("行为"), DefaultValue(true)]
         public bool EnableSwitch { get; set; } = true;
 
+        /// <summary>
+        /// 鼠标滚轮切换焦点页使能
+        /// </summary>
+        [Description("鼠标滚轮切换焦点页使能"), Category("行为"), DefaultValue(true)]
+        public bool EnablePageScrolling { get; set; } = true;
+
         Color? scrollback;
         /// <summary>
         /// 滚动条颜色
@@ -758,7 +764,6 @@ namespace AntdUI
             }
         }
 
-
         TabPage FindNearestPage(Rectangle currentRect, TabCollection items, TabPage page)
         {
             double minDistance = int.MaxValue;
@@ -816,6 +821,19 @@ namespace AntdUI
 
         void MouseWheelCore(MouseEventArgs e)
         {
+            if (!scroll_show && EnablePageScrolling)
+            {
+                if (ContainsTabPage(e.X, e.Y) != null)
+                {
+                    int index = SelectedIndex + (e.Delta > 0 ? -1 : 1);
+                    if (index > -1 && index < Pages.Count)
+                    {
+                        SelectedIndex = index;
+                        return;
+                    }
+                }
+            }
+
             if (MouseWheelCore(e.Delta) && e is HandledMouseEventArgs handled) handled.Handled = true;
         }
         bool MouseWheelCore(int Delta)

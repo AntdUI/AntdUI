@@ -200,10 +200,10 @@ namespace AntdUI
             }
         }
 
+        internal Color? borderColor;
         /// <summary>
         /// 边框颜色
         /// </summary>
-        internal Color? borderColor;
         [Description("边框颜色"), Category("边框"), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor
@@ -882,7 +882,7 @@ namespace AntdUI
         /// 形态
         /// </summary>
         [Description("形态"), Category("外观"), DefaultValue(TVariant.Outlined)]
-        public TVariant Variant { get; set; }
+        public TVariant Variant { get; set; } = TVariant.Outlined;
 
         #region 密码框
 
@@ -1662,7 +1662,7 @@ namespace AntdUI
             Input control;
             public ICaret(Input input) { control = input; }
 
-            public Rectangle Rect = new Rectangle(-1, -1000, (int)Config.Dpi, 0);
+            public Rectangle Rect = new Rectangle(-1, -1000, Config.Dpi < 1 ? 1 : (int)Config.Dpi, 0);
 
             public Rectangle SetXY(CacheCaret[] cache_font, int i)
             {

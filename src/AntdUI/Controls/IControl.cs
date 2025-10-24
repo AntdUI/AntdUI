@@ -711,11 +711,20 @@ namespace AntdUI
 
         #region 渲染
 
+        /// <summary>
+        /// 渲染 时发生
+        /// </summary>
         [Description("渲染 时发生"), Category("行为")]
         public event DrawEventHandler? Draw;
+
+        /// <summary>
+        /// 渲染背景 时发生
+        /// </summary>
         [Description("渲染背景 时发生"), Category("行为")]
         public event DrawEventHandler? DrawBg;
+
         protected virtual void OnDrawBg(DrawEventArgs e) => DrawBg?.Invoke(this, e);
+
         protected virtual void OnDraw(DrawEventArgs e) => Draw?.Invoke(this, e);
 
         protected override void OnPaint(PaintEventArgs e)

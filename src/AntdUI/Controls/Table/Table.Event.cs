@@ -183,6 +183,17 @@ namespace AntdUI
         [Description("编辑完成后发生"), Category("行为")]
         public event EndEditCompleteEventHandler? CellEditComplete;
 
+        /// <summary>
+        /// 单元格输入模式下按下回车键时发生
+        /// </summary>
+        public delegate void CellEditEnterEventHandler(object sender, TableCellEditEnterEventArgs e);
+
+        /// <summary>
+        /// 单元格按下回车键时发生
+        /// </summary>
+        [Description("单元格输入模式下按下回车键时发生"), Category("行为")]
+        public event CellEditEnterEventHandler? CellEditEnter;
+
         #endregion
 
         #region 绘制
@@ -330,5 +341,33 @@ namespace AntdUI
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
 
         #endregion
+
+        public class CELLDB
+        {
+            public CELLDB(CELL _cell, int _r_x, int _r_y, int _offset_x, int _offset_xi, int _offset_y, int _i_row, int _i_cel, Column _col)
+            {
+                cell = _cell;
+                x = _r_x;
+                y = _r_y;
+                offset_x = _offset_x;
+                offset_xi = _offset_xi;
+                offset_y = _offset_y;
+                i_row = _i_row;
+                i_cel = _i_cel;
+                col = _col;
+            }
+
+            public CELL cell { get; set; }
+
+            public int x { get; set; }
+            public int y { get; set; }
+            public int offset_x { get; set; }
+            public int offset_xi { get; set; }
+            public int offset_y { get; set; }
+            public int i_row { get; set; }
+            public int i_cel { get; set; }
+            public Column col { get; set; }
+            public int mode { get; set; }
+        }
     }
 }

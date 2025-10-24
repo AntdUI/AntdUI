@@ -112,13 +112,13 @@ namespace AntdUI
                 {
                     foreach (var template in templates.Value)
                     {
-                        if (template is CellText text) return true;
+                        if (template is CellText) return true;
                     }
                 }
             }
             return false;
         }
-        void OnEditMode(RowTemplate it, CELL cell, Rectangle rect, int i_row, int i_col, Column? column, int sx, int sy)
+        void OnEditMode(RowTemplate it, CELL cell, Rectangle rect, int i_row, int i_col, Column column, int sx, int sy)
         {
             if (rows == null) return;
             if (it.AnimationHover)
@@ -126,6 +126,10 @@ namespace AntdUI
                 it.ThreadHover?.Dispose();
                 it.ThreadHover = null;
             }
+
+            // 存储当前编辑的单元格信息
+            _currentEdit = new TableCellEditEnterEventArgs(it.RECORD!, i_row, i_col, column);
+
             bool multiline = cell.COLUMN.LineBreak;
             if (column is ColumnSelect columnSelect)
             {
@@ -441,6 +445,14 @@ namespace AntdUI
                 if (e.KeyChar == 13)
                 {
                     e.Handled = true;
+
+                    // 使用存储的单元格信息触发 CellEnter 事件
+                    if (_currentEdit != null)
+                    {
+                        FocusedCell = null;
+                        CellEditEnter?.Invoke(sender, _currentEdit);
+                    }
+
                     EditModeClose();
                 }
             }
@@ -453,6 +465,9 @@ namespace AntdUI
         #region 集合处理
 
         ConcurrentDictionary<Input, object?[]> _editControls = new ConcurrentDictionary<Input, object?[]>();
+
+        // 存储当前编辑的单元格信息
+        private TableCellEditEnterEventArgs? _currentEdit;
 
         /// <summary>
         /// 添加空间到编辑
