@@ -1,5 +1,16 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.1.13` 2025-10-24
+
+- ➕ Select Dropdown Maximum Height Scrollbar
+- ➕ Table Cell Focus Navigation (Configure Jump Order)
+- ➕ Table CellEditEnter Event
+- ➕ TabHeader Add Button Icon Property Settings
+- ➕ Tabs EnablePageScrolling Scroll to switch focus pages (enabled by default)
+- ➕ Table DataSource adds support for dynamic objects and dictionary objects
+- ✍️ Cursor not displayed when Input Dpi 1 is active
+- 🧹 Standardize events
+
 ### `2.1.12` 2025-10-17
 
 - ✍️ Carousel Out of Memory
