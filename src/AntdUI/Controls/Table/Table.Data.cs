@@ -407,6 +407,27 @@ namespace AntdUI
                 foreach (AntItem it in arows) cells.Add(it.key, it);
                 return cells;
             }
+            else if (row is System.Dynamic.ExpandoObject expando)
+            {
+                // 支持动态对象（ExpandoObject）
+                var cells = new Dictionary<string, object?>();
+                var dict = (IDictionary<string, object?>)expando;
+                foreach (var kvp in dict)
+                {
+                    cells.Add(kvp.Key, kvp.Value);
+                }
+                return cells;
+            }
+            else if (row is IDictionary<string, object?> dict)
+            {
+                // 支持字典对象
+                var cells = new Dictionary<string, object?>();
+                foreach (var kvp in dict)
+                {
+                    cells.Add(kvp.Key, kvp.Value);
+                }
+                return cells;
+            }
             else
             {
                 var cells = new Dictionary<string, object?>(len);
@@ -421,18 +442,50 @@ namespace AntdUI
 
         Dictionary<string, object?> GetRow(object row, out TempiColumn[] _columns)
         {
-            var list = TypeDescriptor.GetProperties(row);
-            var cells = new Dictionary<string, object?>(list.Count);
-            int index = 0;
-            var columns = new List<TempiColumn>(list.Count);
-            foreach (PropertyDescriptor it in list)
+            if (row is System.Dynamic.ExpandoObject expando)
             {
-                columns.Add(new TempiColumn(index, it.DisplayName ?? it.Name)); index++;
-                cells.Add(it.Name, it);
-                GetRow(row, it, ref cells);
+                // 支持动态对象（ExpandoObject）
+                var dict = (IDictionary<string, object?>)expando;
+                var cells = new Dictionary<string, object?>(dict.Count);
+                var columns = new List<TempiColumn>(dict.Count);
+                int index = 0;
+                foreach (var kvp in dict)
+                {
+                    columns.Add(new TempiColumn(index, kvp.Key)); index++;
+                    cells.Add(kvp.Key, kvp.Value);
+                }
+                _columns = columns.ToArray();
+                return cells;
             }
-            _columns = columns.ToArray();
-            return cells;
+            else if (row is IDictionary<string, object?> dict)
+            {
+                // 支持字典对象
+                var cells = new Dictionary<string, object?>(dict.Count);
+                var columns = new List<TempiColumn>(dict.Count);
+                int index = 0;
+                foreach (var kvp in dict)
+                {
+                    columns.Add(new TempiColumn(index, kvp.Key)); index++;
+                    cells.Add(kvp.Key, kvp.Value);
+                }
+                _columns = columns.ToArray();
+                return cells;
+            }
+            else
+            {
+                var list = TypeDescriptor.GetProperties(row);
+                var cells = new Dictionary<string, object?>(list.Count);
+                int index = 0;
+                var columns = new List<TempiColumn>(list.Count);
+                foreach (PropertyDescriptor it in list)
+                {
+                    columns.Add(new TempiColumn(index, it.DisplayName ?? it.Name)); index++;
+                    cells.Add(it.Name, it);
+                    GetRow(row, it, ref cells);
+                }
+                _columns = columns.ToArray();
+                return cells;
+            }
         }
         void GetRow(object row, PropertyDescriptor it, ref Dictionary<string, object?> cells)
         {

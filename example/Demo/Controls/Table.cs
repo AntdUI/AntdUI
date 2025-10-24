@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -64,6 +65,8 @@ namespace Demo.Controls
             // 配置焦点跳转顺序 
             table1.ConfigureFocusNavigation(["age", "address", "date",], selectAll: true, lineBreak: true);
 
+            //设置总结栏
+            SummarySet();
 
             #endregion
 
@@ -387,6 +390,7 @@ namespace Demo.Controls
         void pagination1_ValueChanged(object sender, AntdUI.PagePageEventArgs e)
         {
             table1.DataSource = GetPageData(e.Current, e.PageSize);
+            SummarySet();
         }
         string pagination1_ShowTotalChanged(object sender, AntdUI.PagePageEventArgs e)
         {
@@ -645,6 +649,17 @@ namespace Demo.Controls
             {
                 table1.EnableFocusNavigation = false;
             }
+        }
+
+        private void SummarySet()
+        {
+            var dataList = (IEnumerable<TestClass>)table1.DataSource;
+            table1.Summary = new Dictionary<string, object>
+            {
+                { "age", dataList.Any() ?(int)dataList.Average(x => x.age) : 0},
+                { "address", $"共{dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length)}地址"} ,
+                { "hobby", $"共{dataList.Select(x => x.hobby).Distinct().Count()}种爱好" }
+            };
         }
     }
 }
