@@ -696,7 +696,8 @@ namespace AntdUI
         /// </summary>
         [Description("文件拖拽后时发生"), Category("行为")]
         public event DragEventHandler? DragChanged;
-        internal void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
+
+        protected virtual void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
 
         #endregion
 
@@ -711,11 +712,20 @@ namespace AntdUI
 
         #region 渲染
 
+        /// <summary>
+        /// 渲染 时发生
+        /// </summary>
         [Description("渲染 时发生"), Category("行为")]
         public event DrawEventHandler? Draw;
+
+        /// <summary>
+        /// 渲染背景 时发生
+        /// </summary>
         [Description("渲染背景 时发生"), Category("行为")]
         public event DrawEventHandler? DrawBg;
+
         protected virtual void OnDrawBg(DrawEventArgs e) => DrawBg?.Invoke(this, e);
+
         protected virtual void OnDraw(DrawEventArgs e) => Draw?.Invoke(this, e);
 
         protected override void OnPaint(PaintEventArgs e)

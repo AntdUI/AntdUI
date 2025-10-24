@@ -52,7 +52,7 @@ namespace AntdUI
                 else if (value > PageTotal) value = PageTotal;
                 if (current == value) return;
                 current = value;
-                ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
+                OnValueChanged(current, total, pageSize, PageTotal);
                 OnPropertyChanged(nameof(Current));
                 ButtonLayout(true);
             }
@@ -109,7 +109,7 @@ namespace AntdUI
                 if (pageSize == value) return;
                 pageSize = value;
                 if (total > 0 && Math.Ceiling(total * 1.0 / pageSize) < current) current = (int)Math.Ceiling(total * 1.0 / pageSize);
-                ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, PageTotal));
+                OnValueChanged(current, total, pageSize, PageTotal);
                 if (input_SizeChanger != null)
                 {
                     string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
@@ -157,11 +157,15 @@ namespace AntdUI
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event PageValueEventHandler? ValueChanged;
 
+        protected virtual void OnValueChanged(int current, int total, int pageSize, int pageTotal) => ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, pageTotal));
+
         /// <summary>
         /// 显示数据总量
         /// </summary>
         [Description("用于显示数据总量"), Category("行为")]
         public event PageValueRtEventHandler? ShowTotalChanged;
+
+        protected virtual string? OnShowTotalChanged(int current, int total, int pageSize, int pageTotal) => ShowTotalChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, pageTotal));
 
         bool showSizeChanger = false;
         /// <summary>
@@ -590,7 +594,7 @@ namespace AntdUI
                     int total_page = (int)Math.Ceiling((total * 1.0) / pageSize);//总页数
                     if (total_page == 0) total_page = 1;
 
-                    if (TextDesc == null) showTotal = ShowTotalChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, total_page));
+                    if (TextDesc == null) showTotal = OnShowTotalChanged(current, total, pageSize, total_page);
                     else showTotal = TextDesc;
 
                     int pyrn = Helper.GDI(g =>

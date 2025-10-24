@@ -167,6 +167,7 @@ namespace AntdUI
         /// </summary>
         [Description("切换使能"), Category("行为"), DefaultValue(true)]
         public bool EnableSwitch { get; set; } = true;
+
         /// <summary>
         /// 鼠标滚轮切换焦点页使能
         /// </summary>
@@ -449,7 +450,7 @@ namespace AntdUI
                 int old = _select;
                 _select = value;
                 style.SelectedIndexChanged(value, old);
-                SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
+                OnSelectedIndexChanged(value);
                 Invalidate();
                 ShowPage(_select);
                 OnPropertyChanged(nameof(SelectedIndex));
@@ -763,7 +764,6 @@ namespace AntdUI
             }
         }
 
-
         TabPage FindNearestPage(Rectangle currentRect, TabCollection items, TabPage page)
         {
             double minDistance = int.MaxValue;
@@ -861,7 +861,6 @@ namespace AntdUI
                         return true;
                 }
             }
-
             return false;
         }
 
@@ -1579,6 +1578,8 @@ namespace AntdUI
         /// </summary>
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged;
+
+        protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
 
         internal void MouseChangeIndex(TabPage page)
         {

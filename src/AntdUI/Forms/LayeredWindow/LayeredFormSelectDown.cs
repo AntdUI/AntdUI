@@ -609,7 +609,22 @@ namespace AntdUI
                     ScrollBar.SetVrSize(0, maxh);
                     if (sy > 0) ScrollBar.ValueY = sy;
                 }
-                else ScrollBar.SetVrSize(0, 0);
+                else
+                {
+                    if (PARENT is Control control)
+                    {
+                        var screen = Screen.FromPoint(control.PointToScreen(Point.Empty)).WorkingArea;
+                        if (h > screen.Height - shadow2)
+                        {
+                            h = screen.Height - shadow2;
+                            ScrollBar.SizeChange(new Rectangle(0, 0, w, h));
+                            ScrollBar.SetVrSize(0, maxh);
+                            if (sy > 0) ScrollBar.ValueY = sy;
+                        }
+                        else ScrollBar.SetVrSize(0, 0);
+                    }
+                    else ScrollBar.SetVrSize(0, 0);
+                }
                 if (init) tmpW = w;
                 else if (animateConfig.Inverted)
                 {

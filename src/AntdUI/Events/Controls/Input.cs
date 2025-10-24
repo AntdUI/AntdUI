@@ -66,7 +66,7 @@ namespace AntdUI
 
     public delegate void InputVerifyKeyboardEventHandler(object sender, InputVerifyKeyboardEventArgs e);
 
-    public class InputNumberEventArgs : VEventArgs<decimal>
+    public class InputNumberEventArgs : DecimalEventArgs
     {
         public InputNumberEventArgs(decimal value) : base(value) { }
     }

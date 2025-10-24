@@ -52,7 +52,7 @@ namespace AntdUI
                 else if (value > MaxValue) value = MaxValue;
                 if (_value2 == value) return;
                 _value2 = value;
-                Value2Changed?.Invoke(this, new IntEventArgs(_value2));
+                OnValue2Changed(_value2);
                 Invalidate();
                 OnPropertyChanged(nameof(Value2));
             }
@@ -63,6 +63,8 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? Value2Changed;
+
+        protected virtual void OnValue2Changed(int e) => Value2Changed?.Invoke(this, new IntEventArgs(e));
 
         #endregion
 

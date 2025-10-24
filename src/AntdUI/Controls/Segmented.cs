@@ -430,7 +430,7 @@ namespace AntdUI
                 if (_select == value) return;
                 var old = _select;
                 _select = value;
-                SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
+                OnSelectIndexChanged(value);
                 SetRect(old, _select);
                 OnPropertyChanged(nameof(SelectIndex));
             }
@@ -585,6 +585,8 @@ namespace AntdUI
         [Description("SelectIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectIndexChanged;
 
+        protected virtual void OnSelectIndexChanged(int e) => SelectIndexChanged?.Invoke(this, new IntEventArgs(e));
+
         /// <summary>
         /// SelectIndex 属性值更改前发生
         /// </summary>
@@ -596,6 +598,8 @@ namespace AntdUI
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
         public event SegmentedItemEventHandler? ItemClick;
+
+        protected virtual void OnItemClick(SegmentedItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new SegmentedItemEventArgs(item, e));
 
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
@@ -1252,7 +1256,7 @@ namespace AntdUI
                     if (SelectIndexChanging == null) pass = true;
                     else if (SelectIndexChanging(this, new IntEventArgs(i))) pass = true;
                     if (pass) SelectIndex = i;
-                    ItemClick?.Invoke(this, new SegmentedItemEventArgs(it, e));
+                    OnItemClick(it, e);
                     return;
                 }
             }

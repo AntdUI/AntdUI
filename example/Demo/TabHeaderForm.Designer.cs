@@ -54,7 +54,6 @@ namespace Demo
             // 
             // tabHeader1
             // 
-            tabHeader1.AddIconSvg = "CopyOutlined";
             tabHeader1.BackActive = System.Drawing.Color.White;
             tabHeader1.BackColor = System.Drawing.Color.FromArgb(232, 232, 232);
             tabHeader1.BorderWidth = 1F;

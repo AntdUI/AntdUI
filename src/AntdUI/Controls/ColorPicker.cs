@@ -193,7 +193,7 @@ namespace AntdUI
                 if (DisabledAlpha && value.A != 255) value = Color.FromArgb(255, value);
                 _value = value;
                 if (BeforeAutoSize()) Invalidate();
-                ValueChanged?.Invoke(this, new ColorEventArgs(value));
+                OnValueChanged(value);
                 OnPropertyChanged(nameof(Value));
             }
         }
@@ -322,7 +322,7 @@ namespace AntdUI
                     hasvalue = false;
                     _value = def;
                     Invalidate();
-                    ValueChanged?.Invoke(this, new ColorEventArgs(_value));
+                    OnValueChanged(_value);
                 }
                 else _value = def;
             }
@@ -426,6 +426,8 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event ColorEventHandler? ValueChanged;
+
+        protected virtual void OnValueChanged(Color e) => ValueChanged?.Invoke(this, new ColorEventArgs(e));
 
         /// <summary>
         /// Value格式化时发生

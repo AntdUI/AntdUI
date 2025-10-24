@@ -25,7 +25,7 @@ namespace AntdUI
 {
     public class TableCheckEventArgs : ITableEventArgs
     {
-        public TableCheckEventArgs(bool value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
+        public TableCheckEventArgs(bool value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -35,77 +35,28 @@ namespace AntdUI
         /// </summary>
         public bool Value { get; private set; }
     }
-    public class TableClickEventArgs : MouseEventArgs
+    public class TableClickEventArgs : ITableMouseNullEventArgs
     {
-        public TableClickEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableClickEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, e)
         {
-            Record = record;
-            RowIndex = rowIndex;
-            ColumnIndex = columnIndex;
-            Column = column;
             Rect = rect;
         }
-
-        /// <summary>
-        /// 原始行
-        /// </summary>
-        public object? Record { get; private set; }
-
-        /// <summary>
-        /// 行序号
-        /// </summary>
-        public int RowIndex { get; private set; }
-
-        /// <summary>
-        /// 列序号
-        /// </summary>
-        public int ColumnIndex { get; private set; }
-
-        /// <summary>
-        /// 表头
-        /// </summary>
-        public Column? Column { get; private set; }
 
         /// <summary>
         /// 表格区域
         /// </summary>
         public Rectangle Rect { get; private set; }
     }
-    public class TableHoverEventArgs : MouseEventArgs
+    public class TableHoverEventArgs : ITableMouseNullEventArgs
     {
-        public TableHoverEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle? rect, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableHoverEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle? rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, e)
         {
-            Record = record;
-            RowIndex = rowIndex;
-            ColumnIndex = columnIndex;
-            Column = column;
             Rect = rect;
         }
 
-        public TableHoverEventArgs(MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public TableHoverEventArgs(MouseEventArgs e) : base(e)
         {
-            RowIndex = ColumnIndex = -1;
         }
-
-        /// <summary>
-        /// 原始行
-        /// </summary>
-        public object? Record { get; private set; }
-
-        /// <summary>
-        /// 行序号
-        /// </summary>
-        public int RowIndex { get; private set; }
-
-        /// <summary>
-        /// 列序号
-        /// </summary>
-        public int ColumnIndex { get; private set; }
-
-        /// <summary>
-        /// 表头
-        /// </summary>
-        public Column? Column { get; private set; }
 
         /// <summary>
         /// 表格区域
@@ -114,7 +65,7 @@ namespace AntdUI
     }
     public class TableButtonEventArgs : TableClickEventArgs
     {
-        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, rect, e)
+        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, rect, e)
         {
             Btn = btn;
         }
@@ -126,7 +77,7 @@ namespace AntdUI
     }
     public class TableEventArgs : ITableEventArgs
     {
-        public TableEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
+        public TableEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -139,7 +90,7 @@ namespace AntdUI
 
     public class TableBeginEditInputStyleEventArgs : ITableEventArgs
     {
-        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column? column, Input input) : base(record, rowIndex, columnIndex, column)
+        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column column, Input input) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
             Input = input;
@@ -222,7 +173,7 @@ namespace AntdUI
 
         public class Result<T> : ITableEventArgs
         {
-            public Result(T input, Column? column, TableEndEditEventArgs e) : base(e.Record, e.RowIndex, e.ColumnIndex, column)
+            public Result(T input, Column column, TableEndEditEventArgs e) : base(e.Record, e.RowIndex, e.ColumnIndex, column)
             {
                 Input = input;
             }
@@ -233,7 +184,7 @@ namespace AntdUI
 
     public class TableEndEditEventArgs : ITableEventArgs
     {
-        public TableEndEditEventArgs(string value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
+        public TableEndEditEventArgs(string value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -246,7 +197,7 @@ namespace AntdUI
 
     public class TableEndValueEditEventArgs : ITableEventArgs
     {
-        public TableEndValueEditEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column? column) : base(record, rowIndex, columnIndex, column)
+        public TableEndValueEditEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -255,6 +206,40 @@ namespace AntdUI
         /// 修改后值
         /// </summary>
         public object? Value { get; private set; }
+    }
+
+    /// <summary>
+    /// CellEditEnter 事件参数
+    /// </summary>
+    public class TableCellEditEnterEventArgs : EventArgs
+    {
+        public TableCellEditEnterEventArgs(object record, int rowIndex, int columnIndex, Column column)
+        {
+            Record = record;
+            RowIndex = rowIndex;
+            ColumnIndex = columnIndex;
+            Column = column;
+        }
+
+        /// <summary>
+        /// 数据对象
+        /// </summary>
+        public object Record { get; private set; }
+
+        /// <summary>
+        /// 行索引
+        /// </summary>
+        public int RowIndex { get; private set; }
+
+        /// <summary>
+        /// 列索引
+        /// </summary>
+        public int ColumnIndex { get; private set; }
+
+        /// <summary>
+        /// 列对象
+        /// </summary>
+        public Column Column { get; private set; }
     }
 
     public class TableSetRowStyleEventArgs : EventArgs
@@ -447,9 +432,76 @@ namespace AntdUI
         public bool Expand { get; private set; }
     }
 
+    public class ITableMouseEventArgs : MouseEventArgs
+    {
+        public ITableMouseEventArgs(object? record, int rowIndex, int columnIndex, Column column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            Record = record;
+            RowIndex = rowIndex;
+            ColumnIndex = columnIndex;
+            Column = column;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        /// <summary>
+        /// 行序号
+        /// </summary>
+        public int RowIndex { get; private set; }
+
+        /// <summary>
+        /// 列序号
+        /// </summary>
+        public int ColumnIndex { get; private set; }
+
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column Column { get; private set; }
+    }
+
+    public class ITableMouseNullEventArgs : MouseEventArgs
+    {
+        public ITableMouseNullEventArgs(object? record, int rowIndex, int columnIndex, Column? column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            Record = record;
+            RowIndex = rowIndex;
+            ColumnIndex = columnIndex;
+            Column = column;
+        }
+
+        public ITableMouseNullEventArgs(MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        {
+            RowIndex = ColumnIndex = -1;
+        }
+
+        /// <summary>
+        /// 原始行
+        /// </summary>
+        public object? Record { get; private set; }
+
+        /// <summary>
+        /// 行序号
+        /// </summary>
+        public int RowIndex { get; private set; }
+
+        /// <summary>
+        /// 列序号
+        /// </summary>
+        public int ColumnIndex { get; private set; }
+
+        /// <summary>
+        /// 表头
+        /// </summary>
+        public Column? Column { get; private set; }
+    }
+
     public class ITableEventArgs : EventArgs
     {
-        public ITableEventArgs(object? record, int rowIndex, int columnIndex, Column? column)
+        public ITableEventArgs(object? record, int rowIndex, int columnIndex, Column column)
         {
             Record = record;
             RowIndex = rowIndex;
@@ -473,8 +525,9 @@ namespace AntdUI
         /// <summary>
         /// 表头
         /// </summary>
-        public Column? Column { get; private set; }
+        public Column Column { get; private set; }
     }
+
     public class TableFilterPopupBeginEventArgs : EventArgs
     {
         public TableFilterPopupBeginEventArgs(Column column)

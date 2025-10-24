@@ -18,13 +18,9 @@
 // QQ: 17379620
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -41,8 +37,7 @@ namespace AntdUI
         /// <summary>
         /// 是否启用焦点自动跳转
         /// </summary>
-        [Description("是否启用焦点自动跳转")]
-        [DefaultValue(false)]
+        [Description("文是否启用焦点自动跳转字颜色"), Category("行为"), DefaultValue(false)]
         public bool EnableFocusNavigation { get; set; } = false;
 
         /// <summary>
@@ -53,11 +48,6 @@ namespace AntdUI
         /// <param name="lineBreak">是否换行，不换行本行则回到第一个设置的字段</param>
         public void ConfigureFocusNavigation(string[] fieldSequence, bool selectAll = true, bool lineBreak = true)
         {
-            // 绑定事件（如果尚未绑定）
-            if (this.CellEditEnter == null)
-            {
-                this.CellEditEnter += Table_CellEditEnter;
-            }
             _focusNavigationMap.Clear();
 
             for (int i = 0; i < fieldSequence.Length - 1; i++)
@@ -66,10 +56,7 @@ namespace AntdUI
             }
 
             // 记录第一个字段，用于跨行跳转
-            if (fieldSequence.Length > 0)
-            {
-                _firstFieldKey = fieldSequence[0];
-            }
+            if (fieldSequence.Length > 0) _firstFieldKey = fieldSequence[0];
 
             EnableFocusNavigation = _focusNavigationMap.Count > 0;
             _selectAll = selectAll;
@@ -85,32 +72,29 @@ namespace AntdUI
         {
             try
             {
-                if (!EnableFocusNavigation)
-                {
-                    return;
-                }
+                if (!EnableFocusNavigation) return;
 
                 // 找到目标列
-                var targetColumn = this.Columns.FirstOrDefault(c => c.Key == columnKey);
+                var targetColumn = Columns.FirstOrDefault(c => c.Key == columnKey);
 
                 if (targetColumn != null && targetColumn.Editable)
                 {
-                    this.BeginInvoke(new Action(() =>
+                    BeginInvoke(new Action(() =>
                     {
                         // 获取列索引
-                        var columnIndex = this.Columns.IndexOf(targetColumn);
+                        var columnIndex = Columns.IndexOf(targetColumn);
 
                         if (columnIndex >= 0)
                         {
-                            this.EnterEditMode(rowIndex, columnIndex);
+                            EnterEditMode(rowIndex, columnIndex);
 
                             // 如果启用文本全选，延迟设置文本全选
                             if (_selectAll == true)
                             {
-                                this.BeginInvoke(new Action(() =>
+                                BeginInvoke(new Action(() =>
                                 {
                                     // 查找当前编辑的输入控件并设置全选
-                                    var editControls = this.Controls.OfType<Input>().Where(c => c.Visible && c.Focused).ToList();
+                                    var editControls = Controls.OfType<Input>().Where(c => c.Visible && c.Focused).ToList();
                                     foreach (var input in editControls)
                                     {
                                         input.SelectAll();
@@ -140,93 +124,48 @@ namespace AntdUI
             if (!EnableFocusNavigation || string.IsNullOrEmpty(columnKey)) return;
 
             // 查找下一个字段
-            if (_focusNavigationMap.TryGetValue(columnKey, out string nextColumnKey))
-            {
-                // 延迟执行，确保当前编辑完全结束
-                this.BeginInvoke(new Action(() =>
-                {
-                    MoveToNextEditableCell(rowIndex, nextColumnKey);
-                }));
-            }
+            if (_focusNavigationMap.TryGetValue(columnKey, out var nextColumnKey)) BeginInvoke(() => MoveToNextEditableCell(rowIndex, nextColumnKey));
             else
             {
-                // 当前字段是最后一个字段
-                if (_lineBreak == true)
+                if (!string.IsNullOrEmpty(_firstFieldKey))
                 {
-                    // 允许换行：尝试跳转到下一行的第一个字段
-                    if (!string.IsNullOrEmpty(_firstFieldKey))
+                    // 当前字段是最后一个字段
+                    if (_lineBreak == true)
                     {
+                        // 允许换行：尝试跳转到下一行的第一个字段
                         // 检查是否有下一行
                         // 支持多种数据源类型
                         int totalRows = 0;
-                        if (this.DataSource is System.ComponentModel.BindingList<object> bindingList)
-                        {
-                            totalRows = bindingList.Count;
-                        }
-                        else if (this.DataSource is System.Collections.IList list)
-                        {
-                            totalRows = list.Count;
-                        }
-                        else if (this.DataSource is System.Data.DataTable dataTable)
-                        {
-                            totalRows = dataTable.Rows.Count;
-                        }
+                        if (dataSource is BindingList<object> bindingList) totalRows = bindingList.Count;
+                        else if (dataSource is System.Collections.IList list) totalRows = list.Count;
+                        else if (dataSource is System.Data.DataTable dataTable) totalRows = dataTable.Rows.Count;
 
                         if (totalRows > 0)
                         {
                             int nextRowIndex = rowIndex + 1;
 
-                            if (nextRowIndex <= totalRows)
-                            {
-                                // 延迟执行，确保当前编辑完全结束
-                                this.BeginInvoke(new Action(() =>
-                                {
-                                    if (!string.IsNullOrEmpty(_firstFieldKey))
-                                    {
-                                        MoveToNextEditableCell(nextRowIndex, _firstFieldKey);
-                                    }
-                                }));
-                            }
+                            if (nextRowIndex <= totalRows) BeginInvoke(() => MoveToNextEditableCell(nextRowIndex, _firstFieldKey!));
                         }
                     }
-                }
-                else
-                {
-                    // 不换行：回到本行的第一个字段
-                    if (!string.IsNullOrEmpty(_firstFieldKey))
+                    else
                     {
-                        // 延迟执行，确保当前编辑完全结束
-                        this.BeginInvoke(new Action(() =>
-                        {
-                            if (!string.IsNullOrEmpty(_firstFieldKey))
-                            {
-                                MoveToNextEditableCell(rowIndex, _firstFieldKey);
-                            }
-                        }));
+                        // 不换行：回到本行的第一个字段
+                        BeginInvoke(() => MoveToNextEditableCell(rowIndex, _firstFieldKey!));
                     }
                 }
             }
         }
 
-
         /// <summary>
         /// 单元格编辑模式下按下回车键事件处理
         /// </summary>
-        public void Table_CellEditEnter(object? sender, AntdUI.Table.TableCellEditEnterEventArgs e)
+        public void Table_CellEditEnter(TableCellEditEnterEventArgs e)
         {
-            // 处理焦点跳转
-            if (this.EnableFocusNavigation && e.Column?.Key != null)
+            if (EnableFocusNavigation)
             {
-                this.FocusNavigation(e.Column.Key, e.RowIndex);
-
-            }
-            else
-            {
-                // 如果焦点跳转未启用，提供提示信息
-                if (!this.EnableFocusNavigation)
-                {
-                    System.Diagnostics.Debug.WriteLine("[CellEditEnter] 提示：请先调用 ConfigureFocusNavigation 方法启用焦点跳转功能");
-                }
+                if (e.Column?.Key == null) return;
+                // 处理焦点跳转
+                FocusNavigation(e.Column.Key, e.RowIndex);
             }
         }
     }

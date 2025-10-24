@@ -399,7 +399,7 @@ namespace AntdUI.Chat
                                 mouseDown = text;
                             }
                         }
-                        ItemClick?.Invoke(this, new ChatItemEventArgs(it, e));
+                        OnItemClick(it, e);
                     }
                     else if (it is TextChatItem text) text.SelectionLength = 0;
                 }
@@ -516,6 +516,8 @@ namespace AntdUI.Chat
         /// </summary>
         [Description("单击时发生"), Category("行为")]
         public event ClickEventHandler? ItemClick;
+
+        protected virtual void OnItemClick(IChatItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new ChatItemEventArgs(item, e));
 
         #endregion
 

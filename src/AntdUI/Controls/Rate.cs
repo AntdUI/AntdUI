@@ -104,7 +104,7 @@ namespace AntdUI
                     }
                 }
                 Invalidate();
-                ValueChanged?.Invoke(this, new FloatEventArgs(_value));
+                OnValueChanged(_value);
                 OnPropertyChanged(nameof(Value));
             }
         }
@@ -114,6 +114,8 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event FloatEventHandler? ValueChanged;
+
+        protected virtual void OnValueChanged(float e) => ValueChanged?.Invoke(this, new FloatEventArgs(e));
 
         /// <summary>
         /// 自定义每项的提示信息

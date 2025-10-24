@@ -1118,6 +1118,8 @@ namespace AntdUI
         [Description("点击项时发生"), Category("行为")]
         public event VirtualItemEventHandler? ItemClick;
 
+        protected virtual void OnItemClick(VirtualItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new VirtualItemEventArgs(item, e));
+
         VirtualItem? MDown;
         int isdouclick = 0;
         protected override void OnMouseDown(MouseEventArgs e)
@@ -1227,7 +1229,7 @@ namespace AntdUI
                     int x = e.X, y = e.Y + ScrollBar.Value;
                     if (MDown.RECT.Contains(x, y))
                     {
-                        ItemClick?.Invoke(this, new VirtualItemEventArgs(MDown, e));
+                        OnItemClick(MDown, e);
                         MDown.MouseClick(this, new VirtualPanelMouseArgs(MDown, MDown.RECT, x, y, e, isdouclick));
                     }
                 }

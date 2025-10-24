@@ -134,7 +134,7 @@ namespace AntdUI
                 else if (value > _maxValue) value = _maxValue;
                 if (_value == value) return;
                 _value = value;
-                ValueChanged?.Invoke(this, new IntEventArgs(_value));
+                OnValueChanged(_value);
                 Invalidate();
                 OnPropertyChanged(nameof(Value));
             }
@@ -194,6 +194,8 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? ValueChanged;
+
+        protected virtual void OnValueChanged(int e) => ValueChanged?.Invoke(this, new IntEventArgs(e));
 
         /// <summary>
         /// 是否显示数值

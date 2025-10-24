@@ -484,9 +484,12 @@ namespace AntdUI
         [Description("CollapseItem上的按件单击时发生"), Category("行为")]
         public event CollapseButtonClickEventHandler? ButtonClick;
 
-        internal void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand, value.RectTitle, value.RectControl));
-        internal void OnExpandingChanged(CollapseItem value, bool expand, Point location) => ExpandingChanged?.Invoke(this, new CollapseExpandingEventArgs(value, expand, value.RectTitle, value.RectControl, location));
-        internal void OnButtonClickChanged(CollapseItem value, CollapseGroupButton button) => (ButtonClick ?? ButtonClickChanged)?.Invoke(this, new CollapseButtonClickEventArgs(button, value));
+        internal void OnExpandChanged2(CollapseItem value, bool expand) => OnExpandChanged(value, expand);
+        protected virtual void OnExpandChanged(CollapseItem value, bool expand) => ExpandChanged?.Invoke(this, new CollapseExpandEventArgs(value, expand, value.RectTitle, value.RectControl));
+
+        protected virtual void OnExpandingChanged(CollapseItem value, bool expand, Point location) => ExpandingChanged?.Invoke(this, new CollapseExpandingEventArgs(value, expand, value.RectTitle, value.RectControl, location));
+
+        protected virtual void OnButtonClick(CollapseItem value, CollapseGroupButton button) => (ButtonClick ?? ButtonClickChanged)?.Invoke(this, new CollapseButtonClickEventArgs(button, value));
 
         #endregion
 
@@ -930,7 +933,7 @@ namespace AntdUI
                                 if (btn.SwitchMode)
                                 {
                                     btn.Checked = !btn.Checked;
-                                    OnButtonClickChanged(item, btn);
+                                    OnButtonClick(item, btn);
                                     Invalidate(btn.rect);
                                     item.MDown = false;
                                     return;
@@ -938,7 +941,7 @@ namespace AntdUI
                                 btn.AnimationClick = false;
                                 if (btn.EditType != EButtonEditTypes.Button) btn.Select = true;
 
-                                OnButtonClickChanged(item, btn);
+                                OnButtonClick(item, btn);
 
                                 item.MDown = false;
                                 return;
@@ -1166,7 +1169,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
-                PARENT?.OnExpandChanged(this, expand);
+                PARENT?.OnExpandChanged2(this, expand);
                 if (value) PARENT?.UniqueOne(this);
                 if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
                 {

@@ -219,7 +219,7 @@ namespace AntdUI
                 if (rect_r.Contains(e.X, e.Y))
                 {
                     OnClearValue();
-                    ClearClick?.Invoke(this, e);
+                    OnClearClick(e);
                 }
                 is_clear_down = false;
                 return;
@@ -465,6 +465,8 @@ namespace AntdUI
 
         [Description("验证键盘时发生"), Category("行为")]
         public event InputVerifyKeyboardEventHandler? VerifyKeyboard;
+
+        protected virtual void OnClearClick(MouseEventArgs e) => ClearClick?.Invoke(this, e);
 
         #endregion
     }

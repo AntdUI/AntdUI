@@ -90,7 +90,7 @@ namespace AntdUI
                 if (currentValue == value) return;
                 currentValue = Constrain(value);
                 Text = GetNumberText(currentValue);
-                ValueChanged?.Invoke(this, new DecimalEventArgs(currentValue));
+                OnValueChanged(currentValue);
                 OnPropertyChanged(nameof(Value));
             }
         }
@@ -216,6 +216,8 @@ namespace AntdUI
         /// </summary>
         [Description("Value 属性值更改时发生"), Category("行为")]
         public event DecimalEventHandler? ValueChanged;
+
+        protected virtual void OnValueChanged(decimal e) => ValueChanged?.Invoke(this, new DecimalEventArgs(e));
 
         /// <summary>
         /// 格式化数值以供显示

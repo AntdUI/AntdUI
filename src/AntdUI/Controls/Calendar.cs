@@ -176,7 +176,7 @@ namespace AntdUI
             {
                 if (_value == value) return;
                 _value = value;
-                DateChanged?.Invoke(this, new DateTimeEventArgs(_value));
+                OnDateChanged(_value);
                 Invalidate();
                 LoadBadge();
                 OnPropertyChanged(nameof(Value));
@@ -735,7 +735,7 @@ namespace AntdUI
                                     }
                                     PaintDayChinese(g, it, radius, arge.OffsetX, arge.OffsetY, font4, brush_fore, brush_fore_c, brush_fore_disable, brush_active_fore, brush_active, brush_bg_disable);
                                     g.Restore(state);
-                                    ItemPaint?.Invoke(this, new CalendarPaintEventArgs(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius));
+                                    OnItemPaint(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius);
                                     g.Restore(state);
                                 }
                             }
@@ -757,7 +757,7 @@ namespace AntdUI
                                 }
                                 PaintDay(g, it, radius, arge.OffsetX, arge.OffsetY, brush_fore, brush_fore_disable, brush_active_fore, brush_active, brush_bg_disable);
                                 g.Restore(state);
-                                ItemPaint?.Invoke(this, new CalendarPaintEventArgs(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius));
+                                OnItemPaint(g, TDatePicker.Date, it.rect, it.rect_read, it.date, it.date_str, it.enable, radius);
                                 g.Restore(state);
                             }
                         }
@@ -1307,11 +1307,15 @@ namespace AntdUI
         [Description("日期 改变时发生"), Category("行为")]
         public event DateTimeEventHandler? DateChanged;
 
+        protected virtual void OnDateChanged(DateTime e) => DateChanged?.Invoke(this, new DateTimeEventArgs(e));
+
         /// <summary>
         /// 绘制项时发生
         /// </summary>
         [Description("绘制项时发生"), Category("行为")]
         public event CalendarPaintEventHandler? ItemPaint;
+
+        protected virtual void OnItemPaint(Canvas canvas, TDatePicker type, Rectangle rect, Rectangle rectreal, DateTime date, string text, bool enable, int radius) => ItemPaint?.Invoke(this, new CalendarPaintEventArgs(canvas, type, rect, rectreal, date, text, enable, radius));
 
         /// <summary>
         /// 绘制项之前发生
