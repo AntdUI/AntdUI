@@ -457,7 +457,7 @@ namespace AntdUI
                                 if (sub.rect.Contains(e.X, e.Y + y))
                                 {
                                     sub.Select = true;
-                                    ItemClick?.Invoke(this, new ItemClickEventArgs(sub, new Rectangle(sub.rect.X, sub.rect.Y - y, sub.rect.Width, sub.rect.Height), e));
+                                    OnItemClick(sub, new Rectangle(sub.rect.X, sub.rect.Y - y, sub.rect.Width, sub.rect.Height), e);
                                 }
                                 MDown = null;
                                 return;
@@ -512,6 +512,8 @@ namespace AntdUI
         /// </summary>
         [Description("点击项事件"), Category("行为")]
         public event ItemClickEventHandler? ItemClick;
+
+        protected virtual void OnItemClick(CollapseGroupSub item, Rectangle rect, MouseEventArgs e) => ItemClick?.Invoke(this, new ItemClickEventArgs(item, rect, e));
 
         #endregion
 

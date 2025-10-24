@@ -199,6 +199,8 @@ namespace AntdUI
         [Description("SelectIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectIndexChanged;
 
+        protected virtual void OnSelectIndexChanged(int e) => SelectIndexChanged?.Invoke(this, new IntEventArgs(e));
+
         #region SetSelectIndex
 
         void SetSelectIndex(int value, bool auto = false)
@@ -221,7 +223,7 @@ namespace AntdUI
                 AnimationChange = true;
                 var old = selectIndex;
                 selectIndex = value;
-                if (old != value) SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
+                if (old != value) OnSelectIndexChanged(value);
                 var speed = Math.Abs(end - AnimationChangeValue) / 50F;
                 if (speed < 8) speed = 8F;
                 if (left)
@@ -310,7 +312,7 @@ namespace AntdUI
                 AnimationChange = true;
                 var old = selectIndex;
                 selectIndex = value;
-                SelectIndexChanged?.Invoke(this, new IntEventArgs(value));
+                OnSelectIndexChanged(value);
                 var speed = Math.Abs(end - AnimationChangeValue) / 50F;
                 if (speed < 8) speed = 8F;
                 if (left)

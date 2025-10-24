@@ -186,7 +186,7 @@ namespace AntdUI
                     }
                 }
                 Invalidate();
-                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
+                OnCheckedChanged(value);
                 OnPropertyChanged(nameof(Checked));
             }
         }
@@ -221,6 +221,8 @@ namespace AntdUI
         /// </summary>
         [Description("Checked 属性值更改时发生"), Category("行为")]
         public event BoolEventHandler? CheckedChanged;
+
+        protected virtual void OnCheckedChanged(bool e) => CheckedChanged?.Invoke(this, new BoolEventArgs(e));
 
         #endregion
 

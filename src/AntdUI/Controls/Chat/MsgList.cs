@@ -339,11 +339,11 @@ namespace AntdUI.Chat
         [Description("项目双击事件"), Category("行为")]
         public event ItemClickEventHandler? ItemDoubleClick;
 
-        protected virtual void OnItemSelected(MsgItem selectedItem) => ItemSelected?.Invoke(this, new MsgItemEventArgs(selectedItem));
+        protected virtual void OnItemSelected(MsgItem item) => ItemSelected?.Invoke(this, new MsgItemEventArgs(item));
 
-        protected virtual void OnItemClick(MsgItem selectedItem, MouseEventArgs e) => ItemClick?.Invoke(this, new MsgItemClickEventArgs(selectedItem, e));
+        protected virtual void OnItemClick(MsgItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new MsgItemClickEventArgs(item, e));
 
-        protected virtual void OnItemDoubleClick(MsgItem selectedItem, MouseEventArgs e) => ItemDoubleClick?.Invoke(this, new MsgItemClickEventArgs(selectedItem, e));
+        protected virtual void OnItemDoubleClick(MsgItem item, MouseEventArgs e) => ItemDoubleClick?.Invoke(this, new MsgItemClickEventArgs(item, e));
 
         #endregion
 

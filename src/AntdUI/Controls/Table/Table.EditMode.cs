@@ -139,8 +139,7 @@ namespace AntdUI
                     value = cellSelect.value?.Tag;
                     val = cellSelect.value;
                 }
-                bool isok = true;
-                if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col, column));
+                bool isok = OnCellBeginEdit(value, it.RECORD, i_row, i_col, column);
                 if (!isok) return;
                 inEditMode = true;
 
@@ -151,12 +150,12 @@ namespace AntdUI
                     if (columnSelect.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (columnSelect.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
-                    CellBeginEditInputStyle?.Invoke(this, arge);
+                    OnCellBeginEditInputStyle(arge);
                     if (arge.Input is Select select)
                     {
                         ShowSelect(select, (cf, _value) =>
                         {
-                            bool isok_end = CellEndValueEdit?.Invoke(this, new TableEndValueEditEventArgs(_value, it.RECORD, i_row, i_col, column)) ?? true;
+                            bool isok_end = OnCellEndValueEdit(_value, it.RECORD, i_row, i_col, column);
                             if (isok_end && !cf)
                             {
                                 if (cell is TCellSelect cellSelect)
@@ -170,7 +169,7 @@ namespace AntdUI
                                     SetValue(cell, _value);
                                     LoadLayout();
                                 }
-                                CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
+                                OnCellEditComplete(it.RECORD, i_row, i_col, column);
                             }
                         });
                     }
@@ -184,8 +183,7 @@ namespace AntdUI
                 else if (cell.VALUE is AntItem item) value = item.value;
                 else value = cell.VALUE;
 
-                bool isok = true;
-                if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col, column));
+                bool isok = OnCellBeginEdit(value, it.RECORD, i_row, i_col, column);
                 if (!isok) return;
                 inEditMode = true;
 
@@ -196,12 +194,11 @@ namespace AntdUI
                     if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
-                    CellBeginEditInputStyle?.Invoke(this, arge);
+                    OnCellBeginEditInputStyle(arge);
                     ShowInput(arge.Input, (cf, _value) =>
                     {
-                        var e = new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column);
-                        arge.Call?.Invoke(e);
-                        bool isok_end = CellEndEdit?.Invoke(this, e) ?? true;
+                        arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
+                        bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
                         if (isok_end && !cf)
                         {
                             if (GetValue(value, _value, out var o))
@@ -211,7 +208,7 @@ namespace AntdUI
                                 SetValue(cell, o);
                                 if (multiline) LoadLayout();
                             }
-                            CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
+                            OnCellEditComplete(it.RECORD, i_row, i_col, column);
                         }
                     });
                 });
@@ -226,8 +223,7 @@ namespace AntdUI
                         if (cell.PROPERTY != null && cell.VALUE != null) value = cell.PROPERTY.GetValue(cell.VALUE);
                         else if (cell.VALUE is AntItem item) value = item.value;
                         else value = cell.VALUE;
-                        bool isok = true;
-                        if (CellBeginEdit != null) isok = CellBeginEdit(this, new TableEventArgs(value, it.RECORD, i_row, i_col, column));
+                        bool isok = OnCellBeginEdit(value, it.RECORD, i_row, i_col, column);
                         if (!isok) return;
                         inEditMode = true;
 
@@ -238,12 +234,11 @@ namespace AntdUI
                             if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                             else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
-                            CellBeginEditInputStyle?.Invoke(this, arge);
+                            OnCellBeginEditInputStyle(arge);
                             ShowInput(arge.Input, (cf, _value) =>
                             {
-                                var e = new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column);
-                                arge.Call?.Invoke(e);
-                                bool isok_end = CellEndEdit?.Invoke(this, e) ?? true;
+                                arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
+                                bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
                                 if (isok_end && !cf)
                                 {
                                     if (value is CellText text2)
@@ -256,7 +251,7 @@ namespace AntdUI
                                         text.Text = _value;
                                         if (GetValue(value, _value, out var o)) SetValue(cell, o);
                                     }
-                                    CellEditComplete?.Invoke(this, new ITableEventArgs(it.RECORD, i_row, i_col, column));
+                                    OnCellEditComplete(it.RECORD, i_row, i_col, column);
                                 }
                             });
                         });
@@ -450,7 +445,7 @@ namespace AntdUI
                     if (_currentEdit != null)
                     {
                         FocusedCell = null;
-                        CellEditEnter?.Invoke(sender, _currentEdit);
+                        OnCellEditEnter(sender, _currentEdit);
                     }
 
                     EditModeClose();

@@ -696,7 +696,8 @@ namespace AntdUI
         /// </summary>
         [Description("文件拖拽后时发生"), Category("行为")]
         public event DragEventHandler? DragChanged;
-        internal void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
+
+        protected virtual void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
 
         #endregion
 

@@ -450,7 +450,7 @@ namespace AntdUI
                 int old = _select;
                 _select = value;
                 style.SelectedIndexChanged(value, old);
-                SelectedIndexChanged?.Invoke(this, new IntEventArgs(value));
+                OnSelectedIndexChanged(value);
                 Invalidate();
                 ShowPage(_select);
                 OnPropertyChanged(nameof(SelectedIndex));
@@ -1578,6 +1578,8 @@ namespace AntdUI
         /// </summary>
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged;
+
+        protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
 
         internal void MouseChangeIndex(TabPage page)
         {

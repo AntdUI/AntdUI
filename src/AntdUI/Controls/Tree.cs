@@ -321,34 +321,24 @@ namespace AntdUI
         /// </summary>
         [Description("移动项事件"), Category("行为")]
         public event TreeHoverEventHandler? NodeMouseMove;
-        internal void OnNodeMouseMove(TreeItem item, bool hover)
-        {
-            if (NodeMouseMove == null) return;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseMove(this, new TreeHoverEventArgs(item, item.Rect("Text", sx, sy), hover));
-        }
 
-        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args)
-        {
-            if (SelectChanged == null) return;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            SelectChanged(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
-        }
-        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args)
-        {
-            if (NodeMouseClick == null) return;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
-        }
-        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args)
-        {
-            if (NodeMouseDoubleClick == null) return;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            NodeMouseDoubleClick(this, new TreeSelectEventArgs(item, item.Rect("Text", sx, sy), type, args));
-        }
-        internal void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
+        #region 重写
 
-        internal void OnAfterExpand(TreeItem item, bool value) => AfterExpand?.Invoke(this, new TreeCheckedEventArgs(item, value));
+        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
+        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
+        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDoubleClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
+        internal void OnNodeMouseMove(TreeItem item, bool hover) => OnNodeMouseMove(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), hover);
+
+        protected virtual void OnSelectChanged(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => SelectChanged?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
+        protected virtual void OnNodeMouseClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
+        protected virtual void OnNodeMouseDoubleClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseDoubleClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
+        protected virtual void OnNodeMouseMove(TreeItem item, Rectangle rect, bool hover) => NodeMouseMove?.Invoke(this, new TreeHoverEventArgs(item, rect, hover));
+        protected virtual void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
+        protected virtual void OnAfterExpand(TreeItem item, bool value) => AfterExpand?.Invoke(this, new TreeCheckedEventArgs(item, value));
+        internal void OnICheckedChanged(TreeItem item, bool value) => OnCheckedChanged(item, value);
+        internal void OnIAfterExpand(TreeItem item, bool value) => OnAfterExpand(item, value);
+
+        #endregion
 
         #endregion
 
@@ -1745,7 +1735,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
-                PARENT?.OnAfterExpand(this, value);
+                PARENT?.OnIAfterExpand(this, value);
                 if (items != null && items.Count > 0)
                 {
                     if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
@@ -1837,7 +1827,7 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                PARENT?.OnCheckedChanged(this, value);
+                PARENT?.OnICheckedChanged(this, value);
                 OnCheck();
                 CheckState = value ? CheckState.Checked : CheckState.Unchecked;
             }
@@ -1857,7 +1847,7 @@ namespace AntdUI
                 if (_checked != __checked)
                 {
                     _checked = __checked;
-                    PARENT?.OnCheckedChanged(this, __checked);
+                    PARENT?.OnICheckedChanged(this, __checked);
                     OnCheck();
                 }
                 if (value != CheckState.Unchecked) checkStateOld = value;

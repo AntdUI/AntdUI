@@ -201,13 +201,13 @@ namespace AntdUI
                 if (value.Length == 0 || items == null || items.Count == 0)
                 {
                     ClearSelect();
-                    SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
+                    OnSelectedValueChanged(selectedValue);
                     return;
                 }
                 CalculateRect();
                 Invalidate();
                 Text = "";
-                SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
+                OnSelectedValueChanged(selectedValue);
             }
         }
 
@@ -231,7 +231,7 @@ namespace AntdUI
             CalculateRect();
             SetCaretPostion();
             subForm?.SetValues(selecteds);
-            SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(selectedValue));
+            OnSelectedValueChanged(selectedValue);
         }
 
         /// <summary>
@@ -239,6 +239,8 @@ namespace AntdUI
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectsEventHandler? SelectedValueChanged;
+
+        protected virtual void OnSelectedValueChanged(object[] e) => SelectedValueChanged?.Invoke(this, new ObjectsEventArgs(e));
 
         string? filtertext;
         protected override void OnTextChanged(EventArgs e)

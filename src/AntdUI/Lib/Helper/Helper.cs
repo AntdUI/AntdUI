@@ -150,6 +150,7 @@ namespace AntdUI
             if (handle == null) return true;
             try
             {
+                if (handle.SafeWaitHandle.IsClosed) return close;
                 handle.WaitOne();
                 if (handle.SafeWaitHandle.IsClosed) return close;
                 return false;

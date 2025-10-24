@@ -130,21 +130,24 @@ namespace AntdUI
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectNEventHandler? SelectedValueChanged;
 
+        protected virtual void OnSelectedValueChanged(object? e) => SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(e));
+
         /// <summary>
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category("行为")]
         public event ObjectNEventHandler? ItemClick;
 
+        protected virtual void OnItemClick(object? e) => ItemClick?.Invoke(this, new ObjectNEventArgs(e));
+
         internal void DropDownChange(object value)
         {
-            var arge = new ObjectNEventArgs(value);
-            if (SelectedValue == value) ItemClick?.Invoke(this, arge);
+            if (SelectedValue == value) OnItemClick(value);
             else
             {
                 SelectedValue = value;
-                ItemClick?.Invoke(this, arge);
-                SelectedValueChanged?.Invoke(this, arge);
+                OnItemClick(value);
+                OnSelectedValueChanged(value);
             }
             select_x = 0;
             subForm = null;

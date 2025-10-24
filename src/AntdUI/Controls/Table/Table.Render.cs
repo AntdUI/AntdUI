@@ -222,14 +222,14 @@ namespace AntdUI
                 if (it.Type == RowType.Summary)
                 {
                     it.SHOW = true;
-                    var item = new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex)));
+                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
                     shows.Add(item);
                     summarys.Add(item);
                 }
                 else
                 {
                     it.SHOW = it.ShowExpand && it.Type == RowType.None && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
-                    if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
             }
@@ -245,14 +245,14 @@ namespace AntdUI
                 if (it.Type == RowType.Summary)
                 {
                     it.SHOW = true;
-                    var item = new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex)));
+                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
                     shows.Add(item);
                     summarys.Add(item);
                 }
                 else
                 {
                     it.SHOW = it.ShowExpand && (it.Type == RowType.None || it.Type == RowType.Column) && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
-                    if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
             }
@@ -270,14 +270,14 @@ namespace AntdUI
                 if (it.Type == RowType.Summary)
                 {
                     it.SHOW = true;
-                    var item = new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex)));
+                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
                     shows.Add(item);
                     summarys.Add(item);
                 }
                 else
                 {
                     it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
-                    if (it.SHOW) shows.Add(new StyleRow(it, SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(it.RECORD, it.INDEX, showIndex))));
+                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
             }
@@ -535,7 +535,7 @@ namespace AntdUI
         /// </summary>
         void PaintBg(Canvas g, RowTemplate row)
         {
-            RowPaintBegin?.Invoke(this, new TablePaintRowEventArgs(g, row.RECT, row.RECORD, row.INDEX));
+            OnRowPaintBegin(g, row.RECT, row.RECORD, row.INDEX);
             if (dragBody != null)
             {
                 if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
@@ -554,7 +554,7 @@ namespace AntdUI
                 if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get(nameof(Table), ColorScheme)), row.RECT);
                 else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
             }
-            RowPaint?.Invoke(this, new TablePaintRowEventArgs(g, row.RECT, row.RECORD, row.INDEX));
+            OnRowPaint(g, row.RECT, row.RECORD, row.INDEX);
         }
 
         #region 单元格
@@ -684,7 +684,7 @@ namespace AntdUI
                         }
                     }
                 }
-                CellPaint?.Invoke(this, new TablePaintEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN));
+                OnCellPaint(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN);
             }
             catch { }
             g.Restore(state);

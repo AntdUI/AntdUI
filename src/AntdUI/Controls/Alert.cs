@@ -380,6 +380,8 @@ namespace AntdUI
         [Description("Close时发生"), Category("行为")]
         public event RBoolEventHandler? CloseChanged;
 
+        protected virtual bool OnCloseChanged() => CloseChanged == null || CloseChanged(this, EventArgs.Empty);
+
         #endregion
 
         #region 鼠标
@@ -390,9 +392,7 @@ namespace AntdUI
         {
             if (e.Button == MouseButtons.Left && closeIcon && rect_close.Contains(e.X, e.Y))
             {
-                bool isclose = false;
-                if (CloseChanged == null || CloseChanged(this, EventArgs.Empty)) isclose = true;
-                if (isclose) Dispose();
+                if (OnCloseChanged()) Dispose();
                 return;
             }
             base.OnMouseClick(e);

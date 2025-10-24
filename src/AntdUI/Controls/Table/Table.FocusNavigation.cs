@@ -48,9 +48,6 @@ namespace AntdUI
         /// <param name="lineBreak">是否换行，不换行本行则回到第一个设置的字段</param>
         public void ConfigureFocusNavigation(string[] fieldSequence, bool selectAll = true, bool lineBreak = true)
         {
-            // 绑定事件（如果尚未绑定）
-            if (CellEditEnter == null) CellEditEnter += Table_CellEditEnter;
-
             _focusNavigationMap.Clear();
 
             for (int i = 0; i < fieldSequence.Length - 1; i++)
@@ -162,17 +159,13 @@ namespace AntdUI
         /// <summary>
         /// 单元格编辑模式下按下回车键事件处理
         /// </summary>
-        public void Table_CellEditEnter(object? sender, TableCellEditEnterEventArgs e)
+        public void Table_CellEditEnter(TableCellEditEnterEventArgs e)
         {
-            // 处理焦点跳转
-            if (EnableFocusNavigation && e.Column?.Key != null) FocusNavigation(e.Column.Key, e.RowIndex);
-            else
+            if (EnableFocusNavigation)
             {
-                // 如果焦点跳转未启用，提供提示信息
-                if (!EnableFocusNavigation)
-                {
-                    System.Diagnostics.Debug.WriteLine("[CellEditEnter] 提示：请先调用 ConfigureFocusNavigation 方法启用焦点跳转功能");
-                }
+                if (e.Column?.Key == null) return;
+                // 处理焦点跳转
+                FocusNavigation(e.Column.Key, e.RowIndex);
             }
         }
     }

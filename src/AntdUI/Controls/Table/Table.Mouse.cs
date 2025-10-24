@@ -147,7 +147,7 @@ namespace AntdUI
                                 {
                                     btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db, cellMouseDown.doubleClick);
                                     btn_template.ExtraMouseDown = true;
-                                    CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn_template, it.RECORD, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e));
+                                    OnCellButtonDown(btn_template, it.RECORD, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
                                     return;
                                 }
                             }
@@ -156,7 +156,6 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (CellButtonDown == null) return;
                     foreach (var item in template.Value)
                     {
                         if (item is CellLink btn_template)
@@ -166,7 +165,7 @@ namespace AntdUI
                                 if (btn_template.Rect.Contains(db.x, db.y))
                                 {
                                     btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db, cellMouseDown.doubleClick);
-                                    CellButtonDown(this, new TableButtonEventArgs(btn_template, it.RECORD, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e));
+                                    OnCellButtonDown(btn_template, it.RECORD, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
                                     return;
                                 }
                             }
@@ -276,7 +275,7 @@ namespace AntdUI
                             else if (i == to) d[i] = from;
                             else d[i] = i;
                         }
-                        SortRowsTree?.Invoke(this, new TableSortTreeEventArgs(record, d, from, to));
+                        OnSortRowsTree(record, d, from, to);
                     }
                     else
                     {
@@ -297,7 +296,7 @@ namespace AntdUI
                         }
                         SortData = sortData.ToArray();
                         LoadLayout();
-                        SortRows?.Invoke(this, new IntEventArgs(-1));
+                        OnSortRows(-1);
                     }
                 }
                 dragBody = null;
@@ -329,7 +328,7 @@ namespace AntdUI
                     }
                     if (btnMDown.cell.ExtraMouseDown)
                     {
-                        CellButtonUp?.Invoke(this, new TableButtonEventArgs(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, RealRect(btnMDown), e));
+                        OnCellButtonUp(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, RealRect(btnMDown), e);
                         btnMDown.cell.ExtraMouseDown = false;
                     }
                 }
@@ -376,14 +375,14 @@ namespace AntdUI
                                 {
                                     checkCell.Checked = value;
                                     SetValue(it.cell, checkCell.Checked);
-                                    CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col));
+                                    OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                                 }
                             }
                             else if (checkCell.AutoCheck)
                             {
                                 checkCell.Checked = !checkCell.Checked;
                                 SetValue(it.cell, checkCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col));
+                                OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
                     }
@@ -414,7 +413,7 @@ namespace AntdUI
                                 }
                                 radioCell.Checked = true;
                                 SetValue(it.cell, radioCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col));
+                                OnCheckedChanged(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
                     }
@@ -440,7 +439,7 @@ namespace AntdUI
                             {
                                 switchCell.Checked = !switchCell.Checked;
                                 SetValue(it.cell, switchCell.Checked);
-                                CheckedChanged?.Invoke(this, new TableCheckEventArgs(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col));
+                                OnCheckedChanged(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
                     }
@@ -542,7 +541,7 @@ namespace AntdUI
                                 {
                                     if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
                                 }
-                                var result = SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, col.COLUMN)) ?? false;
+                                var result = OnSortModeChanged(sortMode, col.COLUMN);
                                 if (result) Invalidate();
                                 else
                                 {
@@ -561,7 +560,7 @@ namespace AntdUI
                                             break;
                                     }
                                     LoadLayout();
-                                    SortRows?.Invoke(this, new IntEventArgs(it.i_cel));
+                                    OnSortRows(it.i_cel);
                                 }
                             }
                         }
@@ -570,12 +569,12 @@ namespace AntdUI
                 bool enterEdit = false;
                 if (it.doubleClick)
                 {
-                    CellDoubleClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e));
+                    OnCellDoubleClick(it.row.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
                 }
                 else
                 {
-                    CellClick?.Invoke(this, new TableClickEventArgs(it.row.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e));
+                    OnCellClick(it.row.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
                 }
                 if (enterEdit)
@@ -608,20 +607,18 @@ namespace AntdUI
                     subForm = new LayeredFormSelectDown(this, btn.cell.DropDownItems, btn.cell, rect);
                     subForm.Show(this);
                 }
-
-                var arge = new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
-                CellButtonUp?.Invoke(this, arge);
-                CellButtonClick?.Invoke(this, arge);
+                OnCellButtonUp(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+                OnCellButtonClick(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
                 return true;
             }
-            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e));
+            OnCellButtonUp(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
             return false;
         }
         bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             if (btn == null) return false;
             btn.cell.ExtraMouseDown = false;
-            CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn.cell, it.row.RECORD, it.i_row, it.i_cel, btn.col, RealRect(btn.cell.Rect, it.offset_xi, it.offset_y), e));
+            OnCellButtonUp(btn.cell, it.row.RECORD, it.i_row, it.i_cel, btn.col, RealRect(btn.cell.Rect, it.offset_xi, it.offset_y), e);
             return false;
         }
         LayeredFormSelectDown? subForm;
@@ -797,10 +794,10 @@ namespace AntdUI
             }
             if (rows == null || inEditMode) return;
             var db = CellContains(rows, false, x, y);
-            if (db == null) CellHover?.Invoke(this, new TableHoverEventArgs(new MouseEventArgs(MouseButtons.None, 0, x, y, 0)));
+            if (db == null) OnCellHover();
             else
             {
-                CellHover?.Invoke(this, new TableHoverEventArgs(db.cell.ROW.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0)));
+                OnCellHover(db.cell.ROW.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));
                 if (db.mode == 0) MouseHoverRow(db);
             }
         }
@@ -1242,7 +1239,7 @@ namespace AntdUI
                 }
             }
             CloseTip();
-            CellHover?.Invoke(this, new TableHoverEventArgs(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+            OnCellHover();
         }
 
         void ILeave(Template template)

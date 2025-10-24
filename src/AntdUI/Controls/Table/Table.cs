@@ -495,7 +495,7 @@ namespace AntdUI
             {
                 if (focusedCell == value) return;
                 focusedCell = value;
-                if (value != null) CellFocused?.Invoke(this, new TableClickEventArgs(value.ROW.RECORD, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1)));
+                if (value != null) OnCellFocused(value.ROW.RECORD, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1));
                 Invalidate();
             }
         }
@@ -735,7 +735,7 @@ namespace AntdUI
                 {
                     Invalidate();
                     OnPropertyChanged(nameof(SelectedIndex));
-                    SelectIndexChanged?.Invoke(this, EventArgs.Empty);
+                    OnSelectIndexChanged();
                 }
             }
         }
@@ -755,7 +755,7 @@ namespace AntdUI
                 selectedIndex = value;
                 Invalidate();
                 OnPropertyChanged(nameof(SelectedIndexs));
-                SelectIndexChanged?.Invoke(this, EventArgs.Empty);
+                OnSelectIndexChanged();
             }
         }
 
@@ -1856,7 +1856,7 @@ namespace AntdUI
             {
                 if (checkState == value) return;
                 checkState = value;
-                PARENT?.OnCheckedOverallChanged(this, value);
+                PARENT?.OnICheckedOverallChanged(this, value);
                 bool __checked = value == CheckState.Checked;
                 if (_checked != __checked)
                 {

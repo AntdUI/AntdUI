@@ -114,7 +114,7 @@ namespace AntdUI
             {
                 if (Helper.AreDateTimeArraysEqual(_value, value)) return;
                 _value = value;
-                ValueChanged?.Invoke(this, new DateTimesEventArgs(value));
+                OnValueChanged(value);
                 SetText(value);
                 OnPropertyChanged(nameof(Value));
             }
@@ -294,6 +294,8 @@ namespace AntdUI
         #region 事件
 
         public event DateTimesEventHandler? ValueChanged;
+
+        protected virtual void OnValueChanged(DateTime[]? e) => ValueChanged?.Invoke(this, new DateTimesEventArgs(e));
 
         /// <summary>
         /// 预置点击时发生

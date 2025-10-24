@@ -365,7 +365,7 @@ namespace AntdUI
                 Invalidate();
                 if (items == null) return;
                 SelectedItem = items[value];
-                TabChanged?.Invoke(this, new TabChangedEventArgs(_selectItem!, value));
+                OnTabChanged(_selectItem!, value);
             }
         }
 
@@ -383,7 +383,7 @@ namespace AntdUI
                 if (items == null) return;
                 //获取Index
                 var index = items.IndexOf(value);
-                TabSelectedItemChanged?.Invoke(this, new TabChangedEventArgs(value, index));
+                OnTabSelectedItemChanged(value, index);
             }
         }
 
@@ -931,7 +931,7 @@ namespace AntdUI
             {
                 dragHeader = null;
                 mdown = null;
-                AddClick?.Invoke(this, EventArgs.Empty);
+                OnAddClick();
                 return;
             }
             if (items == null) return;
@@ -991,7 +991,7 @@ namespace AntdUI
                 if (isSelectedTab)
                 {
                     _selectItem = items[newSelectedIndex];
-                    TabChanged?.Invoke(this, new TabChangedEventArgs(_selectItem!, newSelectedIndex));
+                    OnTabChanged(_selectItem!, newSelectedIndex);
                 }
                 else _selectItem = items[newSelectedIndex]; // 如果关闭的不是当前选中标签，只需要更新索引，不触发事件
             }
@@ -1124,16 +1124,25 @@ namespace AntdUI
         /// </summary>
         [Description("添加选项事件")]
         public event EventHandler? AddClick;
+
+        protected virtual void OnAddClick() => AddClick?.Invoke(this, EventArgs.Empty);
+
         /// <summary>
         /// 序列号变动事件
         /// </summary>
         [Description("序列号变动事件")]
         public event EventHandler<TabChangedEventArgs>? TabChanged;
+
+        protected virtual void OnTabChanged(TagTabItem value, int tabIndex) => TabChanged?.Invoke(this, new TabChangedEventArgs(value, tabIndex));
+
         /// <summary>
         /// 选项选中事件
         /// </summary>
         [Description("选项选中事件")]
         public event EventHandler<TabChangedEventArgs>? TabSelectedItemChanged;
+
+        protected virtual void OnTabSelectedItemChanged(TagTabItem value, int tabIndex) => TabSelectedItemChanged?.Invoke(this, new TabChangedEventArgs(value, tabIndex));
+
         /// <summary>
         /// 选项关闭事件
         /// </summary>

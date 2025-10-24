@@ -222,8 +222,8 @@ namespace AntdUI
             selectedItem = null;
             selectedValue = null;
             selectedIndex = -1;
-            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
-            SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
+            OnSelectedValueChanged(selectedValue);
+            OnSelectedIndexChanged(selectedIndex);
         }
 
         void ChangeValue(int value, object? obj)
@@ -243,8 +243,8 @@ namespace AntdUI
                 if (obj == null) Text = "";
                 else Text = obj.ToString() ?? "";
             }
-            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
-            SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
+            OnSelectedValueChanged(selectedValue);
+            OnSelectedIndexChanged(selectedIndex);
         }
         void SetChangeValue(BaseCollection items, object val)
         {
@@ -305,8 +305,8 @@ namespace AntdUI
             selectedValue = value;
             Text = text;
             if (AutoPrefixSvg && item != null) PrefixSvg = item.IconSvg;
-            SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(selectedValue));
-            SelectedIndexChanged?.Invoke(this, new IntEventArgs(selectedIndex));
+            OnSelectedValueChanged(selectedValue);
+            OnSelectedIndexChanged(selectedIndex);
             SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));
             OnPropertyChanged(nameof(SelectedIndex));
             OnPropertyChanged(nameof(SelectedValue));
@@ -330,6 +330,8 @@ namespace AntdUI
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged;
 
+        protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
+
         /// <summary>
         /// 多层树结构更改时发生
         /// </summary>
@@ -341,6 +343,8 @@ namespace AntdUI
         /// </summary>
         [Description("SelectedValue 属性值更改时发生"), Category("行为")]
         public event ObjectNEventHandler? SelectedValueChanged;
+
+        protected virtual void OnSelectedValueChanged(object? e) => SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(e));
 
         /// <summary>
         /// 关闭某项 时发生

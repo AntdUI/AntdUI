@@ -626,7 +626,7 @@ namespace AntdUI
             {
                 if (part.Href != null && part.Bounds.Contains(e.Location))
                 {
-                    OnLinkClicked(new LinkClickedEventArgs(part.Href, part.Text));
+                    OnLinkClicked(part.Href, part.Text);
                     return;
                 }
             }
@@ -648,22 +648,22 @@ namespace AntdUI
             if (count > 0) Invalidate();
         }
 
-        protected virtual void OnLinkClicked(LinkClickedEventArgs e)
+        protected virtual void OnLinkClicked(string href, string text)
         {
-            if (LinkAutoNavigation && Uri.TryCreate(e.Href, UriKind.Absolute, out _))
+            if (LinkAutoNavigation && Uri.TryCreate(href, UriKind.Absolute, out _))
             {
                 try
                 {
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                     {
-                        FileName = e.Href,
+                        FileName = href,
                         UseShellExecute = true
                     });
                     return;
                 }
                 catch { }
             }
-            LinkClicked?.Invoke(this, e);
+            LinkClicked?.Invoke(this, new LinkClickedEventArgs(href, text));
         }
 
         #endregion

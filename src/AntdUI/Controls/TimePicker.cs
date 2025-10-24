@@ -56,7 +56,7 @@ namespace AntdUI
             {
                 _value = value;
                 Text = new DateTime(1997, 1, 1, value.Hours, value.Minutes, value.Seconds).ToString(Format);
-                ValueChanged?.Invoke(this, new TimeSpanNEventArgs(value));
+                OnValueChanged(value);
                 OnPropertyChanged(nameof(Value));
             }
         }
@@ -131,6 +131,8 @@ namespace AntdUI
         #region 事件
 
         public event TimeSpanNEventHandler? ValueChanged;
+
+        protected virtual void OnValueChanged(TimeSpan e) => ValueChanged?.Invoke(this, new TimeSpanNEventArgs(e));
 
         #endregion
 
