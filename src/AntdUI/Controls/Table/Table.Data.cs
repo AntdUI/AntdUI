@@ -523,9 +523,10 @@ namespace AntdUI
             }
             var dir = new List<int>();
             int index = 0;
+            int offset = showRowNumbers ? 1 : 0; // 如果启用行号列，索引需要偏移
             ForColumnI(columns, column =>
             {
-                if (column.Fixed) dir.Add(index);
+                if (column.Fixed) dir.Add(index + offset); // 添加偏移
                 index++;
             });
             if (dir.Count > 0)
@@ -542,7 +543,7 @@ namespace AntdUI
                     dir.Reverse();
                     foreach (int i in dir)
                     {
-                        if (i == index - 1) _fixedColumnR.Add(i);
+                        if (i == index - 1 + offset) _fixedColumnR.Add(i); // 最右边也需要考虑偏移
                         else if (_fixedColumnR.Count > 0 && _fixedColumnR[_fixedColumnR.Count - 1] - 1 == i) _fixedColumnR.Add(i);
                     }
                 }
@@ -658,10 +659,21 @@ namespace AntdUI
                 get
                 {
                     if (cells == null) return null;
+                    
+                    // 检查是否有行号列，如果有则调整索引
+                    bool hasRowNumberColumn = cells.ContainsKey("__RowNumber__");
+                    int adjustedIndex = hasRowNumberColumn ? index - 1 : index;
+                    
+                    // 如果调整后的索引小于 0，说明访问的是行号列
+                    if (adjustedIndex < 0) return null;
+                    
                     int i = 0;
                     foreach (var item in cells)
                     {
-                        if (i == index)
+                        // 跳过行号列
+                        if (item.Key == "__RowNumber__") continue;
+                        
+                        if (i == adjustedIndex)
                         {
                             if (item.Value is PropertyDescriptor prop) return prop.GetValue(record);
                             else if (item.Value is AntItem it) return it.value;

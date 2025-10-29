@@ -17,6 +17,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using AntdUI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,8 +37,8 @@ namespace Demo.Controls
             #region Table
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnCheck("check").SetFixed().SetWidth("100"),
+                new AntdUI.Column("name", "姓名") { KeyTree = "Sub" }.SetFixed().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -61,12 +62,27 @@ namespace Demo.Controls
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
 
-
             // 配置焦点跳转顺序 
             table1.ConfigureFocusNavigation(["age", "address", "date",], selectAll: true, lineBreak: true);
 
             //设置总结栏
             SummarySet();
+
+            // 启用行号
+            table1.ShowRowNumbers = true;
+
+            // 自定义所有属性
+            table1.RowNumberColumnWidth = 100;
+            selectRowNumberMode.Items.AddRange(EnumListAll(typeof(AntdUI.TableRowNumberMode)));
+            selectRowNumberIndentStyle.Items.AddRange(EnumListAll(typeof(AntdUI.TableRowNumberIndentStyle)));
+            table1.RowNumberIndentStyle = TableRowNumberIndentStyle.IndentDash;
+            table1.RowNumberTitle = "序号";
+            table1.RowNumberIndentSize = 40;
+            //table1.RowNumberFollowSort = true; // `false`: 行号始终显示1, 2, 3...（不随排序改变） `true`: 行号随数据排序改变（使用原始数据索引）
+            //table1.RowNumberFont = new Font("Arial", 10, FontStyle.Bold);
+            table1.RowNumberForeColor = Color.BlueViolet;
+            //table1.RowNumberAlign = ColumnAlign.Right;
+
 
             #endregion
 
@@ -83,6 +99,14 @@ namespace Demo.Controls
             var lists = new List<AntdUI.SelectItem>(list.Length);
             foreach (var it in list) lists.Add(new AntdUI.SelectItem(it));
             lists.RemoveAt(0);
+            return lists.ToArray();
+        }
+
+        AntdUI.SelectItem[] EnumListAll(Type data)
+        {
+            Array list = Enum.GetValues(data);
+            var lists = new List<AntdUI.SelectItem>(list.Length);
+            foreach (var it in list) lists.Add(new AntdUI.SelectItem(it));
             return lists.ToArray();
         }
 
@@ -372,6 +396,116 @@ namespace Demo.Controls
                 int index = start + i;
                 list.Add(new TestClass(index, i, AntdUI.Localization.Get("Table.Data.Name3", "胡彦祖"), 20 + index));
             }
+
+            // 插入分组数据（用于测试行号折叠功能）
+            var wuYanzu = new TestClass(1000, 0, "吴彦祖", 50)
+            {
+                Sub = new List<TestClass>()
+            };
+            list.Add(wuYanzu);
+
+            var wuWife = new TestClass(1001, 0, "Lisa.S（老婆）", 47);
+            wuYanzu.Sub.Add(wuWife);
+
+            var wuDaughter = new TestClass(1002, 0, "吴斐然（女儿）", 10)
+            {
+                Sub = new List<TestClass>()
+            };
+
+            var pet1 = new TestClass(1011, 0, "旺财（宠物狗）", 3);
+            var pet2 = new TestClass(1012, 0, "咪咪（宠物猫）", 2);
+            wuDaughter.Sub.Add(pet1);
+            wuDaughter.Sub.Add(pet2);
+            wuYanzu.Sub.Add(wuDaughter);
+
+            var wuFan1 = new TestClass(1003, 0, "粉丝团成员1", 28);
+            var wuFan2 = new TestClass(1004, 0, "粉丝团成员2", 25);
+            wuYanzu.Sub.Add(wuFan1);
+            wuYanzu.Sub.Add(wuFan2);
+
+            var huYanbin = new TestClass(2000, 0, "胡彦斌", 41)
+            {
+                Sub = new List<TestClass>()
+            };
+            list.Add(huYanbin);
+
+            var huExGirlfriend = new TestClass(2001, 0, "郑爽（前女友）", 32)
+            {
+                Sub = new List<TestClass>()
+            };
+
+            var affair1 = new TestClass(2011, 0, "绯闻女友A", 28);
+            var affair2 = new TestClass(2012, 0, "绯闻女友B", 26);
+            huExGirlfriend.Sub.Add(affair1);
+            huExGirlfriend.Sub.Add(affair2);
+            huYanbin.Sub.Add(huExGirlfriend);
+
+
+            var huSon = new TestClass(2002, 0, "胡小宝（儿子）", 8)
+            {
+                Sub = new List<TestClass>()
+            };
+
+            var classmate1 = new TestClass(2021, 0, "小明（同学）", 8);
+            var classmate2 = new TestClass(2022, 0, "小红（同学）", 8);
+            huSon.Sub.Add(classmate1);
+            huSon.Sub.Add(classmate2);
+            huYanbin.Sub.Add(huSon);
+
+
+            var huWorks = new TestClass(2003, 0, "音乐团队", 35)
+            {
+                Sub = new List<TestClass>()
+            };
+            var music1 = new TestClass(2031, 0, "编曲师", 38);
+            var music2 = new TestClass(2032, 0, "吉他手", 32);
+            huWorks.Sub.Add(music1);
+            huWorks.Sub.Add(music2);
+            huYanbin.Sub.Add(huWorks);
+
+
+            var liXian = new TestClass(3000, 0, "李现（单身）", 33);
+            list.Add(liXian);
+
+
+            var eddiePeng = new TestClass(3100, 0, "彭于晏", 42)
+            {
+                Sub = new List<TestClass>()
+            };
+            list.Add(eddiePeng);
+
+
+            var eddieMother = new TestClass(3101, 0, "彭妈妈", 70)
+            {
+                Sub = new List<TestClass>()
+            };
+
+
+            var eddieMotherFriend1 = new TestClass(4001, 0, "陈阿姨（妈妈的朋友）", 68)
+            {
+                Sub = new List<TestClass>()
+            };
+            var eddieMotherFriend2 = new TestClass(4002, 0, "李阿姨（妈妈的朋友）", 65);
+
+
+            var friendChild1 = new TestClass(5001, 0, "儿子小王", 25);
+            var friendChild2 = new TestClass(5002, 0, "女儿小张", 23);
+            eddieMotherFriend1.Sub.Add(friendChild1);
+            eddieMotherFriend1.Sub.Add(friendChild2);
+
+            eddieMother.Sub.Add(eddieMotherFriend1);
+            eddieMother.Sub.Add(eddieMotherFriend2);
+
+            var eddieSister = new TestClass(3102, 0, "彭妹妹（姐姐）", 40)
+            {
+                Sub = new List<TestClass>()
+            };
+            var niece = new TestClass(3103, 0, "外甥小彭", 12);
+            eddieSister.Sub.Add(niece);
+
+            eddiePeng.Sub.Add(eddieMother);
+            eddiePeng.Sub.Add(eddieSister);
+
             return list;
         }
 
@@ -637,6 +771,17 @@ namespace Demo.Controls
                     OnPropertyChanged();
                 }
             }
+
+            List<TestClass> _sub;
+            public List<TestClass> Sub
+            {
+                get => _sub;
+                set
+                {
+                    _sub = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private void checkboxFocusNavigation_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
@@ -660,6 +805,27 @@ namespace Demo.Controls
                 { "address", $"共{dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length)}地址"} ,
                 { "hobby", $"共{dataList.Select(x => x.hobby).Distinct().Count()}种爱好" }
             };
+        }
+
+        private void selectRowNumberMode_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        {
+            if (e.Value is AntdUI.TableRowNumberMode v)
+            {
+                table1.RowNumberMode = v;
+                if (v == AntdUI.TableRowNumberMode.VisibleGrouped)
+                    selectRowNumberIndentStyle.Visible = true;
+                else
+                    selectRowNumberIndentStyle.Visible = false;
+            }
+
+            else
+                table1.RowNumberMode = AntdUI.TableRowNumberMode.All;
+        }
+
+        private void selectRowNumberIndentStyle_SelectedValueChanged(object sender, ObjectNEventArgs e)
+        {
+            if (e.Value is AntdUI.TableRowNumberIndentStyle)
+                table1.RowNumberIndentStyle = (AntdUI.TableRowNumberIndentStyle)e.Value;
         }
     }
 }

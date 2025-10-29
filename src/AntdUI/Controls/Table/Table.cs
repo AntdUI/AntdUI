@@ -118,8 +118,50 @@ namespace AntdUI
             get
             {
                 if (dataTmp == null || dataTmp.rows.Length == 0) return null;
-                if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
+                if (index < 0) return null;
+                
+                // 优先从当前渲染的 rows 中获取数据（包括树形子行）
+                if (rows != null && rows.Length > index + 1)
+                {
+                    var rowTemplate = rows[index + 1]; //第一行是表头
+                    if (rowTemplate != null)
+                    {
+                        if (rowTemplate.INDEX_REAL >= 0 && rowTemplate.INDEX_REAL < dataTmp.rows.Length)
+                        {
+                            // 对于普通行（非树形子行），使用 INDEX_REAL 获取正确的数据
+                            return dataTmp.rows[rowTemplate.INDEX_REAL];
+                        }
+                        else if (rowTemplate.INDEX_REAL == -1 && rowTemplate.RECORD != null)
+                        {
+                            // 对于树形子行，直接从 record 的属性构建 IRow
+                            var cellsDict = new Dictionary<string, object?>();
+                            var record = rowTemplate.RECORD;
+                            var props = TypeDescriptor.GetProperties(record);
+
+                            foreach (var cell in rowTemplate.cells)
+                            {
+                                if (cell.COLUMN == null || string.IsNullOrEmpty(cell.COLUMN.Key)) continue;
+
+                                if (cell.COLUMN is ColumnRowNumber)
+                                {
+                                    // 添加行号列占位符，值为 null 保持索引一致
+                                    cellsDict["__RowNumber__"] = null;
+                                }
+                                else
+                                {
+                                    var prop = props.Find(cell.COLUMN.Key, true);
+                                    cellsDict[cell.COLUMN.Key] = prop?.GetValue(record);
+                                }
+                            }
+                            return new IRow(-1, rowTemplate.RECORD, cellsDict);
+                        }
+                    }
+                }
+                
+                // 回退到原始逻辑：直接从 dataTmp.rows 获取
+                if (index >= dataTmp.rows.Length) return null;
                 if (SortData == null) return dataTmp.rows[index];
+                if (SortData[index] < 0 || SortData[index] >= dataTmp.rows.Length) return null;
                 return dataTmp.rows[SortData[index]];
             }
         }
@@ -799,6 +841,177 @@ namespace AntdUI
         /// </summary>
         [Description("多选行"), Category("行为"), DefaultValue(false)]
         public bool MultipleRows { get; set; }
+
+        bool showRowNumbers = false;
+        /// <summary>
+        /// 显示行号
+        /// </summary>
+        [Description("显示行号"), Category("外观"), DefaultValue(false)]
+        public bool ShowRowNumbers
+        {
+            get => showRowNumbers;
+            set
+            {
+                if (showRowNumbers == value) return;
+                showRowNumbers = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(ShowRowNumbers));
+            }
+        }
+
+        int rowNumberColumnWidth = 60;
+        /// <summary>
+        /// 行号列宽度（像素）
+        /// </summary>
+        [Description("行号列宽度（像素）"), Category("外观"), DefaultValue(60)]
+        public int RowNumberColumnWidth
+        {
+            get => rowNumberColumnWidth;
+            set
+            {
+                if (rowNumberColumnWidth == value) return;
+                rowNumberColumnWidth = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberColumnWidth));
+            }
+        }
+
+        bool rowNumberFollowSort = false;
+        /// <summary>
+        /// 行号是否跟随排序
+        /// </summary>
+        [Description("行号是否跟随排序"), Category("外观"), DefaultValue(false)]
+        public bool RowNumberFollowSort
+        {
+            get => rowNumberFollowSort;
+            set
+            {
+                if (rowNumberFollowSort == value) return;
+                rowNumberFollowSort = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberFollowSort));
+            }
+        }
+
+        string rowNumberTitle = "#";
+        /// <summary>
+        /// 行号列标题
+        /// </summary>
+        [Description("行号列标题"), Category("外观"), DefaultValue("#")]
+        public string RowNumberTitle
+        {
+            get => rowNumberTitle;
+            set
+            {
+                if (rowNumberTitle == value) return;
+                rowNumberTitle = value ?? "#";
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberTitle));
+            }
+        }
+
+        Font? rowNumberFont;
+        /// <summary>
+        /// 行号列字体
+        /// </summary>
+        [Description("行号列字体"), Category("外观"), DefaultValue(null)]
+        public Font? RowNumberFont
+        {
+            get => rowNumberFont;
+            set
+            {
+                if (rowNumberFont == value) return;
+                rowNumberFont = value;
+                Invalidate();
+                OnPropertyChanged(nameof(RowNumberFont));
+            }
+        }
+
+        Color? rowNumberForeColor;
+        /// <summary>
+        /// 行号列文字颜色
+        /// </summary>
+        [Description("行号列文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? RowNumberForeColor
+        {
+            get => rowNumberForeColor;
+            set
+            {
+                if (rowNumberForeColor == value) return;
+                rowNumberForeColor = value;
+                Invalidate();
+                OnPropertyChanged(nameof(RowNumberForeColor));
+            }
+        }
+
+        TableRowNumberMode rowNumberMode = TableRowNumberMode.All;
+        /// <summary>
+        /// 行号计数模式
+        /// </summary>
+        [Description("行号计数模式"), Category("外观"), DefaultValue(TableRowNumberMode.All)]
+        public TableRowNumberMode RowNumberMode
+        {
+            get => rowNumberMode;
+            set
+            {
+                if (rowNumberMode == value) return;
+                rowNumberMode = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberMode));
+            }
+        }
+
+        ColumnAlign rowNumberAlign = ColumnAlign.Center;
+        /// <summary>
+        /// 行号列对齐方式
+        /// </summary>
+        [Description("行号列对齐方式"), Category("外观"), DefaultValue(ColumnAlign.Center)]
+        public ColumnAlign RowNumberAlign
+        {
+            get => rowNumberAlign;
+            set
+            {
+                if (rowNumberAlign == value) return;
+                rowNumberAlign = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberAlign));
+            }
+        }
+
+        TableRowNumberIndentStyle rowNumberIndentStyle = TableRowNumberIndentStyle.IndentDash;
+        /// <summary>
+        /// 行号列缩进样式（VisibleGrouped 模式下子行显示方式）
+        /// </summary>
+        [Description("行号列缩进样式（VisibleGrouped 模式下子行显示方式）"), Category("外观"), DefaultValue(TableRowNumberIndentStyle.IndentDash)]
+        public TableRowNumberIndentStyle RowNumberIndentStyle
+        {
+            get => rowNumberIndentStyle;
+            set
+            {
+                if (rowNumberIndentStyle == value) return;
+                rowNumberIndentStyle = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberIndentStyle));
+            }
+        }
+
+        int rowNumberIndentSize = 20;
+        /// <summary>
+        /// 行号列缩进大小（每级缩进的像素数）
+        /// </summary>
+        [Description("行号列缩进大小（每级缩进的像素数）"), Category("外观"), DefaultValue(20)]
+        public int RowNumberIndentSize
+        {
+            get => rowNumberIndentSize;
+            set
+            {
+                if (rowNumberIndentSize == value) return;
+                rowNumberIndentSize = value;
+                if (LoadLayout()) Invalidate();
+                OnPropertyChanged(nameof(RowNumberIndentSize));
+            }
+        }
 
         /// <summary>
         /// 返回当前树表格字段名
@@ -1983,6 +2196,28 @@ namespace AntdUI
     }
 
     /// <summary>
+    /// 行号列
+    /// </summary>
+    public class ColumnRowNumber : Column
+    {
+        /// <summary>
+        /// 行号列
+        /// </summary>
+        /// <param name="title">显示文字，默认为"#"</param>
+        public ColumnRowNumber(string title = "#") : base("__RowNumber__", title)
+        {
+            Align = ColumnAlign.Center;
+            ReadOnly = true;
+            Ellipsis = false;
+        }
+
+        /// <summary>
+        /// 插槽
+        /// </summary>
+        public new Func<object?, object, int, object?>? Render { get; }
+    }
+
+    /// <summary>
     /// 开关表头
     /// </summary>
     public class ColumnSwitch : Column
@@ -2845,4 +3080,5 @@ namespace AntdUI
         /// </summary>
         Icon = 2
     }
+
 }

@@ -1003,6 +1003,21 @@ namespace AntdUI
             /// </summary>
             public string? value { get; set; }
 
+            /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? CellFont { get; set; }
+
+            /// <summary>
+            /// 文字颜色
+            /// </summary>
+            public Color? CellFore { get; set; }
+
+            /// <summary>
+            /// 父级编号（用于层级编号格式）
+            /// </summary>
+            public string? ParentNumber { get; set; }
+
             #region 布局
 
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
@@ -1013,37 +1028,39 @@ namespace AntdUI
 
             public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
+                Font fontToUse = CellFont ?? font;
+                
                 if (COLUMN.LineBreak)
                 {
                     if (COLUMN.Width != null)
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureText(value, font, w - gap.x2);
+                            var size2 = g.MeasureText(value, fontToUse, w - gap.x2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap.x2);
+                            var size2 = g.MeasureText(value, fontToUse, (int)Math.Ceiling(width * (f / 100F)) - gap.x2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap.x2);
+                            var size2 = g.MeasureText(value, fontToUse, (int)Math.Ceiling(i * Config.Dpi) - gap.x2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else
                         {
-                            var size2 = g.MeasureText(value, font, width - gap.x2);
+                            var size2 = g.MeasureText(value, fontToUse, width - gap.x2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                     }
                 }
-                var size = g.MeasureText(value, font);
+                var size = g.MeasureText(value, fontToUse);
                 MinWidth = size.Width;
                 return new Size(size.Width + gap.x2, size.Height);
             }
@@ -1052,7 +1069,84 @@ namespace AntdUI
 
             #region 渲染
 
-            public void Print(Canvas g, TAMode colorScheme, Font font, SolidBrush fore, bool enable) => g.DrawText(value, font, fore, RECT_REAL, StringFormat(COLUMN));
+            public void Print(Canvas g, TAMode colorScheme, Font font, SolidBrush fore, bool enable)
+            {
+                Font fontToUse = CellFont ?? font;
+                Color foreColorToUse = CellFore ?? fore.Color;
+                
+                Rectangle drawRect = RECT_REAL;
+                string displayText = value ?? string.Empty;
+                
+                // 如果是行号列且是 VisibleGrouped 模式
+                if (COLUMN is ColumnRowNumber && PARENT.rowNumberMode == TableRowNumberMode.VisibleGrouped)
+                {
+                    int treeDepth = ROW.ExpandDepth; // 获取树的展开深度
+                    var indentStyle = PARENT.RowNumberIndentStyle;
+                    
+                    if (treeDepth > 0 && indentStyle != TableRowNumberIndentStyle.None)
+                    {
+                        // 判断是否需要缩进
+                        bool needsIndent = indentStyle == TableRowNumberIndentStyle.Indent 
+                                         || indentStyle == TableRowNumberIndentStyle.IndentLine
+                                         || indentStyle == TableRowNumberIndentStyle.IndentDot
+                                         || indentStyle == TableRowNumberIndentStyle.IndentDash;
+                        
+                        int indentPixels = 0;
+                        if (needsIndent)
+                        {
+                            // 添加缩进 - 使用用户设置的缩进大小
+                            indentPixels = (int)(treeDepth * PARENT.RowNumberIndentSize * Config.Dpi);
+                            drawRect = new Rectangle(
+                                RECT_REAL.X + indentPixels, 
+                                RECT_REAL.Y, 
+                                RECT_REAL.Width - indentPixels, 
+                                RECT_REAL.Height
+                            );
+                        }
+                        
+                        // 根据不同的缩进样式进行绘制
+                        if (indentStyle == TableRowNumberIndentStyle.IndentLine)
+                        {
+                            // 绘制竖线分割表示层次
+                            Color lineColor = Color.FromArgb(150, foreColorToUse);
+                            using (var pen = new Pen(lineColor, (float)(1F * Config.Dpi)))
+                            {
+                                for (int i = 1; i <= treeDepth; i++)
+                                {
+                                    // 竖线位置应该与缩进后的文本位置对齐
+                                    int lineX = RECT_REAL.X + (i * PARENT.RowNumberIndentSize * (int)Config.Dpi) - (int)(PARENT.RowNumberIndentSize * 0.5F * Config.Dpi);
+                                    // 只绘制部分高度的竖线，不覆盖整个单元格
+                                    int lineTop = RECT_REAL.Top + (int)(RECT_REAL.Height * 0.2F);
+                                    int lineBottom = RECT_REAL.Bottom - (int)(RECT_REAL.Height * 0.2F);
+                                    g.DrawLine(pen, lineX, lineTop, lineX, lineBottom);
+                                }
+                            }
+                        }
+                        else if (indentStyle == TableRowNumberIndentStyle.IndentDot || indentStyle == TableRowNumberIndentStyle.Dot)
+                        {
+                            // 点号格式：如果有父级编号，显示为 "父级.子级" 格式
+                            if (!string.IsNullOrEmpty(ParentNumber))
+                            {
+                                displayText = ParentNumber + "." + value;
+                            }
+                        }
+                        else if (indentStyle == TableRowNumberIndentStyle.IndentDash || indentStyle == TableRowNumberIndentStyle.Dash)
+                        {
+                            // 横线格式：如果有父级编号，显示为 "父级-子级" 格式
+                            if (!string.IsNullOrEmpty(ParentNumber))
+                            {
+                                displayText = ParentNumber + "-" + value;
+                            }
+                        }
+                        // Indent 模式只需要缩进，不需要额外处理
+                    }
+                }
+                
+                using (var foreBrush = new SolidBrush(foreColorToUse))
+                {
+                    g.DrawText(displayText, fontToUse, foreBrush, drawRect, StringFormat(COLUMN));
+                }
+            }
 
             #endregion
 

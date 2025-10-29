@@ -160,35 +160,68 @@ namespace AntdUI
             #region 处理表头
 
             var _columns = new List<Column>(dataTmp.columns.Length);
-            if (columns == null || columns.Count == 0) ForColumn(dataTmp.columns, it => _columns.Add(it));
+
+            // 如果启用了行号显示，先添加行号列
+            if (showRowNumbers)
+            {
+                var rowNumberColumn = new ColumnRowNumber(rowNumberTitle);
+                rowNumberColumn.PARENT = this;
+                rowNumberColumn.Width = rowNumberColumnWidth.ToString();
+                rowNumberColumn.Align = rowNumberAlign; // 应用对齐方式
+                rowNumberColumn.INDEX = 0;
+                rowNumberColumn.INDEX_REAL = -1; // 行号列不在原始columns中
+                _columns.Add(rowNumberColumn);
+            }
+
+            // 添加用户定义的列
+            if (columns == null || columns.Count == 0)
+            {
+                ForColumn(dataTmp.columns, it => _columns.Add(it));
+            }
             else
             {
-                int x = 0;
+                // 使用统一的 ForColumn 方法，自动设置 INDEX
                 ForColumn(columns, it =>
                 {
-                    int INDEX = _columns.Count;
+                    // 返回列的索引
+                    int INDEX = _columns.Count;  
                     _columns.Add(it);
-                    if (it.Width != null) col_width.Add(x, ColumnWidth(it.Width));
-                    x++;
-                    if (it.KeyTree != null)
-                    {
-                        foreach (var item in dataTmp.columns)
-                        {
-                            if (item.key == it.KeyTree)
-                            {
-                                KeyTree = it.KeyTree;
-                                break;
-                            }
-                        }
-                    }
                     return INDEX;
                 });
-                if (KeyTree != null)
+            }
+
+            // 处理列宽
+            for (int x = 0; x < _columns.Count; x++)
+            {
+                var it = _columns[x];
+                if (it.Width != null && it.Key != "__RowNumber__")
                 {
-                    foreach (var it in _columns)
+                    col_width.Add(x, ColumnWidth(it.Width));
+                }
+                else if (it is ColumnRowNumber)
+                {
+                    // 行号列设置为固定像素宽度
+                    col_width.Add(x, (int)(rowNumberColumnWidth * Config.Dpi));
+                }
+
+                if (it.KeyTree != null)
+                {
+                    foreach (var item in dataTmp.columns)
                     {
-                        if (it.KeyTree == KeyTree) KeyTreeINDEX = it.INDEX;
+                        if (item.key == it.KeyTree)
+                        {
+                            KeyTree = it.KeyTree;
+                            break;
+                        }
                     }
+                }
+            }
+
+            if (KeyTree != null)
+            {
+                foreach (var it in _columns)
+                {
+                    if (it.KeyTree == KeyTree) KeyTreeINDEX = it.INDEX;
                 }
             }
 
@@ -228,6 +261,7 @@ namespace AntdUI
 
             if (KeyTree == null)
             {
+                int displayIndex = start; // 显示序号
                 ForRow(dataTmp, start, end, row =>
                 {
                     if (row == null)
@@ -236,12 +270,37 @@ namespace AntdUI
                         return;
                     }
                     var cells = new List<CELL>(_columns.Count);
-                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
+                    foreach (var column in _columns)
+                    {
+                        if (showRowNumbers && column is ColumnRowNumber)
+                        {
+                            // 根据 RowNumberFollowSort 决定行号值
+                            int rowNumber;
+                            if (rowNumberFollowSort)
+                            {
+                                // 跟随排序，使用原始行索引 + 1
+                                rowNumber = row.i + 1;
+                            }
+                            else
+                            {
+                                // 不跟随排序，使用显示序号
+                                rowNumber = displayIndex + 1;
+                            }
+                            AddRows(ref cells, ref processing, column, null, rowNumber.ToString(), null, false);
+                        }
+                        else
+                        {
+                            AddRows(ref cells, ref processing, column, row, column.Key);
+                        }
+                    }
                     if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.i, row.record);
+                    displayIndex++;
                 });
             }
             else
             {
+                int rowNumberCounter = 0; // 行号计数器（用于树形模式）
+                int rootTreeIndex = 0; // 根树索引（用于 VisibleGrouped 模式）
                 ForRow(dataTmp, start, end, row =>
                 {
                     if (row == null)
@@ -250,8 +309,39 @@ namespace AntdUI
                         return;
                     }
                     var cells = new List<CELL>(_columns.Count);
-                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
-                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
+                    string? parentRowNumber = null; // 父行的行号
+                    foreach (var column in _columns)
+                    {
+                        if (showRowNumbers && column is ColumnRowNumber)
+                        {
+                            int rowNumber;
+                            if (rowNumberFollowSort)
+                            {
+                                rowNumber = row.i + 1;
+                            }
+                            else
+                            {
+                                if (rowNumberMode == TableRowNumberMode.VisibleGrouped)
+                                {
+                                    // VisibleGrouped 模式：每棵根树从1开始独立计数
+                                    rootTreeIndex++;
+                                    rowNumber = rootTreeIndex;
+                                }
+                                else
+                                {
+                                    rowNumberCounter++;
+                                    rowNumber = rowNumberCounter;
+                                }
+                            }
+                            parentRowNumber = rowNumber.ToString(); // 保存父行的行号
+                            AddRows(ref cells, ref processing, column, null, parentRowNumber, null, false);
+                        }
+                        else
+                        {
+                            AddRows(ref cells, ref processing, column, row, column.Key);
+                        }
+                    }
+                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true, ref rowNumberCounter, parentRowNumber);
                 });
             }
             if (dataTmp.summary != null)
@@ -332,7 +422,12 @@ namespace AntdUI
                                 it.INDEX = cel_i;
                                 var text_size = it.GetSize(g, columnfont ?? Font, font_size, rect.Width, gap);
                                 var readWidthCell = read_width_cell[cel_i];
-                                if (it.COLUMN is ColumnSort) readWidthCell.value = -2;
+                                if (it.COLUMN is ColumnRowNumber)
+                                {
+                                    // 行号列使用固定宽度
+                                    readWidthCell.value = (int)(rowNumberColumnWidth * Config.Dpi);
+                                }
+                                else if (it.COLUMN is ColumnSort) readWidthCell.value = -2;
                                 else if (it.COLUMN is ColumnCheck check && check.NoTitle) readWidthCell.value = -1;
                                 else
                                 {
@@ -367,7 +462,13 @@ namespace AntdUI
                             {
                                 var it = row.cells[cel_i];
                                 it.INDEX = cel_i;
-                                if (it.COLUMN is ColumnSort || (it is TCellCheck check && check.NoTitle))
+                                if (it.COLUMN is ColumnRowNumber)
+                                {
+                                    // 行号列使用固定宽度，不参与自动计算
+                                    read_width_cell[cel_i].value = (int)(rowNumberColumnWidth * Config.Dpi);
+                                    if (max_height < font_size.Height) max_height = font_size.Height;
+                                }
+                                else if (it.COLUMN is ColumnSort || (it is TCellCheck check && check.NoTitle))
                                 {
                                     if (max_height < gap.y2) max_height = gap.y2;
                                 }
@@ -728,7 +829,7 @@ namespace AntdUI
                 }
             }
         }
-        bool ForTree(ref List<RowTemplate?> _rows, ref int processing, RowTemplate row_new, IRow row, List<Column> _columns, string KeyTree, int KeyTreeINDEX, int depth, bool show)
+        bool ForTree(ref List<RowTemplate?> _rows, ref int processing, RowTemplate row_new, IRow row, List<Column> _columns, string KeyTree, int KeyTreeINDEX, int depth, bool show, ref int rowNumberCounter, string? parentNumber = null)
         {
             if (DefaultExpand && dataOne)
             {
@@ -746,9 +847,13 @@ namespace AntdUI
             var list_tree = ForTreeValue(row, KeyTree);
             if (list_tree != null)
             {
-                show = show && row_new.Expand;
+                bool isChildVisible = show && row_new.Expand; // 子行是否可见
                 row_new.CanExpand = true;
                 count++;
+
+                // VisibleGrouped 模式：每棵树独立计数，重置计数器
+                int groupCounter = 0;
+
                 for (int i = 0; i < list_tree.Count; i++)
                 {
                     var item_tree = GetRow(list_tree[i], _columns.Count);
@@ -756,8 +861,120 @@ namespace AntdUI
                     {
                         var row_tree = new IRow(i, list_tree[i], item_tree);
                         var cells_tree = new List<CELL>(_columns.Count);
-                        foreach (var column in _columns) AddRows(ref cells_tree, ref processing, column, row_tree, column.Key);
-                        if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
+
+                        string? currentNumber = null; // 当前行的编号
+                        string? fullParentNumber = null; // 完整父级路径（传递给子层）
+
+                        foreach (var column in _columns)
+                        {
+                            if (showRowNumbers && column is ColumnRowNumber)
+                            {
+                                int rowNumber = 0;
+
+                                if (rowNumberMode == TableRowNumberMode.All)
+                                {
+                                    // All 模式 - 所有行都计数
+                                    if (rowNumberFollowSort)
+                                    {
+                                        rowNumber = row.i + 1;
+                                    }
+                                    else
+                                    {
+                                        rowNumberCounter++;
+                                        rowNumber = rowNumberCounter;
+                                    }
+                                }
+                                else if (rowNumberMode == TableRowNumberMode.VisibleOnly)
+                                {
+                                    // VisibleOnly 模式 - 只有可见行计数
+                                    if (rowNumberFollowSort)
+                                    {
+                                        rowNumber = row.i + 1;
+                                    }
+                                    else
+                                    {
+                                        if (isChildVisible)
+                                        {
+                                            rowNumberCounter++;
+                                            rowNumber = rowNumberCounter;
+                                        }
+                                    }
+                                }
+                                else if (rowNumberMode == TableRowNumberMode.VisibleGrouped)
+                                {
+                                    // VisibleGrouped 模式 - 每棵子树独立从1开始计数
+                                    if (rowNumberFollowSort)
+                                    {
+                                        rowNumber = row.i + 1;
+                                    }
+                                    else
+                                    {
+                                        if (isChildVisible)
+                                        {
+                                            groupCounter++;
+                                            rowNumber = groupCounter;
+                                        }
+                                    }
+                                }
+
+                                currentNumber = rowNumber.ToString();
+
+                                // 根据 rowNumberIndentStyle 选择合适的连接符
+                                string separator = ".";
+                                if (rowNumberIndentStyle == TableRowNumberIndentStyle.IndentDash || rowNumberIndentStyle == TableRowNumberIndentStyle.Dash)
+                                {
+                                    separator = "-";
+                                }
+                                else if (rowNumberIndentStyle == TableRowNumberIndentStyle.IndentDot || rowNumberIndentStyle == TableRowNumberIndentStyle.Dot)
+                                { 
+                                    separator = ".";
+                                }
+                                // IndentLine, None, Indent 模式使用默认的点号
+
+                                // 构建传递给下一层的完整父级路径
+                                // 如果有父级编号，则构建完整的层级路径
+                                if (!string.IsNullOrEmpty(parentNumber))
+                                {
+                                    // 当前行的完整路径 = 父级路径 + 连接符 + 当前行号
+                                    fullParentNumber = parentNumber + separator + currentNumber;
+                                }
+                                else
+                                {
+                                    // 如果没有父级编号，则完整路径就是当前行号
+                                    fullParentNumber = currentNumber;
+                                }
+
+                                // 添加行号单元格
+                                var cell = GetCELL(column, ref processing, null, currentNumber, null, false);
+                                if (cell is TCellText textCell)
+                                {
+                                    // 如果存在父行号，设置父级编号
+                                    // 这样在 IndentDash 模式下可以显示 "父行号-子行号" 的格式
+                                    if (!string.IsNullOrEmpty(parentNumber))
+                                    {
+                                        textCell.ParentNumber = parentNumber;
+                                    }
+
+                                    // 应用自定义字体和颜色
+                                    if (rowNumberFont != null)
+                                    {
+                                        textCell.CellFont = rowNumberFont;
+                                    }
+                                    if (rowNumberForeColor.HasValue)
+                                    {
+                                        textCell.CellFore = rowNumberForeColor.Value;
+                                    }
+                                }
+                                if (cell != null) cells_tree.Add(cell);
+                            }
+                            else
+                            {
+                                AddRows(ref cells_tree, ref processing, column, row_tree, column.Key);
+                            }
+                        }
+                        // 对于树形子行，INDEX_REAL 应该设置为 -1，因为它们不在 dataTmp.rows 中
+                        // 避免通过 Table[rowIndex] 访问时返回错误的数据
+                        if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), -1, row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, isChildVisible, ref rowNumberCounter, fullParentNumber)) count++;
                     }
                 }
             }
@@ -950,6 +1167,17 @@ namespace AntdUI
         float check_radius = 0F, check_border = 1F;
         void AddRows(ref List<CELL> cells, ref int processing, Column column, IRow row, string key, bool summary = false)
         {
+            // 处理行号列（汇总行不显示行号）
+            if (column is ColumnRowNumber)
+            {
+                if (summary)
+                {
+                    // 汇总行不显示行号
+                    AddRows(ref cells, ref processing, column, null, "", null, summary);
+                }
+                return; // 行号列已在遍历时处理
+            }
+
             if (summary)
             {
                 if (row.cells.TryGetValue(key, out var ov))
@@ -983,8 +1211,31 @@ namespace AntdUI
         /// <param name="prop">反射</param>
         void AddRows(ref List<CELL> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop, bool summary)
         {
-            if (value == null) cells.Add(new TCellText(this, column, prop, ov, null));
-            else cells.Add(GetCELL(column, ref processing, ov, value, prop, summary));
+            CELL? cell = null;
+            if (value == null)
+            {
+                cell = new TCellText(this, column, prop, ov, null);
+            }
+            else
+            {
+                cell = GetCELL(column, ref processing, ov, value, prop, summary);
+            }
+
+            // 如果是行号列，应用自定义字体和颜色
+            if (showRowNumbers && cell != null && column is ColumnRowNumber && cell is TCellText textCell)
+            {
+                if (rowNumberFont != null)
+                {
+                    textCell.CellFont = rowNumberFont;
+                }
+                if (rowNumberForeColor.HasValue)
+                {
+                    textCell.CellFore = rowNumberForeColor.Value;
+                }
+            }
+
+            if (cell != null) cells.Add(cell);
+
             if (ov is INotifyPropertyChanged notify)
             {
                 notify.PropertyChanged -= Notify_PropertyChanged;
