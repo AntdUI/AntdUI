@@ -627,6 +627,12 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 点击时自动改变选中状态
+        /// </summary>
+        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(false)]
+        public bool AutoToggle { get; set; }
+
         bool toggle = false;
         /// <summary>
         /// 选中状态
@@ -2510,7 +2516,8 @@ namespace AntdUI
 
         protected override void OnClick(EventArgs e)
         {
-            Form? form = FindForm();
+            if (AutoToggle) Toggle = !toggle;
+            var form = FindForm();
             if (form != null) form.DialogResult = DialogResult;
             base.OnClick(e);
         }

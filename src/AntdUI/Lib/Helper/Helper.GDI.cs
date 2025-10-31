@@ -238,6 +238,43 @@ namespace AntdUI
             return flags;
         }
 
+
+        static Dictionary<string, StringFormat> ffs = new Dictionary<string, StringFormat>();
+        /// <summary>
+        /// 文本布局
+        /// </summary>
+        /// <param name="measure">是否测量</param>
+        public static StringFormat TF(FormatFlags flags, bool measure = false)
+        {
+            var key = (int)flags + "_" + measure;
+            if (ffs.TryGetValue(key, out var r)) return r;
+            StringFormat sf = new StringFormat(StringFormat.GenericTypographic);
+#if NET40 || NET46 || NET48
+            ffs.Add(key, sf);
+#else
+            ffs.TryAdd(key, sf);
+#endif
+            // 处理垂直对齐（LineAlignment）
+            if (flags.HasFlag(FormatFlags.Top)) sf.LineAlignment = StringAlignment.Near;
+            else if (flags.HasFlag(FormatFlags.VerticalCenter)) sf.LineAlignment = StringAlignment.Center;
+            else if (flags.HasFlag(FormatFlags.Bottom)) sf.LineAlignment = StringAlignment.Far;
+
+            // 处理水平对齐（Alignment）
+            if (flags.HasFlag(FormatFlags.Left)) sf.Alignment = StringAlignment.Near;
+            else if (flags.HasFlag(FormatFlags.HorizontalCenter)) sf.Alignment = StringAlignment.Center;
+            else if (flags.HasFlag(FormatFlags.Right)) sf.Alignment = StringAlignment.Far;
+
+            // 处理文本截断方式
+            if (flags.HasFlag(FormatFlags.EllipsisCharacter)) sf.Trimming = StringTrimming.EllipsisCharacter;
+
+            // 处理换行设置
+            if (flags.HasFlag(FormatFlags.NoWrap)) sf.FormatFlags |= StringFormatFlags.NoWrap;
+
+            if (!measure) sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
+
+            return sf;
+        }
+
         #endregion
 
         /// <summary>
@@ -1043,12 +1080,10 @@ namespace AntdUI
 
         public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image = null, int offset = 0)
         {
-            using (var sc = SF_NoWrap())
-            {
-                PaintEmpty(g, rect, font, fore, text, image, offset, sc);
-            }
+            PaintEmpty(g, rect, font, fore, text, image, offset, FormatFlags.Center | FormatFlags.NoWrap);
         }
 
+        [Obsolete("use FormatFlags")]
         public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text, Image? image, int offset, StringFormat sf)
         {
             using (var brush = new SolidBrush(fore))
@@ -1088,6 +1123,47 @@ namespace AntdUI
                     g.String(emptytext, font, brush, rect_font, sf);
                 }
                 else g.String(emptytext, font, brush, rect, sf);
+            }
+        }
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text, Image? image, int offset, FormatFlags format)
+        {
+            using (var brush = new SolidBrush(fore))
+            {
+                if (offset > 0)
+                {
+                    rect.Offset(0, offset);
+                    rect.Height -= offset;
+                }
+                string emptytext = text ?? Localization.Get("NoData", "暂无数据");
+                var bmp = image ?? Config.EmptyImage;
+                if (bmp != null)
+                {
+                    int gap = (int)(8 * Config.Dpi);
+                    var size = g.MeasureString(emptytext, font);
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - bmp.Width) / 2, rect.Y + (rect.Height - bmp.Height) / 2 - size.Height, bmp.Width, bmp.Height), rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+                    g.Image(bmp, rect_img);
+                    g.String(emptytext, font, brush, rect_font, format);
+                }
+                else if (Config.EmptyImageSvg != null)
+                {
+                    var size = g.MeasureString(emptytext, font);
+                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+
+                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
+                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
+
+                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, fore))
+                    {
+                        if (_bmp == null)
+                        {
+                            g.String(emptytext, font, brush, rect, format);
+                            return;
+                        }
+                        else g.Image(_bmp, rect_img);
+                    }
+                    g.String(emptytext, font, brush, rect_font, format);
+                }
+                else g.String(emptytext, font, brush, rect, format);
             }
         }
 

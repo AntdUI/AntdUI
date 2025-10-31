@@ -1403,92 +1403,62 @@ namespace AntdUI
 
         void PaintEmpty(Canvas g, Rectangle rect, int offset) => g.PaintEmpty(rect, Font, fore ?? Colour.Text.Get(nameof(Table), "emptyFore", ColorScheme), EmptyText, EmptyImage, offset, StringFormat(ColumnAlign.Center));
 
-        public static StringFormat StringFormat(Column column, bool isColumn) => isColumn ? StringFormat(column.ColAlign ?? column.Align, LineBreak: column.ColBreak) : StringFormat(column);
+        public static FormatFlags StringFormat(Column column, bool isColumn) => isColumn ? StringFormat(column.ColAlign ?? column.Align, LineBreak: column.ColBreak) : StringFormat(column);
 
-        public static StringFormat StringFormat(Column column) => StringFormat(column.Align, column.Ellipsis, column.LineBreak);
+        public static FormatFlags StringFormat(Column column) => StringFormat(column.Align, column.Ellipsis, column.LineBreak);
 
-        static Dictionary<string, StringFormat> sf_cache = new Dictionary<string, StringFormat>(12) { { "Center00", Helper.SF_NoWrap() } };
-        public static StringFormat StringFormat(ColumnAlign Align, bool Ellipsis = false, bool LineBreak = false)
+        public static FormatFlags StringFormat(ColumnAlign Align, bool Ellipsis = false, bool LineBreak = false)
         {
-            var id = Align.ToString() + (Ellipsis ? 1 : 0) + (LineBreak ? 1 : 0);
-            if (sf_cache.TryGetValue(id, out var value)) return value;
+            if (Ellipsis && LineBreak)
+            {
+                switch (Align)
+                {
+                    case ColumnAlign.Center:
+                        return FormatFlags.Center | FormatFlags.NoWrapEllipsis;
+                    case ColumnAlign.Left:
+                        return FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+                    case ColumnAlign.Right:
+                    default:
+                        return FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+                }
+            }
+            else if (Ellipsis)
+            {
+                switch (Align)
+                {
+                    case ColumnAlign.Center:
+                        return FormatFlags.Center | FormatFlags.EllipsisCharacter;
+                    case ColumnAlign.Left:
+                        return FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
+                    case ColumnAlign.Right:
+                    default:
+                        return FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
+                }
+            }
+            else if (LineBreak)
+            {
+                switch (Align)
+                {
+                    case ColumnAlign.Center:
+                        return FormatFlags.Center;
+                    case ColumnAlign.Left:
+                        return FormatFlags.Left | FormatFlags.VerticalCenter;
+                    case ColumnAlign.Right:
+                    default:
+                        return FormatFlags.Right | FormatFlags.VerticalCenter;
+                }
+            }
             else
             {
-                if (Ellipsis && LineBreak)
+                switch (Align)
                 {
-                    switch (Align)
-                    {
-                        case ColumnAlign.Center:
-                            StringFormat resultCenter = Helper.SF_Ellipsis();
-                            sf_cache.Add(id, resultCenter);
-                            return resultCenter;
-                        case ColumnAlign.Left:
-                            StringFormat resultLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
-                            sf_cache.Add(id, resultLeft);
-                            return resultLeft;
-                        case ColumnAlign.Right:
-                        default:
-                            StringFormat resultRight = Helper.SF_Ellipsis(lr: StringAlignment.Far);
-                            sf_cache.Add(id, resultRight);
-                            return resultRight;
-                    }
-                }
-                else if (Ellipsis)
-                {
-                    switch (Align)
-                    {
-                        case ColumnAlign.Center:
-                            StringFormat resultCenter = Helper.SF_ALL();
-                            sf_cache.Add(id, resultCenter);
-                            return resultCenter;
-                        case ColumnAlign.Left:
-                            StringFormat resultLeft = Helper.SF_ALL(lr: StringAlignment.Near);
-                            sf_cache.Add(id, resultLeft);
-                            return resultLeft;
-                        case ColumnAlign.Right:
-                        default:
-                            StringFormat resultRight = Helper.SF_ALL(lr: StringAlignment.Far);
-                            sf_cache.Add(id, resultRight);
-                            return resultRight;
-                    }
-                }
-                else if (LineBreak)
-                {
-                    switch (Align)
-                    {
-                        case ColumnAlign.Center:
-                            StringFormat resultCenter = Helper.SF();
-                            sf_cache.Add(id, resultCenter);
-                            return resultCenter;
-                        case ColumnAlign.Left:
-                            StringFormat resultLeft = Helper.SF(lr: StringAlignment.Near);
-                            sf_cache.Add(id, resultLeft);
-                            return resultLeft;
-                        case ColumnAlign.Right:
-                        default:
-                            StringFormat resultRight = Helper.SF(lr: StringAlignment.Far);
-                            sf_cache.Add(id, resultRight);
-                            return resultRight;
-                    }
-                }
-                else
-                {
-                    switch (Align)
-                    {
-                        case ColumnAlign.Center:
-                            StringFormat resultCenter = Helper.SF_NoWrap();
-                            sf_cache.Add(id, resultCenter);
-                            return resultCenter;
-                        case ColumnAlign.Left:
-                            StringFormat resultLeft = Helper.SF_NoWrap(lr: StringAlignment.Near);
-                            sf_cache.Add(id, resultLeft);
-                            return resultLeft;
-                        case ColumnAlign.Right:
-                        default:
-                            StringFormat resultRight = Helper.SF_NoWrap(lr: StringAlignment.Far);
-                            sf_cache.Add(id, resultRight);
-                            return resultRight;
-                    }
+                    case ColumnAlign.Center:
+                        return FormatFlags.Center | FormatFlags.NoWrap;
+                    case ColumnAlign.Left:
+                        return FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
+                    case ColumnAlign.Right:
+                    default:
+                        return FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
                 }
             }
         }
