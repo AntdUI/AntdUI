@@ -37,7 +37,7 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("name", "姓名").SetFixed().SetTree("Sub").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -60,7 +60,6 @@ namespace Demo.Controls
 
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
-
 
             // 配置焦点跳转顺序 
             table1.ConfigureFocusNavigation(["age", "address", "date",], selectAll: true, lineBreak: true);
@@ -372,6 +371,116 @@ namespace Demo.Controls
                 int index = start + i;
                 list.Add(new TestClass(index, i, AntdUI.Localization.Get("Table.Data.Name3", "胡彦祖"), 20 + index));
             }
+
+            // 插入分组数据（用于测试行号折叠功能）
+            var wuYanzu = new TestClass(1000, 0, "吴彦祖", 50)
+            {
+                Sub = new List<TestClass>()
+            };
+            list.Add(wuYanzu);
+
+            var wuWife = new TestClass(1001, 0, "Lisa.S（老婆）", 47);
+            wuYanzu.Sub.Add(wuWife);
+
+            var wuDaughter = new TestClass(1002, 0, "吴斐然（女儿）", 10)
+            {
+                Sub = new List<TestClass>()
+            };
+
+            var pet1 = new TestClass(1011, 0, "旺财（宠物狗）", 3);
+            var pet2 = new TestClass(1012, 0, "咪咪（宠物猫）", 2);
+            wuDaughter.Sub.Add(pet1);
+            wuDaughter.Sub.Add(pet2);
+            wuYanzu.Sub.Add(wuDaughter);
+
+            var wuFan1 = new TestClass(1003, 0, "粉丝团成员1", 28);
+            var wuFan2 = new TestClass(1004, 0, "粉丝团成员2", 25);
+            wuYanzu.Sub.Add(wuFan1);
+            wuYanzu.Sub.Add(wuFan2);
+
+            var huYanbin = new TestClass(2000, 0, "胡彦斌", 41)
+            {
+                Sub = new List<TestClass>()
+            };
+            list.Add(huYanbin);
+
+            var huExGirlfriend = new TestClass(2001, 0, "郑爽（前女友）", 32)
+            {
+                Sub = new List<TestClass>()
+            };
+
+            var affair1 = new TestClass(2011, 0, "绯闻女友A", 28);
+            var affair2 = new TestClass(2012, 0, "绯闻女友B", 26);
+            huExGirlfriend.Sub.Add(affair1);
+            huExGirlfriend.Sub.Add(affair2);
+            huYanbin.Sub.Add(huExGirlfriend);
+
+
+            var huSon = new TestClass(2002, 0, "胡小宝（儿子）", 8)
+            {
+                Sub = new List<TestClass>()
+            };
+
+            var classmate1 = new TestClass(2021, 0, "小明（同学）", 8);
+            var classmate2 = new TestClass(2022, 0, "小红（同学）", 8);
+            huSon.Sub.Add(classmate1);
+            huSon.Sub.Add(classmate2);
+            huYanbin.Sub.Add(huSon);
+
+
+            var huWorks = new TestClass(2003, 0, "音乐团队", 35)
+            {
+                Sub = new List<TestClass>()
+            };
+            var music1 = new TestClass(2031, 0, "编曲师", 38);
+            var music2 = new TestClass(2032, 0, "吉他手", 32);
+            huWorks.Sub.Add(music1);
+            huWorks.Sub.Add(music2);
+            huYanbin.Sub.Add(huWorks);
+
+
+            var liXian = new TestClass(3000, 0, "李现（单身）", 33);
+            list.Add(liXian);
+
+
+            var eddiePeng = new TestClass(3100, 0, "彭于晏", 42)
+            {
+                Sub = new List<TestClass>()
+            };
+            list.Add(eddiePeng);
+
+
+            var eddieMother = new TestClass(3101, 0, "彭妈妈", 70)
+            {
+                Sub = new List<TestClass>()
+            };
+
+
+            var eddieMotherFriend1 = new TestClass(4001, 0, "陈阿姨（妈妈的朋友）", 68)
+            {
+                Sub = new List<TestClass>()
+            };
+            var eddieMotherFriend2 = new TestClass(4002, 0, "李阿姨（妈妈的朋友）", 65);
+
+
+            var friendChild1 = new TestClass(5001, 0, "儿子小王", 25);
+            var friendChild2 = new TestClass(5002, 0, "女儿小张", 23);
+            eddieMotherFriend1.Sub.Add(friendChild1);
+            eddieMotherFriend1.Sub.Add(friendChild2);
+
+            eddieMother.Sub.Add(eddieMotherFriend1);
+            eddieMother.Sub.Add(eddieMotherFriend2);
+
+            var eddieSister = new TestClass(3102, 0, "彭妹妹（姐姐）", 40)
+            {
+                Sub = new List<TestClass>()
+            };
+            var niece = new TestClass(3103, 0, "外甥小彭", 12);
+            eddieSister.Sub.Add(niece);
+
+            eddiePeng.Sub.Add(eddieMother);
+            eddiePeng.Sub.Add(eddieSister);
+
             return list;
         }
 
@@ -634,6 +743,17 @@ namespace Demo.Controls
                 set
                 {
                     _btns = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            List<TestClass> _sub;
+            public List<TestClass> Sub
+            {
+                get => _sub;
+                set
+                {
+                    _sub = value;
                     OnPropertyChanged();
                 }
             }

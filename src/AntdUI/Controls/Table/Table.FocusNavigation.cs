@@ -37,8 +37,20 @@ namespace AntdUI
         /// <summary>
         /// 是否启用焦点自动跳转
         /// </summary>
-        [Description("文是否启用焦点自动跳转字颜色"), Category("行为"), DefaultValue(false)]
+        [Description("是否启用焦点自动跳转"), Category("行为"), DefaultValue(false)]
         public bool EnableFocusNavigation { get; set; } = false;
+
+        /// <summary>
+        /// 焦点跳转时自动选中行（行背景色跟随）
+        /// </summary>
+        [Description("焦点跳转时自动选中行"), Category("行为"), DefaultValue(true)]
+        public bool FocusNavigationAutoSelectRow { get; set; } = true;
+
+        /// <summary>
+        /// 焦点跳转时自动滚动到新行
+        /// </summary>
+        [Description("焦点跳转时自动滚动到新行"), Category("行为"), DefaultValue(true)]
+        public bool FocusNavigationAutoScroll { get; set; } = true;
 
         /// <summary>
         /// 配置焦点跳转顺序  
@@ -81,6 +93,12 @@ namespace AntdUI
                 {
                     BeginInvoke(new Action(() =>
                     {
+                        // 更新选中行索引，使行背景色跟随焦点切换
+                        if (FocusNavigationAutoSelectRow && (selectedIndex.Length == 0 || selectedIndex[0] != rowIndex)) SelectedIndex = rowIndex;
+
+                        // 滚动到新行，确保行在可见范围内
+                        if (FocusNavigationAutoScroll) ScrollLine(rowIndex);
+
                         // 获取列索引
                         var columnIndex = Columns.IndexOf(targetColumn);
 
@@ -134,17 +152,17 @@ namespace AntdUI
                     {
                         // 允许换行：尝试跳转到下一行的第一个字段
                         // 检查是否有下一行
-                        // 支持多种数据源类型
+                        // 优先使用 rows.Length（可见行数），这样可以正确处理树形展开/折叠的情况
                         int totalRows = 0;
-                        if (dataSource is BindingList<object> bindingList) totalRows = bindingList.Count;
+                        if (rows != null && rows.Length > 0) totalRows = rows.Length - rowSummary;  // 使用可见行数（考虑树形展开/折叠）
+                        else if (dataSource is BindingList<object> bindingList) totalRows = bindingList.Count;
                         else if (dataSource is System.Collections.IList list) totalRows = list.Count;
                         else if (dataSource is System.Data.DataTable dataTable) totalRows = dataTable.Rows.Count;
 
                         if (totalRows > 0)
                         {
                             int nextRowIndex = rowIndex + 1;
-
-                            if (nextRowIndex <= totalRows) BeginInvoke(() => MoveToNextEditableCell(nextRowIndex, _firstFieldKey!));
+                            if (nextRowIndex < totalRows) BeginInvoke(() => MoveToNextEditableCell(nextRowIndex, _firstFieldKey!));
                         }
                     }
                     else
