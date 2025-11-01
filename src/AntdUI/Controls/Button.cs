@@ -39,6 +39,7 @@ namespace AntdUI
         public Button() : base(ControlType.Button)
         {
             base.BackColor = Color.Transparent;
+            sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
         }
 
         #region 属性
@@ -374,6 +375,37 @@ namespace AntdUI
         [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
         public float ArrowProg { get; set; } = -1F;
 
+        #region 快捷键
+
+        bool useMnemonic = true;
+        /// <summary>
+        /// 如助记键
+        /// </summary>
+        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
+        public bool UseMnemonic
+        {
+            get => useMnemonic;
+            set
+            {
+                if (useMnemonic == value) return;
+                useMnemonic = value;
+                if (value) sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
+                else sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.None;
+            }
+        }
+
+        protected override bool ProcessMnemonic(char charCode)
+        {
+            if (UseMnemonic && Enabled && Visible && IsMnemonic(charCode, Text))
+            {
+                PerformClick();
+                return true;
+            }
+            return base.ProcessMnemonic(charCode);
+        }
+
+        #endregion
+
         #region 文本
 
         string? text;
@@ -399,7 +431,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat stringFormat = Helper.SF_NoWrap();
+        StringFormat sf = Helper.SF_NoWrap();
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>
         /// 文本位置
@@ -412,7 +444,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref stringFormat);
+                textAlign.SetAlignment(ref sf);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }
@@ -460,7 +492,7 @@ namespace AntdUI
             {
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
-                stringFormat.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
+                sf.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
                 OnPropertyChanged(nameof(AutoEllipsis));
             }
         }
@@ -477,7 +509,7 @@ namespace AntdUI
             {
                 if (textMultiLine == value) return;
                 textMultiLine = value;
-                stringFormat.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
+                sf.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));
             }
@@ -1714,7 +1746,7 @@ namespace AntdUI
                         PaintTextAlign(rect_read, ref rect_text);
                     }
                 }
-                g.DrawText(text, Font, color, rect_text, stringFormat);
+                g.DrawText(text, Font, color, rect_text, sf);
             }
         }
 

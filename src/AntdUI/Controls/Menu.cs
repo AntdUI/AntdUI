@@ -390,7 +390,8 @@ namespace AntdUI
             IUSelect(items);
             if (items.ListExceed(i1))
             {
-                Invalidate(); return;
+                Invalidate();
+                return;
             }
             var it1 = items[i1];
             it1.Select = true;
@@ -406,12 +407,14 @@ namespace AntdUI
             IUSelect(items);
             if (items.ListExceed(i1))
             {
-                Invalidate(); return;
+                Invalidate();
+                return;
             }
             var it1 = items[i1];
             if (it1.items.ListExceed(i2))
             {
-                Invalidate(); return;
+                Invalidate();
+                return;
             }
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
@@ -1448,6 +1451,7 @@ namespace AntdUI
         {
             if (items == null || items.Count == 0) return;
             IUSelect(items);
+            Invalidate();
         }
 
         void IUSelect(MenuItemCollection items)
