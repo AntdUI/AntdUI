@@ -455,6 +455,10 @@ namespace AntdUI
                             {
                                 if (radio.Rect.Contains(db.x, db.y) && radio.Enabled && radio.AutoCheck) radio.Checked = !radio.Checked;
                             }
+                            else if (item is CellSwitch _switch)
+                            {
+                                if (_switch.Rect.Contains(db.x, db.y) && _switch.Enabled && _switch.AutoCheck) _switch.Checked = !_switch.Checked;
+                            }
                         }
                     }
                     else if (it.row.IsColumn && it.cell is TCellColumn col)
@@ -856,6 +860,15 @@ namespace AntdUI
                         }
                         else radio_template.ExtraMouseHover = false;
                     }
+                    else if (item is CellSwitch switch_template)
+                    {
+                        if (switch_template.Enabled && switch_template.AutoCheck)
+                        {
+                            switch_template.ExtraMouseHover = switch_template.Rect.Contains(db.x, db.y);
+                            if (switch_template.ExtraMouseHover) hand++;
+                        }
+                        else switch_template.ExtraMouseHover = false;
+                    }
                 }
                 return hand > 0;
             }
@@ -1249,6 +1262,7 @@ namespace AntdUI
                 if (it is CellLink btn) btn.ExtraMouseHover = false;
                 else if (it is CellCheckbox checkbox) checkbox.ExtraMouseHover = false;
                 else if (it is CellRadio radio) radio.ExtraMouseHover = false;
+                else if (it is CellSwitch _switch) _switch.ExtraMouseHover = false;
             }
         }
 

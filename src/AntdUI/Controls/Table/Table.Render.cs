@@ -1320,82 +1320,112 @@ namespace AntdUI
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
             float border = BorderCellWidth * Config.Dpi;
-            if (BorderHigh)
+            switch (BorderRenderMode)
             {
-                var half = border / 2F;
-                for (int i = s; i < dividers.Length; i++)
-                {
-                    var divider = dividers[i];
-                    g.Fill(color, new RectangleF(divider[1], divider[0] - half, divider[2], border));
-                }
-            }
-            else
-            {
-                using (var pen = new Pen(color, border))
-                {
+                case TableBorderMode.None:
+                    int sp = (int)border, sp2 = sp / 2;
                     for (int i = s; i < dividers.Length; i++)
                     {
                         var divider = dividers[i];
-                        g.DrawLine(pen, divider[1], divider[0], divider[1] + divider[2], divider[0]);
+                        g.Fill(color, new Rectangle(divider[1], divider[0] - sp2, divider[2], sp));
                     }
-                }
+                    break;
+                case TableBorderMode.Pen:
+                    using (var pen = new Pen(color, border))
+                    {
+                        for (int i = s; i < dividers.Length; i++)
+                        {
+                            var divider = dividers[i];
+                            g.DrawLine(pen, divider[1], divider[0], divider[1] + divider[2], divider[0]);
+                        }
+                    }
+                    break;
+                case TableBorderMode.High:
+                    var half = border / 2F;
+                    for (int i = s; i < dividers.Length; i++)
+                    {
+                        var divider = dividers[i];
+                        g.Fill(color, new RectangleF(divider[1], divider[0] - half, divider[2], border));
+                    }
+                    break;
             }
         }
         void PaintBorder(Canvas g, int[] it)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
             float border = BorderCellWidth * Config.Dpi;
-            if (BorderHigh)
+            switch (BorderRenderMode)
             {
-                var half = border / 2F;
-                g.Fill(color, new RectangleF(it[1], it[0] - half, it[2], border));
-            }
-            else
-            {
-                using (var pen = new Pen(color, border))
-                {
-                    g.DrawLine(pen, it[1], it[0], it[1] + it[2], it[0]);
-                }
+                case TableBorderMode.None:
+                    int sp = (int)border, sp2 = sp / 2;
+                    g.Fill(color, new Rectangle(it[1], it[0] - sp2, it[2], sp));
+                    break;
+                case TableBorderMode.Pen:
+                    using (var pen = new Pen(color, border))
+                    {
+                        g.DrawLine(pen, it[1], it[0], it[1] + it[2], it[0]);
+                    }
+                    break;
+                case TableBorderMode.High:
+                    var half = border / 2F;
+                    g.Fill(color, new RectangleF(it[1], it[0] - half, it[2], border));
+                    break;
             }
         }
         void PaintBorderH(Canvas g, int[][] dividers)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
             float border = BorderCellWidth * Config.Dpi;
-            if (BorderHigh)
+            switch (BorderRenderMode)
             {
-                var half = border / 2F;
-                foreach (var it in dividers)
-                {
-                    g.Fill(color, new RectangleF(it[0] - half, it[1], border, it[2]));
-                }
-            }
-            else
-            {
-                using (var pen = new Pen(color, border))
-                {
-                    foreach (var it in dividers) g.DrawLine(pen, it[0], it[1], it[0], it[1] + it[2]);
-                }
+                case TableBorderMode.None:
+                    int sp = (int)border, sp2 = sp / 2;
+                    foreach (var it in dividers)
+                    {
+                        g.Fill(color, new RectangleF(it[0] - sp2, it[1], sp, it[2]));
+                    }
+                    break;
+                case TableBorderMode.Pen:
+                    using (var pen = new Pen(color, border))
+                    {
+                        foreach (var it in dividers) g.DrawLine(pen, it[0], it[1], it[0], it[1] + it[2]);
+                    }
+                    break;
+                case TableBorderMode.High:
+                    var half = border / 2F;
+                    foreach (var it in dividers)
+                    {
+                        g.Fill(color, new RectangleF(it[0] - half, it[1], border, it[2]));
+                    }
+                    break;
             }
         }
         void PaintBorder(Canvas g, Rectangle rect)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
             float border = BorderCellWidth * Config.Dpi;
-            if (BorderHigh)
+            switch (BorderRenderMode)
             {
-                var half = border / 2F;
-                g.Fill(color, new RectangleF(rect.X, rect.Y - half, rect.Width, border));// 上边
-                g.Fill(color, new RectangleF(rect.X, rect.Bottom - half, rect.Width, border));// 下边
-                g.Fill(color, new RectangleF(rect.X - half, rect.Y, border, rect.Height));// 左边
-                g.Fill(color, new RectangleF(rect.Right - half, rect.Y, border, rect.Height));// 右边
-            }
-            else
-            {
-                using (var pen = new Pen(color, border))
-                {
-                    g.Draw(pen, rect);
-                }
+                case TableBorderMode.None:
+                    int sp = (int)border, sp2 = sp / 2;
+                    g.Fill(color, new RectangleF(rect.X, rect.Y - sp2, rect.Width, sp));// 上边
+                    g.Fill(color, new RectangleF(rect.X, rect.Bottom - sp2, rect.Width, sp));// 下边
+                    g.Fill(color, new RectangleF(rect.X - sp2, rect.Y, sp, rect.Height));// 左边
+                    g.Fill(color, new RectangleF(rect.Right - sp2, rect.Y, sp, rect.Height));// 右边
+                    break;
+                case TableBorderMode.Pen:
+                    using (var pen = new Pen(color, border))
+                    {
+                        g.Draw(pen, rect);
+                    }
+                    break;
+                case TableBorderMode.High:
+                    var half = border / 2F;
+                    g.Fill(color, new RectangleF(rect.X, rect.Y - half, rect.Width, border));// 上边
+                    g.Fill(color, new RectangleF(rect.X, rect.Bottom - half, rect.Width, border));// 下边
+                    g.Fill(color, new RectangleF(rect.X - half, rect.Y, border, rect.Height));// 左边
+                    g.Fill(color, new RectangleF(rect.Right - half, rect.Y, border, rect.Height));// 右边
+                    break;
             }
         }
 

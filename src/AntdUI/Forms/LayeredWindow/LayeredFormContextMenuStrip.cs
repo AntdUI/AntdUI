@@ -162,8 +162,13 @@ namespace AntdUI
             else _config.Target.SetTopMost(Handle);
             rectsContent = LoadLayout(subs);
             ScrollBar = new ScrollBar(this, TAMode.Auto);
+            ParentRect = parent.TargetRect;
+            IsLeftAligned = parent.IsLeftAligned;
             Init(point);
         }
+
+        bool IsLeftAligned = false;
+        Rectangle? ParentRect;
 
         public override string name => nameof(AntdUI.ContextMenuStrip);
 
@@ -173,8 +178,23 @@ namespace AntdUI
         void Init(Point point)
         {
             var screen = Screen.FromPoint(point).WorkingArea;
-            if (point.X < screen.X) point.X = screen.X;
-            else if (point.X > (screen.X + screen.Width) - TargetRect.Width + shadow) point.X = screen.X + screen.Width - TargetRect.Width + shadow;
+            if (ParentRect.HasValue)
+            {
+                if (IsLeftAligned) point.X = ParentRect.Value.X - TargetRect.Width + (3 * shadow);
+                else
+                {
+                    if (point.X > (screen.X + screen.Width) - TargetRect.Width + shadow)
+                    {
+                        point.X = ParentRect.Value.X - TargetRect.Width + (3 * shadow);
+                        IsLeftAligned = true;
+                    }
+                }
+            }
+            else
+            {
+                if (point.X < screen.X) point.X = screen.X;
+                else if (point.X > (screen.X + screen.Width) - TargetRect.Width + shadow) point.X = screen.X + screen.Width - TargetRect.Width + shadow;
+            }
 
             if (TargetRect.Height > screen.Height)
             {

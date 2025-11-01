@@ -650,11 +650,26 @@ namespace AntdUI
         [Description("单元格边框宽度"), Category("边框"), DefaultValue(1F)]
         public float BorderCellWidth { get; set; } = 1F;
 
+        bool? borderHigh;
         /// <summary>
         /// 高精度边框
         /// </summary>
-        [Description("高精度边框"), Category("边框"), DefaultValue(false)]
-        public bool BorderHigh { get; set; }
+        [Obsolete("use BorderRenderMode")]
+        [Description("高精度边框"), Category("边框"), DefaultValue(null)]
+        public bool? BorderHigh
+        {
+            get => borderHigh;
+            set
+            {
+                if (borderHigh == value) return;
+                borderHigh = value;
+                if (borderHigh.HasValue) BorderRenderMode = borderHigh.Value ? TableBorderMode.High : TableBorderMode.Pen;
+                else BorderRenderMode = TableBorderMode.None;
+            }
+        }
+
+        [Description("边框渲染模式"), Category("边框"), DefaultValue(TableBorderMode.None)]
+        public TableBorderMode BorderRenderMode { get; set; } = TableBorderMode.None;
 
         #region 表头
 
