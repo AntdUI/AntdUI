@@ -17,7 +17,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using AntdUI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,8 +36,8 @@ namespace Demo.Controls
             #region Table
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check").SetFixed().SetWidth("100"),
-                new AntdUI.Column("name", "姓名") { KeyTree = "Sub" }.SetFixed().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnCheck("check").SetFixed(),
+                new AntdUI.Column("name", "姓名").SetFixed().SetTree("Sub").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -68,22 +67,6 @@ namespace Demo.Controls
             //设置总结栏
             SummarySet();
 
-            // 启用行号
-            table1.ShowRowNumbers = true;
-
-            // 自定义所有属性
-            table1.RowNumberColumnWidth = 100;
-            selectRowNumberMode.Items.AddRange(EnumListAll(typeof(AntdUI.TableRowNumberMode)));
-            selectRowNumberIndentStyle.Items.AddRange(EnumListAll(typeof(AntdUI.TableRowNumberIndentStyle)));
-            table1.RowNumberIndentStyle = TableRowNumberIndentStyle.IndentDash;
-            table1.RowNumberTitle = "序号";
-            table1.RowNumberIndentSize = 40;
-            //table1.RowNumberFollowSort = true; // `false`: 行号始终显示1, 2, 3...（不随排序改变） `true`: 行号随数据排序改变（使用原始数据索引）
-            //table1.RowNumberFont = new Font("Arial", 10, FontStyle.Bold);
-            table1.RowNumberForeColor = Color.BlueViolet;
-            //table1.RowNumberAlign = ColumnAlign.Right;
-
-
             #endregion
 
             selectEditMode.Items.AddRange(EnumList(typeof(AntdUI.TEditMode)));
@@ -99,14 +82,6 @@ namespace Demo.Controls
             var lists = new List<AntdUI.SelectItem>(list.Length);
             foreach (var it in list) lists.Add(new AntdUI.SelectItem(it));
             lists.RemoveAt(0);
-            return lists.ToArray();
-        }
-
-        AntdUI.SelectItem[] EnumListAll(Type data)
-        {
-            Array list = Enum.GetValues(data);
-            var lists = new List<AntdUI.SelectItem>(list.Length);
-            foreach (var it in list) lists.Add(new AntdUI.SelectItem(it));
             return lists.ToArray();
         }
 
@@ -805,27 +780,6 @@ namespace Demo.Controls
                 { "address", $"共{dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length)}地址"} ,
                 { "hobby", $"共{dataList.Select(x => x.hobby).Distinct().Count()}种爱好" }
             };
-        }
-
-        private void selectRowNumberMode_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
-        {
-            if (e.Value is AntdUI.TableRowNumberMode v)
-            {
-                table1.RowNumberMode = v;
-                if (v == AntdUI.TableRowNumberMode.VisibleGrouped)
-                    selectRowNumberIndentStyle.Visible = true;
-                else
-                    selectRowNumberIndentStyle.Visible = false;
-            }
-
-            else
-                table1.RowNumberMode = AntdUI.TableRowNumberMode.All;
-        }
-
-        private void selectRowNumberIndentStyle_SelectedValueChanged(object sender, ObjectNEventArgs e)
-        {
-            if (e.Value is AntdUI.TableRowNumberIndentStyle)
-                table1.RowNumberIndentStyle = (AntdUI.TableRowNumberIndentStyle)e.Value;
         }
     }
 }

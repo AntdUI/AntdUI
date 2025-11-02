@@ -79,11 +79,15 @@ namespace AntdUI
         bool FunRun = true;
         protected override void Dispose(bool disposing)
         {
+            try
+            {
+                base.Dispose(disposing);
+            }
+            catch { }
             handle = null;
             FunRun = false;
             messageHandler?.Dispose();
             messageHandler = null;
-            base.Dispose(disposing);
             Win32.Dispose(memDc, ref hBitmap, ref oldBits);
             if (memDc == IntPtr.Zero) return;
             Win32.DeleteDC(memDc);

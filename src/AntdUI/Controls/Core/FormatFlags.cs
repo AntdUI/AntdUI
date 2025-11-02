@@ -2,7 +2,7 @@
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
-// YOU OBTAIN A COPY OF THE LICENSE AT
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
@@ -17,41 +17,56 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
+
 namespace AntdUI
 {
-    /// <summary>
-    ///  行号列缩进样式（VisibleGrouped 模式下子行显示方式）
-    /// </summary>
-    public enum TableRowNumberIndentStyle
+    [Flags]
+    public enum FormatFlags : int
     {
         /// <summary>
-        /// 无缩进
+        /// 内容顶部对齐
         /// </summary>
-        None = 0,
+        Top = 1,
         /// <summary>
-        /// 仅缩进
+        /// 内容垂直居中
         /// </summary>
-        Indent = 1,
+        VerticalCenter = 2,
         /// <summary>
-        /// 缩进 + 分割线
+        /// 内容底部对齐
         /// </summary>
-        IndentLine = 2,
+        Bottom = 4,
+
         /// <summary>
-        /// 缩进 + 点号格式（如：1.1, 1.2）
+        /// 内容向左对齐
         /// </summary>
-        IndentDot = 3,
+        Left = 8,
         /// <summary>
-        /// 缩进 + 横线格式（如：1-1, 1-2）
+        /// 内容水平居中
         /// </summary>
-        IndentDash = 4,
+        HorizontalCenter = 16,
         /// <summary>
-        /// 仅点号格式（如：1.1, 1.2）（无缩进）
+        /// 内容向右对齐
         /// </summary>
-        Dot = 5,
+        Right = 32,
+
         /// <summary>
-        /// 仅横线格式（如：1-1, 1-2）（无缩进）
+        /// 文本内容不换行（\n无效）
         /// </summary>
-        Dash = 6
+        NoWrap = 64,
+        /// <summary>
+        /// 内容超出显示省略号
+        /// </summary>
+        EllipsisCharacter = 128,
+
+        /// <summary>
+        /// 垂直水平居中（组合值）
+        /// </summary>
+        Center = VerticalCenter | HorizontalCenter,
+
+        /// <summary>
+        /// 不换行且超出显示省略号（组合值）
+        /// </summary>
+        NoWrapEllipsis = NoWrap | EllipsisCharacter
     }
 }
-

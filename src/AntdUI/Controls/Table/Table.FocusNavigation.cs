@@ -102,9 +102,6 @@ namespace AntdUI
                         // 获取列索引
                         var columnIndex = Columns.IndexOf(targetColumn);
 
-                        // 如果启用行号列，索引需要偏移 +1
-                        if (showRowNumbers && columnIndex >= 0) columnIndex += 1;
-
                         if (columnIndex >= 0)
                         {
                             EnterEditMode(rowIndex, columnIndex);
@@ -185,24 +182,8 @@ namespace AntdUI
             if (EnableFocusNavigation)
             {
                 if (e.Column?.Key == null) return;
-
-                // 如果启用行号且在树形模式下，重新查找当前行在 rows 数组中的实际位置
-                int actualRowIndex = e.RowIndex;
-                if (showRowNumbers && rowNumberMode != TableRowNumberMode.All && e.Record != null && rows != null)
-                {
-                    // 通过 Record 对象查找当前在 rows 数组中的实际位置
-                    for (int i = 0; i < rows.Length; i++)
-                    {
-                        if (rows[i] != null && rows[i].RECORD == e.Record)
-                        {
-                            actualRowIndex = i;
-                            break;
-                        }
-                    }
-                }
-
                 // 处理焦点跳转
-                FocusNavigation(e.Column.Key, actualRowIndex);
+                FocusNavigation(e.Column.Key, e.RowIndex);
             }
         }
     }

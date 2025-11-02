@@ -1,4 +1,4 @@
-﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -162,14 +162,14 @@ namespace AntdUI
             else _config.Target.SetTopMost(Handle);
             rectsContent = LoadLayout(subs);
             ScrollBar = new ScrollBar(this, TAMode.Auto);
-            IsSubMenu = true;
             ParentRect = parent.TargetRect;
             IsLeftAligned = parent.IsLeftAligned;
             Init(point);
         }
-        bool IsSubMenu = false;
+
         bool IsLeftAligned = false;
-        Rectangle ParentRect;
+        Rectangle? ParentRect;
+
         public override string name => nameof(AntdUI.ContextMenuStrip);
 
 
@@ -178,17 +178,14 @@ namespace AntdUI
         void Init(Point point)
         {
             var screen = Screen.FromPoint(point).WorkingArea;
-            if (IsSubMenu)
+            if (ParentRect.HasValue)
             {
-                if (IsLeftAligned)
-                {
-                    point.X = ParentRect.X - TargetRect.Width + 3 * shadow;
-                }
+                if (IsLeftAligned) point.X = ParentRect.Value.X - TargetRect.Width + (3 * shadow);
                 else
                 {
                     if (point.X > (screen.X + screen.Width) - TargetRect.Width + shadow)
                     {
-                        point.X = ParentRect.X - TargetRect.Width + 3 * shadow;
+                        point.X = ParentRect.Value.X - TargetRect.Width + (3 * shadow);
                         IsLeftAligned = true;
                     }
                 }

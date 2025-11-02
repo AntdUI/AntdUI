@@ -2,7 +2,7 @@
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
-// YOU OBTAIN A COPY OF THE LICENSE AT
+// YOU MAY OBTAIN A COPY OF THE LICENSE AT
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
@@ -19,23 +19,16 @@
 
 namespace AntdUI
 {
-    /// <summary>
-    /// 行号计数模式
-    /// </summary>
-    public enum TableRowNumberMode
+    public enum TableBorderMode
     {
+        None = 0,
         /// <summary>
-        /// 默认计数 - 所有行都计入行号（包括折叠的）
+        /// 画笔同级
         /// </summary>
-        All = 0,
+        Pen = 1,
         /// <summary>
-        /// 可见计数 - 只有可见行计入行号（折叠的子行不计数）
+        /// 高精度
         /// </summary>
-        VisibleOnly = 1,
-        /// <summary>
-        /// 可见子行单独计数 - 每棵子树独立从1开始计数
-        /// </summary>
-        VisibleGrouped = 2
+        High = 2
     }
 }
-

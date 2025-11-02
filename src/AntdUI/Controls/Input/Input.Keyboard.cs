@@ -41,7 +41,7 @@ namespace AntdUI
                         return !readOnly;
                 }
             }
-            return true;
+            return base.IsInputKey(keyData);
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData) => false;

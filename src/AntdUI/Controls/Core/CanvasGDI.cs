@@ -34,9 +34,10 @@ namespace AntdUI.Core
 
         #region MeasureString
 
-        public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, Helper.m_sf);
-        public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, Helper.m_sf);
+        public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Center);
+        public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Center);
         public Size MeasureString(string? text, Font font, int width, StringFormat? format) => g.MeasureString(text, font, width, format ?? Helper.m_sf).Size();
+        public Size MeasureString(string? text, Font font, int width, FormatFlags format) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
 
         #endregion
 
@@ -49,7 +50,6 @@ namespace AntdUI.Core
                 String(text, font, brush, rect, format);
             }
         }
-
         public void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
         {
             if (text == null) return;
@@ -64,7 +64,6 @@ namespace AntdUI.Core
             }
             else g.DrawString(text, font, brush, rect, format ?? Helper.m_sf);
         }
-
         public void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null)
         {
             using (var brush = new SolidBrush(color))
@@ -72,8 +71,6 @@ namespace AntdUI.Core
                 String(text, font, brush, rect, format);
             }
         }
-
-
         public void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null)
         {
             if (text == null) return;
@@ -87,6 +84,49 @@ namespace AntdUI.Core
                 }
             }
             else g.DrawString(text, font, brush, rect, format ?? Helper.m_sf);
+        }
+
+        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, rect, format);
+            }
+        }
+        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format)
+        {
+            if (text == null) return;
+            CorrectionTextRendering.CORE(font, text, ref rect);
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, Helper.TF(format));
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, rect, Helper.TF(format));
+        }
+        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                String(text, font, brush, rect, format);
+            }
+        }
+        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format)
+        {
+            if (text == null) return;
+            CorrectionTextRendering.CORE(font, text, ref rect);
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, Helper.TF(format));
+                    Fill(brush, path);
+                }
+            }
+            else g.DrawString(text, font, brush, rect, Helper.TF(format));
         }
 
         public void String(string? text, Font font, Color color, int x, int y)
@@ -206,9 +246,31 @@ namespace AntdUI.Core
 
         #region MeasureText
 
-        public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, Helper.m_sf);
-        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, Helper.m_sf);
+        public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Center);
+        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Center);
         public Size MeasureText(string? text, Font font, int width, StringFormat? format)
+        {
+            if (SvgDb.Emoji.Count == 0 || text == null) return MeasureString(text, font, width, format);
+            else
+            {
+                var characters = new List<TMPChar>(text.Length);
+                int emojiCount = 0;
+                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                {
+                    string txt = str.Substring(nStart, nLen);
+                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    {
+                        characters.Add(new TMPChar(txt, true));
+                        emojiCount++;
+                    }
+                    else characters.Add(new TMPChar(txt, false));
+                    return true;
+                });
+                if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters));
+                else return MeasureString(text, font, width, format);
+            }
+        }
+        public Size MeasureText(string? text, Font font, int width, FormatFlags format)
         {
             if (SvgDb.Emoji.Count == 0 || text == null) return MeasureString(text, font, width, format);
             else
@@ -479,6 +541,145 @@ namespace AntdUI.Core
                             x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
                             break;
                     }
+                }
+                if (it.emoji)
+                {
+                    var svg = SvgDb.Emoji[it.txt];
+                    var rect_ico = new Rectangle(x + use_x, y + use_y, lineHeight, lineHeight);
+                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                }
+                else String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
+                use_x += it.w;
+            }
+        }
+
+
+        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format)
+        {
+            using (var brush = new SolidBrush(color))
+            {
+                DrawText(text, font, brush, rect, format);
+            }
+        }
+
+        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format)
+        {
+            if (SvgDb.Emoji.Count == 0) String(text, font, brush, rect, format);
+            else
+            {
+                if (text == null) return;
+                var characters = new List<TMPChar>(text.Length);
+                int emojiCount = 0;
+                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                {
+                    string txt = str.Substring(nStart, nLen);
+                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    {
+                        characters.Add(new TMPChar(txt, true));
+                        emojiCount++;
+                    }
+                    else characters.Add(new TMPChar(txt, false));
+                    return true;
+                });
+                if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
+                else String(text, font, brush, rect, format);
+            }
+        }
+
+        void DrawText(string? text, Font font, Brush brush, Rectangle rect, List<TMPChar> characters, FormatFlags format)
+        {
+            CorrectionTextRendering.CORE(font, text, ref rect);
+            int lineHeight = MeasureText(font, rect.Width, ref characters);
+            var sizeT = MeasureText(ref characters, rect.Width, lineHeight);
+            if (Config.TextRenderingHighQuality)
+            {
+                using (var path = new GraphicsPath())
+                {
+                    float fontsize = StringPathFontSize(font);
+
+                    bool wrap = format.HasFlag(FormatFlags.NoWrap);
+                    bool ellipsis = format.HasFlag(FormatFlags.EllipsisCharacter);
+
+                    int y;
+                    if (format.HasFlag(FormatFlags.VerticalCenter)) y = rect.Y + (rect.Height - sizeT.Height) / 2;
+                    else if (format.HasFlag(FormatFlags.Bottom)) y = rect.Bottom - sizeT.Height;
+                    else y = rect.Y;
+
+                    DrawText(characters, path, fontsize, rect.X, y, font, brush, lineHeight, rect, wrap, ellipsis, format);
+                    Fill(brush, path);
+                }
+            }
+            else
+            {
+                bool wrap = format.HasFlag(StringFormatFlags.NoWrap);
+                bool ellipsis = format.HasFlag(StringTrimming.EllipsisCharacter);
+
+                int y;
+                if (format.HasFlag(FormatFlags.VerticalCenter)) y = rect.Y + (rect.Height - sizeT.Height) / 2;
+                else if (format.HasFlag(FormatFlags.Bottom)) y = rect.Bottom - sizeT.Height;
+                else y = rect.Y;
+
+                DrawText(characters, rect.X, y, font, brush, lineHeight, rect, wrap, ellipsis, format);
+            }
+        }
+
+        void DrawText(List<TMPChar> characters, GraphicsPath path, float fontsize, int x, int y, Font font, Brush brush, int lineHeight, Rectangle rect, bool wrap, bool ellipsis, FormatFlags format)
+        {
+            int use_x = 0, use_y = 0, use_line = 0;
+            if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, use_line)) / 2;
+            else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, use_line);
+            for (int i = 0; i < characters.Count; i++)
+            {
+                var it = characters[i];
+                if (DrawTextNextChar(characters, i + 1, rect, lineHeight, use_y, use_line, wrap, ellipsis))
+                {
+                    string ellipsisText = "...";
+                    Size ellipsisSize = MeasureString(ellipsisText, font);
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.m_sf);
+                    return;
+                }
+                if (use_line < it.line)
+                {
+                    use_line = it.line;
+                    use_x = 0;
+                    use_y += lineHeight;
+                    if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
+                    else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
+                }
+                if (it.emoji)
+                {
+                    var svg = SvgDb.Emoji[it.txt];
+                    var rect_ico = new Rectangle(x + use_x, y + use_y, lineHeight, lineHeight);
+                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                }
+                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.m_sf);
+                use_x += it.w;
+            }
+        }
+        void DrawText(List<TMPChar> characters, int x, int y, Font font, Brush brush, int lineHeight, Rectangle rect, bool wrap, bool ellipsis, FormatFlags format)
+        {
+            int use_x = 0, use_y = 0, use_line = 0;
+            if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, use_line)) / 2;
+            else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, use_line);
+            for (int i = 0; i < characters.Count; i++)
+            {
+                var it = characters[i];
+                if (DrawTextNextChar(characters, i + 1, rect, lineHeight, use_y, use_line, wrap, ellipsis))
+                {
+                    string ellipsisText = "...";
+                    Size ellipsisSize = MeasureString(ellipsisText, font);
+                    String(ellipsisText, font, brush, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight));
+                    return;
+                }
+                if (use_line < it.line)
+                {
+                    use_line = it.line;
+                    use_x = 0;
+                    use_y += lineHeight;
+                    if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
+                    else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
                 }
                 if (it.emoji)
                 {

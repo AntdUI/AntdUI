@@ -30,16 +30,28 @@ namespace AntdUI
 
         Size MeasureString(string? text, Font font);
         Size MeasureString(string? text, Font font, int width);
+        [Obsolete("use FormatFlags")]
         Size MeasureString(string? text, Font font, int width, StringFormat? format);
+        Size MeasureString(string? text, Font font, int width, FormatFlags format);
 
         #endregion
 
         #region String
 
+        [Obsolete("use FormatFlags")]
         void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null);
+        [Obsolete("use FormatFlags")]
         void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
+        [Obsolete("use FormatFlags")]
         void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null);
+        [Obsolete("use FormatFlags")]
         void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null);
+
+        void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format);
+        void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format);
+        void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format);
+        void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format);
+
         void String(string? text, Font font, Color color, int x, int y);
         void String(string? text, Font font, Brush brush, int x, int y);
         void String(string? text, Font font, Color color, float x, float y);
@@ -55,14 +67,21 @@ namespace AntdUI
 
         Size MeasureText(string? text, Font font);
         Size MeasureText(string? text, Font font, int width);
+        [Obsolete("use FormatFlags")]
         Size MeasureText(string? text, Font font, int width, StringFormat? format);
+        Size MeasureText(string? text, Font font, int width, FormatFlags format);
 
         #endregion
 
         #region DrawText
 
+        [Obsolete("use FormatFlags")]
         void DrawText(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null);
+        [Obsolete("use FormatFlags")]
         void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null);
+
+        void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format);
+        void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format);
 
         #endregion
 

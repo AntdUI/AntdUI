@@ -50,8 +50,6 @@ namespace Demo.Controls
             pagination1 = new AntdUI.Pagination();
             table1 = new AntdUI.Table();
             panel1 = new System.Windows.Forms.Panel();
-            selectRowNumberIndentStyle = new AntdUI.Select();
-            selectRowNumberMode = new AntdUI.Select();
             checkboxFocusNavigation = new AntdUI.Checkbox();
             selectFocusedStyle = new AntdUI.Select();
             selectEditStyle = new AntdUI.Select();
@@ -80,7 +78,7 @@ namespace Demo.Controls
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
-            header1.Size = new Size(1400, 74);
+            header1.Size = new Size(1300, 74);
             header1.TabIndex = 0;
             header1.Text = "Table 表格";
             header1.UseTitleFont = true;
@@ -92,7 +90,7 @@ namespace Demo.Controls
             pagination1.Name = "pagination1";
             pagination1.RightToLeft = RightToLeft.Yes;
             pagination1.ShowSizeChanger = true;
-            pagination1.Size = new Size(1400, 40);
+            pagination1.Size = new Size(1300, 40);
             pagination1.TabIndex = 3;
             pagination1.Total = 100;
             pagination1.ValueChanged += pagination1_ValueChanged;
@@ -107,7 +105,7 @@ namespace Demo.Controls
             table1.Location = new Point(0, 132);
             table1.Name = "table1";
             table1.Radius = 6;
-            table1.Size = new Size(1400, 504);
+            table1.Size = new Size(1300, 504);
             table1.TabIndex = 2;
             table1.CellClick += table1_CellClick;
             table1.CellButtonClick += table1_CellButtonClick;
@@ -119,8 +117,6 @@ namespace Demo.Controls
             // panel1
             // 
             panel1.AutoScroll = true;
-            panel1.Controls.Add(selectRowNumberIndentStyle);
-            panel1.Controls.Add(selectRowNumberMode);
             panel1.Controls.Add(checkboxFocusNavigation);
             panel1.Controls.Add(selectFocusedStyle);
             panel1.Controls.Add(selectEditStyle);
@@ -140,37 +136,8 @@ namespace Demo.Controls
             panel1.Font = new Font("Microsoft YaHei UI", 10F);
             panel1.Location = new Point(0, 74);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1400, 58);
+            panel1.Size = new Size(1300, 58);
             panel1.TabIndex = 1;
-            // 
-            // selectRowNumberIndentStyle
-            // 
-            selectRowNumberIndentStyle.AllowClear = true;
-            selectRowNumberIndentStyle.Dock = DockStyle.Left;
-            selectRowNumberIndentStyle.List = true;
-            selectRowNumberIndentStyle.ListAutoWidth = true;
-            selectRowNumberIndentStyle.LocalizationPlaceholderText = "Table.{id}";
-            selectRowNumberIndentStyle.Location = new Point(1636, 0);
-            selectRowNumberIndentStyle.Name = "selectRowNumberIndentStyle";
-            selectRowNumberIndentStyle.PlaceholderText = "行号缩进样式";
-            selectRowNumberIndentStyle.Size = new Size(112, 41);
-            selectRowNumberIndentStyle.TabIndex = 14;
-            selectRowNumberIndentStyle.Visible = false;
-            selectRowNumberIndentStyle.SelectedValueChanged += selectRowNumberIndentStyle_SelectedValueChanged;
-            // 
-            // selectRowNumberMode
-            // 
-            selectRowNumberMode.AllowClear = true;
-            selectRowNumberMode.Dock = DockStyle.Left;
-            selectRowNumberMode.List = true;
-            selectRowNumberMode.ListAutoWidth = true;
-            selectRowNumberMode.LocalizationPlaceholderText = "Table.{id}";
-            selectRowNumberMode.Location = new Point(1531, 0);
-            selectRowNumberMode.Name = "selectRowNumberMode";
-            selectRowNumberMode.PlaceholderText = "行号计数模式";
-            selectRowNumberMode.Size = new Size(105, 41);
-            selectRowNumberMode.TabIndex = 13;
-            selectRowNumberMode.SelectedValueChanged += selectRowNumberMode_SelectedValueChanged;
             // 
             // checkboxFocusNavigation
             // 
@@ -370,7 +337,7 @@ namespace Demo.Controls
             Controls.Add(header1);
             Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Table";
-            Size = new Size(1400, 676);
+            Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);
@@ -397,7 +364,5 @@ namespace Demo.Controls
         private AntdUI.Select selectEditStyle;
         private AntdUI.Select selectFocusedStyle;
         private AntdUI.Checkbox checkboxFocusNavigation;
-        private AntdUI.Select selectRowNumberMode;
-        private AntdUI.Select selectRowNumberIndentStyle;
     }
 }
