@@ -430,15 +430,8 @@ namespace AntdUI
                 rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
                 rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
                 rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
-                int GetTabIndex()
-                {
-                    foreach (var it in cache_font)
-                    {
-                        if (it.text == "\t") return it.i;
-                    }
-                    return -1;
-                }
-                int tabindex = GetTabIndex();
+
+                int tabindex = GetTabIndex(cache_font);
                 List<int> i_l = new List<int>(cache_font.Length), i_r = new List<int>(i_l.Count);
                 if (tabindex == -1)
                 {
@@ -494,6 +487,12 @@ namespace AntdUI
                             rect_tmp.Offset(left, 0);
                             it.rect = rect_tmp;
                         }
+                        if (tabindex > 0)
+                        {
+                            var rect_tmp = cache_font[tabindex].rect;
+                            rect_tmp.Offset(left, 0);
+                            cache_font[tabindex].rect = rect_tmp;
+                        }
                     }
                     if (i_r.Count > 0)
                     {
@@ -518,6 +517,12 @@ namespace AntdUI
                             var rect_tmp = it.rect;
                             rect_tmp.Offset(left, 0);
                             it.rect = rect_tmp;
+                        }
+                        if (tabindex > 0)
+                        {
+                            var rect_tmp = cache_font[tabindex].rect;
+                            rect_tmp.Offset(left, 0);
+                            cache_font[tabindex].rect = rect_tmp;
                         }
                     }
                     if (i_r.Count > 0)
@@ -611,6 +616,14 @@ namespace AntdUI
                 }
                 list.Clear();
             }
+        }
+        int GetTabIndex(CacheFont[] cache_font)
+        {
+            foreach (var it in cache_font)
+            {
+                if (it.text == "\t") return it.i;
+            }
+            return -1;
         }
 
         #endregion
