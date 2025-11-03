@@ -611,6 +611,7 @@ namespace AntdUI
         }
         void OpenDown(ContextMenuStripItem item, Rectangle rect, IContextMenuStripItem[] sub)
         {
+            foreach (var it in sub) it.ParentItem = item;
             var trect = TargetRect;
             subForm = new LayeredFormContextMenuStrip(config, this, new Point(trect.X + trect.Width - rect.X - shadow2, trect.Y + rect.Y + shadow / 2 - ScrollBar.Value), sub);
             subForm.Show(this);

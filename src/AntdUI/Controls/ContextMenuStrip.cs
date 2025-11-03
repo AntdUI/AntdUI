@@ -435,5 +435,8 @@ namespace AntdUI
     /// </summary>
     public class ContextMenuStripItemDivider : IContextMenuStripItem { }
 
-    public class IContextMenuStripItem { }
+    public class IContextMenuStripItem
+    {
+        public ContextMenuStripItem? ParentItem { get; internal set; }
+    }
 }

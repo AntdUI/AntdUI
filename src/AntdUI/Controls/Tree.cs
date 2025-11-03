@@ -378,7 +378,7 @@ namespace AntdUI
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Config.Dpi) : icon_size, gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
                     check_radius = icon_size * .2F;
-                    if (CheckStrictly && has && items![0].PARENT == null && items[0].PARENTITEM == null)
+                    if (CheckStrictly && has && items![0].PARENT == null && items[0].ParentItem == null)
                     {
                         //新数据
                         var dir = new List<TreeItem>();
@@ -428,7 +428,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = Parent;
+                it.PARENTITEM = it.ParentItem = Parent;
                 if (it.Visible)
                 {
                     it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
@@ -782,7 +782,7 @@ namespace AntdUI
                                 {
                                     bool targetChecked = ShouldCheckTarget(item);
                                     item.CheckState = SetCheck(item, targetChecked);
-                                    SetCheckStrictly(item.PARENTITEM);
+                                    SetCheckStrictly(item.ParentItem);
                                 }
                                 else item.Checked = !item.Checked;
                             }
@@ -1004,7 +1004,7 @@ namespace AntdUI
             }
             if (check_all_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
             else item.CheckState = CheckState.Unchecked;
-            SetCheckStrictly(item.PARENTITEM);
+            SetCheckStrictly(item.ParentItem);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1137,7 +1137,7 @@ namespace AntdUI
 
         bool FindUp(TreeItem item)
         {
-            var p1 = item.PARENTITEM;
+            var p1 = item.ParentItem;
             if (p1 == null)
             {
                 int index = items!.IndexOf(item) - 1;
@@ -1168,7 +1168,7 @@ namespace AntdUI
                 Select(item.items![0]);
                 return true;
             }
-            var p1 = item.PARENTITEM;
+            var p1 = item.ParentItem;
             if (p1 == null)
             {
                 int index = items!.IndexOf(item) + 1;
@@ -1188,7 +1188,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (p1.PARENTITEM == null)
+                    if (p1.ParentItem == null)
                     {
                         var sub = items!;
                         int index2 = sub.Count + 1;
@@ -1205,7 +1205,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var sub = p1.PARENTITEM.items!;
+                        var sub = p1.ParentItem.items!;
                         int index2 = sub.Count + 1;
                         if (index2 < sub.Count)
                         {
@@ -1858,7 +1858,7 @@ namespace AntdUI
         {
             ThreadCheck?.Dispose();
             ThreadCheck = null;
-            if (PARENT != null && PARENT.IsHandleCreated && (PARENTITEM == null || PARENTITEM.expand) && show && Config.HasAnimation(nameof(Tree)))
+            if (PARENT != null && PARENT.IsHandleCreated && (ParentItem == null || ParentItem.expand) && show && Config.HasAnimation(nameof(Tree)))
             {
                 AnimationCheck = true;
                 if (_checked)
@@ -1908,7 +1908,7 @@ namespace AntdUI
             if (PARENT == null) return;
             Checked = value;
             if (handsub) PARENT.SetCheck(this, value);
-            PARENT.SetCheckStrictly(PARENTITEM);
+            PARENT.SetCheckStrictly(ParentItem);
         }
 
         #endregion
@@ -1953,8 +1953,8 @@ namespace AntdUI
 
         public void Remove()
         {
-            if (PARENTITEM == null) PARENT?.Items.Remove(this);
-            else PARENTITEM.items?.Remove(this);
+            if (ParentItem == null) PARENT?.Items.Remove(this);
+            else ParentItem.items?.Remove(this);
         }
 
         #endregion
@@ -2044,8 +2044,11 @@ namespace AntdUI
 
         public int Depth { get; private set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
         public TreeItem? PARENTITEM { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TreeItem? ParentItem { get; internal set; }
 
         #region 内部
 
@@ -2337,11 +2340,11 @@ namespace AntdUI
         public string FullPath(string PathSeparator = "/")
         {
             var list = new List<string?>(Depth + 1) { Text };
-            var parent = PARENTITEM;
+            var parent = ParentItem;
             while (parent != null)
             {
                 list.Insert(0, parent.Text);
-                parent = parent.PARENTITEM;
+                parent = parent.ParentItem;
             }
             return string.Join(PathSeparator, list);
         }
@@ -2349,11 +2352,11 @@ namespace AntdUI
         public string FullID(string PathSeparator = "/")
         {
             var list = new List<string?>(Depth + 1) { ID };
-            var parent = PARENTITEM;
+            var parent = ParentItem;
             while (parent != null)
             {
                 list.Insert(0, parent.ID);
-                parent = parent.PARENTITEM;
+                parent = parent.ParentItem;
             }
             return string.Join(PathSeparator, list);
         }
@@ -2361,11 +2364,11 @@ namespace AntdUI
         public string FullName(string PathSeparator = "/")
         {
             var list = new List<string?>(Depth + 1) { Name };
-            var parent = PARENTITEM;
+            var parent = ParentItem;
             while (parent != null)
             {
                 list.Insert(0, parent.Name);
-                parent = parent.PARENTITEM;
+                parent = parent.ParentItem;
             }
             return string.Join(PathSeparator, list);
         }

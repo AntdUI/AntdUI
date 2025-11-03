@@ -213,7 +213,7 @@ namespace AntdUI
             foreach (var it in items)
             {
                 it.PARENT = this;
-                it.PARENTITEM = Parent;
+                it.PARENTITEM = it.ParentItem = Parent;
                 var size = g.MeasureString(it.Text, Font, csize, s_c);
                 int xc = size.Height - font_height;
                 if (xc > 0 && tmp < xc) tmp = xc;
@@ -809,7 +809,7 @@ namespace AntdUI
             base.Add(item);
 
             item.PARENT = PARENT;
-            item.PARENTITEM = PARENTITEM;
+            item.PARENTITEM = item.ParentItem = PARENTITEM;
         }
     }
     /// <summary>
@@ -868,7 +868,7 @@ namespace AntdUI
             set
             {
                 if (select == value) return;
-                if (value && PARENT is Collapse collapse && PARENTITEM is CollapseItem collapseItem) collapse.IUSelect(collapseItem);
+                if (value && PARENT is Collapse collapse && ParentItem is CollapseItem collapseItem) collapse.IUSelect(collapseItem);
                 select = value;
                 Invalidate();
             }
@@ -991,7 +991,7 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                if (PARENT == null || PARENTITEM == null) return;
+                if (PARENT == null || ParentItem == null) return;
                 try
                 {
                     ThreadCheck?.Dispose();
@@ -1031,7 +1031,7 @@ namespace AntdUI
                 }
                 finally
                 {
-                    if (PARENTITEM is CollapseItem collapse) CheckedChanged?.Invoke(this, new CollapseSwitchCheckedChangedEventArgs(this, collapse, value));
+                    if (ParentItem is CollapseItem collapse) CheckedChanged?.Invoke(this, new CollapseSwitchCheckedChangedEventArgs(this, collapse, value));
                 }
             }
         }
@@ -1195,7 +1195,7 @@ namespace AntdUI
         private void edit_TextChanged(object? sender, EventArgs e)
         {
             if (TextChanged == null) return;
-            if (PARENT is Collapse parent && PARENTITEM is CollapseItem item)
+            if (PARENT is Collapse parent && ParentItem is CollapseItem item)
             {
                 if (sender is Input input) TextChanged(this, new CollapseEditChangedEventArgs(parent, item, input.Text));
                 else if (sender is IControl control) TextChanged(this, new CollapseEditChangedEventArgs(parent, item, control.Text));
@@ -1413,8 +1413,11 @@ namespace AntdUI
 
         internal ICollapse? PARENT { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
         public ICollapseItem? PARENTITEM { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ICollapseItem? ParentItem { get; internal set; }
 
         internal virtual void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
         {
