@@ -34,8 +34,13 @@ namespace AntdUI
                     case Keys.Tab:
                         return Multiline && AcceptsTab && ((keyData & Keys.Control) == 0);
                     case Keys.Escape:
+                    case Keys.Left:
+                    case Keys.Right:
+                        if (isempty) return base.IsInputKey(keyData);
+                        return true;
                     case Keys.Up:
                     case Keys.Down:
+                        if (isempty) return base.IsInputKey(keyData);
                         return Multiline;
                     case Keys.Back:
                         return !readOnly;
@@ -235,6 +240,7 @@ namespace AntdUI
         /// <returns>返回true拦截消息</returns>
         public bool ProcessShortcutKeys(ShortcutKeys keyData)
         {
+            AcceptsTab = true;
             switch (keyData)
             {
                 case ShortcutKeys.Back:

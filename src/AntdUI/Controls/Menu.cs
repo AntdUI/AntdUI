@@ -661,7 +661,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = Parent;
+                it.PARENTITEM = it.ParentItem = Parent;
                 int uw = it.SetRect(this, depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, out int exr);
                 if (it.Visible)
                 {
@@ -706,7 +706,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = Parent;
+                it.PARENTITEM = it.ParentItem = Parent;
                 int uw = it.SetRectInlineNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
                 if (it.Visible)
                 {
@@ -1548,7 +1548,7 @@ namespace AntdUI
 
         bool FindUp(MenuItem item)
         {
-            var p1 = item.PARENTITEM;
+            var p1 = item.ParentItem;
             if (p1 == null)
             {
                 int index = items!.IndexOf(item) - 1;
@@ -1579,7 +1579,7 @@ namespace AntdUI
                 SetFocusItem(item.items![0]);
                 return true;
             }
-            var p1 = item.PARENTITEM;
+            var p1 = item.ParentItem;
             if (p1 == null)
             {
                 int index = items!.IndexOf(item) + 1;
@@ -1599,7 +1599,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    if (p1.PARENTITEM == null)
+                    if (p1.ParentItem == null)
                     {
                         var sub = items!;
                         int index2 = sub.Count + 1;
@@ -1616,7 +1616,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        var sub = p1.PARENTITEM.items!;
+                        var sub = p1.ParentItem.items!;
                         int index2 = sub.Count + 1;
                         if (index2 < sub.Count)
                         {
@@ -1694,7 +1694,7 @@ namespace AntdUI
                     tmpAM = true;
                     ItemClick?.Invoke(this, new MenuItemEventArgs(it, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
                     SelectItem = it;
-                    if (SelectEx(it.PARENTITEM) > 0) ChangeList(true);
+                    if (SelectEx(it.ParentItem) > 0) ChangeList(true);
                     tmpAM = false;
                     Invalidate();
                     if (focus) Focus(it);
@@ -1724,7 +1724,7 @@ namespace AntdUI
                 count++;
                 it.Expand = it.Select = true;
             }
-            count += SelectEx(it.PARENTITEM);
+            count += SelectEx(it.ParentItem);
             return count;
         }
 
@@ -2089,7 +2089,7 @@ namespace AntdUI
                     if (PARENT == null) return;
                     if (value && PARENT.Unique)
                     {
-                        if (PARENTITEM == null)
+                        if (ParentItem == null)
                         {
                             foreach (var it in PARENT.Items)
                             {
@@ -2098,7 +2098,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            foreach (var it in PARENTITEM.Sub)
+                            foreach (var it in ParentItem.Sub)
                             {
                                 if (it != this) it.Expand = false;
                             }
@@ -2304,8 +2304,8 @@ namespace AntdUI
 
         public void Remove()
         {
-            if (PARENTITEM == null) PARENT?.Items.Remove(this);
-            else PARENTITEM.items?.Remove(this);
+            if (ParentItem == null) PARENT?.Items.Remove(this);
+            else ParentItem.items?.Remove(this);
         }
 
         public void UpdateText(string newText)
@@ -2386,8 +2386,11 @@ namespace AntdUI
 
         #endregion
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
         public MenuItem? PARENTITEM { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MenuItem? ParentItem { get; internal set; }
 
         #region 内部
         internal int Depth { get; set; }

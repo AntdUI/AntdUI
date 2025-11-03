@@ -407,7 +407,7 @@ namespace AntdUI
                 foreach (var btn in it.buttons)
                 {
                     btn.PARENT = this;
-                    btn.PARENTITEM = it;
+                    btn.PARENTITEM = btn.ParentItem = it;
                     int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
                     int space = (rectButtons.Height - height) / 2;
                     bx -= space;

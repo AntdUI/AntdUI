@@ -94,17 +94,22 @@ namespace AntdUI
             }
             else
             {
+                if (control is TabPage page) page.ShowedChanged += Parent_VisibleChanged;
+                control.VisibleChanged += Parent_VisibleChanged;
                 var point = control.PointToScreen(Point.Empty);
                 SetLocation(point);
                 SetSize(control.Size);
                 Size = control.Size;
                 Location = point;
             }
+            owner.VisibleChanged += Parent_VisibleChanged;
             owner.LocationChanged += Parent_LocationChanged;
             owner.SizeChanged += Parent_SizeChanged;
+            LoadVisible();
             base.OnLoad(e);
         }
 
+        private void Parent_VisibleChanged(object? sender, EventArgs e) => LoadVisible();
         private void Parent_LocationChanged(object? sender, EventArgs e)
         {
             if (control == null)
@@ -160,8 +165,33 @@ namespace AntdUI
             Print();
         }
 
+        bool visible = false;
+        void LoadVisible()
+        {
+            var tmp = GetVisible();
+            if (visible == tmp) return;
+            visible = tmp;
+            temp?.Dispose();
+            temp = null;
+            Print();
+        }
+        bool GetVisible()
+        {
+            if (control == null) return owner.Visible;
+            else
+            {
+                if (control is TabPage page) return page.Showed && page.Visible;
+                return control.Visible;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
+            if (control != null)
+            {
+                control.VisibleChanged -= Parent_VisibleChanged;
+                if (control is TabPage page) page.ShowedChanged -= Parent_VisibleChanged;
+            }
             owner.LocationChanged -= Parent_LocationChanged;
             owner.SizeChanged -= Parent_SizeChanged;
             temp?.Dispose();
@@ -177,26 +207,29 @@ namespace AntdUI
             {
                 temp?.Dispose();
                 temp = new Bitmap(rect_read.Width, rect_read.Height);
-                using (var g = Graphics.FromImage(temp).High())
+                if (visible)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
+                    using (var g = Graphics.FromImage(temp).High())
                     {
-                        if (RenderRegion == null)
+                        using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                         {
-                            if (Radius > 0)
+                            if (RenderRegion == null)
                             {
-                                using (var path = rect.RoundPath(Radius))
+                                if (Radius > 0)
+                                {
+                                    using (var path = rect.RoundPath(Radius))
+                                    {
+                                        g.Fill(brush, path);
+                                    }
+                                }
+                                else g.Fill(brush, rect);
+                            }
+                            else
+                            {
+                                using (var path = RenderRegion())
                                 {
                                     g.Fill(brush, path);
                                 }
-                            }
-                            else g.Fill(brush, rect);
-                        }
-                        else
-                        {
-                            using (var path = RenderRegion())
-                            {
-                                g.Fill(brush, path);
                             }
                         }
                     }

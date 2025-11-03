@@ -270,7 +270,8 @@ namespace AntdUI
             // 处理换行设置
             if (flags.HasFlag(FormatFlags.NoWrap)) sf.FormatFlags |= StringFormatFlags.NoWrap;
 
-            if (!measure) sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
+            if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            else sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
 
             return sf;
         }
