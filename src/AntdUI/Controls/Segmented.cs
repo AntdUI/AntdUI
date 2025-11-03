@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -944,9 +945,10 @@ namespace AntdUI
                     }
                     else
                     {
+                        var reverses = new List<SegmentedItem>(items.Count);
                         if (Vertical)
                         {
-                            int y = 0;
+                            int y = 0, yH = 0;
                             switch (iconalign)
                             {
                                 case TAlignMini.Top:
@@ -956,7 +958,12 @@ namespace AntdUI
                                         it.PARENT = this;
                                         if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t);
                                         else it.SetRectTop(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_t), imgsize_t, text_heigth, sp, g, Font);
-                                        y += it.Rect.Height + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            yH += it.Rect.Height + _igap;
+                                        }
+                                        else y += it.Rect.Height + _igap;
                                     }
                                     break;
                                 case TAlignMini.Bottom:
@@ -966,7 +973,12 @@ namespace AntdUI
                                         it.PARENT = this;
                                         if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b);
                                         else it.SetRectBottom(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_b), imgsize_b, text_heigth, sp, g, Font);
-                                        y += it.Rect.Height + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            yH += it.Rect.Height + _igap;
+                                        }
+                                        else y += it.Rect.Height + _igap;
                                     }
                                     break;
                                 case TAlignMini.Left:
@@ -976,7 +988,12 @@ namespace AntdUI
                                         it.PARENT = this;
                                         if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_l), imgsize_l);
                                         else it.SetRectLeft(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_l), imgsize_l, sp, gap);
-                                        y += it.Rect.Height + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            yH += it.Rect.Height + _igap;
+                                        }
+                                        else y += it.Rect.Height + _igap;
                                     }
                                     break;
                                 case TAlignMini.Right:
@@ -986,7 +1003,12 @@ namespace AntdUI
                                         it.PARENT = this;
                                         if (it.HasIcon && it.HasEmptyText) it.SetIconNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_r), imgsize_r);
                                         else it.SetRectRight(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth_r), imgsize_r, sp, gap);
-                                        y += it.Rect.Height + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            yH += it.Rect.Height + _igap;
+                                        }
+                                        else y += it.Rect.Height + _igap;
                                     }
                                     break;
                                 default:
@@ -995,12 +1017,43 @@ namespace AntdUI
                                     {
                                         it.PARENT = this;
                                         it.SetRectNone(new Rectangle(rect.X, rect.Y + y, rect.Width, heigth));
-                                        y += it.Rect.Height + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            yH += it.Rect.Height + _igap;
+                                        }
+                                        else y += it.Rect.Height + _igap;
                                     }
                                     break;
                             }
                             Rect = new Rectangle(_rect.X, _rect.Y, _rect.Width, y - _igap + Margin.Vertical);
-                            if (Rect.Height < _rect.Height && rightToLeft == RightToLeft.Yes)
+                            if (reverses.Count > 0)
+                            {
+                                if (Rect.Height < _rect.Height && rightToLeft == RightToLeft.Yes)
+                                {
+                                    int hc = _rect.Bottom - Rect.Height, yb = _rect.Y;
+                                    Rect.Y = hc;
+                                    foreach (var it in items)
+                                    {
+                                        if (it.Reverse)
+                                        {
+                                            it.SetOffset(0, yb - it.Rect.Y);
+                                            yb += it.Rect.Height + _igap;
+                                        }
+                                        else it.SetOffset(0, hc);
+                                    }
+                                }
+                                else
+                                {
+                                    int yb = _rect.Bottom - yH;
+                                    foreach (var it in reverses)
+                                    {
+                                        it.SetOffset(0, yb - it.Rect.Y);
+                                        yb += it.Rect.Height + _igap;
+                                    }
+                                }
+                            }
+                            else if (Rect.Height < _rect.Height && rightToLeft == RightToLeft.Yes)
                             {
                                 int hc = _rect.Bottom - Rect.Height;
                                 Rect.Y = hc;
@@ -1009,7 +1062,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            int x = 0;
+                            int x = 0, xW = 0;
                             switch (iconalign)
                             {
                                 case TAlignMini.Top:
@@ -1023,7 +1076,12 @@ namespace AntdUI
                                             var size = g.MeasureText(it.Text, Font);
                                             it.SetRectTop(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_t, size.Height, sp);
                                         }
-                                        x += it.Rect.Width + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            xW += it.Rect.Width + _igap;
+                                        }
+                                        else x += it.Rect.Width + _igap;
                                     }
                                     break;
                                 case TAlignMini.Bottom:
@@ -1037,7 +1095,12 @@ namespace AntdUI
                                             var size = g.MeasureText(it.Text, Font);
                                             it.SetRectBottom(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height), imgsize_b, size.Height, sp);
                                         }
-                                        x += it.Rect.Width + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            xW += it.Rect.Width + _igap;
+                                        }
+                                        else x += it.Rect.Width + _igap;
                                     }
                                     break;
                                 case TAlignMini.Left:
@@ -1051,7 +1114,12 @@ namespace AntdUI
                                             var size = g.MeasureText(it.Text, Font);
                                             it.SetRectLeft(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_l + sp + gap2, rect.Height), imgsize_l, sp, gap);
                                         }
-                                        x += it.Rect.Width + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            xW += it.Rect.Width + _igap;
+                                        }
+                                        else x += it.Rect.Width + _igap;
                                     }
                                     break;
                                 case TAlignMini.Right:
@@ -1065,7 +1133,12 @@ namespace AntdUI
                                             var size = g.MeasureText(it.Text, Font);
                                             it.SetRectRight(new Rectangle(rect.X + x, rect.Y, size.Width + imgsize_r + sp + gap2, rect.Height), imgsize_r, sp, gap);
                                         }
-                                        x += it.Rect.Width + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            xW += it.Rect.Width + _igap;
+                                        }
+                                        else x += it.Rect.Width + _igap;
                                     }
                                     break;
                                 default:
@@ -1074,12 +1147,43 @@ namespace AntdUI
                                         it.PARENT = this;
                                         var size = g.MeasureText(it.Text, Font);
                                         it.SetRectNone(new Rectangle(rect.X + x, rect.Y, size.Width + gap2, rect.Height));
-                                        x += it.Rect.Width + _igap;
+                                        if (it.Reverse)
+                                        {
+                                            reverses.Add(it);
+                                            xW += it.Rect.Width + _igap;
+                                        }
+                                        else x += it.Rect.Width + _igap;
                                     }
                                     break;
                             }
                             Rect = new Rectangle(_rect.X, _rect.Y, x - _igap + Margin.Horizontal, _rect.Height);
-                            if (Rect.Width < _rect.Width && rightToLeft == RightToLeft.Yes)
+                            if (reverses.Count > 0)
+                            {
+                                if (Rect.Width < _rect.Width && rightToLeft == RightToLeft.Yes)
+                                {
+                                    int hc = _rect.Right - Rect.Width, xr = _rect.X;
+                                    Rect.X = hc;
+                                    foreach (var it in items)
+                                    {
+                                        if (it.Reverse)
+                                        {
+                                            it.SetOffset(xr - it.Rect.X, 0);
+                                            xr += it.Rect.Width + _igap;
+                                        }
+                                        else it.SetOffset(hc, 0);
+                                    }
+                                }
+                                else
+                                {
+                                    int xr = _rect.Right - xW;
+                                    foreach (var it in reverses)
+                                    {
+                                        it.SetOffset(xr - it.Rect.X, 0);
+                                        xr += it.Rect.Width + _igap;
+                                    }
+                                }
+                            }
+                            else if (Rect.Width < _rect.Width && rightToLeft == RightToLeft.Yes)
                             {
                                 int hc = _rect.Right - Rect.Width;
                                 Rect.X = hc;
@@ -1450,6 +1554,12 @@ namespace AntdUI
         public string? LocalizationText { get; set; }
 
         /// <summary>
+        /// 反向
+        /// </summary>
+        [Description("是否反向"), Category("数据"), DefaultValue(false)]
+        public bool Reverse { get; set; }
+
+        /// <summary>
         /// 用户定义数据
         /// </summary>
         [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
@@ -1801,6 +1911,12 @@ namespace AntdUI
         public SegmentedItem SetEnabled(bool value = false)
         {
             enabled = value;
+            return this;
+        }
+
+        public SegmentedItem SetReverse(bool value = true)
+        {
+            Reverse = value;
             return this;
         }
 
