@@ -161,12 +161,14 @@ namespace AntdUI
             if (sdate == edate) dates = new DateTime[] { edate, edate };
             else if (sdate < edate) dates = new DateTime[] { sdate, edate };
             else dates = new DateTime[] { edate, sdate };
-            action(dates);
             if (r)
             {
+                oldTime = sdate;
+                oldTimeHover = edate;
                 Date = edate;
                 Print();
             }
+            else action(dates);
         }
         bool SetDate(ItemCalendari item)
         {
