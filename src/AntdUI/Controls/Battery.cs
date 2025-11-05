@@ -212,7 +212,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (ShowText) g.String("100%", Font, fore ?? Colour.Text.Get(nameof(Battery), ColorScheme), rect, c);
+                    if (ShowText) g.String("100%", Font, fore ?? Colour.Text.Get(nameof(Battery), ColorScheme), rect);
                 }
                 else
                 {
@@ -246,13 +246,11 @@ namespace AntdUI
                             g.Image(bmp, e.Rect);
                         }
                     }
-                    if (ShowText) g.String(_value + "%", Font, fore ?? Colour.Text.Get(nameof(Battery), ColorScheme), rect, c);
+                    if (ShowText) g.String(_value + "%", Font, fore ?? Colour.Text.Get(nameof(Battery), ColorScheme), rect);
                 }
             }
             base.OnDraw(e);
         }
-
-        readonly FormatFlags c = FormatFlags.Center;
 
         #endregion
     }

@@ -520,15 +520,11 @@ namespace AntdUI
                 if (showSymbol)
                 {
                     //允许显示自定义符号，如0~9, A~Z,?...
-                    StringFormat stringFormat = new StringFormat();
-                    stringFormat.Alignment = StringAlignment.Center;
-                    stringFormat.LineAlignment = StringAlignment.Center;
                     var rect_color = new RectangleF(rect_read.X + (rect_read.Width - size_color) / 2F, rect_read.Y + (rect_read.Height - size_color) / 2F, size_color, size_color);
                     using (var brush = new SolidBrush(_fore))
                     {
-                        g.String(Text, Font, brush, rect_color, stringFormat);
+                        g.String(Text, Font, brush, rect_color);
                     }
-                    stringFormat.Dispose();
 
                 }
             }

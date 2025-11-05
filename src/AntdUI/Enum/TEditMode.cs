@@ -28,6 +28,8 @@ namespace AntdUI
 
     public enum TEditSelection
     {
+        None,
+        First,
         Last,
         All
     }

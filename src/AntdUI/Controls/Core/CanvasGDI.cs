@@ -36,21 +36,21 @@ namespace AntdUI.Core
 
         public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Center);
         public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Center);
-        public Size MeasureString(string? text, Font font, int width, StringFormat? format) => g.MeasureString(text, font, width, format ?? Helper.m_sf).Size();
-        public Size MeasureString(string? text, Font font, int width, FormatFlags format) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
+        public Size MeasureString(string? text, Font font, int width, StringFormat format) => g.MeasureString(text, font, width, format).Size();
+        public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Center) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
 
         #endregion
 
         #region String
 
-        public void String(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null)
+        public void String(string? text, Font font, Color color, Rectangle rect, StringFormat format)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
+        public void String(string? text, Font font, Brush brush, Rectangle rect, StringFormat format)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -58,20 +58,20 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format ?? Helper.m_sf);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format);
                     Fill(brush, path);
                 }
             }
-            else g.DrawString(text, font, brush, rect, format ?? Helper.m_sf);
+            else g.DrawString(text, font, brush, rect, format);
         }
-        public void String(string? text, Font font, Color color, RectangleF rect, StringFormat? format = null)
+        public void String(string? text, Font font, Color color, RectangleF rect, StringFormat format)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat? format = null)
+        public void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat format)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -79,21 +79,21 @@ namespace AntdUI.Core
             {
                 using (var path = new GraphicsPath())
                 {
-                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format ?? Helper.m_sf);
+                    path.AddString(text, font.FontFamily, (int)font.Style, StringPathFontSize(font), rect, format);
                     Fill(brush, path);
                 }
             }
-            else g.DrawString(text, font, brush, rect, format ?? Helper.m_sf);
+            else g.DrawString(text, font, brush, rect, format);
         }
 
-        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format)
+        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format)
+        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -107,14 +107,14 @@ namespace AntdUI.Core
             }
             else g.DrawString(text, font, brush, rect, Helper.TF(format));
         }
-        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format)
+        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format)
+        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -248,7 +248,7 @@ namespace AntdUI.Core
 
         public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Center);
         public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Center);
-        public Size MeasureText(string? text, Font font, int width, StringFormat? format)
+        public Size MeasureText(string? text, Font font, int width, StringFormat format)
         {
             if (SvgDb.Emoji.Count == 0 || text == null) return MeasureString(text, font, width, format);
             else
@@ -270,7 +270,7 @@ namespace AntdUI.Core
                 else return MeasureString(text, font, width, format);
             }
         }
-        public Size MeasureText(string? text, Font font, int width, FormatFlags format)
+        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center)
         {
             if (SvgDb.Emoji.Count == 0 || text == null) return MeasureString(text, font, width, format);
             else
@@ -380,7 +380,7 @@ namespace AntdUI.Core
 
         #region DrawText
 
-        public void DrawText(string? text, Font font, Color color, Rectangle rect, StringFormat? format = null)
+        public void DrawText(string? text, Font font, Color color, Rectangle rect, StringFormat format)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -388,7 +388,7 @@ namespace AntdUI.Core
             }
         }
 
-        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat? format = null)
+        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat format)
         {
             if (SvgDb.Emoji.Count == 0) String(text, font, brush, rect, format);
             else
@@ -412,7 +412,7 @@ namespace AntdUI.Core
             }
         }
 
-        void DrawText(string? text, Font font, Brush brush, Rectangle rect, List<TMPChar> characters, StringFormat? format = null)
+        void DrawText(string? text, Font font, Brush brush, Rectangle rect, List<TMPChar> characters, StringFormat format)
         {
             CorrectionTextRendering.CORE(font, text, ref rect);
             int lineHeight = MeasureText(font, rect.Width, ref characters);
@@ -423,27 +423,6 @@ namespace AntdUI.Core
                 {
                     float fontsize = StringPathFontSize(font);
 
-                    if (format == null) DrawText(characters, path, fontsize, rect.X, rect.Y, font, brush, lineHeight, rect, false, false, StringAlignment.Near);
-                    else
-                    {
-                        bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
-                        bool ellipsis = format.Trimming.HasFlag(StringTrimming.EllipsisCharacter);
-
-                        int y;
-                        if (format.LineAlignment == StringAlignment.Center) y = rect.Y + (rect.Height - sizeT.Height) / 2;
-                        else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
-                        else y = rect.Y;
-
-                        DrawText(characters, path, fontsize, rect.X, y, font, brush, lineHeight, rect, wrap, ellipsis, format.Alignment);
-                    }
-                    Fill(brush, path);
-                }
-            }
-            else
-            {
-                if (format == null) DrawText(characters, rect.X, rect.Y, font, brush, lineHeight, rect, false, false, StringAlignment.Near);
-                else
-                {
                     bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
                     bool ellipsis = format.Trimming.HasFlag(StringTrimming.EllipsisCharacter);
 
@@ -452,8 +431,22 @@ namespace AntdUI.Core
                     else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
                     else y = rect.Y;
 
-                    DrawText(characters, rect.X, y, font, brush, lineHeight, rect, wrap, ellipsis, format.Alignment);
+                    DrawText(characters, path, fontsize, rect.X, y, font, brush, lineHeight, rect, wrap, ellipsis, format.Alignment);
+
+                    Fill(brush, path);
                 }
+            }
+            else
+            {
+                bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
+                bool ellipsis = format.Trimming.HasFlag(StringTrimming.EllipsisCharacter);
+
+                int y;
+                if (format.LineAlignment == StringAlignment.Center) y = rect.Y + (rect.Height - sizeT.Height) / 2;
+                else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
+                else y = rect.Y;
+
+                DrawText(characters, rect.X, y, font, brush, lineHeight, rect, wrap, ellipsis, format.Alignment);
             }
         }
 
@@ -476,7 +469,7 @@ namespace AntdUI.Core
                 {
                     string ellipsisText = "...";
                     Size ellipsisSize = MeasureString(ellipsisText, font);
-                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.m_sf);
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Center));
                     return;
                 }
                 if (use_line < it.line)
@@ -501,7 +494,7 @@ namespace AntdUI.Core
                     if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
                     else SvgExtend.GetImgExtend(this, svg, rect_ico);
                 }
-                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.m_sf);
+                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
                 use_x += it.w;
             }
         }
@@ -555,7 +548,7 @@ namespace AntdUI.Core
         }
 
 
-        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format)
+        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -563,7 +556,7 @@ namespace AntdUI.Core
             }
         }
 
-        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format)
+        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             if (SvgDb.Emoji.Count == 0) String(text, font, brush, rect, format);
             else
@@ -636,7 +629,7 @@ namespace AntdUI.Core
                 {
                     string ellipsisText = "...";
                     Size ellipsisSize = MeasureString(ellipsisText, font);
-                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.m_sf);
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Center));
                     return;
                 }
                 if (use_line < it.line)
@@ -654,7 +647,7 @@ namespace AntdUI.Core
                     if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
                     else SvgExtend.GetImgExtend(this, svg, rect_ico);
                 }
-                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.m_sf);
+                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
                 use_x += it.w;
             }
         }

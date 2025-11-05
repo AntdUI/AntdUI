@@ -1173,16 +1173,25 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 选择最后文本
+        /// </summary>
+        public void SelectLast()
+        {
+            if (cache_font == null) return;
+            SelectionStart = cache_font.Length;
+            SelectionLength = 0;
+            SetCaretPostion(cache_font.Length + 1);
+        }
+
+        /// <summary>
         /// 选择所有文本
         /// </summary>
         public void SelectAll()
         {
-            if (cache_font != null)
-            {
-                SelectionStart = 0;
-                SelectionLength = cache_font.Length;
-                SetCaretPostion(cache_font.Length + 1);
-            }
+            if (cache_font == null) return;
+            SelectionStart = 0;
+            SelectionLength = cache_font.Length;
+            SetCaretPostion(cache_font.Length + 1);
         }
 
         /// <summary>

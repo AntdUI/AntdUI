@@ -474,66 +474,51 @@ namespace AntdUI
                     // 测量文本大小
                     var size = g.MeasureText(content.Text, content.Font ?? Font);
                     using (var brush = new SolidBrush(content.ForeColor ?? Colour.Text.Get(nameof(Preview))))
-                    using (var format = new StringFormat())
                     {
                         Rectangle textRect;
                         int width = TargetRect.Width, height = size.Height;
-
                         if (size.Width > TargetRect.Width)
                         {
-                            format.FormatFlags = StringFormatFlags.LineLimit;
-                            format.Trimming = StringTrimming.Word;
                             // 重新测量换行后的文本所需区域
-                            size = g.MeasureText(content.Text, content.Font ?? Font, TargetRect.Width, format);
+                            size = g.MeasureText(content.Text, content.Font ?? Font, TargetRect.Width);
 
                             //重新测量后重新赋值矩形高度
                             height = Math.Min(size.Height, TargetRect.Height);
                             width = TargetRect.Width;
                         }
-
+                        var format = Helper.SetAlignment(content.TextAlign);
                         switch (content.TextAlign)
                         {
                             case ContentAlignment.TopLeft:
                                 textRect = new Rectangle(0, 0, width, height);
-                                format.Alignment = StringAlignment.Near;
                                 break;
                             case ContentAlignment.TopCenter:
                                 textRect = new Rectangle(0, 0, width, height);
-                                format.Alignment = StringAlignment.Center;
                                 break;
                             case ContentAlignment.TopRight:
                                 textRect = new Rectangle(0, 0, width, height);
-                                format.Alignment = StringAlignment.Far;
                                 break;
                             case ContentAlignment.MiddleLeft:
                                 textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
-                                format.Alignment = StringAlignment.Near;
                                 break;
                             case ContentAlignment.MiddleCenter:
                                 textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
-                                format.Alignment = StringAlignment.Center;
                                 break;
                             case ContentAlignment.MiddleRight:
                                 textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
-                                format.Alignment = StringAlignment.Far;
                                 break;
                             case ContentAlignment.BottomLeft:
                                 textRect = new Rectangle(0, TargetRect.Height - height, width, height);
-                                format.Alignment = StringAlignment.Near;
                                 break;
                             case ContentAlignment.BottomCenter:
                                 textRect = new Rectangle(0, TargetRect.Height - height, width, height);
-                                format.Alignment = StringAlignment.Center;
                                 break;
                             case ContentAlignment.BottomRight:
                                 textRect = new Rectangle(0, TargetRect.Height - height, width, height);
-                                format.Alignment = StringAlignment.Far;
                                 break;
                             default:
                                 throw new Exception("什么鬼，你怎么可能进入这个异常");
                         }
-
-                        format.LineAlignment = StringAlignment.Far;
 
                         g.DrawText(content.Text, content.Font ?? Font, brush, textRect, format);
                     }

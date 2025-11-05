@@ -163,6 +163,7 @@ namespace AntdUI
             return sf;
         }
 
+        [Obsolete("use FormatFlags enum")]
         public static StringFormat SF_MEASURE_FONT()
         {
             var sf = new StringFormat(StringFormat.GenericTypographic) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };

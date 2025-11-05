@@ -138,8 +138,7 @@ namespace AntdUI.Chat
             base.OnDraw(e);
         }
 
-        readonly FormatFlags SFBage = FormatFlags.Center,
-            SFL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis,
+        readonly FormatFlags SFL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis,
              SFR = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time, int radius)
         {

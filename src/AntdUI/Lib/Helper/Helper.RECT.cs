@@ -409,6 +409,7 @@ namespace AntdUI
 
         #region 文本方向
 
+        [Obsolete("use FormatFlags enum")]
         public static void SetAlignment(this ContentAlignment textAlign, ref StringFormat stringFormat)
         {
             switch (textAlign)
@@ -464,6 +465,8 @@ namespace AntdUI
                     break;
             }
         }
+
+        [Obsolete("use FormatFlags enum")]
         public static void SetAlignment(this HorizontalAlignment textAlign, ref StringFormat stringFormat)
         {
             switch (textAlign)
@@ -483,52 +486,41 @@ namespace AntdUI
             }
         }
 
-        public static FormatFlags SetAlignment(this ContentAlignment textAlign, FormatFlags format)
+        public static FormatFlags SetAlignment(ContentAlignment textAlign)
         {
-            var flags = FormatFlagsBase(format);
-
             switch (textAlign)
             {
                 case ContentAlignment.TopLeft:
                     //内容在垂直方向上顶部对齐，在水平方向上左边对齐
-                    flags |= FormatFlags.Left | FormatFlags.Top;
-                    break;
+                    return FormatFlags.Left | FormatFlags.Top;
                 case ContentAlignment.TopCenter:
                     //内容在垂直方向上顶部对齐，在水平方向上居中对齐
-                    flags |= FormatFlags.HorizontalCenter | FormatFlags.Top;
-                    break;
+                    return FormatFlags.HorizontalCenter | FormatFlags.Top;
                 case ContentAlignment.TopRight:
                     //内容在垂直方向上顶部对齐，在水平方向上右边对齐
-                    flags |= FormatFlags.Right | FormatFlags.Top;
-                    break;
+                    return FormatFlags.Right | FormatFlags.Top;
                 case ContentAlignment.MiddleLeft:
                     //内容在垂直方向上中间对齐，在水平方向上左边对齐
-                    flags |= FormatFlags.Left | FormatFlags.Top;
-                    break;
+                    return FormatFlags.Left | FormatFlags.Top;
                 case ContentAlignment.MiddleCenter:
                     //内容在垂直方向上中间对齐，在水平方向上居中对齐
-                    flags |= FormatFlags.Center;
-                    break;
+                    return FormatFlags.Center;
                 case ContentAlignment.MiddleRight:
                     //内容在垂直方向上中间对齐，在水平方向上右边对齐
-                    flags |= FormatFlags.Right | FormatFlags.VerticalCenter;
-                    break;
+                    return FormatFlags.Right | FormatFlags.VerticalCenter;
                 case ContentAlignment.BottomLeft:
                     //内容在垂直方向上底边对齐，在水平方向上左边对齐
-                    flags |= FormatFlags.Left | FormatFlags.Bottom;
-                    break;
+                    return FormatFlags.Left | FormatFlags.Bottom;
                 case ContentAlignment.BottomCenter:
                     //内容在垂直方向上底边对齐，在水平方向上居中对齐
-                    flags |= FormatFlags.HorizontalCenter | FormatFlags.Bottom;
-                    break;
+                    return FormatFlags.HorizontalCenter | FormatFlags.Bottom;
                 case ContentAlignment.BottomRight:
                     //内容在垂直方向上底边对齐，在水平方向上右边对齐
-                    flags |= FormatFlags.Right | FormatFlags.Bottom;
-                    break;
+                    return FormatFlags.Right | FormatFlags.Bottom;
+                default: return FormatFlags.Center;
             }
-
-            return flags;
         }
+        public static FormatFlags SetAlignment(this ContentAlignment textAlign, FormatFlags format) => FormatFlagsBase(format) | SetAlignment(textAlign);
 
         public static FormatFlags SetAlignment(this HorizontalAlignment textAlign, FormatFlags format)
         {
