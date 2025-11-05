@@ -432,6 +432,7 @@ namespace AntdUI
 
         #region 渲染
 
+        readonly FormatFlags s_f = FormatFlags.Center;
         FormatFlags s_f_L, s_f_R;
         protected override void OnDraw(DrawEventArgs e)
         {
