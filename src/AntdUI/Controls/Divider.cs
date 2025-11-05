@@ -47,8 +47,8 @@ namespace AntdUI
             {
                 if (vertical == value) return;
                 vertical = value;
-                if (vertical) s_f.FormatFlags |= StringFormatFlags.DirectionVertical;
-                else s_f.FormatFlags ^= StringFormatFlags.DirectionVertical;
+                if (value) s_f |= FormatFlags.DirectionVertical;
+                else s_f ^= FormatFlags.DirectionVertical;
                 Invalidate();
             }
         }
@@ -159,7 +159,7 @@ namespace AntdUI
 
         #endregion
 
-        readonly StringFormat s_f = Helper.SF_ALL();
+        FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrapEllipsis;
         protected override void OnDraw(DrawEventArgs e)
         {
             var rect = e.Rect.PaddingRect(Margin);

@@ -39,7 +39,6 @@ namespace AntdUI
         public Button() : base(ControlType.Button)
         {
             base.BackColor = Color.Transparent;
-            sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
         }
 
         #region 属性
@@ -389,8 +388,8 @@ namespace AntdUI
             {
                 if (useMnemonic == value) return;
                 useMnemonic = value;
-                if (value) sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
-                else sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.None;
+                if (value) sf |= FormatFlags.HotkeyPrefixShow;
+                else sf ^= FormatFlags.HotkeyPrefixShow;
             }
         }
 
@@ -431,7 +430,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat sf = Helper.SF_NoWrap();
+        FormatFlags sf = FormatFlags.Center | FormatFlags.NoWrap | FormatFlags.HotkeyPrefixShow;
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>
         /// 文本位置
@@ -444,7 +443,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref sf);
+                sf = textAlign.SetAlignment(sf);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }
@@ -492,7 +491,8 @@ namespace AntdUI
             {
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
-                sf.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
+                if (value) sf |= FormatFlags.EllipsisCharacter;
+                else sf ^= FormatFlags.EllipsisCharacter;
                 OnPropertyChanged(nameof(AutoEllipsis));
             }
         }
@@ -509,7 +509,8 @@ namespace AntdUI
             {
                 if (textMultiLine == value) return;
                 textMultiLine = value;
-                sf.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
+                if (value) sf |= FormatFlags.NoWrap;
+                else sf ^= FormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));
             }

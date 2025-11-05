@@ -662,7 +662,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_f_left = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly FormatFlags s_f_left = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
@@ -753,7 +753,6 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ThreadLoading?.Dispose();
-            s_f_left.Dispose();
             shadow_temp?.Dispose();
             shadow_temp = null;
             base.Dispose(disposing);

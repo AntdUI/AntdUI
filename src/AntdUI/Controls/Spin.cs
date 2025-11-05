@@ -415,7 +415,7 @@ namespace AntdUI
             thread = null;
         }
 
-        readonly StringFormat s_f = Helper.SF_ALL();
+        readonly FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrapEllipsis;
 
         float? rate;
         int mode = 0;

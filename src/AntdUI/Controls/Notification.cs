@@ -526,9 +526,6 @@ namespace AntdUI
             config.OnClose?.Invoke();
             config.OnClose = null;
             close_button.Dispose();
-            s_f.Dispose();
-            s_f_left.Dispose();
-            s_f_left_left.Dispose();
             shadow_temp?.Dispose();
             shadow_temp = null;
             base.Dispose(disposing);
@@ -568,7 +565,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_f = Helper.SF_ALL(), s_f_left = Helper.SF_ALL(lr: StringAlignment.Near), s_f_left_left = Helper.SF(StringAlignment.Near, StringAlignment.Near);
+        readonly FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrapEllipsis, s_f_left = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis, s_f_left_left = FormatFlags.Left | FormatFlags.Top;
 
         public override Bitmap? PrintBit()
         {

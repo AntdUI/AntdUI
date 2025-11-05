@@ -115,8 +115,8 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref sf);
-                sc.LineAlignment = sf.LineAlignment;
+                sf = textAlign.SetAlignment(sf);
+                sc = Helper.SetVerticalAlignment(sf, sc);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }
@@ -552,8 +552,8 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        readonly StringFormat sEllipsis = Helper.SF_Ellipsis(tb: StringAlignment.Near, lr: StringAlignment.Near);
-        StringFormat sc = Helper.SF_NoWrap(), sf = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly FormatFlags sEllipsis = FormatFlags.Left | FormatFlags.Top | FormatFlags.EllipsisCharacter;
+        FormatFlags sc = FormatFlags.Center | FormatFlags.NoWrap, sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         /// <summary>
         /// 渲染文字

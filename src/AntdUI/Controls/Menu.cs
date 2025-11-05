@@ -1009,7 +1009,7 @@ namespace AntdUI
             }
         }
 
-        readonly StringFormat SL = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly FormatFlags SL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius)
         {
             using (var brush = new SolidBrush(fore))

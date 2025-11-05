@@ -25,7 +25,7 @@ namespace AntdUI
     public enum FormatFlags : int
     {
         /// <summary>
-        /// 内容顶部对齐
+        /// 内容垂直顶部对齐
         /// </summary>
         Top = 1,
         /// <summary>
@@ -33,12 +33,12 @@ namespace AntdUI
         /// </summary>
         VerticalCenter = 2,
         /// <summary>
-        /// 内容底部对齐
+        /// 内容垂直底部对齐
         /// </summary>
         Bottom = 4,
 
         /// <summary>
-        /// 内容向左对齐
+        /// 内容水平向左对齐
         /// </summary>
         Left = 8,
         /// <summary>
@@ -46,7 +46,7 @@ namespace AntdUI
         /// </summary>
         HorizontalCenter = 16,
         /// <summary>
-        /// 内容向右对齐
+        /// 内容水平向右对齐
         /// </summary>
         Right = 32,
 
@@ -58,6 +58,13 @@ namespace AntdUI
         /// 内容超出显示省略号
         /// </summary>
         EllipsisCharacter = 128,
+
+        /// <summary>
+        /// 显示热键符号
+        /// </summary>
+        HotkeyPrefixShow = 256,
+
+        DirectionVertical = 512,
 
         /// <summary>
         /// 垂直水平居中（组合值）

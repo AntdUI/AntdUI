@@ -464,8 +464,6 @@ namespace AntdUI
                 panel_main = null;
             }
             if (config.Content is Control control) control.Dispose();
-            stringLeft.Dispose();
-            stringTL.Dispose();
             Dispose();
 
             if (config.ManualActivateParent)
@@ -512,8 +510,8 @@ namespace AntdUI
         Rectangle[] rectsContent;
         bool rtext = false;
 
-        readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
-        readonly StringFormat stringTL = Helper.SF_Ellipsis(StringAlignment.Near, StringAlignment.Near);
+        readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter,
+            stringTL = FormatFlags.Left | FormatFlags.Top | FormatFlags.EllipsisCharacter;
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics.High();

@@ -278,8 +278,8 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringLeft = Helper.SF_Ellipsis(lr: StringAlignment.Near);
-        readonly StringFormat stringCenter = Helper.SF_NoWrap();
+        readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter,
+            stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
 
         public override Bitmap? PrintBit()
         {

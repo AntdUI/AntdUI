@@ -418,7 +418,6 @@ namespace AntdUI
 
         #endregion
 
-        readonly StringFormat s_f = Helper.SF_NoWrap();
         public override Bitmap? PrintBit()
         {
             var rbmp = new Bitmap(TargetRect.Width, TargetRect.Height);
@@ -570,14 +569,14 @@ namespace AntdUI
                 if (LoadingProgressStr != null)
                 {
                     rect_loading.Offset(0, loading_size);
-                    g.String(LoadingProgressStr, Font, color, rect_loading, s_f);
+                    g.String(LoadingProgressStr, Font, color, rect_loading, FormatFlags.Center | FormatFlags.NoWrap);
                 }
             }
             else if (LoadingProgressStr != null)
             {
                 g.DrawEllipse(Colour.Error.Get(nameof(Preview)), bor6, rect_loading);
                 rect_loading.Offset(0, loading_size);
-                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(nameof(Preview)), rect_loading, s_f);
+                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(nameof(Preview)), rect_loading, FormatFlags.Center | FormatFlags.NoWrap);
             }
         }
 

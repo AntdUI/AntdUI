@@ -128,7 +128,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat s_f = Helper.SF_ALL(lr: StringAlignment.Near);
+        FormatFlags s_f = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -141,7 +141,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref s_f);
+                s_f = textAlign.SetAlignment(s_f);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }

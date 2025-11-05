@@ -131,7 +131,7 @@ namespace AntdUI
 
         string button_text = Localization.Get("Now", "此刻");
         string OKButton = Localization.Get("OK", "确定");
-        StringFormat s_f = Helper.SF();
+        readonly FormatFlags s_f = FormatFlags.Center;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(Colour.BgElevated.Get(nameof(DatePicker), ColorScheme)))

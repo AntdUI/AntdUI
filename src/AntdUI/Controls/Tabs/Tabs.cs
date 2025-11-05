@@ -550,7 +550,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_c = Helper.SF_ALL(), s_f = Helper.SF_NoWrap();
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrapEllipsis, s_f = FormatFlags.Center | FormatFlags.NoWrap;
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0 || !_tabMenuVisible) return;

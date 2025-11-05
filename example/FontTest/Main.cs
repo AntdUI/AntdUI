@@ -28,7 +28,6 @@ namespace FontTest
             InitializeComponent();
         }
 
-        StringFormat s_f = AntdUI.Helper.SF_NoWrap();
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -83,6 +82,8 @@ namespace FontTest
             using (var g = AntdUI.Helper.High(Graphics.FromImage(bmp)))
             {
                 #region 绘制原始
+
+                var s_f = AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrap;
 
                 using (var bmp_o = new Bitmap(size, size))
                 {

@@ -252,7 +252,7 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
-        StringFormat c = Helper.SF();
+        readonly FormatFlags c = FormatFlags.Center;
 
         #endregion
     }

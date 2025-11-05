@@ -176,7 +176,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat sf = Helper.SF(lr: StringAlignment.Near);
+        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(backColor ?? Colour.BgElevated.Get(name, ColorScheme)))

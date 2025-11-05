@@ -61,7 +61,7 @@ namespace AntdUI
                 FridayButton = "Fri";
                 SaturdayButton = "Sat";
                 SundayButton = "Sun";
-                s_f_L = Helper.SF(lr: StringAlignment.Near); s_f_R = Helper.SF(lr: StringAlignment.Far);
+                s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter;
             }
             else
             {
@@ -74,7 +74,7 @@ namespace AntdUI
                 FridayButton = "五";
                 SaturdayButton = "六";
                 SundayButton = "日";
-                s_f_L = Helper.SF(lr: StringAlignment.Far); s_f_R = Helper.SF(lr: StringAlignment.Near);
+                s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
             }
 
             Date = DateNow;
@@ -432,8 +432,8 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat s_f = Helper.SF();
-        StringFormat s_f_L, s_f_R;
+        readonly FormatFlags s_f = FormatFlags.Center;
+        FormatFlags s_f_L, s_f_R;
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
@@ -1353,7 +1353,7 @@ namespace AntdUI
                         FridayButton = "Fri";
                         SaturdayButton = "Sat";
                         SundayButton = "Sun";
-                        s_f_L = Helper.SF(lr: StringAlignment.Near); s_f_R = Helper.SF(lr: StringAlignment.Far);
+                        s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter;
                     }
                     else
                     {
@@ -1366,7 +1366,7 @@ namespace AntdUI
                         FridayButton = "五";
                         SaturdayButton = "六";
                         SundayButton = "日";
-                        s_f_L = Helper.SF(lr: StringAlignment.Far); s_f_R = Helper.SF(lr: StringAlignment.Near);
+                        s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
                     }
                     LoadLayout();
                     break;

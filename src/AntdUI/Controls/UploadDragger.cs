@@ -350,7 +350,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_f = Helper.SF_Ellipsis();
+        readonly FormatFlags s_f = FormatFlags.Center | FormatFlags.EllipsisCharacter;
 
         protected override void OnDraw(DrawEventArgs e)
         {

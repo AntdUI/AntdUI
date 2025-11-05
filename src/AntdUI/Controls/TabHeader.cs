@@ -697,7 +697,7 @@ namespace AntdUI
             g.Restore(state);
         }
 
-        StringFormat sf = Helper.SF_NoWrap(lr: StringAlignment.Near);
+        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
         /// <summary>
         /// 绘制单个标签（包含圆角）
         /// </summary>

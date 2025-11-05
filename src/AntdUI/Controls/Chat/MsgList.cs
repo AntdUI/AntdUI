@@ -138,9 +138,9 @@ namespace AntdUI.Chat
             base.OnDraw(e);
         }
 
-        StringFormat SFBage = Helper.SF();
-        StringFormat SFL = Helper.SF_ALL(lr: StringAlignment.Near);
-        StringFormat SFR = Helper.SF_ALL(lr: StringAlignment.Far);
+        readonly FormatFlags SFBage = FormatFlags.Center,
+            SFL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis,
+             SFR = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time, int radius)
         {
             it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
@@ -484,12 +484,12 @@ namespace AntdUI.Chat
             }
         }
 
-        StringFormat? _textFormat;
+        FormatFlags? _textFormat;
         /// <summary>
         /// 文本对齐方式
         /// </summary>
         [Description("文本对齐方式"), Category("外观"), DefaultValue(null)]
-        public StringFormat? TextFormat
+        public FormatFlags? TextFormat
         {
             get => _textFormat;
             set

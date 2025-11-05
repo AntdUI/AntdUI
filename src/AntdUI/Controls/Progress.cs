@@ -639,7 +639,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_c = Helper.SF_NoWrap(), s_r = Helper.SF_NoWrap(lr: StringAlignment.Far), s_l = Helper.SF_NoWrap(lr: StringAlignment.Near);
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrap;
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
@@ -696,7 +696,7 @@ namespace AntdUI
             using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
             {
                 string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
-                g.String(textShow, Font, brush, new Rectangle(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), s_l);
+                g.String(textShow, Font, brush, new Rectangle(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
             }
 
             int w = radius == 0 ? (int)Math.Round(icon_rect.Width * .2F) : (int)(radius * Config.Dpi);
@@ -833,7 +833,7 @@ namespace AntdUI
                 using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
                 {
                     string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
-                    g.String(textShow, Font, brush, new Rectangle(rect.X + has_x2, rect.Y, rect.Width - has_x2, rect.Height), s_l);
+                    g.String(textShow, Font, brush, new Rectangle(rect.X + has_x2, rect.Y, rect.Width - has_x2, rect.Height), FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
                 }
             }
             else
@@ -915,7 +915,7 @@ namespace AntdUI
 
                         using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
                         {
-                            g.String(textShow, Font, brush, rect_rext, s_r);
+                            g.String(textShow, Font, brush, rect_rext, FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
                         }
                     }
                 }

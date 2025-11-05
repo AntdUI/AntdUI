@@ -469,7 +469,7 @@ namespace AntdUI
                                 if (DateTime.TryParse(stext, out var date_s))
                                 {
                                     Text = date_s.ToString(Format) + '\t' + date_e.ToString(Format);
-                                    if (subForm is LayeredFormDatePickerRange layered_range)  layered_range.SetDateE(date_s, date_e);
+                                    if (subForm is LayeredFormDatePickerRange layered_range) layered_range.SetDateE(date_s, date_e);
                                     else if (subForm is LayeredFormDatePickerRangeTime layered_time) layered_time.IClose();
                                 }
                                 else Text = text.Substring(0, index) + '\t' + date_e.ToString(Format);

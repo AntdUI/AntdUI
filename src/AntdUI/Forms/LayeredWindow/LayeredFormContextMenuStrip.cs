@@ -332,7 +332,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat sfl = Helper.SF_Ellipsis(lr: StringAlignment.Near), sfr = Helper.SF_Ellipsis(lr: StringAlignment.Far);
+        readonly FormatFlags sfl = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter, sfr = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(Colour.BgElevated.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme)))

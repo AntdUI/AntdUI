@@ -28,8 +28,8 @@ namespace AntdUI
     {
         #region 渲染
 
-        internal StringFormat sf_center = Helper.SF_NoWrap();
-        internal StringFormat sf_placeholder = Helper.SF_ALL(lr: StringAlignment.Near);
+        internal FormatFlags sf_center = FormatFlags.Center | FormatFlags.NoWrap;
+        internal FormatFlags sf_placeholder = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         internal Action? TakePaint;
         public new void Invalidate()

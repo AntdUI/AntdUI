@@ -453,7 +453,7 @@ namespace AntdUI
             return Rect.Height + gap;
         }
 
-        readonly StringFormat s_c = Helper.SF(tb: StringAlignment.Near, lr: StringAlignment.Center);
+        readonly FormatFlags s_c = FormatFlags.Top | FormatFlags.HorizontalCenter;
 
         #endregion
 
@@ -495,7 +495,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat s_l = Helper.SF_ALL(lr: StringAlignment.Near);
+        FormatFlags s_l = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)

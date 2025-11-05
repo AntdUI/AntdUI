@@ -700,8 +700,8 @@ namespace AntdUI
 
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, useLeftMargin ? hasl : 0, 0, hasr, 0);
 
-        StringFormat stringLeft = Helper.SF_ALL(lr: StringAlignment.Near);
-        StringFormat stringCenter = Helper.SF_ALL();
+        readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis,
+            stringCenter = FormatFlags.Center | FormatFlags.NoWrapEllipsis;
 
         #region 渲染
 

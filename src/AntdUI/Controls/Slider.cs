@@ -356,7 +356,6 @@ namespace AntdUI
             }
         }
 
-        readonly StringFormat s_f = Helper.SF_NoWrap();
         internal RectangleF rectEllipse;
         internal void PaintEllipse(Canvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
         {
@@ -426,6 +425,7 @@ namespace AntdUI
                         float uks = ProgValue(it.Value);
                         if (!string.IsNullOrWhiteSpace(it.Text))
                         {
+                            var s_f = FormatFlags.Center | FormatFlags.NoWrap;
                             if (it.Fore.HasValue)
                             {
                                 using (var fore2 = new SolidBrush(it.Fore.Value))

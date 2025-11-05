@@ -217,7 +217,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat stringFormat = Helper.SF_NoWrap();
+        FormatFlags sf = FormatFlags.Center | FormatFlags.NoWrap;
 
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>
@@ -231,7 +231,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref stringFormat);
+                sf = textAlign.SetAlignment(sf);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }
@@ -249,7 +249,8 @@ namespace AntdUI
             {
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
-                stringFormat.Trimming = value ? StringTrimming.EllipsisCharacter : StringTrimming.None;
+                if (value) sf |= FormatFlags.EllipsisCharacter;
+                else sf ^= FormatFlags.EllipsisCharacter;
                 OnPropertyChanged(nameof(AutoEllipsis));
             }
         }
@@ -266,7 +267,8 @@ namespace AntdUI
             {
                 if (textMultiLine == value) return;
                 textMultiLine = value;
-                stringFormat.FormatFlags = value ? 0 : StringFormatFlags.NoWrap;
+                if (value) sf ^= FormatFlags.NoWrap;
+                else sf |= FormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));
             }
@@ -330,7 +332,7 @@ namespace AntdUI
         [Description("Close时发生"), Category("行为")]
         public event RBoolEventHandler? CloseChanged;
 
-        protected virtual bool OnCloseChanged() => CloseChanged?.Invoke(this, EventArgs.Empty) ?? false;
+        protected virtual bool OnCloseChanged() => CloseChanged?.Invoke(this, EventArgs.Empty) ?? true;
 
         #endregion
 
@@ -429,7 +431,7 @@ namespace AntdUI
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawText(text, Font, brush, rect.text, stringFormat);
+                    g.DrawText(text, Font, brush, rect.text, sf);
                 }
             }
         }

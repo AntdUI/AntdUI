@@ -228,7 +228,7 @@ namespace AntdUI.Chat
             base.OnDraw(e);
         }
 
-        StringFormat SFL = Helper.SF(tb: StringAlignment.Near);
+        readonly FormatFlags SFL = FormatFlags.Top | FormatFlags.HorizontalCenter;
 
         void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
         {
