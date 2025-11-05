@@ -87,18 +87,15 @@ namespace AntdUI
         static float GetFontOffset(Font font, int size, string text)
         {
             float cs = size / 2F;
-            using (var s_f = Helper.SF_NoWrap())
+            using (var bmp = new Bitmap(size, size))
             {
-                using (var bmp = new Bitmap(size, size))
+                using (var g_o = Graphics.FromImage(bmp).High())
                 {
-                    using (var g_o = Graphics.FromImage(bmp).High())
-                    {
-                        g_o.String(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), s_f);
-                    }
-                    TextRealY(bmp, out var ry, out var rheight);
-                    float ready = ry + rheight / 2F;
-                    return cs - ready;
+                    g_o.String(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), FormatFlags.Center | FormatFlags.NoWrap);
                 }
+                TextRealY(bmp, out var ry, out var rheight);
+                float ready = ry + rheight / 2F;
+                return cs - ready;
             }
         }
 

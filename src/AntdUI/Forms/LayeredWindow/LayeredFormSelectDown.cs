@@ -54,8 +54,7 @@ namespace AntdUI
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(control.DropDownTextAlign);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
             float dpi = Config.Dpi;
             if (dpi == 1F) Radius = control.DropDownRadius ?? control.radius;
@@ -84,8 +83,7 @@ namespace AntdUI
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(control.DropDownTextAlign);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
             float dpi = Config.Dpi;
             if (dpi == 1F) Radius = control.DropDownRadius ?? control.Radius;
@@ -113,8 +111,7 @@ namespace AntdUI
             DPadding = new Size(12, 5);
             selectedValue = sValue;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(TAlign.Left);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(TAlign.Left) | FormatFlags.NoWrap;
 
             float dpi = Config.Dpi;
             if (dpi == 1F) Radius = radius;
@@ -158,8 +155,7 @@ namespace AntdUI
             MaxCount = cell.DropDownMaxCount;
             DPadding = cell.DropDownPadding;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(cell.DropDownTextAlign);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(cell.DropDownTextAlign) | FormatFlags.NoWrap;
 
             float dpi = Config.Dpi;
             if (dpi == 1F) Radius = cell.DropDownRadius ?? control.Radius;
@@ -196,8 +192,7 @@ namespace AntdUI
             DPadding = parent.DPadding;
             MaxCount = maxcount;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(control.DropDownTextAlign);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
             Radius = radius;
             ArrowSize = arrowSize;
@@ -225,8 +220,7 @@ namespace AntdUI
             DPadding = parent.DPadding;
             MaxCount = maxcount;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(control.DropDownTextAlign);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
             Radius = radius;
             ArrowSize = arrowSize;
@@ -255,8 +249,7 @@ namespace AntdUI
             DPadding = parent.DPadding;
             MaxCount = maxcount;
             ItemOS = new ItemIndex(items);
-            sf = Helper.SF(cell.DropDownTextAlign);
-            sf.FormatFlags = StringFormatFlags.NoWrap;
+            sf = Helper.SF(cell.DropDownTextAlign) | FormatFlags.NoWrap;
 
             Radius = radius;
             ArrowSize = arrowSize;
@@ -375,7 +368,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat sf;
+        FormatFlags sf;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
@@ -573,7 +566,7 @@ namespace AntdUI
                 {
                     maxwr = width - padd2;
                     maxw = maxwr - gap_x2;
-                    sf.Trimming = StringTrimming.EllipsisCharacter;
+                    sf |= FormatFlags.EllipsisCharacter;
                 }
 
                 int item_count = 0, divider_count = 0, y = 0, sy = 0;

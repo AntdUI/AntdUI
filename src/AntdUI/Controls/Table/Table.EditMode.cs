@@ -409,7 +409,18 @@ namespace AntdUI
                 };
             }
             if (input.ReadOnly) input.BackColor = Colour.BorderSecondary.Get(nameof(Table));
-            if (EditSelection == TEditSelection.All) input.SelectAll();
+            switch (EditSelection)
+            {
+                case TEditSelection.First:
+                    input.SelectionStart = input.SelectionLength = 0;
+                    break;
+                case TEditSelection.Last:
+                    input.SelectLast();
+                    break;
+                case TEditSelection.All:
+                    input.SelectAll();
+                    break;
+            }
             return input;
         }
         void ShowInput(Input input, Action<bool, string> call)

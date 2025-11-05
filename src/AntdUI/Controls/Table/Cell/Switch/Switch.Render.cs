@@ -95,7 +95,7 @@ namespace AntdUI
                         var textRect = Checked
                             ? new Rectangle(Rect.X + (Rect.Width - Rect.Height + gap2) / 2 - textSize.Width / 2, Rect.Y + Rect.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
                             : new Rectangle(Rect.X + (Rect.Height - gap + (Rect.Width - Rect.Height + gap) / 2 - textSize.Width / 2), Rect.Y + Rect.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
-                        g.String(textToRender, font, brush, textRect, FormatFlags.Center);
+                        g.String(textToRender, font, brush, textRect);
                     }
                 }
             }

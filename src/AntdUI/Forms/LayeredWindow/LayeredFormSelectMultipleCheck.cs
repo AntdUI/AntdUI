@@ -177,7 +177,7 @@ namespace AntdUI
 
         #region 渲染
 
-        StringFormat sf;
+        FormatFlags sf;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
@@ -476,9 +476,9 @@ namespace AntdUI
                 {
                     maxwr = width - padd2;
                     maxw = maxwr - gap_x2;
-                    sf.Trimming = StringTrimming.EllipsisCharacter;
+                    sf |= FormatFlags.EllipsisCharacter;
                 }
-                sf.FormatFlags = StringFormatFlags.NoWrap;
+                sf |= FormatFlags.NoWrap;
 
                 int item_count = 0, divider_count = 0, y = 0, sy = 0;
                 var lists = new List<ObjectItemCheck>(items.Count);

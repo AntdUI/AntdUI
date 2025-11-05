@@ -409,6 +409,7 @@ namespace AntdUI
 
         #region 文本方向
 
+        [Obsolete("use FormatFlags enum")]
         public static void SetAlignment(this ContentAlignment textAlign, ref StringFormat stringFormat)
         {
             switch (textAlign)
@@ -464,6 +465,8 @@ namespace AntdUI
                     break;
             }
         }
+
+        [Obsolete("use FormatFlags enum")]
         public static void SetAlignment(this HorizontalAlignment textAlign, ref StringFormat stringFormat)
         {
             switch (textAlign)
@@ -481,6 +484,106 @@ namespace AntdUI
                     stringFormat.Alignment = StringAlignment.Far;
                     break;
             }
+        }
+
+        public static FormatFlags SetAlignment(ContentAlignment textAlign)
+        {
+            switch (textAlign)
+            {
+                case ContentAlignment.TopLeft:
+                    //内容在垂直方向上顶部对齐，在水平方向上左边对齐
+                    return FormatFlags.Left | FormatFlags.Top;
+                case ContentAlignment.TopCenter:
+                    //内容在垂直方向上顶部对齐，在水平方向上居中对齐
+                    return FormatFlags.HorizontalCenter | FormatFlags.Top;
+                case ContentAlignment.TopRight:
+                    //内容在垂直方向上顶部对齐，在水平方向上右边对齐
+                    return FormatFlags.Right | FormatFlags.Top;
+                case ContentAlignment.MiddleLeft:
+                    //内容在垂直方向上中间对齐，在水平方向上左边对齐
+                    return FormatFlags.Left | FormatFlags.Top;
+                case ContentAlignment.MiddleCenter:
+                    //内容在垂直方向上中间对齐，在水平方向上居中对齐
+                    return FormatFlags.Center;
+                case ContentAlignment.MiddleRight:
+                    //内容在垂直方向上中间对齐，在水平方向上右边对齐
+                    return FormatFlags.Right | FormatFlags.VerticalCenter;
+                case ContentAlignment.BottomLeft:
+                    //内容在垂直方向上底边对齐，在水平方向上左边对齐
+                    return FormatFlags.Left | FormatFlags.Bottom;
+                case ContentAlignment.BottomCenter:
+                    //内容在垂直方向上底边对齐，在水平方向上居中对齐
+                    return FormatFlags.HorizontalCenter | FormatFlags.Bottom;
+                case ContentAlignment.BottomRight:
+                    //内容在垂直方向上底边对齐，在水平方向上右边对齐
+                    return FormatFlags.Right | FormatFlags.Bottom;
+                default: return FormatFlags.Center;
+            }
+        }
+        public static FormatFlags SetAlignment(this ContentAlignment textAlign, FormatFlags format) => FormatFlagsBase(format) | SetAlignment(textAlign);
+
+        public static FormatFlags SetAlignment(this HorizontalAlignment textAlign, FormatFlags format)
+        {
+            var flags = FormatFlagsBase(format);
+
+            if (format.HasFlag(FormatFlags.VerticalCenter)) flags |= FormatFlags.VerticalCenter;
+            else if (format.HasFlag(FormatFlags.Top)) flags |= FormatFlags.Top;
+            else if (format.HasFlag(FormatFlags.Bottom)) flags |= FormatFlags.Bottom;
+
+            switch (textAlign)
+            {
+                case HorizontalAlignment.Left:
+                    flags |= FormatFlags.Left;
+                    break;
+                case HorizontalAlignment.Center:
+                    flags |= FormatFlags.HorizontalCenter;
+                    break;
+                case HorizontalAlignment.Right:
+                    flags |= FormatFlags.Right;
+                    break;
+            }
+
+            return flags;
+        }
+        public static FormatFlags SetHorizontalAlignment(FormatFlags textAlign, FormatFlags format)
+        {
+            var flags = FormatFlagsBase(format);
+
+            if (format.HasFlag(FormatFlags.VerticalCenter)) flags |= FormatFlags.VerticalCenter;
+            else if (format.HasFlag(FormatFlags.Top)) flags |= FormatFlags.Top;
+            else if (format.HasFlag(FormatFlags.Bottom)) flags |= FormatFlags.Bottom;
+
+            if (textAlign.HasFlag(FormatFlags.HorizontalCenter)) flags |= FormatFlags.HorizontalCenter;
+            else if (textAlign.HasFlag(FormatFlags.Left)) flags |= FormatFlags.Left;
+            else if (textAlign.HasFlag(FormatFlags.Right)) flags |= FormatFlags.Right;
+            else flags |= FormatFlags.Left;
+
+            return flags;
+        }
+        public static FormatFlags SetVerticalAlignment(FormatFlags textAlign, FormatFlags format)
+        {
+            var flags = FormatFlagsBase(format);
+
+            if (format.HasFlag(FormatFlags.HorizontalCenter)) flags |= FormatFlags.HorizontalCenter;
+            else if (format.HasFlag(FormatFlags.Left)) flags |= FormatFlags.Left;
+            else if (format.HasFlag(FormatFlags.Right)) flags |= FormatFlags.Right;
+
+            if (textAlign.HasFlag(FormatFlags.VerticalCenter)) flags |= FormatFlags.VerticalCenter;
+            else if (textAlign.HasFlag(FormatFlags.Top)) flags |= FormatFlags.Top;
+            else if (textAlign.HasFlag(FormatFlags.Right)) flags |= FormatFlags.Bottom;
+            else flags |= FormatFlags.Top;
+
+            return flags;
+        }
+        public static FormatFlags FormatFlagsBase(FormatFlags format)
+        {
+            FormatFlags flags = 0;
+            if (format.HasFlag(FormatFlags.NoWrap)) flags |= FormatFlags.NoWrap;
+            if (format.HasFlag(FormatFlags.EllipsisCharacter)) flags |= FormatFlags.EllipsisCharacter;
+            if (format.HasFlag(FormatFlags.HotkeyPrefixShow)) flags |= FormatFlags.HotkeyPrefixShow;
+            if (format.HasFlag(FormatFlags.DirectionVertical)) flags |= FormatFlags.DirectionVertical;
+
+            return flags;
         }
 
         #endregion

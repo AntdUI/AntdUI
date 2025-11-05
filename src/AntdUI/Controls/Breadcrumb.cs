@@ -156,7 +156,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_f = Helper.SF_ALL();
+        readonly FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrapEllipsis;
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)

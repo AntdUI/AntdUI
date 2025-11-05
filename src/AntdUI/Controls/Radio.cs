@@ -97,7 +97,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        StringFormat stringFormat = Helper.SF_ALL(lr: StringAlignment.Near);
+        FormatFlags s_f = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -110,7 +110,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref stringFormat);
+                s_f = textAlign.SetAlignment(s_f);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }
@@ -206,7 +206,16 @@ namespace AntdUI
             {
                 if (rightToLeft == value) return;
                 rightToLeft = value;
-                stringFormat.Alignment = RightToLeft == RightToLeft.Yes ? StringAlignment.Far : StringAlignment.Near;
+                if (rightToLeft == RightToLeft.Yes)
+                {
+                    s_f ^= FormatFlags.Left;
+                    s_f |= FormatFlags.Right;
+                }
+                else
+                {
+                    s_f ^= FormatFlags.Right;
+                    s_f |= FormatFlags.Left;
+                }
                 Invalidate();
                 OnPropertyChanged(nameof(RightToLeft));
             }
@@ -250,7 +259,7 @@ namespace AntdUI
                 if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
                 using (var brush = new SolidBrush(enabled ? (fore ?? Colour.Text.Get(nameof(Radio), ColorScheme)) : Colour.TextQuaternary.Get(nameof(Radio), "foreDisabled", ColorScheme)))
                 {
-                    g.DrawText(Text, Font, brush, text_rect, stringFormat);
+                    g.DrawText(Text, Font, brush, text_rect, s_f);
                 }
             }
             base.OnDraw(e);

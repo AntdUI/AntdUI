@@ -193,7 +193,7 @@ namespace AntdUI
 
         public Timeline() { ScrollBar = new ScrollBar(this); }
 
-        readonly StringFormat stringFormatLeft = Helper.SF(lr: StringAlignment.Near);
+        readonly FormatFlags stringFormatLeft = FormatFlags.Left | FormatFlags.VerticalCenter;
 
         protected override void OnDraw(DrawEventArgs e)
         {

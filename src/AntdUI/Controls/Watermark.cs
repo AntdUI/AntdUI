@@ -161,7 +161,7 @@ namespace AntdUI
             /// <summary>
             /// 文本对齐方式
             /// </summary>
-            public StringAlignment TextAlign { get; set; } = StringAlignment.Center;
+            public FormatFlags TextAlign { get; set; } = FormatFlags.Center;
 
             /// <summary>
             /// 是否启用
@@ -261,7 +261,7 @@ namespace AntdUI
                 ForeColor = value;
                 return this;
             }
-            public Config SetTextAlign(StringAlignment value = StringAlignment.Near)
+            public Config SetTextAlign(FormatFlags value)
             {
                 TextAlign = value;
                 return this;
@@ -430,50 +430,47 @@ namespace AntdUI
         {
             if (string.IsNullOrEmpty(config.Content)) return;
 
-            using (var format = Helper.SF(lr: config.TextAlign))
+            // 计算文字区域
+            if (string.IsNullOrEmpty(config.SubContent))
             {
-                // 计算文字区域
-                if (string.IsNullOrEmpty(config.SubContent))
+                // 绘制主内容
+                var mainRect = new Rectangle(x, y + (h - h) / 2, w, h);
+                g.DrawText(config.Content, font, brush, mainRect, config.TextAlign);
+            }
+            else
+            {
+                int contentHeight = h, subContentHeight = 0, spacing = (int)(4 * Config.Dpi); // 主内容和副内容之间的间距
+                                                                                              // 如果有副内容，计算实际需要的空间
+                using (var subFont = new Font(Font.FontFamily, Font.Size * config.SubFontSize, Font.Style))
                 {
-                    // 绘制主内容
-                    var mainRect = new Rectangle(x, y + (h - h) / 2, w, h);
-                    g.DrawText(config.Content, font, brush, mainRect, format);
-                }
-                else
-                {
-                    int contentHeight = h, subContentHeight = 0, spacing = (int)(4 * Config.Dpi); // 主内容和副内容之间的间距
-                    // 如果有副内容，计算实际需要的空间
-                    using (var subFont = new Font(Font.FontFamily, Font.Size * config.SubFontSize, Font.Style))
+                    Size mainSize = g.MeasureText(config.Content, font, w, config.TextAlign), subSize = g.MeasureText(config.SubContent, subFont, w, config.TextAlign);
+
+                    // 计算总高度
+                    int totalTextHeight = mainSize.Height + spacing + subSize.Height;
+
+                    // 如果总高度超过水印高度，则按比例缩放
+                    if (totalTextHeight > h)
                     {
-                        Size mainSize = g.MeasureText(config.Content, font, w, format), subSize = g.MeasureText(config.SubContent, subFont, w, format);
-
-                        // 计算总高度
-                        int totalTextHeight = mainSize.Height + spacing + subSize.Height;
-
-                        // 如果总高度超过水印高度，则按比例缩放
-                        if (totalTextHeight > h)
-                        {
-                            var scale = h / totalTextHeight;
-                            contentHeight = mainSize.Height * scale;
-                            subContentHeight = subSize.Height * scale;
-                            spacing *= scale;
-                        }
-                        else
-                        {
-                            contentHeight = mainSize.Height;
-                            subContentHeight = subSize.Height;
-                        }
-                        // 计算垂直居中位置
-                        int totalHeight = contentHeight + spacing + subContentHeight, startY = y + (h - totalHeight) / 2;
-
-                        // 绘制主内容
-                        var mainRect = new Rectangle(x, startY, w, contentHeight);
-                        g.DrawText(config.Content, font, brush, mainRect, format);
-
-                        // 绘制副内容
-                        var subRect = new Rectangle(x, startY + contentHeight + spacing, w, subContentHeight);
-                        g.DrawText(config.SubContent, subFont, brush, subRect, format);
+                        var scale = h / totalTextHeight;
+                        contentHeight = mainSize.Height * scale;
+                        subContentHeight = subSize.Height * scale;
+                        spacing *= scale;
                     }
+                    else
+                    {
+                        contentHeight = mainSize.Height;
+                        subContentHeight = subSize.Height;
+                    }
+                    // 计算垂直居中位置
+                    int totalHeight = contentHeight + spacing + subContentHeight, startY = y + (h - totalHeight) / 2;
+
+                    // 绘制主内容
+                    var mainRect = new Rectangle(x, startY, w, contentHeight);
+                    g.DrawText(config.Content, font, brush, mainRect, config.TextAlign);
+
+                    // 绘制副内容
+                    var subRect = new Rectangle(x, startY + contentHeight + spacing, w, subContentHeight);
+                    g.DrawText(config.SubContent, subFont, brush, subRect, config.TextAlign);
                 }
             }
         }

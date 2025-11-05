@@ -108,8 +108,8 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
-        readonly StringFormat s_f_l = Helper.SF_NoWrap(StringAlignment.Center, StringAlignment.Far),
-            s_f_r1 = Helper.SF_NoWrap(StringAlignment.Far, StringAlignment.Near), s_f_r2 = Helper.SF_NoWrap(StringAlignment.Near, StringAlignment.Near);
+        readonly FormatFlags s_f_l = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrap,
+            s_f_r1 = FormatFlags.Left | FormatFlags.Bottom | FormatFlags.NoWrap, s_f_r2 = FormatFlags.Left | FormatFlags.Top | FormatFlags.NoWrap;
 
         void TaskLong()
         {

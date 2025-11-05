@@ -335,7 +335,7 @@ namespace AntdUI
                 }
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawText(btn.Text, font, brush, rect_text, btn.stringFormat);
+                    g.DrawText(btn.Text, font, brush, rect_text, btn.s_f);
                 }
             }
         }
@@ -479,10 +479,10 @@ namespace AntdUI
 
         internal static void PaintLink(Canvas g, Font font, Rectangle rect_read, CellLink link, bool enable, TAMode colorScheme)
         {
-            if (link.ExtraMouseDown) g.DrawText(link.Text, font, Colour.PrimaryActive.Get(nameof(Button), colorScheme), rect_read, link.stringFormat);
-            else if (link.AnimationHover) g.DrawText(link.Text, font, Colour.Primary.Get(nameof(Button), colorScheme).BlendColors(link.AnimationHoverValue, Colour.PrimaryHover.Get(nameof(Button), colorScheme)), rect_read, link.stringFormat);
-            else if (link.ExtraMouseHover) g.DrawText(link.Text, font, Colour.PrimaryHover.Get(nameof(Button), colorScheme), rect_read, link.stringFormat);
-            else g.DrawText(link.Text, font, ((enable && link.Enabled) ? Colour.Primary.Get(nameof(Button), colorScheme) : Colour.TextQuaternary.Get(nameof(Button), colorScheme)), rect_read, link.stringFormat);
+            if (link.ExtraMouseDown) g.DrawText(link.Text, font, Colour.PrimaryActive.Get(nameof(Button), colorScheme), rect_read, link.s_f);
+            else if (link.AnimationHover) g.DrawText(link.Text, font, Colour.Primary.Get(nameof(Button), colorScheme).BlendColors(link.AnimationHoverValue, Colour.PrimaryHover.Get(nameof(Button), colorScheme)), rect_read, link.s_f);
+            else if (link.ExtraMouseHover) g.DrawText(link.Text, font, Colour.PrimaryHover.Get(nameof(Button), colorScheme), rect_read, link.s_f);
+            else g.DrawText(link.Text, font, ((enable && link.Enabled) ? Colour.Primary.Get(nameof(Button), colorScheme) : Colour.TextQuaternary.Get(nameof(Button), colorScheme)), rect_read, link.s_f);
         }
     }
 }

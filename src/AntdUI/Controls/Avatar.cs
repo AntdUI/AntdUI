@@ -519,7 +519,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        readonly StringFormat stringCenter = Helper.SF_ALL();
+        readonly FormatFlags stringCenter = FormatFlags.Center | FormatFlags.NoWrapEllipsis;
 
         bool PaintImage(Canvas g, Rectangle rect, float _radius)
         {

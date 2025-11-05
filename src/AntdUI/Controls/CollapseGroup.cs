@@ -336,7 +336,7 @@ namespace AntdUI
             else g.Fill(brush, sub.rect);
         }
 
-        readonly StringFormat s_c = Helper.SF(tb: StringAlignment.Near), s_l = Helper.SF_ALL(lr: StringAlignment.Near);
+        readonly FormatFlags s_c = FormatFlags.HorizontalCenter | FormatFlags.Top, s_l = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         internal PointF[] PaintArrow(RectangleF rect)
         {

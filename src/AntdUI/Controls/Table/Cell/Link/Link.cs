@@ -69,7 +69,7 @@ namespace AntdUI
         /// </summary>
         public string? LocalizationText { get; set; }
 
-        internal StringFormat stringFormat = Helper.SF_NoWrap();
+        internal FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrap;
 
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>
@@ -82,7 +82,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                textAlign.SetAlignment(ref stringFormat);
+                s_f = textAlign.SetAlignment(s_f);
                 OnPropertyChanged();
             }
         }
@@ -124,7 +124,7 @@ namespace AntdUI
         public CellLink SetTextAlign(ContentAlignment align = ContentAlignment.MiddleLeft)
         {
             textAlign = align;
-            textAlign.SetAlignment(ref stringFormat);
+            s_f = textAlign.SetAlignment(s_f);
             return this;
         }
         public CellLink SetEnabled(bool value = false)

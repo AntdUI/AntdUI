@@ -764,13 +764,13 @@ namespace AntdUI
                 multiline = value;
                 if (multiline)
                 {
-                    sf_placeholder.FormatFlags &= ~StringFormatFlags.NoWrap;
-                    sf_placeholder.LineAlignment = StringAlignment.Near;
+                    sf_placeholder &= ~FormatFlags.VerticalCenter & ~FormatFlags.NoWrap;
+                    sf_placeholder |= FormatFlags.Top;
                 }
                 else
                 {
-                    sf_placeholder.FormatFlags |= StringFormatFlags.NoWrap;
-                    sf_placeholder.LineAlignment = StringAlignment.Center;
+                    sf_placeholder &= ~FormatFlags.Top;
+                    sf_placeholder |= FormatFlags.VerticalCenter | FormatFlags.NoWrap;
                 }
                 CalculateRect();
                 Invalidate();
@@ -805,7 +805,7 @@ namespace AntdUI
             {
                 if (textalign == value) return;
                 textalign = value;
-                textalign.SetAlignment(ref sf_placeholder);
+                sf_placeholder = textalign.SetAlignment(sf_placeholder);
                 CalculateRect();
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
@@ -1173,16 +1173,25 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 选择最后文本
+        /// </summary>
+        public void SelectLast()
+        {
+            if (cache_font == null) return;
+            SelectionStart = cache_font.Length;
+            SelectionLength = 0;
+            SetCaretPostion(cache_font.Length + 1);
+        }
+
+        /// <summary>
         /// 选择所有文本
         /// </summary>
         public void SelectAll()
         {
-            if (cache_font != null)
-            {
-                SelectionStart = 0;
-                SelectionLength = cache_font.Length;
-                SetCaretPostion(cache_font.Length + 1);
-            }
+            if (cache_font == null) return;
+            SelectionStart = 0;
+            SelectionLength = cache_font.Length;
+            SetCaretPostion(cache_font.Length + 1);
         }
 
         /// <summary>

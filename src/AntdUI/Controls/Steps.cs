@@ -430,8 +430,8 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringLeft = Helper.SF(lr: StringAlignment.Near);
-        readonly StringFormat stringCenter = Helper.SF_NoWrap();
+        readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter,
+            stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
 
         protected override void OnDraw(DrawEventArgs e)
         {

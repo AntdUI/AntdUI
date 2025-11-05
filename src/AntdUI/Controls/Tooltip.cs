@@ -107,7 +107,7 @@ namespace AntdUI
         #region 渲染
 
         int arrowSize = 0;
-        readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrap, s_l = FormatFlags.Left | FormatFlags.VerticalCenter;
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
@@ -350,7 +350,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_c = Helper.SF_NoWrap(), s_l = Helper.SF(lr: StringAlignment.Near);
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrap, s_l = FormatFlags.Left | FormatFlags.VerticalCenter;
         public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
@@ -530,7 +530,7 @@ namespace AntdUI
             }
         }
 
-        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, int arrowSize, int arrowX, StringFormat s_c, StringFormat s_l)
+        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, int arrowSize, int arrowX, FormatFlags s_c, FormatFlags s_l)
         {
             int gap = (int)(3 * Config.Dpi), paddingy = (int)(6 * Config.Dpi), paddingx = (int)(8 * Config.Dpi), gap2 = gap * 2, paddingy2 = paddingy * 2, paddingx2 = paddingx * 2;
             int radius = (int)(core.Radius * Config.Dpi);

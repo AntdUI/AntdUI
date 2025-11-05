@@ -218,7 +218,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat stringCenter = Helper.SF_NoWrap();
+        readonly FormatFlags stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
 
         int use_primary = 0;
         public override Bitmap? PrintBit()

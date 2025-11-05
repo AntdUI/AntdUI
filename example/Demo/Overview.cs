@@ -679,15 +679,13 @@ namespace Demo
                 count = d.Count.ToString();
             }
 
-            StringFormat s_f = AntdUI.Helper.SF_NoWrap(lr: StringAlignment.Near);
-            StringFormat s_c = AntdUI.Helper.SF_NoWrap();
             public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 using (var font_title = new Font(e.Panel.Font, FontStyle.Bold))
                 using (var font_count = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * .74F, e.Panel.Font.Style))
                 {
                     var size = AntdUI.Helper.Size(g.MeasureString(title, font_title));
-                    g.String(title, font_title, AntdUI.Style.Db.Text, new Rectangle(e.Rect.X + x, e.Rect.Y, e.Rect.Width, e.Rect.Height), s_f);
+                    g.String(title, font_title, AntdUI.Style.Db.Text, new Rectangle(e.Rect.X + x, e.Rect.Y, e.Rect.Width, e.Rect.Height), AntdUI.FormatFlags.Left | AntdUI.FormatFlags.VerticalCenter | AntdUI.FormatFlags.NoWrap);
 
                     var rect_count = new Rectangle(e.Rect.X + x + size.Width + gap, e.Rect.Y + (e.Rect.Height - size.Height) / 2, size.Height, size.Height);
                     using (var path = AntdUI.Helper.RoundPath(rect_count, e.Radius))
@@ -695,7 +693,7 @@ namespace Demo
                         g.Fill(AntdUI.Style.Db.TagDefaultBg, path);
                         g.Draw(AntdUI.Style.Db.DefaultBorder, sp, path);
                     }
-                    g.String(count, font_count, AntdUI.Style.Db.Text, rect_count, s_c);
+                    g.String(count, font_count, AntdUI.Style.Db.Text, rect_count, AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrap);
                 }
             }
 

@@ -905,8 +905,8 @@ namespace AntdUI
         /// <summary>
         /// 编辑模式下的默认文本选择动作
         /// </summary>
-        [Description("编辑模式下的默认文本选择动作"), Category("行为"), DefaultValue(TEditSelection.Last)]
-        public TEditSelection EditSelection { get; set; } = TEditSelection.Last;
+        [Description("编辑模式下的默认文本选择动作"), Category("行为"), DefaultValue(TEditSelection.None)]
+        public TEditSelection EditSelection { get; set; } = TEditSelection.None;
 
         /// <summary>
         /// 编辑模式输入框样式

@@ -346,7 +346,6 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly StringFormat s_f = Helper.SF_NoWrap();
         protected override void OnDraw(DrawEventArgs e)
         {
             if (buttons.Length < 2)
@@ -356,6 +355,7 @@ namespace AntdUI
             }
             var g = e.Canvas;
             float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
+            var s_f = FormatFlags.Center | FormatFlags.NoWrap;
             if (Enabled)
             {
                 Color fore = Colour.Text.Get(nameof(Pagination), ColorScheme), color = fill ?? Colour.Primary.Get(nameof(Pagination), ColorScheme);
