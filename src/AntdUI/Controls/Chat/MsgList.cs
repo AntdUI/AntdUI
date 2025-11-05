@@ -204,7 +204,7 @@ namespace AntdUI.Chat
                                 rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
                                 g.FillEllipse(it.BadgeBack ?? Color.Red, rect_badge);
                             }
-                            g.String(it.Badge, font_time, it.BadgeFore ?? Color.White, rect_badge, SFBage);
+                            g.String(it.Badge, font_time, it.BadgeFore ?? Color.White, rect_badge);
                         }
                     }
                 }
