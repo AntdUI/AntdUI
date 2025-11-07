@@ -219,6 +219,51 @@ namespace AntdUI
             /// 前景色
             /// </summary>
             public Color? Fore { get; set; }
+
+            #region 设置
+
+            public Config SetOffset(Rectangle? value)
+            {
+                Offset = value;
+                return this;
+            }
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetRadius(int value = 0)
+            {
+                Radius = value;
+                return this;
+            }
+            public Config SetArrow(int? value)
+            {
+                ArrowSize = value;
+                return this;
+            }
+            public Config SetArrow(TAlign value)
+            {
+                ArrowAlign = value;
+                return this;
+            }
+            public Config SetCustomWidth(int? value)
+            {
+                CustomWidth = value;
+                return this;
+            }
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+
+            #endregion
         }
 
         #endregion
@@ -251,14 +296,14 @@ namespace AntdUI
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
             else
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -282,7 +327,7 @@ namespace AntdUI
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
         }
@@ -301,7 +346,7 @@ namespace AntdUI
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(ocontrol, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
             if (Print() == RenderResult.OK) return false;

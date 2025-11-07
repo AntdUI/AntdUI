@@ -80,8 +80,7 @@ namespace AntdUI
             }
             LoadLayout(count);
             ScrollTime();
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
-            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             if (OS.Win7OrLower) Select();
         }
 
@@ -106,7 +105,6 @@ namespace AntdUI
 
         bool ShowH = true, ShowM = true, ShowS = true, ShowButtonNow = true, ValueTimeHorizontal = false;
 
-        TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
 
         ScrollBar ScrollH, ScrollM, ScrollS;
@@ -137,7 +135,7 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(nameof(DatePicker), ColorScheme)))
             {
                 g.Fill(brush, path);
-                if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect));
+                if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)

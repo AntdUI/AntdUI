@@ -140,7 +140,7 @@ namespace AntdUI
             /// <summary>
             /// 偏移量
             /// </summary>
-            public object? Offset { get; set; }
+            public Rectangle? Offset { get; set; }
 
             /// <summary>
             /// 标题
@@ -233,11 +233,6 @@ namespace AntdUI
             #region 设置
 
             public Config SetOffset(Rectangle? value)
-            {
-                Offset = value;
-                return this;
-            }
-            public Config SetOffset(RectangleF value)
             {
                 Offset = value;
                 return this;
