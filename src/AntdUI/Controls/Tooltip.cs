@@ -219,6 +219,51 @@ namespace AntdUI
             /// 前景色
             /// </summary>
             public Color? Fore { get; set; }
+
+            #region 设置
+
+            public Config SetOffset(Rectangle? value)
+            {
+                Offset = value;
+                return this;
+            }
+            public Config SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public Config SetRadius(int value = 0)
+            {
+                Radius = value;
+                return this;
+            }
+            public Config SetArrow(int? value)
+            {
+                ArrowSize = value;
+                return this;
+            }
+            public Config SetArrow(TAlign value)
+            {
+                ArrowAlign = value;
+                return this;
+            }
+            public Config SetCustomWidth(int? value)
+            {
+                CustomWidth = value;
+                return this;
+            }
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+
+            #endregion
         }
 
         #endregion

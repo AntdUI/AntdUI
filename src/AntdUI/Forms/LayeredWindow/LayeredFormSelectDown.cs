@@ -64,9 +64,7 @@ namespace AntdUI
                 Radius = (int)(control.DropDownRadius ?? control.radius * dpi);
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
-
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
-            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             Init();
         }
         public LayeredFormSelectDown(Dropdown control, IList<object> items)
@@ -94,8 +92,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, null, true);
 
-            var tmpAlign = CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
-            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             Init();
         }
         public LayeredFormSelectDown(Tabs control, IList<object> items, int radius, object? sValue, Rectangle rect)
@@ -166,8 +163,7 @@ namespace AntdUI
             }
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
 
-            var tmpAlign = CLocation(control, cell.DropDownPlacement, rect, cell.DropDownArrow, ArrowSize, true);
-            if (cell.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(control, cell.DropDownPlacement, rect, cell.DropDownArrow, ArrowSize, true);
             Init();
         }
 
@@ -201,8 +197,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize);
-            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
         }
         public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
@@ -229,8 +224,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, control.DropDownArrow, ArrowSize);
-            if (control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
         }
         public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
@@ -258,8 +252,7 @@ namespace AntdUI
 
             Items = LoadLayout(AutoWidth, 0, ItemOS.List, null, true);
             tmpItemHeight = itemHeight;
-            var tmpAlign = CLocation(parent, rect, cell.DropDownArrow, ArrowSize);
-            if (cell.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(parent, rect, cell.DropDownArrow, ArrowSize);
             Init();
         }
 
@@ -356,7 +349,6 @@ namespace AntdUI
 
         public override string name => keyid;
 
-        TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
         ScrollBar ScrollBar;
         bool nodata = false;
@@ -374,7 +366,8 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
-                if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect, tmpItemHeight));
+                if (tmpItemHeight > 0) g.FillPolygon(brush, TAlign.LT.AlignLines(ArrowSize, rect, tmpItemHeight));
+                else if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)

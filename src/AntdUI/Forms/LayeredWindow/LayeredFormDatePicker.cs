@@ -114,12 +114,10 @@ namespace AntdUI
 
             LoadLayout();
 
-            var tmpAlign = CLocation(_control, _control.Placement, _control.DropDownArrow, ArrowSize, true);
-            if (_control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(_control, _control.Placement, _control.DropDownArrow, ArrowSize, true);
             if (OS.Win7OrLower) Select();
         }
 
-        TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
 
         DateTime DateNow = DateTime.Now;
@@ -212,7 +210,7 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
-                if (ArrowAlign != TAlign.None) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect));
+                if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }
         }
 

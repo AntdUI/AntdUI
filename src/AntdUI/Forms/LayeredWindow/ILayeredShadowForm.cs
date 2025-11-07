@@ -39,19 +39,17 @@ namespace AntdUI
 
         #region 坐标
 
-        public TAlign CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, bool Collision = false)
+        public void CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
             var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
-            calculateCoordinate.Auto(Placement, animateConfig, Collision, out var align, out int x, out int y);
-            SetLocation(x - shadow, y);
-            return align;
+            calculateCoordinate.Auto(Placement, animateConfig, Collision, out int x, out int y, out ArrowLine);
+            SetLocation(x, y);
         }
-        public TAlign CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, bool Collision = false)
+        public void CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
             var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
-            calculateCoordinate.Auto(Placement, animateConfig, Collision, out var align, out int x, out int y);
-            SetLocation(x - shadow, y);
-            return align;
+            calculateCoordinate.Auto(Placement, animateConfig, Collision, out int x, out int y, out ArrowLine);
+            SetLocation(x, y);
         }
         public TAlign CLocation(ILayeredShadowForm control, Rectangle rect, bool DropDownArrow, int ArrowSize)
         {
@@ -160,6 +158,8 @@ namespace AntdUI
         /// </summary>
         [Description("圆角"), Category("外观"), DefaultValue(0)]
         public int Radius { get; set; }
+
+        public Point[]? ArrowLine;
 
         public abstract void PrintContent(Canvas g, Rectangle rect, GraphicsState state);
         public abstract void PrintBg(Canvas g, Rectangle rect, GraphicsPath path);
@@ -322,6 +322,8 @@ namespace AntdUI
         /// </summary>
         [Description("圆角"), Category("外观"), DefaultValue(0)]
         public int Radius { get; set; }
+
+        public Point[]? ArrowLine;
 
         public abstract void PrintContent(Canvas g, Rectangle rect, GraphicsState state);
         public abstract void PrintBg(Canvas g, Rectangle rect, GraphicsPath path);

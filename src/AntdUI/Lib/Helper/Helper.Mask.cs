@@ -41,7 +41,7 @@ namespace AntdUI
         /// <summary>
         /// 叠加蒙版
         /// </summary>
-        /// <param name="target">目标</param>
+        /// <param name="owner">父控件</param>
         /// <param name="form">操作对象</param>
         /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
         public static ILayeredFormOpacity FormMask(this Control owner, Form form, bool MaskClosable = false)

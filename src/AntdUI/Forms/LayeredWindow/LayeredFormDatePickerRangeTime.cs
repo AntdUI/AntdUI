@@ -115,14 +115,12 @@ namespace AntdUI
 
             LoadLayout();
 
-            var tmpAlign = CLocation(_control, _control.Placement, _control.DropDownArrow, ArrowSize, true);
-            if (_control.DropDownArrow) ArrowAlign = tmpAlign;
+            CLocation(_control, _control.Placement, _control.DropDownArrow, ArrowSize, true);
             if (OS.Win7OrLower) Select();
         }
 
         #region 箭头
 
-        TAlign ArrowAlign = TAlign.None;
         int ArrowSize = 8;
 
         float AnimationBarValue = 0;
@@ -229,10 +227,16 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
-                if (ArrowAlign != TAlign.None)
+                if (ArrowLine != null)
                 {
-                    if (AnimationBarValue != 0F) g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, new RectangleF(rect.X + AnimationBarValue, rect.Y, rect.Width, rect.Height)));
-                    else g.FillPolygon(brush, ArrowAlign.AlignLines(ArrowSize, rect));
+                    if (AnimationBarValue != 0F)
+                    {
+                        var state = g.Save();
+                        g.TranslateTransform(AnimationBarValue, 0);
+                        g.FillPolygon(brush, ArrowLine);
+                        g.Restore(state);
+                    }
+                    else g.FillPolygon(brush, ArrowLine);
                 }
             }
         }

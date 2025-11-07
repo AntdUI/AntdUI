@@ -24,6 +24,19 @@ namespace AntdUI
 {
     public class CalculateCoordinate
     {
+        public CalculateCoordinate(Rectangle rect, Rectangle drop, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
+        {
+            sx = rect.X;
+            sy = rect.Y;
+            cw = rect.Width;
+            ch = rect.Height;
+            dw = drop.Width;
+            dh = drop.Height;
+            arrow = ArrowSize;
+            shadow = Shadow;
+            shadow2 = Shadow2;
+            creal = rect_real;
+        }
         public CalculateCoordinate(Control control, Rectangle drop, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
         {
             var point = control.PointToScreen(Point.Empty);
@@ -32,12 +45,7 @@ namespace AntdUI
             sy = point.Y;
             cw = size.Width;
             ch = size.Height;
-            if (control is IControl icontrol)
-            {
-                crect = icontrol.ReadRectangle;
-                padd = GetPadding(icontrol);
-            }
-            else crect = control.ClientRectangle;
+            if (control is IControl icontrol) padd = GetPadding(icontrol);
             dw = drop.Width;
             dh = drop.Height;
             arrow = ArrowSize;
@@ -67,40 +75,51 @@ namespace AntdUI
         public int ch { get; set; }
 
         /// <summary>
-        /// 控件真实容器
-        /// </summary>
-        public Rectangle crect { get; set; }
-
-        /// <summary>
-        /// 控件边距
+        /// 控件边距（阴影+边框）
         /// </summary>
         public int padd { get; set; }
 
         /// <summary>
-        /// 下拉宽度
+        /// 下拉/气泡 宽度（包含阴影）
         /// </summary>
         public int dw { get; set; }
 
         /// <summary>
-        /// 下拉高度
+        /// 下拉/气泡 高度（包含阴影）
         /// </summary>
         public int dh { get; set; }
+
+        /// <summary>
+        /// 下拉/气泡 箭头大小
+        /// </summary>
         public int arrow { get; set; }
+
+        /// <summary>
+        /// 下拉/气泡 阴影大小（单边）
+        /// </summary>
         public int shadow { get; set; }
+
+        /// <summary>
+        /// Popover 阴影大小*2（两边一起）
+        /// </summary>
         public int shadow2 { get; set; }
 
         /// <summary>
-        /// 内容区域
+        /// 内容区域（控件内部某个区域，如纯绘制控件列表中的某一项）
         /// </summary>
         public Rectangle? creal { get; set; }
+
+        /// <summary>
+        /// 自定义屏幕区域（用于屏幕碰撞）
+        /// </summary>
         public Rectangle? screen { get; set; }
 
         int GetPadding(IControl control)
         {
-            if (control is Button button) return (int)(button.BorderWidth * Config.Dpi);
-            else if (control is Input input) return (int)(input.BorderWidth * Config.Dpi);
-            else if (control is ColorPicker colorPicker) return (int)(colorPicker.BorderWidth * Config.Dpi);
-            else if (control is Switch _switch) return (int)(Config.Dpi);
+            if (control is Button button) return (int)((button.WaveSize + button.BorderWidth / 2F) * Config.Dpi);
+            else if (control is Input input) return (int)((input.WaveSize + input.BorderWidth / 2F) * Config.Dpi);
+            else if (control is ColorPicker colorPicker) return (int)((colorPicker.WaveSize + colorPicker.BorderWidth / 2F) * Config.Dpi);
+            else if (control is Switch _switch) return (int)(_switch.WaveSize * Config.Dpi);
             else if (control is Panel panel) return (int)(panel.BorderWidth * Config.Dpi);
             else if (control is Alert alert) return (int)(alert.BorderWidth * Config.Dpi);
             else if (control is Avatar avatar) return (int)(avatar.BorderWidth * Config.Dpi);
@@ -121,7 +140,7 @@ namespace AntdUI
 
         #endregion
 
-        #region 方向
+        #region 核心
 
         /// <summary>
         /// 居中X
@@ -129,7 +148,7 @@ namespace AntdUI
         public int CenterX()
         {
             if (creal.HasValue) return sx + creal.Value.X + (creal.Value.Width - dw) / 2;
-            return (sx + (cw - dw) / 2) + shadow;
+            return sx + (cw - dw) / 2;
         }
 
         /// <summary>
@@ -138,7 +157,7 @@ namespace AntdUI
         public int CenterY()
         {
             if (creal.HasValue) return sy + creal.Value.Y + (creal.Value.Height - dh) / 2;
-            return (sy + (ch - dh) / 2) + shadow;
+            return sy + (ch - dh) / 2;
         }
 
         /// <summary>
@@ -146,8 +165,8 @@ namespace AntdUI
         /// </summary>
         public int L()
         {
-            if (creal.HasValue) return sx + creal.Value.X;
-            return sx + crect.X;
+            if (creal.HasValue) return sx - shadow + padd + creal.Value.X;
+            return sx - shadow + padd;
         }
 
         /// <summary>
@@ -155,44 +174,8 @@ namespace AntdUI
         /// </summary>
         public int R()
         {
-            if (creal.HasValue) return sx + creal.Value.X + creal.Value.Width - dw;
-            return sx + (crect.X + crect.Width) - dw;
-        }
-
-        /// <summary>
-        /// 上Y ↑
-        /// </summary>
-        public int TopY()
-        {
-            if (creal.HasValue) return sy - dh + creal.Value.Y + crect.Y + padd;
-            return sy - dh + crect.Y - arrow + shadow - padd;
-        }
-
-        /// <summary>
-        /// 下Y ↓
-        /// </summary>
-        public int BottomY()
-        {
-            if (creal.HasValue) return sy + creal.Value.Bottom - padd;
-            return sy + crect.Bottom + arrow - shadow + padd;
-        }
-
-        /// <summary>
-        /// 左X ←
-        /// </summary>
-        public int Left()
-        {
-            if (creal.HasValue) return sx + creal.Value.X - dw;
-            return sx - dw + padd;
-        }
-
-        /// <summary>
-        /// 右X → 
-        /// </summary>
-        public int Right()
-        {
-            if (creal.HasValue) return sx + creal.Value.Right;
-            return sx + cw - padd;
+            if (creal.HasValue) return sx + creal.Value.X + creal.Value.Width - dw - padd + shadow;
+            return sx + cw - dw - padd + shadow;
         }
 
         /// <summary>
@@ -200,8 +183,8 @@ namespace AntdUI
         /// </summary>
         public int Y()
         {
-            if (creal.HasValue) return sy + creal.Value.Y;
-            return sy + padd;
+            if (creal.HasValue) return sy - shadow + padd + creal.Value.Y;
+            return sy - shadow + padd;
         }
 
         /// <summary>
@@ -209,39 +192,451 @@ namespace AntdUI
         /// </summary>
         public int B()
         {
-            if (creal.HasValue) return sy + creal.Value.Bottom - dh;
-            return sy + ch - dh - padd;
+            if (creal.HasValue) return sy + creal.Value.Y + creal.Value.Height - dh + padd + shadow;
+            return sy + ch - dh + padd + shadow;
+        }
+
+        /// <summary>
+        /// 上Y ↑
+        /// </summary>
+        public int TopY()
+        {
+            if (creal.HasValue) return sy - dh + padd + shadow - arrow + creal.Value.Y;
+            return sy - dh + padd + shadow - arrow;
+        }
+
+        /// <summary>
+        /// 下Y ↓
+        /// </summary>
+        public int BottomY()
+        {
+            if (creal.HasValue) return sy + creal.Value.Bottom + arrow - shadow - padd;
+            return sy + ch + arrow - shadow - padd;
+        }
+
+        /// <summary>
+        /// 左X ←
+        /// </summary>
+        public int Left()
+        {
+            if (creal.HasValue) return sx - dw + padd + shadow - arrow + creal.Value.X;
+            return sx - dw + padd + shadow - arrow;
+        }
+
+        /// <summary>
+        /// 右X → 
+        /// </summary>
+        public int Right()
+        {
+            if (creal.HasValue) return sx + creal.Value.Right + arrow - shadow - padd;
+            return sx + cw + arrow - shadow - padd;
         }
 
         #endregion
 
-        public void Auto(TAlignFrom placement, PushAnimateConfig animate, bool collision, out TAlign align, out int x, out int y)
+        #region 计算坐标
+
+        public void Auto(TAlign align, bool collision, out int x, out int y, out Point[]? rect_arrow)
+        {
+            bool inverted = false;
+            switch (align)
+            {
+                case TAlign.Top:
+                    Top(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlign.Bottom:
+                    Bottom(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
+                case TAlign.Left:
+                    Left(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlign.Right:
+                    Right(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
+                case TAlign.TL:
+                    TL(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlign.BL:
+                    BL(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
+                case TAlign.TR:
+                    TR(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlign.BR:
+                    BR(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
+                case TAlign.LT:
+                    LT(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlign.RT:
+                    RT(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
+                case TAlign.LB:
+                    LB(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlign.RB:
+                    RB(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                default:
+                    Top(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+            }
+        }
+        public void Auto(TAlignFrom placement, PushAnimateConfig animate, bool collision, out int x, out int y, out Point[]? rect_arrow)
         {
             bool inverted = false;
             switch (placement)
             {
                 case TAlignFrom.Top:
-                    Top(collision, out align, out x, out y, ref inverted);
-                    break;
-                case TAlignFrom.TL:
-                    TL(collision, out align, out x, out y, ref inverted);
-                    break;
-                case TAlignFrom.TR:
-                    TR(collision, out align, out x, out y, ref inverted);
+                    Top(collision, out x, out y, ref inverted, out rect_arrow);
                     break;
                 case TAlignFrom.Bottom:
-                    Bottom(collision, out align, out x, out y, ref inverted);
+                    Bottom(collision, out x, out y, ref inverted, out rect_arrow);
                     break;
-                case TAlignFrom.BR:
-                    BR(collision, out align, out x, out y, ref inverted);
+
+                case TAlignFrom.TL:
+                    TL(collision, out x, out y, ref inverted, out rect_arrow);
                     break;
                 case TAlignFrom.BL:
+                    BL(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
+                case TAlignFrom.TR:
+                    TR(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+                case TAlignFrom.BR:
+                    BR(collision, out x, out y, ref inverted, out rect_arrow);
+                    break;
+
                 default:
-                    BL(collision, out align, out x, out y, ref inverted);
+                    Top(collision, out x, out y, ref inverted, out rect_arrow);
                     break;
             }
             animate.Inverted = inverted;
         }
+
+        void Top(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = CenterX();
+            y = TopY();
+            if (collision && ScreenArea.IsBottom(x, y))
+            {
+                y = BottomY();
+                rect_arrow = ArrowBottom(x, y);
+            }
+            else
+            {
+                inverted = true;
+                rect_arrow = ArrowTop(x, y);
+            }
+        }
+        void Bottom(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = CenterX();
+            y = BottomY();
+            if (collision && ScreenArea.IsTop(x, y))
+            {
+                y = TopY();
+                inverted = true;
+                rect_arrow = ArrowTop(x, y);
+            }
+            else rect_arrow = ArrowBottom(x, y);
+        }
+
+        void Left(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = Left();
+            y = CenterY();
+            if (collision && ScreenArea.IsRight(x, y))
+            {
+                x = Right();
+                rect_arrow = ArrowRight(x, y);
+            }
+            else rect_arrow = ArrowLeft(x, y);
+        }
+        void Right(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = Right();
+            y = CenterY();
+            if (collision && ScreenArea.IsLeft(x, y))
+            {
+                x = Left();
+                rect_arrow = ArrowLeft(x, y);
+            }
+            else rect_arrow = ArrowRight(x, y);
+        }
+
+        void TL(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = L();
+            y = TopY();
+            if (collision && ScreenArea.IsBottom(x, y))
+            {
+                y = BottomY();
+                rect_arrow = ArrowBL(x, y);
+            }
+            else
+            {
+                inverted = true;
+                rect_arrow = ArrowTL(x, y);
+            }
+        }
+        void BL(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = L();
+            y = BottomY();
+            if (collision && ScreenArea.IsTop(x, y))
+            {
+                y = TopY();
+                inverted = true;
+                rect_arrow = ArrowTL(x, y);
+            }
+            else rect_arrow = ArrowBL(x, y);
+        }
+
+        void TR(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = R();
+            y = TopY();
+            if (collision && ScreenArea.IsBottom(x, y))
+            {
+                y = BottomY();
+                rect_arrow = ArrowBR(x, y);
+            }
+            else
+            {
+                inverted = true;
+                rect_arrow = ArrowTR(x, y);
+            }
+        }
+        void BR(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = R();
+            y = BottomY();
+            if (collision && ScreenArea.IsTop(x, y))
+            {
+                y = TopY();
+                inverted = true;
+                rect_arrow = ArrowTR(x, y);
+            }
+            else rect_arrow = ArrowBR(x, y);
+        }
+
+        void LT(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = Left();
+            y = Y();
+            if (collision && ScreenArea.IsRight(x, y))
+            {
+                x = Right();
+                rect_arrow = ArrowRT(x, y);
+            }
+            else rect_arrow = ArrowLT(x, y);
+        }
+        void RT(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = Right();
+            y = Y();
+            if (collision && ScreenArea.IsLeft(x, y))
+            {
+                x = Left();
+                rect_arrow = ArrowLT(x, y);
+            }
+            else rect_arrow = ArrowRT(x, y);
+        }
+
+        void LB(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = Left();
+            y = B();
+            if (collision && ScreenArea.IsRight(x, y))
+            {
+                x = Right();
+                rect_arrow = ArrowRB(x, y);
+            }
+            else rect_arrow = ArrowLB(x, y);
+        }
+        void RB(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
+        {
+            x = Right();
+            y = B();
+            if (collision && ScreenArea.IsLeft(x, y))
+            {
+                x = Left();
+                rect_arrow = ArrowLB(x, y);
+            }
+            else rect_arrow = ArrowRB(x, y);
+        }
+
+        #region 箭头
+
+        Point[]? ArrowTop(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw / 2, y_arrow = dh - shadow;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow +  arrow),
+                    new Point(x_arrow - arrow, y_arrow),
+                    new Point(x_arrow + arrow, y_arrow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowBottom(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw / 2, y_arrow = shadow - arrow;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow),
+                    new Point(x_arrow - arrow, shadow),
+                    new Point(x_arrow + arrow, shadow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowLeft(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw - shadow, y_arrow = dh / 2;
+                return new Point[] {
+                    new Point(x_arrow + arrow, y_arrow),
+                    new Point(x_arrow, y_arrow - arrow),
+                    new Point(x_arrow, y_arrow + arrow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowRight(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = shadow - arrow, y_arrow = dh / 2;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow),
+                    new Point(shadow, y_arrow - shadow),
+                    new Point(shadow, y_arrow + shadow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowTL(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = shadow + arrow + 12, y_arrow = dh - shadow;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow +  arrow),
+                    new Point(x_arrow - arrow, y_arrow),
+                    new Point(x_arrow + arrow, y_arrow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowBL(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = shadow + arrow + 12, y_arrow = shadow - arrow;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow),
+                    new Point(x_arrow - arrow, shadow),
+                    new Point(x_arrow + arrow, shadow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowTR(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw - (shadow + arrow + 12), y_arrow = dh - shadow;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow +  arrow),
+                    new Point(x_arrow - arrow, y_arrow),
+                    new Point(x_arrow + arrow, y_arrow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowBR(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw - (shadow + arrow + 12), y_arrow = shadow - arrow;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow),
+                    new Point(x_arrow - arrow, shadow),
+                    new Point(x_arrow + arrow, shadow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowLT(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw - shadow, y_arrow = shadow + arrow + 12;
+                return new Point[] {
+                    new Point(x_arrow + arrow, y_arrow),
+                    new Point(x_arrow, y_arrow - arrow),
+                    new Point(x_arrow, y_arrow + arrow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowRT(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = shadow - arrow, y_arrow = shadow + arrow + 12;
+                return new Point[] {
+                    new Point(x_arrow, y_arrow),
+                    new Point(shadow, y_arrow - shadow),
+                    new Point(shadow, y_arrow + shadow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowLB(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = dw - shadow, y_arrow = dh - (shadow + arrow + 12);
+                return new Point[] {
+                    new Point(x_arrow + arrow, y_arrow),
+                    new Point(x_arrow, y_arrow - arrow),
+                    new Point(x_arrow, y_arrow + arrow)
+                };
+            }
+            return null;
+        }
+        Point[]? ArrowRB(int x, int y)
+        {
+            if (arrow > 0)
+            {
+                int x_arrow = shadow - arrow, y_arrow = dh - (shadow + arrow + 12);
+                return new Point[] {
+                    new Point(x_arrow, y_arrow),
+                    new Point(shadow, y_arrow - shadow),
+                    new Point(shadow, y_arrow + shadow)
+                };
+            }
+            return null;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region TAlign
 
         public void Auto(ref TAlign align, int gap, out int x, out int y, out int ox)
         {
@@ -290,157 +685,20 @@ namespace AntdUI
 
         }
 
-        #region 核心
-
-        #region TAlignFrom
-
-        public void Top(bool collision, out TAlign align, out int x, out int y, ref bool inverted)
-        {
-            align = TAlign.Bottom;
-            x = CenterX();
-            y = TopY();
-            inverted = true;
-            if (collision)
-            {
-                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (y < screenArea.Y)
-                {
-                    inverted = false;
-                    y = BottomY();
-                    align = TAlign.Top;
-                }
-            }
-        }
-
-        public void TL(bool collision, out TAlign align, out int x, out int y, ref bool inverted)
-        {
-            align = TAlign.BL;
-            x = L();
-            y = TopY();
-            inverted = true;
-            if (collision)
-            {
-                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                bool f = y < screenArea.Y;
-                if (f)
-                {
-                    inverted = false;
-                    y = BottomY();
-                    align = TAlign.TL;
-                }
-                if (x + dw > screenArea.Right)
-                {
-                    x = R();
-                    align = f ? TAlign.TR : TAlign.BR;
-                }
-            }
-        }
-
-        public void TR(bool collision, out TAlign align, out int x, out int y, ref bool inverted)
-        {
-            align = TAlign.BR;
-            x = R();
-            y = TopY();
-            inverted = true;
-            if (collision)
-            {
-                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                bool f = y < screenArea.Y;
-                if (f)
-                {
-                    inverted = false;
-                    y = BottomY();
-                    align = TAlign.TR;
-                }
-                if (x < screenArea.X)
-                {
-                    x = L();
-                    align = f ? TAlign.TL : TAlign.BL;
-                }
-            }
-        }
-
-        public void Bottom(bool collision, out TAlign align, out int x, out int y, ref bool inverted)
-        {
-            align = TAlign.Top;
-            x = CenterX();
-            y = BottomY();
-            if (collision)
-            {
-                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                if (y + dh > screenArea.Bottom)
-                {
-                    inverted = true;
-                    y = TopY();
-                    align = TAlign.Bottom;
-                }
-            }
-        }
-
-        public void BR(bool collision, out TAlign align, out int x, out int y, ref bool inverted)
-        {
-            align = TAlign.TR;
-            x = R();
-            y = BottomY();
-            if (collision)
-            {
-                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                bool f = y + dh > screenArea.Bottom;
-                if (f)
-                {
-                    align = TAlign.BR;
-                    inverted = true;
-                    y = TopY();
-                }
-                if (x < screenArea.X)
-                {
-                    x = L();
-                    align = f ? TAlign.BL : TAlign.TL;
-                }
-            }
-        }
-
-        public void BL(bool collision, out TAlign align, out int x, out int y, ref bool inverted)
-        {
-            align = TAlign.TL;
-            x = L();
-            y = BottomY();
-            if (collision)
-            {
-                var screenArea = screen ?? Screen.FromPoint(new Point(x, y)).WorkingArea;
-                bool f = y + dh > screenArea.Bottom;
-                if (f)
-                {
-                    align = TAlign.BL;
-                    inverted = true;
-                    y = TopY();
-                }
-                if (x + dw > screenArea.Right)
-                {
-                    x = R();
-                    align = f ? TAlign.BR : TAlign.TR;
-                }
-            }
-        }
-
-        #endregion
-
-        #region TAlign
-
         public void Top(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
         {
             x = CenterX();
             y = TopY();
             align = TAlign.Top;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && y < screenArea.Y)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsBottom(x, y))
             {
                 y = BottomY();
                 align = TAlign.Bottom;
             }
             int cx = dw / 2, tsize = arrow + gap;
             arrowX = cx;
-            if (x < screenArea.X)
+            if (screenArea.IsRight(x, y))
             {
                 arrowX = cx - (screenArea.X - x);
                 if (arrowX < tsize) arrowX = tsize;
@@ -459,15 +717,15 @@ namespace AntdUI
             x = CenterX();
             y = BottomY();
             align = TAlign.Bottom;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && y + dh > screenArea.Bottom)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsTop(x, y))
             {
                 y = TopY();
                 align = TAlign.Top;
             }
             int cx = dw / 2, tsize = arrow + gap;
             arrowX = cx;
-            if (x < screenArea.X)
+            if (screenArea.IsRight(x, y))
             {
                 arrowX = cx - (screenArea.X - x);
                 if (arrowX < tsize) arrowX = tsize;
@@ -486,14 +744,14 @@ namespace AntdUI
             x = L();
             y = TopY();
             align = TAlign.TL;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screenArea.Right)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = R();
                 align = TAlign.TR;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void TR(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -501,14 +759,14 @@ namespace AntdUI
             x = R();
             y = TopY();
             align = TAlign.TR;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screenArea.X)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = L();
                 align = TAlign.TL;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void LT(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -516,14 +774,14 @@ namespace AntdUI
             x = Left();
             y = Y();
             align = TAlign.LT;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screenArea.X)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = Right();
                 align = TAlign.RT;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void Left(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -531,14 +789,14 @@ namespace AntdUI
             x = Left();
             y = CenterY();
             align = TAlign.Left;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screenArea.X)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = Right();
                 align = TAlign.Right;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void LB(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -546,14 +804,14 @@ namespace AntdUI
             x = Left();
             y = B();
             align = TAlign.LB;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screenArea.X)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = Right();
                 align = TAlign.RB;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void RT(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -561,14 +819,14 @@ namespace AntdUI
             x = Right();
             y = Y();
             align = TAlign.RT;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screenArea.Right)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = Left();
                 align = TAlign.LT;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void Right(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -576,14 +834,14 @@ namespace AntdUI
             x = Right();
             y = CenterY();
             align = TAlign.Right;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screenArea.Right)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = Left();
                 align = TAlign.Left;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void RB(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -591,14 +849,14 @@ namespace AntdUI
             x = Right();
             y = B();
             align = TAlign.RB;
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screenArea.Right)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = Left();
                 align = TAlign.LB;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void BL(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -606,14 +864,14 @@ namespace AntdUI
             align = TAlign.BL;
             x = L();
             y = BottomY();
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x + dw > screenArea.Right)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = R();
                 align = TAlign.BR;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void BR(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -621,19 +879,55 @@ namespace AntdUI
             align = TAlign.BR;
             x = R();
             y = BottomY();
-            var screenArea = screen ?? Screen.FromPoint(new Point(sx, sy)).WorkingArea;
-            if (collision && x < screenArea.X)
+            var screenArea = ScreenArea;
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = L();
                 align = TAlign.BL;
             }
             arrowX = -1;
-            if (x < screenArea.X) x = screenArea.X;
+            if (screenArea.IsRight(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
 
         #endregion
 
-        #endregion
+        public ScreenCollision ScreenArea => new ScreenCollision(this);
+
+        public class ScreenCollision
+        {
+            CalculateCoordinate coordinate;
+            public ScreenCollision(CalculateCoordinate c)
+            {
+                coordinate = c;
+                Rect = c.screen ?? Screen.FromPoint(new Point(c.sx, c.sy)).WorkingArea;
+            }
+            public Rectangle Rect { get; set; }
+
+            public int X => Rect.X;
+            public int Y => Rect.Y;
+            public int Right => Rect.Right;
+            public int Bottom => Rect.Bottom;
+
+            /// <summary>
+            /// 是否碰撞底部
+            /// </summary>
+            public bool IsBottom(int x, int y) => y < Rect.Y;
+
+            /// <summary>
+            /// 是否碰撞右侧
+            /// </summary>
+            public bool IsRight(int x, int y) => x < Rect.X;
+
+            /// <summary>
+            /// 是否碰撞左侧
+            /// </summary>
+            public bool IsLeft(int x, int y) => x + coordinate.dw > Rect.Right;
+
+            /// <summary>
+            /// 是否碰撞顶部
+            /// </summary>
+            public bool IsTop(int x, int y) => y + coordinate.dh > Rect.Bottom;
+        }
     }
 }
