@@ -39,15 +39,15 @@ namespace AntdUI
 
         #region 坐标
 
-        public void CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize, bool Collision = false)
+        public void CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize)
         {
-            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
-            calculateCoordinate.Auto(Placement, animateConfig, Collision, out int x, out int y, out ArrowLine);
+            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, Radius, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
+            calculateCoordinate.Auto(Placement, animateConfig, true, out int x, out int y, out ArrowLine);
             SetLocation(x, y);
         }
         public void CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
-            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
+            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, Radius, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
             calculateCoordinate.Auto(Placement, animateConfig, Collision, out int x, out int y, out ArrowLine);
             SetLocation(x, y);
         }

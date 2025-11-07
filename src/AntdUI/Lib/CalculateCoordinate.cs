@@ -24,7 +24,7 @@ namespace AntdUI
 {
     public class CalculateCoordinate
     {
-        public CalculateCoordinate(Rectangle rect, Rectangle drop, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
+        public CalculateCoordinate(Rectangle rect, Rectangle drop, int Radius, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
         {
             sx = rect.X;
             sy = rect.Y;
@@ -32,12 +32,13 @@ namespace AntdUI
             ch = rect.Height;
             dw = drop.Width;
             dh = drop.Height;
+            radius = GetRadius(Radius);
             arrow = ArrowSize;
             shadow = Shadow;
             shadow2 = Shadow2;
             creal = rect_real;
         }
-        public CalculateCoordinate(Control control, Rectangle drop, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
+        public CalculateCoordinate(Control control, Rectangle drop, int Radius, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
         {
             var point = control.PointToScreen(Point.Empty);
             var size = control.ClientSize;
@@ -48,6 +49,7 @@ namespace AntdUI
             if (control is IControl icontrol) padd = GetPadding(icontrol);
             dw = drop.Width;
             dh = drop.Height;
+            radius = GetRadius(Radius);
             arrow = ArrowSize;
             shadow = Shadow;
             shadow2 = Shadow2;
@@ -90,6 +92,11 @@ namespace AntdUI
         public int dh { get; set; }
 
         /// <summary>
+        /// 下拉/气泡 圆角大小
+        /// </summary>
+        public int radius { get; set; }
+
+        /// <summary>
         /// 下拉/气泡 箭头大小
         /// </summary>
         public int arrow { get; set; }
@@ -128,6 +135,12 @@ namespace AntdUI
             else if (control is Tabs tab) return (int)(tab.Gap * Config.Dpi);
             else if (control is ContainerPanel containerPanel) return (int)(containerPanel.BorderWidth * Config.Dpi);
             return 0;
+        }
+        int GetRadius(int radius)
+        {
+            int min = (int)(4 * Config.Dpi);
+            if (min > radius) return min;
+            return radius;
         }
 
         #region 设置
@@ -192,8 +205,8 @@ namespace AntdUI
         /// </summary>
         public int B()
         {
-            if (creal.HasValue) return sy + creal.Value.Y + creal.Value.Height - dh + padd + shadow;
-            return sy + ch - dh + padd + shadow;
+            if (creal.HasValue) return sy + creal.Value.Y + creal.Value.Height - dh - padd + shadow;
+            return sy + ch - dh - padd + shadow;
         }
 
         /// <summary>
@@ -324,7 +337,7 @@ namespace AntdUI
         {
             x = CenterX();
             y = TopY();
-            if (collision && ScreenArea.IsBottom(x, y))
+            if (collision && ScreenArea.IsTop(x, y))
             {
                 y = BottomY();
                 rect_arrow = ArrowBottom(x, y);
@@ -339,7 +352,7 @@ namespace AntdUI
         {
             x = CenterX();
             y = BottomY();
-            if (collision && ScreenArea.IsTop(x, y))
+            if (collision && ScreenArea.IsBottom(x, y))
             {
                 y = TopY();
                 inverted = true;
@@ -352,7 +365,7 @@ namespace AntdUI
         {
             x = Left();
             y = CenterY();
-            if (collision && ScreenArea.IsRight(x, y))
+            if (collision && ScreenArea.IsLeft(x, y))
             {
                 x = Right();
                 rect_arrow = ArrowRight(x, y);
@@ -363,7 +376,7 @@ namespace AntdUI
         {
             x = Right();
             y = CenterY();
-            if (collision && ScreenArea.IsLeft(x, y))
+            if (collision && ScreenArea.IsRight(x, y))
             {
                 x = Left();
                 rect_arrow = ArrowLeft(x, y);
@@ -375,7 +388,7 @@ namespace AntdUI
         {
             x = L();
             y = TopY();
-            if (collision && ScreenArea.IsBottom(x, y))
+            if (collision && ScreenArea.IsTop(x, y))
             {
                 y = BottomY();
                 rect_arrow = ArrowBL(x, y);
@@ -390,7 +403,7 @@ namespace AntdUI
         {
             x = L();
             y = BottomY();
-            if (collision && ScreenArea.IsTop(x, y))
+            if (collision && ScreenArea.IsBottom(x, y))
             {
                 y = TopY();
                 inverted = true;
@@ -403,7 +416,7 @@ namespace AntdUI
         {
             x = R();
             y = TopY();
-            if (collision && ScreenArea.IsBottom(x, y))
+            if (collision && ScreenArea.IsTop(x, y))
             {
                 y = BottomY();
                 rect_arrow = ArrowBR(x, y);
@@ -418,7 +431,7 @@ namespace AntdUI
         {
             x = R();
             y = BottomY();
-            if (collision && ScreenArea.IsTop(x, y))
+            if (collision && ScreenArea.IsBottom(x, y))
             {
                 y = TopY();
                 inverted = true;
@@ -431,7 +444,7 @@ namespace AntdUI
         {
             x = Left();
             y = Y();
-            if (collision && ScreenArea.IsRight(x, y))
+            if (collision && ScreenArea.IsLeft(x, y))
             {
                 x = Right();
                 rect_arrow = ArrowRT(x, y);
@@ -442,7 +455,7 @@ namespace AntdUI
         {
             x = Right();
             y = Y();
-            if (collision && ScreenArea.IsLeft(x, y))
+            if (collision && ScreenArea.IsRight(x, y))
             {
                 x = Left();
                 rect_arrow = ArrowLT(x, y);
@@ -454,7 +467,7 @@ namespace AntdUI
         {
             x = Left();
             y = B();
-            if (collision && ScreenArea.IsRight(x, y))
+            if (collision && ScreenArea.IsLeft(x, y))
             {
                 x = Right();
                 rect_arrow = ArrowRB(x, y);
@@ -465,7 +478,7 @@ namespace AntdUI
         {
             x = Right();
             y = B();
-            if (collision && ScreenArea.IsLeft(x, y))
+            if (collision && ScreenArea.IsRight(x, y))
             {
                 x = Left();
                 rect_arrow = ArrowLB(x, y);
@@ -531,7 +544,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = shadow + arrow + 12, y_arrow = dh - shadow;
+                int x_arrow = shadow + arrow + radius, y_arrow = dh - shadow;
                 return new Point[] {
                     new Point(x_arrow, y_arrow +  arrow),
                     new Point(x_arrow - arrow, y_arrow),
@@ -544,7 +557,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = shadow + arrow + 12, y_arrow = shadow - arrow;
+                int x_arrow = shadow + arrow + radius, y_arrow = shadow - arrow;
                 return new Point[] {
                     new Point(x_arrow, y_arrow),
                     new Point(x_arrow - arrow, shadow),
@@ -557,7 +570,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = dw - (shadow + arrow + 12), y_arrow = dh - shadow;
+                int x_arrow = dw - (shadow + arrow + radius), y_arrow = dh - shadow;
                 return new Point[] {
                     new Point(x_arrow, y_arrow +  arrow),
                     new Point(x_arrow - arrow, y_arrow),
@@ -570,7 +583,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = dw - (shadow + arrow + 12), y_arrow = shadow - arrow;
+                int x_arrow = dw - (shadow + arrow + radius), y_arrow = shadow - arrow;
                 return new Point[] {
                     new Point(x_arrow, y_arrow),
                     new Point(x_arrow - arrow, shadow),
@@ -583,7 +596,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = dw - shadow, y_arrow = shadow + arrow + 12;
+                int x_arrow = dw - shadow, y_arrow = shadow + arrow + radius;
                 return new Point[] {
                     new Point(x_arrow + arrow, y_arrow),
                     new Point(x_arrow, y_arrow - arrow),
@@ -596,7 +609,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = shadow - arrow, y_arrow = shadow + arrow + 12;
+                int x_arrow = shadow - arrow, y_arrow = shadow + arrow + radius;
                 return new Point[] {
                     new Point(x_arrow, y_arrow),
                     new Point(shadow, y_arrow - shadow),
@@ -609,7 +622,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = dw - shadow, y_arrow = dh - (shadow + arrow + 12);
+                int x_arrow = dw - shadow, y_arrow = dh - (shadow + arrow + radius);
                 return new Point[] {
                     new Point(x_arrow + arrow, y_arrow),
                     new Point(x_arrow, y_arrow - arrow),
@@ -622,7 +635,7 @@ namespace AntdUI
         {
             if (arrow > 0)
             {
-                int x_arrow = shadow - arrow, y_arrow = dh - (shadow + arrow + 12);
+                int x_arrow = shadow - arrow, y_arrow = dh - (shadow + arrow + radius);
                 return new Point[] {
                     new Point(x_arrow, y_arrow),
                     new Point(shadow, y_arrow - shadow),
@@ -691,14 +704,14 @@ namespace AntdUI
             y = TopY();
             align = TAlign.Top;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsBottom(x, y))
+            if (collision && screenArea.IsTop(x, y))
             {
                 y = BottomY();
                 align = TAlign.Bottom;
             }
             int cx = dw / 2, tsize = arrow + gap;
             arrowX = cx;
-            if (screenArea.IsRight(x, y))
+            if (screenArea.IsLeft(x, y))
             {
                 arrowX = cx - (screenArea.X - x);
                 if (arrowX < tsize) arrowX = tsize;
@@ -718,14 +731,14 @@ namespace AntdUI
             y = BottomY();
             align = TAlign.Bottom;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsTop(x, y))
+            if (collision && screenArea.IsBottom(x, y))
             {
                 y = TopY();
                 align = TAlign.Top;
             }
             int cx = dw / 2, tsize = arrow + gap;
             arrowX = cx;
-            if (screenArea.IsRight(x, y))
+            if (screenArea.IsLeft(x, y))
             {
                 arrowX = cx - (screenArea.X - x);
                 if (arrowX < tsize) arrowX = tsize;
@@ -745,13 +758,13 @@ namespace AntdUI
             y = TopY();
             align = TAlign.TL;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsLeft(x, y))
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = R();
                 align = TAlign.TR;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void TR(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -760,13 +773,13 @@ namespace AntdUI
             y = TopY();
             align = TAlign.TR;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsRight(x, y))
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = L();
                 align = TAlign.TL;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void LT(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -775,13 +788,13 @@ namespace AntdUI
             y = Y();
             align = TAlign.LT;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsRight(x, y))
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = Right();
                 align = TAlign.RT;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void Left(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -790,13 +803,13 @@ namespace AntdUI
             y = CenterY();
             align = TAlign.Left;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsRight(x, y))
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = Right();
                 align = TAlign.Right;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void LB(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -805,13 +818,13 @@ namespace AntdUI
             y = B();
             align = TAlign.LB;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsRight(x, y))
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = Right();
                 align = TAlign.RB;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void RT(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -820,13 +833,13 @@ namespace AntdUI
             y = Y();
             align = TAlign.RT;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsLeft(x, y))
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = Left();
                 align = TAlign.LT;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void Right(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -835,13 +848,13 @@ namespace AntdUI
             y = CenterY();
             align = TAlign.Right;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsLeft(x, y))
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = Left();
                 align = TAlign.Left;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void RB(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -850,13 +863,13 @@ namespace AntdUI
             y = B();
             align = TAlign.RB;
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsLeft(x, y))
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = Left();
                 align = TAlign.LB;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void BL(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -865,13 +878,13 @@ namespace AntdUI
             x = L();
             y = BottomY();
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsLeft(x, y))
+            if (collision && screenArea.IsRight(x, y))
             {
                 x = R();
                 align = TAlign.BR;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
         public void BR(bool collision, int gap, out TAlign align, out int x, out int y, out int arrowX)
@@ -880,13 +893,13 @@ namespace AntdUI
             x = R();
             y = BottomY();
             var screenArea = ScreenArea;
-            if (collision && screenArea.IsRight(x, y))
+            if (collision && screenArea.IsLeft(x, y))
             {
                 x = L();
                 align = TAlign.BL;
             }
             arrowX = -1;
-            if (screenArea.IsRight(x, y)) x = screenArea.X;
+            if (screenArea.IsLeft(x, y)) x = screenArea.X;
             else if (x > screenArea.Right - dw) x = screenArea.Right - dw;
         }
 
@@ -910,24 +923,24 @@ namespace AntdUI
             public int Bottom => Rect.Bottom;
 
             /// <summary>
-            /// 是否碰撞底部
+            /// 是否碰撞顶部
             /// </summary>
-            public bool IsBottom(int x, int y) => y < Rect.Y;
+            public bool IsTop(int x, int y) => y < Rect.Y;
 
             /// <summary>
-            /// 是否碰撞右侧
+            /// 是否碰撞底部
             /// </summary>
-            public bool IsRight(int x, int y) => x < Rect.X;
+            public bool IsBottom(int x, int y) => y + coordinate.dh > Rect.Bottom;
 
             /// <summary>
             /// 是否碰撞左侧
             /// </summary>
-            public bool IsLeft(int x, int y) => x + coordinate.dw > Rect.Right;
+            public bool IsLeft(int x, int y) => x < Rect.X;
 
             /// <summary>
-            /// 是否碰撞顶部
+            /// 是否碰撞右侧
             /// </summary>
-            public bool IsTop(int x, int y) => y + coordinate.dh > Rect.Bottom;
+            public bool IsRight(int x, int y) => x + coordinate.dw > Rect.Right;
         }
     }
 }

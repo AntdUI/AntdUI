@@ -296,14 +296,14 @@ namespace AntdUI
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
             else
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -327,7 +327,7 @@ namespace AntdUI
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(control, TargetRect, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
         }
@@ -346,7 +346,7 @@ namespace AntdUI
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(ocontrol, TargetRect, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
             if (Print() == RenderResult.OK) return false;

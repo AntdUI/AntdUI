@@ -172,12 +172,12 @@ namespace AntdUI
             });
             if (config.CustomPoint.HasValue)
             {
-                new CalculateCoordinate(config.CustomPoint.Value, TargetRect, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+                new CalculateCoordinate(config.CustomPoint.Value, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
                 SetLocation(x, y);
             }
             else
             {
-                new CalculateCoordinate(config.Control, TargetRect, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+                new CalculateCoordinate(config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
                 SetLocation(x, y);
             }
         }

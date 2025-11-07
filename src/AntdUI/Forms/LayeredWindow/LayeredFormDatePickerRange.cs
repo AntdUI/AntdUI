@@ -117,7 +117,7 @@ namespace AntdUI
 
             LoadLayout();
 
-            CLocation(_control, _control.Placement, _control.DropDownArrow, ArrowSize, true);
+            CLocation(_control, _control.Placement, _control.DropDownArrow, ArrowSize);
             if (OS.Win7OrLower) Select();
         }
 
