@@ -31,7 +31,9 @@ namespace Demo
         [STAThread]
         static void Main(string[] arge)
         {
+#if !NET10_0
             ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
+#endif
             var command = string.Join(" ", arge);
             AntdUI.Localization.DefaultLanguage = "zh-CN";
             var lang = AntdUI.Localization.CurrentLanguage;

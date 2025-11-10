@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>net9.0-windows;net8.0-windows;net6.0-windows;net48;net46;net40</TargetFrameworks>
+		<TargetFrameworks>net10.0-windows;net9.0-windows;net8.0-windows;net6.0-windows;net48;net46;net40</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Authors>Tom</Authors>
@@ -27,7 +27,7 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='net46' OR '$(TargetFramework)'=='net48'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net48'">
 		<Reference Include="System.Design" />
 	</ItemGroup>
 

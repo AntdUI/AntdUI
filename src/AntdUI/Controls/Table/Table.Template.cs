@@ -239,7 +239,7 @@ namespace AntdUI
         /// <summary>
         /// 复选框
         /// </summary>
-        class TCellCheck : CELL
+        class TCellCheck : CELL_CHECK
         {
             /// <summary>
             /// 复选框
@@ -249,7 +249,7 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            public TCellCheck(Table table, ColumnCheck column, PropertyDescriptor? prop, object? ov, bool value) : base(table, column, prop, ov)
+            public TCellCheck(Table table, ColumnCheck column, PropertyDescriptor? prop, object? ov, bool value, bool valint) : base(table, column, prop, ov, valint)
             {
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
@@ -268,7 +268,7 @@ namespace AntdUI
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
-            public bool Checked
+            public override bool Checked
             {
                 get => _checked;
                 set
@@ -327,7 +327,6 @@ namespace AntdUI
             #endregion
 
             public bool NoTitle { get; set; }
-            public bool AutoCheck { get; set; }
 
             #endregion
 
@@ -411,7 +410,7 @@ namespace AntdUI
         /// <summary>
         /// 单选框
         /// </summary>
-        class TCellRadio : CELL
+        class TCellRadio : CELL_CHECK
         {
             /// <summary>
             /// 单选框
@@ -421,7 +420,7 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            public TCellRadio(Table table, ColumnRadio column, PropertyDescriptor? prop, object? ov, bool value) : base(table, column, prop, ov)
+            public TCellRadio(Table table, ColumnRadio column, PropertyDescriptor? prop, object? ov, bool value, bool valint) : base(table, column, prop, ov, valint)
             {
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
@@ -439,7 +438,7 @@ namespace AntdUI
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
-            public bool Checked
+            public override bool Checked
             {
                 get => _checked;
                 set
@@ -496,8 +495,6 @@ namespace AntdUI
             }
 
             #endregion
-
-            public bool AutoCheck { get; set; }
 
             #endregion
 
@@ -573,7 +570,7 @@ namespace AntdUI
         /// <summary>
         /// 开关
         /// </summary>
-        class TCellSwitch : CELL
+        class TCellSwitch : CELL_CHECK
         {
             /// <summary>
             /// 开关
@@ -583,7 +580,7 @@ namespace AntdUI
             /// <param name="prop">反射</param>
             /// <param name="ov">行数据</param>
             /// <param name="value">值</param>
-            public TCellSwitch(Table table, ColumnSwitch column, PropertyDescriptor? prop, object? ov, bool value) : base(table, column, prop, ov)
+            public TCellSwitch(Table table, ColumnSwitch column, PropertyDescriptor? prop, object? ov, bool value, bool valint) : base(table, column, prop, ov, valint)
             {
                 _checked = value;
                 AnimationCheckValue = _checked ? 1F : 0F;
@@ -601,7 +598,7 @@ namespace AntdUI
 
             bool _checked = false;
             [Description("选中状态"), Category("行为"), DefaultValue(false)]
-            public bool Checked
+            public override bool Checked
             {
                 get => _checked;
                 set
@@ -757,8 +754,6 @@ namespace AntdUI
 
             #endregion
 
-            public bool AutoCheck { get; set; }
-
             #endregion
 
             #region 布局
@@ -843,6 +838,18 @@ namespace AntdUI
             #endregion
 
             public override string ToString() => Checked.ToString();
+        }
+
+        abstract class CELL_CHECK : CELL
+        {
+            public CELL_CHECK(Table table, Column column, PropertyDescriptor? prop, object? ov, bool val_int) : base(table, column, prop, ov)
+            {
+                ValInt = val_int;
+            }
+
+            public abstract bool Checked { get; set; }
+            public bool AutoCheck { get; set; }
+            public bool ValInt { get; set; }
         }
 
         /// <summary>

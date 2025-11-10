@@ -1636,21 +1636,9 @@ namespace AntdUI
             action_add = item =>
             {
                 item.PARENT = it;
-                bool top = it.Controls.Count == 0;
                 item.Dock = DockStyle.Fill;
-                if (it.InvokeRequired)
-                {
-                    it.Invoke(() =>
-                    {
-                        it.Controls.Add(item);
-                        if (top) item.Showed = true;
-                    });
-                }
-                else
-                {
-                    it.Controls.Add(item);
-                    if (top) item.Showed = true;
-                }
+                if (it.InvokeRequired) it.Invoke(() => it.Controls.Add(item));
+                else it.Controls.Add(item);
             };
             action_del = (item, index) =>
             {
@@ -1867,11 +1855,13 @@ namespace AntdUI
         #region 隐藏显示
 
         bool showed = false;
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Description("显示的"), Category("外观"), DefaultValue(false)]
         public bool Showed
         {
             get => showed;
-            set
+            internal set
             {
                 if (showed == value) return;
                 showed = value;

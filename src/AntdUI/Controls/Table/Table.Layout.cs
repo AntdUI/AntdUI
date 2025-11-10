@@ -999,24 +999,39 @@ namespace AntdUI
             {
                 //复选框
                 has_check = true;
-                bool value_check = false;
+                bool value_check = false, val_int = false;
                 if (value is bool check) value_check = check;
-                return new TCellCheck(this, columnCheck, prop, ov, value_check);
+                else if (value is int check_int)
+                {
+                    value_check = check_int > 0;
+                    val_int = true;
+                }
+                return new TCellCheck(this, columnCheck, prop, ov, value_check, val_int);
             }
             else if (column is ColumnRadio columnRadio)
             {
                 //单选框
                 has_check = true;
-                bool value_check = false;
+                bool value_check = false, val_int = false;
                 if (value is bool check) value_check = check;
-                return new TCellRadio(this, columnRadio, prop, ov, value_check);
+                else if (value is int check_int)
+                {
+                    value_check = check_int > 0;
+                    val_int = true;
+                }
+                return new TCellRadio(this, columnRadio, prop, ov, value_check, val_int);
             }
             else if (column is ColumnSwitch columnSwitch)
             {
                 //开关
-                bool value_check = false;
+                bool value_check = false, val_int = false;
                 if (value is bool check) value_check = check;
-                return new TCellSwitch(this, columnSwitch, prop, ov, value_check);
+                else if (value is int check_int)
+                {
+                    value_check = check_int > 0;
+                    val_int = true;
+                }
+                return new TCellSwitch(this, columnSwitch, prop, ov, value_check, val_int);
             }
             else if (column is ColumnSelect columnSelect)
             {
@@ -1360,6 +1375,13 @@ namespace AntdUI
             if (count > 0 && nocount == count) columnCheck.Checked = value;
         }
 
+        void SetValueCheck(CELL_CHECK cel) => SetValueCheck(cel, !cel.Checked);
+        void SetValueCheck(CELL_CHECK cel, bool value)
+        {
+            cel.Checked = value;
+            if (cel.ValInt) SetValue(cel, value ? 1 : 0);
+            else SetValue(cel, value);
+        }
         void SetValue(CELL cel, object? value)
         {
             if (cel.PROPERTY == null)

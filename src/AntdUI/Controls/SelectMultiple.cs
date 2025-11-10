@@ -673,6 +673,18 @@ namespace AntdUI
 
         #endregion
 
+        #region 事件
+
+        /// <summary>
+        /// 下拉展开 属性值更改时发生
+        /// </summary>
+        [Description("下拉展开 属性值更改时发生"), Category("行为")]
+        public event BoolEventHandler? ExpandDropChanged;
+
+        protected virtual void OnExpandDropChanged(bool e) => ExpandDropChanged?.Invoke(this, new BoolEventArgs(e));
+
+        #endregion
+
         #region 焦点
 
         bool expandDrop = false;
@@ -714,6 +726,7 @@ namespace AntdUI
                     subForm?.IClose();
                     filtertext = "";
                 }
+                OnExpandDropChanged(value);
             }
         }
 

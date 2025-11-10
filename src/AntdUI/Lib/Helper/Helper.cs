@@ -101,6 +101,42 @@ namespace AntdUI
             else if (target.Value is Control control) return FindPARENT(control.Parent, mdi);
             return null;
         }
+
+        public static List<Control> FindPARENTs(this Control control, bool mdi = false)
+        {
+            var list = new List<Control>(2);
+            if (control is DoubleBufferForm formd)
+            {
+                list.Add(formd);
+                if (formd.Tag is Form form)
+                {
+                    list.Add(form);
+                    return list;
+                }
+                else if (formd.Parent != null)
+                {
+                    var tmp = FindPARENTs(formd.Parent, mdi);
+                    if (tmp != null) list.AddRange(tmp);
+                    return list;
+                }
+                else return list;
+            }
+            else if (control is Form form)
+            {
+                if (mdi) list.Add(form);
+                else list.Add(form.ParentForm ?? form);
+                return list;
+            }
+            else if (control.Parent != null)
+            {
+                list.Add(control);
+                var tmp = FindPARENTs(control.Parent, mdi);
+                if (tmp != null) list.AddRange(tmp);
+            }
+            else list.Add(control);
+            return list;
+        }
+
         public static bool SetTopMost(this Control? control, IntPtr hand)
         {
             var form = control.FindPARENT();
