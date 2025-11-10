@@ -347,6 +347,14 @@ namespace AntdUI
         protected virtual void OnSelectedValueChanged(object? e) => SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(e));
 
         /// <summary>
+        /// 下拉展开 属性值更改时发生
+        /// </summary>
+        [Description("下拉展开 属性值更改时发生"), Category("行为")]
+        public event BoolEventHandler? ExpandDropChanged;
+
+        protected virtual void OnExpandDropChanged(bool e) => ExpandDropChanged?.Invoke(this, new BoolEventArgs(e));
+
+        /// <summary>
         /// 关闭某项 时发生
         /// </summary>
         [Description("关闭某项 时发生"), Category("行为")]
@@ -540,6 +548,7 @@ namespace AntdUI
                     subForm = null;
                     filtertext = "";
                 }
+                OnExpandDropChanged(value);
             }
         }
 
@@ -621,11 +630,41 @@ namespace AntdUI
         {
             base.OnMouseWheel(e);
             if (ReadOnly || !WheelModifyEnabled || items == null || items.Count == 0) return;
-            int newIndex;
-            if (e.Delta > 0) newIndex = SelectedIndex <= 0 ? items.Count - 1 : SelectedIndex - 1;
-            else newIndex = SelectedIndex >= items.Count - 1 ? 0 : SelectedIndex + 1;
-            SelectedIndex = newIndex;
+            SelectedIndex = IMouseWheel(items, e.Delta);
             if (e is HandledMouseEventArgs handled) handled.Handled = true;
+        }
+
+        int IMouseWheel(BaseCollection items, int delta)
+        {
+            int count = items.Count, errcount = 0, newIndex;
+            if (delta > 0)
+            {
+                newIndex = SelectedIndex <= 0 ? items.Count - 1 : SelectedIndex - 1;
+                while (WheelItem(items[newIndex]))
+                {
+                    errcount++;
+                    if (errcount > count) return -1;
+                    newIndex--;
+                    if (newIndex < 0) newIndex = count - 1;
+                }
+            }
+            else
+            {
+                newIndex = SelectedIndex >= items.Count - 1 ? 0 : SelectedIndex + 1;
+                while (WheelItem(items[newIndex]))
+                {
+                    errcount++;
+                    if (errcount > count) return -1;
+                    newIndex++;
+                    if (newIndex > count - 1) newIndex = 0;
+                }
+            }
+            return newIndex;
+        }
+        bool WheelItem(object? it)
+        {
+            if (it is DividerSelectItem) return true;
+            return false;
         }
 
         #endregion

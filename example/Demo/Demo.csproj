@@ -1,14 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net9.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
-		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
 		<ApplicationIcon>icon.ico</ApplicationIcon>
+		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<WindowsSupportedOSPlatformVersion>5.1</WindowsSupportedOSPlatformVersion>
 		<TargetPlatformMinVersion>5.1</TargetPlatformMinVersion>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
@@ -27,9 +28,12 @@
 	<ItemGroup>
 		<PackageReference Include="PublishAotCompressed" Version="1.0.5" />
 		<PackageReference Include="VC-LTL" Version="5.2.2" />
-		<PackageReference Include="WinFormsComInterop" Version="0.5.0" />
 		<PackageReference Include="YY-Thunks" Version="1.1.7" />
 		<RdXmlFile Include="rd.xml" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' != 'net10.0-windows'">
+		<PackageReference Include="WinFormsComInterop" Version="0.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

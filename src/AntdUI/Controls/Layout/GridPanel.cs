@@ -154,6 +154,8 @@ namespace AntdUI
                 if (container is GridPanel parent && parent.IsHandleCreated)
                 {
                     if (parent.PauseLayout) return false;
+                    var point = parent.PointToScreen(Point.Empty);
+                    if (point.X == point.Y && point.X < 0 && point.Y < 0) return false;
                     var rect = parent.DisplayRectangle;
                     if (!string.IsNullOrEmpty(Span) && parent.Controls.Count > 0)
                     {

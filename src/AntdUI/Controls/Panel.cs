@@ -422,17 +422,20 @@ namespace AntdUI
         {
             var g = e.Canvas;
             var rect_read = ReadRectangle;
-            float _radius = radius * Config.Dpi;
-            using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
+            if (rect_read.Width > 0 && rect_read.Height > 0)
             {
-                using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme)))
+                float _radius = radius * Config.Dpi;
+                using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
                 {
-                    g.Fill(brush, path);
+                    using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme)))
+                    {
+                        g.Fill(brush, path);
+                    }
+                    if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
+                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
                 }
-                if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
+                if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
             }
-            if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
             base.OnDraw(e);
         }
 

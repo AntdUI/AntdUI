@@ -73,6 +73,7 @@ namespace AntdUI
         public override string name => "Mask";
         Func<GraphicsPath>? RenderRegion;
 
+        Control[]? list;
         protected override void OnLoad(EventArgs e)
         {
             if (control == null)
@@ -91,24 +92,32 @@ namespace AntdUI
                     Size = owner.Size;
                     Location = owner.Location;
                 }
+                owner.VisibleChanged += Parent_VisibleChanged;
             }
             else
             {
-                if (control is TabPage page) page.ShowedChanged += Parent_VisibleChanged;
-                control.VisibleChanged += Parent_VisibleChanged;
                 var point = control.PointToScreen(Point.Empty);
                 SetLocation(point);
                 SetSize(control.Size);
                 Size = control.Size;
                 Location = point;
+                var tmps = control.FindPARENTs();
+                list = tmps.ToArray();
+                foreach (var control in list)
+                {
+                    if (control is TabPage page) page.ShowedChanged += Parent_VisibleChanged;
+                    control.VisibleChanged += Parent_VisibleChanged;
+                    control.Disposed += Parent_Disposed;
+                }
             }
-            owner.VisibleChanged += Parent_VisibleChanged;
             owner.LocationChanged += Parent_LocationChanged;
             owner.SizeChanged += Parent_SizeChanged;
             LoadVisible();
             base.OnLoad(e);
         }
 
+
+        private void Parent_Disposed(object? sender, EventArgs e) => IClose();
         private void Parent_VisibleChanged(object? sender, EventArgs e) => LoadVisible();
         private void Parent_LocationChanged(object? sender, EventArgs e)
         {
@@ -177,20 +186,32 @@ namespace AntdUI
         }
         bool GetVisible()
         {
-            if (control == null) return owner.Visible;
+            if (list == null) return owner.Visible;
             else
             {
-                if (control is TabPage page) return page.Showed && page.Visible;
-                return control.Visible;
+                foreach (var control in list)
+                {
+                    if (control is TabPage page)
+                    {
+                        if (!page.Showed) return false;
+                    }
+                    else if (!control.Visible) return false;
+                }
+                return true;
             }
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (control != null)
+            if (list == null) owner.VisibleChanged -= Parent_VisibleChanged;
+            else
             {
-                control.VisibleChanged -= Parent_VisibleChanged;
-                if (control is TabPage page) page.ShowedChanged -= Parent_VisibleChanged;
+                foreach (var control in list)
+                {
+                    control.Disposed -= Parent_Disposed;
+                    control.VisibleChanged -= Parent_VisibleChanged;
+                    if (control is TabPage page) page.ShowedChanged -= Parent_VisibleChanged;
+                }
             }
             owner.LocationChanged -= Parent_LocationChanged;
             owner.SizeChanged -= Parent_SizeChanged;

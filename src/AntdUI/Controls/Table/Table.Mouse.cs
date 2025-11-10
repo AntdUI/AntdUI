@@ -373,15 +373,13 @@ namespace AntdUI
                                 var value = columnCheck.Call(!checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
                                 if (checkCell.Checked != value)
                                 {
-                                    checkCell.Checked = value;
-                                    SetValue(it.cell, checkCell.Checked);
+                                    SetValueCheck(checkCell, value);
                                     OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                                 }
                             }
                             else if (checkCell.AutoCheck)
                             {
-                                checkCell.Checked = !checkCell.Checked;
-                                SetValue(it.cell, checkCell.Checked);
+                                SetValueCheck(checkCell);
                                 OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
@@ -404,15 +402,10 @@ namespace AntdUI
                                     if (i != it.i_row)
                                     {
                                         var cell_selno = rows[i].cells[it.i_cel];
-                                        if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked)
-                                        {
-                                            radioCell2.Checked = false;
-                                            SetValue(cell_selno, false);
-                                        }
+                                        if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked) SetValueCheck(radioCell2, false);
                                     }
                                 }
-                                radioCell.Checked = true;
-                                SetValue(it.cell, radioCell.Checked);
+                                SetValueCheck(radioCell, true);
                                 OnCheckedChanged(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
@@ -428,17 +421,12 @@ namespace AntdUI
                                 {
                                     var value = columnSwitch.Call(!switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
                                     if (switchCell.Checked == value) return;
-                                    switchCell.Checked = value;
-                                    SetValue(it.cell, value);
-                                }).ContinueWith(action =>
-                                {
-                                    switchCell.Loading = false;
-                                });
+                                    SetValueCheck(switchCell, value);
+                                }).ContinueWith(action => switchCell.Loading = false);
                             }
                             else if (switchCell.AutoCheck)
                             {
-                                switchCell.Checked = !switchCell.Checked;
-                                SetValue(it.cell, switchCell.Checked);
+                                SetValueCheck(switchCell);
                                 OnCheckedChanged(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
