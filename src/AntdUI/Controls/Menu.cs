@@ -1107,6 +1107,12 @@ namespace AntdUI
         }
         void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
         {
+
+            if (ScrollBar.Show && Mode == TMenuMode.Inline)
+            {             
+                rect.Width -= Math.Min(ScrollBar.SIZE, rect.Width);
+            }
+            
             if (Round || radius > 0)
             {
                 using (var path = rect.RoundPath(radius, Round))
