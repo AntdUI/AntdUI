@@ -345,6 +345,23 @@ namespace AntdUI
         [Description("鼠标右键控制"), Category("交互"), DefaultValue(true)]
         public bool MouseRightCtrl { get; set; } = true;
 
+        bool scrollBarBlock = false;
+        /// <summary>
+        /// 滚动条遮挡
+        /// </summary>
+        [Description("滚动条遮挡"), Category("外观"), DefaultValue(false)]
+        public bool ScrollBarBlock
+        {
+            get => scrollBarBlock;
+            set
+            {
+                if (scrollBarBlock == value) return;
+                scrollBarBlock = value;
+                ChangeList(true);
+                OnPropertyChanged(nameof(ScrollBarBlock));
+            }
+        }
+
         #region 下拉
 
         /// <summary>
@@ -619,9 +636,19 @@ namespace AntdUI
                         }
                         else
                         {
-                            int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : icon_size;
-                            int yr = ChangeListY(rect, items!, ref icon_count, height, sp) + Padding.Vertical;
-                            int scx = yr > _rect.Height ? ScrollBar.SIZE : 0;
+                            scrollBarBlock = true;
+                            int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : icon_size, scx;
+                            if (ScrollBar.Show && scrollBarBlock)
+                            {
+                                rect.Width -= ScrollBar.SIZE;
+                                int yr = ChangeListY(rect, items!, ref icon_count, height, sp) + Padding.Vertical;
+                                scx = 0;
+                            }
+                            else
+                            {
+                                int yr = ChangeListY(rect, items!, ref icon_count, height, sp) + Padding.Vertical;
+                                scx = yr > _rect.Height ? ScrollBar.SIZE : 0;
+                            }
                             collapsedWidth = ChangeList(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, 0) + Padding.Horizontal;
                         }
                         if (AutoCollapse)
