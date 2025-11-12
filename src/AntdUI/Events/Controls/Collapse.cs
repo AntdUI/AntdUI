@@ -95,7 +95,8 @@ namespace AntdUI
     {
         public CollapseCustomInputEditEventArgs() { }
 
-        public IControl Edit { get; set; }
+        public IControl? Edit { get; set; }
     }
+
     public delegate void CollapseCustomInputEditEventHandler(object sender, CollapseCustomInputEditEventArgs e);
 }

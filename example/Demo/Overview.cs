@@ -720,7 +720,7 @@ namespace Demo
                 else name = data.id;
             }
 
-            StringFormat s_f = AntdUI.Helper.SF(lr: StringAlignment.Near);
+            AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Left | AntdUI.FormatFlags.VerticalCenter;
             public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
                 using (var brush = new SolidBrush(AntdUI.Style.Db.BgContainer))

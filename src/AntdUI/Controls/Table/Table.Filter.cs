@@ -228,11 +228,11 @@ namespace AntdUI
                                 {
                                     if (option.Condition == FilterConditions.Greater)
                                     {
-                                        if (val.ToString().StartsWith(value.ToString())) list.Add(row);
+                                        if (val.ToString()!.StartsWith(value.ToString()!)) list.Add(row);
                                     }
                                     else
                                     {
-                                        if (val.ToString().EndsWith(value.ToString())) list.Add(row);
+                                        if (val.ToString()!.EndsWith(value.ToString()!)) list.Add(row);
                                     }
                                 }
                                 else if (val.GetType() == typeof(DateTime))
@@ -266,11 +266,11 @@ namespace AntdUI
                                 {
                                     if (option.Condition == FilterConditions.Contain)
                                     {
-                                        if (emptyVal == false && emptyVal2 == false && val.ToString().Contains(value.ToString())) list.Add(row);
+                                        if (emptyVal == false && emptyVal2 == false && val!.ToString()!.Contains(value!.ToString()!)) list.Add(row);
                                     }
                                     else
                                     {
-                                        if (emptyVal == false && emptyVal2 == false && val.ToString().Contains(value.ToString()) == false) list.Add(row);
+                                        if (emptyVal == false && emptyVal2 == false && val!.ToString()!.Contains(value!.ToString()!) == false) list.Add(row);
                                     }
                                 }
                                 break;

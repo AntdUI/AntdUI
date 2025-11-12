@@ -126,9 +126,6 @@ namespace AntdUI
         ScrollBar ScrollBar;
         bool nodata = false;
 
-        public ILayeredForm? SubForm() => subForm;
-        LayeredFormSelectMultiple? subForm;
-
         #endregion
 
         #region 渲染

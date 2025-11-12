@@ -19,6 +19,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -59,10 +60,10 @@ namespace AntdUI
         }
         public virtual void ClosingAnimation() { }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (animateConfig.End(name)) e.Cancel = true;
-            base.OnClosing(e);
+            base.OnFormClosing(e);
         }
 
         protected override void Dispose(bool disposing)

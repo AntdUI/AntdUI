@@ -67,7 +67,9 @@ namespace AntdUI
         [Description("文本"), Category("外观"), DefaultValue(null)]
         public override string? Text
         {
+#pragma warning disable CS8764, CS8766
             get => this.GetLangI(LocalizationText, text);
+#pragma warning restore CS8764, CS8766
             set
             {
                 if (text == value) return;
@@ -594,7 +596,7 @@ namespace AntdUI
         private static extern void DragAcceptFiles(IntPtr hWnd, bool fAccept);
 
         [DllImport("shell32.dll", SetLastError = false, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Winapi)]
-        private static extern uint DragQueryFile(IntPtr hWnd, uint iFile, StringBuilder lpszFile, int cch);
+        private static extern uint DragQueryFile(IntPtr hWnd, uint iFile, StringBuilder? lpszFile, int cch);
 
         [DllImport("shell32.dll", SetLastError = false, CallingConvention = CallingConvention.Winapi)]
         private static extern void DragFinish(IntPtr hDrop);

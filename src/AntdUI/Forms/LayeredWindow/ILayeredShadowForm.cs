@@ -54,7 +54,7 @@ namespace AntdUI
         public TAlign CLocation(ILayeredShadowForm control, Rectangle rect, bool DropDownArrow, int ArrowSize)
         {
             var trect = control.TargetRect;
-            var screen = Screen.FromPoint(trect.Location).WorkingArea;
+            var screen = Screen.FromPoint(new Point(trect.X + control.shadow, trect.Y + control.shadow)).WorkingArea;
             int x = trect.X + trect.Width - rect.X - control.shadow + (DropDownArrow ? ArrowSize : 0), y = trect.Y + rect.Y + control.shadow;
             if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + control.shadow;
             if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + control.shadow;

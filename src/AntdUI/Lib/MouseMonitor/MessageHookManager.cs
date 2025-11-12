@@ -39,11 +39,11 @@ namespace AntdUI
                     if (!InstallHooks()) throw new Exception("Hook Error");
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 // 钩子初始化失败，记录日志
                 Dispose();
-                throw ex;
+                throw;
             }
         }
 

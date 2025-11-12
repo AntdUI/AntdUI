@@ -567,7 +567,7 @@ namespace AntdUI
             formMask?.IClose();
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             task_start?.Dispose();
             if (!ok_end)
@@ -609,7 +609,7 @@ namespace AntdUI
                     IClose(true);
                 }
             }
-            base.OnClosing(e);
+            base.OnFormClosing(e);
         }
 
         protected override void Dispose(bool disposing)

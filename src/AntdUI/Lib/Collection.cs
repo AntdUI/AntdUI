@@ -492,7 +492,6 @@ namespace AntdUI
         }
     }
 
-    [Obsolete("use BindingList")]
     public class AntList<T> : IList<T>
     {
         public AntList() { }

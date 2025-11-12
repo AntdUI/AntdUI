@@ -113,9 +113,9 @@ namespace AntdUI
                                 mask.Show(config.Form);
                                 return mask;
                             }));
-                            var frm = ITask.Invoke(config.Form, new Func<LayeredFormDrawer>(() => new LayeredFormDrawer(config, mask)));
+                            var frm = ITask.Invoke(config.Form, new Func<LayeredFormDrawer>(() => new LayeredFormDrawer(config, mask!)));
                             if (config.DisplayDelay > 0) System.Threading.Thread.Sleep(config.DisplayDelay);
-                            if (frm.isclose) return config;
+                            if (frm!.isclose) return config;
                             config.Form.BeginInvoke(new Action(() =>
                             {
                                 frm.Show(mask);

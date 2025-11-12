@@ -577,7 +577,7 @@ namespace AntdUI
 
     public interface ICollapseItem
     {
-        string Text { get; set; }
+        string? Text { get; set; }
     }
 
     public class CollapseGroupItem : ICollapseItem
@@ -855,7 +855,7 @@ namespace AntdUI
         public CollapseGroupButton() : base() { }
         public CollapseGroupButton(string text) : base(text) { }
 
-        internal ITask? ThreadHover, ThreadCheck, ThreadClick;
+        internal ITask? ThreadHover, ThreadCheck;
         public CollapseGroupButton(string text, Image? icon) : base(text, icon) { }
         internal bool AnimationClick = false;
         internal float AnimationClickValue = 0;
@@ -1170,7 +1170,7 @@ namespace AntdUI
                         {
                             CollapseCustomInputEditEventArgs args = new CollapseCustomInputEditEventArgs();
                             CustomInputEdit(this, args);
-                            if (args.Edit != null && args.Edit is IControl)
+                            if (args.Edit != null)
                             {
                                 args.Edit.Location = rect.Location;
                                 args.Edit.Size = new Size(Width ?? args.Edit.Width, rect.Size.Height);

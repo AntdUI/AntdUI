@@ -33,7 +33,7 @@ namespace AntdUI
         public int PixelCount => Width * Height;
 
         private Bitmap bitmap;
-        private BitmapData bitmapData;
+        private BitmapData? bitmapData;
 
         public UnsafeBitmap(Bitmap bmp, bool lockBitmap = false, ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
         {
@@ -41,10 +41,7 @@ namespace AntdUI
             Width = bmp.Width;
             Height = bmp.Height;
 
-            if (lockBitmap)
-            {
-                Lock(imageLockMode);
-            }
+            if (lockBitmap) Lock(imageLockMode);
         }
 
         public void Lock(ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
@@ -61,7 +58,7 @@ namespace AntdUI
         {
             if (IsLocked)
             {
-                bitmap.UnlockBits(bitmapData);
+                bitmap.UnlockBits(bitmapData!);
                 bitmapData = null;
                 Pointer = null;
                 IsLocked = false;

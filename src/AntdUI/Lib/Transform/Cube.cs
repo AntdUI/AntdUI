@@ -86,7 +86,7 @@ namespace AntdUI
             var point3D = new PointF[24];
             var tmpOrigin = new Point(0, 0);
             var point0 = new Math3D.Point3D(0, 0, 0);
-            double zoom = Screen.PrimaryScreen.Bounds.Width / 1.5D;
+            double zoom = Screen.PrimaryScreen!.Bounds.Width / 1.5D;
             var cubePoints = fillCubeVertices(width, height, depth);
             var anchorPoint = cubePoints[4];
             double cameraZ = -(((anchorPoint.X - cubeOrigin.X) * zoom) / cubeOrigin.X) + anchorPoint.Z;
