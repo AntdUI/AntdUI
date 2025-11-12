@@ -274,7 +274,6 @@ namespace AntdUI
             var rect = ReadRectangle;
 
             Color _fore = fore ?? Style.Get(Colour.Text, nameof(HyperlinkLabel));
-            PaintText(g, Text, _fore, rect);
             if (shadow > 0)
             {
                 using (var bmp = new Bitmap(Width, Height))
@@ -287,6 +286,7 @@ namespace AntdUI
                     g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                 }
             }
+            PaintText(g, Text, _fore, rect);
         }
 
         void PaintText(Canvas g, string? text, Color color, Rectangle rect)

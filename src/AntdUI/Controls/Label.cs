@@ -442,7 +442,6 @@ namespace AntdUI
 
             Color _fore = Colour.DefaultColor.Get(nameof(Label), ColorScheme);
             if (fore.HasValue) _fore = fore.Value;
-            PaintText(g, Text, _fore, rect_read);
             if (shadow > 0)
             {
                 using (var bmp = new Bitmap(Width, Height))
@@ -455,6 +454,7 @@ namespace AntdUI
                     g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                 }
             }
+            PaintText(g, Text, _fore, rect_read);
             base.OnDraw(e);
         }
 
