@@ -28,6 +28,7 @@ namespace Demo
         public bool Animation, ShadowEnabled, ShowInWindow, ScrollBarHide, TextRenderingHighQuality;
         public Setting(Form _form)
         {
+            form = _form;
             InitializeComponent();
             switch1.Checked = Animation = AntdUI.Config.Animation;
             switch2.Checked = ShadowEnabled = AntdUI.Config.ShadowEnabled;

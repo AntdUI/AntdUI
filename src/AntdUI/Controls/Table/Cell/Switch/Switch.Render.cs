@@ -101,7 +101,6 @@ namespace AntdUI
             }
         }
 
-        bool nullText = false;
         public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             string? checkedText = CheckedText, uncheckedText = UnCheckedText;

@@ -238,7 +238,7 @@ namespace Demo.Controls
                 return v * 100 + h;
             }
 
-            StringFormat s_f = new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+            AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrapEllipsis;
             Bitmap bmp = null;
             public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {

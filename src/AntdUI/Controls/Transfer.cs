@@ -757,7 +757,7 @@ namespace AntdUI
             else
             {
                 sourceFilteredItems = sourceItems
-                    .Where(item => item.Text.IndexOf(sourceSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(item => item.Text?.IndexOf(sourceSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
 
@@ -767,7 +767,7 @@ namespace AntdUI
             else
             {
                 targetFilteredItems = targetItems
-                    .Where(item => item.Text.IndexOf(targetSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(item => item.Text?.IndexOf(targetSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
             hover_to_right.Enable = sourceFilteredItems.Any(i => i.selected);

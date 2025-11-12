@@ -238,7 +238,9 @@ namespace AntdUI
         public override string Text
         {
             get => base.Text;
+#pragma warning disable CS8765
             set
+#pragma warning restore CS8765
             {
                 if (base.Text == value) return;
 

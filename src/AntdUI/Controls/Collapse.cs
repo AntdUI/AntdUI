@@ -1265,7 +1265,9 @@ namespace AntdUI
         public override string Text
         {
             get => this.GetLangIN(LocalizationText, text);
+#pragma warning disable CS8765, CS8767
             set
+#pragma warning restore CS8765, CS8767
             {
                 if (text == value) return;
                 base.Text = text = value;

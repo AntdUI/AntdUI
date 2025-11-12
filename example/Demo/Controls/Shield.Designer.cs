@@ -210,7 +210,6 @@ namespace Demo.Controls
         #endregion
 
         private AntdUI.PageHeader header1;
-        private AntdUI.Button button1;
         private AntdUI.Shield shield1;
         private AntdUI.Shield shield2;
         private AntdUI.Shield shield3;

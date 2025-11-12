@@ -313,7 +313,7 @@ namespace Vanara.PInvoke
         /// <summary>Performs an implicit conversion from <see cref="System.Nullable{Rectangle}"/> to <see cref="PRECT"/>.</summary>
         /// <param name="r">The r.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator PRECT(Rectangle? r) => r.HasValue ? new PRECT(r.Value) : null;
+        public static implicit operator PRECT?(Rectangle? r) => r.HasValue ? new PRECT(r.Value) : null;
 
         /// <summary>Performs an implicit conversion from <see cref="Rectangle"/> to <see cref="PRECT"/>.</summary>
         /// <param name="r">The r.</param>

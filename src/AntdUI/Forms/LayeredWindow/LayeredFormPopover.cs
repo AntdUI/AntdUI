@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
@@ -235,7 +234,7 @@ namespace AntdUI
 
         private void Control_Disposed(object? sender, EventArgs e) => IClose();
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (config.Content is Control control)
             {
@@ -247,14 +246,14 @@ namespace AntdUI
                 if (control.IsDisposed)
                 {
                     form?.Dispose();
-                    base.OnClosing(e);
+                    base.OnFormClosing(e);
                     return;
                 }
                 tempContent = new Bitmap(control.Width, control.Height);
                 control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
                 if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
             }
-            base.OnClosing(e);
+            base.OnFormClosing(e);
         }
 
         protected override void Dispose(bool disposing)
@@ -267,7 +266,9 @@ namespace AntdUI
                 control.Disposed -= Control_Disposed;
                 control.Dispose();
             }
+#pragma warning disable CS8625
             config.Content = null;
+#pragma warning restore CS8625
             form?.Dispose();
             base.Dispose(disposing);
         }

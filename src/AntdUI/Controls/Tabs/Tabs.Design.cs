@@ -34,17 +34,17 @@ namespace AntdUI
 
             #region 初始化
 
-            public IDesignerHost DesignerHost { get; private set; }
-            public ISelectionService SelectionService { get; private set; }
+            public IDesignerHost? DesignerHost { get; private set; }
+            public ISelectionService? SelectionService { get; private set; }
 
             public override void Initialize(IComponent component)
             {
                 base.Initialize(component);
-                DesignerHost = (IDesignerHost)GetService(typeof(IDesignerHost));
-                SelectionService = (ISelectionService)GetService(typeof(ISelectionService));
+                DesignerHost = (IDesignerHost)GetService(typeof(IDesignerHost))!;
+                SelectionService = (ISelectionService)GetService(typeof(ISelectionService))!;
             }
 
-            DesignerActionListCollection actionLists;
+            DesignerActionListCollection? actionLists;
             public override DesignerActionListCollection ActionLists
             {
                 get
@@ -89,6 +89,7 @@ namespace AntdUI
             /// Gets the selection service.
             /// </summary>
             public ISelectionService SelectionService { get; private set; }
+
             #endregion
 
             #region Actions
@@ -127,6 +128,7 @@ namespace AntdUI
                     }
                 }
             }
+
             #endregion
 
             #region Constructor
@@ -134,8 +136,8 @@ namespace AntdUI
             public TabControlActionList(IComponent component) : base(component)
             {
                 Control = (Tabs)component;
-                DesignerHost = (IDesignerHost)GetService(typeof(IDesignerHost));
-                SelectionService = (ISelectionService)GetService(typeof(ISelectionService));
+                DesignerHost = (IDesignerHost)GetService(typeof(IDesignerHost))!;
+                SelectionService = (ISelectionService)GetService(typeof(ISelectionService))!;
             }
 
             #endregion
@@ -148,6 +150,7 @@ namespace AntdUI
                 if (prop == null) throw new ArgumentException("Unknown property.", propName);
                 else return prop;
             }
+
             #endregion
 
             #region Overrides
@@ -162,6 +165,7 @@ namespace AntdUI
                     new DesignerActionMethodItem(this, "RemoveTab", "移除选项卡", "数据" ,"删除当前选项卡")
                 };
             }
+
             #endregion
         }
     }

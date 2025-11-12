@@ -167,7 +167,7 @@ namespace AntdUI
         {
             if (item is ToolStripMenuItem tsmi)
             {
-                resources.ApplyResources(item, item.Name);
+                resources.ApplyResources(item, item.Name!);
                 if (tsmi.DropDownItems.Count > 0)
                 {
                     foreach (ToolStripMenuItem c in tsmi.DropDownItems) Loading(c, resources);

@@ -608,7 +608,9 @@ namespace AntdUI
         public override string Text
         {
             get => this.GetLangIN(LocalizationText, _text);
+#pragma warning disable CS8765
             set => SetText(value);
+#pragma warning restore CS8765
         }
 
         /// <summary>

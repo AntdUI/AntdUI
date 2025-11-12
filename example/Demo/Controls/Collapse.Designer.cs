@@ -114,7 +114,7 @@ namespace Demo.Controls
             collapse1.FontExpand = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
             collapse1.Size = new Size(723, 448);
             collapse1.TabIndex = 0;
-            collapse1.ButtonClickChanged += new AntdUI.CollapseButtonClickEventHandler(collapse1_ButtonClickChanged);
+            collapse1.ButtonClick += new AntdUI.CollapseButtonClickEventHandler(collapse1_ButtonClickChanged);
             // 
             // collapseItem1
             // 

@@ -997,7 +997,9 @@ namespace AntdUI
             bmp_alpha_read?.Dispose();
             bmp_alpha_read = null;
             bmp_dot_12?.Dispose();
+#pragma warning disable CS8625
             bmp_dot_12 = null;
+#pragma warning restore CS8625
             base.Dispose(disposing);
         }
 
