@@ -612,11 +612,11 @@ namespace AntdUI
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio);
-                    int gap = (_gap.HasValue ? (int)(_gap.Value * Config.Dpi) : (int)(size.Height * .8F)), gap2 = gap * 2, sp = (_itemMargin.HasValue ? (int)(_itemMargin.Value * Config.Dpi) : (int)(size.Height * .2F)), sp2 = sp * 2, height = size.Height + gap2;
+                    int gap = (_gap.HasValue ? (int)(_gap.Value * Config.Dpi) : (int)(size.Height * .8F)), gap2 = gap * 2, divider = (int)Config.Dpi, sp = (_itemMargin.HasValue ? (int)(_itemMargin.Value * Config.Dpi) : (int)(size.Height * .2F)), sp2 = sp * 2, height = size.Height + gap2;
                     int inlineIndent = (_inlineIndent.HasValue ? (int)(_inlineIndent.Value * Config.Dpi) : (int)(size.Height * 1.2F)), iconsp = (icongap.HasValue ? (int)(icongap.Value * Config.Dpi) : size.Height / 2);
                     if (mode == TMenuMode.Horizontal)
                     {
-                        ChangeListHorizontal(rect, g, items!, ref x, icon_size, gap, gap2, sp, sp2, iconsp);
+                        ChangeListHorizontal(rect, g, items!, ref x, icon_size, gap, gap2, divider, sp, sp2, iconsp);
                         scroll_show = x > rect.Width;
                         if (scroll_show)
                         {
@@ -632,7 +632,7 @@ namespace AntdUI
                         if (mode == TMenuMode.InlineNoText)
                         {
                             int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : (int)(icon_size * 0.85F);
-                            collapsedWidth = ChangeListInlineNoText(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, iconsp) + Padding.Horizontal;
+                            collapsedWidth = ChangeListInlineNoText(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, iconsp) + Padding.Horizontal;
                         }
                         else
                         {
@@ -649,7 +649,7 @@ namespace AntdUI
                                 int yr = ChangeListY(rect, items!, ref icon_count, height, sp) + Padding.Vertical;
                                 scx = yr > _rect.Height ? ScrollBar.SIZE : 0;
                             }
-                            collapsedWidth = ChangeList(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, 0) + Padding.Horizontal;
+                            collapsedWidth = ChangeList(rect, g, null, items!, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, inlineIndent, iconsp, scx, 0) + Padding.Horizontal;
                         }
                         if (AutoCollapse)
                         {
@@ -670,6 +670,7 @@ namespace AntdUI
             int y = 0;
             foreach (var it in items)
             {
+                if (it is MenuDividerItem) continue;
                 if (it.HasIcon) icon_count++;
                 if (it.Visible)
                 {
@@ -680,7 +681,7 @@ namespace AntdUI
             return y;
         }
 
-        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
+        int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int divider, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
         {
             int collapsedWidth = 0, i = 0;
             foreach (var it in items)
@@ -689,43 +690,51 @@ namespace AntdUI
                 i++;
                 it.PARENT = this;
                 it.PARENTITEM = it.ParentItem = Parent;
-                int uw = it.SetRect(this, depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, out int exr);
-                if (it.Visible)
+                if (it is MenuDividerItem)
                 {
-                    int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2 + scx + exr;
-                    if (size > collapsedWidth) collapsedWidth = size;
-                    y += height + sp;
-                    if (mode == TMenuMode.Inline && it.CanExpand)
+                    it.SetRectDivider(new Rectangle(rect.X, rect.Y + y, rect.Width, divider));
+                    y += divider + sp;
+                }
+                else
+                {
+                    int uw = it.SetRect(this, depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, out int exr);
+                    if (it.Visible)
                     {
-                        if (collapsed)
+                        int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2 + scx + exr;
+                        if (size > collapsedWidth) collapsedWidth = size;
+                        y += height + sp;
+                        if (mode == TMenuMode.Inline && it.CanExpand)
                         {
-                            int oldy = y;
-                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
-                            if (size2 > collapsedWidth) collapsedWidth = size2;
-                            y = oldy;
-                        }
-                        else
-                        {
-                            int y_item = y;
-                            int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
-                            if (size2 > collapsedWidth) collapsedWidth = size2;
-
-                            it.SubY = rect.Y + y_item - sp / 2;
-                            it.SubHeight = y - y_item;
-
-                            if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                            if (collapsed)
                             {
-                                it.ExpandHeight = y - y_item;
-                                y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                                int oldy = y;
+                                int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
+                                if (size2 > collapsedWidth) collapsedWidth = size2;
+                                y = oldy;
                             }
-                            else if (!it.Expand) y = y_item;
+                            else
+                            {
+                                int y_item = y;
+                                int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
+                                if (size2 > collapsedWidth) collapsedWidth = size2;
+
+                                it.SubY = rect.Y + y_item - sp / 2;
+                                it.SubHeight = y - y_item;
+
+                                if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                                {
+                                    it.ExpandHeight = y - y_item;
+                                    y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                                }
+                                else if (!it.Expand) y = y_item;
+                            }
                         }
                     }
                 }
             }
             return collapsedWidth;
         }
-        int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int sp, int sp2, int iconsp)
+        int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int divider, int sp, int sp2, int iconsp)
         {
             int collapsedWidth = 0, i = 0;
             foreach (var it in items)
@@ -734,44 +743,52 @@ namespace AntdUI
                 i++;
                 it.PARENT = this;
                 it.PARENTITEM = it.ParentItem = Parent;
-                int uw = it.SetRectInlineNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
-                if (it.Visible)
+                if (it is MenuDividerItem)
                 {
-                    int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2;
-                    if (size > collapsedWidth) collapsedWidth = size;
-                    y += height + sp;
-                    if (it.CanExpand)
+                    it.SetRectDivider(new Rectangle(rect.X, rect.Y + y, rect.Width, divider));
+                    y += divider + sp;
+                }
+                else
+                {
+                    int uw = it.SetRectInlineNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
+                    if (it.Visible)
                     {
-                        if (collapsed)
+                        int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2;
+                        if (size > collapsedWidth) collapsedWidth = size;
+                        y += height + sp;
+                        if (it.CanExpand)
                         {
-                            int oldy = y;
-                            int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
-                            if (size2 > collapsedWidth) collapsedWidth = size2;
-                            y = oldy;
-                        }
-                        else
-                        {
-                            int y_item = y;
-
-                            int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
-                            if (size2 > collapsedWidth) collapsedWidth = size2;
-
-                            it.SubY = rect.Y + y_item - sp / 2;
-                            it.SubHeight = y - y_item;
-
-                            if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                            if (collapsed)
                             {
-                                it.ExpandHeight = y - y_item;
-                                y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                                int oldy = y;
+                                int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, iconsp);
+                                if (size2 > collapsedWidth) collapsedWidth = size2;
+                                y = oldy;
                             }
-                            else if (!it.Expand) y = y_item;
+                            else
+                            {
+                                int y_item = y;
+
+                                int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, iconsp);
+                                if (size2 > collapsedWidth) collapsedWidth = size2;
+
+                                it.SubY = rect.Y + y_item - sp / 2;
+                                it.SubHeight = y - y_item;
+
+                                if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                                {
+                                    it.ExpandHeight = y - y_item;
+                                    y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                                }
+                                else if (!it.Expand) y = y_item;
+                            }
                         }
                     }
                 }
             }
             return collapsedWidth;
         }
-        void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gap2, int sp, int sp2, int iconsp)
+        void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gap2, int divider, int sp, int sp2, int iconsp)
         {
             int i = 0;
             foreach (var it in items)
@@ -779,23 +796,31 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                int width = g.MeasureText(it.Text, it.Font ?? Font).Width;
-                if (it.HasIcon)
+                if (it is MenuDividerItem)
                 {
-                    int tmp = icon_size + iconsp;
-                    int usew = gap2 + tmp, y = (rect.Height - icon_size) / 2;
-                    int size = width + gap2 + tmp;
-                    var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
-                    it.ico_rect = new Rectangle(_rect.X + gap, _rect.Y + y, icon_size, icon_size);
-                    it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap + tmp, _rect.Y, _rect.Width - usew, _rect.Height));
-                    if (it.Visible) x += size + sp;
+                    it.SetRectDivider(new Rectangle(rect.X + x, rect.Y, divider, rect.Height));
+                    x += divider + sp;
                 }
                 else
                 {
-                    int size = width + gap2;
-                    var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
-                    it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height));
-                    if (it.Visible) x += size + sp;
+                    int width = g.MeasureText(it.Text, it.Font ?? Font).Width;
+                    if (it.HasIcon)
+                    {
+                        int tmp = icon_size + iconsp;
+                        int usew = gap2 + tmp, y = (rect.Height - icon_size) / 2;
+                        int size = width + gap2 + tmp;
+                        var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
+                        it.ico_rect = new Rectangle(_rect.X + gap, _rect.Y + y, icon_size, icon_size);
+                        it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap + tmp, _rect.Y, _rect.Width - usew, _rect.Height));
+                        if (it.Visible) x += size + sp;
+                    }
+                    else
+                    {
+                        int size = width + gap2;
+                        var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
+                        it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height));
+                        if (it.Visible) x += size + sp;
+                    }
                 }
             }
         }
@@ -804,6 +829,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
+                if (it is MenuDividerItem) continue;
                 it.ico_rect = new Rectangle(it.rect.X + (it.rect.Width - it.ico_rect.Width) / 2, it.ico_rect.Y, it.ico_rect.Width, it.ico_rect.Height);
                 if (it.Visible && it.CanExpand) ChangeUTitle(it.Sub);
             }
@@ -841,8 +867,9 @@ namespace AntdUI
             }
             float _radius = radius * Config.Dpi;
             using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get(nameof(Menu), ColorScheme)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(Menu), ColorScheme)))
             {
-                PaintItems(g, e.Rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg);
+                PaintItems(g, e.Rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg, brush_split);
             }
             g.ResetTransform();
             if (scroll_show)
@@ -861,41 +888,49 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
-        void PaintItems(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg)
+        void PaintItems(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush sub_bg, SolidBrush brush_split)
         {
             foreach (var it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
-                    PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                    if (!collapsed && (it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
+                    if (it.Depth == -1) g.Fill(brush_split, it.Rect);
+                    else
                     {
-                        if (ShowSubBack) g.Fill(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
-                        var state = g.Save();
-                        if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
-                        PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                        g.Restore(state);
+                        PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+                        if (!collapsed && (it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
+                        {
+                            if (ShowSubBack) g.Fill(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
+                            var state = g.Save();
+                            if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
+                            PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
+                            g.Restore(state);
+                        }
                     }
                 }
             }
         }
-        void PaintItemExpand(Canvas g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
+        void PaintItemExpand(Canvas g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush brush_split)
         {
             foreach (var it in items)
             {
                 it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
                 if (it.show)
                 {
-                    PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                    if (it.Expand && it.items != null && it.items.Count > 0)
+                    if (it.Depth == -1) g.Fill(brush_split, it.Rect);
+                    else
                     {
-                        PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                        if (it.ExpandThread)
+                        PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
+                        if (it.Expand && it.items != null && it.items.Count > 0)
                         {
-                            using (var brush = new SolidBrush(BackColor))
+                            PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
+                            if (it.ExpandThread)
                             {
-                                g.Fill(brush, new RectangleF(rect.X, it.rect.Bottom + it.ExpandHeight * it.ExpandProg, rect.Width, it.ExpandHeight));
+                                using (var brush = new SolidBrush(BackColor))
+                                {
+                                    g.Fill(brush, new RectangleF(rect.X, it.rect.Bottom + it.ExpandHeight * it.ExpandProg, rect.Width, it.ExpandHeight));
+                                }
                             }
                         }
                     }
@@ -1192,6 +1227,7 @@ namespace AntdUI
         {
             if (item.Visible)
             {
+                if (item is MenuDividerItem) return false;
                 bool can = item.CanExpand;
                 if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
                 {
@@ -1249,6 +1285,7 @@ namespace AntdUI
                     }
                     return true;
                 }
+                if (item is MenuDividerItem) return false;
                 if (can && item.Expand && !collapsed)
                 {
                     foreach (var sub in item.Sub)
@@ -2515,6 +2552,14 @@ namespace AntdUI
             txt_rect = rect_text;
             Show = true;
         }
+
+        internal void SetRectDivider(Rectangle _rect)
+        {
+            Depth = -1;
+            rect = _rect;
+            Show = true;
+        }
+
         internal Rectangle rect { get; set; }
         internal Rectangle arr_rect { get; set; }
 
@@ -3179,5 +3224,10 @@ namespace AntdUI
         }
 
         #endregion
+    }
+
+    public class MenuDividerItem : MenuItem
+    {
+        private new string? Text => null;
     }
 }

@@ -99,6 +99,7 @@ namespace AntdUI
         public T[] ToArray() => list.ToArray();
         public void ForEach(Action<T> action) => list.ForEach(action);
         public bool TrueForAll(Predicate<T> match) => list.TrueForAll(match);
+        public T[] Safe => list.ToArray();
 
         #endregion
 
