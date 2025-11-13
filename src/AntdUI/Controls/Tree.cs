@@ -1032,7 +1032,14 @@ namespace AntdUI
             if (item.show)
             {
                 if (item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode) > 0) hand++;
-                if (item.items != null) foreach (var sub in item.items) IMouseMove(sub, x, y, ref hand);
+                try
+                {
+                    if (item.items != null)
+                    {
+                        foreach (var sub in item.items.Safe) IMouseMove(sub, x, y, ref hand);
+                    }
+                }
+                catch { }
             }
         }
 

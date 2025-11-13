@@ -30,7 +30,7 @@ namespace AntdUI
 
         TAMode ColorScheme;
         bool isdark = false;
-        List<OMenuItem> Items;
+        List<IMenuItem> Items;
         Size DPadding;
         Color? backColor, BackHover, BackActive, foreColor, ForeActive;
         float IconRatio = 0.7F, IconGap = 0.25F;
@@ -119,28 +119,25 @@ namespace AntdUI
                     {
                         if (hoveindex > -1)
                         {
-                            var it = Items[hoveindex];
-                            if (OnClick(it)) return true;
+                            if (Items[hoveindex] is OMenuItem it && OnClick(it)) return true;
                         }
                     }
                     else if (keys == Keys.Up)
                     {
-                        hoveindex--;
-                        if (hoveindex < 0) hoveindex = Items.Count - 1;
-                        foreach (var it in Items) it.Hover = false;
-                        FocusItem(Items[hoveindex]);
+                        int tmp = IMouseWheel(1);
+                        if (tmp == hoveindex) return true;
+                        hoveindex = tmp;
+                        foreach (var item in Items) item.Hover = false;
+                        if (Items[hoveindex] is OMenuItem it) FocusItem(it);
                         return true;
                     }
                     else if (keys == Keys.Down)
                     {
-                        if (hoveindex == -1) hoveindex = 0;
-                        else
-                        {
-                            hoveindex++;
-                            if (hoveindex > Items.Count - 1) hoveindex = 0;
-                        }
-                        foreach (var it in Items) it.Hover = false;
-                        FocusItem(Items[hoveindex]);
+                        int tmp = IMouseWheel(-1);
+                        if (tmp == hoveindex) return true;
+                        hoveindex = tmp;
+                        foreach (var item in Items) item.Hover = false;
+                        if (Items[hoveindex] is OMenuItem it) FocusItem(it);
                         return true;
                     }
                     else if (keys == Keys.Left)
@@ -156,8 +153,7 @@ namespace AntdUI
                     {
                         if (hoveindex > -1)
                         {
-                            var it = Items[hoveindex];
-                            if (it.Sub != null && it.Sub.Count > 0)
+                            if (Items[hoveindex] is OMenuItem it && it.Sub != null && it.Sub.Count > 0)
                             {
                                 subForm?.IClose();
                                 subForm = null;
@@ -170,6 +166,39 @@ namespace AntdUI
                 }
                 return false;
             };
+        }
+
+        int IMouseWheel(int delta)
+        {
+            int count = Items.Count, errcount = 0, newIndex;
+            if (delta > 0)
+            {
+                newIndex = hoveindex <= 0 ? Items.Count - 1 : hoveindex - 1;
+                while (WheelItem(Items[newIndex]))
+                {
+                    errcount++;
+                    if (errcount > count) return -1;
+                    newIndex--;
+                    if (newIndex < 0) newIndex = count - 1;
+                }
+            }
+            else
+            {
+                newIndex = hoveindex >= Items.Count - 1 ? 0 : hoveindex + 1;
+                while (WheelItem(Items[newIndex]))
+                {
+                    errcount++;
+                    if (errcount > count) return -1;
+                    newIndex++;
+                    if (newIndex > count - 1) newIndex = 0;
+                }
+            }
+            return newIndex;
+        }
+        bool WheelItem(object? it)
+        {
+            if (it is DMenuItem) return true;
+            return false;
         }
 
         #endregion
@@ -187,18 +216,29 @@ namespace AntdUI
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
             if (ScrollBar.ShowY) g.TranslateTransform(0, -ScrollBar.ValueY);
-            if (foreColor.HasValue)
+            using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(AntdUI.Menu), ColorScheme)))
             {
-                using (var brush = new SolidBrush(foreColor.Value))
+                if (foreColor.HasValue)
                 {
-                    foreach (var it in Items) DrawItem(g, brush, it);
+                    using (var brush = new SolidBrush(foreColor.Value))
+                    {
+                        foreach (var it in Items)
+                        {
+                            if (it is OMenuItem menu) DrawItem(g, brush, menu);
+                            else g.Fill(brush_split, it.Rect);
+                        }
+                    }
                 }
-            }
-            else
-            {
-                using (var brush = new SolidBrush(Colour.Text.Get(nameof(AntdUI.Menu), ColorScheme)))
+                else
                 {
-                    foreach (var it in Items) DrawItem(g, brush, it);
+                    using (var brush = new SolidBrush(Colour.Text.Get(nameof(AntdUI.Menu), ColorScheme)))
+                    {
+                        foreach (var it in Items)
+                        {
+                            if (it is OMenuItem menu) DrawItem(g, brush, menu);
+                            else g.Fill(brush_split, it.Rect);
+                        }
+                    }
                 }
             }
             g.Restore(state);
@@ -314,8 +354,8 @@ namespace AntdUI
         #region 布局
 
         int tmp_padd = 0;
-        List<OMenuItem> LoadLayout(IList<MenuItem> items, Point point) => Helper.GDI(g => LoadLayout(g, items, point));
-        List<OMenuItem> LoadLayout(Canvas g, IList<MenuItem> items, Point point)
+        List<IMenuItem> LoadLayout(IList<MenuItem> items, Point point) => Helper.GDI(g => LoadLayout(g, items, point));
+        List<IMenuItem> LoadLayout(Canvas g, IList<MenuItem> items, Point point)
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;
 
@@ -329,38 +369,49 @@ namespace AntdUI
 
             int maxw = ItemMaxWidth(g, items, text_height, icon_size, icon_gap), maxwr = maxw + gap_x2;
 
-            int y = 0, sy = 0, count = 0;
-            var lists = new List<OMenuItem>(items.Count);
+            int y = 0, sy = 0, count = 0, divider_count = 0;
+            var lists = new List<IMenuItem>(items.Count);
             foreach (var it in items)
             {
                 if (it.Visible)
                 {
-                    var rect = new Rectangle(padd, padd + y, maxwr, item_height);
-                    int ux = gap_x, uw = gap_x2;
-                    var item = new OMenuItem(it, rect);
-                    if (it.HasIcon)
+                    if (it is MenuDividerItem)
                     {
-                        int tmp = icon_size + icon_gap;
-                        item.RectIcon = new Rectangle(rect.X + ux, rect.Y + icon_xy, icon_size, icon_size);
-                        ux += tmp;
-                        uw += tmp;
+                        divider_count++;
+                        var item = new DMenuItem(new Rectangle(padd, padd2 + y, maxwr, sp));
+                        y += padd2 + sp;
+                        lists.Add(item);
                     }
-                    if (it.CanExpand)
+                    else
                     {
-                        item.RectArrow = new Rectangle(rect.Right - gap_x - icon_size, rect.Y + icon_xy, icon_size, icon_size);
-                        uw += icon_size + icon_gap;
+                        var rect = new Rectangle(padd, padd + y, maxwr, item_height);
+                        int ux = gap_x, uw = gap_x2;
+                        var item = new OMenuItem(it, rect);
+                        if (it.HasIcon)
+                        {
+                            int tmp = icon_size + icon_gap;
+                            item.RectIcon = new Rectangle(rect.X + ux, rect.Y + icon_xy, icon_size, icon_size);
+                            ux += tmp;
+                            uw += tmp;
+                        }
+                        if (it.CanExpand)
+                        {
+                            item.RectArrow = new Rectangle(rect.Right - gap_x - icon_size, rect.Y + icon_xy, icon_size, icon_size);
+                            uw += icon_size + icon_gap;
+                        }
+                        item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
+                        if (it.Select && sy == 0) sy = y;
+                        y += item_height;
+                        lists.Add(item);
+                        count++;
                     }
-                    item.RectText = new Rectangle(rect.X + ux, rect.Y, rect.Width - uw, rect.Height);
-                    if (it.Select && sy == 0) sy = y;
-                    y += item_height;
-                    lists.Add(item);
-                    count++;
                 }
             }
 
             #endregion
 
             int maxh = item_height * count + padd2;
+            if (divider_count > 0) maxh += divider_count * (padd2 + sp);
             int h = maxh, w = maxw + padd2 + gap_x2;
 
             var screen = Screen.FromPoint(point).WorkingArea;
@@ -421,8 +472,7 @@ namespace AntdUI
                 int count = 0, hand = 0, sy = ScrollBar.Value;
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    var it = Items[i];
-                    if (it.Val.Enabled)
+                    if (Items[i] is OMenuItem it && it.Val.Enabled)
                     {
                         if (it.Contains(x, y + sy, out var change))
                         {
@@ -443,8 +493,8 @@ namespace AntdUI
             if (hoveindex > -1)
             {
                 if (PARENT is Menu menu) menu.select_x = select_x;
-                var it = Items[hoveindex];
-                if (it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
+
+                if (Items[hoveindex] is OMenuItem it && it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
             }
         }
         protected override void OnMouseUp(MouseButtons button, int clicks, int x, int y, int delta)
@@ -453,12 +503,9 @@ namespace AntdUI
             {
                 down = false;
                 int sy = ScrollBar.Value;
-                foreach (var it in Items)
+                foreach (var item in Items)
                 {
-                    if (it.Val.Enabled && it.Contains(x, y + sy, out _))
-                    {
-                        if (OnClick(it)) return;
-                    }
+                    if (item is OMenuItem it && it.Val.Enabled && it.Contains(x, y + sy, out _) && OnClick(it)) return;
                 }
             }
             else down = false;
@@ -515,7 +562,7 @@ namespace AntdUI
 
         #region 列模型
 
-        internal class OMenuItem
+        internal class OMenuItem : IMenuItem
         {
             public OMenuItem(MenuItem _val, Rectangle rect)
             {
@@ -535,11 +582,9 @@ namespace AntdUI
 
             public Rectangle RectIcon { get; set; }
 
-            public bool Hover { get; set; }
 
             internal Rectangle RectArrow { get; set; }
 
-            public Rectangle Rect { get; set; }
             internal bool SetHover(bool val)
             {
                 bool change = false;
@@ -571,6 +616,20 @@ namespace AntdUI
             }
 
             public Rectangle RectText { get; set; }
+        }
+        internal class DMenuItem : IMenuItem
+        {
+            public DMenuItem(Rectangle rect)
+            {
+                Rect = rect;
+            }
+        }
+
+        internal class IMenuItem
+        {
+            public bool Hover { get; set; }
+
+            public Rectangle Rect { get; set; }
         }
 
         #endregion

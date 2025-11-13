@@ -284,30 +284,18 @@ namespace AntdUI
                     }
                     else if (keys == Keys.Up)
                     {
-                        hoveindex--;
-                        if (hoveindex < 0) hoveindex = Items.Count - 1;
-                        while (!Items[hoveindex].SID)
-                        {
-                            hoveindex--;
-                            if (hoveindex < 0) hoveindex = Items.Count - 1;
-                        }
+                        int tmp = IMouseWheel(1);
+                        if (tmp == hoveindex) return true;
+                        hoveindex = tmp;
                         foreach (var it in Items) it.Hover = false;
                         FocusItem(Items[hoveindex]);
                         return true;
                     }
                     else if (keys == Keys.Down)
                     {
-                        if (hoveindex == -1) hoveindex = 0;
-                        else
-                        {
-                            hoveindex++;
-                            if (hoveindex > Items.Count - 1) hoveindex = 0;
-                        }
-                        while (!Items[hoveindex].SID)
-                        {
-                            hoveindex++;
-                            if (hoveindex > Items.Count - 1) hoveindex = 0;
-                        }
+                        int tmp = IMouseWheel(-1);
+                        if (tmp == hoveindex) return true;
+                        hoveindex = tmp;
                         foreach (var it in Items) it.Hover = false;
                         FocusItem(Items[hoveindex]);
                         return true;
@@ -341,6 +329,34 @@ namespace AntdUI
                 }
                 return false;
             };
+        }
+
+        int IMouseWheel(int delta)
+        {
+            int count = Items.Count, errcount = 0, newIndex;
+            if (delta > 0)
+            {
+                newIndex = hoveindex <= 0 ? Items.Count - 1 : hoveindex - 1;
+                while (!Items[newIndex].SID)
+                {
+                    errcount++;
+                    if (errcount > count) return -1;
+                    newIndex--;
+                    if (newIndex < 0) newIndex = count - 1;
+                }
+            }
+            else
+            {
+                newIndex = hoveindex >= Items.Count - 1 ? 0 : hoveindex + 1;
+                while (!Items[newIndex].SID)
+                {
+                    errcount++;
+                    if (errcount > count) return -1;
+                    newIndex++;
+                    if (newIndex > count - 1) newIndex = 0;
+                }
+            }
+            return newIndex;
         }
 
         #endregion
