@@ -27,43 +27,190 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    internal class LayeredFormPreview : ILayeredFormOpacity
+    /// <summary>
+    /// ImagePreview 图片预览
+    /// </summary>
+    /// <remarks>常驻图片预览。</remarks>
+    [Description("ImagePreview 图片预览")]
+    [ToolboxItem(true)]
+    [DefaultProperty("SelectIndex")]
+    [DefaultEvent("SelectIndexChanged")]
+    public class ImagePreview : IControl
     {
-        int Radius = 0, Bor = 0;
-        bool HasBor = false;
-        Form form;
+        #region 属性
+
+        #region 数据
+
+        private int selectIndex = 0;
+        /// <summary>
+        /// 选择序号
+        /// </summary>
+        [Description("选择序号"), Category("数据"), DefaultValue(0)]
+        public int SelectIndex
+        {
+            get => selectIndex;
+            set
+            {
+                if (selectIndex == value) return;
+                if (items != null)
+                {
+                    if (items.ListExceed(value))
+                    {
+                        selectIndex = 0;
+                        return;
+                    }
+                    selectIndex = value;
+                    OnSelectIndexChanged(value);
+                    if (IsHandleCreated) LoadImg();
+                }
+                else selectIndex = 0;
+            }
+        }
+
+        ImagePreviewItemCollection? items;
+        /// <summary>
+        /// 图片集合
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("图片集合"), Category("数据")]
+        public ImagePreviewItemCollection Image
+        {
+            get
+            {
+                items ??= new ImagePreviewItemCollection();
+                return items;
+            }
+            set => items = value;
+        }
+
+        /// <summary>
+        /// SelectIndex 属性值更改时发生
+        /// </summary>
+        [Description("SelectIndex 属性值更改时发生"), Category("行为")]
+        public event IntEventHandler? SelectIndexChanged;
+
+        protected virtual void OnSelectIndexChanged(int e) => SelectIndexChanged?.Invoke(this, new IntEventArgs(e));
+
+        /// <summary>
+        /// 总共多少图
+        /// </summary>
+        public int PageSize
+        {
+            get
+            {
+                if (items == null) return 0;
+                return items.Count;
+            }
+        }
+
+        #endregion
+
+        #region 按钮
 
         PreBtns[]? btns;
-        Preview.Config config;
-        public LayeredFormPreview(Preview.Config _config)
+
+        bool showBtn = true;
+        /// <summary>
+        /// 是否显示按钮
+        /// </summary>
+        [Description("是否显示按钮"), Category("外观"), DefaultValue(true)]
+        public bool ShowBtn
         {
-            config = _config;
-            form = _config.Form;
-            Font = form.Font;
-            TopMost = _config.Form.TopMost;
-            HasBor = form.FormFrame(out Radius, out Bor);
-            if (form is Window window)
+            get => showBtn;
+            set
             {
-                SetSize(window.Size);
-                SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
+                if (showBtn == value) return;
+                showBtn = value;
+                if (IsHandleCreated)
+                {
+                    InitBtns();
+                    Invalidate();
+                }
             }
-            else
+        }
+
+        bool showDefaultBtn = true;
+        /// <summary>
+        /// 是否显示默认按钮
+        /// </summary>
+        [Description("是否显示默认按钮"), Category("外观"), DefaultValue(true)]
+        public bool ShowDefaultBtn
+        {
+            get => showDefaultBtn;
+            set
             {
-                SetSize(form.Size);
-                SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
+                if (showDefaultBtn == value) return;
+                showDefaultBtn = value;
+                if (IsHandleCreated)
+                {
+                    InitBtns();
+                    Invalidate();
+                }
             }
-            PageSize = config.ContentCount;
-            SelectIndex = config.SelectIndex;
-            if (config.ShowBtn)
+        }
+
+        ImagePreviewButtonCollection? customButton;
+        /// <summary>
+        /// 自定义按钮
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("自定义按钮"), Category("数据")]
+        public ImagePreviewButtonCollection CustomButton
+        {
+            get
             {
-                if (config.ShowDefaultBtn)
+                customButton ??= new ImagePreviewButtonCollection();
+                return customButton;
+            }
+            set => customButton = value;
+        }
+
+        /// <summary>
+        /// 按钮点击时发生
+        /// </summary>
+        [Description("按钮点击时发生"), Category("行为")]
+        public event ImagePreviewButtonEventHandler? ButtonClick;
+
+        protected virtual void OnButtonClick(ImagePreviewItem item, string id, object? tag) => ButtonClick?.Invoke(this, new ImagePreviewButtonEventArgs(item, id, tag));
+
+        /// <summary>
+        /// 按钮大小
+        /// </summary>
+        [Description("按钮大小"), Category("外观"), DefaultValue(typeof(Size), "42, 46")]
+        public int[] BtnSize { get; set; } = new int[] { 42, 46 };
+
+        /// <summary>
+        /// 按钮图标大小
+        /// </summary>
+        [Description("按钮图标大小"), Category("外观"), DefaultValue(18)]
+        public int BtnIconSize { get; set; } = 18;
+
+        /// <summary>
+        /// 左右按钮大小
+        /// </summary>
+        [Description("左右按钮大小"), Category("外观"), DefaultValue(40)]
+        public int BtnLRSize { get; set; } = 40;
+
+        /// <summary>
+        /// 容器边距
+        /// </summary>
+        [Description("容器边距"), Category("外观"), DefaultValue(24)]
+        public int ContainerPadding { get; set; } = 24;
+
+        /// <summary>
+        /// 按钮边距
+        /// </summary>
+        [Description("按钮边距"), Category("外观"), DefaultValue(typeof(Size), "12, 32")]
+        public int[] BtnPadding { get; set; } = new int[] { 12, 32 };
+
+        void InitBtns()
+        {
+            if (showBtn)
+            {
+                if (showDefaultBtn)
                 {
                     int len = 8;
-                    if (config.Btns != null && config.Btns.Length > 0) len += config.Btns.Length;
+                    if (customButton != null && customButton.Count > 0) len += customButton.Count;
                     var btnwiths = new List<PreBtns>(len)
                     {
                         new PreBtns("@t_flipY",SvgDb.Custom["SwapOutlined"].Insert(28," transform=\"rotate(90),translate(0 -100%)\"")),
@@ -73,73 +220,39 @@ namespace AntdUI
                         new PreBtns("@t_zoomOut","ZoomOutOutlined"),
                         new PreBtns("@t_zoomIn","ZoomInOutlined"),
                     };
-                    if (config.Content is IList<Preview.ImageTextContent>) btnwiths.Add(new PreBtns("@t_copyText", SvgDb.Custom["CopyOutlined"]));//这里是如果存在文字，则添加一个可以复制文本的按钮
-                    if (config.Btns != null && config.Btns.Length > 0)
+                    if (customButton != null && customButton.Count > 0)
                     {
-                        foreach (var it in config.Btns) btnwiths.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
+                        foreach (var it in customButton) btnwiths.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
                     }
                     btns = btnwiths.ToArray();
                 }
-                else if (config.Btns != null && config.Btns.Length > 0)
+                else if (customButton != null && customButton.Count > 0)
                 {
-                    var btnwiths = new List<PreBtns>(config.Btns.Length);
-                    foreach (var it in config.Btns) btnwiths.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
+                    var btnwiths = new List<PreBtns>(customButton.Count);
+                    foreach (var it in customButton) btnwiths.Add(new PreBtns(it.Name, it.IconSvg, it.Tag));
                     btns = btnwiths.ToArray();
                 }
+                else btns = null;
             }
+            else btns = null;
+
+            SizeChange(ClientRectangle);
         }
 
-        public override string name => nameof(Preview);
+        #endregion
 
-        int PageSize = 0;
+        #endregion
 
-        protected override void OnLoad(EventArgs e)
+        protected override void OnHandleCreated(EventArgs e)
         {
-            if (form is Window window)
-            {
-                SetSize(window.Size);
-                SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
-            }
-            else
-            {
-                SetSize(form.Size);
-                SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
-            }
-            form.LocationChanged += Form_LSChanged;
-            form.SizeChanged += Form_LSChanged;
-            LoadImg();
-            base.OnLoad(e);
-            if (OS.Win7OrLower) Select();
-        }
-
-        private void Form_LSChanged(object? sender, EventArgs e)
-        {
-            if (form is Window window)
-            {
-                SetSize(window.Size);
-                SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
-            }
-            else
-            {
-                SetSize(form.Size);
-                SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
-            }
-            Print();
+            base.OnHandleCreated(e);
+            InitBtns();
+            LoadImg(false);
         }
 
         protected override void Dispose(bool disposing)
         {
             PlayGIF = false;
-            form.LocationChanged -= Form_LSChanged;
-            form.SizeChanged -= Form_LSChanged;
             base.Dispose(disposing);
         }
 
@@ -152,14 +265,14 @@ namespace AntdUI
         /// 加载状态
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool Loading
+        internal bool Loading
         {
             get => loading;
             set
             {
                 if (loading == value) return;
                 loading = value;
-                Print();
+                Invalidate();
             }
         }
 
@@ -169,7 +282,7 @@ namespace AntdUI
         /// 加载进度
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public float LoadingProgress
+        internal float LoadingProgress
         {
             get => _value;
             set
@@ -178,7 +291,7 @@ namespace AntdUI
                 if (value < 0) value = 0;
                 else if (value > 1) value = 1;
                 _value = value;
-                if (loading) Print();
+                if (loading) Invalidate();
             }
         }
 
@@ -225,7 +338,7 @@ namespace AntdUI
                                 }
                                 catch { }
                             }
-                            Print();
+                            Invalidate();
                             Thread.Sleep(Math.Max(delays[i], 10));
                         }
                         else
@@ -235,7 +348,7 @@ namespace AntdUI
                         }
                     }
                 }
-            }, () => Print());
+            }, () => Invalidate());
         }
 
         object _lock = new object();
@@ -262,51 +375,37 @@ namespace AntdUI
 
         #endregion
 
-        int SelectIndex = 0;
-        object? SelectValue;
         Size ImgSize = new Size();
-        void LoadImg()
+        void LoadImg(bool r = true)
         {
             autoDpi = true;
-            if (config.Content is IList<Image> images)
+            if (items == null) return;
+            int index = selectIndex;
+            var it = items[index];
+            if (it.Img == null)
             {
-                Img = images[SelectIndex];
-                ImgSize = Img.Size;
-                FillScaleImg();
-            }
-            else if (config.Content is IList<Preview.ImageTextContent> imgTxtList)
-            {
-                Img = imgTxtList[SelectIndex].Image;
-                Tag = imgTxtList[SelectIndex];
-                ImgSize = Img.Size;
-                FillScaleImg();
-            }
-            else if (config.Content is object[] list && list[0] is IList<object> data)
-            {
-                if (list[1] is Func<int, object, Image?> call)
+                if (it.Call != null)
                 {
                     imgtmp?.Dispose();
-                    SelectValue = data[SelectIndex];
-                    Img = call.Invoke(SelectIndex, SelectValue);
+                    Img = it.Call(index, it);
                     if (Img == null)
                     {
-                        Print();
+                        if (r) Invalidate();
                         return;
                     }
                     ImgSize = Img.Size;
                     FillScaleImg();
+                    if (r) Invalidate();
                 }
-                else if (list[1] is Func<int, object, Action<float, string?>, Image?> callprog)
+                else if (it.CallProg != null)
                 {
                     LoadingProgressStr = null;
                     _value = -1F;
                     Loading = true;
-                    int selectIndex = SelectIndex;
-                    SelectValue = data[SelectIndex];
                     DateTime now = DateTime.Now, now2 = DateTime.Now;
                     ITask.Run(() =>
                     {
-                        var img = callprog.Invoke(SelectIndex, SelectValue, (prog, progstr) =>
+                        var img = it.CallProg(index, it, (prog, progstr) =>
                         {
                             LoadingProgressStr = progstr;
                             LoadingProgress = prog;
@@ -335,16 +434,23 @@ namespace AntdUI
                             if ((now2 - now).TotalMilliseconds < 100)
                             {
                                 Thread.Sleep(100);
-                                if (selectIndex == SelectIndex) Print();
+                                if (selectIndex == SelectIndex) Invalidate();
                             }
                         }
                     });
                 }
+                else
+                {
+                    Img = null;
+                    if (r) Invalidate();
+                }
             }
             else
             {
-                Img = null;
-                Print();
+                Img = it.Img;
+                ImgSize = Img.Size;
+                FillScaleImg();
+                if (r) Invalidate();
             }
         }
 
@@ -363,7 +469,7 @@ namespace AntdUI
                 if (value < 0.06) { value = 0.06F; }
                 else if (value > _dpi && _dpi < 1F && value > 1F) value = 1F;
                 _dpi = value;
-                rect_img_dpi = ScaleImg(rect_read, _dpi);
+                rect_img_dpi = ScaleImg(ClientRectangle, _dpi);
             }
         }
 
@@ -410,7 +516,7 @@ namespace AntdUI
         {
             if (autoDpi)
             {
-                var rect = rect_read;
+                var rect = ClientRectangle;
                 float DpiX = (float)((rect.Width * 1.0) / (ImgSize.Width * 1.0)), DpiY = (float)((rect.Height * 1.0) / (ImgSize.Height * 1.0));
                 if (DpiX > 1 && DpiY > 0) Dpi = 1F;
                 else if (ImgSize.Width > ImgSize.Height)
@@ -430,124 +536,51 @@ namespace AntdUI
 
         #endregion
 
-        public override Bitmap? PrintBit()
+        protected override void OnDraw(DrawEventArgs e)
         {
-            var rbmp = new Bitmap(TargetRect.Width, TargetRect.Height);
-            using (var g = Graphics.FromImage(rbmp).High())
+            base.OnDraw(e);
+            var g = e.Canvas;
+            var rect = ClientRectangle;
+            if (imgtmp == null)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
+                if (LoadingProgressStr != null) PaintLoading(g, rect, true);
+            }
+            else
+            {
+                g.Image(imgtmp, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
+                if (loading) PaintLoading(g, rect);
+            }
+            using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
+            {
+                if (PageSize > 1)
                 {
-                    if (Radius > 0)
-                    {
-                        using (var path = rect_read.RoundPath(Radius))
-                        {
-                            g.Fill(brush, path);
-                        }
-                    }
-                    else g.Fill(brush, rect_read);
+                    PaintBtn(g, brush, rect_left, rect_left_icon, "LeftOutlined", hoverLeft, enabledLeft);
+                    PaintBtn(g, brush, rect_right, rect_right_icon, "RightOutlined", hoverRight, enabledRight);
                 }
-
-                if (imgtmp == null)
+                if (btns == null) return;
+                using (var path = rect_panel.RoundPath(rect_panel.Height))
                 {
-                    if (LoadingProgressStr != null) PaintLoading(g, true);
-                }
-                else
-                {
-                    g.Image(imgtmp, rect_img_dpi, new RectangleF(0, 0, ImgSize.Width, ImgSize.Height), GraphicsUnit.Pixel);
-                    if (loading) PaintLoading(g);
-                }
-                using (var brush = new SolidBrush(Color.FromArgb(26, 0, 0, 0)))
-                {
-                    PaintBtn(g, brush, rect_close, rect_close_icon, SvgDb.IcoClose, hoverClose, true);
-                    if (PageSize > 1)
+                    g.Fill(brush, path);
+                    foreach (var it in btns)
                     {
-                        PaintBtn(g, brush, rect_left, rect_left_icon, "LeftOutlined", hoverLeft, enabledLeft);
-                        PaintBtn(g, brush, rect_right, rect_right_icon, "RightOutlined", hoverRight, enabledRight);
-                    }
-                    if (btns != null)
-                    {
-                        using (var path = rect_panel.RoundPath(rect_panel.Height))
+                        using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
                         {
-                            g.Fill(brush, path);
-                        }
-                        foreach (var it in btns)
-                        {
-                            using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
+                            if (bmp != null)
                             {
-                                if (bmp != null)
-                                {
-                                    if (it.enabled) g.Image(bmp, it.rect);
-                                    else g.Image(bmp, it.rect, 0.3F);
-                                }
+                                if (it.enabled) g.Image(bmp, it.rect);
+                                else g.Image(bmp, it.rect, 0.3F);
                             }
                         }
                     }
                 }
-
-                if (Tag is Preview.ImageTextContent content && content.Text != null)
-                {
-                    // 测量文本大小
-                    var size = g.MeasureText(content.Text, content.Font ?? Font);
-                    using (var brush = new SolidBrush(content.ForeColor ?? Colour.Text.Get(nameof(Preview))))
-                    {
-                        Rectangle textRect;
-                        int width = TargetRect.Width, height = size.Height;
-                        if (size.Width > TargetRect.Width)
-                        {
-                            // 重新测量换行后的文本所需区域
-                            size = g.MeasureText(content.Text, content.Font ?? Font, TargetRect.Width);
-
-                            //重新测量后重新赋值矩形高度
-                            height = Math.Min(size.Height, TargetRect.Height);
-                            width = TargetRect.Width;
-                        }
-                        var format = Helper.SetAlignment(content.TextAlign);
-                        switch (content.TextAlign)
-                        {
-                            case ContentAlignment.TopLeft:
-                                textRect = new Rectangle(0, 0, width, height);
-                                break;
-                            case ContentAlignment.TopCenter:
-                                textRect = new Rectangle(0, 0, width, height);
-                                break;
-                            case ContentAlignment.TopRight:
-                                textRect = new Rectangle(0, 0, width, height);
-                                break;
-                            case ContentAlignment.MiddleLeft:
-                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
-                                break;
-                            case ContentAlignment.MiddleCenter:
-                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
-                                break;
-                            case ContentAlignment.MiddleRight:
-                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
-                                break;
-                            case ContentAlignment.BottomLeft:
-                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
-                                break;
-                            case ContentAlignment.BottomCenter:
-                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
-                                break;
-                            case ContentAlignment.BottomRight:
-                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
-                                break;
-                            default:
-                                throw new Exception("什么鬼，你怎么可能进入这个异常");
-                        }
-
-                        g.DrawText(content.Text, content.Font ?? Font, brush, textRect, format);
-                    }
-                }
             }
-
-            return rbmp;
         }
 
-        void PaintLoading(Canvas g, bool error = false)
+        void PaintLoading(Canvas g, Rectangle rect, bool error = false)
         {
             var bor6 = 6F * Config.Dpi;
             int loading_size = (int)(40 * Config.Dpi);
-            var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
+            var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
             Color color, bg;
             if (error)
             {
@@ -628,30 +661,30 @@ namespace AntdUI
 
         #region 坐标
 
-        Rectangle rect_read, rect_left, rect_left_icon, rect_right, rect_right_icon, rect_close, rect_close_icon, rect_panel;
+        Rectangle rect_left, rect_left_icon, rect_right, rect_right_icon, rect_panel;
         protected override void OnSizeChanged(EventArgs e)
         {
+            SizeChange(ClientRectangle);
             base.OnSizeChanged(e);
-            if (config == null) return;
-            var rect_target = TargetRectXY;
-            rect_read = HasBor ? new Rectangle(Bor, 0, rect_target.Width - Bor * 2, rect_target.Height - Bor) : rect_target;
-            int btn_height = (int)(config.BtnSize[1] * Config.Dpi), lr_size = (int)(config.BtnLRSize * Config.Dpi), btn_width = (int)(config.BtnSize[0] * Config.Dpi),
-                padding = (int)(config.ContainerPadding * Config.Dpi), padding_lr = (int)(config.BtnPadding[0] * Config.Dpi), padding_buttom = (int)(config.BtnPadding[1] * Config.Dpi),
-                icon_size = (int)(config.BtnIconSize * Config.Dpi);
-            rect_close = new Rectangle(rect_read.Right - padding_buttom - btn_width, rect_read.Y + padding_buttom, btn_width, btn_width);
-            rect_close_icon = GetCentered(rect_close, icon_size);
+        }
+
+        void SizeChange(Rectangle rect)
+        {
+            int btn_height = (int)(BtnSize[1] * Config.Dpi), lr_size = (int)(BtnLRSize * Config.Dpi), btn_width = (int)(BtnSize[0] * Config.Dpi),
+                padding = (int)(ContainerPadding * Config.Dpi), padding_lr = (int)(BtnPadding[0] * Config.Dpi), padding_buttom = (int)(BtnPadding[1] * Config.Dpi),
+                icon_size = (int)(BtnIconSize * Config.Dpi);
 
             if (PageSize > 1)
             {
-                rect_left = new Rectangle(rect_read.X + padding_lr, rect_read.Y + (rect_read.Height - lr_size) / 2, lr_size, lr_size);
+                rect_left = new Rectangle(rect.X + padding_lr, rect.Y + (rect.Height - lr_size) / 2, lr_size, lr_size);
                 rect_left_icon = GetCentered(rect_left, icon_size);
 
-                rect_right = new Rectangle(rect_read.Right - padding_lr - lr_size, rect_read.Y + (rect_read.Height - lr_size) / 2, lr_size, lr_size);
+                rect_right = new Rectangle(rect.Right - padding_lr - lr_size, rect.Y + (rect.Height - lr_size) / 2, lr_size, lr_size);
                 rect_right_icon = GetCentered(rect_right, icon_size);
             }
 
             if (btns == null) return;
-            int w = (btn_width * btns.Length - 1) + padding * 2, x = rect_read.X + (rect_read.Width - w) / 2, y = rect_read.Bottom - padding_buttom - btn_height;
+            int w = (btn_width * btns.Length - 1) + padding * 2, x = rect.X + (rect.Width - w) / 2, y = rect.Bottom - padding_buttom - btn_height;
             rect_panel = new Rectangle(x, y, w, btn_height);
             x += padding;
             foreach (var it in btns)
@@ -672,7 +705,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        bool hoverClose = false, hoverLeft = false, hoverRight = false;
+        bool hoverLeft = false, hoverRight = false;
         bool enabledLeft => SelectIndex > 0;
         bool enabledRight => SelectIndex < PageSize - 1;
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -690,7 +723,7 @@ namespace AntdUI
                     Dpi -= 0.1F;
                     SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
                 }
-                Print();
+                Invalidate();
             }
             base.OnMouseWheel(e);
         }
@@ -715,28 +748,12 @@ namespace AntdUI
                     offsetX = offsetXOld + e.X - movePos.X;
                     offsetY = offsetYOld + e.Y - movePos.Y;
                     Dpi = _dpi;
-                    Print();
+                    Invalidate();
                     return;
                 }
             }
+            if (btns == null) return;
             int count = 0, hand = 0;
-            if (rect_close.Contains(e.X, e.Y))
-            {
-                hand++;
-                if (!hoverClose)
-                {
-                    hoverClose = true;
-                    count++;
-                }
-            }
-            else
-            {
-                if (hoverClose)
-                {
-                    hoverClose = false;
-                    count++;
-                }
-            }
             if (PageSize > 1)
             {
                 if (enabledLeft && rect_left.Contains(e.X, e.Y))
@@ -774,31 +791,28 @@ namespace AntdUI
                     }
                 }
             }
-            if (btns != null)
+            foreach (var it in btns)
             {
-                foreach (var it in btns)
+                if (it.enabled && it.Rect.Contains(e.X, e.Y))
                 {
-                    if (it.enabled && it.Rect.Contains(e.X, e.Y))
+                    hand++;
+                    if (!it.hover)
                     {
-                        hand++;
-                        if (!it.hover)
-                        {
-                            it.hover = true;
-                            count++;
-                        }
+                        it.hover = true;
+                        count++;
                     }
-                    else
+                }
+                else
+                {
+                    if (it.hover)
                     {
-                        if (it.hover)
-                        {
-                            it.hover = false;
-                            count++;
-                        }
+                        it.hover = false;
+                        count++;
                     }
                 }
             }
             SetCursor(hand > 0);
-            if (count > 0) Print();
+            if (count > 0) Invalidate();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -861,14 +875,14 @@ namespace AntdUI
                                     if (Img != null)
                                     {
                                         Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                                        Print();
+                                        Invalidate();
                                     }
                                     break;
                                 case "@t_flipX":
                                     if (Img != null)
                                     {
                                         Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                        Print();
+                                        Invalidate();
                                     }
                                     break;
                                 case "@t_rotateL":
@@ -882,7 +896,7 @@ namespace AntdUI
                                         FillScaleImg();
                                         Dpi = old;
                                         autoDpi = oldautoDpi;
-                                        Print();
+                                        Invalidate();
                                     }
                                     break;
                                 case "@t_rotateR":
@@ -896,33 +910,22 @@ namespace AntdUI
                                         FillScaleImg();
                                         Dpi = old;
                                         autoDpi = oldautoDpi;
-                                        Print();
+                                        Invalidate();
                                     }
                                     break;
                                 case "@t_zoomOut":
                                     Dpi -= 0.1F;
                                     SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
-                                    Print();
+                                    Invalidate();
                                     break;
                                 case "@t_zoomIn":
                                     Dpi += 0.1F;
                                     SetBtnEnabled("@t_zoomOut", true);
-                                    Print();
-                                    break;
-                                case "@t_copyText":
-                                    if (Tag is Preview.ImageTextContent content && content.Text != null && content.Text.Length > 0)
-                                    {
-                                        if (Helper.ClipboardSetText(this, content.Text))
-                                        {
-                                            Message.open(new Message.Config(this, "复制成功", TType.Success, Font)
-                                            {
-                                                ShowInWindow = true
-                                            });
-                                        }
-                                    }
+                                    Invalidate();
                                     break;
                                 default:
-                                    config.OnBtns?.Invoke(it.id, new Preview.BtnEvent(SelectIndex, SelectValue, it.tag));
+                                    if (items == null) return;
+                                    OnButtonClick(items[selectIndex], it.id, it.tag);
                                     break;
                             }
                         }
@@ -931,47 +934,152 @@ namespace AntdUI
                     }
                 }
             }
-            if (rect_close.Contains(e.X, e.Y))
-            {
-                PlayGIF = false;
-                IClose(); return;
-            }
             if (PageSize > 1)
             {
                 if (enabledLeft && rect_left.Contains(e.X, e.Y))
                 {
-                    int newIndex = SelectIndex - 1;
-                    if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
-                    else
-                    {
-                        if (config.OnSelectIndexChanged(newIndex)) SelectIndex = newIndex;
-                        else return;
-                    }
-                    LoadImg();
-                    Print();
+                    SelectIndex = selectIndex - 1;
                     return;
                 }
                 if (enabledRight && rect_right.Contains(e.X, e.Y))
                 {
-                    int newIndex = SelectIndex + 1;
-                    if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
-                    else
-                    {
-                        if (config.OnSelectIndexChanged(newIndex)) SelectIndex = newIndex;
-                        else return;
-                    }
-                    LoadImg();
-                    Print();
+                    SelectIndex = selectIndex + 1;
                     return;
                 }
             }
-            if (!rect_img_dpi.Contains(e.X, e.Y)) IClose();
             base.OnMouseUp(e);
         }
 
         bool moveImg = false, moveImging = false;
         Point movePos;
         float offsetXOld = 0, offsetYOld = 0;
+
+        #endregion
+    }
+
+    public class ImagePreviewItemCollection : iCollection<ImagePreviewItem>
+    {
+    }
+
+    public class ImagePreviewItem
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
+        /// <summary>
+        /// 图片
+        /// </summary>
+        [Description("图片"), Category("外观"), DefaultValue(null)]
+        public Image? Img { get; set; }
+
+        public Func<int, ImagePreviewItem, Image?>? Call { get; set; }
+        public Func<int, ImagePreviewItem, Action<float, string?>, Image?>? CallProg { get; set; }
+
+        /// <summary>
+        /// 用户定义数据
+        /// </summary>
+        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        public object? Tag { get; set; }
+
+        #region 设置
+
+        public ImagePreviewItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public ImagePreviewItem SetImage(Image? value)
+        {
+            Img = value;
+            return this;
+        }
+
+        public ImagePreviewItem SetImage(Func<int, object, Image?>? value)
+        {
+            Call = value;
+            return this;
+        }
+
+        public ImagePreviewItem SetImage(Func<int, object, Action<float, string?>, Image?>? value)
+        {
+            CallProg = value;
+            return this;
+        }
+
+        public ImagePreviewItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
+    }
+
+
+    public class ImagePreviewButtonCollection : iCollection<ImagePreviewButton>
+    {
+    }
+
+    /// <summary>
+    /// 按钮
+    /// </summary>
+    public class ImagePreviewButton
+    {
+        /// <summary>
+        /// 自定义按钮
+        /// </summary>
+        public ImagePreviewButton() { }
+
+        /// <summary>
+        /// 自定义按钮
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        /// <param name="svg">图标SVG</param>
+        public ImagePreviewButton(string name, string svg)
+        {
+            Name = name;
+            IconSvg = svg;
+        }
+
+        /// <summary>
+        /// 按钮名称
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        public string IconSvg { get; set; }
+
+        /// <summary>
+        /// 用户定义数据
+        /// </summary>
+        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        public object? Tag { get; set; }
+
+        #region 设置
+
+        public ImagePreviewButton SetName(string value)
+        {
+            Name = value;
+            return this;
+        }
+
+        public ImagePreviewButton SetIcon(string value)
+        {
+            IconSvg = value;
+            return this;
+        }
+
+        public ImagePreviewButton SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
 
         #endregion
     }

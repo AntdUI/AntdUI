@@ -141,7 +141,42 @@ namespace AntdUI
             /// </summary>
             public Func<int, bool>? OnSelectIndexChanged { get; set; }
 
-            #region 自定义按钮
+            #region 按钮
+
+            /// <summary>
+            /// 是否显示按钮
+            /// </summary>
+            public bool ShowBtn { get; set; } = true;
+
+            /// <summary>
+            /// 是否显示默认按钮
+            /// </summary>
+            public bool ShowDefaultBtn { get; set; } = true;
+
+            /// <summary>
+            /// 按钮大小
+            /// </summary>
+            public int[] BtnSize { get; set; } = new int[] { 42, 46 };
+
+            /// <summary>
+            /// 按钮图标大小
+            /// </summary>
+            public int BtnIconSize { get; set; } = 18;
+
+            /// <summary>
+            /// 左右按钮大小
+            /// </summary>
+            public int BtnLRSize { get; set; } = 40;
+
+            /// <summary>
+            /// 容器边距
+            /// </summary>
+            public int ContainerPadding { get; set; } = 24;
+
+            /// <summary>
+            /// 按钮边距
+            /// </summary>
+            public int[] BtnPadding { get; set; } = new int[] { 12, 32 };
 
             /// <summary>
             /// 自定义按钮
@@ -152,6 +187,92 @@ namespace AntdUI
             /// 自定义按钮回调
             /// </summary>
             public Action<string, BtnEvent>? OnBtns { get; set; }
+
+            #endregion
+
+            #region 设置
+
+            public Config SetSelectIndex(int value)
+            {
+                SelectIndex = value;
+                return this;
+            }
+            public Config SetTag(object? value)
+            {
+                Tag = value;
+                return this;
+            }
+            public Config SetSelectIndexChanged(Func<int, bool>? value)
+            {
+                OnSelectIndexChanged = value;
+                return this;
+            }
+
+            #region 按钮
+
+            public Config SetShowBtn(bool value = false)
+            {
+                ShowBtn = value;
+                return this;
+            }
+            public Config SetShowDefaultBtn(bool value = false)
+            {
+                ShowDefaultBtn = value;
+                return this;
+            }
+            public Config SetBtnSize(int w, int h)
+            {
+                BtnSize = new int[] { w, h };
+                return this;
+            }
+            public Config SetBtnSize(int value)
+            {
+                BtnSize = new int[] { value, value };
+                return this;
+            }
+            public Config SetBtnIconSize(int value)
+            {
+                BtnIconSize = value;
+                return this;
+            }
+            public Config SetBtnLRSize(int value)
+            {
+                BtnLRSize = value;
+                return this;
+            }
+            public Config SetContainerPadding(int value)
+            {
+                ContainerPadding = value;
+                return this;
+            }
+            public Config SetBtnPadding(int w, int h)
+            {
+                BtnPadding = new int[] { w, h };
+                return this;
+            }
+            public Config SetBtnPadding(int value)
+            {
+                BtnPadding = new int[] { value, value };
+                return this;
+            }
+            public Config SetBtns(params Btn[] value)
+            {
+                Btns = value;
+                return this;
+            }
+            public Config SetBtns(List<Btn>? value)
+            {
+                Btns = value?.ToArray();
+                return this;
+            }
+
+            public Config SetOnBtns(Action<string, BtnEvent>? value)
+            {
+                OnBtns = value;
+                return this;
+            }
+
+            #endregion
 
             #endregion
         }
