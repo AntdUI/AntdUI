@@ -119,7 +119,6 @@ namespace AntdUI
         [Description("拖拽排序"), Category("行为"), DefaultValue(false)]
         public bool DragSort { get; set; }
 
-
         Color? fore;
         /// <summary>
         /// 文字颜色
@@ -631,57 +630,59 @@ namespace AntdUI
 
         protected override void PaintContent(Canvas g, Rectangle rect, int left, int rigth)
         {
-            if (items == null) return;
             var state = g.Save();
             var rect_real = new Rectangle(rect.X + left, rect.Y, rect.Width - rigth - left, rect.Height);
             // 设置新的剪裁区域
             g.SetClip(rect_real);
             g.TranslateTransform(left, 0);
             int _radius = (int)(radius * Config.Dpi), radiusContent = (int)(RadiusContent * Config.Dpi), border = (int)(borderWidth * Config.Dpi);
-            TagTabItem? tabselect = null;
             var color = Colour.Text.Get(nameof(TabHeader), ColorScheme);
-            for (int i = 0; i < items.Count; i++)
+            if (items != null && items.Count > 0)
             {
-                var it = items[i];
-                if (it.Visible)
+                TagTabItem? tabselect = null;
+                for (int i = 0; i < items.Count; i++)
                 {
-                    if (i == _select)
+                    var it = items[i];
+                    if (it.Visible)
                     {
-                        tabselect = items[i];
-                        continue;
-                    }
-                    DrawTab(g, items[i], color, i, _radius, radiusContent, border);
-                }
-            }
-            if (dragHeader != null && dragHeader.im > -1)
-            {
-                g.Restore(state);
-                state = g.Save();
-                var it = items[dragHeader.im];
-                using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(TabHeader), ColorScheme)))
-                {
-                    int sp = (int)(2 * Config.Dpi);
-                    if (dragHeader.last) g.Fill(brush_split, new Rectangle(left + it.Rect.Right - sp, it.Rect.Y, sp * 2, it.Rect.Height));
-                    else g.Fill(brush_split, new Rectangle(left + it.Rect.X - sp, it.Rect.Y, sp * 2, it.Rect.Height));
-                }
-                g.SetClip(rect_real);
-                g.TranslateTransform(left, 0);
-            }
-            if (tabselect != null)
-            {
-                using (var path = tabselect.Rect.RoundPath(radius, true, true, false, false))
-                {
-                    g.Fill(BackActive ?? Colour.BgBase.Get(nameof(TabHeader), ColorScheme), path);
-                    if (border > 0)
-                    {
-                        using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(nameof(TabHeader), ColorScheme), border))
+                        if (i == _select)
                         {
-                            g.Draw(pen, path);
+                            tabselect = items[i];
+                            continue;
+                        }
+                        DrawTab(g, items[i], color, i, _radius, radiusContent, border);
+                    }
+                }
+                if (dragHeader != null && dragHeader.im > -1)
+                {
+                    g.Restore(state);
+                    state = g.Save();
+                    var it = items[dragHeader.im];
+                    using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(TabHeader), ColorScheme)))
+                    {
+                        int sp = (int)(2 * Config.Dpi);
+                        if (dragHeader.last) g.Fill(brush_split, new Rectangle(left + it.Rect.Right - sp, it.Rect.Y, sp * 2, it.Rect.Height));
+                        else g.Fill(brush_split, new Rectangle(left + it.Rect.X - sp, it.Rect.Y, sp * 2, it.Rect.Height));
+                    }
+                    g.SetClip(rect_real);
+                    g.TranslateTransform(left, 0);
+                }
+                if (tabselect != null)
+                {
+                    using (var path = tabselect.Rect.RoundPath(radius, true, true, false, false))
+                    {
+                        g.Fill(BackActive ?? Colour.BgBase.Get(nameof(TabHeader), ColorScheme), path);
+                        if (border > 0)
+                        {
+                            using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(nameof(TabHeader), ColorScheme), border))
+                            {
+                                g.Draw(pen, path);
+                            }
                         }
                     }
+                    DrawText(g, tabselect, ForeActive ?? fore ?? color);
+                    DrawCloseButton(g, tabselect, color, radiusContent);
                 }
-                DrawText(g, tabselect, ForeActive ?? fore ?? color);
-                DrawCloseButton(g, tabselect, color, radiusContent);
             }
             if (showAdd)
             {
@@ -796,57 +797,9 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (items == null) return;
             int count = 0, hand = 0;
             int x = e.X - _hasl, y = e.Y;
-            if (dragHeader != null)
-            {
-                SetCursor(CursorType.SizeAll);
-                dragHeader.hand = true;
-                dragHeader.xr = x - dragHeader.x;
-                int xr = dragHeader.x + dragHeader.xr;
-                dragHeader.last = x > dragHeader.x;
 
-                var cel_sel = HitTestCore(x, y, out int i);
-                if (cel_sel != null)
-                {
-                    if (i == dragHeader.i) dragHeader.im = -1;
-                    else dragHeader.im = i;
-                }
-                else
-                {
-                    var last = items.Count - 1;
-                    if (last == dragHeader.i) dragHeader.im = -1;
-                    else dragHeader.im = last;
-                }
-                Invalidate();
-                return;
-            }
-            foreach (var it in items)
-            {
-                if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
-                {
-                    bool hoveClose = it.ShowClose && it.RectClose.Contains(x, y);
-                    if (hoveClose) hand++;
-                    if (it.Hover == true && it.HoverClose == hoveClose) continue;
-                    it.Hover = true;
-                    it.HoverClose = hoveClose;
-                    count++;
-                }
-                else
-                {
-                    if (it.Hover)
-                    {
-                        count++;
-                        it.Hover = false;
-                    }
-                    if (it.HoverClose)
-                    {
-                        count++;
-                        it.HoverClose = false;
-                    }
-                }
-            }
             if (showAdd && RectAdd.Contains(x, y))
             {
                 hand++;
@@ -860,6 +813,58 @@ namespace AntdUI
             {
                 HoverAdd = false;
                 count++;
+            }
+
+            if (items != null)
+            {
+                if (dragHeader != null)
+                {
+                    SetCursor(CursorType.SizeAll);
+                    dragHeader.hand = true;
+                    dragHeader.xr = x - dragHeader.x;
+                    int xr = dragHeader.x + dragHeader.xr;
+                    dragHeader.last = x > dragHeader.x;
+
+                    var cel_sel = HitTestCore(x, y, out int i);
+                    if (cel_sel != null)
+                    {
+                        if (i == dragHeader.i) dragHeader.im = -1;
+                        else dragHeader.im = i;
+                    }
+                    else
+                    {
+                        var last = items.Count - 1;
+                        if (last == dragHeader.i) dragHeader.im = -1;
+                        else dragHeader.im = last;
+                    }
+                    Invalidate();
+                    return;
+                }
+                foreach (var it in items)
+                {
+                    if (it.Visible && it.Enabled && it.Rect.Contains(x, y))
+                    {
+                        bool hoveClose = it.ShowClose && it.RectClose.Contains(x, y);
+                        if (hoveClose) hand++;
+                        if (it.Hover == true && it.HoverClose == hoveClose) continue;
+                        it.Hover = true;
+                        it.HoverClose = hoveClose;
+                        count++;
+                    }
+                    else
+                    {
+                        if (it.Hover)
+                        {
+                            count++;
+                            it.Hover = false;
+                        }
+                        if (it.HoverClose)
+                        {
+                            count++;
+                            it.HoverClose = false;
+                        }
+                    }
+                }
             }
             SetCursor(hand > 0);
             if (count > 0) Invalidate();
