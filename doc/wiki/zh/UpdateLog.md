@@ -1,5 +1,43 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.0` 2025-11-14
+
+> 🎉 NET 10.0
+
+- ➕ Table 复选支持int 0,1
+- ➕ Table 焦点自动跳转增加 自动选中行、自动滚动到新行
+- ➕ Table BorderRenderMode 三种模式
+- ➕ Table CellSwitch
+- ➕ Table 丰富 EditSelection
+- ➕ DatePicker/Select/TimePicker ExpandDropChanged
+- ➕ Preview 补全更多定义属性
+- ➕ ImagePreview 图片预览控件
+- ➕ Menu MenuDividerItem 分割线
+- ➕ Menu ScrollBarBlock 内嵌模式下滚动条重叠
+- ➕ Input SelectLast
+- ➕ Segmented Reverse
+- ➕ ContextMenuStrip ParentItem
+- ➕ Button UseMnemonic
+- ➕ Button AutoToggle
+- ✍️ ContextMenuStrip 调整屏幕边缘碰撞 子菜单在左侧弹出
+- ✍️ Message 换行后图标大小异常
+- ✍️ TabHeader 空数据不显示添加按钮
+- ✍️ Tree 抑制异常
+- ✍️ Label 阴影顺序
+- ✍️ Select 下拉多屏错位
+- ✍️ Select 鼠标滚轮 DividerSelectItem 选中
+- ✍️ Select Placement TR 位置异常
+- ✍️ Popover 箭头位置显示有误
+- ✍️ DatePickerRange 键盘回车刷新下拉
+- ✍️ DatePickerRange TextAlign 选中不到开始时间最后
+- ✍️ Input 补全左右键
+- ✍️ Menu USelect 修复UI刷新
+- ✍️ Table 焦点跳转 调整 Tree 模式下 Table[RowIndex][ColumnIndex] 获取的值不正确情况
+- ✍️ Table 换行居中问题
+- ✍️ Input 键盘回车
+- ✍️ Mask 隐藏后依旧显示
+- ✍️ 覆盖新渲染
+
 ### `2.1.13` 2025-10-24
 
 - ➕ Select 下拉 最大高度滚动条
@@ -102,7 +140,7 @@
 
 ### `2.1.5` 2025-09-17
 
-- ➕ Config UseHook  `用于 Addins 开发`
+- ➕ Config UseHook `用于 Addins 开发`
 - ➕ Transfer 穿梭框
 - ➕ Table BorderHigh
 - ➕ Table 键盘全选交互
@@ -539,7 +577,7 @@
 - ✍️ Table 浮动列背景
 - ✍️ Table DataTable 编辑模式设置值
 - ✍️ Table 插槽列排序
-- ✍️ InputNumber 修复 TextAlign.Right
+- ✍️ InputNumber - ✍️ TextAlign.Right
 - ✍️ Avatar PlayGIF 设置无效
 
 ### `1.9.12` 2025-04-27
@@ -824,7 +862,7 @@
 - ➕ Tree 获取区域方法
 - ➕ Segmented 徽标
 - ➕ Table CustomSort
-- ➕ GridPanel  Span 扩展行高设置
+- ➕ GridPanel Span 扩展行高设置
 - ✍️ Menu/PageHeader 主题
 - ✍️ FloatButton 补全徽标能力
 - ✍️ Button Loading 键盘交互
@@ -1597,7 +1635,7 @@
 ### `1.2.4` 2024-05-20
 - ➕ Table 表头排序，简化键盘，优化 Tip 交互
 - ➕ Avatar 支持SVG
-- ✍️ Table 修复 编辑模式不消失
+- ✍️ Table - ✍️ 编辑模式不消失
 - ✍️ SelectMultiple 补全 全选项，清空项目 方法，新增超出计数
 - ✍️ BorderlessForm 交互修复
 
@@ -1624,7 +1662,7 @@
 - ➕ Table EnableHeaderResizing 手动调整列头宽度
 - ➕ Panel 阴影方向
 - ➕ Carousel 滚动交互
-- ✍️ Input 修复 回车输入
+- ✍️ Input - ✍️ 回车输入
 - ✍️ 按钮非空文本
 - ✍️ Menu 无箭头
 - ✍️ Steps 横向宽度分配不均
