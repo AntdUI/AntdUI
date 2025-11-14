@@ -725,7 +725,7 @@ namespace AntdUI
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)
             {
-                int icon_size = (int)(size.Height * .86F);
+                int icon_size = (int)(g.MeasureText(Config.NullText, Font).Height * .86F);
                 rect_icon = new Rectangle(shadow + paddingx, shadow + (height - icon_size) / 2, icon_size, icon_size);
                 rect_txt = new Rectangle(rect_icon.Right + sp, shadow, size.Width, height);
 
@@ -741,7 +741,7 @@ namespace AntdUI
             }
             else
             {
-                int icon_size = (int)(size.Height * .86F);
+                int icon_size = (int)(g.MeasureText(Config.NullText, Font).Height * .86F);
                 rect_icon = new Rectangle(shadow + paddingx, shadow + (height - icon_size) / 2, icon_size, icon_size);
                 rect_txt = new Rectangle(rect_icon.Right + sp, shadow, size.Width, height);
                 return new Size(size.Width + icon_size + sp + paddingx * 2 + shadow2, height + shadow2);
