@@ -32,7 +32,7 @@ namespace AntdUI
     /// <remarks>旋转木马，一组轮播的区域。</remarks>
     [Description("Carousel 走马灯")]
     [ToolboxItem(true)]
-    [DefaultProperty("Image")]
+    [DefaultProperty("SelectIndex")]
     [DefaultEvent("SelectIndexChanged")]
     [Designer(typeof(IControlDesigner))]
     public class Carousel : IControl
