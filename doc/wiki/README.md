@@ -1,107 +1,27 @@
 # AntdUI
 
-### 🦄 介绍
+### 🦄 介绍 Introduce
 
-基于 Ant Design 设计语言的 WinForm UI 界面库，致力于将现代美观的前端设计风格带入到桌面应用程序中。采用纯GDI绘图，不需任何图片资源，全面支持AOT，最低兼容 `.NET Framework 4.0`
+基于 Ant Design 设计语言的 WinForm UI 界面库，通过将 Ant Design 的现代设计理念与 WinForm 的开发场景深度融合，让桌面应用具备与 Web 应用同级别的视觉品质与用户体验，填补传统 WinForm 应用界面风格陈旧、交互体验单一的空白。
 
-### ✨ 特性
+Ant Design for WinForms, which deeply integrates Ant Design's modern design concepts with WinForm development scenarios. This enables desktop applications to achieve visual quality and user experience on par with web applications, filling the gap left by the outdated interface style and singular interaction experience of traditional WinForm applications.
 
-- 🌈 高质量抗锯齿文字渲染
-- 🎨 纯 GDI 矢量绘图，能打断的舒适动效
-- 😍 Emoji 打破黑白界限，增加趣味
-- 💎 Winform 上最阴影的阴影效果
-- 📦 无边框窗口，拥有原生窗口特性
-- 👚 主题配置​，黑白模式
-- 🌍 全球化支持
-- 🦜 SVG 矢量图
-- 👓 DPI 适配
-- 🦺 AOT 发布
+### ✨ 特性 Features
 
-### 🖥 环境
+- 🌈 高质量抗锯齿文字渲染	|	High quality anti aliasing text rendering
+- 🎨 纯 GDI 矢量绘图，能打断的舒适动效	|	Pure GDI vector graphics, comfortable dynamic effects that can be interrupted
+- 😍 Emoji 打破黑白界限，增加趣味	|	Emoji breaks the black and white boundaries and adds fun
+- 💎 Winform 上最阴影的阴影效果	|	Superior shadow effects on Winforms
+- 📦 无边框窗口，拥有原生窗口特性	|	Borderless window with native window features
+- 👚 主题配置​，黑白模式	|	Theme configuration, black and white mode
+- 🌍 全球化支持	|	Internationale
+- 🦜 SVG 矢量图	|	SVG vector graphics
+- 👓 DPI 适配	|	DPI adaptation
+- 🦺 AOT 发布	|	AOT Release
 
-- .NET 9.0
-- .NET 6.0
+### 🖥 环境 Requirements
+
+- .NET 10.0
+- .NET 8.0
 - .NET Framework4.8
 - .NET Framework4.0及以上
-
-### 🌴 控件
-
-⬇️| 通用 `2` | 动画 | 禁用 |
-:---:|:--|:--:|:--:|
-➡️| [**Button** 按钮](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Button.md) | ✅ | ✅ |
-➡️| [**FloatButton** 悬浮按钮](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/FloatButton.md) | ✅ | ❎ |
-||||
-⬇️| 布局 `5` | 动画 | 禁用 |
-➡️| [**Divider** 分割线](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Divider.md) | ❎ | ❎ |
-➡️| [**StackPanel** 堆栈布局](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/StackPanel.md) | ❎ | ❎ |
-➡️| [**FlowPanel** 流动布局](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/FlowPanel.md) | ❎ | ❎ |
-➡️| [**GridPanel** 格栅布局](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/GridPanel.md) | ❎ | ❎ |
-➡️| [**Splitter** 分隔面板](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Splitter.md) | ❎ | ❎ |
-||||
-⬇️| 导航 `7` | 动画 | 禁用 |
-➡️| [**Breadcrumb** 面包屑](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Breadcrumb.md) | ✅ | ❎ |
-➡️| [**Dropdown** 下拉菜单](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Dropdown.md) | ✅ | ✅ |
-➡️| [**Menu** 导航菜单](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Menu.md) | ✅ | ❎ |
-➡️| [**PageHeader** 页头](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/PageHeader.md) | ✅ | ❎ |
-➡️| [**TabHeader** 多标签页头](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/TabHeader.md) | ✅ | ❎ |
-➡️| [**Pagination** 分页](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Pagination.md) | ✅ | ✅ |
-➡️| [**Steps** 步骤条](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Steps.md) | ❎ | ❎ |
-||||
-⬇️| 数据录入 `15` | 动画 | 禁用 |
-➡️| [**Checkbox** 多选框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Checkbox.md) | ✅ | ✅ |
-➡️| [**ColorPicker** 颜色选择器](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/ColorPicker.md) | ✅ | ✅ |
-➡️| [**DatePicker** 日期选择框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange** 日期范围选择框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/DatePicker#DatePickerRange.md) | ✅ | ✅ |
-➡️| [**Input** 输入框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber** 数字输入框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Input#InputNumber.md) | ✅ | ✅ |
-➡️| [**Radio** 单选框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Radio.md) | ✅ | ✅ |
-➡️| [**Rate** 评分](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Rate.md) | ✅ | ❎ |
-➡️| [**Select** 选择器](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Select.md) | ✅ | ✅ |
-➡️| [**Slider** 滑动输入条](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Slider.md) | ✅ | ❎ |
-➡️| [**SliderRange** 滑动范围输入条](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Slider.md#sliderrange) | ✅ | ❎ |
-➡️| [**Switch** 开关](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Switch.md) | ✅ | ✅ |
-➡️| [**TimePicker** 时间选择框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/TimePicker.md) | ✅ | ✅ |
-➡️| [**Transfer** 穿梭框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Transfer.md) | ✅ | ❎ |
-➡️| [**UploadDragger** 拖拽上传](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/UploadDragger.md) | ✅ | ❎ |
-||||
-⬇️| 数据展示 `19` | 动画 | 禁用 |
-➡️| [**Avatar** 头像](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Avatar.md) | ❎ | ❎ |
-➡️| [**Badge** 徽标数](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Badge.md) | ✅ | ❎ |
-➡️| [**Calendar** 日历](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Calendar.md) | ✅ | ❎ |
-➡️| [**Panel** 面板](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Panel.md) | ✅ | ❎ |
-➡️| [**Carousel** 走马灯](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Carousel.md) | ✅ | ❎ |
-➡️| [**Collapse** 折叠面板](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Collapse.md) | ✅ | ❎ |
-➡️| [**Preview** 图片预览](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Preview.md) | ✅ | ✅ |
-➡️| [**Popover** 气泡卡片](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Popover.md) | ✅ | ❎ |
-➡️| [**Segmented** 分段控制器](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Segmented.md) | ✅ | ✅ |
-➡️| [**Table** 表格](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Table.md) | ✅ | ❎ |
-➡️| [**Tabs** 标签页](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Tabs.md) | ✅ | ✅ |
-➡️| [**Tag** 标签](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Tag.md) | ✅ | ❎ |
-➡️| [**Timeline** 时间轴](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Timeline.md) | ❎ | ❎ |
-➡️| [**Tooltip** 文字提示](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Tooltip.md) | ✅ | ❎ |
-➡️| [**Tree** 树形控件](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Tree.md) | ✅ | ✅ |
-➡️| [**Tour** 漫游式引导](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Tour.md) | ✅ | ❎ |
-➡️| [**Label** 文本](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Label.md) | ✅ | ❎ |
-➡️| [**LabelTime** 时间文本](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
-➡️| **Chart** 图表 | ✅ | ❎ |
-||||
-⬇️| 反馈 `8` | 动画 | 禁用 |
-➡️| [**Alert** 警告提示](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Alert.md) | ✅ | ❎ |
-➡️| [**Drawer** 抽屉](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Drawer.md) | ✅ | ❎ |
-➡️| [**Message** 全局提示](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Message.md) | ✅ | ❎ |
-➡️| [**Modal** 对话框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Modal.md) | ✅ | ❎ |
-➡️| [**Notification** 通知提醒框](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Notification.md) | ✅ | ❎ |
-➡️| [**Progress** 进度条](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Progress.md) | ✅ | ❎ |
-➡️| [**Spin** 加载中](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Spin.md) | ✅ | ❎ |
-➡️| **Watermark** 水印 | ✅ | ❎ |
-||||
-⬇️| 聊天 `2` | 动画 | 禁用 |
-➡️| **MsgList** 好友消息列表 | ✅ | ❎ |
-➡️| **ChatList** 气泡聊天列表 | ✅ | ❎ |
-||||
-⬇️| 其他 `5` | 动画 | 禁用 |
-➡️| [**Battery** 电量](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Battery.md) | ✅ | ❎ |
-➡️| [**Signal** 信号强度](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Signal.md) | ✅ | ❎ |
-➡️| [**Shield** 徽章](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/Shield.md) | ❎ | ❎ |
-➡️| [**ContextMenuStrip** 右键菜单](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |
-➡️| **Image3D** 图片3D | ✅ | ❎ |

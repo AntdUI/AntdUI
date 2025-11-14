@@ -1,5 +1,43 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.0` 2025-11-14
+
+> 🎉 NET 10.0
+
+- ➕ Table checkbox supports int 0,1
+- ➕ Table focus automatic jump increases automatic selection of rows and automatic scrolling to new rows
+- ➕ Table BorderRenderMode: Three Modes
+- ➕ Table CellSwitch
+- ➕ Rich EditSelection Table
+- ➕ DatePicker/Select/TimePicker ExpandDropChanged
+- ➕ Preview to complete more defined attributes
+- ➕ ImagePreview Image Preview Control
+- ➕ Menu DividerItem dividing line
+- ➕ Menu ScrollBarBlock with overlapping scrollbars in embedded mode
+- ➕ Input SelectLast
+- ➕ Segmented Reverse
+- ➕ ContextMenuStrip ParentItem
+- ➕ Button UseMnemonic
+- ➕ Button AutoToggle
+- ✍️ ContextMenuStrip adjusts the screen edge collision submenu and pops up on the left side
+- ✍️ Abnormal icon size after message line break
+- ✍️ TabHeader empty data does not display add button
+- ✍️ Tree suppresses anomalies
+- ✍️ Label Shadow Order
+- ✍️ Select drop-down multi screen misalignment
+- ✍️ Select Mouse Wheel DividerSelect Item Select
+- ✍️ Select Placement TR abnormal position
+- ✍️ The position of the Popover arrow is displayed incorrectly
+- ✍️ DatePickerRange keyboard press enter refresh dropdown
+- ✍️ DatePickerRange TextAlign cannot be selected until the end of the start time
+- ✍️ Input to complete left and right keys
+- ✍️ Menu USelect fixes UI refresh
+- ✍️ Table focus jump adjustment: Incorrect values obtained from Table [RowIndex] [ColumnIndex] in Tree mode
+- ✍️ Table line wrapping and centering issue
+- ✍️ Input Keyboard Enter
+- ✍️ Mask still shows after being hidden
+- ✍️ Overlay new rendering
+
 ### `2.1.13` 2025-10-24
 
 - ➕ Select Dropdown Maximum Height Scrollbar
