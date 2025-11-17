@@ -833,12 +833,11 @@ namespace AntdUI
             if (result && e is HandledMouseEventArgs handled) handled.Handled = true;
             return result;
         }
-        public bool MouseWheelX(int Delta)
+        public bool MouseWheelX(int delta)
         {
-            if (Delta == 0) return false;
+            if (delta == 0) return false;
             if (EnabledX && ShowX)
             {
-                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                 int value = ValueX - delta;
                 ValueX = value;
                 if (ValueX != value) return false;
@@ -853,12 +852,11 @@ namespace AntdUI
             if (result && e is HandledMouseEventArgs handled) handled.Handled = true;
             return result;
         }
-        public bool MouseWheelY(int Delta)
+        public bool MouseWheelY(int delta)
         {
-            if (Delta == 0) return false;
+            if (delta == 0) return false;
             if (EnabledY && ShowY)
             {
-                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
                 int value = ValueY - delta;
                 ValueY = value;
                 if (ValueY != value) return false;
@@ -873,10 +871,9 @@ namespace AntdUI
             if (result && e is HandledMouseEventArgs handled) handled.Handled = true;
             return result;
         }
-        public bool MouseWheel(int Delta)
+        public bool MouseWheel(int delta)
         {
-            if (Delta == 0) return false;
-            int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+            if (delta == 0) return false;
             if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift && EnabledX && ShowX)
             {
                 ValueX -= delta;

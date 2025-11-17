@@ -193,12 +193,11 @@ namespace AntdUI
             if (MouseWheelCore(e.Delta) && e is HandledMouseEventArgs handled) handled.Handled = true;
             base.OnMouseWheel(e);
         }
-        bool MouseWheelCore(int Delta)
+        bool MouseWheelCore(int delta)
         {
             if (ScrollYShow && autoscroll)
             {
-                if (Delta == 0) return false;
-                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                if (delta == 0) return false;
                 var old = scrolly;
                 ScrollY -= delta;
                 if (old == scrolly) return false;
