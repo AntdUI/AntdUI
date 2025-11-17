@@ -311,7 +311,6 @@ namespace AntdUI
                     SetSize(form.Size);
                     SetLocation(form.Location);
                     HasBor = form.FormFrame(out Radius, out Bor);
-                    this.FormClosing += OnFormClosing;
                 }
                 else
                 {
@@ -319,14 +318,6 @@ namespace AntdUI
                     SetLocation(config.Target.PointToScreen(Point.Empty));
                     if (config.Target is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
                 }
-            }
-        }
-
-        private void OnFormClosing(object? sender, FormClosingEventArgs e)
-        {
-            if (this.Owner != null)
-            {
-                this.Owner.Close(); // 关闭父窗口
             }
         }
 

@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -75,7 +76,20 @@ namespace AntdUI
             else CallStart();
         }
 
-        public bool End(string name)
+        public bool End(string name, CloseReason closeReason)
+        {
+            System.Diagnostics.Debug.WriteLine(closeReason);
+            switch (closeReason)
+            {
+                case CloseReason.UserClosing:
+                    return End(name);
+                default:
+                    CallEnd();
+                    return false;
+            }
+        }
+
+        bool End(string name)
         {
             if (ok_end)
             {
@@ -216,7 +230,20 @@ namespace AntdUI
             }
             else CallStart();
         }
-        public bool End(string name)
+        public bool End(string name, CloseReason closeReason)
+        {
+            System.Diagnostics.Debug.WriteLine(closeReason);
+            switch (closeReason)
+            {
+                case CloseReason.UserClosing:
+                    return End(name);
+                default:
+                    CallEnd();
+                    return false;
+            }
+        }
+
+        bool End(string name)
         {
             if (ok_end) return false;
             else if (run_end) return true;
@@ -340,7 +367,7 @@ namespace AntdUI
     public interface IAnimateConfig : IDisposable
     {
         void Start(string name);
-        bool End(string name);
+        bool End(string name, CloseReason closeReason);
         void DisposeBmp();
     }
 }
