@@ -78,7 +78,6 @@ namespace AntdUI
 
         public bool End(string name, CloseReason closeReason)
         {
-            System.Diagnostics.Debug.WriteLine(closeReason);
             switch (closeReason)
             {
                 case CloseReason.UserClosing:
@@ -232,7 +231,6 @@ namespace AntdUI
         }
         public bool End(string name, CloseReason closeReason)
         {
-            System.Diagnostics.Debug.WriteLine(closeReason);
             switch (closeReason)
             {
                 case CloseReason.UserClosing:

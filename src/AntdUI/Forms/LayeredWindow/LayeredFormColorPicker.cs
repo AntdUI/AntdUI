@@ -721,17 +721,20 @@ namespace AntdUI
 
                         #region 色相
 
-                        var _rect_hue = new Rectangle(rect_hue.X + point_hue - gap / 2, rect_hue.Y + rect_hue.Height / 2 - gap / 2, gap, gap);
+                        if (bmp_dot_12 != null)
+                        {
+                            var _rect_hue = new Rectangle(rect_hue.X + point_hue - gap / 2, rect_hue.Y + rect_hue.Height / 2 - gap / 2, gap, gap);
 
-                        g.Image(bmp_dot_12, new Rectangle(rect_hue.X + point_hue - bmp_dot_12.Height / 2, rect_hue.Y + (rect_hue.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
-                        g.FillEllipse(brush_hue, _rect_hue);
-                        g.DrawEllipse(pen, _rect_hue);
+                            g.Image(bmp_dot_12, new Rectangle(rect_hue.X + point_hue - bmp_dot_12.Height / 2, rect_hue.Y + (rect_hue.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
+                            g.FillEllipse(brush_hue, _rect_hue);
+                            g.DrawEllipse(pen, _rect_hue);
+                        }
 
                         #endregion
 
                         #region 透明度
 
-                        if (rect_alpha.Width > 0)
+                        if (rect_alpha.Width > 0 && bmp_dot_12 != null)
                         {
                             brush_val.Color = color_alpha;
                             var _rect_alpha = new Rectangle(rect_alpha.X + point_alpha - gap / 2, rect_alpha.Y + rect_alpha.Height / 2 - gap / 2, gap, gap);
@@ -774,7 +777,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        Bitmap bmp_dot_12;
+        Bitmap? bmp_dot_12;
         Rectangle rect_color;
 
         #region 取色器
@@ -997,9 +1000,7 @@ namespace AntdUI
             bmp_alpha_read?.Dispose();
             bmp_alpha_read = null;
             bmp_dot_12?.Dispose();
-#pragma warning disable CS8625
             bmp_dot_12 = null;
-#pragma warning restore CS8625
             base.Dispose(disposing);
         }
 
