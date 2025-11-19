@@ -1749,8 +1749,6 @@ namespace AntdUI
                         PaintTextAlign(rect_read, ref rect_text);
                     }
                 }
-
-                g.Fill(Color.Red, rect_text);
                 g.DrawText(text, Font, color, rect_text, sf);
             }
         }

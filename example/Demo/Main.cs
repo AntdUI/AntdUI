@@ -126,10 +126,7 @@ namespace Demo
                     AntdUI.ITask.Run(() =>
                     {
                         Thread.Sleep(2000);
-                        Invoke(new Action(() =>
-                        {
-                            btn.Enabled = true;
-                        }));
+                        btn.Enabled = true;
                     });
                 }
                 else
@@ -142,21 +139,6 @@ namespace Demo
                     });
                 }
             }
-        }
-
-        private void btn_close_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void btn_min_Click(object sender, EventArgs e)
-        {
-            Min();
-        }
-
-        private void btn_max_Click(object sender, EventArgs e)
-        {
-            MaxRestore();
         }
     }
 }

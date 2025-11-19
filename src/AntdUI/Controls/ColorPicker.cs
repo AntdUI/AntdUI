@@ -859,10 +859,7 @@ namespace AntdUI
             ExtraMouseDown = true;
             if (subForm == null)
             {
-                subForm = new LayeredFormColorPicker(this, ReadRectangle, Value, color =>
-                {
-                    Value = color;
-                });
+                subForm = new LayeredFormColorPicker(this, ReadRectangle, color => Value = color);
                 subForm.Disposed += (a, b) =>
                 {
                     ExtraMouseDown = false;
