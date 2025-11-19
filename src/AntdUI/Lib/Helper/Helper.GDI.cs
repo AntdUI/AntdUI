@@ -42,11 +42,6 @@ namespace AntdUI
             var key = (int)flags + "_" + measure;
             if (ffs.TryGetValue(key, out var r)) return r;
             StringFormat sf = new StringFormat(StringFormat.GenericTypographic);
-#if NET40 || NET46 || NET48
-            ffs.Add(key, sf);
-#else
-            ffs.TryAdd(key, sf);
-#endif
             // 处理垂直对齐（LineAlignment）
             if (flags.HasFlag(FormatFlags.VerticalCenter)) sf.LineAlignment = StringAlignment.Center;
             else if (flags.HasFlag(FormatFlags.Top)) sf.LineAlignment = StringAlignment.Near;
@@ -68,8 +63,13 @@ namespace AntdUI
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
             if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            else sf.FormatFlags ^= StringFormatFlags.MeasureTrailingSpaces;
+            else sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
 
+#if NET40 || NET46 || NET48
+            ffs.Add(key, sf);
+#else
+            ffs.TryAdd(key, sf);
+#endif
             return sf;
         }
 

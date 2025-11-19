@@ -130,7 +130,7 @@ namespace AntdUI
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
                 if (value) sf |= FormatFlags.EllipsisCharacter;
-                else sf ^= FormatFlags.EllipsisCharacter;
+                else sf &= ~FormatFlags.EllipsisCharacter;
                 Invalidate();
                 OnPropertyChanged(nameof(AutoEllipsis));
             }
@@ -148,7 +148,7 @@ namespace AntdUI
             {
                 if (textMultiLine == value) return;
                 textMultiLine = value;
-                if (value) sf ^= FormatFlags.NoWrap;
+                if (value) sf &= ~FormatFlags.NoWrap;
                 else sf |= FormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));

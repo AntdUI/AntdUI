@@ -389,7 +389,7 @@ namespace AntdUI
                 if (useMnemonic == value) return;
                 useMnemonic = value;
                 if (value) sf |= FormatFlags.HotkeyPrefixShow;
-                else sf ^= FormatFlags.HotkeyPrefixShow;
+                else sf &= ~FormatFlags.HotkeyPrefixShow;
             }
         }
 
@@ -494,7 +494,7 @@ namespace AntdUI
                 if (autoEllipsis == value) return;
                 autoEllipsis = value;
                 if (value) sf |= FormatFlags.EllipsisCharacter;
-                else sf ^= FormatFlags.EllipsisCharacter;
+                else sf &= ~FormatFlags.EllipsisCharacter;
                 OnPropertyChanged(nameof(AutoEllipsis));
             }
         }
@@ -512,7 +512,7 @@ namespace AntdUI
                 if (textMultiLine == value) return;
                 textMultiLine = value;
                 if (value) sf |= FormatFlags.NoWrap;
-                else sf ^= FormatFlags.NoWrap;
+                else sf &= ~FormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));
             }
@@ -1749,6 +1749,8 @@ namespace AntdUI
                         PaintTextAlign(rect_read, ref rect_text);
                     }
                 }
+
+                g.Fill(Color.Red, rect_text);
                 g.DrawText(text, Font, color, rect_text, sf);
             }
         }

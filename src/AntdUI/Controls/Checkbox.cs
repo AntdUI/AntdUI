@@ -188,12 +188,12 @@ namespace AntdUI
                 rightToLeft = value;
                 if (rightToLeft == RightToLeft.Yes)
                 {
-                    s_f ^= FormatFlags.Left;
+                    s_f &= ~FormatFlags.Left;
                     s_f |= FormatFlags.Right;
                 }
                 else
                 {
-                    s_f ^= FormatFlags.Right;
+                    s_f &= ~FormatFlags.Right;
                     s_f |= FormatFlags.Left;
                 }
                 Invalidate();
