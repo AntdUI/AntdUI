@@ -266,7 +266,7 @@ namespace AntdUI
             {
                 Color _color = fill ?? Colour.Primary.Get(nameof(Switch), ColorScheme);
                 PaintClick(g, path, rect, rect_read, _color);
-                if (enabled && hasFocus && WaveSize > 0)
+                if (enabled && (hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
                 {
                     float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
                     using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))

@@ -151,6 +151,11 @@ namespace AntdUI
         /// </summary>
         public static bool ShadowEnabled { get; set; } = true;
 
+        /// <summary>
+        /// 焦点边框使能
+        /// </summary>
+        public static bool FocusBorderEnabled { get; set; } = true;
+
         #region 弹出在窗口
 
         /// <summary>

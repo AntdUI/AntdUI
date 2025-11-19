@@ -1641,7 +1641,7 @@ namespace AntdUI
         }
         void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read, bool enabled, float radius)
         {
-            if (enabled && hasFocus && WaveSize > 0)
+            if (enabled && (hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
             {
                 float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2, r = radius + wave;
                 var rect_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2);
