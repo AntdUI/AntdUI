@@ -32,13 +32,13 @@ namespace AntdUI
         readonly int ArrowSize = 8;
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28, btn_size = 24;//260
         int offy = 0;
-        Color Value, ValueNAlpha, ValueHue, ValueDefault = Color.Empty;
+        Color Value, ValueNAlpha, ValueHue, ValueDefault;
         Action<Color> action;
         TColorMode mode;
         PointF[]? rect_arrow;
         bool AllowClear = false, ShowClose = false, ShowReset = false;
         TAMode ColorScheme;
-        public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Color clrDefault, Action<Color> _action)
+        public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
@@ -48,7 +48,7 @@ namespace AntdUI
             Font = control.Font.Size > 15f ? new Font(control.Font.Name, 15f, control.Font.Unit) : control.Font;//字体过大时, 编辑器文本超出编辑框
             mode = control.Mode;
             MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
-            color_alpha = Value = control.Value;
+            color_alpha = Value = ValueDefault = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();
             hsv.s = hsv.v = 1;
@@ -56,7 +56,6 @@ namespace AntdUI
             Radius = control.Radius * Config.Dpi;
             Radius2 = Radius * 0.75F;
             PARENT = control;
-            ValueDefault = clrDefault;
             action = _action;
             int colors_h = 160;
             if (Config.Dpi != 1F)
@@ -100,8 +99,17 @@ namespace AntdUI
 
             if (AllowClear || ShowClose || ShowReset)
             {
-                if (AllowClear) rect_btn = new Rectangle(10 + w - gap - btn_size, y + gap, btn_size, btn_size);
-                if (ShowReset) rect_reset = new Rectangle(10 + w - (btn_size + gap) * 2, y + gap, btn_size, btn_size);
+                int uw = gap + btn_size, ux = 10 + w - uw;
+                if (AllowClear)
+                {
+                    rect_btn = new Rectangle(ux, y + gap, btn_size, btn_size);
+                    ux -= uw;
+                }
+                if (ShowReset)
+                {
+                    rect_reset = new Rectangle(ux, y + gap, btn_size, btn_size);
+                    ux -= uw;
+                }
                 if (ShowClose) rect_close = new Rectangle(10 + gap, y + gap, btn_size, btn_size);
                 offy = btn_size + line_h + line_h / 2;
                 y += offy;
@@ -461,11 +469,7 @@ namespace AntdUI
                 else if (ShowClose && rect_close.Contains(e.X, e.Y)) IClose();
                 else if (ShowReset && rect_reset.Contains(e.X, e.Y))
                 {
-                    if (PARENT is ColorPicker color && color.HasValue)
-                    {
-                        color.Value = ValueDefault;
-                        Print();
-                    }
+                    if (Value != ValueDefault) ChangeColor(ValueDefault);
                 }
             }
             base.OnMouseDown(e);
@@ -621,18 +625,11 @@ namespace AntdUI
                     {
                         using (var path = rect_reset.RoundPath(Radius2))
                         {
-                            if (ValueDefault != Color.Empty)
-                            {
-                                using (SolidBrush brush = new SolidBrush(hover_reset ? Color.FromArgb(200, ValueDefault) : ValueDefault))
-                                {
-                                    g.Fill(brush, path);
-                                }
-                            }
-
-                            g.Draw(hover_close ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Config.Dpi, path);
+                            g.Draw(hover_reset ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Config.Dpi, path);
                         }
-                        g.PaintIconReset(rect_reset, Colour.TextTertiary.Get(nameof(ColorPicker), ColorScheme), .8F);
+                        g.PaintIconReset(rect_reset, ValueDefault, .8F);
                     }
+
                     #region 调色板
 
                     using (var bmp = new Bitmap(rect_colors.Width, rect_colors.Height))
@@ -721,17 +718,20 @@ namespace AntdUI
 
                         #region 色相
 
-                        var _rect_hue = new Rectangle(rect_hue.X + point_hue - gap / 2, rect_hue.Y + rect_hue.Height / 2 - gap / 2, gap, gap);
+                        if (bmp_dot_12 != null)
+                        {
+                            var _rect_hue = new Rectangle(rect_hue.X + point_hue - gap / 2, rect_hue.Y + rect_hue.Height / 2 - gap / 2, gap, gap);
 
-                        g.Image(bmp_dot_12, new Rectangle(rect_hue.X + point_hue - bmp_dot_12.Height / 2, rect_hue.Y + (rect_hue.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
-                        g.FillEllipse(brush_hue, _rect_hue);
-                        g.DrawEllipse(pen, _rect_hue);
+                            g.Image(bmp_dot_12, new Rectangle(rect_hue.X + point_hue - bmp_dot_12.Height / 2, rect_hue.Y + (rect_hue.Height - bmp_dot_12.Height) / 2, bmp_dot_12.Width, bmp_dot_12.Height));
+                            g.FillEllipse(brush_hue, _rect_hue);
+                            g.DrawEllipse(pen, _rect_hue);
+                        }
 
                         #endregion
 
                         #region 透明度
 
-                        if (rect_alpha.Width > 0)
+                        if (rect_alpha.Width > 0 && bmp_dot_12 != null)
                         {
                             brush_val.Color = color_alpha;
                             var _rect_alpha = new Rectangle(rect_alpha.X + point_alpha - gap / 2, rect_alpha.Y + rect_alpha.Height / 2 - gap / 2, gap, gap);
@@ -774,7 +774,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        Bitmap bmp_dot_12;
+        Bitmap? bmp_dot_12;
         Rectangle rect_color;
 
         #region 取色器
@@ -997,9 +997,7 @@ namespace AntdUI
             bmp_alpha_read?.Dispose();
             bmp_alpha_read = null;
             bmp_dot_12?.Dispose();
-#pragma warning disable CS8625
             bmp_dot_12 = null;
-#pragma warning restore CS8625
             base.Dispose(disposing);
         }
 

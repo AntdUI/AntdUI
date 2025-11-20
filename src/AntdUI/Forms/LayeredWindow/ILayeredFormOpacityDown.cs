@@ -58,7 +58,7 @@ namespace AntdUI
         internal void DisposeTmp() => animateConfig.DisposeBmp();
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (animateConfig.End(name)) e.Cancel = true;
+            if (animateConfig.End(name, e.CloseReason)) e.Cancel = true;
             base.OnFormClosing(e);
         }
 

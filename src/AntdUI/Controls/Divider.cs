@@ -48,7 +48,7 @@ namespace AntdUI
                 if (vertical == value) return;
                 vertical = value;
                 if (value) s_f |= FormatFlags.DirectionVertical;
-                else s_f ^= FormatFlags.DirectionVertical;
+                else s_f &= ~FormatFlags.DirectionVertical;
                 Invalidate();
             }
         }

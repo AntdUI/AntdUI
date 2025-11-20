@@ -210,12 +210,12 @@ namespace AntdUI
                 rightToLeft = value;
                 if (rightToLeft == RightToLeft.Yes)
                 {
-                    s_f ^= FormatFlags.Left;
+                    s_f &= ~FormatFlags.Left;
                     s_f |= FormatFlags.Right;
                 }
                 else
                 {
-                    s_f ^= FormatFlags.Right;
+                    s_f &= ~FormatFlags.Right;
                     s_f |= FormatFlags.Left;
                 }
                 Invalidate();
@@ -276,7 +276,7 @@ namespace AntdUI
             var bor2 = 2F * Config.Dpi;
             if (enabled)
             {
-                if (hasFocus && (rect.Height - icon_rect.Height) > bor2)
+                if ((hasFocus && Config.FocusBorderEnabled) && (rect.Height - icon_rect.Height) > bor2)
                 {
                     float wave = bor2, wave2 = wave * 2;
                     g.DrawEllipse(Colour.PrimaryBorder.Get(nameof(Radio), ColorScheme), wave, new RectangleF(icon_rect.X - wave, icon_rect.Y - wave, icon_rect.Width + wave2, icon_rect.Height + wave2));

@@ -27,10 +27,11 @@ namespace AntdUI
 {
     internal class LayeredFormModal : Window, IEventListener, LayeredFormAsynLoad
     {
-        Modal.Config config;
+        internal Modal.Config config;
         Panel? panel_main;
         public LayeredFormModal(Modal.Config _config)
         {
+            config = _config;
             SetStyle(
                 ControlStyles.UserPaint |
                 ControlStyles.AllPaintingInWmPaint |
@@ -40,10 +41,9 @@ namespace AntdUI
             UpdateStyles();
 
             DisableTheme = true;
-            Resizable = false;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Resizable = config.Resizable;
+            if (!config.Resizable) FormBorderStyle = FormBorderStyle.FixedSingle;
             ShowInTaskbar = false;
-            config = _config;
             var form_tmp = config.Target.FindPARENT();
             if (form_tmp != null && form_tmp.TopMost || (form_tmp is LayeredFormPopover layered && layered.topMost) || (form_tmp is LayeredFormDrawer layeredDrawer && layeredDrawer.topMost) || (form_tmp is LayeredFormTour layeredTour && layeredTour.topMost)) TopMost = true;
             config.Target.SetIcon(this);
@@ -191,13 +191,7 @@ namespace AntdUI
                     AcceptButton = btn_ok;
                     CancelButton = btn_no;
                 }
-                else
-                {
-                    ONESC = () =>
-                    {
-                        DialogResult = DialogResult.No;
-                    };
-                }
+                else ONESC = () => DialogResult = DialogResult.No;
             }
 
             #endregion
@@ -222,6 +216,11 @@ namespace AntdUI
                         w = control.Width + paddingx * 2 + cpaddingx2;
                         wp = control.Width + cpaddingx2;
                         Controls.Add(control);
+                        if (config.Resizable)
+                        {
+                            control.Dock = DockStyle.Fill;
+                            control.BringToFront();
+                        }
                         control.Disposed += (a, b) => Close();
                         if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
@@ -230,7 +229,7 @@ namespace AntdUI
                                 rectTitle = new Rectangle(0, 0, 0, 0);
                                 int h = control.Height + butt_h + cpaddingy2;
                                 rectContent = new Rectangle(paddingx + cpaddingx, paddingy + cpaddingy, wp - cpaddingx2, h - butt_h - cpaddingy2);
-                                MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                                Size = new Size(w, h + paddingy * 2);
                             }
                             else
                             {
@@ -240,7 +239,7 @@ namespace AntdUI
 
                                 rectTitle = new Rectangle(paddingx, paddingy, wp - cpaddingx2, sizeTitle.Height + gap);
                                 rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
-                                MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                                Size = new Size(w, h + paddingy * 2);
                             }
                         }
                         else
@@ -258,7 +257,7 @@ namespace AntdUI
                             }
                             else rectContent = new Rectangle(paddingx + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             control.Location = new Point(rectContent.X, rectContent.Y);
-                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon)
                         {
@@ -290,7 +289,7 @@ namespace AntdUI
 
                             int h = sizeTitle.Height + gap + h_temp + butt_h + cpaddingy2;
                             rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
-                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            Size = new Size(w, h + paddingy * 2);
                         }
                         else
                         {
@@ -328,7 +327,7 @@ namespace AntdUI
                                 h = sizeTitle.Height + gap + h_temp + butt_h + cpaddingy2;
                                 rectContent = new Rectangle(paddingx + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             }
-                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon)
                         {
@@ -350,7 +349,7 @@ namespace AntdUI
                             rectTitle = new Rectangle(paddingx, paddingy, wp - cpaddingx2, sizeTitle.Height + gap);
                             rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
 
-                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            Size = new Size(w, h + paddingy * 2);
                         }
                         else
                         {
@@ -374,7 +373,7 @@ namespace AntdUI
                                 rectContent = new Rectangle(paddingx + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             }
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
-                            MinimumSize = MaximumSize = Size = new Size(w, h + paddingy * 2);
+                            Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon)
                         {
@@ -386,8 +385,15 @@ namespace AntdUI
                     return new Rectangle[0];
                 }
             });
+            if (config.Resizable)
+            {
+                if (config.MinimumSize.HasValue) MinimumSize = config.MinimumSize.Value;
+                if (config.MaximumSize.HasValue) MaximumSize = config.MaximumSize.Value;
+            }
+            else MinimumSize = MaximumSize = Size;
             ResumeLayout();
             config.Layered = this;
+            if (config.Content is Modal.UserControl tmp) tmp.Layered = this;
 
             if (config.Target.Value is Form form)
             {

@@ -836,12 +836,11 @@ namespace AntdUI
 
             if (MouseWheelCore(e.Delta) && e is HandledMouseEventArgs handled) handled.Handled = true;
         }
-        bool MouseWheelCore(int Delta)
+        bool MouseWheelCore(int delta)
         {
             if (scroll_show)
             {
-                if (Delta == 0) return false;
-                int delta = Delta / SystemInformation.MouseWheelScrollDelta * (int)(Config.ScrollStep * Config.Dpi);
+                if (delta == 0) return false;
                 switch (alignment)
                 {
                     case TabAlignment.Left:

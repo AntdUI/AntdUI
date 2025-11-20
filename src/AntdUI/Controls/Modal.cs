@@ -635,6 +635,21 @@ namespace AntdUI
                 Layered.BeginInvoke(() => Layered.DialogResult = result);
             }
 
+            /// <summary>
+            /// 是否可调整大小
+            /// </summary>
+            public bool Resizable { get; set; }
+
+            /// <summary>
+            /// 最小大小
+            /// </summary>
+            public Size? MinimumSize { get; set; }
+
+            /// <summary>
+            /// 最大大小
+            /// </summary>
+            public Size? MaximumSize { get; set; }
+
             #region 设置
 
             public Config SetContentPadding(int x, int y)
@@ -809,6 +824,21 @@ namespace AntdUI
             public Config SetEnableSound(bool value = true)
             {
                 EnableSound = value;
+                return this;
+            }
+            public Config SetResizable(bool value = true)
+            {
+                Resizable = value;
+                return this;
+            }
+            public Config SetMinimumSize(Size? value)
+            {
+                MinimumSize = value;
+                return this;
+            }
+            public Config SetMaximumSize(Size? value)
+            {
+                MaximumSize = value;
                 return this;
             }
 
@@ -1039,6 +1069,27 @@ namespace AntdUI
             }
 
             #endregion
+        }
+
+        public class UserControl : System.Windows.Forms.UserControl
+        {
+            internal LayeredFormModal? Layered;
+
+            public void SetTitle(string text)
+            {
+                if (Layered == null) return;
+                Layered.config.Title = text;
+                Layered.Invalidate();
+            }
+
+            public void SetOkText(string text) => Layered?.SetOkText(text);
+            public void SetCancelText(string text) => Layered?.SetCancelText(text);
+
+            public void SetDialogResult(DialogResult result)
+            {
+                if (Layered == null) return;
+                Layered.DialogResult = result;
+            }
         }
     }
 

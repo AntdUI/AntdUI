@@ -459,7 +459,7 @@ namespace AntdUI
                 int size_color = (int)(rect_read.Height * .75F);
                 if (Enabled)
                 {
-                    if (hasFocus && WaveSize > 0)
+                    if ((hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
                     {
                         float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
                         using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(_radius + wave))
@@ -859,10 +859,7 @@ namespace AntdUI
             ExtraMouseDown = true;
             if (subForm == null)
             {
-                subForm = new LayeredFormColorPicker(this, ReadRectangle, Value, color =>
-                {
-                    Value = color;
-                });
+                subForm = new LayeredFormColorPicker(this, ReadRectangle, color => Value = color);
                 subForm.Disposed += (a, b) =>
                 {
                     ExtraMouseDown = false;

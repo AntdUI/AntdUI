@@ -88,12 +88,12 @@ namespace Demo
             tooltipComponent1 = new AntdUI.TooltipComponent();
             avatar2 = new AntdUI.Carousel();
             panel8 = new AntdUI.Panel();
-            label5 = new Label();
+            label5 = new AntdUI.Label();
             divider1 = new AntdUI.Divider();
-            label7 = new Label();
+            label7 = new AntdUI.Label();
             panel9 = new AntdUI.Panel();
-            label9 = new Label();
-            label8 = new Label();
+            label9 = new AntdUI.Label();
+            label8 = new AntdUI.Label();
             tooltipComponent2 = new AntdUI.TooltipComponent();
             badge1 = new AntdUI.Badge();
             badge2 = new AntdUI.Badge();
@@ -115,7 +115,7 @@ namespace Demo
             button1.Location = new Point(40, 78);
             button1.Margin = new Padding(4);
             button1.Name = "button1";
-            button1.Size = new Size(145, 47);
+            button1.Size = new Size(137, 46);
             button1.TabIndex = 0;
             button1.Text = "Primary Button";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -128,7 +128,7 @@ namespace Demo
             button2.Location = new Point(210, 78);
             button2.Margin = new Padding(4);
             button2.Name = "button2";
-            button2.Size = new Size(141, 47);
+            button2.Size = new Size(134, 46);
             button2.TabIndex = 0;
             button2.Text = "Default Button";
             button2.Click += Button_Click;
@@ -141,7 +141,7 @@ namespace Demo
             button3.Location = new Point(380, 78);
             button3.Margin = new Padding(4);
             button3.Name = "button3";
-            button3.Size = new Size(143, 47);
+            button3.Size = new Size(136, 46);
             button3.TabIndex = 0;
             button3.Text = "Danger Button";
             button3.Type = AntdUI.TTypeMini.Error;
@@ -152,7 +152,7 @@ namespace Demo
             radio1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio1.Location = new Point(40, 168);
             radio1.Name = "radio1";
-            radio1.Size = new Size(117, 43);
+            radio1.Size = new Size(109, 42);
             radio1.TabIndex = 1;
             radio1.Text = "Option A";
             // 
@@ -161,7 +161,7 @@ namespace Demo
             radio2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             radio2.Location = new Point(210, 168);
             radio2.Name = "radio2";
-            radio2.Size = new Size(115, 43);
+            radio2.Size = new Size(107, 42);
             radio2.TabIndex = 1;
             radio2.Text = "Option B";
             // 
@@ -171,7 +171,7 @@ namespace Demo
             radio3.Checked = true;
             radio3.Location = new Point(380, 168);
             radio3.Name = "radio3";
-            radio3.Size = new Size(117, 43);
+            radio3.Size = new Size(108, 42);
             radio3.TabIndex = 1;
             radio3.Text = "Option C";
             // 
@@ -181,7 +181,7 @@ namespace Demo
             radio4.Enabled = false;
             radio4.Location = new Point(550, 168);
             radio4.Name = "radio4";
-            radio4.Size = new Size(118, 43);
+            radio4.Size = new Size(109, 42);
             radio4.TabIndex = 1;
             radio4.Text = "Option D";
             // 
@@ -191,7 +191,7 @@ namespace Demo
             radio5.Enabled = false;
             radio5.Location = new Point(720, 168);
             radio5.Name = "radio5";
-            radio5.Size = new Size(115, 43);
+            radio5.Size = new Size(106, 42);
             radio5.TabIndex = 1;
             radio5.Text = "Option E";
             // 
@@ -200,7 +200,7 @@ namespace Demo
             checkbox1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox1.Location = new Point(40, 239);
             checkbox1.Name = "checkbox1";
-            checkbox1.Size = new Size(117, 43);
+            checkbox1.Size = new Size(109, 42);
             checkbox1.TabIndex = 2;
             checkbox1.Text = "Option A";
             // 
@@ -209,7 +209,7 @@ namespace Demo
             checkbox2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             checkbox2.Location = new Point(210, 239);
             checkbox2.Name = "checkbox2";
-            checkbox2.Size = new Size(115, 43);
+            checkbox2.Size = new Size(107, 42);
             checkbox2.TabIndex = 2;
             checkbox2.Text = "Option B";
             // 
@@ -219,7 +219,7 @@ namespace Demo
             checkbox3.Checked = true;
             checkbox3.Location = new Point(380, 239);
             checkbox3.Name = "checkbox3";
-            checkbox3.Size = new Size(117, 43);
+            checkbox3.Size = new Size(108, 42);
             checkbox3.TabIndex = 2;
             checkbox3.Text = "Option C";
             // 
@@ -229,7 +229,7 @@ namespace Demo
             checkbox4.Enabled = false;
             checkbox4.Location = new Point(550, 239);
             checkbox4.Name = "checkbox4";
-            checkbox4.Size = new Size(118, 43);
+            checkbox4.Size = new Size(109, 42);
             checkbox4.TabIndex = 2;
             checkbox4.Text = "Option D";
             // 
@@ -239,7 +239,7 @@ namespace Demo
             checkbox5.Enabled = false;
             checkbox5.Location = new Point(720, 239);
             checkbox5.Name = "checkbox5";
-            checkbox5.Size = new Size(115, 43);
+            checkbox5.Size = new Size(106, 42);
             checkbox5.TabIndex = 2;
             checkbox5.Text = "Option E";
             // 
@@ -314,7 +314,7 @@ namespace Demo
             button4.Margin = new Padding(4);
             button4.Name = "button4";
             button4.Shape = AntdUI.TShape.Circle;
-            button4.Size = new Size(47, 47);
+            button4.Size = new Size(46, 46);
             button4.TabIndex = 0;
             button4.Text = "按";
             button4.Type = AntdUI.TTypeMini.Primary;
@@ -343,10 +343,10 @@ namespace Demo
             // tooltip1
             // 
             tooltip1.Location = new Point(907, 76);
-            tooltip1.MaximumSize = new Size(117, 51);
-            tooltip1.MinimumSize = new Size(117, 51);
+            tooltip1.MaximumSize = new Size(111, 45);
+            tooltip1.MinimumSize = new Size(111, 45);
             tooltip1.Name = "tooltip1";
-            tooltip1.Size = new Size(117, 51);
+            tooltip1.Size = new Size(111, 45);
             tooltip1.TabIndex = 9;
             tooltip1.Text = "Prompt Text";
             // 
@@ -545,7 +545,6 @@ namespace Demo
             label7.Size = new Size(237, 48);
             label7.TabIndex = 0;
             label7.Text = "Card title";
-            label7.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // panel9
             // 
@@ -569,6 +568,7 @@ namespace Demo
             // label9
             // 
             label9.BackColor = Color.Transparent;
+            label9.ColorScheme = AntdUI.TAMode.Dark;
             label9.Dock = DockStyle.Fill;
             label9.Location = new Point(38, 218);
             label9.Name = "label9";
@@ -580,6 +580,7 @@ namespace Demo
             // label8
             // 
             label8.BackColor = Color.Transparent;
+            label8.ColorScheme = AntdUI.TAMode.Dark;
             label8.Dock = DockStyle.Top;
             label8.Font = new Font("Microsoft YaHei UI Light", 12F, FontStyle.Bold);
             label8.Location = new Point(38, 188);
@@ -587,7 +588,6 @@ namespace Demo
             label8.Size = new Size(327, 30);
             label8.TabIndex = 11;
             label8.Text = "Tour Title";
-            label8.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tooltipComponent2
             // 
@@ -678,7 +678,7 @@ namespace Demo
             button5.Location = new Point(887, 625);
             button5.Margin = new Padding(4);
             button5.Name = "button5";
-            button5.Size = new Size(166, 47);
+            button5.Size = new Size(150, 46);
             button5.TabIndex = 0;
             button5.Text = "Search Button";
             button5.Click += Button_Click;
@@ -696,7 +696,7 @@ namespace Demo
             button6.Location = new Point(1080, 625);
             button6.Margin = new Padding(4);
             button6.Name = "button6";
-            button6.Size = new Size(166, 47);
+            button6.Size = new Size(150, 46);
             button6.TabIndex = 0;
             button6.Text = "Search Button";
             button6.Click += Button_Click;
@@ -803,12 +803,12 @@ namespace Demo
         private AntdUI.PageHeader panel_top;
         private AntdUI.TooltipComponent tooltipComponent1;
         private AntdUI.Panel panel8;
-        private Label label5;
+        private AntdUI.Label label5;
         private AntdUI.Divider divider1;
-        private Label label7;
+        private AntdUI.Label label7;
         private AntdUI.Panel panel9;
-        private Label label9;
-        private Label label8;
+        private AntdUI.Label label9;
+        private AntdUI.Label label8;
         private AntdUI.Carousel avatar2;
         private AntdUI.TooltipComponent tooltipComponent2;
         private AntdUI.Badge badge1;

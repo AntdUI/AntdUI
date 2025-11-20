@@ -364,6 +364,50 @@ namespace AntdUI
         /// </summary>
         public int? Gap { get; set; }
 
+        #region 加载动画
+
+        bool loading = false;
+        internal int AnimationLoadingValue = 0;
+        int AnimationLoadingWaveValue = 0;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                ThreadLoading?.Dispose();
+                OnPropertyChanged(true);
+                if (loading)
+                {
+                    AnimationClickValue = 0;
+                    ThreadLoading = new ITask(PARENT.PARENT, i =>
+                    {
+                        AnimationLoadingWaveValue += 1;
+                        if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
+                        AnimationLoadingValue = i;
+                        OnPropertyChanged();
+                        return loading;
+                    }, 10, 360, 6, () => OnPropertyChanged(true));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 加载响应点击
+        /// </summary>
+        public bool LoadingRespondClick { get; set; }
+
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        public float LoadingValue { get; set; } = 0.3F;
+
+        #endregion
+
         #endregion
 
         #region 设置
@@ -513,6 +557,17 @@ namespace AntdUI
         public CellButton SetArrowProg(float value = 1F)
         {
             ArrowProg = value;
+            return this;
+        }
+
+        public CellButton SetLoading(bool value = true)
+        {
+            loading = value;
+            return this;
+        }
+        public CellButton SetLoadingValue(float value = -1F)
+        {
+            LoadingValue = value;
             return this;
         }
 
