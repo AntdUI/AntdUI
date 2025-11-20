@@ -54,7 +54,7 @@ namespace AntdUI
             else
             {
                 var size = g.MeasureText(Text ?? Config.NullText, font);
-                bool has_icon = HasIcon;
+                bool has_icon = HasIcon || loading;
                 if (has_icon || ShowArrow)
                 {
                     if (has_icon && (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom))
@@ -213,6 +213,12 @@ namespace AntdUI
                 });
             }
         }
+
+        #region 加载动画
+
+        ITask? ThreadLoading;
+
+        #endregion
 
         #endregion
     }

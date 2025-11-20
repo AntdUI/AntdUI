@@ -635,8 +635,8 @@ namespace AntdUI
             if (config == null) return;
             var rect_target = TargetRectXY;
             rect_read = HasBor ? new Rectangle(Bor, 0, rect_target.Width - Bor * 2, rect_target.Height - Bor) : rect_target;
-            int btn_height = (int)(config.BtnSize[1] * Config.Dpi), lr_size = (int)(config.BtnLRSize * Config.Dpi), btn_width = (int)(config.BtnSize[0] * Config.Dpi),
-                padding = (int)(config.ContainerPadding * Config.Dpi), padding_lr = (int)(config.BtnPadding[0] * Config.Dpi), padding_buttom = (int)(config.BtnPadding[1] * Config.Dpi),
+            int btn_height = (int)(config.BtnSize.Height * Config.Dpi), lr_size = (int)(config.BtnLRSize * Config.Dpi), btn_width = (int)(config.BtnSize.Width * Config.Dpi),
+                padding = (int)(config.ContainerPadding * Config.Dpi), padding_lr = (int)(config.BtnPadding.Width * Config.Dpi), padding_buttom = (int)(config.BtnPadding.Height * Config.Dpi),
                 icon_size = (int)(config.BtnIconSize * Config.Dpi);
             rect_close = new Rectangle(rect_read.Right - padding_buttom - btn_width, rect_read.Y + padding_buttom, btn_width, btn_width);
             rect_close_icon = GetCentered(rect_close, icon_size);
@@ -662,11 +662,7 @@ namespace AntdUI
             }
         }
 
-        Rectangle GetCentered(Rectangle rect, int size)
-        {
-            int xy = (rect.Width - size) / 2;
-            return new Rectangle(rect.X + xy, rect.Y + xy, size, size);
-        }
+        Rectangle GetCentered(Rectangle rect, int size) => new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
 
         #endregion
 

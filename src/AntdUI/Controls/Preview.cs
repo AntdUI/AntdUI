@@ -156,7 +156,7 @@ namespace AntdUI
             /// <summary>
             /// 按钮大小
             /// </summary>
-            public int[] BtnSize { get; set; } = new int[] { 42, 46 };
+            public Size BtnSize { get; set; } = new Size(42, 46);
 
             /// <summary>
             /// 按钮图标大小
@@ -176,7 +176,7 @@ namespace AntdUI
             /// <summary>
             /// 按钮边距
             /// </summary>
-            public int[] BtnPadding { get; set; } = new int[] { 12, 32 };
+            public Size BtnPadding { get; set; } = new Size(12, 32);
 
             /// <summary>
             /// 自定义按钮
@@ -222,12 +222,12 @@ namespace AntdUI
             }
             public Config SetBtnSize(int w, int h)
             {
-                BtnSize = new int[] { w, h };
+                BtnSize = new Size(w, h);
                 return this;
             }
             public Config SetBtnSize(int value)
             {
-                BtnSize = new int[] { value, value };
+                BtnSize = new Size(value, value);
                 return this;
             }
             public Config SetBtnIconSize(int value)
@@ -247,12 +247,12 @@ namespace AntdUI
             }
             public Config SetBtnPadding(int w, int h)
             {
-                BtnPadding = new int[] { w, h };
+                BtnPadding = new Size(w, h);
                 return this;
             }
             public Config SetBtnPadding(int value)
             {
-                BtnPadding = new int[] { value, value };
+                BtnPadding = new Size(value, value);
                 return this;
             }
             public Config SetBtns(params Btn[] value)

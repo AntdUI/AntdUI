@@ -173,35 +173,103 @@ namespace AntdUI
 
         protected virtual void OnButtonClick(ImagePreviewItem item, string id, object? tag) => ButtonClick?.Invoke(this, new ImagePreviewButtonEventArgs(item, id, tag));
 
+        Size btnSize = new Size(42, 46);
         /// <summary>
         /// 按钮大小
         /// </summary>
         [Description("按钮大小"), Category("外观"), DefaultValue(typeof(Size), "42, 46")]
-        public int[] BtnSize { get; set; } = new int[] { 42, 46 };
+        public Size BtnSize
+        {
+            get => btnSize;
+            set
+            {
+                btnSize = value;
+                if (IsHandleCreated)
+                {
+                    SizeChange(ClientRectangle);
+                    Invalidate();
+                }
+            }
+        }
 
+        int btnIconSize = 18;
         /// <summary>
         /// 按钮图标大小
         /// </summary>
         [Description("按钮图标大小"), Category("外观"), DefaultValue(18)]
-        public int BtnIconSize { get; set; } = 18;
+        public int BtnIconSize
+        {
+            get => btnIconSize;
+            set
+            {
+                if (btnIconSize == value) return;
+                btnIconSize = value;
+                if (IsHandleCreated)
+                {
+                    SizeChange(ClientRectangle);
+                    Invalidate();
+                }
+            }
+        }
 
+        int btnLRSize = 40;
         /// <summary>
         /// 左右按钮大小
         /// </summary>
         [Description("左右按钮大小"), Category("外观"), DefaultValue(40)]
-        public int BtnLRSize { get; set; } = 40;
+        public int BtnLRSize
+        {
+            get => btnLRSize;
+            set
+            {
+                if (btnLRSize == value) return;
+                btnLRSize = value;
+                if (IsHandleCreated)
+                {
+                    SizeChange(ClientRectangle);
+                    Invalidate();
+                }
+            }
+        }
 
+        int containerPadding = 24;
         /// <summary>
         /// 容器边距
         /// </summary>
         [Description("容器边距"), Category("外观"), DefaultValue(24)]
-        public int ContainerPadding { get; set; } = 24;
+        public int ContainerPadding
+        {
+            get => containerPadding;
+            set
+            {
+                if (containerPadding == value) return;
+                containerPadding = value;
+                if (IsHandleCreated)
+                {
+                    SizeChange(ClientRectangle);
+                    Invalidate();
+                }
+            }
+        }
 
+        Size btnPadding = new Size(12, 32);
         /// <summary>
         /// 按钮边距
         /// </summary>
         [Description("按钮边距"), Category("外观"), DefaultValue(typeof(Size), "12, 32")]
-        public int[] BtnPadding { get; set; } = new int[] { 12, 32 };
+        public Size BtnPadding
+        {
+            get => btnPadding;
+            set
+            {
+                btnPadding = value;
+                if (IsHandleCreated)
+                {
+                    SizeChange(ClientRectangle);
+                    Invalidate();
+                }
+            }
+        }
 
         void InitBtns()
         {
@@ -380,78 +448,82 @@ namespace AntdUI
         {
             autoDpi = true;
             if (items == null) return;
-            int index = selectIndex;
-            var it = items[index];
-            if (it.Img == null)
+            try
             {
-                if (it.Call != null)
+                int index = selectIndex;
+                var it = items[index];
+                if (it.Img == null)
                 {
-                    imgtmp?.Dispose();
-                    Img = it.Call(index, it);
-                    if (Img == null)
+                    if (it.Call != null)
                     {
+                        imgtmp?.Dispose();
+                        Img = it.Call(index, it);
+                        if (Img == null)
+                        {
+                            if (r) Invalidate();
+                            return;
+                        }
+                        ImgSize = Img.Size;
+                        FillScaleImg();
                         if (r) Invalidate();
-                        return;
                     }
+                    else if (it.CallProg != null)
+                    {
+                        LoadingProgressStr = null;
+                        _value = -1F;
+                        Loading = true;
+                        DateTime now = DateTime.Now, now2 = DateTime.Now;
+                        ITask.Run(() =>
+                        {
+                            var img = it.CallProg(index, it, (prog, progstr) =>
+                            {
+                                LoadingProgressStr = progstr;
+                                LoadingProgress = prog;
+                            });
+                            now2 = DateTime.Now;
+                            if (selectIndex == SelectIndex)
+                            {
+                                if (img == null)
+                                {
+                                    Img?.Dispose();
+                                    Img = null;
+                                    return;
+                                }
+                                LoadingProgressStr = null;
+                                imgtmp?.Dispose();
+                                Img = img;
+                                ImgSize = Img.Size;
+                                FillScaleImg();
+                            }
+                            else img?.Dispose();
+                        }, () =>
+                        {
+                            if (selectIndex == SelectIndex)
+                            {
+                                Loading = false;
+                                if ((now2 - now).TotalMilliseconds < 100)
+                                {
+                                    Thread.Sleep(100);
+                                    if (selectIndex == SelectIndex) Invalidate();
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Img = null;
+                        if (r) Invalidate();
+                    }
+                }
+                else
+                {
+                    Img = it.Img;
                     ImgSize = Img.Size;
                     FillScaleImg();
                     if (r) Invalidate();
                 }
-                else if (it.CallProg != null)
-                {
-                    LoadingProgressStr = null;
-                    _value = -1F;
-                    Loading = true;
-                    DateTime now = DateTime.Now, now2 = DateTime.Now;
-                    ITask.Run(() =>
-                    {
-                        var img = it.CallProg(index, it, (prog, progstr) =>
-                        {
-                            LoadingProgressStr = progstr;
-                            LoadingProgress = prog;
-                        });
-                        now2 = DateTime.Now;
-                        if (selectIndex == SelectIndex)
-                        {
-                            if (img == null)
-                            {
-                                Img?.Dispose();
-                                Img = null;
-                                return;
-                            }
-                            LoadingProgressStr = null;
-                            imgtmp?.Dispose();
-                            Img = img;
-                            ImgSize = Img.Size;
-                            FillScaleImg();
-                        }
-                        else img?.Dispose();
-                    }, () =>
-                    {
-                        if (selectIndex == SelectIndex)
-                        {
-                            Loading = false;
-                            if ((now2 - now).TotalMilliseconds < 100)
-                            {
-                                Thread.Sleep(100);
-                                if (selectIndex == SelectIndex) Invalidate();
-                            }
-                        }
-                    });
-                }
-                else
-                {
-                    Img = null;
-                    if (r) Invalidate();
-                }
             }
-            else
-            {
-                Img = it.Img;
-                ImgSize = Img.Size;
-                FillScaleImg();
-                if (r) Invalidate();
-            }
+            catch { }
         }
 
         #region 缩放
@@ -670,8 +742,8 @@ namespace AntdUI
 
         void SizeChange(Rectangle rect)
         {
-            int btn_height = (int)(BtnSize[1] * Config.Dpi), lr_size = (int)(BtnLRSize * Config.Dpi), btn_width = (int)(BtnSize[0] * Config.Dpi),
-                padding = (int)(ContainerPadding * Config.Dpi), padding_lr = (int)(BtnPadding[0] * Config.Dpi), padding_buttom = (int)(BtnPadding[1] * Config.Dpi),
+            int btn_height = (int)(BtnSize.Height * Config.Dpi), lr_size = (int)(BtnLRSize * Config.Dpi), btn_width = (int)(BtnSize.Width * Config.Dpi),
+                padding = (int)(ContainerPadding * Config.Dpi), padding_lr = (int)(BtnPadding.Width * Config.Dpi), padding_buttom = (int)(BtnPadding.Height * Config.Dpi),
                 icon_size = (int)(BtnIconSize * Config.Dpi);
 
             if (PageSize > 1)
@@ -695,11 +767,7 @@ namespace AntdUI
             }
         }
 
-        Rectangle GetCentered(Rectangle rect, int size)
-        {
-            int xy = (rect.Width - size) / 2;
-            return new Rectangle(rect.X + xy, rect.Y + xy, size, size);
-        }
+        Rectangle GetCentered(Rectangle rect, int size) => new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
 
         #endregion
 

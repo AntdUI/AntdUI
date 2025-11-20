@@ -291,35 +291,66 @@ namespace AntdUI
         }
         static void PaintButton(Canvas g, Font font, CellButton btn, Color color, Rectangle rect_read)
         {
+            bool has_loading = btn.Loading && btn.LoadingValue > -1;
             if (string.IsNullOrEmpty(btn.Text))
             {
                 var font_size = g.MeasureString(Config.NullText, font);
                 //没有文字
                 var rect = PaintButtonImageRectCenter(btn, font_size, rect_read);
-                if (PaintButtonImageNoText(g, btn, color, rect) && btn.ShowArrow)
+                if (has_loading)
                 {
-                    int size = (int)(font_size.Height * btn.IconRatio);
-                    var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
-                    PaintButtonTextArrow(g, btn, rect_arrow, color);
+                    float loading_size = rect_read.Height * 0.06F;
+                    using (var brush = new Pen(color, loading_size))
+                    {
+                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        g.DrawArc(brush, rect, btn.AnimationLoadingValue, btn.LoadingValue * 360F);
+                    }
+                }
+                else
+                {
+                    if (PaintButtonImageNoText(g, btn, color, rect) && btn.ShowArrow)
+                    {
+                        int size = (int)(font_size.Height * btn.IconRatio);
+                        var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
+                        PaintButtonTextArrow(g, btn, rect_arrow, color);
+                    }
                 }
             }
             else
             {
                 var font_size = MeasureText(g, btn.Text, font, rect_read, out int txt_height, out bool textLine);
-                bool has_left = btn.HasIcon, has_right = btn.ShowArrow;
+                bool has_left = has_loading || btn.HasIcon, has_right = btn.ShowArrow;
                 Rectangle rect_text;
                 if (has_left || has_right)
                 {
                     if (has_left && has_right)
                     {
                         rect_text = Button.RectAlignLR(g, txt_height, textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
-                        PaintButtonPaintImage(g, btn, color, rect_l);
+                        if (has_loading)
+                        {
+                            float loading_size = rect_l.Height * .14F;
+                            using (var brush = new Pen(color, loading_size))
+                            {
+                                brush.StartCap = brush.EndCap = LineCap.Round;
+                                g.DrawArc(brush, rect_l, btn.AnimationLoadingValue, btn.LoadingValue * 360F);
+                            }
+                        }
+                        else PaintButtonPaintImage(g, btn, color, rect_l);
                         PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                     else if (has_left)
                     {
                         rect_text = Button.RectAlignL(g, txt_height, textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
-                        PaintButtonPaintImage(g, btn, color, rect_l);
+                        if (has_loading)
+                        {
+                            float loading_size = rect_l.Height * .14F;
+                            using (var brush = new Pen(color, loading_size))
+                            {
+                                brush.StartCap = brush.EndCap = LineCap.Round;
+                                g.DrawArc(brush, rect_l, btn.AnimationLoadingValue, btn.LoadingValue * 360F);
+                            }
+                        }
+                        else PaintButtonPaintImage(g, btn, color, rect_l);
                     }
                     else
                     {
