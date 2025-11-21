@@ -366,6 +366,10 @@ namespace Demo
                     return "Expand";
                 case "Menu.collapse":
                     return "Collapse";
+                case "Menu.flatten":
+                    return "Flatten";
+                case "Menu.indent":
+                    return "Indent";
 
                 //Message ----------------------------
                 case "Message.Text":
@@ -450,6 +454,8 @@ namespace Demo
                     return "Multiple Images";
                 case "Preview.button3":
                     return "Dynamic Load Images";
+                case "Preview.button4":
+                    return "Multiple images and Text previews";
 
                 //Progress ----------------------------
                 case "Progress.Text":
@@ -537,6 +543,10 @@ namespace Demo
                     return "Steps";
                 case "Steps.Description":
                     return "A navigation bar that guides users through the steps of a task.";
+                case "Steps.CurrentCompleted":
+                    return "Current Completed";
+                case "Steps.CurrentProcessing":
+                    return "Current Processing";
 
                 //Switch ----------------------------
                 case "Switch.Text":
@@ -577,6 +587,8 @@ namespace Demo
                     return "FocusedStyle";
                 case "Table.checkScrollBarAvoidHeader":
                     return "ScrollBar AvoidHeader";
+                case "Table.checkboxFocusNavigation":
+                    return "FocusNavigation";
                 case "Table.Column.name":
                     return "Name";
                 case "Table.Column.checkTitle":
@@ -761,6 +773,8 @@ namespace Demo
                     return "Control above";
                 case "Spin.btnWindow":
                     return "Entire window";
+                case "Spin.buttonError":
+                    return "Error callback";
 
                 //Shield ----------------------------
                 case "Shield.Text":

@@ -1,5 +1,23 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.1` 2025-11-21
+
+- ➕ Tree NodeMouseDown/NodeMouseUp
+- ➕ Calendar 鼠标事件
+- ➕ Button ToggleChanged
+- ➕ Table CellButton Loading
+- ➕ Config FocusBorderEnabled
+- ➕ Modal UserControl 控制方法
+- ➕ Config Resizable/Min/MaximumSize 等
+- ➕ Spin/Message 适配 异步
+- ✍️ OnClosing > OnFormClosing 导致窗口关闭被拦截
+- ✍️ ColorPicker 下拉空异常
+- ✍️ ColorPicker 单独 ShowReset 错位
+- ✍️ ImagePreview 设计器异常
+- ✍️ Popover Control 错位
+- ✍️ 字符换行不居中
+- ✍️ 移除多余的滚轮计算
+
 ### `2.2.0` 2025-11-14
 
 > 🎉 NET 10.0

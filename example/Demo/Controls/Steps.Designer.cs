@@ -118,11 +118,11 @@ namespace Demo.Controls
             // 
             switch1.Checked = true;
             switch1.CheckedText = "当前里程碑处理中";
-            switch1.LocalizationCheckedText = "Current Milestone Completed";
-            switch1.LocalizationUnCheckedText = "Current Milestone Processing";
+            switch1.LocalizationCheckedText = "Steps.CurrentCompleted";
+            switch1.LocalizationUnCheckedText = "Steps.CurrentProcessing";
             switch1.Location = new Point(3, 161);
             switch1.Name = "switch1";
-            switch1.Size = new Size(219, 44);
+            switch1.Size = new Size(230, 44);
             switch1.TabIndex = 35;
             switch1.UnCheckedText = "当前里程碑已完成";
             switch1.CheckedChanged += switch1_CheckedChanged;

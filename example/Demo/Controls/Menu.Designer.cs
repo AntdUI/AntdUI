@@ -285,7 +285,7 @@ namespace Demo.Controls
             // 
             switch5.CheckedText = "平展";
             switch5.LocalizationCheckedText = "Menu.flatten";
-            switch5.LocalizationUnCheckedText = "Menu.normal";
+            switch5.LocalizationUnCheckedText = "Menu.indent";
             switch5.Location = new Point(267, 91);
             switch5.Name = "switch5";
             switch5.Size = new Size(84, 33);
