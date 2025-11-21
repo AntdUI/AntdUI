@@ -1,5 +1,23 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.1` 2025-11-21
+
+- ➕ Tree NodeMouseDown/NodeMouseUp
+- ➕ Calendar Mouse Events
+- ➕ Button ToggleChanged
+- ➕ Table CellButton Loading
+- ➕ Config FocusBorderEnabled
+- ➕ Modal UserControl Control Method
+- ➕ Config Resize/Min/MaximumSize, etc
+- ➕ Spin/Message adaptation asynchronous
+- ✍️ OnFormClosing causes window closure to be intercepted
+- ✍️ ColorPicker dropdown null exception
+- ✍️ ColorPicker individual ShowReset misalignment
+- ✍️ ImagePreview designer exception
+- ✍️ Popoover Control misalignment
+- ✍️ Character line break not centered
+- ✍️ Remove excess roller calculation
+
 ### `2.2.0` 2025-11-14
 
 > 🎉 NET 10.0
