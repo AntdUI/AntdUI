@@ -240,6 +240,8 @@ namespace AntdUI
 
         #region Spin 加载
 
+        #region 同步
+
         /// <summary>
         /// Spin 加载中
         /// </summary>
@@ -262,6 +264,35 @@ namespace AntdUI
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
         public Task Spin(Spin.Config config, Action<Spin.Config> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
+
+        #endregion
+
+        #region 异步
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(Func<Spin.Config, Task> action, Action? end = null) => Spin(new Spin.Config(), action, end);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(string text, Func<Spin.Config, Task> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="config">自定义配置</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(Spin.Config config, Func<Spin.Config, Task> action, Action? end = null) => AntdUI.Spin.open(this, config, action, end);
+
+        #endregion
 
         #endregion
 

@@ -984,61 +984,45 @@ namespace AntdUI
             Invalidate();
         }
 
-        protected override void OnMouseUp(MouseEventArgs e)
+        string? Mdown;
+        protected override void OnMouseDown(MouseEventArgs e)
         {
+            Mdown = null;
             if (e.Button == MouseButtons.Left)
             {
                 if (rect_lefts.Contains(e.X, e.Y))
                 {
-                    if (hover_lefts.Enable)
-                    {
-                        if (showType == 2) Date = _Date.AddYears(-10);
-                        else Date = _Date.AddYears(-1);
-                        Invalidate();
-                    }
+                    Mdown = "lefts";
                     return;
                 }
                 else if (rect_rights.Contains(e.X, e.Y))
                 {
-                    if (hover_rights.Enable)
-                    {
-                        if (showType == 2) Date = _Date.AddYears(10);
-                        else Date = _Date.AddYears(1);
-                        Invalidate();
-                    }
+                    Mdown = "rights";
                     return;
                 }
                 else if (showType == 0 && rect_left.Contains(e.X, e.Y))
                 {
-                    if (hover_left.Enable)
-                    {
-                        Date = _Date.AddMonths(-1);
-                        Invalidate();
-                    }
+                    Mdown = "left";
                     return;
                 }
                 else if (showType == 0 && rect_right.Contains(e.X, e.Y))
                 {
-                    if (hover_right.Enable)
-                    {
-                        Date = _Date.AddMonths(1);
-                        Invalidate();
-                    }
+                    Mdown = "right";
                     return;
                 }
                 else if ((showType == 0 && rect_year.Contains(e.X, e.Y)) || (showType != 0 && rect_year2.Contains(e.X, e.Y)))
                 {
-                    ChangeType(2);
+                    Mdown = "year";
                     return;
                 }
                 else if (showType == 0 && showButtonToDay && rect_button.Contains(e.X, e.Y))
                 {
-                    Value = Date = DateNow = DateTime.Now;
+                    Mdown = "button";
                     return;
                 }
                 else if (rect_month.Contains(e.X, e.Y))
                 {
-                    ChangeType(1);
+                    Mdown = "month";
                     return;
                 }
                 else
@@ -1051,8 +1035,8 @@ namespace AntdUI
                             {
                                 if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
-                                    Date = it.date;
-                                    ChangeType(0);
+                                    Mdown = it.date_str;
+                                    OnItemMouseDown(it.date, TDatePicker.Month, it.rect, it.rect_read, it.date_str, it.enable, e);
                                     return;
                                 }
                             }
@@ -1066,8 +1050,8 @@ namespace AntdUI
                             {
                                 if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
-                                    Date = it.date;
-                                    ChangeType(1);
+                                    Mdown = it.date_str;
+                                    OnItemMouseDown(it.date, TDatePicker.Year, it.rect, it.rect_read, it.date_str, it.enable, e);
                                     return;
                                 }
                             }
@@ -1081,7 +1065,142 @@ namespace AntdUI
                             {
                                 if (it.enable && it.rect.Contains(e.X, e.Y))
                                 {
-                                    Value = it.date;
+                                    Mdown = it.date_str;
+                                    OnItemMouseDown(it.date, TDatePicker.Date, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            base.OnMouseDown(e);
+        }
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (rect_lefts.Contains(e.X, e.Y))
+                {
+                    if (hover_lefts.Enable && Mdown == "lefts")
+                    {
+                        if (showType == 2) Date = _Date.AddYears(-10);
+                        else Date = _Date.AddYears(-1);
+                        Invalidate();
+                    }
+                    return;
+                }
+                else if (rect_rights.Contains(e.X, e.Y))
+                {
+                    if (hover_rights.Enable && Mdown == "rights")
+                    {
+                        if (showType == 2) Date = _Date.AddYears(10);
+                        else Date = _Date.AddYears(1);
+                        Invalidate();
+                    }
+                    return;
+                }
+                else if (showType == 0 && rect_left.Contains(e.X, e.Y))
+                {
+                    if (hover_left.Enable && Mdown == "left")
+                    {
+                        Date = _Date.AddMonths(-1);
+                        Invalidate();
+                    }
+                    return;
+                }
+                else if (showType == 0 && rect_right.Contains(e.X, e.Y))
+                {
+                    if (hover_right.Enable && Mdown == "right")
+                    {
+                        Date = _Date.AddMonths(1);
+                        Invalidate();
+                    }
+                    return;
+                }
+                else if ((showType == 0 && rect_year.Contains(e.X, e.Y)) || (showType != 0 && rect_year2.Contains(e.X, e.Y)))
+                {
+                    if (Mdown == "year") ChangeType(2);
+                    return;
+                }
+                else if (showType == 0 && showButtonToDay && rect_button.Contains(e.X, e.Y))
+                {
+                    if (Mdown == "button") Value = Date = DateNow = DateTime.Now;
+                    return;
+                }
+                else if (rect_month.Contains(e.X, e.Y))
+                {
+                    if (Mdown == "month") ChangeType(1);
+                    return;
+                }
+                else
+                {
+                    if (showType == 1)
+                    {
+                        if (calendar_month != null)
+                        {
+                            foreach (var it in calendar_month)
+                            {
+                                if (it.enable && it.rect.Contains(e.X, e.Y))
+                                {
+                                    if (Mdown == it.date_str)
+                                    {
+                                        Date = it.date;
+                                        ChangeType(0);
+                                        OnItemMouseUp(it.date, TDatePicker.Month, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                        OnItemMouseClick(it.date, TDatePicker.Month, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    }
+                                    else
+                                    {
+                                        OnItemMouseUp(it.date, TDatePicker.Month, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else if (showType == 2)
+                    {
+                        if (calendar_year != null)
+                        {
+                            foreach (var it in calendar_year)
+                            {
+                                if (it.enable && it.rect.Contains(e.X, e.Y))
+                                {
+                                    if (Mdown == it.date_str)
+                                    {
+                                        Date = it.date;
+                                        ChangeType(1);
+                                        OnItemMouseUp(it.date, TDatePicker.Year, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                        OnItemMouseClick(it.date, TDatePicker.Year, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    }
+                                    else
+                                    {
+                                        OnItemMouseUp(it.date, TDatePicker.Year, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (calendar_day != null)
+                        {
+                            foreach (var it in calendar_day)
+                            {
+                                if (it.enable && it.rect.Contains(e.X, e.Y))
+                                {
+                                    if (Mdown == it.date_str)
+                                    {
+                                        Value = it.date;
+                                        OnItemMouseUp(it.date, TDatePicker.Date, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                        OnItemMouseClick(it.date, TDatePicker.Date, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    }
+                                    else
+                                    {
+                                        OnItemMouseUp(it.date, TDatePicker.Date, it.rect, it.rect_read, it.date_str, it.enable, e);
+                                    }
                                     return;
                                 }
                             }
@@ -1322,6 +1441,17 @@ namespace AntdUI
         /// </summary>
         [Description("绘制项之前发生"), Category("行为")]
         public event CalendarPaintBeginEventHandler? ItemPaintBegin;
+
+        [Description("鼠标点击事件"), Category("行为")]
+        public event CalendarMouseEventHandler? ItemMouseClick;
+        [Description("鼠标按下事件"), Category("行为")]
+        public event CalendarMouseEventHandler? ItemMouseDown;
+        [Description("鼠标松开事件"), Category("行为")]
+        public event CalendarMouseEventHandler? ItemMouseUp;
+
+        protected virtual void OnItemMouseClick(DateTime e, TDatePicker type, Rectangle rect, Rectangle rectreal, string text, bool enable, MouseEventArgs args) => ItemMouseClick?.Invoke(this, new CalendarMouseEventArgs(e, type, rect, rectreal, text, enable, args));
+        protected virtual void OnItemMouseDown(DateTime e, TDatePicker type, Rectangle rect, Rectangle rectreal, string text, bool enable, MouseEventArgs args) => ItemMouseDown?.Invoke(this, new CalendarMouseEventArgs(e, type, rect, rectreal, text, enable, args));
+        protected virtual void OnItemMouseUp(DateTime e, TDatePicker type, Rectangle rect, Rectangle rectreal, string text, bool enable, MouseEventArgs args) => ItemMouseUp?.Invoke(this, new CalendarMouseEventArgs(e, type, rect, rectreal, text, enable, args));
 
         #endregion
 

@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -76,4 +77,37 @@ namespace AntdUI
 
     public delegate void CalendarPaintEventHandler(object sender, CalendarPaintEventArgs e);
     public delegate void CalendarPaintBeginEventHandler(object sender, CalendarPaintBeginEventArgs e);
+
+    public class CalendarMouseEventArgs : VMEventArgs<DateTime>
+    {
+        public CalendarMouseEventArgs(DateTime value, TDatePicker type, Rectangle rect, Rectangle rectreal, string text, bool enable, MouseEventArgs e) : base(value, e)
+        {
+            Type = type;
+            Rect = rect;
+            RectReal = rectreal;
+            Text = text;
+            Enable = enable;
+        }
+
+        /// <summary>
+        /// 区域
+        /// </summary>
+        public Rectangle Rect { get; private set; }
+
+        /// <summary>
+        /// 真实区域
+        /// </summary>
+        public Rectangle RectReal { get; private set; }
+
+        public TDatePicker Type { get; private set; }
+
+        public string Text { get; private set; }
+
+        public bool Enable { get; private set; }
+    }
+
+    /// <summary>
+    /// DateTime 类型事件
+    /// </summary>
+    public delegate void CalendarMouseEventHandler(object sender, CalendarMouseEventArgs e);
 }

@@ -311,6 +311,18 @@ namespace AntdUI
         public event TreeSelectEventHandler? NodeMouseClick;
 
         /// <summary>
+        /// 鼠标按下事件
+        /// </summary>
+        [Description("鼠标按下事件"), Category("行为")]
+        public event TreeSelectEventHandler? NodeMouseDown;
+
+        /// <summary>
+        /// 鼠标松开事件
+        /// </summary>
+        [Description("鼠标松开事件"), Category("行为")]
+        public event TreeSelectEventHandler? NodeMouseUp;
+
+        /// <summary>
         /// 双击项事件
         /// </summary>
         [Description("双击项事件"), Category("行为")]
@@ -326,11 +338,15 @@ namespace AntdUI
 
         internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
         internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
+        internal void OnNodeMouseDown(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDown(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
+        internal void OnNodeMouseUp(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseUp(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
         internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDoubleClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
         internal void OnNodeMouseMove(TreeItem item, bool hover) => OnNodeMouseMove(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), hover);
 
         protected virtual void OnSelectChanged(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => SelectChanged?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
         protected virtual void OnNodeMouseClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
+        protected virtual void OnNodeMouseDown(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseDown?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
+        protected virtual void OnNodeMouseUp(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseUp?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
         protected virtual void OnNodeMouseDoubleClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseDoubleClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
         protected virtual void OnNodeMouseMove(TreeItem item, Rectangle rect, bool hover) => NodeMouseMove?.Invoke(this, new TreeHoverEventArgs(item, rect, hover));
         protected virtual void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
@@ -748,6 +764,7 @@ namespace AntdUI
                 if (down > 0)
                 {
                     MDown = item;
+                    OnNodeMouseDown(item, down, e);
                     return true;
                 }
                 if (item.ICanExpand && item.Expand)
@@ -845,6 +862,7 @@ namespace AntdUI
                                 }
                             }
                         }
+                        OnNodeMouseUp(item, down, e);
                         if (doubleClick) OnNodeMouseDoubleClick(item, down, e);
                         else OnNodeMouseClick(item, down, e);
                     }
