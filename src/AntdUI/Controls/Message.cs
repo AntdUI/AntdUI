@@ -21,6 +21,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -82,7 +83,17 @@ namespace AntdUI
         /// <param name="call">耗时任务</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void loading(Target target, string text, Action<Config> call, Font? font = null, int? autoClose = null) => open(new Config(target, text, TType.None, font, autoClose) { Call = call });
+        public static void loading(Target target, string text, Action<Config> call, Font? font = null, int? autoClose = null) => open(new Config(target, text, TType.None, font, autoClose).SetCall(call));
+
+        /// <summary>
+        /// 加载提示
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="text">提示内容</param>
+        /// <param name="call">耗时任务</param>
+        /// <param name="font">字体</param>
+        /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
+        public static void loading(Target target, string text, Func<Config, Task> call, Font? font = null, int? autoClose = null) => open(new Config(target, text, TType.None, font, autoClose).SetCall(call));
 
         public static void open(Target target, string text, Font? font = null, int? autoClose = null) => open(new Config(target, text, TType.None, font, autoClose));
 
@@ -134,7 +145,17 @@ namespace AntdUI
         /// <param name="call">耗时任务</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void loading(Form form, string text, Action<Config> call, Font? font = null, int? autoClose = null) => open(new Config(form, text, TType.None, font, autoClose) { Call = call });
+        public static void loading(Form form, string text, Action<Config> call, Font? font = null, int? autoClose = null) => open(new Config(form, text, TType.None, font, autoClose).SetCall(call));
+
+        /// <summary>
+        /// 加载提示
+        /// </summary>
+        /// <param name="form">窗口</param>
+        /// <param name="text">提示内容</param>
+        /// <param name="call">耗时任务</param>
+        /// <param name="font">字体</param>
+        /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
+        public static void loading(Form form, string text, Func<Config, Task> call, Font? font = null, int? autoClose = null) => open(new Config(form, text, TType.None, font, autoClose).SetCall(call));
 
         public static void open(Form form, string text, Font? font = null, int? autoClose = null) => open(new Config(form, text, TType.None, font, autoClose));
 
@@ -290,7 +311,7 @@ namespace AntdUI
             /// <summary>
             /// 加载回调
             /// </summary>
-            public Action<Config>? Call { get; set; }
+            public object? Call { get; set; }
 
             /// <summary>
             /// 字体
@@ -404,7 +425,17 @@ namespace AntdUI
 
             #endregion
 
+            public Config SetCall(Action? value)
+            {
+                Call = value;
+                return this;
+            }
             public Config SetCall(Action<Config>? value)
+            {
+                Call = value;
+                return this;
+            }
+            public Config SetCall(Func<Config, Task>? value)
             {
                 Call = value;
                 return this;
@@ -602,7 +633,9 @@ namespace AntdUI
                     var tmp = DateTime.Now;
                     try
                     {
-                        config.Call(config);
+                        if (config.Call is Func<Message.Config, Task> func) func(config).Wait();
+                        else if (config.Call is Action<Message.Config> action_config) action_config(config);
+                        else if (config.Call is Action action) action();
                     }
                     catch { }
                     var time = DateTime.Now - tmp;

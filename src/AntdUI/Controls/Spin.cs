@@ -250,6 +250,8 @@ namespace AntdUI
 
         #region 静态方法
 
+        #region 同步
+
         /// <summary>
         /// Spin 加载中
         /// </summary>
@@ -347,6 +349,103 @@ namespace AntdUI
                 { }
             });
         }
+
+        #endregion
+
+        #region 异步
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config(), action, end, error);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, string text, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config { Text = text }, action, end, error);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="config">自定义配置</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, Config config, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null)
+        {
+            var parent = control.FindPARENT();
+            if (parent is LayeredFormAsynLoad model)
+            {
+                if (model.IsLoad)
+                {
+                    var Event = new ManualResetEvent(false);
+                    model.LoadCompleted += () => Event.SetWait();
+                    return ITask.Run(() =>
+                    {
+                        if (Event.Wait(1000)) return;
+                        open_core(control, true, parent, config, action, end, error)?.Wait();
+                    });
+                }
+                else return open_core(control, control.InvokeRequired, parent, config, action, end, error);
+            }
+            return open_core(control, control.InvokeRequired, parent, config, action, end, error);
+        }
+
+        static Task open_core(Control control, bool InvokeRequired, Form? parent, Config config, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null)
+        {
+            var frm = open_core(control, InvokeRequired, parent, config);
+            bool hasError = false;
+            return ITask.Run(() =>
+            {
+                if (frm == null) return;
+                Exception? ex = null;
+                try
+                {
+                    var task = action(config);
+                    if (task != null) task.Wait();
+                }
+                catch (Exception e)
+                {
+                    ex = e;
+                    hasError = true;
+                    try
+                    {
+                        error?.Invoke(e);
+                    }
+                    catch { }
+                }
+                if (frm.IsDisposed) return;
+                try
+                {
+                    frm.Invoke(() => frm.Dispose());
+                }
+                catch { }
+                // 如果没有提供错误回调，则重新抛出异常
+                if (ex != null && error == null) throw ex;
+            }, () =>
+            {
+                if (end == null || hasError) return;
+                // 只有在没有错误且提供了完成回调时才执行
+                try
+                {
+                    end();
+                }
+                catch
+                { }
+            });
+        }
+
+        #endregion
 
         #endregion
     }

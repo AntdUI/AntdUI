@@ -108,51 +108,11 @@ namespace AntdUI
 
         internal Action<TableEndEditEventArgs>? Call { get; set; }
 
-        public InputNumber Set(InputNumber input, Action<Result<InputNumber>>? call = null)
+        public T Set<T>(T input, Action<Result<T>>? call = null) where T : Input
         {
             SetInput(input);
             if (call == null) return input;
-            Call = e => call(new Result<InputNumber>(input, Column, e));
-            return input;
-        }
-
-        public Select Set(Select input, Action<Result<Select>>? call = null)
-        {
-            SetInput(input);
-            if (call == null) return input;
-            Call = e => call(new Result<Select>(input, Column, e));
-            return input;
-        }
-
-        public SelectMultiple Set(SelectMultiple input, Action<Result<SelectMultiple>>? call = null)
-        {
-            SetInput(input);
-            if (call == null) return input;
-            Call = e => call(new Result<SelectMultiple>(input, Column, e));
-            return input;
-        }
-
-        public DatePicker Set(DatePicker input, Action<Result<DatePicker>>? call = null)
-        {
-            SetInput(input);
-            if (call == null) return input;
-            Call = e => call(new Result<DatePicker>(input, Column, e));
-            return input;
-        }
-
-        public DatePickerRange Set(DatePickerRange input, Action<Result<DatePickerRange>>? call = null)
-        {
-            SetInput(input);
-            if (call == null) return input;
-            Call = e => call(new Result<DatePickerRange>(input, Column, e));
-            return input;
-        }
-
-        public TimePicker Set(TimePicker input, Action<Result<TimePicker>>? call = null)
-        {
-            SetInput(input);
-            if (call == null) return input;
-            Call = e => call(new Result<TimePicker>(input, Column, e));
+            Call = e => call(new Result<T>(input, Column, e));
             return input;
         }
 

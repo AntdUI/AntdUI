@@ -323,8 +323,6 @@ namespace AntdUI
             FontSub?.Dispose();
             subForm?.IClose();
             subForm = null;
-            resetEvent?.WaitDispose();
-            resetEvent = null;
             base.Dispose(disposing);
         }
 
@@ -493,10 +491,8 @@ namespace AntdUI
                     {
                         IClose();
                         CloseSub();
-                        resetEvent = new ManualResetEvent(false);
                         ITask.Run(() =>
                         {
-                            if (resetEvent.Wait(false)) return;
                             if (config.CallSleep > 0) Thread.Sleep(config.CallSleep);
                             config.Target.BeginInvoke(new Action(() => config.Call(item)));
                         });
@@ -619,8 +615,6 @@ namespace AntdUI
 
         protected override void OnMouseWheel(MouseButtons button, int clicks, int x, int y, int delta) => ScrollBar.MouseWheel(delta);
         protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
-
-        ManualResetEvent? resetEvent;
 
         LayeredFormContextMenuStrip? subForm;
         ILayeredForm? SubLayeredForm.SubForm() => subForm;

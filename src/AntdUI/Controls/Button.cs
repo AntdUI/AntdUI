@@ -723,6 +723,7 @@ namespace AntdUI
                     else Invalidate();
                 }
                 else Invalidate();
+                OnToggleChanged(value);
                 OnPropertyChanged(nameof(Toggle));
             }
         }
@@ -2290,6 +2291,15 @@ namespace AntdUI
                 }
             }
         }
+
+        #endregion
+
+        #region 事件
+
+        [Description("Toggle 改变时发生"), Category("行为")]
+        public event BoolEventHandler? ToggleChanged;
+
+        protected virtual void OnToggleChanged(bool e) => ToggleChanged?.Invoke(this, new BoolEventArgs(e));
 
         #endregion
 

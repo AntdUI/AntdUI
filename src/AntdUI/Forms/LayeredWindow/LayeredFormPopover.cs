@@ -76,6 +76,7 @@ namespace AntdUI
                             rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
                         }
                     }
+                    rectContent.Offset(shadow, shadow);
                     tempContent = new Bitmap(control.Width, control.Height);
                     control.Size = new Size(tempContent.Width, tempContent.Height);
                     control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
