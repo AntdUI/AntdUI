@@ -511,7 +511,7 @@ namespace AntdUI
             {
                 if (textMultiLine == value) return;
                 textMultiLine = value;
-                if (value) sf |= FormatFlags.NoWrap;
+                if (!value) sf |= FormatFlags.NoWrap;
                 else sf &= ~FormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));
