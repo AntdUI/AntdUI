@@ -287,6 +287,7 @@ namespace AntdUI
                         new PreBtns("@t_rotateR","RotateRightOutlined"),
                         new PreBtns("@t_zoomOut","ZoomOutOutlined"),
                         new PreBtns("@t_zoomIn","ZoomInOutlined"),
+                        new PreBtns("@t_zoomToControl","ExpandOutlined"),
                     };
                     if (customButton != null && customButton.Count > 0)
                     {
@@ -917,6 +918,93 @@ namespace AntdUI
             }
         }
 
+        public void ZoomToControl()
+        {
+
+            if (Img != null)
+            {
+                Dpi = 1;
+                float fControlWidth = this.Size.Width;
+                float fControlHeight = this.Size.Height;
+                float fImageWidth = ImgSize.Width;
+                float fImageHeight = ImgSize.Height;
+                if (fImageWidth / fImageHeight > fControlWidth / fControlHeight)
+                {
+                    Dpi = fControlWidth / fImageWidth;
+                }
+                else
+                {
+                    Dpi = fControlHeight / fImageHeight;
+                }
+                Invalidate();
+            }
+
+        }
+
+        public void FlipY()
+        {
+            if (Img != null)
+            {
+                Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                Invalidate();
+            }
+        }
+
+        public void FlipX()
+        {
+            if (Img != null)
+            {
+                Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                Invalidate();
+            }
+        }
+
+        public void RotateL()
+        {
+            if (Img != null)
+            {
+                float old = _dpi;
+                bool oldautoDpi = autoDpi;
+                Img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                ImgSize = Img.Size;
+                autoDpi = true;
+                FillScaleImg();
+                Dpi = old;
+                autoDpi = oldautoDpi;
+                Invalidate();
+            }
+        }
+
+        public void RotateR()
+        {
+            if (Img != null)
+            {
+                float old = _dpi;
+                bool oldautoDpi = autoDpi;
+                Img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                ImgSize = Img.Size;
+                autoDpi = true;
+                FillScaleImg();
+                Dpi = old;
+                autoDpi = oldautoDpi;
+                Invalidate();
+            }
+        }
+
+        public void ZoomOut()
+        {
+            Dpi -= 0.1F;
+            SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
+            Invalidate();
+        }
+
+        public void ZoomIn()
+        {
+            Dpi += 0.1F;
+            SetBtnEnabled("@t_zoomOut", true);
+            Invalidate();
+        }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (moveImg)
@@ -940,56 +1028,25 @@ namespace AntdUI
                             switch (it.id)
                             {
                                 case "@t_flipY":
-                                    if (Img != null)
-                                    {
-                                        Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                                        Invalidate();
-                                    }
+                                    FlipY();
                                     break;
                                 case "@t_flipX":
-                                    if (Img != null)
-                                    {
-                                        Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                        Invalidate();
-                                    }
+                                    FlipX();
                                     break;
                                 case "@t_rotateL":
-                                    if (Img != null)
-                                    {
-                                        float old = _dpi;
-                                        bool oldautoDpi = autoDpi;
-                                        Img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                        ImgSize = Img.Size;
-                                        autoDpi = true;
-                                        FillScaleImg();
-                                        Dpi = old;
-                                        autoDpi = oldautoDpi;
-                                        Invalidate();
-                                    }
+                                    RotateL();
                                     break;
                                 case "@t_rotateR":
-                                    if (Img != null)
-                                    {
-                                        float old = _dpi;
-                                        bool oldautoDpi = autoDpi;
-                                        Img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                                        ImgSize = Img.Size;
-                                        autoDpi = true;
-                                        FillScaleImg();
-                                        Dpi = old;
-                                        autoDpi = oldautoDpi;
-                                        Invalidate();
-                                    }
+                                    RotateR();
                                     break;
                                 case "@t_zoomOut":
-                                    Dpi -= 0.1F;
-                                    SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
-                                    Invalidate();
+                                    ZoomOut();
                                     break;
                                 case "@t_zoomIn":
-                                    Dpi += 0.1F;
-                                    SetBtnEnabled("@t_zoomOut", true);
-                                    Invalidate();
+                                    ZoomIn();
+                                    break;
+                                case "@t_zoomToControl":
+                                    ZoomToControl();
                                     break;
                                 default:
                                     if (items == null) return;
