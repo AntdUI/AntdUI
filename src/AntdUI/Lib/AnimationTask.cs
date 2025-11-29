@@ -26,7 +26,7 @@ namespace AntdUI
 {
     public class AnimationTask : IDisposable
     {
-        #region 测试
+        #region 旧
 
         /// <summary>
         /// 循环任务
@@ -38,43 +38,29 @@ namespace AntdUI
         /// <param name="sleep">运行前睡眠</param>
         public AnimationTask(Control control, Func<bool> action, int interval, Action? end = null, int sleep = 0)
         {
-            bool ok = true;
-            task = ITask.Run(() =>
+            Run(() =>
             {
-                if (sleep > 0) Thread.Sleep(sleep);
                 while (true)
                 {
-                    if (token.Wait(control))
-                    {
-                        ok = false;
-                        return;
-                    }
+                    if (token.Wait(control)) return false;
                     else
                     {
                         if (action()) Thread.Sleep(interval);
-                        else return;
+                        else return true;
                     }
                 }
-            }).ContinueWith(action =>
-            {
-                if (ok && end != null) end();
-                Dispose();
-            });
+            }, new IAnimationConfig().SetEnd(end).SetSleep(sleep).SetPriority());
         }
         public AnimationTask(Control control, Func<bool> action)
         {
-            task = ITask.Run(() =>
+            Run(() =>
             {
                 while (true)
                 {
-                    if (token.Wait(control)) return;
-                    else
-                    {
-                        if (action()) { }
-                        else return;
-                    }
+                    if (token.Wait(control)) return false;
+                    else if (!action()) return false;
                 }
-            }).ContinueWith(action => Dispose());
+            }, new IAnimationConfig().SetPriority());
         }
 
         /// <summary>
@@ -87,36 +73,19 @@ namespace AntdUI
         /// <param name="sleep">运行前睡眠</param>
         public AnimationTask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0, bool isend = false)
         {
-            bool ok = true;
-            task = ITask.Run(() =>
+            Run(() =>
             {
-                if (sleep > 0) Thread.Sleep(sleep);
                 for (int i = 0; i < totalFrames; i++)
                 {
-                    if (token.Wait())
-                    {
-                        ok = false;
-                        return;
-                    }
+                    if (token.Wait()) return false;
                     else
                     {
                         if (action(i + 1)) Thread.Sleep(interval);
-                        else return;
+                        else return true;
                     }
                 }
-            }).ContinueWith(action =>
-            {
-                if (isend)
-                {
-                    Dispose();
-                    end();
-                }
-                else
-                {
-                    if (ok) end();
-                    Dispose();
-                }
-            });
+                return true;
+            }, new IAnimationConfig().SetEnd(end).SetSleep(sleep).SetEndRCall(isend).SetPriority());
         }
 
         Task? task;
