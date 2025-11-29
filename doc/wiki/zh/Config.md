@@ -117,7 +117,7 @@ AntdUI.Config.NoticeOverflowClose = false;
 ### 文本呈现质量
 
 ``` csharp
-AntdUI.Config.TextRenderingHint = System.Drawing.Text.ClearTypeGridFit;
+AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 ```
 
 ### 文本高质量呈现 🔴
