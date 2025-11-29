@@ -135,34 +135,12 @@ namespace AntdUI
                 if (IsHandleCreated && Config.HasAnimation(nameof(Checkbox)))
                 {
                     AnimationCheck = true;
-                    if (value)
+                    ThreadCheck = new AnimationTask(new AnimationLinearFConfig(this, i =>
                     {
-                        ThreadCheck = new ITask(this, () =>
-                        {
-                            AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
-                            if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
-                            Invalidate();
-                            return true;
-                        }, 20, () =>
-                        {
-                            AnimationCheck = false;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadCheck = new ITask(this, () =>
-                        {
-                            AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
-                            if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
-                            Invalidate();
-                            return true;
-                        }, 20, () =>
-                        {
-                            AnimationCheck = false;
-                            Invalidate();
-                        });
-                    }
+                        AnimationCheckValue = i;
+                        Invalidate();
+                        return true;
+                    }, 20).SetValue(AnimationCheckValue, value, 0.2F).SetEnd(() => AnimationCheck = false));
                 }
                 else AnimationCheckValue = value ? 1F : 0F;
                 Invalidate();
@@ -352,34 +330,12 @@ namespace AntdUI
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
-                        if (value)
+                        ThreadHover = new AnimationTask(new AnimationLinearConfig(this, i =>
                         {
-                            ThreadHover = new ITask(this, () =>
-                            {
-                                AnimationHoverValue += 20;
-                                if (AnimationHoverValue > 255) { AnimationHoverValue = 255; return false; }
-                                Invalidate();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                Invalidate();
-                            });
-                        }
-                        else
-                        {
-                            ThreadHover = new ITask(this, () =>
-                            {
-                                AnimationHoverValue -= 20;
-                                if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                Invalidate();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                Invalidate();
-                            });
-                        }
+                            AnimationHoverValue = i;
+                            Invalidate();
+                            return true;
+                        }, 10).SetValueColor(AnimationHoverValue, value, 20).SetEnd(() => AnimationHover = false));
                     }
                     else AnimationHoverValue = 255;
                     Invalidate();
@@ -395,8 +351,8 @@ namespace AntdUI
             ThreadHover?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover;
-        ITask? ThreadCheck;
+        AnimationTask? ThreadHover;
+        AnimationTask? ThreadCheck;
 
         #endregion
 

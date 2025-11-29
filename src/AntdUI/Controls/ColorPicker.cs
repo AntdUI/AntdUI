@@ -721,34 +721,15 @@ namespace AntdUI
                 {
                     ThreadFocus?.Dispose();
                     AnimationFocus = true;
-                    if (value)
+                    var config = new AnimationLinearConfig(this, i =>
                     {
-                        ThreadFocus = new ITask(this, () =>
-                        {
-                            AnimationFocusValue += 4;
-                            if (AnimationFocusValue > 30) return false;
-                            Invalidate();
-                            return true;
-                        }, 20, () =>
-                        {
-                            AnimationFocus = false;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadFocus = new ITask(this, () =>
-                        {
-                            AnimationFocusValue -= 4;
-                            if (AnimationFocusValue < 1) return false;
-                            Invalidate();
-                            return true;
-                        }, 20, () =>
-                        {
-                            AnimationFocus = false;
-                            Invalidate();
-                        });
-                    }
+                        AnimationFocusValue = i;
+                        Invalidate();
+                        return true;
+                    }, 20).SetValue(AnimationFocusValue);
+                    if (value) config.SetAdd(4).SetMax(30);
+                    else config.SetAdd(-4).SetMax(0);
+                    ThreadFocus = new AnimationTask(config.SetEnd(() => AnimationFocus = false));
                 }
                 else Invalidate();
             }
@@ -772,34 +753,12 @@ namespace AntdUI
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
-                        if (value)
+                        ThreadHover = new AnimationTask(new AnimationLinearConfig(this, i =>
                         {
-                            ThreadHover = new ITask(this, () =>
-                            {
-                                AnimationHoverValue += 20;
-                                if (AnimationHoverValue > 255) { AnimationHoverValue = 255; return false; }
-                                Invalidate();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                Invalidate();
-                            });
-                        }
-                        else
-                        {
-                            ThreadHover = new ITask(this, () =>
-                            {
-                                AnimationHoverValue -= 20;
-                                if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                Invalidate();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                Invalidate();
-                            });
-                        }
+                            AnimationHoverValue = i;
+                            Invalidate();
+                            return true;
+                        }, 10).SetValueColor(AnimationHoverValue, value, 20).SetEnd(() => AnimationHover = false));
                     }
                     else AnimationHoverValue = 255;
                     Invalidate();
@@ -881,8 +840,8 @@ namespace AntdUI
             bmp_alpha = null;
             base.Dispose(disposing);
         }
-        ITask? ThreadHover;
-        ITask? ThreadFocus;
+        AnimationTask? ThreadHover;
+        AnimationTask? ThreadFocus;
 
         #endregion
 

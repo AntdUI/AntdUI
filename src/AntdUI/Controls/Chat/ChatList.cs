@@ -997,7 +997,7 @@ namespace AntdUI.Chat
             }
         }
 
-        ITask? task;
+        AnimationTask? task;
         internal bool showlinedot = false;
         bool loading;
         public bool Loading
@@ -1012,12 +1012,12 @@ namespace AntdUI.Chat
                 showlinedot = false;
                 if (value && PARENT != null)
                 {
-                    task = new ITask(PARENT, () =>
+                    task = new AnimationTask(new AnimationLoopConfig(PARENT, () =>
                     {
                         showlinedot = !showlinedot;
                         Invalidate();
                         return loading;
-                    }, 200);
+                    }, 200).SetPriority());
                 }
                 else Invalidate();
             }

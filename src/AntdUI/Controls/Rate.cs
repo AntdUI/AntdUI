@@ -329,7 +329,7 @@ namespace AntdUI
             internal float AnimationActiveValueO = 0;
             internal float AnimationActiveValueS = 0;
             internal bool AnimationActive = false;
-            ITask? ThreadActive;
+            AnimationTask? ThreadActive;
             internal bool Animatio(bool _active, bool _hover, bool _half)
             {
                 if (active == _active && hover == _hover)
@@ -350,7 +350,7 @@ namespace AntdUI
                     {
                         if (active && hover)
                         {
-                            ThreadActive = new ITask((i) =>
+                            ThreadActive = new AnimationTask((i) =>
                             {
                                 AnimationActiveValueS = AnimationActiveValueO = Animation.Animate(i, t, 1F, AnimationType.Ball);
                                 rate.Invalidate();
@@ -367,7 +367,7 @@ namespace AntdUI
                             if (active_old && hover_old)
                             {
                                 //仅缩小
-                                ThreadActive = new ITask((i) =>
+                                ThreadActive = new AnimationTask((i) =>
                                 {
                                     AnimationActiveValueS = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
                                     rate.Invalidate();
@@ -382,7 +382,7 @@ namespace AntdUI
                             }
                             else
                             {
-                                ThreadActive = new ITask((i) =>
+                                ThreadActive = new AnimationTask((i) =>
                                 {
                                     AnimationActiveValueO = Animation.Animate(i, t, 1F, AnimationType.Ball);
                                     rate.Invalidate();
@@ -402,7 +402,7 @@ namespace AntdUI
                         if (active_old && !hover_old)
                         {
                             //仅不透明
-                            ThreadActive = new ITask((i) =>
+                            ThreadActive = new AnimationTask((i) =>
                             {
                                 AnimationActiveValueO = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
                                 rate.Invalidate();
@@ -416,7 +416,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            ThreadActive = new ITask((i) =>
+                            ThreadActive = new AnimationTask((i) =>
                             {
                                 AnimationActiveValueS = AnimationActiveValueO = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
                                 rate.Invalidate();

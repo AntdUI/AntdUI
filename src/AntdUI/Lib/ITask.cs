@@ -26,8 +26,6 @@ namespace AntdUI
 {
     public class ITask : IDisposable
     {
-        public bool IsRun = false;
-
         /// <summary>
         /// 循环任务
         /// </summary>
@@ -37,10 +35,10 @@ namespace AntdUI
         /// <param name="max">最大值</param>
         /// <param name="add">更新量</param>
         /// <param name="end">结束回调</param>
+        [Obsolete("use AnimationTask")]
         public ITask(Control control, Func<int, bool> action, int interval, int max, int add, Action? end = null)
         {
             bool ok = true;
-            IsRun = true;
             task = Run(() =>
             {
                 int val = 0;
@@ -75,10 +73,10 @@ namespace AntdUI
         /// <param name="max">最大值</param>
         /// <param name="add">更新量</param>
         /// <param name="end">结束回调</param>
+        [Obsolete("use AnimationTask")]
         public ITask(Control control, Action<float> action, int interval, float max, float add, Action? end = null)
         {
             bool ok = true;
-            IsRun = true;
             task = Run(() =>
             {
                 float val = 0;
@@ -112,10 +110,10 @@ namespace AntdUI
         /// <param name="interval">间隔</param>
         /// <param name="end">结束回调</param>
         /// <param name="sleep">运行前睡眠</param>
+        [Obsolete("use AnimationTask")]
         public ITask(Control control, Func<bool> action, int interval, Action? end = null, int sleep = 0)
         {
             bool ok = true;
-            IsRun = true;
             task = Run(() =>
             {
                 if (sleep > 0) Thread.Sleep(sleep);
@@ -138,9 +136,10 @@ namespace AntdUI
                 Dispose();
             });
         }
+
+        [Obsolete("use AnimationTask")]
         public ITask(Control control, Func<bool> action)
         {
-            IsRun = true;
             task = Run(() =>
             {
                 while (true)
@@ -163,9 +162,9 @@ namespace AntdUI
         /// <param name="totalFrames">总帧数</param>
         /// <param name="end">结束回调</param>
         /// <param name="sleep">运行前睡眠</param>
+        [Obsolete("use AnimationTask")]
         public ITask(Func<int, bool> action, int interval, int totalFrames, Action end, int sleep = 0, bool isend = false)
         {
-            IsRun = true;
             bool ok = true;
             task = Run(() =>
             {
@@ -197,9 +196,10 @@ namespace AntdUI
                 }
             });
         }
+
+        [Obsolete("use AnimationTask")]
         public ITask(bool _is, int interval, int totalFrames, float cold, AnimationType type, Action<int, float> action, Action end)
         {
-            IsRun = true;
             bool ok = true;
             task = Run(() =>
             {
@@ -274,7 +274,6 @@ namespace AntdUI
                 token?.Dispose();
                 token = null;
             }
-            IsRun = false;
             GC.SuppressFinalize(this);
         }
 

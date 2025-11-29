@@ -228,7 +228,7 @@ namespace AntdUI
 
         #region 动画和工具提示
 
-        ITask? animationTask;
+        AnimationTask? animationTask;
         private void StartAnimation()
         {
             animationTask?.Dispose();
@@ -236,16 +236,11 @@ namespace AntdUI
             {
                 AnimationProgress = 0F;
                 var t = Animation.TotalFrames(10, AnimationDuration);
-                animationTask = new ITask((i) =>
+                animationTask = new AnimationTask(new AnimationFixedConfig(i =>
                 {
-                    AnimationProgress = Animation.Animate(i, t, 1F, AnimationType.Ball);
+                    AnimationProgress = i;
                     Invalidate();
-                    return true;
-                }, 10, t, () =>
-                {
-                    AnimationProgress = 1F;
-                    Invalidate();
-                });
+                }, 10, Animation.TotalFrames(10, AnimationDuration), true, AnimationType.Ball));
             }
             else AnimationProgress = 1F;
         }

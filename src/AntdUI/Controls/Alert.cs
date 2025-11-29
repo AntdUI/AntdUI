@@ -317,11 +317,11 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? task;
+        AnimationTask? task;
         void StartTask()
         {
             task?.Dispose();
-            if (loop) task = new ITask(this, TextAnimation, LoopSpeed, EndTask);
+            if (loop) task = new AnimationTask(new AnimationLoopConfig(this, TextAnimation, LoopSpeed).SetEnd(EndTask));
             else Invalidate();
         }
 

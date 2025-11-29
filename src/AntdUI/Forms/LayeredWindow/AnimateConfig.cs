@@ -46,7 +46,7 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? task;
+        AnimationTask? task;
         bool ok_end = false;
 
         public void Start(string name)
@@ -56,7 +56,7 @@ namespace AntdUI
                 var t = Animation.TotalFrames(10, 80);
                 if (form is SpinForm)
                 {
-                    task = new ITask(i =>
+                    task = new AnimationTask(i =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         form.alpha = (byte)(Alpha * val);
@@ -65,7 +65,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    task = new ITask(i =>
+                    task = new AnimationTask(i =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         SetAnimateValue((byte)(Alpha * val));
@@ -101,7 +101,7 @@ namespace AntdUI
             {
                 call_end();
                 var t = Animation.TotalFrames(10, 80);
-                task = new ITask((i) =>
+                task = new AnimationTask((i) =>
                 {
                     var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                     SetAnimateValue((byte)(Alpha * (1F - val)));
@@ -195,7 +195,7 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? task;
+        AnimationTask? task;
         bool run_end = false, ok_end = false;
 
         public void Start(string name)
@@ -207,7 +207,7 @@ namespace AntdUI
                 {
                     var tr = form.TargetRect;
                     int _y = tr.Y, _height = tr.Height;
-                    task = new ITask((i) =>
+                    task = new AnimationTask((i) =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         int height = (int)(_height * val);
@@ -218,7 +218,7 @@ namespace AntdUI
                 else
                 {
                     int _height = form.TargetRect.Height;
-                    task = new ITask((i) =>
+                    task = new AnimationTask((i) =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         int height = (int)(_height * val);
@@ -255,7 +255,7 @@ namespace AntdUI
                 {
                     var tr = form.TargetRect;
                     int _y = tr.Y, _height = tr.Height;
-                    new ITask(i =>
+                    new AnimationTask(i =>
                     {
                         var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
                         int height = (int)(_height * val);
@@ -266,7 +266,7 @@ namespace AntdUI
                 else
                 {
                     int _height = form.TargetRect.Height;
-                    new ITask(i =>
+                    new AnimationTask(i =>
                     {
                         var val = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
                         SetAnimateValue((int)(_height * val), val);

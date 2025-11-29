@@ -624,7 +624,7 @@ namespace AntdUI
             ThreadLoading?.Dispose();
             if (!animation) return;
 
-            ThreadLoading = new ITask(this, () =>
+            ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
             {
                 AnimationLoadingValue = AnimationLoadingValue.Calculate(0.01F);
                 if (AnimationLoadingValue > 1)
@@ -635,10 +635,7 @@ namespace AntdUI
                 }
                 Invalidate();
                 return true;
-            }, 10, () =>
-            {
-                Invalidate();
-            });
+            }, 10).SetEnd(Invalidate).SetPriority());
 
         }
         protected override void Dispose(bool disposing)
@@ -647,7 +644,7 @@ namespace AntdUI
 
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading;
+        AnimationTask? ThreadLoading;
         float AnimationLoadingValue = 0F;
         #endregion
 

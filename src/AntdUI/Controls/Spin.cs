@@ -452,7 +452,7 @@ namespace AntdUI
 
     internal class SpinCore : IDisposable
     {
-        ITask? thread = null;
+        AnimationTask? thread = null;
 
         float LineWidth = 6, LineAngle = 0;
         int prog_size = 0;
@@ -462,7 +462,7 @@ namespace AntdUI
         {
             Stop();
             bool ProgState = false;
-            thread = new ITask(control, () =>
+            thread = new AnimationTask(control, () =>
             {
                 Animation(ref ProgState);
                 control.Invalidate();
@@ -473,7 +473,7 @@ namespace AntdUI
         {
             Stop();
             bool ProgState = false;
-            thread = new ITask(control, () =>
+            thread = new AnimationTask(control, () =>
             {
                 Animation(ref ProgState);
                 control.Print();

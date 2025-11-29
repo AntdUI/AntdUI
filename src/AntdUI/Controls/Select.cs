@@ -451,7 +451,7 @@ namespace AntdUI
         LayeredFormSelectDown? subForm;
         public ILayeredForm? SubForm() => subForm;
 
-        ITask? ThreadExpand;
+        AnimationTask? ThreadExpand;
         float ArrowProg = -1F;
         bool expand = false;
         /// <summary>
@@ -469,33 +469,11 @@ namespace AntdUI
                 if (Config.HasAnimation(nameof(AntdUI.Select)))
                 {
                     ThreadExpand?.Dispose();
-                    var t = Animation.TotalFrames(10, 100);
-                    if (value)
+                    ThreadExpand = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadExpand = new ITask((i) =>
-                        {
-                            ArrowProg = Animation.Animate(i, t, 2F, AnimationType.Ball) - 1F;
-                            Invalidate();
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            ArrowProg = 1;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadExpand = new ITask((i) =>
-                        {
-                            ArrowProg = -(Animation.Animate(i, t, 2F, AnimationType.Ball) - 1F);
-                            Invalidate();
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            ArrowProg = -1;
-                            Invalidate();
-                        });
-                    }
+                        ArrowProg = i;
+                        Invalidate();
+                    }, 10, Animation.TotalFrames(10, 100), value, AnimationType.Ball).SetArrow());
                 }
                 else ArrowProg = value ? 1F : -1F;
             }

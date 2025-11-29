@@ -94,7 +94,7 @@ namespace AntdUI
                 Loading = loading;
                 if (loading)
                 {
-                    ThreadLoading = new ITask(this, i =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(this, i =>
                     {
                         foreach (var it in config.Btns)
                         {
@@ -102,10 +102,7 @@ namespace AntdUI
                         }
                         Print();
                         return Loading;
-                    }, 10, 360, 6, () =>
-                    {
-                        Print();
-                    });
+                    }, 10, 360, 6).SetEnd(() => Print()));
                 }
                 else
                 {
@@ -131,7 +128,7 @@ namespace AntdUI
                 return false;
             }
         }
-        ITask? ThreadLoading;
+        AnimationTask? ThreadLoading;
 
         #endregion
 

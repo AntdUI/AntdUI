@@ -384,14 +384,14 @@ namespace AntdUI
                 if (loading)
                 {
                     AnimationClickValue = 0;
-                    ThreadLoading = new ITask(PARENT.PARENT, i =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(PARENT.PARENT, i =>
                     {
                         AnimationLoadingWaveValue += 1;
                         if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
                         AnimationLoadingValue = i;
                         OnPropertyChanged();
                         return loading;
-                    }, 10, 360, 6, () => OnPropertyChanged(true));
+                    }, 10, 360, 6).SetEnd(() => OnPropertyChanged(true)));
                 }
             }
         }

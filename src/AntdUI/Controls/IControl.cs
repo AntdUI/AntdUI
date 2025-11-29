@@ -465,7 +465,7 @@ namespace AntdUI
             return true;
         }
 
-        ITask? taskTouch;
+        AnimationTask? taskTouch;
         protected virtual bool OnTouchUp()
         {
             taskTouch?.Dispose();
@@ -482,7 +482,7 @@ namespace AntdUI
                         int duration = (int)Math.Ceiling(moveYa * .1F), incremental = moveYa / 2, sleep = 20;
                         if (moveY > 0)
                         {
-                            taskTouch = new ITask(this, () =>
+                            taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
                                 if (moveYa > 0 && OnTouchScrollY(-incremental))
                                 {
@@ -490,11 +490,11 @@ namespace AntdUI
                                     return true;
                                 }
                                 return false;
-                            }, sleep);
+                            }, sleep).SetPriority());
                         }
                         else
                         {
-                            taskTouch = new ITask(this, () =>
+                            taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
                                 if (moveYa > 0 && OnTouchScrollY(incremental))
                                 {
@@ -502,7 +502,7 @@ namespace AntdUI
                                     return true;
                                 }
                                 return false;
-                            }, sleep);
+                            }, sleep).SetPriority());
                         }
                     }
                 }
@@ -558,7 +558,7 @@ namespace AntdUI
 
         #region 鼠标悬停
 
-        ITask? taskHover;
+        AnimationTask? taskHover;
         TimeSpan timeHover;
         Stopwatch hoverStopwatch = new Stopwatch();
         int oldx = -1, oldy = -1;
@@ -577,12 +577,12 @@ namespace AntdUI
                 if (taskHover == null)
                 {
                     OnMouseHover(-1, -1);
-                    taskHover = new ITask(this, () =>
+                    taskHover = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         if (hoverStopwatch.Elapsed < timeHover) return true;
                         BeginInvoke(() => OnMouseHover(oldx, oldy));
                         return false;
-                    }, Config.MouseHoverDelay, () => taskHover = null, Config.MouseHoverDelay);
+                    }, Config.MouseHoverDelay).SetEnd(() => taskHover = null).SetSleep(Config.MouseHoverDelay).SetPriority());
                 }
             }
         }

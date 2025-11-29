@@ -105,7 +105,7 @@ namespace AntdUI
                 {
                     loading_vol = 0;
                     bool add = true;
-                    ThreadLoading = new ITask(this, () =>
+                    ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         if (add)
                         {
@@ -119,10 +119,7 @@ namespace AntdUI
                         }
                         Invalidate();
                         return loading;
-                    }, 80, () =>
-                    {
-                        Invalidate();
-                    });
+                    }, 80).SetEnd(Invalidate).SetPriority());
                 }
                 else Invalidate();
             }
@@ -135,7 +132,7 @@ namespace AntdUI
             ThreadLoading?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading;
+        AnimationTask? ThreadLoading;
 
         #endregion
 

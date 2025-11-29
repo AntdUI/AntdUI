@@ -1147,7 +1147,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand;
+        AnimationTask? ThreadExpand;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Category("外观"), Description("展开进度"), DefaultValue(0F)]
@@ -1180,34 +1180,17 @@ namespace AntdUI
                     if (ThreadExpand?.Tag is float oldv) oldval = oldv;
                     ExpandThread = true;
                     var t = Animation.TotalFrames(10, PARENT.AnimationSpeed < 10 ? 10 : PARENT.AnimationSpeed);
-                    if (value)
+                    ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
                     {
-                        ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                        {
-                            ExpandProg = val;
-                            PARENT.LoadLayout();
-                        }, () =>
-                        {
-                            if (PARENT.AutoSize) PARENT.canset = true;
-                            ExpandProg = 1F;
-                            ExpandThread = false;
-                            PARENT.LoadLayout();
-                        });
-                    }
-                    else
+                        ExpandProg = val;
+                        PARENT.LoadLayout();
+                    }, 10, t, oldval, () =>
                     {
-                        ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                        {
-                            ExpandProg = val;
-                            PARENT.LoadLayout();
-                        }, () =>
-                        {
-                            if (PARENT.AutoSize) PARENT.canset = true;
-                            ExpandProg = 1F;
-                            ExpandThread = false;
-                            PARENT.LoadLayout();
-                        });
-                    }
+                        if (PARENT.AutoSize) PARENT.canset = true;
+                        ExpandProg = 1F;
+                        ExpandThread = false;
+                        PARENT.LoadLayout();
+                    }, value));
                 }
                 else
                 {

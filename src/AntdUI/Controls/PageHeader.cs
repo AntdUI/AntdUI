@@ -372,16 +372,13 @@ namespace AntdUI
                 ThreadLoading?.Dispose();
                 if (loading)
                 {
-                    ThreadLoading = new ITask(this, () =>
+                    ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         AnimationLoadingValue += 6;
                         if (AnimationLoadingValue > 360) AnimationLoadingValue = 0;
                         Invalidate();
                         return loading;
-                    }, 10, () =>
-                    {
-                        Invalidate();
-                    });
+                    }, 10).SetEnd(Invalidate).SetPriority());
                 }
                 else Invalidate();
                 OnPropertyChanged(nameof(Loading));
@@ -400,7 +397,7 @@ namespace AntdUI
             DisposeBmp();
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading;
+        AnimationTask? ThreadLoading;
 
         #endregion
 
@@ -427,34 +424,11 @@ namespace AntdUI
                     var t = Animation.TotalFrames(10, 200);
                     var _rect = ClientRectangle;
                     var rect = new Rectangle(_rect.X, _rect.Y, _rect.Width - hasr, _rect.Height);
-                    if (value)
+                    ThreadBack = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadBack = new ITask((i) =>
-                        {
-                            AnimationBackValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate(rect);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            AnimationBackValue = 1F;
-                            AnimationBack = false;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadBack = new ITask((i) =>
-                        {
-                            AnimationBackValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate(rect);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            AnimationBackValue = 0F;
-                            AnimationBack = false;
-                            Invalidate();
-                        });
-                    }
+                        AnimationBackValue = i;
+                        Invalidate();
+                    }, 10, Animation.TotalFrames(10, 200), value, AnimationType.Ball).SetEnd(() => AnimationBack = false));
                 }
                 else
                 {
@@ -1186,7 +1160,7 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? ThreadBack;
+        AnimationTask? ThreadBack;
         ITaskOpacity hove_back, hove_close, hove_full, hove_max, hove_min;
         public PageHeader()
         {

@@ -407,7 +407,7 @@ namespace AntdUI
             LoadData();
         }
 
-        ITask? task_start;
+        AnimationTask? task_start;
         /// <summary>
         /// 刷新数据
         /// </summary>
@@ -428,7 +428,7 @@ namespace AntdUI
                     Rectangle old = current_rect.Value, current = rect.Value;
                     current_rect = old;
                     var t = Animation.TotalFrames(10, 200);
-                    task_start = new ITask(i =>
+                    task_start = new AnimationTask(i =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         current_rect = new Rectangle(old.X + (int)((current.X - old.X) * val), old.Y + (int)((current.Y - old.Y) * val),

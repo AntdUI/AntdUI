@@ -1505,6 +1505,12 @@ namespace AntdUI
 
         #endregion
 
+        public Calendar SetDate(DateTime value)
+        {
+            Date = value;
+            return this;
+        }
+
         protected override void Dispose(bool disposing)
         {
             hover_lefts?.Dispose(); hover_left?.Dispose(); hover_rights?.Dispose(); hover_right?.Dispose(); hover_year?.Dispose(); hover_month?.Dispose(); hover_button?.Dispose();
