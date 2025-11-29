@@ -1730,7 +1730,7 @@ namespace AntdUI
                                 show = false;
                                 return;
                             }
-                            CaretPrint = new ITask(control, () =>
+                            CaretPrint = new AnimationTask(control, () =>
                             {
                                 Flag = !flag;
                                 return show;
@@ -1755,7 +1755,7 @@ namespace AntdUI
                 }
             }
 
-            ITask? CaretPrint;
+            AnimationTask? CaretPrint;
 
             public void Dispose() => CaretPrint?.Dispose();
         }
@@ -1765,7 +1765,7 @@ namespace AntdUI
         #region 闪烁动画
 
         Color? colorBlink;
-        ITask? ThreadAnimateBlink;
+        AnimationTask? ThreadAnimateBlink;
         /// <summary>
         /// 闪烁动画状态
         /// </summary>
@@ -1783,7 +1783,7 @@ namespace AntdUI
             {
                 AnimationBlinkState = true;
                 int index = 0, len = colors.Length;
-                ThreadAnimateBlink = new ITask(this, () =>
+                ThreadAnimateBlink = new AnimationTask(this, () =>
                 {
                     colorBlink = colors[index];
                     index++;
@@ -1819,13 +1819,13 @@ namespace AntdUI
                 index++;
                 if (index > len - 1) index = 0;
                 var t = Animation.TotalFrames(transition_interval, interval);
-                ThreadAnimateBlink = new ITask(this, () =>
+                ThreadAnimateBlink = new AnimationTask(this, () =>
                 {
                     Color start = tmp, end = colors[index];
                     index++;
                     if (index > len - 1) index = 0;
                     tmp = end;
-                    new ITask(i =>
+                    new AnimationTask(i =>
                     {
                         var prog = Animation.Animate(i, t, 1F, animationType);
                         colorBlink = start.BlendColors(Helper.ToColorN(prog, end));
@@ -1857,7 +1857,7 @@ namespace AntdUI
             ThreadAnimateBlink?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadHover;
-        ITask? ThreadFocus;
+        AnimationTask? ThreadHover;
+        AnimationTask? ThreadFocus;
     }
 }

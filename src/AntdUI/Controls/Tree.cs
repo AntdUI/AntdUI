@@ -1667,7 +1667,7 @@ namespace AntdUI
 
         #region 加载动画
 
-        internal ITask? ThreadLoading;
+        internal AnimationTask? ThreadLoading;
         bool loading = false;
         public float AnimationLoadingValue = 0;
         float AnimationLoadingWaveValue = 0;
@@ -1691,14 +1691,14 @@ namespace AntdUI
 
         internal void StartLoading(Tree tree)
         {
-            ThreadLoading = new ITask(tree, i =>
+            ThreadLoading = new AnimationTask(new AnimationLinearConfig(tree, i =>
             {
                 AnimationLoadingWaveValue += 1;
                 if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
                 AnimationLoadingValue = i;
                 Invalidate();
                 return loading;
-            }, 10, 360, 10, () => Invalidate());
+            }, 10, 360, 10).SetEnd(Invalidate));
         }
 
         #endregion
@@ -1747,7 +1747,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand;
+        AnimationTask? ThreadExpand;
         bool expand = false;
         /// <summary>
         /// 展开
@@ -1769,37 +1769,25 @@ namespace AntdUI
                         float oldval = -1;
                         if (ThreadExpand?.Tag is float oldv) oldval = oldv;
                         ExpandThread = true;
+                        int t;
                         if (value)
                         {
                             int time = ExpandCount(this) * 10;
                             if (time < 100) time = 100;
                             else if (time > 1000) time = 1000;
-                            int t = Animation.TotalFrames(10, time);
-                            ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                            {
-                                ExpandProg = val;
-                                Invalidates();
-                            }, () =>
-                            {
-                                ExpandProg = 1F;
-                                ExpandThread = false;
-                                Invalidates();
-                            });
+                            t = Animation.TotalFrames(10, time);
                         }
-                        else
+                        else t = Animation.TotalFrames(10, 200);
+                        ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
                         {
-                            var t = Animation.TotalFrames(10, 200);
-                            ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                            {
-                                ExpandProg = val;
-                                Invalidates();
-                            }, () =>
-                            {
-                                ExpandProg = 1F;
-                                ExpandThread = false;
-                                Invalidates();
-                            });
-                        }
+                            ExpandProg = val;
+                            Invalidates();
+                        }, 10, t, oldval, () =>
+                        {
+                            ExpandProg = 1F;
+                            ExpandThread = false;
+                            Invalidates();
+                        }, value));
                     }
                     else
                     {
@@ -1841,7 +1829,7 @@ namespace AntdUI
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
 
-        ITask? ThreadCheck;
+        AnimationTask? ThreadCheck;
 
         bool _checked = false;
         [Description("选中状态"), Category("行为"), DefaultValue(false)]
@@ -1886,21 +1874,7 @@ namespace AntdUI
             if (PARENT != null && PARENT.IsHandleCreated && (ParentItem == null || ParentItem.expand) && show && Config.HasAnimation(nameof(Tree)))
             {
                 AnimationCheck = true;
-                if (_checked)
-                {
-                    ThreadCheck = new ITask(PARENT, () =>
-                    {
-                        AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
-                        if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
-                        Invalidate();
-                        return true;
-                    }, 20, () =>
-                    {
-                        AnimationCheck = false;
-                        Invalidate();
-                    });
-                }
-                else if (checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                if (!_checked && checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
                 {
                     AnimationCheck = false;
                     AnimationCheckValue = 1F;
@@ -1908,17 +1882,12 @@ namespace AntdUI
                 }
                 else
                 {
-                    ThreadCheck = new ITask(PARENT, () =>
+                    ThreadCheck = new AnimationTask(new AnimationLinearFConfig(PARENT, i =>
                     {
-                        AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
-                        if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
-                        Invalidate();
+                        AnimationCheckValue = i;
+                        PARENT.Invalidate();
                         return true;
-                    }, 20, () =>
-                    {
-                        AnimationCheck = false;
-                        Invalidate();
-                    });
+                    }, 20).SetValue(AnimationCheckValue, _checked, 0.2F).SetEnd(() => AnimationCheck = false));
                 }
             }
             else
@@ -2002,35 +1971,11 @@ namespace AntdUI
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;
-                    var t = Animation.TotalFrames(20, 200);
-                    if (value)
+                    ThreadHover = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadHover = new ITask((i) =>
-                        {
-                            AnimationHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate();
-                            return true;
-                        }, 20, t, () =>
-                        {
-                            AnimationHover = false;
-                            AnimationHoverValue = 1;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadHover = new ITask((i) =>
-                        {
-                            AnimationHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate();
-                            return true;
-                        }, 20, t, () =>
-                        {
-                            AnimationHover = false;
-                            AnimationHoverValue = 0;
-                            Invalidate();
-                        });
-                    }
+                        AnimationHoverValue = i;
+                        Invalidate();
+                    }, 20, Animation.TotalFrames(20, 200), value, AnimationType.Ball).SetEnd(() => AnimationHover = false));
                 }
                 else Invalidate();
             }
@@ -2175,7 +2120,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover;
+        AnimationTask? ThreadHover;
 
         internal Rectangle check_rect { get; set; }
         internal Rectangle txt_rect { get; set; }

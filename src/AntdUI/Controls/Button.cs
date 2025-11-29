@@ -511,8 +511,8 @@ namespace AntdUI
             {
                 if (textMultiLine == value) return;
                 textMultiLine = value;
-                if (value) sf |= FormatFlags.NoWrap;
-                else sf &= ~FormatFlags.NoWrap;
+                if (value) sf &= ~FormatFlags.NoWrap;
+                else sf |= FormatFlags.NoWrap;
                 Invalidate();
                 OnPropertyChanged(nameof(TextMultiLine));
             }
@@ -690,35 +690,11 @@ namespace AntdUI
 
                         ThreadIconToggle?.Dispose();
                         AnimationIconToggle = true;
-                        var t = Animation.TotalFrames(10, IconToggleAnimation);
-                        if (value)
+                        ThreadIconToggle = new AnimationTask(new AnimationFixedConfig(i =>
                         {
-                            ThreadIconToggle = new ITask((i) =>
-                            {
-                                AnimationIconToggleValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                Invalidate();
-                                return true;
-                            }, 10, t, () =>
-                            {
-                                AnimationIconToggleValue = 1F;
-                                AnimationIconToggle = false;
-                                Invalidate();
-                            });
-                        }
-                        else
-                        {
-                            ThreadIconToggle = new ITask((i) =>
-                            {
-                                AnimationIconToggleValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                Invalidate();
-                                return true;
-                            }, 10, t, () =>
-                            {
-                                AnimationIconToggleValue = 0F;
-                                AnimationIconToggle = false;
-                                Invalidate();
-                            });
-                        }
+                            AnimationIconToggleValue = i;
+                            Invalidate();
+                        }, 10, Animation.TotalFrames(10, IconToggleAnimation), value, AnimationType.Ball).SetEnd(() => AnimationIconToggle = false));
                     }
                     else Invalidate();
                 }
@@ -911,17 +887,14 @@ namespace AntdUI
                 if (loading)
                 {
                     AnimationClickValue = 0;
-                    ThreadLoading = new ITask(this, i =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(this, i =>
                     {
                         AnimationLoadingWaveValue += 1;
                         if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
                         AnimationLoadingValue = i;
                         Invalidate();
                         return loading;
-                    }, 10, 360, 6, () =>
-                    {
-                        Invalidate();
-                    });
+                    }, 10, 360, 6).SetEnd(Invalidate));
                 }
                 else Invalidate();
                 OnPropertyChanged(nameof(Loading));
@@ -1032,11 +1005,11 @@ namespace AntdUI
 
         #endregion
 
-        ITask? ThreadHover;
-        ITask? ThreadIconHover;
-        ITask? ThreadIconToggle;
-        ITask? ThreadClick;
-        ITask? ThreadLoading;
+        AnimationTask? ThreadHover;
+        AnimationTask? ThreadIconHover;
+        AnimationTask? ThreadIconToggle;
+        AnimationTask? ThreadClick;
+        AnimationTask? ThreadLoading;
 
         #region 点击动画
 
@@ -1050,18 +1023,18 @@ namespace AntdUI
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;
                 AnimationClick = true;
-                ThreadClick = new ITask(this, () =>
+                ThreadClick = new AnimationTask(new AnimationLoopConfig(this, () =>
                 {
                     if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
                     else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
                     if (AnimationClickValue > 1) { AnimationClickValue = 0F; return false; }
                     Invalidate();
                     return true;
-                }, 50, () =>
+                }, 50).SetEnd(() =>
                 {
                     AnimationClick = false;
                     Invalidate();
-                });
+                }));
             }
         }
 
@@ -1107,70 +1080,23 @@ namespace AntdUI
                         {
                             ThreadIconHover?.Dispose();
                             AnimationIconHover = true;
-                            var t = Animation.TotalFrames(10, IconHoverAnimation);
-                            if (value)
+                            ThreadIconHover = new AnimationTask(new AnimationFixedConfig(i =>
                             {
-                                ThreadIconHover = new ITask((i) =>
-                                {
-                                    AnimationIconHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                    Invalidate();
-                                    return true;
-                                }, 10, t, () =>
-                                {
-                                    AnimationIconHoverValue = 1F;
-                                    AnimationIconHover = false;
-                                    Invalidate();
-                                });
-                            }
-                            else
-                            {
-                                ThreadIconHover = new ITask((i) =>
-                                {
-                                    AnimationIconHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                    Invalidate();
-                                    return true;
-                                }, 10, t, () =>
-                                {
-                                    AnimationIconHoverValue = 0F;
-                                    AnimationIconHover = false;
-                                    Invalidate();
-                                });
-                            }
+                                AnimationIconHoverValue = i;
+                                Invalidate();
+                            }, 10, Animation.TotalFrames(10, IconHoverAnimation), value, AnimationType.Ball).SetEnd(() => AnimationIconHover = false));
                         }
                         if (alpha > 0)
                         {
                             int addvalue = alpha / 12;
                             ThreadHover?.Dispose();
                             AnimationHover = true;
-                            if (value)
+                            ThreadHover = new AnimationTask(new AnimationLinearConfig(this, i =>
                             {
-                                ThreadHover = new ITask(this, () =>
-                                {
-                                    AnimationHoverValue += addvalue;
-                                    if (AnimationHoverValue > alpha) { AnimationHoverValue = alpha; return false; }
-                                    Invalidate();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationHover = false;
-                                    Invalidate();
-                                });
-                            }
-                            else
-                            {
-                                ThreadHover = new ITask(this, () =>
-                                {
-                                    if (AnimationHoverValue > alpha) AnimationHoverValue = alpha;
-                                    else AnimationHoverValue -= addvalue;
-                                    if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                    Invalidate();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationHover = false;
-                                    Invalidate();
-                                });
-                            }
+                                AnimationHoverValue = i;
+                                Invalidate();
+                                return true;
+                            }, 10).SetValueColor(AnimationHoverValue, value, addvalue, alpha).SetEnd(() => AnimationHover = false));
                         }
                         else
                         {
@@ -1189,7 +1115,7 @@ namespace AntdUI
         #region 闪烁动画
 
         Color? colorBlink;
-        ITask? ThreadAnimateBlink;
+        AnimationTask? ThreadAnimateBlink;
         /// <summary>
         /// 闪烁动画状态
         /// </summary>
@@ -1207,7 +1133,7 @@ namespace AntdUI
             {
                 AnimationBlinkState = true;
                 int index = 0, len = colors.Length;
-                ThreadAnimateBlink = new ITask(this, () =>
+                ThreadAnimateBlink = new AnimationTask(this, () =>
                 {
                     colorBlink = colors[index];
                     index++;
@@ -1243,13 +1169,13 @@ namespace AntdUI
                 index++;
                 if (index > len - 1) index = 0;
                 var t = Animation.TotalFrames(transition_interval, interval);
-                ThreadAnimateBlink = new ITask(this, () =>
+                ThreadAnimateBlink = new AnimationTask(this, () =>
                 {
                     Color start = tmp, end = colors[index];
                     index++;
                     if (index > len - 1) index = 0;
                     tmp = end;
-                    new ITask(i =>
+                    new AnimationTask(i =>
                     {
                         var prog = Animation.Animate(i, t, 1F, animationType);
                         colorBlink = start.BlendColors(Helper.ToColorN(prog, end));

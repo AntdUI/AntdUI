@@ -65,7 +65,7 @@ namespace AntdUI
             };
         }
 
-        ITask? Thread;
+        AnimationTask? Thread;
 
         bool enable = true;
         public bool Enable
@@ -95,34 +95,32 @@ namespace AntdUI
                     var prog = (int)(MaxValue * .078F);
                     if (value)
                     {
-                        Thread = new ITask(control, () =>
+                        Thread = new AnimationTask(new AnimationLinearConfig(control, i =>
                         {
-                            Value += prog;
-                            if (Value > MaxValue) { Value = MaxValue; return false; }
+                            Value = i;
                             action();
                             return true;
-                        }, 10, () =>
+                        }, 10).SetAdd(prog).SetMax(MaxValue).SetValue(Value).SetEnd(() =>
                         {
                             Value = MaxValue;
                             Animation = false;
                             action();
-                        });
+                        }));
                     }
                     else
                     {
                         Down = false;
-                        Thread = new ITask(control, () =>
+                        Thread = new AnimationTask(new AnimationLinearConfig(control, i =>
                         {
-                            Value -= prog;
-                            if (Value < 1) { Value = 0; return false; }
+                            Value = i;
                             action();
                             return true;
-                        }, 10, () =>
+                        }, 10).SetAdd(-prog).SetMax(0).SetValue(Value).SetEnd(() =>
                         {
                             Value = 0;
                             Animation = false;
                             action();
-                        });
+                        }));
                     }
                 }
                 else

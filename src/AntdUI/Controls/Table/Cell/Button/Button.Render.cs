@@ -116,69 +116,23 @@ namespace AntdUI
                         {
                             ThreadImageHover?.Dispose();
                             AnimationImageHover = true;
-                            var t = Animation.TotalFrames(10, IconHoverAnimation);
-                            if (value)
+                            ThreadImageHover = new AnimationTask(new AnimationFixedConfig(i =>
                             {
-                                ThreadImageHover = new ITask((i) =>
-                                {
-                                    AnimationImageHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                    OnPropertyChanged();
-                                    return true;
-                                }, 10, t, () =>
-                                {
-                                    AnimationImageHoverValue = 1F;
-                                    AnimationImageHover = false;
-                                    OnPropertyChanged();
-                                });
-                            }
-                            else
-                            {
-                                ThreadImageHover = new ITask((i) =>
-                                {
-                                    AnimationImageHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                                    OnPropertyChanged();
-                                    return true;
-                                }, 10, t, () =>
-                                {
-                                    AnimationImageHoverValue = 0F;
-                                    AnimationImageHover = false;
-                                    OnPropertyChanged();
-                                });
-                            }
+                                AnimationImageHoverValue = i;
+                                OnPropertyChanged();
+                            }, 10, Animation.TotalFrames(10, IconHoverAnimation), value, AnimationType.Ball).SetEnd(() => AnimationImageHover = false));
                         }
                         if (_back_hover.A > 0)
                         {
                             int addvalue = _back_hover.A / 12;
                             ThreadHover?.Dispose();
                             AnimationHover = true;
-                            if (value)
+                            ThreadHover = new AnimationTask(new AnimationLinearConfig(PARENT.PARENT, i =>
                             {
-                                ThreadHover = new ITask(PARENT.PARENT, () =>
-                                {
-                                    AnimationHoverValue += addvalue;
-                                    if (AnimationHoverValue > _back_hover.A) { AnimationHoverValue = _back_hover.A; return false; }
-                                    OnPropertyChanged();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationHover = false;
-                                    OnPropertyChanged();
-                                });
-                            }
-                            else
-                            {
-                                ThreadHover = new ITask(PARENT.PARENT, () =>
-                                {
-                                    AnimationHoverValue -= addvalue;
-                                    if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                    OnPropertyChanged();
-                                    return true;
-                                }, 10, () =>
-                                {
-                                    AnimationHover = false;
-                                    OnPropertyChanged();
-                                });
-                            }
+                                AnimationHoverValue = i;
+                                OnPropertyChanged();
+                                return true;
+                            }, 10).SetValueColor(AnimationHoverValue, value, addvalue, _back_hover.A).SetEnd(() => AnimationHover = false));
                         }
                         else
                         {
@@ -199,24 +153,24 @@ namespace AntdUI
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;
                 AnimationClick = true;
-                ThreadClick = new ITask(PARENT.PARENT, () =>
+                ThreadClick = new AnimationTask(new AnimationLoopConfig(PARENT.PARENT, () =>
                 {
                     if (AnimationClickValue > 0.6) AnimationClickValue = AnimationClickValue.Calculate(0.04F);
                     else AnimationClickValue += AnimationClickValue = AnimationClickValue.Calculate(0.1F);
                     if (AnimationClickValue > 1) { AnimationClickValue = 0F; return false; }
                     OnPropertyChanged();
                     return true;
-                }, 50, () =>
+                }, 50).SetEnd(() =>
                 {
                     AnimationClick = false;
                     OnPropertyChanged();
-                });
+                }));
             }
         }
 
         #region 加载动画
 
-        ITask? ThreadLoading;
+        AnimationTask? ThreadLoading;
 
         #endregion
 

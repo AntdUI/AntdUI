@@ -1904,21 +1904,7 @@ namespace AntdUI
                 if (Config.HasAnimation(nameof(Table)))
                 {
                     AnimationCheck = true;
-                    if (_checked)
-                    {
-                        ThreadCheck = new ITask(PARENT, () =>
-                        {
-                            AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
-                            if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
-                            PARENT.Invalidate();
-                            return true;
-                        }, 20, () =>
-                        {
-                            AnimationCheck = false;
-                            PARENT.Invalidate();
-                        });
-                    }
-                    else if (checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                    if (!_checked && checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
                     {
                         AnimationCheck = false;
                         AnimationCheckValue = 1F;
@@ -1926,17 +1912,12 @@ namespace AntdUI
                     }
                     else
                     {
-                        ThreadCheck = new ITask(PARENT, () =>
+                        ThreadCheck = new AnimationTask(new AnimationLinearFConfig(PARENT, i =>
                         {
-                            AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
-                            if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
+                            AnimationCheckValue = i;
                             PARENT.Invalidate();
                             return true;
-                        }, 20, () =>
-                        {
-                            AnimationCheck = false;
-                            PARENT.Invalidate();
-                        });
+                        }, 20).SetValue(AnimationCheckValue, _checked, 0.2F).SetEnd(() => AnimationCheck = false));
                     }
                 }
                 else
@@ -1950,7 +1931,7 @@ namespace AntdUI
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
 
-        ITask? ThreadCheck;
+        AnimationTask? ThreadCheck;
 
         internal CheckState checkStateOld = CheckState.Unchecked;
 

@@ -497,31 +497,29 @@ namespace AntdUI
                         float addvalue = shadowOpacityHover / 12F;
                         if (value)
                         {
-                            ThreadHover = new ITask(this, () =>
+                            ThreadHover = new AnimationTask(new AnimationLinearFConfig(this, i =>
                             {
-                                AnimationHoverValue = AnimationHoverValue.Calculate(addvalue);
-                                if (AnimationHoverValue >= shadowOpacityHover) { AnimationHoverValue = shadowOpacityHover; return false; }
+                                AnimationHoverValue = i;
                                 Invalidate();
                                 return true;
-                            }, 20, () =>
+                            }, 20).SetAdd(addvalue).SetMax(shadowOpacityHover).SetValue(AnimationHoverValue).SetEnd(() =>
                             {
                                 AnimationHover = false;
                                 Invalidate();
-                            });
+                            }));
                         }
                         else
                         {
-                            ThreadHover = new ITask(this, () =>
+                            ThreadHover = new AnimationTask(new AnimationLinearFConfig(this, i =>
                             {
-                                AnimationHoverValue = AnimationHoverValue.Calculate(-addvalue);
-                                if (AnimationHoverValue <= shadowOpacity) { AnimationHoverValue = shadowOpacity; return false; }
+                                AnimationHoverValue = i;
                                 Invalidate();
                                 return true;
-                            }, 20, () =>
+                            }, 20).SetAdd(-addvalue).SetMax(shadowOpacity).SetValue(AnimationHoverValue).SetEnd(() =>
                             {
                                 AnimationHover = false;
                                 Invalidate();
-                            });
+                            }));
                         }
                     }
                     else Invalidate();
@@ -542,7 +540,7 @@ namespace AntdUI
             shadow_temp = null;
             base.Dispose(disposing);
         }
-        ITask? ThreadHover;
+        AnimationTask? ThreadHover;
 
         #endregion
 

@@ -200,34 +200,11 @@ namespace AntdUI
                     ThreadHoverY?.Dispose();
                     AnimationHoverY = true;
                     var t = Animation.TotalFrames(10, 100);
-                    if (value)
+                    ThreadHoverY = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadHoverY = new ITask((i) =>
-                        {
-                            AnimationHoverYValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate(RectY);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            AnimationHoverYValue = 1F;
-                            AnimationHoverY = false;
-                            Invalidate(RectY);
-                        });
-                    }
-                    else
-                    {
-                        ThreadHoverY = new ITask((i) =>
-                        {
-                            AnimationHoverYValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate(RectY);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            AnimationHoverYValue = 0F;
-                            AnimationHoverY = false;
-                            Invalidate(RectY);
-                        });
-                    }
+                        AnimationHoverYValue = i;
+                        Invalidate(RectY);
+                    }, 10, Animation.TotalFrames(10, 100), value, AnimationType.Ball).SetEnd(() => AnimationHoverY = false));
                 }
                 else Invalidate(RectY);
             }
@@ -317,35 +294,11 @@ namespace AntdUI
                 {
                     ThreadHoverX?.Dispose();
                     AnimationHoverX = true;
-                    var t = Animation.TotalFrames(10, 100);
-                    if (value)
+                    ThreadHoverX = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadHoverX = new ITask((i) =>
-                        {
-                            AnimationHoverXValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate(RectX);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            AnimationHoverXValue = 1F;
-                            AnimationHoverX = false;
-                            Invalidate(RectX);
-                        });
-                    }
-                    else
-                    {
-                        ThreadHoverX = new ITask((i) =>
-                        {
-                            AnimationHoverXValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate(RectX);
-                            return true;
-                        }, 10, t, () =>
-                        {
-                            AnimationHoverXValue = 0F;
-                            AnimationHoverX = false;
-                            Invalidate(RectX);
-                        });
-                    }
+                        AnimationHoverXValue = i;
+                        Invalidate(RectX);
+                    }, 10, Animation.TotalFrames(10, 100), value, AnimationType.Ball).SetEnd(() => AnimationHoverX = false));
                 }
                 else Invalidate(RectX);
             }
@@ -1011,11 +964,11 @@ namespace AntdUI
 
         #region 动画
 
-        ITask? ThreadHoverY;
+        AnimationTask? ThreadHoverY;
         float AnimationHoverYValue = 0F;
         bool AnimationHoverY = false;
 
-        ITask? ThreadHoverX;
+        AnimationTask? ThreadHoverX;
         float AnimationHoverXValue = 0F;
         bool AnimationHoverX = false;
 

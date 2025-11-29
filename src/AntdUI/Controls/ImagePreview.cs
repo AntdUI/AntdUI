@@ -737,6 +737,7 @@ namespace AntdUI
         protected override void OnSizeChanged(EventArgs e)
         {
             SizeChange(ClientRectangle);
+            if (Img != null) FillScaleImg();
             base.OnSizeChanged(e);
         }
 
@@ -940,56 +941,22 @@ namespace AntdUI
                             switch (it.id)
                             {
                                 case "@t_flipY":
-                                    if (Img != null)
-                                    {
-                                        Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                                        Invalidate();
-                                    }
+                                    FlipY();
                                     break;
                                 case "@t_flipX":
-                                    if (Img != null)
-                                    {
-                                        Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                        Invalidate();
-                                    }
+                                    FlipX();
                                     break;
                                 case "@t_rotateL":
-                                    if (Img != null)
-                                    {
-                                        float old = _dpi;
-                                        bool oldautoDpi = autoDpi;
-                                        Img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                        ImgSize = Img.Size;
-                                        autoDpi = true;
-                                        FillScaleImg();
-                                        Dpi = old;
-                                        autoDpi = oldautoDpi;
-                                        Invalidate();
-                                    }
+                                    RotateL();
                                     break;
                                 case "@t_rotateR":
-                                    if (Img != null)
-                                    {
-                                        float old = _dpi;
-                                        bool oldautoDpi = autoDpi;
-                                        Img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                                        ImgSize = Img.Size;
-                                        autoDpi = true;
-                                        FillScaleImg();
-                                        Dpi = old;
-                                        autoDpi = oldautoDpi;
-                                        Invalidate();
-                                    }
+                                    RotateR();
                                     break;
                                 case "@t_zoomOut":
-                                    Dpi -= 0.1F;
-                                    SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
-                                    Invalidate();
+                                    ZoomOut();
                                     break;
                                 case "@t_zoomIn":
-                                    Dpi += 0.1F;
-                                    SetBtnEnabled("@t_zoomOut", true);
-                                    Invalidate();
+                                    ZoomIn();
                                     break;
                                 default:
                                     if (items == null) return;
@@ -1021,6 +988,78 @@ namespace AntdUI
         bool moveImg = false, moveImging = false;
         Point movePos;
         float offsetXOld = 0, offsetYOld = 0;
+
+        #endregion
+
+        #region 方法
+
+        public void ZoomToControl()
+        {
+            if (Img == null) return;
+            Dpi = 1;
+            var rect = ClientRectangle;
+            float fControlWidth = rect.Width, fControlHeight = rect.Height;
+            float fImageWidth = ImgSize.Width, fImageHeight = ImgSize.Height;
+            if (fImageWidth / fImageHeight > fControlWidth / fControlHeight) Dpi = fControlWidth / fImageWidth;
+            else Dpi = fControlHeight / fImageHeight;
+            Invalidate();
+        }
+
+        public void FlipY()
+        {
+            if (Img == null) return;
+            Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            Invalidate();
+        }
+
+        public void FlipX()
+        {
+            if (Img == null) return;
+            Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            Invalidate();
+        }
+
+        public void RotateL()
+        {
+            if (Img == null) return;
+            float old = _dpi;
+            bool oldautoDpi = autoDpi;
+            Img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+            ImgSize = Img.Size;
+            autoDpi = true;
+            FillScaleImg();
+            Dpi = old;
+            autoDpi = oldautoDpi;
+            Invalidate();
+        }
+
+        public void RotateR()
+        {
+            if (Img == null) return;
+            float old = _dpi;
+            bool oldautoDpi = autoDpi;
+            Img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            ImgSize = Img.Size;
+            autoDpi = true;
+            FillScaleImg();
+            Dpi = old;
+            autoDpi = oldautoDpi;
+            Invalidate();
+        }
+
+        public void ZoomOut()
+        {
+            Dpi -= 0.1F;
+            SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
+            Invalidate();
+        }
+
+        public void ZoomIn()
+        {
+            Dpi += 0.1F;
+            SetBtnEnabled("@t_zoomOut", true);
+            Invalidate();
+        }
 
         #endregion
     }

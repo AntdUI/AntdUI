@@ -1054,7 +1054,7 @@ namespace AntdUI
                         using (var pen = new Pen(fore_active, Config.Dpi * 2))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                            g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                            g.DrawLines(pen, it.arr_rect.TriangleLines(it.GetArrowProg(), .4F));
                         }
                     }
                     else PaintBack(g, back_active, it.rect, radius);
@@ -1064,7 +1064,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore_enabled, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.GetArrowProg(), .4F));
                     }
                 }
                 PaintTextIcon(g, it, fore_enabled, radius);
@@ -1108,7 +1108,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.ArrowProg, .4F));
+                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.GetArrowProg(), .4F));
                     }
                 }
                 else if (mode == TMenuMode.Vertical)
@@ -2135,7 +2135,7 @@ namespace AntdUI
 
         #region 展开
 
-        ITask? ThreadExpand;
+        AnimationTask? ThreadExpand;
         bool expand = true;
         /// <summary>
         /// 展开
@@ -2180,40 +2180,27 @@ namespace AntdUI
                         float oldval = -1;
                         if (ThreadExpand?.Tag is float oldv) oldval = oldv;
                         ExpandThread = true;
+                        int t;
                         if (value)
                         {
                             int time = ExpandCount(this) * 10;
                             if (time > 1000) time = 1000;
-                            int t = Animation.TotalFrames(10, time);
-                            ThreadExpand = new ITask(false, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                            {
-                                ExpandProg = val;
-                                ArrowProg = Animation.Animate(i, t, 2F, AnimationType.Ball) - 1F;
-                                Invalidates();
-                            }, () =>
-                            {
-                                ArrowProg = 1;
-                                ExpandProg = 1F;
-                                ExpandThread = false;
-                                Invalidates();
-                            });
+                            t = Animation.TotalFrames(10, time);
                         }
-                        else
+                        else t = Animation.TotalFrames(10, 200);
+
+                        ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val, arrow) =>
                         {
-                            var t = Animation.TotalFrames(10, 200);
-                            ThreadExpand = new ITask(true, 10, t, oldval, AnimationType.Ball, (i, val) =>
-                            {
-                                ExpandProg = val;
-                                ArrowProg = -(Animation.Animate(i, t, 2F, AnimationType.Ball) - 1F);
-                                Invalidates();
-                            }, () =>
-                            {
-                                ExpandProg = 1F;
-                                ExpandThread = false;
-                                ArrowProg = -1;
-                                Invalidates();
-                            });
-                        }
+                            ExpandProg = val;
+                            ArrowProg = arrow;
+                            Invalidates();
+                        }, 10, t, oldval, () =>
+                        {
+                            ExpandProg = 1F;
+                            ArrowProg = value ? 1F : -1F;
+                            ExpandThread = false;
+                            Invalidates();
+                        }, value));
                     }
                     else
                     {
@@ -2397,35 +2384,11 @@ namespace AntdUI
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;
-                    var t = Animation.TotalFrames(20, 200);
-                    if (value)
+                    ThreadHover = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadHover = new ITask((i) =>
-                        {
-                            AnimationHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate();
-                            return true;
-                        }, 20, t, () =>
-                        {
-                            AnimationHover = false;
-                            AnimationHoverValue = 1;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadHover = new ITask((i) =>
-                        {
-                            AnimationHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate();
-                            return true;
-                        }, 20, t, () =>
-                        {
-                            AnimationHover = false;
-                            AnimationHoverValue = 0;
-                            Invalidate();
-                        });
-                    }
+                        AnimationHoverValue = i;
+                        Invalidate();
+                    }, 20, Animation.TotalFrames(20, 200), value, AnimationType.Ball).SetEnd(() => AnimationHover = false));
                 }
             }
         }
@@ -2458,7 +2421,14 @@ namespace AntdUI
 
         #region 内部
         internal int Depth { get; set; }
-        internal float ArrowProg { get; set; } = 1F;
+        internal float? ArrowProg { get; set; }
+
+        public float GetArrowProg()
+        {
+            if (ArrowProg.HasValue) return ArrowProg.Value;
+            else return expand ? 1F : -1F;
+        }
+
         internal Menu? PARENT { get; set; }
 
         #region 布局
@@ -2625,7 +2595,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover;
+        AnimationTask? ThreadHover;
 
         internal Rectangle txt_rect { get; set; }
         internal Rectangle ico_rect { get; set; }
@@ -3031,35 +3001,11 @@ namespace AntdUI
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;
-                    var t = Animation.TotalFrames(20, 200);
-                    if (value)
+                    ThreadHover = new AnimationTask(new AnimationFixedConfig(i =>
                     {
-                        ThreadHover = new ITask((i) =>
-                        {
-                            AnimationHoverValue = Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate();
-                            return true;
-                        }, 20, t, () =>
-                        {
-                            AnimationHover = false;
-                            AnimationHoverValue = 1;
-                            Invalidate();
-                        });
-                    }
-                    else
-                    {
-                        ThreadHover = new ITask((i) =>
-                        {
-                            AnimationHoverValue = 1F - Animation.Animate(i, t, 1F, AnimationType.Ball);
-                            Invalidate();
-                            return true;
-                        }, 20, t, () =>
-                        {
-                            AnimationHover = false;
-                            AnimationHoverValue = 0;
-                            Invalidate();
-                        });
-                    }
+                        AnimationHoverValue = i;
+                        Invalidate();
+                    }, 20, Animation.TotalFrames(20, 200), value, AnimationType.Ball).SetEnd(() => AnimationHover = false));
                 }
             }
         }
@@ -3119,7 +3065,7 @@ namespace AntdUI
 
         internal float AnimationHoverValue = 0;
         internal bool AnimationHover = false;
-        ITask? ThreadHover;
+        AnimationTask? ThreadHover;
 
         #endregion
 

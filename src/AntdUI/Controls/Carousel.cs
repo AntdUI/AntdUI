@@ -229,17 +229,7 @@ namespace AntdUI
                 if (left)
                 {
                     float modera = end - height * 0.05F;
-                    ThreadChange = new ITask(this, () =>
-                    {
-                        AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
-                        if (AnimationChangeValue > end)
-                        {
-                            AnimationChangeValue = end;
-                            return false;
-                        }
-                        Invalidate();
-                        return true;
-                    }, 10, () =>
+                    RunAnimation(speed, modera, end, () =>
                     {
                         AnimationChange = false;
                         Invalidate();
@@ -252,17 +242,7 @@ namespace AntdUI
                         AnimationChangeAuto = true;
                         end = len * height;
                         float modera = end - height * 0.05F;
-                        ThreadChange = new ITask(this, () =>
-                        {
-                            AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
-                            if (AnimationChangeValue > end)
-                            {
-                                AnimationChangeValue = end;
-                                return false;
-                            }
-                            Invalidate();
-                            return true;
-                        }, 10, () =>
+                        RunAnimation(speed, modera, end, () =>
                         {
                             AnimationChange = false;
                             AnimationChangeValue = 0;
@@ -272,17 +252,7 @@ namespace AntdUI
                     else
                     {
                         float modera = end + height * 0.05F;
-                        ThreadChange = new ITask(this, () =>
-                        {
-                            AnimationChangeValue -= Speed2(speed, modera);
-                            if (AnimationChangeValue <= end)
-                            {
-                                AnimationChangeValue = end;
-                                return false;
-                            }
-                            Invalidate();
-                            return true;
-                        }, 10, () =>
+                        RunAnimation2(speed, modera, end, () =>
                         {
                             AnimationChange = false;
                             Invalidate();
@@ -318,17 +288,7 @@ namespace AntdUI
                 if (left)
                 {
                     float modera = end - width * 0.05F;
-                    ThreadChange = new ITask(this, () =>
-                    {
-                        AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
-                        if (AnimationChangeValue > end)
-                        {
-                            AnimationChangeValue = end;
-                            return false;
-                        }
-                        Invalidate();
-                        return true;
-                    }, 10, () =>
+                    RunAnimation(speed, modera, end, () =>
                     {
                         AnimationChange = false;
                         Invalidate();
@@ -341,17 +301,7 @@ namespace AntdUI
                         AnimationChangeAuto = true;
                         end = len * width;
                         float modera = end - width * 0.05F;
-                        ThreadChange = new ITask(this, () =>
-                        {
-                            AnimationChangeValue = AnimationChangeValue.Calculate(Speed(speed, modera));
-                            if (AnimationChangeValue > end)
-                            {
-                                AnimationChangeValue = end;
-                                return false;
-                            }
-                            Invalidate();
-                            return true;
-                        }, 10, () =>
+                        RunAnimation(speed, modera, end, () =>
                         {
                             AnimationChange = false;
                             AnimationChangeValue = 0;
@@ -361,17 +311,7 @@ namespace AntdUI
                     else
                     {
                         float modera = end + width * 0.05F;
-                        ThreadChange = new ITask(this, () =>
-                        {
-                            AnimationChangeValue -= Speed2(speed, modera);
-                            if (AnimationChangeValue <= end)
-                            {
-                                AnimationChangeValue = end;
-                                return false;
-                            }
-                            Invalidate();
-                            return true;
-                        }, 10, () =>
+                        RunAnimation2(speed, modera, end, () =>
                         {
                             AnimationChange = false;
                             Invalidate();
@@ -385,6 +325,36 @@ namespace AntdUI
                 AnimationChangeValue = value * width;
                 Invalidate();
             }
+        }
+
+        void RunAnimation(float speed, float modera, float end, Action endcall)
+        {
+            ThreadChange = new AnimationTask(new AnimationLoopConfig(this, () =>
+            {
+                AnimationChangeValue += Speed(speed, modera);
+                if (AnimationChangeValue > end)
+                {
+                    AnimationChangeValue = end;
+                    return false;
+                }
+                Invalidate();
+                return true;
+            }, 10).SetEnd(endcall));
+        }
+
+        void RunAnimation2(float speed, float modera, float end, Action endcall)
+        {
+            ThreadChange = new AnimationTask(new AnimationLoopConfig(this, () =>
+            {
+                AnimationChangeValue -= Speed2(speed, modera);
+                if (AnimationChangeValue <= end)
+                {
+                    AnimationChangeValue = end;
+                    return false;
+                }
+                Invalidate();
+                return true;
+            }, 10).SetEnd(endcall));
         }
 
         #endregion
@@ -423,7 +393,7 @@ namespace AntdUI
         int AnimationChangeMaxWH = 0;
         float AnimationChangeValue = 0F;
         bool AnimationChange = false;
-        ITask? ThreadChange;
+        AnimationTask? ThreadChange;
 
         void LongTime()
         {

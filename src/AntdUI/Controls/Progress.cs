@@ -345,7 +345,7 @@ namespace AntdUI
                     if (_value > _value_show)
                     {
                         float s = _value_show, v = Math.Abs(_value - s);
-                        ThreadValue = new ITask((i) =>
+                        ThreadValue = new AnimationTask((i) =>
                         {
                             _value_show = s + AntdUI.Animation.Animate(i, t, v, AnimationType.Ball);
                             Invalidate();
@@ -359,7 +359,7 @@ namespace AntdUI
                     else
                     {
                         float s = _value_show, v = Math.Abs(_value_show - _value);
-                        ThreadValue = new ITask((i) =>
+                        ThreadValue = new AnimationTask((i) =>
                         {
                             _value_show = s - AntdUI.Animation.Animate(i, t, v, AnimationType.Ball);
                             Invalidate();
@@ -406,7 +406,7 @@ namespace AntdUI
                 if (showInTaskbar) ShowTaskbar(!loading);
                 if (loading)
                 {
-                    ThreadLoading = new ITask(this, () =>
+                    ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         AnimationLoadingValue = AnimationLoadingValue.Calculate(0.01F);
                         if (AnimationLoadingValue > 1)
@@ -417,10 +417,7 @@ namespace AntdUI
                         }
                         Invalidate();
                         return loading;
-                    }, 10, () =>
-                    {
-                        Invalidate();
-                    });
+                    }, 10).SetEnd(Invalidate).SetPriority());
                 }
                 else Invalidate();
                 OnPropertyChanged(nameof(Loading));
@@ -502,8 +499,7 @@ namespace AntdUI
             ThreadValue?.Dispose();
             base.Dispose(disposing);
         }
-        ITask? ThreadLoading;
-        ITask? ThreadValue;
+        AnimationTask? ThreadLoading, ThreadValue;
 
         #endregion
 

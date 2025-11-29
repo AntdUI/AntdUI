@@ -601,13 +601,13 @@ namespace AntdUI
                     {
                         if (ThreadLoading == null)
                         {
-                            ThreadLoading = new ITask(this, () =>
+                            ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
                                 AnimationLoadingValue += 6;
                                 if (AnimationLoadingValue > 360) AnimationLoadingValue = 0;
                                 Invalidate();
                                 return true;
-                            }, 10, () => Invalidate());
+                            }, 10).SetEnd(Invalidate).SetPriority());
                         }
                     }
                     else
@@ -780,7 +780,7 @@ namespace AntdUI
         #region Loading
 
         int AnimationLoadingValue = 0;
-        ITask? ThreadLoading;
+        AnimationTask? ThreadLoading;
 
         protected override void Dispose(bool disposing)
         {

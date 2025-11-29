@@ -444,7 +444,7 @@ namespace AntdUI
         }
         bool AnimationBar = false;
         RectangleF AnimationBarValue;
-        ITask? ThreadBar;
+        AnimationTask? ThreadBar;
 
         RectangleF TabSelectRect;
 
@@ -471,7 +471,7 @@ namespace AntdUI
                         AnimationBar = true;
                         TabSelectRect = NewValue;
                         float p_val = Math.Abs(NewValue.Y - AnimationBarValue.Y) * 0.09F, p_w_val = Math.Abs(NewValue.Height - AnimationBarValue.Height) * 0.1F, p_val2 = (NewValue.Y - AnimationBarValue.Y) * 0.5F;
-                        ThreadBar = new ITask(this, () =>
+                        ThreadBar = new AnimationTask(new AnimationLoopConfig(this, () =>
                         {
                             if (AnimationBarValue.Height != NewValue.Height)
                             {
@@ -509,12 +509,12 @@ namespace AntdUI
                             }
                             Invalidate();
                             return true;
-                        }, 10, () =>
+                        }, 10).SetEnd(() =>
                         {
                             AnimationBarValue = NewValue;
                             AnimationBar = false;
                             Invalidate();
-                        });
+                        }));
                     }
                 }
                 else
@@ -524,7 +524,7 @@ namespace AntdUI
                         AnimationBar = true;
                         TabSelectRect = NewValue;
                         float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
-                        ThreadBar = new ITask(this, () =>
+                        ThreadBar = new AnimationTask(new AnimationLoopConfig(this, () =>
                         {
                             if (AnimationBarValue.Width != NewValue.Width)
                             {
@@ -562,12 +562,12 @@ namespace AntdUI
                             }
                             Invalidate();
                             return true;
-                        }, 10, () =>
+                        }, 10).SetEnd(() =>
                         {
                             AnimationBarValue = NewValue;
                             AnimationBar = false;
                             Invalidate();
-                        });
+                        }));
                     }
                 }
                 return;

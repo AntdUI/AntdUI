@@ -249,7 +249,7 @@ namespace AntdUI
 
         #endregion
 
-        ITask? task_start;
+        AnimationTask? task_start;
         protected override void OnLoad(EventArgs e)
         {
             if (ActiveAnimation) PlayAnimation();
@@ -266,7 +266,7 @@ namespace AntdUI
             if (Config.HasAnimation(name))
             {
                 var t = Animation.TotalFrames(10, 200);
-                task_start = new ITask(start_X == end_X ? i =>
+                task_start = new AnimationTask(start_X == end_X ? i =>
                 {
                     var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                     SetAnimateValueY(start_Y + (int)((end_Y - start_Y) * val), (byte)(240 * val));
@@ -282,24 +282,28 @@ namespace AntdUI
                     DisposeAnimation();
                     SetAnimateValue(end_X, end_Y, 240);
                     Print(true);
+                    RunLoading();
                 });
             }
             else
             {
                 SetAnimateValue(end_X, end_Y, 240);
                 Print(true);
+                RunLoading();
             }
         }
+
+        public virtual void RunLoading() { }
 
         #endregion
 
         #region 关闭动画
 
-        internal ITask StopAnimation()
+        internal AnimationTask StopAnimation()
         {
             task_start?.Dispose();
             var t = Animation.TotalFrames(10, 200);
-            return new ITask(start_X == end_X ? (i) =>
+            return new AnimationTask(start_X == end_X ? (i) =>
             {
                 var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                 SetAnimateValueY(end_Y - (int)((end_Y - start_Y) * val), (byte)(240 * (1F - val)));
@@ -636,7 +640,7 @@ namespace AntdUI
                 if (Config.HasAnimation(name))
                 {
                     var t = Animation.TotalFrames(10, 200);
-                    new ITask(i =>
+                    new AnimationTask(i =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         foreach (var it in dir) it.Key.SetAnimateValueY(it.Value[0] + (it.Value[1] - (int)(it.Value[1] * val)));
@@ -686,7 +690,7 @@ namespace AntdUI
                 if (Config.HasAnimation(name))
                 {
                     var t = Animation.TotalFrames(10, 200);
-                    new ITask(i =>
+                    new AnimationTask(i =>
                     {
                         var val = Animation.Animate(i, t, 1F, AnimationType.Ball);
                         foreach (var it in dir) it.Key.SetAnimateValueY(it.Value[0] + (it.Value[1] - (int)(it.Value[1] * val)));

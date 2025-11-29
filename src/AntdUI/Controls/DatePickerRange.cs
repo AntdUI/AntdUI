@@ -580,7 +580,7 @@ namespace AntdUI
 
         bool AnimationBar = false;
         RectangleF AnimationBarValue = RectangleF.Empty;
-        ITask? ThreadBar;
+        AnimationTask? ThreadBar;
 
         string StartEndFocusedTmp = "00";
         void StartEndFocused()
@@ -603,7 +603,7 @@ namespace AntdUI
                     AnimationBar = true;
                     bool left = NewValue.X > AnimationBarValue.X;
                     ThreadBar?.Dispose();
-                    ThreadBar = new ITask(this, () =>
+                    ThreadBar = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         if (AnimationBarValue.Width != NewValue.Width)
                         {
@@ -643,7 +643,7 @@ namespace AntdUI
                         }
                         Invalidate();
                         return true;
-                    }, 10, () =>
+                    }, 10).SetEnd(() =>
                     {
                         if (subForm is LayeredFormDatePickerRange layered)
                         {
@@ -658,7 +658,7 @@ namespace AntdUI
                         AnimationBarValue = NewValue;
                         AnimationBar = false;
                         Invalidate();
-                    });
+                    }));
                     return;
                 }
             }

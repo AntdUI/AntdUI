@@ -174,11 +174,12 @@ namespace AntdUI
             StopAnimation();
             if (Config.HasAnimation(nameof(AntdUI.Badge)) && state == TState.Processing)
             {
-                ThreadState = new ITask(this, i =>
+                ThreadState = new AnimationTask(new AnimationLinearConfig(this, i =>
                 {
-                    AnimationStateValue = i;
+                    AnimationStateValue = i / 100F;
                     Invalidate();
-                }, 50, 1F, .05F);
+                    return state == TState.Processing;
+                }, 50, 100, 5));
             }
         }
         void StopAnimation()
@@ -190,7 +191,7 @@ namespace AntdUI
             StopAnimation();
             base.Dispose(disposing);
         }
-        ITask? ThreadState;
+        AnimationTask? ThreadState;
         float AnimationStateValue = 0;
 
         #endregion

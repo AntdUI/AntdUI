@@ -1189,31 +1189,29 @@ namespace AntdUI
                     float addvalue = shadowOpacityHover / 12F;
                     if (value)
                     {
-                        virtualShadow.ThreadHover = new ITask(this, () =>
+                        virtualShadow.ThreadHover = new AnimationTask(new AnimationLinearFConfig(this, i =>
                         {
-                            virtualShadow.AnimationHoverValue = virtualShadow.AnimationHoverValue.Calculate(addvalue);
-                            if (virtualShadow.AnimationHoverValue >= shadowOpacityHover) { virtualShadow.AnimationHoverValue = shadowOpacityHover; return false; }
+                            virtualShadow.AnimationHoverValue = i;
                             Invalidate();
                             return true;
-                        }, 20, () =>
+                        }, 20).SetAdd(addvalue).SetMax(shadowOpacityHover).SetValue(virtualShadow.AnimationHoverValue).SetEnd(() =>
                         {
                             virtualShadow.AnimationHover = false;
                             Invalidate();
-                        });
+                        }));
                     }
                     else
                     {
-                        virtualShadow.ThreadHover = new ITask(this, () =>
+                        virtualShadow.ThreadHover = new AnimationTask(new AnimationLinearFConfig(this, i =>
                         {
-                            virtualShadow.AnimationHoverValue = virtualShadow.AnimationHoverValue.Calculate(-addvalue);
-                            if (virtualShadow.AnimationHoverValue <= shadowOpacity) { virtualShadow.AnimationHoverValue = shadowOpacity; return false; }
+                            virtualShadow.AnimationHoverValue = i;
                             Invalidate();
                             return true;
-                        }, 20, () =>
+                        }, 20).SetAdd(-addvalue).SetMax(shadowOpacity).SetValue(virtualShadow.AnimationHoverValue).SetEnd(() =>
                         {
                             virtualShadow.AnimationHover = false;
                             Invalidate();
-                        });
+                        }));
                     }
                 }
                 else Invalidate();
@@ -1299,7 +1297,7 @@ namespace AntdUI
     public abstract class VirtualShadowItem : VirtualItem
     {
         internal Rectangle RECT_S;
-        internal ITask? ThreadHover;
+        internal AnimationTask? ThreadHover;
         internal float AnimationHoverValue = 0.1F;
         internal bool AnimationHover = false;
 

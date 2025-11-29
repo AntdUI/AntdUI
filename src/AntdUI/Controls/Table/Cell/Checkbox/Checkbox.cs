@@ -168,34 +168,12 @@ namespace AntdUI
                     if (PARENT.PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
                     {
                         AnimationCheck = true;
-                        if (value)
+                        ThreadCheck = new AnimationTask(new AnimationLinearFConfig(PARENT.PARENT, i =>
                         {
-                            ThreadCheck = new ITask(PARENT.PARENT, () =>
-                            {
-                                AnimationCheckValue = AnimationCheckValue.Calculate(0.2F);
-                                if (AnimationCheckValue > 1) { AnimationCheckValue = 1F; return false; }
-                                OnPropertyChanged();
-                                return true;
-                            }, 20, () =>
-                            {
-                                AnimationCheck = false;
-                                OnPropertyChanged();
-                            });
-                        }
-                        else
-                        {
-                            ThreadCheck = new ITask(PARENT.PARENT, () =>
-                            {
-                                AnimationCheckValue = AnimationCheckValue.Calculate(-0.2F);
-                                if (AnimationCheckValue <= 0) { AnimationCheckValue = 0F; return false; }
-                                OnPropertyChanged();
-                                return true;
-                            }, 20, () =>
-                            {
-                                AnimationCheck = false;
-                                OnPropertyChanged();
-                            });
-                        }
+                            AnimationCheckValue = i;
+                            OnPropertyChanged();
+                            return true;
+                        }, 20).SetValue(AnimationCheckValue, value, 0.2F).SetEnd(() => AnimationCheck = false));
                     }
                     else AnimationCheckValue = value ? 1F : 0F;
                 }
@@ -206,7 +184,7 @@ namespace AntdUI
         }
 
 
-        ITask? ThreadCheck, ThreadHover;
+        AnimationTask? ThreadCheck, ThreadHover;
 
         int AnimationHoverValue = 0;
         bool AnimationHover = false;
@@ -225,34 +203,12 @@ namespace AntdUI
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
-                        if (value)
+                        ThreadHover = new AnimationTask(new AnimationLinearConfig(PARENT.PARENT, i =>
                         {
-                            ThreadHover = new ITask(PARENT.PARENT, () =>
-                            {
-                                AnimationHoverValue += 20;
-                                if (AnimationHoverValue > 255) { AnimationHoverValue = 255; return false; }
-                                OnPropertyChanged();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                OnPropertyChanged();
-                            });
-                        }
-                        else
-                        {
-                            ThreadHover = new ITask(PARENT.PARENT, () =>
-                            {
-                                AnimationHoverValue -= 20;
-                                if (AnimationHoverValue < 1) { AnimationHoverValue = 0; return false; }
-                                OnPropertyChanged();
-                                return true;
-                            }, 10, () =>
-                            {
-                                AnimationHover = false;
-                                OnPropertyChanged();
-                            });
-                        }
+                            AnimationHoverValue = i;
+                            OnPropertyChanged();
+                            return true;
+                        }, 10).SetValueColor(AnimationHoverValue, value, 20).SetEnd(() => AnimationHover = false));
                     }
                     else AnimationHoverValue = 255;
                     OnPropertyChanged();

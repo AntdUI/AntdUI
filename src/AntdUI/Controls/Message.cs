@@ -603,20 +603,11 @@ namespace AntdUI
         internal override bool ActiveAnimation => false;
 
         bool loading = false, loadingend = true;
-        int AnimationLoadingValue = 0;
-        ITask? ThreadLoading;
+        int AnimationLoadingValue = -1;
+        AnimationTask? ThreadLoading;
         public bool IInit()
         {
             if (SetPosition(config.Target, config.ShowInWindow ?? Config.ShowInWindowByMessage)) return true;
-            if (loading)
-            {
-                ThreadLoading = new ITask(this, i =>
-                {
-                    AnimationLoadingValue = i;
-                    Print();
-                    return loading;
-                }, 20, 360, 10);
-            }
             loadingend = false;
             ITask.Run(() =>
             {
@@ -674,6 +665,25 @@ namespace AntdUI
             return false;
         }
 
+        public override void RunLoading()
+        {
+            if (loading)
+            {
+                if (loadingend) return;
+                AnimationLoadingValue = 0;
+                ThreadLoading = new AnimationTask(new AnimationLinearConfig(this, i =>
+                {
+                    if (loading)
+                    {
+                        AnimationLoadingValue = i;
+                        Print();
+                        return true;
+                    }
+                    return false;
+                }, 20, 360, 10));
+            }
+        }
+
         bool IRefresh()
         {
             var oldw = TargetRect.Width;
@@ -711,10 +721,13 @@ namespace AntdUI
                 {
                     var bor3 = 3F * Config.Dpi;
                     g.DrawEllipse(Colour.Fill.Get(nameof(Message)), bor3, rect_loading);
-                    using (var pen = new Pen(Colour.Primary.Get(nameof(Message)), bor3))
+                    if (AnimationLoadingValue > -1)
                     {
-                        pen.StartCap = pen.EndCap = LineCap.Round;
-                        g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
+                        using (var pen = new Pen(Colour.Primary.Get(nameof(Message)), bor3))
+                        {
+                            pen.StartCap = pen.EndCap = LineCap.Round;
+                            g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
+                        }
                     }
                 }
                 else if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);

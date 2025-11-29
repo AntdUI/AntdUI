@@ -566,7 +566,7 @@ namespace AntdUI
 
             bool AnimationBar = false;
             RectangleF AnimationBarValue;
-            ITask? ThreadBar;
+            AnimationTask? ThreadBar;
 
             void SetRect(int old, int value)
             {
@@ -593,7 +593,7 @@ namespace AntdUI
                                 AnimationBarValue.X = OldValue.X;
                                 AnimationBar = true;
                                 float p_val = Math.Abs(NewValue.Y - AnimationBarValue.Y) * 0.09F, p_w_val = Math.Abs(NewValue.Height - AnimationBarValue.Height) * 0.1F, p_val2 = (NewValue.Y - AnimationBarValue.Y) * 0.5F;
-                                ThreadBar = new ITask(owner, () =>
+                                ThreadBar = new AnimationTask(new AnimationLoopConfig(owner, () =>
                                 {
                                     if (AnimationBarValue.Height != NewValue.Height)
                                     {
@@ -631,12 +631,12 @@ namespace AntdUI
                                     }
                                     owner.Invalidate();
                                     return true;
-                                }, 10, () =>
+                                }, 10).SetEnd(() =>
                                 {
                                     AnimationBarValue = NewValue;
                                     AnimationBar = false;
                                     owner.Invalidate();
-                                });
+                                }));
                                 return;
                             }
                         }
@@ -647,7 +647,7 @@ namespace AntdUI
                                 AnimationBarValue.Y = OldValue.Y;
                                 AnimationBar = true;
                                 float p_val = Math.Abs(NewValue.X - AnimationBarValue.X) * 0.09F, p_w_val = Math.Abs(NewValue.Width - AnimationBarValue.Width) * 0.1F, p_val2 = (NewValue.X - AnimationBarValue.X) * 0.5F;
-                                ThreadBar = new ITask(owner, () =>
+                                ThreadBar = new AnimationTask(new AnimationLoopConfig(owner, () =>
                                 {
                                     if (AnimationBarValue.Width != NewValue.Width)
                                     {
@@ -685,12 +685,12 @@ namespace AntdUI
                                     }
                                     owner.Invalidate();
                                     return true;
-                                }, 10, () =>
+                                }, 10).SetEnd(() =>
                                 {
                                     AnimationBarValue = NewValue;
                                     AnimationBar = false;
                                     owner.Invalidate();
-                                });
+                                }));
                                 return;
                             }
                         }
