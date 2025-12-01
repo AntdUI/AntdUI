@@ -2194,13 +2194,13 @@ namespace AntdUI
                             ExpandProg = val;
                             ArrowProg = arrow;
                             Invalidates();
-                        }, 10, t, oldval, () =>
+                        }, 10, t, oldval, value).SetEnd(() =>
                         {
                             ExpandProg = 1F;
                             ArrowProg = value ? 1F : -1F;
                             ExpandThread = false;
                             Invalidates();
-                        }, value));
+                        }));
                     }
                     else
                     {

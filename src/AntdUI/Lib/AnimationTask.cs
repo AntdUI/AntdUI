@@ -838,7 +838,7 @@ namespace AntdUI
     /// </summary>
     public class AnimationFixed2Config : IAnimationConfig
     {
-        public AnimationFixed2Config(Action<int, float> call, int interval, int totalFrames, float value, Action end, bool sw, AnimationType type = AnimationType.Ball)
+        public AnimationFixed2Config(Action<int, float> call, int interval, int totalFrames, float value, bool sw, AnimationType type = AnimationType.Ball)
         {
             Call = call;
             Interval = interval;
@@ -847,7 +847,7 @@ namespace AntdUI
             LR = sw;
             Type = type;
         }
-        public AnimationFixed2Config(Action<int, float, float> call, int interval, int totalFrames, float value, Action end, bool sw, AnimationType type = AnimationType.Ball)
+        public AnimationFixed2Config(Action<int, float, float> call, int interval, int totalFrames, float value, bool sw, AnimationType type = AnimationType.Ball)
         {
             Call = call;
             Interval = interval;

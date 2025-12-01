@@ -13,7 +13,6 @@ namespace AntdUI.Svg
     {
         float DpiY { get; }
         void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit);
-        void DrawImageUnscaled(Image image, Point location);
         void DrawPath(Pen pen, GraphicsPath path);
         void FillPath(Brush brush, GraphicsPath path);
         ISvgBoundable GetBoundable();

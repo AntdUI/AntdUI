@@ -6,7 +6,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
 
 namespace AntdUI.Svg
@@ -16,7 +15,7 @@ namespace AntdUI.Svg
     /// </summary>
     public sealed class SvgRenderer : ISvgRenderer, IGraphicsProvider
     {
-        private readonly Graphics _innerGraphics;
+        private readonly Canvas _innerGraphics;
         private readonly bool _disposable;
         private readonly Image _image;
 
@@ -43,12 +42,12 @@ namespace AntdUI.Svg
         /// <summary>
         /// Initializes a new instance of the <see cref="ISvgRenderer"/> class.
         /// </summary>
-        private SvgRenderer(Graphics graphics, bool disposable = true)
+        private SvgRenderer(Canvas graphics, bool disposable = true)
         {
             _innerGraphics = graphics;
             _disposable = disposable;
         }
-        private SvgRenderer(Graphics graphics, Image image)
+        private SvgRenderer(Canvas graphics, Image image)
             : this(graphics)
         {
             _image = image;
@@ -56,34 +55,15 @@ namespace AntdUI.Svg
 
         public void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit)
         {
-            _innerGraphics.DrawImage(image, destRect, srcRect, graphicsUnit);
+            _innerGraphics.Image(image, destRect, srcRect, graphicsUnit);
         }
         public void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit, float opacity)
         {
-            var matrix = new ColorMatrix { Matrix33 = opacity };
-            var attributes = new ImageAttributes();
-            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            var points = new[]
-            {
-                destRect.Location,
-                new PointF(destRect.X + destRect.Width, destRect.Y),
-                new PointF(destRect.X, destRect.Y + destRect.Height)
-            };
-            _innerGraphics.DrawImage(image, points, srcRect, graphicsUnit, attributes);
+            _innerGraphics.Image(image, destRect, srcRect, opacity, graphicsUnit);
         }
 
-        public void DrawImageUnscaled(Image image, Point location)
-        {
-            _innerGraphics.DrawImageUnscaled(image, location);
-        }
-        public void DrawPath(Pen pen, GraphicsPath path)
-        {
-            _innerGraphics.DrawPath(pen, path);
-        }
-        public void FillPath(Brush brush, GraphicsPath path)
-        {
-            _innerGraphics.FillPath(brush, path);
-        }
+        public void DrawPath(Pen pen, GraphicsPath path) => _innerGraphics.Draw(pen, path);
+        public void FillPath(Brush brush, GraphicsPath path) => _innerGraphics.Fill(brush, path);
         public Region GetClip()
         {
             return _innerGraphics.Clip;
@@ -125,19 +105,16 @@ namespace AntdUI.Svg
                 _image.Dispose();
         }
 
-        Graphics IGraphicsProvider.GetGraphics()
-        {
-            return _innerGraphics;
-        }
+        Canvas IGraphicsProvider.GetGraphics() => _innerGraphics;
 
-        private static Graphics CreateGraphics(Image image)
+        private static Canvas CreateGraphics(Image image)
         {
             var g = Graphics.FromImage(image);
             g.PixelOffsetMode = PixelOffsetMode.Half;
             g.CompositingQuality = CompositingQuality.HighQuality;
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.TextContrast = 1;
-            return g;
+            return new Core.CanvasGDI(g);
         }
 
         /// <summary>
@@ -154,7 +131,7 @@ namespace AntdUI.Svg
         /// Creates a new <see cref="ISvgRenderer"/> from the specified <see cref="Graphics"/>.
         /// </summary>
         /// <param name="graphics">The <see cref="Graphics"/> to create the renderer from.</param>
-        public static ISvgRenderer FromGraphics(Graphics graphics)
+        public static ISvgRenderer FromGraphics(Canvas graphics)
         {
             return new SvgRenderer(graphics, false);
         }

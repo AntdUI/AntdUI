@@ -788,7 +788,7 @@ namespace AntdUI.Chat
                         }
                         break;
                     default:
-                        if (nType == 18)
+                        if (nType == 18 || (nType == 4 && SvgDb.Emoji.ContainsKey(it)))
                         {
                             item.HasEmoji = true;
                             font_widths.Add(new CacheFont(it, true, 0, type));
@@ -815,17 +815,10 @@ namespace AntdUI.Chat
 
             if (item.HasEmoji)
             {
-                using (var font = new Font(EmojiFont, Font.Size))
+                if (font_height == 0) font_height = FixFontWidth(g).Height;
+                foreach (var it in font_widths)
                 {
-                    foreach (var it in font_widths)
-                    {
-                        if (it.emoji)
-                        {
-                            var sizefont = g.MeasureString(it.text, font);
-                            if (font_height < sizefont.Height) font_height = sizefont.Height;
-                            it.width = sizefont.Width;
-                        }
-                    }
+                    if (it.emoji) it.width = font_height;
                 }
             }
 

@@ -3,12 +3,10 @@
 // COPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.
 // GITHUB: https://github.com/svg-net/SVG
 
-using System.Drawing;
-
 namespace AntdUI.Svg
 {
     public interface IGraphicsProvider
     {
-        Graphics GetGraphics();
+        Canvas GetGraphics();
     }
 }

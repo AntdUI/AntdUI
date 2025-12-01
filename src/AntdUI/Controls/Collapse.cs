@@ -1184,13 +1184,13 @@ namespace AntdUI
                     {
                         ExpandProg = val;
                         PARENT.LoadLayout();
-                    }, 10, t, oldval, () =>
+                    }, 10, t, oldval, value).SetEnd(() =>
                     {
                         if (PARENT.AutoSize) PARENT.canset = true;
                         ExpandProg = 1F;
                         ExpandThread = false;
                         PARENT.LoadLayout();
-                    }, value));
+                    }));
                 }
                 else
                 {

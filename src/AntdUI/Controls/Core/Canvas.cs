@@ -70,6 +70,8 @@ namespace AntdUI
         [Obsolete("use FormatFlags")]
         Size MeasureText(string? text, Font font, int width, StringFormat format);
         Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center);
+        Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Center);
+        Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, StringFormat format);
 
         #endregion
 
@@ -106,6 +108,8 @@ namespace AntdUI
         bool Image(Image bmp, Rectangle rect, float opacity);
         bool Image(Image bmp, Rectangle destRect, Rectangle srcRect, float opacity);
         bool Image(Image bmp, Rectangle destRect, Rectangle srcRect, float opacity, GraphicsUnit srcUnit);
+        bool Image(Image bmp, RectangleF destRect, RectangleF srcRect, float opacity);
+        bool Image(Image bmp, RectangleF destRect, RectangleF srcRect, float opacity, GraphicsUnit srcUnit);
 
         #endregion
 
@@ -218,14 +222,22 @@ namespace AntdUI
         void SetClip(Rectangle rect, CombineMode combineMode);
         void SetClip(RectangleF rect, CombineMode combineMode);
         void SetClip(GraphicsPath path, CombineMode combineMode);
+        void SetClip(Region region, CombineMode combineMode);
         void ResetClip();
         void ResetTransform();
         void TranslateTransform(float dx, float dy);
+        void TranslateTransform(float dx, float dy, MatrixOrder order);
         void RotateTransform(float angle);
+        void RotateTransform(float angle, MatrixOrder order);
+        void ScaleTransform(float sx, float sy);
+        void ScaleTransform(float sx, float sy, MatrixOrder order);
         float DpiX { get; }
         float DpiY { get; }
         Matrix Transform { get; set; }
+        Region Clip { get; set; }
+        RectangleF RegionBounds(Region region);
         CompositingMode CompositingMode { get; set; }
+        SmoothingMode SmoothingMode { get; set; }
 
         #endregion
     }
