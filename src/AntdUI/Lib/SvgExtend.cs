@@ -41,6 +41,22 @@ namespace AntdUI
             }
             return false;
         }
+        public static bool GetImgCanvas(this Canvas g, string svg, Rectangle rect, Color? color = null)
+        {
+            if (rect.Width > 0 && rect.Height > 0)
+            {
+                var doc = SvgDocument(svg);
+                if (doc == null) return false;
+                if (color.HasValue) doc.Fill = new Svg.SvgColourServer(color.Value);
+                doc.Width = rect.Width;
+                doc.Height = rect.Height;
+                var state = g.Save();
+                g.TranslateTransform(rect.X, rect.Y);
+                doc.Draw(g, rect.Size);
+                g.Restore(state);
+            }
+            return false;
+        }
 
         /// <summary>
         /// SVG转图片

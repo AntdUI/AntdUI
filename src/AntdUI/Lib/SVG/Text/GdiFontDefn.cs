@@ -55,7 +55,7 @@ namespace AntdUI.Svg
                 format.SetMeasurableCharacterRanges((from r in Enumerable.Range(32 * s, Math.Min(32, text.Length - 32 * s))
                                                      select new CharacterRange(r, 1)).ToArray());
                 regions.AddRange(from r in g.MeasureCharacterRanges(text, _font, new Rectangle(0, 0, 1000, 1000), format)
-                                 select r.GetBounds(g));
+                                 select g.RegionBounds(r));
             }
             return regions;
         }
@@ -63,18 +63,19 @@ namespace AntdUI.Svg
         public SizeF MeasureString(ISvgRenderer renderer, string text)
         {
             var g = GetGraphics(renderer);
+            //return new SizeF(g.MeasureString(text, _font, 1000).Width, Ascent(renderer));
             StringFormat format = StringFormat.GenericTypographic.Clone() as StringFormat;
             format.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(0, text.Length) });
             format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
             Region[] r = g.MeasureCharacterRanges(text, _font, new Rectangle(0, 0, 1000, 1000), format);
-            RectangleF rect = r[0].GetBounds(g);
+            RectangleF rect = g.RegionBounds(r[0]);
 
             return new SizeF(rect.Width, Ascent(renderer));
         }
 
-        Graphics? _graphics;
+        Canvas? _graphics;
         Bitmap? _bitmap;
-        private Graphics GetGraphics(object renderer)
+        private Canvas GetGraphics(object renderer)
         {
             var provider = renderer as IGraphicsProvider;
             if (provider == null)
@@ -82,7 +83,7 @@ namespace AntdUI.Svg
                 if (_graphics == null)
                 {
                     _bitmap = new Bitmap(1, 1);
-                    _graphics = Graphics.FromImage(_bitmap);
+                    _graphics = new Core.CanvasGDI(Graphics.FromImage(_bitmap));
                 }
                 return _graphics;
             }

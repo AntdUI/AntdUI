@@ -653,12 +653,12 @@ namespace AntdUI
                         {
                             ExpandProg = val;
                             Invalidates();
-                        }, 10, Animation.TotalFrames(10, 200), oldval, () =>
+                        }, 10, Animation.TotalFrames(10, 200), oldval, value).SetEnd(() =>
                         {
                             ExpandProg = 1F;
                             ExpandThread = false;
                             Invalidates();
-                        }, value));
+                        }));
                     }
                     else
                     {

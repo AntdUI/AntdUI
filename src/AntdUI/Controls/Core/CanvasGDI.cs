@@ -38,6 +38,8 @@ namespace AntdUI.Core
         public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Center);
         public Size MeasureString(string? text, Font font, int width, StringFormat format) => g.MeasureString(text, font, width, format).Size();
         public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Center) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
+        public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Center) => g.MeasureCharacterRanges(text, font, rect, Helper.TF(format, true));
+        public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, StringFormat format) => g.MeasureCharacterRanges(text, font, rect, format);
 
         #endregion
 
@@ -891,6 +893,36 @@ namespace AntdUI.Core
             catch { }
             return false;
         }
+        public bool Image(Image bmp, RectangleF destRect, RectangleF srcRect, float opacity) => Image(bmp, destRect, srcRect, opacity, GraphicsUnit.Pixel);
+        public bool Image(Image bmp, RectangleF destRect, RectangleF srcRect, float opacity, GraphicsUnit srcUnit)
+        {
+            try
+            {
+                lock (bmp)
+                {
+                    if (opacity >= 1F)
+                    {
+                        Image(bmp, destRect, srcRect, srcUnit);
+                        return true;
+                    }
+                    using (var attributes = new ImageAttributes())
+                    {
+                        var matrix = new ColorMatrix { Matrix33 = opacity };
+                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                        var points = new[]
+                        {
+                            destRect.Location,
+                            new PointF(destRect.X + destRect.Width, destRect.Y),
+                            new PointF(destRect.X, destRect.Y + destRect.Height)
+                        };
+                        g.DrawImage(bmp, points, srcRect, srcUnit, attributes);
+                    }
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
 
         #endregion
 
@@ -1384,10 +1416,16 @@ namespace AntdUI.Core
         public void SetClip(Rectangle rect, CombineMode combineMode) => g.SetClip(rect, combineMode);
         public void SetClip(RectangleF rect, CombineMode combineMode) => g.SetClip(rect, combineMode);
         public void SetClip(GraphicsPath path, CombineMode combineMode) => g.SetClip(path, combineMode);
+        public void SetClip(Region region, CombineMode combineMode) => g.SetClip(region, combineMode);
         public void ResetClip() => g.ResetClip();
         public void ResetTransform() => g.ResetTransform();
         public void TranslateTransform(float dx, float dy) => g.TranslateTransform(dx, dy);
+        public void TranslateTransform(float dx, float dy, MatrixOrder order) => g.TranslateTransform(dx, dy, order);
         public void RotateTransform(float angle) => g.RotateTransform(angle);
+        public void RotateTransform(float angle, MatrixOrder order) => g.RotateTransform(angle, order);
+        public void ScaleTransform(float sx, float sy) => g.ScaleTransform(sx, sy);
+        public void ScaleTransform(float sx, float sy, MatrixOrder order) => g.ScaleTransform(sx, sy, order);
+
         public float DpiX => g.DpiX;
         public float DpiY => g.DpiY;
         public Matrix Transform
@@ -1400,6 +1438,17 @@ namespace AntdUI.Core
             get => g.CompositingMode;
             set => g.CompositingMode = value;
         }
+        public SmoothingMode SmoothingMode
+        {
+            get => g.SmoothingMode;
+            set => g.SmoothingMode = value;
+        }
+        public Region Clip
+        {
+            get => g.Clip;
+            set => g.Clip = value;
+        }
+        public RectangleF RegionBounds(Region region) => region.GetBounds(g);
         public void Dispose() => g.Dispose();
 
         #endregion
