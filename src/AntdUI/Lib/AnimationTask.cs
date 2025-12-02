@@ -474,9 +474,13 @@ namespace AntdUI
         public void Dispose()
         {
             if (token == null) return;
-            token.Cancel();
-            token.Dispose();
-            token = null;
+            try
+            {
+                token.Cancel();
+                token.Dispose();
+                token = null;
+            }
+            catch { }
         }
     }
 

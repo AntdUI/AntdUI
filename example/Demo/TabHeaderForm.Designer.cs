@@ -92,6 +92,7 @@ namespace Demo
             ClientSize = new System.Drawing.Size(830, 414);
             Controls.Add(button1);
             Controls.Add(tabHeader1);
+            Icon = Properties.Resources.icon;
             Name = "TabHeaderForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "TabHeader";

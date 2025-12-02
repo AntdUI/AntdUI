@@ -70,7 +70,7 @@ namespace AntdUI
                 else nCharLen += nLastCharLen;
                 lst_history_break_type.Add(nRightBreakType);
                 nIndex += nLastCharLen;
-                if (nLeftBreakType != Extended_Pictographic) nLeftBreakType = nRightBreakType;
+                nLeftBreakType = nRightBreakType;
             }
             if (nCharLen != 0)
             {
@@ -139,7 +139,7 @@ namespace AntdUI
                 else nCharLen += nLastCharLen;
                 lst_history_break_type.Add(nRightBreakType);
                 nIndex += LastLen;
-                if (nLeftBreakType != Extended_Pictographic) nLeftBreakType = nRightBreakType;
+                nLeftBreakType = nRightBreakType;
             }
             if (nCharLen != 0 && nIndexCharStart < strText.Length)
             {
