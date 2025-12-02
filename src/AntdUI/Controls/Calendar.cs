@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Windows.Forms;
@@ -428,6 +429,59 @@ namespace AntdUI
 
         #endregion
 
+        Color? back;
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? Back
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Back));
+            }
+        }
+
+        string? backExtend;
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        public string? BackExtend
+        {
+            get => backExtend;
+            set
+            {
+                if (backExtend == value) return;
+                backExtend = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BackExtend));
+            }
+        }
+
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? Fore
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Fore));
+            }
+        }
+
         #endregion
 
         #region 渲染
@@ -442,7 +496,10 @@ namespace AntdUI
             int _radius = (int)(radius * Config.Dpi);
             using (var path = rect_read.RoundPath(_radius))
             {
-                g.Fill(Colour.BgElevated.Get(nameof(Calendar), ColorScheme), path);
+                using (var brush = backExtend.BrushEx(rect_read, back, Colour.BgElevated.Get(nameof(Calendar), ColorScheme)))
+                {
+                    g.Fill(brush, path);
+                }
             }
 
             #region 方向
@@ -546,7 +603,7 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintYear(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
-            var color_fore = Colour.TextBase.Get(nameof(Calendar), ColorScheme);
+            var color_fore = fore ?? Colour.TextBase.Get(nameof(Calendar), ColorScheme);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 if (hover_year.Animation) g.String(year_str, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(nameof(Calendar), ColorScheme)), rect_year_l, s_f);
@@ -596,7 +653,7 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintMonth(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
-            var color_fore = Colour.TextBase.Get(nameof(Calendar), ColorScheme);
+            var color_fore = fore ?? Colour.TextBase.Get(nameof(Calendar), ColorScheme);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture);
@@ -651,7 +708,7 @@ namespace AntdUI
         void PrintDay(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             if (rect_day_s == null) return;
-            var color_fore = Colour.TextBase.Get(nameof(Calendar), ColorScheme);
+            var color_fore = fore ?? Colour.TextBase.Get(nameof(Calendar), ColorScheme);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);

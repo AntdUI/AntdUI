@@ -516,6 +516,11 @@ namespace AntdUI
             public bool DefaultFocus { get; set; }
 
             /// <summary>
+            /// 默认接受OK按钮
+            /// </summary>
+            public bool DefaultAcceptButton { get; set; } = true;
+
+            /// <summary>
             /// 取消按钮字体
             /// </summary>
             public Font? CancelFont { get; set; }
@@ -710,6 +715,11 @@ namespace AntdUI
             public Config SetDefaultFocus(bool value = true)
             {
                 DefaultFocus = value;
+                return this;
+            }
+            public Config SetDefaultAcceptButton(bool value = false)
+            {
+                DefaultAcceptButton = value;
                 return this;
             }
             public Config SetInput(Input value)

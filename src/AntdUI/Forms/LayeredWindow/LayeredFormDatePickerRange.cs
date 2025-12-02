@@ -221,6 +221,7 @@ namespace AntdUI
                 rect_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
                 rect_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
                 rect_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
+                LoadLayoutDiv();
 
                 if (badge_action == null) return;
                 var oldval = value;
@@ -1030,6 +1031,28 @@ namespace AntdUI
             }
 
             SetSize(rw, r_h);
+        }
+        void LoadLayoutDiv()
+        {
+            if (rect_div.Count == 0) return;
+            switch (showType)
+            {
+                case TDatePicker.Date:
+                    if (calendar_day == null || calendar_day2 == null) return;
+                    foreach (var it in calendar_day) rect_div[it.id].Enable = it.enable;
+                    foreach (var it in calendar_day2) rect_div["R_" + it.id].Enable = it.enable;
+                    break;
+                case TDatePicker.Month:
+                    if (calendar_month == null || calendar_month2 == null) return;
+                    foreach (var it in calendar_month) rect_div[it.id].Enable = it.enable;
+                    foreach (var it in calendar_month2) rect_div["R_" + it.id].Enable = it.enable;
+                    break;
+                case TDatePicker.Year:
+                    if (calendar_year == null || calendar_year2 == null) return;
+                    foreach (var it in calendar_year) rect_div[it.id].Enable = it.enable;
+                    foreach (var it in calendar_year2) rect_div["R_" + it.id].Enable = it.enable;
+                    break;
+            }
         }
 
         void LoadLayoutButton(int t_x, int r_h, int t_time_height)
