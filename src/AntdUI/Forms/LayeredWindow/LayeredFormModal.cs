@@ -188,8 +188,8 @@ namespace AntdUI
             {
                 if (butt_h > 0)
                 {
-                    AcceptButton = btn_ok;
                     CancelButton = btn_no;
+                    if (config.DefaultAcceptButton) AcceptButton = btn_ok;
                 }
                 else ONESC = () => DialogResult = DialogResult.No;
             }

@@ -318,6 +318,23 @@ namespace AntdUI
         /// <summary>
         /// 画刷（渐变色）
         /// </summary>
+        /// <param name="code">渐变代码H5</param>
+        /// <param name="rect">区域</param>
+        /// <param name="defn">默认空颜色</param>
+        /// <param name="def">默认颜色</param>
+        public static Brush BrushEx(this string? code, Rectangle rect, Color? defn, Color def)
+        {
+            if (code != null)
+            {
+                var arr = BrushEx(code);
+                if (arr.Length > 1) return BrushEx(code, arr, rect);
+            }
+            return new SolidBrush(defn ?? def);
+        }
+
+        /// <summary>
+        /// 画刷（渐变色）
+        /// </summary>
         public static bool BrushEx(this string? code, Rectangle rect, Canvas g)
         {
             if (code != null)

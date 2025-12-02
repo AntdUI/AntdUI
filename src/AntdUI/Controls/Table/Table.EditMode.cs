@@ -464,7 +464,10 @@ namespace AntdUI
             }
         }
         void InputEdit_SelectedValueChanged(object? sender, ObjectNEventArgs e) => EditModeClose();
-        void InputEdit_LostFocus(object? sender, EventArgs e) => EditModeClose();
+        void InputEdit_LostFocus(object? sender, EventArgs e)
+        {
+            if (EditLostFocus) EditModeClose();
+        }
 
         #endregion
 

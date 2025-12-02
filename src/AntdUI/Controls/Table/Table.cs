@@ -921,6 +921,14 @@ namespace AntdUI
         public bool EditAutoHeight { get; set; }
 
         /// <summary>
+        /// 失去焦点退出编辑模式
+        /// </summary>
+        [Description("失去焦点退出编辑模式"), Category("行为"), DefaultValue(true)]
+        public bool EditLostFocus { get; set; } = true;
+
+        #endregion
+
+        /// <summary>
         /// 树表格的箭头样式
         /// </summary>
         [Description("树表格的箭头样式"), Category("行为"), DefaultValue(TableTreeStyle.Button)]
@@ -931,8 +939,6 @@ namespace AntdUI
         /// </summary>
         [Description("动画时长（ms）"), Category("行为"), DefaultValue(100)]
         public int AnimationTime { get; set; } = 100;
-
-        #endregion
 
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]

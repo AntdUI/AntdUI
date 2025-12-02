@@ -161,6 +161,7 @@ namespace AntdUI
                 rect_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
                 rect_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
                 rect_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
+                LoadLayoutDiv();
 
                 if (badge_action == null) return;
                 var oldval = value;
@@ -808,6 +809,25 @@ namespace AntdUI
             }
 
             SetSize(rw, r_h);
+        }
+        void LoadLayoutDiv()
+        {
+            if (rect_div.Count == 0) return;
+            switch (showType)
+            {
+                case TDatePicker.Date:
+                    if (calendar_day == null) return;
+                    foreach (var it in calendar_day) rect_div[it.id].Enable = it.enable;
+                    break;
+                case TDatePicker.Month:
+                    if (calendar_month == null) return;
+                    foreach (var it in calendar_month) rect_div[it.id].Enable = it.enable;
+                    break;
+                case TDatePicker.Year:
+                    if (calendar_year == null) return;
+                    foreach (var it in calendar_year) rect_div[it.id].Enable = it.enable;
+                    break;
+            }
         }
         void ScrollTime(List<CalendarT> calendar_time, DateTime d)
         {
