@@ -754,6 +754,7 @@ namespace Demo
             Controls.Add(button1);
             Font = new Font("Microsoft YaHei UI Light", 12F);
             ForeColor = Color.Black;
+            Icon = Properties.Resources.icon;
             MinimumSize = new Size(1300, 720);
             Name = "Main";
             StartPosition = FormStartPosition.CenterScreen;

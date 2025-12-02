@@ -182,6 +182,7 @@ namespace Demo
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F);
             ForeColor = Color.Black;
+            Icon = Properties.Resources.icon;
             MinimumSize = new Size(660, 400);
             Name = "Overview";
             StartPosition = FormStartPosition.CenterScreen;

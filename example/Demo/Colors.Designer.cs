@@ -282,7 +282,6 @@ namespace Demo
             // 
             textBox1.Location = new Point(270, 13);
             textBox1.Name = "textBox1";
-            textBox1.SelectionStart = 7;
             textBox1.Size = new Size(114, 38);
             textBox1.TabIndex = 3;
             textBox1.Text = "#1677FF";
@@ -523,6 +522,7 @@ namespace Demo
             ClientSize = new Size(964, 461);
             Controls.Add(tableLPanel);
             Font = new Font("Microsoft YaHei UI", 14F);
+            Icon = Properties.Resources.icon;
             MinimumSize = new Size(980, 500);
             Name = "Colors";
             StartPosition = FormStartPosition.CenterScreen;
