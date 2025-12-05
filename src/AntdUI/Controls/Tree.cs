@@ -453,7 +453,7 @@ namespace AntdUI
                         if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
                         else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
                     }
-                    y += height + gapI;
+                    y += it.txt_rect.Height + gapI;
                     if (it.ICanExpand)
                     {
                         int y_item = y;
@@ -2029,7 +2029,8 @@ namespace AntdUI
         internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
-            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (_rect.Height - icon_size) / 2, ui = icon_size + gap;
+            var size = g.MeasureText(Text, font);
+            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (size.Height + 10 - icon_size) / 2, ui = icon_size + gap;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -2050,8 +2051,8 @@ namespace AntdUI
                 usew += ui;
                 x += ui;
             }
-            var size = g.MeasureText(Text, font);
-            int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y + (_rect.Height - txt_h) / 2;
+
+            int txt_w = size.Width + gap, txt_h = size.Height + 10, txt_y = _rect.Y;
             if (subTitle == null)
             {
                 usew += txt_w;
