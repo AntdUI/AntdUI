@@ -213,7 +213,7 @@ namespace AntdUI
             foreach (var it in items)
             {
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 var size = g.MeasureString(it.Text, Font, csize, s_c);
                 int xc = size.Height - font_height;
                 if (xc > 0 && tmp < xc) tmp = xc;
@@ -791,7 +791,7 @@ namespace AntdUI
             base.Add(item);
 
             item.PARENT = PARENT;
-            item.PARENTITEM = item.ParentItem = PARENTITEM;
+            item.ParentItem = PARENTITEM;
         }
     }
     /// <summary>
@@ -904,7 +904,6 @@ namespace AntdUI
         }
 
         bool switchMode = false;
-        //[Obsolete("请使用EditType")]
         [Browsable(false)]
         [Description("Switch切换模式"), Category("行为"), DefaultValue(false)]
         public bool SwitchMode
@@ -1326,9 +1325,6 @@ namespace AntdUI
 
 
         internal ICollapse? PARENT { get; set; }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
-        public ICollapseItem? PARENTITEM { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ICollapseItem? ParentItem { get; internal set; }

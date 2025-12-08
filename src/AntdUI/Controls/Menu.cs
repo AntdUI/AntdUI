@@ -689,7 +689,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 if (it is MenuDividerItem)
                 {
                     it.SetRectDivider(new Rectangle(rect.X, rect.Y + y, rect.Width, divider));
@@ -742,7 +742,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 if (it is MenuDividerItem)
                 {
                     it.SetRectDivider(new Rectangle(rect.X, rect.Y + y, rect.Width, divider));
@@ -2412,9 +2412,6 @@ namespace AntdUI
         public List<MenuButton>? Button { get; set; }
 
         #endregion
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
-        public MenuItem? PARENTITEM { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? ParentItem { get; internal set; }

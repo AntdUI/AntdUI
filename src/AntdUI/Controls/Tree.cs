@@ -444,7 +444,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 if (it.Visible)
                 {
                     it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
@@ -2013,9 +2013,6 @@ namespace AntdUI
         #endregion
 
         public int Depth { get; private set; }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
-        public TreeItem? PARENTITEM { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TreeItem? ParentItem { get; internal set; }
