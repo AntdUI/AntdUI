@@ -113,12 +113,11 @@ namespace AntdUI
 
         bool rmax = false;
         bool DwmEnabled = true;
-        protected override void OnHandleCreated(EventArgs e)
+        public override void OnCreated‌()
         {
             if (OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
             else DwmEnabled = false;
             DisableProcessWindowsGhosting();
-            base.OnHandleCreated(e);
             if (WindowState == FormWindowState.Maximized) rmax = true;
             if (FormBorderStyle != FormBorderStyle.None && !rmax)
             {
