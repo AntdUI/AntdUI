@@ -780,7 +780,7 @@ namespace AntdUI
                 size.Width = 0;
                 return size;
             }
-            else return g.MeasureString(text, font);
+            else return g.MeasureText(text, font);
         }
 
         public Rectangle GetTitleRect(Canvas g)
