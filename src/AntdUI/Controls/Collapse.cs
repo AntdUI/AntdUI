@@ -316,7 +316,7 @@ namespace AntdUI
                 {
                     var rect_t = rect.DeflateRect(Margin);
                     LoadLayout(rect_t, items);
-                    if (r) Invalidate(rect_t);
+                    if (r) Invalidate();
                 }
             }
         }
@@ -498,11 +498,8 @@ namespace AntdUI
         FormatFlags s_l = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         protected override void OnDraw(DrawEventArgs e)
         {
-            if (items == null || items.Count == 0)
-            {
-                base.OnDraw(e);
-                return;
-            }
+            base.OnDraw(e);
+            if (items == null || items.Count == 0) return;
             var g = e.Canvas;
             float r = radius * Config.Dpi;
             using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Collapse), ColorScheme)))
@@ -513,7 +510,7 @@ namespace AntdUI
                     using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(nameof(Collapse), ColorScheme), borderWidth * Config.Dpi))
                     using (var pen_arr = new Pen(forebrush.Color, 1.2F * Config.Dpi))
                     {
-                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        pen.StartCap = pen.EndCap = LineCap.Round;
                         if (items.Count == 1 || _gap > 0)
                         {
                             foreach (var item in items)
@@ -688,7 +685,6 @@ namespace AntdUI
                     }
                 }
             }
-            base.OnDraw(e);
         }
         private int GetIconSize(int titleHeight) { return titleHeight - (int)(8 * Config.Dpi); }
 

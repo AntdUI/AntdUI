@@ -2413,7 +2413,6 @@ namespace AntdUI
 
         #endregion
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? ParentItem { get; internal set; }
 
         #region 内部

@@ -1326,7 +1326,6 @@ namespace AntdUI
 
         internal ICollapse? PARENT { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ICollapseItem? ParentItem { get; internal set; }
 
         internal virtual void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)

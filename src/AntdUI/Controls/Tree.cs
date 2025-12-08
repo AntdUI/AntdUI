@@ -2014,7 +2014,6 @@ namespace AntdUI
 
         public int Depth { get; private set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TreeItem? ParentItem { get; internal set; }
 
         #region 内部
