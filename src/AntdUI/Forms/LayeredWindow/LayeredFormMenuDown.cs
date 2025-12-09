@@ -335,18 +335,13 @@ namespace AntdUI
             if (it.Val.Icon != null) g.Image(it.Val.Icon, it.RectIcon);
             if (it.Val.IconSvg != null) g.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore);
         }
-        void PaintArrow(Canvas g, OMenuItem item, Color color)
+        void PaintArrow(Canvas g, OMenuItem it, Color color)
         {
-            var state = g.Save();
-            int size = item.RectArrow.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
-            g.RotateTransform(-90F);
             using (var pen = new Pen(color, Config.Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .7F));
+                g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
             }
-            g.Restore(state);
         }
 
         #endregion

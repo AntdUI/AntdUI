@@ -74,6 +74,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
+            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
             ClickEnd = control.ClickEnd;
@@ -533,16 +534,11 @@ namespace AntdUI
         }
         void DrawArrow(Canvas g, ObjectItem it, Color color)
         {
-            var state = g.Save();
-            int size = it.RectArrow.Width, size_arrow = size / 2;
-            g.TranslateTransform(it.RectArrow.X + size_arrow, it.RectArrow.Y + size_arrow);
-            g.RotateTransform(-90F);
             using (var pen = new Pen(color, Config.Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, it.RectArrow.Width, it.RectArrow.Height).TriangleLines(-1, .7F));
+                g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
             }
-            g.Restore(state);
         }
 
         #endregion

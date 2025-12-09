@@ -367,8 +367,8 @@ namespace AntdUI
         /// <summary>
         /// 下拉边距
         /// </summary>
-        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
-        public Size DropDownPadding { get; set; } = new Size(12, 5);
+        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "16, 10")]
+        public Size DropDownPadding { get; set; } = new Size(16, 10);
 
         /// <summary>
         /// 下拉图标比例
@@ -689,7 +689,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 if (it is MenuDividerItem)
                 {
                     it.SetRectDivider(new Rectangle(rect.X, rect.Y + y, rect.Width, divider));
@@ -742,7 +742,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 if (it is MenuDividerItem)
                 {
                     it.SetRectDivider(new Rectangle(rect.X, rect.Y + y, rect.Width, divider));
@@ -1054,7 +1054,7 @@ namespace AntdUI
                         using (var pen = new Pen(fore_active, Config.Dpi * 2))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                            g.DrawLines(pen, it.arr_rect.TriangleLines(it.GetArrowProg(), .4F));
+                            g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
                         }
                     }
                     else PaintBack(g, back_active, it.rect, radius);
@@ -1064,7 +1064,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore_enabled, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.GetArrowProg(), .4F));
+                        g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
                     }
                 }
                 PaintTextIcon(g, it, fore_enabled, radius);
@@ -1108,7 +1108,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore, Config.Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLines(it.GetArrowProg(), .4F));
+                        g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
                     }
                 }
                 else if (mode == TMenuMode.Vertical)
@@ -2413,10 +2413,6 @@ namespace AntdUI
 
         #endregion
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
-        public MenuItem? PARENTITEM { get; set; }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MenuItem? ParentItem { get; internal set; }
 
         #region 内部

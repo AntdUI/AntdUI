@@ -51,10 +51,8 @@ namespace AntdUI
                     if (caret2.i > 0) start = FindStart(cache_font, caret2.i - 2);
                     if (caret2.i >= cache_font.Length) end = cache_font.Length;
                     else end = FindEnd(cache_font, caret2.i);
-
-                    SetSelectionStart(start);
-                    SelectionLength = end - start;
-
+                    bool set_s2 = SetSelectionStart(start), set_e2 = SetSelectionLength(end - start);
+                    if (set_s2 || set_e2) Invalidate();
                     return;
                 }
                 if (is_clear && rect_r.Contains(e.X, e.Y))
@@ -77,8 +75,8 @@ namespace AntdUI
                 if (ScrollYShow && autoscroll && ScrollHover)
                 {
                     float yratio = ((e.Y - ScrollRect.Top) - ScrollSliderFull / 2) / (ScrollRect.Height - ScrollSliderFull);
-                    ScrollY = (int)(yratio * ScrollYMax);
                     ScrollYDown = true;
+                    ScrollY = (int)(yratio * ScrollYMax);
                     SetCursor(false);
                     Window.CanHandMessage = false;
                     return;
@@ -87,11 +85,12 @@ namespace AntdUI
                 mDownLocation = e.Location;
                 if (BanInput) return;
                 var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                bool set_s = false, set_e = false, set_caret = false;
                 if (caret == null)
                 {
-                    SetSelectionStart(0);
-                    SelectionLength = 0;
-                    SetCaretPostion(selectionStart);
+                    set_s = SetSelectionStart(0);
+                    set_e = SetSelectionLength(0);
+                    set_caret = SetCaretPostion(selectionStart);
                 }
                 else
                 {
@@ -99,25 +98,27 @@ namespace AntdUI
                     {
                         if (caret.i > selectionStartTemp)
                         {
-                            if (selectionStart != selectionStartTemp) SetSelectionStart(selectionStartTemp);
-                            SelectionLength = caret.i - selectionStartTemp;
+                            if (selectionStart != selectionStartTemp) set_s = SetSelectionStart(selectionStartTemp);
+                            set_e = SetSelectionLength(caret.i - selectionStartTemp);
                         }
                         else
                         {
                             int len = selectionStartTemp - caret.i;
-                            SetSelectionStart(caret.i, false);
-                            SelectionLength = len;
+                            set_s = SetSelectionStart(caret.i, false);
+                            set_e = SetSelectionLength(len);
                         }
                     }
                     else
                     {
-                        SetSelectionStart(caret.i);
-                        SelectionLength = 0;
+                        set_s = SetSelectionStart(caret.i);
+                        set_e = SetSelectionLength(0);
                     }
-                    SetCaretPostion(caret.index);
+                    set_caret = SetCaretPostion(caret.index);
                 }
                 if (cache_font != null) mDown = true;
-                else if (ModeRange) SetCaretPostion();
+                else if (ModeRange && SetCaretPostion()) set_caret = true;
+
+                if (set_s || set_e || set_caret) Invalidate();
             }
         }
 
@@ -144,10 +145,11 @@ namespace AntdUI
                 }
                 else
                 {
-                    SelectionLength = Math.Abs(caret.i - selectionStart);
+                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart));
                     if (caret.i > selectionStart) selectionStartTemp = selectionStart;
                     else selectionStartTemp = caret.i;
-                    SetCaretPostion(caret.index);
+                    bool set_caret = SetCaretPostion(caret.index);
+                    if (set_e || set_caret) Invalidate();
                 }
                 Window.CanHandMessage = false;
             }
@@ -167,7 +169,11 @@ namespace AntdUI
                         hover_clear = hover;
                         Invalidate();
                     }
-                    if (hover) { SetCursor(true); return; }
+                    if (hover)
+                    {
+                        SetCursor(true);
+                        return;
+                    }
                 }
                 if (((HasPrefix || prefixText != null) && rect_l.Contains(e.X, e.Y) && PrefixClick != null) || ((HasSuffix || suffixText != null) && rect_r.Contains(e.X, e.Y) && SuffixClick != null))
                 {
@@ -239,23 +245,17 @@ namespace AntdUI
             if (md && mDownMove && mDownLocation != e.Location && cache_font != null)
             {
                 var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
-                if (caret == null) { }
+                if (caret == null) return;
+                if (selectionStart == caret.i) SelectionLength = 0;
+                else if (caret.i > selectionStart)
+                {
+                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_caret = SetCaretPostion(caret.index);
+                    if (set_e || set_caret) Invalidate();
+                }
                 else
                 {
-                    if (selectionStart == caret.i) SelectionLength = 0;
-                    else if (caret.i > selectionStart)
-                    {
-                        SelectionLength = Math.Abs(caret.i - selectionStart);
-                        SetCaretPostion(caret.index);
-                    }
-                    else
-                    {
-                        int x = scrollx;
-                        SelectionLength = Math.Abs(caret.i - selectionStart);
-                        SetSelectionStart(caret.i, false);
-                        SetCaretPostion(caret.index);
-                        ScrollX = x;
-                    }
+                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_s = SetSelectionStart(caret.i, false), set_caret = SetCaretPostion(caret.index), set_scroll = SetScrollX(scrollx);
+                    if (set_s || set_e || set_caret || set_scroll) Invalidate();
                 }
             }
             else OnClickContent();

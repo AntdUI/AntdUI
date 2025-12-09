@@ -255,12 +255,19 @@ namespace AntdUI
 
         public float Dpi() => Config.Dpi;
 
+        bool isload = false;
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            if (DesignMode) return;
+            if (isload || DesignMode) return;
+            OnCreated‌();
             SetTheme();
             if (AutoHandDpi) AutoDpi(Dpi(), this);
+            isload = true;
+        }
+
+        public virtual void OnCreated‌()
+        {
         }
 
         public void AutoDpi(Control control) => AutoDpi(Dpi(), control);

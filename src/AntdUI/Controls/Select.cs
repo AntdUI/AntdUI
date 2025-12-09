@@ -437,7 +437,7 @@ namespace AntdUI
                 using (var pen = new Pen(Colour.TextQuaternary.Get(nameof(Select), ColorScheme), 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
-                    g.DrawLines(pen, rect_r.TriangleLines(ArrowProg));
+                    g.DrawLines(pen, rect_r.TriangleLinesVertical(ArrowProg));
                 }
             }
         }

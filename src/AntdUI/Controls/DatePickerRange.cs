@@ -461,7 +461,7 @@ namespace AntdUI
                             StartFocused = false;
                             EndFocused = true;
                             StartEndFocused();
-                            SetCaretPostion();
+                            if (SetCaretPostion()) Invalidate();
                         }
                     }
                     else

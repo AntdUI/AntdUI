@@ -567,6 +567,7 @@ namespace AntdUI
             if (is_clear == _is_clear) return;
             is_clear = _is_clear;
             CalculateRect();
+            Invalidate();
         }
 
         bool autoscroll = false;
@@ -609,7 +610,10 @@ namespace AntdUI
         {
             get => this.GetLangIN(LocalizationText, _text);
 #pragma warning disable CS8765
-            set => SetText(value);
+            set
+            {
+                if (SetText(value)) Invalidate();
+            }
 #pragma warning restore CS8765
         }
 
@@ -619,10 +623,10 @@ namespace AntdUI
         [Description("文本总行"), Category("数据"), DefaultValue(0)]
         public int TextTotalLine { get; private set; } = 0;
 
-        void SetText(string value, bool changed = true)
+        bool SetText(string value, bool changed = true)
         {
             value ??= "";
-            if (_text == value) return;
+            if (_text == value) return false;
             _text = value;
             isempty = string.IsNullOrEmpty(_text);
             FixFontWidth();
@@ -631,16 +635,16 @@ namespace AntdUI
             {
                 if (isempty)
                 {
-                    if (selectionStart > 0) SelectionStart = 0;
+                    if (selectionStart > 0) SetSelectionStart(0);
                 }
-                else if (cache_font != null) SelectionStart = cache_font.Length;
+                else if (cache_font != null) SetSelectionStart(cache_font.Length);
             }
-            Invalidate();
             if (changed)
             {
                 OnTextChanged(EventArgs.Empty);
                 OnPropertyChanged(nameof(Text));
             }
+            return true;
         }
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
@@ -684,11 +688,15 @@ namespace AntdUI
         public int SelectionStart
         {
             get => selectionStart;
-            set => SetSelectionStart(value);
+            set
+            {
+                if (SetSelectionStart(value)) Invalidate();
+            }
         }
 
-        void SetSelectionStart(int value, bool caret = true)
+        bool SetSelectionStart(int value, bool caret = true, bool rd = true)
         {
+            bool r = false;
             if (value < 0) value = 0;
             else if (value > 0)
             {
@@ -697,12 +705,13 @@ namespace AntdUI
             }
             if (selectionStart == value)
             {
-                if (caret) SetCaretPostion(value + 1);
-                return;
+                if (caret) r = SetCaretPostion(value + 1, false);
+                return false;
             }
             selectionStart = selectionStartTemp = value;
-            if (caret) SetCaretPostion(value + 1);
+            if (caret) r = SetCaretPostion(value + 1, false);
             OnPropertyChanged(nameof(SelectionStart));
+            return r;
         }
 
         /// <summary>
@@ -714,11 +723,16 @@ namespace AntdUI
             get => selectionLength;
             set
             {
-                if (selectionLength == value) return;
-                selectionLength = value;
-                Invalidate();
-                OnPropertyChanged(nameof(SelectionLength));
+                if (SetSelectionLength(value)) Invalidate();
             }
+        }
+
+        bool SetSelectionLength(int value)
+        {
+            if (selectionLength == value) return false;
+            selectionLength = value;
+            OnPropertyChanged(nameof(SelectionLength));
+            return true;
         }
 
         #endregion
@@ -961,6 +975,8 @@ namespace AntdUI
 
         #region 方法
 
+        #region 修改文本
+
         /// <summary>
         /// 将文本追加到当前文本中
         /// </summary>
@@ -968,9 +984,79 @@ namespace AntdUI
         public void AppendText(string text)
         {
             var tmp = _text + text;
-            Text = tmp;
-            SetSelectionStart(selectionStart + text.Length);
+            bool set_t = SetText(tmp), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
+            if (set_t || set_s) Invalidate();
         }
+
+        /// <summary>
+        /// 追加文本到末尾
+        /// </summary>
+        /// <param name="text">追加的文本</param>
+        /// <param name="config">文本配置</param>
+        public void AppendText(string text, TextOpConfig config)
+        {
+            int start = cache_font == null ? 0 : (cache_font[cache_font.Length - 1].i + 1), length = GraphemeSplitter.EachCount(text), start_tmp = selectionStart;
+            var tmp = _text + text;
+            bool set_t = SetText(tmp), set_style = false, set_s = false;
+            if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
+            {
+                var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);
+                set_style = SetStyle(data, false);
+            }
+            switch (config.CursorBehavior)
+            {
+                case CursorBehavior.EndOfNewText:
+                    set_s = SetSelectionStart(start_tmp + length);
+                    break;
+                case CursorBehavior.EndOfWholeText:
+                    if (cache_font != null) set_s = SetSelectionStart(cache_font.Length);
+                    break;
+            }
+            if (config.Redraw && (set_t || set_s || set_style)) Invalidate();
+        }
+
+        /// <summary>
+        /// 插入文本
+        /// </summary>
+        /// <param name="startIndex">开始位置</param>
+        /// <param name="text">文本</param>
+        /// <param name="config">文本配置</param>
+        public void InsertText(int startIndex, string text, TextOpConfig config)
+        {
+            if (cache_font == null)
+            {
+                AppendText(text, config);
+                return;
+            }
+            int start = startIndex, end = selectionLength, end_temp = start + end, length = GraphemeSplitter.EachCount(text);
+            var texts = new List<string>(end);
+            foreach (var it in cache_font)
+            {
+                if (it.i < start || it.i >= end_temp) texts.Add(it.text);
+            }
+            texts.Insert(start, text);
+            bool set_t = SetText(string.Join("", texts)), set_style = false, set_s = false;
+            if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
+            {
+                var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);
+                set_style = SetStyle(data, false);
+            }
+            switch (config.CursorBehavior)
+            {
+                case CursorBehavior.EndOfNewText:
+                    set_s = SetSelectionStart(start + length);
+                    break;
+                case CursorBehavior.EndOfWholeText:
+                    if (cache_font != null) set_s = SetSelectionStart(cache_font.Length);
+                    break;
+                case CursorBehavior.StartOfNewText:
+                    set_s = SetSelectionStart(start);
+                    break;
+            }
+            if (config.Redraw && (set_t || set_s || set_style)) Invalidate();
+        }
+
+        #endregion
 
         /// <summary>
         /// 清除所有文本
@@ -1045,9 +1131,8 @@ namespace AntdUI
                 {
                     var it = history_Log[index];
                     history_I = index;
-                    Text = it.Text;
-                    SelectionStart = it.SelectionStart;
-                    SelectionLength = it.SelectionLength;
+                    bool set_t = SetText(it.Text), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
+                    if (set_t || set_s || set_e) Invalidate();
                 }
             }
         }
@@ -1065,9 +1150,8 @@ namespace AntdUI
                 {
                     var it = history_Log[index];
                     history_I = index;
-                    Text = it.Text;
-                    SelectionStart = it.SelectionStart;
-                    SelectionLength = it.SelectionLength;
+                    bool set_t = SetText(it.Text), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
+                    if (set_t || set_s || set_e) Invalidate();
                 }
             }
         }
@@ -1077,41 +1161,53 @@ namespace AntdUI
         /// </summary>
         /// <param name="start">第一个字符的位置</param>
         /// <param name="length">字符长度</param>
+        /// <param name="rd">是否渲染</param>
         public void Select(int start, int length)
         {
-            SelectionStart = start;
-            SelectionLength = length;
+            bool set_s = SetSelectionStart(start), set_e = SetSelectionLength(length);
+            if (set_s || set_e) Invalidate();
         }
+
+        #region 样式
 
         TextStyle[]? styles;
         /// <summary>
-        /// 样式
+        /// 设置样式
         /// </summary>
         /// <param name="start">第一个字符的位置</param>
         /// <param name="length">字符长度</param>
         /// <param name="font">字体</param>
         /// <param name="fore">文本颜色</param>
         /// <param name="back">背景颜色</param>
-        public void SetStyle(int start, int length, Font? font = null, Color? fore = null, Color? back = null)
+        public bool SetStyle(int start, int length, Font? font = null, Color? fore = null, Color? back = null) => SetStyle(new TextStyle(start, length, font, fore, back));
+
+        /// <summary>
+        /// 设置样式
+        /// </summary>
+        public bool SetStyle(TextStyle style, bool rd = true)
         {
-            var data = new TextStyle(start, length, font, fore, back);
-            if (styles == null) styles = new TextStyle[] { data };
+            if (styles == null) styles = new TextStyle[] { style };
             else
             {
                 var tmp = new List<TextStyle>(styles.Length + 1);
                 tmp.AddRange(styles);
-                tmp.Add(data);
+                tmp.Add(style);
                 styles = tmp.ToArray();
             }
-            if (SetStyle(data)) Invalidate();
+            if (ApplyStyle(style))
+            {
+                if (rd) Invalidate();
+                return true;
+            }
+            return false;
         }
 
         void SetStyle()
         {
             if (styles == null) return;
-            foreach (var it in styles) SetStyle(it);
+            foreach (var it in styles) ApplyStyle(it);
         }
-        bool SetStyle(TextStyle style)
+        bool ApplyStyle(TextStyle style)
         {
             if (cache_font == null) return false;
             int len = style.Start + style.Length;
@@ -1146,6 +1242,12 @@ namespace AntdUI
 
         public class TextStyle
         {
+            public TextStyle(int start, int length)
+            {
+                Start = start;
+                Length = length;
+            }
+
             public TextStyle(int start, int length, Font? font, Color? fore, Color? back)
             {
                 Start = start;
@@ -1172,7 +1274,45 @@ namespace AntdUI
             /// 背景色
             /// </summary>
             public Color? Back { get; set; }
+
+            #region 设置
+
+            public TextStyle Set(int start, int length)
+            {
+                Start = start;
+                Length = length;
+                return this;
+            }
+            public TextStyle SetStart(int value)
+            {
+                Start = value;
+                return this;
+            }
+            public TextStyle SetLength(int value)
+            {
+                Length = value;
+                return this;
+            }
+            public TextStyle SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public TextStyle SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
+            public TextStyle SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+
+            #endregion
         }
+
+        #endregion
 
         /// <summary>
         /// 选择最后文本
@@ -1180,9 +1320,8 @@ namespace AntdUI
         public void SelectLast()
         {
             if (cache_font == null) return;
-            SelectionStart = cache_font.Length;
-            SelectionLength = 0;
-            SetCaretPostion(cache_font.Length + 1);
+            bool set_s = SetSelectionStart(cache_font.Length), set_e = SetSelectionLength(0), set_caret = SetCaretPostion(cache_font.Length + 1);
+            if (set_s || set_e || set_caret) Invalidate();
         }
 
         /// <summary>
@@ -1191,9 +1330,8 @@ namespace AntdUI
         public void SelectAll()
         {
             if (cache_font == null) return;
-            SelectionStart = 0;
-            SelectionLength = cache_font.Length;
-            SetCaretPostion(cache_font.Length + 1);
+            bool set_s = SetSelectionStart(0), set_e = SetSelectionLength(cache_font.Length), set_caret = SetCaretPostion(cache_font.Length + 1);
+            if (set_s || set_e || set_caret) Invalidate();
         }
 
         /// <summary>
@@ -1204,7 +1342,7 @@ namespace AntdUI
         public void EnterText(string text, bool ismax = true)
         {
             if (ReadOnly || BanInput) return;
-            int offset = 0;
+            int offset = 0, rdcount = 0;
             if (cache_font == null)
             {
                 if (ismax && text.Length > MaxLength)
@@ -1213,7 +1351,7 @@ namespace AntdUI
                     if (text.Length == 0) return;
                 }
                 AddHistoryRecord();
-                SetText(text, false);
+                if (SetText(text, false)) rdcount++;
             }
             else
             {
@@ -1236,8 +1374,8 @@ namespace AntdUI
                         if (it.i < start || it.i >= end_temp) texts.Add(it.text);
                     }
                     texts.Insert(start, text);
-                    SetText(string.Join("", texts), false);
-                    SelectionLength = 0;
+                    if (SetText(string.Join("", texts), false)) rdcount++;
+                    if (SetSelectionLength(0)) rdcount++;
                     offset = start;
                 }
                 else
@@ -1256,19 +1394,15 @@ namespace AntdUI
                     var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
                     texts.Insert(start + 1, text);
-                    SetText(string.Join("", texts), false);
+                    if (SetText(string.Join("", texts), false)) rdcount++;
                     offset = start + 1;
                 }
             }
-            int len = 0;
-            GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
-            {
-                len++;
-                return true;
-            });
-            SetSelectionStart(offset + len);
+            int len = GraphemeSplitter.EachCount(text);
+            if (SetSelectionStart(offset + len)) rdcount++;
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
+            if (rdcount > 0) Invalidate();
         }
 
         /// <summary>
@@ -1288,9 +1422,8 @@ namespace AntdUI
                     int index = _text.IndexOf(value);
                     if (index > -1)
                     {
-                        SelectionLength = value.Length;
-                        SelectionStart = index;
-                        Invalidate();
+                        bool set_s = SetSelectionStart(index), set_e = SetSelectionLength(value.Length);
+                        if (set_s || set_e) Invalidate();
                     }
                 }
             }
@@ -1370,6 +1503,7 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
+            return;
             HasFocus = false;
             CaretInfo.Show = false;
             if (LostFocusClearSelection) SelectionLength = 0;
@@ -1495,7 +1629,6 @@ namespace AntdUI
         /// </summary>
         CacheCaret FindNearestFont(int x, int y, CacheCaret[] cache_caret)
         {
-            int b = CaretInfo.Height / 2;
             CacheCaret first = cache_caret[0], last = cache_caret[cache_caret.Length - 1];
             if (multiline)
             {
@@ -1507,11 +1640,12 @@ namespace AntdUI
                 if (x < first.x) return first;
                 else if (x > last.x) return last;
             }
-            var findy = FindNearestFontY(y, cache_caret, b);
+            var findy = FindNearestFontY(y, cache_caret);
             CacheCaret? result = null;
             if (findy == null)
             {
                 double minDistance = int.MaxValue;
+                int b = CaretInfo.Height / 2;
                 for (int i = 0; i < cache_caret.Length; i++)
                 {
                     var it = cache_caret[i];
@@ -1551,58 +1685,45 @@ namespace AntdUI
             if (result == null) return last;
             return result;
         }
-        CacheCaret? FindNearestFontY(int y, CacheCaret[] cache_caret, int b)
+        CacheCaret? FindNearestFontY(int y, CacheCaret[] cache_caret)
         {
-            int minDistance = int.MaxValue;
-            CacheCaret? result = null;
-            for (int i = 0; i < cache_caret.Length; i++)
+            foreach (var it in cache_caret)
             {
-                var it = cache_caret[i];
-                // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
-                int currentMinDistance = Math.Abs(y - (it.y + b));
-                // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
-                if (currentMinDistance < minDistance)
-                {
-                    minDistance = currentMinDistance;
-                    result = it;
-                }
+                if (it.y == y) return it;
             }
-            return result;
+            return null;
         }
 
         #endregion
 
         int CurrentPosIndex = 0;
-        internal void SetCaretPostion() => SetCaretPostion(CurrentPosIndex);
-        internal void SetCaretPostion(int PosIndex)
+        internal bool SetCaretPostion(bool rd = true) => SetCaretPostion(CurrentPosIndex, rd);
+        internal bool SetCaretPostion(int PosIndex, bool rd = true)
         {
-            if (PosIndex < 0) return;
+            if (PosIndex < 0) return false;
             CurrentPosIndex = PosIndex;
-            if (CaretInfo.Show)
+            if (cache_caret == null)
             {
-                if (cache_caret == null)
-                {
-                    if (ModeRange) ModeRangeCaretPostion(true);
-                    else
-                    {
-                        if (textalign == HorizontalAlignment.Center) CaretInfo.X = rect_text.X + rect_text.Width / 2;
-                        else if (textalign == HorizontalAlignment.Right) CaretInfo.X = rect_text.Right;
-                    }
-                }
+                if (ModeRange) ModeRangeCaretPostion(true);
                 else
                 {
-                    if (PosIndex > cache_caret.Length - 1)
-                    {
-                        PosIndex = cache_caret.Length - 1;
-                        return;
-                    }
-                    var r = CaretInfo.SetXY(cache_caret, PosIndex);
-                    if (ModeRange) ModeRangeCaretPostion(false);
-                    ScrollIFTo(r);
+                    if (textalign == HorizontalAlignment.Center) CaretInfo.X = rect_text.X + rect_text.Width / 2;
+                    else if (textalign == HorizontalAlignment.Right) CaretInfo.X = rect_text.Right;
                 }
-                CaretInfo.flag = true;
-                Invalidate();
             }
+            else
+            {
+                if (PosIndex > cache_caret.Length - 1)
+                {
+                    PosIndex = cache_caret.Length - 1;
+                    return false;
+                }
+                var r = CaretInfo.SetXY(cache_caret, PosIndex, out var rd2);
+                if (ModeRange) ModeRangeCaretPostion(false);
+                return ScrollIFTo(r, rd) || rd2;
+            }
+            CaretInfo.flag = true;
+            return true;
         }
 
         void OnImeStartPrivate(IntPtr hIMC)
@@ -1675,19 +1796,19 @@ namespace AntdUI
 
             public Rectangle Rect = new Rectangle(-1, -1000, Config.Dpi < 1 ? 1 : (int)Config.Dpi, 0);
 
-            public Rectangle SetXY(CacheCaret[] cache_font, int i)
+            public Rectangle SetXY(CacheCaret[] cache_font, int i, out bool rd)
             {
                 var it = cache_font[i];
-                SetXY(it.x, it.y);
+                rd = SetXY(it.x, it.y);
                 return new Rectangle(it.x, it.y, Rect.Width, Rect.Height);
             }
-            public void SetXY(int x, int y)
+            public bool SetXY(int x, int y)
             {
-                if (Rect.X == x && Rect.Y == y && flag) return;
+                if (Rect.X == x && Rect.Y == y && flag) return false;
                 Rect.X = x;
                 Rect.Y = y;
                 flag = true;
-                control.Invalidate();
+                return true;
             }
 
             public int X
@@ -1735,7 +1856,7 @@ namespace AntdUI
                                 Flag = !flag;
                                 return show;
                             }, control.CaretSpeed, null, control.CaretSpeed);
-                            control.SetCaretPostion();
+                            if (control.SetCaretPostion()) control.Invalidate();
                         }
                         else CaretPrint = null;
                         control.Invalidate();

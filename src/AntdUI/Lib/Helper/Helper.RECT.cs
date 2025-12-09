@@ -600,9 +600,9 @@ namespace AntdUI
             };
         }
 
-        public static PointF[] TriangleLines(this Rectangle rect, float prog, float d = 0.7F)
+        public static PointF[] TriangleLinesVertical(this Rectangle rect, float prog, float d = 0.7F)
         {
-            float size = rect.Width * d, size2 = size / 2;
+            float size = rect.Width * d, size2 = size / 2F;
             float x = rect.X + rect.Width / 2F, y = rect.Y + (rect.Height / 2F);
             if (prog == 0)
             {
@@ -615,48 +615,49 @@ namespace AntdUI
             {
                 float h = size2 * prog, h2 = h / 2;
                 return new PointF[] {
-                    new PointF(x - size2,y + h2),
+                    new PointF(x - size2, y + h2),
                     new PointF(x, y - h2),
-                    new PointF(x + size2,y + h2)
+                    new PointF(x + size2, y + h2)
                 };
             }
             else
             {
                 float h = size2 * -prog, h2 = h / 2;
                 return new PointF[] {
-                    new PointF(x - size2,y - h2),
+                    new PointF(x - size2, y - h2),
                     new PointF(x, y + h2),
-                    new PointF(x + size2,y - h2)
+                    new PointF(x + size2, y - h2)
                 };
             }
         }
-        public static PointF[] TriangleLines(this RectangleF rect, float prog, float d = 0.7F)
+        public static PointF[] TriangleLinesHorizontal(this Rectangle rect, float prog, float d = 0.7F)
         {
-            float size = rect.Width * d, size2 = size / 2;
-            float x = rect.X + rect.Width / 2F, y = rect.Y + (rect.Height / 2F);
+            // 计算箭头尺寸和中心点坐标
+            float size = rect.Height * d, size2 = size / 2F;
+            float x = rect.X + rect.Width / 2F, y = rect.Y + rect.Height / 2F;
             if (prog == 0)
             {
                 return new PointF[] {
-                    new PointF(x - size2, y),
-                    new PointF(x + size2, y)
+                    new PointF(x, y - size2),
+                    new PointF(x, y + size2)
                 };
             }
             else if (prog > 0)
             {
-                float h = size2 * prog, h2 = h / 2;
+                float w = size2 * prog, w2 = w / 2;
                 return new PointF[] {
-                    new PointF(x - size2,y + h2),
-                    new PointF(x, y - h2),
-                    new PointF(x + size2,y + h2)
+                    new PointF(x + w2, y - size2), // 右侧底点
+                    new PointF(x - w2, y),         // 尖端
+                    new PointF(x + w2, y + size2)  // 左侧顶点
                 };
             }
             else
             {
-                float h = size2 * -prog, h2 = h / 2;
+                float w = size2 * -prog, w2 = w / 2;
                 return new PointF[] {
-                    new PointF(x - size2,y - h2),
-                    new PointF(x, y + h2),
-                    new PointF(x + size2,y - h2)
+                    new PointF(x - w2, y - size2), // 左侧顶点
+                    new PointF(x + w2, y), // 尖端
+                    new PointF(x - w2, y + size2) // 右侧底点
                 };
             }
         }

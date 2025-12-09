@@ -316,7 +316,7 @@ namespace AntdUI
                 {
                     var rect_t = rect.DeflateRect(Margin);
                     LoadLayout(rect_t, items);
-                    if (r) Invalidate(rect_t);
+                    if (r) Invalidate();
                 }
             }
         }
@@ -407,7 +407,7 @@ namespace AntdUI
                 foreach (var btn in it.buttons)
                 {
                     btn.PARENT = this;
-                    btn.PARENTITEM = btn.ParentItem = it;
+                    btn.ParentItem = it;
                     int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
                     int space = (rectButtons.Height - height) / 2;
                     bx -= space;
@@ -498,11 +498,8 @@ namespace AntdUI
         FormatFlags s_l = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
         protected override void OnDraw(DrawEventArgs e)
         {
-            if (items == null || items.Count == 0)
-            {
-                base.OnDraw(e);
-                return;
-            }
+            base.OnDraw(e);
+            if (items == null || items.Count == 0) return;
             var g = e.Canvas;
             float r = radius * Config.Dpi;
             using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Collapse), ColorScheme)))
@@ -513,7 +510,7 @@ namespace AntdUI
                     using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(nameof(Collapse), ColorScheme), borderWidth * Config.Dpi))
                     using (var pen_arr = new Pen(forebrush.Color, 1.2F * Config.Dpi))
                     {
-                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        pen.StartCap = pen.EndCap = LineCap.Round;
                         if (items.Count == 1 || _gap > 0)
                         {
                             foreach (var item in items)
@@ -688,7 +685,6 @@ namespace AntdUI
                     }
                 }
             }
-            base.OnDraw(e);
         }
         private int GetIconSize(int titleHeight) { return titleHeight - (int)(8 * Config.Dpi); }
 
@@ -719,7 +715,7 @@ namespace AntdUI
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
-            else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
+            else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLinesVertical(-1, .56F));
             else PaintArrow(g, item, pen_arr, -90F);
 
             //g.String(item.Text, Font, fore, item.RectText, s_l);
@@ -730,7 +726,7 @@ namespace AntdUI
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.ExpandThread) PaintArrow(g, item, fore, -90 + (90F * item.ExpandProg));
-            else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
+            else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLinesVertical(-1, .56F));
             else PaintArrow(g, item, fore, -90F);
 
             PaintItemIconText(g, item, fore);
@@ -871,7 +867,7 @@ namespace AntdUI
             int size_arrow = rect_arr.Width / 2;
             g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLinesVertical(-1, .56F));
             g.ResetTransform();
         }
         void PaintArrow(Canvas g, CollapseItem item, SolidBrush brush, float rotate)
@@ -880,7 +876,7 @@ namespace AntdUI
             int size_arrow = rect_arr.Width / 2;
             g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.FillPolygon(brush, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
+            g.FillPolygon(brush, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLinesVertical(-1, .56F));
             g.ResetTransform();
         }
 

@@ -573,11 +573,11 @@ namespace AntdUI
         /// </summary>
         /// <param name="rect">区域</param>
         /// <param name="radius">圆角大小</param>
-        /// <param name="TL">↖</param>
-        /// <param name="TR">↗</param>
-        /// <param name="BR">↘</param>
-        /// <param name="BL">↙</param>
-        public static GraphicsPath RoundPath(this Rectangle rect, float radius, bool TL, bool TR, bool BR, bool BL)
+        /// <param name="roundTL">↖</param>
+        /// <param name="roundTR">↗</param>
+        /// <param name="roundBR">↘</param>
+        /// <param name="roundBL">↙</param>
+        public static GraphicsPath RoundPath(this Rectangle rect, float radius, bool roundTL, bool roundTR, bool roundBR, bool roundBL)
         {
             var path = new GraphicsPath();
             if (radius <= 0F) path.AddRectangle(rect);
@@ -587,22 +587,22 @@ namespace AntdUI
                 var arc = new RectangleF(rect.X, rect.Y, diameter, diameter);
 
                 // TL
-                if (TL) path.AddArc(arc, 180, 90);
+                if (roundTL) path.AddArc(arc, 180, 90);
                 else path.AddLine(rect.X, rect.Y, rect.Right - diameter, rect.Y);
 
                 // TR
                 arc.X = rect.Right - diameter;
-                if (TR) path.AddArc(arc, 270, 90);
+                if (roundTR) path.AddArc(arc, 270, 90);
                 else path.AddLine(rect.Right, rect.Y, rect.Right, rect.Bottom - diameter);
 
                 // BR
                 arc.Y = rect.Bottom - diameter;
-                if (BR) path.AddArc(arc, 0, 90);
+                if (roundBR) path.AddArc(arc, 0, 90);
                 else path.AddLine(rect.Right, rect.Bottom, rect.X + diameter, rect.Bottom);
 
                 // BL
                 arc.X = rect.Left;
-                if (BL) path.AddArc(arc, 90, 90);
+                if (roundBL) path.AddArc(arc, 90, 90);
                 else path.AddLine(rect.X, rect.Bottom, rect.X, rect.Y + diameter);
 
                 path.CloseFigure();
@@ -615,11 +615,11 @@ namespace AntdUI
         /// </summary>
         /// <param name="rect">区域</param>
         /// <param name="radius">圆角大小</param>
-        /// <param name="TL">↖</param>
-        /// <param name="TR">↗</param>
-        /// <param name="BR">↘</param>
-        /// <param name="BL">↙</param>
-        public static GraphicsPath RoundPath(this RectangleF rect, float radius, bool TL, bool TR, bool BR, bool BL)
+        /// <param name="roundTL">↖</param>
+        /// <param name="roundTR">↗</param>
+        /// <param name="roundBR">↘</param>
+        /// <param name="roundBL">↙</param>
+        public static GraphicsPath RoundPath(this RectangleF rect, float radius, bool roundTL, bool roundTR, bool roundBR, bool roundBL)
         {
             var path = new GraphicsPath();
             if (radius > 0)
@@ -630,27 +630,149 @@ namespace AntdUI
                 var arc = new RectangleF(rect.X, rect.Y, diameter, diameter);
 
                 // TL
-                if (TL) path.AddArc(arc, 180, 90);
+                if (roundTL) path.AddArc(arc, 180, 90);
                 else path.AddLine(rect.X, rect.Y, rect.Right - diameter, rect.Y);
 
                 // TR
                 arc.X = rect.Right - diameter;
-                if (TR) path.AddArc(arc, 270, 90);
+                if (roundTR) path.AddArc(arc, 270, 90);
                 else path.AddLine(rect.Right, rect.Y, rect.Right, rect.Bottom - diameter);
 
                 // BR
                 arc.Y = rect.Bottom - diameter;
-                if (BR) path.AddArc(arc, 0, 90);
+                if (roundBR) path.AddArc(arc, 0, 90);
                 else path.AddLine(rect.Right, rect.Bottom, rect.X + diameter, rect.Bottom);
 
                 // BL
                 arc.X = rect.Left;
-                if (BL) path.AddArc(arc, 90, 90);
+                if (roundBL) path.AddArc(arc, 90, 90);
                 else path.AddLine(rect.X, rect.Bottom, rect.X, rect.Y + diameter);
 
                 path.CloseFigure();
             }
             else path.AddRectangle(rect);
+            return path;
+        }
+
+        /// <summary>
+        /// 创建具有自定义圆角的路径
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="radiusTL">左上角圆角半径</param>
+        /// <param name="radiusTR">右上角圆角半径</param>
+        /// <param name="radiusBR">右下角圆角半径</param>
+        /// <param name="radiusBL">左下角圆角半径</param>
+        /// <returns>圆角路径</returns>
+        public static GraphicsPath RoundPath(this Rectangle rect, float radiusTL, float radiusTR, float radiusBR, float radiusBL)
+        {
+            var path = new GraphicsPath();
+
+            // 处理无效值：限制圆角在[0, min(width/2, height/2)]范围内
+            float maxRadius = Math.Min(rect.Width / 2f, rect.Height / 2f);
+            radiusTL = Math.Max(0, Math.Min(radiusTL, maxRadius));
+            radiusTR = Math.Max(0, Math.Min(radiusTR, maxRadius));
+            radiusBR = Math.Max(0, Math.Min(radiusBR, maxRadius));
+            radiusBL = Math.Max(0, Math.Min(radiusBL, maxRadius));
+
+            // 如果所有圆角都是0，直接添加矩形
+            if (radiusTL <= 0f && radiusTR <= 0f && radiusBR <= 0f && radiusBL <= 0f)
+            {
+                path.AddRectangle(rect);
+                return path;
+            }
+
+            float x = rect.X;
+            float y = rect.Y;
+            float right = x + rect.Width;
+            float bottom = y + rect.Height;
+
+            // 从顶部边的起点开始
+            path.StartFigure();
+            path.AddLine(x + radiusTL, y, right - radiusTR, y); // 顶部边
+
+            // 右上角
+            if (radiusTR > 0) path.AddArc(right - radiusTR * 2, y, radiusTR * 2, radiusTR * 2, 270, 90);
+
+            // 右侧边
+            path.AddLine(right, y + radiusTR, right, bottom - radiusBR);
+
+            // 右下角
+            if (radiusBR > 0) path.AddArc(right - radiusBR * 2, bottom - radiusBR * 2, radiusBR * 2, radiusBR * 2, 0, 90);
+
+            // 底部边
+            path.AddLine(right - radiusBR, bottom, x + radiusBL, bottom);
+
+            // 左下角
+            if (radiusBL > 0) path.AddArc(x, bottom - radiusBL * 2, radiusBL * 2, radiusBL * 2, 90, 90);
+
+            // 左侧边
+            path.AddLine(x, bottom - radiusBL, x, y + radiusTL);
+
+            // 左上角
+            if (radiusTL > 0) path.AddArc(x, y, radiusTL * 2, radiusTL * 2, 180, 90);
+
+            path.CloseFigure();
+            return path;
+        }
+
+        /// <summary>
+        /// 创建具有自定义圆角的路径
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="radiusTL">左上角圆角半径</param>
+        /// <param name="radiusTR">右上角圆角半径</param>
+        /// <param name="radiusBR">右下角圆角半径</param>
+        /// <param name="radiusBL">左下角圆角半径</param>
+        /// <returns>圆角路径</returns>
+        public static GraphicsPath RoundPath(this RectangleF rect, float radiusTL, float radiusTR, float radiusBR, float radiusBL)
+        {
+            var path = new GraphicsPath();
+
+            // 处理无效值：限制圆角在[0, min(width/2, height/2)]范围内
+            float maxRadius = Math.Min(rect.Width / 2f, rect.Height / 2f);
+            radiusTL = Math.Max(0, Math.Min(radiusTL, maxRadius));
+            radiusTR = Math.Max(0, Math.Min(radiusTR, maxRadius));
+            radiusBR = Math.Max(0, Math.Min(radiusBR, maxRadius));
+            radiusBL = Math.Max(0, Math.Min(radiusBL, maxRadius));
+
+            // 如果所有圆角都是0，直接添加矩形
+            if (radiusTL <= 0f && radiusTR <= 0f && radiusBR <= 0f && radiusBL <= 0f)
+            {
+                path.AddRectangle(rect);
+                return path;
+            }
+
+            float x = rect.X;
+            float y = rect.Y;
+            float right = x + rect.Width;
+            float bottom = y + rect.Height;
+
+            // 从顶部边的起点开始
+            path.StartFigure();
+            path.AddLine(x + radiusTL, y, right - radiusTR, y); // 顶部边
+
+            // 右上角
+            if (radiusTR > 0) path.AddArc(right - radiusTR * 2, y, radiusTR * 2, radiusTR * 2, 270, 90);
+
+            // 右侧边
+            path.AddLine(right, y + radiusTR, right, bottom - radiusBR);
+
+            // 右下角
+            if (radiusBR > 0) path.AddArc(right - radiusBR * 2, bottom - radiusBR * 2, radiusBR * 2, radiusBR * 2, 0, 90);
+
+            // 底部边
+            path.AddLine(right - radiusBR, bottom, x + radiusBL, bottom);
+
+            // 左下角
+            if (radiusBL > 0) path.AddArc(x, bottom - radiusBL * 2, radiusBL * 2, radiusBL * 2, 90, 90);
+
+            // 左侧边
+            path.AddLine(x, bottom - radiusBL, x, y + radiusTL);
+
+            // 左上角
+            if (radiusTL > 0) path.AddArc(x, y, radiusTL * 2, radiusTL * 2, 180, 90);
+
+            path.CloseFigure();
             return path;
         }
 

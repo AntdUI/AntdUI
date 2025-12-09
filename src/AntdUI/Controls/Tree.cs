@@ -444,7 +444,7 @@ namespace AntdUI
                 it.Index = i;
                 i++;
                 it.PARENT = this;
-                it.PARENTITEM = it.ParentItem = Parent;
+                it.ParentItem = Parent;
                 if (it.Visible)
                 {
                     it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
@@ -453,7 +453,7 @@ namespace AntdUI
                         if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
                         else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
                     }
-                    y += height + gapI;
+                    y += it.txt_rect.Height + gapI;
                     if (it.ICanExpand)
                     {
                         int y_item = y;
@@ -692,10 +692,10 @@ namespace AntdUI
         {
             using (var pen = new Pen(color, 2F))
             {
-                pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                pen.StartCap = pen.EndCap = LineCap.Round;
 
                 if (item.ExpandThread) PaintArrow(g, item, pen, sx, sy, -90F + (90F * item.ExpandProg));
-                else if (item.Expand) g.DrawLines(pen, item.arrow_rect.TriangleLines(-1, .4F));
+                else if (item.Expand) g.DrawLines(pen, item.arrow_rect.TriangleLinesVertical(-1, .4F));
                 else PaintArrow(g, item, pen, sx, sy, -90F);
             }
         }
@@ -705,7 +705,7 @@ namespace AntdUI
             int size_arrow = item.arrow_rect.Width / 2;
             g.TranslateTransform(item.arrow_rect.X + size_arrow, item.arrow_rect.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arrow_rect.Width, item.arrow_rect.Height).TriangleLines(-1, .4F));
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arrow_rect.Width, item.arrow_rect.Height).TriangleLinesVertical(-1, .4F));
             g.ResetTransform();
             g.TranslateTransform(-sx, -sy);
         }
@@ -2014,10 +2014,6 @@ namespace AntdUI
 
         public int Depth { get; private set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Obsolete("use ParentItem")]
-        public TreeItem? PARENTITEM { get; set; }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TreeItem? ParentItem { get; internal set; }
 
         #region 内部
@@ -2029,7 +2025,8 @@ namespace AntdUI
         internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
-            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (_rect.Height - icon_size) / 2, ui = icon_size + gap;
+            var size = g.MeasureText(Text, font);
+            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (size.Height + 10 - icon_size) / 2, ui = icon_size + gap;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -2050,8 +2047,8 @@ namespace AntdUI
                 usew += ui;
                 x += ui;
             }
-            var size = g.MeasureText(Text, font);
-            int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y + (_rect.Height - txt_h) / 2;
+
+            int txt_w = size.Width + gap, txt_h = size.Height + 10, txt_y = _rect.Y;
             if (subTitle == null)
             {
                 usew += txt_w;

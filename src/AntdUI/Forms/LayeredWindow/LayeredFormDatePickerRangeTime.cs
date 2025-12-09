@@ -44,8 +44,6 @@ namespace AntdUI
             Font = _control.Font;
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
-            if (_control.InteractiveReset) EndFocused = false;
-            else EndFocused = endFocused;
             AnimationBarValue = bar;
 
             ShowH = control.Format.Contains("H");
@@ -109,9 +107,23 @@ namespace AntdUI
                 ArrowSize = (int)(8 * dpi);
                 Radius = (int)(_control.radius * dpi);
             }
-            SelDate = _control.Value;
-            if (SelDate == null) Date = DateNow;
-            else Date = EndFocused ? SelDate[1] : SelDate[0];
+            if (_control.Value == null) Date = DateNow;
+            else
+            {
+                SelTMP = _control.Value;
+                Date = EndFocused ? SelTMP[1] : SelTMP[0];
+                if (_control.InteractiveReset)
+                {
+                    EndFocused = false;
+                    oldTimeStart = oldTime = SelTMP[0];
+                }
+                else
+                {
+                    SelDate = (DateTime[])_control.Value.Clone();
+                    SelTMP = null;
+                    EndFocused = endFocused;
+                }
+            }
 
             LoadLayout();
 
@@ -139,6 +151,7 @@ namespace AntdUI
         DateTime DateNow = DateTime.Now;
 
         public DateTime[]? SelDate;
+        DateTime[]? SelTMP;
         DateTime? oldTime, oldTimeStart;
 
         DateTime _Date;
@@ -528,27 +541,85 @@ namespace AntdUI
                     else g.String(OKButton, Font, brush_active, rect_buttonok.Rect, s_f);
                 }
 
-                foreach (var it in datas)
+                if (SelTMP == null)
                 {
-                    var rect = rect_div[it.id];
-                    using (var path = rect.RectRead.RoundPath(Radius))
+                    foreach (var it in datas)
                     {
-                        if ((SelDate != null && oldTime == null && (EndFocused ? SelDate[1] : SelDate[0]).ToString("yyyy-MM-dd") == it.date_str) || (oldTime.HasValue && oldTime.Value.ToString("yyyy-MM-dd") == it.date_str))
+                        var rect = rect_div[it.id];
+                        using (var path = rect.RectRead.RoundPath(Radius))
                         {
-                            g.Fill(brush_active, path);
-                            g.String(it.v, Font, Colour.PrimaryColor.Get(nameof(DatePicker), ColorScheme), rect_div[it.id].Rect, s_f);
+                            if ((SelDate != null && oldTime == null && (EndFocused ? SelDate[1] : SelDate[0]).ToString("yyyy-MM-dd") == it.date_str) || (oldTime.HasValue && oldTime.Value.ToString("yyyy-MM-dd") == it.date_str))
+                            {
+                                g.Fill(brush_active, path);
+                                g.String(it.v, Font, Colour.PrimaryColor.Get(nameof(DatePicker), ColorScheme), rect_div[it.id].Rect, s_f);
+                            }
+                            else if (it.enable)
+                            {
+                                if (rect.Hover) g.Fill(brush_bg_disable, path);
+                                g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, rect_div[it.id].Rect, s_f);
+                            }
+                            else
+                            {
+                                g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                                g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
+                            }
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                         }
-                        else if (it.enable)
+                    }
+                }
+                else
+                {
+                    using (var brush_active_bg = new SolidBrush(Colour.PrimaryBg.Get(nameof(DatePicker), ColorScheme)))
+                    using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get(nameof(DatePicker), ColorScheme)))
+                    {
+                        foreach (var it in datas)
                         {
-                            if (rect.Hover) g.Fill(brush_bg_disable, path);
-                            g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, rect_div[it.id].Rect, s_f);
+                            var rect = rect_div[it.id];
+                            using (var path = rect.RectRead.RoundPath(Radius))
+                            {
+                                switch (IfDSType(SelTMP, it.date, it.date_str, "yyyy-MM-dd"))
+                                {
+                                    case 0:
+                                        if (it.enable)
+                                        {
+                                            if (rect.Hover) g.Fill(brush_bg_disable, path);
+                                            if (it.t == 1) g.String(it.v, Font, brush_fore, rect_div[it.id].Rect, s_f);
+                                            else g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
+                                        }
+                                        else
+                                        {
+                                            g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                                            g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
+                                        }
+                                        if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                                        break;
+                                    case 1:
+                                        g.Fill(brush_active, path);
+                                        g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect, s_f);
+                                        break;
+                                    case 2:
+                                        g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
+                                        g.String(it.v, Font, brush_fore, rect_div[it.id].Rect, s_f);
+                                        break;
+                                    case 3:// ←
+                                        g.Fill(brush_active_bg, new RectangleF(rect.RectRead.Right, rect.RectRead.Y, rect.Rect.Width - rect.RectRead.Width, rect.RectRead.Height));
+                                        using (var path_l = rect.RectRead.RoundPath(Radius, true, false, false, true))
+                                        {
+                                            g.Fill(brush_active, path_l);
+                                        }
+                                        g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect, s_f);
+                                        break;
+                                    case 4:// →
+                                        g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.RectRead.Width, rect.RectRead.Height));
+                                        using (var path_r = rect.RectRead.RoundPath(Radius, false, true, true, false))
+                                        {
+                                            g.Fill(brush_active, path_r);
+                                        }
+                                        g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect, s_f);
+                                        break;
+                                }
+                            }
                         }
-                        else
-                        {
-                            g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                            g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
-                        }
-                        if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path); ;
                     }
                 }
                 if (badge_list.Count > 0)
@@ -562,6 +633,33 @@ namespace AntdUI
                 if (rect_button.Hover) g.String(button_text, Font, Colour.PrimaryActive.Get(nameof(DatePicker), ColorScheme), rect_button.Rect, s_f);
                 else g.String(button_text, Font, brush_active, rect_button.Rect, s_f);
             }
+        }
+
+        int IfDSType(DateTime[] dates, DateTime date, string date_str, string f)
+        {
+            DateTime s = dates[0], e = dates[1];
+            bool c = s < e;
+            if (date_str == s.ToString(f))
+            {
+                if (s == e) return 1;
+                if (c) return 3;// ←
+                else return 4;// →
+            }
+            else if (date_str == e.ToString(f))
+            {
+                if (s == e) return 1;
+                if (c) return 4;// →
+                else return 3;// ←
+            }
+            if (c)
+            {
+                if (date < e && date > s) return 2;
+            }
+            else
+            {
+                if (date > e && date < s) return 2;
+            }
+            return 0;
         }
 
         #endregion
@@ -728,7 +826,8 @@ namespace AntdUI
                         it.rect_read = new Rectangle(it.rect.X + _x, it.rect.Y + _y, size_time_one, size_time_height_one);
                     }
 
-                    if (SelDate != null) ScrollTime(calendar_time, oldTime ?? (EndFocused ? SelDate[1] : SelDate[0]));
+                    if (SelTMP != null) ScrollTime(calendar_time, oldTime ?? (EndFocused ? SelTMP[1] : SelTMP[0]));
+                    else if (SelDate != null) ScrollTime(calendar_time, oldTime ?? (EndFocused ? SelDate[1] : SelDate[0]));
                 }
 
                 dlist.Add(new RectangleF(rw - line, 0, line2, r_h));
@@ -958,12 +1057,14 @@ namespace AntdUI
                         else if (rect_button.Contains(x, y))
                         {
                             //此刻
+                            SelTMP = null;
                             oldTime = Date = DateNow = DateTime.Parse(DateTime.Now.ToString(control.Format));
                             Print();
                             ScrollTime(calendar_time!, oldTime.Value);
                         }
                         else if (rect_buttonok.Contains(x, y))
                         {
+                            SelTMP = null;
                             if (SelDate == null)
                             {
                                 if (oldTime.HasValue)
@@ -1030,6 +1131,7 @@ namespace AntdUI
                                     {
                                         if (rect_div[it.id].Contains(x, y))
                                         {
+                                            SelTMP = null;
                                             if (oldTime.HasValue) oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, oldTime.Value.Hour, oldTime.Value.Minute, oldTime.Value.Second);
                                             else if (SelDate == null)
                                             {
@@ -1057,6 +1159,7 @@ namespace AntdUI
                                         case 1:
                                             if (it.Contains(x, y + ScrollM.Value))
                                             {
+                                                SelTMP = null;
                                                 if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, it.t, oldTime.Value.Second);
                                                 else if (SelDate == null)
                                                 {
@@ -1076,6 +1179,7 @@ namespace AntdUI
                                         case 2:
                                             if (it.Contains(x, y + ScrollS.Value))
                                             {
+                                                SelTMP = null;
                                                 if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, oldTime.Value.Minute, it.t);
                                                 else if (SelDate == null)
                                                 {
@@ -1096,6 +1200,7 @@ namespace AntdUI
                                         default:
                                             if (it.Contains(x, y + ScrollH.Value))
                                             {
+                                                SelTMP = null;
                                                 if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, it.t, oldTime.Value.Minute, oldTime.Value.Second);
                                                 else if (SelDate == null)
                                                 {
