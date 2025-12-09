@@ -1,5 +1,35 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.2` 2025-12-09
+
+- ➕ ImagePreview 暴露操作按钮方法
+- ➕ Table EditLostFocus
+- ➕ Modal DefaultAcceptButton
+- ➕ Calendar Back/Fore 颜色属性
+- ➕ Input InsertText
+- ✍️ PageHeader 标题栏、增强各方向圆角
+- ✍️ Tree 项Text带换行的情况下重叠问题
+- ✍️ Collapse 收缩后圆角缺角
+- ✍️ Form 多次打开缩放
+- ✍️ Dropdown Trigger.Hover 鼠标离开下拉不消失
+- ✍️ Tabs Card 隐藏第一个后面头不显示
+- ✍️ DatePickerRange 时间部分，无法选择
+- ✍️ Menu 箭头精度
+- ✍️ Menu 扩宽默认下拉边距
+- ✍️ Input 向下查找
+- ✍️ 优化 Input 多次渲染
+- ✍️ Button TextMultiLine 换行不生效
+- ✍️ Table 编辑模式错位
+- ✍️ Table 复选框联动
+- ✍️ Table 适配 int 复选框值
+- ✍️ Menu 初始箭头方向
+- ✍️ ImagePreview 图片初始错位
+- ✍️ PageHeader 最小化按钮某字体不显示
+- ✍️ DatePicker MaxDate 没有正确应用
+- ✍️ 组合 Emoji 字素簇拆分异常
+- 🧹 移除 PARENTITEM
+- 🧹 重构动画
+
 ### `2.2.1` 2025-11-21
 
 - ➕ Tree NodeMouseDown/NodeMouseUp

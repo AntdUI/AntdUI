@@ -1,5 +1,35 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.2` 2025-12-09
+
+- ➕ ImagePreview exposure operation button method
+- ➕ Table EditLostFocus
+- ➕ Modal DefaultAcceptButton
+- ➕ Calendar Back/More Color Properties
+- ➕ Input InsertText
+- ✍️ PageHeader title bar, enhanced rounded corners in all directions
+- ✍️ Overlap problem in Tree item Text with line breaks
+- ✍️ Collapse: rounded corners with missing corners after contraction
+- ✍️ Form opens zoom multiple times
+- ✍️ Dropdown Trigger. Hover: When the mouse is away, the dropdown does not disappear
+- ✍️ Tabs Card hides the first one and does not display the back header
+- ✍️ DatePickerRange time part, unable to select
+- ✍️ Menu arrow accuracy
+- ✍️ Menu widening default dropdown margin
+- ✍️ Input down search
+- ✍️ Optimize Input for multiple renderings
+- ✍️ Button TextMultiLine line wrapping does not take effect
+- ✍️ Table editing mode misalignment
+- ✍️ Table checkbox linkage
+- ✍️ Table adaptation int checkbox values
+- ✍️ Menu initial arrow direction
+- ✍️ ImagePreview image initial misalignment
+- ✍️ Page Header Minimization Button: A certain font is not displayed
+- ✍️ DatePicker MaxDate not applied correctly
+- ✍️ Abnormal splitting of combined emoji voxel clusters
+- 🧹 Remove PARTITEM
+- 🧹 Refactoring animation
+
 ### `2.2.1` 2025-11-21
 
 - ➕ Tree NodeMouseDown/NodeMouseUp
