@@ -375,17 +375,8 @@ namespace AntdUI
             using (var pen = new Pen(color, 2F * Config.Dpi))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                if (btn.IsLink)
-                {
-                    var state = g.Save();
-                    float size_arrow = rect.Width / 2F;
-                    g.TranslateTransform(rect.X + size_arrow, rect.Y + size_arrow);
-                    g.RotateTransform(-90F);
-                    g.DrawLines(pen, new RectangleF(-size_arrow, -size_arrow, rect.Width, rect.Height).TriangleLines(btn.ArrowProg));
-                    g.ResetTransform();
-                    g.Restore(state);
-                }
-                else g.DrawLines(pen, rect.TriangleLines(btn.ArrowProg));
+                if (btn.IsLink) g.DrawLines(pen, rect.TriangleLinesHorizontal(btn.ArrowProg));
+                else g.DrawLines(pen, rect.TriangleLinesVertical(btn.ArrowProg));
             }
         }
 

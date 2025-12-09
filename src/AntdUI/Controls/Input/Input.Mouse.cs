@@ -254,7 +254,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    bool set_s = SetSelectionStart(caret.i, false), set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_caret = SetCaretPostion(caret.index), set_scroll = SetScrollX(scrollx);
+                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_s = SetSelectionStart(caret.i, false), set_caret = SetCaretPostion(caret.index), set_scroll = SetScrollX(scrollx);
                     if (set_s || set_e || set_caret || set_scroll) Invalidate();
                 }
             }

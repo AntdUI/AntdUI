@@ -715,7 +715,7 @@ namespace AntdUI
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore, Pen pen_arr)
         {
             if (item.ExpandThread) PaintArrow(g, item, pen_arr, -90 + (90F * item.ExpandProg));
-            else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLines(-1, .56F));
+            else if (item.Expand) g.DrawLines(pen_arr, item.RectArrow.TriangleLinesVertical(-1, .56F));
             else PaintArrow(g, item, pen_arr, -90F);
 
             //g.String(item.Text, Font, fore, item.RectText, s_l);
@@ -726,7 +726,7 @@ namespace AntdUI
         void PaintItem(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.ExpandThread) PaintArrow(g, item, fore, -90 + (90F * item.ExpandProg));
-            else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLines(-1, .56F));
+            else if (item.Expand) g.FillPolygon(fore, item.RectArrow.TriangleLinesVertical(-1, .56F));
             else PaintArrow(g, item, fore, -90F);
 
             PaintItemIconText(g, item, fore);
@@ -867,7 +867,7 @@ namespace AntdUI
             int size_arrow = rect_arr.Width / 2;
             g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLinesVertical(-1, .56F));
             g.ResetTransform();
         }
         void PaintArrow(Canvas g, CollapseItem item, SolidBrush brush, float rotate)
@@ -876,7 +876,7 @@ namespace AntdUI
             int size_arrow = rect_arr.Width / 2;
             g.TranslateTransform(rect_arr.X + size_arrow, rect_arr.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.FillPolygon(brush, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLines(-1, .56F));
+            g.FillPolygon(brush, new Rectangle(-size_arrow, -size_arrow, rect_arr.Width, rect_arr.Height).TriangleLinesVertical(-1, .56F));
             g.ResetTransform();
         }
 

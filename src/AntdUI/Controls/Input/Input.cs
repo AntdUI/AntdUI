@@ -1629,7 +1629,6 @@ namespace AntdUI
         /// </summary>
         CacheCaret FindNearestFont(int x, int y, CacheCaret[] cache_caret)
         {
-            int b = CaretInfo.Height / 2;
             CacheCaret first = cache_caret[0], last = cache_caret[cache_caret.Length - 1];
             if (multiline)
             {
@@ -1641,11 +1640,12 @@ namespace AntdUI
                 if (x < first.x) return first;
                 else if (x > last.x) return last;
             }
-            var findy = FindNearestFontY(y, cache_caret, b);
+            var findy = FindNearestFontY(y, cache_caret);
             CacheCaret? result = null;
             if (findy == null)
             {
                 double minDistance = int.MaxValue;
+                int b = CaretInfo.Height / 2;
                 for (int i = 0; i < cache_caret.Length; i++)
                 {
                     var it = cache_caret[i];
@@ -1685,23 +1685,13 @@ namespace AntdUI
             if (result == null) return last;
             return result;
         }
-        CacheCaret? FindNearestFontY(int y, CacheCaret[] cache_caret, int b)
+        CacheCaret? FindNearestFontY(int y, CacheCaret[] cache_caret)
         {
-            int minDistance = int.MaxValue;
-            CacheCaret? result = null;
-            for (int i = 0; i < cache_caret.Length; i++)
+            foreach (var it in cache_caret)
             {
-                var it = cache_caret[i];
-                // 计算点到矩形四个边的最近距离，取最小值作为当前矩形的最近距离
-                int currentMinDistance = Math.Abs(y - (it.y + b));
-                // 如果当前矩形的最近距离比之前找到的最近距离小，更新最近距离和最近矩形信息
-                if (currentMinDistance < minDistance)
-                {
-                    minDistance = currentMinDistance;
-                    result = it;
-                }
+                if (it.y == y) return it;
             }
-            return result;
+            return null;
         }
 
         #endregion

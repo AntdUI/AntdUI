@@ -692,10 +692,10 @@ namespace AntdUI
         {
             using (var pen = new Pen(color, 2F))
             {
-                pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                pen.StartCap = pen.EndCap = LineCap.Round;
 
                 if (item.ExpandThread) PaintArrow(g, item, pen, sx, sy, -90F + (90F * item.ExpandProg));
-                else if (item.Expand) g.DrawLines(pen, item.arrow_rect.TriangleLines(-1, .4F));
+                else if (item.Expand) g.DrawLines(pen, item.arrow_rect.TriangleLinesVertical(-1, .4F));
                 else PaintArrow(g, item, pen, sx, sy, -90F);
             }
         }
@@ -705,7 +705,7 @@ namespace AntdUI
             int size_arrow = item.arrow_rect.Width / 2;
             g.TranslateTransform(item.arrow_rect.X + size_arrow, item.arrow_rect.Y + size_arrow);
             g.RotateTransform(rotate);
-            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arrow_rect.Width, item.arrow_rect.Height).TriangleLines(-1, .4F));
+            g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arrow_rect.Width, item.arrow_rect.Height).TriangleLinesVertical(-1, .4F));
             g.ResetTransform();
             g.TranslateTransform(-sx, -sy);
         }

@@ -432,16 +432,11 @@ namespace AntdUI
         }
         void DrawArrow(Canvas g, ObjectItemCheck item, Color color)
         {
-            var state = g.Save();
-            int size = item.RectArrow.Width, size_arrow = size / 2;
-            g.TranslateTransform(item.RectArrow.X + size_arrow, item.RectArrow.Y + size_arrow);
-            g.RotateTransform(-90F);
-            using (var pen = new Pen(color, 2F))
+            using (var pen = new Pen(color, Config.Dpi * 2F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.RectArrow.Width, item.RectArrow.Height).TriangleLines(-1, .2F));
+                g.DrawLines(pen, item.RectArrow.TriangleLinesHorizontal(-1, .2F));
             }
-            g.Restore(state);
         }
 
         #endregion

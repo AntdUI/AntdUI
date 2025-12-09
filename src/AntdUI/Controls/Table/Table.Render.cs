@@ -778,13 +778,13 @@ namespace AntdUI
             using (var pen = new Pen(color, check_border * 2))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, rect.TriangleLines(-1, .6F));
+                g.DrawLines(pen, rect.TriangleLinesVertical(-1, .6F));
             }
             g.Restore(state);
         }
         void PaintArrowFill(Canvas g, RowTemplate item, SolidBrush brush, float ArrowProg)
         {
-            g.FillPolygon(brush, PaintArrow(g, item, ArrowProg, out var state).TriangleLines(-1, 0.8F));
+            g.FillPolygon(brush, PaintArrow(g, item, ArrowProg, out var state).TriangleLinesVertical(-1, 0.8F));
             g.Restore(state);
         }
         Rectangle PaintArrow(Canvas g, RowTemplate item, float ArrowProg, out GraphicsState state)
