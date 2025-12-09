@@ -344,17 +344,23 @@ namespace AntdUI
                     return rect_list.ToArray();
                 });
             }
+            int onetmp = 0;
             Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, int gap2, out int ico_size, out int ico_gap, out int close_size, out int sizewh, out int rw)
             {
                 sizewh = rw = 0;
                 var size_t = g.MeasureString(Config.NullText, owner.Font);
                 var rect_dir = new Dictionary<TabPage, Size>(items.Count);
+                int i = 0;
+                int? tmp = null;
                 foreach (var item in items)
                 {
                     var size = g.MeasureString(item.Text, owner.Font);
                     rect_dir.Add(item, size);
                     if (rw < size.Width) rw = size.Width;
+                    if (item.Visible && tmp == null) tmp = i;
+                    i++;
                 }
+                onetmp = tmp ?? 0;
                 ico_size = (int)(size_t.Height * owner.iconratio);
                 ico_gap = (int)(size_t.Height * owner.icongap);
                 close_size = (int)(size_t.Height * (owner.iconratio * .8F));
@@ -484,7 +490,7 @@ namespace AntdUI
                             }
                         }
 
-                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, (int)(radius * Config.Dpi), rect_ful, rects[0].Rect, rects[rects.Length - 1].Rect, false);
+                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, (int)(radius * Config.Dpi), rect_ful, rects[onetmp].Rect, rects[rects.Length - 1].Rect, false);
                     }
                 }
             }
@@ -1082,17 +1088,23 @@ namespace AntdUI
                     return rect_list.ToArray();
                 });
             }
+            int onetmp = 0;
             Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, int gap2, out int ico_size, out int ico_gap, out int close_size, out int sizewh, out int rw)
             {
                 sizewh = rw = 0;
                 var size_t = g.MeasureString(Config.NullText, owner.Font);
                 var rect_dir = new Dictionary<TabPage, Size>(items.Count);
+                int i = 0;
+                int? tmp = null;
                 foreach (var item in items)
                 {
                     var size = g.MeasureString(item.Text, owner.Font);
                     rect_dir.Add(item, size);
                     if (rw < size.Width) rw = size.Width;
+                    if (item.Visible && tmp == null) tmp = i;
+                    i++;
                 }
+                onetmp = tmp ?? 0;
                 ico_size = (int)(size_t.Height * owner.iconratio);
                 ico_gap = (int)(size_t.Height * owner.icongap);
                 close_size = (int)(size_t.Height * (owner.iconratio * .8F));
@@ -1160,14 +1172,15 @@ namespace AntdUI
                         int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2, borb2 = bor / 2;
                         TabPage? sel = null;
                         int select = owner.SelectedIndex;
+                        var rect_one = rects[onetmp].Rect;
                         switch (owner.Alignment)
                         {
                             case TabAlignment.Bottom:
-                                int read_b_h = rects[0].Rect.Height + rects[0].Rect.X;
+                                int read_b_h = rect_one.Height + rect_one.X;
                                 var rect_s_b = new Rectangle(rect_t.X, rect_t.Bottom - read_b_h, rect_t.Width, read_b_h);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_b, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_b, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_b);
@@ -1201,10 +1214,10 @@ namespace AntdUI
                                 }
                                 break;
                             case TabAlignment.Left:
-                                var rect_s_l = new Rectangle(rect_t.X, rect_t.Y, rects[0].Rect.Right, rect_t.Height);
+                                var rect_s_l = new Rectangle(rect_t.X, rect_t.Y, rect_one.Right, rect_t.Height);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_l, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_l, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_l);
@@ -1238,11 +1251,11 @@ namespace AntdUI
                                 }
                                 break;
                             case TabAlignment.Right:
-                                int read_r_w = rects[0].Rect.Width + rects[0].Rect.Y;
+                                int read_r_w = rect_one.Width + rect_one.Y;
                                 var rect_s_r = new Rectangle(rect_t.Right - read_r_w, rect_t.Y, read_r_w, rect_t.Height);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_r, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_r, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_r);
@@ -1277,10 +1290,10 @@ namespace AntdUI
                                 break;
                             case TabAlignment.Top:
                             default:
-                                var rect_s_t = new Rectangle(rect_t.X, rect_t.Y, rect_t.Width, rects[0].Rect.Bottom);
+                                var rect_s_t = new Rectangle(rect_t.X, rect_t.Y, rect_t.Width, rect_one.Bottom);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_t, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_t, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_t);
@@ -1315,7 +1328,7 @@ namespace AntdUI
                                 break;
                         }
                         g.ResetClip();
-                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, radius, rect_t, rects[0].Rect, rects[rects.Length - 1].Rect, true);
+                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, radius, rect_t, rect_one, rects[rects.Length - 1].Rect, true);
                     }
                 }
             }
@@ -1922,17 +1935,23 @@ namespace AntdUI
                     return rect_list.ToArray();
                 });
             }
+            int onetmp = 0;
             Dictionary<TabPage, Size> GetDir(Tabs owner, Canvas g, TabCollection items, int gap, int gap2, out int ico_size, out int ico_gap, out int close_size, out int sizewh, out int rw)
             {
                 sizewh = rw = 0;
                 var size_t = g.MeasureString(Config.NullText, owner.Font);
                 var rect_dir = new Dictionary<TabPage, Size>(items.Count);
+                int i = 0;
+                int? tmp = null;
                 foreach (var item in items)
                 {
                     var size = g.MeasureString(item.Text, owner.Font);
                     rect_dir.Add(item, size);
                     if (rw < size.Width) rw = size.Width;
+                    if (item.Visible && tmp == null) tmp = i;
+                    i++;
                 }
+                onetmp = tmp ?? 0;
                 ico_size = (int)(size_t.Height * owner.iconratio);
                 ico_gap = (int)(size_t.Height * owner.icongap);
                 close_size = (int)(size_t.Height * (owner.iconratio * .8F));
@@ -2006,14 +2025,15 @@ namespace AntdUI
                         float borb2 = bor / 2F;
                         TabPage? sel = null;
                         int i = 0, select = owner.SelectedIndex;
+                        var rect_one = rects[onetmp].Rect;
                         switch (owner.Alignment)
                         {
                             case TabAlignment.Bottom:
-                                int read_b_h = rects[0].Rect.Height + rects[0].Rect.X;
+                                int read_b_h = rect_one.Height + rect_one.X;
                                 var rect_s_b = new Rectangle(rect_t.X, rect_t.Bottom - read_b_h - bor, rect_t.Width, read_b_h + bor);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_b, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_b, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_b);
@@ -2069,10 +2089,10 @@ namespace AntdUI
                                 }
                                 break;
                             case TabAlignment.Left:
-                                var rect_s_l = new Rectangle(rect_t.X, rect_t.Y, rects[0].Rect.Right + bor, rect_t.Height);
+                                var rect_s_l = new Rectangle(rect_t.X, rect_t.Y, rect_one.Right + bor, rect_t.Height);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_l, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_l, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_l);
@@ -2128,11 +2148,11 @@ namespace AntdUI
                                 }
                                 break;
                             case TabAlignment.Right:
-                                int read_r_w = rects[0].Rect.Width + rects[0].Rect.Y;
+                                int read_r_w = rect_one.Width + rect_one.Y;
                                 var rect_s_r = new Rectangle(rect_t.Right - read_r_w - bor, rect_t.Y, read_r_w + bor, rect_t.Height);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_r, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_r, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_r);
@@ -2189,10 +2209,10 @@ namespace AntdUI
                                 break;
                             case TabAlignment.Top:
                             default:
-                                var rect_s_t = new Rectangle(rect_t.X, rect_t.Y, rect_t.Width, rects[0].Rect.Bottom + bor);
+                                var rect_s_t = new Rectangle(rect_t.X, rect_t.Y, rect_t.Width, rect_one.Bottom + bor);
                                 if (owner.scroll_show)
                                 {
-                                    g.SetClip(owner.PaintExceedPre(rect_s_t, rects[0].Rect.Height));
+                                    g.SetClip(owner.PaintExceedPre(rect_s_t, rect_one.Height));
                                     g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                                 }
                                 else g.SetClip(rect_s_t);
@@ -2249,7 +2269,7 @@ namespace AntdUI
                                 break;
                         }
 
-                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, radius, rect_t, rects[0].Rect, rects[rects.Length - 1].Rect, true);
+                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, radius, rect_t, rect_one, rects[rects.Length - 1].Rect, true);
                     }
                 }
             }
