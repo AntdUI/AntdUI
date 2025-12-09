@@ -37,26 +37,27 @@ namespace AntdUI
         CacheFont[]? cache_font;
         CacheCaret[]? cache_caret;
         bool HasEmoji = false;
-        void FixFontWidth(bool force = false)
+        bool FixFontWidth(bool force = false)
         {
             HasEmoji = false;
             var text = Text;
             if (force)
             {
-                Helper.GDI(g =>
+                return Helper.GDI(g =>
                 {
                     float dpi = Config.Dpi;
-                    int font_height = g.MeasureString(Config.NullText, Font).Height;
+                    int font_height = g.MeasureString(Config.NullText, Font).Height, rdcount = 0;
                     if (isempty)
                     {
                         TextTotalLine = 0;
-                        ScrollX = ScrollY = 0;
+                        if (SetScrollX(0)) rdcount++;
+                        if (SetScrollY(0)) rdcount++;
                         cache_font = null;
                         cache_caret = null;
                     }
                     else FixFontWidth(g, text, force, ref font_height);
                     CaretInfo.Height = font_height;
-                    CalculateRect();
+                    return CalculateRect() || rdcount > 0;
                 });
             }
             else
@@ -64,24 +65,24 @@ namespace AntdUI
                 if (isempty)
                 {
                     TextTotalLine = 0;
-                    ScrollX = ScrollY = 0;
+                    bool set_x = SetScrollX(0), set_y = SetScrollY(0);
                     cache_font = null;
                     cache_caret = null;
-                    CalculateRect();
+                    return CalculateRect() || set_x || set_y;
                 }
                 else
                 {
-                    Helper.GDI(g =>
+                    return Helper.GDI(g =>
                     {
                         int font_height = g.MeasureString(Config.NullText, Font).Height;
                         if (text == null)
                         {
                             CaretInfo.Height = font_height;
-                            return;
+                            return false;
                         }
                         FixFontWidth(g, text, force, ref font_height);
                         CaretInfo.Height = font_height;
-                        CalculateRect();
+                        return CalculateRect();
                     });
                 }
             }
@@ -234,12 +235,13 @@ namespace AntdUI
 
         internal Rectangle? RECTDIV;
         internal int UR = 0;
-        internal void CalculateRect()
+        internal bool CalculateRect()
         {
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
             rect.Width -= UR;
             RectAuto(rect, sps, sps2);
+            int rdcount = 0;
             if (cache_font == null)
             {
                 TextTotalLine = 0;
@@ -254,7 +256,7 @@ namespace AntdUI
                     rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
                     rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
                 }
-                CaretInfo.SetXY(rect_text.X, rect_text.Y);
+                if (CaretInfo.SetXY(rect_text.X, rect_text.Y)) rdcount++;
             }
             else
             {
@@ -312,7 +314,7 @@ namespace AntdUI
                     _text = "";
                     cache_font = null;
                     cache_caret = null;
-                    return;
+                    return true;
                 }
 
                 var last = cache_font[cache_font.Length - 1];
@@ -392,14 +394,14 @@ namespace AntdUI
                 ScrollYMax = last.rect.Bottom - rect.Height + sps;
                 if (multiline)
                 {
-                    ScrollX = 0;
+                    if (SetScrollX(0)) rdcount++;
                     ScrollXShow = false;
                     ScrollYShow = last.rect.Bottom > rect.Bottom;
                     if (ScrollYShow)
                     {
-                        if (ScrollY > ScrollYMax) ScrollY = ScrollYMax;
+                        if (ScrollY > ScrollYMax && SetScrollY(ScrollYMax)) rdcount++;
                     }
-                    else ScrollY = 0;
+                    else if (SetScrollY(0)) rdcount++;
                 }
                 else
                 {
@@ -410,12 +412,13 @@ namespace AntdUI
                     else ScrollXShow = last.rect.Right > rect_text.Right;
                     if (ScrollXShow)
                     {
-                        if (ScrollX > ScrollXMax) ScrollX = ScrollXMax;
+                        if (ScrollX > ScrollXMax && SetScrollX(ScrollXMax)) rdcount++;
                     }
-                    else ScrollX = 0;
+                    else if (SetScrollX(0)) rdcount++;
                 }
             }
-            SetCaretPostion();
+            if (SetCaretPostion()) rdcount++;
+            return rdcount > 0;
         }
 
         #region 处理文本方向

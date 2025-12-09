@@ -1461,7 +1461,7 @@ namespace AntdUI
                     if (datarow.Table.Columns.Contains(cel.COLUMN.Key)) datarow[cel.COLUMN.Key] = cel.VALUE = value;
                     else datarow[col] = cel.VALUE = value;
                     if (dataTmp == null) return;
-                    dataTmp.rows[row].SetValue(col, value);
+                    dataTmp.rows[row].SetValue(cel.COLUMN.Key, value);
                 }
             }
             else cel.PROPERTY.SetValue(cel.VALUE, value);

@@ -367,13 +367,17 @@ namespace AntdUI
                 case ShortcutKeys.PageUp:
                     if (ScrollYShow && cache_font != null)
                     {
-                        SelectionLength = 0;
+                        bool set_e = SetSelectionLength(0);
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
-                        if (caret == null) SetSelectionStart(0);
+                        if (caret == null)
+                        {
+                            bool set_s = SetSelectionStart(0);
+                            if (set_s || set_e) Invalidate();
+                        }
                         else
                         {
-                            SetSelectionStart(caret.i, false);
-                            SetCaretPostion(caret.index);
+                            bool set_s = SetSelectionStart(caret.i, false), set_caret = SetCaretPostion(caret.index);
+                            if (set_s || set_caret) Invalidate();
                         }
                         if (HandShortcutKeys) return true;
                     }
@@ -381,14 +385,15 @@ namespace AntdUI
                 case ShortcutKeys.PageDown:
                     if (ScrollYShow && cache_font != null)
                     {
-                        SelectionLength = 0;
+                        bool set_s, set_e = SetSelectionLength(0), set_caret = false;
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
-                        if (caret == null) SetSelectionStart(cache_font.Length);
+                        if (caret == null) set_s = SetSelectionStart(cache_font.Length);
                         else
                         {
-                            SetSelectionStart(caret.i, false);
-                            SetCaretPostion(caret.index);
+                            set_s = SetSelectionStart(caret.i, false);
+                            set_caret = SetCaretPostion(caret.index);
                         }
+                        if (set_s || set_e || set_caret) Invalidate();
                         if (HandShortcutKeys) return true;
                     }
                     break;
@@ -496,10 +501,8 @@ namespace AntdUI
                     {
                         if (start != it.i) texts.Add(it.text);
                     }
-                    Text = string.Join("", texts);
-                    SetSelectionStart(start, false);
-                    if (start == 0) SetCaretPostion(0);
-                    else SetCaretPostion(pos);
+                    bool set_t = SetText(string.Join("", texts)), set_s = SetSelectionStart(start, false), set_caret = SetCaretPostion(start == 0 ? 0 : pos, false);
+                    if (set_t || set_s || set_caret) Invalidate();
                 }
             }
         }
@@ -511,9 +514,8 @@ namespace AntdUI
             {
                 if (it.i < start || it.i >= end_temp) texts.Add(it.text);
             }
-            Text = string.Join("", texts);
-            SelectionLength = 0;
-            SetSelectionStart(start);
+            bool set_t = SetText(string.Join("", texts)), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
+            if (set_t || set_s || set_e) Invalidate();
         }
 
         /// <summary>
@@ -532,9 +534,8 @@ namespace AntdUI
                 {
                     if (it.i < start || it.i >= end_temp) texts.Add(it.text);
                 }
-                Text = string.Join("", texts);
-                SelectionLength = 0;
-                SetSelectionStart(start);
+                bool set_t = SetText(string.Join("", texts)), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
+                if (set_t || set_s || set_e) Invalidate();
             }
             else if (selectionStart < cache_font.Length)
             {
@@ -544,8 +545,8 @@ namespace AntdUI
                 {
                     if (start != it.i) texts.Add(it.text);
                 }
-                Text = string.Join("", texts);
-                SetSelectionStart(start);
+                bool set_t = SetText(string.Join("", texts)), set_s = SetSelectionStart(start);
+                if (set_t || set_s) Invalidate();
             }
         }
 
@@ -557,25 +558,27 @@ namespace AntdUI
                 if (selectionStartTemp == selectionStart || selectionStartTemp < selectionStart) selectionStartTemp--;
                 if (selectionStartTemp < 0) selectionStartTemp = 0;
                 if (old == selectionStartTemp) return;
-                SelectionLength++;
-                SetCaretPostion(CurrentPosIndex - 1);
+                bool set_e = SetSelectionLength(selectionLength + 1), set_caret = SetCaretPostion(CurrentPosIndex - 1);
+                if (set_e || set_caret) Invalidate();
                 return;
             }
             if (SelectionLength > 0)
             {
-                if (selectionStartTemp < selectionStart) SetSelectionStart(selectionStartTemp);
+                bool set_s, set_e;
+                if (selectionStartTemp < selectionStart) set_s = SetSelectionStart(selectionStartTemp);
                 else
                 {
                     int old = selectionStart;
                     selectionStart--;
-                    SetSelectionStart(old);
+                    set_s = SetSelectionStart(old);
                 }
-                SelectionLength = 0;
+                set_e = SetSelectionLength(0);
+                if (set_s || set_e) Invalidate();
             }
             else
             {
-                SelectionLength = 0;
-                SetSelectionStart(selectionStart - 1);
+                bool set_e = SetSelectionLength(0), set_s = SetSelectionStart(selectionStart - 1);
+                if (set_s || set_e) Invalidate();
             }
         }
 
@@ -583,41 +586,46 @@ namespace AntdUI
         {
             if (shift)
             {
+                bool set_e2;
                 if (selectionStart > selectionStartTemp)
                 {
                     selectionStartTemp++;
-                    SelectionLength--;
+                    set_e2 = SetSelectionLength(selectionLength - 1);
                 }
-                else SelectionLength++;
-                SetCaretPostion(CurrentPosIndex + 1);
+                else set_e2 = SetSelectionLength(selectionLength + 1);
+                bool set_caret = SetCaretPostion(CurrentPosIndex + 1);
+                if (set_e2 || set_caret) Invalidate();
                 return;
             }
+            bool set_s, set_e;
             if (SelectionLength > 0)
             {
-                if (selectionStartTemp > selectionStart) SetSelectionStart(selectionStartTemp + selectionLength);
+                if (selectionStartTemp > selectionStart) set_s = SetSelectionStart(selectionStartTemp + selectionLength);
                 else
                 {
                     int old = selectionStart;
                     selectionStart--;
-                    SetSelectionStart(old + selectionLength);
+                    set_s = SetSelectionStart(old + selectionLength);
                 }
-                SelectionLength = 0;
+                set_e = SetSelectionLength(0);
             }
             else
             {
-                SelectionLength = 0;
-                SetSelectionStart(selectionStart + 1);
+                set_e = SetSelectionLength(0);
+                set_s = SetSelectionStart(selectionStart + 1);
             }
+            if (set_s || set_e) Invalidate();
         }
 
         void ProcessUpKey(bool shift)
         {
+            bool set_s, set_e;
             if (shift)
             {
                 if (cache_font == null)
                 {
-                    SelectionLength = 0;
-                    SetSelectionStart(selectionStart - 1);
+                    set_e = SetSelectionLength(0);
+                    set_s = SetSelectionStart(selectionStart - 1);
                 }
                 else
                 {
@@ -626,84 +634,88 @@ namespace AntdUI
                     var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
                     if (nearest == null || nearest.i == selectionStartTemp)
                     {
-                        SetSelectionStart(index - 1);
-                        SelectionLength++;
+                        set_s = SetSelectionStart(index - 1);
+                        set_e = SetSelectionLength(selectionLength + 1);
                     }
                     else
                     {
-                        SetSelectionStart(nearest.i);
-                        SelectionLength += index - nearest.i + (index >= cend ? 1 : 0);
+                        set_s = SetSelectionStart(nearest.i);
+                        set_e = SetSelectionLength(selectionLength + (index - nearest.i + (index >= cend ? 1 : 0)));
                     }
                 }
             }
             else
             {
-                SelectionLength = 0;
-                if (cache_font == null) SetSelectionStart(selectionStart - 1);
+                set_e = SetSelectionLength(0);
+                if (cache_font == null) set_s = SetSelectionStart(selectionStart - 1);
                 else
                 {
                     var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
-                    if (nearest == null) SetSelectionStart(selectionStart - 1);
+                    if (nearest == null) set_s = SetSelectionStart(selectionStart - 1);
                     else
                     {
-                        if (nearest.i == selectionStart) SetSelectionStart(selectionStart - 1);
-                        else SetSelectionStart(nearest.i);
+                        if (nearest.i == selectionStart) set_s = SetSelectionStart(selectionStart - 1);
+                        else set_s = SetSelectionStart(nearest.i);
                     }
                 }
             }
+            if (set_s || set_e) Invalidate();
         }
 
         void ProcessDownKey(bool shift)
         {
+            bool set_s, set_e;
             if (shift)
             {
                 if (cache_font == null)
                 {
-                    SelectionLength = 0;
-                    SetSelectionStart(selectionStart + 1);
+                    set_e = SetSelectionLength(0);
+                    set_s = SetSelectionStart(selectionStart + 1);
                 }
                 else
                 {
                     int index = selectionStartTemp + selectionLength;
                     if (index > cache_font.Length - 1) return;
                     var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
-                    if (nearest == null || nearest.i == index) SelectionLength++;
-                    else SelectionLength += nearest.i - index;
+                    if (nearest == null || nearest.i == index) set_e = SetSelectionLength(selectionLength + 1);
+                    else set_e = SetSelectionLength(selectionLength + (nearest.i - index));
                     if (nearest == null) CurrentPosIndex = selectionStart + selectionLength;
                     else CurrentPosIndex = nearest.index;
-                    SetCaretPostion();
+                    set_s = SetCaretPostion();
                 }
             }
             else
             {
-                SelectionLength = 0;
-                if (cache_font == null) SetSelectionStart(selectionStart + 1);
+                set_e = SetSelectionLength(0);
+                if (cache_font == null) set_s = SetSelectionStart(selectionStart + 1);
                 else
                 {
                     var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
-                    if (nearest == null || nearest.i == selectionStart) SetSelectionStart(selectionStart + 1);
-                    else SetSelectionStart(nearest.i);
+                    if (nearest == null || nearest.i == selectionStart) set_s = SetSelectionStart(selectionStart + 1);
+                    else set_s = SetSelectionStart(nearest.i);
                 }
             }
+            if (set_s || set_e) Invalidate();
         }
 
         void ProcessHomeKey(bool ctrl, bool shift)
         {
+            bool set_s = false, set_e;
             if (ctrl && shift)
             {
                 int index = selectionStartTemp;
                 if (index == 0) return;
                 if (ScrollYShow) ScrollY = 0;
-                SetSelectionStart(0);
-                SelectionLength += index;
+                set_s = SetSelectionStart(0);
+                set_e = SetSelectionLength(selectionLength + index);
             }
             else
             {
-                SelectionLength = 0;
+                set_e = SetSelectionLength(0);
                 if (ctrl)
                 {
                     if (ScrollYShow) ScrollY = 0;
-                    SetSelectionStart(0);
+                    set_s = SetSelectionStart(0);
                 }
                 else
                 {
@@ -715,16 +727,17 @@ namespace AntdUI
                         {
                             int start = FindStartY(cache_font, index - 1);
                             if (start == index) return;
-                            SetSelectionStart(start);
+                            set_s = SetSelectionStart(start);
                         }
                     }
                     else
                     {
                         if (ScrollYShow) ScrollY = 0;
-                        SetSelectionStart(0);
+                        set_s = SetSelectionStart(0);
                     }
                 }
             }
+            if (set_s || set_e) Invalidate();
         }
 
         void ProcessEndKey(bool ctrl, bool shift)
@@ -739,11 +752,12 @@ namespace AntdUI
             }
             else
             {
+                bool set_s, set_e = false;
                 if (ctrl)
                 {
                     if (ScrollYShow) ScrollY = ScrollYMax;
-                    SelectionLength = 0;
-                    SetSelectionStart(cache_font.Length);
+                    set_e = SetSelectionLength(0);
+                    set_s = SetSelectionStart(cache_font.Length);
                 }
                 else
                 {
@@ -753,15 +767,16 @@ namespace AntdUI
                         if (index > cache_font.Length - 1) return;
                         int start = FindEndY(cache_font, index) + 1;
                         if (start == index) return;
-                        SetSelectionStart(start);
+                        set_s = SetSelectionStart(start);
                     }
                     else
                     {
                         if (ScrollYShow) ScrollY = ScrollYMax;
-                        SelectionLength = 0;
-                        SetSelectionStart(cache_font.Length);
+                        set_e = SetSelectionLength(0);
+                        set_s = SetSelectionStart(cache_font.Length);
                     }
                 }
+                if (set_s || set_e) Invalidate();
             }
         }
 

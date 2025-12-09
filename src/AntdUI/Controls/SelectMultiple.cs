@@ -230,6 +230,7 @@ namespace AntdUI
             selectedValue = selecteds.ToArray();
             CalculateRect();
             SetCaretPostion();
+            Invalidate();
             subForm?.SetValues(selecteds);
             OnSelectedValueChanged(selectedValue);
         }

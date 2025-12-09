@@ -29,10 +29,10 @@ namespace AntdUI
         {
             return Each(strText, 0, cb);
         }
-        public static int Each(string strText, int nIndex, Func<string, int, int, int, bool> cb)
+        public static int Each(string? strText, int nIndex, Func<string, int, int, int, bool> cb)
         {
+            if (strText == null || nIndex >= strText.Length) return 0;
             int nCounter = 0;
-            if (string.IsNullOrEmpty(strText) || nIndex >= strText.Length) return 0;
             int nIndexCharStart = 0, nCharLen = 0, nLastCharLen = 0;
             int nCodePoint = 0;
             int nLeftBreakType = 0, nRightBreakType = 0;
@@ -77,6 +77,48 @@ namespace AntdUI
                 nCounter++;
                 CharCompleted(strText, nIndexCharStart, nCharLen, nLeftBreakType, cb);
             }
+            return nCounter;
+        }
+        public static int EachCount(string? strText, int nIndex = 0)
+        {
+            if (strText == null || nIndex >= strText.Length) return 0;
+            int nCounter = 0;
+            int nIndexCharStart = 0, nCharLen = 0, nLastCharLen = 0;
+            int nCodePoint = 0;
+            int nLeftBreakType = 0, nRightBreakType = 0;
+
+            while (nIndex < strText.Length && char.IsLowSurrogate(strText, nIndex))
+            {
+                nIndex++;
+                nCharLen++;
+            }
+            if (nCharLen != 0) nCounter++;
+
+            nIndexCharStart = nIndex;
+            nCodePoint = GetCodePoint(strText, nIndex);
+            nLastCharLen = nCodePoint >= 0x10000 ? 2 : 1;       // >= 0x10000 is double char
+            nLeftBreakType = GetBreakProperty(nCodePoint);
+            nIndex += nLastCharLen;
+            nCharLen = nLastCharLen;
+            var lst_history_break_type = new List<int> { nLeftBreakType };
+            while (nIndex < strText.Length)
+            {
+                nCodePoint = GetCodePoint(strText, nIndex);
+                nLastCharLen = nCodePoint >= 0x10000 ? 2 : 1;   // >= 0x10000 is double char
+                nRightBreakType = GetBreakProperty(nCodePoint);
+                if (ShouldBreak(nRightBreakType, lst_history_break_type))
+                {
+                    nCounter++;
+                    nIndexCharStart = nIndex;
+                    nCharLen = nLastCharLen;
+                    lst_history_break_type.Clear();
+                }
+                else nCharLen += nLastCharLen;
+                lst_history_break_type.Add(nRightBreakType);
+                nIndex += nLastCharLen;
+                nLeftBreakType = nRightBreakType;
+            }
+            if (nCharLen != 0) nCounter++;
             return nCounter;
         }
 
@@ -165,11 +207,7 @@ namespace AntdUI
             return ((strText[nIndex] & 0x03FF) << 10) + (strText[nIndex + 1] & 0x03FF) + 0x10000;
         }
 
-        static bool CharCompleted(string strText, int nIndex, int nLen, int nType, Func<string, int, int, int, bool> cb_bool)
-        {
-            if (!cb_bool(strText, nIndex, nLen, nType)) return false;
-            return true;
-        }
+        static bool CharCompleted(string strText, int nIndex, int nLen, int nType, Func<string, int, int, int, bool> cb_bool) => cb_bool(strText, nIndex, nLen, nType);
 
         static bool ShouldBreak(int nRightType, List<int> lstHistoryBreakType)
         {
