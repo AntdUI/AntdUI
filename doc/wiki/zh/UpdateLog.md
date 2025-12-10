@@ -1,6 +1,6 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
-### `2.2.2` 2025-12-09
+### `2.2.3` 2025-12-10
 
 - ➕ ImagePreview 暴露操作按钮方法
 - ➕ Table EditLostFocus
