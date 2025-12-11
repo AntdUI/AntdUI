@@ -1503,7 +1503,6 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
-            return;
             HasFocus = false;
             CaretInfo.Show = false;
             if (LostFocusClearSelection) SelectionLength = 0;

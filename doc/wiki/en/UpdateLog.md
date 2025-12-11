@@ -1,6 +1,6 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
-### `2.2.2` 2025-12-09
+### `2.2.3` 2025-12-10
 
 - ➕ ImagePreview exposure operation button method
 - ➕ Table EditLostFocus
