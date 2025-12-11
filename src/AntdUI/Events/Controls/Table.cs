@@ -25,7 +25,7 @@ namespace AntdUI
 {
     public class TableCheckEventArgs : ITableEventArgs
     {
-        public TableCheckEventArgs(bool value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
+        public TableCheckEventArgs(bool value, object record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -37,7 +37,7 @@ namespace AntdUI
     }
     public class TableClickEventArgs : ITableMouseNullEventArgs
     {
-        public TableClickEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, e)
+        public TableClickEventArgs(object record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, e)
         {
             Rect = rect;
         }
@@ -49,7 +49,7 @@ namespace AntdUI
     }
     public class TableHoverEventArgs : ITableMouseNullEventArgs
     {
-        public TableHoverEventArgs(object? record, int rowIndex, int columnIndex, Column? column, Rectangle? rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, e)
+        public TableHoverEventArgs(object record, int rowIndex, int columnIndex, Column? column, Rectangle? rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, e)
         {
             Rect = rect;
         }
@@ -65,7 +65,7 @@ namespace AntdUI
     }
     public class TableButtonEventArgs : TableClickEventArgs
     {
-        public TableButtonEventArgs(CellLink btn, object? record, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, rect, e)
+        public TableButtonEventArgs(CellLink btn, object record, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) : base(record, rowIndex, columnIndex, column, rect, e)
         {
             Btn = btn;
         }
@@ -77,7 +77,7 @@ namespace AntdUI
     }
     public class TableEventArgs : ITableEventArgs
     {
-        public TableEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
+        public TableEventArgs(object? value, object record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -90,7 +90,7 @@ namespace AntdUI
 
     public class TableBeginEditInputStyleEventArgs : ITableEventArgs
     {
-        public TableBeginEditInputStyleEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column column, Input input) : base(record, rowIndex, columnIndex, column)
+        public TableBeginEditInputStyleEventArgs(object? value, object record, int rowIndex, int columnIndex, Column column, Input input) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
             Input = input;
@@ -144,7 +144,7 @@ namespace AntdUI
 
     public class TableEndEditEventArgs : ITableEventArgs
     {
-        public TableEndEditEventArgs(string value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
+        public TableEndEditEventArgs(string value, object record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -157,7 +157,7 @@ namespace AntdUI
 
     public class TableEndValueEditEventArgs : ITableEventArgs
     {
-        public TableEndValueEditEventArgs(object? value, object? record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
+        public TableEndValueEditEventArgs(object? value, object record, int rowIndex, int columnIndex, Column column) : base(record, rowIndex, columnIndex, column)
         {
             Value = value;
         }
@@ -204,7 +204,7 @@ namespace AntdUI
 
     public class TableSetRowStyleEventArgs : EventArgs
     {
-        public TableSetRowStyleEventArgs(object? record, int rowIndex, int index)
+        public TableSetRowStyleEventArgs(object record, int rowIndex, int index)
         {
             Record = record;
             RowIndex = rowIndex;
@@ -214,7 +214,7 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
+        public object Record { get; private set; }
 
         /// <summary>
         /// 序号
@@ -229,7 +229,7 @@ namespace AntdUI
 
     public class TablePaintEventArgs : EventArgs
     {
-        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column)
+        public TablePaintEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, int rowIndex, int index, Column column)
         {
             g = canvas;
             Rect = rect;
@@ -258,7 +258,7 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
+        public object Record { get; private set; }
 
         /// <summary>
         /// 序号
@@ -278,7 +278,7 @@ namespace AntdUI
 
     public class TablePaintBeginEventArgs : TablePaintEventArgs
     {
-        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object? record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
+        public TablePaintBeginEventArgs(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, int rowIndex, int index, Column column) : base(canvas, rect, rectreal, record, rowIndex, index, column) { }
 
         /// <summary>
         /// 是否处理
@@ -303,7 +303,7 @@ namespace AntdUI
 
     public class TablePaintRowEventArgs : EventArgs
     {
-        public TablePaintRowEventArgs(Canvas canvas, Rectangle rect, object? record, int rowIndex)
+        public TablePaintRowEventArgs(Canvas canvas, Rectangle rect, object record, int rowIndex)
         {
             g = canvas;
             Rect = rect;
@@ -324,7 +324,7 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
+        public object Record { get; private set; }
 
         /// <summary>
         /// 行序号
@@ -375,7 +375,7 @@ namespace AntdUI
 
     public class TableExpandEventArgs : EventArgs
     {
-        public TableExpandEventArgs(object? record, bool expand)
+        public TableExpandEventArgs(object record, bool expand)
         {
             Record = record;
             Expand = expand;
@@ -384,7 +384,7 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
+        public object Record { get; private set; }
 
         /// <summary>
         /// 是否展开
@@ -394,7 +394,7 @@ namespace AntdUI
 
     public class ITableMouseEventArgs : MouseEventArgs
     {
-        public ITableMouseEventArgs(object? record, int rowIndex, int columnIndex, Column column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public ITableMouseEventArgs(object record, int rowIndex, int columnIndex, Column column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         {
             Record = record;
             RowIndex = rowIndex;
@@ -405,7 +405,7 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
+        public object Record { get; private set; }
 
         /// <summary>
         /// 行序号
@@ -425,7 +425,7 @@ namespace AntdUI
 
     public class ITableMouseNullEventArgs : MouseEventArgs
     {
-        public ITableMouseNullEventArgs(object? record, int rowIndex, int columnIndex, Column? column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
+        public ITableMouseNullEventArgs(object record, int rowIndex, int columnIndex, Column? column, MouseEventArgs e) : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         {
             Record = record;
             RowIndex = rowIndex;
@@ -461,7 +461,7 @@ namespace AntdUI
 
     public class ITableEventArgs : EventArgs
     {
-        public ITableEventArgs(object? record, int rowIndex, int columnIndex, Column column)
+        public ITableEventArgs(object record, int rowIndex, int columnIndex, Column column)
         {
             Record = record;
             RowIndex = rowIndex;
@@ -472,7 +472,7 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
+        public object Record { get; private set; }
         /// <summary>
         /// 行序号
         /// </summary>

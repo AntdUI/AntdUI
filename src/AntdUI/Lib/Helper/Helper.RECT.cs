@@ -501,7 +501,7 @@ namespace AntdUI
                     return FormatFlags.Right | FormatFlags.Top;
                 case ContentAlignment.MiddleLeft:
                     //内容在垂直方向上中间对齐，在水平方向上左边对齐
-                    return FormatFlags.Left | FormatFlags.Top;
+                    return FormatFlags.Left | FormatFlags.VerticalCenter;
                 case ContentAlignment.MiddleCenter:
                     //内容在垂直方向上中间对齐，在水平方向上居中对齐
                     return FormatFlags.Center;

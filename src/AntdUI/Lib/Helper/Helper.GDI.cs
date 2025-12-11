@@ -1084,9 +1084,11 @@ namespace AntdUI
             }
             else if (badegConfig.Badge != null)
             {
-                var color = badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme);
+                Color color = badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme),
+                    borcolor = badegConfig.BadgeBorderColor ?? Colour.ErrorColor.Get(nameof(Badge), colorScheme);
                 var rect = Rect;
                 float borsize = Config.Dpi;
+                if (badegConfig.BadgeBorderWidth.HasValue) borsize = badegConfig.BadgeBorderWidth.Value * Config.Dpi;
                 using (var font = new Font(Font.FontFamily, Font.Size * badegConfig.BadgeSize))
                 {
                     int hasx = (int)(badegConfig.BadgeOffsetX * Config.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * Config.Dpi);
@@ -1099,7 +1101,7 @@ namespace AntdUI
                             if (badegConfig.BadgeMode)
                             {
                                 float b2 = borsize * 2, rr = size * 0.2F, rr2 = rr * 2;
-                                g.FillEllipse(Colour.ErrorColor.Get(nameof(Badge), colorScheme), new RectangleF(rect_badge.X - borsize, rect_badge.Y - borsize, rect_badge.Width + b2, rect_badge.Height + b2));
+                                g.FillEllipse(borcolor, new RectangleF(rect_badge.X - borsize, rect_badge.Y - borsize, rect_badge.Width + b2, rect_badge.Height + b2));
                                 using (var path = rect_badge.RoundPath(1, true))
                                 {
                                     path.AddEllipse(new RectangleF(rect_badge.X + rr, rect_badge.Y + rr, rect_badge.Width - rr2, rect_badge.Height - rr2));
@@ -1109,20 +1111,21 @@ namespace AntdUI
                             else
                             {
                                 g.FillEllipse(color, rect_badge);
-                                g.DrawEllipse(Colour.ErrorColor.Get(nameof(Badge), colorScheme), borsize, rect_badge);
+                                if (borsize > 0) g.DrawEllipse(borcolor, borsize, rect_badge);
                             }
                         }
                     }
                     else
                     {
+                        Color fore = badegConfig.BadgeFore ?? Colour.ErrorColor.Get(nameof(Badge), colorScheme);
                         var size = g.MeasureString(badegConfig.Badge, font).Size(4, 2);
                         int size_badge = (int)(size.Height * 1.2F);
                         if (size.Height > size.Width)
                         {
                             var rect_badge = PaintBadge(rect, badegConfig.BadgeAlign, hasx, hasy, size_badge, size_badge);
                             g.FillEllipse(color, rect_badge);
-                            g.DrawEllipse(Colour.ErrorColor.Get(nameof(Badge), colorScheme), borsize, rect_badge);
-                            g.String(badegConfig.Badge, font, Colour.ErrorColor.Get(nameof(Badge), colorScheme), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
+                            if (borsize > 0) g.DrawEllipse(borcolor, borsize, rect_badge);
+                            g.String(badegConfig.Badge, font, fore, rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                         }
                         else
                         {
@@ -1131,9 +1134,9 @@ namespace AntdUI
                             using (var path = rect_badge.RoundPath(rect_badge.Height))
                             {
                                 g.Fill(color, path);
-                                g.Draw(Colour.ErrorColor.Get(nameof(Badge), colorScheme), borsize, path);
+                                if (borsize > 0) g.Draw(borcolor, borsize, path);
                             }
-                            g.String(badegConfig.Badge, font, Colour.ErrorColor.Get(nameof(Badge), colorScheme), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
+                            g.String(badegConfig.Badge, font, fore, rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                         }
                     }
                 }

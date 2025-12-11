@@ -1639,6 +1639,22 @@ namespace AntdUI
         [Description("徽标大小"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize { get; set; } = .6F;
 
+        Color? badgefore;
+        /// <summary>
+        /// 徽标前景颜色
+        /// </summary>
+        [Description("徽标前景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeFore
+        {
+            get => badgefore;
+            set
+            {
+                if (badgefore == value) return;
+                badgefore = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
         /// <summary>
         /// 徽标背景颜色
         /// </summary>
@@ -1658,6 +1674,38 @@ namespace AntdUI
                 if (badgeMode == value) return;
                 badgeMode = value;
                 PARENT?.Invalidate();
+            }
+        }
+
+        Color? badgeBorderColor;
+        /// <summary>
+        /// 徽标边框颜色
+        /// </summary>
+        [Description("徽标边框颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBorderColor
+        {
+            get => badgeBorderColor;
+            set
+            {
+                if (badgeBorderColor == value) return;
+                badgeBorderColor = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
+            }
+        }
+
+        float? badgeBorderWidth;
+        /// <summary>
+        /// 徽标边框宽度
+        /// </summary>
+        [Description("徽标边框宽度"), Category("徽标"), DefaultValue(null)]
+        public float? BadgeBorderWidth
+        {
+            get => badgeBorderWidth;
+            set
+            {
+                if (badgeBorderWidth == value) return;
+                badgeBorderWidth = value;
+                if (badge != null || badgeSvg != null) PARENT?.Invalidate();
             }
         }
 
@@ -1919,6 +1967,60 @@ namespace AntdUI
             Reverse = value;
             return this;
         }
+
+        #region 徽标
+
+        public SegmentedItem SetBadge(string? value = " ", TAlign align = TAlign.TR)
+        {
+            badge = value;
+            badgeAlign = align;
+            return this;
+        }
+        public SegmentedItem SetBadgeSvg(string? value, TAlign align = TAlign.TR)
+        {
+            badgeSvg = value;
+            badgeAlign = align;
+            return this;
+        }
+        public SegmentedItem SetBadgeOffset(int x, int y)
+        {
+            BadgeOffsetX = x;
+            BadgeOffsetY = y;
+            return this;
+        }
+        public SegmentedItem SetBadgeSize(float value)
+        {
+            BadgeSize = value;
+            return this;
+        }
+        public SegmentedItem SetBadgeFore(Color? value)
+        {
+            BadgeFore = value;
+            return this;
+        }
+        public SegmentedItem SetBadgeBack(Color? value)
+        {
+            BadgeBack = value;
+            return this;
+        }
+        public SegmentedItem SetBadgeBorderColor(Color? value)
+        {
+            BadgeBorderColor = value;
+            return this;
+        }
+        public SegmentedItem SetBadgeBorderWidth(float? value)
+        {
+            BadgeBorderWidth = value;
+            return this;
+        }
+        public SegmentedItem SetBadgeBorder(float value, Color color)
+        {
+            BadgeBorderWidth = value;
+            BadgeBorderColor = color;
+            return this;
+        }
+
+        #endregion
 
         public SegmentedItem SetTag(object? value)
         {

@@ -128,7 +128,7 @@ namespace AntdUI
             }
 
             // 存储当前编辑的单元格信息
-            _currentEdit = new TableCellEditEnterEventArgs(it.RECORD!, i_row, i_col, column);
+            _currentEdit = new TableCellEditEnterEventArgs(it.RECORD, i_row, i_col, column);
 
             bool multiline = cell.COLUMN.LineBreak;
             if (column is ColumnSelect columnSelect)

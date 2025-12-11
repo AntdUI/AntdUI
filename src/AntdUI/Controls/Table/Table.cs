@@ -997,13 +997,83 @@ namespace AntdUI
             }
         }
 
-        List<int> enableDir = new List<int>();
+        #region 选中行
+
+        /// <summary>
+        /// 设置选中行
+        /// </summary>
+        /// <param name="record">行数据</param>
+        /// <param name="expand">是否展开关联父级</param>
+        public void SetSelected(object record, bool expand = false)
+        {
+            if (rows == null) return;
+            for (int i = 0; i < rows.Length; i++)
+            {
+                var row = rows[i];
+                if (row.RECORD == record)
+                {
+                    SelectedIndex = row.INDEX;
+                    if (expand && !row.SHOW)
+                    {
+                        ExpandUp(rows, i);
+                        if (LoadLayout()) Invalidate();
+                    }
+                    return;
+                }
+            }
+        }
+
+        void ExpandUp(RowTemplate[] rows, int i)
+        {
+            var id = rows[i].ExpandDepth - 1;
+            while (true)
+            {
+                if (i < 1) return;
+                i--;
+                var it = rows[i];
+                if (it.CanExpand)
+                {
+                    if (it.ExpandDepth == id)
+                    {
+                        rows_Expand.Add(it.RECORD);
+                        id = it.ExpandDepth - 1;
+                        if (id < 0) return;
+                    }
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region 禁用行
+
+        List<object> enableDir = new List<object>();
         /// <summary>
         /// 获取行使能
         /// </summary>
         /// <param name="i">行</param>
         /// <returns>是否禁用</returns>
-        public bool GetRowEnable(int i) => enableDir.Contains(i);
+        public bool GetRowEnable(int i)
+        {
+            if (rows == null) return true;
+            foreach (var row in rows)
+            {
+                if (row.INDEX == i) return GetRowEnable(row.RECORD);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 获取行使能
+        /// </summary>
+        /// <param name="record">行对象</param>
+        /// <returns>是否禁用</returns>
+        public bool GetRowEnable(object record)
+        {
+            if (enableDir.Contains(record)) return false;
+            return true;
+        }
 
         /// <summary>
         /// 设置行使能
@@ -1011,28 +1081,54 @@ namespace AntdUI
         /// <param name="i">行</param>
         /// <param name="value">值</param>
         /// <param name="ui">是否刷新ui</param>
-        /// <returns>成功失败</returns>
         public void SetRowEnable(int i, bool value = true, bool ui = true)
+        {
+            if (rows == null) return;
+            foreach (var row in rows)
+            {
+                if (row.INDEX == i)
+                {
+                    SetRowEnable(row.RECORD, value, ui);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 设置行使能
+        /// </summary>
+        /// <param name="record">行对象</param>
+        /// <param name="value">值</param>
+        /// <param name="ui">是否刷新ui</param>
+        public void SetRowEnable(object record, bool value = true, bool ui = true)
         {
             if (value)
             {
-                if (enableDir.Contains(i)) enableDir.Remove(i);
+                if (enableDir.Contains(record)) enableDir.Remove(record);
                 else return;
             }
             else
             {
-                if (enableDir.Contains(i)) return;
-                else enableDir.Add(i);
+                if (enableDir.Contains(record)) return;
+                else enableDir.Add(record);
             }
             if (rows == null) return;
             try
             {
-                var selectRow = rows[i + 1];
-                selectRow.ENABLE = value;
-                if (ui) Invalidate();
+                foreach (var row in rows)
+                {
+                    if (row.RECORD == record)
+                    {
+                        row.ENABLE = value;
+                        if (ui) Invalidate();
+                        return;
+                    }
+                }
             }
             catch { }
         }
+
+        #endregion
 
         #region 滚动
 
@@ -1106,6 +1202,7 @@ namespace AntdUI
                 }
                 return 0;
             }
+            if (!rows[i].SHOW) i = NextIndexUp(rows, i) + 1;
             var selectRow = rows[i];
             if (force)
             {
@@ -1171,7 +1268,7 @@ namespace AntdUI
         {
             if (rows == null || !ScrollBar.ShowX) return 0;
             int sx = ScrollBar.ValueX;
-            foreach (TCellColumn cellColumn in rows[0].cells)
+            foreach (var cellColumn in rows[0].cells)
             {
                 if (cellColumn.COLUMN.Key == column)
                 {
@@ -1205,7 +1302,7 @@ namespace AntdUI
         {
             if (rows == null || !ScrollBar.ShowX) return 0;
             int sx = ScrollBar.ValueX;
-            foreach (TCellColumn cellColumn in rows[0].cells)
+            foreach (var cellColumn in rows[0].cells)
             {
                 if (cellColumn.COLUMN == column)
                 {
@@ -1491,10 +1588,11 @@ namespace AntdUI
                 dir_columns = new Dictionary<string, Column>(dataTmp.columns.Length);
                 var columns = new Dictionary<string, DataColumn>(dataTmp.columns.Length);
                 foreach (var column in dataTmp.columns) columns.Add(column.key, new DataColumn(column.key) { Caption = column.text });
-                foreach (TCellColumn item in rows[0].cells)
+                foreach (var item in rows[0].cells)
                 {
-                    dir_columns.Add(item.COLUMN.Key, item.COLUMN);
-                    if (!string.IsNullOrWhiteSpace(item.value) && columns.TryGetValue(item.COLUMN.Key, out var find)) find.Caption = item.value;
+                    var column = item.COLUMN;
+                    dir_columns.Add(column.Key, column);
+                    if (!string.IsNullOrWhiteSpace(column.Title) && columns.TryGetValue(column.Key, out var find)) find.Caption = column.Title;
                 }
                 foreach (var item in columns) dt.Columns.Add(item.Value);
             }
@@ -1558,12 +1656,7 @@ namespace AntdUI
                 {
                     if (rows == null) return;
                     rows_Expand = new List<object>(rows.Length - 1);
-                    for (int i = 1; i < rows.Length; i++)
-                    {
-                        var record = rows[i].RECORD;
-                        if (record == null) continue;
-                        rows_Expand.Add(record);
-                    }
+                    for (int i = 1; i < rows.Length; i++) rows_Expand.Add(rows[i].RECORD);
                 }
                 else rows_Expand.Clear();
             }
@@ -1578,7 +1671,7 @@ namespace AntdUI
                     for (int i = 1; i < rows.Length; i++)
                     {
                         var record = rows[i].RECORD;
-                        if (record == null || rows_Expand.Contains(record)) continue;
+                        if (rows_Expand.Contains(record)) continue;
                         rows_Expand.Add(record);
                         ExpandChanged(this, new TableExpandEventArgs(record, false));
                     }

@@ -2241,6 +2241,9 @@ namespace AntdUI
         #region 徽标
 
         string? badge;
+        /// <summary>
+        /// 徽标内容
+        /// </summary>
         [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
@@ -2254,6 +2257,9 @@ namespace AntdUI
         }
 
         string? badgeSvg;
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
         [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
@@ -2267,6 +2273,9 @@ namespace AntdUI
         }
 
         TAlign badgeAlign = TAlign.Right;
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
         [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.Right)]
         public TAlign BadgeAlign
         {
@@ -2280,6 +2289,9 @@ namespace AntdUI
         }
 
         float badgeSize = .6F;
+        /// <summary>
+        /// 徽标比例
+        /// </summary>
         [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize
         {
@@ -2293,6 +2305,9 @@ namespace AntdUI
         }
 
         bool badgeMode = false;
+        /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
         [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
         public bool BadgeMode
         {
@@ -2305,7 +2320,26 @@ namespace AntdUI
             }
         }
 
+        Color? badgefore;
+        /// <summary>
+        /// 徽标前景颜色
+        /// </summary>
+        [Description("徽标前景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeFore
+        {
+            get => badgefore;
+            set
+            {
+                if (badgefore == value) return;
+                badgefore = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
         Color? badgeback;
+        /// <summary>
+        /// 徽标背景颜色
+        /// </summary>
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {
@@ -2314,6 +2348,38 @@ namespace AntdUI
             {
                 if (badgeback == value) return;
                 badgeback = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        Color? badgeBorderColor;
+        /// <summary>
+        /// 徽标边框颜色
+        /// </summary>
+        [Description("徽标边框颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBorderColor
+        {
+            get => badgeBorderColor;
+            set
+            {
+                if (badgeBorderColor == value) return;
+                badgeBorderColor = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        float? badgeBorderWidth;
+        /// <summary>
+        /// 徽标边框宽度
+        /// </summary>
+        [Description("徽标边框宽度"), Category("徽标"), DefaultValue(null)]
+        public float? BadgeBorderWidth
+        {
+            get => badgeBorderWidth;
+            set
+            {
+                if (badgeBorderWidth == value) return;
+                badgeBorderWidth = value;
                 if (badge != null || badgeSvg != null) Invalidate();
             }
         }
@@ -2729,9 +2795,30 @@ namespace AntdUI
             BadgeSize = value;
             return this;
         }
+        public MenuItem SetBadgeFore(Color? value)
+        {
+            BadgeFore = value;
+            return this;
+        }
         public MenuItem SetBadgeBack(Color? value)
         {
             BadgeBack = value;
+            return this;
+        }
+        public MenuItem SetBadgeBorderColor(Color? value)
+        {
+            BadgeBorderColor = value;
+            return this;
+        }
+        public MenuItem SetBadgeBorderWidth(float? value)
+        {
+            BadgeBorderWidth = value;
+            return this;
+        }
+        public MenuItem SetBadgeBorder(float value, Color color)
+        {
+            BadgeBorderWidth = value;
+            BadgeBorderColor = color;
             return this;
         }
 
@@ -2870,6 +2957,9 @@ namespace AntdUI
         #region 徽标
 
         string? badge;
+        /// <summary>
+        /// 徽标内容
+        /// </summary>
         [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
         public string? Badge
         {
@@ -2883,6 +2973,9 @@ namespace AntdUI
         }
 
         string? badgeSvg;
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
         [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
         public string? BadgeSvg
         {
@@ -2896,6 +2989,9 @@ namespace AntdUI
         }
 
         TAlign badgeAlign = TAlign.Right;
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
         [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.Right)]
         public TAlign BadgeAlign
         {
@@ -2909,6 +3005,9 @@ namespace AntdUI
         }
 
         float badgeSize = .6F;
+        /// <summary>
+        /// 徽标比例
+        /// </summary>
         [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
         public float BadgeSize
         {
@@ -2922,6 +3021,9 @@ namespace AntdUI
         }
 
         bool badgeMode = false;
+        /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
         [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
         public bool BadgeMode
         {
@@ -2934,7 +3036,26 @@ namespace AntdUI
             }
         }
 
+        Color? badgefore;
+        /// <summary>
+        /// 徽标前景颜色
+        /// </summary>
+        [Description("徽标前景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeFore
+        {
+            get => badgefore;
+            set
+            {
+                if (badgefore == value) return;
+                badgefore = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
         Color? badgeback;
+        /// <summary>
+        /// 徽标背景颜色
+        /// </summary>
         [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
         public Color? BadgeBack
         {
@@ -2943,6 +3064,38 @@ namespace AntdUI
             {
                 if (badgeback == value) return;
                 badgeback = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        Color? badgeBorderColor;
+        /// <summary>
+        /// 徽标边框颜色
+        /// </summary>
+        [Description("徽标边框颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBorderColor
+        {
+            get => badgeBorderColor;
+            set
+            {
+                if (badgeBorderColor == value) return;
+                badgeBorderColor = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        float? badgeBorderWidth;
+        /// <summary>
+        /// 徽标边框宽度
+        /// </summary>
+        [Description("徽标边框宽度"), Category("徽标"), DefaultValue(null)]
+        public float? BadgeBorderWidth
+        {
+            get => badgeBorderWidth;
+            set
+            {
+                if (badgeBorderWidth == value) return;
+                badgeBorderWidth = value;
                 if (badge != null || badgeSvg != null) Invalidate();
             }
         }
@@ -3151,9 +3304,30 @@ namespace AntdUI
             BadgeSize = value;
             return this;
         }
+        public MenuButton SetBadgeFore(Color? value)
+        {
+            BadgeFore = value;
+            return this;
+        }
         public MenuButton SetBadgeBack(Color? value)
         {
             BadgeBack = value;
+            return this;
+        }
+        public MenuButton SetBadgeBorderColor(Color? value)
+        {
+            BadgeBorderColor = value;
+            return this;
+        }
+        public MenuButton SetBadgeBorderWidth(float? value)
+        {
+            BadgeBorderWidth = value;
+            return this;
+        }
+        public MenuButton SetBadgeBorder(float value, Color color)
+        {
+            BadgeBorderWidth = value;
+            BadgeBorderColor = color;
             return this;
         }
 
