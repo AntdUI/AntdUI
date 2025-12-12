@@ -102,8 +102,10 @@ namespace AntdUI.Svg
             if (string.IsNullOrEmpty(svg)) return null;
             using (var strReader = new System.IO.StringReader(svg))
             {
-                var reader = new SvgTextReader(strReader);
-                reader.WhitespaceHandling = WhitespaceHandling.None;
+                var reader = new SvgTextReader(strReader)
+                {
+                    WhitespaceHandling = WhitespaceHandling.None
+                };
                 return Open<T>(reader);
             }
         }
@@ -116,8 +118,10 @@ namespace AntdUI.Svg
         public static T? Open<T>(Stream stream) where T : SvgDocument, new()
         {
             // Don't close the stream via a dispose: that is the client's job.
-            var reader = new SvgTextReader(stream);
-            reader.WhitespaceHandling = WhitespaceHandling.None;
+            var reader = new SvgTextReader(stream)
+            {
+                WhitespaceHandling = WhitespaceHandling.None
+            };
             return Open<T>(reader);
         }
 

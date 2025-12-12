@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -32,7 +33,7 @@ namespace AntdUI
 
         #region FormatFlags
 
-        static Dictionary<string, StringFormat> ffs = new Dictionary<string, StringFormat>();
+        static ConcurrentDictionary<string, StringFormat> ffs = new ConcurrentDictionary<string, StringFormat>();
         /// <summary>
         /// 文本布局
         /// </summary>
@@ -65,11 +66,8 @@ namespace AntdUI
             if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
             else sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
 
-#if NET40 || NET46 || NET48
-            ffs.Add(key, sf);
-#else
-            ffs.TryAdd(key, sf);
-#endif
+            if (!ffs.TryAdd(key, sf)) sf.Dispose();
+
             return sf;
         }
 

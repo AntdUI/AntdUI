@@ -42,13 +42,15 @@ namespace AntdUI.Svg.FilterEffects
             _renderer = renderer;
             Transform = transform;
             _renderMethod = renderMethod;
-            _images = new Dictionary<string, Bitmap?>();
-            _images[SvgFilterPrimitive.BackgroundAlpha] = null;
-            _images[SvgFilterPrimitive.BackgroundImage] = null;
-            _images[SvgFilterPrimitive.FillPaint] = null;
-            _images[SvgFilterPrimitive.SourceAlpha] = null;
-            _images[SvgFilterPrimitive.SourceGraphic] = null;
-            _images[SvgFilterPrimitive.StrokePaint] = null;
+            _images = new Dictionary<string, Bitmap?>
+            {
+                [SvgFilterPrimitive.BackgroundAlpha] = null,
+                [SvgFilterPrimitive.BackgroundImage] = null,
+                [SvgFilterPrimitive.FillPaint] = null,
+                [SvgFilterPrimitive.SourceAlpha] = null,
+                [SvgFilterPrimitive.SourceGraphic] = null,
+                [SvgFilterPrimitive.StrokePaint] = null
+            };
         }
 
         public void Add(string key, Bitmap? value) => _images.Add(ProcessKey(key), value);

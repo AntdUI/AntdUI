@@ -36,14 +36,16 @@ namespace AntdUI
         /// 汇总类型
         /// </summary>
         public TSummaryType SummaryType { get; set; } = TSummaryType.None;
+
         /// <summary>
         /// 格式化 (0.#####, {0:P2}...)
         /// </summary>
         /// <remarks>当SummaryType=Text时，此属性为设置要显示的内容</remarks>
         public string? DisplayFormat { get; set; }
+
         /// <summary>
         /// SummaryType为Text时，显示的文本
         /// </summary>
-        public string DisplayText { get; set; }
+        public string? DisplayText { get; set; }
     }
 }

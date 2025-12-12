@@ -823,7 +823,8 @@ namespace AntdUI
         {
             get
             {
-                foreach (Column col in Columns)
+                if (columns == null) return null;
+                foreach (var col in columns)
                 {
                     if (col.KeyTree != null && !string.IsNullOrEmpty(col.KeyTree)) return col.KeyTree;
                 }
@@ -862,21 +863,14 @@ namespace AntdUI
                 summaryCustomize = value;
                 if (value)
                 {
-                    MouseClick += Table_MouseClick;
-                    InitSummaryMenu();
-                    Column[] cols = SummaryColumns;
+                    var cols = SummaryColumns;
                     if (cols == null || cols.Length == 0)
                     {
-                        if (Columns.Count > 0) Columns[0].SetSummaryItem("TOTAL");
+                        if (columns != null && columns.Count > 0) columns[0].SetSummaryItem("TOTAL");
                     }
                     UpdateSummaries();
                 }
-                else
-                {
-                    MouseClick -= Table_MouseClick;
-                    Summary = null;//不显示
-                    HideSummaryMenu();
-                }
+                else Summary = null;
             }
         }
 
@@ -2822,8 +2816,10 @@ namespace AntdUI
         }
         public Column SetSummaryItem(string text)
         {
-            SummaryItem = new SummaryItemOption(TSummaryType.Text);
-            SummaryItem.DisplayText = text;
+            SummaryItem = new SummaryItemOption(TSummaryType.Text)
+            {
+                DisplayText = text
+            };
             return this;
         }
 

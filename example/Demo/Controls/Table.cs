@@ -779,15 +779,15 @@ namespace Demo.Controls
         }
         private void Table1_CustomSummaryCalculate(object sender, AntdUI.TableCustomSummaryEventArgs e)
         {
-           if(!e.Finalize)
+            if (!e.Finalize)
             {
-                TestClass item=e.Record as TestClass;
+                TestClass item = e.Record as TestClass;
                 if (item.date.Year > 1999) e.TotalValue = 1;
             }
         }
         private void SummarySet()
         {
-            if(table1.SummaryCustomize)
+            if (table1.SummaryCustomize)
             {
                 table1.UpdateSummaries();
                 return;

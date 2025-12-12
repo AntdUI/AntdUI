@@ -315,6 +315,11 @@ namespace AntdUI
                     if (cellMDown == null)
                     {
                         EditModeClose();
+                        if (summaryCustomize && e.Button == MouseButtons.Right)
+                        {
+                            var celdb = CellContainsSummary(rows, e.X, e.Y);
+                            if (celdb != null) Table_MouseClick(celdb);
+                        }
                         return;
                     }
                     MouseUpRow(rows, cellMDown, btnMDown, e);
@@ -476,7 +481,7 @@ namespace AntdUI
                             Point location = PointToScreen(col.rect_filter.Location);
                             Point locaionOrigin = location;
                             location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
-                            if (fixedColumnR != null && fixedColumnR.Contains(Columns.IndexOf(focusColumn)))
+                            if (fixedColumnR != null && fixedColumnR.Contains(columns!.IndexOf(focusColumn)))
                             {
                                 int gap = (int)(_gap.Width * Config.Dpi);
                                 location.X -= (showFixedColumnR ? gap : gap * 2);
@@ -953,7 +958,6 @@ namespace AntdUI
             {
                 if (it.IsColumn)
                 {
-                    FocusedColumnSummary = null;
                     if (fixedHeader)
                     {
                         if (CellContainsFixed(it, ex, ey, sx, sy, px, py, out var tmp))
@@ -971,28 +975,35 @@ namespace AntdUI
                         }
                     }
                 }
-                else if (it.Type == RowType.Summary)
-                {
-                    if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
-                    {
-                        tmp!.mode = 0;
-                        if (tmp != null) FocusedColumnSummary = tmp.col;
-                    }
-                    continue;
-                }
+                else if (it.Type == RowType.Summary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
                     if (sethover) hovers = it.INDEX_REAL;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
-                        if (SummaryCustomize && Summary != null && tmp != null && ey > rect_read.Height - (RowHeight ?? 42))
-                        {
-                            tmp!.mode = 0;
-                            FocusedColumnSummary = tmp.col;
-                            continue;
-                        }
                         tmp!.mode = 0;
                         return tmp;
+                    }
+                }
+            }
+            return null;
+        }
+        CELLDB? CellContainsSummary(RowTemplate[] rows, int ex, int ey)
+        {
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+            int px = ex + sx, py = ey + sy;
+            foreach (RowTemplate it in rows)
+            {
+                if (it.IsColumn) continue;
+                else if (it.Type == RowType.Summary)
+                {
+                    if (it.Contains(ex, py, false))
+                    {
+                        if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
+                        {
+                            tmp!.mode = 0;
+                            return tmp;
+                        }
                     }
                 }
             }
