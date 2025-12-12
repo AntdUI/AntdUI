@@ -115,7 +115,7 @@ namespace AntdUI
                             dragBody = new DragHeader(e.X, e.Y, db.cell.ROW.INDEX, e.Y);
                             return;
                         }
-                        if (db.cell.ROW.CanExpand && db.cell.ROW.RECORD != null && db.cell.ROW.RectExpand.Contains(db.x, db.y))
+                        if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
                         {
                             if (db.cell.ROW.Expand) rows_Expand.Remove(db.cell.ROW.RECORD);
                             else rows_Expand.Add(db.cell.ROW.RECORD);

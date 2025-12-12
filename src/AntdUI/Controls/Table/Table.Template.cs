@@ -34,7 +34,7 @@ namespace AntdUI
         internal class RowTemplate : IROW
         {
             Table PARENT;
-            public RowTemplate(Table table, CELL[] cell, int i, object? value)
+            public RowTemplate(Table table, CELL[] cell, int i, object value)
             {
                 PARENT = table;
                 cells = cell;
@@ -55,7 +55,7 @@ namespace AntdUI
             /// <summary>
             /// 原始行数据
             /// </summary>
-            public object? RECORD { get; set; }
+            public object RECORD { get; set; }
 
             /// <summary>
             /// 使能
@@ -163,7 +163,7 @@ namespace AntdUI
             /// <summary>
             /// 原始行数据
             /// </summary>
-            object? RECORD { get; }
+            object RECORD { get; }
 
             /// <summary>
             /// 使能

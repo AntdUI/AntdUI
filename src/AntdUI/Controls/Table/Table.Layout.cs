@@ -286,7 +286,7 @@ namespace AntdUI
 
             var _cols = new List<TCellColumn>(_columns.Count);
             foreach (var it in _columns) _cols.Add(new TCellColumn(this, it));
-            AddRows(ref _rows, _cols.ToArray(), dataSource);
+            AddRows(ref _rows, _cols.ToArray(), dataSource ?? _rows);
 
             #endregion
 
@@ -1073,16 +1073,16 @@ namespace AntdUI
             else return new TCellText(this, column, prop, ov, value);
         }
 
-        RowTemplate AddRows(ref List<RowTemplate?> rows, CELL[] cells, int row_i, object? record)
+        RowTemplate AddRows(ref List<RowTemplate?> rows, CELL[] cells, int row_i, object record)
         {
             var row = new RowTemplate(this, cells, row_i, record);
-            if (enableDir.Contains(row_i)) row.ENABLE = false;
+            if (enableDir.Contains(record)) row.ENABLE = false;
             if (row.INDEX_REAL == hovers) row.hover = true;
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;
         }
-        RowTemplate AddRows(ref List<RowTemplate?> rows, TCellColumn[] cells, object? record)
+        RowTemplate AddRows(ref List<RowTemplate?> rows, TCellColumn[] cells, object record)
         {
             var row = new RowTemplate(this, cells, -1, record)
             {

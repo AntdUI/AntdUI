@@ -565,9 +565,24 @@ namespace AntdUI
             public int BadgeOffsetY { get; set; }
 
             /// <summary>
+            /// 徽标前景颜色
+            /// </summary>
+            public Color? BadgeFore { get; set; }
+
+            /// <summary>
             /// 徽标背景颜色
             /// </summary>
             public Color? BadgeBack { get; set; }
+
+            /// <summary>
+            /// 徽标边框颜色
+            /// </summary>
+            public Color? BadgeBorderColor { get; set; }
+
+            /// <summary>
+            /// 徽标边框宽度
+            /// </summary>
+            public float? BadgeBorderWidth { get; set; }
 
             #region 内部
 
@@ -681,9 +696,30 @@ namespace AntdUI
                 BadgeSize = value;
                 return this;
             }
+            public ConfigBtn SetBadgeFore(Color? value)
+            {
+                BadgeFore = value;
+                return this;
+            }
             public ConfigBtn SetBadgeBack(Color? value)
             {
                 BadgeBack = value;
+                return this;
+            }
+            public ConfigBtn SetBadgeBorderColor(Color? value)
+            {
+                BadgeBorderColor = value;
+                return this;
+            }
+            public ConfigBtn SetBadgeBorderWidth(float? value)
+            {
+                BadgeBorderWidth = value;
+                return this;
+            }
+            public ConfigBtn SetBadgeBorder(float value, Color color)
+            {
+                BadgeBorderWidth = value;
+                BadgeBorderColor = color;
                 return this;
             }
 

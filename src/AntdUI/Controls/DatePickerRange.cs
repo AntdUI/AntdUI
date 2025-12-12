@@ -158,19 +158,34 @@ namespace AntdUI
 
         protected override void OnTextChanged(EventArgs e)
         {
+            base.OnTextChanged(e);
             if (isempty) showS = showE = true;
             else
             {
                 string text = Text;
                 int index = text.IndexOf("\t");
-                if (index > -1)
+                if (index == 0 && text.Trim() == "")
+                {
+                    Text = string.Empty;
+                    showS = showE = true;
+                }
+                else if (index > -1)
                 {
                     showS = index == 0;
                     showE = string.IsNullOrEmpty(text.Substring(index + 1));
                 }
-                else showS = showE = false;
+                else
+                {
+                    if (EndFocused && !StartFocused)
+                    {
+                        EndFocused = false;
+                        StartFocused = true;
+                        SelectionStart = text.Length;
+                    }
+                    showS = string.IsNullOrEmpty(text);
+                    showE = true;
+                }
             }
-            base.OnTextChanged(e);
         }
 
         protected override bool Verify(char key, out string? change)
