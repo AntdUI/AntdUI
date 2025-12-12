@@ -83,7 +83,7 @@ namespace AntdUI
 
             public bool IsColumn => Type == RowType.Column;
             public bool IsOther => Type == RowType.None || Type == RowType.Summary;
-
+            public bool IsSummary => Type== RowType.Summary;
             #region 悬浮状态
 
             internal bool hover = false;
@@ -191,7 +191,7 @@ namespace AntdUI
 
             bool IsColumn { get; }
             bool IsOther { get; }
-
+            bool IsSummary { get; }
             bool CanExpand { get; }
 
             bool Expand { get; }

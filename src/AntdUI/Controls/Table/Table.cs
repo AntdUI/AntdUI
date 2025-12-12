@@ -17,6 +17,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using AntdUI.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -86,6 +87,7 @@ namespace AntdUI
                 hovers = -1;
                 ExtractHeaderFixed();
                 ExtractData();
+                UpdateSummaries();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(DataSource));
             }
@@ -850,6 +852,34 @@ namespace AntdUI
             }
         }
 
+        bool summaryCustomize = false;
+        [Description("是否启用内置汇总定制功能（可右键菜单自定义切换)"), Category("外观"), DefaultValue(false)]
+        public bool SummaryCustomize
+        {
+            get => summaryCustomize;
+            set
+            {
+                if (summaryCustomize == value) return;
+                summaryCustomize = value;
+                if (value)
+                {
+                    MouseClick += Table_MouseClick;
+                    InitSummaryMenu();
+                    Column[] cols = SummaryColumns;
+                    if(cols==null || cols.Length == 0)
+                    {
+                        if (Columns.Count > 0) Columns[0].SetSummaryItem("TOTAL");
+                    }
+                    UpdateSummaries();
+                }
+                else
+                {
+                    MouseClick -= Table_MouseClick;
+                    Summary = null;//不显示
+                    HideSummaryMenu();
+                }
+            }
+        }
         #endregion
 
         /// <summary>
@@ -2488,14 +2518,25 @@ namespace AntdUI
         /// <returns></returns>
         public string? GetDisplayText(object? value)
         {
+            return GetDisplayText(value, DisplayFormat);
+        }
+
+        /// <summary>
+        /// 返回格式化的字符串
+        /// </summary>
+        /// <param name="value">数据</param>
+        /// <param name="format">格式化</param>
+        /// <returns></returns>
+        internal static string? GetDisplayText(object? value,string? format)
+        {
             if (value == null || value == DBNull.Value) return null;
             else
             {
-                if (DisplayFormat == null || string.IsNullOrEmpty(DisplayFormat)) return value?.ToString();
+                if (format == null || string.IsNullOrEmpty(format)) return value?.ToString();
                 try
                 {
-                    if (DisplayFormat.Contains("{0:")) return string.Format(DisplayFormat, value);
-                    return string.Format("{0:" + DisplayFormat + "}", value);
+                    if (format.Contains("{0:")) return string.Format(format, value);
+                    return string.Format("{0:" + format + "}", value);
                 }
                 catch { return value?.ToString(); }
             }
@@ -2503,6 +2544,12 @@ namespace AntdUI
 
         #endregion
 
+        #region 汇总
+        /// <summary>
+        /// 汇总栏选项
+        /// </summary>
+        public SummaryItemOption? SummaryItem { get; set; }
+        #endregion
         /// <summary>
         /// 列可拖拽
         /// </summary>
@@ -2761,6 +2808,24 @@ namespace AntdUI
 
         #endregion
 
+        #region 汇总
+        public Column SetSummaryItem(TSummaryType summaryType)
+        {
+            SummaryItem = new SummaryItemOption(summaryType);
+            return this;
+        }
+        public Column SetSummaryItem(TSummaryType summaryType,string format)
+        {
+            SummaryItem = new SummaryItemOption(summaryType,format);
+            return this;
+        }
+        public Column SetSummaryItem(string text)
+        {
+            SummaryItem = new SummaryItemOption( TSummaryType.Text);
+            SummaryItem.DisplayText= text;
+            return this;
+        }
+        #endregion
         /// <summary>
         /// 设置列可拖拽
         /// </summary>

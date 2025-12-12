@@ -88,6 +88,39 @@ namespace AntdUI
         public object? Value { get; private set; }
     }
 
+    #region 自定义汇总
+    public delegate void CustomSummaryEventHandler(object sender, TableCustomSummaryEventArgs e);
+    public class TableCustomSummaryEventArgs
+    {
+        public TableCustomSummaryEventArgs(Column column, object record, int rowIndex,bool end)
+        {
+            Column = column;
+            Record = record;
+            RowIndex = rowIndex;
+            Finalize = end;
+        }
+        /// <summary>
+        /// 当前汇总的列
+        /// </summary>
+        public Column Column { get; private set; }
+        /// <summary>
+        /// 汇总的行对象 (DataRow, IList,IRow[] (Finalize=true时), ...)
+        /// </summary>
+        public object Record { get; private set; }
+        /// <summary>
+        /// 当前汇总行索引
+        /// </summary>
+        public int RowIndex { get; private set; }
+        /// <summary>
+        /// 是否为完成时的汇总运算
+        /// </summary>
+        public bool Finalize { get; private set; }
+        /// <summary>
+        /// 获取或设置自定义汇总值
+        /// </summary>
+        public double? TotalValue { get; set; }
+    }
+    #endregion
     public class TableBeginEditInputStyleEventArgs : ITableEventArgs
     {
         public TableBeginEditInputStyleEventArgs(object? value, object record, int rowIndex, int columnIndex, Column column, Input input) : base(record, rowIndex, columnIndex, column)

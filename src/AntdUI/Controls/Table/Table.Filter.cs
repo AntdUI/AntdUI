@@ -155,6 +155,7 @@ namespace AntdUI
                 }
             }
             FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(FilterList()));
+            UpdateSummaries();
             if (LoadLayout()) Invalidate();
 
         }

@@ -302,7 +302,11 @@ namespace AntdUI
         /// </summary>
         [Description("行排序时发生"), Category("行为")]
         public event IntEventHandler? SortRows;
-
+        /// <summary>
+        /// 每行或行自定义汇总计算结束时发生
+        /// </summary>
+        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
+        public event CustomSummaryEventHandler CustomSummaryCalculate = null;
         protected virtual void OnSortRows(int e) => SortRows?.Invoke(this, new IntEventArgs(e));
 
         /// <summary>

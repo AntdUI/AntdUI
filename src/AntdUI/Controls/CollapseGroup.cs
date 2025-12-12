@@ -1338,7 +1338,7 @@ namespace AntdUI
             Show = true;
         }
 
-        internal virtual bool Show { get; set; }
+        internal virtual bool Show { get; set; } = true;
         internal Rectangle rect { get; set; }
 
         internal bool Contains(int x, int y, int sx, int sy)

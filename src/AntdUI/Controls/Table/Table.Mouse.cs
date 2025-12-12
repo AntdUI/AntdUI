@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Vanara.PInvoke;
 
 namespace AntdUI
 {
@@ -949,10 +950,12 @@ namespace AntdUI
         {
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
+            
             foreach (RowTemplate it in rows)
             {
                 if (it.IsColumn)
                 {
+                    FocusedColumnSummary = null;
                     if (fixedHeader)
                     {
                         if (CellContainsFixed(it, ex, ey, sx, sy, px, py, out var tmp))
@@ -970,12 +973,26 @@ namespace AntdUI
                         }
                     }
                 }
-                else if (it.Type == RowType.Summary) continue;
+                else if (it.Type == RowType.Summary)
+                {
+                    if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
+                    {
+                        tmp!.mode = 0;
+                        if (tmp != null) FocusedColumnSummary = tmp.col;
+                    }
+                    continue;
+                }
                 else if (it.Contains(ex, py, sethover))
                 {
                     if (sethover) hovers = it.INDEX_REAL;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
+                        if (SummaryCustomize && Summary != null && tmp!=null  && ey > rect_read.Height - (RowHeight ?? 42))
+                        {
+                            tmp!.mode = 0;
+                            FocusedColumnSummary = tmp.col;
+                            continue;
+                        }
                         tmp!.mode = 0;
                         return tmp;
                     }

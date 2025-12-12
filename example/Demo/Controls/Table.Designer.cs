@@ -65,6 +65,7 @@ namespace Demo.Controls
             checkRowsDragSort = new AntdUI.Checkbox();
             checkColumnDragSort = new AntdUI.Checkbox();
             checkFixedHeader = new AntdUI.Checkbox();
+            checkboxSummaryCustomize = new AntdUI.Checkbox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -117,6 +118,7 @@ namespace Demo.Controls
             // panel1
             // 
             panel1.AutoScroll = true;
+            panel1.Controls.Add(checkboxSummaryCustomize);
             panel1.Controls.Add(checkboxFocusNavigation);
             panel1.Controls.Add(selectFocusedStyle);
             panel1.Controls.Add(selectEditStyle);
@@ -329,6 +331,18 @@ namespace Demo.Controls
             checkFixedHeader.Text = "固定表头";
             checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
             // 
+            // checkboxSummaryCustomize
+            // 
+            checkboxSummaryCustomize.AutoSizeMode = AntdUI.TAutoSize.Width;
+            checkboxSummaryCustomize.Dock = DockStyle.Left;
+            checkboxSummaryCustomize.LocalizationText = "Table.{id}";
+            checkboxSummaryCustomize.Location = new Point(1531, 0);
+            checkboxSummaryCustomize.Name = "checkboxSummaryCustomize";
+            checkboxSummaryCustomize.Size = new Size(101, 41);
+            checkboxSummaryCustomize.TabIndex = 13;
+            checkboxSummaryCustomize.Text = "自定义汇总";
+            checkboxSummaryCustomize.CheckedChanged += checkboxSummaryCustomize_CheckedChanged;
+            // 
             // Table
             // 
             Controls.Add(table1);
@@ -364,5 +378,6 @@ namespace Demo.Controls
         private AntdUI.Select selectEditStyle;
         private AntdUI.Select selectFocusedStyle;
         private AntdUI.Checkbox checkboxFocusNavigation;
+        private AntdUI.Checkbox checkboxSummaryCustomize;
     }
 }

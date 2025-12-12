@@ -223,6 +223,7 @@ namespace AntdUI
                 {
                     it.SHOW = true;
                     var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
+                   
                     shows.Add(item);
                     summarys.Add(item);
                 }
@@ -674,7 +675,7 @@ namespace AntdUI
                         {
                             using (arge.CellBack)
                             {
-                                g.Fill(arge.CellBack, it.RECT);
+                                g.Fill(arge.CellBack, it.RECT.X,it.RECT.Y+1,it.RECT.Width,it.RECT.Height-1);
                             }
                         }
                         using (arge.CellFont)

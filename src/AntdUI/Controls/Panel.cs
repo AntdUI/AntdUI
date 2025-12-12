@@ -301,6 +301,39 @@ namespace AntdUI
                 OnPropertyChanged(nameof(BackgroundImage));
             }
         }
+        string? iconSvg;
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? IconSvg
+        {
+            get => iconSvg;
+            set
+            {
+                if (iconSvg == value) return;
+                iconSvg = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconSvg));
+            }
+        }
+
+        float iconratio = .5F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category("外观"), DefaultValue(.5F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconRatio));
+            }
+        }
 
         TFit backFit = TFit.Fill;
         /// <summary>
@@ -435,6 +468,17 @@ namespace AntdUI
                         g.Fill(brush, path);
                     }
                     if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
+                    if (iconSvg != null)
+                    {
+                        Rectangle rect = IconRect;
+                        using (var _bmp = SvgExtend.GetImgExtend(iconSvg, rect, iconHover ? AntdUI.Style.Db.PrimaryActive : ShadowColor ?? AntdUI.Style.Db.BorderColor))
+                        {
+                            if (_bmp != null)
+                            {
+                                g.Image(_bmp, rect, 1);
+                            }
+                        }
+                    }
                     if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
                 }
                 if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
@@ -552,7 +596,42 @@ namespace AntdUI
             base.OnMouseEnter(e);
             ExtraMouseHover = true;
         }
+        bool iconHover = false;
+        /// <summary>
+        /// 图标是否获得焦点
+        /// </summary>
+        public bool IconFocused
+        {
+            get => iconHover;
+            private set
+            {
+                if (iconHover == value) return;
+                iconHover = value;
 
+                this.Cursor = value ? Cursors.Hand : Cursors.Default;
+                Invalidate();
+            }
+        }
+        private Rectangle IconRect
+        {
+            get
+            {
+                if (IconSvg == null) return Rectangle.Empty;
+                Rectangle rect_read = ReadRectangle;
+                int size = rect_read.Width > rect_read.Height ? rect_read.Height : rect_read.Width;
+                size = (int)(size * (IconRatio < 0 ? 0.5f : IconRatio));
+                return new Rectangle((ClientRectangle.Width - size) / 2, (ClientRectangle.Height - size) / 2, size, size);
+            }
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (IconSvg != null)
+            {
+                using (Region region = new Region(IconRect))
+                    IconFocused = region.IsVisible(e.Location);
+            }
+        }
         #region 离开监控
 
 
@@ -572,6 +651,7 @@ namespace AntdUI
         {
             base.OnLeave(e);
             ExtraMouseHover = false;
+            IconFocused = false;
         }
 
         #endregion

@@ -73,7 +73,7 @@ namespace AntdUI
         }
         protected void InitConditions()
         {
-            Array conditions = Enum.GetValues(typeof(FilterConditions));
+            Array conditions = System.Enum.GetValues(typeof(FilterConditions));
             List<SelectItem> items = new List<SelectItem>(conditions.Length);
             foreach (FilterConditions condition in conditions) items.Add(new SelectItem(condition).SetText(GetConditionText(condition)).SetIcon(GetConditionIconSvg(condition)));
             items.RemoveAt(items.Count - 1);
