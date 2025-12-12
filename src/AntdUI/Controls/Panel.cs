@@ -57,6 +57,9 @@ namespace AntdUI
         }
 
         TAlignRound radiusAlign = TAlignRound.ALL;
+        /// <summary>
+        /// 圆角方向
+        /// </summary>
         [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
         public TAlignRound RadiusAlign
         {

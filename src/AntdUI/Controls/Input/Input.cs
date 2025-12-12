@@ -587,7 +587,7 @@ namespace AntdUI
         /// <summary>
         /// 处理快捷键
         /// </summary>
-        [Description("处理快捷键"), Category("行为"), DefaultValue(true)]
+        [Obsolete, Description("处理快捷键"), Category("行为"), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
 
         #endregion
@@ -1527,7 +1527,7 @@ namespace AntdUI
                 //    break;
                 case 0x100://WM_KEYDOWN
                 case 0x0104://WM_SYSKEYDOWN
-                    if (HandKeyDown(GetKeyBoard(m.WParam.ToInt32()))) return;
+                    HandKeyDown(GetKeyBoard(m.WParam.ToInt32()));
                     break;
                 //case 0x101://WM_KEYUP
                 //case 0x0105://WM_SYSKEYUP
