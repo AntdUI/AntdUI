@@ -36,7 +36,36 @@ namespace AntdUI
     public class Checkbox : IControl, IEventListener
     {
         public Checkbox() : base(ControlType.Select) { }
+        #region 快捷键
 
+        bool useMnemonic = true;
+        /// <summary>
+        /// 如助记键
+        /// </summary>
+        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
+        public bool UseMnemonic
+        {
+            get => useMnemonic;
+            set
+            {
+                if (useMnemonic == value) return;
+                useMnemonic = value;
+                if (value) s_f |= FormatFlags.HotkeyPrefixShow;
+                else s_f &= ~FormatFlags.HotkeyPrefixShow;
+            }
+        }
+
+        protected override bool ProcessMnemonic(char charCode)
+        {
+            if (UseMnemonic && Enabled && Visible && IsMnemonic(charCode, Text))
+            {
+                Checked = !Checked;
+                base.OnClick(EventArgs.Empty);
+                return true;
+            }
+            return base.ProcessMnemonic(charCode);
+        }
+        #endregion
         #region 属性
 
         Color? fore;
@@ -98,7 +127,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        FormatFlags s_f = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+        FormatFlags s_f = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis | FormatFlags.HotkeyPrefixShow;
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
