@@ -70,6 +70,11 @@ namespace SVGView
             {
                 var svg = input1.Text;
                 if (svg == null) return;
+                if (svg.Contains("viewBox=\\\"") && svg.Contains("\\\">"))
+                {
+                    input1.Text = svg.Replace("\\\"", "\"");
+                    return;
+                }
                 button1.IconSvg = svg;
                 int size = (int)Math.Floor((pictureBox1.Width > pictureBox1.Height ? pictureBox1.Height : pictureBox1.Width) * 0.8F);
                 pictureBox1.Image = AntdUI.SvgExtend.SvgToBmp(svg, size, size, Color.Black);

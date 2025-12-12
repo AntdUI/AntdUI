@@ -197,19 +197,6 @@ namespace AntdUI
             bool Expand { get; }
         }
 
-        public enum RowType
-        {
-            None,
-            /// <summary>
-            /// 表头
-            /// </summary>
-            Column,
-            /// <summary>
-            /// 总结栏
-            /// </summary>
-            Summary
-        }
-
         #region 单元格
 
         /// <summary>

@@ -73,6 +73,18 @@ namespace Demo
                     return "NotContain";
                 case "Filter.None":
                     return "None";
+                case "Table.Summary.SUM":
+                    return "SUM";
+                case "Table.Summary.AVG":
+                    return "AVG";
+                case "Table.Summary.MIN":
+                    return "MIN";
+                case "Table.Summary.MAX":
+                    return "MAX";
+                case "Table.Summary.COUNT":
+                    return "COUNT";
+                case "Table.Summary.NONE":
+                    return "None";
 
                 #region DEMO
 

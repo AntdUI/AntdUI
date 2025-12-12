@@ -86,6 +86,7 @@ namespace AntdUI
                 hovers = -1;
                 ExtractHeaderFixed();
                 ExtractData();
+                UpdateSummaries();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(DataSource));
             }
@@ -495,7 +496,7 @@ namespace AntdUI
             {
                 if (focusedCell == value) return;
                 focusedCell = value;
-                if (value != null) OnCellFocused(value.ROW.RECORD, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1));
+                if (value != null) OnCellFocused(value.ROW.RECORD, value.ROW.Type, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1));
                 Invalidate();
             }
         }
@@ -822,7 +823,8 @@ namespace AntdUI
         {
             get
             {
-                foreach (Column col in Columns)
+                if (columns == null) return null;
+                foreach (var col in columns)
                 {
                     if (col.KeyTree != null && !string.IsNullOrEmpty(col.KeyTree)) return col.KeyTree;
                 }
@@ -847,6 +849,28 @@ namespace AntdUI
                     if (value_tree is IList list) count += list.Count;
                 }
                 return count;
+            }
+        }
+
+        bool summaryCustomize = false;
+        [Description("是否启用内置汇总定制功能（可右键菜单自定义切换)"), Category("外观"), DefaultValue(false)]
+        public bool SummaryCustomize
+        {
+            get => summaryCustomize;
+            set
+            {
+                if (summaryCustomize == value) return;
+                summaryCustomize = value;
+                if (value)
+                {
+                    var cols = SummaryColumns;
+                    if (cols == null || cols.Length == 0)
+                    {
+                        if (columns != null && columns.Count > 0) columns[0].SetSummaryItem("TOTAL");
+                    }
+                    UpdateSummaries();
+                }
+                else Summary = null;
             }
         }
 
@@ -2486,20 +2510,37 @@ namespace AntdUI
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns></returns>
-        public string? GetDisplayText(object? value)
+        public string? GetDisplayText(object? value) => GetDisplayText(value, DisplayFormat);
+
+        /// <summary>
+        /// 返回格式化的字符串
+        /// </summary>
+        /// <param name="value">数据</param>
+        /// <param name="format">格式化</param>
+        /// <returns></returns>
+        internal static string? GetDisplayText(object? value, string? format)
         {
             if (value == null || value == DBNull.Value) return null;
             else
             {
-                if (DisplayFormat == null || string.IsNullOrEmpty(DisplayFormat)) return value?.ToString();
+                if (format == null || string.IsNullOrEmpty(format)) return value?.ToString();
                 try
                 {
-                    if (DisplayFormat.Contains("{0:")) return string.Format(DisplayFormat, value);
-                    return string.Format("{0:" + DisplayFormat + "}", value);
+                    if (format.Contains("{0:")) return string.Format(format, value);
+                    return string.Format("{0:" + format + "}", value);
                 }
                 catch { return value?.ToString(); }
             }
         }
+
+        #endregion
+
+        #region 汇总
+
+        /// <summary>
+        /// 汇总栏选项
+        /// </summary>
+        public SummaryItemOption? SummaryItem { get; set; }
 
         #endregion
 
@@ -2756,6 +2797,29 @@ namespace AntdUI
         public Column SetDisplayFormat(string format)
         {
             DisplayFormat = format;
+            return this;
+        }
+
+        #endregion
+
+        #region 汇总
+
+        public Column SetSummaryItem(TSummaryType summaryType)
+        {
+            SummaryItem = new SummaryItemOption(summaryType);
+            return this;
+        }
+        public Column SetSummaryItem(TSummaryType summaryType, string format)
+        {
+            SummaryItem = new SummaryItemOption(summaryType, format);
+            return this;
+        }
+        public Column SetSummaryItem(string text)
+        {
+            SummaryItem = new SummaryItemOption(TSummaryType.Text)
+            {
+                DisplayText = text
+            };
             return this;
         }
 

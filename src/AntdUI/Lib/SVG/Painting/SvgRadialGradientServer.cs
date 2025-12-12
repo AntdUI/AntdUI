@@ -196,9 +196,11 @@ namespace AntdUI.Svg
                 }
 
                 // calculate the brush
-                var brush = new PathGradientBrush(path);
-                brush.CenterPoint = focals[0];
-                brush.InterpolationColors = blend;
+                var brush = new PathGradientBrush(path)
+                {
+                    CenterPoint = focals[0],
+                    InterpolationColors = blend
+                };
 
                 return brush;
             }

@@ -93,7 +93,7 @@ namespace AntdUI
         [Description("单击时发生"), Category("行为")]
         public event ClickEventHandler? CellClick;
 
-        protected virtual void OnCellClick(object record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellClick?.Invoke(this, new TableClickEventArgs(record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
         /// 滑动时发生
@@ -101,7 +101,7 @@ namespace AntdUI
         [Description("滑动时发生"), Category("行为")]
         public event HoverEventHandler? CellHover;
 
-        protected virtual void OnCellHover(object record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellHover?.Invoke(this, new TableHoverEventArgs(record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellHover(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellHover?.Invoke(this, new TableHoverEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         protected virtual void OnCellHover() => CellHover?.Invoke(this, new TableHoverEventArgs(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
 
@@ -111,7 +111,7 @@ namespace AntdUI
         [Description("单击按钮时发生"), Category("行为")]
         public event ClickButtonEventHandler? CellButtonClick;
 
-        protected virtual void OnCellButtonClick(CellLink btn, object record, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonClick?.Invoke(this, new TableButtonEventArgs(btn, record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellButtonClick(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonClick?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
         /// 按下按钮时发生
@@ -119,7 +119,7 @@ namespace AntdUI
         [Description("按下按钮时发生"), Category("行为")]
         public event ClickButtonEventHandler? CellButtonDown;
 
-        protected virtual void OnCellButtonDown(CellLink btn, object record, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn, record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellButtonDown(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
         /// 放下按钮时发生
@@ -127,7 +127,7 @@ namespace AntdUI
         [Description("放下按钮时发生"), Category("行为")]
         public event ClickButtonEventHandler? CellButtonUp;
 
-        protected virtual void OnCellButtonUp(CellLink btn, object record, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn, record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellButtonUp(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
         /// 双击时发生
@@ -135,7 +135,7 @@ namespace AntdUI
         [Description("双击时发生"), Category("行为")]
         public event ClickEventHandler? CellDoubleClick;
 
-        protected virtual void OnCellDoubleClick(object record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellDoubleClick?.Invoke(this, new TableClickEventArgs(record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellDoubleClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellDoubleClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
         /// 单元格焦点变更后发生
@@ -143,7 +143,7 @@ namespace AntdUI
         [Description("单元格焦点变更后发生"), Category("行为")]
         public event ClickEventHandler? CellFocused;
 
-        protected virtual void OnCellFocused(object record, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellFocused?.Invoke(this, new TableClickEventArgs(record, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellFocused?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         #region 编辑
 
@@ -250,7 +250,7 @@ namespace AntdUI
         [Description("绘制行时发生"), Category("行为")]
         public event CellPaintRowEventHandler? RowPaint;
 
-        protected virtual void OnRowPaint(Canvas canvas, Rectangle rect, object record, int rowIndex) => RowPaint?.Invoke(this, new TablePaintRowEventArgs(canvas, rect, record, rowIndex));
+        protected virtual void OnRowPaint(Canvas canvas, Rectangle rect, object record, RowType rowType, int rowIndex) => RowPaint?.Invoke(this, new TablePaintRowEventArgs(canvas, rect, record, rowType, rowIndex));
 
         /// <summary>
         /// 绘制行前发生
@@ -258,7 +258,7 @@ namespace AntdUI
         [Description("绘制行前发生"), Category("行为")]
         public event CellPaintRowEventHandler? RowPaintBegin;
 
-        protected virtual void OnRowPaintBegin(Canvas canvas, Rectangle rect, object record, int rowIndex) => RowPaintBegin?.Invoke(this, new TablePaintRowEventArgs(canvas, rect, record, rowIndex));
+        protected virtual void OnRowPaintBegin(Canvas canvas, Rectangle rect, object record, RowType rowType, int rowIndex) => RowPaintBegin?.Invoke(this, new TablePaintRowEventArgs(canvas, rect, record, rowType, rowIndex));
 
         /// <summary>
         /// 绘制单元格时发生
@@ -266,7 +266,7 @@ namespace AntdUI
         [Description("绘制单元格时发生"), Category("行为")]
         public event CellPaintEventHandler? CellPaint;
 
-        protected virtual void OnCellPaint(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, int rowIndex, int index, Column column) => CellPaint?.Invoke(this, new TablePaintEventArgs(canvas, rect, rectreal, record, rowIndex, index, column));
+        protected virtual void OnCellPaint(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, RowType rowType, int rowIndex, int index, Column column) => CellPaint?.Invoke(this, new TablePaintEventArgs(canvas, rect, rectreal, record, rowType, rowIndex, index, column));
 
         /// <summary>
         /// 绘制单元格之前发生
@@ -304,6 +304,12 @@ namespace AntdUI
         public event IntEventHandler? SortRows;
 
         protected virtual void OnSortRows(int e) => SortRows?.Invoke(this, new IntEventArgs(e));
+
+        /// <summary>
+        /// 每行或行自定义汇总计算结束时发生
+        /// </summary>
+        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
+        public event CustomSummaryEventHandler? CustomSummaryCalculate;
 
         /// <summary>
         /// 树行排序时发生

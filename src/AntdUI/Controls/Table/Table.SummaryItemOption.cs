@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -17,35 +17,35 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+
 namespace AntdUI
 {
-    public class TabChangedEventArgs : VEventArgs<TagTabItem>
+    /// <summary>
+    /// 列汇总
+    /// </summary>
+    public class SummaryItemOption
     {
-        public TabChangedEventArgs(TagTabItem value, int tabIndex) : base(value)
+        public SummaryItemOption() { }
+        public SummaryItemOption(TSummaryType summaryType) { SummaryType = summaryType; }
+        public SummaryItemOption(TSummaryType summaryType, string displayFormat) : this(summaryType)
         {
-            Index = tabIndex;
+            DisplayFormat = displayFormat;
         }
-
-        public int Index { get; private set; }
-    }
-
-    public class TabCloseEventArgs : TabChangedEventArgs
-    {
-        public TabCloseEventArgs(TagTabItem value, int tabIndex) : base(value, tabIndex) { }
 
         /// <summary>
-        /// 取消操作
+        /// 汇总类型
         /// </summary>
-        public bool Cancel { get; set; }
+        public TSummaryType SummaryType { get; set; } = TSummaryType.None;
 
-        #region 设置
+        /// <summary>
+        /// 格式化 (0.#####, {0:P2}...)
+        /// </summary>
+        /// <remarks>当SummaryType=Text时，此属性为设置要显示的内容</remarks>
+        public string? DisplayFormat { get; set; }
 
-        public TabCloseEventArgs SetCancel(bool value = true)
-        {
-            Cancel = value;
-            return this;
-        }
-
-        #endregion
+        /// <summary>
+        /// SummaryType为Text时，显示的文本
+        /// </summary>
+        public string? DisplayText { get; set; }
     }
 }

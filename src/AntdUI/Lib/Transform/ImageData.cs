@@ -49,15 +49,13 @@ namespace AntdUI
             set => _red = value;
         }
 
-        public ImageData Clone()
+        public ImageData Clone() => new ImageData
         {
-            ImageData cb = new ImageData();
-            cb.A = (byte[,])_alpha.Clone();
-            cb.B = (byte[,])_blue.Clone();
-            cb.G = (byte[,])_green.Clone();
-            cb.R = (byte[,])_red.Clone();
-            return cb;
-        }
+            A = (byte[,])_alpha.Clone(),
+            B = (byte[,])_blue.Clone(),
+            G = (byte[,])_green.Clone(),
+            R = (byte[,])_red.Clone()
+        };
 
         public void FromBitmap(Bitmap srcBmp)
         {

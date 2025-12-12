@@ -82,11 +82,12 @@ namespace AntdUI
                         g.TranslateTransform(0, -sy);
                         foreach (var it in shows) PaintBg(g, it.row);
 
-                        if (dividers.Length > 0) PaintBorder(g, dividers, 1);
-
-                        g.ResetTransform();
-                        g.TranslateTransform(-sx, -sy);
+                        g.TranslateTransform(-sx, 0);
                         foreach (var it in shows) PaintForeItem(g, it, brush_fore, brush_foreEnable);
+                        g.ResetTransform();
+
+                        g.TranslateTransform(0, -sy);
+                        if (dividers.Length > 0) PaintBorder(g, dividers, 1);
                         g.ResetTransform();
 
                         PaintTableBgHeader(g, rows[0], _radius, sx);
@@ -130,21 +131,26 @@ namespace AntdUI
                             else PaintBg(g, it.row);
                         }
 
-                        if (dividers.Length > 0) PaintBorder(g, dividers);
-
-                        g.ResetTransform();
-                        g.TranslateTransform(-sx, -sy);
+                        g.TranslateTransform(-sx, 0);
                         foreach (var it in shows)
                         {
                             if (it.row.IsColumn) PaintTableHeader(g, it.row, brush_forecolumn, column_font, _radius);
                             else PaintForeItem(g, it, brush_fore, brush_foreEnable);
                         }
-                        if (bordered)
-                        {
-                            g.ResetTransform();
-                            g.TranslateTransform(-sx, 0);
-                        }
+
+                        #region 边框
+
+                        g.ResetTransform();
+                        g.TranslateTransform(0, -sy);
+                        if (dividers.Length > 0) PaintBorder(g, dividers);
+
+                        g.ResetTransform();
+                        if (bordered) g.TranslateTransform(-sx, 0);
+                        else g.TranslateTransform(-sx, -sy);
+
                         if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
+
+                        #endregion
                     }
                 }
                 else
@@ -168,17 +174,21 @@ namespace AntdUI
                     g.TranslateTransform(0, -sy);
                     foreach (var it in shows) PaintBg(g, it.row);
 
+                    g.TranslateTransform(-sx, 0);
+                    foreach (var it in shows) PaintForeItem(g, it, brush_fore, brush_foreEnable);
+
+                    #region 边框
+
+                    g.ResetTransform();
+                    g.TranslateTransform(0, -sy);
                     if (dividers.Length > 0) PaintBorder(g, dividers);
 
                     g.ResetTransform();
-                    g.TranslateTransform(-sx, -sy);
-                    foreach (var it in shows) PaintForeItem(g, it, brush_fore, brush_foreEnable);
-                    if (bordered)
-                    {
-                        g.ResetTransform();
-                        g.TranslateTransform(-sx, 0);
-                    }
+                    if (bordered) g.TranslateTransform(-sx, 0);
+                    else g.TranslateTransform(0, -sy);
                     if (dividerHs.Length > 0) PaintBorderH(g, dividerHs);
+
+                    #endregion
                 }
 
                 g.ResetClip();
@@ -535,7 +545,7 @@ namespace AntdUI
         /// </summary>
         void PaintBg(Canvas g, RowTemplate row)
         {
-            OnRowPaintBegin(g, row.RECT, row.RECORD, row.INDEX);
+            OnRowPaintBegin(g, row.RECT, row.RECORD, row.Type, row.INDEX);
             if (dragBody != null)
             {
                 if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
@@ -554,7 +564,7 @@ namespace AntdUI
                 if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get(nameof(Table), ColorScheme)), row.RECT);
                 else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
             }
-            OnRowPaint(g, row.RECT, row.RECORD, row.INDEX);
+            OnRowPaint(g, row.RECT, row.RECORD, row.Type, row.INDEX);
         }
 
         #region 单元格
@@ -662,7 +672,7 @@ namespace AntdUI
                 if (CellPaintBegin == null) PaintItemCore(g, columnIndex, it, enable, Font, fore);
                 else
                 {
-                    var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN);
+                    var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.Type, it.ROW.INDEX, columnIndex, it.COLUMN);
                     CellPaintBegin(this, arge);
                     if (arge.Handled)
                     {
@@ -684,7 +694,7 @@ namespace AntdUI
                         }
                     }
                 }
-                OnCellPaint(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.INDEX, columnIndex, it.COLUMN);
+                OnCellPaint(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.Type, it.ROW.INDEX, columnIndex, it.COLUMN);
             }
             catch { }
             g.Restore(state);

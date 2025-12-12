@@ -541,16 +541,18 @@ namespace AntdUI.Svg
 
             public TextDrawingState Clone()
             {
-                var result = new TextDrawingState();
-                result._anchoredPaths = _anchoredPaths.ToList();
-                result.BaselinePath = BaselinePath;
-                result._xAnchor = _xAnchor;
-                result.Current = Current;
-                result.TextBounds = TextBounds;
-                result.Element = Element;
-                result.NumChars = NumChars;
-                result.Parent = Parent;
-                result.Renderer = Renderer;
+                var result = new TextDrawingState
+                {
+                    _anchoredPaths = _anchoredPaths.ToList(),
+                    BaselinePath = BaselinePath,
+                    _xAnchor = _xAnchor,
+                    Current = Current,
+                    TextBounds = TextBounds,
+                    Element = Element,
+                    NumChars = NumChars,
+                    Parent = Parent,
+                    Renderer = Renderer
+                };
                 return result;
             }
 

@@ -33,15 +33,16 @@ namespace AntdUI
         {
             get
             {
-                List<Column> columns = new List<Column>();
-                foreach (var col in Columns)
+                if (columns == null) return null;
+                var tmp = new List<Column>(columns.Count);
+                foreach (var col in columns)
                 {
-                    if (col.Filter != null && col.Filter.Enabled) columns.Add(col);
+                    if (col.Filter != null && col.Filter.Enabled) tmp.Add(col);
                 }
-                if (columns.Count > 0)
+                if (tmp.Count > 0)
                 {
-                    Column[] result = new Column[columns.Count];
-                    columns.CopyTo(result, 0);
+                    Column[] result = new Column[tmp.Count];
+                    tmp.CopyTo(result, 0);
                     return result;
                 }
                 return null;
@@ -55,21 +56,15 @@ namespace AntdUI
         {
             get
             {
-                if (rows == null || rows.Length == 0)
+                if (columns == null) return null;
+                if (rows == null || rows.Length == 0) return columns.ToArray();
+                var tmp = new List<Column>(columns.Count);
+                var cells = rows[0].cells;
+                foreach (var it in cells)
                 {
-                    return Columns.ToArray();
+                    if (it.COLUMN.Visible) tmp.Add(it.COLUMN);
                 }
-                List<Column> columns = new List<Column>();
-                CELL[] cells = rows[0].cells;
-                foreach (CELL cELL in cells)
-                {
-                    if (cELL.COLUMN.Visible)
-                    {
-                        columns.Add(cELL.COLUMN);
-                    }
-                }
-
-                return columns.ToArray();
+                return tmp.ToArray();
             }
         }
 
@@ -80,7 +75,8 @@ namespace AntdUI
         /// <param name="ignoreCase">是否忽略大小写</param>
         public Column? GetColumnByFieldKey(string key, bool ignoreCase = false)
         {
-            foreach (var col in Columns)
+            if (columns == null) return null;
+            foreach (var col in columns)
             {
                 if (col.Key.Equals(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) return col;
             }
@@ -155,6 +151,7 @@ namespace AntdUI
                 }
             }
             FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(FilterList()));
+            UpdateSummaries();
             if (LoadLayout()) Invalidate();
 
         }

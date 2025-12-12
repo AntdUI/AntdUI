@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -19,33 +19,42 @@
 
 namespace AntdUI
 {
-    public class TabChangedEventArgs : VEventArgs<TagTabItem>
+    /// <summary>
+    /// 汇总类型
+    /// </summary>
+    public enum TSummaryType
     {
-        public TabChangedEventArgs(TagTabItem value, int tabIndex) : base(value)
-        {
-            Index = tabIndex;
-        }
-
-        public int Index { get; private set; }
-    }
-
-    public class TabCloseEventArgs : TabChangedEventArgs
-    {
-        public TabCloseEventArgs(TagTabItem value, int tabIndex) : base(value, tabIndex) { }
-
         /// <summary>
-        /// 取消操作
+        /// 不汇总 (默认)
         /// </summary>
-        public bool Cancel { get; set; }
-
-        #region 设置
-
-        public TabCloseEventArgs SetCancel(bool value = true)
-        {
-            Cancel = value;
-            return this;
-        }
-
-        #endregion
+        None = 0,
+        /// <summary>
+        /// 仅显示文本 (如：TOTAL：, 汇总:, SUM...)
+        /// </summary>
+        Text = 1,
+        /// <summary>
+        /// 总和
+        /// </summary>
+        SUM = 2,
+        /// <summary>
+        /// 平均
+        /// </summary>
+        AVG = 3,
+        /// <summary>
+        /// 最小值
+        /// </summary>
+        MIN = 4,
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        MAX = 5,
+        /// <summary>
+        /// 计数
+        /// </summary>
+        Count = 6,
+        /// <summary>
+        /// 自定义
+        /// </summary>
+        Custom = 7,
     }
 }

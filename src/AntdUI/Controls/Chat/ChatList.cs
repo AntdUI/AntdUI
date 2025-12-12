@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -741,7 +742,7 @@ namespace AntdUI.Chat
 
         #region 字体
 
-        Dictionary<string, Size> font_dir = new Dictionary<string, Size>();
+        ConcurrentDictionary<string, Size> font_dir = new ConcurrentDictionary<string, Size>();
 
         public void ClearCache() => font_dir.Clear();
 
@@ -873,7 +874,7 @@ namespace AntdUI.Chat
             {
                 var size = g.MeasureString(text, Font);
                 size.Width = (int)Math.Ceiling(size.Width * 8F);
-                font_dir.Add(text, size);
+                font_dir.TryAdd(text, size);
                 return size;
             }
         }
@@ -883,7 +884,7 @@ namespace AntdUI.Chat
             else
             {
                 var size = g.MeasureString(text, Font);
-                font_dir.Add(text, size);
+                font_dir.TryAdd(text, size);
                 return size;
             }
         }

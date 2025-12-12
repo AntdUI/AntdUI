@@ -408,6 +408,7 @@ namespace AntdUI
                 {
                     btn.PARENT = this;
                     btn.ParentItem = it;
+                    if (btn.Show == false || btn.Visible == false) continue;
                     int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
                     int space = (rectButtons.Height - height) / 2;
                     bx -= space;
@@ -897,7 +898,7 @@ namespace AntdUI
                 if (item.buttons == null) continue;
                 foreach (var btn in item.buttons)
                 {
-                    if (!btn.Visible || !btn.Enabled) continue;
+                    if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
                     if (btn.Contains(e.X, e.Y))
                     {
                         item.MDown = true;
@@ -923,7 +924,7 @@ namespace AntdUI
                         if (item.buttons == null) continue;
                         foreach (var btn in item.buttons)
                         {
-                            if (!btn.Visible || !btn.Enabled) continue;
+                            if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
                             if (btn.Contains(e.X, e.Y))
                             {
                                 if (btn.SwitchMode)
@@ -970,7 +971,7 @@ namespace AntdUI
                 if (item.buttons == null) continue;
                 foreach (var btn in item.buttons)
                 {
-                    if (!btn.Visible || !btn.Enabled) continue;
+                    if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
                     if (btn.Contains(e.X, e.Y))
                     {
                         btn.hasFocus = btn.AnimationHover = true;
@@ -1008,7 +1009,7 @@ namespace AntdUI
                 if (item.buttons == null || item.buttons.Count == 0) continue;
                 foreach (var btn in item.buttons)
                 {
-                    if (!btn.Visible || !btn.Enabled) continue;
+                    if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
                     if (btn.rect.Contains(x, y))
                     {
                         OpenTip(btn);
@@ -1066,7 +1067,7 @@ namespace AntdUI
             if (item.buttons == null || item.buttons.Count == 0) return;
             foreach (var btn in item.buttons)
             {
-                if (!btn.Visible || !btn.Enabled) continue;
+                if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
                 btn.Select = false;
             }
         }
@@ -1312,6 +1313,7 @@ namespace AntdUI
             if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
             foreach (var btn in buttons)
             {
+                if (btn.Visible == false) continue;
                 if (btn.Contains(x, y)) return false;
             }
             return RectTitle.Contains(x, y);

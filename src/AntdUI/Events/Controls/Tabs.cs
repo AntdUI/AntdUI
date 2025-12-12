@@ -30,6 +30,12 @@ namespace AntdUI
 
     public class TabsItemEventArgs : VMEventArgs<TabPage>
     {
+        public TabsItemEventArgs(TabPage item, int index, Tabs.IStyle style, MouseEventArgs e) : base(item, e)
+        {
+            Index = index;
+            Style = style;
+        }
+
         public int Index { get; private set; }
 
         public Tabs.IStyle Style { get; private set; }
@@ -39,11 +45,15 @@ namespace AntdUI
         /// </summary>
         public bool Cancel { get; set; }
 
-        public TabsItemEventArgs(TabPage item, int index, Tabs.IStyle style, MouseEventArgs e) : base(item, e)
+        #region 设置
+
+        public TabsItemEventArgs SetCancel(bool value = true)
         {
-            Index = index;
-            Style = style;
+            Cancel = value;
+            return this;
         }
+
+        #endregion
     }
 
     /// <summary>

@@ -73,7 +73,7 @@ namespace AntdUI
         }
         protected void InitConditions()
         {
-            Array conditions = Enum.GetValues(typeof(FilterConditions));
+            Array conditions = System.Enum.GetValues(typeof(FilterConditions));
             List<SelectItem> items = new List<SelectItem>(conditions.Length);
             foreach (FilterConditions condition in conditions) items.Add(new SelectItem(condition).SetText(GetConditionText(condition)).SetIcon(GetConditionIconSvg(condition)));
             items.RemoveAt(items.Count - 1);
@@ -118,9 +118,9 @@ namespace AntdUI
                 var edit = new InputNumber
                 {
                     Margin = new Padding(0),
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Fill,
+                    DecimalPlaces = type == typeof(int) || type == typeof(short) || type == typeof(long) ? 0 : 7
                 };
-                edit.DecimalPlaces = type == typeof(int) || type == typeof(short) || type == typeof(long) ? 0 : 7;
                 try
                 {
                     edit.Value = Option.FilterValues != null && Option.FilterValues.Count == 1 ? Convert.ToDecimal(Option.FilterValues[0]) : 0;
@@ -161,10 +161,10 @@ namespace AntdUI
                 var edit = new Switch
                 {
                     Margin = new Padding(0),
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Fill,
+                    CheckedText = "是",
+                    UnCheckedText = "否"
                 };
-                edit.CheckedText = "是";
-                edit.UnCheckedText = "否";
                 try
                 {
                     edit.Checked = Option.FilterValues != null && Option.FilterValues.Count == 1 && Convert.ToBoolean(Option.FilterValues[0]);
@@ -183,9 +183,9 @@ namespace AntdUI
                 var edit = new Input
                 {
                     Margin = new Padding(0),
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Fill,
+                    Text = Option.FilterValues != null && Option.FilterValues.Count == 1 && Option.FilterValues[0] != DBNull.Value ? Option.FilterValues[0]?.ToString() ?? string.Empty : string.Empty
                 };
-                edit.Text = Option.FilterValues != null && Option.FilterValues.Count == 1 && Option.FilterValues[0] != DBNull.Value ? Option.FilterValues[0]?.ToString() ?? string.Empty : string.Empty;
                 edit.TextChanged += Edit_TextChanged;
                 tablePanel.Controls.Add(edit, 1, 0);
             }

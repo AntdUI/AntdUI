@@ -73,6 +73,32 @@ namespace AntdUI
 
         public int OffsetX { get; set; }
         public int OffsetY { get; set; }
+
+        #region 设置
+
+        public CalendarPaintBeginEventArgs SetHandled(bool value = true)
+        {
+            Handled = value;
+            return this;
+        }
+        public CalendarPaintBeginEventArgs SetOffset(int x, int y)
+        {
+            OffsetX = x;
+            OffsetY = y;
+            return this;
+        }
+        public CalendarPaintBeginEventArgs SetOffsetX(int value)
+        {
+            OffsetX = value;
+            return this;
+        }
+        public CalendarPaintBeginEventArgs SetOffsetY(int value)
+        {
+            OffsetY = value;
+            return this;
+        }
+
+        #endregion
     }
 
     public delegate void CalendarPaintEventHandler(object sender, CalendarPaintEventArgs e);

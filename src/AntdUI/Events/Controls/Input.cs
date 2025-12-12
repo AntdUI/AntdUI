@@ -44,6 +44,21 @@ namespace AntdUI
         /// 验证结果
         /// </summary>
         public bool Result { get; set; } = true;
+
+        #region 设置
+
+        public InputVerifyCharEventArgs SetResult(bool value = false)
+        {
+            Result = value;
+            return this;
+        }
+        public InputVerifyCharEventArgs SetReplaceText(string? value)
+        {
+            ReplaceText = value;
+            return this;
+        }
+
+        #endregion
     }
 
 
@@ -62,6 +77,16 @@ namespace AntdUI
         /// 验证结果
         /// </summary>
         public bool Result { get; set; } = true;
+
+        #region 设置
+
+        public InputVerifyKeyboardEventArgs SetResult(bool value = false)
+        {
+            Result = value;
+            return this;
+        }
+
+        #endregion
     }
 
 

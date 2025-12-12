@@ -98,7 +98,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        FormatFlags s_f = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+        FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis | FormatFlags.HotkeyPrefixShow;
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>
         /// 文本位置
@@ -111,7 +111,7 @@ namespace AntdUI
             {
                 if (textAlign == value) return;
                 textAlign = value;
-                s_f = textAlign.SetAlignment(s_f);
+                sf = textAlign.SetAlignment(sf);
                 Invalidate();
                 OnPropertyChanged(nameof(TextAlign));
             }
@@ -166,18 +166,50 @@ namespace AntdUI
                 rightToLeft = value;
                 if (rightToLeft == RightToLeft.Yes)
                 {
-                    s_f &= ~FormatFlags.Left;
-                    s_f |= FormatFlags.Right;
+                    sf &= ~FormatFlags.Left;
+                    sf |= FormatFlags.Right;
                 }
                 else
                 {
-                    s_f &= ~FormatFlags.Right;
-                    s_f |= FormatFlags.Left;
+                    sf &= ~FormatFlags.Right;
+                    sf |= FormatFlags.Left;
                 }
                 Invalidate();
                 OnPropertyChanged(nameof(RightToLeft));
             }
         }
+
+        #region 快捷键
+
+        bool useMnemonic = true;
+        /// <summary>
+        /// 如助记键
+        /// </summary>
+        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
+        public bool UseMnemonic
+        {
+            get => useMnemonic;
+            set
+            {
+                if (useMnemonic == value) return;
+                useMnemonic = value;
+                if (value) sf |= FormatFlags.HotkeyPrefixShow;
+                else sf &= ~FormatFlags.HotkeyPrefixShow;
+            }
+        }
+
+        protected override bool ProcessMnemonic(char charCode)
+        {
+            if (UseMnemonic && Enabled && Visible && IsMnemonic(charCode, Text))
+            {
+                Checked = !Checked;
+                base.OnClick(EventArgs.Empty);
+                return true;
+            }
+            return base.ProcessMnemonic(charCode);
+        }
+
+        #endregion
 
         #endregion
 
@@ -217,7 +249,7 @@ namespace AntdUI
                 if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
                 using (var brush = fore.Brush(Colour.Text.Get(nameof(Checkbox), ColorScheme), Colour.TextQuaternary.Get(nameof(Checkbox), "foreDisabled", ColorScheme), enabled))
                 {
-                    g.DrawText(Text, Font, brush, text_rect, s_f);
+                    g.DrawText(Text, Font, brush, text_rect, sf);
                 }
             }
             base.OnDraw(e);

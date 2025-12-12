@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -19,33 +19,16 @@
 
 namespace AntdUI
 {
-    public class TabChangedEventArgs : VEventArgs<TagTabItem>
+    public enum RowType
     {
-        public TabChangedEventArgs(TagTabItem value, int tabIndex) : base(value)
-        {
-            Index = tabIndex;
-        }
-
-        public int Index { get; private set; }
-    }
-
-    public class TabCloseEventArgs : TabChangedEventArgs
-    {
-        public TabCloseEventArgs(TagTabItem value, int tabIndex) : base(value, tabIndex) { }
-
+        None,
         /// <summary>
-        /// 取消操作
+        /// 表头
         /// </summary>
-        public bool Cancel { get; set; }
-
-        #region 设置
-
-        public TabCloseEventArgs SetCancel(bool value = true)
-        {
-            Cancel = value;
-            return this;
-        }
-
-        #endregion
+        Column,
+        /// <summary>
+        /// 总结栏
+        /// </summary>
+        Summary
     }
 }
