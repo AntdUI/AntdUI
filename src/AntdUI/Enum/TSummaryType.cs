@@ -17,16 +17,12 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AntdUI.Enums
+namespace AntdUI
 {
     /// <summary>
     /// 汇总类型
     /// </summary>
-   public enum TSummaryType
+    public enum TSummaryType
     {
         /// <summary>
         /// 不汇总 (默认)
@@ -35,30 +31,30 @@ namespace AntdUI.Enums
         /// <summary>
         /// 仅显示文本 (如：TOTAL：, 汇总:, SUM...)
         /// </summary>
-        Text=1,
+        Text = 1,
         /// <summary>
         /// 总和
         /// </summary>
-        SUM=2,
+        SUM = 2,
         /// <summary>
         /// 平均
         /// </summary>
-        AVG=3,
+        AVG = 3,
         /// <summary>
         /// 最小值
         /// </summary>
-        MIN=4,
+        MIN = 4,
         /// <summary>
         /// 最大值
         /// </summary>
-        MAX=5,
+        MAX = 5,
         /// <summary>
         /// 计数
         /// </summary>
-        Count=6,
+        Count = 6,
         /// <summary>
         /// 自定义
         /// </summary>
-        Custom=7,
+        Custom = 7,
     }
 }

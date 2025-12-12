@@ -37,5 +37,15 @@ namespace AntdUI
         /// 取消操作
         /// </summary>
         public bool Cancel { get; set; }
+
+        #region 设置
+
+        public TabCloseEventArgs SetCancel(bool value = true)
+        {
+            Cancel = value;
+            return this;
+        }
+
+        #endregion
     }
 }

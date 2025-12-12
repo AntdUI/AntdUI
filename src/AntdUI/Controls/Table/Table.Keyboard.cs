@@ -152,7 +152,7 @@ namespace AntdUI
                     int index = selectedIndex[0];
                     if (index > rows.Length) return;
                     var it = rows[index];
-                    OnCellClick(it.RECORD, index, 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+                    OnCellClick(it.RECORD, it.Type, index, 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     if (EditMode != TEditMode.None && focusedCell != null) EnterEditMode(index, focusedCell.INDEX);
                 }
             }

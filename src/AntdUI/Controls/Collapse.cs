@@ -1313,7 +1313,7 @@ namespace AntdUI
             if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
             foreach (var btn in buttons)
             {
-                if(btn.Visible==false) continue;
+                if (btn.Visible == false) continue;
                 if (btn.Contains(x, y)) return false;
             }
             return RectTitle.Contains(x, y);

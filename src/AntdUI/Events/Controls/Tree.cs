@@ -74,6 +74,16 @@ namespace AntdUI
         public TreeItem Item { get; private set; }
         public bool Value { get; private set; }
         public bool CanExpand { get; set; } = true;
+
+        #region …Ë÷√
+
+        public TreeExpandEventArgs SetCanExpand(bool value = false)
+        {
+            CanExpand = value;
+            return this;
+        }
+
+        #endregion
     }
 
     public delegate void TreeExpandEventHandler(object sender, TreeExpandEventArgs e);

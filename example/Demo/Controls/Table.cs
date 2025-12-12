@@ -50,9 +50,9 @@ namespace Demo.Controls
                     }
                 },
                 new AntdUI.ColumnSelect("hobby", "爱好") { Items=new List<AntdUI.SelectItem>(){ new AntdUI.SelectItem(EHobbies.读书.ToString(), (int)EHobbies.读书) {IconSvg= "BookOutlined" }, new AntdUI.SelectItem(EHobbies.旅游.ToString(), (int)EHobbies.旅游) { IconSvg = "GlobalOutlined" }, new AntdUI.SelectItem(EHobbies.社交.ToString(), (int)EHobbies.社交) { IconSvg = "CommentOutlined" }, new AntdUI.SelectItem(EHobbies.运动.ToString(), (int)EHobbies.运动) { IconSvg = "DribbbleOutlined" } } }.SetAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column.").SetSummaryItem( AntdUI.Enums.TSummaryType.AVG),
+                new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column.").SetSummaryItem(AntdUI.TSummaryType.AVG),
                 new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetSummaryItem( AntdUI.Enums.TSummaryType.Custom,"20后 {0:0} 位"),
+                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetSummaryItem(AntdUI.TSummaryType.Custom,"20后 {0:0} 位"),
                 new AntdUI.Column("tag", "Tag"),
                 new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),

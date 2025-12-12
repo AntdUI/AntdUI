@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using Vanara.PInvoke;
 
 namespace AntdUI
 {
@@ -148,7 +147,7 @@ namespace AntdUI
                                 {
                                     btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db, cellMouseDown.doubleClick);
                                     btn_template.ExtraMouseDown = true;
-                                    OnCellButtonDown(btn_template, it.RECORD, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
+                                    OnCellButtonDown(btn_template, it.RECORD, it.Type, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
                                     return;
                                 }
                             }
@@ -166,7 +165,7 @@ namespace AntdUI
                                 if (btn_template.Rect.Contains(db.x, db.y))
                                 {
                                     btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db, cellMouseDown.doubleClick);
-                                    OnCellButtonDown(btn_template, it.RECORD, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
+                                    OnCellButtonDown(btn_template, it.RECORD, it.Type, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
                                     return;
                                 }
                             }
@@ -329,7 +328,7 @@ namespace AntdUI
                     }
                     if (btnMDown.cell.ExtraMouseDown)
                     {
-                        OnCellButtonUp(btnMDown.cell, btnMDown.row.RECORD, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, RealRect(btnMDown), e);
+                        OnCellButtonUp(btnMDown.cell, btnMDown.row.RECORD, btnMDown.row.Type, btnMDown.i_row, btnMDown.i_cel, btnMDown.cell.PARENT.COLUMN, RealRect(btnMDown), e);
                         btnMDown.cell.ExtraMouseDown = false;
                     }
                 }
@@ -562,12 +561,12 @@ namespace AntdUI
                 bool enterEdit = false;
                 if (it.doubleClick)
                 {
-                    OnCellDoubleClick(it.row.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
+                    OnCellDoubleClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
                 }
                 else
                 {
-                    OnCellClick(it.row.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
+                    OnCellClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
                     if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
                 }
                 if (enterEdit)
@@ -600,18 +599,18 @@ namespace AntdUI
                     subForm = new LayeredFormSelectDown(this, btn.cell.DropDownItems, btn.cell, rect);
                     subForm.Show(this);
                 }
-                OnCellButtonUp(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
-                OnCellButtonClick(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+                OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+                OnCellButtonClick(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
                 return true;
             }
-            OnCellButtonUp(btn.cell, it.row.RECORD, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+            OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
             return false;
         }
         bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             if (btn == null) return false;
             btn.cell.ExtraMouseDown = false;
-            OnCellButtonUp(btn.cell, it.row.RECORD, it.i_row, it.i_cel, btn.col, RealRect(btn.cell.Rect, it.offset_xi, it.offset_y), e);
+            OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, btn.col, RealRect(btn.cell.Rect, it.offset_xi, it.offset_y), e);
             return false;
         }
         LayeredFormSelectDown? subForm;
@@ -790,7 +789,7 @@ namespace AntdUI
             if (db == null) OnCellHover();
             else
             {
-                OnCellHover(db.cell.ROW.RECORD, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));
+                OnCellHover(db.cell.ROW.RECORD, db.cell.ROW.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));
                 if (db.mode == 0) MouseHoverRow(db);
             }
         }
@@ -950,7 +949,6 @@ namespace AntdUI
         {
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
-            
             foreach (RowTemplate it in rows)
             {
                 if (it.IsColumn)
@@ -987,7 +985,7 @@ namespace AntdUI
                     if (sethover) hovers = it.INDEX_REAL;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
-                        if (SummaryCustomize && Summary != null && tmp!=null  && ey > rect_read.Height - (RowHeight ?? 42))
+                        if (SummaryCustomize && Summary != null && tmp != null && ey > rect_read.Height - (RowHeight ?? 42))
                         {
                             tmp!.mode = 0;
                             FocusedColumnSummary = tmp.col;

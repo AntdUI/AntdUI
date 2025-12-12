@@ -17,7 +17,6 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using AntdUI.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -497,7 +496,7 @@ namespace AntdUI
             {
                 if (focusedCell == value) return;
                 focusedCell = value;
-                if (value != null) OnCellFocused(value.ROW.RECORD, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1));
+                if (value != null) OnCellFocused(value.ROW.RECORD, value.ROW.Type, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1));
                 Invalidate();
             }
         }
@@ -866,7 +865,7 @@ namespace AntdUI
                     MouseClick += Table_MouseClick;
                     InitSummaryMenu();
                     Column[] cols = SummaryColumns;
-                    if(cols==null || cols.Length == 0)
+                    if (cols == null || cols.Length == 0)
                     {
                         if (Columns.Count > 0) Columns[0].SetSummaryItem("TOTAL");
                     }
@@ -880,6 +879,7 @@ namespace AntdUI
                 }
             }
         }
+
         #endregion
 
         /// <summary>
@@ -2516,10 +2516,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns></returns>
-        public string? GetDisplayText(object? value)
-        {
-            return GetDisplayText(value, DisplayFormat);
-        }
+        public string? GetDisplayText(object? value) => GetDisplayText(value, DisplayFormat);
 
         /// <summary>
         /// 返回格式化的字符串
@@ -2527,7 +2524,7 @@ namespace AntdUI
         /// <param name="value">数据</param>
         /// <param name="format">格式化</param>
         /// <returns></returns>
-        internal static string? GetDisplayText(object? value,string? format)
+        internal static string? GetDisplayText(object? value, string? format)
         {
             if (value == null || value == DBNull.Value) return null;
             else
@@ -2545,11 +2542,14 @@ namespace AntdUI
         #endregion
 
         #region 汇总
+
         /// <summary>
         /// 汇总栏选项
         /// </summary>
         public SummaryItemOption? SummaryItem { get; set; }
+
         #endregion
+
         /// <summary>
         /// 列可拖拽
         /// </summary>
@@ -2809,23 +2809,26 @@ namespace AntdUI
         #endregion
 
         #region 汇总
+
         public Column SetSummaryItem(TSummaryType summaryType)
         {
             SummaryItem = new SummaryItemOption(summaryType);
             return this;
         }
-        public Column SetSummaryItem(TSummaryType summaryType,string format)
+        public Column SetSummaryItem(TSummaryType summaryType, string format)
         {
-            SummaryItem = new SummaryItemOption(summaryType,format);
+            SummaryItem = new SummaryItemOption(summaryType, format);
             return this;
         }
         public Column SetSummaryItem(string text)
         {
-            SummaryItem = new SummaryItemOption( TSummaryType.Text);
-            SummaryItem.DisplayText= text;
+            SummaryItem = new SummaryItemOption(TSummaryType.Text);
+            SummaryItem.DisplayText = text;
             return this;
         }
+
         #endregion
+
         /// <summary>
         /// 设置列可拖拽
         /// </summary>
