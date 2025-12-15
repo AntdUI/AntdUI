@@ -169,6 +169,8 @@ namespace AntdUI
 
         public ILayeredForm? SubForm() => subForm;
         LayeredFormSelectMultipleCheck? subForm;
+        public override bool EnableSafetyTriangleZone => true;
+        public override Rectangle? OnSafetyTriangleZone(int x, int y) => subForm?.TargetRect;
 
         #endregion
 

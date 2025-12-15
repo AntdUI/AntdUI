@@ -51,6 +51,7 @@ namespace AntdUI
             CloseIcon = control.CloseIcon;
             DropNoMatchClose = control.DropDownEmptyClose;
             MaxCount = control.MaxCount;
+            MaxCount = 0;
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
             ItemOS = new ItemIndex(items);
@@ -372,6 +373,8 @@ namespace AntdUI
 
         public ILayeredForm? SubForm() => subForm;
         LayeredFormSelectDown? subForm;
+        public override bool EnableSafetyTriangleZone => true;
+        public override Rectangle? OnSafetyTriangleZone(int x, int y) => subForm?.TargetRect;
 
         #endregion
 
