@@ -70,7 +70,7 @@ namespace AntdUI
             // 记录第一个字段，用于跨行跳转
             if (fieldSequence.Length > 0) _firstFieldKey = fieldSequence[0];
 
-            EnableFocusNavigation = _focusNavigationMap.Count > 0;
+            EnableFocusNavigation = _focusNavigationMap.Count > 0 || fieldSequence.Length > 0;
             _selectAll = selectAll;
             _lineBreak = lineBreak;
         }
