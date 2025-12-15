@@ -114,6 +114,7 @@ namespace Demo.Controls
             table1.RowPaint += table1_RowPaint;
             table1.FilterPopupEnd += table1_FilterPopupEnd;
             table1.FilterDataChanged += table1_FilterDataChanged;
+            table1.SortRowsTree += table1_SortRowsTree;
             // 
             // panel1
             // 

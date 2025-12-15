@@ -62,7 +62,7 @@ namespace Demo.Controls
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
 
             // 配置焦点跳转顺序 
-            table1.ConfigureFocusNavigation(["age", "address", "date",], selectAll: true, lineBreak: true);
+            table1.ConfigureFocusNavigation(["age", "address", "date"], selectAll: true, lineBreak: true);
 
             //设置总结栏
             SummarySet();
@@ -348,6 +348,17 @@ namespace Demo.Controls
                 return;
             }
             table1.Summary = GetPageSummaryData(e.Records);
+        }
+
+        void table1_SortRowsTree(object sender, AntdUI.TableSortTreeEventArgs e)
+        {
+            if (e.Record is TestClass data)
+            {
+                var temp = data.Sub[e.From];
+                data.Sub[e.From] = data.Sub[e.To];
+                data.Sub[e.To] = temp;
+                e.SetHandled();
+            }
         }
 
         #endregion

@@ -149,6 +149,7 @@ namespace AntdUI
             public bool ShowExpand { get; set; } = true;
 
             internal int ExpandDepth { get; set; }
+            internal int INDEX_REAL_KEY { get; set; }
             internal int KeyTreeINDEX { get; set; } = -1;
             internal Rectangle RectExpand;
         }

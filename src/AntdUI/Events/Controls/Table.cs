@@ -415,10 +415,9 @@ namespace AntdUI
 
     public class TableSortTreeEventArgs : EventArgs
     {
-        public TableSortTreeEventArgs(object? record, int[] sort, int from, int to)
+        public TableSortTreeEventArgs(object record, int from, int to)
         {
             Record = record;
-            Sort = sort;
             From = from;
             To = to;
         }
@@ -426,13 +425,26 @@ namespace AntdUI
         /// <summary>
         /// 原始行
         /// </summary>
-        public object? Record { get; private set; }
-
-        public int[] Sort { get; private set; }
+        public object Record { get; private set; }
 
         public int From { get; private set; }
 
         public int To { get; private set; }
+
+        /// <summary>
+        /// 是否处理
+        /// </summary>
+        public bool Handled { get; set; }
+
+        #region 设置
+
+        public TableSortTreeEventArgs SetHandled(bool value = true)
+        {
+            Handled = value;
+            return this;
+        }
+
+        #endregion
     }
 
     public class TableExpandEventArgs : EventArgs
