@@ -410,22 +410,16 @@ namespace AntdUI
             else if (row is System.Dynamic.ExpandoObject expando)
             {
                 // 支持动态对象（ExpandoObject）
-                var cells = new Dictionary<string, object?>();
+                var cells = new Dictionary<string, object?>(len);
                 var dict = (IDictionary<string, object?>)expando;
-                foreach (var kvp in dict)
-                {
-                    cells.Add(kvp.Key, kvp.Value);
-                }
+                foreach (var kvp in dict) cells.Add(kvp.Key, kvp.Value);
                 return cells;
             }
             else if (row is IDictionary<string, object?> dict)
             {
                 // 支持字典对象
-                var cells = new Dictionary<string, object?>();
-                foreach (var kvp in dict)
-                {
-                    cells.Add(kvp.Key, kvp.Value);
-                }
+                var cells = new Dictionary<string, object?>(len);
+                foreach (var kvp in dict) cells.Add(kvp.Key, kvp.Value);
                 return cells;
             }
             else
@@ -438,6 +432,41 @@ namespace AntdUI
                 }
                 return cells;
             }
+        }
+        object? GetRow(object row, string key)
+        {
+            if (row is IList<AntItem> arows)
+            {
+                foreach (var it in arows)
+                {
+                    if (it.key == key) return it.value;
+                }
+            }
+            else if (row is System.Dynamic.ExpandoObject expando)
+            {
+                // 支持动态对象（ExpandoObject）
+                var dict = (IDictionary<string, object?>)expando;
+                foreach (var kvp in dict)
+                {
+                    if (kvp.Key == key) return kvp.Value;
+                }
+            }
+            else if (row is IDictionary<string, object?> dict)
+            {
+                // 支持字典对象
+                foreach (var kvp in dict)
+                {
+                    if (kvp.Key == key) return kvp.Value;
+                }
+            }
+            else
+            {
+                foreach (PropertyDescriptor it in TypeDescriptor.GetProperties(row))
+                {
+                    if (it.Name == key) return it.GetValue(row);
+                }
+            }
+            return null;
         }
 
         Dictionary<string, object?> GetRow(object row, out TempiColumn[] _columns)

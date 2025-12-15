@@ -317,7 +317,13 @@ namespace AntdUI
         [Description("树行排序时发生"), Category("行为")]
         public event SortTreeEventHandler? SortRowsTree;
 
-        protected virtual void OnSortRowsTree(object? record, int[] sort, int from, int to) => SortRowsTree?.Invoke(this, new TableSortTreeEventArgs(record, sort, from, to));
+        protected virtual bool OnSortRowsTree(object record, int from, int to)
+        {
+            if (SortRowsTree == null) return false;
+            var arge = new TableSortTreeEventArgs(record, from, to);
+            SortRowsTree(this, arge);
+            return arge.Handled;
+        }
 
         public delegate void SortTreeEventHandler(object sender, TableSortTreeEventArgs e);
 

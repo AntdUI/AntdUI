@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 
 namespace AntdUI
 {
@@ -750,7 +751,7 @@ namespace AntdUI
                 show = show && row_new.Expand;
                 row_new.CanExpand = true;
                 count++;
-                for (int i = 0; i < list_tree.Count; i++)
+                for (int i = 0; i < list_tree.Length; i++)
                 {
                     var item_tree = GetRow(list_tree[i], _columns.Count);
                     if (item_tree.Count > 0)
@@ -758,48 +759,41 @@ namespace AntdUI
                         var row_tree = new IRow(i, list_tree[i], item_tree);
                         var cells_tree = new List<CELL>(_columns.Count);
                         foreach (var column in _columns) AddRows(ref cells_tree, ref processing, column, row_tree, column.Key);
-                        if (ForTree(ref _rows, ref processing, AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record), row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
+                        var _row = AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record);
+                        _row.INDEX_REAL_KEY = i;
+                        if (ForTree(ref _rows, ref processing, _row, row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
                     }
                 }
             }
             return count > 0;
         }
 
-        static IList<object>? ForTreeValue(IRow row, string KeyTree)
+        static object[]? ForTreeValue(IRow row, string KeyTree)
         {
-            if (row.cells.TryGetValue(KeyTree, out var ov_tree))
+            if (row.cells.TryGetValue(KeyTree, out var ov))
             {
-                if (ov_tree is AntItem item)
-                {
-                    var value_tree = item.value;
-                    if (value_tree is IList<AntItem[]> list_tree && list_tree.Count > 0)
-                    {
-                        var value = new List<object>(list_tree.Count);
-                        foreach (var it in list_tree) value.Add(it);
-                        return value.ToArray();
-                    }
-                }
-                else if (ov_tree is PropertyDescriptor prop)
-                {
-                    var value_tree = prop.GetValue(row.record);
-                    if (value_tree == null) return null;
-                    if (value_tree is IList<object> list_tree && list_tree.Count > 0) return list_tree;
-                    else if (value_tree is IEnumerable<object> list_tree2)
-                    {
-                        int count = 0;
-                        foreach (var it in list_tree2) count++;
-                        if (count > 0)
-                        {
-                            var sub = new List<object>(count);
-                            foreach (var it in list_tree2) sub.Add(it);
-                            return sub;
-                        }
-                    }
-                }
+                if (ov is AntItem item) return ForTreeValue(item.value);
+                else if (ov is PropertyDescriptor prop) return ForTreeValue(prop.GetValue(row.record));
             }
             return null;
         }
-
+        static object[]? ForTreeValue(object? value)
+        {
+            if (value == null) return null;
+            if (value is IList<AntItem[]> list_items && list_items.Count > 0)
+            {
+                var list = new List<object>(list_items.Count);
+                foreach (var it in list_items) list.Add(it);
+                return list.ToArray();
+            }
+            else if (value is IList<object> lists && lists.Count > 0) return lists.ToArray();
+            else if (value is IEnumerable<object> listi)
+            {
+                var list = listi.ToList();
+                return list.Count > 0 ? list.ToArray() : null;
+            }
+            return null;
+        }
 
         #endregion
 
@@ -1077,7 +1071,7 @@ namespace AntdUI
         {
             var row = new RowTemplate(this, cells, row_i, record);
             if (enableDir.Contains(record)) row.ENABLE = false;
-            if (row.INDEX_REAL == hovers) row.hover = true;
+            if (row.INDEX == hovers) row.hover = true;
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;

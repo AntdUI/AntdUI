@@ -248,34 +248,29 @@ namespace AntdUI
                     foreach (var it in rows)
                     {
                         it.hover = false;
-                        if (dragBody.im == it.INDEX) { it.hover = true; dim = it.INDEX_REAL; }
+                        if (dragBody.im == it.INDEX)
+                        {
+                            it.hover = true;
+                            dim = it.INDEX_REAL;
+                        }
                         if (dragBody.i == it.INDEX) di = it.INDEX_REAL;
                     }
                     if (dim == di)
                     {
-                        object? record = null;
-                        int from = dragBody.i, to = dragBody.im, count = 0;
-                        foreach (var it in rows)
+                        var row = DragBodyTree(rows, dragBody);
+                        if (row != null)
                         {
-                            if (it.INDEX_REAL == di)
-                            {
-                                if (record == null)
-                                {
-                                    record = it.RECORD;
-                                    from -= it.INDEX + 1;
-                                    to -= it.INDEX + 1;
-                                }
-                                else count++;
-                            }
+                            int from = rows[dragBody.i].INDEX_REAL_KEY, to = rows[dragBody.im].INDEX_REAL_KEY;
+                            //var keytree = columns![row.KeyTreeINDEX].KeyTree!;
+                            //var list = ForTreeValue(GetRow(row.RECORD, keytree));
+                            //if (list != null)
+                            //{
+                            //    var temp = list[from];
+                            //    list[from] = list[to];
+                            //    list[to] = temp;
+                            //}
+                            if (OnSortRowsTree(row.RECORD, from, to) && LoadLayout()) Invalidate();
                         }
-                        var d = new int[count];
-                        for (int i = 0; i < count; i++)
-                        {
-                            if (i == from) d[i] = to;
-                            else if (i == to) d[i] = from;
-                            else d[i] = i;
-                        }
-                        OnSortRowsTree(record, d, from, to);
                     }
                     else
                     {
@@ -338,6 +333,16 @@ namespace AntdUI
                     }
                 }
             }
+        }
+
+        RowTemplate? DragBodyTree(RowTemplate[] rows, DragHeader dragBody)
+        {
+            int fromDepth = rows[dragBody.i].ExpandDepth - 1;
+            for (int i = dragBody.i - 1; i > 1; i--)
+            {
+                if (rows[i].ExpandDepth == fromDepth) return rows[i];
+            }
+            return null;
         }
 
         void filter_PopupEndEventMethod(object sender, CancelEventArgs e)
@@ -713,7 +718,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    hovers = db.cell.ROW.INDEX_REAL;
+                    hovers = db.cell.ROW.INDEX;
                     if (db.mode > 0)
                     {
                         for (int i = 1; i < rows.Length; i++)
@@ -978,7 +983,7 @@ namespace AntdUI
                 else if (it.Type == RowType.Summary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
-                    if (sethover) hovers = it.INDEX_REAL;
+                    if (sethover) hovers = it.INDEX;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
                         tmp!.mode = 0;
