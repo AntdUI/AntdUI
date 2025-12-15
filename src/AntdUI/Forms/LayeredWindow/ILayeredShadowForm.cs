@@ -17,6 +17,7 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -142,7 +143,29 @@ namespace AntdUI
         {
             if (RunAnimation) return;
             base.OnMouseMove(e);
-            OnMouseMove(e.Button, e.Clicks, e.X - shadow, e.Y - shadow, e.Delta);
+            int x = e.X - shadow, y = e.Y - shadow;
+            if (EnableSafetyTriangleZone)
+            {
+                bool ret = false;
+                if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) ret = true;
+                var rect = OnSafetyTriangleZone(x, y);
+                if (rect.HasValue)
+                {
+                    var now = DateTime.Now;
+                    if ((now - SafetyTriangleFlag).TotalMilliseconds > 500)
+                    {
+                        SafetyTriangleFlag = now;
+                        int x2 = rect.Value.X - TargetRect.X, y2 = rect.Value.Y - TargetRect.Y;
+                        SafetyTriangleZone = new Point[] {
+                            new Point(x, y),
+                            new Point(x2, y2),
+                            new Point(x2, y2 + rect.Value.Height)
+                        };
+                    }
+                }
+                if (ret) return;
+            }
+            OnMouseMove(e.Button, e.Clicks, x, y, e.Delta);
         }
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -150,6 +173,19 @@ namespace AntdUI
             base.OnMouseWheel(e);
             OnMouseWheel(e.Button, e.Clicks, e.X - shadow, e.Y - shadow, e.Delta);
         }
+
+        #endregion
+
+        #region 安全三角区
+
+        Point[]? SafetyTriangleZone;
+        DateTime SafetyTriangleFlag;
+
+        /// <summary>
+        /// 是否启用安全三角区
+        /// </summary>
+        public virtual bool EnableSafetyTriangleZone => false;
+        public virtual Rectangle? OnSafetyTriangleZone(int x, int y) => null;
 
         #endregion
 
@@ -306,7 +342,29 @@ namespace AntdUI
         {
             if (RunAnimation) return;
             base.OnMouseMove(e);
-            OnMouseMove(e.Button, e.Clicks, e.X - shadow, e.Y - shadow, e.Delta);
+            int x = e.X - shadow, y = e.Y - shadow;
+            if (EnableSafetyTriangleZone)
+            {
+                bool ret = false;
+                if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) ret = true;
+                var rect = OnSafetyTriangleZone(x, y);
+                if (rect.HasValue)
+                {
+                    var now = DateTime.Now;
+                    if ((now - SafetyTriangleFlag).TotalMilliseconds > 500)
+                    {
+                        SafetyTriangleFlag = now;
+                        int x2 = rect.Value.X - TargetRect.X, y2 = rect.Value.Y - TargetRect.Y;
+                        SafetyTriangleZone = new Point[] {
+                            new Point(x, y),
+                            new Point(x2, y2),
+                            new Point(x2, y2 + rect.Value.Height)
+                        };
+                    }
+                }
+                if (ret) return;
+            }
+            OnMouseMove(e.Button, e.Clicks, x, y, e.Delta);
         }
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -314,6 +372,19 @@ namespace AntdUI
             base.OnMouseWheel(e);
             OnMouseWheel(e.Button, e.Clicks, e.X - shadow, e.Y - shadow, e.Delta);
         }
+
+        #endregion
+
+        #region 安全三角区
+
+        Point[]? SafetyTriangleZone;
+        DateTime SafetyTriangleFlag;
+
+        /// <summary>
+        /// 是否启用安全三角区
+        /// </summary>
+        public virtual bool EnableSafetyTriangleZone => false;
+        public virtual Rectangle? OnSafetyTriangleZone(int x, int y) => null;
 
         #endregion
 

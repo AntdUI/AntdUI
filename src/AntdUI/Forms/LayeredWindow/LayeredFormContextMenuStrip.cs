@@ -618,6 +618,8 @@ namespace AntdUI
 
         LayeredFormContextMenuStrip? subForm;
         ILayeredForm? SubLayeredForm.SubForm() => subForm;
+        public override bool EnableSafetyTriangleZone => true;
+        public override Rectangle? OnSafetyTriangleZone(int x, int y) => subForm?.TargetRect;
 
         #endregion
 

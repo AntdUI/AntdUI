@@ -510,6 +510,37 @@ namespace AntdUI
             }
             return null;
         }
+
+        /// <summary>
+        /// 判断指定坐标是否在三角形内
+        /// </summary>
+        /// <param name="x">鼠标X坐标</param>
+        /// <param name="y">鼠标Y坐标</param>
+        /// <param name="trianglePoints">三角形的三个顶点（必须包含3个Point）</param>
+        /// <returns>true=在内部，false=在外部</returns>
+        public static bool IsPointInTriangle(int x, int y, Point[] trianglePoints)
+        {
+            // 校验参数：必须传入3个顶点
+            Point A = trianglePoints[0], B = trianglePoints[1], C = trianglePoints[2];
+
+            // 计算三个叉乘结果（判断P在各边的哪一侧）
+            float cross1 = CrossProduct(B.X - A.X, B.Y - A.Y, x - A.X, y - A.Y), cross2 = CrossProduct(C.X - B.X, C.Y - B.Y, x - B.X, y - B.Y), cross3 = CrossProduct(A.X - C.X, A.Y - C.Y, x - C.X, y - C.Y);
+
+            // 判断是否全部同向（都为正 或 都为负，包含0则在边上）
+            bool isSameSign = (cross1 >= 0 && cross2 >= 0 && cross3 >= 0) || (cross1 <= 0 && cross2 <= 0 && cross3 <= 0);
+
+            return isSameSign;
+        }
+
+        /// <summary>
+        /// 计算二维向量叉乘（仅返回Z轴分量，代表方向）
+        /// </summary>
+        /// <param name="x1">向量1 X</param>
+        /// <param name="y1">向量1 Y</param>
+        /// <param name="x2">向量2 X</param>
+        /// <param name="y2">向量2 Y</param>
+        /// <returns>叉乘结果</returns>
+        private static float CrossProduct(int x1, int y1, int x2, int y2) => (x1 * (float)y2) - (y1 * (float)x2);
     }
 
     internal class AnchorDock
