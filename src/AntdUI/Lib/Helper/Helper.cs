@@ -535,8 +535,10 @@ namespace AntdUI
         /// <summary>
         /// 计算二维向量叉乘（仅返回Z轴分量，代表方向）
         /// </summary>
-        /// <param name="v1">向量1</param>
-        /// <param name="v2">向量2</param>
+        /// <param name="x1">向量1 X</param>
+        /// <param name="y1">向量1 Y</param>
+        /// <param name="x2">向量2 X</param>
+        /// <param name="y2">向量2 Y</param>
         /// <returns>叉乘结果</returns>
         private static float CrossProduct(int x1, int y1, int x2, int y2) => (x1 * (float)y2) - (y1 * (float)x2);
     }

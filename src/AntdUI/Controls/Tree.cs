@@ -644,13 +644,14 @@ namespace AntdUI
             if (item.Fore.HasValue)
             {
                 color = item.Fore.Value;
-                using (var brush = new SolidBrush(color))
-                {
-                    g.DrawText(item.Text, Font, brush, item.txt_rect, s_c);
-                }
+                g.DrawText(item.Text, Font, color, item.txt_rect, s_c);
             }
             else g.DrawText(item.Text, Font, fore, item.txt_rect, s_c);
-            if (item.SubTitle != null) g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
+            if (item.SubTitle != null)
+            {
+                if (item.ForeSub.HasValue) g.DrawText(item.SubTitle, Font, item.ForeSub.Value, item.subtxt_rect, s_l);
+                else g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
+            }
             if (item.Loading)
             {
                 if (item.ico_rect.Height > 0)
@@ -1468,6 +1469,44 @@ namespace AntdUI
 
         #endregion
 
+        #region 查找
+
+        /// <summary>
+        /// 根据节点id查询节点
+        /// </summary>
+        public TreeItem? FindID(string id) => FindID(items, id);
+
+        TreeItem? FindID(TreeItemCollection? items, string id)
+        {
+            if (items == null) return null;
+            foreach (var sub in items)
+            {
+                if (sub.ID == id) return sub;
+                var preItem = FindID(sub.items, id);
+                if (preItem != null) return preItem;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 根据节点name查询节点
+        /// </summary>
+        public TreeItem? FindName(string id) => FindName(items, id);
+
+        TreeItem? FindName(TreeItemCollection? items, string id)
+        {
+            if (items == null) return null;
+            foreach (var sub in items)
+            {
+                if (sub.Name == id) return sub;
+                var preItem = FindName(sub.items, id);
+                if (preItem != null) return preItem;
+            }
+            return null;
+        }
+
+        #endregion
+
         public TreeItem? HitTest(int x, int y, out TreeCType type)
         {
             if (items == null || items.Count == 0)
@@ -1921,6 +1960,22 @@ namespace AntdUI
             {
                 if (fore == value) return;
                 fore = value;
+                Invalidate();
+            }
+        }
+
+        Color? foreSub;
+        /// <summary>
+        /// 子文本颜色
+        /// </summary>
+        [Description("子文本颜色"), Category("外观"), DefaultValue(null)]
+        public Color? ForeSub
+        {
+            get => foreSub;
+            set
+            {
+                if (foreSub == value) return;
+                foreSub = value;
                 Invalidate();
             }
         }
