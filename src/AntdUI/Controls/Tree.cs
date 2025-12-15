@@ -447,7 +447,12 @@ namespace AntdUI
                 it.ParentItem = Parent;
                 if (it.Visible)
                 {
-                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
+                    if (it.ParentItem != null && !it.ParentItem.Expand)
+                    {
+                        it.SetRect(g, Font, depth, checkable, blockNode, has_sub, true, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
+                        continue;
+                    }
+                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, false, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
                     if (expand)
                     {
                         if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
@@ -2077,11 +2082,21 @@ namespace AntdUI
 
         #region 布局
 
-        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, bool initsub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
+            if (initsub)
+            {
+                arrow_rect = Rectangle.Empty;
+                check_rect = Rectangle.Empty;
+                ico_rect = Rectangle.Empty;
+                txt_rect = Rectangle.Empty;
+                rect = Rectangle.Empty;
+                rect_all = Rectangle.Empty;
+                return;
+            }
             Depth = depth;
             var size = g.MeasureText(Text, font);
-            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (size.Height + 10 - icon_size) / 2, ui = icon_size + gap;
+            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (size.Height + gap - icon_size) / 2, ui = icon_size + gap;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -2103,7 +2118,7 @@ namespace AntdUI
                 x += ui;
             }
 
-            int txt_w = size.Width + gap, txt_h = size.Height + 10, txt_y = _rect.Y;
+            int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y;
             if (subTitle == null)
             {
                 usew += txt_w;
