@@ -382,7 +382,7 @@ namespace AntdUI
                     Redo();
                     break;
                 case ShortcutKeys.PageUp:
-                    if (ScrollYShow && cache_font != null)
+                    if (ScrollY.Show && cache_font != null)
                     {
                         bool set_e = SetSelectionLength(0);
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
@@ -399,7 +399,7 @@ namespace AntdUI
                     }
                     break;
                 case ShortcutKeys.PageDown:
-                    if (ScrollYShow && cache_font != null)
+                    if (ScrollY.Show && cache_font != null)
                     {
                         bool set_s, set_e = SetSelectionLength(0), set_caret = false;
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
@@ -719,7 +719,7 @@ namespace AntdUI
             {
                 int index = selectionStartTemp;
                 if (index == 0) return;
-                if (ScrollYShow) ScrollY = 0;
+                if (ScrollY.Show) ScrollY.Value = 0;
                 set_s = SetSelectionStart(0);
                 set_e = SetSelectionLength(selectionLength + index);
             }
@@ -728,7 +728,7 @@ namespace AntdUI
                 set_e = SetSelectionLength(0);
                 if (ctrl)
                 {
-                    if (ScrollYShow) ScrollY = 0;
+                    if (ScrollY.Show) ScrollY.Value = 0;
                     set_s = SetSelectionStart(0);
                 }
                 else
@@ -746,7 +746,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (ScrollYShow) ScrollY = 0;
+                        if (ScrollY.Show) ScrollY.Value = 0;
                         set_s = SetSelectionStart(0);
                     }
                 }
@@ -761,7 +761,7 @@ namespace AntdUI
             {
                 int index = selectionStartTemp + selectionLength;
                 if (index > cache_font.Length - 1) return;
-                if (ScrollYShow) ScrollY = ScrollYMax;
+                if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
                 SelectionLength += cache_font.Length - selectionStartTemp;
             }
             else
@@ -769,7 +769,7 @@ namespace AntdUI
                 bool set_s, set_e = false;
                 if (ctrl)
                 {
-                    if (ScrollYShow) ScrollY = ScrollYMax;
+                    if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
                     set_e = SetSelectionLength(0);
                     set_s = SetSelectionStart(cache_font.Length);
                 }
@@ -785,7 +785,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (ScrollYShow) ScrollY = ScrollYMax;
+                        if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
                         set_e = SetSelectionLength(0);
                         set_s = SetSelectionStart(cache_font.Length);
                     }

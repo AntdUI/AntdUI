@@ -375,7 +375,8 @@ namespace AntdUI
         {
             parentItem.Checked = checkedState;
             parentItem.Select = checkedState;
-            foreach (var item in parentItem.Sub)
+            if (parentItem.items == null) return;
+            foreach (var item in parentItem.items)
             {
                 UpdateCheckedState(item, checkedState);
             }

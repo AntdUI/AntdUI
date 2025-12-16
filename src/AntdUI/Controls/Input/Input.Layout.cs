@@ -50,8 +50,8 @@ namespace AntdUI
                     if (isempty)
                     {
                         TextTotalLine = 0;
-                        if (SetScrollX(0)) rdcount++;
-                        if (SetScrollY(0)) rdcount++;
+                        if (ScrollX.SetValue(0)) rdcount++;
+                        if (ScrollY.SetValue(0)) rdcount++;
                         cache_font = null;
                         cache_caret = null;
                     }
@@ -65,7 +65,7 @@ namespace AntdUI
                 if (isempty)
                 {
                     TextTotalLine = 0;
-                    bool set_x = SetScrollX(0), set_y = SetScrollY(0);
+                    bool set_x = ScrollX.SetValue(0), set_y = ScrollY.SetValue(0);
                     cache_font = null;
                     cache_caret = null;
                     return CalculateRect() || set_x || set_y;
@@ -245,9 +245,9 @@ namespace AntdUI
             if (cache_font == null)
             {
                 TextTotalLine = 0;
-                oldtmp = null;
-                ScrollXShow = ScrollYShow = false;
-                scrollx = scrolly = ScrollXMin = ScrollXMax = ScrollYMax = 0;
+                oldtmpY = oldtmpX = null;
+                ScrollX.Clear();
+                ScrollY.Clear();
                 if (ModeRange)
                 {
                     int center = rect_text.Width / 2;
@@ -260,10 +260,11 @@ namespace AntdUI
             }
             else
             {
+                int maxx = 0;
                 if (multiline)
                 {
                     var rectText = rect_text;
-                    if (ScrollYShow) rectText.Width -= 16;
+                    if (ScrollY.Show) rectText.Width -= (int)(16 * Config.Dpi);
                     int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
                     int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
@@ -273,6 +274,7 @@ namespace AntdUI
                             it.hide = it.ret = true;
                             it.line = line;
                             line++;
+                            if (usex > maxx) maxx = usex;
                             usey += lineHeight;
                             usex = 0;
                             it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
@@ -287,7 +289,7 @@ namespace AntdUI
                                 it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                                 continue;
                             }
-                            else if (usex + it.width > rectText.Width)
+                            else if (wordwrap && usex + it.width > rectText.Width)
                             {
                                 line++;
                                 usey += lineHeight;
@@ -372,49 +374,54 @@ namespace AntdUI
                 });
                 cache_caret = carets.ToArray();
 
-                ScrollXMax = last.rect.Right - rect_text.Right;
+                ScrollX.Max = last.rect.Right - rect_text.Right;
                 switch (textalign)
                 {
                     case HorizontalAlignment.Center:
-                        if (ScrollXMax > 0) ScrollXMin = -ScrollXMax;
+                        if (ScrollX.Max > 0) ScrollX.Min = -ScrollX.Max;
                         else
                         {
-                            ScrollXMin = ScrollXMax;
-                            ScrollXMax = -ScrollXMax;
+                            ScrollX.Min = ScrollX.Max;
+                            ScrollX.Max = -ScrollX.Max;
                         }
                         break;
                     case HorizontalAlignment.Right:
-                        ScrollXMin = cache_font[0].rect.Right - rect.Right + sps;
-                        ScrollXMax = 0;
+                        ScrollX.Min = cache_font[0].rect.Right - rect.Right + sps;
+                        ScrollX.Max = 0;
                         break;
                     default:
-                        ScrollXMin = 0;
+                        ScrollX.Min = 0;
                         break;
                 }
-                ScrollYMax = last.rect.Bottom - rect.Height + sps;
+                ScrollY.Max = last.rect.Bottom - rect.Height + sps;
                 if (multiline)
                 {
-                    if (SetScrollX(0)) rdcount++;
-                    ScrollXShow = false;
-                    ScrollYShow = last.rect.Bottom > rect.Bottom;
-                    if (ScrollYShow)
+                    if (ScrollX.SetValue(0)) rdcount++;
+                    if (wordwrap) ScrollX.Show = false;
+                    else
                     {
-                        if (ScrollY > ScrollYMax && SetScrollY(ScrollYMax)) rdcount++;
+                        ScrollX.Max = maxx - rect_text.Right;
+                        ScrollX.Show = maxx > rect.Right;
                     }
-                    else if (SetScrollY(0)) rdcount++;
+                    ScrollY.Show = last.rect.Bottom > rect.Bottom;
+                    if (ScrollY.Show)
+                    {
+                        if (ScrollY.Value > ScrollY.Max && ScrollY.SetValue(ScrollY.Max)) rdcount++;
+                    }
+                    else if (ScrollY.SetValue(0)) rdcount++;
                 }
                 else
                 {
-                    oldtmp = null;
-                    ScrollYShow = false;
-                    ScrollY = 0;
-                    if (textalign == HorizontalAlignment.Right) ScrollXShow = last.rect.Right < rect.Right;
-                    else ScrollXShow = last.rect.Right > rect_text.Right;
-                    if (ScrollXShow)
+                    oldtmpY = oldtmpX = null;
+                    ScrollY.Show = false;
+                    ScrollY.Value = 0;
+                    if (textalign == HorizontalAlignment.Right) ScrollX.Show = last.rect.Right < rect.Right;
+                    else ScrollX.Show = last.rect.Right > rect_text.Right;
+                    if (ScrollX.Show)
                     {
-                        if (ScrollX > ScrollXMax && SetScrollX(ScrollXMax)) rdcount++;
+                        if (ScrollX.Value > ScrollX.Max && ScrollX.SetValue(ScrollX.Max)) rdcount++;
                     }
-                    else if (SetScrollX(0)) rdcount++;
+                    else if (ScrollX.SetValue(0)) rdcount++;
                 }
             }
             if (SetCaretPostion()) rdcount++;
