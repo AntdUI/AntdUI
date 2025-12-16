@@ -44,7 +44,7 @@ namespace AntdUI
                 {
                     mDownMove = mDown = false;
 
-                    var caret2 = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                    var caret2 = GetCaretPostion(e.X + ScrollX.Value, e.Y + ScrollY.Value);
                     if (caret2 == null) return;
                     int start = 0, end;
 
@@ -71,20 +71,31 @@ namespace AntdUI
                     return;
                 }
                 if (IMouseDown(e.X, e.Y)) return;
-
-                if (ScrollYShow && autoscroll && ScrollHover)
+                if (autoscroll)
                 {
-                    float yratio = ((e.Y - ScrollRect.Top) - ScrollSliderFull / 2) / (ScrollRect.Height - ScrollSliderFull);
-                    ScrollYDown = true;
-                    ScrollY = (int)(yratio * ScrollYMax);
-                    SetCursor(false);
-                    Window.CanHandMessage = false;
-                    return;
+                    if (ScrollY.Show && ScrollY.Hover)
+                    {
+                        float yratio = ((e.Y - ScrollY.Rect.Top) - ScrollY.SliderFull / 2) / (ScrollY.Rect.Height - ScrollY.SliderFull);
+                        ScrollY.Down = true;
+                        ScrollY.Value = (int)(yratio * ScrollY.Max);
+                        SetCursor(false);
+                        Window.CanHandMessage = false;
+                        return;
+                    }
+                    if (ScrollX.Show && ScrollX.Hover)
+                    {
+                        float xratio = ((e.X - ScrollX.Rect.Left) - ScrollX.SliderFull / 2) / (ScrollX.Rect.Width - ScrollX.SliderFull);
+                        ScrollX.Down = true;
+                        ScrollX.Value = (int)(xratio * ScrollX.Max);
+                        SetCursor(false);
+                        Window.CanHandMessage = false;
+                        return;
+                    }
                 }
                 mDownMove = false;
                 mDownLocation = e.Location;
                 if (BanInput) return;
-                var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                var caret = GetCaretPostion(e.X + ScrollX.Value, e.Y + ScrollY.Value);
                 bool set_s = false, set_e = false, set_caret = false;
                 if (caret == null)
                 {
@@ -126,10 +137,17 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollYDown)
+            if (ScrollY.Down)
             {
-                float yratio = ((e.Y - ScrollRect.Top) - ScrollSliderFull / 2) / (ScrollRect.Height - ScrollSliderFull);
-                ScrollY = (int)(yratio * ScrollYMax);
+                float yratio = ((e.Y - ScrollY.Rect.Top) - ScrollY.SliderFull / 2) / (ScrollY.Rect.Height - ScrollY.SliderFull);
+                ScrollY.Value = (int)(yratio * ScrollY.Max);
+                Window.CanHandMessage = false;
+                return;
+            }
+            else if (ScrollX.Down)
+            {
+                float xratio = ((e.X - ScrollX.Rect.Left) - ScrollX.SliderFull / 2) / (ScrollX.Rect.Width - ScrollX.SliderFull);
+                ScrollX.Value = (int)(xratio * ScrollX.Max);
                 Window.CanHandMessage = false;
                 return;
             }
@@ -137,7 +155,7 @@ namespace AntdUI
             {
                 mDownMove = true;
                 SetCursor(CursorType.IBeam);
-                var caret = GetCaretPostion(mDownLocation.X + scrollx + (e.X - mDownLocation.X), mDownLocation.Y + scrolly + (e.Y - mDownLocation.Y));
+                var caret = GetCaretPostion(mDownLocation.X + ScrollX.Value + (e.X - mDownLocation.X), mDownLocation.Y + ScrollY.Value + (e.Y - mDownLocation.Y));
                 if (caret == null)
                 {
                     Window.CanHandMessage = false;
@@ -156,10 +174,18 @@ namespace AntdUI
             else
             {
                 bool setScroll = true;
-                if (ScrollYShow && autoscroll)
+                if (autoscroll)
                 {
-                    ScrollHover = ScrollRect.Contains(e.X, e.Y);
-                    if (ScrollHover) setScroll = false;
+                    if (ScrollY.Show)
+                    {
+                        ScrollY.Hover = ScrollY.Rect.Contains(e.X, e.Y);
+                        if (ScrollY.Hover) setScroll = false;
+                    }
+                    if (ScrollX.Show)
+                    {
+                        ScrollX.Hover = ScrollX.Rect.Contains(e.X, e.Y);
+                        if (ScrollX.Hover) setScroll = false;
+                    }
                 }
                 if (is_clear)
                 {
@@ -201,12 +227,12 @@ namespace AntdUI
         }
         bool MouseWheelCore(int delta)
         {
-            if (ScrollYShow && autoscroll)
+            if (ScrollY.Show && autoscroll)
             {
                 if (delta == 0) return false;
-                var old = scrolly;
-                ScrollY -= delta;
-                if (old == scrolly) return false;
+                var old = ScrollY.Value;
+                ScrollY.Value -= delta;
+                if (old == ScrollY.Value) return false;
                 return true;
             }
             return false;
@@ -218,7 +244,7 @@ namespace AntdUI
             bool md = mDown;
             mDown = false;
             Window.CanHandMessage = true;
-            ScrollYDown = false;
+            ScrollY.Down = ScrollX.Down = false;
             if (is_clear_down)
             {
                 if (rect_r.Contains(e.X, e.Y))
@@ -244,7 +270,7 @@ namespace AntdUI
             if (IMouseUp(e.X, e.Y)) return;
             if (md && mDownMove && mDownLocation != e.Location && cache_font != null)
             {
-                var caret = GetCaretPostion(e.X + scrollx, e.Y + scrolly);
+                var caret = GetCaretPostion(e.X + ScrollX.Value, e.Y + ScrollY.Value);
                 if (caret == null) return;
                 if (selectionStart == caret.i) SelectionLength = 0;
                 else if (caret.i > selectionStart)
@@ -254,7 +280,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_s = SetSelectionStart(caret.i, false), set_caret = SetCaretPostion(caret.index), set_scroll = SetScrollX(scrollx);
+                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_s = SetSelectionStart(caret.i, false), set_caret = SetCaretPostion(caret.index), set_scroll = ScrollX.SetValue(ScrollX.Value);
                     if (set_s || set_e || set_caret || set_scroll) Invalidate();
                 }
             }

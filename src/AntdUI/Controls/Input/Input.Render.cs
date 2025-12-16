@@ -124,44 +124,110 @@ namespace AntdUI
 
         void PaintScroll(Canvas g, Rectangle rect_read, float _radius)
         {
-            if (ScrollYShow && autoscroll)
+            if (autoscroll && (ScrollY.Show || ScrollX.Show))
             {
                 int SIZE = (int)(16 * Config.Dpi), SIZE_BAR = (int)(6 * Config.Dpi), SIZE_MINIY = (int)(Config.ScrollMinSizeY * Config.Dpi);
-                ScrollRect = new Rectangle(rect_read.Right - SIZE, rect_read.Y, SIZE, rect_read.Height);
-                if (IsPaintScroll())
+                var bg = Colour.TextBase.Get(nameof(Input), ColorScheme);
+                if (ScrollX.Show)
                 {
-                    var color = Color.FromArgb(10, Colour.TextBase.Get(nameof(Input), ColorScheme));
-                    if (JoinRight) g.Fill(color, ScrollRect);
-                    else
+                    if (ScrollY.Show)
                     {
-                        using (var pathScroll = Helper.RoundPath(ScrollRect, _radius, false, true, true, false))
+                        ScrollX.Rect = new Rectangle(rect_read.X, rect_read.Bottom - SIZE, rect_read.Width - SIZE, SIZE);
+                        if (IsPaintScroll())
                         {
-                            g.Fill(color, pathScroll);
+                            var color = Color.FromArgb(10, bg);
+                            if ((joinMode == TJoinMode.Right || joinMode == TJoinMode.Top) || JoinLeft) g.Fill(color, ScrollX.Rect);
+                            else
+                            {
+                                using (var pathScroll = Helper.RoundPath(ScrollX.Rect, _radius, false, false, false, true))
+                                {
+                                    g.Fill(color, pathScroll);
+                                }
+                            }
                         }
                     }
+                    else
+                    {
+                        ScrollX.Rect = new Rectangle(rect_read.X, rect_read.Bottom - SIZE, rect_read.Width, SIZE);
+                        if (IsPaintScroll())
+                        {
+                            var color = Color.FromArgb(10, bg);
+                            g.Fill(color, ScrollX.Rect);
+                        }
+                    }
+                    float val = ScrollX.Value, VrValue = ScrollX.Max + ScrollX.Rect.Width, gap = (ScrollX.Rect.Height - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2;
+                    float widthfull = ((ScrollX.Rect.Width / VrValue) * ScrollX.Rect.Width), width = widthfull - SIZE;
+                    if (width < min) width = min;
+                    else if (width < SIZE) width = SIZE;
+                    float x = val == 0 ? 0 : (val / (VrValue - ScrollX.Rect.Width)) * (ScrollX.Rect.Width - width);
+                    ScrollX.Slider = new RectangleF(ScrollX.Rect.X + x + gap, ScrollX.Rect.Y + gap, width - gap * 2, SIZE_BAR);
+
+                    if (widthfull < SIZE_MINIY) widthfull = SIZE_MINIY;
+                    else if (widthfull < SIZE) widthfull = SIZE;
+                    ScrollX.SliderFull = widthfull;
+
+                    int alpha = ScrollX.Hover ? 141 : 110;
+                    using (var path = ScrollX.Slider.RoundPath(ScrollX.Slider.Width))
+                    {
+                        g.Fill(Color.FromArgb(alpha, bg), path);
+                    }
                 }
-                float val = scrolly, VrValue = ScrollYMax + ScrollRect.Height, gap = (ScrollRect.Width - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2;
-                float heightfull = ((ScrollRect.Height / VrValue) * ScrollRect.Height), height = heightfull - SIZE;
-                if (height < min) height = min;
-                else if (height < SIZE) height = SIZE;
-                float y = val == 0 ? 0 : (val / (VrValue - ScrollRect.Height)) * (ScrollRect.Height - height);
-                ScrollSlider = new RectangleF(ScrollRect.X + gap, ScrollRect.Y + y + gap, SIZE_BAR, height - gap * 2);
-
-                if (heightfull < SIZE_MINIY) heightfull = SIZE_MINIY;
-                else if (heightfull < SIZE) heightfull = SIZE;
-                ScrollSliderFull = heightfull;
-
-                int alpha = ScrollHover ? 141 : 110;
-                using (var path = ScrollSlider.RoundPath(ScrollSlider.Width))
+                if (ScrollY.Show)
                 {
-                    g.Fill(Color.FromArgb(alpha, Colour.TextBase.Get(nameof(Input), ColorScheme)), path);
+                    ScrollY.Rect = new Rectangle(rect_read.Right - SIZE, rect_read.Y, SIZE, rect_read.Height);
+                    if (IsPaintScroll())
+                    {
+                        var color = Color.FromArgb(10, bg);
+                        if (joinMode == TJoinMode.Left || JoinRight) g.Fill(color, ScrollY.Rect);
+                        else if (joinMode == TJoinMode.Top)
+                        {
+                            using (var pathScroll = Helper.RoundPath(ScrollY.Rect, _radius, false, true, false, false))
+                            {
+                                g.Fill(color, pathScroll);
+                            }
+                        }
+                        else if (joinMode == TJoinMode.Bottom)
+                        {
+                            using (var pathScroll = Helper.RoundPath(ScrollY.Rect, _radius, false, false, true, false))
+                            {
+                                g.Fill(color, pathScroll);
+                            }
+                        }
+                        else
+                        {
+                            using (var pathScroll = Helper.RoundPath(ScrollY.Rect, _radius, false, true, true, false))
+                            {
+                                g.Fill(color, pathScroll);
+                            }
+                        }
+                    }
+                    float val = ScrollY.Value, VrValue = ScrollY.Max + ScrollY.Rect.Height, gap = (ScrollY.Rect.Width - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2;
+                    float heightfull = ((ScrollY.Rect.Height / VrValue) * ScrollY.Rect.Height), height = heightfull - SIZE;
+                    if (height < min) height = min;
+                    else if (height < SIZE) height = SIZE;
+                    float y = val == 0 ? 0 : (val / (VrValue - ScrollY.Rect.Height)) * (ScrollY.Rect.Height - height);
+                    ScrollY.Slider = new RectangleF(ScrollY.Rect.X + gap, ScrollY.Rect.Y + y + gap, SIZE_BAR, height - gap * 2);
+
+                    if (heightfull < SIZE_MINIY) heightfull = SIZE_MINIY;
+                    else if (heightfull < SIZE) heightfull = SIZE;
+                    ScrollY.SliderFull = heightfull;
+
+                    int alpha = ScrollY.Hover ? 141 : 110;
+                    using (var path = ScrollY.Slider.RoundPath(ScrollY.Slider.Width))
+                    {
+                        g.Fill(Color.FromArgb(alpha, bg), path);
+                    }
                 }
             }
         }
 
         bool IsPaintScroll()
         {
-            if (Config.ScrollBarHide) return ScrollHover;
+            if (Config.ScrollBarHide)
+            {
+                if (ScrollY.Show && ScrollX.Show) return ScrollY.Hover || ScrollX.Hover;
+                return ScrollY.Hover;
+            }
             else return true;
         }
 
@@ -214,7 +280,7 @@ namespace AntdUI
                 else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
                 else g.SetClip(new Rectangle(0, 0, w, Height));
 
-                g.TranslateTransform(-ScrollX, -ScrollY);
+                g.TranslateTransform(-ScrollX.Value, -ScrollY.Value);
                 using (var brush = new SolidBrush(CaretColor ?? _fore))
                 {
                     g.Fill(brush, CaretInfo.Rect);
@@ -225,7 +291,7 @@ namespace AntdUI
         void PaintText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
         {
             var state = g.Save();
-            g.TranslateTransform(-ScrollX, -ScrollY);
+            g.TranslateTransform(-ScrollX.Value, -ScrollY.Value);
             var tmp = PCSText(g, _fore, w, h, cache_font);
             if (styles != null)
             {
@@ -243,21 +309,21 @@ namespace AntdUI
             var tmp = new List<CacheFont>(cache_font.Length);
             if (IsPassWord)
             {
-                if (ScrollYShow)
+                if (ScrollY.Show)
                 {
                     foreach (var it in cache_font)
                     {
                         if (it.ret) continue;
-                        bool show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
+                        bool show = it.rect.Y > ScrollY.Value - it.rect.Height && it.rect.Bottom < ScrollY.Value + h + it.rect.Height;
                         if (show) tmp.Add(it);
                     }
                 }
-                else if (ScrollXShow)
+                else if (ScrollX.Show)
                 {
                     foreach (var it in cache_font)
                     {
                         if (it.ret) continue;
-                        bool show = it.rect.X > ScrollX - it.rect.Width && it.rect.Right < ScrollX + w + it.rect.Width;
+                        bool show = it.rect.X > ScrollX.Value - it.rect.Width && it.rect.Right < ScrollX.Value + w + it.rect.Width;
                         if (show) tmp.Add(it);
                     }
                 }
@@ -272,21 +338,21 @@ namespace AntdUI
             }
             else
             {
-                if (ScrollYShow)
+                if (ScrollY.Show)
                 {
                     foreach (var it in cache_font)
                     {
                         if (it.hide) continue;
-                        bool show = it.rect.Y > ScrollY - it.rect.Height && it.rect.Bottom < ScrollY + h + it.rect.Height;
+                        bool show = it.rect.Y > ScrollY.Value - it.rect.Height && it.rect.Bottom < ScrollY.Value + h + it.rect.Height;
                         if (show) tmp.Add(it);
                     }
                 }
-                else if (ScrollXShow)
+                else if (ScrollX.Show)
                 {
                     foreach (var it in cache_font)
                     {
                         if (it.hide) continue;
-                        bool show = it.rect.X > ScrollX - it.rect.Width && it.rect.Right < ScrollX + w + it.rect.Width;
+                        bool show = it.rect.X > ScrollX.Value - it.rect.Width && it.rect.Right < ScrollX.Value + w + it.rect.Width;
                         if (show) tmp.Add(it);
                     }
                 }

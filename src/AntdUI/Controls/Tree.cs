@@ -401,11 +401,17 @@ namespace AntdUI
                         TestSub(ref dir, items);
                         foreach (var item in dir)
                         {
-                            int check_count = 0;
-                            foreach (var sub in item.Sub)
-                            { if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++; }
-                            if (check_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
-                            else item.CheckState = CheckState.Unchecked;
+                            if (item.items == null) item.CheckState = CheckState.Unchecked;
+                            else
+                            {
+                                int check_count = 0;
+                                foreach (var sub in item.items)
+                                {
+                                    if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+                                }
+                                if (check_count > 0) item.CheckState = check_count == item.items.Count ? CheckState.Checked : CheckState.Indeterminate;
+                                else item.CheckState = CheckState.Unchecked;
+                            }
                         }
                     }
                     ChangeList(g, rect, null, items!, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
@@ -431,7 +437,7 @@ namespace AntdUI
                 if (it.ICanExpand)
                 {
                     dir.Insert(0, it);
-                    TestSub(ref dir, it.Sub);
+                    TestSub(ref dir, it.items!);
                 }
             }
         }
@@ -447,12 +453,7 @@ namespace AntdUI
                 it.ParentItem = Parent;
                 if (it.Visible)
                 {
-                    if (it.ParentItem != null && !it.ParentItem.Expand)
-                    {
-                        it.SetRect(g, Font, depth, checkable, blockNode, has_sub, true, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
-                        continue;
-                    }
-                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, false, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
+                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
                     if (expand)
                     {
                         if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
@@ -462,7 +463,7 @@ namespace AntdUI
                     if (it.ICanExpand)
                     {
                         int y_item = y;
-                        ChangeList(g, rect, it, it.Sub, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
+                        ChangeList(g, rect, it, it.items!, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
                         it.SubY = y_item - gapI / 2;
                         it.SubHeight = y - y_item;
                         if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
@@ -775,7 +776,7 @@ namespace AntdUI
                 }
                 if (item.ICanExpand && item.Expand)
                 {
-                    foreach (var sub in item.Sub)
+                    foreach (var sub in item.items!)
                     {
                         if (IMouseDown(e, sub)) return true;
                     }
@@ -876,7 +877,7 @@ namespace AntdUI
                 }
                 if (can && item.Expand)
                 {
-                    foreach (var sub in item.Sub)
+                    foreach (var sub in item.items!)
                     {
                         if (IMouseUp(e, sub, MDown)) return true;
                     }
@@ -1016,8 +1017,14 @@ namespace AntdUI
         public void SetCheckStrictly(TreeItem? item)
         {
             if (item == null) return;
+            if (item.items == null)
+            {
+                item.CheckState = CheckState.Unchecked;
+                SetCheckStrictly(item.ParentItem);
+                return;
+            }
             int check_all_count = 0, check_count = 0;
-            foreach (var sub in item.Sub)
+            foreach (var sub in item.items)
             {
                 if (sub.CheckState == CheckState.Checked)
                 {
@@ -1026,7 +1033,7 @@ namespace AntdUI
                 }
                 else if (sub.CheckState == CheckState.Indeterminate) check_all_count++;
             }
-            if (check_all_count > 0) item.CheckState = check_count == item.Sub.Count ? CheckState.Checked : CheckState.Indeterminate;
+            if (check_all_count > 0) item.CheckState = check_count == item.items.Count ? CheckState.Checked : CheckState.Indeterminate;
             else item.CheckState = CheckState.Unchecked;
             SetCheckStrictly(item.ParentItem);
         }
@@ -1042,7 +1049,7 @@ namespace AntdUI
                     try
                     {
                         int hand = 0;
-                        foreach (var it in items) IMouseMove(it, e.X, e.Y, ref hand);
+                        foreach (var it in items) IMouseMove(it, true, e.X, e.Y, ref hand);
                         SetCursor(hand > 0);
                     }
                     catch { }
@@ -1051,16 +1058,16 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(TreeItem item, int x, int y, ref int hand)
+        void IMouseMove(TreeItem item, bool expend, int x, int y, ref int hand)
         {
             if (item.show)
             {
-                if (item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode) > 0) hand++;
+                if (expend && item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode) > 0) hand++;
                 try
                 {
                     if (item.items != null)
                     {
-                        foreach (var sub in item.items.Safe) IMouseMove(sub, x, y, ref hand);
+                        foreach (var sub in item.items.Safe) IMouseMove(sub, item.Expand, x, y, ref hand);
                     }
                 }
                 catch { }
@@ -1360,7 +1367,8 @@ namespace AntdUI
                 foreach (var it in items)
                 {
                     it.Expand = value;
-                    ExpandAll(it.Sub, value);
+                    if (it.items == null) continue;
+                    ExpandAll(it.items, value);
                 }
             }
         }
@@ -1536,7 +1544,7 @@ namespace AntdUI
             }
             if (item.ICanExpand && item.Expand)
             {
-                foreach (var sub in item.Sub)
+                foreach (var sub in item.items!)
                 {
                     if (IHitTest(x, y, sub, out mdown, out down)) return true;
                 }
@@ -2082,18 +2090,8 @@ namespace AntdUI
 
         #region 布局
 
-        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, bool initsub, Rectangle _rect, int depth_gap, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
-            if (initsub)
-            {
-                arrow_rect = Rectangle.Empty;
-                check_rect = Rectangle.Empty;
-                ico_rect = Rectangle.Empty;
-                txt_rect = Rectangle.Empty;
-                rect = Rectangle.Empty;
-                rect_all = Rectangle.Empty;
-                return;
-            }
             Depth = depth;
             var size = g.MeasureText(Text, font);
             int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (size.Height + gap - icon_size) / 2, ui = icon_size + gap;

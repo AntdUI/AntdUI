@@ -41,6 +41,8 @@ namespace AntdUI
         {
             base.BackColor = Color.Transparent;
             CaretInfo = new ICaret(this);
+            ScrollY = new ScrollYInfo(this);
+            ScrollX = new ScrollInfo(this);
         }
 
         #region 属性
@@ -794,6 +796,27 @@ namespace AntdUI
             }
         }
 
+        bool wordwrap = true;
+        /// <summary>
+        /// 自动换行
+        /// </summary>
+        [Description("自动换行"), Category("行为"), DefaultValue(true)]
+        public bool WordWrap
+        {
+            get => wordwrap;
+            set
+            {
+                if (wordwrap == value) return;
+                wordwrap = value;
+                if (multiline)
+                {
+                    CalculateRect();
+                    Invalidate();
+                }
+                OnPropertyChanged(nameof(WordWrap));
+            }
+        }
+
         int lineheight = 0;
         [Description("多行行高"), Category("行为"), DefaultValue(0)]
         public int LineHeight
@@ -1463,14 +1486,23 @@ namespace AntdUI
                 Rectangle r;
                 if (CurrentPosIndex >= cache_font.Length) r = cache_font[cache_font.Length - 1].rect;
                 else r = cache_font[CurrentPosIndex].rect;
-                ScrollY = r.Bottom;
+                ScrollY.Value = r.Bottom;
             }
         }
 
         /// <summary>
         /// 内容滚动到最下面
         /// </summary>
-        public void ScrollToEnd() => ScrollY = ScrollYMax;
+        public void ScrollToEnd() => ScrollY.Value = ScrollY.Max;
+
+        /// <summary>
+        /// 滚动到指定行
+        /// </summary>
+        public void ScrollLine(int i)
+        {
+            int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
+            ScrollY.Value = lineHeight * i;
+        }
 
         #endregion
 
@@ -1730,7 +1762,7 @@ namespace AntdUI
             try
             {
                 var point = CaretInfo.Rect.Location;
-                point.Offset(0, -scrolly);
+                point.Offset(0, -ScrollY.Value);
                 var CandidateForm = new Win32.CANDIDATEFORM()
                 {
                     dwStyle = Win32.CFS_CANDIDATEPOS,
