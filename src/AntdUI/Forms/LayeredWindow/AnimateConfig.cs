@@ -78,8 +78,11 @@ namespace AntdUI
 
         public bool End(string name, CloseReason closeReason)
         {
+            if (name == nameof(Popover)) closeReason = CloseReason.UserClosing;
             switch (closeReason)
             {
+                case CloseReason.FormOwnerClosing:
+                    return false;
                 case CloseReason.UserClosing:
                     return End(name);
                 default:
