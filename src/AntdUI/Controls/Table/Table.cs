@@ -1199,56 +1199,41 @@ namespace AntdUI
                 int len = dataTmp.rows.Length * _RowHeight.Value;
                 var prog = (_RowHeight.Value * i) * 1F / len;
                 int y = (int)Math.Round(len * prog);
-                if (force)
-                {
-                    if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                    else ScrollBar.ValueY = y;
-                    return sy - ScrollBar.ValueY;
-                }
-                else
-                {
-                    int b = y + _RowHeight.Value;
-                    if (visibleHeader && fixedHeader)
-                    {
-                        if (y - rows[0].RECT.Height < sy || b > sy + rect_read.Height)
-                        {
-                            if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                            else ScrollBar.ValueY = y;
-                            return sy - ScrollBar.ValueY;
-                        }
-                    }
-                    else if (y < sy || b > sy + rect_read.Height)
-                    {
-                        if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                        else ScrollBar.ValueY = y;
-                        return sy - ScrollBar.ValueY;
-                    }
-                }
-                return 0;
+                return ScrollLine(sy, y, y + _RowHeight.Value, rows, force);
             }
             if (!rows[i].SHOW) i = NextIndexUp(rows, i) + 1;
-            var selectRow = rows[i];
+            var select = rows[i].RECT;
+            return ScrollLine(sy, select.Y, select.Bottom, rows, force);
+        }
+        int ScrollLine(int y, int b, RowTemplate[] rows, bool force = false)
+        {
+            if (!ScrollBar.ShowY) return 0;
+            int sy = ScrollBar.ValueY;
+            return ScrollLine(sy, y, b, rows, force);
+        }
+        int ScrollLine(int sy, int y, int b, RowTemplate[] rows, bool force = false)
+        {
             if (force)
             {
-                if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-                else ScrollBar.ValueY = rows[i].RECT.Y;
+                if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                else ScrollBar.ValueY = y;
                 return sy - ScrollBar.ValueY;
             }
             else
             {
                 if (visibleHeader && fixedHeader)
                 {
-                    if (selectRow.RECT.Y - rows[0].RECT.Height < sy || selectRow.RECT.Bottom > sy + rect_read.Height)
+                    if (y - rows[0].RECT.Height < sy || b > sy + rect_read.Height)
                     {
-                        if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-                        else ScrollBar.ValueY = rows[i].RECT.Y;
+                        if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                        else ScrollBar.ValueY = y;
                         return sy - ScrollBar.ValueY;
                     }
                 }
-                else if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height)
+                else if (y < sy || b > sy + rect_read.Height)
                 {
-                    if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-                    else ScrollBar.ValueY = rows[i].RECT.Y;
+                    if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                    else ScrollBar.ValueY = y;
                     return sy - ScrollBar.ValueY;
                 }
             }

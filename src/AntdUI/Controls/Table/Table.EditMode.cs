@@ -46,7 +46,7 @@ namespace AntdUI
                     EditModeClose();
                     if (CanEditMode(item))
                     {
-                        ScrollLine(row, rows);
+                        ScrollLine(crect.Y, crect.Bottom, rows);
                         if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY);
                         else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
                         else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);

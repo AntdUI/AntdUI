@@ -318,6 +318,7 @@ namespace AntdUI
 
                 #region 处理需要的行
 
+                int heightEs = 0;
                 for (int row_i = 0; row_i < _rows.Count; row_i++)
                 {
                     var row = _rows[row_i];
@@ -349,7 +350,8 @@ namespace AntdUI
                             else if (rowHeightHeader.HasValue) row.Height = (int)(rowHeightHeader.Value * dpi);
                             else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
                             else row.Height = max_height + gap.y2;
-                            tmp_width_cell = CalculateWidth(rect, false, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
+                            if (visibleHeader) heightEs += row.Height;
+                            tmp_width_cell = CalculateWidth(rect, heightEs * _rows.Count, false, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
                             var del_tmp_width_cell = new List<int>(tmp_width_cell.Count);
                             foreach (var it in tmp_width_cell)
                             {
@@ -388,6 +390,7 @@ namespace AntdUI
                             if (_RowHeight.HasValue) row.Height = max_height = _RowHeight.Value;
                             else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
                             else row.Height = max_height + gap.y2;
+                            heightEs += row.Height;
                         }
                     }
                 }
@@ -452,7 +455,7 @@ namespace AntdUI
                     }
                 }
 
-                var width_cell = CalculateWidth(rect, true, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
+                var width_cell = CalculateWidth(rect, heightEs, true, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
 
                 #endregion
 
@@ -803,16 +806,18 @@ namespace AntdUI
         /// 计算宽度
         /// </summary>
         /// <param name="rect">区域</param>
+        /// <param name="heightEs">预估高度</param>
         /// <param name="col_width">表头宽度代码</param>
         /// <param name="read_width">每列的当前值和最大值</param>
         /// <param name="gap2">边距2</param>
         /// <param name="check_size">复选框大小</param>
         /// <param name="sort_size">拖拽大小</param>
         /// <param name="is_exceed">是否超出容器宽度</param>
-        Dictionary<int, int> CalculateWidth(Rectangle rect, bool change, ref Rectangle rect_read, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int gap2, int check_size, int sort_size, ref bool is_exceed)
+        Dictionary<int, int> CalculateWidth(Rectangle rect, int heightEs, bool change, ref Rectangle rect_read, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int gap2, int check_size, int sort_size, ref bool is_exceed)
         {
-            int use_width = rect.Width;
-            float max_width = 0;
+            bool showX = heightEs > rect_read.Bottom;
+            int use_width = rect.Width, ex_width = showX ? ScrollBar.SIZE : 0;
+            float max_width = ex_width;
             Dictionary<int, float> col_width_tmp = new Dictionary<int, float>(col_width.Count);
             foreach (var it in read_width)
             {
@@ -903,10 +908,11 @@ namespace AntdUI
                 {
                     if (AutoSizeColumnsMode == ColumnsMode.Fill)
                     {
+                        int tmpw = rect_read.Width - ex_width;
                         int fill_wi = 0;
                         foreach (var it in col_width_tmp) fill_wi += (int)Math.Round(it.Value);
                         sum_wi -= fill_wi;
-                        int tw = rect_read.Width - fill_wi;
+                        int tw = tmpw - fill_wi;
                         //填充
                         var percentage = new Dictionary<int, int>(width_cell.Count);
                         foreach (var it in width_cell)

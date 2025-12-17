@@ -586,7 +586,7 @@ namespace AntdUI
                     db.cell = RealCELL(db.cell, rows, ref i_row, ref i_cel, ref it, out var crect);
                     if (CanEditMode(db.cell))
                     {
-                        int val = ScrollLine(i_row, rows);
+                        int val = ScrollLine(crect.Y, crect.Bottom, rows);
                         OnEditMode(it.row, db.cell, crect, i_row, i_cel, db.col, db.offset_xi, db.offset_y - val);
                     }
                 }
