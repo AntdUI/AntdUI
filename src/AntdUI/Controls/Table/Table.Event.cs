@@ -430,7 +430,23 @@ namespace AntdUI
             public int i_row { get; set; }
             public int i_cel { get; set; }
             public Column col { get; set; }
-            public int mode { get; set; }
+            public CELLDBMode mode { get; set; }
+        }
+        public enum CELLDBMode : int
+        {
+            None = 0,
+            /// <summary>
+            /// 表头
+            /// </summary>
+            Column = 1,
+            /// <summary>
+            /// 浮动表头
+            /// </summary>
+            ColumnFixed = 2,
+            /// <summary>
+            /// 总结栏
+            /// </summary>
+            Summary = 3
         }
     }
 }

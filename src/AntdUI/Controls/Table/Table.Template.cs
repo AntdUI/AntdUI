@@ -83,6 +83,7 @@ namespace AntdUI
 
             public bool IsColumn => Type == RowType.Column;
             public bool IsOther => Type == RowType.None || Type == RowType.Summary;
+            public bool IsSummary => Type == RowType.Summary;
 
             #region 悬浮状态
 

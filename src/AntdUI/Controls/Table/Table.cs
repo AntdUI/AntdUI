@@ -1789,7 +1789,7 @@ namespace AntdUI
             }
         }
 
-        public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out CELLDBMode mode)
         {
             if (rows == null)
             {
@@ -1800,7 +1800,8 @@ namespace AntdUI
             var db = CellContains(rows, false, x, y);
             if (db == null)
             {
-                mode = r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+                mode = CELLDBMode.None;
+                r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
             else

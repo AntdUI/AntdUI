@@ -47,7 +47,7 @@ namespace AntdUI
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
                 var db = CellContains(rows, true, e.X, e.Y);
-                if (db == null)
+                if (db == null || db.mode == CELLDBMode.Summary)
                 {
                     FocusedCell = null;
                     return;
@@ -312,8 +312,8 @@ namespace AntdUI
                         EditModeClose();
                         if (summaryCustomize && e.Button == MouseButtons.Right)
                         {
-                            var celdb = CellContainsSummary(rows, e.X, e.Y);
-                            if (celdb != null) Table_MouseClick(celdb);
+                            var celdb = CellContains(rows, false, e.X, e.Y);
+                            if (celdb != null && celdb.mode == CELLDBMode.Summary) Summary_RClick(celdb);
                         }
                         return;
                     }
@@ -366,7 +366,7 @@ namespace AntdUI
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             var db = CellContains(rows, true, e.X, e.Y);
-            if (db == null) MouseUpBtn(it, btn, e);
+            if (db == null || db.mode == CELLDBMode.Summary) MouseUpBtn(it, btn, e);
             else if (it.i_row != db.i_row || it.i_cel != db.i_cel) MouseUpBtn(it, btn, e, db);
             else
             {
@@ -701,7 +701,7 @@ namespace AntdUI
             {
                 if (rows == null || inEditMode) return;
                 var db = CellContains(rows, true, e.X, e.Y);
-                if (db == null)
+                if (db == null || db.mode == CELLDBMode.Summary)
                 {
                     foreach (RowTemplate it in rows)
                     {
@@ -796,7 +796,7 @@ namespace AntdUI
             }
             if (rows == null || inEditMode) return;
             var db = CellContains(rows, false, x, y);
-            if (db == null) OnCellHover();
+            if (db == null || db.mode == CELLDBMode.Summary) OnCellHover();
             else
             {
                 OnCellHover(db.cell.ROW.RECORD, db.cell.ROW.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));
@@ -959,7 +959,51 @@ namespace AntdUI
         {
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
-            foreach (RowTemplate it in rows)
+            if (summary == null) return CellContainsCore(rows, sethover, ex, ey, sx, sy, px, py);
+            else
+            {
+                var row_tmp = new List<RowTemplate>(rows.Length);
+                foreach (var it in rows)
+                {
+                    if (it.IsSummary)
+                    {
+                        if (sFixedB == -1)
+                        {
+                            if (it.CONTAINS(ex, py))
+                            {
+                                if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
+                                {
+                                    tmp!.mode = CELLDBMode.Summary;
+                                    return tmp;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int eyb = ey + sFixedB;
+                            if (it.CONTAINS(ex, eyb))
+                            {
+                                for (int i = 0; i < it.cells.Length; i++)
+                                {
+                                    var cel = it.cells[i];
+                                    if (cel.CONTAIN(ex, eyb))
+                                    {
+                                        var tmp = new CELLDB(cel, ex, eyb, sx, sx, sy, it.INDEX, i, cel.COLUMN);
+                                        tmp.mode = CELLDBMode.Summary;
+                                        return tmp;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else row_tmp.Add(it);
+                }
+                return CellContainsCore(row_tmp, sethover, ex, ey, sx, sy, px, py);
+            }
+        }
+        CELLDB? CellContainsCore(IList<RowTemplate> rows, bool sethover, int ex, int ey, int sx, int sy, int px, int py)
+        {
+            foreach (var it in rows)
             {
                 if (it.IsColumn)
                 {
@@ -967,7 +1011,7 @@ namespace AntdUI
                     {
                         if (CellContainsFixed(it, ex, ey, sx, sy, px, py, out var tmp))
                         {
-                            tmp!.mode = 2;
+                            tmp!.mode = CELLDBMode.ColumnFixed;
                             return tmp;
                         }
                     }
@@ -975,40 +1019,19 @@ namespace AntdUI
                     {
                         if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                         {
-                            tmp!.mode = 1;
+                            tmp!.mode = CELLDBMode.Column;
                             return tmp;
                         }
                     }
                 }
-                else if (it.Type == RowType.Summary) continue;
+                else if (it.IsSummary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
                     if (sethover) hovers = it.INDEX;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
-                        tmp!.mode = 0;
+                        tmp!.mode = CELLDBMode.None;
                         return tmp;
-                    }
-                }
-            }
-            return null;
-        }
-        CELLDB? CellContainsSummary(RowTemplate[] rows, int ex, int ey)
-        {
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            int px = ex + sx, py = ey + sy;
-            foreach (RowTemplate it in rows)
-            {
-                if (it.IsColumn) continue;
-                else if (it.Type == RowType.Summary)
-                {
-                    if (it.Contains(ex, py, false))
-                    {
-                        if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
-                        {
-                            tmp!.mode = 0;
-                            return tmp;
-                        }
                     }
                 }
             }

@@ -206,6 +206,7 @@ namespace AntdUI
                 else showFixedColumnL = showFixedColumnR = false;
 
                 if (summarys.Length > 0) PaintFixedSummary(g, rect, rect_read, summarys, brush_fore, brush_foreEnable, brush_forecolumn, column_font, sx, sy, _radius);
+                else sFixedB = -1;
 
                 #endregion
 
@@ -1013,6 +1014,7 @@ namespace AntdUI
             else showFixedColumnR = false;
         }
 
+        int sFixedB = -1;
         void PaintFixedSummary(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (ScrollBar.ShowY)
@@ -1022,7 +1024,8 @@ namespace AntdUI
                     var lastrow = shows[shows.Length - 1];
                     if (sy + rect_read.Height < lastrow.row.RECT.Bottom)
                     {
-                        int scrollBar = ScrollBar.ShowX ? ScrollBar.SIZE : 0, h = lastrow.row.RECT.Bottom - shows[0].row.RECT.Y, sFixedB = lastrow.row.RECT.Bottom - rect_read.Bottom + scrollBar;
+                        int scrollBar = ScrollBar.ShowX ? ScrollBar.SIZE : 0, h = lastrow.row.RECT.Bottom - shows[0].row.RECT.Y;
+                        sFixedB = lastrow.row.RECT.Bottom - rect_read.Bottom + scrollBar;
 
                         var rect_Fixed = new Rectangle(rect_read.X, rect_read.Bottom - h - scrollBar, rect_read.Width, h + scrollBar);
 
