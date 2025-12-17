@@ -20,13 +20,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
 {
-    [Browsable(false)]
+    [ToolboxItem(false)]
     public partial class FilterControl : UserControl
     {
         public const string SVG_EQUAL = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M160 256c-35.4 0-64 28.6-64 64s28.6 64 64 64h704c35.4 0 64-28.6 64-64s-28.6-64-64-64H160z m0 384c-35.4 0-64 28.6-64 64s28.6 64 64 64h704c35.4 0 64-28.6 64-64s-28.6-64-64-64H160z\"></path></svg>";

@@ -51,7 +51,6 @@ namespace AntdUI
             CloseIcon = control.CloseIcon;
             DropNoMatchClose = control.DropDownEmptyClose;
             MaxCount = control.MaxCount;
-            MaxCount = 0;
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
             ItemOS = new ItemIndex(items);

@@ -18,6 +18,7 @@
 // QQ: 17379620
 
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -65,24 +66,21 @@ namespace AntdUI
             };
         }
         ContextMenuStripItem GetMenu(TSummaryType value, string key, string id, string svg) => new ContextMenuStripItem().SetText(key, "Table.Summary." + id).SetSubText(id).SetIcon(svg).SetTag(value);
-        private Column? ActiveColumnSummary { get; set; }
+        private Form? FMenuStrip;
         private void Summary_RClick(CELLDB cell)
         {
             var colSummary = cell.col;
-            ActiveColumnSummary = null;
-            ActiveColumnSummary = colSummary;
             if (colSummary.SummaryItem == null) colSummary.SummaryItem = new SummaryItemOption(TSummaryType.None);
-            var config = new ContextMenuStrip.Config(this, SummaryItemRightKey, InitSummaryMenu(colSummary.SummaryItem.SummaryType)).SetFont(Font).SetAlign(TAlign.Top);
-            config.open();
-        }
-        private void SummaryItemRightKey(ContextMenuStripItem item)
-        {
-            if (ActiveColumnSummary == null) return;
-            if (item.Tag is TSummaryType summaryType)
+            FMenuStrip?.Dispose();
+            FMenuStrip = new ContextMenuStrip.Config(this, item =>
             {
-                ActiveColumnSummary.SummaryItem!.SummaryType = summaryType;
-                UpdateSummaries();
-            }
+                FMenuStrip = null;
+                if (item.Tag is TSummaryType summaryType)
+                {
+                    colSummary.SummaryItem.SummaryType = summaryType;
+                    UpdateSummaries();
+                }
+            }, InitSummaryMenu(colSummary.SummaryItem.SummaryType)).SetFont(Font).SetAlign(TAlign.Top).open();
         }
         /// <summary>
         /// 已启用汇总的列
@@ -214,7 +212,6 @@ namespace AntdUI
                 items.Add(item);
             }
             if (items.Count > 0) Summary = new List<AntItem[]> { items.ToArray() };
-            ActiveColumnSummary = null;
 
         }
         private string? GetSummaryItemText(object? value, string? format) => Column.GetDisplayText(value, string.IsNullOrEmpty(format) ? "0.#" : format);

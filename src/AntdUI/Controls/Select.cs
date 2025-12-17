@@ -143,6 +143,12 @@ namespace AntdUI
         public bool AutoPrefixSvg { get; set; }
 
         /// <summary>
+        /// 自动设置文本
+        /// </summary>
+        [Description("自动设置文本"), Category("外观"), DefaultValue(true)]
+        public bool AutoText { get; set; } = true;
+
+        /// <summary>
         /// 鼠标滚轮修改值
         /// </summary>
         [Description("鼠标滚轮修改值"), Category("交互"), DefaultValue(true)]
@@ -234,14 +240,17 @@ namespace AntdUI
                 selectedItem = it;
                 selectedValue = it.Tag;
                 if (AutoPrefixSvg) PrefixSvg = it.IconSvg;
-                Text = it.Text;
+                if (AutoText) Text = it.Text;
             }
             else
             {
                 selectedItem = null;
                 selectedValue = obj;
-                if (obj == null) Text = "";
-                else Text = obj.ToString() ?? "";
+                if (AutoText)
+                {
+                    if (obj == null) Text = "";
+                    else Text = obj.ToString() ?? "";
+                }
             }
             OnSelectedValueChanged(selectedValue);
             OnSelectedIndexChanged(selectedIndex);
@@ -303,7 +312,7 @@ namespace AntdUI
             selectedIndex = y;
             selectedItem = item;
             selectedValue = value;
-            Text = text;
+            if (AutoText) Text = text;
             if (AutoPrefixSvg && item != null) PrefixSvg = item.IconSvg;
             OnSelectedValueChanged(selectedValue);
             OnSelectedIndexChanged(selectedIndex);
@@ -660,7 +669,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.LANG:
-                    Text = selectedItem.Text;
+                    if (AutoText) Text = selectedItem.Text;
                     break;
             }
         }
