@@ -67,6 +67,7 @@ namespace AntdUI
         }
         ContextMenuStripItem GetMenu(TSummaryType value, string key, string id, string svg) => new ContextMenuStripItem().SetText(key, "Table.Summary." + id).SetSubText(id).SetIcon(svg).SetTag(value);
         private Form? FMenuStrip;
+        public bool SummaryRowFocused { get; private set; }
         private void Summary_RClick(CELLDB cell)
         {
             var colSummary = cell.col;
