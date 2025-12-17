@@ -969,30 +969,19 @@ namespace AntdUI
                     {
                         if (sFixedB == -1)
                         {
-                            if (it.CONTAINS(ex, py))
+                            if (it.CONTAINS(ex, py) && CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                             {
-                                if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
-                                {
-                                    tmp!.mode = CELLDBMode.Summary;
-                                    return tmp;
-                                }
+                                tmp!.mode = CELLDBMode.Summary;
+                                return tmp;
                             }
                         }
                         else
                         {
                             int eyb = ey + sFixedB;
-                            if (it.CONTAINS(ex, eyb))
+                            if (it.CONTAINS(ex, eyb) && CellContains(it, ex, ey, eyb, sx, sy, px, py, out var tmp))
                             {
-                                for (int i = 0; i < it.cells.Length; i++)
-                                {
-                                    var cel = it.cells[i];
-                                    if (cel.CONTAIN(ex, eyb))
-                                    {
-                                        var tmp = new CELLDB(cel, ex, eyb, sx, sx, sy, it.INDEX, i, cel.COLUMN);
-                                        tmp.mode = CELLDBMode.Summary;
-                                        return tmp;
-                                    }
-                                }
+                                tmp!.mode = CELLDBMode.Summary;
+                                return tmp;
                             }
                         }
                     }
@@ -1117,6 +1106,48 @@ namespace AntdUI
                 if (cel.CONTAIN(px, py))
                 {
                     cell = new CELLDB(cel, px, py, sx, sx, sy, it.INDEX, i, cel.COLUMN);
+                    return true;
+                }
+            }
+            cell = null;
+            return false;
+        }
+        bool CellContains(RowTemplate it, int ex, int ey, int eyb, int sx, int sy, int px, int py, out CELLDB? cell)
+        {
+            var hasi = new List<int>();
+            if (showFixedColumnL && fixedColumnL != null)
+            {
+                foreach (var i in fixedColumnL)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex, eyb))
+                    {
+                        cell = new CELLDB(cel, ex, eyb, 0, 0, sy, it.INDEX, i, cel.COLUMN);
+                        return true;
+                    }
+                }
+            }
+            if (showFixedColumnR && fixedColumnR != null)
+            {
+                foreach (var i in fixedColumnR)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex + sFixedR, eyb))
+                    {
+                        cell = new CELLDB(cel, ex + sFixedR, eyb, -sFixedR, sFixedR, sy, it.INDEX, i, cel.COLUMN);
+                        return true;
+                    }
+                }
+            }
+            for (int i = 0; i < it.cells.Length; i++)
+            {
+                if (hasi.Contains(i)) continue;
+                var cel = it.cells[i];
+                if (cel.CONTAIN(px, eyb))
+                {
+                    cell = new CELLDB(cel, px, eyb, sx, sx, sy, it.INDEX, i, cel.COLUMN);
                     return true;
                 }
             }

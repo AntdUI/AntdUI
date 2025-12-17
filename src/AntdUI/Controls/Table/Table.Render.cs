@@ -1085,6 +1085,7 @@ namespace AntdUI
                         g.ResetClip();
                         clipath?.Dispose();
                     }
+                    else sFixedB = -1;
                 }
                 catch { }
             }
