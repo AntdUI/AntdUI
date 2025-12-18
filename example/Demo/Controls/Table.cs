@@ -34,7 +34,7 @@ namespace Demo.Controls
             InitializeComponent();
 
             #region Table
-            table1.MultipleRows = true;
+
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
                 new AntdUI.Column("name", "姓名").SetFixed().SetTree("Sub").SetLocalizationTitleID("Table.Column."),
@@ -66,7 +66,8 @@ namespace Demo.Controls
 
             //设置总结栏
             SummarySet();
-            table1.CustomSummaryCalculate += Table1_CustomSummaryCalculate;
+            table1.CustomSummaryCalculate += table1_CustomSummaryCalculate;
+
             #endregion
 
             selectEditMode.Items.AddRange(EnumList(typeof(AntdUI.TEditMode)));
@@ -226,7 +227,7 @@ namespace Demo.Controls
             else table1.EditInputStyle = AntdUI.TEditInputStyle.Default;
         }
 
-        private void selectFocusedStyle_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        void selectFocusedStyle_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             if (e.Value is AntdUI.TableCellFocusedStyle v) table1.CellFocusedStyle = v;
             else table1.CellFocusedStyle = AntdUI.TableCellFocusedStyle.None;
@@ -237,6 +238,40 @@ namespace Demo.Controls
             if (e.Column == null) return true;
             if (e.Column.Key == "tag" || e.Column.Key == "btns" || e.Column.Key == "imgs") return false;
             return true;
+        }
+
+        void checkboxFocusNavigation_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            table1.EnableFocusNavigation = checkboxFocusNavigation.Checked;
+        }
+        void checkboxSummaryCustomize_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            table1.MultipleRows = e.Value;
+            table1.SummaryCustomize = e.Value;
+            SummarySet();
+        }
+        void table1_CustomSummaryCalculate(object sender, AntdUI.TableCustomSummaryEventArgs e)
+        {
+            if (!e.Finalize)
+            {
+                TestClass item = e.Record as TestClass;
+                if (item.date.Year > 1999) e.TotalValue = 1;
+            }
+        }
+        void SummarySet()
+        {
+            if (table1.SummaryCustomize)
+            {
+                table1.OnUpdateSummaries();
+                return;
+            }
+            var dataList = (IEnumerable<TestClass>)table1.DataSource;
+            table1.Summary = new Dictionary<string, object>
+            {
+                { "age", dataList.Any() ?(int)dataList.Average(x => x.age) : 0},
+                { "address", $"共{dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length)}地址"} ,
+                { "hobby", $"共{dataList.Select(x => x.hobby).Distinct().Count()}种爱好" }
+            };
         }
 
         #endregion
@@ -770,48 +805,5 @@ namespace Demo.Controls
                 }
             }
         }
-
-        private void checkboxFocusNavigation_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
-        {
-            if (checkboxFocusNavigation.Checked)
-            {
-                table1.EnableFocusNavigation = true;
-            }
-            else
-            {
-                table1.EnableFocusNavigation = false;
-            }
-        }
-        private void checkboxSummaryCustomize_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
-        {
-            table1.SummaryCustomize = e.Value;
-
-            SummarySet();
-        }
-        private void Table1_CustomSummaryCalculate(object sender, AntdUI.TableCustomSummaryEventArgs e)
-        {
-            if (!e.Finalize)
-            {
-                TestClass item = e.Record as TestClass;
-                if (item.date.Year > 1999) e.TotalValue = 1;
-            }
-        }
-        private void SummarySet()
-        {
-            if (table1.SummaryCustomize)
-            {
-                table1.OnUpdateSummaries();
-                return;
-            }
-            var dataList = (IEnumerable<TestClass>)table1.DataSource;
-            table1.Summary = new Dictionary<string, object>
-            {
-                { "age", dataList.Any() ?(int)dataList.Average(x => x.age) : 0},
-                { "address", $"共{dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length)}地址"} ,
-                { "hobby", $"共{dataList.Select(x => x.hobby).Distinct().Count()}种爱好" }
-            };
-        }
-
-
     }
 }
