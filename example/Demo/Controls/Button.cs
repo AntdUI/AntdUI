@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Button : UserControl
     {
-        Form form;
-        public Button(Form _form)
+        AntdUI.BaseForm form;
+        public Button(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace Demo.Controls
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            panel_btns.Width = btng1.Width + btng2.Width + btng3.Width + panel_btns.Padding.Horizontal + (int)(panel_btns.Shadow * AntdUI.Config.Dpi) * 2;
+            panel_btns.Width = btng1.Width + btng2.Width + btng3.Width + panel_btns.Padding.Horizontal + (int)(panel_btns.Shadow * form.Dpi) * 2;
         }
         private void Btns(object sender, EventArgs e)
         {
@@ -99,7 +99,7 @@ namespace Demo.Controls
         private void UpdatePanelWidth()
         {
             if (panel_btns.IsDisposed) return;
-            panel_btns.Width = btng1.Width + btng2.Width + btng3.Width + panel_btns.Padding.Horizontal + (int)(panel_btns.Shadow * AntdUI.Config.Dpi) * 2;
+            panel_btns.Width = btng1.Width + btng2.Width + btng3.Width + panel_btns.Padding.Horizontal + (int)(panel_btns.Shadow * form.Dpi) * 2;
         }
 
         private void switch1_CheckedChanged(object sender, AntdUI.BoolEventArgs e) => panel1.Enabled = e.Value;
