@@ -873,6 +873,7 @@ namespace AntdUI
                     OnUpdateSummaries();
                 }
                 else Summary = null;
+                SummaryCustomizeChanged?.Invoke(this, new BoolEventArgs(value));
             }
         }
 

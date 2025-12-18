@@ -412,16 +412,34 @@ namespace AntdUI
             {
                 var rect = rect_read;
                 float DpiX = (float)((rect.Width * 1.0) / (ImgSize.Width * 1.0)), DpiY = (float)((rect.Height * 1.0) / (ImgSize.Height * 1.0));
-                if (DpiX > 1 && DpiY > 0) Dpi = 1F;
-                else if (ImgSize.Width > ImgSize.Height)
+                if (config.Fit.HasValue)
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiX;
-                    else Dpi = DpiY;
+                    switch (config.Fit.Value)
+                    {
+                        case TFit.Contain:
+                            Dpi = Math.Min(DpiX, DpiY);
+                            break;
+                        case TFit.Cover:
+                            Dpi = Math.Max(DpiX, DpiY);
+                            break;
+                        default:
+                            Dpi = 1F;
+                            break;
+                    }
                 }
                 else
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiY;
-                    else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    if (DpiX > 1 && DpiY > 0) Dpi = 1F;
+                    else if (ImgSize.Width > ImgSize.Height)
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiX;
+                        else Dpi = DpiY;
+                    }
+                    else
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiY;
+                        else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    }
                 }
             }
         }

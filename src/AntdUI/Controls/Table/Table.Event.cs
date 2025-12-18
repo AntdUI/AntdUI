@@ -306,12 +306,6 @@ namespace AntdUI
         protected virtual void OnSortRows(int e) => SortRows?.Invoke(this, new IntEventArgs(e));
 
         /// <summary>
-        /// 每行或行自定义汇总计算结束时发生
-        /// </summary>
-        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
-        public event CustomSummaryEventHandler? CustomSummaryCalculate;
-
-        /// <summary>
         /// 树行排序时发生
         /// </summary>
         [Description("树行排序时发生"), Category("行为")]
@@ -402,6 +396,23 @@ namespace AntdUI
         /// </summary>
         [Description("筛选数据变更后发生"), Category("行为")]
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
+
+        /// <summary>
+        /// 每行或行自定义汇总计算结束时发生
+        /// </summary>
+        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
+        public event CustomSummaryEventHandler? CustomSummaryCalculate;
+
+        /// <summary>
+        /// 内置汇总功能切换
+        /// </summary>
+        public delegate void SummaryCustomizeChangedEventHandler(object sender, BoolEventArgs e);
+
+        /// <summary>
+        /// 内置/外部汇总栏切换后发生
+        /// </summary>
+        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
+        public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
 
         #endregion
 

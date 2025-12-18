@@ -132,6 +132,11 @@ namespace AntdUI
             public int ContentCount { get; set; }
 
             /// <summary>
+            /// 图片布局
+            /// </summary>
+            public TFit? Fit { get; set; }
+
+            /// <summary>
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
@@ -205,6 +210,11 @@ namespace AntdUI
             public Config SetSelectIndexChanged(Func<int, bool>? value)
             {
                 OnSelectIndexChanged = value;
+                return this;
+            }
+            public Config SetFit(TFit? value)
+            {
+                Fit = value;
                 return this;
             }
 

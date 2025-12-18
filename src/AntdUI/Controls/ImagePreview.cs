@@ -105,6 +105,12 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 图片布局
+        /// </summary>
+        [Description("图片布局"), Category("外观"), DefaultValue(null)]
+        public TFit? Fit { get; set; }
+
         #region 按钮
 
         PreBtns[]? btns;
@@ -590,16 +596,34 @@ namespace AntdUI
             {
                 var rect = ClientRectangle;
                 float DpiX = (float)((rect.Width * 1.0) / (ImgSize.Width * 1.0)), DpiY = (float)((rect.Height * 1.0) / (ImgSize.Height * 1.0));
-                if (DpiX > 1 && DpiY > 0) Dpi = 1F;
-                else if (ImgSize.Width > ImgSize.Height)
+                if (Fit.HasValue)
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiX;
-                    else Dpi = DpiY;
+                    switch (Fit.Value)
+                    {
+                        case TFit.Contain:
+                            Dpi = Math.Min(DpiX, DpiY);
+                            break;
+                        case TFit.Cover:
+                            Dpi = Math.Max(DpiX, DpiY);
+                            break;
+                        default:
+                            Dpi = 1F;
+                            break;
+                    }
                 }
                 else
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiY;
-                    else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    if (DpiX > 1 && DpiY > 0) Dpi = 1F;
+                    else if (ImgSize.Width > ImgSize.Height)
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiX;
+                        else Dpi = DpiY;
+                    }
+                    else
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiY;
+                        else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    }
                 }
             }
         }

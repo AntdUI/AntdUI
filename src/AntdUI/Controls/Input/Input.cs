@@ -711,7 +711,15 @@ namespace AntdUI
                 return false;
             }
             selectionStart = selectionStartTemp = value;
-            if (caret) r = SetCaretPostion(value + 1, false);
+            if (caret)
+            {
+                if (cache_font == null || cache_font.Length <= value) r = SetCaretPostion(value + 1, false);
+                else
+                {
+                    var it = cache_font[value];
+                    r = SetCaretPostion(value + (it.ret ? 0 : 1), false);
+                }
+            }
             OnPropertyChanged(nameof(SelectionStart));
             return r;
         }
