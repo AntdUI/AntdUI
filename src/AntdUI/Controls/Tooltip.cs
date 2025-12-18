@@ -282,7 +282,7 @@ namespace AntdUI
             PARENT = control;
             ocontrol = control;
             control.Parent.SetTopMost(Handle);
-            MessageEnable = MessageCloseMouseLeave = true;
+            CloseMode = CloseMode.Leave;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
@@ -314,7 +314,7 @@ namespace AntdUI
         {
             ocontrol = control;
             control.SetTopMost(Handle);
-            MessageEnable = MessageCloseMouseLeave = true;
+            CloseMode = CloseMode.Leave;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
@@ -335,7 +335,7 @@ namespace AntdUI
         }
         public TooltipForm NoMessage()
         {
-            MessageEnable = MessageCloseMouseLeave = false;
+            CloseMode = CloseMode.None;
             return this;
         }
 

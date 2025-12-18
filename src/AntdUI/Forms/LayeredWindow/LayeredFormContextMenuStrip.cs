@@ -29,19 +29,17 @@ namespace AntdUI
     internal class LayeredFormContextMenuStrip : ILayeredShadowFormOpacity, SubLayeredForm
     {
         ContextMenuStrip.Config config;
-        public override bool MessageEnable => true;
-        public override bool MessageCloseSub => true;
-        public override bool MessageClickMe => false;
 
         Font? FontSub;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config) : base(250)
         {
             var point = _config.Location ?? MousePosition;
             PARENT = this;
+            CloseMode = CloseMode.Click | CloseMode.NoControl;
             if (_config.TopMost)
             {
                 Helper.SetTopMost(Handle);
-                MessageCloseMouseLeave = true;
+                CloseMode = CloseMode.Leave;
             }
             else _config.Target.SetTopMost(Handle);
             config = _config;
@@ -98,7 +96,7 @@ namespace AntdUI
                 {
                     select_index--;
                     if (select_index < 0) select_index = rectsContent.Length - 1;
-                    while (rectsContent[select_index].Tag == null)
+                    while (rectsContent[select_index].Continue)
                     {
                         select_index--;
                         if (select_index < 0) select_index = rectsContent.Length - 1;
@@ -115,7 +113,7 @@ namespace AntdUI
                         select_index++;
                         if (select_index > rectsContent.Length - 1) select_index = 0;
                     }
-                    while (rectsContent[select_index].Tag == null)
+                    while (rectsContent[select_index].Continue)
                     {
                         select_index++;
                         if (select_index > rectsContent.Length - 1) select_index = 0;
@@ -152,10 +150,10 @@ namespace AntdUI
         }
 
         ScrollBar ScrollBar;
-        bool issub = false;
-        public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs) : base(250)
+        object? Guid;
+        public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, object guid, IContextMenuStripItem[] subs) : base(250)
         {
-            issub = true;
+            Guid = guid;
             PARENT = parent;
             config = _config;
             Font = parent.Font;
@@ -172,7 +170,6 @@ namespace AntdUI
         Rectangle? ParentRect;
 
         public override string name => nameof(AntdUI.ContextMenuStrip);
-
 
         #region 布局
 
@@ -323,7 +320,7 @@ namespace AntdUI
             FontSub?.Dispose();
             subForm?.IClose();
             subForm = null;
-            if (!issub) config.OnClose?.Invoke();
+            if (Guid == null) config.OnClose?.Invoke();
             base.Dispose(disposing);
         }
 
@@ -490,7 +487,6 @@ namespace AntdUI
                 {
                     if (Config.HasAnimation(name))
                     {
-                        IClose();
                         CloseSub();
                         ITask.Run(() =>
                         {
@@ -502,7 +498,6 @@ namespace AntdUI
                     {
                         if (config.CallSleep > 0)
                         {
-                            IClose();
                             CloseSub();
                             ITask.Run(() =>
                             {
@@ -512,7 +507,6 @@ namespace AntdUI
                         }
                         else
                         {
-                            IClose();
                             CloseSub();
                             config.Call(item);
                         }
@@ -523,6 +517,7 @@ namespace AntdUI
                     if (subForm == null) OpenDown(item, it.Rect, item.Sub);
                     else
                     {
+                        if (subForm.Guid == it.Tag) return false;
                         subForm?.IClose();
                         subForm = null;
                     }
@@ -534,7 +529,8 @@ namespace AntdUI
 
         void CloseSub()
         {
-            LayeredFormContextMenuStrip item = this;
+            IClose();
+            var item = this;
             while (item.PARENT is LayeredFormContextMenuStrip form)
             {
                 if (item == form) return;
@@ -610,7 +606,7 @@ namespace AntdUI
         {
             foreach (var it in sub) it.ParentItem = item;
             var trect = TargetRect;
-            subForm = new LayeredFormContextMenuStrip(config, this, new Point(trect.X + trect.Width - rect.X - shadow2, trect.Y + rect.Y + shadow / 2 - ScrollBar.Value), sub);
+            subForm = new LayeredFormContextMenuStrip(config, this, new Point(trect.X + trect.Width - rect.X - shadow2, trect.Y + rect.Y + shadow / 2 - ScrollBar.Value), item, sub);
             subForm.Show(this);
         }
 
@@ -629,8 +625,10 @@ namespace AntdUI
             public InRect(IContextMenuStripItem tag)
             {
                 Tag = tag;
+                if (tag is ContextMenuStripItemDivider) Continue = true;
             }
 
+            public bool Continue;
             public IContextMenuStripItem Tag { get; set; }
 
             public bool Hover { get; set; }

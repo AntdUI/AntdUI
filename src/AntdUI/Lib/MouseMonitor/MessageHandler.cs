@@ -94,11 +94,12 @@ namespace AntdUI
                 case MessageHookManager.WM_LBUTTONDOWN:
                 case MessageHookManager.WM_RBUTTONDOWN:
                 case MessageHookManager.WM_MBUTTONDOWN:
-                case MessageHookManager.WM_NCMOUSEMOVE:
                     msg.IMOUSECLICK();
                     break;
+                case MessageHookManager.WM_NCMOUSEMOVE:
+                case MessageHookManager.WM_MOUSEMOVE:
                 case MessageHookManager.WM_MOUSELEAVE:
-                    msg.IMOUSELEAVE();
+                    msg.IMOUSEMOVE();
                     break;
                 case MessageHookManager.WM_KEYDOWN:
                     return msg.IKEYS((Keys)(int)m.WParam);

@@ -17,19 +17,28 @@
 // CSDN: https://blog.csdn.net/v_132
 // QQ: 17379620
 
-using System.Windows.Forms;
+using System;
 
 namespace AntdUI
 {
-    public interface IMessage
+    [Flags]
+    public enum CloseMode
     {
-        void IMOUSECLICK();
-
-        void IMOUSEMOVE();
-
         /// <summary>
-        /// KEYDOWN
+        /// 不做任何处理
         /// </summary>
-        bool IKEYS(Keys key);
+        None,
+        /// <summary>
+        /// 点击下拉其他区域
+        /// </summary>
+        Click,
+        /// <summary>
+        /// 离开下拉或控件
+        /// </summary>
+        Leave,
+        /// <summary>
+        /// 不包含控件
+        /// </summary>
+        NoControl
     }
 }

@@ -29,9 +29,6 @@ namespace AntdUI
     internal class LayeredFormPopover : ILayeredShadowFormOpacity
     {
         Popover.Config config;
-        public override bool MessageEnable => true;
-        public override bool MessageCloseSub => true;
-
         internal bool topMost = false;
         Form? form;
 
@@ -39,6 +36,7 @@ namespace AntdUI
         public LayeredFormPopover(Popover.Config _config)
         {
             config = _config;
+            CloseMode = CloseMode.Click;
             topMost = config.Control.SetTopMost(Handle);
             Font = config.Font ?? config.Control.Font;
 

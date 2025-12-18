@@ -38,7 +38,7 @@ namespace AntdUI
         ScrollBar ScrollBar;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items)
         {
-            MessageCloseMouseLeave = true;
+            CloseMode = CloseMode.Leave;
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
@@ -70,9 +70,10 @@ namespace AntdUI
         }
 
         SubLayeredForm? lay;
-
-        public LayeredFormMenuDown(Menu control, int sx, LayeredFormMenuDown parent, int radius, float itemHeight, Rectangle rect, MenuItemCollection items)
+        object? Guid;
+        public LayeredFormMenuDown(Menu control, int sx, LayeredFormMenuDown parent, int radius, float itemHeight, Rectangle rect, object guid, MenuItemCollection items)
         {
+            Guid = guid;
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
@@ -517,7 +518,7 @@ namespace AntdUI
             if (it.Sub == null || it.Sub.Count == 0)
             {
                 if (PARENT is Menu menu) menu.DropDownChange(it.Val);
-                IClose();
+                CloseSub();
                 return true;
             }
             else
@@ -525,6 +526,7 @@ namespace AntdUI
                 if (subForm == null) OpenDown(it);
                 else
                 {
+                    if (subForm.Guid == it.Val) return false;
                     subForm?.IClose();
                     subForm = null;
                 }
@@ -537,10 +539,22 @@ namespace AntdUI
             var rect = new Rectangle(it.Rect.X + tmp_padd, it.Rect.Y - ScrollBar.ValueY - tmp_padd, it.Rect.Width, it.Rect.Height);
             if (PARENT is Menu menu)
             {
-                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, tmp_padd + it.Rect.Height / 2F, rect, it.Sub);
+                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, tmp_padd + it.Rect.Height / 2F, rect, it.Val, it.Sub);
                 subForm.Show(this);
             }
         }
+        void CloseSub()
+        {
+            IClose();
+            var item = this;
+            while (item.lay is LayeredFormMenuDown form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
+            }
+        }
+
         public override void IClosing()
         {
             if (select_x == 0)
@@ -554,7 +568,6 @@ namespace AntdUI
                 }
             }
         }
-
 
         #endregion
 

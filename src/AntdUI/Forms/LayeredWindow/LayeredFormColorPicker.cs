@@ -47,7 +47,7 @@ namespace AntdUI
             ShowReset = control.ShowReset;
             Font = control.Font.Size > 15f ? new Font(control.Font.Name, 15f, control.Font.Unit) : control.Font;//字体过大时, 编辑器文本超出编辑框
             mode = control.Mode;
-            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
+            if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
             color_alpha = Value = ValueDefault = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();

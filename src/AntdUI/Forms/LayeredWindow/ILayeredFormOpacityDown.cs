@@ -29,14 +29,13 @@ namespace AntdUI
         public PushAnimateConfig animateConfig;
         public ILayeredFormOpacityDown()
         {
+            CloseMode = CloseMode.Click;
             animateConfig = new PushAnimateConfig(this, () =>
             {
                 RunAnimation = false;
                 LoadOK();
             }, () => RunAnimation = true);
         }
-
-        public override bool MessageEnable => true;
 
         public bool RunAnimation = true;
         protected override void OnLoad(EventArgs e)
