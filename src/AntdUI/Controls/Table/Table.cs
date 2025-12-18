@@ -1189,6 +1189,14 @@ namespace AntdUI
             return 0;
         }
 
+        /// <summary>
+        /// 内容滚动到最下面
+        /// </summary>
+        public void ScrollToEnd()
+        {
+            if (ScrollBar.ShowY) ScrollBar.Value = ScrollBar.Max;
+        }
+
         int ScrollLine(int i, RowTemplate[] rows, bool force = false)
         {
             if (!ScrollBar.ShowY) return 0;
@@ -1201,7 +1209,8 @@ namespace AntdUI
                 int y = (int)Math.Round(len * prog);
                 return ScrollLine(sy, y, y + _RowHeight.Value, rows, force);
             }
-            if (!rows[i].SHOW) i = NextIndexUp(rows, i) + 1;
+            var it = rows[i];
+            if (!it.ShowExpand) i = NextIndexUp(rows, i);
             var select = rows[i].RECT;
             return ScrollLine(sy, select.Y, select.Bottom, rows, force);
         }

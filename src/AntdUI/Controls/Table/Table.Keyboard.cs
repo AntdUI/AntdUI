@@ -167,7 +167,7 @@ namespace AntdUI
                 {
                     if (value < rows.Length - 1)
                     {
-                        if (rows[value].SHOW) return value;
+                        if (rows[value].ShowExpand) return value;
                         else value++;
                     }
                     else return rows.Length - 1;
@@ -184,7 +184,7 @@ namespace AntdUI
                     if (value > 0)
                     {
                         if (rows.Length < value) return rows.Length - 1;
-                        else if (rows[value].SHOW) return value;
+                        else if (rows[value].ShowExpand) return value;
                         else value--;
                     }
                     else return 0;
