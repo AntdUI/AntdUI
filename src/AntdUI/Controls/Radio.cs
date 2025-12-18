@@ -285,7 +285,7 @@ namespace AntdUI
         {
             float dot_size = icon_rect.Height;
             if (right) icon_rect.X = rect.Width - icon_rect.X - icon_rect.Width;
-            var bor2 = 2F * Config.Dpi;
+            var bor2 = 2F * Dpi;
             if (enabled)
             {
                 if ((hasFocus && Config.FocusBorderEnabled) && (rect.Height - icon_rect.Height) > bor2)

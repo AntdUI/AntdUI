@@ -173,7 +173,7 @@ namespace AntdUI.Captcha
         private void GeneratePuzzle(Rectangle crect, int puzzleSize)
         {
             Random rand = new Random();
-            int maxX = crect.Width - puzzleSize, maxY = crect.Height - puzzleSize, gap = (int)(10 * Config.Dpi);
+            int maxX = crect.Width - puzzleSize, maxY = crect.Height - puzzleSize, gap = (int)(10 * Dpi);
 
             puzzlePosition = new Point(
                crect.X + rand.Next(puzzleSize * 2, maxX),
@@ -215,7 +215,7 @@ namespace AntdUI.Captcha
                 int newPosition = sliderPosition + deltaX;
 
                 // 计算滑块最大位置（考虑滑块自身宽度）
-                int maxSliderPosition = sliderRect.Width - (int)(SliderThumbWidth * Config.Dpi);
+                int maxSliderPosition = sliderRect.Width - (int)(SliderThumbWidth * Dpi);
                 // 限制滑块位置在有效范围内
                 newPosition = newPosition < 0 ? 0 : (newPosition > maxSliderPosition ? maxSliderPosition : newPosition);
                 sliderPosition = newPosition;
@@ -284,7 +284,7 @@ namespace AntdUI.Captcha
             // 检查拼图块是否接近正确位置
             int deltaX = Math.Abs(currentPuzzlePosition.X - puzzlePosition.X);
 
-            if (deltaX <= (int)(TolerancePixels * Config.Dpi))
+            if (deltaX <= (int)(TolerancePixels * Dpi))
             {
                 // 验证成功
                 currentPuzzlePosition = puzzlePosition;
@@ -335,7 +335,7 @@ namespace AntdUI.Captcha
 
             var rh = g.MeasureString(Config.NullText, Font).Height;
 
-            int sliderHeight = rh * 2, gap = (int)(rh * 0.32F), gap2 = gap * 2, psize = (int)(puzzleSize * Config.Dpi);
+            int sliderHeight = rh * 2, gap = (int)(rh * 0.32F), gap2 = gap * 2, psize = (int)(puzzleSize * Dpi);
 
             var rect_img = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - sliderHeight - gap2);
 
@@ -398,7 +398,7 @@ namespace AntdUI.Captcha
                     g.FillClosedCurve(mountainBrush, mountains);
                 }
 
-                int size = (int)(40 * Config.Dpi), gap = (int)(12 * Config.Dpi);
+                int size = (int)(40 * Dpi), gap = (int)(12 * Dpi);
                 // 绘制太阳
                 var sunRect = new Rectangle(rect.Right - size - gap, rect.Y + gap, size, size);
                 using (var sunBrush = new SolidBrush(Style.Db.Warning))
@@ -416,7 +416,7 @@ namespace AntdUI.Captcha
         private void DrawPuzzlePiece(Canvas g, Rectangle rect_img, Image image, int size)
         {
             if (state == PuzzleCaptchaState.Success) return;
-            float bor = 2 * Config.Dpi;
+            float bor = 2 * Dpi;
             Rectangle holeRect = new Rectangle(puzzlePosition.X, puzzlePosition.Y, size, size), puzzleRect = new Rectangle(currentPuzzlePosition.X, currentPuzzlePosition.Y, size, size);
 
             using (var holePath = CreatePuzzlePath(holeRect))
@@ -522,7 +522,7 @@ namespace AntdUI.Captcha
                 g.String(sliderText, Font, brush, sliderRect);
             }
 
-            int sliderThumbWidth = (int)(SliderThumbWidth * Config.Dpi), ico_size = (int)(sliderRect.Height * 0.4F);
+            int sliderThumbWidth = (int)(SliderThumbWidth * Dpi), ico_size = (int)(sliderRect.Height * 0.4F);
 
             // 绘制进度
             if (sliderPosition > 0)
@@ -547,7 +547,7 @@ namespace AntdUI.Captcha
             };
 
             using (var brush = new SolidBrush(thumbColor))
-            using (var pen = new Pen(Style.Db.PrimaryBorder, Config.Dpi))
+            using (var pen = new Pen(Style.Db.PrimaryBorder, Dpi))
             {
                 g.Fill(brush, thumbRect);
                 g.Draw(pen, thumbRect);
@@ -572,7 +572,7 @@ namespace AntdUI.Captcha
 
         #region 辅助方法
 
-        private Rectangle GetSliderThumbRect() => new Rectangle(sliderRect.X + sliderPosition, sliderRect.Y, (int)(SliderThumbWidth * Config.Dpi), sliderRect.Height);
+        private Rectangle GetSliderThumbRect() => new Rectangle(sliderRect.X + sliderPosition, sliderRect.Y, (int)(SliderThumbWidth * Dpi), sliderRect.Height);
 
         #endregion
     }

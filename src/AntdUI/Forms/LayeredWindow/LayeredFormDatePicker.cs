@@ -102,12 +102,11 @@ namespace AntdUI
 
             #endregion
 
-            float dpi = Config.Dpi;
-            if (dpi == 1F) Radius = _control.radius;
+            if (Dpi == 1F) Radius = _control.radius;
             else
             {
-                ArrowSize = (int)(8 * dpi);
-                Radius = (int)(_control.radius * dpi);
+                ArrowSize = (int)(8 * Dpi);
+                Radius = (int)(_control.radius * Dpi);
             }
             SelDate = _control.Value;
             Date = SelDate ?? DateNow;
@@ -219,7 +218,7 @@ namespace AntdUI
         FormatFlags s_f_L, s_f_R;
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(nameof(DatePicker), ColorScheme), 1.6F * Config.Dpi))
+            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(nameof(DatePicker), ColorScheme), 1.6F * Dpi))
             using (var pen_arrow_hover = new Pen(Colour.Text.Get(nameof(DatePicker), ColorScheme), pen_arrow.Width))
             using (var pen_arrow_enable = new Pen(Colour.FillSecondary.Get(nameof(DatePicker), ColorScheme), pen_arrow.Width))
             {
@@ -569,7 +568,7 @@ namespace AntdUI
             }
 
             int rw = t_width + t_x, r_h = 0;
-            float line2 = Config.Dpi, line = line2 / 2;
+            float line2 = Dpi, line = line2 / 2;
             if (showType == TDatePicker.Date)
             {
                 int item_size = (t_width - sp2) / 7, y = t_top + sp2;

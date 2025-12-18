@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Notification : UserControl
     {
-        Form form;
-        public Notification(Form _form)
+        AntdUI.BaseForm form;
+        public Notification(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

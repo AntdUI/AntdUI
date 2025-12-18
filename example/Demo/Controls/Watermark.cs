@@ -24,9 +24,9 @@ namespace Demo.Controls
 {
     public partial class Watermark : UserControl
     {
-        Form form;
+        AntdUI.BaseForm form;
 
-        public Watermark(Form _form)
+        public Watermark(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

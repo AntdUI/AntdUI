@@ -23,10 +23,10 @@ namespace Demo
 {
     public partial class Setting : UserControl
     {
-        Form form;
+        AntdUI.BaseForm form;
 
         public bool Animation, ShadowEnabled, ShowInWindow, ScrollBarHide, TextRenderingHighQuality;
-        public Setting(Form _form)
+        public Setting(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

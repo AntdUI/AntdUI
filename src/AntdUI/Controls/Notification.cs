@@ -513,7 +513,7 @@ namespace AntdUI
             Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Target.SetTopMost(Handle);
-            shadow_size = (int)(shadow_size * Config.Dpi);
+            shadow_size = (int)(shadow_size * Dpi);
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
             font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
@@ -585,7 +585,7 @@ namespace AntdUI
                 {
                     if (close_button.Animation)
                     {
-                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
+                        using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                         {
                             g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(Notification))), path);
                         }
@@ -593,7 +593,7 @@ namespace AntdUI
                     }
                     else if (close_button.Switch)
                     {
-                        using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
+                        using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                         {
                             g.Fill(Colour.FillSecondary.Get(nameof(Notification)), path);
                         }
@@ -608,7 +608,7 @@ namespace AntdUI
                 }
                 if (config.Link != null)
                 {
-                    using (var pen = new Pen(Colour.Primary.Get(nameof(Notification)), Config.Dpi))
+                    using (var pen = new Pen(Colour.Primary.Get(nameof(Notification)), Dpi))
                     {
                         g.DrawText(config.Link.Text, Font, Colour.Primary.Get(nameof(Notification)), rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
@@ -627,7 +627,7 @@ namespace AntdUI
         /// <param name="rect_read">真实区域</param>
         GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
         {
-            var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
+            var path = rect_read.RoundPath((int)(config.Radius * Dpi));
             if (Config.ShadowEnabled)
             {
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
@@ -645,7 +645,7 @@ namespace AntdUI
         Size RenderMeasure(Canvas g, int shadow)
         {
             int shadow2 = shadow * 2;
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
 
             var size_title = g.MeasureText(config.Title, font_title, 10000, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), t_max_width = (int)Math.Ceiling(360 * dpi);

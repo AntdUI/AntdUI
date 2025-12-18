@@ -255,7 +255,7 @@ namespace AntdUI
         }
 
         int pyr = 0;
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Config.Dpi);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Dpi);
 
         Color? fill;
         /// <summary>
@@ -354,7 +354,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            float border = borderWidth * Config.Dpi, _radius = radius * Config.Dpi;
+            float border = borderWidth * Dpi, _radius = radius * Dpi;
             var s_f = FormatFlags.Center | FormatFlags.NoWrap;
             if (Enabled)
             {
@@ -567,11 +567,11 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                var rect = ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
+                var rect = ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Dpi);
                 if (rect.Width == 0 || rect.Height == 0) return;
                 if (showSizeChanger)
                 {
-                    int wsize = (int)(4 * Config.Dpi);
+                    int wsize = (int)(4 * Dpi);
                     rect.Y += wsize;
                     rect.Height -= wsize * 2;
                 }
@@ -584,7 +584,7 @@ namespace AntdUI
                         _SizeChangerWidth = InitSizeChanger(rect);
                         t_Width -= _SizeChangerWidth;
                     }
-                    int gap = (int)(_gap * Config.Dpi);
+                    int gap = (int)(_gap * Dpi);
                     int total_button = t_Width / (rect.Height + gap);//总共多少按钮
                     if (total_button < 3)
                     {
@@ -800,8 +800,8 @@ namespace AntdUI
 
         int GetSizeChangerWidth(string placeholder)
         {
-            if (sizeChangerWidth > 0) return (int)(sizeChangerWidth * Config.Dpi);
-            int wsize = (int)(5 * Config.Dpi) * 2;
+            if (sizeChangerWidth > 0) return (int)(sizeChangerWidth * Dpi);
+            int wsize = (int)(5 * Dpi) * 2;
             if (pageSizeOptions == null || pageSizeOptions.Length == 0)
             {
                 return Helper.GDI(g =>

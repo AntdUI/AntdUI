@@ -24,7 +24,7 @@ namespace AntdUI
 {
     public class CalculateCoordinate
     {
-        public CalculateCoordinate(Rectangle rect, Rectangle drop, int Radius, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
+        public CalculateCoordinate(ILayeredForm owner, Rectangle rect, Rectangle drop, int Radius, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
         {
             sx = rect.X;
             sy = rect.Y;
@@ -32,13 +32,13 @@ namespace AntdUI
             ch = rect.Height;
             dw = drop.Width;
             dh = drop.Height;
-            radius = GetRadius(Radius);
+            radius = GetRadius(owner, Radius);
             arrow = ArrowSize;
             shadow = Shadow;
             shadow2 = Shadow2;
             creal = rect_real;
         }
-        public CalculateCoordinate(Control control, Rectangle drop, int Radius, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
+        public CalculateCoordinate(ILayeredForm owner, Control control, Rectangle drop, int Radius, int ArrowSize, int Shadow, int Shadow2, Rectangle? rect_real = null)
         {
             var point = control.PointToScreen(Point.Empty);
             var size = control.ClientSize;
@@ -49,7 +49,7 @@ namespace AntdUI
             if (control is IControl icontrol) padd = GetPadding(icontrol);
             dw = drop.Width;
             dh = drop.Height;
-            radius = GetRadius(Radius);
+            radius = GetRadius(owner, Radius);
             arrow = ArrowSize;
             shadow = Shadow;
             shadow2 = Shadow2;
@@ -123,22 +123,22 @@ namespace AntdUI
 
         int GetPadding(IControl control)
         {
-            if (control is Button button) return (int)((button.WaveSize + button.BorderWidth / 2F) * Config.Dpi);
-            else if (control is Input input) return (int)((input.WaveSize + input.BorderWidth / 2F) * Config.Dpi);
-            else if (control is ColorPicker colorPicker) return (int)((colorPicker.WaveSize + colorPicker.BorderWidth / 2F) * Config.Dpi);
-            else if (control is Switch _switch) return (int)(_switch.WaveSize * Config.Dpi);
-            else if (control is Panel panel) return (int)(panel.BorderWidth * Config.Dpi);
-            else if (control is Alert alert) return (int)(alert.BorderWidth * Config.Dpi);
-            else if (control is Avatar avatar) return (int)(avatar.BorderWidth * Config.Dpi);
-            else if (control is Tag tag) return (int)(tag.BorderWidth * Config.Dpi);
-            else if (control is Table table) return (int)(table.BorderWidth * Config.Dpi);
-            else if (control is Tabs tab) return (int)(tab.Gap * Config.Dpi);
-            else if (control is ContainerPanel containerPanel) return (int)(containerPanel.BorderWidth * Config.Dpi);
+            if (control is Button button) return (int)((button.WaveSize + button.BorderWidth / 2F) * control.Dpi);
+            else if (control is Input input) return (int)((input.WaveSize + input.BorderWidth / 2F) * control.Dpi);
+            else if (control is ColorPicker colorPicker) return (int)((colorPicker.WaveSize + colorPicker.BorderWidth / 2F) * control.Dpi);
+            else if (control is Switch _switch) return (int)(_switch.WaveSize * control.Dpi);
+            else if (control is Panel panel) return (int)(panel.BorderWidth * control.Dpi);
+            else if (control is Alert alert) return (int)(alert.BorderWidth * control.Dpi);
+            else if (control is Avatar avatar) return (int)(avatar.BorderWidth * control.Dpi);
+            else if (control is Tag tag) return (int)(tag.BorderWidth * control.Dpi);
+            else if (control is Table table) return (int)(table.BorderWidth * control.Dpi);
+            else if (control is Tabs tab) return (int)(tab.Gap * control.Dpi);
+            else if (control is ContainerPanel containerPanel) return (int)(containerPanel.BorderWidth * control.Dpi);
             return 0;
         }
-        int GetRadius(int radius)
+        int GetRadius(ILayeredForm owner, int radius)
         {
-            int min = (int)(4 * Config.Dpi);
+            int min = (int)(4 * owner.Dpi);
             if (min > radius) return min;
             return radius;
         }

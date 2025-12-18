@@ -36,7 +36,7 @@ namespace FontTest
 
         void LoadData()
         {
-            int size = (int)(140 * AntdUI.Config.Dpi);
+            int size = (int)(140 * Dpi);
             using (var fonts = new InstalledFontCollection())
             {
                 // 遍历字体集合

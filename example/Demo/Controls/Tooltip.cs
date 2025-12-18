@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Tooltip : UserControl
     {
-        Form form;
-        public Tooltip(Form _form)
+        AntdUI.BaseForm form;
+        public Tooltip(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

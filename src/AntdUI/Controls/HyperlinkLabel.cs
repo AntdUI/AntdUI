@@ -418,7 +418,7 @@ namespace AntdUI
         {
             if (style.UnderlineThickness > 0)
             {
-                using var pen = new Pen(style.UnderlineColor ?? color, style.UnderlineThickness * Config.Dpi);
+                using var pen = new Pen(style.UnderlineColor ?? color, style.UnderlineThickness * Dpi);
                 int y = rect.Bottom;
                 g.DrawLine(pen, rect.Left + LinkPadding.Left, y, rect.Right - LinkPadding.Right, y);
             }

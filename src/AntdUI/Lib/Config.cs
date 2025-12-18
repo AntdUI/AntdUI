@@ -144,7 +144,7 @@ namespace AntdUI
         /// <summary>
         /// 鼠标悬停时长（毫秒）
         /// </summary>
-        public static int MouseHoverDelay { get; set; } = 200;
+        public static int MouseHoverDelay { get; set; } = 100;
 
         /// <summary>
         /// 阴影使能
@@ -198,7 +198,11 @@ namespace AntdUI
         /// <summary>
         /// 是否使用钩子
         /// </summary>
+#if DEBUG
         public static bool UseHook { get; set; }
+#else
+        public static bool UseHook { get; set; } = true;
+#endif
 
         /// <summary>
         /// DPI模式
@@ -228,7 +232,7 @@ namespace AntdUI
 
         static bool dpione = true;
         static float _dpi = 1F;
-        static float? _dpi_custom;
+        internal static float? _dpi_custom;
         public static float Dpi
         {
             get

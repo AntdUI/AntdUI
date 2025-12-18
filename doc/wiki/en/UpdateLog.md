@@ -1,5 +1,39 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.4` 2025-12-18 📐
+
+- ➕ Menu Expand Security Triangle `Amazon 2013`
+- ➕ DPI adaptation to PerMonitorV2 and AutoScaleMode.Font
+- ➕ Table Set Selected Method for Selecting Rows
+- ➕ The Table SummaryCustomize property is used to enable the built-in summary customization feature, supporting custom summary customization
+- ➕ Table ScrollToEnd
+- ➕ Table Summary feature enhancement
+- ➕ Tree ForeSub
+- ➕ Tree FindID/FindName method
+- ➕ Input ScrollLine
+- ➕ Input WordWrap
+- ➕ Select AutoText
+- ➕ Preview Fit
+- ➕ Checkbox/Radio useMnemonic
+- ➕ Enrich logo text color and border attributes
+- ✍️ Button MiddleLeft misalignment
+- ✍️ DatePickerRange cursor interaction
+- ✍️ The column 'Configuring FocusNavigation' is not effective
+- ✍️ Table Tree Row Sorting
+- ✍️ Table Fill scrollbar occlusion
+- ✍️ Table ScrollLine misalignment
+- ✍️ Table Initial Suspension State
+- ✍️ Optimize jump table filtering and merging
+- ✍️ After the Tree node is folded and opened, the same level node NodeMouseMove event and `e.Item` error indicate the folded child node
+- ✍️ Input open button event triggered
+- ✍️ Input Organize scrollbar
+- ✍️ Input, empty, enter, interaction
+- ✍️ Input: Cancel keyboard interception
+- ✍️ FloatButton Closing still disappears after disabling interception
+- ✍️ ContextMenuStrip keyboard up and down interaction
+- ✍️ UseHook is enabled by default
+- 🧹 LayerForm disappearance determination
+
 ### `2.2.3` 2025-12-10
 
 - ➕ ImagePreview exposure operation button method

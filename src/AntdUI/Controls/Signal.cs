@@ -197,7 +197,7 @@ namespace AntdUI
                                 Positions = new float[] { 0, loading_vol / 100F, 1F }
                             };
                             g.Fill(brush, path);
-                            g.Draw(color2, Config.Dpi, path);
+                            g.Draw(color2, Dpi, path);
                         }
                     }
                 }
@@ -282,7 +282,7 @@ namespace AntdUI
                 if (loading)
                 {
                     Color color1 = fill ?? Colour.FillQuaternary.Get(nameof(Signal), ColorScheme), color2 = FillFully ?? Colour.Success.Get(nameof(Signal), ColorScheme);
-                    using (var pen = new Pen(color2, Config.Dpi))
+                    using (var pen = new Pen(color2, Dpi))
                     using (var brush = new LinearGradientBrush(rect_pie, color1, color2, 90F))
                     {
                         brush.InterpolationColors = new ColorBlend(2)

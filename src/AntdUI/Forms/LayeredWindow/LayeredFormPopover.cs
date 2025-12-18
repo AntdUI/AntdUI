@@ -29,9 +29,6 @@ namespace AntdUI
     internal class LayeredFormPopover : ILayeredShadowFormOpacity
     {
         Popover.Config config;
-        public override bool MessageEnable => true;
-        public override bool MessageCloseSub => true;
-
         internal bool topMost = false;
         Form? form;
 
@@ -39,18 +36,17 @@ namespace AntdUI
         public LayeredFormPopover(Popover.Config _config)
         {
             config = _config;
+            CloseMode = CloseMode.Click;
             topMost = config.Control.SetTopMost(Handle);
             Font = config.Font ?? config.Control.Font;
 
             Helper.GDI(g =>
             {
-                var dpi = Config.Dpi;
+                Radius = (int)(config.Radius * Dpi);
+                ArrowSize = (int)(config.ArrowSize * Dpi);
 
-                Radius = (int)(config.Radius * dpi);
-                ArrowSize = (int)(config.ArrowSize * dpi);
-
-                int sp = (int)Math.Round(config.Gap * dpi), paddingx = 10 + (int)(config.Padding.Width * dpi),
-                paddingy = 10 + (int)(config.Padding.Height * dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
+                int sp = (int)Math.Round(config.Gap * Dpi), paddingx = 10 + (int)(config.Padding.Width * Dpi),
+                paddingy = 10 + (int)(config.Padding.Height * Dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (config.Content is Control control)
                 {
@@ -58,7 +54,7 @@ namespace AntdUI
                     control.BackColor = config.Back ?? Colour.BgElevated.Get(nameof(Popover), config.ColorScheme);
                     control.ForeColor = config.Fore ?? Colour.Text.Get(nameof(Popover), config.ColorScheme);
                     Win32.WindowTheme(control, config.ColorScheme);
-                    Helper.DpiAuto(config.Dpi ?? Config.Dpi, control);
+                    Helper.DpiAuto(config.Dpi ?? Dpi, control);
                     int w = control.Width;
                     int h;
                     if (_config.Title == null)
@@ -94,7 +90,7 @@ namespace AntdUI
                         {
                             if (txt.Call != null) hasmouse = true;
                             var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
-                            int txt_w = sizeContent.Width + (int)(txt.Gap * dpi);
+                            int txt_w = sizeContent.Width + (int)(txt.Gap * Dpi);
                             _texts.Add(new int[] { paddingx + has_x, paddingy, txt_w });
                             if (max_h < sizeContent.Height) max_h = sizeContent.Height;
                             has_x += txt_w;
@@ -121,7 +117,7 @@ namespace AntdUI
                             {
                                 if (txt.Call != null) hasmouse = true;
                                 var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
-                                int txt_w = sizeContent.Width + (int)(txt.Gap * dpi);
+                                int txt_w = sizeContent.Width + (int)(txt.Gap * Dpi);
                                 _texts.Add(new int[] { paddingx + has_x, paddingy + sizeTitle.Height + sp, txt_w });
                                 if (max_h < sizeContent.Height) max_h = sizeContent.Height;
                                 has_x += txt_w;
@@ -172,12 +168,12 @@ namespace AntdUI
             });
             if (config.CustomPoint.HasValue)
             {
-                new CalculateCoordinate(config.CustomPoint.Value, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+                new CalculateCoordinate(this, config.CustomPoint.Value, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
                 SetLocation(x, y);
             }
             else
             {
-                new CalculateCoordinate(config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+                new CalculateCoordinate(this, config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
                 SetLocation(x, y);
             }
         }

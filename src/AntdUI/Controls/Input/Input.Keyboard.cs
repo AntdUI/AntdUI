@@ -46,8 +46,6 @@ namespace AntdUI
             return base.IsInputKey(keyData);
         }
 
-        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData) => false;
-
         public void HandKeyBoard(Keys key)
         {
             if (OnVerifyKeyboard(key))

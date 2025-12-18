@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Progress : UserControl
     {
-        Form form;
-        public Progress(Form _form)
+        AntdUI.BaseForm form;
+        public Progress(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

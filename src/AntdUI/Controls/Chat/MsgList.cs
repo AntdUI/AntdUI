@@ -126,7 +126,7 @@ namespace AntdUI.Chat
                 return;
             }
             var g = e.Canvas;
-            int sy = ScrollBar.Value, radius = (int)Math.Ceiling(IconRadius * Config.Dpi);
+            int sy = ScrollBar.Value, radius = (int)Math.Ceiling(IconRadius * Dpi);
             g.TranslateTransform(0, -sy);
             using (var font_text = new Font(Font.FontFamily, Font.Size * .9F))
             using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
@@ -188,12 +188,12 @@ namespace AntdUI.Chat
                         }
                         else
                         {
-                            var badgesize = g.MeasureString(it.Badge, font_time).Size(4, 2);
+                            var badgesize = g.MeasureString(it.Badge, font_time).Size(g, 4, 2);
                             Rectangle rect_badge;
                             if (badgesize.Width > badgesize.Height)
                             {
                                 rect_badge = new Rectangle(it.rect_icon.Right - badgesize.Width + badgesize.Width / 3, it.rect_icon.Y - badgesize.Height / 3, badgesize.Width, badgesize.Height);
-                                using (var path = rect_badge.RoundPath(6 * Config.Dpi))
+                                using (var path = rect_badge.RoundPath(6 * Dpi))
                                 {
                                     g.Fill(it.BadgeBack ?? Color.Red, path);
                                 }

@@ -51,18 +51,16 @@ namespace AntdUI
             CloseIcon = control.CloseIcon;
             DropNoMatchClose = control.DropDownEmptyClose;
             MaxCount = control.MaxCount;
-            MaxCount = 0;
             DPadding = control.DropDownPadding;
             AutoWidth = control.ListAutoWidth;
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
-            if (dpi == 1F) Radius = control.DropDownRadius ?? control.radius;
+            if (Dpi == 1F) Radius = control.DropDownRadius ?? control.radius;
             else
             {
-                ArrowSize = (int)(8 * dpi);
-                Radius = (int)(control.DropDownRadius ?? control.radius * dpi);
+                ArrowSize = (int)(8 * Dpi);
+                Radius = (int)(control.DropDownRadius ?? control.radius * Dpi);
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
             CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
@@ -75,7 +73,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
-            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
+            if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
             ClickEnd = control.ClickEnd;
@@ -85,7 +83,7 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             if (dpi == 1F) Radius = control.DropDownRadius ?? control.Radius;
             else
             {
@@ -103,7 +101,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
-            MessageCloseMouseLeave = true;
+            CloseMode = CloseMode.Leave;
             control.Parent.SetTopMost(Handle);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             MaxCount = 7;
@@ -112,7 +110,7 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(TAlign.Left) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             if (dpi == 1F) Radius = radius;
             else
             {
@@ -146,7 +144,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             Tag = cell;
-            MessageCloseMouseLeave = true;
+            CloseMode = CloseMode.Leave;
             control.Parent.SetTopMost(Handle);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = cell.DropDownValue;
@@ -156,7 +154,7 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(cell.DropDownTextAlign) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             if (dpi == 1F) Radius = cell.DropDownRadius ?? control.Radius;
             else
             {
@@ -174,8 +172,10 @@ namespace AntdUI
         #region 子
 
         float tmpItemHeight = 0F;
-        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        object? Guid;
+        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object guid, IList<object> items, int sel = -1)
         {
+            Guid = guid;
             select_x = sx;
             keyid = nameof(AntdUI.Select);
             PARENT = control;
@@ -202,8 +202,9 @@ namespace AntdUI
             CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
         }
-        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object guid, IList<object> items, int sel = -1)
         {
+            Guid = guid;
             select_x = sx;
             keyid = nameof(Dropdown);
             PARENT = control;
@@ -229,8 +230,9 @@ namespace AntdUI
             CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
         }
-        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object guid, IList<object> items, int sel = -1)
         {
+            Guid = guid;
             select_x = sx;
             keyid = nameof(Table);
             PARENT = control;
@@ -468,7 +470,7 @@ namespace AntdUI
                 {
                     if (it.HoverClose)
                     {
-                        using (var path = it.RectClose.RoundPath((int)(4 * Config.Dpi)))
+                        using (var path = it.RectClose.RoundPath((int)(4 * Dpi)))
                         {
                             g.Fill(Colour.FillSecondary.Get(keyid, ColorScheme), path);
                         }
@@ -537,7 +539,7 @@ namespace AntdUI
         }
         void DrawArrow(Canvas g, ObjectItem it, Color color)
         {
-            using (var pen = new Pen(color, Config.Dpi * 1.4F))
+            using (var pen = new Pen(color, Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
@@ -556,7 +558,7 @@ namespace AntdUI
             if (items.Count > 0)
             {
                 nodata = false;
-                int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+                int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
                 icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
                 gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
 
@@ -896,7 +898,7 @@ namespace AntdUI
             {
                 selectedValue = it.Tag;
                 OnCall(it);
-                IClose();
+                CloseSub();
                 return true;
             }
             else
@@ -904,6 +906,7 @@ namespace AntdUI
                 if (subForm == null) OpenDown(it, it.Sub);
                 else
                 {
+                    if (subForm.Guid == it.Tag) return false;
                     subForm?.IClose();
                     subForm = null;
                 }
@@ -926,18 +929,29 @@ namespace AntdUI
             var rect = new Rectangle(it.Rect.X + tmp_padd, it.Rect.Y - ScrollBar.ValueY - tmp_padd, it.Rect.Width, it.Rect.Height);
             if (PARENT is Select select)
             {
-                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
+                subForm = new LayeredFormSelectDown(select, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, it.Tag, sub, tag);
                 subForm.Show(this);
             }
             else if (PARENT is Dropdown dropdown)
             {
-                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
+                subForm = new LayeredFormSelectDown(dropdown, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, it.Tag, sub, tag);
                 subForm.Show(this);
             }
             else if (PARENT is Table table && Tag is ICell cell)
             {
-                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, sub, tag);
+                subForm = new LayeredFormSelectDown(table, cell, select_x + 1, this, Radius, ArrowSize, it.MaxCount, tmp_padd + it.Rect.Height / 2F, rect, it.Tag, sub, tag);
                 subForm.Show(this);
+            }
+        }
+        void CloseSub()
+        {
+            IClose();
+            var item = this;
+            while (item.lay is LayeredFormSelectDown form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
             }
         }
         public override void IClosing()

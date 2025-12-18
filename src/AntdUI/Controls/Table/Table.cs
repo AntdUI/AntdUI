@@ -86,7 +86,7 @@ namespace AntdUI
                 hovers = -1;
                 ExtractHeaderFixed();
                 ExtractData();
-                UpdateSummaries();
+                OnUpdateSummaries();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(DataSource));
             }
@@ -750,6 +750,7 @@ namespace AntdUI
                 if (SetIndex(value))
                 {
                     Invalidate();
+                    OnUpdateSummaries();
                     OnPropertyChanged(nameof(SelectedIndex));
                     OnSelectIndexChanged();
                 }
@@ -770,6 +771,7 @@ namespace AntdUI
                 if (selectedIndex == value) return;
                 selectedIndex = value;
                 Invalidate();
+                OnUpdateSummaries();
                 OnPropertyChanged(nameof(SelectedIndexs));
                 OnSelectIndexChanged();
             }
@@ -866,11 +868,12 @@ namespace AntdUI
                     var cols = SummaryColumns;
                     if (cols == null || cols.Length == 0)
                     {
-                        if (columns != null && columns.Count > 0) columns[0].SetSummaryItem("TOTAL");
+                        if (columns != null && columns.Count > 0) columns[0].SetSummaryItem(string.Empty);//设置为空文本
                     }
-                    UpdateSummaries();
+                    OnUpdateSummaries();
                 }
                 else Summary = null;
+                SummaryCustomizeChanged?.Invoke(this, new BoolEventArgs(value));
             }
         }
 
@@ -1189,6 +1192,14 @@ namespace AntdUI
             return 0;
         }
 
+        /// <summary>
+        /// 内容滚动到最下面
+        /// </summary>
+        public void ScrollToEnd()
+        {
+            if (ScrollBar.ShowY) ScrollBar.Value = ScrollBar.Max;
+        }
+
         int ScrollLine(int i, RowTemplate[] rows, bool force = false)
         {
             if (!ScrollBar.ShowY) return 0;
@@ -1199,56 +1210,42 @@ namespace AntdUI
                 int len = dataTmp.rows.Length * _RowHeight.Value;
                 var prog = (_RowHeight.Value * i) * 1F / len;
                 int y = (int)Math.Round(len * prog);
-                if (force)
-                {
-                    if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                    else ScrollBar.ValueY = y;
-                    return sy - ScrollBar.ValueY;
-                }
-                else
-                {
-                    int b = y + _RowHeight.Value;
-                    if (visibleHeader && fixedHeader)
-                    {
-                        if (y - rows[0].RECT.Height < sy || b > sy + rect_read.Height)
-                        {
-                            if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                            else ScrollBar.ValueY = y;
-                            return sy - ScrollBar.ValueY;
-                        }
-                    }
-                    else if (y < sy || b > sy + rect_read.Height)
-                    {
-                        if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                        else ScrollBar.ValueY = y;
-                        return sy - ScrollBar.ValueY;
-                    }
-                }
-                return 0;
+                return ScrollLine(sy, y, y + _RowHeight.Value, rows, force);
             }
-            if (!rows[i].SHOW) i = NextIndexUp(rows, i) + 1;
-            var selectRow = rows[i];
+            var it = rows[i];
+            if (!it.ShowExpand) i = NextIndexUp(rows, i);
+            var select = rows[i].RECT;
+            return ScrollLine(sy, select.Y, select.Bottom, rows, force);
+        }
+        int ScrollLine(int y, int b, RowTemplate[] rows, bool force = false)
+        {
+            if (!ScrollBar.ShowY) return 0;
+            int sy = ScrollBar.ValueY;
+            return ScrollLine(sy, y, b, rows, force);
+        }
+        int ScrollLine(int sy, int y, int b, RowTemplate[] rows, bool force = false)
+        {
             if (force)
             {
-                if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-                else ScrollBar.ValueY = rows[i].RECT.Y;
+                if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                else ScrollBar.ValueY = y;
                 return sy - ScrollBar.ValueY;
             }
             else
             {
                 if (visibleHeader && fixedHeader)
                 {
-                    if (selectRow.RECT.Y - rows[0].RECT.Height < sy || selectRow.RECT.Bottom > sy + rect_read.Height)
+                    if (y - rows[0].RECT.Height < sy || b > sy + rect_read.Height)
                     {
-                        if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-                        else ScrollBar.ValueY = rows[i].RECT.Y;
+                        if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                        else ScrollBar.ValueY = y;
                         return sy - ScrollBar.ValueY;
                     }
                 }
-                else if (selectRow.RECT.Y < sy || selectRow.RECT.Bottom > sy + rect_read.Height)
+                else if (y < sy || b > sy + rect_read.Height)
                 {
-                    if (fixedHeader) ScrollBar.ValueY = rows[i].RECT.Y - rows[0].RECT.Height;
-                    else ScrollBar.ValueY = rows[i].RECT.Y;
+                    if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+                    else ScrollBar.ValueY = y;
                     return sy - ScrollBar.ValueY;
                 }
             }
@@ -1789,7 +1786,7 @@ namespace AntdUI
             }
         }
 
-        public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out int mode)
+        public CELL? HitTest(int x, int y, out int r_x, out int r_y, out int offset_x, out int offset_xi, out int offset_y, out int i_row, out int i_cel, out CELLDBMode mode)
         {
             if (rows == null)
             {
@@ -1800,7 +1797,8 @@ namespace AntdUI
             var db = CellContains(rows, false, x, y);
             if (db == null)
             {
-                mode = r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
+                mode = CELLDBMode.None;
+                r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
             else

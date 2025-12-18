@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class GridPanel : UserControl
     {
-        Form form;
-        public GridPanel(Form _form)
+        AntdUI.BaseForm form;
+        public GridPanel(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

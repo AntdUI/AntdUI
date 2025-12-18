@@ -27,7 +27,7 @@ namespace AntdUI
     {
         internal static void PaintButton(Canvas g, Font font, Size gap, Rectangle rect_read, CellButton btn, bool enable, TAMode colorScheme)
         {
-            float _radius = (btn.Shape == TShape.Round || btn.Shape == TShape.Circle) ? rect_read.Height : btn.Radius * Config.Dpi;
+            float _radius = (btn.Shape == TShape.Round || btn.Shape == TShape.Circle) ? rect_read.Height : btn.Radius * g.Dpi;
 
             if (btn.Type == TTypeMini.Default)
             {
@@ -52,7 +52,7 @@ namespace AntdUI
 
                     if (btn.AnimationClick)
                     {
-                        int sp = (int)(Math.Max(gap.Height, gap.Width) * Config.Dpi);
+                        int sp = (int)(Math.Max(gap.Height, gap.Width) * g.Dpi);
                         float maxw = rect_read.Width + (sp * btn.AnimationClickValue), maxh = rect_read.Height + (sp * btn.AnimationClickValue),
                             alpha = 100 * (1F - btn.AnimationClickValue);
                         using (var path_click = new RectangleF(rect_read.X + (rect_read.Width - maxw) / 2F, rect_read.Y + (rect_read.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, btn.Shape))
@@ -82,7 +82,7 @@ namespace AntdUI
                         }
                         if (btn.BorderWidth > 0)
                         {
-                            float border = btn.BorderWidth * Config.Dpi;
+                            float border = btn.BorderWidth * g.Dpi;
                             if (btn.ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
@@ -169,7 +169,7 @@ namespace AntdUI
 
                     if (btn.AnimationClick)
                     {
-                        int sp = (int)(Math.Max(gap.Height, gap.Width) * Config.Dpi);
+                        int sp = (int)(Math.Max(gap.Height, gap.Width) * g.Dpi);
                         float maxw = rect_read.Width + (sp * btn.AnimationClickValue), maxh = rect_read.Height + (sp * btn.AnimationClickValue),
                             alpha = 100 * (1F - btn.AnimationClickValue);
                         using (var path_click = new RectangleF(rect_read.X + (rect_read.Width - maxw) / 2F, rect_read.Y + (rect_read.Height - maxh) / 2F, maxw, maxh).RoundPath(_radius, btn.Shape))
@@ -187,7 +187,7 @@ namespace AntdUI
 
                         if (btn.BorderWidth > 0)
                         {
-                            float border = btn.BorderWidth * Config.Dpi;
+                            float border = btn.BorderWidth * g.Dpi;
                             if (btn.ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
@@ -372,7 +372,7 @@ namespace AntdUI
         }
         static void PaintButtonTextArrow(Canvas g, CellButton btn, Rectangle rect, Color color)
         {
-            using (var pen = new Pen(color, 2F * Config.Dpi))
+            using (var pen = new Pen(color, 2F * g.Dpi))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 if (btn.IsLink) g.DrawLines(pen, rect.TriangleLinesHorizontal(btn.ArrowProg));

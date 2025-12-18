@@ -246,7 +246,7 @@ namespace AntdUI
                 PaintClick(g, path, rect, rect_read, _color);
                 if (enabled && (hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
                 {
-                    float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                    float wave = (WaveSize * Dpi / 2), wave2 = wave * 2;
                     using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
                     {
                         g.Draw(Colour.PrimaryBorder.Get(nameof(Switch), ColorScheme), wave, path_focus);
@@ -258,7 +258,7 @@ namespace AntdUI
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
                     else if (ExtraMouseHover) g.Fill(brush, path);
                 }
-                int gap = (int)(Gap * Config.Dpi), gap2 = gap * 2;
+                int gap = (int)(Gap * Dpi), gap2 = gap * 2;
                 if (AnimationCheck)
                 {
                     var alpha = 255 * AnimationCheckValue;
@@ -342,7 +342,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, WaveSize * Config.Dpi);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, WaveSize * Dpi);
 
         public override GraphicsPath RenderRegion
         {

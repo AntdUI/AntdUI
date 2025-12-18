@@ -412,16 +412,34 @@ namespace AntdUI
             {
                 var rect = rect_read;
                 float DpiX = (float)((rect.Width * 1.0) / (ImgSize.Width * 1.0)), DpiY = (float)((rect.Height * 1.0) / (ImgSize.Height * 1.0));
-                if (DpiX > 1 && DpiY > 0) Dpi = 1F;
-                else if (ImgSize.Width > ImgSize.Height)
+                if (config.Fit.HasValue)
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiX;
-                    else Dpi = DpiY;
+                    switch (config.Fit.Value)
+                    {
+                        case TFit.Contain:
+                            Dpi = Math.Min(DpiX, DpiY);
+                            break;
+                        case TFit.Cover:
+                            Dpi = Math.Max(DpiX, DpiY);
+                            break;
+                        default:
+                            Dpi = 1F;
+                            break;
+                    }
                 }
                 else
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiY;
-                    else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    if (DpiX > 1 && DpiY > 0) Dpi = 1F;
+                    else if (ImgSize.Width > ImgSize.Height)
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiX;
+                        else Dpi = DpiY;
+                    }
+                    else
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiY;
+                        else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    }
                 }
             }
         }
@@ -545,8 +563,8 @@ namespace AntdUI
 
         void PaintLoading(Canvas g, bool error = false)
         {
-            var bor6 = 6F * Config.Dpi;
-            int loading_size = (int)(40 * Config.Dpi);
+            var bor6 = 6F * Dpi;
+            int loading_size = (int)(40 * Dpi);
             var rect_loading = new Rectangle(rect_read.X + (rect_read.Width - loading_size) / 2, rect_read.Y + (rect_read.Height - loading_size) / 2, loading_size, loading_size);
             Color color, bg;
             if (error)
@@ -635,9 +653,9 @@ namespace AntdUI
             if (config == null) return;
             var rect_target = TargetRectXY;
             rect_read = HasBor ? new Rectangle(Bor, 0, rect_target.Width - Bor * 2, rect_target.Height - Bor) : rect_target;
-            int btn_height = (int)(config.BtnSize.Height * Config.Dpi), lr_size = (int)(config.BtnLRSize * Config.Dpi), btn_width = (int)(config.BtnSize.Width * Config.Dpi),
-                padding = (int)(config.ContainerPadding * Config.Dpi), padding_lr = (int)(config.BtnPadding.Width * Config.Dpi), padding_buttom = (int)(config.BtnPadding.Height * Config.Dpi),
-                icon_size = (int)(config.BtnIconSize * Config.Dpi);
+            int btn_height = (int)(config.BtnSize.Height * Dpi), lr_size = (int)(config.BtnLRSize * Dpi), btn_width = (int)(config.BtnSize.Width * Dpi),
+                padding = (int)(config.ContainerPadding * Dpi), padding_lr = (int)(config.BtnPadding.Width * Dpi), padding_buttom = (int)(config.BtnPadding.Height * Dpi),
+                icon_size = (int)(config.BtnIconSize * Dpi);
             rect_close = new Rectangle(rect_read.Right - padding_buttom - btn_width, rect_read.Y + padding_buttom, btn_width, btn_width);
             rect_close_icon = GetCentered(rect_close, icon_size);
 

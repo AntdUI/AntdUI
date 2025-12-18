@@ -38,6 +38,7 @@ namespace AntdUI
                 ControlStyles.ResizeRedraw |
                 ControlStyles.DoubleBuffer, true);
             UpdateStyles();
+            InitDpi();
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
@@ -66,7 +67,8 @@ namespace AntdUI
                     Invoke(actionLoadMessage);
                     return;
                 }
-                if (MessageEnable) messageHandler = new MessageHandler(this);
+                if (CloseMode == CloseMode.None) return;
+                messageHandler = new MessageHandler(this);
             }
         }
 
@@ -275,7 +277,13 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (UFocus && m.Msg == 0x21)
+            if (m.Msg == 0x02E0)
+            {
+                // 低字节是水平DPI，高字节是垂直DPI
+                int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
+                InitDpi(dpiX);
+            }
+            else if (UFocus && m.Msg == 0x21)
             {
                 m.Result = new IntPtr(3);
                 return;
@@ -319,28 +327,30 @@ namespace AntdUI
         public virtual bool CanLoadMessage { get; set; } = true;
 
         /// <summary>
-        /// 消息使能
+        /// 关闭行为
         /// </summary>
-        [Description("消息使能"), Category("行为"), DefaultValue(false)]
-        public virtual bool MessageEnable { get; set; }
+        [Description("关闭行为"), Category("行为"), DefaultValue(CloseMode.None)]
+        public CloseMode CloseMode { get; set; } = CloseMode.None;
 
-        /// <summary>
-        /// 点击子菜单关闭（true后点击子菜单不关闭）
-        /// </summary>
-        [Description("点击子菜单关闭"), Category("行为"), DefaultValue(false)]
-        public virtual bool MessageCloseSub { get; set; }
+        #endregion
 
-        /// <summary>
-        /// 点击自己是否关闭（true 点击自己不关闭）
-        /// </summary>
-        [Description("点击自己是否关闭"), Category("行为"), DefaultValue(true)]
-        public virtual bool MessageClickMe { get; set; } = true;
+        #region DPI
 
-        /// <summary>
-        /// 鼠标离开关闭
-        /// </summary>
-        [Description("鼠标离开关闭"), Category("行为"), DefaultValue(false)]
-        public virtual bool MessageCloseMouseLeave { get; set; }
+        public float Dpi { get; private set; }
+
+        void InitDpi(int? dpi = null)
+        {
+            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
+            else if (dpi.HasValue) Dpi = dpi.Value / 96F;
+            else
+            {
+#if NET40 || NET46
+                Dpi = Dpi;
+#else
+                Dpi = DeviceDpi / 96F;
+#endif
+            }
+        }
 
         #endregion
 
@@ -349,54 +359,17 @@ namespace AntdUI
         public void IMOUSECLICK()
         {
             var mousePosition = MousePosition;
-            if (!target_rect.Contains(mousePosition))
-            {
-                try
-                {
-                    if (PARENT != null && PARENT.IsHandleCreated)
-                    {
-                        if (MessageClickMe)
-                        {
-                            if (ContainsPosition(PARENT, mousePosition)) return;
-                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return;
-                        }
-
-                        #region 判断内容
-
-                        if (MessageCloseSub && FunSub(PARENT, mousePosition)) return;
-
-                        #endregion
-                    }
-                    IClose();
-                }
-                catch { }
-            }
+            if (ALLRECT().Contains(mousePosition)) return;
+            IClose();
         }
 
-        public void IMOUSELEAVE()
+        public void IMOUSEMOVE()
         {
-            if (MessageCloseMouseLeave)
+            if (CloseMode.HasFlag(CloseMode.Leave))
             {
                 var mousePosition = MousePosition;
-                if (!target_rect.Contains(mousePosition))
-                {
-                    try
-                    {
-                        if (PARENT != null && PARENT.IsHandleCreated)
-                        {
-                            if (ContainsPosition(PARENT, mousePosition)) return;
-                            if (new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size).Contains(mousePosition)) return;
-
-                            #region 判断内容
-
-                            if (MessageCloseSub && FunSub(PARENT, mousePosition)) return;
-
-                            #endregion
-                        }
-                        IClose();
-                    }
-                    catch { }
-                }
+                if (ALLRECT().Contains(mousePosition)) return;
+                IClose();
             }
         }
 
@@ -406,52 +379,29 @@ namespace AntdUI
             return KeyCall(keys);
         }
 
-        bool FunSub(Control control, Point mousePosition)
+        Rectangle ALLRECT()
+        {
+            if (PARENT == null) return target_rect;
+            var rect = new Rectangle(target_rect.X, target_rect.Y, target_rect.Width, target_rect.Height);
+            try
+            {
+                if (!CloseMode.HasFlag(CloseMode.NoControl) && PARENT.IsHandleCreated) rect = Rectangle.Union(rect, new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size));
+            }
+            catch { }
+            FunSub(PARENT, ref rect);
+            return rect;
+        }
+        void FunSub(Control control, ref Rectangle rect)
         {
             if (control is SubLayeredForm subForm)
             {
                 var subform = subForm.SubForm();
-                if (subform != null && ContainsPosition(subform, mousePosition) > 0) return true;
-            }
-            if (control.Controls == null || control.Controls.Count == 0) return false;
-            foreach (Control it in control.Controls)
-            {
-                if (FunSub(it, mousePosition)) return true;
-            }
-            return false;
-        }
-
-        bool ContainsPosition(Control control, Point mousePosition)
-        {
-            if (new Rectangle(control.PointToScreen(Point.Empty), control.Size).Contains(mousePosition)) return true;
-            try
-            {
-                if (control is SubLayeredForm subForm)
+                if (subform != null)
                 {
-                    var subform = subForm.SubForm();
-                    if (subform != null && ContainsPosition(subform, mousePosition) > 0) return true;
+                    rect = Rectangle.Union(rect, subform.TargetRect);
+                    FunSub(subform, ref rect);
                 }
             }
-            catch { }
-
-            return false;
-        }
-
-        int ContainsPosition(ILayeredForm control, Point mousePosition)
-        {
-            int count = 0;
-            try
-            {
-                if (control.TargetRect.Contains(mousePosition)) count++;
-
-                if (control is SubLayeredForm subForm)
-                {
-                    var subform = subForm.SubForm();
-                    if (subform != null) count += ContainsPosition(subform, mousePosition);
-                }
-            }
-            catch { }
-            return count;
         }
 
         #endregion
@@ -526,7 +476,7 @@ namespace AntdUI
         {
             if (mdown)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Dpi);
                 if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
                 {
                     oldMY = moveY;

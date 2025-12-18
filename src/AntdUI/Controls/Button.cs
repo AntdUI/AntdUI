@@ -1210,7 +1210,7 @@ namespace AntdUI
             var g = e.Canvas;
             Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = ReadRectangle;
             if (rect_read.Width == 0 || rect_read.Height == 0) return;
-            float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Config.Dpi;
+            float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
             bool is_default = type == TTypeMini.Default, enabled = Enabled;
             if (toggle && typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
@@ -1249,7 +1249,7 @@ namespace AntdUI
                         if (borderWidth > 0)
                         {
                             PaintLoadingWave(g, path, rect_read);
-                            float border = borderWidth * Config.Dpi;
+                            float border = borderWidth * Dpi;
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
@@ -1323,7 +1323,7 @@ namespace AntdUI
 
                         if (borderWidth > 0)
                         {
-                            float border = borderWidth * Config.Dpi;
+                            float border = borderWidth * Dpi;
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
@@ -1439,7 +1439,7 @@ namespace AntdUI
         /// </summary>
         void PaintShadow(Canvas g, Rectangle rect, GraphicsPath path, Color color, float radius)
         {
-            float wave = (WaveSize * Config.Dpi / 2);
+            float wave = (WaveSize * Dpi / 2);
             using (var path_shadow = new RectangleF(rect.X, rect.Y + wave, rect.Width, rect.Height).RoundPath(radius))
             {
                 path_shadow.AddPath(path, false);
@@ -1459,7 +1459,7 @@ namespace AntdUI
                         var state = g.Save();
                         g.SetClip(path);
                         g.ResetTransform();
-                        int len = (int)(LoadingWaveSize * Config.Dpi), count = LoadingWaveCount * 2 + 2;
+                        int len = (int)(LoadingWaveSize * Dpi), count = LoadingWaveCount * 2 + 2;
                         if (count < 6) count = 6;
                         if (LoadingWaveVertical)
                         {
@@ -1570,7 +1570,7 @@ namespace AntdUI
         {
             if (enabled && (hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
             {
-                float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2, r = radius + wave;
+                float wave = (WaveSize * Dpi / 2), wave2 = wave * 2, r = radius + wave;
                 var rect_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2);
                 using (var path_focus = Path(rect_focus, r))
                 {
@@ -1682,7 +1682,7 @@ namespace AntdUI
 
         void PaintTextArrow(Canvas g, Rectangle rect, Color color)
         {
-            using (var pen = new Pen(color, 2F * Config.Dpi))
+            using (var pen = new Pen(color, 2F * Dpi))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 if (isLink) g.DrawLines(pen, rect.TriangleLinesVertical(ArrowProg));
@@ -1849,7 +1849,7 @@ namespace AntdUI
         {
             if (IconSize.Width > 0 && IconSize.Height > 0)
             {
-                int w = (int)(IconSize.Width * Config.Dpi), h = (int)(IconSize.Height * Config.Dpi);
+                int w = (int)(IconSize.Width * Dpi), h = (int)(IconSize.Height * Dpi);
                 return new Rectangle(rect_read.X + (rect_read.Width - w) / 2, rect_read.Y + (rect_read.Height - h) / 2, w, h);
             }
             else
@@ -1922,7 +1922,7 @@ namespace AntdUI
         {
             if (IconSize.Width > 0 && IconSize.Height > 0)
             {
-                int w = (int)(IconSize.Width * Config.Dpi), h = (int)(IconSize.Height * Config.Dpi);
+                int w = (int)(IconSize.Width * Dpi), h = (int)(IconSize.Height * Dpi);
                 return new Rectangle(rectl.X + (rectl.Width - w) / 2, rectl.Y + (rectl.Height - h) / 2, w, h);
             }
             else return rectl;
@@ -2131,14 +2131,14 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, shape, joinMode, joinLeft, joinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
 
         public override GraphicsPath RenderRegion
         {
             get
             {
                 var rect = ReadRectangle;
-                return Path(rect, (shape == TShape.Round || shape == TShape.Circle) ? rect.Height : radius * Config.Dpi);
+                return Path(rect, (shape == TShape.Round || shape == TShape.Circle) ? rect.Height : radius * Dpi);
             }
         }
         #endregion
@@ -2152,7 +2152,7 @@ namespace AntdUI
             if (RespondRealAreas)
             {
                 var rect_read = ReadRectangle;
-                using (var path = Path(rect_read, radius * Config.Dpi))
+                using (var path = Path(rect_read, radius * Dpi))
                 {
                     ExtraMouseHover = path.IsVisible(e.X, e.Y);
                 }
@@ -2283,7 +2283,7 @@ namespace AntdUI
                 return Helper.GDI(g =>
                 {
                     var font_size = MeasureText(g, Text, out int txt_height);
-                    int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(WaveSize * Config.Dpi), wave2 = wave;
+                    int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(WaveSize * Dpi), wave2 = wave;
                     int height = Math.Max(font_size.Height, icon_size);
                     if (Shape == TShape.Circle || string.IsNullOrEmpty(Text) || displayStyle == TButtonDisplayStyle.Image)
                     {
@@ -2391,7 +2391,7 @@ namespace AntdUI
                 if (RespondRealAreas)
                 {
                     var rect_read = ReadRectangle;
-                    using (var path = Path(rect_read, radius * Config.Dpi))
+                    using (var path = Path(rect_read, radius * Dpi))
                     {
                         return path.IsVisible(x, y);
                     }

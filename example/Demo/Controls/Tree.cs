@@ -27,8 +27,8 @@ namespace Demo.Controls
 {
     public partial class Tree : UserControl
     {
-        Form form;
-        public Tree(Form _form)
+        AntdUI.BaseForm form;
+        public Tree(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

@@ -240,5 +240,11 @@ namespace AntdUI
         SmoothingMode SmoothingMode { get; set; }
 
         #endregion
+
+        #region DPI
+
+        float Dpi { get; }
+
+        #endregion
     }
 }

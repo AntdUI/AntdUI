@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Menu : UserControl
     {
-        Form form;
-        public Menu(Form _form)
+        AntdUI.BaseForm form;
+        public Menu(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
@@ -77,12 +77,12 @@ namespace Demo.Controls
             {
                 menu2.Tag = menu2.Mode;
                 menu2.Mode = AntdUI.TMenuMode.InlineNoText;
-                menu2.Width = (int)(66 * AntdUI.Config.Dpi);
+                menu2.Width = (int)(66 * form.Dpi);
             }
             else if (menu2.Tag is AntdUI.TMenuMode mode)
             {
                 menu2.Mode = mode;
-                menu2.Width = (int)(251 * AntdUI.Config.Dpi);
+                menu2.Width = (int)(251 * form.Dpi);
             }
         }
     }

@@ -430,7 +430,7 @@ namespace AntdUI
             {
                 Helper.GDI(g =>
                 {
-                    int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Config.Dpi), border2 = border * 2, offset = (int)(offsetY * Config.Dpi);
+                    int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Dpi), border2 = border * 2, offset = (int)(offsetY * Dpi);
                     Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
@@ -635,7 +635,7 @@ namespace AntdUI
             // 设置新的剪裁区域
             g.SetClip(rect_real);
             g.TranslateTransform(left, 0);
-            int _radius = (int)(radius * Config.Dpi), radiusContent = (int)(RadiusContent * Config.Dpi), border = (int)(borderWidth * Config.Dpi);
+            int _radius = (int)(radius * Dpi), radiusContent = (int)(RadiusContent * Dpi), border = (int)(borderWidth * Dpi);
             var color = Colour.Text.Get(nameof(TabHeader), ColorScheme);
             if (items != null && items.Count > 0)
             {
@@ -660,7 +660,7 @@ namespace AntdUI
                     var it = items[dragHeader.im];
                     using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(TabHeader), ColorScheme)))
                     {
-                        int sp = (int)(2 * Config.Dpi);
+                        int sp = (int)(2 * Dpi);
                         if (dragHeader.last) g.Fill(brush_split, new Rectangle(left + it.Rect.Right - sp, it.Rect.Y, sp * 2, it.Rect.Height));
                         else g.Fill(brush_split, new Rectangle(left + it.Rect.X - sp, it.Rect.Y, sp * 2, it.Rect.Height));
                     }

@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Avatar : UserControl
     {
-        Form form;
-        public Avatar(Form _form)
+        AntdUI.BaseForm form;
+        public Avatar(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

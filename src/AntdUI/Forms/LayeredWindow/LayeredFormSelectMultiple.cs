@@ -52,12 +52,11 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign);
 
-            float dpi = Config.Dpi;
-            if (dpi == 1F) Radius = control.radius;
+            if (Dpi == 1F) Radius = control.radius;
             else
             {
-                ArrowSize = (int)(8 * dpi);
-                Radius = (int)(control.radius * dpi);
+                ArrowSize = (int)(8 * Dpi);
+                Radius = (int)(control.radius * Dpi);
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
 
@@ -377,7 +376,7 @@ namespace AntdUI
             if (items.Count > 0)
             {
                 nodata = false;
-                int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+                int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
                 icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
                 gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
 

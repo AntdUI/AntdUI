@@ -51,7 +51,7 @@ namespace AntdUI
             config = _config;
             topMost = config.Form.SetTopMost(Handle);
             Font = config.Form.Font;
-            padding = (int)Math.Round(config.Padding * Config.Dpi);
+            padding = (int)Math.Round(config.Padding * Dpi);
             Padding = new Padding(padding);
             HasBor = Helper.FormFrame(config.Form, out FrmRadius, out FrmBor);
             config.Content.BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme);
@@ -66,7 +66,7 @@ namespace AntdUI
             {
                 config.Content.Tag = config.Content.Size;
                 Win32.WindowTheme(config.Content, Config.IsDark);
-                Helper.DpiAuto(Config.Dpi, config.Content);
+                Helper.DpiAuto(Dpi, config.Content);
             }
             config.Content.Location = Helper.OffScreenArea(tempContent.Width * 2, tempContent.Height * 2);
             config.Content.Size = new Size(tempContent.Width, tempContent.Height);
@@ -84,7 +84,7 @@ namespace AntdUI
                 case TAlignMini.Top:
                     vertical = true;
                     start_H = 0;
-                    end_H = (int)(config.Content.Height * Config.Dpi) + padding * 2 + 20;
+                    end_H = (int)(config.Content.Height * Dpi) + padding * 2 + 20;
                     if (config.Form is Window windowT)
                     {
                         start_W = end_W = windowT.Width;
@@ -101,7 +101,7 @@ namespace AntdUI
                 case TAlignMini.Bottom:
                     vertical = true;
                     start_H = 0;
-                    end_H = (int)(config.Content.Height * Config.Dpi) + padding * 2 + 20;
+                    end_H = (int)(config.Content.Height * Dpi) + padding * 2 + 20;
                     if (config.Form is Window windowB)
                     {
                         start_W = end_W = windowB.Width;
@@ -118,7 +118,7 @@ namespace AntdUI
                     break;
                 case TAlignMini.Left:
                     start_W = 0;
-                    end_W = (int)(config.Content.Width * Config.Dpi) + padding * 2 + 20;
+                    end_W = (int)(config.Content.Width * Dpi) + padding * 2 + 20;
                     if (config.Form is Window windowL)
                     {
                         start_H = end_H = windowL.Height;
@@ -135,7 +135,7 @@ namespace AntdUI
                 case TAlignMini.Right:
                 default:
                     start_W = 0;
-                    end_W = (int)(config.Content.Width * Config.Dpi) + padding * 2 + 20;
+                    end_W = (int)(config.Content.Width * Dpi) + padding * 2 + 20;
                     if (config.Form is Window windowR)
                     {
                         start_H = end_H = windowR.Height;
@@ -425,7 +425,7 @@ namespace AntdUI
                 switch (config.Align)
                 {
                     case TAlignMini.Top:
-                        end_H = (int)(size.Height * Config.Dpi) + padding * 2 + 20;
+                        end_H = (int)(size.Height * Dpi) + padding * 2 + 20;
                         if (config.Form is Window windowT)
                         {
                             start_W = end_W = windowT.Width;
@@ -440,7 +440,7 @@ namespace AntdUI
                         }
                         break;
                     case TAlignMini.Bottom:
-                        end_H = (int)(size.Height * Config.Dpi) + padding * 2 + 20;
+                        end_H = (int)(size.Height * Dpi) + padding * 2 + 20;
                         if (config.Form is Window windowB)
                         {
                             start_W = end_W = windowB.Width;
@@ -456,7 +456,7 @@ namespace AntdUI
                         end_Y = start_Y - end_H;
                         break;
                     case TAlignMini.Left:
-                        end_W = (int)(size.Width * Config.Dpi) + padding * 2 + 20;
+                        end_W = (int)(size.Width * Dpi) + padding * 2 + 20;
                         if (config.Form is Window windowL)
                         {
                             start_H = end_H = windowL.Height;
@@ -472,7 +472,7 @@ namespace AntdUI
                         break;
                     case TAlignMini.Right:
                     default:
-                        end_W = (int)(size.Width * Config.Dpi) + padding * 2 + 20;
+                        end_W = (int)(size.Width * Dpi) + padding * 2 + 20;
                         if (config.Form is Window windowR)
                         {
                             start_H = end_H = windowR.Height;

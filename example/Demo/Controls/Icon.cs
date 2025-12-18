@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class Icon : UserControl, AntdUI.IEventListener
     {
-        Form form;
-        public Icon(Form _form)
+        AntdUI.BaseForm form;
+        public Icon(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
@@ -190,7 +190,7 @@ namespace Demo.Controls
             int gap = 8, sp = 1, x = 30;
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 gap = (int)(8 * dpi);
                 sp = (int)(1 * dpi);
                 x = (int)(30 * dpi);
@@ -228,7 +228,7 @@ namespace Demo.Controls
             Rectangle rect_icon, rect_text;
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 int w = (int)(200 * dpi), h = (int)(100 * dpi);
                 icon_size = (int)(36 * dpi);
                 int text_size = (int)(24 * dpi), y = (h - (icon_size + text_size)) / 2;
@@ -266,7 +266,7 @@ namespace Demo.Controls
             Rectangle rect_icon, rect_icon_hover;
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 sp = (int)(4 * dpi);
                 int size = (int)(100 * dpi);
                 int icon_size = (int)(48 * dpi), xy = (size - icon_size) / 2;

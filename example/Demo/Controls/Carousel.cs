@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Carousel : UserControl
     {
-        Form form;
-        public Carousel(Form _form)
+        AntdUI.BaseForm form;
+        public Carousel(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

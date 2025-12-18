@@ -700,7 +700,7 @@ namespace Demo
             int gap = 8, sp = 1, x = 30;
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 gap = (int)(8 * dpi);
                 sp = (int)(1 * dpi);
                 x = (int)(30 * dpi);
@@ -760,7 +760,7 @@ namespace Demo
             RectangleF rect_line;
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 thickness = (int)(1 * dpi);
                 int title_height = (int)(44 * dpi), size = (int)(10 * dpi), size2 = size * 2, size4 = size2 * 2;
 

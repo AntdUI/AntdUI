@@ -29,7 +29,7 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            float radius = Radius * Config.Dpi;
+            float radius = Radius * g.Dpi;
             using (var path = Rect.RoundPath(radius))
             {
                 using (var bmp = new Bitmap(Rect.Width, Rect.Height))
@@ -53,13 +53,13 @@ namespace AntdUI
                     }
                 }
 
-                if (BorderWidth > 0 && BorderColor.HasValue) g.Draw(BorderColor.Value, BorderWidth * Config.Dpi, path);
+                if (BorderWidth > 0 && BorderColor.HasValue) g.Draw(BorderColor.Value, BorderWidth * g.Dpi, path);
             }
         }
 
         public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
-            if (Size.HasValue) return new Size((int)Math.Ceiling(Size.Value.Width * Config.Dpi), (int)Math.Ceiling(Size.Value.Height * Config.Dpi));
+            if (Size.HasValue) return new Size((int)Math.Ceiling(Size.Value.Width * g.Dpi), (int)Math.Ceiling(Size.Value.Height * g.Dpi));
             else
             {
                 int size = gap.x2 + g.MeasureString(Config.NullText, font).Height;

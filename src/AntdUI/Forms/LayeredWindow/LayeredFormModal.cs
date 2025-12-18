@@ -53,7 +53,7 @@ namespace AntdUI
 
             SuspendLayout();
 
-            int butt_h = (int)Math.Round(config.BtnHeight * Config.Dpi);
+            int butt_h = (int)Math.Round(config.BtnHeight * Dpi);
             BackColor = Colour.BgElevated.Get(nameof(AntdUI.Modal), config.ColorScheme);
             Size = new Size(416, 122 + butt_h);
             config.Target.SetFontConfig(config.Font, this);
@@ -198,11 +198,9 @@ namespace AntdUI
 
             rectsContent = Helper.GDI(g =>
             {
-                var dpi = Config.Dpi;
-
-                int gap = (int)Math.Round(8F * dpi), paddingx = (int)Math.Round(config.Padding.Width * dpi), paddingy = (int)Math.Round(config.Padding.Height * dpi),
-                cpaddingx = (int)Math.Round(config.ContentPadding.Width * dpi), cpaddingy = (int)Math.Round(config.ContentPadding.Height * dpi), cpaddingx2 = cpaddingx * 2, cpaddingy2 = cpaddingy * 2,
-                    w = (int)Math.Round(config.Width * dpi), wp = w - paddingx * 2;
+                int gap = (int)Math.Round(8F * Dpi), paddingx = (int)Math.Round(config.Padding.Width * Dpi), paddingy = (int)Math.Round(config.Padding.Height * Dpi),
+                cpaddingx = (int)Math.Round(config.ContentPadding.Width * Dpi), cpaddingy = (int)Math.Round(config.ContentPadding.Height * Dpi), cpaddingx2 = cpaddingx * 2, cpaddingy2 = cpaddingy * 2,
+                    w = (int)Math.Round(config.Width * Dpi), wp = w - paddingx * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (panel_main != null) panel_main.Height = butt_h;
 
@@ -212,7 +210,7 @@ namespace AntdUI
                     if (config.Content is Control control)
                     {
                         Win32.WindowTheme(control, Config.IsDark);
-                        Helper.DpiAuto(dpi, control);
+                        Helper.DpiAuto(Dpi, control);
                         w = control.Width + paddingx * 2 + cpaddingx2;
                         wp = control.Width + cpaddingx2;
                         Controls.Add(control);
@@ -281,7 +279,7 @@ namespace AntdUI
                             foreach (var txt in list)
                             {
                                 var sizeContent = g.MeasureText(txt.Text, txt.Font ?? Font, wp - cpaddingx2);
-                                int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                int txt_h = sizeContent.Height + (int)(txt.Gap * Dpi);
                                 texts.Add(new Rectangle(rectTitle.X + cpaddingx, has_y, wp - cpaddingx2, txt_h));
                                 has_y += txt_h;
                                 h_temp += txt_h;
@@ -305,7 +303,7 @@ namespace AntdUI
                                 foreach (var txt in list)
                                 {
                                     var sizeContent = g.MeasureText(txt.Text, txt.Font ?? Font, ww);
-                                    int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                    int txt_h = sizeContent.Height + (int)(txt.Gap * Dpi);
                                     texts.Add(new Rectangle(rectTitle.X + cpaddingx, has_y, ww, txt_h));
                                     has_y += txt_h;
                                     h_temp += txt_h;
@@ -319,7 +317,7 @@ namespace AntdUI
                                 foreach (var txt in list)
                                 {
                                     var sizeContent = g.MeasureText(txt.Text, txt.Font ?? Font, wp - cpaddingx2);
-                                    int txt_h = sizeContent.Height + (int)(txt.Gap * dpi);
+                                    int txt_h = sizeContent.Height + (int)(txt.Gap * Dpi);
                                     texts.Add(new Rectangle(paddingx + cpaddingx, has_y, wp - cpaddingx2, txt_h));
                                     has_y += txt_h;
                                     h_temp += txt_h;
@@ -527,7 +525,7 @@ namespace AntdUI
             {
                 if (close_button.Animation)
                 {
-                    using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
+                    using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                     {
                         g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme)), path);
                     }
@@ -535,7 +533,7 @@ namespace AntdUI
                 }
                 else if (close_button.Switch)
                 {
-                    using (var path = rect_close.RoundPath((int)(4 * Config.Dpi)))
+                    using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                     {
                         g.Fill(Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme), path);
                     }

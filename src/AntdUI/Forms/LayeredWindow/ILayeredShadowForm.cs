@@ -33,7 +33,7 @@ namespace AntdUI
         {
             if (ShadowEnabled)
             {
-                shadow = (int)(10 * Config.Dpi);
+                shadow = (int)(10 * Dpi);
                 shadow2 = shadow * 2;
             }
         }
@@ -42,13 +42,13 @@ namespace AntdUI
 
         public void CLocation(IControl control, TAlignFrom Placement, bool DropDownArrow, int ArrowSize)
         {
-            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, Radius, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
+            var calculateCoordinate = new CalculateCoordinate(this, control, TargetRect, Radius, DropDownArrow ? ArrowSize : 0, shadow, shadow2);
             calculateCoordinate.Auto(Placement, animateConfig, true, out int x, out int y, out ArrowLine);
             SetLocation(x, y);
         }
         public void CLocation(IControl control, TAlignFrom Placement, Rectangle rect_real, bool DropDownArrow, int ArrowSize, bool Collision = false)
         {
-            var calculateCoordinate = new CalculateCoordinate(control, TargetRect, Radius, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
+            var calculateCoordinate = new CalculateCoordinate(this, control, TargetRect, Radius, DropDownArrow ? ArrowSize : 0, shadow, shadow2, rect_real);
             calculateCoordinate.Auto(Placement, animateConfig, Collision, out int x, out int y, out ArrowLine);
             SetLocation(x, y);
         }
@@ -259,7 +259,7 @@ namespace AntdUI
         {
             if (ShadowEnabled)
             {
-                shadow = (int)(10 * Config.Dpi);
+                shadow = (int)(10 * Dpi);
                 shadow2 = shadow * 2;
             }
         }

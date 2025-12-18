@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Dropdown : UserControl
     {
-        Form form;
-        public Dropdown(Form _form)
+        AntdUI.BaseForm form;
+        public Dropdown(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

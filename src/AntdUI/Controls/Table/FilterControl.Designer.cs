@@ -114,6 +114,7 @@ namespace AntdUI
             // selectCondition
             // 
             selectCondition.AutoPrefixSvg = true;
+            selectCondition.AutoText = false;
             selectCondition.IconRatio = 1F;
             selectCondition.IconRatioRight = 0F;
             selectCondition.List = true;

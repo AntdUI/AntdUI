@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Badge : UserControl
     {
-        Form form;
-        public Badge(Form _form)
+        AntdUI.BaseForm form;
+        public Badge(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

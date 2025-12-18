@@ -427,7 +427,7 @@ namespace AntdUI
             var rect_read = ReadRectangle;
             if (rect_read.Width > 0 && rect_read.Height > 0)
             {
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
                 {
                     using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme)))
@@ -435,7 +435,7 @@ namespace AntdUI
                         g.Fill(brush, path);
                     }
                     if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
+                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Dpi, borderStyle, path);
                 }
                 if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
             }
@@ -454,7 +454,7 @@ namespace AntdUI
             var path = rect_read.RoundPath(radius, shadowAlign, radiusAlign);
             if (shadow > 0)
             {
-                int shadow = (int)(Shadow * Config.Dpi), shadowOffsetX = (int)(ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(ShadowOffsetY * Config.Dpi);
+                int shadow = (int)(Shadow * Dpi), shadowOffsetX = (int)(ShadowOffsetX * Dpi), shadowOffsetY = (int)(ShadowOffsetY * Dpi);
                 if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
@@ -475,7 +475,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth / 2F);
 
-        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Config.Dpi);
+        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Dpi);
 
         #endregion
 

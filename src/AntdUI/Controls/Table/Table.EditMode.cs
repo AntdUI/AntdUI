@@ -46,7 +46,7 @@ namespace AntdUI
                     EditModeClose();
                     if (CanEditMode(item))
                     {
-                        ScrollLine(row, rows);
+                        ScrollLine(crect.Y, crect.Bottom, rows);
                         if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY);
                         else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
                         else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);
@@ -334,7 +334,7 @@ namespace AntdUI
 
         Rectangle RectInput(CELL cell, Rectangle rect, int sx, int sy, float borwidth, int wavesize)
         {
-            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
+            int bor = (int)((wavesize + borwidth / 2F) * Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
             if (EditAutoHeight)
             {
                 int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
@@ -349,7 +349,7 @@ namespace AntdUI
         }
         Rectangle RectInputDefault(CELL cell, Rectangle rect, int sx, int sy, float borwidth, int wavesize)
         {
-            int bor = (int)((wavesize + borwidth / 2F) * Config.Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
+            int bor = (int)((wavesize + borwidth / 2F) * Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
             if (EditAutoHeight)
             {
                 int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;

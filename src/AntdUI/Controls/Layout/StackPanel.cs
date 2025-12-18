@@ -219,8 +219,8 @@ namespace AntdUI
                         else
                         {
                             if (ItemSize.EndsWith("%") && float.TryParse(ItemSize.TrimEnd('%'), out var f)) val = HandLayout(parent, controls, rect, (int)Math.Round((Vertical ? rect.Height : rect.Width) * (f / 100F)));
-                            else if (int.TryParse(ItemSize, out var i)) val = HandLayout(parent, controls, rect, (int)Math.Round(i * Config.Dpi));
-                            else val = HandLayoutFill(controls, rect);
+                            else if (int.TryParse(ItemSize, out var i)) val = HandLayout(parent, controls, rect, (int)Math.Round(i * parent.Dpi));
+                            else val = HandLayoutFill(parent, controls, rect);
                         }
                         if (parent.ScrollBar != null)
                         {
@@ -238,7 +238,7 @@ namespace AntdUI
                 int count = controls.Count;
                 int offset = 0, use = 0, gap = 0;
                 if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
-                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * parent.Dpi);
                 if (Vertical)
                 {
                     if (Reverse)
@@ -316,7 +316,7 @@ namespace AntdUI
                 int count = controls.Count;
                 int offset = 0, use = 0, gap = 0;
                 if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
-                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * parent.Dpi);
                 if (Vertical)
                 {
                     if (Reverse)
@@ -389,11 +389,11 @@ namespace AntdUI
                 }
                 return use;
             }
-            int HandLayoutFill(List<Control> controls, Rectangle rect)
+            int HandLayoutFill(StackPanel parent, List<Control> controls, Rectangle rect)
             {
                 int count = controls.Count;
                 int usex = 0, usey = 0, gap = 0;
-                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * parent.Dpi);
                 if (Vertical)
                 {
                     int size = (rect.Height - (gap * (count - 1))) / count;

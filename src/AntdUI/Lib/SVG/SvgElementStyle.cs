@@ -424,7 +424,8 @@ namespace AntdUI.Svg
                     var uri = sFaces.First().Descendants().OfType<SvgFontFaceUri>().First().ReferencedElement;
                     font = OwnerDocument.IdManager.GetElementById(uri) as SvgFont;
                 }
-                return new SvgFontDefn(font, fontSize, SvgDocument.Ppi);
+                int ppi = (int)(renderer.Dpi * 96);
+                return new SvgFontDefn(font, fontSize, ppi);
             }
         }
 

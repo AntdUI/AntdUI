@@ -34,10 +34,9 @@ namespace AntdUI.Svg
             return _boundables.Pop();
         }
 
-        public float DpiY
-        {
-            get { return _innerGraphics.DpiY; }
-        }
+        public float Dpi => _innerGraphics.Dpi;
+
+        public float DpiY => _innerGraphics.DpiY;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ISvgRenderer"/> class.

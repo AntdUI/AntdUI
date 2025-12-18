@@ -110,7 +110,6 @@ namespace AntdUI
                         case WM_LBUTTONDOWN:
                         case WM_RBUTTONDOWN:
                         case WM_MBUTTONDOWN:
-                        case WM_NCMOUSEMOVE:
                             foreach (var handler in Handlers())
                             {
                                 try
@@ -120,12 +119,13 @@ namespace AntdUI
                                 catch { }
                             }
                             break;
+                        case WM_NCMOUSEMOVE:
                         case WM_MOUSEMOVE:
                             foreach (var handler in Handlers())
                             {
                                 try
                                 {
-                                    handler.IMOUSELEAVE();
+                                    handler.IMOUSEMOVE();
                                 }
                                 catch { }
                             }

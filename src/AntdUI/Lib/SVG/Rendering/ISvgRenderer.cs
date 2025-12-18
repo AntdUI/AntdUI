@@ -11,6 +11,7 @@ namespace AntdUI.Svg
 {
     public interface ISvgRenderer : IDisposable
     {
+        float Dpi { get; }
         float DpiY { get; }
         void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit);
         void DrawPath(Pen pen, GraphicsPath path);

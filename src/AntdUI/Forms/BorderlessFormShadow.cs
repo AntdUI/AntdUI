@@ -137,7 +137,7 @@ namespace AntdUI
 
         public void ISize()
         {
-            int shadow = (int)(form.Shadow * Config.Dpi), shadow2 = shadow * 2;
+            int shadow = (int)(form.Shadow * form.Dpi), shadow2 = shadow * 2;
             rect_read = new Rectangle(shadow, shadow, form.Width, form.Height);
             shadow_rect = new Rectangle(form.Left - shadow, form.Top - shadow, rect_read.Width + shadow2, rect_read.Height + shadow2);
         }
@@ -189,7 +189,7 @@ namespace AntdUI
         Bitmap PrintBit()
         {
             Win32.Dispose(memDc, ref hBitmap, ref oldBits);
-            int radius = (int)(form.Radius * Config.Dpi), shadow = (int)(form.Shadow * Config.Dpi), shadow2 = shadow * 2, shadow4 = shadow * 4, shadow6 = shadow * 6;
+            int radius = (int)(form.Radius * form.Dpi), shadow = (int)(form.Shadow * form.Dpi), shadow2 = shadow * 2, shadow4 = shadow * 4, shadow6 = shadow * 6;
             if (bitbmp == null)
             {
                 bitbmp = new Bitmap(shadow6, shadow6);
@@ -228,7 +228,7 @@ namespace AntdUI
                     g.Image(bitbmp, new Rectangle(shadow2, 0, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, 0, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
 
                     g.ResetClip();
-                    if (form.BorderWidth > 0) g.Draw(form.BorderColor, form.BorderWidth * Config.Dpi, path);
+                    if (form.BorderWidth > 0) g.Draw(form.BorderColor, form.BorderWidth * form.Dpi, path);
                 }
             }
             return bitmap;

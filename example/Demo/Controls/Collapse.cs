@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Collapse : UserControl
     {
-        Form form;
-        public Collapse(Form _form)
+        AntdUI.BaseForm form;
+        public Collapse(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

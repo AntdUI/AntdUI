@@ -697,7 +697,7 @@ namespace AntdUI
                 g.String(textShow, Font, brush, new Rectangle(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
             }
 
-            int w = radius == 0 ? (int)Math.Round(icon_rect.Width * .2F) : (int)(radius * Config.Dpi);
+            int w = radius == 0 ? (int)Math.Round(icon_rect.Width * .2F) : (int)(radius * Dpi);
             g.DrawEllipse(_back, w, icon_rect);
 
             #region 进度条
@@ -741,8 +741,8 @@ namespace AntdUI
         {
             var _back = back ?? Colour.FillSecondary.Get(nameof(Progress), ColorScheme);
             var font_size = g.MeasureString("100" + TextUnit, Font);
-            int pro_gap = (int)(stepGap * Config.Dpi), pro_h = (int)(font_size.Height * valueratio);
-            float pro_w = (int)(stepSize * Config.Dpi), has_x = 0;
+            int pro_gap = (int)(stepGap * Dpi), pro_h = (int)(font_size.Height * valueratio);
+            float pro_w = (int)(stepSize * Dpi), has_x = 0;
             int pro_y = rect.Y + (rect.Height - pro_h) / 2;
 
             var prog = steps * _value_show;
@@ -844,7 +844,7 @@ namespace AntdUI
         void PaintShapeRound(Canvas g, Rectangle rect_t, Rectangle rect, Color color, bool round)
         {
             var _back = back ?? Colour.FillSecondary.Get(nameof(Progress), ColorScheme);
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             if (round) _radius = rect.Height;
 
             if (state == TType.None)
@@ -940,13 +940,13 @@ namespace AntdUI
             if (rect.Width == rect.Height) prog_size = rect.Width;
             else if (rect.Width > rect.Height) prog_size = rect.Height;
             else prog_size = rect.Width;
-            int w = radius == 0 ? (int)Math.Round(prog_size * .04F) : (int)(radius * Config.Dpi);
+            int w = radius == 0 ? (int)Math.Round(prog_size * .04F) : (int)(radius * Dpi);
             prog_size -= w;
             var rect_prog = new Rectangle(rect.X + (rect.Width - prog_size) / 2, rect.Y + (rect.Height - prog_size) / 2, prog_size, prog_size);
 
             if (HasIcon)
             {
-                int iconSize = prog_size - radius - (int)(IconCirclePadding * Config.Dpi), gap = (rect_prog.Width - iconSize) / 2;
+                int iconSize = prog_size - radius - (int)(IconCirclePadding * Dpi), gap = (rect_prog.Width - iconSize) / 2;
                 if (IconCircleAngle)
                 {
                     var state = g.Save();

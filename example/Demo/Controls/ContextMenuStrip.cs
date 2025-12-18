@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class ContextMenuStrip : UserControl
     {
-        Form form;
-        public ContextMenuStrip(Form _form)
+        AntdUI.BaseForm form;
+        public ContextMenuStrip(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

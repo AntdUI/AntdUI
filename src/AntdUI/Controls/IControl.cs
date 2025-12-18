@@ -66,6 +66,7 @@ namespace AntdUI
                     break;
             }
             UpdateStyles();
+            InitDpi();
         }
 
         #region 属性
@@ -302,6 +303,33 @@ namespace AntdUI
 
         #endregion
 
+        #region DPI
+
+        public float Dpi { get; private set; }
+
+        void InitDpi()
+        {
+            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
+            else
+            {
+#if NET40 || NET46
+                Dpi = Dpi;
+#else
+                Dpi = DeviceDpi / 96F;
+#endif
+            }
+        }
+
+#if !NET40 && !NET46
+        protected override void OnDpiChangedBeforeParent(EventArgs e)
+        {
+            base.OnDpiChangedBeforeParent(e);
+            InitDpi();
+        }
+#endif
+
+        #endregion
+
         #endregion
 
         #region Spin 加载
@@ -506,7 +534,7 @@ namespace AntdUI
         {
             if (mdown)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Dpi);
                 if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
                 {
                     oldMY = moveY;

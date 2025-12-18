@@ -254,7 +254,7 @@ namespace AntdUI
                 var rect = parent.DisplayRectangle;
                 int offset = 0, use_x = 0, use_y = 0, last_len = 0, gap = 0;
                 if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
-                if (Gap > 0 && controls.Count > 1) gap = (int)Math.Round(Gap * Config.Dpi);
+                if (Gap > 0 && controls.Count > 1) gap = (int)Math.Round(Gap * parent.Dpi);
                 var cps = new List<CP>();
                 var dir = new List<CP>(controls.Count);
                 int oldx = 0;

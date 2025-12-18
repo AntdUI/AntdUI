@@ -306,12 +306,6 @@ namespace AntdUI
         protected virtual void OnSortRows(int e) => SortRows?.Invoke(this, new IntEventArgs(e));
 
         /// <summary>
-        /// 每行或行自定义汇总计算结束时发生
-        /// </summary>
-        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
-        public event CustomSummaryEventHandler? CustomSummaryCalculate;
-
-        /// <summary>
         /// 树行排序时发生
         /// </summary>
         [Description("树行排序时发生"), Category("行为")]
@@ -403,6 +397,23 @@ namespace AntdUI
         [Description("筛选数据变更后发生"), Category("行为")]
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
 
+        /// <summary>
+        /// 每行或行自定义汇总计算结束时发生
+        /// </summary>
+        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
+        public event CustomSummaryEventHandler? CustomSummaryCalculate;
+
+        /// <summary>
+        /// 内置汇总功能切换
+        /// </summary>
+        public delegate void SummaryCustomizeChangedEventHandler(object sender, BoolEventArgs e);
+
+        /// <summary>
+        /// 内置/外部汇总栏切换后发生
+        /// </summary>
+        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
+        public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
+
         #endregion
 
         public class CELLDB
@@ -430,7 +441,23 @@ namespace AntdUI
             public int i_row { get; set; }
             public int i_cel { get; set; }
             public Column col { get; set; }
-            public int mode { get; set; }
+            public CELLDBMode mode { get; set; }
+        }
+        public enum CELLDBMode : int
+        {
+            None = 0,
+            /// <summary>
+            /// 表头
+            /// </summary>
+            Column = 1,
+            /// <summary>
+            /// 浮动表头
+            /// </summary>
+            ColumnFixed = 2,
+            /// <summary>
+            /// 总结栏
+            /// </summary>
+            Summary = 3
         }
     }
 }

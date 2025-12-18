@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class Preview : UserControl
     {
-        Form form;
-        public Preview(Form _form)
+        AntdUI.BaseForm form;
+        public Preview(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

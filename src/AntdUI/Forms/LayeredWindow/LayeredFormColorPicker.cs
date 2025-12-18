@@ -47,29 +47,29 @@ namespace AntdUI
             ShowReset = control.ShowReset;
             Font = control.Font.Size > 15f ? new Font(control.Font.Name, 15f, control.Font.Unit) : control.Font;//字体过大时, 编辑器文本超出编辑框
             mode = control.Mode;
-            MessageCloseMouseLeave = control.Trigger == Trigger.Hover;
+            if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
             color_alpha = Value = ValueDefault = control.Value;
             ValueNAlpha = Color.FromArgb(255, Value);
             var hsv = ValueNAlpha.ToHSV();
             hsv.s = hsv.v = 1;
             ValueHue = hsv.HSVToColor();
-            Radius = control.Radius * Config.Dpi;
+            Radius = control.Radius * Dpi;
             Radius2 = Radius * 0.75F;
             PARENT = control;
             action = _action;
             int colors_h = 160;
-            if (Config.Dpi != 1F)
+            if (Dpi != 1F)
             {
-                colors_h = (int)(colors_h * Config.Dpi);
+                colors_h = (int)(colors_h * Dpi);
 
-                gap = (int)(gap * Config.Dpi);
-                dot_size = (int)(dot_size * Config.Dpi);
-                dot_bor_size = (int)(dot_bor_size * Config.Dpi);
-                btn_size = (int)(btn_size * Config.Dpi);
-                line_h = (int)(line_h * Config.Dpi);
-                panel_color = (int)(panel_color * Config.Dpi);
-                w = (int)(w * Config.Dpi);
-                h = (int)(h * Config.Dpi);
+                gap = (int)(gap * Dpi);
+                dot_size = (int)(dot_size * Dpi);
+                dot_bor_size = (int)(dot_bor_size * Dpi);
+                btn_size = (int)(btn_size * Dpi);
+                line_h = (int)(line_h * Dpi);
+                panel_color = (int)(panel_color * Dpi);
+                w = (int)(w * Dpi);
+                h = (int)(h * Dpi);
             }
 
             if (control.Mode == TColorMode.Rgb)
@@ -158,7 +158,7 @@ namespace AntdUI
             Size = TargetRect.Size;
 
             var rect_input = new Rectangle(rect_colors_big.X + 4, yb + line_h + gap, rect_colors_big.Width - 8, panel_color);
-            int wsize = (int)(4 * Config.Dpi), wsize2 = wsize * 2;
+            int wsize = (int)(4 * Dpi), wsize2 = wsize * 2;
             switch (control.Mode)
             {
                 case TColorMode.Rgb:
@@ -608,7 +608,7 @@ namespace AntdUI
                                 g.DrawLine(pen, new Point(rect_btn.X, rect_btn.Bottom), new Point(rect_btn.Right, rect_btn.Y));
                             }
                             g.ResetClip();
-                            g.Draw(hover_btn ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Config.Dpi, path);
+                            g.Draw(hover_btn ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Dpi, path);
                         }
                     }
 
@@ -616,7 +616,7 @@ namespace AntdUI
                     {
                         using (var path = rect_close.RoundPath(Radius2))
                         {
-                            g.Draw(hover_close ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Config.Dpi, path);
+                            g.Draw(hover_close ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Dpi, path);
                         }
                         g.PaintIconClose(rect_close, Colour.TextTertiary.Get(nameof(ColorPicker), ColorScheme), .8F);
                     }
@@ -625,7 +625,7 @@ namespace AntdUI
                     {
                         using (var path = rect_reset.RoundPath(Radius2))
                         {
-                            g.Draw(hover_reset ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Config.Dpi, path);
+                            g.Draw(hover_reset ? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme) : Colour.Split.Get(nameof(ColorPicker), ColorScheme), Dpi, path);
                         }
                         g.PaintIconReset(rect_reset, ValueDefault, .8F);
                     }

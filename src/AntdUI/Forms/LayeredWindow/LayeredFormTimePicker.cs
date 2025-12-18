@@ -71,12 +71,11 @@ namespace AntdUI
 
             #endregion
 
-            float dpi = Config.Dpi;
-            if (dpi == 1F) Radius = control.Radius;
+            if (Dpi == 1F) Radius = control.Radius;
             else
             {
-                ArrowSize = (int)(8 * dpi);
-                Radius = (int)(control.Radius * dpi);
+                ArrowSize = (int)(8 * Dpi);
+                Radius = (int)(control.Radius * Dpi);
             }
             LoadLayout(count);
             ScrollTime();

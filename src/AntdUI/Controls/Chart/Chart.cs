@@ -416,13 +416,13 @@ namespace AntdUI
 
             // 绘制图例边框
             var legendBorderColor = LegendBorderColor ?? (Config.IsDark ? Color.FromArgb(70, 70, 70) : Color.LightGray);
-            using (var pen = new Pen(legendBorderColor, Config.Dpi))
+            using (var pen = new Pen(legendBorderColor, Dpi))
             {
                 g.Draw(pen, legendRect);
             }
 
             // 绘制图例项
-            int itemSpacing = (int)(5 * Config.Dpi), colorBoxWidth = (int)(15 * Config.Dpi), colorBoxSpacing = (int)(25 * Config.Dpi), currentY = legendRect.Y + itemSpacing;
+            int itemSpacing = (int)(5 * Dpi), colorBoxWidth = (int)(15 * Dpi), colorBoxSpacing = (int)(25 * Dpi), currentY = legendRect.Y + itemSpacing;
 
             foreach (var item in legendItems)
             {
@@ -436,7 +436,7 @@ namespace AntdUI
                 {
                     g.Fill(brush, colorRect);
                 }
-                using (var pen = new Pen(Config.IsDark ? Color.White : Color.Black, Config.Dpi))
+                using (var pen = new Pen(Config.IsDark ? Color.White : Color.Black, Dpi))
                 {
                     g.Draw(pen, colorRect);
                 }
@@ -454,7 +454,7 @@ namespace AntdUI
 
         private Rectangle CalculateLegendRect(Rectangle rect, Size legendSize)
         {
-            int itemSpacing = (int)(5 * Config.Dpi);
+            int itemSpacing = (int)(5 * Dpi);
             int legendWidth = legendSize.Width, legendHeight = legendSize.Height, legendX = 0, legendY = 0;
 
             switch (LegendPosition)
@@ -502,7 +502,7 @@ namespace AntdUI
 
         private Size CalculateLegendSize(Canvas g, List<LegendItem> legendItems)
         {
-            int itemSpacing = (int)(5 * Config.Dpi), colorBoxWidth = (int)(15 * Config.Dpi), colorBoxSpacing = (int)(10 * Config.Dpi), padding = itemSpacing;
+            int itemSpacing = (int)(5 * Dpi), colorBoxWidth = (int)(15 * Dpi), colorBoxSpacing = (int)(10 * Dpi), padding = itemSpacing;
 
             // 计算最大文本宽度和总高度
             int maxTextWidth = 0, totalHeight = padding;
@@ -527,14 +527,14 @@ namespace AntdUI
 
         private int CalculateLegendHeight()
         {
-            int itemSpacing = (int)(5 * Config.Dpi), itemHeight = (int)(20 * Config.Dpi);
+            int itemSpacing = (int)(5 * Dpi), itemHeight = (int)(20 * Dpi);
             var visibleCount = Datasets.Count(d => d.Visible);
             return visibleCount * (itemHeight + itemSpacing) + 10;
         }
 
         private void DrawGrid(Canvas g, Rectangle chartRect)
         {
-            using (var pen = new Pen(GridColor ?? Style.Db.BorderColor, Config.Dpi))
+            using (var pen = new Pen(GridColor ?? Style.Db.BorderColor, Dpi))
             {
                 pen.DashStyle = DashStyle.Dot;
 
@@ -558,7 +558,7 @@ namespace AntdUI
 
         private void DrawAxes(Canvas g, Rectangle chartRect)
         {
-            using (var pen = new Pen(AxisColor ?? Style.Db.BorderColor, Config.Dpi * 2))
+            using (var pen = new Pen(AxisColor ?? Style.Db.BorderColor, Dpi * 2))
             {
                 // X轴
                 g.DrawLine(pen, chartRect.X, chartRect.Bottom, chartRect.Right, chartRect.Bottom);
@@ -905,7 +905,7 @@ namespace AntdUI
         /// <returns>缩放后的值</returns>
         private float GetScaledValue(float value)
         {
-            return value * Config.Dpi;
+            return value * Dpi;
         }
 
         /// <summary>
@@ -915,7 +915,7 @@ namespace AntdUI
         /// <returns>缩放后的值</returns>
         private int GetScaledValue(int value)
         {
-            return (int)(value * Config.Dpi);
+            return (int)(value * Dpi);
         }
 
         #endregion
@@ -1037,7 +1037,7 @@ namespace AntdUI
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Dpi))
                 {
                     g.DrawLines(pen, points.Take(points.Count - 2).ToArray());
                 }
@@ -1191,7 +1191,7 @@ namespace AntdUI
                 var pointSize = 6;
 
                 using (var brush = new SolidBrush(pointColor))
-                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
@@ -1220,7 +1220,7 @@ namespace AntdUI
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : Color.Black;
 
                 using (var brush = new SolidBrush(Color.FromArgb((int)(255 * dataset.Opacity), pointColor)))
-                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
@@ -1310,7 +1310,7 @@ namespace AntdUI
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Dpi))
                 {
                     g.DrawPolygon(pen, points);
                 }
@@ -1318,7 +1318,7 @@ namespace AntdUI
                 // 绘制数据点
                 using (var brush = new SolidBrush(fillColor))
                 {
-                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
+                    int tSize = (int)(3 * Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
                         g.FillEllipse(brush, new Rectangle(point.X - tSize, point.Y - tSize, tSize2, tSize2));
@@ -1423,7 +1423,7 @@ namespace AntdUI
 
                 // 绘制样条曲线
                 var lineColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue);
-                using (var pen = new Pen(lineColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(lineColor, dataset.BorderWidth * Dpi))
                 {
                     DrawSplineCurve(g, pen, points.ToArray());
                 }
@@ -1432,7 +1432,7 @@ namespace AntdUI
                 var pointColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : lineColor;
                 using (var brush = new SolidBrush(pointColor))
                 {
-                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
+                    int tSize = (int)(3 * Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
                         g.FillEllipse(brush, new RectangleF(point.X - tSize, point.Y - tSize, tSize2, tSize2));
@@ -1489,7 +1489,7 @@ namespace AntdUI
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Dpi))
                 using (var path = new GraphicsPath())
                 {
                     path.AddCurve(points.Take(points.Count - 2).ToArray(), 0.5f);
@@ -1512,7 +1512,7 @@ namespace AntdUI
             {
                 var barColor = dataset.FillColor ?? Color.Blue;
                 using (var brush = new SolidBrush(barColor))
-                using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Dpi))
                 {
                     foreach (var dataPoint in dataset.DataPoints.Where(p => p.Visible))
                     {
@@ -1557,7 +1557,7 @@ namespace AntdUI
 
                         var barColor = dataset.FillColor ?? Color.Blue;
                         using (var brush = new SolidBrush(barColor))
-                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Config.Dpi))
+                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Dpi))
                         {
                             var barRect = new RectangleF(x, y, barWidth, barHeight);
                             g.Fill(brush, barRect);
@@ -1598,7 +1598,7 @@ namespace AntdUI
 
                         var barColor = dataset.FillColor ?? Color.Blue;
                         using (var brush = new SolidBrush(barColor))
-                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Config.Dpi))
+                        using (var pen = new Pen(dataset.BorderColor ?? Color.Black, dataset.BorderWidth * Dpi))
                         {
                             var barRect = new RectangleF(x, y, barWidth, barHeight);
                             g.Fill(brush, barRect);
@@ -1632,7 +1632,7 @@ namespace AntdUI
 
                 // 绘制阶梯线
                 var lineColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Blue);
-                using (var pen = new Pen(lineColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(lineColor, dataset.BorderWidth * Dpi))
                 {
                     for (int i = 0; i < points.Count - 1; i++)
                     {
@@ -1650,7 +1650,7 @@ namespace AntdUI
                 var pointColor = dataset.FillColor.HasValue ? dataset.FillColor.Value : lineColor;
                 using (var brush = new SolidBrush(pointColor))
                 {
-                    int tSize = (int)(3 * Config.Dpi), tSize2 = tSize * 2;
+                    int tSize = (int)(3 * Dpi), tSize2 = tSize * 2;
                     foreach (var point in points)
                     {
                         g.FillEllipse(brush, new Rectangle(point.X - tSize, point.Y - tSize, tSize2, tSize2));
@@ -1703,7 +1703,7 @@ namespace AntdUI
 
                 // 绘制边框
                 var borderColor = dataset.BorderColor.HasValue ? dataset.BorderColor.Value : fillColor;
-                using (var pen = new Pen(borderColor, dataset.BorderWidth * Config.Dpi))
+                using (var pen = new Pen(borderColor, dataset.BorderWidth * Dpi))
                 {
                     g.DrawLines(pen, steppedPoints.Take(steppedPoints.Count - 2).ToArray());
                 }

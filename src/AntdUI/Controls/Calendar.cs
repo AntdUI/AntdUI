@@ -493,7 +493,7 @@ namespace AntdUI
             var g = e.Canvas;
             var rect_read = ReadRectangle;
 
-            int _radius = (int)(radius * Config.Dpi);
+            int _radius = (int)(radius * Dpi);
             using (var path = rect_read.RoundPath(_radius))
             {
                 using (var brush = backExtend.BrushEx(rect_read, back, Colour.BgElevated.Get(nameof(Calendar), ColorScheme)))
@@ -504,7 +504,7 @@ namespace AntdUI
 
             #region 方向
 
-            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(nameof(Calendar), ColorScheme), 1.6F * Config.Dpi))
+            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(nameof(Calendar), ColorScheme), 1.6F * Dpi))
             using (var pen_arrow_hover = new Pen(Colour.Text.Get(nameof(Calendar), ColorScheme), pen_arrow.Width))
             using (var pen_arrow_enable = new Pen(Colour.FillSecondary.Get(nameof(Calendar), ColorScheme), pen_arrow.Width))
             {
@@ -626,13 +626,13 @@ namespace AntdUI
                         else if (it.enable)
                         {
                             if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Config.Dpi, path);
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Config.Dpi, path);
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
@@ -678,13 +678,13 @@ namespace AntdUI
                         else if (it.enable)
                         {
                             if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Config.Dpi, path);
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, brush_fore, it.rect, s_f);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Config.Dpi, path);
+                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
@@ -901,7 +901,7 @@ namespace AntdUI
                 {
                     using (var path = it.rect_read.RoundPath(radius))
                     {
-                        g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Config.Dpi, path);
+                        g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                     }
                     return;
                 }
@@ -912,7 +912,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding);
 
-        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Config.Dpi);
+        public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Dpi);
 
         #endregion
 
@@ -1329,7 +1329,7 @@ namespace AntdUI
 
         void LoadLayout()
         {
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
 
             var rect = ReadRectangle;
 
@@ -1349,7 +1349,7 @@ namespace AntdUI
             rect_rights = new Rectangle(rect.X + rect.Width - t_top, rect.Y, t_top, t_top);
             rect_right = new Rectangle(rect.X + rect.Width - t_top * 2, rect.Y, t_top, t_top);
 
-            int gap = (int)(4 * Config.Dpi), xm = rect.Width / 2;
+            int gap = (int)(4 * Dpi), xm = rect.Width / 2;
             rect_year2 = new Rectangle(rect.X + (rect.Width - year2_width) / 2, rect.Y, year2_width, t_top);
             rect_button = new Rectangle(rect.X, rect.Bottom - t_button, rect.Width, t_button);
             if (YDR)
@@ -1395,8 +1395,8 @@ namespace AntdUI
                     int y = rect.Y + t_top + 12;
                     int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
 
-                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
-                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
+                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Dpi);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Dpi);
 
                     rect_day_s = new Rectangle[]{
                         new Rectangle(rect.X + gap_day, y, size_w, size_h),
@@ -1423,8 +1423,8 @@ namespace AntdUI
                     int y = rect.Y + t_top + 12;
                     int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
 
-                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
-                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
+                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Dpi);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Dpi);
 
                     rect_day_s = new Rectangle[]{
                         new Rectangle(rect.X + gap_day, y, size_w, size_h),
@@ -1452,8 +1452,8 @@ namespace AntdUI
                         gap_day = gap_day2 / 2;
                     }
 
-                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Config.Dpi);
-                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Config.Dpi);
+                    rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Dpi);
+                    if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Dpi);
 
                     rect_day_s = new Rectangle[]{
                         new Rectangle(rect.X + gap_day, y, size, size),

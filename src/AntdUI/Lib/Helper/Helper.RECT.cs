@@ -156,11 +156,11 @@ namespace AntdUI
             return size;
         }
 
-        public static Rectangle DeflateRect(this Rectangle rect, Padding padding, ShadowConfig config, TAlignMini align, float borderWidth = 0F)
+        public static Rectangle DeflateRect(this Rectangle rect, Padding padding, Panel config, TAlignMini align, float borderWidth = 0F)
         {
             if (config.Shadow > 0)
             {
-                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2, shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
+                int shadow = (int)(config.Shadow * config.Dpi), s2 = shadow * 2, shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * config.Dpi));
                 int x, y, w, h;
                 switch (align)
                 {
@@ -214,7 +214,7 @@ namespace AntdUI
 
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth * Config.Dpi), pr2 = pr * 2;
+                    int pr = (int)Math.Ceiling(borderWidth * config.Dpi), pr2 = pr * 2;
                     return new Rectangle(x + pr, y + pr, w - pr2, h - pr2);
                 }
                 return new Rectangle(x, y, w, h);
@@ -223,7 +223,7 @@ namespace AntdUI
             {
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth * Config.Dpi), pr2 = pr * 2;
+                    int pr = (int)Math.Ceiling(borderWidth * config.Dpi), pr2 = pr * 2;
                     return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
                 }
                 return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
@@ -232,11 +232,11 @@ namespace AntdUI
 
         #endregion
 
-        public static Rectangle PaddingRect(this Rectangle rect, ShadowConfig config, TAlignMini align, float borderWidth = 0F)
+        public static Rectangle PaddingRect(this Rectangle rect, Panel config, TAlignMini align, float borderWidth = 0F)
         {
             if (config.Shadow > 0)
             {
-                int shadow = (int)(config.Shadow * Config.Dpi), s2 = shadow * 2, shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * Config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * Config.Dpi));
+                int shadow = (int)(config.Shadow * config.Dpi), s2 = shadow * 2, shadowOffsetX = Math.Abs((int)(config.ShadowOffsetX * config.Dpi)), shadowOffsetY = Math.Abs((int)(config.ShadowOffsetY * config.Dpi));
 
                 int x, y, w, h;
                 switch (align)
@@ -291,7 +291,7 @@ namespace AntdUI
 
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling(borderWidth * Config.Dpi / 2F), pr2 = pr * 2;
+                    int pr = (int)Math.Ceiling(borderWidth * config.Dpi / 2F), pr2 = pr * 2;
                     return new Rectangle(x + pr, y + pr, w - pr2, h - pr2);
                 }
                 return new Rectangle(x, y, w, h);
@@ -300,7 +300,7 @@ namespace AntdUI
             {
                 if (borderWidth > 0)
                 {
-                    int pr = (int)Math.Ceiling((borderWidth * Config.Dpi) / 2F), pr2 = pr * 2;
+                    int pr = (int)Math.Ceiling((borderWidth * config.Dpi) / 2F), pr2 = pr * 2;
                     return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
                 }
                 return rect;

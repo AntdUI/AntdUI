@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Tabs : UserControl
     {
-        Form form;
-        public Tabs(Form _form)
+        AntdUI.BaseForm form;
+        public Tabs(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

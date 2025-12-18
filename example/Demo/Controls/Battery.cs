@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Battery : UserControl
     {
-        Form form;
-        public Battery(Form _form)
+        AntdUI.BaseForm form;
+        public Battery(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

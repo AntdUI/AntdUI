@@ -163,7 +163,7 @@ namespace AntdUI
                         if (controls.Count > 0)
                         {
                             var rects = parent.ConvertToRects(rect, Span);
-                            HandLayout(controls, rects, rect);
+                            HandLayout(parent, controls, rects, rect);
                         }
                     }
                 }
@@ -205,10 +205,10 @@ namespace AntdUI
 
             #endregion
 
-            void HandLayout(List<Control> controls, Rects[] rects, Rectangle rect)
+            void HandLayout(GridPanel parent, List<Control> controls, Rects[] rects, Rectangle rect)
             {
                 if (rects.Length == 0 || controls.Count == 0) return;
-                int gap = (int)Math.Round(Gap * Config.Dpi), gap2 = gap * 2;
+                int gap = (int)Math.Round(Gap * parent.Dpi), gap2 = gap * 2;
                 int index = 0;
                 for (int i = 0; i < controls.Count; i++)
                 {
@@ -444,7 +444,7 @@ namespace AntdUI
             }
 
             // int类型（仅int乘Dpi）
-            if (int.TryParse(dimensionStr, out int intValue)) return (float)Math.Round(Math.Abs(intValue) * Config.Dpi);
+            if (int.TryParse(dimensionStr, out int intValue)) return (float)Math.Round(Math.Abs(intValue) * Dpi);
 
             // float类型（直接使用）
             if (float.TryParse(dimensionStr, out float floatValue)) return floatValue;
@@ -490,9 +490,9 @@ namespace AntdUI
                     var rects = ConvertToRects(DisplayRectangle, Span);
                     using (var fore = new SolidBrush(Style.Db.Text))
                     using (var bg = new SolidBrush(Style.Db.Fill))
-                    using (var pen = new Pen(Style.Db.PrimaryBorder, Config.Dpi * 2))
+                    using (var pen = new Pen(Style.Db.PrimaryBorder, Dpi * 2))
                     {
-                        int gap = (int)(3 * Config.Dpi), gap2 = gap * 2;
+                        int gap = (int)(3 * Dpi), gap2 = gap * 2;
                         foreach (var it in rects)
                         {
                             var rect = new Rectangle(it.Rect.X + gap, it.Rect.Y + gap, it.Rect.Width - gap2, it.Rect.Height - gap2);

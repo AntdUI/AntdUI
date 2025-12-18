@@ -105,6 +105,12 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 图片布局
+        /// </summary>
+        [Description("图片布局"), Category("外观"), DefaultValue(null)]
+        public TFit? Fit { get; set; }
+
         #region 按钮
 
         PreBtns[]? btns;
@@ -590,16 +596,34 @@ namespace AntdUI
             {
                 var rect = ClientRectangle;
                 float DpiX = (float)((rect.Width * 1.0) / (ImgSize.Width * 1.0)), DpiY = (float)((rect.Height * 1.0) / (ImgSize.Height * 1.0));
-                if (DpiX > 1 && DpiY > 0) Dpi = 1F;
-                else if (ImgSize.Width > ImgSize.Height)
+                if (Fit.HasValue)
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiX;
-                    else Dpi = DpiY;
+                    switch (Fit.Value)
+                    {
+                        case TFit.Contain:
+                            Dpi = Math.Min(DpiX, DpiY);
+                            break;
+                        case TFit.Cover:
+                            Dpi = Math.Max(DpiX, DpiY);
+                            break;
+                        default:
+                            Dpi = 1F;
+                            break;
+                    }
                 }
                 else
                 {
-                    if (rect.Width > rect.Height) Dpi = DpiY;
-                    else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    if (DpiX > 1 && DpiY > 0) Dpi = 1F;
+                    else if (ImgSize.Width > ImgSize.Height)
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiX;
+                        else Dpi = DpiY;
+                    }
+                    else
+                    {
+                        if (rect.Width > rect.Height) Dpi = DpiY;
+                        else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                    }
                 }
             }
         }
@@ -650,8 +674,8 @@ namespace AntdUI
 
         void PaintLoading(Canvas g, Rectangle rect, bool error = false)
         {
-            var bor6 = 6F * Config.Dpi;
-            int loading_size = (int)(40 * Config.Dpi);
+            var bor6 = 6F * Dpi;
+            int loading_size = (int)(40 * Dpi);
             var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
             Color color, bg;
             if (error)
@@ -743,9 +767,9 @@ namespace AntdUI
 
         void SizeChange(Rectangle rect)
         {
-            int btn_height = (int)(BtnSize.Height * Config.Dpi), lr_size = (int)(BtnLRSize * Config.Dpi), btn_width = (int)(BtnSize.Width * Config.Dpi),
-                padding = (int)(ContainerPadding * Config.Dpi), padding_lr = (int)(BtnPadding.Width * Config.Dpi), padding_buttom = (int)(BtnPadding.Height * Config.Dpi),
-                icon_size = (int)(BtnIconSize * Config.Dpi);
+            int btn_height = (int)(BtnSize.Height * Dpi), lr_size = (int)(BtnLRSize * Dpi), btn_width = (int)(BtnSize.Width * Dpi),
+                padding = (int)(ContainerPadding * Dpi), padding_lr = (int)(BtnPadding.Width * Dpi), padding_buttom = (int)(BtnPadding.Height * Dpi),
+                icon_size = (int)(BtnIconSize * Dpi);
 
             if (PageSize > 1)
             {

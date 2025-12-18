@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Signal : UserControl
     {
-        Form form;
-        public Signal(Form _form)
+        AntdUI.BaseForm form;
+        public Signal(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

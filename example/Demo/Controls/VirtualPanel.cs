@@ -27,8 +27,8 @@ namespace Demo.Controls
 {
     public partial class VirtualPanel : UserControl
     {
-        Form form;
-        public VirtualPanel(Form _form)
+        AntdUI.BaseForm form;
+        public VirtualPanel(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
@@ -131,7 +131,7 @@ namespace Demo.Controls
 
             public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 using (var brush = new SolidBrush(data))
                 {
                     g.Fill(brush, e.Rect);
@@ -140,7 +140,7 @@ namespace Demo.Controls
 
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 return new Size((int)(width * dpi), (int)(height * dpi));
             }
         }
@@ -242,7 +242,7 @@ namespace Demo.Controls
             Bitmap bmp = null;
             public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 if (bmp == null || bmp.Width != e.Rect.Width || bmp.Height != e.Rect.Height)
                 {
                     bmp?.Dispose();
@@ -286,7 +286,7 @@ namespace Demo.Controls
 
             public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
             {
-                var dpi = AntdUI.Config.Dpi;
+                var dpi = g.Dpi;
                 int count = 5, w = (e.Rect.Width - ((int)(20 * dpi) * count)) / count;
                 float dpi_x = w * 1F / image.Width;
                 int h = (int)(image.Height * dpi_x);

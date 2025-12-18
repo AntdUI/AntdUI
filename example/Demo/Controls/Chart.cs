@@ -26,11 +26,11 @@ namespace Demo.Controls
 {
     public partial class Chart : UserControl
     {
-        Form form;
+        AntdUI.BaseForm form;
         private AntdUI.Chart mainChart;
         private AntdUI.Select selectChartType;
 
-        public Chart(Form _form)
+        public Chart(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

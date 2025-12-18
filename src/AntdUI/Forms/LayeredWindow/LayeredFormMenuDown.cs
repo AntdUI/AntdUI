@@ -38,7 +38,7 @@ namespace AntdUI
         ScrollBar ScrollBar;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items)
         {
-            MessageCloseMouseLeave = true;
+            CloseMode = CloseMode.Leave;
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
@@ -53,7 +53,7 @@ namespace AntdUI
             DPadding = control.DropDownPadding;
             IconRatio = control.DropIconRatio;
             IconGap = control.DropIconGap;
-            Radius = (int)(radius * Config.Dpi);
+            Radius = (int)(radius * Dpi);
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
             Items = LoadLayout(items, point);
@@ -70,9 +70,10 @@ namespace AntdUI
         }
 
         SubLayeredForm? lay;
-
-        public LayeredFormMenuDown(Menu control, int sx, LayeredFormMenuDown parent, int radius, float itemHeight, Rectangle rect, MenuItemCollection items)
+        object? Guid;
+        public LayeredFormMenuDown(Menu control, int sx, LayeredFormMenuDown parent, int radius, float itemHeight, Rectangle rect, object guid, MenuItemCollection items)
         {
+            Guid = guid;
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
@@ -340,7 +341,7 @@ namespace AntdUI
         }
         void PaintArrow(Canvas g, OMenuItem it, Color color)
         {
-            using (var pen = new Pen(color, Config.Dpi * 1.4F))
+            using (var pen = new Pen(color, Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
@@ -357,7 +358,7 @@ namespace AntdUI
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;
 
-            int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+            int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
             icon_size = (int)(text_height * IconRatio), icon_gap = (int)(text_height * IconGap), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
             gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
 
@@ -517,7 +518,7 @@ namespace AntdUI
             if (it.Sub == null || it.Sub.Count == 0)
             {
                 if (PARENT is Menu menu) menu.DropDownChange(it.Val);
-                IClose();
+                CloseSub();
                 return true;
             }
             else
@@ -525,6 +526,7 @@ namespace AntdUI
                 if (subForm == null) OpenDown(it);
                 else
                 {
+                    if (subForm.Guid == it.Val) return false;
                     subForm?.IClose();
                     subForm = null;
                 }
@@ -537,10 +539,22 @@ namespace AntdUI
             var rect = new Rectangle(it.Rect.X + tmp_padd, it.Rect.Y - ScrollBar.ValueY - tmp_padd, it.Rect.Width, it.Rect.Height);
             if (PARENT is Menu menu)
             {
-                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, tmp_padd + it.Rect.Height / 2F, rect, it.Sub);
+                subForm = new LayeredFormMenuDown(menu, select_x + 1, this, Radius, tmp_padd + it.Rect.Height / 2F, rect, it.Val, it.Sub);
                 subForm.Show(this);
             }
         }
+        void CloseSub()
+        {
+            IClose();
+            var item = this;
+            while (item.lay is LayeredFormMenuDown form)
+            {
+                if (item == form) return;
+                form.IClose();
+                item = form;
+            }
+        }
+
         public override void IClosing()
         {
             if (select_x == 0)
@@ -554,7 +568,6 @@ namespace AntdUI
                 }
             }
         }
-
 
         #endregion
 

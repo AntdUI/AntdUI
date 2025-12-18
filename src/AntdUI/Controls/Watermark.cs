@@ -337,11 +337,11 @@ namespace AntdUI
                 using (var brush = new SolidBrush(config.ForeColor ?? Colour.FillSecondary.Get(nameof(Watermark))))
                 {
                     // 计算水印间距
-                    int gapX = (int)(config.Gap[0] * Config.Dpi), gapY = (int)(config.Gap[1] * Config.Dpi);
-                    int width = (int)(config.Width * Config.Dpi), height = (int)(config.Height * Config.Dpi), patternWidth = width + gapX, patternHeight = height + gapY;
+                    int gapX = (int)(config.Gap[0] * Dpi), gapY = (int)(config.Gap[1] * Dpi);
+                    int width = (int)(config.Width * Dpi), height = (int)(config.Height * Dpi), patternWidth = width + gapX, patternHeight = height + gapY;
 
                     // 计算起始偏移
-                    int startX = (int)(config.Offset[0] * Config.Dpi) % patternWidth, startY = (int)(config.Offset[1] * Config.Dpi) % patternHeight;
+                    int startX = (int)(config.Offset[0] * Dpi) % patternWidth, startY = (int)(config.Offset[1] * Dpi) % patternHeight;
 
                     #region 移除非客户区域
 
@@ -439,8 +439,8 @@ namespace AntdUI
             }
             else
             {
-                int contentHeight = h, subContentHeight = 0, spacing = (int)(4 * Config.Dpi); // 主内容和副内容之间的间距
-                                                                                              // 如果有副内容，计算实际需要的空间
+                int contentHeight = h, subContentHeight = 0, spacing = (int)(4 * Dpi); // 主内容和副内容之间的间距
+                                                                                       // 如果有副内容，计算实际需要的空间
                 using (var subFont = new Font(Font.FontFamily, Font.Size * config.SubFontSize, Font.Style))
                 {
                     Size mainSize = g.MeasureText(config.Content, font, w, config.TextAlign), subSize = g.MeasureText(config.SubContent, subFont, w, config.TextAlign);

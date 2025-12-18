@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Result : UserControl
     {
-        Form form;
-        public Result(Form _form)
+        AntdUI.BaseForm form;
+        public Result(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

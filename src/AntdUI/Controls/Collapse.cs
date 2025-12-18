@@ -326,8 +326,8 @@ namespace AntdUI
             Helper.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
-                int gap = (int)(_gap * Config.Dpi), gap_x = (int)(HeaderPadding.Width * Config.Dpi), gap_y = (int)(HeaderPadding.Height * Config.Dpi),
-                    content_x = (int)(ContentPadding.Width * Config.Dpi), content_y = (int)(ContentPadding.Height * Config.Dpi), use_y = 0;
+                int gap = (int)(_gap * Dpi), gap_x = (int)(HeaderPadding.Width * Dpi), gap_y = (int)(HeaderPadding.Height * Dpi),
+                    content_x = (int)(ContentPadding.Width * Dpi), content_y = (int)(ContentPadding.Height * Dpi), use_y = 0;
                 int title_height = size.Height + gap_y * 2;
                 int full_count = 0, useh = 0, full_h = 0;
                 if (Unique && UniqueFull)
@@ -403,7 +403,7 @@ namespace AntdUI
             if (it.buttons != null && it.buttons.Count > 0)
             {
                 int bx = rectButtons.Right;
-                int gapW = (int)(4 * Config.Dpi);
+                int gapW = (int)(4 * Dpi);
                 foreach (var btn in it.buttons)
                 {
                     btn.PARENT = this;
@@ -419,7 +419,7 @@ namespace AntdUI
                         string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
 
                         var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                        width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Config.Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                        width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
                     }
 
                     if (width < height) width = btn.SwitchMode ? height * 4 : height;
@@ -502,14 +502,14 @@ namespace AntdUI
             base.OnDraw(e);
             if (items == null || items.Count == 0) return;
             var g = e.Canvas;
-            float r = radius * Config.Dpi;
+            float r = radius * Dpi;
             using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Collapse), ColorScheme)))
             using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get(nameof(Collapse), ColorScheme)))
             {
                 if (borderWidth > 0)
                 {
-                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(nameof(Collapse), ColorScheme), borderWidth * Config.Dpi))
-                    using (var pen_arr = new Pen(forebrush.Color, 1.2F * Config.Dpi))
+                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(nameof(Collapse), ColorScheme), borderWidth * Dpi))
+                    using (var pen_arr = new Pen(forebrush.Color, 1.2F * Dpi))
                     {
                         pen.StartCap = pen.EndCap = LineCap.Round;
                         if (items.Count == 1 || _gap > 0)
@@ -687,7 +687,7 @@ namespace AntdUI
                 }
             }
         }
-        private int GetIconSize(int titleHeight) { return titleHeight - (int)(8 * Config.Dpi); }
+        private int GetIconSize(int titleHeight) { return titleHeight - (int)(8 * Dpi); }
 
         void PaintItemIconText(Canvas g, CollapseItem item, SolidBrush fore)
         {
@@ -696,7 +696,7 @@ namespace AntdUI
             {
                 int height = rect.Height * 2;
                 int iconSize = GetIconSize(height);
-                int gap = (int)(6 * Config.Dpi);
+                int gap = (int)(6 * Dpi);
                 Rectangle ico_rect = new Rectangle(rect.X, rect.Y - gap, iconSize, iconSize);
 
                 if (item.Icon != null) g.Image(item.Icon, ico_rect);
@@ -806,7 +806,7 @@ namespace AntdUI
                                 PaintClick(g, path, rect_read, rect_read, _color, btn);
                                 if (enabled && (btn.hasFocus && Config.FocusBorderEnabled) && btn.WaveSize > 0)
                                 {
-                                    float wave = (btn.WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                                    float wave = (btn.WaveSize * Dpi / 2), wave2 = wave * 2;
                                     using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
                                     {
                                         g.Draw(Colour.PrimaryBorder.Get(nameof(Switch), ColorScheme), wave, path_focus);
@@ -818,7 +818,7 @@ namespace AntdUI
                                     if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, brush.Color), path);
                                     else if (btn.ExtraMouseHover) g.Fill(brush, path);
                                 }
-                                int gap = (int)(3 * Config.Dpi), gap2 = gap * 2;
+                                int gap = (int)(3 * Dpi), gap2 = gap * 2;
                                 if (btn.AnimationCheck)
                                 {
                                     var alpha = 255 * btn.AnimationCheckValue;

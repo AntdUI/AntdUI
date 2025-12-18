@@ -195,7 +195,7 @@ namespace AntdUI
             var g = e.Canvas;
             var size = g.MeasureString("100%", Font);
             var rect = new Rectangle((e.Rect.Width - size.Width) / 2, (e.Rect.Height - size.Height) / 2, size.Width, size.Height);
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             using (var path_pain = rect.RoundPath(_radius))
             {
                 if (_value >= 100)
@@ -205,7 +205,7 @@ namespace AntdUI
                         g.Fill(brush, path_pain);
                         if (dotsize > 0)
                         {
-                            float _dotsize = dotsize * Config.Dpi;
+                            float _dotsize = dotsize * Dpi;
                             using (var path = new RectangleF(rect.Right, rect.Top + (rect.Height - _dotsize) / 2F, _dotsize / 2F, _dotsize).RoundPath(_radius / 2, false, true, true, false))
                             {
                                 g.Fill(brush, path);
@@ -221,7 +221,7 @@ namespace AntdUI
                         g.Fill(brush, path_pain);
                         if (dotsize > 0)
                         {
-                            float _dotsize = dotsize * Config.Dpi;
+                            float _dotsize = dotsize * Dpi;
                             using (var path = new RectangleF(rect.Right, rect.Top + (rect.Height - _dotsize) / 2F, _dotsize / 2F, _dotsize).RoundPath(_radius / 2, false, true, true, false))
                             {
                                 g.Fill(brush, path);

@@ -346,7 +346,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Config.Dpi));
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Dpi));
 
         #endregion
 
@@ -358,7 +358,7 @@ namespace AntdUI
         {
             var g = e.Canvas;
             var rect = DisplayRectangle;
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             using (var path = rect.RoundPath(_radius))
             {
                 g.Fill(back ?? Colour.FillQuaternary.Get(nameof(UploadDragger), ColorScheme), path);
@@ -367,7 +367,7 @@ namespace AntdUI
                 #region 渲染主体
 
                 var size = g.MeasureString(Config.NullText, Font);
-                int sp = (int)(4 * Config.Dpi), gap = (int)(16 * Config.Dpi), gap2 = gap * 2, icon_size = (int)(size.Height * iconratio);
+                int sp = (int)(4 * Dpi), gap = (int)(16 * Dpi), gap2 = gap * 2, icon_size = (int)(size.Height * iconratio);
 
                 if (string.IsNullOrWhiteSpace(iconSvg) && icon == null)
                 {
@@ -440,7 +440,7 @@ namespace AntdUI
 
                 if (borderWidth > 0)
                 {
-                    var borw = borderWidth * Config.Dpi;
+                    var borw = borderWidth * Dpi;
                     if (AnimationHover) g.Draw((borderColor ?? Colour.BorderColor.Get(nameof(UploadDragger), ColorScheme)).BlendColors(AnimationHoverValue, Colour.PrimaryHover.Get(nameof(UploadDragger), ColorScheme)), borw, path);
                     else if (ExtraMouseHover) g.Draw(Colour.PrimaryHover.Get(nameof(UploadDragger), ColorScheme), borw, borderStyle, path);
                     else g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(UploadDragger), ColorScheme), borw, borderStyle, path);
@@ -451,7 +451,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => DisplayRectangle;
 
-        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Config.Dpi);
+        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Dpi);
 
         #endregion
 

@@ -132,7 +132,7 @@ namespace AntdUI
                     }
                     break;
             }
-            int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
+            int offset = (int)(Config.NoticeWindowOffsetXY * Dpi);
             var y = TopYCore(workingArea, offset);
             if (y < workingArea.Bottom - TargetRect.Height)
             {
@@ -187,7 +187,7 @@ namespace AntdUI
                     }
                     break;
             }
-            int offset = (int)(Config.NoticeWindowOffsetXY * Config.Dpi);
+            int offset = (int)(Config.NoticeWindowOffsetXY * Dpi);
             var y = BottomYCore(workingArea, offset) - TargetRect.Height;
             if (y >= workingArea.Y)
             {

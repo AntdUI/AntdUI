@@ -221,7 +221,7 @@ namespace AntdUI
             if (image != null && value != null)
             {
                 var t = Animation.TotalFrames(Speed, Duration);
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 ITask.Run(() =>
                 {
                     var _rect = ClientRectangle;
@@ -324,7 +324,7 @@ namespace AntdUI
             }
             var g = e.Canvas;
             var rect = e.Rect.PaddingRect(Padding);
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             if (run == null && shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);//应在绘制背景前绘制阴影，否则会影响背景色
             FillRect(g, rect, back, _radius, round);
             if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);

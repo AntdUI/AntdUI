@@ -47,5 +47,10 @@ namespace AntdUI
         /// SummaryType为Text时，显示的文本
         /// </summary>
         public string? DisplayText { get; set; }
+
+        /// <summary>
+        /// 统计模式是否为只统计选中的行 (false时为当前视图的所有行)
+        /// </summary>
+        public bool SelectionMode { get; set; }
     }
 }

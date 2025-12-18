@@ -83,6 +83,7 @@ namespace AntdUI
 
             public bool IsColumn => Type == RowType.Column;
             public bool IsOther => Type == RowType.None || Type == RowType.Summary;
+            public bool IsSummary => Type == RowType.Summary;
 
             #region 悬浮状态
 
@@ -670,7 +671,7 @@ namespace AntdUI
                         if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
                         else if (ExtraMouseHover) g.Fill(brush, path);
                     }
-                    float gap = (int)(2 * Config.Dpi), gap2 = gap * 2F;
+                    float gap = (int)(2 * g.Dpi), gap2 = gap * 2F;
                     if (AnimationCheck)
                     {
                         var alpha = 255 * AnimationCheckValue;
@@ -894,7 +895,7 @@ namespace AntdUI
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi) - gap.x2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * g.Dpi) - gap.x2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
@@ -1006,7 +1007,7 @@ namespace AntdUI
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureText(value.Text, font, (int)Math.Ceiling(i * Config.Dpi) - gap2);
+                            var size2 = g.MeasureText(value.Text, font, (int)Math.Ceiling(i * g.Dpi) - gap2);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap2, size2.Height);
                         }
@@ -1063,7 +1064,7 @@ namespace AntdUI
                 if (COLUMN.SortOrder || COLUMN.HasFilter)
                 {
                     int size;
-                    if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * Config.Dpi);
+                    if (PARENT.SortOrderSize.HasValue) size = (int)(PARENT.SortOrderSize.Value * g.Dpi);
                     else size = (int)(font_size.Height * .6F);
                     int size2 = size * 2, sp = (int)(size * .34F), use_r = 0, r = _rect.Right - (gap.x > 0 ? gap.x : sp);
                     if (COLUMN.HasFilter)
@@ -1094,7 +1095,7 @@ namespace AntdUI
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * Config.Dpi));
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * g.Dpi));
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
@@ -1381,11 +1382,11 @@ namespace AntdUI
 
     public class TableGaps
     {
-        public TableGaps(Size gap)
+        public TableGaps(Size gap, float dpi)
         {
-            x = (int)(gap.Width * Config.Dpi);
+            x = (int)(gap.Width * dpi);
             x2 = x * 2;
-            y = (int)(gap.Height * Config.Dpi);
+            y = (int)(gap.Height * dpi);
             y2 = y * 2;
         }
 

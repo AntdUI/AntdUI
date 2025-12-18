@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Message : UserControl
     {
-        Form form;
-        public Message(Form _form)
+        AntdUI.BaseForm form;
+        public Message(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

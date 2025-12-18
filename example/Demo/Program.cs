@@ -43,7 +43,7 @@ namespace Demo
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             AntdUI.Config.SetEmptyImageSvg(Properties.Resources.icon_empty, Properties.Resources.icon_empty_dark);
             AntdUI.SvgDb.Emoji = AntdUI.FluentFlat.Emoji;
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             if (command == "m") Application.Run(new Main());
             else if (command == "color") Application.Run(new Colors());
             else if (command == "tab") Application.Run(new TabHeaderForm());

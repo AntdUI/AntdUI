@@ -47,7 +47,7 @@ namespace AntdUI
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
                 var db = CellContains(rows, true, e.X, e.Y);
-                if (db == null)
+                if (db == null || db.mode == CELLDBMode.Summary)
                 {
                     FocusedCell = null;
                     return;
@@ -312,8 +312,8 @@ namespace AntdUI
                         EditModeClose();
                         if (summaryCustomize && e.Button == MouseButtons.Right)
                         {
-                            var celdb = CellContainsSummary(rows, e.X, e.Y);
-                            if (celdb != null) Table_MouseClick(celdb);
+                            var celdb = CellContains(rows, false, e.X, e.Y);
+                            if (celdb != null && celdb.mode == CELLDBMode.Summary) Summary_RClick(celdb);
                         }
                         return;
                     }
@@ -366,7 +366,7 @@ namespace AntdUI
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
             var db = CellContains(rows, true, e.X, e.Y);
-            if (db == null) MouseUpBtn(it, btn, e);
+            if (db == null || db.mode == CELLDBMode.Summary) MouseUpBtn(it, btn, e);
             else if (it.i_row != db.i_row || it.i_cel != db.i_cel) MouseUpBtn(it, btn, e, db);
             else
             {
@@ -488,7 +488,7 @@ namespace AntdUI
                             location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
                             if (fixedColumnR != null && fixedColumnR.Contains(columns!.IndexOf(focusColumn)))
                             {
-                                int gap = (int)(_gap.Width * Config.Dpi);
+                                int gap = (int)(_gap.Width * Dpi);
                                 location.X -= (showFixedColumnR ? gap : gap * 2);
                             }
                             location.X += col.rect_filter.Width / 2;
@@ -516,7 +516,7 @@ namespace AntdUI
 
                             Popover.open(new Popover.Config(this, editor)
                             {
-                                Dpi = (fnt.Size / 9F) * Config.Dpi,
+                                Dpi = (fnt.Size / 9F) * Dpi,
                                 Tag = focusColumn.Filter,
                                 ArrowAlign = align,
                                 Font = fnt,
@@ -586,7 +586,7 @@ namespace AntdUI
                     db.cell = RealCELL(db.cell, rows, ref i_row, ref i_cel, ref it, out var crect);
                     if (CanEditMode(db.cell))
                     {
-                        int val = ScrollLine(i_row, rows);
+                        int val = ScrollLine(crect.Y, crect.Bottom, rows);
                         OnEditMode(it.row, db.cell, crect, i_row, i_cel, db.col, db.offset_xi, db.offset_y - val);
                     }
                 }
@@ -701,7 +701,7 @@ namespace AntdUI
             {
                 if (rows == null || inEditMode) return;
                 var db = CellContains(rows, true, e.X, e.Y);
-                if (db == null)
+                if (db == null || db.mode == CELLDBMode.Summary)
                 {
                     foreach (RowTemplate it in rows)
                     {
@@ -796,7 +796,7 @@ namespace AntdUI
             }
             if (rows == null || inEditMode) return;
             var db = CellContains(rows, false, x, y);
-            if (db == null) OnCellHover();
+            if (db == null || db.mode == CELLDBMode.Summary) OnCellHover();
             else
             {
                 OnCellHover(db.cell.ROW.RECORD, db.cell.ROW.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));
@@ -959,7 +959,40 @@ namespace AntdUI
         {
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
-            foreach (RowTemplate it in rows)
+            if (summary == null) return CellContainsCore(rows, sethover, ex, ey, sx, sy, px, py);
+            else
+            {
+                var row_tmp = new List<RowTemplate>(rows.Length);
+                foreach (var it in rows)
+                {
+                    if (it.IsSummary)
+                    {
+                        if (sFixedB == -1)
+                        {
+                            if (it.CONTAINS(ex, py) && CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
+                            {
+                                tmp!.mode = CELLDBMode.Summary;
+                                return tmp;
+                            }
+                        }
+                        else
+                        {
+                            int eyb = ey + sFixedB;
+                            if (it.CONTAINS(ex, eyb) && CellContains(it, ex, ey, eyb, sx, sy, px, py, out var tmp))
+                            {
+                                tmp!.mode = CELLDBMode.Summary;
+                                return tmp;
+                            }
+                        }
+                    }
+                    else row_tmp.Add(it);
+                }
+                return CellContainsCore(row_tmp, sethover, ex, ey, sx, sy, px, py);
+            }
+        }
+        CELLDB? CellContainsCore(IList<RowTemplate> rows, bool sethover, int ex, int ey, int sx, int sy, int px, int py)
+        {
+            foreach (var it in rows)
             {
                 if (it.IsColumn)
                 {
@@ -967,7 +1000,7 @@ namespace AntdUI
                     {
                         if (CellContainsFixed(it, ex, ey, sx, sy, px, py, out var tmp))
                         {
-                            tmp!.mode = 2;
+                            tmp!.mode = CELLDBMode.ColumnFixed;
                             return tmp;
                         }
                     }
@@ -975,40 +1008,19 @@ namespace AntdUI
                     {
                         if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                         {
-                            tmp!.mode = 1;
+                            tmp!.mode = CELLDBMode.Column;
                             return tmp;
                         }
                     }
                 }
-                else if (it.Type == RowType.Summary) continue;
+                else if (it.IsSummary) continue;
                 else if (it.Contains(ex, py, sethover))
                 {
                     if (sethover) hovers = it.INDEX;
                     if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                     {
-                        tmp!.mode = 0;
+                        tmp!.mode = CELLDBMode.None;
                         return tmp;
-                    }
-                }
-            }
-            return null;
-        }
-        CELLDB? CellContainsSummary(RowTemplate[] rows, int ex, int ey)
-        {
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
-            int px = ex + sx, py = ey + sy;
-            foreach (RowTemplate it in rows)
-            {
-                if (it.IsColumn) continue;
-                else if (it.Type == RowType.Summary)
-                {
-                    if (it.Contains(ex, py, false))
-                    {
-                        if (CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
-                        {
-                            tmp!.mode = 0;
-                            return tmp;
-                        }
                     }
                 }
             }
@@ -1094,6 +1106,48 @@ namespace AntdUI
                 if (cel.CONTAIN(px, py))
                 {
                     cell = new CELLDB(cel, px, py, sx, sx, sy, it.INDEX, i, cel.COLUMN);
+                    return true;
+                }
+            }
+            cell = null;
+            return false;
+        }
+        bool CellContains(RowTemplate it, int ex, int ey, int eyb, int sx, int sy, int px, int py, out CELLDB? cell)
+        {
+            var hasi = new List<int>();
+            if (showFixedColumnL && fixedColumnL != null)
+            {
+                foreach (var i in fixedColumnL)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex, eyb))
+                    {
+                        cell = new CELLDB(cel, ex, eyb, 0, 0, sy, it.INDEX, i, cel.COLUMN);
+                        return true;
+                    }
+                }
+            }
+            if (showFixedColumnR && fixedColumnR != null)
+            {
+                foreach (var i in fixedColumnR)
+                {
+                    hasi.Add(i);
+                    var cel = it.cells[i];
+                    if (cel.CONTAIN(ex + sFixedR, eyb))
+                    {
+                        cell = new CELLDB(cel, ex + sFixedR, eyb, -sFixedR, sFixedR, sy, it.INDEX, i, cel.COLUMN);
+                        return true;
+                    }
+                }
+            }
+            for (int i = 0; i < it.cells.Length; i++)
+            {
+                if (hasi.Contains(i)) continue;
+                var cel = it.cells[i];
+                if (cel.CONTAIN(px, eyb))
+                {
+                    cell = new CELLDB(cel, px, eyb, sx, sx, sy, it.INDEX, i, cel.COLUMN);
                     return true;
                 }
             }

@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Steps : UserControl
     {
-        Form form;
-        public Steps(Form _form)
+        AntdUI.BaseForm form;
+        public Steps(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

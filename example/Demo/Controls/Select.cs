@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Select : UserControl
     {
-        Form form;
-        public Select(Form _form)
+        AntdUI.BaseForm form;
+        public Select(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

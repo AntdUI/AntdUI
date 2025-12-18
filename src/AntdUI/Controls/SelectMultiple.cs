@@ -356,7 +356,7 @@ namespace AntdUI
                 {
                     var _style_left = new List<SelectItem?>(selectedValue.Length);
                     List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);
-                    int gap = (int)(Gap * Config.Dpi), gap2 = gap * 2, gap4 = gap2 * 2, height = font_height + gap2, del_icon = (int)(height * .4);
+                    int gap = (int)(Gap * Dpi), gap2 = gap * 2, gap4 = gap2 * 2, height = font_height + gap2, del_icon = (int)(height * .4);
                     if (AutoHeight || rect_read.Height > height * 2)
                     {
                         //多行
@@ -489,7 +489,7 @@ namespace AntdUI
         {
             if (AutoHeight)
             {
-                int pr = (int)Math.Round((WaveSize + BorderWidth / 2F) * Config.Dpi) * 2, gap = (int)(Gap * Config.Dpi) * 4;
+                int pr = (int)Math.Round((WaveSize + BorderWidth / 2F) * Dpi) * 2, gap = (int)(Gap * Dpi) * 4;
                 Height = (height + Padding.Top + Padding.Vertical + pr) + y + gap;
             }
         }
@@ -528,7 +528,7 @@ namespace AntdUI
                                 if (style == null)
                                 {
                                     g.Fill(GetStatusColor(true), path);
-                                    if (tagBordered) g.Draw(brush, 1f * Config.Dpi, path);
+                                    if (tagBordered) g.Draw(brush, 1f * Dpi, path);
                                     var rect_del = rect_left_dels[i];
                                     if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
                                     g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
@@ -537,7 +537,7 @@ namespace AntdUI
                                 {
                                     using (var brushbg = style.TagBackExtend.BrushEx(rect_lefts[i], style.TagBack ?? GetStatusColor(true)))
                                     {
-                                        if (tagBordered) g.Draw(brush, 1f * Config.Dpi, path);
+                                        if (tagBordered) g.Draw(brush, 1f * Dpi, path);
                                         g.Fill(brushbg, path);
                                     }
                                     if (style.TagFore.HasValue)

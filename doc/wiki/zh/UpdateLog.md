@@ -1,5 +1,39 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.4` 2025-12-18 📐
+
+- ➕ 菜单展开安全三角区 `Amazon 2013`
+- ➕ DPI 适配 PerMonitorV2 与 AutoScaleMode.Font
+- ➕ Table SetSelected 选中行方法
+- ➕ Table SummaryCustomize 属性，用于启用内置汇总定制功能，支持自定义汇总
+- ➕ Table ScrollToEnd
+- ➕ Table Summary 汇总功能增强
+- ➕ Tree ForeSub
+- ➕ Tree FindID/FindName 方法
+- ➕ Input ScrollLine
+- ➕ Input WordWrap
+- ➕ Select AutoText
+- ➕ Preview Fit
+- ➕ Checkbox/Radio useMnemonic
+- ➕ 丰富徽标 文本颜色和边框属性
+- ✍️ Button MiddleLeft 错位
+- ✍️ DatePickerRange 光标交互
+- ✍️ Table ConfigureFocusNavigation 一列不生效
+- ✍️ Table Tree 行排序
+- ✍️ Table Fill 滚动条遮挡
+- ✍️ Table ScrollLine 错位
+- ✍️ Table 初始悬浮态
+- ✍️ 优化跳转 Table 筛选合并
+- ✍️ Tree 节点折叠打开后，同级节点 NodeMouseMove事件，`e.Item` 错误为折叠的子节点
+- ✍️ Input 开放按键事件触发
+- ✍️ Input 整理滚动条
+- ✍️ Input 空回车交互
+- ✍️ Input 取消键盘拦截
+- ✍️ FloatButton Closing 关闭拦截后依旧消失
+- ✍️ ContextMenuStrip 键盘上下交互
+- ✍️ UseHook 默认启用
+- 🧹 LayeredForm 消失判定
+
 ### `2.2.3` 2025-12-10
 
 - ➕ ImagePreview 暴露操作按钮方法

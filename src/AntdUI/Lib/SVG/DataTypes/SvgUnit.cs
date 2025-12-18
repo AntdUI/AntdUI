@@ -65,7 +65,7 @@ namespace AntdUI.Svg
         /// Converts the current unit to one that can be used at render time.
         /// </summary>
         /// <returns>The representation of the current unit in a device value (usually pixels).</returns>
-        public float ToDeviceValue(ISvgRenderer renderer, UnitRenderingType renderType, SvgElement owner)
+        public float ToDeviceValue(ISvgRenderer? renderer, UnitRenderingType renderType, SvgElement owner)
         {
             // If it's already been calculated
             if (_deviceValue.HasValue)
@@ -83,8 +83,6 @@ namespace AntdUI.Svg
             // http://www.w3.org/TR/SVG11/coords.html#Units
 
             const float cmInInch = 2.54f;
-            int ppi = SvgDocument.Ppi;
-
             var type = Type;
             var value = Value;
 
@@ -95,6 +93,7 @@ namespace AntdUI.Svg
                 case SvgUnitType.Em:
                     using (var currFont = GetFont(renderer, owner))
                     {
+                        int ppi = (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                         if (currFont == null)
                         {
                             points = (float)(value * 9);
@@ -109,6 +108,7 @@ namespace AntdUI.Svg
                 case SvgUnitType.Ex:
                     using (var currFont = GetFont(renderer, owner))
                     {
+                        int ppi = (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                         if (currFont == null)
                         {
                             points = (float)(value * 9);
@@ -121,19 +121,19 @@ namespace AntdUI.Svg
                         break;
                     }
                 case SvgUnitType.Centimeter:
-                    _deviceValue = (value / cmInInch) * ppi;
+                    _deviceValue = (value / cmInInch) * (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                     break;
                 case SvgUnitType.Inch:
-                    _deviceValue = value * ppi;
+                    _deviceValue = value * (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                     break;
                 case SvgUnitType.Millimeter:
-                    _deviceValue = (float)((value / 10) / cmInInch) * ppi;
+                    _deviceValue = (float)((value / 10) / cmInInch) * (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                     break;
                 case SvgUnitType.Pica:
-                    _deviceValue = ((value * 12) / 72) * ppi;
+                    _deviceValue = ((value * 12) / 72) * (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                     break;
                 case SvgUnitType.Point:
-                    _deviceValue = (value / 72) * ppi;
+                    _deviceValue = (value / 72) * (int)((renderer?.Dpi ?? Config.Dpi) * 96);
                     break;
                 case SvgUnitType.Pixel:
                     _deviceValue = value;

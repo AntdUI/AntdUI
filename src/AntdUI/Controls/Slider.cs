@@ -289,7 +289,7 @@ namespace AntdUI
             var padding = Padding;
             var _rect = e.Rect.PaddingRect(padding);
             if (_rect.Width == 0 || _rect.Height == 0) return;
-            int LineSize = (int)(lineSize * Config.Dpi), DotS = (int)((dotSizeActive > dotSize ? dotSizeActive : dotSize) * Config.Dpi), DotS2 = DotS * 2;
+            int LineSize = (int)(lineSize * Dpi), DotS = (int)((dotSizeActive > dotSize ? dotSizeActive : dotSize) * Dpi), DotS2 = DotS * 2;
             if (align == TAlignMini.Top || align == TAlignMini.Bottom)
             {
                 if (padding.Top > DotS || padding.Bottom > DotS)
@@ -359,7 +359,7 @@ namespace AntdUI
         internal RectangleF rectEllipse;
         internal void PaintEllipse(Canvas g, Rectangle rect, RectangleF rect_read, float prog, SolidBrush brush, Color color, Color color_hover, Color color_active, int LineSize)
         {
-            int DotSize = (int)(dotSize * Config.Dpi), DotSizeActive = (int)(dotSizeActive * Config.Dpi);
+            int DotSize = (int)(dotSize * Dpi), DotSizeActive = (int)(dotSizeActive * Dpi);
             rectEllipse = RectDot(rect, rect_read, prog, DotSizeActive + LineSize);
 
             var rect_ellipse_rl = RectDot(rect, rect_read, prog, DotSize + LineSize);
@@ -418,7 +418,7 @@ namespace AntdUI
             {
                 using (var fore = new SolidBrush(Colour.Text.Get(nameof(Slider), ColorScheme)))
                 {
-                    int markTextGap = (int)(MarkTextGap * Config.Dpi);
+                    int markTextGap = (int)(MarkTextGap * Dpi);
                     int size2 = LineSize, size = size2 * 2;
                     foreach (var it in marks)
                     {
@@ -554,7 +554,7 @@ namespace AntdUI
                 if (Dots)
                 {
                     var rect = ClientRectangle;
-                    int DotSize = (int)(dotSize * Config.Dpi);
+                    int DotSize = (int)(dotSize * Dpi);
                     var mark_list = new List<float>(marks.Count);
                     int i = 0;
                     switch (align)
@@ -581,7 +581,7 @@ namespace AntdUI
                 if (mark)
                 {
                     var rect = ClientRectangle;
-                    int DotSize = (int)(dotSize * Config.Dpi);
+                    int DotSize = (int)(dotSize * Dpi);
                     foreach (var it in marks)
                     {
                         float uks = ProgValue(it.Value);

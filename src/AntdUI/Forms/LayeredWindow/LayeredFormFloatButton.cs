@@ -43,12 +43,11 @@ namespace AntdUI
 
             Helper.GDI(g =>
             {
-                var dpi = Config.Dpi;
-                BadgeSize = (int)Math.Round(BadgeSize * dpi);
-                _config.MarginX = (int)Math.Round(_config.MarginX * dpi);
-                _config.MarginY = (int)Math.Round(_config.MarginY * dpi);
-                _config.Size = (int)Math.Round(_config.Size * dpi);
-                _config.Gap = (int)Math.Round(_config.Gap * dpi);
+                BadgeSize = (int)Math.Round(BadgeSize * Dpi);
+                _config.MarginX = (int)Math.Round(_config.MarginX * Dpi);
+                _config.MarginY = (int)Math.Round(_config.MarginY * Dpi);
+                _config.Size = (int)Math.Round(_config.Size * Dpi);
+                _config.Gap = (int)Math.Round(_config.Gap * Dpi);
                 ShadowXY = _config.Gap / 2;
                 int size = _config.Size, t_size = size + _config.Gap, icon_size = (int)(size * 0.45F), xy = (size - icon_size) / 2;
                 int hasx = 0, hasy = 0;
@@ -59,7 +58,7 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        SetIconSize(it, size, xy, icon_size, dpi);
+                        SetIconSize(it, size, xy, icon_size, Dpi);
                         hasy += t_size;
                     }
                     SetSize(size + _config.Gap, hasy);
@@ -71,7 +70,7 @@ namespace AntdUI
                         it.PropertyChanged += Notify_PropertyChanged;
                         it.rect = new Rectangle(hasx, hasy, t_size, t_size);
                         it.rect_read = new Rectangle(hasx + ShadowXY, hasy + ShadowXY, size, size);
-                        SetIconSize(it, size, xy, icon_size, dpi);
+                        SetIconSize(it, size, xy, icon_size, Dpi);
                         hasx += t_size;
                     }
                     SetSize(hasx, size + _config.Gap);
@@ -340,7 +339,7 @@ namespace AntdUI
         GraphicsPath DrawShadow(Canvas g, FloatButton.ConfigBtn it)
         {
             bool round = it.Round;
-            float radius = round ? it.rect_read.Height : it.Radius * Config.Dpi;
+            float radius = round ? it.rect_read.Height : it.Radius * Dpi;
             var path = Helper.RoundPath(it.rect_read, radius, round);
             if (Config.ShadowEnabled && it.Enabled)
             {
