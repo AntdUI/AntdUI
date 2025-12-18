@@ -86,7 +86,7 @@ namespace AntdUI
                 hovers = -1;
                 ExtractHeaderFixed();
                 ExtractData();
-                UpdateSummaries();
+                OnUpdateSummaries();
                 if (LoadLayout()) Invalidate();
                 OnPropertyChanged(nameof(DataSource));
             }
@@ -750,6 +750,7 @@ namespace AntdUI
                 if (SetIndex(value))
                 {
                     Invalidate();
+                    OnUpdateSummaries();
                     OnPropertyChanged(nameof(SelectedIndex));
                     OnSelectIndexChanged();
                 }
@@ -770,6 +771,7 @@ namespace AntdUI
                 if (selectedIndex == value) return;
                 selectedIndex = value;
                 Invalidate();
+                OnUpdateSummaries();
                 OnPropertyChanged(nameof(SelectedIndexs));
                 OnSelectIndexChanged();
             }
@@ -866,9 +868,9 @@ namespace AntdUI
                     var cols = SummaryColumns;
                     if (cols == null || cols.Length == 0)
                     {
-                        if (columns != null && columns.Count > 0) columns[0].SetSummaryItem("TOTAL");
+                        if (columns != null && columns.Count > 0) columns[0].SetSummaryItem(string.Empty);//设置为空文本
                     }
-                    UpdateSummaries();
+                    OnUpdateSummaries();
                 }
                 else Summary = null;
             }

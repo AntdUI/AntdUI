@@ -34,7 +34,7 @@ namespace Demo.Controls
             InitializeComponent();
 
             #region Table
-
+            table1.MultipleRows = true;
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
                 new AntdUI.Column("name", "姓名").SetFixed().SetTree("Sub").SetLocalizationTitleID("Table.Column."),
@@ -800,7 +800,7 @@ namespace Demo.Controls
         {
             if (table1.SummaryCustomize)
             {
-                table1.UpdateSummaries();
+                table1.OnUpdateSummaries();
                 return;
             }
             var dataList = (IEnumerable<TestClass>)table1.DataSource;
