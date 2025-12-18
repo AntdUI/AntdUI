@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Radio : UserControl
     {
-        Form form;
-        public Radio(Form _form)
+        AntdUI.BaseForm form;
+        public Radio(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

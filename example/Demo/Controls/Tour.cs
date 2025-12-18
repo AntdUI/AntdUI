@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class Tour : UserControl
     {
-        Form form;
-        public Tour(Form _form)
+        AntdUI.BaseForm form;
+        public Tour(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

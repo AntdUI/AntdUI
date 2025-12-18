@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class Icon : UserControl, AntdUI.IEventListener
     {
-        Form form;
-        public Icon(Form _form)
+        AntdUI.BaseForm form;
+        public Icon(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

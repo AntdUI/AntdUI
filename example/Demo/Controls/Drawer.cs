@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Drawer : UserControl
     {
-        Form form;
-        public Drawer(Form _form)
+        AntdUI.BaseForm form;
+        public Drawer(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

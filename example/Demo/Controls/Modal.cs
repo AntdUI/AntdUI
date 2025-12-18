@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class Modal : UserControl
     {
-        Form form;
-        public Modal(Form _form)
+        AntdUI.BaseForm form;
+        public Modal(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

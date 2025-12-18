@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class ColorPicker : UserControl
     {
-        Form form;
-        public ColorPicker(Form _form)
+        AntdUI.BaseForm form;
+        public ColorPicker(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

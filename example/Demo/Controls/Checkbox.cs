@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Checkbox : UserControl
     {
-        Form form;
-        public Checkbox(Form _form)
+        AntdUI.BaseForm form;
+        public Checkbox(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

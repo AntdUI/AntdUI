@@ -27,8 +27,8 @@ namespace Demo.Controls
 {
     public partial class Table : UserControl
     {
-        Form form;
-        public Table(Form _form)
+        AntdUI.BaseForm form;
+        public Table(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Segmented : UserControl
     {
-        Form form;
-        public Segmented(Form _form)
+        AntdUI.BaseForm form;
+        public Segmented(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

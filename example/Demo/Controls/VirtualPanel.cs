@@ -27,8 +27,8 @@ namespace Demo.Controls
 {
     public partial class VirtualPanel : UserControl
     {
-        Form form;
-        public VirtualPanel(Form _form)
+        AntdUI.BaseForm form;
+        public VirtualPanel(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

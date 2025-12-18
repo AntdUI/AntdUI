@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Divider : UserControl
     {
-        Form form;
-        public Divider(Form _form)
+        AntdUI.BaseForm form;
+        public Divider(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

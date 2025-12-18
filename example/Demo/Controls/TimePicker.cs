@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class TimePicker : UserControl
     {
-        Form form;
-        public TimePicker(Form _form)
+        AntdUI.BaseForm form;
+        public TimePicker(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

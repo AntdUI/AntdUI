@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class Spin : UserControl
     {
-        Form form;
-        public Spin(Form _form)
+        AntdUI.BaseForm form;
+        public Spin(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

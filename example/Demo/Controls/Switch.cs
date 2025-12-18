@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Switch : UserControl
     {
-        Form form;
-        public Switch(Form _form)
+        AntdUI.BaseForm form;
+        public Switch(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

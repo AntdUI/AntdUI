@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Calendar : UserControl
     {
-        Form form;
-        public Calendar(Form _form)
+        AntdUI.BaseForm form;
+        public Calendar(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

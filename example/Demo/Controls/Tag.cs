@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Tag : UserControl
     {
-        Form form;
-        public Tag(Form _form)
+        AntdUI.BaseForm form;
+        public Tag(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

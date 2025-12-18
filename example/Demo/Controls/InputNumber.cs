@@ -24,8 +24,8 @@ namespace Demo.Controls
 {
     public partial class InputNumber : UserControl
     {
-        Form form;
-        public InputNumber(Form _form)
+        AntdUI.BaseForm form;
+        public InputNumber(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

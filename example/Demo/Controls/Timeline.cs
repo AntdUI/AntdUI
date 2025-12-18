@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Timeline : UserControl
     {
-        Form form;
-        public Timeline(Form _form)
+        AntdUI.BaseForm form;
+        public Timeline(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

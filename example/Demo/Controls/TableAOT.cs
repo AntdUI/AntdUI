@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class TableAOT : UserControl
     {
-        Form form;
-        public TableAOT(Form _form)
+        AntdUI.BaseForm form;
+        public TableAOT(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

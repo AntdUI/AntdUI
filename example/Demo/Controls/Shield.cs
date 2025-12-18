@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Shield : UserControl
     {
-        Form form;
-        public Shield(Form _form)
+        AntdUI.BaseForm form;
+        public Shield(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

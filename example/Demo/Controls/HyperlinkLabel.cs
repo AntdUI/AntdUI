@@ -23,9 +23,9 @@ namespace Demo.Controls
 {
     public partial class HyperlinkLabel : UserControl
     {
-        Form form;
+        AntdUI.BaseForm form;
 
-        public HyperlinkLabel(Form _form)
+        public HyperlinkLabel(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

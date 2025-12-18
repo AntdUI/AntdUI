@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Transfer : UserControl, AntdUI.IEventListener
     {
-        Form form;
-        public Transfer(Form _form)
+        AntdUI.BaseForm form;
+        public Transfer(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

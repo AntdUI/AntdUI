@@ -26,8 +26,8 @@ namespace Demo.Controls
 {
     public partial class DatePicker : UserControl
     {
-        Form form;
-        public DatePicker(Form _form)
+        AntdUI.BaseForm form;
+        public DatePicker(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

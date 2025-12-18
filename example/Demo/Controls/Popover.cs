@@ -25,8 +25,8 @@ namespace Demo.Controls
 {
     public partial class Popover : UserControl
     {
-        Form form;
-        public Popover(Form _form)
+        AntdUI.BaseForm form;
+        public Popover(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

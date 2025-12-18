@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Breadcrumb : UserControl
     {
-        Form form;
-        public Breadcrumb(Form _form)
+        AntdUI.BaseForm form;
+        public Breadcrumb(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

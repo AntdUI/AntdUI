@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Pagination : UserControl
     {
-        Form form;
-        public Pagination(Form _form)
+        AntdUI.BaseForm form;
+        public Pagination(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

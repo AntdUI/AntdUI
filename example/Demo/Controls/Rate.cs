@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Rate : UserControl
     {
-        Form form;
-        public Rate(Form _form)
+        AntdUI.BaseForm form;
+        public Rate(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Slider : UserControl
     {
-        Form form;
-        public Slider(Form _form)
+        AntdUI.BaseForm form;
+        public Slider(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

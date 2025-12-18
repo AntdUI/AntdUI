@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class PageHeader : UserControl
     {
-        Form form;
-        public PageHeader(Form _form)
+        AntdUI.BaseForm form;
+        public PageHeader(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();

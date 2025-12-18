@@ -23,8 +23,8 @@ namespace Demo.Controls
 {
     public partial class Alert : UserControl
     {
-        Form form;
-        public Alert(Form _form)
+        AntdUI.BaseForm form;
+        public Alert(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
