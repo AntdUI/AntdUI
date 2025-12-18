@@ -547,7 +547,12 @@ namespace AntdUI
         void PaintBg(Canvas g, RowTemplate row)
         {
             OnRowPaintBegin(g, row.RECT, row.RECORD, row.Type, row.INDEX);
-            if (dragBody != null)
+            if (dragBody == null)
+            {
+                if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get(nameof(Table), ColorScheme)), row.RECT);
+                else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
+            }
+            else
             {
                 if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
                 else if (dragBody.im == row.INDEX)
@@ -559,11 +564,6 @@ namespace AntdUI
                         else g.Fill(brush_split, new Rectangle(row.RECT.X, row.RECT.Y - sp, row.RECT.Width, sp * 2));
                     }
                 }
-            }
-            else
-            {
-                if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get(nameof(Table), ColorScheme)), row.RECT);
-                else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(nameof(Table), ColorScheme), row.RECT);
             }
             OnRowPaint(g, row.RECT, row.RECORD, row.Type, row.INDEX);
         }

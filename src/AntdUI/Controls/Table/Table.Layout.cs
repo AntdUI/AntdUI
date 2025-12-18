@@ -324,6 +324,7 @@ namespace AntdUI
                     var row = _rows[row_i];
                     if (row == null) continue;
                     row.INDEX = row_i;
+                    if (row_i == hovers) row.hover = true;
                     if (row.ShowExpand)
                     {
                         int max_height = 0;
@@ -1077,7 +1078,6 @@ namespace AntdUI
         {
             var row = new RowTemplate(this, cells, row_i, record);
             if (enableDir.Contains(record)) row.ENABLE = false;
-            if (row.INDEX == hovers) row.hover = true;
             foreach (var it in row.cells) it.SetROW(row);
             rows.Add(row);
             return row;

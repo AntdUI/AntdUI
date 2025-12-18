@@ -46,8 +46,8 @@ namespace AntdUI
             ContextMenuStripItem? mode = null;
             if (MultipleRows)
             {
-                mode = new ContextMenuStripItem().SetText(selectionMode ? "选择行模式" : "所有行模式").SetIcon(selectionMode ? SvgSummarySelectionMode : SvgSummaryAllMode).SetID("MODE");
-                mode.Checked = selectionMode;
+                if (selectionMode) mode = new ContextMenuStripItem().SetText("选择行模式", "Table.Summary.Mode").SetIcon(SvgSummarySelectionMode).SetID("MODE").SetChecked();
+                else mode = new ContextMenuStripItem().SetText("所有行模式", "Table.Summary.ModeALL").SetIcon(SvgSummaryAllMode).SetID("MODE");
             }
             switch (type)
             {
@@ -106,8 +106,7 @@ namespace AntdUI
                 }
                 else if (item.ID == "MODE")
                 {
-                    item.Checked = !item.Checked;
-                    colSummary.SummaryItem.SelectionMode = item.Checked;
+                    colSummary.SummaryItem.SelectionMode = !item.Checked;
                     OnUpdateSummaries();
                 }
             }, InitSummaryMenu(colSummary.SummaryItem.SummaryType, colSummary.SummaryItem.SelectionMode)).SetFont(Font).SetAlign(TAlign.Top).SetRatio(0.7F).SetClose(() => FMenuStrip = null).open();
