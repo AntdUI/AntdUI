@@ -56,12 +56,11 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
-            if (dpi == 1F) Radius = control.DropDownRadius ?? control.radius;
+            if (Dpi == 1F) Radius = control.DropDownRadius ?? control.radius;
             else
             {
-                ArrowSize = (int)(8 * dpi);
-                Radius = (int)(control.DropDownRadius ?? control.radius * dpi);
+                ArrowSize = (int)(8 * Dpi);
+                Radius = (int)(control.DropDownRadius ?? control.radius * Dpi);
             }
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
             CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
@@ -84,7 +83,7 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(control.DropDownTextAlign) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             if (dpi == 1F) Radius = control.DropDownRadius ?? control.Radius;
             else
             {
@@ -111,7 +110,7 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(TAlign.Left) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             if (dpi == 1F) Radius = radius;
             else
             {
@@ -155,7 +154,7 @@ namespace AntdUI
             ItemOS = new ItemIndex(items);
             sf = Helper.SF(cell.DropDownTextAlign) | FormatFlags.NoWrap;
 
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             if (dpi == 1F) Radius = cell.DropDownRadius ?? control.Radius;
             else
             {
@@ -467,7 +466,7 @@ namespace AntdUI
                 {
                     if (it.HoverClose)
                     {
-                        using (var path = it.RectClose.RoundPath((int)(4 * Config.Dpi)))
+                        using (var path = it.RectClose.RoundPath((int)(4 * Dpi)))
                         {
                             g.Fill(Colour.FillSecondary.Get(keyid, ColorScheme), path);
                         }
@@ -536,7 +535,7 @@ namespace AntdUI
         }
         void DrawArrow(Canvas g, ObjectItem it, Color color)
         {
-            using (var pen = new Pen(color, Config.Dpi * 1.4F))
+            using (var pen = new Pen(color, Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
@@ -555,7 +554,7 @@ namespace AntdUI
             if (items.Count > 0)
             {
                 nodata = false;
-                int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+                int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
                 icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
                 gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
 

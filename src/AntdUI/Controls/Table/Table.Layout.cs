@@ -201,10 +201,10 @@ namespace AntdUI
 
             if (VirtualMode)
             {
-                var dpi = Config.Dpi;
+                var dpi = Dpi;
                 Helper.GDI(g =>
                 {
-                    int gap = (int)(_gap.Height * Config.Dpi) * 2;
+                    int gap = (int)(_gap.Height * Dpi) * 2;
 
                     #region 虚拟计算需要布局坐标的宽高
 
@@ -299,9 +299,9 @@ namespace AntdUI
             var rowlist = new List<RowTemplate>(_rows.Count);
             Helper.GDI(g =>
             {
-                var dpi = Config.Dpi;
+                var dpi = Dpi;
                 var font_size = g.MeasureString(Config.NullText, Font);
-                var gap = new TableGaps(_gap);
+                var gap = new TableGaps(_gap, dpi);
                 int check_size = (int)(_checksize * dpi), switchsize = (int)(_switchsize * dpi), treesize = (int)(TreeButtonSize * dpi),
                  gapTree = (int)(_gapTree * dpi), gapTree2 = gapTree * 2, sort_size = (int)(DragHandleSize * dpi), sort_ico_size = (int)(DragHandleIconSize * dpi), split_move = (int)(6F * dpi);
 
@@ -415,7 +415,7 @@ namespace AntdUI
                         }
                         else if (int.TryParse(minWidth, out var i))
                         {
-                            int min = (int)(i * Config.Dpi);
+                            int min = (int)(i * Dpi);
                             if (min > firstrow.cells[it.Key].MinWidth) firstrow.cells[it.Key].MinWidth = min;
                             if (it.Value.value < min)
                             {
@@ -444,7 +444,7 @@ namespace AntdUI
                         }
                         else if (int.TryParse(maxWidth, out var i))
                         {
-                            int max = (int)(i * Config.Dpi);
+                            int max = (int)(i * Dpi);
                             if (it.Value.value > max)
                             {
                                 it.Value.value = max;
@@ -936,7 +936,7 @@ namespace AntdUI
         object ColumnWidth(string width)
         {
             if (width.EndsWith("%") && float.TryParse(width.TrimEnd('%'), out var f)) return f / 100F;
-            else if (int.TryParse(width, out var i)) return (int)(i * Config.Dpi);
+            else if (int.TryParse(width, out var i)) return (int)(i * Dpi);
             else if (width.Contains("fill")) return -2;//填充剩下的
             else return -1; //AUTO
         }

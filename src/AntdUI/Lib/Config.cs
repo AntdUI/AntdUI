@@ -228,7 +228,7 @@ namespace AntdUI
 
         static bool dpione = true;
         static float _dpi = 1F;
-        static float? _dpi_custom;
+        internal static float? _dpi_custom;
         public static float Dpi
         {
             get

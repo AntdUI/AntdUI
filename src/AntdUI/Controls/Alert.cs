@@ -370,7 +370,7 @@ namespace AntdUI
         /// <summary>
         /// 显示区域（容器）
         /// </summary>
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, borWidth / 2F * Config.Dpi);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, borWidth / 2F * Dpi);
 
         #endregion
 
@@ -467,7 +467,7 @@ namespace AntdUI
             }
             else
             {
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 Color back, bor_color, color = Colour.Text.Get(nameof(Alert), ColorScheme);
                 switch (icon)
                 {
@@ -546,7 +546,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    if (borWidth > 0) g.Draw(bor_color, borWidth * Config.Dpi, path);
+                    if (borWidth > 0) g.Draw(bor_color, borWidth * Dpi, path);
                 }
             }
             base.OnDraw(e);
@@ -694,7 +694,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => DisplayRectangle;
 
-        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Config.Dpi);
+        public override GraphicsPath RenderRegion => DisplayRectangle.RoundPath(radius * Dpi);
 
         #endregion
 

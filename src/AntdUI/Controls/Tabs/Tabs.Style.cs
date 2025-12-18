@@ -138,8 +138,8 @@ namespace AntdUI
                 owner = tabs;
                 rects = Helper.GDI(g =>
                 {
-                    int gap = (int)(tabs.Gap * Config.Dpi), gap2 = gap * 2, xy = 0;
-                    int barSize = (int)(Size * Config.Dpi), barPadding = (int)(Padding * Config.Dpi), barPadding2 = barPadding * 2;
+                    int gap = (int)(tabs.Gap * tabs.Dpi), gap2 = gap * 2, xy = 0;
+                    int barSize = (int)(Size * tabs.Dpi), barPadding = (int)(Padding * tabs.Dpi), barPadding2 = barPadding * 2;
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, gap2, out int ico_size, out int ico_gap, out int close_size, out int xy2, out int rw);
                     int? rw_tmp = tabs.TextCenter ? rw : null;
@@ -187,7 +187,7 @@ namespace AntdUI
                             tabs.SetPadding(0, 0, 0, xy2 + tabs.Margin.Horizontal);
                             if (BackSize > 0)
                             {
-                                int barBackSize = (int)(BackSize * Config.Dpi);
+                                int barBackSize = (int)(BackSize * tabs.Dpi);
                                 rect_line_top = new Rectangle(0, rect.Bottom - xy2, rect.Width + tabs.Margin.Horizontal, barBackSize);
                             }
                             owner.scroll_max = xy - rect.Width;
@@ -218,7 +218,7 @@ namespace AntdUI
                             tabs.SetPadding(xy2 + tabs.Margin.Vertical, 0, 0, 0);
                             if (BackSize > 0)
                             {
-                                int barBackSize = (int)(BackSize * Config.Dpi);
+                                int barBackSize = (int)(BackSize * tabs.Dpi);
                                 rect_line_top = new Rectangle(rect.X + xy2 - barBackSize, 0, barBackSize, rect.Height + tabs.Margin.Vertical);
                             }
                             owner.scroll_max = xy - rect.Height;
@@ -250,7 +250,7 @@ namespace AntdUI
                             tabs.SetPadding(0, 0, xy2 + tabs.Margin.Vertical, 0);
                             if (BackSize > 0)
                             {
-                                int barBackSize = (int)(BackSize * Config.Dpi);
+                                int barBackSize = (int)(BackSize * tabs.Dpi);
                                 rect_line_top = new Rectangle(x, 0, barBackSize, rect.Height + tabs.Margin.Vertical);
                             }
                             owner.scroll_max = xy - rect.Height;
@@ -298,7 +298,7 @@ namespace AntdUI
                             tabs.SetPadding(0, xy2 + tabs.Margin.Horizontal, 0, 0);
                             if (BackSize > 0)
                             {
-                                int barBackSize = (int)(BackSize * Config.Dpi);
+                                int barBackSize = (int)(BackSize * tabs.Dpi);
                                 rect_line_top = new Rectangle(0, rect.Y + xy2 - barBackSize, rect.Width + tabs.Margin.Horizontal, barBackSize);
                             }
                             owner.scroll_max = xy - rect.Width;
@@ -490,7 +490,7 @@ namespace AntdUI
                             }
                         }
 
-                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, (int)(radius * Config.Dpi), rect_ful, rects[onetmp].Rect, rects[rects.Length - 1].Rect, false);
+                        if (owner.scroll_show) owner.PaintExceed(g, brush_fore.Color, (int)(radius * owner.Dpi), rect_ful, rects[onetmp].Rect, rects[rects.Length - 1].Rect, false);
                     }
                 }
             }
@@ -545,7 +545,7 @@ namespace AntdUI
             {
                 if (radius > 0)
                 {
-                    using (var path = rect.RoundPath(radius * Config.Dpi))
+                    using (var path = rect.RoundPath(radius * g.Dpi))
                     {
                         g.Fill(brush, path);
                     }
@@ -556,7 +556,7 @@ namespace AntdUI
             {
                 if (radius > 0)
                 {
-                    using (var path = rect.RoundPath(radius * Config.Dpi))
+                    using (var path = rect.RoundPath(radius * g.Dpi))
                     {
                         g.Fill(brush, path);
                     }
@@ -898,7 +898,7 @@ namespace AntdUI
                 owner = tabs;
                 rects = Helper.GDI(g =>
                 {
-                    int gap = (int)(tabs.Gap * Config.Dpi), gap2 = gap * 2, xy = 0, cardgap = (int)(Gap * Config.Dpi);
+                    int gap = (int)(tabs.Gap * owner.Dpi), gap2 = gap * 2, xy = 0, cardgap = (int)(Gap * owner.Dpi);
 
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, gap2, out int ico_size, out int ico_gap, out int close_size, out int xy2, out int rw);
@@ -1169,7 +1169,7 @@ namespace AntdUI
                     using (var brush_fill = new SolidBrush(owner.Fill ?? Colour.Primary.Get(nameof(Tabs), owner.ColorScheme)))
                     {
                         var rect_t = owner.ClientRectangle;
-                        int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2, borb2 = bor / 2;
+                        int radius = (int)(Radius * owner.Dpi), bor = (int)(bordersize * owner.Dpi), bor2 = bor * 6, bor22 = bor2 * 2, borb2 = bor / 2;
                         TabPage? sel = null;
                         int select = owner.SelectedIndex;
                         var rect_one = rects[onetmp].Rect;
@@ -1649,7 +1649,7 @@ namespace AntdUI
                 owner = tabs;
                 rects = Helper.GDI(g =>
                 {
-                    int gap = (int)(tabs.Gap * Config.Dpi), gap2 = gap * 2, xy = 0, cardgap = (int)(Gap * Config.Dpi);
+                    int gap = (int)(tabs.Gap * tabs.Dpi), gap2 = gap * 2, xy = 0, cardgap = (int)(Gap * tabs.Dpi);
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, gap2, out int ico_size, out int ico_gap, out int close_size, out int xy2, out int rw);
                     int? rw_tmp = tabs.TextCenter ? rw : null;
@@ -2021,7 +2021,7 @@ namespace AntdUI
                     using (var brush_bg_active = new SolidBrush(FillActive ?? Colour.BgContainer.Get(nameof(Tabs), owner.ColorScheme)))
                     {
                         var rect_t = owner.ClientRectangle;
-                        int radius = (int)(Radius * Config.Dpi), bor = (int)(bordersize * Config.Dpi), bor2 = bor * 6, bor22 = bor2 * 2;
+                        int radius = (int)(Radius * owner.Dpi), bor = (int)(bordersize * owner.Dpi), bor2 = bor * 6, bor22 = bor2 * 2;
                         float borb2 = bor / 2F;
                         TabPage? sel = null;
                         int i = 0, select = owner.SelectedIndex;

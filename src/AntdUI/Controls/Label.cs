@@ -538,7 +538,7 @@ namespace AntdUI
 
         Rectangle PaintTextLeft(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            int gap = (int)(iconGap * Config.Dpi);
+            int gap = (int)(iconGap * Dpi);
             int text_width = font_size.Width;
             int xOffset = rect_read.X;
 
@@ -632,7 +632,7 @@ namespace AntdUI
         }
         Rectangle PaintTextRight(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            int gap = (int)(iconGap * Config.Dpi);
+            int gap = (int)(iconGap * Dpi);
             int text_width = font_size.Width;
             int rightEdge = rect_read.Right;
 
@@ -733,7 +733,7 @@ namespace AntdUI
         }
         Rectangle PaintTextCenter(Canvas g, Color color, Rectangle rect_read, Size font_size, bool has_prefixText, bool has_suffixText, bool has_prefix, bool has_suffix)
         {
-            int gap = (int)(iconGap * Config.Dpi);
+            int gap = (int)(iconGap * Dpi);
             int text_width = font_size.Width;
 
             if (Highlight)

@@ -51,11 +51,27 @@ namespace AntdUI
             }
             return size;
         }
+        public static Size Size(this Size size, Canvas g, int p)
+        {
+            if (p > 0)
+            {
+                var s = (int)(p * g.Dpi);
+                size.Width += s;
+                size.Height += s;
+            }
+            return size;
+        }
 
         public static Size Size(this Size size, int w, int h)
         {
             if (w > 0) size.Width += (int)(w * Config.Dpi);
             if (h > 0) size.Height += (int)(h * Config.Dpi);
+            return size;
+        }
+        public static Size Size(this Size size, Canvas g, int w, int h)
+        {
+            if (w > 0) size.Width += (int)(w * g.Dpi);
+            if (h > 0) size.Height += (int)(h * g.Dpi);
             return size;
         }
 

@@ -51,7 +51,7 @@ namespace AntdUI
                 if (State == TState.Processing && PARENT.PARENT != null)
                 {
                     float max = TxtHeight * PARENT.PARENT.AnimationStateValue, alpha = 255 * (1F - PARENT.PARENT.AnimationStateValue);
-                    g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(RectDot.X + (RectDot.Width - max) / 2F, RectDot.Y + (RectDot.Height - max) / 2F, max, max));
+                    g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * g.Dpi, new RectangleF(RectDot.X + (RectDot.Width - max) / 2F, RectDot.Y + (RectDot.Height - max) / 2F, max, max));
                 }
                 g.FillEllipse(brush, RectDot);
             }

@@ -369,7 +369,7 @@ namespace AntdUI
         {
             if (_itemSize.HasValue)
             {
-                int Size = (int)Math.Ceiling(_itemSize.Value * Config.Dpi);
+                int Size = (int)Math.Ceiling(_itemSize.Value * Dpi);
                 var rect_dirtmp = new Dictionary<TabPage, Size>(rect_dir.Count);
                 foreach (var it in rect_dir) rect_dirtmp.Add(it.Key, new Size(Size, it.Value.Height));
                 if (alignment == TabAlignment.Left || alignment == TabAlignment.Right) sizewh = Size;
@@ -571,11 +571,11 @@ namespace AntdUI
                         if (string.IsNullOrEmpty(page.Badge) || page.Badge == "" || page.Badge == " ")
                         {
                             var size = g.MeasureString(Config.NullText, font).Width / 2;
-                            var rect_badge = new RectangleF(rect.Right - size - page.BadgeOffsetX * Config.Dpi, rect.Y + page.BadgeOffsetY * Config.Dpi, size, size);
+                            var rect_badge = new RectangleF(rect.Right - size - page.BadgeOffsetX * Dpi, rect.Y + page.BadgeOffsetY * Dpi, size, size);
                             using (var brush = new SolidBrush(color))
                             {
                                 g.FillEllipse(brush, rect_badge);
-                                g.DrawEllipse(brush_fore.Color, Config.Dpi, rect_badge);
+                                g.DrawEllipse(brush_fore.Color, Dpi, rect_badge);
                             }
                         }
                         else
@@ -584,24 +584,24 @@ namespace AntdUI
                             int size_badge = (int)(size.Height * 1.2F);
                             if (size.Height > size.Width)
                             {
-                                var rect_badge = new Rectangle(rect.Right - size_badge - (int)(page.BadgeOffsetX * Config.Dpi), rect.Y + (int)(page.BadgeOffsetY * Config.Dpi), size_badge, size_badge);
+                                var rect_badge = new Rectangle(rect.Right - size_badge - (int)(page.BadgeOffsetX * Dpi), rect.Y + (int)(page.BadgeOffsetY * Dpi), size_badge, size_badge);
                                 using (var brush = new SolidBrush(color))
                                 {
                                     g.FillEllipse(brush, rect_badge);
-                                    g.DrawEllipse(brush_fore.Color, Config.Dpi, rect_badge);
+                                    g.DrawEllipse(brush_fore.Color, Dpi, rect_badge);
                                 }
                                 g.String(page.Badge, font, brush_fore, rect_badge, s_f);
                             }
                             else
                             {
                                 int w_badge = size.Width + (size_badge - size.Height);
-                                var rect_badge = new Rectangle(rect.Right - w_badge - (int)(page.BadgeOffsetX * Config.Dpi), rect.Y + (int)(page.BadgeOffsetY * Config.Dpi), w_badge, size_badge);
+                                var rect_badge = new Rectangle(rect.Right - w_badge - (int)(page.BadgeOffsetX * Dpi), rect.Y + (int)(page.BadgeOffsetY * Dpi), w_badge, size_badge);
                                 using (var brush = new SolidBrush(color))
                                 {
                                     using (var path = rect_badge.RoundPath(rect_badge.Height))
                                     {
                                         g.Fill(brush, path);
-                                        g.Draw(brush_fore.Color, Config.Dpi, path);
+                                        g.Draw(brush_fore.Color, Dpi, path);
                                     }
                                 }
                                 g.String(page.Badge, font, brush_fore, rect_badge, s_f);
@@ -669,7 +669,7 @@ namespace AntdUI
             {
                 if (alignment == TabAlignment.Top || alignment == TabAlignment.Bottom)
                 {
-                    int moveXY = oldXY - e.X, moveXYa = Math.Abs(moveXY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                    int moveXY = oldXY - e.X, moveXYa = Math.Abs(moveXY), threshold = (int)(Config.TouchThreshold * Dpi);
                     if (moveXYa > threshold)
                     {
                         oldXY = e.X;
@@ -679,7 +679,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    int moveXY = oldXY - e.Y, moveXYa = Math.Abs(moveXY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                    int moveXY = oldXY - e.Y, moveXYa = Math.Abs(moveXY), threshold = (int)(Config.TouchThreshold * Dpi);
                     if (moveXYa > threshold)
                     {
                         oldXY = e.Y;
@@ -1159,7 +1159,7 @@ namespace AntdUI
                 case TabAlignment.Right:
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
-                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
+                        int gap = (int)(_gap * Dpi), gap2 = gap * 2;
                         int size = last.Height, icosize = (int)(size * 0.4F);
                         var rect_cr = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
                         if (scroll_y > 0)
@@ -1214,7 +1214,7 @@ namespace AntdUI
                 default:
                     if (scroll_x > 0 || scroll_max != scroll_x)
                     {
-                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2;
+                        int gap = (int)(_gap * Dpi), gap2 = gap * 2;
                         int size = last.Height, icosize = (int)(size * 0.4F);
                         var rect_cr = new Rectangle(rect.Right - size, last.Y, size, size);
                         if (scroll_x > 0)
@@ -1279,8 +1279,8 @@ namespace AntdUI
                         int size = (int)(last.Height * .6F);
                         using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get(nameof(Tabs), ColorScheme)))
                         using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get(nameof(Tabs), ColorScheme)))
-                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Config.Dpi))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Dpi))
                         {
                             if (scroll_y > 0)
                             {
@@ -1327,8 +1327,8 @@ namespace AntdUI
                         int size = (int)(last.Height * .6F);
                         using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get(nameof(Tabs), ColorScheme)))
                         using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get(nameof(Tabs), ColorScheme)))
-                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Config.Dpi))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Dpi))
                         {
                             if (scroll_x > 0)
                             {
@@ -1379,11 +1379,11 @@ namespace AntdUI
                 case TabAlignment.Right:
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
-                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
+                        int gap = (int)(_gap * Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
                         using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get(nameof(Tabs), ColorScheme)))
                         using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get(nameof(Tabs), ColorScheme)))
-                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Config.Dpi))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Dpi))
                         {
                             if (scroll_y > 0)
                             {
@@ -1461,11 +1461,11 @@ namespace AntdUI
                 default:
                     if (scroll_x > 0 || scroll_max != scroll_x)
                     {
-                        int gap = (int)(_gap * Config.Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
+                        int gap = (int)(_gap * Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
                         using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get(nameof(Tabs), ColorScheme)))
                         using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get(nameof(Tabs), ColorScheme)))
-                        using (var pen = new Pen(scrollfore ?? color, 2F * Config.Dpi))
-                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Config.Dpi))
+                        using (var pen = new Pen(scrollfore ?? color, 2F * Dpi))
+                        using (var pen_hover = new Pen(ScrollForeHover ?? Colour.PrimaryColor.Get(nameof(Tabs), ColorScheme), 2F * Dpi))
                         {
                             if (scroll_x > 0)
                             {

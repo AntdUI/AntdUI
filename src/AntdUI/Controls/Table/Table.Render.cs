@@ -51,7 +51,7 @@ namespace AntdUI
 
         void PaintTable(Canvas g, RowTemplate[] rows, Rectangle rect, Rectangle rect_real, Font column_font)
         {
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get(nameof(Table), ColorScheme)))
             using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get(nameof(Table), ColorScheme)))
@@ -214,8 +214,8 @@ namespace AntdUI
                 {
                     g.ResetClip();
                     var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
-                    if (clipath == null) g.Draw(color, borderWidth * Config.Dpi, rect_divider);
-                    else g.Draw(color, borderWidth * Config.Dpi, clipath);
+                    if (clipath == null) g.Draw(color, borderWidth * Dpi, rect_divider);
+                    else g.Draw(color, borderWidth * Dpi, clipath);
                 }
 
                 clipath?.Dispose();
@@ -370,7 +370,7 @@ namespace AntdUI
                         {
                             using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(Table), ColorScheme)))
                             {
-                                int sp = (int)(2 * Config.Dpi);
+                                int sp = (int)(2 * Dpi);
                                 if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
                                 else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
                             }
@@ -384,7 +384,7 @@ namespace AntdUI
                 List<int> handkey = new List<int>(len), dskey = new List<int>(len);
                 var state = g.Save();
                 int rY = row.RECT.Y, rHeight = row.Height / len;
-                int i = 0, gap = (int)(_gap.Width * Config.Dpi), gap2 = gap * 2;
+                int i = 0, gap = (int)(_gap.Width * Dpi), gap2 = gap * 2;
                 foreach (var it in StackedHeaderRows)
                 {
                     foreach (var item in it.StackedColumns) PaintTableHeaderStacked(g, row, fore, column_font, ref handkey, ref dskey, rY, rHeight, item);
@@ -444,7 +444,7 @@ namespace AntdUI
                         {
                             using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(Table), ColorScheme)))
                             {
-                                int sp = (int)(2 * Config.Dpi);
+                                int sp = (int)(2 * Dpi);
                                 if (dragHeader.last) g.Fill(brush_split, new Rectangle(column.RECT.Right - sp, column.RECT.Y, sp * 2, column.RECT.Height));
                                 else g.Fill(brush_split, new Rectangle(column.RECT.X - sp, column.RECT.Y, sp * 2, column.RECT.Height));
                             }
@@ -554,7 +554,7 @@ namespace AntdUI
                 {
                     using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(Table), ColorScheme)))
                     {
-                        int sp = (int)(2 * Config.Dpi);
+                        int sp = (int)(2 * Dpi);
                         if (dragBody.last) g.Fill(brush_split, new Rectangle(row.RECT.X, row.RECT.Bottom - sp, row.RECT.Width, sp * 2));
                         else g.Fill(brush_split, new Rectangle(row.RECT.X, row.RECT.Y - sp, row.RECT.Width, sp * 2));
                     }
@@ -735,13 +735,13 @@ namespace AntdUI
                 {
                     case TableCellFocusedStyle.Solid:
                         g.Fill(CellFocusedBg ?? Colour.BgBase.Get(nameof(Table), ColorScheme), it.RECT);
-                        using (var pen = PaintItemFocus(it, false, (int)(Config.Dpi * 2)))
+                        using (var pen = PaintItemFocus(it, false, (int)(Dpi * 2)))
                         {
                             g.Draw(pen, it.RECT);
                         }
                         break;
                     case TableCellFocusedStyle.Dash:
-                        using (var pen = PaintItemFocus(it, true, (int)(Config.Dpi)))
+                        using (var pen = PaintItemFocus(it, true, (int)(Dpi)))
                         {
                             g.Draw(pen, it.RECT);
                         }
@@ -825,7 +825,7 @@ namespace AntdUI
 
                 if (_gap.Width > 0)
                 {
-                    int gap = (int)(_gap.Width * Config.Dpi);
+                    int gap = (int)(_gap.Width * Dpi);
                     var rect_show = new Rectangle(last.RECT.Right - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                     using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get(nameof(Table), ColorScheme), Color.Transparent, 0F))
                     {
@@ -918,7 +918,7 @@ namespace AntdUI
 
                         if (_gap.Width > 0)
                         {
-                            int gap = (int)(_gap.Width * Config.Dpi);
+                            int gap = (int)(_gap.Width * Dpi);
                             var rect_show = new Rectangle(rect_Fixed.X - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get(nameof(Table), ColorScheme), 0F))
                             {
@@ -1035,7 +1035,7 @@ namespace AntdUI
 
                         if (_gap.Width > 0)
                         {
-                            int gap = (int)(_gap.Width * Config.Dpi);
+                            int gap = (int)(_gap.Width * Dpi);
                             var rect_show = new Rectangle(rect_Fixed.X, rect_Fixed.Y - gap, rect_Fixed.Width, gap * 2);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get(nameof(Table), ColorScheme), 90F))
                             {
@@ -1107,7 +1107,7 @@ namespace AntdUI
 
                     if (_gap.Width > 0)
                     {
-                        int gap = (int)(_gap.Width * Config.Dpi);
+                        int gap = (int)(_gap.Width * Dpi);
                         var rect_show = new Rectangle(rect.X + last.RECT.Right - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                         using (var brush = new LinearGradientBrush(rect_show, Colour.FillSecondary.Get(nameof(Table), ColorScheme), Color.Transparent, 0F))
                         {
@@ -1168,7 +1168,7 @@ namespace AntdUI
 
                         if (_gap.Width > 0)
                         {
-                            int gap = (int)(_gap.Width * Config.Dpi);
+                            int gap = (int)(_gap.Width * Dpi);
                             var rect_show = new Rectangle(rect_Fixed.X - gap, rect_Fixed.Y, gap * 2, rect_Fixed.Height);
                             using (var brush = new LinearGradientBrush(rect_show, Color.Transparent, Colour.FillSecondary.Get(nameof(Table), ColorScheme), 0F))
                             {
@@ -1333,7 +1333,7 @@ namespace AntdUI
         void PaintBorder(Canvas g, int[][] dividers, int s)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
-            float border = BorderCellWidth * Config.Dpi;
+            float border = BorderCellWidth * Dpi;
             switch (BorderRenderMode)
             {
                 case TableBorderMode.None:
@@ -1367,7 +1367,7 @@ namespace AntdUI
         void PaintBorder(Canvas g, int[] it)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
-            float border = BorderCellWidth * Config.Dpi;
+            float border = BorderCellWidth * Dpi;
             switch (BorderRenderMode)
             {
                 case TableBorderMode.None:
@@ -1389,7 +1389,7 @@ namespace AntdUI
         void PaintBorderH(Canvas g, int[][] dividers)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
-            float border = BorderCellWidth * Config.Dpi;
+            float border = BorderCellWidth * Dpi;
             switch (BorderRenderMode)
             {
                 case TableBorderMode.None:
@@ -1417,7 +1417,7 @@ namespace AntdUI
         void PaintBorder(Canvas g, Rectangle rect)
         {
             var color = borderColor ?? Colour.BorderColor.Get(nameof(Table), ColorScheme);
-            float border = BorderCellWidth * Config.Dpi;
+            float border = BorderCellWidth * Dpi;
             switch (BorderRenderMode)
             {
                 case TableBorderMode.None:
@@ -1521,8 +1521,8 @@ namespace AntdUI
                 }
                 if (radius > 0)
                 {
-                    if (visibleHeader) return Helper.RoundPath(rect_divider, radius * Config.Dpi, true, true, false, false);
-                    else return Helper.RoundPath(rect_divider, radius * Config.Dpi);
+                    if (visibleHeader) return Helper.RoundPath(rect_divider, radius * Dpi, true, true, false, false);
+                    else return Helper.RoundPath(rect_divider, radius * Dpi);
                 }
                 var path = new GraphicsPath();
                 path.AddRectangle(rect_divider);

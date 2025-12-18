@@ -72,7 +72,7 @@ namespace AntdUI
 
                 g.Fill(_back, path);
 
-                if (borderWidth > 0) g.Draw(_bor, borderWidth * Config.Dpi, path);
+                if (borderWidth > 0) g.Draw(_bor, borderWidth * g.Dpi, path);
 
                 #endregion
 
@@ -85,12 +85,12 @@ namespace AntdUI
             var size = g.MeasureText(Text, font);
             if (Gap.HasValue)
             {
-                int sp = (int)(Gap.Value * Config.Dpi);
+                int sp = (int)(Gap.Value * g.Dpi);
                 return new Size(size.Width + sp * 2, size.Height + sp);
             }
             else if (PARENT.PARENT.GapCell.HasValue)
             {
-                int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
+                int sp = (int)(PARENT.PARENT.GapCell.Value * g.Dpi);
                 return new Size(size.Width + sp * 2, size.Height + sp);
             }
             else return new Size(size.Width + gap.x2, size.Height + gap.y);

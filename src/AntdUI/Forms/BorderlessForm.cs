@@ -307,7 +307,7 @@ namespace AntdUI
                 else
                 {
                     if (UseDwm && OS.Win11) return;
-                    using (var path = rect.RoundPath(radius * Config.Dpi))
+                    using (var path = rect.RoundPath(radius * Dpi))
                     {
                         var region = new Region(path);
                         path.Widen(Pens.White);

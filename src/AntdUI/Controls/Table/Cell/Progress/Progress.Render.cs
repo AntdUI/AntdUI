@@ -31,7 +31,7 @@ namespace AntdUI
             Color _color = Fill ?? Colour.Primary.Get(nameof(Progress), PARENT.PARENT.ColorScheme), _back = Back ?? Colour.FillSecondary.Get(nameof(Progress), PARENT.PARENT.ColorScheme);
             if (Shape == TShape.Circle)
             {
-                float w = Radius * Config.Dpi;
+                float w = Radius * g.Dpi;
                 g.DrawEllipse(_back, w, Rect);
                 if (Value > 0)
                 {
@@ -45,7 +45,7 @@ namespace AntdUI
             }
             else
             {
-                float radius = Radius * Config.Dpi;
+                float radius = Radius * g.Dpi;
                 if (Shape == TShape.Round) radius = Rect.Height;
 
                 using (var path = Rect.RoundPath(radius))
@@ -86,7 +86,7 @@ namespace AntdUI
 
         public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
-            if (Size.HasValue) return new Size((int)(Size.Value.Width * Config.Dpi), (int)(Size.Value.Height * Config.Dpi));
+            if (Size.HasValue) return new Size((int)(Size.Value.Width * g.Dpi), (int)(Size.Value.Height * g.Dpi));
             int height = g.MeasureString(Config.NullText, font).Height;
             if (Shape == TShape.Circle)
             {

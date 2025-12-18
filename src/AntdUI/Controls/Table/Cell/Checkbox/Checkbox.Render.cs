@@ -41,11 +41,12 @@ namespace AntdUI
         void PaintChecked(Canvas g, Rectangle rect, bool enabled, Rectangle icon_rect)
         {
             var ColorScheme = PARENT.PARENT.ColorScheme;
+            var Dpi = PARENT.PARENT.Dpi;
             float dot_size = icon_rect.Height;
             float radius = dot_size * .2F;
             using (var path = icon_rect.RoundPath(radius))
             {
-                var bor2 = 2F * Config.Dpi;
+                var bor2 = 2F * Dpi;
                 if (enabled)
                 {
                     var color = fill ?? Colour.Primary.Get(nameof(Checkbox), ColorScheme);
@@ -53,7 +54,7 @@ namespace AntdUI
                     {
                         float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
                         g.Fill(Helper.ToColor(alpha, color), path);
-                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Config.Dpi))
+                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
                         {
                             g.DrawLines(pen, icon_rect.CheckArrow());
                         }
@@ -70,7 +71,7 @@ namespace AntdUI
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Colour.BgBase.Get(nameof(Checkbox), ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(nameof(Checkbox), ColorScheme), 2.6F * Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
@@ -82,7 +83,7 @@ namespace AntdUI
                 else
                 {
                     g.Fill(Colour.FillQuaternary.Get(nameof(Checkbox), ColorScheme), path);
-                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), ColorScheme), 2.6F * Dpi, icon_rect.CheckArrow());
                     g.Draw(Colour.BorderColorDisable.Get(nameof(Checkbox), ColorScheme), bor2, path);
                 }
             }

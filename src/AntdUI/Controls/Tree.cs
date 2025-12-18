@@ -392,7 +392,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
-                    int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Config.Dpi) : icon_size, gap = (int)(_gap * Config.Dpi), gapI = gap / 2, height = icon_size + gap * 2;
+                    int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Dpi) : icon_size, gap = (int)(_gap * Dpi), gapI = gap / 2, height = icon_size + gap * 2;
                     check_radius = icon_size * .2F;
                     if (CheckStrictly && has && items![0].PARENT == null && items[0].ParentItem == null)
                     {
@@ -499,7 +499,7 @@ namespace AntdUI
             var g = e.Canvas;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get(nameof(Tree), ColorScheme)))
             using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get(nameof(Tree), ColorScheme)))
             using (var brush_hover = new SolidBrush(BackHover ?? Colour.FillSecondary.Get(nameof(Tree), ColorScheme)))
@@ -592,7 +592,7 @@ namespace AntdUI
             {
                 using (var path_check = Helper.RoundPath(item.check_rect, check_radius))
                 {
-                    var bor2 = 2F * Config.Dpi;
+                    var bor2 = 2F * Dpi;
                     if (item.Enabled)
                     {
                         if (item.AnimationCheck)
@@ -609,7 +609,7 @@ namespace AntdUI
                                 float dot = item.check_rect.Width * 0.3F;
 
                                 g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Tree), ColorScheme)), path_check);
-                                g.DrawLines(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Tree), ColorScheme)), 3F * Config.Dpi, PaintArrow(item.check_rect));
+                                g.DrawLines(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Tree), ColorScheme)), 3F * Dpi, PaintArrow(item.check_rect));
 
                                 if (item.Checked)
                                 {
@@ -619,7 +619,7 @@ namespace AntdUI
                                         g.FillEllipse(brush, new RectangleF(item.check_rect.X + (item.check_rect.Width - max) / 2F, item.check_rect.Y + (item.check_rect.Height - max) / 2F, max, max));
                                     }
                                 }
-                                g.Draw(Colour.Primary.Get(nameof(Tree), ColorScheme), 2F * Config.Dpi, path_check);
+                                g.Draw(Colour.Primary.Get(nameof(Tree), ColorScheme), 2F * Dpi, path_check);
                             }
                         }
                         else if (item.CheckState == CheckState.Indeterminate)
@@ -663,7 +663,7 @@ namespace AntdUI
                 if (item.ico_rect.Height > 0)
                 {
                     float loading_size = item.ico_rect.Height * .14F;
-                    var bor3 = 3F * Config.Dpi;
+                    var bor3 = 3F * Dpi;
                     g.DrawEllipse(Colour.Fill.Get(nameof(Tree)), bor3, item.ico_rect);
                     using (var pen = new Pen(color, loading_size))
                     {
@@ -1475,7 +1475,7 @@ namespace AntdUI
 
         public void Focus(TreeItem item, int gap = 0, bool force = false)
         {
-            if (ScrollBar.ShowY && (force || !item.show)) ScrollBar.ValueY = item.rect.Y - gap - (int)(_gap * Config.Dpi);
+            if (ScrollBar.ShowY && (force || !item.show)) ScrollBar.ValueY = item.rect.Y - gap - (int)(_gap * Dpi);
         }
 
         #endregion

@@ -711,7 +711,7 @@ namespace AntdUI
             else IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
             if (showDivider)
             {
-                int thickness = (int)(dividerthickness * Config.Dpi), margin = (int)(dividerMargin * Config.Dpi);
+                int thickness = (int)(dividerthickness * Dpi), margin = (int)(dividerMargin * Dpi);
                 using (var brush = dividerColor.Brush(Colour.Split.Get(nameof(PageHeader), ColorScheme)))
                 {
                     g.Fill(brush, new Rectangle(e.Rect.X + margin, e.Rect.Bottom - thickness, e.Rect.Width - margin * 2, thickness));
@@ -747,7 +747,7 @@ namespace AntdUI
                 rl += size_w;
                 if (SubText != null)
                 {
-                    int desc_t_w = size_w + (int)(subGap * Config.Dpi);
+                    int desc_t_w = size_w + (int)(subGap * Dpi);
                     using (var brushsub = new SolidBrush(foreSecondary))
                     {
                         if (UseSubCenter) g.DrawText(SubText, descFont ?? Font, brushsub, rect, stringCenter);
@@ -806,7 +806,7 @@ namespace AntdUI
         int IPaintS(Canvas g, Rectangle rect, Size size, float icon_ratio)
         {
             int u_x = 0, sHeight = size.Height;
-            int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
+            int _gap = (int)(gap.HasValue ? gap.Value * Dpi : sHeight * .6F);
             int icon_size = (int)Math.Round(sHeight * .72F);
             if (showback || AnimationBack)
             {
@@ -831,7 +831,7 @@ namespace AntdUI
         int IPaint(Canvas g, Rectangle rect, Color fore, Size size, float icon_ratio)
         {
             int u_x = 0, sHeight = size.Height;
-            int _gap = (int)(gap.HasValue ? gap.Value * Config.Dpi : sHeight * .6F);
+            int _gap = (int)(gap.HasValue ? gap.Value * Dpi : sHeight * .6F);
             int icon_size = (int)Math.Round(sHeight * .72F);
             if (showback || AnimationBack)
             {
@@ -1022,7 +1022,7 @@ namespace AntdUI
             int rr = 0;
             if (CloseSize > 0 && showButton)
             {
-                int btn_size = (fullBox || maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Config.Dpi) : (int)Math.Round((CloseSize - 8) * Config.Dpi);
+                int btn_size = (fullBox || maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Dpi) : (int)Math.Round((CloseSize - 8) * Dpi);
                 rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
                 rr = btn_size;
                 int left = rect_close.Left;

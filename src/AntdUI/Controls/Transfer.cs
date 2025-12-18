@@ -207,7 +207,7 @@ namespace AntdUI
             if (CanLayout())
             {
                 var rect = DisplayRectangle;
-                int buttonWidth = (int)(80 * Config.Dpi), buttonSize = (int)(36 * Config.Dpi), buttonGap = (int)(10 * Config.Dpi),
+                int buttonWidth = (int)(80 * Dpi), buttonSize = (int)(36 * Dpi), buttonGap = (int)(10 * Dpi),
                     buttonY = rect.Y + (rect.Height - (buttonSize * 2 + buttonGap)) / 2, buttonX = rect.X + (rect.Width - buttonSize) / 2,
                     panelWidth = (rect.Width - buttonWidth) / 2;
 
@@ -243,7 +243,7 @@ namespace AntdUI
                     useY += rh + gap2;
 
                     int listHeight = rect_source.Height - useY - gap2, lh;
-                    if (ItemHeight.HasValue) lh = (int)(ItemHeight.Value * Config.Dpi);
+                    if (ItemHeight.HasValue) lh = (int)(ItemHeight.Value * Dpi);
                     else lh = rh + gap2;
 
                     rect_source_com = new Rectangle(rect_source.X + gap, useY, rect_source.Width - gap2, listHeight);
@@ -303,7 +303,7 @@ namespace AntdUI
             Color borderColor = BorderColor ?? Colour.BorderColor.Get(nameof(Transfer), ColorScheme), foreColor = ForeColor ?? Colour.Text.Get(nameof(Transfer), ColorScheme), foreActive = ForeActive ?? Colour.Primary.Get(nameof(Transfer), ColorScheme);
 
             // 绘制面板边框和背景
-            using (var path = rect.RoundPath(PanelRadius * Config.Dpi))
+            using (var path = rect.RoundPath(PanelRadius * Dpi))
             {
                 using (var brush = new SolidBrush(Colour.FillQuaternary.Get(nameof(Transfer), ColorScheme)))
                 {
@@ -381,16 +381,16 @@ namespace AntdUI
                     if (selectAll)
                     {
                         g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
-                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Config.Dpi, rect_checkbox.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Dpi, rect_checkbox.CheckArrow());
                     }
-                    else g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Config.Dpi, path);
+                    else g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Dpi, path);
                 }
             }
 
             var state = g.Save();
             g.SetClip(rect_com);
             g.TranslateTransform(0, -scroll.ValueY);
-            float radius = ItemRadius * Config.Dpi;
+            float radius = ItemRadius * Dpi;
             foreach (var it in items)
             {
                 // 绘制项背景
@@ -418,9 +418,9 @@ namespace AntdUI
                     if (it.selected)
                     {
                         g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
-                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Config.Dpi, it.rect_check.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Dpi, it.rect_check.CheckArrow());
                     }
-                    else g.Draw(Colour.BorderColor.Get(nameof(Transfer), ColorScheme), 2F * Config.Dpi, path);
+                    else g.Draw(Colour.BorderColor.Get(nameof(Transfer), ColorScheme), 2F * Dpi, path);
                 }
 
                 // 绘制项文本
@@ -452,7 +452,7 @@ namespace AntdUI
 
         private void PaintOperationButton(Canvas g, Rectangle rect, string icon, ITaskOpacity hove, Color foreColor, Color backColor, Color backHover, Color backActive, Color backDisable)
         {
-            int gap = (int)(8 * Config.Dpi), gap2 = gap * 2;
+            int gap = (int)(8 * Dpi), gap2 = gap * 2;
             var iconRect = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - gap2, rect.Height - gap2);
             if (hove.Animation)
             {

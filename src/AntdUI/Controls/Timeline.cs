@@ -134,7 +134,7 @@ namespace AntdUI
                     var size_def = g.MeasureString(Config.NullText, Font);
                     int text_size = size_def.Height;
                     float pen_w = text_size * 0.136F, split = pen_w * 0.666F, split_gap = split * 2F;
-                    int gap = (int)Math.Round(8 * Config.Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * .846D), gap_y = (int)Math.Round((Gap * Config.Dpi) ?? (text_size * .91D)), ico_size = (int)Math.Round(text_size * .636D);
+                    int gap = (int)Math.Round(8 * Dpi), gap_x = (int)Math.Round(text_size * 1.1D), gap_x_icon = (int)Math.Round(text_size * .846D), gap_y = (int)Math.Round((Gap * Dpi) ?? (text_size * .91D)), ico_size = (int)Math.Round(text_size * .636D);
 
                     int max_w = rect.Width - ico_size - gap_x_icon - (gap_x * 2);
                     y += gap_x;

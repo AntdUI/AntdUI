@@ -165,7 +165,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get(nameof(Breadcrumb), ColorScheme)))
             using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get(nameof(Breadcrumb), ColorScheme)))
             {
@@ -252,7 +252,7 @@ namespace AntdUI
                 {
                     var hs = new List<Rectangle>(items!.Count);
                     var size_t = g.MeasureString(Config.NullText, Font);
-                    int sp = (int)(4 * Config.Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Config.Dpi);
+                    int sp = (int)(4 * Dpi), sp2 = sp * 2, imgsize = (int)(size_t.Height * .8F), h = size_t.Height + sp, y = rect.Y + (rect.Height - h) / 2, y_img = rect.Y + (rect.Height - imgsize) / 2, _gap = (int)(gap * Dpi);
                     int x = 0, tmpx = 0;
                     foreach (var it in items)
                     {

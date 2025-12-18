@@ -53,7 +53,7 @@ namespace AntdUI
             DPadding = control.DropDownPadding;
             IconRatio = control.DropIconRatio;
             IconGap = control.DropIconGap;
-            Radius = (int)(radius * Config.Dpi);
+            Radius = (int)(radius * Dpi);
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
             Items = LoadLayout(items, point);
@@ -340,7 +340,7 @@ namespace AntdUI
         }
         void PaintArrow(Canvas g, OMenuItem it, Color color)
         {
-            using (var pen = new Pen(color, Config.Dpi * 1.4F))
+            using (var pen = new Pen(color, Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
@@ -357,7 +357,7 @@ namespace AntdUI
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;
 
-            int sp = (int)Config.Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Config.Dpi), gap_y = (int)(DPadding.Height * Config.Dpi),
+            int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
             icon_size = (int)(text_height * IconRatio), icon_gap = (int)(text_height * IconGap), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
             gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
 

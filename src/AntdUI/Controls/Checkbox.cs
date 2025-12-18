@@ -264,7 +264,7 @@ namespace AntdUI
             if (right) icon_rect.X = rect.Width - icon_rect.X - icon_rect.Width;
             using (var path = icon_rect.RoundPath(radius))
             {
-                var bor2 = 2F * Config.Dpi;
+                var bor2 = 2F * Dpi;
                 if (enabled)
                 {
                     if ((hasFocus && Config.FocusBorderEnabled) && (rect.Height - icon_rect.Height) > bor2)
@@ -280,7 +280,7 @@ namespace AntdUI
                     {
                         float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
                         g.Fill(Helper.ToColor(alpha, color), path);
-                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Config.Dpi))
+                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
                         {
                             g.DrawLines(pen, icon_rect.CheckArrow());
                         }
@@ -297,7 +297,7 @@ namespace AntdUI
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Colour.BgBase.Get(nameof(Checkbox), ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(nameof(Checkbox), ColorScheme), 2.6F * Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
@@ -309,7 +309,7 @@ namespace AntdUI
                 else
                 {
                     g.Fill(Colour.FillQuaternary.Get(nameof(Checkbox), "bgDisabled", ColorScheme), path);
-                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), "foreDisabled", ColorScheme), 2.6F * Config.Dpi, icon_rect.CheckArrow());
+                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), "foreDisabled", ColorScheme), 2.6F * Dpi, icon_rect.CheckArrow());
                     g.Draw(Colour.BorderColorDisable.Get(nameof(Checkbox), "borderColorDisabled", ColorScheme), bor2, path);
                 }
             }

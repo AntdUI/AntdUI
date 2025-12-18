@@ -43,7 +43,7 @@ namespace AntdUI
         {
             var ColorScheme = PARENT.PARENT.ColorScheme;
             float dot_size = icon_rect.Height;
-            var bor2 = 2F * Config.Dpi;
+            var bor2 = 2F * g.Dpi;
             if (enabled)
             {
                 var color = fill ?? Colour.Primary.Get(nameof(Radio), ColorScheme);

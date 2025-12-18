@@ -102,6 +102,32 @@ namespace AntdUI
             return doc.Draw();
         }
 
+        /// <summary>
+        /// SVG转图片
+        /// </summary>
+        /// <param name="svg">代码</param>
+        /// <param name="g">绘制</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap? SvgToBmp(this string svg, Canvas g)
+        {
+            var doc = SvgDocument(svg);
+            if (doc == null) return null;
+            if (g.Dpi == 1F) return doc.Draw();
+            Svg.SvgUnitType tw = doc.Width.Type, th = doc.Height.Type;
+            if (tw == Svg.SvgUnitType.Percentage && th == Svg.SvgUnitType.Percentage)
+            {
+                var size = doc.Bounds;
+                doc.Width = size.Width * g.Dpi;
+                doc.Height = size.Height * g.Dpi;
+            }
+            else
+            {
+                doc.Width *= g.Dpi;
+                doc.Height *= g.Dpi;
+            }
+            return doc.Draw();
+        }
+
         static Svg.SvgDocument? SvgDocument(string svg)
         {
             if (svg.StartsWith("<svg")) return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);

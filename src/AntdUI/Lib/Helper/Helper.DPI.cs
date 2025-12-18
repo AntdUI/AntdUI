@@ -45,6 +45,11 @@ namespace AntdUI
             }
             if (control is Form form)
             {
+                if (form.AutoScaleMode == AutoScaleMode.Font)
+                {
+                    DpiLS(dpi, control.Controls);
+                    return;
+                }
                 if (form.WindowState == FormWindowState.Maximized)
                 {
                     form.Scale(new SizeF(dpi, dpi));

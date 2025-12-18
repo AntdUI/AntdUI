@@ -650,8 +650,8 @@ namespace AntdUI
 
         void PaintLoading(Canvas g, Rectangle rect, bool error = false)
         {
-            var bor6 = 6F * Config.Dpi;
-            int loading_size = (int)(40 * Config.Dpi);
+            var bor6 = 6F * Dpi;
+            int loading_size = (int)(40 * Dpi);
             var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
             Color color, bg;
             if (error)
@@ -743,9 +743,9 @@ namespace AntdUI
 
         void SizeChange(Rectangle rect)
         {
-            int btn_height = (int)(BtnSize.Height * Config.Dpi), lr_size = (int)(BtnLRSize * Config.Dpi), btn_width = (int)(BtnSize.Width * Config.Dpi),
-                padding = (int)(ContainerPadding * Config.Dpi), padding_lr = (int)(BtnPadding.Width * Config.Dpi), padding_buttom = (int)(BtnPadding.Height * Config.Dpi),
-                icon_size = (int)(BtnIconSize * Config.Dpi);
+            int btn_height = (int)(BtnSize.Height * Dpi), lr_size = (int)(BtnLRSize * Dpi), btn_width = (int)(BtnSize.Width * Dpi),
+                padding = (int)(ContainerPadding * Dpi), padding_lr = (int)(BtnPadding.Width * Dpi), padding_buttom = (int)(BtnPadding.Height * Dpi),
+                icon_size = (int)(BtnIconSize * Dpi);
 
             if (PageSize > 1)
             {

@@ -612,8 +612,8 @@ namespace AntdUI
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio);
-                    int gap = (_gap.HasValue ? (int)(_gap.Value * Config.Dpi) : (int)(size.Height * .8F)), gap2 = gap * 2, divider = (int)Config.Dpi, sp = (_itemMargin.HasValue ? (int)(_itemMargin.Value * Config.Dpi) : (int)(size.Height * .2F)), sp2 = sp * 2, height = size.Height + gap2;
-                    int inlineIndent = (_inlineIndent.HasValue ? (int)(_inlineIndent.Value * Config.Dpi) : (int)(size.Height * 1.2F)), iconsp = (icongap.HasValue ? (int)(icongap.Value * Config.Dpi) : size.Height / 2);
+                    int gap = (_gap.HasValue ? (int)(_gap.Value * Dpi) : (int)(size.Height * .8F)), gap2 = gap * 2, divider = (int)Dpi, sp = (_itemMargin.HasValue ? (int)(_itemMargin.Value * Dpi) : (int)(size.Height * .2F)), sp2 = sp * 2, height = size.Height + gap2;
+                    int inlineIndent = (_inlineIndent.HasValue ? (int)(_inlineIndent.Value * Dpi) : (int)(size.Height * 1.2F)), iconsp = (icongap.HasValue ? (int)(icongap.Value * Dpi) : size.Height / 2);
                     if (mode == TMenuMode.Horizontal)
                     {
                         ChangeListHorizontal(rect, g, items!, ref x, icon_size, gap, gap2, divider, sp, sp2, iconsp);
@@ -865,7 +865,7 @@ namespace AntdUI
                 back_hover = BackHover ?? Colour.FillSecondary.Get(nameof(Menu), ColorScheme);
                 back_active = BackActive ?? Colour.PrimaryBg.Get(nameof(Menu), ColorScheme);
             }
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get(nameof(Menu), ColorScheme)))
             using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(Menu), ColorScheme)))
             {
@@ -1051,7 +1051,7 @@ namespace AntdUI
                     if (it.CanExpand)
                     {
                         if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
-                        using (var pen = new Pen(fore_active, Config.Dpi * 2))
+                        using (var pen = new Pen(fore_active, Dpi * 2))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                             g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
@@ -1061,7 +1061,7 @@ namespace AntdUI
                 }
                 else if (it.CanExpand)
                 {
-                    using (var pen = new Pen(fore_enabled, Config.Dpi * 2))
+                    using (var pen = new Pen(fore_enabled, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
@@ -1090,7 +1090,7 @@ namespace AntdUI
                     g.Fill(fore, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height - fh) / 2, fw, fh));
                     break;
                 case TFocusMode.Border:
-                    float wave = 2 * Config.Dpi, wave2 = wave * 2, r = radius + wave;
+                    float wave = 2 * Dpi, wave2 = wave * 2, r = radius + wave;
                     var rect_focus = new RectangleF(it.rect.X - wave, it.rect.Y - wave, it.rect.Width + wave2, it.rect.Height + wave2);
                     using (var path_focus = rect_focus.RoundPath(r))
                     {
@@ -1105,7 +1105,7 @@ namespace AntdUI
             {
                 if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText)
                 {
-                    using (var pen = new Pen(fore, Config.Dpi * 2))
+                    using (var pen = new Pen(fore, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
@@ -1113,7 +1113,7 @@ namespace AntdUI
                 }
                 else if (mode == TMenuMode.Vertical)
                 {
-                    using (var pen = new Pen(fore, Config.Dpi * 2))
+                    using (var pen = new Pen(fore, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.arr_rect, .4F));

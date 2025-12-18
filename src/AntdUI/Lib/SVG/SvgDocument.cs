@@ -52,11 +52,6 @@ namespace AntdUI.Svg
         }
 
         /// <summary>
-        /// Gets or sets the Pixels Per Inch of the rendered image.
-        /// </summary>
-        public static int Ppi { get => (int)(Config.Dpi * 96); }
-
-        /// <summary>
         /// Retrieves the <see cref="SvgElement"/> with the specified ID.
         /// </summary>
         /// <param name="id">A <see cref="string"/> containing the ID of the element to find.</param>

@@ -275,6 +275,12 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
+            if (m.Msg == 0x02E0)
+            {
+                // 低字节是水平DPI，高字节是垂直DPI
+                int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
+                InitDpi(dpiX);
+            }
             if (UFocus && m.Msg == 0x21)
             {
                 m.Result = new IntPtr(3);
@@ -341,6 +347,26 @@ namespace AntdUI
         /// </summary>
         [Description("鼠标离开关闭"), Category("行为"), DefaultValue(false)]
         public virtual bool MessageCloseMouseLeave { get; set; }
+
+        #endregion
+
+        #region DPI
+
+        public float Dpi { get; private set; }
+
+        void InitDpi(int? dpi = null)
+        {
+            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
+            else if (dpi.HasValue) Dpi = dpi.Value / 96F;
+            else
+            {
+#if NET40 || NET46
+                Dpi = Dpi;
+#else
+                Dpi = DeviceDpi / 96F;
+#endif
+            }
+        }
 
         #endregion
 
@@ -526,7 +552,7 @@ namespace AntdUI
         {
             if (mdown)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Config.Dpi);
+                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Dpi);
                 if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
                 {
                     oldMY = moveY;

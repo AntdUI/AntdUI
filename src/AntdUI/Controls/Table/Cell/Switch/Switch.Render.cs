@@ -41,7 +41,7 @@ namespace AntdUI
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
                     else if (ExtraMouseHover) g.Fill(brush, path);
                 }
-                int gap = (int)(2 * Config.Dpi), gap2 = gap * 2;
+                int gap = (int)(2 * g.Dpi), gap2 = gap * 2;
                 if (AnimationCheck)
                 {
                     var alpha = 255 * AnimationCheckValue;

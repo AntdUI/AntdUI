@@ -40,14 +40,14 @@ namespace AntdUI
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
-            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
+            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight);
             IPaint(g, rect, rect_read);
             base.OnDraw(e);
         }
 
         internal void IPaint(Canvas g, Rectangle rect, Rectangle rect_read)
         {
-            float _radius = round ? rect_read.Height : radius * Config.Dpi;
+            float _radius = round ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
             using (var path = Path(rect_read, _radius))
             {
@@ -90,7 +90,7 @@ namespace AntdUI
                     PaintScroll(g, rect_read, _radius);
                     if (borderWidth > 0)
                     {
-                        var borWidth = borderWidth * Config.Dpi;
+                        var borWidth = borderWidth * Dpi;
                         if (Variant == TVariant.Underlined)
                         {
                             if (AnimationHover) g.DrawLine(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, rect_read.X, rect_read.Bottom, rect_read.Right, rect_read.Bottom);
@@ -117,7 +117,7 @@ namespace AntdUI
                     PaintText(g, fore, rect_read.Right, rect_read.Bottom);
                     PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                     PaintScroll(g, rect_read, _radius);
-                    if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
+                    if (borderWidth > 0) g.Draw(_border, borderWidth * Dpi, path);
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace AntdUI
         {
             if (autoscroll && (ScrollY.Show || ScrollX.Show))
             {
-                int SIZE = (int)(16 * Config.Dpi), SIZE_BAR = (int)(6 * Config.Dpi), SIZE_MINIY = (int)(Config.ScrollMinSizeY * Config.Dpi);
+                int SIZE = (int)(16 * Dpi), SIZE_BAR = (int)(6 * Dpi), SIZE_MINIY = (int)(Config.ScrollMinSizeY * Dpi);
                 var bg = Colour.TextBase.Get(nameof(Input), ColorScheme);
                 if (ScrollX.Show)
                 {
@@ -469,14 +469,14 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight);
 
         public override GraphicsPath RenderRegion
         {
             get
             {
                 var rect_read = ReadRectangle;
-                float _radius = round ? rect_read.Height : radius * Config.Dpi;
+                float _radius = round ? rect_read.Height : radius * Dpi;
                 return Path(rect_read, _radius);
             }
         }

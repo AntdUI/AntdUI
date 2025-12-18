@@ -279,7 +279,7 @@ namespace AntdUI
                 var rect = ClientRectangle.DeflateRect(Padding);
                 Helper.GDI(g =>
                 {
-                    int gap = (int)(Gap * Config.Dpi), split = (!milestoneMode ? 1 : milestoneTimelineThickness) * (int)Config.Dpi;
+                    int gap = (int)(Gap * Dpi), split = (!milestoneMode ? 1 : milestoneTimelineThickness) * (int)Dpi;
                     var _splits = new List<RectangleF>(items!.Count);
                     using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
                     {
@@ -292,7 +292,7 @@ namespace AntdUI
                         }
                         if (vertical)
                         {
-                            if (milestoneMode) rect.X += (int)(milestoneTimelineThickness * Config.Dpi);
+                            if (milestoneMode) rect.X += (int)(milestoneTimelineThickness * Dpi);
                             int t_height_one = rect.Height / count, iod = 0;
                             foreach (var it in items)
                             {
@@ -555,7 +555,7 @@ namespace AntdUI
                             rect.Inflate(space, space);
                             if (it.BackColor != null) brush_primary.Color = it.BackColor.Value;
                             g.FillEllipse(i > current ? brush_primarybg : brush_primary, rect);
-                            float sizeF = 8F * Config.Dpi;
+                            float sizeF = 8F * Dpi;
                             rect.Inflate((int)sizeF, (int)sizeF);
                             if (i == current)
                             {

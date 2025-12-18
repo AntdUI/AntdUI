@@ -496,7 +496,7 @@ namespace AntdUI
             var g = e.Canvas;
             int len = items.Count;
             var image = items[selectIndex].Img;
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             if (image != null)
             {
                 if (AnimationChange)

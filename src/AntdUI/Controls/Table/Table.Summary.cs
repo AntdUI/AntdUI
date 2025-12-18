@@ -67,12 +67,12 @@ namespace AntdUI
         }
         ContextMenuStripItem GetMenu(TSummaryType value, string key, string id, string svg) => new ContextMenuStripItem().SetText(key, "Table.Summary." + id).SetSubText(id).SetIcon(svg).SetTag(value);
         private Form? FMenuStrip;
-        public bool SummaryRowFocused { get; private set; }
+        public bool SummaryRowFocused => FMenuStrip != null;
         private void Summary_RClick(CELLDB cell)
         {
+            FMenuStrip?.Dispose();
             var colSummary = cell.col;
             if (colSummary.SummaryItem == null) colSummary.SummaryItem = new SummaryItemOption(TSummaryType.None);
-            FMenuStrip?.Dispose();
             FMenuStrip = new ContextMenuStrip.Config(this, item =>
             {
                 FMenuStrip = null;
@@ -81,7 +81,7 @@ namespace AntdUI
                     colSummary.SummaryItem.SummaryType = summaryType;
                     UpdateSummaries();
                 }
-            }, InitSummaryMenu(colSummary.SummaryItem.SummaryType)).SetFont(Font).SetAlign(TAlign.Top).open();
+            }, InitSummaryMenu(colSummary.SummaryItem.SummaryType)).SetFont(Font).SetAlign(TAlign.Top).SetRatio(0.7F).SetClose(() => FMenuStrip = null).open();
         }
         /// <summary>
         /// 已启用汇总的列

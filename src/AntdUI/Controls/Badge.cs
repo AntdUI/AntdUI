@@ -214,14 +214,14 @@ namespace AntdUI
                     if (state == TState.Processing)
                     {
                         float max = size.Height * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
-                        g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF((rect.Width - max) / 2F, (rect.Height - max) / 2F, max, max));
+                        g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Dpi, new RectangleF((rect.Width - max) / 2F, (rect.Height - max) / 2F, max, max));
                     }
                 }
             }
             else
             {
                 var size = g.MeasureText(Text, Font);
-                int dot_size = (int)(size.Height * dotratio), _gap = (int)(gap * Config.Dpi);
+                int dot_size = (int)(size.Height * dotratio), _gap = (int)(gap * Dpi);
                 using (var brush = new SolidBrush(GetColor(fill, state)))
                 {
                     var rect_dot = new RectangleF(rect.X + (size.Height - dot_size) / 2, rect.Y + (rect.Height - dot_size) / 2, dot_size, dot_size);
@@ -229,7 +229,7 @@ namespace AntdUI
                     if (state == TState.Processing)
                     {
                         float max = size.Height * AnimationStateValue, alpha = 255 * (1F - AnimationStateValue);
-                        g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Config.Dpi, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
+                        g.DrawEllipse(Helper.ToColor(alpha, brush.Color), 4F * Dpi, new RectangleF(rect_dot.X + (rect_dot.Width - max) / 2F, rect_dot.Y + (rect_dot.Height - max) / 2F, max, max));
                     }
                 }
                 using (var brush = fore.Brush(Colour.Text.Get(nameof(AntdUI.Badge), ColorScheme), Colour.TextQuaternary.Get(nameof(AntdUI.Badge), "foreDisabled", ColorScheme), Enabled))

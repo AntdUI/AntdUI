@@ -30,6 +30,8 @@ namespace AntdUI.Core
         public CanvasGDI(Graphics gdi)
         {
             g = gdi;
+            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
+            else Dpi = gdi.DpiX / 96F;
         }
 
         #region MeasureString
@@ -1450,6 +1452,12 @@ namespace AntdUI.Core
         }
         public RectangleF RegionBounds(Region region) => region.GetBounds(g);
         public void Dispose() => g.Dispose();
+
+        #endregion
+
+        #region DPI
+
+        public float Dpi { get; private set; }
 
         #endregion
     }

@@ -1072,7 +1072,7 @@ namespace AntdUI
         {
             if (badegConfig.BadgeSvg != null)
             {
-                int hasx = (int)(badegConfig.BadgeOffsetX * Config.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * Config.Dpi);
+                int hasx = (int)(badegConfig.BadgeOffsetX * g.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * g.Dpi);
                 using (var font = new Font(Font.FontFamily, Font.Size * badegConfig.BadgeSize))
                 {
                     var size_badge = g.MeasureString(Config.NullText, font).Height;
@@ -1085,11 +1085,11 @@ namespace AntdUI
                 Color color = badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme),
                     borcolor = badegConfig.BadgeBorderColor ?? Colour.ErrorColor.Get(nameof(Badge), colorScheme);
                 var rect = Rect;
-                float borsize = Config.Dpi;
-                if (badegConfig.BadgeBorderWidth.HasValue) borsize = badegConfig.BadgeBorderWidth.Value * Config.Dpi;
+                float borsize = g.Dpi;
+                if (badegConfig.BadgeBorderWidth.HasValue) borsize = badegConfig.BadgeBorderWidth.Value * g.Dpi;
                 using (var font = new Font(Font.FontFamily, Font.Size * badegConfig.BadgeSize))
                 {
-                    int hasx = (int)(badegConfig.BadgeOffsetX * Config.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * Config.Dpi);
+                    int hasx = (int)(badegConfig.BadgeOffsetX * g.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * g.Dpi);
                     if (string.IsNullOrWhiteSpace(badegConfig.Badge))
                     {
                         var size = g.MeasureString(Config.NullText, font).Height / 2;
@@ -1116,7 +1116,7 @@ namespace AntdUI
                     else
                     {
                         Color fore = badegConfig.BadgeFore ?? Colour.ErrorColor.Get(nameof(Badge), colorScheme);
-                        var size = g.MeasureString(badegConfig.Badge, font).Size(4, 2);
+                        var size = g.MeasureString(badegConfig.Badge, font).Size(g, 4, 2);
                         int size_badge = (int)(size.Height * 1.2F);
                         if (size.Height > size.Width)
                         {
@@ -1144,10 +1144,10 @@ namespace AntdUI
         public static void PaintBadge(this IControl control, DateBadge badge, Rectangle rect, Canvas g)
         {
             var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get(nameof(Badge), control.ColorScheme);
-            float borsize = Config.Dpi;
+            float Dpi = control.Dpi, borsize = Dpi;
             using (var font = new Font(control.Font.FontFamily, control.Font.Size * badge.Size))
             {
-                int hasx = (int)(badge.OffsetX * Config.Dpi), hasy = (int)(badge.OffsetY * Config.Dpi);
+                int hasx = (int)(badge.OffsetX * Dpi), hasy = (int)(badge.OffsetY * Dpi);
                 if (string.IsNullOrWhiteSpace(badge.Content))
                 {
                     var size_badge = g.MeasureString(Config.NullText, font).Height / 2;
@@ -1157,7 +1157,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    var size = g.MeasureString(badge.Content, font).Size(4, 2);
+                    var size = g.MeasureString(badge.Content, font).Size(g, 4, 2);
                     int size_badge = (int)(size.Height * 1.2F);
                     if (size.Height > size.Width)
                     {
@@ -1206,7 +1206,7 @@ namespace AntdUI
 
         public static void PaintShadow(this Canvas g, ShadowConfig config, Rectangle _rect, Rectangle rect, float radius, bool round)
         {
-            int shadow = (int)(config.Shadow * Config.Dpi), shadowOffsetX = (int)(config.ShadowOffsetX * Config.Dpi), shadowOffsetY = (int)(config.ShadowOffsetY * Config.Dpi);
+            int shadow = (int)(config.Shadow * g.Dpi), shadowOffsetX = (int)(config.ShadowOffsetX * g.Dpi), shadowOffsetY = (int)(config.ShadowOffsetY * g.Dpi);
             using (var bmp_shadow = new Bitmap(_rect.Width, _rect.Height))
             {
                 using (var g_shadow = Graphics.FromImage(bmp_shadow))
@@ -1253,7 +1253,7 @@ namespace AntdUI
                 var bmp = image ?? Config.EmptyImage;
                 if (bmp != null)
                 {
-                    int gap = (int)(8 * Config.Dpi);
+                    int gap = (int)(8 * g.Dpi);
                     var size = g.MeasureString(emptytext, font);
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - bmp.Width) / 2, rect.Y + (rect.Height - bmp.Height) / 2 - size.Height, bmp.Width, bmp.Height), rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.Image(bmp, rect_img);
@@ -1262,7 +1262,7 @@ namespace AntdUI
                 else if (Config.EmptyImageSvg != null)
                 {
                     var size = g.MeasureString(emptytext, font);
-                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+                    int gap = (int)(8 * g.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
 
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
@@ -1294,7 +1294,7 @@ namespace AntdUI
                 var bmp = image ?? Config.EmptyImage;
                 if (bmp != null)
                 {
-                    int gap = (int)(8 * Config.Dpi);
+                    int gap = (int)(8 * g.Dpi);
                     var size = g.MeasureString(emptytext, font);
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - bmp.Width) / 2, rect.Y + (rect.Height - bmp.Height) / 2 - size.Height, bmp.Width, bmp.Height), rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
                     g.Image(bmp, rect_img);
@@ -1303,7 +1303,7 @@ namespace AntdUI
                 else if (Config.EmptyImageSvg != null)
                 {
                     var size = g.MeasureString(emptytext, font);
-                    int gap = (int)(8 * Config.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
+                    int gap = (int)(8 * g.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
 
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);

@@ -267,7 +267,7 @@ namespace AntdUI
             if (hover_button.Animation || hover_button.Switch)
             {
                 float radius = round ? rect_read.Height / 2F : _radius;
-                int width = (int)(22 * Config.Dpi);
+                int width = (int)(22 * Dpi);
                 rect_button = new Rectangle(rect_read.Right - width, rect_read.Y, width, rect_read.Height);
                 rect_button_up = new Rectangle(rect_button.X, rect_button.Y, rect_button.Width, rect_button.Height / 2);
                 rect_button_bottom = new Rectangle(rect_button.X, rect_button_up.Bottom, rect_button.Width, rect_button_up.Height);
@@ -280,7 +280,7 @@ namespace AntdUI
                 }
                 if (hover_button.Animation)
                 {
-                    using (var pen = new Pen(Helper.ToColor(hover_button.Value, borColor), Config.Dpi))
+                    using (var pen = new Pen(Helper.ToColor(hover_button.Value, borColor), Dpi))
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
@@ -294,7 +294,7 @@ namespace AntdUI
                 }
                 else if (hover_button.Switch)
                 {
-                    using (var pen = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor, Dpi))
                     {
                         using (var path = rect_button_up.RoundPath(radius, false, true, false, false))
                         {
@@ -309,21 +309,21 @@ namespace AntdUI
 
                 if (hover_button_up.Animation)
                 {
-                    using (var pen = new Pen(borColor.BlendColors(hover_button_up.Value, borderActive), Config.Dpi))
+                    using (var pen = new Pen(borColor.BlendColors(hover_button_up.Value, borderActive), Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
                 }
                 else if (hover_button_up.Switch)
                 {
-                    using (var pen = new Pen(borderActive, Config.Dpi))
+                    using (var pen = new Pen(borderActive, Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
                 }
                 else
                 {
-                    using (var pen = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor, Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Top.TriangleLines(rect_button_up));
                     }
@@ -331,21 +331,21 @@ namespace AntdUI
 
                 if (hover_button_bottom.Animation)
                 {
-                    using (var pen = new Pen(borColor.BlendColors(hover_button_bottom.Value, borderActive), Config.Dpi))
+                    using (var pen = new Pen(borColor.BlendColors(hover_button_bottom.Value, borderActive), Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
                 }
                 else if (hover_button_bottom.Switch)
                 {
-                    using (var pen = new Pen(borderActive, Config.Dpi))
+                    using (var pen = new Pen(borderActive, Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
                 }
                 else
                 {
-                    using (var pen = new Pen(borColor, Config.Dpi))
+                    using (var pen = new Pen(borColor, Dpi))
                     {
                         g.DrawLines(pen, TAlignMini.Bottom.TriangleLines(rect_button_bottom));
                     }
@@ -368,7 +368,7 @@ namespace AntdUI
                 if (hover_button.Switch)
                 {
                     if (rect_button.Width > 0) UR = rect_button.Width;
-                    else UR = (int)(22 * Config.Dpi);
+                    else UR = (int)(22 * Dpi);
                 }
                 else UR = 0;
                 CalculateRect();

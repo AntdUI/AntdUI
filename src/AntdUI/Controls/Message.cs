@@ -591,7 +591,7 @@ namespace AntdUI
             Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Target.SetTopMost(Handle);
-            shadow_size = (int)(shadow_size * Config.Dpi);
+            shadow_size = (int)(shadow_size * Dpi);
             loading = _config.Call != null;
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
@@ -719,7 +719,7 @@ namespace AntdUI
                 }
                 if (loading)
                 {
-                    var bor3 = 3F * Config.Dpi;
+                    var bor3 = 3F * Dpi;
                     g.DrawEllipse(Colour.Fill.Get(nameof(Message)), bor3, rect_loading);
                     if (AnimationLoadingValue > -1)
                     {
@@ -749,7 +749,7 @@ namespace AntdUI
         /// <param name="rect_read">真实区域</param>
         GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
         {
-            var path = rect_read.RoundPath((int)(config.Radius * Config.Dpi));
+            var path = rect_read.RoundPath((int)(config.Radius * Dpi));
             if (Config.ShadowEnabled)
             {
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
@@ -766,7 +766,7 @@ namespace AntdUI
         Size RenderMeasure(Canvas g, int shadow)
         {
             int shadow2 = shadow * 2;
-            float dpi = Config.Dpi;
+            float dpi = Dpi;
             var size = g.MeasureText(config.Text, Font, 10000, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)

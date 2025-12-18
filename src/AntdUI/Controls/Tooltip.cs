@@ -298,14 +298,14 @@ namespace AntdUI
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
             else
             {
                 var align = ArrowAlign;
-                new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -329,7 +329,7 @@ namespace AntdUI
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(control, TargetRect, Radius, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
         }
@@ -348,7 +348,7 @@ namespace AntdUI
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Config.Dpi), out int x, out int y, out arrowX);
+            new CalculateCoordinate(this, ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
             if (Print() == RenderResult.OK) return false;
@@ -538,14 +538,14 @@ namespace AntdUI
         public static Size RenderMeasure(this ITooltip core, Canvas g, int? maxWidth, out bool multiline, out int gap, out int arrowSize)
         {
             multiline = core.Text.Contains("\n");
-            gap = (int)(3 * Config.Dpi);
-            int gap2 = gap * 2, paddingy = (int)(6 * Config.Dpi) * 2 + gap2, paddingx = (int)(8 * Config.Dpi) * 2 + gap2;
+            gap = (int)(3 * g.Dpi);
+            int gap2 = gap * 2, paddingy = (int)(6 * g.Dpi) * 2 + gap2, paddingx = (int)(8 * g.Dpi) * 2 + gap2;
             var font_size = g.MeasureText(core.Text, core.Font);
-            if (core.ArrowSize.HasValue) arrowSize = (int)(core.ArrowSize * Config.Dpi);
+            if (core.ArrowSize.HasValue) arrowSize = (int)(core.ArrowSize * g.Dpi);
             else arrowSize = (int)(g.MeasureText(Config.NullText, core.Font).Height * 0.3F);
             if (core.CustomWidth.HasValue)
             {
-                int width = (int)Math.Ceiling(core.CustomWidth.Value * Config.Dpi);
+                int width = (int)Math.Ceiling(core.CustomWidth.Value * g.Dpi);
                 if (font_size.Width > width)
                 {
                     font_size = g.MeasureText(core.Text, core.Font, width);
@@ -579,8 +579,8 @@ namespace AntdUI
 
         public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, int arrowSize, int arrowX, FormatFlags s_c, FormatFlags s_l)
         {
-            int gap = (int)(3 * Config.Dpi), paddingy = (int)(6 * Config.Dpi), paddingx = (int)(8 * Config.Dpi), gap2 = gap * 2, paddingy2 = paddingy * 2, paddingx2 = paddingx * 2;
-            int radius = (int)(core.Radius * Config.Dpi);
+            int gap = (int)(3 * g.Dpi), paddingy = (int)(6 * g.Dpi), paddingx = (int)(8 * g.Dpi), gap2 = gap * 2, paddingy2 = paddingy * 2, paddingx2 = paddingx * 2;
+            int radius = (int)(core.Radius * g.Dpi);
             using (var brush = new SolidBrush(core.Back ?? (Config.Mode == TMode.Dark ? Color.FromArgb(66, 66, 66) : Color.FromArgb(38, 38, 38))))
             {
                 if (core.ArrowAlign == TAlign.None)

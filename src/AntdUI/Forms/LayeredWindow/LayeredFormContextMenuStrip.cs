@@ -152,9 +152,10 @@ namespace AntdUI
         }
 
         ScrollBar ScrollBar;
-
+        bool issub = false;
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config, LayeredFormContextMenuStrip parent, Point point, IContextMenuStripItem[] subs) : base(250)
         {
+            issub = true;
             PARENT = parent;
             config = _config;
             Font = parent.Font;
@@ -217,13 +218,12 @@ namespace AntdUI
         {
             return Helper.GDI(g =>
             {
-                var dpi = Config.Dpi;
-                Radius = (int)(config.Radius * dpi);
+                Radius = (int)(config.Radius * Dpi);
 
                 var list = new List<InRect>(Items.Length);
                 int text_height = g.MeasureString(Config.NullText, Font).Height;
 
-                int split = (int)Math.Round(1 * dpi), gap = (int)(text_height * config.Gap), icon_size = (int)(text_height * config.IconRatio), icon_gap = (int)(text_height * config.IconGap);
+                int split = (int)Math.Round(1 * Dpi), gap = (int)(text_height * config.Gap), icon_size = (int)(text_height * config.IconRatio), icon_gap = (int)(text_height * config.IconGap);
                 int check_size = (int)(text_height * config.CheckRatio), gap_y = (int)(text_height * config.PaddRatio[1]), gap_x = (int)(text_height * config.PaddRatio[0]), gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
                 int item_height = text_height + gap_y2, icon_xy = (item_height - icon_size) / 2, check_xy = (item_height - check_size) / 2;
 
@@ -323,6 +323,7 @@ namespace AntdUI
             FontSub?.Dispose();
             subForm?.IClose();
             subForm = null;
+            if (!issub) config.OnClose?.Invoke();
             base.Dispose(disposing);
         }
 
@@ -371,7 +372,7 @@ namespace AntdUI
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
-                                using (var pen = new Pen(Colour.TextSecondary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 2F * Config.Dpi))
+                                using (var pen = new Pen(Colour.TextSecondary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 2F * Dpi))
                                 {
                                     pen.StartCap = pen.EndCap = LineCap.Round;
                                     g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -379,7 +380,7 @@ namespace AntdUI
                             }
                             if (item.Checked)
                             {
-                                using (var pen = new Pen(Colour.Primary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 3F * Config.Dpi))
+                                using (var pen = new Pen(Colour.Primary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 3F * Dpi))
                                 {
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }
@@ -400,7 +401,7 @@ namespace AntdUI
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
-                                using (var pen = new Pen(Colour.TextQuaternary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 2F * Config.Dpi))
+                                using (var pen = new Pen(Colour.TextQuaternary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 2F * Dpi))
                                 {
                                     pen.StartCap = pen.EndCap = LineCap.Round;
                                     g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -408,7 +409,7 @@ namespace AntdUI
                             }
                             if (item.Checked)
                             {
-                                using (var pen = new Pen(Colour.Primary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 3F * Config.Dpi))
+                                using (var pen = new Pen(Colour.Primary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 3F * Dpi))
                                 {
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }

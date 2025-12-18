@@ -448,7 +448,7 @@ namespace AntdUI
             var rect = e.Rect.PaddingRect(Padding);
             var g = e.Canvas;
             var rect_read = ReadRectangle;
-            float _radius = round ? rect_read.Height : radius * Config.Dpi;
+            float _radius = round ? rect_read.Height : radius * Dpi;
             using (var path = Path(rect_read, _radius))
             {
                 Color _fore = fore ?? Colour.Text.Get(nameof(ColorPicker), ColorScheme), _back = back ?? Colour.BgContainer.Get(nameof(ColorPicker), ColorScheme),
@@ -461,7 +461,7 @@ namespace AntdUI
                 {
                     if ((hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
                     {
-                        float wave = (WaveSize * Config.Dpi / 2), wave2 = wave * 2;
+                        float wave = (WaveSize * Dpi / 2), wave2 = wave * 2;
                         using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(_radius + wave))
                         {
                             g.Draw(Colour.PrimaryBorder.Get(nameof(ColorPicker), ColorScheme), wave, path_focus);
@@ -470,7 +470,7 @@ namespace AntdUI
                     g.Fill(_back, path);
                     if (borderWidth > 0)
                     {
-                        var borWidth = borderWidth * Config.Dpi;
+                        var borWidth = borderWidth * Dpi;
                         if (AnimationHover) g.Draw(_border.BlendColors(AnimationHoverValue, _borderHover), borWidth, path);
                         else if (ExtraMouseDown) g.Draw(_borderActive, borWidth, path);
                         else if (ExtraMouseHover) g.Draw(_borderHover, borWidth, path);
@@ -481,7 +481,7 @@ namespace AntdUI
                 {
                     _fore = Colour.TextQuaternary.Get(nameof(ColorPicker), "foreDisabled", ColorScheme);
                     g.Fill(Colour.FillTertiary.Get(nameof(ColorPicker), "bgDisabled", ColorScheme), path);
-                    if (borderWidth > 0) g.Draw(_border, borderWidth * Config.Dpi, path);
+                    if (borderWidth > 0) g.Draw(_border, borderWidth * Dpi, path);
                 }
                 var r = _radius * .75F;
                 if (showText)
@@ -546,7 +546,7 @@ namespace AntdUI
                         g.DrawLine(pen, new PointF(rect_color.X, rect_color.Bottom), new PointF(rect_color.Right, rect_color.Y));
                     }
                     g.ResetClip();
-                    g.Draw(Colour.Split.Get(nameof(ColorPicker), ColorScheme), Config.Dpi, path);
+                    g.Draw(Colour.Split.Get(nameof(ColorPicker), ColorScheme), Dpi, path);
                 }
                 else
                 {
@@ -655,14 +655,14 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, joinLeft, joinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, joinLeft, joinRight);
 
         public override GraphicsPath RenderRegion
         {
             get
             {
                 var rect_read = ReadRectangle;
-                float _radius = round ? rect_read.Height : radius * Config.Dpi;
+                float _radius = round ? rect_read.Height : radius * Dpi;
                 return Path(rect_read, _radius);
             }
         }
@@ -924,7 +924,7 @@ namespace AntdUI
                         else font_size = g.MeasureString("Transparent", Font);
                     }
                     else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font);
-                    int gap = (int)(font_size.Height * 1.02F) + (int)(WaveSize * Config.Dpi);
+                    int gap = (int)(font_size.Height * 1.02F) + (int)(WaveSize * Dpi);
                     if (showText)
                     {
                         int s = font_size.Height + gap;

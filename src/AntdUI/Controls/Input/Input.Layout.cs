@@ -45,7 +45,7 @@ namespace AntdUI
             {
                 return Helper.GDI(g =>
                 {
-                    float dpi = Config.Dpi;
+                    float dpi = Dpi;
                     int font_height = g.MeasureString(Config.NullText, Font).Height, rdcount = 0;
                     if (isempty)
                     {
@@ -237,7 +237,7 @@ namespace AntdUI
         internal int UR = 0;
         internal bool CalculateRect()
         {
-            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Config.Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
+            var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
             rect.Width -= UR;
             RectAuto(rect, sps, sps2);
@@ -264,8 +264,8 @@ namespace AntdUI
                 if (multiline)
                 {
                     var rectText = rect_text;
-                    if (ScrollY.Show) rectText.Width -= (int)(16 * Config.Dpi);
-                    int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
+                    if (ScrollY.Show) rectText.Width -= (int)(16 * Dpi);
+                    int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Dpi) : 0);
                     int usex = 0, usey = 0, line = 0;
                     foreach (var it in cache_font)
                     {

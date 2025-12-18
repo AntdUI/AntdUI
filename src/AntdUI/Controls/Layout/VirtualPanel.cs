@@ -458,8 +458,8 @@ namespace AntdUI
             var rect = _rect.PaddingRect(Padding);
             var val = Helper.GDI(g =>
             {
-                int gap = (int)Math.Round(Gap * Config.Dpi), use_x = rect.X, use_y = rect.Y + gap, last_len = 0, max_height = 0;
-                int shadow = (int)(Shadow * Config.Dpi), shadow2 = shadow * 2, r = (int)(radius * Config.Dpi);
+                int gap = (int)Math.Round(Gap * Dpi), use_x = rect.X, use_y = rect.Y + gap, last_len = 0, max_height = 0;
+                int shadow = (int)(Shadow * Dpi), shadow2 = shadow * 2, r = (int)(radius * Dpi);
                 var rows = new List<RItem>();
                 var tmps = new List<VirtualItem>(items.Count);
                 foreach (var it in items)
@@ -956,7 +956,7 @@ namespace AntdUI
                 var rect = e.Rect;
                 rect.Offset(0, sy);
                 g.TranslateTransform(0, -sy);
-                int r = (int)(radius * Config.Dpi);
+                int r = (int)(radius * Dpi);
                 foreach (var it in items)
                 {
                     if (it.SHOW)
@@ -1004,7 +1004,7 @@ namespace AntdUI
                             {
                                 rect.Offset(0, sy);
                                 g.TranslateTransform(0, -sy);
-                                int r = (int)(radius * Config.Dpi);
+                                int r = (int)(radius * Dpi);
                                 foreach (var it in items)
                                 {
                                     if (it.SHOW && it.SHOW_RECT)
@@ -1086,7 +1086,7 @@ namespace AntdUI
                 {
                     if (!shadow_dir_tmp.ContainsKey(id))
                     {
-                        int shadow = (int)(Shadow * Config.Dpi);
+                        int shadow = (int)(Shadow * Dpi);
                         using (var path = new Rectangle(shadow, shadow, it.RECT.Width, it.RECT.Height).RoundPath(radius, shadowAlign, radiusAlign))
                         {
                             shadow_dir_tmp.Add(id, path.PaintShadowO(it.RECT_S.Width, it.RECT_S.Height, shadowColor ?? Colour.TextBase.Get(nameof(VirtualPanel), ColorScheme), shadow));

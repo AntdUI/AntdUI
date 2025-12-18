@@ -345,7 +345,7 @@ namespace AntdUI
             var g = e.Canvas;
             var rect_read = ReadRectangle;
             if (backImage != null) g.Image(rect_read, backImage, backFit, radius, false);
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             Color _fore, _back, _bor;
             switch (type)
             {
@@ -390,7 +390,7 @@ namespace AntdUI
 
                 g.Fill(_back, path);
 
-                if (borderWidth > 0) g.Draw(_bor, borderWidth * Config.Dpi, path);
+                if (borderWidth > 0) g.Draw(_bor, borderWidth * Dpi, path);
 
                 #endregion
 
@@ -469,7 +469,7 @@ namespace AntdUI
         {
             if (ImageSize.Width > 0 && ImageSize.Height > 0)
             {
-                int w = (int)(ImageSize.Width * Config.Dpi), h = (int)(ImageSize.Height * Config.Dpi);
+                int w = (int)(ImageSize.Width * Dpi), h = (int)(ImageSize.Height * Dpi);
                 return new Rectangle(rect_read.X + (rect_read.Width - w) / 2, rect_read.Y + (rect_read.Height - h) / 2, w, h);
             }
             else
@@ -499,7 +499,7 @@ namespace AntdUI
         {
             if (ImageSize.Width > 0 && ImageSize.Height > 0)
             {
-                int w = (int)(ImageSize.Width * Config.Dpi), h = (int)(ImageSize.Height * Config.Dpi);
+                int w = (int)(ImageSize.Width * Dpi), h = (int)(ImageSize.Height * Dpi);
                 return new Rectangle(rectl.X + (rectl.Width - w) / 2, rectl.Y + (rectl.Height - h) / 2, w, h);
             }
             else return rectl;
@@ -507,14 +507,14 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Config.Dpi);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Dpi);
 
         public override GraphicsPath RenderRegion
         {
             get
             {
                 var rect_read = ReadRectangle;
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 return rect_read.RoundPath(_radius);
             }
         }
@@ -618,7 +618,7 @@ namespace AntdUI
                     int count = 0;
                     if (HasImage) count++;
                     if (closeIcon) count++;
-                    return new Size(font_size.Width + (int)(14F * Config.Dpi) + (font_size.Height * count), font_size.Height + (int)(8F * Config.Dpi));
+                    return new Size(font_size.Width + (int)(14F * Dpi) + (font_size.Height * count), font_size.Height + (int)(8F * Dpi));
                 });
             }
         }

@@ -1500,7 +1500,7 @@ namespace AntdUI
         /// </summary>
         public void ScrollLine(int i)
         {
-            int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Config.Dpi) : 0);
+            int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Dpi) : 0);
             ScrollY.Value = lineHeight * i;
         }
 
@@ -1823,9 +1823,13 @@ namespace AntdUI
         internal class ICaret
         {
             Input control;
-            public ICaret(Input input) { control = input; }
+            public ICaret(Input input)
+            {
+                control = input;
+                Rect = new Rectangle(-1, -1000, input.Dpi < 1 ? 1 : (int)input.Dpi, 0);
+            }
 
-            public Rectangle Rect = new Rectangle(-1, -1000, Config.Dpi < 1 ? 1 : (int)Config.Dpi, 0);
+            public Rectangle Rect;
 
             public Rectangle SetXY(CacheCaret[] cache_font, int i, out bool rd)
             {

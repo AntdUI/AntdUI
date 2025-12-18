@@ -36,6 +36,7 @@ namespace AntdUI
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
+            InitDpi();
         }
 
         public void SetCursor(bool val)
@@ -253,24 +254,23 @@ namespace AntdUI
 
         #region DPI
 
-        public float Dpi() => Config.Dpi;
+        public float Dpi { get; private set; }
 
-        bool isload = false;
-        protected override void OnHandleCreated(EventArgs e)
+        void InitDpi(int? dpi = null)
         {
-            base.OnHandleCreated(e);
-            if (isload || DesignMode) return;
-            OnCreated‌();
-            SetTheme();
-            if (AutoHandDpi) AutoDpi(Dpi(), this);
-            isload = true;
+            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
+            else if (dpi.HasValue) Dpi = dpi.Value / 96F;
+            else
+            {
+#if NET40 || NET46
+                Dpi = Dpi;
+#else
+                Dpi = DeviceDpi / 96F;
+#endif
+            }
         }
 
-        public virtual void OnCreated‌()
-        {
-        }
-
-        public void AutoDpi(Control control) => AutoDpi(Dpi(), control);
+        public void AutoDpi(Control control) => AutoDpi(Dpi, control);
 
         public void AutoDpi(float dpi, Control control) => Helper.DpiAuto(dpi, control);
 
@@ -279,9 +279,25 @@ namespace AntdUI
             if (m.Msg == 0x02E0)
             {
                 // 低字节是水平DPI，高字节是垂直DPI
-                int newDpiX = (int)(m.WParam.ToInt64() & 0xFFFF), newDpiY = (int)(m.WParam.ToInt64() >> 16);
+                int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
+                InitDpi(dpiX);
             }
             base.WndProc(ref m);
+        }
+
+        bool isload = false;
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            if (isload || DesignMode) return;
+            OnCreated‌();
+            SetTheme();
+            if (AutoHandDpi) AutoDpi(Dpi, this);
+            isload = true;
+        }
+
+        public virtual void OnCreated‌()
+        {
         }
 
         #endregion
@@ -382,7 +398,7 @@ namespace AntdUI
         {
             if (Window.CanHandMessage && EnableHitTest)
             {
-                float htSize = 8F * Config.Dpi, htSize2 = htSize * 2;
+                float htSize = 8F * Dpi, htSize2 = htSize * 2;
                 GetWindowRect(Handle, out var lpRect);
 
                 var rect = new Rectangle(Point.Empty, lpRect.Size);

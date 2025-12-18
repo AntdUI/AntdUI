@@ -184,7 +184,7 @@ namespace AntdUI
             var rect = ReadRectangle;
             if (rect.Width > 0 && rect.Height > 0)
             {
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 bool hasBack = back.HasValue || backExtend != null, hasBor = borderWidth > 0;
                 if (hasBack || hasBor)
                 {
@@ -198,7 +198,7 @@ namespace AntdUI
                             }
                         }
                         if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
-                        if (hasBor) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Config.Dpi, borderStyle, path);
+                        if (hasBor) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Dpi, borderStyle, path);
                     }
                 }
                 else if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
@@ -208,7 +208,7 @@ namespace AntdUI
                     if (hasBor) return true;
                     using (var path = rect.RoundPath(radius))
                     {
-                        g.Draw(borderColor ?? Colour.Text.Get(nameof(Panel), ColorScheme), Config.Dpi, DashStyle.Dash, path);
+                        g.Draw(borderColor ?? Colour.Text.Get(nameof(Panel), ColorScheme), Dpi, DashStyle.Dash, path);
                     }
                     return true;
                 }

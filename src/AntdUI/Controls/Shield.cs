@@ -298,7 +298,7 @@ namespace AntdUI
         {
             if (radius > 0)
             {
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 using (var path = rect_l.RoundPath(_radius, true, false, false, true))
                 {
                     g.Fill(labelColor ?? System.Drawing.Color.FromArgb(85, 85, 85), path);
@@ -318,7 +318,7 @@ namespace AntdUI
         {
             if (radius > 0)
             {
-                float _radius = radius * Config.Dpi;
+                float _radius = radius * Dpi;
                 using (var path = rect.RoundPath(_radius))
                 {
                     g.Fill(color ?? System.Drawing.Color.FromArgb(68, 204, 17), path);
@@ -339,7 +339,7 @@ namespace AntdUI
         }
         void PaintFore(Canvas g, string? text, Font font, Color color, Rectangle rect)
         {
-            if (ShadowOffsetX > 0 || ShadowOffsetY > 0) g.String(text, font, System.Drawing.Color.FromArgb(77, 1, 1, 1), new Rectangle(rect.X + (int)(ShadowOffsetX * Config.Dpi), rect.Y + (int)(ShadowOffsetY * Config.Dpi), rect.Width, rect.Height));
+            if (ShadowOffsetX > 0 || ShadowOffsetY > 0) g.String(text, font, System.Drawing.Color.FromArgb(77, 1, 1, 1), new Rectangle(rect.X + (int)(ShadowOffsetX * Dpi), rect.Y + (int)(ShadowOffsetY * Dpi), rect.Width, rect.Height));
             g.String(text, font, color, rect);
         }
 

@@ -210,7 +210,7 @@ namespace AntdUI.Chat
                 return;
             }
             var g = e.Canvas;
-            float sy = ScrollBar.Value, radius = Config.Dpi * 8F;
+            float sy = ScrollBar.Value, radius = Dpi * 8F;
             g.TranslateTransform(0, -sy);
             using (var selection = new SolidBrush(SelectionColor))
             using (var selectionme = new SolidBrush(SelectionColorMe))
@@ -299,7 +299,7 @@ namespace AntdUI.Chat
                                 else g.String(it.text, Font, fore, it.rect);
                                 break;
                             case GraphemeSplitter.STRE_TYPE.SVG:
-                                using (var bmp_svg = SvgExtend.SvgToBmp(it.text))
+                                using (var bmp_svg = SvgExtend.SvgToBmp(it.text, g))
                                 {
                                     if (bmp_svg != null) g.Image(it.rect, bmp_svg, TFit.Cover, 0, false);
                                 }
@@ -325,7 +325,7 @@ namespace AntdUI.Chat
                             g.String(it.text, Font, fore, it.rect);
                             break;
                         case GraphemeSplitter.STRE_TYPE.SVG:
-                            using (var bmp_svg = SvgExtend.SvgToBmp(it.text))
+                            using (var bmp_svg = SvgExtend.SvgToBmp(it.text, g))
                             {
                                 if (bmp_svg != null) g.Image(it.rect, bmp_svg, TFit.Cover, 0, false);
                             }
@@ -343,7 +343,7 @@ namespace AntdUI.Chat
 
             if (text.showlinedot)
             {
-                int size = (int)(2 * Config.Dpi), w = size * 3;
+                int size = (int)(2 * Dpi), w = size * 3;
                 if (text.cache_font.Length > 0)
                 {
                     var rect = text.cache_font[text.cache_font.Length - 1].rect;
@@ -688,7 +688,7 @@ namespace AntdUI.Chat
                     var size = g.MeasureString(Config.NullText, Font).Height;
                     int item_height = (int)Math.Ceiling(size * 1.714),
                         gap = (int)Math.Round(item_height * BubbleGap),
-                        itemGap = (int)(ItemGap * Config.Dpi),
+                        itemGap = (int)(ItemGap * Dpi),
                         spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
                     y = spilt;
                     foreach (var it in items!)
@@ -718,7 +718,7 @@ namespace AntdUI.Chat
                         var size = g.MeasureString(Config.NullText, Font).Height;
                         int item_height = (int)Math.Ceiling(size * 1.714),
                             gap = (int)Math.Round(item_height * BubbleGap),
-                            itemGap = (int)(ItemGap * Config.Dpi),
+                            itemGap = (int)(ItemGap * Dpi),
                             spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
 
                         int newh = chatItem.SetRect(rect, chatItem.rect.Y, g, Font, FixFontWidth(g, Font, chatItem, max_width, spilt2), size, spilt, spilt2, item_height, IconLess);

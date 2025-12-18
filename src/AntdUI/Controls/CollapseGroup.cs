@@ -180,7 +180,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
-                    int gap = (int)(4 * Config.Dpi), csize = (rect.Width - (gap * (columnCount - 1))) / columnCount, icon_size = csize / 2, height = size.Height + gap * 2;
+                    int gap = (int)(4 * Dpi), csize = (rect.Width - (gap * (columnCount - 1))) / columnCount, icon_size = csize / 2, height = size.Height + gap * 2;
                     foreach (var it in items)
                     {
                         it.PARENT = this;
@@ -245,7 +245,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             g.TranslateTransform(-sx, -sy);
             using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get(nameof(CollapseGroup), ColorScheme)))
@@ -1050,7 +1050,7 @@ namespace AntdUI
             else
             {
                 //int sp = (int)(font_height * .25F), t_x = rect_read.Y + (emptyIcon ? 0 : ((rect_read.Height - (font_height + icon_size + sp)) / 2));
-                ico_rect = emptyIcon ? Rectangle.Empty : new Rectangle(emptyText == false ? rect_read.X + (int)(2 * Config.Dpi) : (rect_read.X + ((rect_read.Height - icon_size) / 2)), rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
+                ico_rect = emptyIcon ? Rectangle.Empty : new Rectangle(emptyText == false ? rect_read.X + (int)(2 * g.Dpi) : (rect_read.X + ((rect_read.Height - icon_size) / 2)), rect_read.Y + ((rect_read.Height - icon_size) / 2), icon_size, icon_size);
                 txt_rect = emptyText ? Rectangle.Empty : new Rectangle(rect_read.X + icon_size, rect_read.Y + ((rect_read.Height - font_height) / 2), rect_read.Width - icon_size, rect_read.Height);
 
                 if (xc > 0) rect = new Rectangle(rect_read.X, rect_read.Y, rect_read.Width, rect_read.Height + xc);

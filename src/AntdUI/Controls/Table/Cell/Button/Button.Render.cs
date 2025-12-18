@@ -32,12 +32,12 @@ namespace AntdUI
         {
             if (Gap.HasValue)
             {
-                int sp = (int)(Gap.Value * Config.Dpi);
+                int sp = (int)(Gap.Value * g.Dpi);
                 return GetSizeCore(g, font, sp, sp * 2);
             }
             else if (PARENT.PARENT.GapCell.HasValue)
             {
-                int sp = (int)(PARENT.PARENT.GapCell.Value * Config.Dpi);
+                int sp = (int)(PARENT.PARENT.GapCell.Value * g.Dpi);
                 return GetSizeCore(g, font, sp, sp * 2);
             }
             else return GetSizeCore(g, font, gap.x, gap.x2);

@@ -156,6 +156,11 @@ namespace AntdUI
             public Action<ContextMenuStripItem> Call { get; set; }
 
             /// <summary>
+            /// 关闭回调
+            /// </summary>
+            public Action? OnClose { get; set; }
+
+            /// <summary>
             /// 色彩模式
             /// </summary>
             public TAMode ColorScheme { get; set; } = TAMode.Auto;
@@ -254,6 +259,12 @@ namespace AntdUI
             public Config SetLocation(Point? value)
             {
                 Location = value;
+                return this;
+            }
+
+            public Config SetClose(Action? value)
+            {
+                OnClose = value;
                 return this;
             }
 

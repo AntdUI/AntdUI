@@ -489,14 +489,14 @@ namespace AntdUI
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
 
             var rect = ReadRectangle;
             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);
             FillRect(g, rect, back, _radius, round);
 
             if (PaintImage(g, rect, _radius)) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Avatar), "foreDisabled", ColorScheme), rect, stringCenter);
-            if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Config.Dpi, _radius, round);
+            if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Dpi, _radius, round);
             if (Hover)
             {
                 int size = (int)((rect.Width > rect.Height ? rect.Height : rect.Width) * HoverImageRatio);
@@ -507,8 +507,8 @@ namespace AntdUI
             }
             if (loading)
             {
-                var bor6 = 6F * Config.Dpi;
-                int loading_size = (int)(40 * Config.Dpi);
+                var bor6 = 6F * Dpi;
+                int loading_size = (int)(40 * Dpi);
                 var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
                 g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get(nameof(Avatar), ColorScheme)), bor6, rect_loading);
                 using (var penpro = new Pen(Colour.Primary.Get(nameof(Avatar), ColorScheme), bor6))
@@ -580,7 +580,7 @@ namespace AntdUI
         {
             get
             {
-                if (borderWidth > 0) return ClientRectangle.PaddingRect(Padding, borderWidth * Config.Dpi / 2F);
+                if (borderWidth > 0) return ClientRectangle.PaddingRect(Padding, borderWidth * Dpi / 2F);
                 else return ClientRectangle.PaddingRect(Padding);
             }
         }
@@ -598,7 +598,7 @@ namespace AntdUI
                         path.AddEllipse(rect);
                         return path;
                     }
-                    else if (radius > 0) return rect.RoundPath(radius * Config.Dpi);
+                    else if (radius > 0) return rect.RoundPath(radius * Dpi);
                     else
                     {
                         var path = new GraphicsPath();
@@ -615,7 +615,7 @@ namespace AntdUI
                         path.AddEllipse(rect);
                         return path;
                     }
-                    else if (radius > 0) return rect.RoundPath(radius * Config.Dpi);
+                    else if (radius > 0) return rect.RoundPath(radius * Dpi);
                     else
                     {
                         var path = new GraphicsPath();

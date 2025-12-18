@@ -102,11 +102,21 @@ namespace AntdUI
                 {
                     if (borderless.UseDwm)
                     {
-                        if (OS.Win11) Radius = (int)System.Math.Round(8 * Config.Dpi); //Win11
+                        if (OS.Win11) Radius = (int)System.Math.Round(8 * borderless.Dpi); //Win11
                         return false;
                     }
-                    else Radius = (int)(borderless.Radius * Config.Dpi);
+                    else Radius = (int)(borderless.Radius * borderless.Dpi);
                     return false;
+                }
+                else if (form is BaseForm baseForm)
+                {
+                    if (form.FormBorderStyle == FormBorderStyle.None) return false;
+                    if (OS.Win11) Radius = (int)System.Math.Round(8 * baseForm.Dpi); //Win11
+                    if (form is Window || form is FormNoBar) return false;//无边框处理
+                    var rect = new Vanara.PInvoke.RECT();
+                    Vanara.PInvoke.User32.AdjustWindowRectEx(ref rect, Vanara.PInvoke.User32.WindowStyles.WS_OVERLAPPEDWINDOW | Vanara.PInvoke.User32.WindowStyles.WS_CLIPCHILDREN, false, Vanara.PInvoke.User32.WindowStylesEx.WS_EX_CONTROLPARENT | Vanara.PInvoke.User32.WindowStylesEx.WS_EX_APPWINDOW);
+                    Padd = rect.bottom;
+                    return true;
                 }
                 else
                 {

@@ -629,7 +629,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            float _radius = radius * Config.Dpi;
+            float _radius = radius * Dpi;
             using (var path = Rect.RoundPath(_radius, Round))
             {
                 g.Fill(back ?? Colour.BgLayout.Get(nameof(Segmented), ColorScheme), path);
@@ -661,12 +661,12 @@ namespace AntdUI
                 }
                 else
                 {
-                    float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                    float barSize = BarSize * Dpi, barPadding = BarPadding * Dpi, barPadding2 = barPadding * 2;
                     var rect = GetBarRect(AnimationBarValue, barSize, barPadding, barPadding2);
                     var color_active = barColor ?? backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme);
                     if (BarRadius > 0)
                     {
-                        using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                        using (var path = rect.RoundPath(BarRadius * Dpi))
                         {
                             g.Fill(color_active, path);
                         }
@@ -757,11 +757,11 @@ namespace AntdUI
                         }
                     }
                     var color_active = barColor ?? backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme);
-                    float barSize = BarSize * Config.Dpi, barPadding = BarPadding * Config.Dpi, barPadding2 = barPadding * 2;
+                    float barSize = BarSize * Dpi, barPadding = BarPadding * Dpi, barPadding2 = barPadding * 2;
                     var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
                     if (BarRadius > 0)
                     {
-                        using (var path = rect.RoundPath(BarRadius * Config.Dpi))
+                        using (var path = rect.RoundPath(BarRadius * Dpi))
                         {
                             g.Fill(color_active, path);
                         }
@@ -825,7 +825,7 @@ namespace AntdUI
                 Helper.GDI(g =>
                 {
                     var size_t = g.MeasureString(Config.NullText, Font);
-                    int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Config.Dpi), gap = (int)(size_t.Height * itemGap), gap2 = gap * 2;
+                    int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Dpi), gap = (int)(size_t.Height * itemGap), gap2 = gap * 2;
                     if (Full)
                     {
                         int len = items.Count;
