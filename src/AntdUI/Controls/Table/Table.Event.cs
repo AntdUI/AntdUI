@@ -45,7 +45,18 @@ namespace AntdUI
         /// 按钮点击事件
         /// </summary>
         public delegate void ClickButtonEventHandler(object sender, TableButtonEventArgs e);
-
+        /// <summary>
+        /// 内置汇总功能切换
+        /// </summary>
+        public delegate void SummaryCustomizeChangedEventHandler(object sender, BoolEventArgs e);
+        /// <summary>
+        /// 列拖放新位置前事件
+        /// </summary>
+        public delegate void ColumnIndexChangingEventHandler(object sender, TableColumnIndexChangingEventArgs e);
+        /// <summary>
+        /// 列拖放新位置后事件
+        /// </summary>
+        public delegate void ColumnIndexChangedEventHandler(object sender, TableColumnIndexChangedEventArgs e);
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
@@ -142,6 +153,21 @@ namespace AntdUI
         /// </summary>
         [Description("单元格焦点变更后发生"), Category("行为")]
         public event ClickEventHandler? CellFocused;
+        /// <summary>
+        /// 内置/外部汇总栏切换后发生
+        /// </summary>
+        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
+        public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
+        /// <summary>
+        /// 列拖放到新位置时发生 (Cancel=true时取消)
+        /// </summary>
+        [Description("列拖放到新位置时发生 (Cancel=true时取消)"), Category("行为")]
+        public event ColumnIndexChangingEventHandler? ColumnIndexChanging;
+        /// <summary>
+        /// 列拖放到新位置后发生
+        /// </summary>
+        [Description("列拖放到新位置后发生"), Category("行为")]
+        public event ColumnIndexChangedEventHandler? ColumnIndexChanged;
 
         protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellFocused?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
@@ -402,17 +428,6 @@ namespace AntdUI
         /// </summary>
         [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
         public event CustomSummaryEventHandler? CustomSummaryCalculate;
-
-        /// <summary>
-        /// 内置汇总功能切换
-        /// </summary>
-        public delegate void SummaryCustomizeChangedEventHandler(object sender, BoolEventArgs e);
-
-        /// <summary>
-        /// 内置/外部汇总栏切换后发生
-        /// </summary>
-        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
-        public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
 
         #endregion
 

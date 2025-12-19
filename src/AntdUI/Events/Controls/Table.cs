@@ -677,4 +677,38 @@ namespace AntdUI
     }
 
     #endregion
+
+    #region 列调整
+    public class TableColumnIndexChangedEventArgs : EventArgs
+    {
+        public TableColumnIndexChangedEventArgs(int source, int sourceReal, int target) : base()
+        {
+            IndexSource = source;
+            IndexSourceReal = sourceReal;
+            IndexTarget = target;
+        }
+        /// <summary>
+        /// 原位置
+        /// </summary>
+        public int IndexSource { get; private set; }
+        /// <summary>
+        /// 真实原位置索引
+        /// </summary>
+        public int IndexSourceReal { get; private set; }
+        /// <summary>
+        /// 目标位置
+        /// </summary>
+        public int IndexTarget { get; private set; }
+     
+    }
+
+    public class TableColumnIndexChangingEventArgs : TableColumnIndexChangedEventArgs
+    {
+        public TableColumnIndexChangingEventArgs(int source, int sourceReal, int target) : base(source, sourceReal, target) { }
+        /// <summary>
+        /// 是否取消拖放
+        /// </summary>
+        public bool Cancel { set; get; }
+    }
+    #endregion
 }

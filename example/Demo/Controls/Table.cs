@@ -34,7 +34,6 @@ namespace Demo.Controls
             InitializeComponent();
 
             #region Table
-
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
                 new AntdUI.Column("name", "姓名").SetFixed().SetTree("Sub").SetLocalizationTitleID("Table.Column."),
@@ -805,5 +804,15 @@ namespace Demo.Controls
                 }
             }
         }
+       
+        private void Table1_CustomSummaryCalculate(object sender, AntdUI.TableCustomSummaryEventArgs e)
+        {
+            if (!e.Finalize)
+            {
+                TestClass item = e.Record as TestClass;
+                if (item.date.Year > 1999) e.TotalValue = 1;
+            }
+        }
+     
     }
 }
