@@ -221,12 +221,26 @@ namespace AntdUI
 
                     int sourceIndex = sortHeader.IndexOf(dragHeader.i), targetIndex = sortHeader.IndexOf(dragHeader.im);
                     int sourceRealIndex = sortHeader[sourceIndex];
+                    if (ColumnIndexChanging != null)
+                    {
+                        TableColumnIndexChangingEventArgs arg = new TableColumnIndexChangingEventArgs(sourceIndex, sourceRealIndex, targetIndex);
+                        ColumnIndexChanging(this, arg);
+                        if (arg.Cancel)
+                        {
+                            Invalidate();
+                            OnTouchCancel();
+                            return;
+                        }
+                    }
+
                     sortHeader.RemoveAt(sourceIndex);
                     // 调整插入位置，处理拖到最后位置的情况
                     sortHeader.Insert(targetIndex, sourceRealIndex);
                     SortHeader = sortHeader.ToArray();
                     ExtractHeaderFixed();
                     LoadLayout();
+
+                    ColumnIndexChanged?.Invoke(this, new TableColumnIndexChangedEventArgs(sourceIndex, sourceRealIndex, targetIndex));
                 }
                 dragHeader = null;
                 if (hand)

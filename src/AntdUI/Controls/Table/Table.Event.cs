@@ -274,8 +274,6 @@ namespace AntdUI
         [Description("绘制单元格之前发生"), Category("行为")]
         public event CellPaintBeginEventHandler? CellPaintBegin;
 
-        #endregion
-
         public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, TableSetRowStyleEventArgs e);
         /// <summary>
         /// 设置行样式
@@ -296,6 +294,18 @@ namespace AntdUI
             /// </summary>
             public Color? ForeColor { get; set; }
         }
+
+        #endregion
+
+        /// <summary>
+        /// 选中变化后发生
+        /// </summary>
+        [Description("选中变化后发生"), Category("行为")]
+        public event EventHandler? SelectIndexChanged;
+
+        protected virtual void OnSelectIndexChanged() => SelectIndexChanged?.Invoke(this, EventArgs.Empty);
+
+        #region 排序/拖拽
 
         /// <summary>
         /// 行排序时发生
@@ -332,18 +342,33 @@ namespace AntdUI
         protected virtual bool OnSortModeChanged(SortMode sortMode, Column column) => SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, column)) ?? false;
 
         /// <summary>
-        /// 选中变化后发生
+        /// 列拖放新位置前事件
         /// </summary>
-        [Description("选中变化后发生"), Category("行为")]
-        public event EventHandler? SelectIndexChanged;
+        public delegate void ColumnIndexChangingEventHandler(object sender, TableColumnIndexChangingEventArgs e);
 
-        protected virtual void OnSelectIndexChanged() => SelectIndexChanged?.Invoke(this, EventArgs.Empty);
+        /// <summary>
+        /// 列拖放新位置后事件
+        /// </summary>
+        public delegate void ColumnIndexChangedEventHandler(object sender, TableColumnIndexChangedEventArgs e);
+
+        /// <summary>
+        /// 列拖放到新位置时发生 (Cancel=true时取消)
+        /// </summary>
+        [Description("列拖放到新位置时发生 (Cancel=true时取消)"), Category("行为")]
+        public event ColumnIndexChangingEventHandler? ColumnIndexChanging;
+        /// <summary>
+        /// 列拖放到新位置后发生
+        /// </summary>
+        [Description("列拖放到新位置后发生"), Category("行为")]
+        public event ColumnIndexChangedEventHandler? ColumnIndexChanged;
 
         /// <summary>
         /// 自定义排序
         /// </summary>
         [Description("自定义排序"), Category("行为")]
         public event Comparison<string>? CustomSort;
+
+        #endregion
 
         /// <summary>
         /// 展开事件

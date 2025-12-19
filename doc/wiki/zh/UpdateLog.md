@@ -1,6 +1,13 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.5` 2025-12-19
+
+- ➕ Table Column 拖放事件 ColumnIndexChanging, ColumnIndexChanged
+- ✍️ 修复 NET4.0 NET4.6 控件错位
+
 ### `2.2.4` 2025-12-18 📐
+
+> ⚠ NET4.0 NET4.6 控件错位
 
 - ➕ 菜单展开安全三角区 `Amazon 2013`
 - ➕ DPI 适配 PerMonitorV2 与 AutoScaleMode.Font

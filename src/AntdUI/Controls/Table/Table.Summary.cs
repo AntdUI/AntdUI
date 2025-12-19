@@ -129,6 +129,9 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 更新汇总列的数据（异步）
+        /// </summary>
         public void OnUpdateSummaries()
         {
             if (SummaryCustomize == false) return;

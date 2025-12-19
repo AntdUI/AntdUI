@@ -232,6 +232,51 @@ namespace AntdUI
         public int RowIndex { get; private set; }
     }
 
+    #region 列调整
+    public class TableColumnIndexChangedEventArgs : EventArgs
+    {
+        public TableColumnIndexChangedEventArgs(int source, int sourceReal, int target) : base()
+        {
+            IndexSource = source;
+            IndexSourceReal = sourceReal;
+            IndexTarget = target;
+        }
+        /// <summary>
+        /// 原位置
+        /// </summary>
+        public int IndexSource { get; private set; }
+        /// <summary>
+        /// 真实原位置索引
+        /// </summary>
+        public int IndexSourceReal { get; private set; }
+        /// <summary>
+        /// 目标位置
+        /// </summary>
+        public int IndexTarget { get; private set; }
+
+    }
+
+    public class TableColumnIndexChangingEventArgs : TableColumnIndexChangedEventArgs
+    {
+        public TableColumnIndexChangingEventArgs(int source, int sourceReal, int target) : base(source, sourceReal, target) { }
+        /// <summary>
+        /// 是否取消拖放
+        /// </summary>
+        public bool Cancel { set; get; }
+
+        #region 设置
+
+        public TableColumnIndexChangingEventArgs SetHandled(bool value = true)
+        {
+            Cancel = value;
+            return this;
+        }
+
+        #endregion
+    }
+
+    #endregion
+
     #region 绘制
 
     public class TablePaintEventArgs : EventArgs
@@ -608,6 +653,16 @@ namespace AntdUI
         /// 是否取消弹出
         /// </summary>
         public bool Cancel { get; set; }
+
+        #region 设置
+
+        public TableFilterPopupBeginEventArgs SetHandled(bool value = true)
+        {
+            Cancel = value;
+            return this;
+        }
+
+        #endregion
     }
 
     public class TableFilterDataChangedEventArgs : EventArgs
@@ -638,6 +693,16 @@ namespace AntdUI
         /// 是否取消弹出
         /// </summary>
         public bool Cancel { get; set; }
+
+        #region 设置
+
+        public TableFilterPopupEndEventArgs SetHandled(bool value = true)
+        {
+            Cancel = value;
+            return this;
+        }
+
+        #endregion
     }
 
     #endregion

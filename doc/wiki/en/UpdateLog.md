@@ -1,6 +1,13 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.5` 2025-12-19
+
+- ➕ Table Column Drag and Drop Events ColumnIndexChanging, ColumnIndexChanged
+- ✍️ Fix the misalignment of NET4.0 and NET4.6 controls
+
 ### `2.2.4` 2025-12-18 📐
+
+> ⚠ NET4.0 NET4.6 Control Misalignment
 
 - ➕ Menu Expand Security Triangle `Amazon 2013`
 - ➕ DPI adaptation to PerMonitorV2 and AutoScaleMode.Font
