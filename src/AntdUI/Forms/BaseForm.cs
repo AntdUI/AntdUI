@@ -263,7 +263,7 @@ namespace AntdUI
             else
             {
 #if NET40 || NET46
-                Dpi = Dpi;
+                Dpi = Config.Dpi;
 #else
                 Dpi = DeviceDpi / 96F;
 #endif

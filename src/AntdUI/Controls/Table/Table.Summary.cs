@@ -1,4 +1,4 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
+﻿// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
 // THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
 // LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
 // YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using static AntdUI.Table;
 
 namespace AntdUI
 {
@@ -91,7 +90,7 @@ namespace AntdUI
         }
         ContextMenuStripItem GetMenu(TSummaryType value, string key, string id, string svg) => new ContextMenuStripItem().SetText(key, "Table.Summary." + id).SetSubText(id).SetIcon(svg).SetTag(value);
         private Form? FMenuStrip;
-        public bool SummaryRowFocused { get; private set; }
+        public bool SummaryRowFocused => FMenuStrip != null;
         private void Summary_RClick(CELLDB cell)
         {
             FMenuStrip?.Dispose();
@@ -129,6 +128,7 @@ namespace AntdUI
                 return null;
             }
         }
+
         /// <summary>
         /// 更新汇总列的数据（异步）
         /// </summary>
@@ -140,14 +140,7 @@ namespace AntdUI
                 Summary = null;
                 return;
             }
-#if (NET40)
-        if (IsHandleCreated)
-                Invoke(new Action(() => { UpdateSummaries(); }));
-            else
-                UpdateSummaries();
-#else
             ITask.Run(UpdateSummaries);
-#endif
         }
 
         /// <summary>

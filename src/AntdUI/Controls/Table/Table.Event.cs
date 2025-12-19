@@ -45,18 +45,7 @@ namespace AntdUI
         /// 按钮点击事件
         /// </summary>
         public delegate void ClickButtonEventHandler(object sender, TableButtonEventArgs e);
-        /// <summary>
-        /// 内置汇总功能切换
-        /// </summary>
-        public delegate void SummaryCustomizeChangedEventHandler(object sender, BoolEventArgs e);
-        /// <summary>
-        /// 列拖放新位置前事件
-        /// </summary>
-        public delegate void ColumnIndexChangingEventHandler(object sender, TableColumnIndexChangingEventArgs e);
-        /// <summary>
-        /// 列拖放新位置后事件
-        /// </summary>
-        public delegate void ColumnIndexChangedEventHandler(object sender, TableColumnIndexChangedEventArgs e);
+
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
@@ -153,21 +142,6 @@ namespace AntdUI
         /// </summary>
         [Description("单元格焦点变更后发生"), Category("行为")]
         public event ClickEventHandler? CellFocused;
-        /// <summary>
-        /// 内置/外部汇总栏切换后发生
-        /// </summary>
-        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
-        public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
-        /// <summary>
-        /// 列拖放到新位置时发生 (Cancel=true时取消)
-        /// </summary>
-        [Description("列拖放到新位置时发生 (Cancel=true时取消)"), Category("行为")]
-        public event ColumnIndexChangingEventHandler? ColumnIndexChanging;
-        /// <summary>
-        /// 列拖放到新位置后发生
-        /// </summary>
-        [Description("列拖放到新位置后发生"), Category("行为")]
-        public event ColumnIndexChangedEventHandler? ColumnIndexChanged;
 
         protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellFocused?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
@@ -300,8 +274,6 @@ namespace AntdUI
         [Description("绘制单元格之前发生"), Category("行为")]
         public event CellPaintBeginEventHandler? CellPaintBegin;
 
-        #endregion
-
         public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, TableSetRowStyleEventArgs e);
         /// <summary>
         /// 设置行样式
@@ -322,6 +294,18 @@ namespace AntdUI
             /// </summary>
             public Color? ForeColor { get; set; }
         }
+
+        #endregion
+
+        /// <summary>
+        /// 选中变化后发生
+        /// </summary>
+        [Description("选中变化后发生"), Category("行为")]
+        public event EventHandler? SelectIndexChanged;
+
+        protected virtual void OnSelectIndexChanged() => SelectIndexChanged?.Invoke(this, EventArgs.Empty);
+
+        #region 排序/拖拽
 
         /// <summary>
         /// 行排序时发生
@@ -358,18 +342,33 @@ namespace AntdUI
         protected virtual bool OnSortModeChanged(SortMode sortMode, Column column) => SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, column)) ?? false;
 
         /// <summary>
-        /// 选中变化后发生
+        /// 列拖放新位置前事件
         /// </summary>
-        [Description("选中变化后发生"), Category("行为")]
-        public event EventHandler? SelectIndexChanged;
+        public delegate void ColumnIndexChangingEventHandler(object sender, TableColumnIndexChangingEventArgs e);
 
-        protected virtual void OnSelectIndexChanged() => SelectIndexChanged?.Invoke(this, EventArgs.Empty);
+        /// <summary>
+        /// 列拖放新位置后事件
+        /// </summary>
+        public delegate void ColumnIndexChangedEventHandler(object sender, TableColumnIndexChangedEventArgs e);
+
+        /// <summary>
+        /// 列拖放到新位置时发生 (Cancel=true时取消)
+        /// </summary>
+        [Description("列拖放到新位置时发生 (Cancel=true时取消)"), Category("行为")]
+        public event ColumnIndexChangingEventHandler? ColumnIndexChanging;
+        /// <summary>
+        /// 列拖放到新位置后发生
+        /// </summary>
+        [Description("列拖放到新位置后发生"), Category("行为")]
+        public event ColumnIndexChangedEventHandler? ColumnIndexChanged;
 
         /// <summary>
         /// 自定义排序
         /// </summary>
         [Description("自定义排序"), Category("行为")]
         public event Comparison<string>? CustomSort;
+
+        #endregion
 
         /// <summary>
         /// 展开事件
@@ -428,6 +427,17 @@ namespace AntdUI
         /// </summary>
         [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
         public event CustomSummaryEventHandler? CustomSummaryCalculate;
+
+        /// <summary>
+        /// 内置汇总功能切换
+        /// </summary>
+        public delegate void SummaryCustomizeChangedEventHandler(object sender, BoolEventArgs e);
+
+        /// <summary>
+        /// 内置/外部汇总栏切换后发生
+        /// </summary>
+        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
+        public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
 
         #endregion
 

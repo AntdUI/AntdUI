@@ -971,7 +971,6 @@ namespace AntdUI
 
         CELLDB? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey)
         {
-            SummaryRowFocused = false;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
             int px = ex + sx, py = ey + sy;
             if (summary == null) return CellContainsCore(rows, sethover, ex, ey, sx, sy, px, py);
@@ -986,7 +985,6 @@ namespace AntdUI
                         {
                             if (it.CONTAINS(ex, py) && CellContains(it, ex, ey, sx, sy, px, py, out var tmp))
                             {
-                                SummaryRowFocused = true;
                                 tmp!.mode = CELLDBMode.Summary;
                                 return tmp;
                             }
@@ -996,7 +994,6 @@ namespace AntdUI
                             int eyb = ey + sFixedB;
                             if (it.CONTAINS(ex, eyb) && CellContains(it, ex, ey, eyb, sx, sy, px, py, out var tmp))
                             {
-                                SummaryRowFocused = true;
                                 tmp!.mode = CELLDBMode.Summary;
                                 return tmp;
                             }
