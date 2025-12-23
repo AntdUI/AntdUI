@@ -25,10 +25,12 @@ namespace AntdUI
 {
     partial class Input
     {
+        internal bool hasAlt = false;
         protected override bool IsInputKey(Keys keyData)
         {
             if ((keyData & Keys.Alt) != Keys.Alt)
             {
+                hasAlt = false;
                 switch (keyData & Keys.KeyCode)
                 {
                     case Keys.Tab:
@@ -43,6 +45,7 @@ namespace AntdUI
                         return !readOnly;
                 }
             }
+            else hasAlt = true;
             return base.IsInputKey(keyData);
         }
 

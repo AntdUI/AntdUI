@@ -509,6 +509,15 @@ namespace AntdUI
 
         #endregion
 
+        internal bool CanProcessMnemonic()
+        {
+            var form = FindForm();
+            if (form == null) return true;
+            var control = form.ActiveControl;
+            if (control is Input input) return input.hasAlt;
+            return true;
+        }
+
         #endregion
 
         #region 触屏
