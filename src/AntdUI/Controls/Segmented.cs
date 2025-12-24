@@ -312,71 +312,6 @@ namespace AntdUI
             }
         }
 
-
-        #region 边框
-        float _borderWidth = 1F;
-        [Description("边框宽度"), Category("外观"), DefaultValue(1F)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public float BorderWidth
-        {
-            get => _borderWidth;
-            set
-            {
-                if (_borderWidth == value) return;
-                _borderWidth = value;
-                Invalidate();
-                OnPropertyChanged(nameof(BorderWidth));
-            }
-        }
-
-        Color? _borderColor;
-        [Description("边框颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? BorderColor
-        {
-            get => _borderColor;
-            set
-            {
-                if (_borderColor == value) return;
-                _borderColor = value;
-                Invalidate();
-                OnPropertyChanged(nameof(BorderColor));
-            }
-        }
-
-
-        float _itemBorderWidth = 1F;
-        [Description("项边框宽度"), Category("外观"), DefaultValue(1F)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public float ItemBorderWidth
-        {
-            get => _itemBorderWidth;
-            set
-            {
-                if (_itemBorderWidth == value) return;
-                _itemBorderWidth = value;
-                Invalidate();
-                OnPropertyChanged(nameof(ItemBorderWidth));
-            }
-        }
-
-        Color? _itemBorderColor;
-        [Description("项边框颜色"), Category("外观"), DefaultValue(null)]
-        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public Color? ItemBorderColor
-        {
-            get => _itemBorderColor;
-            set
-            {
-                if (_itemBorderColor == value) return;
-                _itemBorderColor = value;
-                Invalidate();
-                OnPropertyChanged(nameof(ItemBorderColor));
-            }
-        }
-        #endregion
-
-
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
@@ -444,6 +379,69 @@ namespace AntdUI
                 OnPropertyChanged(nameof(ForeActive));
             }
         }
+
+        #region 边框
+
+        float _borderWidth = 0F;
+        [Description("边框宽度"), Category("外观"), DefaultValue(0F)]
+        public float BorderWidth
+        {
+            get => _borderWidth;
+            set
+            {
+                if (_borderWidth == value) return;
+                _borderWidth = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BorderWidth));
+            }
+        }
+
+        Color? _borderColor;
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        [Description("边框颜色"), Category("外观"), DefaultValue(null)]
+        public Color? BorderColor
+        {
+            get => _borderColor;
+            set
+            {
+                if (_borderColor == value) return;
+                _borderColor = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BorderColor));
+            }
+        }
+
+
+        float _itemBorderWidth = 0F;
+        [Description("项边框宽度"), Category("外观"), DefaultValue(0F)]
+        public float ItemBorderWidth
+        {
+            get => _itemBorderWidth;
+            set
+            {
+                if (_itemBorderWidth == value) return;
+                _itemBorderWidth = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ItemBorderWidth));
+            }
+        }
+
+        Color? _itemBorderColor;
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        [Description("项边框颜色"), Category("外观"), DefaultValue(null)]
+        public Color? ItemBorderColor
+        {
+            get => _itemBorderColor;
+            set
+            {
+                if (_itemBorderColor == value) return;
+                _itemBorderColor = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ItemBorderColor));
+            }
+        }
+
+        #endregion
 
         RightToLeft rightToLeft = RightToLeft.No;
         [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
@@ -699,15 +697,9 @@ namespace AntdUI
             {
                 g.Fill(back ?? Colour.BgLayout.Get(nameof(Segmented), ColorScheme), path);
 
-                if (_borderWidth > 0)
-                {
-                    using (var borderPath = AntdUI.Helper.RoundPath(this.ClientRectangle.PaddingRect(new Padding((int)(_borderWidth * Dpi))), round ? Rect.Height : _radius))
-                    {
-                        g.Draw(BorderColor ?? Colour.BgLayout.Get(nameof(Segmented), ColorScheme), (int)(_borderWidth * Dpi), borderPath);
-                    }
-                }
+                if (_borderWidth > 0) g.Draw(_borderColor ?? Colour.BgLayout.Get(nameof(Segmented), ColorScheme), (int)(_borderWidth * Dpi), path);
             }
-            var item_text = new System.Collections.Generic.List<SegmentedItem>(items.Count);
+            var item_text = new List<SegmentedItem>(items.Count);
             int _hover = -1;
             for (int i = 0; i < items.Count; i++)
             {
@@ -806,11 +798,7 @@ namespace AntdUI
                     using (var path = TabSelectRect.RoundPath(_radius, Round))
                     {
                         g.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
-
-                        if (_itemBorderWidth > 0 && ItemBorderColor != null)
-                        {
-                            g.Draw(ItemBorderColor ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), (int)(_itemBorderWidth * Dpi), path);
-                        }
+                        if (_itemBorderWidth > 0) g.Draw(_itemBorderColor ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), (int)(_itemBorderWidth * Dpi), path);
                     }
                 }
                 else

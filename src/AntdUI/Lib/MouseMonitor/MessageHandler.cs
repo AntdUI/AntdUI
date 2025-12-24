@@ -38,6 +38,24 @@ namespace AntdUI
 
         #endregion
 
+        #region 方法
+
+        public void SetEnabled(bool value)
+        {
+            if (_isFilter)
+            {
+                if (value) Application.AddMessageFilter(this);
+                else Application.RemoveMessageFilter(this);
+            }
+            else
+            {
+                if (value) RegisterToHook();
+                else UnregisterFromHook();
+            }
+        }
+
+        #endregion
+
         private bool _isHook = false, _isFilter = false;
 
         #region 钩子注册和注销

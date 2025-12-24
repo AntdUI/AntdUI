@@ -25,12 +25,10 @@ namespace AntdUI
 {
     partial class Input
     {
-        internal bool hasAlt = false;
         protected override bool IsInputKey(Keys keyData)
         {
             if ((keyData & Keys.Alt) != Keys.Alt)
             {
-                hasAlt = false;
                 switch (keyData & Keys.KeyCode)
                 {
                     case Keys.Tab:
@@ -45,8 +43,19 @@ namespace AntdUI
                         return !readOnly;
                 }
             }
-            else hasAlt = true;
             return base.IsInputKey(keyData);
+        }
+
+        protected override bool ProcessDialogChar(char charCode)
+        {
+            var r = base.ProcessDialogChar(charCode);
+            if ((ModifierKeys & Keys.Alt) == 0)
+            {
+                OnKeyPress(new KeyPressEventArgs(charCode));
+                IKeyPress(charCode);
+                return true;
+            }
+            return r;
         }
 
         public void HandKeyBoard(Keys key)

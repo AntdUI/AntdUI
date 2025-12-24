@@ -78,7 +78,7 @@ namespace AntdUI
                 s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
             }
 
-            Date = DateNow;
+            Date = DateTime.Now;
         }
 
         #region 属性
@@ -234,7 +234,6 @@ namespace AntdUI
         }
 
         DateTime _Date;
-        DateTime DateNow = DateTime.Now;
         DateTime Date
         {
             get => _Date;
@@ -614,6 +613,7 @@ namespace AntdUI
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme)))
             using (var brush_fore = new SolidBrush(color_fore))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     using (var path = it.rect_read.RoundPath(radius))
@@ -626,13 +626,13 @@ namespace AntdUI
                         else if (it.enable)
                         {
                             if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect, s_f);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
@@ -666,6 +666,7 @@ namespace AntdUI
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme)))
             using (var brush_fore = new SolidBrush(color_fore))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     using (var path = it.rect_read.RoundPath(radius))
@@ -678,13 +679,13 @@ namespace AntdUI
                         else if (it.enable)
                         {
                             if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, brush_fore, it.rect, s_f);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect, s_f);
                         }
                     }
@@ -745,7 +746,7 @@ namespace AntdUI
             using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get(nameof(Calendar), ColorScheme)))
             using (var brush_error = new SolidBrush(Colour.Error.Get(nameof(Calendar), ColorScheme)))
             {
-                PaintToDayFrame(g, datas, DateNow.ToString("yyyy-MM-dd"), radius);
+                PaintToDayFrame(g, datas, DateTime.Now.ToString("yyyy-MM-dd"), radius);
                 if (ItemPaintBegin == null)
                 {
                     if (chinese)
@@ -1182,7 +1183,7 @@ namespace AntdUI
                 }
                 else if (showType == 0 && showButtonToDay && rect_button.Contains(e.X, e.Y))
                 {
-                    if (Mdown == "button") Value = Date = DateNow = DateTime.Now;
+                    if (Mdown == "button") Value = Date = DateTime.Now;
                     return;
                 }
                 else if (rect_month.Contains(e.X, e.Y))

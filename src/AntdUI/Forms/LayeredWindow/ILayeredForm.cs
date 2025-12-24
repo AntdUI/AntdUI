@@ -283,6 +283,7 @@ namespace AntdUI
                 int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
                 InitDpi(dpiX);
             }
+            else if (m.Msg == 0x000A) messageHandler?.SetEnabled(m.WParam != IntPtr.Zero);
             else if (UFocus && m.Msg == 0x21)
             {
                 m.Result = new IntPtr(3);
