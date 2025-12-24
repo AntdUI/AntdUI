@@ -18,5 +18,6 @@ bin-release/
 
 # Projects
 /.vs
+/.claude
 /packages
 *.snk
