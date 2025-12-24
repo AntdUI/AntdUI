@@ -43,7 +43,7 @@ namespace AntdUI
                 if (rect.HasValue) control.Invalidate(rect.Value);
                 else control.Invalidate();
             };
-            Init();
+            Init(control);
         }
         public ScrollBar(FlowPanel control, bool enabledY = true, bool enabledX = false)
         {
@@ -52,7 +52,7 @@ namespace AntdUI
             Invalidate = rect => control.IOnSizeChanged();
             EnabledX = enabledX;
             EnabledY = enabledY;
-            Init();
+            Init(control);
         }
         public ScrollBar(StackPanel control)
         {
@@ -61,7 +61,7 @@ namespace AntdUI
             Invalidate = rect => control.IOnSizeChanged();
             if (control.Vertical) EnabledY = true;
             else EnabledX = true;
-            Init();
+            Init(control);
         }
         public ScrollBar(ILayeredForm control, TAMode colorScheme)
         {
@@ -71,7 +71,7 @@ namespace AntdUI
             Invalidate = rect => control.Print();
             EnabledY = true;
             EnabledX = false;
-            Init();
+            Init(control);
         }
 
         #endregion
@@ -90,15 +90,15 @@ namespace AntdUI
             ChangeSize = () => control.IOnSizeChanged();
             EnabledX = enabledX;
             EnabledY = enabledY;
-            Init();
-            if (control is IScrollBar scroll) Target = scroll;
+            Init(control);
         }
 
-        void Init()
+        void Init(object tag)
         {
             SIZE = (int)(16 * Dpi);
             SIZE_BAR = (int)(6 * Dpi);
             SIZE_MINIY = (int)(Config.ScrollMinSizeY * Dpi);
+            if (tag is IScrollBar scroll) Target = scroll;
         }
 
         Action? ChangeSize;
