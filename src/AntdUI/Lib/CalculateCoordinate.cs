@@ -214,8 +214,10 @@ namespace AntdUI
         /// </summary>
         public int TopY()
         {
-            if (creal.HasValue) return sy - dh + padd + shadow - arrow + creal.Value.Y;
-            return sy - dh + padd + shadow - arrow;
+            int _padd = padd;
+            if (Config.DropDownMarginFurther) _padd = 0;
+            if (creal.HasValue) return sy - dh + _padd + shadow - arrow + creal.Value.Y;
+            return sy - dh + _padd + shadow - arrow;
         }
 
         /// <summary>
@@ -223,8 +225,10 @@ namespace AntdUI
         /// </summary>
         public int BottomY()
         {
-            if (creal.HasValue) return sy + creal.Value.Bottom + arrow - shadow - padd;
-            return sy + ch + arrow - shadow - padd;
+            int _padd = padd;
+            if (Config.DropDownMarginFurther) _padd = 0;
+            if (creal.HasValue) return sy + creal.Value.Bottom + arrow - shadow - _padd;
+            return sy + ch + arrow - shadow - _padd;
         }
 
         /// <summary>
@@ -232,8 +236,10 @@ namespace AntdUI
         /// </summary>
         public int Left()
         {
-            if (creal.HasValue) return sx - dw + padd + shadow - arrow + creal.Value.X;
-            return sx - dw + padd + shadow - arrow;
+            int _padd = padd;
+            if (Config.DropDownMarginFurther) _padd = 0;
+            if (creal.HasValue) return sx - dw + _padd + shadow - arrow + creal.Value.X;
+            return sx - dw + _padd + shadow - arrow;
         }
 
         /// <summary>
@@ -241,8 +247,10 @@ namespace AntdUI
         /// </summary>
         public int Right()
         {
-            if (creal.HasValue) return sx + creal.Value.Right + arrow - shadow - padd;
-            return sx + cw + arrow - shadow - padd;
+            int _padd = padd;
+            if (Config.DropDownMarginFurther) _padd = 0;
+            if (creal.HasValue) return sx + creal.Value.Right + arrow - shadow - _padd;
+            return sx + cw + arrow - shadow - _padd;
         }
 
         #endregion
