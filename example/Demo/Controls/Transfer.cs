@@ -40,7 +40,7 @@ namespace Demo.Controls
             var items = new List<AntdUI.TransferItem>(10);
             for (int i = 0; i <= 10; i++) items.Add(new AntdUI.TransferItem(AntdUI.Localization.Get("Transfer.Content", "选项") + (i + 1), i));
             // 设置穿梭框数据源
-            transfer1.Items = items;
+            transfer1.Items.AddRange(items);
 
             label_source.Suffix = transfer1.GetSourceItems().Count + AntdUI.Localization.Get("Transfer.Items", "项");
             label_target.Suffix = transfer1.GetTargetItems().Count + AntdUI.Localization.Get("Transfer.Items", "项");
@@ -80,8 +80,8 @@ namespace Demo.Controls
             int count = random.Next(10, 40);
             var items = new List<AntdUI.TransferItem>(count);
             for (int i = 1; i <= count; i++) items.Add(new AntdUI.TransferItem(AntdUI.Localization.Get("Transfer.Option", "新选项") + i, i));
-
-            transfer1.Items = items;
+            transfer1.Items.Clear();
+            transfer1.Items.AddRange(items);
             transfer1.Reload();
 
             // 更新源列表和目标列表的数量显示

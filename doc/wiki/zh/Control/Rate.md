@@ -25,6 +25,7 @@ Rate 评分 👚
 **Tooltips** | 自定义每项的提示信息 | string[]`?` | `null` |
 **Character** | 自定义字符SVG | string`?` | `null` |
 🌏 **LocalizationCharacter** | 国际化自定义字符 | string`?` | `null` |
+**TooltipConfig** | 文字提示配置 | [TTooltipConfig](Enum.md#ttipconfig) | `null` |
 
 ### 事件
 

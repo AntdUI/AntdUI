@@ -24,7 +24,7 @@ Input 输入框 👚
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
 **BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
-**BorderWidth** | 边框宽度 | float | 0F |
+**BorderWidth** | 边框宽度 | float | 1F |
 **BorderColor** | 边框颜色 | Color`?` | `null` |
 **BorderHover** | 悬停边框颜色 | Color`?` | `null` |
 **BorderActive** | 激活边框颜色 | Color`?` | `null` |
@@ -38,15 +38,19 @@ Input 输入框 👚
 **Radius** | 圆角 | int | 6 |
 **Round** | 圆角样式 | bool | false |
 **Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
+**Variant** | 形态 | [TVariant](Enum.md#tvariant) | Outlined |
 ||||
 **AllowClear** | 支持清除 | bool | false |
 **AutoScroll** | 显示滚动条 | bool | false |
 **Text** | 文本 | string ||
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**IsTextEmpty** | 文本是否为空 | bool | true |
+**TextTotalLine** | 文本总行数 | int | 0 |
 **ImeMode** | IME(输入法编辑器)状态 | ImeMode | NoControl |
 **EmojiFont** | Emoji字体 | string | Segoe UI Emoj |
 **AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
 **Multiline** | 多行文本 | bool | false |
+**WordWrap** | 自动换行 | bool | true |
 **LineHeight** | 多行行高 | int | 0 |
 **ReadOnly** | 只读 | bool | false |
 **PlaceholderText** | 水印文本 | string`?` | `null` |
@@ -54,7 +58,6 @@ Input 输入框 👚
 **PlaceholderColor** | 水印颜色 | Color`?` | `null` |
 **PlaceholderColorExtend** | 水印渐变色 | string`?` | `null` |
 **LostFocusClearSelection** | 焦点离开清空选中 | bool | true |
-**HandShortcutKeys** 🔴 | 处理快捷键 | bool | true |
 ||||
 **TextAlign** | 文本对齐方向 | HorizontalAlignment | Left |
 **UseSystemPasswordChar** | 使用密码框 | bool | false |
@@ -64,6 +67,7 @@ Input 输入框 👚
 **MaxLength** | 文本最大长度 | int | 32767 |
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
+**IconRatioRight** | 右图标比例 | float | `null` |
 **IconGap** | 图标与文字间距比例 | float | 0.25F |
 **Prefix** | 前缀 | Image`?` | `null` |
 **PrefixFore** | 前缀前景色 | Color`?` | `null` |
@@ -85,17 +89,27 @@ Input 输入框 👚
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **AppendText** | 将文本追加到当前文本中 | void | string text `追加的文本` |
+**InsertText** | 在指定位置插入文本 | void | string text `插入的文本`, int index `插入位置` |
 **Clear** | 清除所有文本 | void ||
 **ClearUndo** | 清除撤消缓冲区信息 | void ||
 **Copy** | 复制 | void ||
 **Cut** | 剪贴 | void ||
 **Paste** | 粘贴 | void ||
 **Undo** | 撤消 | void ||
+**Redo** | 重做 | void ||
 **Select** | 文本选择范围 | void | int start `第一个字符的位置`, int length `字符长度` |
 **SelectAll** | 选择所有文本 | void ||
+**SelectLast** | 选择最后一个字符 | void ||
 **DeselectAll** | 取消全部选中 | void ||
 **ScrollToCaret** | 内容滚动到当前插入符号位置 | void ||
 **ScrollToEnd** | 内容滚动到最下面 | void ||
+**ScrollLine** | 滚动一行 | void | bool down `是否向下滚动` |
+**SetStyle** | 设置文本样式 | void | int start `起始位置`, int length `长度`, Font font `字体`, Color? fore `前景色`, Color? back `背景色` |
+**ClearStyle** | 清空样式 | void ||
+**AnimationBlink** | 开始闪烁动画 | void | int interval `动画间隔时长（毫秒）`, params Color[] colors `色彩值` |
+**AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, params Color[] colors `色彩值` |
+**AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, int transition_interval `过度动画间隔时长（毫秒）`, AnimationType animationType `过度动画类型`, params Color[] colors `色彩值` |
+**StopAnimationBlink** | 停止闪烁动画 | void ||
 
 ### 事件
 
@@ -103,9 +117,9 @@ Input 输入框 👚
 :--|:--|:--|:--|
 **PrefixClick** | 前缀 点击时发生 | void | MouseEventArgs e |
 **SuffixClick** | 后缀 点击时发生 | void | MouseEventArgs e |
-**ClearClick** 🔴 | 清空 点击时发生 | void | MouseEventArgs e |
-**VerifyChar** 🔴 | 验证字符时发生 | void | char Char `输入字符`,string? ReplaceText `替换文本`, bool Result `验证结果`  |
-**VerifyKeyboard** 🔴 | 验证键盘时发生 | void | Keys KeyData, bool Result `验证结果` |
+**ClearClick** | 清空 点击时发生 | void | MouseEventArgs e |
+**VerifyChar** | 验证字符时发生 | void | char Char `输入字符`,string? ReplaceText `替换文本`, bool Result `验证结果`  |
+**VerifyKeyboard** | 验证键盘时发生 | void | Keys KeyData, bool Result `验证结果` |
 
 ### Input 拦截字符串
 

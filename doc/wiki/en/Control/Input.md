@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：TextChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -23,7 +23,7 @@ Name | Description | Type | Default Value |
 **BackgroundImage** | Background image | Image`?` | `null` |
 **BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**BorderWidth** | Border width | float | 0F |
+**BorderWidth** | Border width | float | 1F |
 **BorderColor** | Border color | Color`?` | `null` |
 **BorderHover** | Hover border color | Color`?` | `null` |
 **BorderActive** | Activate border color | Color`?` | `null` |
@@ -37,15 +37,19 @@ Name | Description | Type | Default Value |
 **Radius** | Rounded corners | int | 6 |
 **Round** | Rounded corner style | bool | false |
 **Status** | Set verification status | [TType](Enum.md#ttype) | None |
+**Variant** | Variant | [TVariant](Enum.md#tvariant) | Outlined |
 ||||
 **AllowClear** | Support clearing | bool | false |
 **AutoScroll** | Show scrollbars | bool | false |
 **Text** | Text | string ||
 🌏 **LocalizationText** | International Text | string`?` | `null` |
+**IsTextEmpty** | Is text empty | bool | true |
+**TextTotalLine** | Total lines of text | int | 0 |
 **ImeMode** | IME (Input Method Editor) Status | ImeMode | NoControl |
 **EmojiFont** | EmojiFont | string | Segoe UI Emoj |
 **AcceptsTab** | Does multi line editing allow the input of tab characters | bool | false |
 **Multiline** | Multiline | bool | false |
+**WordWrap** | Auto wrap | bool | true |
 **LineHeight** | Multi row height | int | 0 |
 **ReadOnly** | Read only | bool | false |
 **PlaceholderText** | Watermark Text | string`?` | `null` |
@@ -53,7 +57,6 @@ Name | Description | Type | Default Value |
 **PlaceholderColor** | Watermark color | Color`?` | `null` |
 **PlaceholderColorExtend** | Watermark gradient color | string`?` | `null` |
 **LostFocusClearSelection** | Loss of focus, clear selection | bool | true |
-**HandShortcutKeys** 🔴 | Process shortcut keys | bool | true |
 ||||
 **TextAlign** | Text alignment | HorizontalAlignment | Left |
 **UseSystemPasswordChar** | Use password box | bool | false |
@@ -63,6 +66,7 @@ Name | Description | Type | Default Value |
 **MaxLength** | Maximum Text Length | int | 32767 |
 ||||
 **IconRatio** | Icon Scale | float | 0.7F |
+**IconRatioRight** | Right icon ratio | float | `null` |
 **IconGap** | Ratio of icon to text spacing | float | 0.25F |
 **Prefix** | Prefix | Image`?` | `null` |
 **PrefixFore** | Prefix foreground | Color`?` | `null` |
@@ -79,32 +83,42 @@ Name | Description | Type | Default Value |
 ||||
 **RightToLeft** | Reverse | RightToLeft | No |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **AppendText** | Append text to the current text | void | string text `Additional Text` |
+**InsertText** | Insert text at the specified position | void | string text `Inserted text`, int index `Insertion position` |
 **Clear** | Clear all text | void ||
 **ClearUndo** | Clear undo buffer information | void ||
 **Copy** | Copy | void ||
 **Cut** | Cut | void ||
 **Paste** | Paste | void ||
 **Undo** | Undo | void ||
+**Redo** | Redo | void ||
 **Select** | Text selection range | void | int start, int length |
 **SelectAll** | Select all texts | void ||
+**SelectLast** | Select the last character | void ||
 **DeselectAll** | Uncheck All | void ||
 **ScrollToCaret** | Scroll the content to the current insertion symbol position | void ||
 **ScrollToEnd** | Scroll to the bottom of the content | void ||
+**ScrollLine** | Scroll one line | void | bool down `Whether to scroll down` |
+**SetStyle** | Set text style | void | int start `Start position`, int length `Length`, Font font `Font`, Color? fore `Foreground color`, Color? back `Background color` |
+**ClearStyle** | Clear style | void ||
+**AnimationBlink** | Start blinking animation | void | int interval `Animation interval (milliseconds)`, params Color[] colors `Color values` |
+**AnimationBlinkTransition** | Start color transition blinking animation | void | int interval `Animation interval (milliseconds)`, params Color[] colors `Color values` |
+**AnimationBlinkTransition** | Start color transition blinking animation | void | int interval `Animation interval (milliseconds)`, int transition_interval `Transition animation interval (milliseconds)`, AnimationType animationType `Transition animation type`, params Color[] colors `Color values` |
+**StopAnimationBlink** | Stop blinking animation | void ||
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **PrefixClick** | Occurrence when Prefix is clicked | void | MouseEventArgs e |
 **SuffixClick** | Occurrence when Suffix is clicked | void | MouseEventArgs e |
-**ClearClick** 🔴 | Clear occurs when clicked | void | MouseEventArgs e |
-**VerifyChar** 🔴 | Occurred during character verification | void | char Char `input character`,string? ReplaceText `replace text`, bool Result  |
-**VerifyKeyboard** 🔴 | Occurred during keyboard verification | void | Keys KeyData, bool Result |
+**ClearClick** | Clear occurs when clicked | void | MouseEventArgs e |
+**VerifyChar** | Occurred during character verification | void | char Char `input character`,string? ReplaceText `replace text`, bool Result  |
+**VerifyKeyboard** | Occurred during keyboard verification | void | Keys KeyData, bool Result |
 
 ### Input Intercept strings
 

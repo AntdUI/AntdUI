@@ -14,17 +14,17 @@ Select 选择器 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **List** | 是否列表样式 `与Dropdown一样` | bool | false |
-**ListAutoWidth** | 是否列表自动宽度 | bool | true |
+**ListAutoWidth** | 是否列表自动宽度 | bool | false |
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | 列表最多显示条数 | int | 4 |
-**DropDownRadius** 🔴 | 下拉圆角 | int`?` | `null` |
+**DropDownRadius** | 下拉圆角 | int`?` | `null` |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **DropDownPadding** | 下拉边距 | Size | 12, 5 |
 **ClickEnd** | 点击到最里层 `无节点才能点击` | bool | false |
 **ClickSwitchDropdown** | 点击切换下拉 | bool | true |
-**CloseIcon** 🔴 | 是否显示关闭图标 | bool | false |
+**CloseIcon** | 是否显示关闭图标 | bool | false |
 ||||
-**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
+**Items** | 数据 [更多样式](../DropdownStyles.md) | BaseCollection | [] |
 **SelectedIndex** | 选中序号 | int | -1 |
 **SelectedValue** | 选中值 | object`?` | `null` |
 
@@ -55,8 +55,8 @@ Select 多选器 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**AutoHeight** 🔴 | 自动高度 | bool | false |
-**Gap** 🔴 | 间距 | int | 2 |
+**AutoHeight** | 自动高度 | bool | false |
+**Gap** | 间距 | int | 2 |
 **List** | 是否列表样式 `与Dropdown一样` | bool | false |
 **ListAutoWidth** | 是否列表自动宽度 | bool | true |
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
@@ -68,7 +68,7 @@ Select 多选器 👚
 **CanDelete** | 是否可以删除 | bool | true |
 ||||
 **Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
-**SelectedValue** | 选中值 | object[] | |
+**SelectedValue** | 选中值 | object[] | [] |
 
 ### 方法
 

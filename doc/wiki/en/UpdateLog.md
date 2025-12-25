@@ -1,9 +1,22 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.6` 2025-12-25 🎄
+
+- ➕ Chart displays XY axis labels
+- ➕ Segmented border width border color
+- ➕ Config DropDownMarginFurther
+- ✍️ The dropdown menu is only activated by the scrollbar in Win7
+- ✍️ Calendar daily date refresh issue
+- ✍️ Popover will cause ShowDialog interaction to close after popping up
+- ✍️ FlowLayoutPanel mouse scrolling
+- ✍️ Mnemonic conflicts with Input
+- ✍️ Transfer designer adds items without refreshing
+- ✍️ Chart Y misalignment
+
 ### `2.2.5` 2025-12-19
 
 - ➕ Table Column Drag and Drop Events ColumnIndexChanging, ColumnIndexChanged
-- ✍️ Fix the misalignment of NET4.0 and NET4.6 controls
+- ✍️ misalignment of NET4.0 and NET4.6 controls
 
 ### `2.2.4` 2025-12-18 📐
 
