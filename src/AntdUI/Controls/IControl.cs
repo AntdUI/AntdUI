@@ -509,6 +509,11 @@ namespace AntdUI
 
         #endregion
 
+        internal bool CanProcessMnemonic()
+        {
+            return true;
+        }
+
         #endregion
 
         #region 触屏

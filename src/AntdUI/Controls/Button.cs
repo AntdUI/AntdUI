@@ -395,7 +395,7 @@ namespace AntdUI
 
         protected override bool ProcessMnemonic(char charCode)
         {
-            if (UseMnemonic && Enabled && Visible && IsMnemonic(charCode, Text))
+            if (UseMnemonic && Enabled && Visible && CanProcessMnemonic() && IsMnemonic(charCode, Text))
             {
                 PerformClick();
                 return true;

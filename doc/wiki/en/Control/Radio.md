@@ -20,9 +20,11 @@ Name | Description | Type | Default Value |
 ||||
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**TextAlign** 🔴 | Text position | ContentAlignment | MiddleLeft |
+**TextAlign** | Text position | ContentAlignment | MiddleLeft |
 **Checked** | Checked state | bool | false |
 **AutoCheck** | Click to automatically change the selected status | bool | true |
+**UseMnemonic** | Support mnemonic key | bool | true |
+**HasFocus** | Focus state | bool | false |
 ||||
 **RightToLeft** | Reverse | RightToLeft | No |
 

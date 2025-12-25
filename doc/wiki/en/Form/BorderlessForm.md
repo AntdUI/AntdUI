@@ -6,7 +6,7 @@ Borderless Shadow Window
 
 > Borderless shadow window implemented based on `FormBorderStyle.None`. Inherited from [BaseForm](BaseForm)
 
-### Propertie
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -14,19 +14,27 @@ Name | Description | Type | Default Value |
 **Dark** | Dark Mode | bool | false |
 **Mode** | Color mode | [TAMode](../Control/Enum.md#tamode) | Auto 
 **Radius** | Rounded corners | int | 0 |
+**ShowInTaskbar** | Whether the form appears in the Windows taskbar | bool | true |
 ||||
-**UseDwm** 🔴 | `dwmapi` | bool | true |
+**UseDwm** | Use DWM shadow `Custom colors, borders, and rounded corners do not take effect when using system shadows` | bool | true |
 **Shadow** | Shadow size | int | 10 |
-**ShadowColor** | | Color | 100, 0, 0, 0 |
-**ShadowPierce** 🔴 | Mouse penetration | bool | false |
+**ShadowColor** | Shadow color | Color | 100, 0, 0, 0 |
+**ShadowPierce** | Mouse penetration | bool | false |
 ||||
-**BorderWidth** | | float | 0F |
-**BorderColor** | | Color | 246, 248, 250 |
+**BorderWidth** | Border width | int | 1 |
+**BorderColor** | Border color | Color | 180, 0, 0, 0 |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**DraggableMouseDown** | | void ||
+**DraggableMouseDown** | Drag window | void ||
 **ResizableMouseDown** | Adjust window size (mouse press) | bool ||
 **ResizableMouseMove** | Adjust window size (mouse movement) | bool ||
+**ResizableMouseMove** | Adjust window size (mouse movement) | bool | point: Client coordinates |
+**MaxRestore** | Maximize/Restore window | bool ||
+**Max** | Maximize window | void ||
+**FullRestore** | Full screen/Restore window | bool ||
+**Full** | Full screen window | void ||
+**NoFull** | Exit full screen | void ||
+**RefreshDWM** | Refresh DWM area | void ||

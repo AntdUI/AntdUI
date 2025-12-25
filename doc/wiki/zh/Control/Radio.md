@@ -21,9 +21,11 @@ Radio 单选框 👚
 ||||
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**TextAlign** 🔴 | 文本位置 | ContentAlignment | MiddleLeft |
+**TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
 **Checked** | 选中状态 | bool | false |
 **AutoCheck** | 点击时自动改变选中状态 | bool | true |
+**UseMnemonic** | 支持助记键 | bool | true |
+**HasFocus** | 焦点状态 | bool | false |
 ||||
 **RightToLeft** | 反向 | RightToLeft | No |
 

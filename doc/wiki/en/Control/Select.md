@@ -13,17 +13,17 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **List** | Is it a list style `Like Dropdown` | bool | false |
-**ListAutoWidth** | List automatic width | bool | true |
+**ListAutoWidth** | List automatic width | bool | false |
 **Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | Maximum of displayed items in the list | int | 4 |
-**DropDownRadius** 🔴 | Pull down rounded corner | int`?` | `null` |
+**DropDownRadius** | Pull down rounded corner | int`?` | `null` |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
 **DropDownPadding** | Pull down margin | Size | 12, 5 |
-**ClickEnd** | Click to the end | bool | false |
+**ClickEnd** | Click to the end `No nodes to click` | bool | false |
 **ClickSwitchDropdown** | Click to switch dropdown menu | bool | true |
-**CloseIcon** 🔴 | Display close icon | bool | false |
+**CloseIcon** | Display close icon | bool | false |
 ||||
-**Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
+**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | [] |
 **SelectedIndex** | Select Index | int | -1 |
 **SelectedValue** | Select Value | object`?` | `null` |
 
@@ -53,8 +53,8 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoHeight** 🔴 | Automatic height | bool | false |
-**Gap** 🔴 | Gap | int | 2 |
+**AutoHeight** | Automatic height | bool | false |
+**Gap** | Gap | int | 2 |
 **List** | Is it a list style `Like Dropdown` | bool | false |
 **ListAutoWidth** | List automatic width | bool | true |
 **Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
@@ -66,7 +66,7 @@ Name | Description | Type | Default Value |
 **CanDelete** | Can it be deleted | bool | true |
 ||||
 **Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
-**SelectedValue** | Select Value | object[] | |
+**SelectedValue** | Select Value | object[] | [] |
 
 ### Method
 

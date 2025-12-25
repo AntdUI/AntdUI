@@ -310,7 +310,7 @@
 > [![LabelTime](Icon/LabelTime.png)](Control/LabelTime.md)
 
 
-### 反馈 `7`
+### 反馈 `8`
 
 #### [Alert 警告提示](Control/Alert.md)
 
@@ -353,6 +353,12 @@
 > 用于页面和区块的加载中状态。
 
 > [![Spin](Icon/Spin.png)](Control/Spin.md)
+
+#### [Watermark 水印](Control/Watermark.md)
+
+> 给页面的某个区域加上水印。
+
+> [![Watermark](Icon/Watermark.png)](Control/Watermark.md)
 
 
 ### 其他 `5`

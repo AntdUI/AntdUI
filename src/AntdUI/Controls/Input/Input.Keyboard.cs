@@ -46,6 +46,18 @@ namespace AntdUI
             return base.IsInputKey(keyData);
         }
 
+        protected override bool ProcessDialogChar(char charCode)
+        {
+            var r = base.ProcessDialogChar(charCode);
+            if ((ModifierKeys & Keys.Alt) == 0)
+            {
+                OnKeyPress(new KeyPressEventArgs(charCode));
+                IKeyPress(charCode);
+                return true;
+            }
+            return r;
+        }
+
         public void HandKeyBoard(Keys key)
         {
             if (OnVerifyKeyboard(key))

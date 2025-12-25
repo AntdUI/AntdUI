@@ -106,7 +106,7 @@ namespace AntdUI
                 ArrowSize = (int)(8 * Dpi);
                 Radius = (int)(_control.radius * Dpi);
             }
-            if (_control.Value == null) Date = DateNow;
+            if (_control.Value == null) Date = DateTime.Now;
             else
             {
                 SelTMP = _control.Value;
@@ -146,8 +146,6 @@ namespace AntdUI
         public bool EndFocused = false;
 
         #endregion
-
-        DateTime DateNow = DateTime.Now;
 
         public DateTime[]? SelDate;
         DateTime[]? SelTMP;
@@ -335,6 +333,7 @@ namespace AntdUI
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(DatePicker), ColorScheme)))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
@@ -355,7 +354,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                         }
-                        if (DateNow.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                        if (now.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)
@@ -385,6 +384,7 @@ namespace AntdUI
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(DatePicker), ColorScheme)))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
@@ -405,7 +405,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                         }
-                        if (DateNow.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                        if (now.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)
@@ -540,6 +540,7 @@ namespace AntdUI
                     else g.String(OKButton, Font, brush_active, rect_buttonok.Rect, s_f);
                 }
 
+                var now = DateTime.Now;
                 if (SelTMP == null)
                 {
                     foreach (var it in datas)
@@ -562,7 +563,7 @@ namespace AntdUI
                                 g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                                 g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                             }
-                            if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                         }
                     }
                 }
@@ -590,7 +591,7 @@ namespace AntdUI
                                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                                         }
-                                        if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                                        if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                                         break;
                                     case 1:
                                         g.Fill(brush_active, path);
@@ -1057,7 +1058,7 @@ namespace AntdUI
                         {
                             //此刻
                             SelTMP = null;
-                            oldTime = Date = DateNow = DateTime.Parse(DateTime.Now.ToString(control.Format));
+                            oldTime = Date = DateTime.Parse(DateTime.Now.ToString(control.Format));
                             Print();
                             ScrollTime(calendar_time!, oldTime.Value);
                         }
@@ -1134,8 +1135,8 @@ namespace AntdUI
                                             if (oldTime.HasValue) oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, oldTime.Value.Hour, oldTime.Value.Minute, oldTime.Value.Second);
                                             else if (SelDate == null)
                                             {
-                                                DateNow = DateTime.Now;
-                                                oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, DateNow.Hour, DateNow.Minute, DateNow.Second);
+                                                var now = DateTime.Now;
+                                                oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, now.Hour, now.Minute, now.Second);
                                             }
                                             else
                                             {
@@ -1162,8 +1163,8 @@ namespace AntdUI
                                                 if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, it.t, oldTime.Value.Second);
                                                 else if (SelDate == null)
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    oldTime = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, it.t, 0);
+                                                    var now = DateTime.Now;
+                                                    oldTime = new DateTime(now.Year, now.Month, now.Day, 0, it.t, 0);
                                                 }
                                                 else
                                                 {
@@ -1182,8 +1183,8 @@ namespace AntdUI
                                                 if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, oldTime.Value.Minute, it.t);
                                                 else if (SelDate == null)
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    oldTime = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, 0, it.t);
+                                                    var now = DateTime.Now;
+                                                    oldTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, it.t);
                                                 }
                                                 else
                                                 {
@@ -1203,8 +1204,8 @@ namespace AntdUI
                                                 if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, it.t, oldTime.Value.Minute, oldTime.Value.Second);
                                                 else if (SelDate == null)
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    oldTime = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, it.t, 0, 0);
+                                                    var now = DateTime.Now;
+                                                    oldTime = new DateTime(now.Year, now.Month, now.Day, it.t, 0, 0);
                                                 }
                                                 else
                                                 {

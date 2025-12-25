@@ -1,9 +1,22 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.6` 2025-12-25 🎄
+
+- ➕ Chart 显示XY轴标签
+- ➕ Segmented 边框宽度 边框颜色
+- ➕ Config DropDownMarginFurther
+- ✍️ 下拉框 在Win7下仅有滚动条才激活
+- ✍️ Calendar 当天日期刷新问题
+- ✍️ Popover 弹出 ShowDialog 交互后会导致关闭
+- ✍️ FlowLayoutPanel 鼠标滚动
+- ✍️ Mnemonic 与 Input 冲突
+- ✍️ Transfer 设计器添加项不刷新
+- ✍️ Chart Y 错位
+
 ### `2.2.5` 2025-12-19
 
 - ➕ Table Column 拖放事件 ColumnIndexChanging, ColumnIndexChanged
-- ✍️ 修复 NET4.0 NET4.6 控件错位
+- ✍️ NET4.0 NET4.6 控件错位
 
 ### `2.2.4` 2025-12-18 📐
 

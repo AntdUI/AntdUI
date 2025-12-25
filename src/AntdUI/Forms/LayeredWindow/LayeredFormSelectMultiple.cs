@@ -61,7 +61,7 @@ namespace AntdUI
             Items = LoadLayout(AutoWidth, control.ReadRectangle.Width, ItemOS.List, filtertext, true);
 
             CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
-            if (OS.Win7OrLower) Select();
+            if (OS.Win7OrLower && ScrollBar.ShowY) Select();
 
             KeyCall = keys =>
             {

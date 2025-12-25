@@ -53,7 +53,7 @@
 ⬇️| 通用 `2` | 动画 | 禁用 |
 :---:|:--|:--:|:--:|
 ➡️| [**Button** 按钮](doc/wiki/zh/Control/Button.md) | ✅ | ✅ |
-➡️| [**FloatButton** 悬浮按钮](doc/wiki/zh/Control/FloatButton.md) | ✅ | ❎ |
+➡️| [**FloatButton** 悬浮按钮](doc/wiki/zh/Control/FloatButton.md) | ✅ | ✅ |
 ||||
 ⬇️| 布局 `5` | 动画 | 禁用 |
 ➡️| [**Divider** 分割线](doc/wiki/zh/Control/Divider.md) | ❎ | ❎ |
@@ -65,9 +65,9 @@
 ⬇️| 导航 `7` | 动画 | 禁用 |
 ➡️| [**Breadcrumb** 面包屑](doc/wiki/zh/Control/Breadcrumb.md) | ✅ | ❎ |
 ➡️| [**Dropdown** 下拉菜单](doc/wiki/zh/Control/Dropdown.md) | ✅ | ✅ |
-➡️| [**Menu** 导航菜单](doc/wiki/zh/Control/Menu.md) | ✅ | ❎ |
+➡️| [**Menu** 导航菜单](doc/wiki/zh/Control/Menu.md) | ✅ | ✅ |
 ➡️| [**PageHeader** 页头](doc/wiki/zh/Control/PageHeader.md) | ✅ | ❎ |
-➡️| [**TabHeader** 多标签页头](doc/wiki/zh/Control/TabHeader.md) | ✅ | ❎ |
+➡️| [**TabHeader** 多标签页头](doc/wiki/zh/Control/TabHeader.md) | ✅ | ✅ |
 ➡️| [**Pagination** 分页](doc/wiki/zh/Control/Pagination.md) | ✅ | ✅ |
 ➡️| [**Steps** 步骤条](doc/wiki/zh/Control/Steps.md) | ❎ | ❎ |
 ||||
@@ -88,17 +88,18 @@
 ➡️| [**Transfer** 穿梭框](doc/wiki/zh/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger** 拖拽上传](doc/wiki/zh/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| 数据展示 `19` | 动画 | 禁用 |
+⬇️| 数据展示 `21` | 动画 | 禁用 |
 ➡️| [**Avatar** 头像](doc/wiki/zh/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge** 徽标数](doc/wiki/zh/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar** 日历](doc/wiki/zh/Control/Calendar.md) | ✅ | ❎ |
 ➡️| [**Panel** 面板](doc/wiki/zh/Control/Panel.md) | ✅ | ❎ |
 ➡️| [**Carousel** 走马灯](doc/wiki/zh/Control/Carousel.md) | ✅ | ❎ |
 ➡️| [**Collapse** 折叠面板](doc/wiki/zh/Control/Collapse.md) | ✅ | ❎ |
-➡️| [**Preview** 图片预览](doc/wiki/zh/Control/Preview.md) | ✅ | ✅ |
+➡️| [**Preview** 图片预览](doc/wiki/zh/Control/Preview.md) | ✅ | ❎ |
+➡️| [**ImagePreview** 图片预览](doc/wiki/zh/Control/ImagePreview.md) | ✅ | ❎ |
 ➡️| [**Popover** 气泡卡片](doc/wiki/zh/Control/Popover.md) | ✅ | ❎ |
 ➡️| [**Segmented** 分段控制器](doc/wiki/zh/Control/Segmented.md) | ✅ | ✅ |
-➡️| [**Table** 表格](doc/wiki/zh/Control/Table.md) | ✅ | ❎ |
+➡️| [**Table** 表格](doc/wiki/zh/Control/Table.md) | ✅ | ✅ |
 ➡️| [**Tabs** 标签页](doc/wiki/zh/Control/Tabs.md) | ✅ | ✅ |
 ➡️| [**Tag** 标签](doc/wiki/zh/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline** 时间轴](doc/wiki/zh/Control/Timeline.md) | ❎ | ❎ |
@@ -107,6 +108,7 @@
 ➡️| [**Tour** 漫游式引导](doc/wiki/zh/Control/Tour.md) | ✅ | ❎ |
 ➡️| [**Label** 文本](doc/wiki/zh/Control/Label.md) | ✅ | ❎ |
 ➡️| [**LabelTime** 时间文本](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
+➡️| [**HyperlinkLabel** 超链接文本](doc/wiki/zh/Control/HyperlinkLabel.md) | ✅ | ❎ |
 ➡️| **Chart** 图表 | ✅ | ❎ |
 ||||
 ⬇️| 反馈 `8` | 动画 | 禁用 |
@@ -117,7 +119,7 @@
 ➡️| [**Notification** 通知提醒框](doc/wiki/zh/Control/Notification.md) | ✅ | ❎ |
 ➡️| [**Progress** 进度条](doc/wiki/zh/Control/Progress.md) | ✅ | ❎ |
 ➡️| [**Spin** 加载中](doc/wiki/zh/Control/Spin.md) | ✅ | ❎ |
-➡️| **Watermark** 水印 | ✅ | ❎ |
+➡️| [**Watermark** 水印](doc/wiki/zh/Control/Watermark.md) | ✅ | ❎ |
 ||||
 ⬇️| 聊天 `2` | 动画 | 禁用 |
 ➡️| **MsgList** 好友消息列表 | ✅ | ❎ |

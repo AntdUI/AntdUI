@@ -99,7 +99,7 @@ namespace AntdUI
                 Radius = (int)(_control.radius * Dpi);
             }
             SelDate = _control.Value;
-            Date = SelDate == null ? DateNow : SelDate[0];
+            Date = SelDate == null ? DateTime.Now : SelDate[0];
             if (SelDate != null && SelDate.Length > 1)
             {
                 if (endFocused)
@@ -180,8 +180,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        DateTime DateNow = DateTime.Now;
 
         public DateTime[]? SelDate;
         DateTime? oldTime, oldTimeHover;
@@ -539,6 +537,7 @@ namespace AntdUI
             using (var brush_active_bg = new SolidBrush(Colour.PrimaryBg.Get(nameof(DatePicker), ColorScheme)))
             using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get(nameof(DatePicker), ColorScheme)))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[p + it.id];
@@ -558,7 +557,7 @@ namespace AntdUI
                                     g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                                     g.String(it.v, Font, brush_fore_disable, rect_div[p + it.id].Rect, s_f);
                                 }
-                                if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                                if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                                 break;
                             case 1:
                                 g.Fill(brush_active, path);
@@ -605,6 +604,7 @@ namespace AntdUI
             using (var brush_active_bg = new SolidBrush(Colour.PrimaryBg.Get(nameof(DatePicker), ColorScheme)))
             using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get(nameof(DatePicker), ColorScheme)))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[p + it.id];
@@ -623,7 +623,7 @@ namespace AntdUI
                                     g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                                     g.String(it.v, Font, brush_fore_disable, rect_div[p + it.id].Rect, s_f);
                                 }
-                                if (DateNow.ToString(f) == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                                if (now.ToString(f) == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                                 break;
                             case 1:
                                 g.Fill(brush_active, path);

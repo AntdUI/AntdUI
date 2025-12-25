@@ -105,7 +105,7 @@ namespace AntdUI
 
         void Init()
         {
-            if (OS.Win7OrLower) Select();
+            if (OS.Win7OrLower && ScrollBar.ShowY) Select();
             KeyCall = keys =>
             {
                 if (keys == Keys.Escape)

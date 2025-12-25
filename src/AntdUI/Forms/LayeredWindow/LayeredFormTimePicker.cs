@@ -117,7 +117,6 @@ namespace AntdUI
 
         #region 日期
 
-        DateTime DateNow = DateTime.Now;
         List<CalendarT> calendar_time;
 
         #endregion
@@ -335,8 +334,8 @@ namespace AntdUI
                 {
                     if (ShowButtonNow && rect_button.Contains(x, y))
                     {
-                        DateNow = DateTime.Now;
-                        SelDate = new TimeSpan(DateNow.Hour, DateNow.Minute, DateNow.Second);
+                        var now = DateTime.Now;
+                        SelDate = new TimeSpan(now.Hour, now.Minute, now.Second);
                         action(SelDate);
                         ScrollTime();
                         Print();

@@ -264,7 +264,7 @@ namespace AntdUI
 
         void Init()
         {
-            if (OS.Win7OrLower) Select();
+            if (OS.Win7OrLower && ScrollBar.ShowY) Select();
             KeyCall = keys =>
             {
                 int _select_x = -1;

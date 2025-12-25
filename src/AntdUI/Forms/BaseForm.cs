@@ -249,10 +249,10 @@ namespace AntdUI
 
         #endregion
 
+        #region DPI
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual bool AutoHandDpi { get; set; } = true;
-
-        #region DPI
 
         public float Dpi { get; private set; }
 

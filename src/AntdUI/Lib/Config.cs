@@ -156,6 +156,11 @@ namespace AntdUI
         /// </summary>
         public static bool FocusBorderEnabled { get; set; } = true;
 
+        /// <summary>
+        /// 下拉边距更远
+        /// </summary>
+        public static bool DropDownMarginFurther { get; set; }
+
         #region 弹出在窗口
 
         /// <summary>
@@ -205,11 +210,6 @@ namespace AntdUI
 #endif
 
         /// <summary>
-        /// DPI模式
-        /// </summary>
-        public static DpiMode DpiMode { get; set; } = DpiMode.Default;
-
-        /// <summary>
         /// 默认字体
         /// </summary>
         public static Font? Font { get; set; }
@@ -229,6 +229,11 @@ namespace AntdUI
         #endregion
 
         #region DPI
+
+        /// <summary>
+        /// DPI模式
+        /// </summary>
+        public static DpiMode DpiMode { get; set; } = DpiMode.Default;
 
         static bool dpione = true;
         static float _dpi = 1F;
@@ -255,10 +260,6 @@ namespace AntdUI
             else EventHub.Dispatch(EventType.DPI, _dpi);
         }
 
-        #endregion
-
-        public const string NullText = "龍Qq";
-
         internal static void SetDpi(float dpi)
         {
             dpione = false;
@@ -268,6 +269,10 @@ namespace AntdUI
         }
 
         internal static void SetDpi(Graphics g) => SetDpi(g.DpiX / 96F);
+
+        #endregion
+
+        public const string NullText = "龍Qq";
 
         /// <summary>
         /// 设置修正文本渲染

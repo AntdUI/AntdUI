@@ -24,6 +24,7 @@ Name | Description | Type | Default Value |
 **Tooltips** | Customize the prompt information for each item | string[]`?` | `null` |
 **Character** | Custom Characters SVG | string`?` | `null` |
 🌏 **LocalizationCharacter** | Internationalized Custom characters | string`?` | `null` |
+**TooltipConfig** | Text tooltip configuration | [TTooltipConfig](Enum.md#ttipconfig) | `null` |
 
 ### Event
 

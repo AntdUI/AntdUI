@@ -109,7 +109,7 @@ namespace AntdUI
                 Radius = (int)(_control.radius * Dpi);
             }
             SelDate = _control.Value;
-            Date = SelDate ?? DateNow;
+            Date = SelDate ?? DateTime.Now;
 
             LoadLayout();
 
@@ -118,8 +118,6 @@ namespace AntdUI
         }
 
         int ArrowSize = 8;
-
-        DateTime DateNow = DateTime.Now;
 
         public DateTime? SelDate;
 
@@ -295,6 +293,7 @@ namespace AntdUI
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(DatePicker), ColorScheme)))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
@@ -315,7 +314,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                         }
-                        if (DateNow.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                        if (now.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)
@@ -345,6 +344,7 @@ namespace AntdUI
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
             using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(DatePicker), ColorScheme)))
             {
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
@@ -365,7 +365,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                         }
-                        if (DateNow.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
+                        if (now.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)
@@ -483,6 +483,7 @@ namespace AntdUI
                     else g.String(OKButton, Font, brush_active, rect_buttonok.Rect, s_f);
                 }
 
+                var now = DateTime.Now;
                 foreach (var it in datas)
                 {
                     var rect = rect_div[it.id];
@@ -503,7 +504,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect, s_f);
                         }
-                        if (DateNow.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path); ;
+                        if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(DatePicker), ColorScheme), bor, path); ;
                     }
                 }
                 if (badge_list.Count > 0)
@@ -913,7 +914,7 @@ namespace AntdUI
                         }
                         else if (ShowButtonToDay && rect_button.Contains(x, y))
                         {
-                            SelDate = Date = DateNow = DateTime.Now;
+                            SelDate = Date = DateTime.Now;
                             action(SelDate.Value);
                             if (ShowTime && calendar_time != null)
                             {
@@ -958,8 +959,8 @@ namespace AntdUI
                                                 if (SelDate.HasValue) SelDate = new DateTime(it.date.Year, it.date.Month, it.date.Day, SelDate.Value.Hour, SelDate.Value.Minute, SelDate.Value.Second);
                                                 else
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(it.date.Year, it.date.Month, it.date.Day, DateNow.Hour, DateNow.Minute, DateNow.Second);
+                                                    var now = DateTime.Now;
+                                                    SelDate = new DateTime(it.date.Year, it.date.Month, it.date.Day, now.Hour, now.Minute, now.Second);
                                                 }
                                                 action(SelDate.Value);
                                                 Print();
@@ -986,8 +987,8 @@ namespace AntdUI
                                                 if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, SelDate.Value.Hour, it.t, SelDate.Value.Second);
                                                 else
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, it.t, 0);
+                                                    var now = DateTime.Now;
+                                                    SelDate = new DateTime(now.Year, now.Month, now.Day, 0, it.t, 0);
                                                 }
                                                 Print();
                                                 if (ValueTimeHorizontal) ScrollTime(calendar_time, SelDate.Value);
@@ -1000,8 +1001,8 @@ namespace AntdUI
                                                 if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, SelDate.Value.Hour, SelDate.Value.Minute, it.t);
                                                 else
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, 0, 0, it.t);
+                                                    var now = DateTime.Now;
+                                                    SelDate = new DateTime(now.Year, now.Month, now.Day, 0, 0, it.t);
                                                 }
                                                 Print();
                                                 if (ValueTimeHorizontal) ScrollTime(calendar_time, SelDate.Value);
@@ -1015,8 +1016,8 @@ namespace AntdUI
                                                 if (SelDate.HasValue) SelDate = new DateTime(SelDate.Value.Year, SelDate.Value.Month, SelDate.Value.Day, it.t, SelDate.Value.Minute, SelDate.Value.Second);
                                                 else
                                                 {
-                                                    DateNow = DateTime.Now;
-                                                    SelDate = new DateTime(DateNow.Year, DateNow.Month, DateNow.Day, it.t, 0, 0);
+                                                    var now = DateTime.Now;
+                                                    SelDate = new DateTime(now.Year, now.Month, now.Day, it.t, 0, 0);
                                                 }
                                                 Print();
                                                 if (ValueTimeHorizontal) ScrollTime(calendar_time, SelDate.Value);

@@ -202,6 +202,108 @@ namespace AntdUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ChartDataPoint? HoveredPoint { get; private set; }
 
+        #region 坐标轴配置
+
+        double? xMin;
+        /// <summary>
+        /// X轴最小值（null表示自动计算）
+        /// </summary>
+        [Description("X轴最小值"), Category("坐标轴")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public double? XMin
+        {
+            get => xMin;
+            set
+            {
+                if (xMin == value) return;
+                xMin = value;
+                Invalidate();
+                OnPropertyChanged(nameof(XMin));
+            }
+        }
+
+        double? xMax;
+        /// <summary>
+        /// X轴最大值（null表示自动计算）
+        /// </summary>
+        [Description("X轴最大值"), Category("坐标轴")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public double? XMax
+        {
+            get => xMax;
+            set
+            {
+                if (xMax == value) return;
+                xMax = value;
+                Invalidate();
+                OnPropertyChanged(nameof(XMax));
+            }
+        }
+
+        double? yMin;
+        /// <summary>
+        /// Y轴最小值（null表示自动计算）
+        /// </summary>
+        [Description("Y轴最小值"), Category("坐标轴")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public double? YMin
+        {
+            get => yMin;
+            set
+            {
+                if (yMin == value) return;
+                yMin = value;
+                Invalidate();
+                OnPropertyChanged(nameof(YMin));
+            }
+        }
+
+        double? yMax;
+        /// <summary>
+        /// Y轴最大值（null表示自动计算）
+        /// </summary>
+        [Description("Y轴最大值"), Category("坐标轴")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public double? YMax
+        {
+            get => yMax;
+            set
+            {
+                if (yMax == value) return;
+                yMax = value;
+                Invalidate();
+                OnPropertyChanged(nameof(YMax));
+            }
+        }
+
+        /// <summary>
+        /// 显示X轴标签
+        /// </summary>
+        [Description("显示X轴标签"), Category("坐标轴"), DefaultValue(true)]
+        public bool ShowXAxisLabels { get; set; } = true;
+
+        /// <summary>
+        /// 显示Y轴标签
+        /// </summary>
+        [Description("显示Y轴标签"), Category("坐标轴"), DefaultValue(true)]
+        public bool ShowYAxisLabels { get; set; } = true;
+
+        /// <summary>
+        /// X轴标签格式
+        /// </summary>
+        [Description("X轴标签格式"), Category("坐标轴")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string? XAxisLabelFormat { get; set; }
+
+        /// <summary>
+        /// Y轴标签格式
+        /// </summary>
+        [Description("Y轴标签格式"), Category("坐标轴")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string? YAxisLabelFormat { get; set; }
+
+        #endregion
+
         #endregion
 
         #region 事件
@@ -375,6 +477,25 @@ namespace AntdUI
                     case ContentAlignment.BottomRight:
                         chartRect.Height -= legendHeight + LegendPadding;
                         break;
+                }
+            }
+
+            // 为坐标轴标签留出空间
+            if (ShowAxes)
+            {
+                if (ShowYAxisLabels)
+                {
+                    // 为Y轴标签预留左侧空间（估算最大标签宽度）
+                    var maxLabelWidth = (int)(50 * Dpi);
+                    chartRect.X += maxLabelWidth;
+                    chartRect.Width -= maxLabelWidth;
+                }
+
+                if (ShowXAxisLabels)
+                {
+                    // 为X轴标签预留底部空间
+                    var labelHeight = Font.Height + (int)(10 * Dpi);
+                    chartRect.Height -= labelHeight;
                 }
             }
 
@@ -564,6 +685,70 @@ namespace AntdUI
                 g.DrawLine(pen, chartRect.X, chartRect.Bottom, chartRect.Right, chartRect.Bottom);
                 // Y轴
                 g.DrawLine(pen, chartRect.X, chartRect.Y, chartRect.X, chartRect.Bottom);
+            }
+
+            // 绘制坐标轴标签
+            var labelColor = Style.Db.Text;
+            var labelFont = Font;
+
+            // 绘制Y轴标签
+            if (ShowYAxisLabels)
+            {
+                var yMin = GetMinY();
+                var yMax = GetMaxY();
+                var yRange = GetYRange();
+                var labelCount = 5; // 显示5个标签
+
+                for (int i = 0; i <= labelCount; i++)
+                {
+                    var value = yMin + (yRange * i / labelCount);
+                    var y = chartRect.Bottom - (int)((value - yMin) / yRange * chartRect.Height);
+
+                    // 格式化标签文本
+                    var labelText = string.IsNullOrEmpty(YAxisLabelFormat)
+                        ? value.ToString("F1")
+                        : value.ToString(YAxisLabelFormat);
+
+                    var textSize = g.MeasureString(labelText, labelFont);
+                    var textX = chartRect.X - textSize.Width - (int)(5 * Dpi);
+                    var textY = y - textSize.Height / 2;
+
+                    // 确保标签在可见区域内
+                    if (textX > 0 && textY > 0)
+                    {
+                        g.DrawText(labelText, labelFont, labelColor, new Rectangle(textX, textY, textSize.Width, textSize.Height));
+                    }
+                }
+            }
+
+            // 绘制X轴标签
+            if (ShowXAxisLabels)
+            {
+                var xMin = GetMinX();
+                var xMax = GetMaxX();
+                var xRange = GetXRange();
+                var labelCount = 5; // 显示5个标签
+
+                for (int i = 0; i <= labelCount; i++)
+                {
+                    var value = xMin + (xRange * i / labelCount);
+                    var x = chartRect.X + (int)((value - xMin) / xRange * chartRect.Width);
+
+                    // 格式化标签文本
+                    var labelText = string.IsNullOrEmpty(XAxisLabelFormat)
+                        ? value.ToString("F1")
+                        : value.ToString(XAxisLabelFormat);
+
+                    var textSize = g.MeasureString(labelText, labelFont);
+                    var textX = x - textSize.Width / 2;
+                    var textY = chartRect.Bottom + (int)(5 * Dpi);
+
+                    // 确保标签在可见区域内
+                    if (textX > 0 && textY + textSize.Height < Height)
+                    {
+                        g.DrawText(labelText, labelFont, labelColor, new Rectangle(textX, textY, textSize.Width, textSize.Height));
+                    }
+                }
             }
         }
 
@@ -856,6 +1041,7 @@ namespace AntdUI
 
         private double GetMinX()
         {
+            if (XMin.HasValue) return XMin.Value;
             if (Datasets.Count == 0) return 0;
             var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
             if (!visibleDatasets.Any()) return 0;
@@ -864,6 +1050,7 @@ namespace AntdUI
 
         private double GetMaxX()
         {
+            if (XMax.HasValue) return XMax.Value;
             if (Datasets.Count == 0) return 1; // 默认返回1而不是0，避免范围为0
             var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
             if (!visibleDatasets.Any()) return 1;
@@ -872,14 +1059,13 @@ namespace AntdUI
 
         private double GetMinY()
         {
-            if (Datasets.Count == 0) return 0;
-            var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
-            if (!visibleDatasets.Any()) return 0;
-            return visibleDatasets.Min(d => d.DataPoints.Where(p => p.Visible).Min(p => p.Y));
+            if (YMin.HasValue) return YMin.Value;
+            return 0;
         }
 
         private double GetMaxY()
         {
+            if (YMax.HasValue) return YMax.Value;
             if (Datasets.Count == 0) return 1; // 默认返回1而不是0，避免范围为0
             var visibleDatasets = Datasets.Where(d => d.Visible && d.DataPoints.Count > 0);
             if (!visibleDatasets.Any()) return 1;

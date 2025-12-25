@@ -310,7 +310,7 @@
 > [![LabelTime](Icon/LabelTime.png)](Control/LabelTime.md)
 
 
-### Feedback `7`
+### Feedback `8`
 
 #### [Alert](Control/Alert.md)
 
@@ -353,6 +353,12 @@
 > Used for the loading status of a page or a block.
 
 > [![Spin](Icon/Spin.png)](Control/Spin.md)
+
+#### [Watermark](Control/Watermark.md)
+
+> Add specific text or patterns to the page.
+
+> [![Watermark](Icon/Watermark.png)](Control/Watermark.md)
 
 ### Other `5`
 

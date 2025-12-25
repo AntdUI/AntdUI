@@ -52,21 +52,21 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ⬇️| General `2` | Animation | Disable |
 :---:|:--|:--:|:--:|
 ➡️| [**Button**](doc/wiki/en/Control/Button.md) | ✅ | ✅ |
-➡️| [**FloatButton**](doc/wiki/en/Control/FloatButton.md) | ✅ | ❎ |
+➡️| [**FloatButton**](doc/wiki/en/Control/FloatButton.md) | ✅ | ✅ |
 ||||
 ⬇️| Layout `5` | Animation | Disable |
 ➡️| [**Divider**](doc/wiki/en/Control/Divider.md) | ❎ | ❎ |
 ➡️| [**StackPanel**](doc/wiki/en/Control/StackPanel.md) | ❎ | ❎ |
 ➡️| [**FlowPanel**](doc/wiki/en/Control/FlowPanel.md) | ❎ | ❎ |
 ➡️| [**GridPanel**](doc/wiki/en/Control/GridPanel.md) | ❎ | ❎ |
-➡️| [**Splitter**](doc/wiki/zh/Control/Splitter.md) | ❎ | ❎ |
+➡️| [**Splitter**](doc/wiki/en/Control/Splitter.md) | ❎ | ❎ |
 ||||
 ⬇️| Navigation `7` | Animation | Disable |
 ➡️| [**Breadcrumb**](doc/wiki/en/Control/Breadcrumb.md) | ✅ | ❎ |
 ➡️| [**Dropdown**](doc/wiki/en/Control/Dropdown.md) | ✅ | ✅ |
-➡️| [**Menu**](doc/wiki/en/Control/Menu.md) | ✅ | ❎ |
+➡️| [**Menu**](doc/wiki/en/Control/Menu.md) | ✅ | ✅ |
 ➡️| [**PageHeader**](doc/wiki/en/Control/PageHeader.md) | ✅ | ❎ |
-➡️| [**TabHeader**](doc/wiki/en/Control/TabHeader.md) | ✅ | ❎ |
+➡️| [**TabHeader**](doc/wiki/en/Control/TabHeader.md) | ✅ | ✅ |
 ➡️| [**Pagination**](doc/wiki/en/Control/Pagination.md) | ✅ | ✅ |
 ➡️| [**Steps**](doc/wiki/en/Control/Steps.md) | ❎ | ❎ |
 ||||
@@ -87,7 +87,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Transfer**](doc/wiki/en/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| Data Display `19` | Animation | Disable |
+⬇️| Data Display `21` | Animation | Disable |
 ➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
@@ -95,9 +95,10 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Carousel**](doc/wiki/en/Control/Carousel.md) | ✅ | ❎ |
 ➡️| [**Collapse**](doc/wiki/en/Control/Collapse.md) | ✅ | ❎ |
 ➡️| [**Preview**](doc/wiki/en/Control/Preview.md) | ✅ | ✅ |
+➡️| [**ImagePreview**](doc/wiki/en/Control/ImagePreview.md) | ✅ | ❎ |
 ➡️| [**Popover**](doc/wiki/en/Control/Popover.md) | ✅ | ❎ |
 ➡️| [**Segmented**](doc/wiki/en/Control/Segmented.md) | ✅ | ✅ |
-➡️| [**Table**](doc/wiki/en/Control/Table.md) | ✅ | ❎ |
+➡️| [**Table**](doc/wiki/en/Control/Table.md) | ✅ | ✅ |
 ➡️| [**Tabs**](doc/wiki/en/Control/Tabs.md) | ✅ | ❎ |
 ➡️| [**Tag**](doc/wiki/en/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline**](doc/wiki/en/Control/Timeline.md) | ❎ | ❎ |
@@ -105,8 +106,9 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Tour**](doc/wiki/en/Control/Tour.md) | ✅ | ❎ |
 ➡️| [**Tree**](doc/wiki/en/Control/Tree.md) | ✅ | ✅ |
 ➡️| [**Label**](doc/wiki/en/Control/Label.md) | ✅ | ❎ |
-➡️| [**LabelTime**](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
-➡️| **Chart** 图表 | ✅ | ❎ |
+➡️| [**LabelTime**](doc/wiki/en/Control/LabelTime.md) | ✅ | ❎ |
+➡️| [**HyperlinkLabel**](doc/wiki/en/Control/HyperlinkLabel.md) | ✅ | ❎ |
+➡️| **Chart** | ✅ | ❎ |
 ||||
 ⬇️| Feedback `8` | Animation | Disable |
 ➡️| [**Alert**](doc/wiki/en/Control/Alert.md) | ✅ | ❎ |
@@ -116,7 +118,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Notification**](doc/wiki/en/Control/Notification.md) | ✅ | ❎ |
 ➡️| [**Progress**](doc/wiki/en/Control/Progress.md) | ✅ | ❎ |
 ➡️| [**Spin**](doc/wiki/en/Control/Spin.md) | ✅ | ❎ |
-➡️| **Watermark** | ✅ | ❎ |
+➡️| [**Watermark**](doc/wiki/en/Control/Watermark.md) | ✅ | ❎ |
 ⬇️| Chat `2` | Animation | Disable |
 ➡️| **MsgList** Friend message list | ✅ | ❎ |
 ➡️| **ChatList** Chat bubble list | ✅ | ❎ |
