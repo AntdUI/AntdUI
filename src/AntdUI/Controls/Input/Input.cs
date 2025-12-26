@@ -592,6 +592,12 @@ namespace AntdUI
         [Obsolete, Description("处理快捷键"), Category("行为"), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
 
+        /// <summary>
+        /// 适配系统助记词
+        /// </summary>
+        [Description("适配系统助记词"), Category("行为"), DefaultValue(false)]
+        public bool AdapterSystemMnemonic { get; set; }
+
         #endregion
 
         #region 原生属性
