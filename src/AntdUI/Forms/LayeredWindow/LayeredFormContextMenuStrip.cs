@@ -615,8 +615,29 @@ namespace AntdUI
 
         LayeredFormContextMenuStrip? subForm;
         ILayeredForm? SubLayeredForm.SubForm() => subForm;
+
+        #region 安全三角区
+
         public override bool EnableSafetyTriangleZone => true;
         public override Rectangle? OnSafetyTriangleZone(int x, int y) => subForm?.TargetRect;
+
+        Point[]? SafetyTriangleZone;
+        DateTime SafetyTriangleFlag;
+        public override bool IMOUSEMOVEAfter(int x, int y, Rectangle rect)
+        {
+            bool ret = false;
+            if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) ret = true;
+            var now = DateTime.Now;
+            if ((now - SafetyTriangleFlag).TotalMilliseconds > 500)
+            {
+                SafetyTriangleFlag = now;
+                SafetyTriangleZone = Helper.SafetyTriangleZone(x, y, rect);
+                if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) ret = true;
+            }
+            return ret;
+        }
+
+        #endregion
 
         #endregion
 

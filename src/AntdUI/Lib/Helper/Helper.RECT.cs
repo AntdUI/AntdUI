@@ -1161,5 +1161,88 @@ namespace AntdUI
             }
             return new Point(x - w, y - h);
         }
+
+        /// <summary>
+        /// 计算鼠标与容器的安全三角区
+        /// </summary>
+        /// <param name="x">鼠标x</param>
+        /// <param name="y">鼠标y</param>
+        /// <param name="rect">容器区域</param>
+        public static Point[]? SafetyTriangleZone(int x, int y, Rectangle rect)
+        {
+            // 确定鼠标相对于矩形的位置区域
+            bool isLeft = x < rect.X, isRight = x > rect.Right, isTop = y < rect.Y, isBottom = y > rect.Bottom;
+
+            // 只处理矩形外部的情况
+            if (isLeft || isRight || isTop || isBottom)
+            {
+                // 根据鼠标位置生成安全三角区域
+                if (isLeft && isTop) // 左上区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.Right, rect.Y),
+                        new Point(rect.X, rect.Bottom)
+                    };
+                }
+                else if (isRight && isTop) // 右上区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.X, rect.Y),
+                        new Point(rect.Right, rect.Bottom)
+                    };
+                }
+                else if (isLeft && isBottom) // 左下区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.X, rect.Y),
+                        new Point(rect.Right, rect.Bottom)
+                    };
+                }
+                else if (isRight && isBottom) // 右下区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.Right, rect.Y),
+                        new Point(rect.X, rect.Bottom)
+                    };
+                }
+                else if (isLeft) // 左侧中间区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.X, rect.Y),
+                        new Point(rect.X, rect.Bottom)
+                    };
+                }
+                else if (isRight) // 右侧中间区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.Right, rect.Y),
+                        new Point(rect.Right, rect.Bottom)
+                    };
+                }
+                else if (isTop) // 顶部中间区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.X, rect.Y),
+                        new Point(rect.Right, rect.Y)
+                    };
+                }
+                else if (isBottom) // 底部中间区域
+                {
+                    return new Point[] {
+                        new Point(x, y),
+                        new Point(rect.X, rect.Bottom),
+                        new Point(rect.Right, rect.Bottom)
+                    };
+                }
+            }
+            return null;
+        }
     }
 }

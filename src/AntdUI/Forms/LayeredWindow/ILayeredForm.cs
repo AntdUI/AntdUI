@@ -369,10 +369,13 @@ namespace AntdUI
             if (CloseMode.HasFlag(CloseMode.Leave))
             {
                 var mousePosition = MousePosition;
-                if (ALLRECT().Contains(mousePosition)) return;
+                var rect = ALLRECT();
+                if (IMOUSEMOVEAfter(mousePosition.X, mousePosition.Y, rect)) return;
+                if (rect.Contains(mousePosition)) return;
                 IClose();
             }
         }
+        public virtual bool IMOUSEMOVEAfter(int x, int y, Rectangle rect) => false;
 
         public bool IKEYS(Keys keys)
         {
