@@ -509,12 +509,21 @@ namespace AntdUI
 
         #endregion
 
-        internal bool CanProcessMnemonic()
+        internal bool CanProcessMnemonicBefore(char charCode, string? text)
+        {
+            if (Enabled && Visible && IsMnemonic(charCode, text)) return true;
+            return false;
+        }
+        internal bool CanProcessMnemonicAfter()
         {
             var form = FindForm();
             if (form == null) return true;
-            var control = form.ActiveControl;
+            return CanProcessMnemonicActiveControl(form.ActiveControl);
+        }
+        internal bool CanProcessMnemonicActiveControl(Control? control)
+        {
             if (control is Input input) return input.hasAlt;
+            else if (control is UserControl userControl) return CanProcessMnemonicActiveControl(userControl.ActiveControl);
             return true;
         }
 

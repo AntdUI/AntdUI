@@ -374,11 +374,11 @@ namespace AntdUI
         [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
         public float ArrowProg { get; set; } = -1F;
 
-        #region 快捷键
+        #region 助记键
 
         bool useMnemonic = true;
         /// <summary>
-        /// 如助记键
+        /// 助记键
         /// </summary>
         [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
         public bool UseMnemonic
@@ -395,10 +395,13 @@ namespace AntdUI
 
         protected override bool ProcessMnemonic(char charCode)
         {
-            if (UseMnemonic && Enabled && Visible && CanProcessMnemonic() && IsMnemonic(charCode, Text))
+            if (useMnemonic && CanProcessMnemonicBefore(charCode, text))
             {
-                PerformClick();
-                return true;
+                if (CanProcessMnemonicAfter())
+                {
+                    PerformClick();
+                    return true;
+                }
             }
             return base.ProcessMnemonic(charCode);
         }

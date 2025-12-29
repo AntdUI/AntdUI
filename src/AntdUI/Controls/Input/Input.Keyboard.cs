@@ -45,6 +45,7 @@ namespace AntdUI
                         return !readOnly;
                 }
             }
+            else hasAlt = true;
             return base.IsInputKey(keyData);
         }
 
