@@ -463,6 +463,7 @@ namespace AntdUI
                 }
                 else
                 {
+                    cache_font[0].rect = new Rectangle(rect_d_r.X, rect_d_r.Y, cache_font[0].width, CaretInfo.Height);
                     int user = 0;
                     for (int i = tabindex + 1; i < cache_font.Length; i++)
                     {

@@ -75,7 +75,7 @@ namespace AntdUI
             get => _recordsPerPageText;
             set
             {
-                if (_recordsPerPageText == value || string.IsNullOrWhiteSpace(value)) return;
+                if (_recordsPerPageText == value) return;
                 _recordsPerPageText = value;
                 OnPropertyChanged(nameof(RecordsPerPageText));
                 ButtonLayout(true);
