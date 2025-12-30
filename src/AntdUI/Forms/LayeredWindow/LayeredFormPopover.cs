@@ -38,8 +38,8 @@ namespace AntdUI
                 if (config.Content is Control control)
                 {
                     control.Parent = this;
-                    control.BackColor = config.Back ?? Colour.BgElevated.Get(nameof(Popover), config.ColorScheme);
-                    control.ForeColor = config.Fore ?? Colour.Text.Get(nameof(Popover), config.ColorScheme);
+                    control.BackColor = config.Back ?? Colour.BgElevated.Get(name, config.ColorScheme);
+                    control.ForeColor = config.Fore ?? Colour.Text.Get(name, config.ColorScheme);
                     Win32.WindowTheme(control, config.ColorScheme);
                     Helper.DpiAuto(config.Dpi ?? Dpi, control);
                     int w = control.Width;
@@ -271,7 +271,7 @@ namespace AntdUI
         {
             if (config.Title != null || rtext)
             {
-                using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get(nameof(Popover), config.ColorScheme)))
+                using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get(name, config.ColorScheme)))
                 {
                     using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                     {
@@ -302,9 +302,19 @@ namespace AntdUI
 
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get(nameof(Popover), config.ColorScheme)))
+            using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get(name, config.ColorScheme)))
             {
                 g.Fill(brush, path);
+                if (shadow == 0)
+                {
+                    int bor = (int)(Dpi), bor2 = bor * 2;
+                    using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
+                    {
+                        g.Draw(Colour.BorderColor.Get(name, config.ColorScheme), bor, path2);
+                    }
+                    if (tempContent != null) g.Image(tempContent, rectContent);
+                    return;
+                }
                 if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }
             if (tempContent != null) g.Image(tempContent, rectContent);

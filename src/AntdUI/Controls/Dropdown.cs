@@ -158,7 +158,7 @@ namespace AntdUI
             {
                 if (expand == value) return;
                 expand = value;
-                if (ShowArrow && Config.HasAnimation(nameof(Dropdown)))
+                if (ShowArrow && Config.HasAnimation(nameof(Dropdown), Name))
                 {
                     ThreadExpand?.Dispose();
                     ThreadExpand = new AnimationTask(new AnimationFixedConfig(i =>

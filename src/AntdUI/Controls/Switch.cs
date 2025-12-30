@@ -86,7 +86,7 @@ namespace AntdUI
                 if (_checked == value) return;
                 _checked = value;
                 ThreadCheck?.Dispose();
-                if (IsHandleCreated && Config.HasAnimation(nameof(Switch)))
+                if (IsHandleCreated && Config.HasAnimation(nameof(Switch), Name))
                 {
                     AnimationCheck = true;
                     ThreadCheck = new AnimationTask(new AnimationLinearFConfig(this, i =>
@@ -381,7 +381,7 @@ namespace AntdUI
                 SetCursor(value && enabled);
                 if (enabled)
                 {
-                    if (Config.HasAnimation(nameof(Switch)))
+                    if (Config.HasAnimation(nameof(Switch), Name))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;
@@ -415,7 +415,7 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (Config.HasAnimation(nameof(Switch)) && e.Button == MouseButtons.Left)
+            if (Config.HasAnimation(nameof(Switch), Name) && e.Button == MouseButtons.Left)
             {
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;

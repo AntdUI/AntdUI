@@ -1154,7 +1154,7 @@ namespace AntdUI
                 expand = value;
                 PARENT?.OnExpandChanged2(this, expand);
                 if (value) PARENT?.UniqueOne(this);
-                if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
+                if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse), Name))
                 {
                     if (PARENT.AutoSize) PARENT.canset = false;
                     Location = new Point(-Width, -Height);

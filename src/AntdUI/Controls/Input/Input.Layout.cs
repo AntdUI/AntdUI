@@ -225,7 +225,7 @@ namespace AntdUI
         internal bool CalculateRect()
         {
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
-            int sps = (int)(CaretInfo.Height * .4F), sps2 = sps * 2;
+            int sps = (int)(CaretInfo.Height * paddgap), sps2 = sps * 2;
             rect.Width -= UR;
             RectAuto(rect, sps, sps2);
             int rdcount = 0;

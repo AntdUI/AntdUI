@@ -962,7 +962,7 @@ namespace AntdUI
                 }
                 g.ResetTransform();
                 ScrollBar.Paint(g, ColorScheme);
-                if (Config.HasAnimation(nameof(VirtualPanel)) && BlurBar != null) _event.SetWait();
+                if (Config.HasAnimation(nameof(VirtualPanel), Name) && BlurBar != null) _event.SetWait();
             }
             base.OnDraw(e);
         }
@@ -1053,7 +1053,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    if (Config.HasAnimation(nameof(VirtualPanel)) && BlurBar != null) _event.SetWait();
+                    if (Config.HasAnimation(nameof(VirtualPanel), Name) && BlurBar != null) _event.SetWait();
                     break;
             }
         }
@@ -1169,7 +1169,7 @@ namespace AntdUI
         {
             if (Enabled && ShadowOpacityAnimation && shadow > 0 && shadowOpacityHover > 0 && it is VirtualShadowItem virtualShadow && shadowOpacityHover > shadowOpacity)
             {
-                if (Config.HasAnimation(nameof(VirtualPanel)))
+                if (Config.HasAnimation(nameof(VirtualPanel), Name))
                 {
                     virtualShadow.ThreadHover?.Dispose();
                     virtualShadow.AnimationHover = true;

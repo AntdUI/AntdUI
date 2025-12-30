@@ -254,7 +254,7 @@ namespace AntdUI
                 if (_mouseDotHover == value) return;
                 _mouseDotHover = value;
                 if (!value) CloseTips();
-                if (Config.HasAnimation(nameof(Slider)))
+                if (Config.HasAnimation(nameof(Slider), Name))
                 {
                     ThreadHover?.Dispose();
                     ThreadHover = null;

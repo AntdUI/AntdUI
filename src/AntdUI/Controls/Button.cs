@@ -670,7 +670,7 @@ namespace AntdUI
             {
                 if (value == toggle) return;
                 toggle = value;
-                if (Config.HasAnimation(nameof(Button)))
+                if (Config.HasAnimation(nameof(Button), Name))
                 {
                     if (IconToggleAnimation > 0 && HasIcon && HasToggleIcon)
                     {
@@ -1008,7 +1008,7 @@ namespace AntdUI
 
         public void ClickAnimation()
         {
-            if (WaveSize > 0 && Config.HasAnimation(nameof(Button)))
+            if (WaveSize > 0 && Config.HasAnimation(nameof(Button), Name))
             {
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;
@@ -1064,7 +1064,7 @@ namespace AntdUI
                 {
                     var backHover = GetColorO();
                     int alpha = backHover.A;
-                    if (Config.HasAnimation(nameof(Button)))
+                    if (Config.HasAnimation(nameof(Button), Name))
                     {
                         if (IconHoverAnimation > 0 && ((toggle && HasToggleIcon && (ToggleIconHoverSvg != null || ToggleIconHover != null)) || (HasIcon && (IconHoverSvg != null || IconHover != null))))
                         {

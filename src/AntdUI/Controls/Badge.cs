@@ -159,7 +159,7 @@ namespace AntdUI
         void StartAnimation()
         {
             StopAnimation();
-            if (Config.HasAnimation(nameof(AntdUI.Badge)) && state == TState.Processing)
+            if (Config.HasAnimation(nameof(AntdUI.Badge), Name) && state == TState.Processing)
             {
                 ThreadState = new AnimationTask(new AnimationLinearConfig(this, i =>
                 {

@@ -340,6 +340,24 @@ namespace AntdUI
             }
         }
 
+        float paddgap = .4F;
+        /// <summary>
+        /// 边框间距比例
+        /// </summary>
+        [Description("边框间距比例"), Category("外观"), DefaultValue(.4F)]
+        public float PaddGap
+        {
+            get => paddgap;
+            set
+            {
+                if (paddgap == value) return;
+                paddgap = value;
+                CalculateRect();
+                Invalidate();
+                OnPropertyChanged(nameof(PaddGap));
+            }
+        }
+
         Image? prefix;
         /// <summary>
         /// 前缀
@@ -1634,6 +1652,8 @@ namespace AntdUI
 
         #endregion
 
+        protected virtual bool HasAnimation => true;
+
         #endregion
 
         #region 光标
@@ -1642,16 +1662,16 @@ namespace AntdUI
 
         #region 得到光标位置
 
+        protected virtual void SetCaretPostion(ref int x, ref int y)
+        {
+        }
+
         /// <summary>
         /// 通过坐标系查找光标位置
         /// </summary>
         CacheCaret? GetCaretPostion(int x, int y)
         {
-            if (TakePaint != null)
-            {
-                x += Left;
-                y += Top;
-            }
+            SetCaretPostion(ref x, ref y);
             if (cache_caret == null) return null;
             else return FindNearestFont(x, y, cache_caret);
         }

@@ -355,7 +355,7 @@ namespace AntdUI
                 if (_mouseDown == value) return;
                 _mouseDown = value;
                 ChangeMouseHover(_mouseHover, value);
-                if (Config.HasAnimation(nameof(Input)) && WaveSize > 0 && TakePaint == null)
+                if (Config.HasAnimation(nameof(Input), Name) && HasAnimation && WaveSize > 0)
                 {
                     ThreadFocus?.Dispose();
                     AnimationFocus = true;
@@ -401,7 +401,7 @@ namespace AntdUI
                 if (Enabled)
                 {
                     OnAllowClear();
-                    if (Config.HasAnimation(nameof(Input)) && !ExtraMouseDown && TakePaint == null)
+                    if (Config.HasAnimation(nameof(Input), Name) && HasAnimation && !ExtraMouseDown)
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

@@ -168,6 +168,15 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
+                if (shadow == 0)
+                {
+                    int bor = (int)(Dpi), bor2 = bor * 2;
+                    using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
+                    {
+                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                    }
+                    return;
+                }
                 if (tmpItemHeight > 0) g.FillPolygon(brush, TAlign.LT.AlignLines(ArrowSize, rect, tmpItemHeight));
                 else if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }
@@ -179,11 +188,11 @@ namespace AntdUI
             {
                 int sy = ScrollBar.Value;
                 g.TranslateTransform(0, -sy);
-                using (var brush = new SolidBrush(Colour.Text.Get(nameof(AntdUI.Select), ColorScheme)))
-                using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(nameof(AntdUI.Select), ColorScheme)))
-                using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(nameof(AntdUI.Select), ColorScheme)))
-                using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(nameof(AntdUI.Select), ColorScheme)))
-                using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(AntdUI.Select), ColorScheme)))
+                using (var brush = new SolidBrush(Colour.Text.Get(name, ColorScheme)))
+                using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(name, ColorScheme)))
+                using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
+                using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
                 {
                     if (Radius > 0)
                     {
@@ -260,7 +269,7 @@ namespace AntdUI
             {
                 using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
                 {
-                    using (var brush = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get(nameof(AntdUI.Select), ColorScheme)))
+                    using (var brush = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
                     {
                         g.Fill(brush, path);
                     }
@@ -274,12 +283,12 @@ namespace AntdUI
                 DrawTextIconSelect(g, it);
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(nameof(AntdUI.Select), ColorScheme) : Colour.Error.Get(nameof(AntdUI.Select), ColorScheme))))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
                 }
-                if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(nameof(AntdUI.Select), ColorScheme));
+                if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(name, ColorScheme));
             }
             else g.Fill(brush_split, it.Rect);
         }
@@ -312,12 +321,12 @@ namespace AntdUI
                     }
                     if (it.Online.HasValue)
                     {
-                        using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(nameof(AntdUI.Select), ColorScheme) : Colour.Error.Get(nameof(AntdUI.Select), ColorScheme))))
+                        using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
                         {
                             g.FillEllipse(brush_online, it.RectOnline);
                         }
                     }
-                    if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(nameof(AntdUI.Select), ColorScheme));
+                    if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(name, ColorScheme));
                 }
             }
             else g.Fill(brush_split, it.Rect);
@@ -328,7 +337,7 @@ namespace AntdUI
             {
                 if (selectedValue.Contains(it.Tag))
                 {
-                    using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(nameof(AntdUI.Select), ColorScheme)))
+                    using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
                     {
                         g.Fill(brush_back, it.Rect);
                     }
@@ -341,12 +350,12 @@ namespace AntdUI
                 }
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(nameof(AntdUI.Select), ColorScheme) : Colour.Error.Get(nameof(AntdUI.Select), ColorScheme))))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
                 }
-                if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(nameof(AntdUI.Select), ColorScheme));
+                if (it.HasSub) DrawArrow(g, it, Colour.TextBase.Get(name, ColorScheme));
             }
             else g.Fill(brush_split, it.Rect);
         }
@@ -355,24 +364,24 @@ namespace AntdUI
         {
             if (it.Enable)
             {
-                using (var fore = new SolidBrush(Colour.TextBase.Get(nameof(AntdUI.Select), ColorScheme)))
+                using (var fore = new SolidBrush(Colour.TextBase.Get(name, ColorScheme)))
                 {
                     g.DrawText(it.Text, Font, fore, it.RectText, sf);
                 }
             }
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(nameof(AntdUI.Select), ColorScheme)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
                 {
                     g.DrawText(it.Text, Font, fore, it.RectText, sf);
                 }
             }
-            DrawIcon(g, it, Colour.TextBase.Get(nameof(AntdUI.Select), ColorScheme));
+            DrawIcon(g, it, Colour.TextBase.Get(name, ColorScheme));
 
             using (var path = it.RectCheck.RoundPath(Radius / 2))
             {
-                g.Fill(Colour.Primary.Get(nameof(AntdUI.Select), ColorScheme), path);
-                using (var brush = new Pen(Colour.BgBase.Get(nameof(AntdUI.Select), ColorScheme), 2.6F * Dpi))
+                g.Fill(Colour.Primary.Get(name, ColorScheme), path);
+                using (var brush = new Pen(Colour.BgBase.Get(name, ColorScheme), 2.6F * Dpi))
                 {
                     g.DrawLines(brush, it.RectCheck.CheckArrow());
                 }
@@ -387,7 +396,7 @@ namespace AntdUI
             }
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(nameof(AntdUI.Select), ColorScheme)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
                 {
                     g.DrawText(it.Text, Font, fore, it.RectText, sf);
                 }
@@ -396,7 +405,7 @@ namespace AntdUI
 
             using (var path = it.RectCheck.RoundPath(Radius / 2))
             {
-                g.Draw(Colour.BorderColor.Get(nameof(AntdUI.Select), ColorScheme), 2F * Dpi, path);
+                g.Draw(Colour.BorderColor.Get(name, ColorScheme), 2F * Dpi, path);
             }
         }
         void DrawIcon(Canvas g, ObjectItemCheck it, Color color)

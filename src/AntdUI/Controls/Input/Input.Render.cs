@@ -4,7 +4,6 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -18,12 +17,8 @@ namespace AntdUI
         internal FormatFlags sf_center = FormatFlags.Center | FormatFlags.NoWrap;
         internal FormatFlags sf_placeholder = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
-        internal Action? TakePaint;
-        public new void Invalidate()
-        {
-            if (TakePaint == null) base.Invalidate();
-            else TakePaint();
-        }
+        public new virtual void Invalidate() => base.Invalidate();
+
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;

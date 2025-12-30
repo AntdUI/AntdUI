@@ -636,7 +636,7 @@ namespace AntdUI
                 _mouseHover = value;
                 var enabled = Enabled;
                 SetCursor(value && enabled);
-                if (Config.HasAnimation(nameof(Slider)))
+                if (Config.HasAnimation(nameof(Slider), Name))
                 {
                     ThreadHover?.Dispose();
                     AnimationHover = true;
@@ -664,7 +664,7 @@ namespace AntdUI
                 if (_mouseDotHover == value) return;
                 _mouseDotHover = value;
                 if (!value) CloseTips();
-                if (Config.HasAnimation(nameof(Slider)))
+                if (Config.HasAnimation(nameof(Slider), Name))
                 {
                     ThreadHover?.Dispose();
                     ThreadHover = null;

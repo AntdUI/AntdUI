@@ -117,16 +117,25 @@ namespace AntdUI
         readonly FormatFlags s_f = FormatFlags.Center;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(nameof(DatePicker), ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
+                if (shadow == 0)
+                {
+                    int bor = (int)(Dpi), bor2 = bor * 2;
+                    using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
+                    {
+                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                    }
+                    return;
+                }
                 if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var brush_fore = new SolidBrush(Colour.TextBase.Get(nameof(DatePicker), ColorScheme)))
-            using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get(nameof(DatePicker), ColorScheme)))
+            using (var brush_fore = new SolidBrush(Colour.TextBase.Get(name, ColorScheme)))
+            using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
             {
                 var state2 = g.Save();
                 int type = -1;
@@ -168,7 +177,7 @@ namespace AntdUI
                                 if (it.t == SelDate.Seconds) g.Fill(brush_bg, path);
                                 break;
                         }
-                        if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(DatePicker), ColorScheme), path);
+                        if (it.hover) g.Fill(Colour.FillTertiary.Get(name, ColorScheme), path);
                         g.String(it.v, Font, brush_fore, it.rect_read, s_f);
                     }
                 }
@@ -177,17 +186,17 @@ namespace AntdUI
                 ScrollM.Paint(g, ColorScheme);
                 ScrollS.Paint(g, ColorScheme);
 
-                var color_active = Colour.Primary.Get(nameof(DatePicker), ColorScheme);
+                var color_active = Colour.Primary.Get(name, ColorScheme);
 
                 if (ShowButtonNow)
                 {
-                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(nameof(DatePicker), ColorScheme)), rect_button, s_f);
-                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(nameof(DatePicker), ColorScheme), rect_button, s_f);
+                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_button, s_f);
+                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_button, s_f);
                     else g.String(button_text, Font, color_active, rect_button, s_f);
                 }
 
-                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(nameof(DatePicker), ColorScheme)), rect_buttonok, s_f);
-                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(nameof(DatePicker), ColorScheme), rect_buttonok, s_f);
+                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_buttonok, s_f);
+                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_buttonok, s_f);
                 else g.String(OKButton, Font, color_active, rect_buttonok, s_f);
             }
         }
