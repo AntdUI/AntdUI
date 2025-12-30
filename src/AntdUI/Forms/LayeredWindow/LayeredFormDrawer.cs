@@ -1,21 +1,8 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
-// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
-// YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
-// YOU MAY OBTAIN A COPY OF THE LICENSE AT
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
-// DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
-// SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
-// LIMITATIONS UNDER THE License.
-// GITCODE: https://gitcode.com/AntdUI/AntdUI
-// GITEE: https://gitee.com/AntdUI/AntdUI
-// GITHUB: https://github.com/AntdUI/AntdUI
-// CSDN: https://blog.csdn.net/v_132
-// QQ: 17379620
+// Copyright (C) Tom <17379620>. All Rights Reserved.
+// AntdUI WinForm Library | Licensed under Apache-2.0 License
+// Gitee: https://gitee.com/AntdUI/AntdUI
+// GitHub: https://github.com/AntdUI/AntdUI
+// GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
 using System.ComponentModel;
@@ -357,7 +344,7 @@ namespace AntdUI
 
         #region 控件
 
-        Form? form = null;
+        Form? form;
         void LoadContent()
         {
             var rect = Ang();
@@ -368,6 +355,7 @@ namespace AntdUI
                 form_.FormBorderStyle = FormBorderStyle.None;
                 form_.Location = hidelocation;
                 form_.ClientSize = rect.Size;
+                form_.StartPosition = FormStartPosition.Manual;
                 form = form_;
             }
             else
@@ -376,6 +364,7 @@ namespace AntdUI
                 {
                     BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme),
                     FormBorderStyle = FormBorderStyle.None,
+                    StartPosition = FormStartPosition.Manual,
                     Location = hidelocation,
                     ClientSize = rect.Size
                 };
@@ -396,8 +385,6 @@ namespace AntdUI
                 Close();
             };
             form.Show(this);
-            form.Location = hidelocation;
-            form.ClientSize = rect.Size;
         }
 
         void ShowContent()

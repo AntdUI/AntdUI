@@ -1,21 +1,8 @@
-// COPYRIGHT (C) Tom. ALL RIGHTS RESERVED.
-// THE AntdUI PROJECT IS AN WINFORM LIBRARY LICENSED UNDER THE Apache-2.0 License.
-// LICENSED UNDER THE Apache License, VERSION 2.0 (THE "License")
-// YOU MAY NOT USE THIS FILE EXCEPT IN COMPLIANCE WITH THE License.
-// YOU MAY OBTAIN A COPY OF THE LICENSE AT
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING, SOFTWARE
-// DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
-// SEE THE LICENSE FOR THE SPECIFIC LANGUAGE GOVERNING PERMISSIONS AND
-// LIMITATIONS UNDER THE License.
-// GITCODE: https://gitcode.com/AntdUI/AntdUI
-// GITEE: https://gitee.com/AntdUI/AntdUI
-// GITHUB: https://github.com/AntdUI/AntdUI
-// CSDN: https://blog.csdn.net/v_132
-// QQ: 17379620
+// Copyright (C) Tom <17379620>. All Rights Reserved.
+// AntdUI WinForm Library | Licensed under Apache-2.0 License
+// Gitee: https://gitee.com/AntdUI/AntdUI
+// GitHub: https://github.com/AntdUI/AntdUI
+// GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
 using System.Collections.Generic;
@@ -374,11 +361,11 @@ namespace AntdUI
         [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
         public float ArrowProg { get; set; } = -1F;
 
-        #region 快捷键
+        #region 助记键
 
         bool useMnemonic = true;
         /// <summary>
-        /// 如助记键
+        /// 助记键
         /// </summary>
         [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
         public bool UseMnemonic
@@ -395,10 +382,13 @@ namespace AntdUI
 
         protected override bool ProcessMnemonic(char charCode)
         {
-            if (UseMnemonic && Enabled && Visible && CanProcessMnemonic() && IsMnemonic(charCode, Text))
+            if (useMnemonic && CanProcessMnemonicBefore(charCode, text))
             {
-                PerformClick();
-                return true;
+                if (CanProcessMnemonicAfter())
+                {
+                    PerformClick();
+                    return true;
+                }
             }
             return base.ProcessMnemonic(charCode);
         }
