@@ -35,8 +35,7 @@ namespace AntdUI
                 ControlStyles.UserPaint |
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw |
-                ControlStyles.DoubleBuffer, true);
+                ControlStyles.ResizeRedraw, true);
             UpdateStyles();
             //置顶窗体
             //TopMost = BorderlessForm.TopMost;

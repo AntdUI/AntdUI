@@ -40,7 +40,6 @@ namespace AntdUI
                        ControlStyles.AllPaintingInWmPaint |
                        ControlStyles.OptimizedDoubleBuffer |
                        ControlStyles.ResizeRedraw |
-                       ControlStyles.DoubleBuffer |
                        ControlStyles.SupportsTransparentBackColor |
                        ControlStyles.UserPaint, true);
                     SetStyle(ControlStyles.Selectable, false);
@@ -50,7 +49,6 @@ namespace AntdUI
                        ControlStyles.AllPaintingInWmPaint |
                        ControlStyles.OptimizedDoubleBuffer |
                        ControlStyles.ResizeRedraw |
-                       ControlStyles.DoubleBuffer |
                        ControlStyles.SupportsTransparentBackColor |
                        ControlStyles.UserPaint, true);
                     break;
@@ -59,7 +57,6 @@ namespace AntdUI
                        ControlStyles.AllPaintingInWmPaint |
                        ControlStyles.OptimizedDoubleBuffer |
                        ControlStyles.ResizeRedraw |
-                       ControlStyles.DoubleBuffer |
                        ControlStyles.SupportsTransparentBackColor |
                        ControlStyles.UserPaint, true);
                     SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);

@@ -34,8 +34,7 @@ namespace AntdUI
                 ControlStyles.UserPaint |
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw |
-                ControlStyles.DoubleBuffer, true);
+                ControlStyles.ResizeRedraw, true);
             UpdateStyles();
             base.FormBorderStyle = FormBorderStyle.None;
         }

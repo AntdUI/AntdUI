@@ -32,9 +32,8 @@ namespace AntdUI
         {
             SetStyle(
                 ControlStyles.UserPaint |
-                ControlStyles.DoubleBuffer |
-                ControlStyles.AllPaintingInWmPaint |
-                ControlStyles.OptimizedDoubleBuffer, true);
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.AllPaintingInWmPaint, true);
             UpdateStyles();
             InitDpi();
         }

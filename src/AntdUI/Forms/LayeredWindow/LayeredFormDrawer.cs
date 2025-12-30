@@ -357,7 +357,7 @@ namespace AntdUI
 
         #region 控件
 
-        Form? form = null;
+        Form? form;
         void LoadContent()
         {
             var rect = Ang();
@@ -368,6 +368,7 @@ namespace AntdUI
                 form_.FormBorderStyle = FormBorderStyle.None;
                 form_.Location = hidelocation;
                 form_.ClientSize = rect.Size;
+                form_.StartPosition = FormStartPosition.Manual;
                 form = form_;
             }
             else
@@ -376,6 +377,7 @@ namespace AntdUI
                 {
                     BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme),
                     FormBorderStyle = FormBorderStyle.None,
+                    StartPosition = FormStartPosition.Manual,
                     Location = hidelocation,
                     ClientSize = rect.Size
                 };
@@ -396,8 +398,6 @@ namespace AntdUI
                 Close();
             };
             form.Show(this);
-            form.Location = hidelocation;
-            form.ClientSize = rect.Size;
         }
 
         void ShowContent()

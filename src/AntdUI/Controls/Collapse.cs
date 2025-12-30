@@ -1131,7 +1131,6 @@ namespace AntdUI
                ControlStyles.AllPaintingInWmPaint |
                ControlStyles.OptimizedDoubleBuffer |
                ControlStyles.ResizeRedraw |
-               ControlStyles.DoubleBuffer |
                ControlStyles.SupportsTransparentBackColor |
                ControlStyles.ContainerControl |
                ControlStyles.UserPaint, true);
