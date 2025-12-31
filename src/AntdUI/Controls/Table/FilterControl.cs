@@ -179,19 +179,12 @@ namespace AntdUI
         private void InitFilterValues(FilterSource sourceType, IList<object>? customSource)
         {
             treeList.Items.Clear();
-            bool enabled = Option.Enabled;
-            var values = new HashSet<object?>();
-            bool blankFlag = false;
             if (sourceType != FilterSource.DataSource && customSource != null && customSource.Count > 0)
             {
                 segmentedSource.Items[2].Text = "用户数据";
                 segmentedSource.Items[2].SetText("用户数据", "Filter.UserData");
                 segmentedSource.SelectIndex = 2;
-                foreach (var val in customSource)
-                {
-                    if (blankFlag == false) blankFlag = val == null || val == DBNull.Value;
-                    values.Add(val);
-                }
+                InitFilterValuesCore(sourceType, customSource);
             }
             else
             {
@@ -204,15 +197,12 @@ namespace AntdUI
                 }
                 else source = RowsCache;
                 if (source == null) return;
-
-                foreach (var row in source)
-                {
-                    var value = row[FocusedColumn.Key];
-                    if (blankFlag == false) blankFlag = value == null || value == DBNull.Value;
-                    if (!values.Contains(value)) values.Add(value);
-                }
+                InitFilterValuesCore(sourceType, source);
             }
-
+        }
+        private void InitFilterValuesCore(FilterSource sourceType, IList<object> values)
+        {
+            bool enabled = Option.Enabled;
             int count = values.Count, check_count = 0;
             var items = new List<TreeItem>(count + 1);
             Dictionary<object, SelectItem> selects;
@@ -227,44 +217,53 @@ namespace AntdUI
             {
                 var sw = enabled == false || (Option.FilterValues != null && Option.FilterValues.Contains(val));
                 if (sw) check_count++;
-                if (val == null || val == DBNull.Value)
+                if (val is Table.IRow row)
                 {
-                    if (blankFlag && Option.AllowNull == false) continue;
-                    var item = CreateItem(BLANK_FIELD, enabled);
-                    items.Add(new TreeItem(BLANK_FIELD).SetTag(val).SetChecked(sw));
-                }
-                else
-                {
-                    var text = FocusedColumn?.GetDisplayText(val) ?? "";
-                    if (dir.TryGetValue(text, out var tmp)) tmp.Add(val);
+                    var value = row[FocusedColumn.Key];
+                    if (value == null)
+                    {
+                        if (Option.AllowNull == false) continue;
+                        items.Add(new TreeItem(BLANK_FIELD).SetTag(value).SetChecked(sw));
+                    }
                     else
                     {
-                        var tmps = new List<object> { val };
-                        dir.Add(text, tmps);
-                        var item = new TreeItem(text).SetTag(tmps).SetChecked(sw);
-                        if (selects.TryGetValue(val, out var find))
-                        {
-                            item.Text = find.Text;
-                            item.IconSvg = find.IconSvg;
-                        }
-                        items.Add(item);
+                        string text;
+                        if (FocusedColumn.Render == null) text = FocusedColumn.GetDisplayText(value) ?? "";
+                        else text = FocusedColumn.Render(value, row.record, row.i)?.ToString() ?? "";
+                        AddTreeItems(selects, enabled, ref items, ref dir, ref check_count, value, text);
                     }
                 }
+                else if (val == null || val == DBNull.Value)
+                {
+                    if (Option.AllowNull == false) continue;
+                    items.Add(new TreeItem(BLANK_FIELD).SetTag(val).SetChecked(sw));
+                }
+                else AddTreeItems(selects, enabled, ref items, ref dir, ref check_count, val, FocusedColumn.GetDisplayText(val) ?? "");
             }
             var it_all = new TreeItem().SetText("(全选)", "Filter.SelectAll").SetChecked(enabled).SetID("CHECKED_ALL");
             it_all.CheckState = check_count == 0 ? CheckState.Unchecked : check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
             items.Insert(0, it_all);
             treeList.Items.AddRange(items.ToArray());
         }
-        private TreeItem CreateItem(object? val, bool enabled)
+        private void AddTreeItems(Dictionary<object, SelectItem> selects, bool enabled, ref List<TreeItem> items, ref Dictionary<string, List<object>> dir, ref int check_count, object val, string text)
         {
-            var text = val == null || val == DBNull.Value ? BLANK_FIELD : FocusedColumn?.GetDisplayText(val);
-            return new TreeItem(text ?? "")
+            if (dir.TryGetValue(text, out var tmp)) tmp.Add(val);
+            else
             {
-                Checked = enabled == false || (Option.FilterValues != null && Option.FilterValues.Contains(val)),
-                Tag = val
-            };
+                var sw = enabled == false || (Option.FilterValues != null && Option.FilterValues.Contains(val));
+                if (sw) check_count++;
+                var tmps = new List<object> { val };
+                dir.Add(text, tmps);
+                var item = new TreeItem(text).SetTag(tmps).SetChecked(sw);
+                if (selects.TryGetValue(val, out var find))
+                {
+                    item.Text = find.Text;
+                    item.IconSvg = find.IconSvg;
+                }
+                items.Add(item);
+            }
         }
+
         private string GetConditionIconSvg(FilterConditions condition)
         {
             switch (condition)
