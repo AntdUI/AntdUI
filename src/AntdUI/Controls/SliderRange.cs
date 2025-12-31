@@ -39,8 +39,8 @@ namespace AntdUI
                 else if (value > MaxValue) value = MaxValue;
                 if (_value2 == value) return;
                 _value2 = value;
-                OnValue2Changed(_value2);
                 Invalidate();
+                OnValue2Changed(_value2);
                 OnPropertyChanged(nameof(Value2));
             }
         }

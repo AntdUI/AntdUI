@@ -121,8 +121,8 @@ namespace AntdUI
                 else if (value > _maxValue) value = _maxValue;
                 if (_value == value) return;
                 _value = value;
-                OnValueChanged(_value);
                 Invalidate();
+                OnValueChanged(_value);
                 OnPropertyChanged(nameof(Value));
             }
         }

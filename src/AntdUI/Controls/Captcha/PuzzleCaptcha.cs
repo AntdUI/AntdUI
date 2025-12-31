@@ -103,8 +103,8 @@ namespace AntdUI.Captcha
                 if (state == value) return;
                 state = value;
                 Invalidate();
-                OnPropertyChanged(nameof(State));
                 OnStateChanged(EventArgs.Empty);
+                OnPropertyChanged(nameof(State));
             }
         }
 

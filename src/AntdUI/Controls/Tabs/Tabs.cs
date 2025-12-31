@@ -437,9 +437,9 @@ namespace AntdUI
                 int old = _select;
                 _select = value;
                 style.SelectedIndexChanged(value, old);
-                OnSelectedIndexChanged(value);
                 Invalidate();
                 ShowPage(_select);
+                OnSelectedIndexChanged(value);
                 OnPropertyChanged(nameof(SelectedIndex));
             }
         }

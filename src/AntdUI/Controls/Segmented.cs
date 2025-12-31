@@ -481,8 +481,8 @@ namespace AntdUI
                 if (_select == value) return;
                 var old = _select;
                 _select = value;
-                OnSelectIndexChanged(value);
                 SetRect(old, _select);
+                OnSelectIndexChanged(value);
                 OnPropertyChanged(nameof(SelectIndex));
             }
         }

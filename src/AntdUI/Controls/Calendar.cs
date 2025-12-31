@@ -164,9 +164,9 @@ namespace AntdUI
             {
                 if (_value == value) return;
                 _value = value;
-                OnDateChanged(_value);
                 Invalidate();
                 LoadBadge();
+                OnDateChanged(_value);
                 OnPropertyChanged(nameof(Value));
             }
         }

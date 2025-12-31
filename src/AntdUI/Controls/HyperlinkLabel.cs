@@ -63,8 +63,8 @@ namespace AntdUI
                 if (text == value) return;
                 text = value;
                 if (BeforeAutoSize()) Invalidate();
-                OnTextChanged(EventArgs.Empty);
                 ParseText();
+                OnTextChanged(EventArgs.Empty);
                 OnPropertyChanged(nameof(Text));
             }
         }
