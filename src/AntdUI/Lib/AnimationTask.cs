@@ -302,21 +302,24 @@ namespace AntdUI
         {
             Run(() =>
             {
-                double init_val = 1D;
                 if (config.Call is Action<int, float, float> call_arrow)
                 {
                     if (config.LR)
                     {
-                        if (config.Value > -1) init_val = config.Value;
-                        else init_val = 0;
-                        for (int i = 0; i < config.TotalFrames; i++)
+                        int i_start = 0;
+                        if (config.Value is float old)
+                        {
+                            double progress = Animation.GetReverseProgress(old, config.Type, false);
+                            i_start = (int)(progress * config.TotalFrames);
+                        }
+                        for (int i = i_start; i < config.TotalFrames; i++)
                         {
                             if (token.Wait()) return false;
                             else
                             {
                                 int currentFrames = i + 1;
                                 double progress = ((currentFrames * 1.0) / config.TotalFrames);
-                                var prog = (float)(Animation.Animate(progress, 1D + init_val, config.Type) - init_val);
+                                var prog = (float)(Animation.Animate(progress, 1D, config.Type));
                                 if (prog < 0) return true;
                                 Tag = prog;
 
@@ -328,15 +331,20 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (config.Value > -1) init_val = config.Value;
-                        for (int i = 0; i < config.TotalFrames; i++)
+                        int i_start = 0;
+                        if (config.Value is float old)
+                        {
+                            double progress = Animation.GetReverseProgress(old, config.Type, true);
+                            i_start = (int)(progress * config.TotalFrames);
+                        }
+                        for (int i = i_start; i < config.TotalFrames; i++)
                         {
                             if (token.Wait()) return false;
                             else
                             {
                                 int currentFrames = i + 1;
                                 double progress = ((currentFrames * 1.0) / config.TotalFrames);
-                                var prog = (float)(init_val - Animation.Animate(progress, init_val, config.Type));
+                                var prog = (float)(1D - Animation.Animate(progress, 1D, config.Type));
                                 Tag = prog;
 
                                 var ArrowProg = -(Animation.Animate(currentFrames, config.TotalFrames, 2F, config.Type) - 1F);
@@ -350,16 +358,20 @@ namespace AntdUI
                 {
                     if (config.LR)
                     {
-                        if (config.Value > -1) init_val = config.Value;
-                        else init_val = 0;
-                        for (int i = 0; i < config.TotalFrames; i++)
+                        int i_start = 0;
+                        if (config.Value is float old)
+                        {
+                            double progress = Animation.GetReverseProgress(old, config.Type, false);
+                            i_start = (int)(progress * config.TotalFrames);
+                        }
+                        for (int i = i_start; i < config.TotalFrames; i++)
                         {
                             if (token.Wait()) return false;
                             else
                             {
                                 int currentFrames = i + 1;
                                 double progress = ((currentFrames * 1.0) / config.TotalFrames);
-                                var prog = (float)(Animation.Animate(progress, 1D + init_val, config.Type) - init_val);
+                                var prog = (float)(Animation.Animate(progress, 1D, config.Type));
                                 if (prog < 0) return true;
                                 Tag = prog;
                                 call(currentFrames, prog);
@@ -369,15 +381,20 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (config.Value > -1) init_val = config.Value;
-                        for (int i = 0; i < config.TotalFrames; i++)
+                        int i_start = 0;
+                        if (config.Value is float old)
+                        {
+                            double progress = Animation.GetReverseProgress(old, config.Type, true);
+                            i_start = (int)(progress * config.TotalFrames);
+                        }
+                        for (int i = i_start; i < config.TotalFrames; i++)
                         {
                             if (token.Wait()) return false;
                             else
                             {
                                 int currentFrames = i + 1;
                                 double progress = ((currentFrames * 1.0) / config.TotalFrames);
-                                var prog = (float)(init_val - Animation.Animate(progress, init_val, config.Type));
+                                var prog = (float)(1D - Animation.Animate(progress, 1D, config.Type));
                                 Tag = prog;
                                 call(currentFrames, prog);
                                 Thread.Sleep(config.Interval);
@@ -829,7 +846,7 @@ namespace AntdUI
     /// </summary>
     public class AnimationFixed2Config : IAnimationConfig
     {
-        public AnimationFixed2Config(Action<int, float> call, int interval, int totalFrames, float value, bool sw, AnimationType type = AnimationType.Ball)
+        public AnimationFixed2Config(Action<int, float> call, int interval, int totalFrames, object? value, bool sw, AnimationType type = AnimationType.Ball)
         {
             Call = call;
             Interval = interval;
@@ -838,7 +855,7 @@ namespace AntdUI
             LR = sw;
             Type = type;
         }
-        public AnimationFixed2Config(Action<int, float, float> call, int interval, int totalFrames, float value, bool sw, AnimationType type = AnimationType.Ball)
+        public AnimationFixed2Config(Action<int, float, float> call, int interval, int totalFrames, object? value, bool sw, AnimationType type = AnimationType.Ball)
         {
             Call = call;
             Interval = interval;
@@ -865,7 +882,7 @@ namespace AntdUI
         public bool LR { get; set; }
         public AnimationType Type { get; set; }
 
-        public float Value { get; set; }
+        public object? Value { get; set; }
 
         #region 设置
 

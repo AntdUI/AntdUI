@@ -633,8 +633,7 @@ namespace AntdUI
                     if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(CollapseGroup)))
                     {
                         ThreadExpand?.Dispose();
-                        float oldval = -1;
-                        if (ThreadExpand?.Tag is float oldv) oldval = oldv;
+                        var oldval = ThreadExpand?.Tag;
                         ExpandThread = true;
                         ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
                         {

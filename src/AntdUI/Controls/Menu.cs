@@ -711,7 +711,8 @@ namespace AntdUI
                                 if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                                 {
                                     it.ExpandHeight = y - y_item;
-                                    y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                                    it.ExpandRHeight = (int)(it.ExpandHeight * it.ExpandProg);
+                                    y = y_item + it.ExpandRHeight;
                                 }
                                 else if (!it.Expand) y = y_item;
                             }
@@ -765,7 +766,8 @@ namespace AntdUI
                                 if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
                                 {
                                     it.ExpandHeight = y - y_item;
-                                    y = y_item + (int)Math.Ceiling(it.ExpandHeight * it.ExpandProg);
+                                    it.ExpandRHeight = (int)(it.ExpandHeight * it.ExpandProg);
+                                    y = y_item + it.ExpandRHeight;
                                 }
                                 else if (!it.Expand) y = y_item;
                             }
@@ -909,16 +911,22 @@ namespace AntdUI
                     else
                     {
                         PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-                        if (it.Expand && it.items != null && it.items.Count > 0)
+                        if ((it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
                         {
-                            PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
                             if (it.ExpandThread)
                             {
-                                using (var brush = new SolidBrush(BackColor))
+                                if (it.ExpandTemp == null)
                                 {
-                                    g.Fill(brush, new RectangleF(rect.X, it.rect.Bottom + it.ExpandHeight * it.ExpandProg, rect.Width, it.ExpandHeight));
+                                    it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
+                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay())
+                                    {
+                                        g2.TranslateTransform(0, -it.rect.Bottom);
+                                        PaintItemExpand(g2, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
+                                    }
                                 }
+                                g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), new Rectangle(0, 0, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandProg);
                             }
+                            else PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
                         }
                     }
                 }
@@ -1783,13 +1791,10 @@ namespace AntdUI
         /// 移除菜单
         /// </summary>
         /// <param name="item">项</param>
-        public void Remove(MenuItem item)
+        public void Remove(MenuItem item) => Remove(item, items);
+        void Remove(MenuItem item, MenuItemCollection? items)
         {
-            if (items == null || items.Count == 0) return;
-            Remove(item, items);
-        }
-        void Remove(MenuItem item, MenuItemCollection items)
-        {
+            if (items == null) return;
             foreach (var it in items)
             {
                 if (it == item)
@@ -1797,7 +1802,7 @@ namespace AntdUI
                     items.Remove(it);
                     return;
                 }
-                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
+                Remove(item, it.items);
             }
         }
 
@@ -2164,18 +2169,11 @@ namespace AntdUI
                             return;
                         }
                         ThreadExpand?.Dispose();
-                        float oldval = -1;
-                        if (ThreadExpand?.Tag is float oldv) oldval = oldv;
+                        ExpandTemp?.Dispose();
+                        ExpandTemp = null;
+                        var oldval = ThreadExpand?.Tag;
                         ExpandThread = true;
-                        int t;
-                        if (value)
-                        {
-                            int time = ExpandCount(this) * 10;
-                            if (time > 1000) time = 1000;
-                            t = Animation.TotalFrames(10, time);
-                        }
-                        else t = Animation.TotalFrames(10, 200);
-
+                        int t = Animation.TotalFrames(10, 200);
                         ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val, arrow) =>
                         {
                             ExpandProg = val;
@@ -2186,6 +2184,8 @@ namespace AntdUI
                             ExpandProg = 1F;
                             ArrowProg = value ? 1F : -1F;
                             ExpandThread = false;
+                            ExpandTemp?.Dispose();
+                            ExpandTemp = null;
                             Invalidates();
                         }));
                     }
@@ -2204,20 +2204,6 @@ namespace AntdUI
                     Invalidates();
                 }
             }
-        }
-
-        internal int ExpandCount(MenuItem it)
-        {
-            int count = 0;
-            if (it.Sub != null && it.Sub.Count > 0)
-            {
-                count += it.Sub.Count;
-                foreach (var item in it.Sub)
-                {
-                    if (item.Expand) count += ExpandCount(item);
-                }
-            }
-            return count;
         }
 
         [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
@@ -2655,8 +2641,10 @@ namespace AntdUI
         internal float SubHeight { get; set; }
 
         internal int ExpandHeight { get; set; }
+        internal int ExpandRHeight { get; set; }
         internal float ExpandProg { get; set; }
         internal bool ExpandThread { get; set; }
+        internal Bitmap? ExpandTemp { get; set; }
         internal bool show { get; set; }
         internal bool Show { get; set; }
         void Invalidate() => PARENT?.Invalidate();
