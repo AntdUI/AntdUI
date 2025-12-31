@@ -11,6 +11,34 @@ namespace AntdUI
     partial class Helper
     {
         /// <summary>
+        /// ShowDialog 叠加蒙版
+        /// </summary>
+        /// <param name="owner">父窗口</param>
+        /// <param name="form">操作对象</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        public static DialogResult ShowDialogMask(this Form owner, Form form, bool MaskClosable = false)
+        {
+            var mask = owner.FormMask(form, MaskClosable);
+            var dialog = form.ShowDialog(mask);
+            mask.IClose();
+            return dialog;
+        }
+
+        /// <summary>
+        /// 叠加蒙版
+        /// </summary>
+        /// <param name="owner">父控件</param>
+        /// <param name="form">操作对象</param>
+        /// <param name="MaskClosable">点击蒙层是否允许关闭</param>
+        public static DialogResult ShowDialogMask(this Control owner, Form form, bool MaskClosable = false)
+        {
+            var mask = owner.FormMask(form, MaskClosable);
+            var dialog = form.ShowDialog(mask);
+            mask.IClose();
+            return dialog;
+        }
+
+        /// <summary>
         /// 叠加蒙版
         /// </summary>
         /// <param name="owner">父窗口</param>
