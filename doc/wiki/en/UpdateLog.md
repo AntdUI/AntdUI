@@ -1,5 +1,26 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.7` 2026-01-01 🎇
+
+- ➕ Tree item Checkable
+- ➕ Tree/Menu offers finer and more efficient unfolding animations
+- ➕ ColorPicker DropDownFontRatio
+- ➕ Input PaddGap
+- ➕ Adapt to AutoScaleMode.Dpi
+- ✍️ Tree/Menu interrupts animation
+- ✍️ Tree BeforeExpand Coverage
+- ✍️ Select and click Clear to bring up a dropdown menu
+- ✍️ Table dropdown filtering adapter slots
+- ✍️ DatePickerRange: The cursor is misaligned after deleting the start date
+- ✍️ Pagination RecordsPerPageText cannot be reset
+- ✍️ Drawer suppresses flicker
+- ✍️ Display dropdown menu and visible area of parent container
+- ✍️ Mask residue and Modal abnormal closure
+- ✍️ Event triggering sequence to prevent multiple triggers
+- ✍️ Mnemonic key not recognized under UserControl
+- ✍️ Mnemonic conflicts with Input
+- 🧹 ColorPicker
+
 ### `2.2.6` 2025-12-25 🎄
 
 - ➕ Chart displays XY axis labels
