@@ -408,7 +408,7 @@ namespace AntdUI
             {
                 if (showback == value) return;
                 showback = value;
-                if (Config.HasAnimation(nameof(PageHeader)) && IsHandleCreated)
+                if (Config.HasAnimation(nameof(PageHeader), Name) && IsHandleCreated)
                 {
                     ThreadBack?.Dispose();
                     AnimationBack = true;

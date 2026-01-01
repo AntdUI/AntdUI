@@ -57,8 +57,8 @@ namespace AntdUI
             {
                 if (_value == value) return;
                 _value = value;
-                OnValueChanged(value);
                 SetText(value);
+                OnValueChanged(value);
                 OnPropertyChanged(nameof(Value));
             }
         }

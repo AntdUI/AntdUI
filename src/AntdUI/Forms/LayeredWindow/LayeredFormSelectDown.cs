@@ -375,6 +375,15 @@ namespace AntdUI
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
             {
                 g.Fill(brush, path);
+                if (shadow == 0)
+                {
+                    int bor = (int)(Dpi), bor2 = bor * 2;
+                    using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
+                    {
+                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                    }
+                    return;
+                }
                 if (tmpItemHeight > 0) g.FillPolygon(brush, TAlign.LT.AlignLines(ArrowSize, rect, tmpItemHeight));
                 else if (ArrowLine != null) g.FillPolygon(brush, ArrowLine);
             }

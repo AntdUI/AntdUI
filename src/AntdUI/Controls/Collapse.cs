@@ -1154,13 +1154,12 @@ namespace AntdUI
                 expand = value;
                 PARENT?.OnExpandChanged2(this, expand);
                 if (value) PARENT?.UniqueOne(this);
-                if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse)))
+                if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Collapse), Name))
                 {
                     if (PARENT.AutoSize) PARENT.canset = false;
                     Location = new Point(-Width, -Height);
                     ThreadExpand?.Dispose();
-                    float oldval = -1;
-                    if (ThreadExpand?.Tag is float oldv) oldval = oldv;
+                    var oldval = ThreadExpand?.Tag;
                     ExpandThread = true;
                     var t = Animation.TotalFrames(10, PARENT.AnimationSpeed < 10 ? 10 : PARENT.AnimationSpeed);
                     ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>

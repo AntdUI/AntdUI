@@ -759,8 +759,8 @@ namespace AntdUI
                 selectedIndex = value;
                 Invalidate();
                 OnUpdateSummaries();
-                OnPropertyChanged(nameof(SelectedIndexs));
                 OnSelectIndexChanged();
+                OnPropertyChanged(nameof(SelectedIndexs));
             }
         }
 

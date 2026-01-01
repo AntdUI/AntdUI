@@ -41,6 +41,31 @@ namespace AntdUI
         public static float Animate(double progress, float maxValue, AnimationType type) => (float)(maxValue * type.CalculateValue(progress));
         public static double Animate(double progress, double maxValue, AnimationType type) => maxValue * type.CalculateValue(progress);
 
+        /// <summary>
+        /// 根据动画值和类型反推进度
+        /// </summary>
+        public static double GetReverseProgress(float value, AnimationType type, bool isReverse)
+        {
+            if (isReverse) value = 1F - value;
+            switch (type)
+            {
+                case AnimationType.Liner: return value;
+                case AnimationType.Ease: return value * value;
+                case AnimationType.Ball:
+                    // Ball类型的反函数：y = sqrt(1 - (x-1)^2) → x = 1 - sqrt(1 - y^2)
+                    return 1.0 - Math.Sqrt(1.0 - Math.Pow(value, 2));
+                case AnimationType.Resilience:
+                    // Resilience类型的反函数：y = -10/6 * x * (x - 1.6) → 解二次方程
+                    // 简化：6y = -10x² + 16x → 10x² - 16x + 6y = 0
+                    double a = 10.0, b = -16.0, c = 6.0 * value;
+                    double discriminant = b * b - 4 * a * c;
+                    if (discriminant < 0) return 0.0;
+                    // 取较小的根，因为动画进度从0到1
+                    return (16.0 - Math.Sqrt(discriminant)) / (2 * 10.0);
+                default: return 0.0;
+            }
+        }
+
         internal static double CalculateValue(this AnimationType type, double v)
         {
             switch (type)

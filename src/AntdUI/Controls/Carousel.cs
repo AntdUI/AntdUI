@@ -198,7 +198,7 @@ namespace AntdUI
         void SetSelectIndexVertical(int value, bool auto = false)
         {
             int height = ClientRectangle.Height - Padding.Vertical;
-            if (items != null && IsHandleCreated && Config.HasAnimation(nameof(Carousel)))
+            if (items != null && IsHandleCreated && Config.HasAnimation(nameof(Carousel), Name))
             {
                 ThreadChange?.Dispose();
                 AnimationChangeAuto = false;
@@ -257,7 +257,7 @@ namespace AntdUI
         void SetSelectIndexHorizontal(int value, bool auto = false)
         {
             int width = ClientRectangle.Width - Padding.Horizontal;
-            if (items != null && IsHandleCreated && Config.HasAnimation(nameof(Carousel)))
+            if (items != null && IsHandleCreated && Config.HasAnimation(nameof(Carousel), Name))
             {
                 ThreadChange?.Dispose();
                 AnimationChangeAuto = false;

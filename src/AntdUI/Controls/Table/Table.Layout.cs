@@ -955,7 +955,7 @@ namespace AntdUI
                 {
                     var value = OGetValue(ov, row.record, out var property, out var rv);
                     if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property, summary);
-                    else AddRows(ref cells, ref processing, column, rv, column.Render?.Invoke(value, row.record, row.i), property, summary);
+                    else AddRows(ref cells, ref processing, column, rv, column.Render(value, row.record, row.i), property, summary);
                 }
                 else AddRows(ref cells, ref processing, column, null, column.Render?.Invoke(null, row.record, row.i), null, summary);
             }

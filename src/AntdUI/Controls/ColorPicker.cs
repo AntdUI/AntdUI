@@ -351,6 +351,12 @@ namespace AntdUI
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(true)]
         public bool DropDownArrow { get; set; } = true;
 
+        /// <summary>
+        /// 下拉字体比例
+        /// </summary>
+        [Description("下拉字体比例"), Category("外观"), DefaultValue(0.9F)]
+        public float DropDownFontRatio { get; set; } = 0.9F;
+
         #region 组合
 
         TJoinMode joinMode = TJoinMode.None;

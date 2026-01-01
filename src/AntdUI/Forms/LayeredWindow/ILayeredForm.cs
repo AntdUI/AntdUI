@@ -280,30 +280,39 @@ namespace AntdUI
 
         #endregion
 
-        int countClose = 0;
+        #region 关闭
+
+        bool isClosing = false;
         public virtual void IClosing() { }
         public void IClose(bool isdispose = false)
+        {
+            if (isdispose) _Dispose();
+            else _Close();
+        }
+        void _Close()
+        {
+            try
+            {
+                if (isClosing || IsDisposed) return;
+                isClosing = true;
+                if (InvokeRequired) Invoke(Close);
+                else Close();
+            }
+            catch { }
+        }
+        void _Dispose()
         {
             try
             {
                 if (IsDisposed) return;
-                if (InvokeRequired)
-                {
-                    Invoke(() => IClose(isdispose));
-                    return;
-                }
-                if (countClose > 2) isdispose = true;
-                if (isdispose)
-                {
-                    IClosing();
-                    Dispose();
-                    return;
-                }
-                countClose++;
-                Close();
+                IClosing();
+                if (InvokeRequired) Invoke(Dispose);
+                else Dispose();
             }
             catch { }
         }
+
+        #endregion
 
         #region 属性
 

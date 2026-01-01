@@ -84,7 +84,6 @@ namespace AntdUI
             treeList.Name = "treeList";
             treeList.Size = new System.Drawing.Size(180, 132);
             treeList.TabIndex = 2;
-            treeList.Text = "tree1";
             treeList.CheckedChanged += treeList_CheckedChanged;
             // 
             // inputSearch

@@ -481,8 +481,8 @@ namespace AntdUI
                 if (_select == value) return;
                 var old = _select;
                 _select = value;
-                OnSelectIndexChanged(value);
                 SetRect(old, _select);
+                OnSelectIndexChanged(value);
                 OnPropertyChanged(nameof(SelectIndex));
             }
         }
@@ -512,7 +512,7 @@ namespace AntdUI
             var _old = items[old];
             ThreadBar?.Dispose();
             RectangleF OldValue = _old.Rect, NewValue = _new.Rect;
-            if (Config.HasAnimation(nameof(Segmented)))
+            if (Config.HasAnimation(nameof(Segmented), Name))
             {
                 if (vertical)
                 {

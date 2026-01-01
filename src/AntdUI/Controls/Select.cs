@@ -209,14 +209,17 @@ namespace AntdUI
         object? selectedValue;
         SelectItem? selectedItem;
 
+        bool noex = false;
         void ChangeValueNULL()
         {
+            noex = true;
             Text = "";
             selectedItem = null;
             selectedValue = null;
             selectedIndex = -1;
             OnSelectedValueChanged(selectedValue);
             OnSelectedIndexChanged(selectedIndex);
+            noex = false;
         }
 
         void ChangeValue(int value, object? obj)
@@ -370,7 +373,7 @@ namespace AntdUI
             base.OnTextChanged(e);
             if (HasFocus)
             {
-                if (filtertext == Text) return;
+                if (noex || filtertext == Text) return;
                 filtertext = Text;
                 if (FilterChanged == null)
                 {

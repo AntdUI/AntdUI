@@ -97,6 +97,16 @@ namespace AntdUI
             }
             return false;
         }
+        public static bool HasAnimation(string control, string name)
+        {
+            if (Animation)
+            {
+                if (AnimationData == null) return true;
+                if (AnimationData.Contains(control) || AnimationData.Contains(name)) return false;
+                return true;
+            }
+            return false;
+        }
 
         #endregion
 

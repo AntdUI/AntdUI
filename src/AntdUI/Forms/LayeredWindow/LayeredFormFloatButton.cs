@@ -222,28 +222,28 @@ namespace AntdUI
                             {
                                 case TTypeMini.Primary:
                                     use_primary++;
-                                    back = Colour.Primary.Get(nameof(FloatButton));
-                                    fore = Colour.PrimaryColor.Get(nameof(FloatButton));
+                                    back = Colour.Primary.Get(name);
+                                    fore = Colour.PrimaryColor.Get(name);
                                     break;
                                 case TTypeMini.Success:
-                                    back = Colour.Success.Get(nameof(FloatButton));
-                                    fore = Colour.SuccessColor.Get(nameof(FloatButton));
+                                    back = Colour.Success.Get(name);
+                                    fore = Colour.SuccessColor.Get(name);
                                     break;
                                 case TTypeMini.Error:
-                                    back = Colour.Error.Get(nameof(FloatButton));
-                                    fore = Colour.ErrorColor.Get(nameof(FloatButton));
+                                    back = Colour.Error.Get(name);
+                                    fore = Colour.ErrorColor.Get(name);
                                     break;
                                 case TTypeMini.Warn:
-                                    back = Colour.Warning.Get(nameof(FloatButton));
-                                    fore = Colour.WarningColor.Get(nameof(FloatButton));
+                                    back = Colour.Warning.Get(name);
+                                    fore = Colour.WarningColor.Get(name);
                                     break;
                                 case TTypeMini.Info:
-                                    back = Colour.Info.Get(nameof(FloatButton));
-                                    fore = Colour.InfoColor.Get(nameof(FloatButton));
+                                    back = Colour.Info.Get(name);
+                                    fore = Colour.InfoColor.Get(name);
                                     break;
                                 default:
-                                    back = Colour.BgElevated.Get(nameof(FloatButton));
-                                    fore = Colour.Text.Get(nameof(FloatButton));
+                                    back = Colour.BgElevated.Get(name);
+                                    fore = Colour.Text.Get(name);
                                     break;
                             }
                             if (it.Fore.HasValue) fore = it.Fore.Value;
@@ -251,7 +251,7 @@ namespace AntdUI
                             g.Fill(back, path);
 
                             float loading_size = it.rect_read.Height * 0.06F;
-                            using (var pen = new Pen(Colour.Fill.Get(nameof(FloatButton)), loading_size))
+                            using (var pen = new Pen(Colour.Fill.Get(name), loading_size))
                             using (var brush = new Pen(fore, pen.Width))
                             {
                                 g.DrawEllipse(pen, it.rect_icon);
@@ -268,42 +268,42 @@ namespace AntdUI
                                 {
                                     case TTypeMini.Primary:
                                         use_primary++;
-                                        back = Colour.Primary.Get(nameof(FloatButton));
-                                        back_hover = Colour.PrimaryHover.Get(nameof(FloatButton));
-                                        fore = Colour.PrimaryColor.Get(nameof(FloatButton));
+                                        back = Colour.Primary.Get(name);
+                                        back_hover = Colour.PrimaryHover.Get(name);
+                                        fore = Colour.PrimaryColor.Get(name);
                                         break;
                                     case TTypeMini.Success:
-                                        back = Colour.Success.Get(nameof(FloatButton));
-                                        back_hover = Colour.SuccessHover.Get(nameof(FloatButton));
-                                        fore = Colour.SuccessColor.Get(nameof(FloatButton));
+                                        back = Colour.Success.Get(name);
+                                        back_hover = Colour.SuccessHover.Get(name);
+                                        fore = Colour.SuccessColor.Get(name);
                                         break;
                                     case TTypeMini.Error:
-                                        back = Colour.Error.Get(nameof(FloatButton));
-                                        back_hover = Colour.ErrorHover.Get(nameof(FloatButton));
-                                        fore = Colour.ErrorColor.Get(nameof(FloatButton));
+                                        back = Colour.Error.Get(name);
+                                        back_hover = Colour.ErrorHover.Get(name);
+                                        fore = Colour.ErrorColor.Get(name);
                                         break;
                                     case TTypeMini.Warn:
-                                        back = Colour.Warning.Get(nameof(FloatButton));
-                                        back_hover = Colour.WarningHover.Get(nameof(FloatButton));
-                                        fore = Colour.WarningColor.Get(nameof(FloatButton));
+                                        back = Colour.Warning.Get(name);
+                                        back_hover = Colour.WarningHover.Get(name);
+                                        fore = Colour.WarningColor.Get(name);
                                         break;
                                     case TTypeMini.Info:
-                                        back = Colour.Info.Get(nameof(FloatButton));
-                                        back_hover = Colour.InfoHover.Get(nameof(FloatButton));
-                                        fore = Colour.InfoColor.Get(nameof(FloatButton));
+                                        back = Colour.Info.Get(name);
+                                        back_hover = Colour.InfoHover.Get(name);
+                                        fore = Colour.InfoColor.Get(name);
                                         break;
                                     default:
-                                        back = Colour.BgElevated.Get(nameof(FloatButton));
-                                        back_hover = Colour.FillSecondary.Get(nameof(FloatButton));
-                                        fore = Colour.Text.Get(nameof(FloatButton));
+                                        back = Colour.BgElevated.Get(name);
+                                        back_hover = Colour.FillSecondary.Get(name);
+                                        fore = Colour.Text.Get(name);
                                         break;
                                 }
                                 if (it.Fore.HasValue) fore = it.Fore.Value;
                             }
                             else
                             {
-                                back = back_hover = Colour.FillTertiary.Get(nameof(FloatButton));
-                                fore = Colour.TextQuaternary.Get(nameof(FloatButton));
+                                back = back_hover = Colour.FillTertiary.Get(name);
+                                fore = Colour.TextQuaternary.Get(name);
                             }
 
                             g.Fill(back, path);

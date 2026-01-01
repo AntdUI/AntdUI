@@ -326,7 +326,7 @@ namespace AntdUI
                 _value = value;
                 ThreadValue?.Dispose();
                 ThreadValue = null;
-                if (Config.HasAnimation(nameof(Progress)) && IsHandleCreated && Animation > 0)
+                if (Config.HasAnimation(nameof(Progress), Name) && IsHandleCreated && Animation > 0)
                 {
                     var t = AntdUI.Animation.TotalFrames(10, Animation);
                     if (_value > _value_show)

@@ -28,28 +28,19 @@ namespace AntdUI
         {
             key = k;
             control = _control;
-            action = () =>
-            {
-                _control.Print();
-            };
+            action = () => _control.Print();
         }
         public ITaskOpacity(string k, Form _control)
         {
             key = k;
             control = _control;
-            action = () =>
-            {
-                _control.Invalidate();
-            };
+            action = () => _control.Invalidate();
         }
         public ITaskOpacity(string k, IControl _control)
         {
             key = k;
             control = _control;
-            action = () =>
-            {
-                _control.Invalidate();
-            };
+            action = () => _control.Invalidate();
         }
 
         AnimationTask? Thread;

@@ -476,20 +476,17 @@ namespace AntdUI
         int count = 0;
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (config.MaskClosable && isclose)
+            if (m.Msg == 0xa0 || m.Msg == 0x200) count = 0;
+            else if (!IsLoad && isclose && m.Msg == 134)
             {
-                if (m.Msg == 0xa0 || m.Msg == 0x200) count = 0;
-                else if (m.Msg == 134)
+                var now = DateTime.Now;
+                if (now > old_now)
                 {
-                    var now = DateTime.Now;
-                    if (now > old_now)
-                    {
-                        count = 0;
-                        old_now = now.AddSeconds(1);
-                    }
-                    count++;
-                    if (count > 2) DialogResult = DialogResult.No;
+                    count = 0;
+                    old_now = now.AddSeconds(1);
                 }
+                count++;
+                if (count > 2) DialogResult = DialogResult.No;
             }
             base.WndProc(ref m);
         }

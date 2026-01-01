@@ -1,5 +1,26 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.7` 2026-01-01 🎇
+
+- ➕ Tree 项 Checkable
+- ➕ Tree/Menu 更细腻效率更高的展开动画
+- ➕ ColorPicker DropDownFontRatio
+- ➕ Input PaddGap
+- ➕ 适配 AutoScaleMode.Dpi
+- ✍️ Tree/Menu 打断动画
+- ✍️ Tree BeforeExpand 覆盖面
+- ✍️ Select 点击 Clear 弹出下拉
+- ✍️ Table 下拉筛选适配插槽
+- ✍️ DatePickerRange 开始日期删除后光标错位
+- ✍️ Pagination RecordsPerPageText 无法重置
+- ✍️ Drawer 抑制闪烁
+- ✍️ 下拉框与父容器可见区域显示
+- ✍️ Mask 残留、Modal 异常关闭
+- ✍️ 事件触发顺序，防止多次触发
+- ✍️ 助记键 在 UserControl 下无法识别
+- ✍️ Mnemonic 与 Input 冲突
+- 🧹 ColorPicker
+
 ### `2.2.6` 2025-12-25 🎄
 
 - ➕ Chart 显示XY轴标签

@@ -318,17 +318,25 @@ namespace AntdUI
         readonly FormatFlags sfl = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter, sfr = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, config.ColorScheme)))
             {
                 g.Fill(brush, path);
+                if (shadow == 0)
+                {
+                    int bor = (int)(Dpi), bor2 = bor * 2;
+                    using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
+                    {
+                        g.Draw(Colour.BorderColor.Get(name, config.ColorScheme), bor, path2);
+                    }
+                }
             }
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var brush = new SolidBrush(Colour.Text.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme)))
-            using (var brushSplit = new SolidBrush(Colour.Split.Get(nameof(AntdUI.ContextMenuStrip), "divider", config.ColorScheme)))
-            using (var brushSecondary = new SolidBrush(Colour.TextSecondary.Get(nameof(AntdUI.ContextMenuStrip), "subFore", config.ColorScheme)))
-            using (var brushEnabled = new SolidBrush(Colour.TextQuaternary.Get(nameof(AntdUI.ContextMenuStrip), "foreDisabled", config.ColorScheme)))
+            using (var brush = new SolidBrush(Colour.Text.Get(name, config.ColorScheme)))
+            using (var brushSplit = new SolidBrush(Colour.Split.Get(name, "divider", config.ColorScheme)))
+            using (var brushSecondary = new SolidBrush(Colour.TextSecondary.Get(name, "subFore", config.ColorScheme)))
+            using (var brushEnabled = new SolidBrush(Colour.TextQuaternary.Get(name, "foreDisabled", config.ColorScheme)))
             {
                 g.TranslateTransform(0, -ScrollBar.Value);
                 foreach (var it in rectsContent)
@@ -339,7 +347,7 @@ namespace AntdUI
                         {
                             using (var path = Helper.RoundPath(it.Rect, Radius))
                             {
-                                g.Fill(Colour.PrimaryBg.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), path);
+                                g.Fill(Colour.PrimaryBg.Get(name, config.ColorScheme), path);
                             }
                         }
                         if (item.Enabled)
@@ -356,7 +364,7 @@ namespace AntdUI
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
-                                using (var pen = new Pen(Colour.TextSecondary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 2F * Dpi))
+                                using (var pen = new Pen(Colour.TextSecondary.Get(name, config.ColorScheme), 2F * Dpi))
                                 {
                                     pen.StartCap = pen.EndCap = LineCap.Round;
                                     g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -364,7 +372,7 @@ namespace AntdUI
                             }
                             if (item.Checked)
                             {
-                                using (var pen = new Pen(Colour.Primary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 3F * Dpi))
+                                using (var pen = new Pen(Colour.Primary.Get(name, config.ColorScheme), 3F * Dpi))
                                 {
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }
@@ -385,7 +393,7 @@ namespace AntdUI
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
-                                using (var pen = new Pen(Colour.TextQuaternary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 2F * Dpi))
+                                using (var pen = new Pen(Colour.TextQuaternary.Get(name, config.ColorScheme), 2F * Dpi))
                                 {
                                     pen.StartCap = pen.EndCap = LineCap.Round;
                                     g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -393,7 +401,7 @@ namespace AntdUI
                             }
                             if (item.Checked)
                             {
-                                using (var pen = new Pen(Colour.Primary.Get(nameof(AntdUI.ContextMenuStrip), config.ColorScheme), 3F * Dpi))
+                                using (var pen = new Pen(Colour.Primary.Get(name, config.ColorScheme), 3F * Dpi))
                                 {
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }

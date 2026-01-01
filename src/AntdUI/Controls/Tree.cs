@@ -337,8 +337,19 @@ namespace AntdUI
         protected virtual void OnNodeMouseDoubleClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseDoubleClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
         protected virtual void OnNodeMouseMove(TreeItem item, Rectangle rect, bool hover) => NodeMouseMove?.Invoke(this, new TreeHoverEventArgs(item, rect, hover));
         protected virtual void OnCheckedChanged(TreeItem item, bool value) => CheckedChanged?.Invoke(this, new TreeCheckedEventArgs(item, value));
+        protected virtual bool OnBeforeExpand(TreeItem item, bool value)
+        {
+            if (BeforeExpand == null) return true;
+            else
+            {
+                var arge = new TreeExpandEventArgs(item, value);
+                BeforeExpand(this, arge);
+                return arge.CanExpand;
+            }
+        }
         protected virtual void OnAfterExpand(TreeItem item, bool value) => AfterExpand?.Invoke(this, new TreeCheckedEventArgs(item, value));
         internal void OnICheckedChanged(TreeItem item, bool value) => OnCheckedChanged(item, value);
+        internal bool OnIBeforeExpand(TreeItem item, bool value) => OnBeforeExpand(item, value);
         internal void OnIAfterExpand(TreeItem item, bool value) => OnAfterExpand(item, value);
 
         #endregion
@@ -391,17 +402,21 @@ namespace AntdUI
                             if (item.items == null) item.CheckState = CheckState.Unchecked;
                             else
                             {
-                                int check_count = 0;
+                                int count = 0, check_count = 0;
                                 foreach (var sub in item.items)
                                 {
-                                    if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+                                    if (sub.Checkable)
+                                    {
+                                        count++;
+                                        if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+                                    }
                                 }
-                                if (check_count > 0) item.CheckState = check_count == item.items.Count ? CheckState.Checked : CheckState.Indeterminate;
+                                if (check_count > 0) item.CheckState = check_count == count ? CheckState.Checked : CheckState.Indeterminate;
                                 else item.CheckState = CheckState.Unchecked;
                             }
                         }
                     }
-                    ChangeList(g, rect, null, items!, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
+                    ChangeList(g, rect, null, items, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
                 });
                 ScrollBar.SetVrSize(x, y);
                 ScrollBar.SizeChange(rect);
@@ -413,24 +428,26 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                if (it.ICanExpand) return true;
+                if (it.CanExpand) return true;
             }
             return false;
         }
-        void TestSub(ref List<TreeItem> dir, TreeItemCollection items)
+        void TestSub(ref List<TreeItem> dir, TreeItemCollection? items)
         {
+            if (items == null) return;
             foreach (var it in items)
             {
-                if (it.ICanExpand)
+                if (it.CanExpand)
                 {
                     dir.Insert(0, it);
-                    TestSub(ref dir, it.items!);
+                    TestSub(ref dir, it.items);
                 }
             }
         }
 
-        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection items, bool has_sub, ref int x, ref int y, int height, int depth_gap, int icon_size, int gap, int gapI, int depth, bool expand)
+        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection? items, bool has_sub, ref int x, ref int y, int height, int depth_gap, int icon_size, int gap, int gapI, int depth, bool expand)
         {
+            if (items == null) return;
             int i = 0;
             foreach (var it in items)
             {
@@ -447,18 +464,36 @@ namespace AntdUI
                         else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
                     }
                     y += it.txt_rect.Height + gapI;
-                    if (it.ICanExpand)
+                    if (it.CanExpand)
                     {
-                        int y_item = y;
-                        ChangeList(g, rect, it, it.items!, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
-                        it.SubY = y_item - gapI / 2;
-                        it.SubHeight = y - y_item;
-                        if ((it.Expand || it.ExpandThread) && it.ExpandProg > 0)
+                        if (it.ExpandThread && it.ExpandProg > 0)
                         {
-                            it.ExpandHeight = y - y_item;
-                            y = y_item + (int)(it.ExpandHeight * it.ExpandProg);
+                            if (it.ExpandHeightTMP.HasValue)
+                            {
+                                it.ExpandRHeight = (int)(it.ExpandHeightTMP.Value * it.ExpandProg);
+                                y += it.ExpandRHeight;
+                            }
+                            else
+                            {
+                                int y_item = y;
+                                ChangeList(g, rect, it, it.items, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
+                                it.SubY = y_item - gapI / 2;
+                                it.SubHeight = y - y_item;
+                                it.ExpandHeightTMP = it.ExpandHeight = y - y_item;
+                                it.ExpandRHeight = (int)(it.ExpandHeight * it.ExpandProg);
+                                y = y_item + it.ExpandRHeight;
+                            }
                         }
-                        else if (!it.Expand) y = y_item;
+                        else if (it.Expand)
+                        {
+                            int y_item = y;
+                            ChangeList(g, rect, it, it.items, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
+                            it.SubY = y_item - gapI / 2;
+                            it.SubHeight = y - y_item;
+                            it.ExpandHeight = y - y_item;
+                            it.ExpandRHeight = it.ExpandHeight;
+                            y = y_item + it.ExpandRHeight;
+                        }
                     }
                     if (it.Loading && it.ThreadLoading == null) it.StartLoading(this);
                 }
@@ -493,26 +528,36 @@ namespace AntdUI
             using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(nameof(Tree), ColorScheme)))
             using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get(nameof(Tree), "subFore", ColorScheme)))
             {
-                PaintItem(g, e.Rect, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
             g.ResetTransform();
             ScrollBar.Paint(g, ColorScheme);
             base.OnDraw(e);
         }
-        void PaintItem(Canvas g, Rectangle rect, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
+        void PaintItem(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
             foreach (var it in items)
             {
                 it.show = IsShowRect(rect, sx, sy, it);
                 if (it.show)
                 {
-                    PaintItem(g, it, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
+                    PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
                     if ((it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
                     {
-                        var state = g.Save();
-                        if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
-                        PaintItem(g, rect, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
-                        g.Restore(state);
+                        if (it.ExpandThread)
+                        {
+                            if (it.ExpandTemp == null)
+                            {
+                                it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
+                                using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay())
+                                {
+                                    g2.TranslateTransform(tx, -it.rect.Bottom);
+                                    PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
+                                }
+                            }
+                            g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), new Rectangle(0, 0, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandProg);
+                        }
+                        else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
                     }
                 }
                 else ShowFalse(it.items);
@@ -530,7 +575,7 @@ namespace AntdUI
         }
         void ShowFalse(TreeItemCollection? items)
         {
-            if (items == null || items.Count == 0) return;
+            if (items == null) return;
             foreach (var it in items)
             {
                 it.show = false;
@@ -539,12 +584,12 @@ namespace AntdUI
         }
 
         readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.EllipsisCharacter, s_l = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
-        void PaintItem(Canvas g, TreeItem item, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
+        void PaintItem(Canvas g, TreeItem item, int tx, int ty, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
         {
             if (item.Select)
             {
                 PaintBack(g, active, item.rect, radius);
-                if (item.ICanExpand) PaintArrow(g, item, fore_active, sx, sy);
+                if (item.CanExpand) PaintArrow(g, item, tx, ty, fore_active, sx, sy);
                 PaintItemText(g, item, fore_active, brushTextTertiary);
             }
             else
@@ -565,7 +610,7 @@ namespace AntdUI
                     }
                 }
                 else if (item.Hover) PaintBack(g, hover, item.rect, radius);
-                if (item.ICanExpand) PaintArrow(g, item, fore, sx, sy);
+                if (item.CanExpand) PaintArrow(g, item, tx, ty, fore, sx, sy);
                 if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
@@ -575,7 +620,7 @@ namespace AntdUI
                     }
                 }
             }
-            if (checkable)
+            if (checkable && item.Checkable)
             {
                 using (var path_check = Helper.RoundPath(item.check_rect, check_radius))
                 {
@@ -682,26 +727,26 @@ namespace AntdUI
             };
         }
 
-        void PaintArrow(Canvas g, TreeItem item, SolidBrush color, int sx, int sy)
+        void PaintArrow(Canvas g, TreeItem item, int tx, int ty, SolidBrush color, int sx, int sy)
         {
             using (var pen = new Pen(color, 2F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
 
-                if (item.ExpandThread) PaintArrow(g, item, pen, sx, sy, -90F + (90F * item.ExpandProg));
+                if (item.ExpandThread) PaintArrow(g, item, tx, ty, pen, sx, sy, -90F + (90F * item.ExpandProg));
                 else if (item.Expand) g.DrawLines(pen, item.arrow_rect.TriangleLinesVertical(-1, .4F));
-                else PaintArrow(g, item, pen, sx, sy, -90F);
+                else PaintArrow(g, item, tx, ty, pen, sx, sy, -90F);
             }
         }
 
-        void PaintArrow(Canvas g, TreeItem item, Pen pen, int sx, int sy, float rotate)
+        void PaintArrow(Canvas g, TreeItem item, int tx, int ty, Pen pen, int sx, int sy, float rotate)
         {
             int size_arrow = item.arrow_rect.Width / 2;
             g.TranslateTransform(item.arrow_rect.X + size_arrow, item.arrow_rect.Y + size_arrow);
             g.RotateTransform(rotate);
             g.DrawLines(pen, new Rectangle(-size_arrow, -size_arrow, item.arrow_rect.Width, item.arrow_rect.Height).TriangleLinesVertical(-1, .4F));
             g.ResetTransform();
-            g.TranslateTransform(-sx, -sy);
+            g.TranslateTransform(tx, ty);
         }
 
         void PaintBack(Canvas g, SolidBrush brush, Rectangle rect, float radius)
@@ -761,7 +806,7 @@ namespace AntdUI
                     OnNodeMouseDown(item, down, e);
                     return true;
                 }
-                if (item.ICanExpand && item.Expand)
+                if (item.CanExpand && item.Expand)
                 {
                     foreach (var sub in item.items!)
                     {
@@ -779,7 +824,7 @@ namespace AntdUI
         {
             try
             {
-                bool can = item.ICanExpand;
+                bool can = item.CanExpand;
                 if (MDown == item)
                 {
                     var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
@@ -797,30 +842,10 @@ namespace AntdUI
                                 }
                                 else item.Checked = !item.Checked;
                             }
-                            else if (down == TreeCType.Arrow && can)
-                            {
-                                bool value = !item.Expand;
-                                if (BeforeExpand == null) item.Expand = value;
-                                else
-                                {
-                                    var arge = new TreeExpandEventArgs(item, value);
-                                    BeforeExpand(this, arge);
-                                    if (arge.CanExpand) item.Expand = value;
-                                }
-                            }
+                            else if (down == TreeCType.Arrow && can) item.Expand = !item.Expand;
                             else
                             {
-                                if (doubleClick && can)
-                                {
-                                    bool value = !item.Expand;
-                                    if (BeforeExpand == null) item.Expand = value;
-                                    else
-                                    {
-                                        var arge = new TreeExpandEventArgs(item, value);
-                                        BeforeExpand(this, arge);
-                                        if (arge.CanExpand) item.Expand = value;
-                                    }
-                                }
+                                if (doubleClick && can) item.Expand = !item.Expand;
                                 else
                                 {
                                     selectItem = item;
@@ -1010,17 +1035,21 @@ namespace AntdUI
                 SetCheckStrictly(item.ParentItem);
                 return;
             }
-            int check_all_count = 0, check_count = 0;
+            int count = 0, check_all_count = 0, check_count = 0;
             foreach (var sub in item.items)
             {
-                if (sub.CheckState == CheckState.Checked)
+                if (sub.Checkable)
                 {
-                    check_count++;
-                    check_all_count++;
+                    count++;
+                    if (sub.CheckState == CheckState.Checked)
+                    {
+                        check_count++;
+                        check_all_count++;
+                    }
+                    else if (sub.CheckState == CheckState.Indeterminate) check_all_count++;
                 }
-                else if (sub.CheckState == CheckState.Indeterminate) check_all_count++;
             }
-            if (check_all_count > 0) item.CheckState = check_count == item.items.Count ? CheckState.Checked : CheckState.Indeterminate;
+            if (check_all_count > 0) item.CheckState = check_count == count ? CheckState.Checked : CheckState.Indeterminate;
             else item.CheckState = CheckState.Unchecked;
             SetCheckStrictly(item.ParentItem);
         }
@@ -1152,7 +1181,7 @@ namespace AntdUI
                     if (selectItem != null)
                     {
                         var item = selectItem;
-                        if (item.ICanExpand) item.Expand = !item.Expand;
+                        if (item.CanExpand) item.Expand = !item.Expand;
                         else Select(item);
                     }
                     break;
@@ -1183,12 +1212,12 @@ namespace AntdUI
         }
         TreeItem FindUpExpand(TreeItem it)
         {
-            if (it.ICanExpand && it.Expand) return FindUpExpand(it.items![it.items.Count - 1]);
+            if (it.CanExpand && it.Expand) return FindUpExpand(it.items![it.items.Count - 1]);
             return it;
         }
         bool FindDown(TreeItem item, bool canex = true)
         {
-            if (canex && item.ICanExpand && item.Expand)
+            if (canex && item.CanExpand && item.Expand)
             {
                 Select(item.items![0]);
                 return true;
@@ -1250,12 +1279,12 @@ namespace AntdUI
 
         bool FindLeft(TreeItem item)
         {
-            if (item.ICanExpand && item.Expand) item.Expand = false;
+            if (item.CanExpand && item.Expand) item.Expand = false;
             return true;
         }
         bool FindRight(TreeItem item)
         {
-            if (item.ICanExpand && !item.Expand) item.Expand = true;
+            if (item.CanExpand && !item.Expand) item.Expand = true;
             return true;
         }
 
@@ -1289,16 +1318,12 @@ namespace AntdUI
         /// <summary>
         /// 设置全部 Visible
         /// </summary>
-        public void VisibleAll(bool value = true)
+        public void VisibleAll(bool value = true) => VisibleAll(value, items);
+        public void VisibleAll(bool value, TreeItemCollection? items)
         {
-            if (items == null || items.Count == 0) return;
-            VisibleAll(value, items);
-        }
-        public void VisibleAll(bool value, TreeItemCollection items)
-        {
+            if (items == null) return;
             foreach (var it in items)
             {
-                if (it.items == null || it.items.Count == 0) continue;
                 it.Visible = value;
                 VisibleAll(value, it.items);
             }
@@ -1318,13 +1343,10 @@ namespace AntdUI
         /// 移除菜单
         /// </summary>
         /// <param name="item">项</param>
-        public void Remove(TreeItem item)
+        public void Remove(TreeItem item) => Remove(item, items);
+        void Remove(TreeItem item, TreeItemCollection? items)
         {
-            if (items == null || items.Count == 0) return;
-            Remove(item, items);
-        }
-        void Remove(TreeItem item, TreeItemCollection items)
-        {
+            if (items == null) return;
             foreach (var it in items)
             {
                 if (it == item)
@@ -1332,7 +1354,7 @@ namespace AntdUI
                     items.Remove(it);
                     return;
                 }
-                else if (it.items != null && it.items.Count > 0) Remove(item, it.items);
+                Remove(item, it.items);
             }
         }
 
@@ -1344,20 +1366,24 @@ namespace AntdUI
         /// <param name="value">true 展开、false 收起</param>
         public void ExpandAll(bool value = true)
         {
-            if (items != null && items.Count > 0) ExpandAll(items, value);
+            if (ExpandAllCore(items, value)) ChangeList(true);
         }
 
-        public void ExpandAll(TreeItemCollection items, bool value = true)
+        public void ExpandAll(TreeItemCollection? items, bool value = true)
         {
-            if (items != null && items.Count > 0)
+            if (ExpandAllCore(items, value)) ChangeList(true);
+        }
+
+        internal bool ExpandAllCore(TreeItemCollection? items, bool value = true)
+        {
+            if (items == null) return false;
+            int count = 0;
+            foreach (var it in items)
             {
-                foreach (var it in items)
-                {
-                    it.Expand = value;
-                    if (it.items == null) continue;
-                    ExpandAll(it.items, value);
-                }
+                if (it.ISetExpand(value)) count++;
+                if (ExpandAllCore(it.items, value)) count++;
             }
+            return count > 0;
         }
 
         /// <summary>
@@ -1446,17 +1472,14 @@ namespace AntdUI
         /// <summary>
         /// 全选/全不选
         /// </summary>
-        public void SetCheckeds(bool check)
+        public void SetCheckeds(bool check) => SetCheckeds(items, check);
+        public void SetCheckeds(TreeItemCollection? items, bool check)
         {
             if (items == null) return;
-            SetCheckeds(items, check);
-        }
-        public void SetCheckeds(TreeItemCollection items, bool check)
-        {
             foreach (var it in items)
             {
                 it.Checked = check;
-                if (it.items != null && it.items.Count > 0) SetCheckeds(it.items, check);
+                SetCheckeds(it.items, check);
             }
         }
 
@@ -1529,7 +1552,7 @@ namespace AntdUI
                 mdown = item;
                 return true;
             }
-            if (item.ICanExpand && item.Expand)
+            if (item.CanExpand && item.Expand)
             {
                 foreach (var sub in item.items!)
                 {
@@ -1798,35 +1821,39 @@ namespace AntdUI
             set
             {
                 if (expand == value) return;
-                expand = value;
-                PARENT?.OnIAfterExpand(this, value);
-                if (items != null && items.Count > 0)
+                if (PARENT?.OnIBeforeExpand(this, value) ?? true)
                 {
-                    if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
+                    expand = value;
+                    PARENT?.OnIAfterExpand(this, value);
+                    ExpandHeightTMP = null;
+                    if (items != null && items.Count > 0)
                     {
-                        ThreadExpand?.Dispose();
-                        float oldval = -1;
-                        if (ThreadExpand?.Tag is float oldv) oldval = oldv;
-                        ExpandThread = true;
-                        int t;
-                        if (value)
+                        if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
                         {
-                            int time = ExpandCount(this) * 10;
-                            if (time < 100) time = 100;
-                            else if (time > 1000) time = 1000;
-                            t = Animation.TotalFrames(10, time);
+                            ThreadExpand?.Dispose();
+                            ExpandTemp?.Dispose();
+                            ExpandTemp = null;
+                            var oldval = ThreadExpand?.Tag;
+                            ExpandThread = true;
+                            int t = Animation.TotalFrames(10, 200);
+                            ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
+                            {
+                                ExpandProg = val;
+                                Invalidates();
+                            }, 10, t, oldval, value).SetEnd(() =>
+                            {
+                                ExpandProg = 1F;
+                                ExpandThread = false;
+                                ExpandTemp?.Dispose();
+                                ExpandTemp = null;
+                                Invalidates();
+                            }));
                         }
-                        else t = Animation.TotalFrames(10, 200);
-                        ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
-                        {
-                            ExpandProg = val;
-                            Invalidates();
-                        }, 10, t, oldval, value).SetEnd(() =>
+                        else
                         {
                             ExpandProg = 1F;
-                            ExpandThread = false;
                             Invalidates();
-                        }));
+                        }
                     }
                     else
                     {
@@ -1834,36 +1861,50 @@ namespace AntdUI
                         Invalidates();
                     }
                 }
-                else
-                {
-                    ExpandProg = 1F;
-                    Invalidates();
-                }
             }
         }
 
-        internal int ExpandCount(TreeItem it)
+        internal bool ISetExpand(bool value)
         {
-            int count = 0;
-            if (it.items != null && it.items.Count > 0)
+            if (expand == value) return false;
+            if (PARENT?.OnIBeforeExpand(this, value) ?? true)
             {
-                count += it.items.Count;
-                foreach (var item in it.items)
-                {
-                    if (item.Expand) count += ExpandCount(item);
-                }
+                expand = value;
+                PARENT?.OnIAfterExpand(this, value);
+                ExpandHeightTMP = null;
+                ThreadExpand?.Dispose();
+                ExpandTemp?.Dispose();
+                ThreadExpand = null;
+                ExpandTemp = null;
+                return true;
             }
-            return count;
+            return false;
         }
 
-        [Description("是否可以展开"), Category("行为"), DefaultValue(null)]
-        public bool? CanExpand { get; set; }
+        [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
+        public bool CanExpand => ICanExpand ?? visible && items != null && items.Count > 0;
 
-        internal bool ICanExpand => CanExpand ?? visible && items != null && items.Count > 0;
+        internal bool? ICanExpand { get; set; }
 
         #endregion
 
         #region 选中状态
+
+        bool checkable = true;
+        /// <summary>
+        /// 节点前添加 Checkbox 复选框
+        /// </summary>
+        [Description("节点前添加 Checkbox 复选框"), Category("外观"), DefaultValue(true)]
+        public bool Checkable
+        {
+            get => checkable;
+            set
+            {
+                if (checkable == value) return;
+                checkable = value;
+                Invalidates();
+            }
+        }
 
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
@@ -2077,7 +2118,7 @@ namespace AntdUI
 
         #region 布局
 
-        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool _checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
             var size = g.MeasureText(Text, font);
@@ -2089,7 +2130,7 @@ namespace AntdUI
                 x += ui;
             }
 
-            if (checkable)
+            if (_checkable && checkable)
             {
                 check_rect = new Rectangle(x, y, icon_size, icon_size);
                 usew += ui;
@@ -2146,16 +2187,16 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
 
-        internal TreeCType Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
+        internal TreeCType Contains(int x, int y, int sx, int sy, bool _checkable, bool blockNode)
         {
             if (visible && enabled)
             {
-                if (arrow_rect.Contains(x + sx, y + sy) && ICanExpand)
+                if (arrow_rect.Contains(x + sx, y + sy) && CanExpand)
                 {
                     Hover = true;
                     return TreeCType.Arrow;
                 }
-                else if (checkable && check_rect.Contains(x + sx, y + sy))
+                else if (_checkable && checkable && check_rect.Contains(x + sx, y + sy))
                 {
                     Hover = true;
                     return TreeCType.Check;
@@ -2226,9 +2267,12 @@ namespace AntdUI
 
         internal float SubY { get; set; }
         internal float SubHeight { get; set; }
-        internal float ExpandHeight { get; set; }
+        internal int? ExpandHeightTMP { get; set; }
+        internal int ExpandHeight { get; set; }
+        internal int ExpandRHeight { get; set; }
         internal float ExpandProg { get; set; }
         internal bool ExpandThread { get; set; }
+        internal Bitmap? ExpandTemp { get; set; }
         internal bool show { get; set; }
 
         void Invalidate() => PARENT?.Invalidate();
@@ -2321,9 +2365,15 @@ namespace AntdUI
             return this;
         }
 
+        public TreeItem SetCheckable(bool value = false)
+        {
+            checkable = value;
+            return this;
+        }
+
         public TreeItem SetCanExpand(bool value = true)
         {
-            CanExpand = value;
+            ICanExpand = value;
             return this;
         }
 

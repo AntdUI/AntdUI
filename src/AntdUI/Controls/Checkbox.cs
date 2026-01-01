@@ -119,7 +119,7 @@ namespace AntdUI
                 if (_checked == value) return;
                 _checked = value;
                 ThreadCheck?.Dispose();
-                if (IsHandleCreated && Config.HasAnimation(nameof(Checkbox)))
+                if (IsHandleCreated && Config.HasAnimation(nameof(Checkbox), Name))
                 {
                     AnimationCheck = true;
                     ThreadCheck = new AnimationTask(new AnimationLinearFConfig(this, i =>
@@ -348,7 +348,7 @@ namespace AntdUI
                 SetCursor(value && enabled);
                 if (enabled)
                 {
-                    if (Config.HasAnimation(nameof(Checkbox)))
+                    if (Config.HasAnimation(nameof(Checkbox), Name))
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

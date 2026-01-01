@@ -113,7 +113,7 @@ namespace Demo.Controls
                         }
                     }
                     catch { }
-                    if (count == 0) e.Item.CanExpand = false;
+                    if (count == 0) e.Item.SetCanExpand(false);
                     else
                     {
                         e.Item.IconSvg = Properties.Resources.icon_folderopened;

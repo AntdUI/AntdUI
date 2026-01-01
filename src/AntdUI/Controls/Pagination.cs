@@ -75,7 +75,7 @@ namespace AntdUI
             get => _recordsPerPageText;
             set
             {
-                if (_recordsPerPageText == value || string.IsNullOrWhiteSpace(value)) return;
+                if (_recordsPerPageText == value) return;
                 _recordsPerPageText = value;
                 OnPropertyChanged(nameof(RecordsPerPageText));
                 ButtonLayout(true);
@@ -96,13 +96,13 @@ namespace AntdUI
                 if (pageSize == value) return;
                 pageSize = value;
                 if (total > 0 && Math.Ceiling(total * 1.0 / pageSize) < current) current = (int)Math.Ceiling(total * 1.0 / pageSize);
-                OnValueChanged(current, total, pageSize, PageTotal);
                 if (input_SizeChanger != null)
                 {
                     string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
                     input_SizeChanger.Clear();
                     input_SizeChanger.PlaceholderText = value.ToString() + " " + tips;
                 }
+                OnValueChanged(current, total, pageSize, PageTotal);
                 OnPropertyChanged(nameof(PageSize));
                 ButtonLayout(true);
             }

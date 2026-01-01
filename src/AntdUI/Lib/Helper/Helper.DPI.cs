@@ -32,17 +32,21 @@ namespace AntdUI
             }
             if (control is Form form)
             {
-                if (form.AutoScaleMode == AutoScaleMode.Font)
+                switch (form.AutoScaleMode)
                 {
-                    DpiLS(dpi, control.Controls);
-                    return;
+                    case AutoScaleMode.Font:
+                    case AutoScaleMode.Dpi:
+                        DpiLS(dpi, control.Controls);
+                        break;
+                    default:
+                        if (form.WindowState == FormWindowState.Maximized)
+                        {
+                            form.Scale(new SizeF(dpi, dpi));
+                            return;
+                        }
+                        DpiLS(dpi, form, DpiInfo(form.Controls));
+                        break;
                 }
-                if (form.WindowState == FormWindowState.Maximized)
-                {
-                    form.Scale(new SizeF(dpi, dpi));
-                    return;
-                }
-                DpiLS(dpi, form, DpiInfo(form.Controls));
             }
             else DpiLS(dpi, DpiInfo(control));
         }
