@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -41,6 +42,15 @@ namespace AntdUI
             shadow = Shadow;
             shadow2 = Shadow2;
             creal = rect_real;
+
+            // 计算控件在父级控件中的可见区域
+            var visibleRect = CalculateVisibleRect(control, point, size);
+            if (visibleRect == null) return;
+            sx = visibleRect[0];
+            sy = visibleRect[1];
+            cw = visibleRect[2];
+            ch = visibleRect[3];
+            padd = 0;
         }
 
         /// <summary>
@@ -128,6 +138,59 @@ namespace AntdUI
             int min = (int)(4 * owner.Dpi);
             if (min > radius) return min;
             return radius;
+        }
+
+        /// <summary>
+        /// 计算控件在父级控件中的可见区域
+        /// </summary>
+        /// <param name="control">目标控件</param>
+        /// <param name="screenPoint">控件的屏幕坐标</param>
+        /// <param name="controlSize">控件的区域大小</param>
+        /// <returns>如果需要裁剪，返回[x, y, w, h]，否则返回null</returns>
+        int[]? CalculateVisibleRect(Control control, Point screenPoint, Size controlSize)
+        {
+            // 初始可见区域
+            int visibleX = screenPoint.X, visibleY = screenPoint.Y, visibleWidth = controlSize.Width, visibleHeight = controlSize.Height;
+
+            Control currentControl = control;
+            Control? currentParent = control.Parent;
+
+            // 遍历所有父级控件，直到遇到窗口为止
+            while (currentParent != null && !(currentParent is Form))
+            {
+                // 获取父级控件的屏幕坐标和大小
+                var parentScreenPoint = currentParent.PointToScreen(Point.Empty);
+                var parentSize = currentParent.ClientSize;
+
+                // 计算当前控件在父级控件中的可见区域
+                int currentVisibleX = Math.Max(parentScreenPoint.X, visibleX);
+                int currentVisibleY = Math.Max(parentScreenPoint.Y, visibleY);
+                int currentVisibleRight = Math.Min(parentScreenPoint.X + parentSize.Width, visibleX + visibleWidth);
+                int currentVisibleBottom = Math.Min(parentScreenPoint.Y + parentSize.Height, visibleY + visibleHeight);
+
+                // 计算当前可见区域的宽度和高度
+                int currentVisibleWidth = currentVisibleRight - currentVisibleX;
+                int currentVisibleHeight = currentVisibleBottom - currentVisibleY;
+
+                // 如果可见区域无效，返回最小有效区域
+                if (currentVisibleWidth <= 0 || currentVisibleHeight <= 0) return new int[] { visibleX, visibleY, 1, 1 };
+
+                // 更新可见区域
+                visibleX = currentVisibleX;
+                visibleY = currentVisibleY;
+                visibleWidth = currentVisibleWidth;
+                visibleHeight = currentVisibleHeight;
+
+                // 继续向上遍历
+                currentControl = currentParent;
+                currentParent = currentParent.Parent;
+            }
+
+            // 如果最终可见区域与原始区域相同，返回null
+            if (visibleX == screenPoint.X && visibleY == screenPoint.Y && visibleWidth == controlSize.Width && visibleHeight == controlSize.Height) return null;
+
+            // 否则返回裁剪后的坐标和尺寸
+            return new int[] { visibleX, visibleY, visibleWidth, visibleHeight };
         }
 
         #region 设置

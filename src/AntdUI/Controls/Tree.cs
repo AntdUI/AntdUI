@@ -402,12 +402,16 @@ namespace AntdUI
                             if (item.items == null) item.CheckState = CheckState.Unchecked;
                             else
                             {
-                                int check_count = 0;
+                                int count = 0, check_count = 0;
                                 foreach (var sub in item.items)
                                 {
-                                    if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+                                    if (sub.Checkable)
+                                    {
+                                        count++;
+                                        if (sub.CheckState == CheckState.Checked || sub.CheckState == CheckState.Indeterminate) check_count++;
+                                    }
                                 }
-                                if (check_count > 0) item.CheckState = check_count == item.items.Count ? CheckState.Checked : CheckState.Indeterminate;
+                                if (check_count > 0) item.CheckState = check_count == count ? CheckState.Checked : CheckState.Indeterminate;
                                 else item.CheckState = CheckState.Unchecked;
                             }
                         }
@@ -616,7 +620,7 @@ namespace AntdUI
                     }
                 }
             }
-            if (checkable)
+            if (checkable && item.Checkable)
             {
                 using (var path_check = Helper.RoundPath(item.check_rect, check_radius))
                 {
@@ -1031,17 +1035,21 @@ namespace AntdUI
                 SetCheckStrictly(item.ParentItem);
                 return;
             }
-            int check_all_count = 0, check_count = 0;
+            int count = 0, check_all_count = 0, check_count = 0;
             foreach (var sub in item.items)
             {
-                if (sub.CheckState == CheckState.Checked)
+                if (sub.Checkable)
                 {
-                    check_count++;
-                    check_all_count++;
+                    count++;
+                    if (sub.CheckState == CheckState.Checked)
+                    {
+                        check_count++;
+                        check_all_count++;
+                    }
+                    else if (sub.CheckState == CheckState.Indeterminate) check_all_count++;
                 }
-                else if (sub.CheckState == CheckState.Indeterminate) check_all_count++;
             }
-            if (check_all_count > 0) item.CheckState = check_count == item.items.Count ? CheckState.Checked : CheckState.Indeterminate;
+            if (check_all_count > 0) item.CheckState = check_count == count ? CheckState.Checked : CheckState.Indeterminate;
             else item.CheckState = CheckState.Unchecked;
             SetCheckStrictly(item.ParentItem);
         }
@@ -1882,6 +1890,22 @@ namespace AntdUI
 
         #region 选中状态
 
+        bool checkable = true;
+        /// <summary>
+        /// 节点前添加 Checkbox 复选框
+        /// </summary>
+        [Description("节点前添加 Checkbox 复选框"), Category("外观"), DefaultValue(true)]
+        public bool Checkable
+        {
+            get => checkable;
+            set
+            {
+                if (checkable == value) return;
+                checkable = value;
+                Invalidates();
+            }
+        }
+
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
 
@@ -2094,7 +2118,7 @@ namespace AntdUI
 
         #region 布局
 
-        internal void SetRect(Canvas g, Font font, int depth, bool checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool _checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
             var size = g.MeasureText(Text, font);
@@ -2106,7 +2130,7 @@ namespace AntdUI
                 x += ui;
             }
 
-            if (checkable)
+            if (_checkable && checkable)
             {
                 check_rect = new Rectangle(x, y, icon_size, icon_size);
                 usew += ui;
@@ -2163,7 +2187,7 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
 
-        internal TreeCType Contains(int x, int y, int sx, int sy, bool checkable, bool blockNode)
+        internal TreeCType Contains(int x, int y, int sx, int sy, bool _checkable, bool blockNode)
         {
             if (visible && enabled)
             {
@@ -2172,7 +2196,7 @@ namespace AntdUI
                     Hover = true;
                     return TreeCType.Arrow;
                 }
-                else if (checkable && check_rect.Contains(x + sx, y + sy))
+                else if (_checkable && checkable && check_rect.Contains(x + sx, y + sy))
                 {
                     Hover = true;
                     return TreeCType.Check;
@@ -2338,6 +2362,12 @@ namespace AntdUI
         public TreeItem SetChecked(CheckState value)
         {
             CheckState = value;
+            return this;
+        }
+
+        public TreeItem SetCheckable(bool value = false)
+        {
+            checkable = value;
             return this;
         }
 
