@@ -1006,7 +1006,7 @@ namespace AntdUI
         bool AnimationClick = false;
         float AnimationClickValue = 0;
 
-        public void ClickAnimation()
+        public virtual void ClickAnimation()
         {
             if (WaveSize > 0 && Config.HasAnimation(nameof(Button), Name))
             {
@@ -1233,7 +1233,7 @@ namespace AntdUI
                     {
                         if (!ghost)
                         {
-                            if (WaveSize > 0) PaintShadow(g, rect_read, path, Colour.FillQuaternary.Get(nameof(Button), ColorScheme), _radius);
+                            if (WaveSize > 0) PaintShadow(g, rect, rect_read, path, Colour.FillQuaternary.Get(nameof(Button), ColorScheme), _radius);
                             g.Fill(defaultback ?? Colour.DefaultBg.Get(nameof(Button), ColorScheme), path);
                         }
                         if (borderWidth > 0)
@@ -1365,7 +1365,7 @@ namespace AntdUI
                     {
                         if (enabled)
                         {
-                            if (WaveSize > 0) PaintShadow(g, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
+                            if (WaveSize > 0) PaintShadow(g, rect, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
 
                             if (toggle)
                             {
@@ -1427,7 +1427,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制阴影
         /// </summary>
-        void PaintShadow(Canvas g, Rectangle rect, GraphicsPath path, Color color, float radius)
+        protected virtual void PaintShadow(Canvas g, Rectangle rect_t, Rectangle rect, GraphicsPath path, Color color, float radius)
         {
             float wave = (WaveSize * Dpi / 2);
             using (var path_shadow = new RectangleF(rect.X, rect.Y + wave, rect.Width, rect.Height).RoundPath(radius))
