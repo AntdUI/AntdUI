@@ -348,7 +348,7 @@ namespace AntdUI
             /// <summary>
             /// 最大宽度
             /// </summary>
-            public int? MaxWidth { get; set; } = 40;
+            public int? MaxWidth { get; set; }
 
             public void OK(string text)
             {
