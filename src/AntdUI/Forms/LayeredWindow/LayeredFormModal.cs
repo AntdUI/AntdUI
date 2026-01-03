@@ -477,7 +477,7 @@ namespace AntdUI
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
             if (m.Msg == 0xa0 || m.Msg == 0x200) count = 0;
-            else if (!IsLoad && isclose && m.Msg == 134)
+            else if (config.MaskClosable && isclose && !IsLoad && m.Msg == 134)
             {
                 var now = DateTime.Now;
                 if (now > old_now)

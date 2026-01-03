@@ -36,14 +36,14 @@ namespace AntdUI
                 var db = CellContains(rows, true, e.X, e.Y);
                 if (db == null || db.mode == CELLDBMode.Summary)
                 {
-                    FocusedCell = null;
+                    SetFocusedCell(null);
                     return;
                 }
                 else
                 {
                     var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
-                    if (style == TableCellFocusedStyle.None) FocusedCell = null;
-                    else FocusedCell = db.cell;
+                    if (style == TableCellFocusedStyle.None) SetFocusedCell(null);
+                    else SetFocusedCell(db.cell);
                     if (e.Button == MouseButtons.Left)
                     {
                         if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
@@ -119,7 +119,6 @@ namespace AntdUI
         void MouseDownRow(MouseEventArgs e, RowTemplate it, CELLDB db)
         {
             cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db, e.Clicks > 1);
-            if (focusedCell != null) Invalidate(focusedCell.ROW.RECT);//同行切换单元格时，及时刷新
             if (db.cell is Template template)
             {
                 if (e.Button == MouseButtons.Left)

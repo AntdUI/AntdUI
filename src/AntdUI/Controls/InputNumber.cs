@@ -36,6 +36,9 @@ namespace AntdUI
         }
 
         decimal? minimum, maximum;
+        /// <summary>
+        /// 最小值
+        /// </summary>
         [Description("最小值"), Category("数据"), DefaultValue(null)]
         public decimal? Minimum
         {
@@ -48,6 +51,9 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 最大值
+        /// </summary>
         [Description("最大值"), Category("数据"), DefaultValue(null)]
         public decimal? Maximum
         {
@@ -68,6 +74,9 @@ namespace AntdUI
         }
 
         decimal currentValue = 0;
+        /// <summary>
+        /// 当前值
+        /// </summary>
         [Description("当前值"), Category("数据"), DefaultValue(typeof(decimal), "0")]
         public decimal Value
         {
@@ -168,6 +177,12 @@ namespace AntdUI
         [Description("当按下箭头键时，是否持续增加/减少"), Category("行为"), DefaultValue(true)]
         public bool InterceptArrowKeys { get; set; } = true;
 
+        /// <summary>
+        /// 文本改变时是否更新Value值
+        /// </summary>
+        [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
+        public bool EnabledValueTextChange { get; set; }
+
         string GetNumberText(decimal num)
         {
             if (ValueFormatter != null)
@@ -215,6 +230,38 @@ namespace AntdUI
 
         #endregion
 
+        #region 校验
+
+        static NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+
+        protected override bool Verify(char key, out string? change)
+        {
+            change = null;
+            string keyInput = key.ToString();
+            if (char.IsDigit(key)) return true; // 数字可以
+            else if (keyInput.Equals(numberFormatInfo.NumberGroupSeparator) || keyInput.Equals(numberFormatInfo.NegativeSign)) return true;
+            else if (keyInput.Equals(numberFormatInfo.NumberDecimalSeparator)) return decimalPlaces > 0;
+            else if (key == '\b') return true;// Backspace键可以
+            else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F'))) return true;// 十六进制数字可以
+            else if (key == '。')
+            {
+                if (decimalPlaces > 0)
+                {
+                    change = numberFormatInfo.NumberDecimalSeparator;
+                    return true;
+                }
+                return false;
+            }
+            else if (key == '，')
+            {
+                change = numberFormatInfo.NumberGroupSeparator;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
         #region 渲染
 
         ITaskOpacity hover_button, hover_button_up, hover_button_bottom;
@@ -225,28 +272,6 @@ namespace AntdUI
             hover_button = new ITaskOpacity(key, this);
             hover_button_up = new ITaskOpacity(key, this);
             hover_button_bottom = new ITaskOpacity(key, this);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            hover_button.Dispose();
-            hover_button_up.Dispose();
-            hover_button_bottom.Dispose();
-            base.Dispose(disposing);
-        }
-
-        static NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-        static string decimalSeparator = numberFormatInfo.NumberDecimalSeparator, groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
-
-        protected override bool Verify(char key, out string? change)
-        {
-            change = null;
-            string keyInput = key.ToString();
-            if (char.IsDigit(key)) return true; // 数字可以
-            else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign)) return true;// 小数分隔符可以
-            else if (key == '\b') return true;// Backspace键可以
-            else if (Hexadecimal && ((key >= 'a' && key <= 'f') || (key >= 'A' && key <= 'F'))) return true;// 十六进制数字可以
-            return false;
         }
 
         protected override void PaintOtherBor(Canvas g, Rectangle rect_read, float _radius, Color back, Color borColor, Color borderActive)
@@ -339,6 +364,14 @@ namespace AntdUI
                 }
                 g.Restore(state);
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            hover_button.Dispose();
+            hover_button_up.Dispose();
+            hover_button_bottom.Dispose();
+            base.Dispose(disposing);
         }
 
         #endregion
@@ -460,6 +493,14 @@ namespace AntdUI
                 }
                 if (decimal.TryParse(Text, out var _d)) Value = _d;
                 Text = GetNumberText(currentValue);
+            }
+        }
+
+        protected override void OnSetText(string text, bool isempty)
+        {
+            if (EnabledValueTextChange && !isempty)
+            {
+                if (decimal.TryParse(text, out var _d)) Value = _d;
             }
         }
 

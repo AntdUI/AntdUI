@@ -67,7 +67,7 @@ namespace AntdUI
                 CellRanges = null;
                 dataSource = value;
                 SortData = null;
-                focusedCell = null;
+                focusedxy = null;
                 ScrollBar.Clear();
                 selects.Clear();
                 hovers = -1;
@@ -463,27 +463,41 @@ namespace AntdUI
         /// 当前获得焦点的列
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Column? FocusedColumn => focusedCell?.COLUMN;
+        public Column? FocusedColumn => FocusedCell?.COLUMN;
 
         /// <summary>
         /// 当前获得焦点的行
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public object? FocusedRow => focusedCell?.ROW.RECORD;
+        public object? FocusedRow => FocusedCell?.ROW.RECORD;
 
-        CELL? focusedCell;
         /// <summary>
         /// 当前获得焦点的单元格
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public CELL? FocusedCell
         {
-            get => focusedCell;
-            private set
+            get
             {
-                if (focusedCell == value) return;
-                focusedCell = value;
-                if (value != null) OnCellFocused(value.ROW.RECORD, value.ROW.Type, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT, new MouseEventArgs(MouseButtons.Left, 1, value.RECT.X, value.RECT.Y, 1));
+                if (focusedxy == null || rows == null) return null;
+                return rows[focusedxy[1]].cells[focusedxy[0]];
+            }
+        }
+
+        int[]? focusedxy;
+        private void SetFocusedCell(CELL? value)
+        {
+            if (value == null)
+            {
+                if (focusedxy == null) return;
+                focusedxy = null;
+                Invalidate();
+            }
+            else
+            {
+                if (focusedxy != null && (focusedxy[0] == value.INDEX && focusedxy[1] == value.ROW.INDEX)) return;
+                focusedxy = new int[] { value.INDEX, value.ROW.INDEX };
+                OnCellFocused(value.ROW.RECORD, value.ROW.Type, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT);
                 Invalidate();
             }
         }
@@ -780,7 +794,7 @@ namespace AntdUI
             {
                 if (string.Join("", selectedIndex) == value.ToString()) return false;
                 selectedIndex = new int[1] { value };
-                if (focusedCell != null && rows?.Length > value) FocusedCell = rows[value].cells[focusedCell.INDEX];
+                if (focusedxy != null && rows?.Length > value) focusedxy[1] = value;
                 return true;
             }
         }

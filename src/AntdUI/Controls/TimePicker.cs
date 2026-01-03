@@ -8,6 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -71,6 +72,12 @@ namespace AntdUI
         /// </summary>
         [Description("显示此刻"), Category("外观"), DefaultValue(true)]
         public bool ShowButtonNow { get; set; } = true;
+
+        /// <summary>
+        /// 文本改变时是否更新Value值
+        /// </summary>
+        [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
+        public bool EnabledValueTextChange { get; set; }
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -222,16 +229,26 @@ namespace AntdUI
         {
             if (keyData == Keys.Escape && subForm != null) subForm.IClose();
             else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
-            else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d))
-            {
-                Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
-                if (subForm is LayeredFormTimePicker _SubForm)
-                {
-                    _SubForm.SelDate = Value;
-                    _SubForm.Print();
-                }
-            }
+            else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d)) PValue(_d);
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnSetText(string text, bool isempty)
+        {
+            if (EnabledValueTextChange && !isempty)
+            {
+                if (DateTime.TryParseExact(text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d)) PValue(_d);
+            }
+        }
+
+        void PValue(DateTime value)
+        {
+            Value = new TimeSpan(value.Hour, value.Minute, value.Second);
+            if (subForm is LayeredFormTimePicker _SubForm)
+            {
+                _SubForm.SelDate = Value;
+                _SubForm.Print();
+            }
         }
 
         #endregion

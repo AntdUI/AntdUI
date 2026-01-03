@@ -107,25 +107,33 @@ namespace AntdUI
         }
         int IKeyLeft()
         {
-            if (focusedCell == null || focusedCell.INDEX <= 0) return 50;
-            FocusedCell = focusedCell.ROW.cells[focusedCell.INDEX - 1];
-            if (focusedCell == null) return 50;
-            int x = (fixedColumnR != null && fixedColumnR.Contains(focusedCell.INDEX)) ? 0 : focusedCell.RECT.Width;
-            Invalidate(focusedCell.ROW.RECT);
-            return x;
+            if (focusedxy == null || focusedxy[0] <= 0) return 50;
+            if (rows == null) return 50;
+            try
+            {
+                var row = rows[focusedxy[1]];
+                var cel = row.cells[focusedxy[0] - 1];
+                SetFocusedCell(cel);
+                return (fixedColumnR != null && fixedColumnR.Contains(cel.INDEX)) ? 0 : cel.RECT.Width;
+            }
+            catch { }
+            return 50;
         }
         int IKeyRight()
         {
-            if (focusedCell == null) return 50;
-            int next = focusedCell.INDEX + 1;
-            if (next < focusedCell.ROW.cells.Length)
+            if (focusedxy == null || rows == null) return 50;
+            int next = focusedxy[0] + 1;
+            try
             {
-                FocusedCell = focusedCell?.ROW.cells[next];
-                if (focusedCell == null) return 50;
-                int x = (fixedColumnL != null && fixedColumnL.Contains(focusedCell.INDEX)) || focusedCell.RECT.Right < Width ? 0 : focusedCell.RECT.Width;
-                Invalidate(focusedCell.ROW.RECT);
-                return x;
+                var row = rows[focusedxy[1]];
+                if (next < row.cells.Length)
+                {
+                    var cel = row.cells[next];
+                    SetFocusedCell(cel);
+                    return (fixedColumnL != null && fixedColumnL.Contains(cel.INDEX)) || cel.RECT.Right < Width ? 0 : cel.RECT.Width;
+                }
             }
+            catch { }
             return 50;
         }
 
@@ -140,7 +148,9 @@ namespace AntdUI
                     if (index > rows.Length) return;
                     var it = rows[index];
                     OnCellClick(it.RECORD, it.Type, index, 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
-                    if (EditMode != TEditMode.None && focusedCell != null) EnterEditMode(index, focusedCell.INDEX);
+                    if (editmode == TEditMode.None) return;
+                    if (EnableFocusNavigation || focusedxy == null) return;
+                    EnterEditMode(index, focusedxy[0]);
                 }
             }
             catch { }
