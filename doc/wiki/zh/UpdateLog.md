@@ -1,6 +1,6 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
-### `2.2.8` 2026-01-03
+### `2.2.9` 2026-01-03
 
 - ➕ ButtonShadow 阴影按钮
 - ➕ ChatList EmojiRatio

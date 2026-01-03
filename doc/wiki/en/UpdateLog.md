@@ -1,6 +1,6 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
-### `2.2.8` 2026-01-03
+### `2.2.9` 2026-01-03
 
 - ➕ Button Shadow Shadow button
 - ➕ ChatList EmojiRatio
