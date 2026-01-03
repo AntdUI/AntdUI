@@ -442,7 +442,7 @@ namespace AntdUI
                     // 使用存储的单元格信息触发 CellEnter 事件
                     if (_currentEdit != null)
                     {
-                        FocusedCell = null;
+                        SetFocusedCell(null);
                         OnCellEditEnter(sender, _currentEdit);
                     }
 

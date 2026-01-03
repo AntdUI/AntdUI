@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace AntdUI
 {
@@ -75,7 +74,7 @@ namespace AntdUI
                 if (columns == null) return;
 
                 // 找到目标列
-                var targetColumn = columns.FirstOrDefault(c => c.Key == columnKey);
+                var targetColumn = columns.Find(c => c.Key == columnKey);
 
                 if (targetColumn != null && targetColumn.Editable)
                 {
@@ -89,9 +88,9 @@ namespace AntdUI
 
                         // 获取列索引
                         var columnIndex = columns.IndexOf(targetColumn);
-
                         if (columnIndex >= 0)
                         {
+                            SetFocusedCell(null);
                             EnterEditMode(rowIndex, columnIndex);
 
                             // 如果启用文本全选，延迟设置文本全选
@@ -99,13 +98,11 @@ namespace AntdUI
                             {
                                 BeginInvoke(() =>
                                 {
-                                    // 查找当前编辑的输入控件并设置全选
-                                    var editControls = Controls.OfType<Input>().Where(c => c.Visible && c.Focused).ToList();
-                                    foreach (var input in editControls)
+                                    foreach (var it in _editControls)
                                     {
-                                        input.SelectAll();
-                                        input.Focus();
-                                        break; // 只处理第一个找到的输入控件
+                                        it.Key.SelectAll();
+                                        it.Key.Focus();
+                                        return;
                                     }
                                 });
                             }

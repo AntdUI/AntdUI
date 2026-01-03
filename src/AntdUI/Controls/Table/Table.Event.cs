@@ -125,12 +125,17 @@ namespace AntdUI
         protected virtual void OnCellDoubleClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellDoubleClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
+        /// 单元格焦点变更事件
+        /// </summary>
+        public delegate void CellFocusedEventHandler(object sender, TableCellFocusedEventArgs e);
+
+        /// <summary>
         /// 单元格焦点变更后发生
         /// </summary>
         [Description("单元格焦点变更后发生"), Category("行为")]
-        public event ClickEventHandler? CellFocused;
+        public event CellFocusedEventHandler? CellFocused;
 
-        protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellFocused?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
+        protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect) => CellFocused?.Invoke(this, new TableCellFocusedEventArgs(record, rowType, rowIndex, columnIndex, column, rect));
 
         #region 编辑
 

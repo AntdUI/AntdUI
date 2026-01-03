@@ -194,6 +194,25 @@ namespace AntdUI
 
     #endregion
 
+    public class TableCellFocusedEventArgs : ITableEventArgs
+    {
+        public TableCellFocusedEventArgs(object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect) : base(record, rowIndex, columnIndex, column)
+        {
+            RowType = rowType;
+            Rect = rect;
+        }
+
+        /// <summary>
+        /// 表格区域
+        /// </summary>
+        public Rectangle Rect { get; private set; }
+
+        /// <summary>
+        /// 行类型
+        /// </summary>
+        public RowType RowType { get; private set; }
+    }
+
     public class TableSetRowStyleEventArgs : EventArgs
     {
         public TableSetRowStyleEventArgs(object record, int rowIndex, int index)

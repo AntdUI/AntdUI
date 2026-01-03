@@ -345,6 +345,11 @@ namespace AntdUI
             /// </summary>
             public bool EnableSound { get; set; }
 
+            /// <summary>
+            /// 最大宽度
+            /// </summary>
+            public int? MaxWidth { get; set; } = 40;
+
             public void OK(string text)
             {
                 Icon = TType.Success;
@@ -491,6 +496,12 @@ namespace AntdUI
             public Config SetEnableSound(bool value = true)
             {
                 EnableSound = value;
+                return this;
+            }
+
+            public Config SetMaxWidth(int? value)
+            {
+                MaxWidth = value;
                 return this;
             }
 
@@ -692,7 +703,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags s_f_left = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+        readonly FormatFlags s_f_left = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
         public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
@@ -754,7 +765,9 @@ namespace AntdUI
         {
             int shadow2 = shadow * 2;
             float dpi = Dpi;
-            var size = g.MeasureText(config.Text, Font, 10000, s_f_left);
+            int maxWidth = 0;
+            if (config.MaxWidth.HasValue) maxWidth = (int)(config.MaxWidth.Value * dpi);
+            var size = g.MeasureText(config.Text, Font, maxWidth, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)
             {
