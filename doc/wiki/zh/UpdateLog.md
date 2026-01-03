@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.8` 2026-01-03
+
+- ➕ ButtonShadow 阴影按钮
+- ➕ ChatList EmojiRatio
+- ➕ ChatList EnabledClickImage
+- ➕ ChatList 图片缓存
+- ➕ InputNumber EnabledValueTextChange
+- ➕ DatePicker/TimePicker EnabledValueTextChange
+- ✍️ Modal MaskClosable false 依旧可以关闭
+- ✍️ Table FocusedCell 刷新表格后消失
+- ✍️ Table 焦点与配置跳转交互冲突
+
 ### `2.2.7` 2026-01-01 🎇
 
 - ➕ Tree 项 Checkable
@@ -1434,7 +1446,7 @@
 
 ### `1.5.7` 2024-08-29 🌼
 
-> 规范事件 使用上有重大变化，查看 [issue #IANFNJ](https://gitee.com/antdui/AntdUI/issues/IANFNJ)
+> 规范事件 使用上有重大变化，查看 [issue #IANFNJ](https://gitee.com/AntdUI/AntdUI/issues/IANFNJ)
 
 - ➕ Icon 图标库
 - ➕ VirtualPanel 虚拟容器
@@ -1561,7 +1573,7 @@
 
 ### `1.4.6` 2024-07-24 💎
 
-> Tabs 重构 [beta] 使用上有重大变化，查看 [issue #IAEPO9](https://gitee.com/antdui/AntdUI/issues/IAEPO9)
+> Tabs 重构 [beta] 使用上有重大变化，查看 [issue #IAEPO9](https://gitee.com/AntdUI/AntdUI/issues/IAEPO9)
 
 - ➕ Tabs 图标，关闭按钮、适配四个方向与徽标
 - ➕ Switch 文本
@@ -1575,7 +1587,7 @@
 
 ### `1.4.6-beta` 2024-07-22
 
-> Tabs 重构 [beta] 使用上有重大变化，查看 [issue #IAEPO9](https://gitee.com/antdui/AntdUI/issues/IAEPO9)
+> Tabs 重构 [beta] 使用上有重大变化，查看 [issue #IAEPO9](https://gitee.com/AntdUI/AntdUI/issues/IAEPO9)
 
 - ➕ Tabs 图标，关闭按钮、适配四个方向与徽标
 - ➕ Select 筛选托管

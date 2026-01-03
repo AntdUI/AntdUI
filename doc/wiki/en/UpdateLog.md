@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.8` 2026-01-03
+
+- ➕ Button Shadow Shadow button
+- ➕ ChatList EmojiRatio
+- ➕ ChatList EnabledClickImage
+- ➕ ChatList image cache
+- ➕ InputNumber EnabledValueTextChange
+- ➕ DatePicker/TimePicker EnabledValueTextChange
+- ✍️ Modal MaskClosable false can still be turned off
+- ✍️ Table FocusedCell disappears after refreshing the table
+- ✍️ Table focus and configuration jump interaction conflict
+
 ### `2.2.7` 2026-01-01 🎇
 
 - ➕ Tree item Checkable
@@ -1434,7 +1446,7 @@
 
 ### `1.5.7` 2024-08-29 🌼
 
-> There have been significant changes in the use of standardized events, please refer to the [issue #IANFNJ](https://gitee.com/antdui/AntdUI/issues/IANFNJ)
+> There have been significant changes in the use of standardized events, please refer to the [issue #IANFNJ](https://gitee.com/AntdUI/AntdUI/issues/IANFNJ)
 
 - ➕ Icon Icon Library
 - ➕ VirtualPanel Virtual container
@@ -1561,7 +1573,7 @@
 
 ### `1.4.6` 2024-07-24 💎
 
-> There have been significant changes in the use of Tabs refactoring [beta], please refer to it [issue #IAEPO9](https://gitee.com/antdui/AntdUI/issues/IAEPO9)
+> There have been significant changes in the use of Tabs refactoring [beta], please refer to it [issue #IAEPO9](https://gitee.com/AntdUI/AntdUI/issues/IAEPO9)
 
 - ➕ Tabs Icon, close button, compatible with four directions and logo
 - ➕ Switch text
@@ -1575,7 +1587,7 @@
 
 ### `1.4.6-beta` 2024-07-22
 
-> There have been significant changes in the use of Tabs refactoring [beta], please refer to it [issue #IAEPO9](https://gitee.com/antdui/AntdUI/issues/IAEPO9)
+> There have been significant changes in the use of Tabs refactoring [beta], please refer to it [issue #IAEPO9](https://gitee.com/AntdUI/AntdUI/issues/IAEPO9)
 
 - ➕ Tabs Icon, close button, compatible with four directions and logo
 - ➕ Select Filter hosting
