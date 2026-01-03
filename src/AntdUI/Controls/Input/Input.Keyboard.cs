@@ -517,7 +517,7 @@ namespace AntdUI
                     {
                         if (start != it.i) texts.Add(it.text);
                     }
-                    bool set_t = SetText(string.Join("", texts)), set_s = SetSelectionStart(start, false), set_caret = SetCaretPostion(start == 0 ? 0 : pos, false);
+                    bool set_t = SetText(string.Join("", texts), true), set_s = SetSelectionStart(start, false), set_caret = SetCaretPostion(start == 0 ? 0 : pos, false);
                     if (set_t || set_s || set_caret) Invalidate();
                 }
             }
@@ -530,7 +530,7 @@ namespace AntdUI
             {
                 if (it.i < start || it.i >= end_temp) texts.Add(it.text);
             }
-            bool set_t = SetText(string.Join("", texts)), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
+            bool set_t = SetText(string.Join("", texts), true), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
             if (set_t || set_s || set_e) Invalidate();
         }
 
@@ -550,7 +550,7 @@ namespace AntdUI
                 {
                     if (it.i < start || it.i >= end_temp) texts.Add(it.text);
                 }
-                bool set_t = SetText(string.Join("", texts)), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
+                bool set_t = SetText(string.Join("", texts), true), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
                 if (set_t || set_s || set_e) Invalidate();
             }
             else if (selectionStart < cache_font.Length)
@@ -561,7 +561,7 @@ namespace AntdUI
                 {
                     if (start != it.i) texts.Add(it.text);
                 }
-                bool set_t = SetText(string.Join("", texts)), set_s = SetSelectionStart(start);
+                bool set_t = SetText(string.Join("", texts), true), set_s = SetSelectionStart(start);
                 if (set_t || set_s) Invalidate();
             }
         }

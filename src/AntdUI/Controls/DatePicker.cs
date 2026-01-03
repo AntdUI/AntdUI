@@ -129,6 +129,12 @@ namespace AntdUI
         [Description("选择器类型"), Category("外观"), DefaultValue(TDatePicker.Date)]
         public TDatePicker Picker { get; set; } = TDatePicker.Date;
 
+        /// <summary>
+        /// 文本改变时是否更新Value值
+        /// </summary>
+        [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
+        public bool EnabledValueTextChange { get; set; }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -250,16 +256,7 @@ namespace AntdUI
                     Value = null;
                     return;
                 }
-                if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d))
-                {
-                    Value = _d;
-                    if (subForm != null)
-                    {
-                        subForm.SelDate = subForm.Date = _d;
-                        subForm.Print();
-                    }
-                }
-                SetText(_value);
+                if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d)) PValue(_d);
             }
         }
 
@@ -290,16 +287,24 @@ namespace AntdUI
         {
             if (keyData == Keys.Escape && subForm != null) subForm.IClose();
             else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
-            else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
-            {
-                Value = _d;
-                if (subForm != null)
-                {
-                    subForm.SelDate = subForm.Date = _d;
-                    subForm.Print();
-                }
-            }
+            else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d)) PValue(_d);
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnSetText(string text, bool isempty)
+        {
+            if (EnabledValueTextChange && !isempty)
+            {
+                if (DateTime.TryParseExact(text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d)) PValue(_d);
+            }
+        }
+
+        void PValue(DateTime value)
+        {
+            Value = value;
+            if (subForm == null) return;
+            subForm.SelDate = subForm.Date = value;
+            subForm.Print();
         }
 
         #endregion

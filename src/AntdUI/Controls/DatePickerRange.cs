@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -246,6 +247,12 @@ namespace AntdUI
         /// </summary>
         [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(true)]
         public bool DropDownArrow { get; set; } = true;
+
+        /// <summary>
+        /// 文本改变时是否更新Value值
+        /// </summary>
+        [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
+        public bool EnabledValueTextChange { get; set; }
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -507,6 +514,23 @@ namespace AntdUI
                 StartEndFocused();
             }
             return false;
+        }
+
+        protected override void OnSetText(string text, bool isempty)
+        {
+            if (EnabledValueTextChange && !isempty)
+            {
+                int index = text.IndexOf("\t");
+                if (index > 0 && index < text.Length - 1)
+                {
+                    string sd = text.Substring(0, index), ed = text.Substring(index + 1);
+                    if (DateTime.TryParseExact(sd, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var sdate) &&
+                        DateTime.TryParseExact(ed, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var edate))
+                    {
+                        Value = new DateTime[] { sdate, edate };
+                    }
+                }
+            }
         }
 
         #endregion

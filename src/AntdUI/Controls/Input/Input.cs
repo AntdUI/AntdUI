@@ -625,7 +625,7 @@ namespace AntdUI
 #pragma warning disable CS8765
             set
             {
-                if (SetText(value)) Invalidate();
+                if (SetText(value, false)) Invalidate();
             }
 #pragma warning restore CS8765
         }
@@ -636,7 +636,7 @@ namespace AntdUI
         [Description("文本总行"), Category("数据"), DefaultValue(0)]
         public int TextTotalLine { get; private set; } = 0;
 
-        bool SetText(string value, bool changed = true)
+        bool SetText(string value, bool active, bool changed = true)
         {
             value ??= "";
             if (_text == value) return false;
@@ -644,6 +644,7 @@ namespace AntdUI
             isempty = string.IsNullOrEmpty(_text);
             FixFontWidth();
             OnAllowClear();
+            if (active) OnSetText(value, isempty);
             if (!DesignMode)
             {
                 if (isempty)
@@ -658,6 +659,10 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Text));
             }
             return true;
+        }
+
+        protected virtual void OnSetText(string text, bool isempty)
+        {
         }
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
@@ -1026,7 +1031,7 @@ namespace AntdUI
         public void AppendText(string text)
         {
             var tmp = _text + text;
-            bool set_t = SetText(tmp), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
+            bool set_t = SetText(tmp, true), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
             if (set_t || set_s) Invalidate();
         }
 
@@ -1039,7 +1044,7 @@ namespace AntdUI
         {
             int start = cache_font == null ? 0 : (cache_font[cache_font.Length - 1].i + 1), length = GraphemeSplitter.EachCount(text), start_tmp = selectionStart;
             var tmp = _text + text;
-            bool set_t = SetText(tmp), set_style = false, set_s = false;
+            bool set_t = SetText(tmp, true), set_style = false, set_s = false;
             if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
             {
                 var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);
@@ -1077,7 +1082,7 @@ namespace AntdUI
                 if (it.i < start || it.i >= end_temp) texts.Add(it.text);
             }
             texts.Insert(start, text);
-            bool set_t = SetText(string.Join("", texts)), set_style = false, set_s = false;
+            bool set_t = SetText(string.Join("", texts), true), set_style = false, set_s = false;
             if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
             {
                 var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);
@@ -1173,7 +1178,7 @@ namespace AntdUI
                 {
                     var it = history_Log[index];
                     history_I = index;
-                    bool set_t = SetText(it.Text), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
+                    bool set_t = SetText(it.Text, true), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
                     if (set_t || set_s || set_e) Invalidate();
                 }
             }
@@ -1192,7 +1197,7 @@ namespace AntdUI
                 {
                     var it = history_Log[index];
                     history_I = index;
-                    bool set_t = SetText(it.Text), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
+                    bool set_t = SetText(it.Text, true), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
                     if (set_t || set_s || set_e) Invalidate();
                 }
             }
@@ -1393,7 +1398,7 @@ namespace AntdUI
                     if (text.Length == 0) return;
                 }
                 AddHistoryRecord();
-                if (SetText(text, false)) rdcount++;
+                if (SetText(text, true, false)) rdcount++;
             }
             else
             {
@@ -1416,7 +1421,7 @@ namespace AntdUI
                         if (it.i < start || it.i >= end_temp) texts.Add(it.text);
                     }
                     texts.Insert(start, text);
-                    if (SetText(string.Join("", texts), false)) rdcount++;
+                    if (SetText(string.Join("", texts), true, false)) rdcount++;
                     if (SetSelectionLength(0)) rdcount++;
                     offset = start;
                 }
@@ -1436,7 +1441,7 @@ namespace AntdUI
                     var texts = new List<string>(cache_font.Length);
                     foreach (var it in cache_font) texts.Add(it.text);
                     texts.Insert(start + 1, text);
-                    if (SetText(string.Join("", texts), false)) rdcount++;
+                    if (SetText(string.Join("", texts), true, false)) rdcount++;
                     offset = start + 1;
                 }
             }
