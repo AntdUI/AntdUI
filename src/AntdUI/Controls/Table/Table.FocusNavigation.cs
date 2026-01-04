@@ -65,7 +65,7 @@ namespace AntdUI
         /// 移动到下一个可编辑单元格
         /// </summary>
         /// <param name="rowIndex">行索引</param>
-        /// <param name="columnKey">列键名</param>
+        /// <param name="e.Column.Key">列键名</param>
         private void MoveToNextEditableCell(int rowIndex, string columnKey)
         {
             try
@@ -119,15 +119,19 @@ namespace AntdUI
         /// <summary>
         /// 焦点跳转
         /// </summary>
-        /// <param name="columnKey">当前编辑的列键名</param>
+        /// <param name="e">当前编辑的列</param>
         /// <param name="rowIndex">行索引</param>
-        public void FocusNavigation(string columnKey, int rowIndex)
+        public void FocusNavigation(TableCellEditEnterEventArgs e)
         {
             // 检查是否启用焦点跳转、列键是否有效 
-            if (!EnableFocusNavigation || string.IsNullOrEmpty(columnKey)) return;
-
+            if (!EnableFocusNavigation || string.IsNullOrEmpty(e.Column.Key)) return;
+            if (e.Current && _focusNavigationMap.ContainsKey(e.Column.Key))
+            {
+                BeginInvoke(() => MoveToNextEditableCell(e.RowIndex, e.Column.Key));
+                return;
+            }
             // 查找下一个字段
-            if (_focusNavigationMap.TryGetValue(columnKey, out var nextColumnKey)) BeginInvoke(() => MoveToNextEditableCell(rowIndex, nextColumnKey));
+            if (_focusNavigationMap.TryGetValue(e.Column.Key, out var nextColumnKey)) BeginInvoke(() => MoveToNextEditableCell(e.RowIndex, nextColumnKey));
             else
             {
                 if (!string.IsNullOrEmpty(_firstFieldKey))
@@ -146,14 +150,14 @@ namespace AntdUI
 
                         if (totalRows > 0)
                         {
-                            int nextRowIndex = rowIndex + 1;
+                            int nextRowIndex = e.RowIndex + 1;
                             if (nextRowIndex < totalRows) BeginInvoke(() => MoveToNextEditableCell(nextRowIndex, _firstFieldKey!));
                         }
                     }
                     else
                     {
                         // 不换行：回到本行的第一个字段
-                        BeginInvoke(() => MoveToNextEditableCell(rowIndex, _firstFieldKey!));
+                        BeginInvoke(() => MoveToNextEditableCell(e.RowIndex, _firstFieldKey!));
                     }
                 }
             }
@@ -168,7 +172,7 @@ namespace AntdUI
             {
                 if (e.Column?.Key == null) return;
                 // 处理焦点跳转
-                FocusNavigation(e.Column.Key, e.RowIndex);
+                FocusNavigation(e);
             }
         }
     }

@@ -163,12 +163,13 @@ namespace AntdUI
     /// </summary>
     public class TableCellEditEnterEventArgs : EventArgs
     {
-        public TableCellEditEnterEventArgs(object record, int rowIndex, int columnIndex, Column column)
+        public TableCellEditEnterEventArgs(object record, int rowIndex, int columnIndex, Column column,bool current)
         {
             Record = record;
             RowIndex = rowIndex;
             ColumnIndex = columnIndex;
             Column = column;
+            Current = current;
         }
 
         /// <summary>
@@ -185,7 +186,10 @@ namespace AntdUI
         /// 列索引
         /// </summary>
         public int ColumnIndex { get; private set; }
-
+        /// <summary>
+        /// 仅激活当前(首次回车)
+        /// </summary>
+        public bool Current { get; private set; }
         /// <summary>
         /// 列对象
         /// </summary>

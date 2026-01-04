@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -147,10 +148,23 @@ namespace AntdUI
                     int index = selectedIndex[0];
                     if (index > rows.Length) return;
                     var it = rows[index];
-                    OnCellClick(it.RECORD, it.Type, index, 0, null, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+                    OnCellClick(it.RECORD, it.Type, index, 0, FocusedColumn, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     if (editmode == TEditMode.None) return;
-                    if (EnableFocusNavigation || focusedxy == null) return;
-                    EnterEditMode(index, focusedxy[0]);
+                    if ((EnableFocusNavigation || focusedxy == null) && FocusedColumn != null && _focusNavigationMap.ContainsKey(FocusedColumn.Key))
+                    {
+                        // 使用存储的单元格信息触发 CellEnter 事件
+
+                        _currentEdit = new TableCellEditEnterEventArgs(it.RECORD, index, FocusedColumn.INDEX, FocusedColumn, true);
+                        SetFocusedCell(null);
+                        OnCellEditEnter(it, _currentEdit);
+
+
+                        EditModeClose();
+                    }
+                    else
+                    {
+                        if (focusedxy != null) EnterEditMode(index, focusedxy[0]);
+                    }
                 }
             }
             catch { }
