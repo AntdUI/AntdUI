@@ -299,6 +299,7 @@ namespace AntdUI
         }
         public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = false) : base(240)
         {
+            PARENT = control;
             ocontrol = control;
             control.SetTopMost(Handle);
             CloseMode = CloseMode.Leave;

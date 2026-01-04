@@ -218,7 +218,7 @@ namespace AntdUI
         protected virtual void OnCellEditEnter(object sender, TableCellEditEnterEventArgs e)
         {
             CellEditEnter?.Invoke(sender, e);
-            Table_CellEditEnter(e);
+            if (EnableFocusNavigation) FocusNavigation(e);
         }
 
         #endregion
