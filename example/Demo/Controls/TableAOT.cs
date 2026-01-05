@@ -457,7 +457,7 @@ namespace Demo.Controls
                 new AntdUI.AntItem("radio", false),
                 new AntdUI.AntItem("online", online),
                 new AntdUI.AntItem("enable", start % 2 == 0),
-                new AntdUI.AntItem("age", DateTime.Now.Date.AddYears(-age)),
+                new AntdUI.AntItem("age", age),
                 new AntdUI.AntItem("address", address),
                 new AntdUI.AntItem("date",DateTime.Now.Date.AddYears(-new System.Random().Next(DateTime.Now.Second))),
                 new AntdUI.AntItem("tag",tag),

@@ -58,33 +58,32 @@ namespace AntdUI
         public void FocusNavigation(TableCellEditEnterEventArgs e)
         {
             if (navigationConfig == null) return;
-            // 查找下一个字段
-            if (navigationConfig.Map.TryGetValue(e.Column.Key, out var nextColumnKey)) MoveToNextEditableCell(navigationConfig, e.RowIndex, nextColumnKey);
-            else
+            if (navigationConfig.Contains(e.Column.Key, out var nextColumnKey))
             {
-                // 当前字段是最后一个字段
-                if (navigationConfig.LineBreak == true)
+                // 查找下一个字段
+                if (nextColumnKey == null)
                 {
-                    // 允许换行：尝试跳转到下一行的第一个字段
-                    // 检查是否有下一行
-                    // 优先使用 rows.Length（可见行数），这样可以正确处理树形展开/折叠的情况
-                    int totalRows = 0;
-                    if (rows != null && rows.Length > 0) totalRows = rows.Length - rowSummary;  // 使用可见行数（考虑树形展开/折叠）
-                    else if (dataSource is BindingList<object> bindingList) totalRows = bindingList.Count;
-                    else if (dataSource is System.Collections.IList list) totalRows = list.Count;
-                    else if (dataSource is System.Data.DataTable dataTable) totalRows = dataTable.Rows.Count;
-
-                    if (totalRows > 0)
+                    // 当前字段是最后一个字段
+                    if (navigationConfig.LineBreak == true)
                     {
-                        int nextRowIndex = e.RowIndex + 1;
-                        if (nextRowIndex < totalRows) MoveToNextEditableCell(navigationConfig, nextRowIndex, navigationConfig.FirstFieldKey);
+                        // 允许换行：尝试跳转到下一行的第一个字段
+                        // 检查是否有下一行
+                        // 优先使用 rows.Length（可见行数），这样可以正确处理树形展开/折叠的情况
+                        int totalRows = 0;
+                        if (rows != null && rows.Length > 0) totalRows = rows.Length - rowSummary;  // 使用可见行数（考虑树形展开/折叠）
+                        else if (dataSource is BindingList<object> bindingList) totalRows = bindingList.Count;
+                        else if (dataSource is System.Collections.IList list) totalRows = list.Count;
+                        else if (dataSource is System.Data.DataTable dataTable) totalRows = dataTable.Rows.Count;
+
+                        if (totalRows > 0)
+                        {
+                            int nextRowIndex = e.RowIndex + 1;
+                            if (nextRowIndex < totalRows) MoveToNextEditableCell(navigationConfig, nextRowIndex, navigationConfig.FirstFieldKey);
+                        }
                     }
+                    else MoveToNextEditableCell(navigationConfig, e.RowIndex, navigationConfig.FirstFieldKey);// 不换行：回到本行的第一个字段
                 }
-                else
-                {
-                    // 不换行：回到本行的第一个字段
-                    MoveToNextEditableCell(navigationConfig, e.RowIndex, navigationConfig.FirstFieldKey);
-                }
+                else MoveToNextEditableCell(navigationConfig, e.RowIndex, nextColumnKey);
             }
         }
 
@@ -155,9 +154,9 @@ namespace AntdUI
             {
                 SelectAll = selectAll;
                 LineBreak = lineBreak;
-                // 记录第一个字段，用于跨行跳转
-                FirstFieldKey = fieldSequence[0];
                 int len = fieldSequence.Length - 1;
+                FirstFieldKey = fieldSequence[0];
+                LastFieldKey = fieldSequence[len];
                 Map = new Dictionary<string, string>(len);
                 for (int i = 0; i < len; i++) Map.Add(fieldSequence[i], fieldSequence[i + 1]);
             }
@@ -168,14 +167,16 @@ namespace AntdUI
             public Dictionary<string, string> Map { get; set; }
 
             public string FirstFieldKey { get; set; }
+            public string LastFieldKey { get; set; }
 
             public bool SelectAll { get; set; }
             public bool LineBreak { get; set; }
 
-            public bool Contains(string key)
+            public bool Contains(string key, out string? next)
             {
-                if (Map.TryGetValue(key, out _)) return true;
-                return FirstFieldKey == key;
+                if (Map.TryGetValue(key, out next)) return true;
+                next = null;
+                return FirstFieldKey == key || LastFieldKey == key;
             }
         }
     }

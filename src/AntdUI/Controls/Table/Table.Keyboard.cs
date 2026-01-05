@@ -149,12 +149,15 @@ namespace AntdUI
                     var it = rows[index];
                     OnCellClick(it.RECORD, it.Type, index, 0, FocusedColumn, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     if (editmode == TEditMode.None || focusedxy == null) return;
-                    var id_tmp = "edit_" + focusedxy[0] + "_" + focusedxy[1];
-                    foreach (var item in _editControls)
+                    if (inEditMode)
                     {
-                        if (item.Key.Name == id_tmp) return;
+                        var id_tmp = "edit_" + focusedxy[0] + "_" + focusedxy[1];
+                        foreach (var item in _editControls)
+                        {
+                            if (item.Key.Name == id_tmp) return;
+                        }
+                        if (EnableFocusNavigation && (navigationConfig?.Contains(rows[0].cells[focusedxy[0]].COLUMN.Key, out _) ?? false)) return;
                     }
-                    if (EnableFocusNavigation && (navigationConfig?.Contains(rows[0].cells[focusedxy[0]].COLUMN.Key) ?? false)) return;
                     _currentEdit = null;
                     EnterEditMode(index, focusedxy[0]);
                 }
