@@ -1062,8 +1062,7 @@ namespace AntdUI
                 SetCursor(value && enabled && !loading);
                 if (enabled)
                 {
-                    var backHover = GetColorO();
-                    int alpha = backHover.A;
+                    int alpha = GetColorO().A;
                     if (Config.HasAnimation(nameof(Button), Name))
                     {
                         if (IconHoverAnimation > 0 && ((toggle && HasToggleIcon && (ToggleIconHoverSvg != null || ToggleIconHover != null)) || (HasIcon && (IconHoverSvg != null || IconHover != null))))

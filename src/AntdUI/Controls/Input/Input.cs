@@ -636,6 +636,23 @@ namespace AntdUI
         [Description("文本总行"), Category("数据"), DefaultValue(0)]
         public int TextTotalLine { get; private set; } = 0;
 
+        /// <summary>
+        /// 多行文本集合
+        /// </summary>
+        [Description("多行文本集合"), Category("外观"), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Editor("System.Windows.Forms.Design.StringArrayEditor", typeof(UITypeEditor))]
+        public string[] Lines
+        {
+            get => _text.Split(new string[] { "\n", Environment.NewLine }, StringSplitOptions.None);
+            set
+            {
+                string newText;
+                if (value == null || value.Length == 0) newText = string.Empty;
+                else newText = string.Join(Environment.NewLine, value);
+                if (_text != newText) Text = newText;
+            }
+        }
+
         bool SetText(string value, bool active, bool changed = true)
         {
             value ??= "";
