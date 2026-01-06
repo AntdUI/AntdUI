@@ -440,11 +440,32 @@ namespace AntdUI.Chat
                             {
                                 if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) OnItemIconClick(it, e);
                                 else if (text.ContainsRead(e.X, e.Y, 0, scrolly))
-                                {
-                                    oldMouseDown = e.Location;
-                                    text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
+                                { 
+                                    var bmp = text.ContainsReadImage(e.X, e.Y, 0, scrolly);
+                                    if (EnabledClickImage && ItemImageClick != null && bmp != null)
+                                    {
+                                        var id = bmp.i.ToString() + bmp.text.Length;
+                                        if (text.image_cache.TryGetValue(id, out var img))
+                                        {
+                                            ChatItemImageClickEventArgs arg = new ChatItemImageClickEventArgs(it, e, img);
+                                            ItemImageClick(it, arg);
+                                            if (arg.ImageUpdated != null)
+                                            {
+                                                text.image_cache[id].Dispose();
+                                                text.image_cache[id] = arg.ImageUpdated;
+                                                Invalidate();
+                                            }
+                                            break;
+                                        }
 
-                                    mouseDown = text;
+                                    }
+                                    else
+                                    {
+                                        oldMouseDown = e.Location;
+                                        text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
+
+                                        mouseDown = text;
+                                    }
                                 }
                             }
                         }
@@ -582,10 +603,15 @@ namespace AntdUI.Chat
         /// </summary>
         [Description("消息头像单击时发生"), Category("行为")]
         public event ClickEventHandler? ItemIconClick;
+        /// <summary>
+        /// 消息图片单击时发生
+        /// </summary>
+        [Description("消息图片单击时发生"), Category("行为")]
+        public event ClickImageEventHandler? ItemImageClick;
 
         protected virtual void OnItemClick(IChatItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new ChatItemEventArgs(item, e));
         protected virtual void OnItemIconClick(IChatItem item, MouseEventArgs e) => ItemIconClick?.Invoke(this, new ChatItemEventArgs(item, e));
-
+    
         #endregion
 
         #region 键盘
