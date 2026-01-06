@@ -44,21 +44,6 @@ namespace AntdUI
                     var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
                     if (style == TableCellFocusedStyle.None) SetFocusedCell(null);
                     else SetFocusedCell(db.cell);
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
-                        {
-                            if (shift_index == -1) SelectedIndexs = SetIndexs(db.i_row);
-                            else
-                            {
-                                if (shift_index > db.i_row) SelectedIndexs = SetIndexs(db.i_row, shift_index);
-                                else SelectedIndexs = SetIndexs(shift_index, db.i_row);
-                            }
-                        }
-                        else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(db.i_row);
-                        else SelectedIndex = db.i_row;
-                    }
-                    shift_index = db.i_row;
                     if (dataSource is BindingSource bindingSource) bindingSource.Position = db.i_row - 1;
                     var it = db.cell.ROW;
                     if (db.mode > 0)
@@ -370,227 +355,264 @@ namespace AntdUI
             else if (it.i_row != db.i_row || it.i_cel != db.i_cel) MouseUpBtn(it, btn, e, db);
             else
             {
-                if (selectedIndex.Length == 1) SelectedIndex = it.i_row;
-                if (MouseUpBtn(it, btn, e, db)) return;
-                if (e.Button == MouseButtons.Left)
+                if (MouseUpRow(rows, it, btn, e, db))
                 {
-                    if (it.cell is TCellCheck checkCell)
+                    if (e.Button == MouseButtons.Left)
                     {
-                        if (checkCell.CONTAIN_REAL(db.x, db.y))
+                        if (MultipleRows && ModifierKeys.HasFlag(Keys.Shift))
                         {
-                            if (checkCell.COLUMN is ColumnCheck columnCheck && columnCheck.Call != null)
+                            if (shift_index == -1) SelectedIndexs = SetIndexs(db.i_row);
+                            else
                             {
-                                var value = columnCheck.Call(!checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
-                                if (checkCell.Checked != value)
-                                {
-                                    SetValueCheck(checkCell, value);
-                                    OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
-                                }
+                                if (shift_index > db.i_row) SelectedIndexs = SetIndexs(db.i_row, shift_index);
+                                else SelectedIndexs = SetIndexs(shift_index, db.i_row);
                             }
-                            else if (checkCell.AutoCheck)
+                        }
+                        else if (MultipleRows && ModifierKeys.HasFlag(Keys.Control)) SelectedIndexs = SetIndexs(db.i_row);
+                        else SelectedIndex = db.i_row;
+                    }
+                    shift_index = db.i_row;
+                }
+            }
+        }
+        bool MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, CELLDB db)
+        {
+            if (MouseUpBtn(it, btn, e, db)) return false;
+            if (e.Button == MouseButtons.Left)
+            {
+                if (it.cell is TCellCheck checkCell)
+                {
+                    if (checkCell.CONTAIN_REAL(db.x, db.y))
+                    {
+                        if (checkCell.COLUMN is ColumnCheck columnCheck && columnCheck.Call != null)
+                        {
+                            var value = columnCheck.Call(!checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
+                            if (checkCell.Checked != value)
                             {
-                                SetValueCheck(checkCell);
+                                SetValueCheck(checkCell, value);
                                 OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
                             }
                         }
-                    }
-                    else if (it.cell is TCellRadio radioCell)
-                    {
-                        if (radioCell.CONTAIN_REAL(db.x, db.y) && !radioCell.Checked)
+                        else if (checkCell.AutoCheck)
                         {
-                            bool isok = false;
-                            if (radioCell.COLUMN is ColumnRadio columnRadio && columnRadio.Call != null)
+                            SetValueCheck(checkCell);
+                            OnCheckedChanged(checkCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
+                        }
+                        return false;
+                    }
+                }
+                else if (it.cell is TCellRadio radioCell)
+                {
+                    if (radioCell.CONTAIN_REAL(db.x, db.y) && !radioCell.Checked)
+                    {
+                        bool isok = false;
+                        if (radioCell.COLUMN is ColumnRadio columnRadio && columnRadio.Call != null)
+                        {
+                            var value = columnRadio.Call(true, it.row.RECORD, it.i_row, it.i_cel);
+                            if (value) isok = true;
+                        }
+                        else if (radioCell.AutoCheck) isok = true;
+                        if (isok)
+                        {
+                            for (int i = 0; i < rows.Length; i++)
                             {
-                                var value = columnRadio.Call(true, it.row.RECORD, it.i_row, it.i_cel);
-                                if (value) isok = true;
-                            }
-                            else if (radioCell.AutoCheck) isok = true;
-                            if (isok)
-                            {
-                                for (int i = 0; i < rows.Length; i++)
+                                if (i != it.i_row)
                                 {
-                                    if (i != it.i_row)
-                                    {
-                                        var cell_selno = rows[i].cells[it.i_cel];
-                                        if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked) SetValueCheck(radioCell2, false);
-                                    }
+                                    var cell_selno = rows[i].cells[it.i_cel];
+                                    if (cell_selno is TCellRadio radioCell2 && radioCell2.Checked) SetValueCheck(radioCell2, false);
                                 }
-                                SetValueCheck(radioCell, true);
-                                OnCheckedChanged(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
+                            }
+                            SetValueCheck(radioCell, true);
+                            OnCheckedChanged(radioCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
+                        }
+                        return false;
+                    }
+                }
+                else if (it.cell is TCellSwitch switchCell)
+                {
+                    if (switchCell.CONTAIN_REAL(db.x, db.y) && !switchCell.Loading)
+                    {
+                        if (switchCell.COLUMN is ColumnSwitch columnSwitch && columnSwitch.Call != null)
+                        {
+                            switchCell.Loading = true;
+                            ITask.Run(() =>
+                            {
+                                var value = columnSwitch.Call(!switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
+                                if (switchCell.Checked == value) return;
+                                SetValueCheck(switchCell, value);
+                            }).ContinueWith(action => switchCell.Loading = false);
+                        }
+                        else if (switchCell.AutoCheck)
+                        {
+                            SetValueCheck(switchCell);
+                            OnCheckedChanged(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
+                        }
+                        return false;
+                    }
+                }
+                else if (it.cell is Template template)
+                {
+                    foreach (var item in template.Value)
+                    {
+                        if (item is CellCheckbox checkbox)
+                        {
+                            if (checkbox.Rect.Contains(db.x, db.y) && checkbox.Enabled)
+                            {
+                                if (checkbox.AutoCheck) checkbox.Checked = !checkbox.Checked;
+                                return false;
+                            }
+                        }
+                        else if (item is CellRadio radio)
+                        {
+                            if (radio.Rect.Contains(db.x, db.y) && radio.Enabled)
+                            {
+                                if (radio.AutoCheck) radio.Checked = !radio.Checked;
+                                return false;
+                            }
+                        }
+                        else if (item is CellSwitch _switch)
+                        {
+                            if (_switch.Rect.Contains(db.x, db.y) && _switch.Enabled)
+                            {
+                                if (_switch.AutoCheck) _switch.Checked = !_switch.Checked;
+                                return false;
                             }
                         }
                     }
-                    else if (it.cell is TCellSwitch switchCell)
+                }
+                else if (it.row.IsColumn && it.cell is TCellColumn col)
+                {
+                    if (it.cell.COLUMN.Filter != null && col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
                     {
-                        if (switchCell.CONTAIN_REAL(db.x, db.y) && !switchCell.Loading)
+                        //点击筛选
+                        var focusColumn = it.cell.COLUMN;
+                        IList<object>? customSource = null;
+                        Font? fnt = null;
+                        int filterHeight = 0;
+                        if (FilterPopupBegin != null)
                         {
-                            if (switchCell.COLUMN is ColumnSwitch columnSwitch && columnSwitch.Call != null)
+                            var arg = new TableFilterPopupBeginEventArgs(focusColumn);
+                            FilterPopupBegin(this, arg);
+                            if (arg.Cancel) return false;
+                            customSource = arg.CustomSource;
+                            fnt = arg.Font;
+                            filterHeight = arg.Height;
+                        }
+                        fnt ??= Font;
+                        var editor = new FilterControl(this, focusColumn, customSource)
+                        {
+                            Font = fnt
+                        };
+                        if (filterHeight > 0) editor.Height = filterHeight;
+                        Point location = PointToScreen(col.rect_filter.Location);
+                        Point locaionOrigin = location;
+                        location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
+                        if (fixedColumnR != null && fixedColumnR.Contains(columns!.IndexOf(focusColumn)))
+                        {
+                            int gap = (int)(_gap.Width * Dpi);
+                            location.X -= (showFixedColumnR ? gap : gap * 2);
+                        }
+                        location.X += col.rect_filter.Width / 2;
+                        location.Y += col.rect_filter.Height;
+                        Rectangle? rectScreen = Screen.FromPoint(location).WorkingArea;
+                        TAlign align = TAlign.Bottom;
+                        if (rectScreen.HasValue)
+                        {
+                            if (location.X - (editor.Width / 2) < rectScreen.Value.Left)
                             {
-                                switchCell.Loading = true;
-                                ITask.Run(() =>
-                                {
-                                    var value = columnSwitch.Call(!switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel);
-                                    if (switchCell.Checked == value) return;
-                                    SetValueCheck(switchCell, value);
-                                }).ContinueWith(action => switchCell.Loading = false);
+                                align = TAlign.Right;
+                                location.X = editor.Width / 2;
                             }
-                            else if (switchCell.AutoCheck)
+                            else if (location.X + editor.Width > rectScreen.Value.Right)
                             {
-                                SetValueCheck(switchCell);
-                                OnCheckedChanged(switchCell.Checked, it.row.RECORD, it.i_row, it.i_cel, db.col);
+                                align = TAlign.Left;
+                                location.X = rectScreen.Value.Right - editor.Width / 2;
+                            }
+                            else if (location.Y + editor.Height > rectScreen.Value.Bottom)
+                            {
+                                align = TAlign.Top;
+                                location.Y = locaionOrigin.Y;
                             }
                         }
-                    }
-                    else if (it.cell is Template template)
-                    {
-                        foreach (var item in template.Value)
-                        {
-                            if (item is CellCheckbox checkbox)
-                            {
-                                if (checkbox.Rect.Contains(db.x, db.y) && checkbox.Enabled && checkbox.AutoCheck) checkbox.Checked = !checkbox.Checked;
-                            }
-                            else if (item is CellRadio radio)
-                            {
-                                if (radio.Rect.Contains(db.x, db.y) && radio.Enabled && radio.AutoCheck) radio.Checked = !radio.Checked;
-                            }
-                            else if (item is CellSwitch _switch)
-                            {
-                                if (_switch.Rect.Contains(db.x, db.y) && _switch.Enabled && _switch.AutoCheck) _switch.Checked = !_switch.Checked;
-                            }
-                        }
-                    }
-                    else if (it.row.IsColumn && it.cell is TCellColumn col)
-                    {
-                        if (it.cell.COLUMN.Filter != null && col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
-                        {
-                            //点击筛选
-                            var focusColumn = it.cell.COLUMN;
-                            IList<object>? customSource = null;
-                            Font? fnt = null;
-                            int filterHeight = 0;
-                            if (FilterPopupBegin != null)
-                            {
-                                var arg = new TableFilterPopupBeginEventArgs(focusColumn);
-                                FilterPopupBegin(this, arg);
-                                if (arg.Cancel) return;
-                                customSource = arg.CustomSource;
-                                fnt = arg.Font;
-                                filterHeight = arg.Height;
-                            }
-                            fnt ??= Font;
-                            var editor = new FilterControl(this, focusColumn, customSource)
-                            {
-                                Font = fnt
-                            };
-                            if (filterHeight > 0) editor.Height = filterHeight;
-                            Point location = PointToScreen(col.rect_filter.Location);
-                            Point locaionOrigin = location;
-                            location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
-                            if (fixedColumnR != null && fixedColumnR.Contains(columns!.IndexOf(focusColumn)))
-                            {
-                                int gap = (int)(_gap.Width * Dpi);
-                                location.X -= (showFixedColumnR ? gap : gap * 2);
-                            }
-                            location.X += col.rect_filter.Width / 2;
-                            location.Y += col.rect_filter.Height;
-                            Rectangle? rectScreen = Screen.FromPoint(location).WorkingArea;
-                            TAlign align = TAlign.Bottom;
-                            if (rectScreen.HasValue)
-                            {
-                                if (location.X - (editor.Width / 2) < rectScreen.Value.Left)
-                                {
-                                    align = TAlign.Right;
-                                    location.X = editor.Width / 2;
-                                }
-                                else if (location.X + editor.Width > rectScreen.Value.Right)
-                                {
-                                    align = TAlign.Left;
-                                    location.X = rectScreen.Value.Right - editor.Width / 2;
-                                }
-                                else if (location.Y + editor.Height > rectScreen.Value.Bottom)
-                                {
-                                    align = TAlign.Top;
-                                    location.Y = locaionOrigin.Y;
-                                }
-                            }
 
-                            Popover.open(new Popover.Config(this, editor)
-                            {
-                                Dpi = (fnt.Size / 9F) * Dpi,
-                                Tag = focusColumn.Filter,
-                                ArrowAlign = align,
-                                Font = fnt,
-                                CustomPoint = new Rectangle(location, Size.Empty),
-                                Padding = new Size(6, 6),
-                                OnClosing = filter_PopupEndEventMethod
-                            });
-                        }
-                        else if (it.cell.COLUMN.SortOrder)
+                        Popover.open(new Popover.Config(this, editor)
                         {
-                            //点击排序
-                            SortMode sortMode = SortMode.NONE;
-                            int r_x_f = db.x - col.offsetx, r_y_f = db.y - col.offsety;
-                            if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
-                            else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
+                            Dpi = (fnt.Size / 9F) * Dpi,
+                            Tag = focusColumn.Filter,
+                            ArrowAlign = align,
+                            Font = fnt,
+                            CustomPoint = new Rectangle(location, Size.Empty),
+                            Padding = new Size(6, 6),
+                            OnClosing = filter_PopupEndEventMethod
+                        });
+                    }
+                    else if (it.cell.COLUMN.SortOrder)
+                    {
+                        //点击排序
+                        SortMode sortMode = SortMode.NONE;
+                        int r_x_f = db.x - col.offsetx, r_y_f = db.y - col.offsety;
+                        if (col.rect_up.Contains(r_x_f, r_y_f)) sortMode = SortMode.ASC;
+                        else if (col.rect_down.Contains(r_x_f, r_y_f)) sortMode = SortMode.DESC;
+                        else
+                        {
+                            sortMode = col.COLUMN.SortMode + 1;
+                            if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
+                        }
+                        if (col.COLUMN.SetSortMode(sortMode))
+                        {
+                            foreach (var item in it.row.cells)
+                            {
+                                if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
+                            }
+                            var result = OnSortModeChanged(sortMode, col.COLUMN);
+                            if (result) Invalidate();
                             else
                             {
-                                sortMode = col.COLUMN.SortMode + 1;
-                                if (sortMode > SortMode.DESC) sortMode = SortMode.NONE;
-                            }
-                            if (col.COLUMN.SetSortMode(sortMode))
-                            {
-                                foreach (var item in it.row.cells)
+                                Invalidate();
+                                switch (sortMode)
                                 {
-                                    if (item.COLUMN.SortOrder && item.INDEX != it.i_cel) item.COLUMN.SetSortMode(SortMode.NONE);
+                                    case SortMode.ASC:
+                                        SortDataASC(col.COLUMN);
+                                        break;
+                                    case SortMode.DESC:
+                                        SortDataDESC(col.COLUMN);
+                                        break;
+                                    case SortMode.NONE:
+                                    default:
+                                        SortData = null;
+                                        break;
                                 }
-                                var result = OnSortModeChanged(sortMode, col.COLUMN);
-                                if (result) Invalidate();
-                                else
-                                {
-                                    Invalidate();
-                                    switch (sortMode)
-                                    {
-                                        case SortMode.ASC:
-                                            SortDataASC(col.COLUMN);
-                                            break;
-                                        case SortMode.DESC:
-                                            SortDataDESC(col.COLUMN);
-                                            break;
-                                        case SortMode.NONE:
-                                        default:
-                                            SortData = null;
-                                            break;
-                                    }
-                                    LoadLayout();
-                                    OnSortRows(it.i_cel);
-                                }
+                                LoadLayout();
+                                OnSortRows(it.i_cel);
                             }
                         }
-                    }
-                }
-                bool enterEdit = false;
-                if (it.doubleClick)
-                {
-                    OnCellDoubleClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
-                    if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
-                }
-                else
-                {
-                    OnCellClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
-                    if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
-                }
-                if (enterEdit)
-                {
-                    EditModeClose();
-                    int i_row = db.i_row, i_cel = db.i_cel;
-                    db.cell = RealCELL(db.cell, rows, ref i_row, ref i_cel, ref it, out var crect);
-                    if (CanEditMode(db.cell))
-                    {
-                        int val = ScrollLine(crect.Y, crect.Bottom, rows);
-                        OnEditMode(it.row, db.cell, crect, i_row, i_cel, db.col, db.offset_xi, db.offset_y - val);
                     }
                 }
             }
+            bool enterEdit = false;
+            if (it.doubleClick)
+            {
+                OnCellDoubleClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
+                if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
+            }
+            else
+            {
+                OnCellClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
+                if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
+            }
+            if (enterEdit)
+            {
+                EditModeClose();
+                int i_row = db.i_row, i_cel = db.i_cel;
+                db.cell = RealCELL(db.cell, rows, ref i_row, ref i_cel, ref it, out var crect);
+                if (CanEditMode(db.cell))
+                {
+                    int val = ScrollLine(crect.Y, crect.Bottom, rows);
+                    OnEditMode(it.row, db.cell, crect, i_row, i_cel, db.col, db.offset_xi, db.offset_y - val);
+                    return false;
+                }
+            }
+            return true;
         }
         bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e, CELLDB db)
         {
