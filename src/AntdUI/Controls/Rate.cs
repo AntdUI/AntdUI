@@ -537,7 +537,6 @@ namespace AntdUI
         protected override void OnMouseHover(int x, int y)
         {
             CloseTip();
-            if (x == -1 || y == -1) return;
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];

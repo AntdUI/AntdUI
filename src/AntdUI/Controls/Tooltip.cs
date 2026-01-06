@@ -306,7 +306,7 @@ namespace AntdUI
             PARENT = control;
             ocontrol = control;
             control.SetTopMost(Handle);
-            CloseMode = CloseMode.Leave;
+            CloseMode = CloseMode.Click;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;

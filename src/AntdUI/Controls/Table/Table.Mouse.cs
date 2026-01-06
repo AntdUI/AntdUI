@@ -789,14 +789,13 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
-            if (x == -1 || y == -1)
-            {
-                CloseTip();
-                return;
-            }
             if (rows == null || inEditMode) return;
             var db = CellContains(rows, false, x, y);
-            if (db == null || db.mode == CELLDBMode.Summary) OnCellHover();
+            if (db == null || db.mode == CELLDBMode.Summary)
+            {
+                CloseTip();
+                OnCellHover();
+            }
             else
             {
                 OnCellHover(db.cell.ROW.RECORD, db.cell.ROW.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));

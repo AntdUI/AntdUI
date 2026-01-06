@@ -21,24 +21,35 @@ namespace AntdUI
     /// 点击事件
     /// </summary>
     public delegate void ClickEventHandler(object sender, ChatItemEventArgs e);
-    /// <summary>
-    /// 图片点击事件
-    /// </summary>
-    public delegate void ClickImageEventHandler(object sender, ChatItemImageClickEventArgs e);
 
     public class ChatItemImageClickEventArgs : ChatItemEventArgs
     {
-        public ChatItemImageClickEventArgs(Chat.IChatItem item, MouseEventArgs e, Image img) : base(item, e) { ClickImage = img; }
-        
+        public ChatItemImageClickEventArgs(Chat.IChatItem item, MouseEventArgs e, Image img) : base(item, e)
+        {
+            ClickImage = img;
+        }
+
         /// <summary>
         /// 点击的图片
         /// </summary>
         public Image ClickImage { get; private set; }
+
         /// <summary>
         /// 已更新的图片 (替换原图片)
         /// </summary>
-        public Image ImageUpdated { get; set; }
+        public Image? ImageUpdated { get; set; }
+
+        public ChatItemImageClickEventArgs SetImage(Image? value)
+        {
+            ImageUpdated = value;
+            return this;
+        }
     }
+
+    /// <summary>
+    /// 图片点击事件
+    /// </summary>
+    public delegate void ClickImageEventHandler(object sender, ChatItemImageClickEventArgs e);
 
     #endregion
 

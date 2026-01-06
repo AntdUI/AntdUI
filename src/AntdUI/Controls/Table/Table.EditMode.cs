@@ -407,8 +407,8 @@ namespace AntdUI
                 case TEditSelection.Last:
                     input.SelectLast();
                     break;
-                default:
-                    if (EnableFocusNavigation) input.SelectAll();
+                case TEditSelection.All:
+                    input.SelectAll();
                     break;
             }
             return input;

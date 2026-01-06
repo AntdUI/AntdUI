@@ -1320,7 +1320,7 @@ namespace AntdUI
         protected override void OnMouseHover(int x, int y)
         {
             CloseTip();
-            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            if (items == null || items.Count == 0) return;
             foreach (var it in items)
             {
                 if (it.Enabled && it.Rect.Contains(x, y))

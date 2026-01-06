@@ -990,7 +990,7 @@ namespace AntdUI
         protected override void OnMouseHover(int x, int y)
         {
             CloseTip();
-            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            if (items == null || items.Count == 0) return;
             foreach (var item in items)
             {
                 if (item.buttons == null || item.buttons.Count == 0) continue;

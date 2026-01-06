@@ -386,11 +386,6 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
-            if (x == -1 || y == -1)
-            {
-                CloseTip();
-                return;
-            }
             foreach (var it in config.Btns)
             {
                 if (it.Enabled && !it.Loading && it.rect.Contains(x, y))
