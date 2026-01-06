@@ -617,6 +617,9 @@ namespace AntdUI
         public bool IsTextEmpty => isempty;
 
         string _text = "";
+        /// <summary>
+        /// 文本
+        /// </summary>
         [Description("文本"), Category("外观"), DefaultValue("")]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public override string Text
@@ -687,6 +690,9 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// Emoji字体
+        /// </summary>
         [Description("Emoji字体"), Category("外观"), DefaultValue("Segoe UI Emoji")]
         public string EmojiFont { get; set; } = "Segoe UI Emoji";
 

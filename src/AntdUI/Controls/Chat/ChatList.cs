@@ -296,7 +296,7 @@ namespace AntdUI.Chat
                                 if (it.emoji)
                                 {
                                     if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) PaintItemTextEmoji(g, fore, it, svg);
-                                    else g.String(it.text, font, fore, new Rectangle(it.rect.X - 20, it.rect.Y - 20, it.rect.Width + 40, it.rect.Height + 40));
+                                    else g.String(it.text, font, fore, it.rect);
                                 }
                                 else g.String(it.text, Font, fore, it.rect);
                                 break;

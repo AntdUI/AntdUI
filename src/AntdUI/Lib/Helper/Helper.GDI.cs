@@ -29,7 +29,8 @@ namespace AntdUI
         {
             var key = (int)flags + "_" + measure;
             if (ffs.TryGetValue(key, out var r)) return r;
-            StringFormat sf = new StringFormat(StringFormat.GenericTypographic);
+            var sf = new StringFormat(StringFormat.GenericTypographic);
+
             // 处理垂直对齐（LineAlignment）
             if (flags.HasFlag(FormatFlags.VerticalCenter)) sf.LineAlignment = StringAlignment.Center;
             else if (flags.HasFlag(FormatFlags.Top)) sf.LineAlignment = StringAlignment.Near;
@@ -51,7 +52,11 @@ namespace AntdUI
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
             if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            else sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
+            else
+            {
+                sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
+                sf.FormatFlags &= ~StringFormatFlags.LineLimit;
+            }
 
             if (!ffs.TryAdd(key, sf)) sf.Dispose();
 
@@ -1473,5 +1478,62 @@ namespace AntdUI
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// 将图片转换为指定大小的点阵矩阵
+        /// </summary>
+        /// <param name="bmp">图片</param>
+        /// <param name="horizontalMode">是否横向取模（true=横向，false=纵向）</param>
+        /// <returns>点阵数据（每个字节表示8个像素）</returns>
+        public static byte[] ConvertImageToDotMatrix(Bitmap bmp, bool horizontalMode = true)
+        {
+            // 转换为点阵
+            int width = bmp.Width, height = bmp.Height;
+            byte[] dotMatrix = new byte[(width * height + 7) / 8];
+            int index = 0;
+
+            if (horizontalMode)
+            {
+                // 横向取模：按行扫描（宽度方向）
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        Color pixelColor = bmp.GetPixel(x, y);
+                        bool isBlack = (pixelColor.R < 128 && pixelColor.G < 128 && pixelColor.B < 128);
+
+                        if (isBlack)
+                        {
+                            // 将像素添加到点阵（高位在前）
+                            dotMatrix[index / 8] |= (byte)(1 << (7 - (index % 8)));
+                        }
+
+                        index++;
+                    }
+                }
+            }
+            else
+            {
+                // 纵向取模：按列扫描（高度方向）
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        Color pixelColor = bmp.GetPixel(x, y);
+                        bool isBlack = (pixelColor.R < 128 && pixelColor.G < 128 && pixelColor.B < 128);
+
+                        if (isBlack)
+                        {
+                            // 将像素添加到点阵（高位在前）
+                            dotMatrix[index / 8] |= (byte)(1 << (7 - (index % 8)));
+                        }
+
+                        index++;
+                    }
+                }
+            }
+
+            return dotMatrix;
+        }
     }
 }

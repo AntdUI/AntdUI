@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -39,6 +40,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
+                cache.Clear();
                 Invalidate();
                 OnTextChanged(EventArgs.Empty);
                 OnPropertyChanged(nameof(Text));
@@ -47,6 +49,30 @@ namespace AntdUI
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
+
+        int? fontSize;
+        /// <summary>
+        /// 字体大小
+        /// </summary>
+        [Description("字体大小"), Category("外观"), DefaultValue(null)]
+        public int? FontSize
+        {
+            get => fontSize;
+            set
+            {
+                if (fontSize == value) return;
+                fontSize = value;
+                cache.Clear();
+                Invalidate();
+                OnPropertyChanged(nameof(FontSize));
+            }
+        }
+
+        /// <summary>
+        /// Emoji字体
+        /// </summary>
+        [Description("Emoji字体"), Category("外观"), DefaultValue("Segoe UI Emoji")]
+        public string EmojiFont { get; set; } = "Segoe UI Emoji";
 
         int dotSize = 4;
         /// <summary>
@@ -306,33 +332,51 @@ namespace AntdUI
                 }
             }
             var txt = Text;
-            if (string.IsNullOrEmpty(txt)) return;
+            if (txt == null || string.IsNullOrEmpty(txt)) return;
 
-            var patterns = GetPatterns(txt);
             var fore = DotColor ?? Colour.Primary.Get(nameof(LabelLed), ColorScheme);
-
-            if (shadow > 0)
+            if (fontSize.HasValue)
             {
-                using (var bmp = new Bitmap(Width, Height))
+                var patterns = GetPatterns(txt, fontSize.Value);
+                if (shadow > 0)
                 {
-                    using (var g2 = Graphics.FromImage(bmp).HighLay())
+                    using (var bmp = new Bitmap(Width, Height))
                     {
-                        RenderLed(g2, ClientRectangle.PaddingRect(Padding), patterns, ShadowColor ?? fore, false);
+                        using (var g2 = Graphics.FromImage(bmp).HighLay())
+                        {
+                            RenderLed(g2, ClientRectangle.PaddingRect(Padding), patterns, fontSize.Value, fontSize.Value, ShadowColor ?? fore, false);
+                        }
+                        Helper.Blur(bmp, shadow);
+                        g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                     }
-                    Helper.Blur(bmp, shadow);
-                    g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                 }
+                RenderLed(g, rect, patterns, fontSize.Value, fontSize.Value, fore, true);
             }
-            RenderLed(g, rect, patterns, fore, true);
+            else
+            {
+                int rows, cols;
+                GetFontSize(out rows, out cols);
+                var patterns = GetPatterns(txt);
+                if (shadow > 0)
+                {
+                    using (var bmp = new Bitmap(Width, Height))
+                    {
+                        using (var g2 = Graphics.FromImage(bmp).HighLay())
+                        {
+                            RenderLed(g2, ClientRectangle.PaddingRect(Padding), patterns, rows, cols, ShadowColor ?? fore, false);
+                        }
+                        Helper.Blur(bmp, shadow);
+                        g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
+                    }
+                }
+                RenderLed(g, rect, patterns, rows, cols, fore, true);
+            }
         }
 
-        void RenderLed(Canvas g, Rectangle rect, int[][] patterns, Color color, bool drawbg)
+        void RenderLed(Canvas g, Rectangle rect, int[][] patterns, int rows, int cols, Color color, bool drawbg)
         {
             int dot = (int)Math.Max(1, Math.Round(dotSize * Dpi * textScale)), gap = (int)Math.Round(dotGap * Dpi * textScale);
             int pitch = dot + gap, charGap = gap * 2;
-
-            int rows, cols;
-            GetFontSize(out rows, out cols);
 
             int charWidth = cols * pitch - gap, charHeight = rows * pitch - gap;
 
@@ -387,6 +431,65 @@ namespace AntdUI
                 }
             }
         }
+        void RenderLed(Canvas g, Rectangle rect, byte[][] patterns, int rows, int cols, Color color, bool drawbg)
+        {
+            int dot = (int)Math.Max(1, Math.Round(dotSize * Dpi * textScale)), gap = (int)Math.Round(dotGap * Dpi * textScale);
+            int pitch = dot + gap, charGap = gap * 2;
+
+            int charWidth = cols * pitch - gap, charHeight = rows * pitch - gap;
+
+            int totalWidth = patterns.Length == 0 ? 0 : patterns.Length * charWidth + Math.Max(0, patterns.Length - 1) * charGap;
+
+            int startX = rect.X, startY = rect.Y;
+            if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
+            if (rect.Height > charHeight) startY += (rect.Height - charHeight) / 2;
+
+            using (var brushOn = new SolidBrush(color))
+            {
+                if (drawbg && showOffLed)
+                {
+                    using (var brushOff = new SolidBrush(offDotColor ?? Helper.ToColor(40, color)))
+                    {
+                        for (int i = 0; i < patterns.Length; i++)
+                        {
+                            var pattern = patterns[i];
+                            int offsetX = startX + i * (charWidth + charGap);
+                            for (int r = 0; r < rows; r++)
+                            {
+                                for (int c = 0; c < cols; c++)
+                                {
+                                    int byteIndex = (r * cols + c) / 8, bitIndex = 7 - (r * cols + c) % 8;
+                                    bool isOn = (pattern[byteIndex] & (1 << bitIndex)) == 0;
+                                    int x = offsetX + c * pitch, y = startY + r * pitch;
+                                    DrawDot(g, isOn ? brushOn : brushOff, x, y, dot);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < patterns.Length; i++)
+                    {
+                        var pattern = patterns[i];
+                        for (int r = 0; r < rows; r++)
+                        {
+                            for (int c = 0; c < cols; c++)
+                            {
+                                int byteIndex = (r * cols + c) / 8, bitIndex = 7 - (r * cols + c) % 8;
+                                bool isOn = (pattern[byteIndex] & (1 << bitIndex)) == 0;
+                                if (isOn)
+                                {
+                                    int offsetX = startX + i * (charWidth + charGap);
+                                    int x = offsetX + c * pitch, y = startY + r * pitch;
+                                    DrawDot(g, brushOn, x, y, dot);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         void DrawDot(Canvas g, Brush brush, int x, int y, int size)
         {
@@ -420,6 +523,65 @@ namespace AntdUI
 
         #region 数据
 
+        #region DIV
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            cache.Clear();
+            base.OnFontChanged(e);
+        }
+
+        ConcurrentDictionary<string, byte[]> cache = new ConcurrentDictionary<string, byte[]>();
+        byte[][] GetPatterns(string text, int size)
+        {
+            var list = new List<byte[]>(text.Length);
+            using (var font = new Font(Font.FontFamily, size, Font.Style, GraphicsUnit.Pixel))
+            {
+                var rect = new Rectangle(0, 0, size, size);
+                Font? fontEmoji = null;
+                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                {
+                    string txt = str.Substring(nStart, nLen);
+                    if (cache.TryGetValue(txt, out var find)) list.Add(find);
+                    else
+                    {
+                        if (nType == 18 || nType == 4)
+                        {
+                            if (fontEmoji == null) fontEmoji = new Font(EmojiFont, Font.Size);
+                            using (var bmp = new Bitmap(size, size))
+                            {
+                                using (var g = Graphics.FromImage(bmp).HighLay())
+                                {
+                                    g.String(txt, fontEmoji, Brushes.White, rect);
+                                }
+                                var tmp = Helper.ConvertImageToDotMatrix(bmp, true);
+                                cache.TryAdd(txt, tmp);
+                                list.Add(tmp);
+                            }
+                        }
+                        else
+                        {
+                            using (var bmp = new Bitmap(size, size))
+                            {
+                                using (var g = Graphics.FromImage(bmp).HighLay())
+                                {
+                                    g.String(txt, font, Brushes.White, rect);
+                                }
+                                var tmp = Helper.ConvertImageToDotMatrix(bmp, true);
+                                cache.TryAdd(txt, tmp);
+                                list.Add(tmp);
+                            }
+                        }
+                    }
+                    return true;
+                });
+                fontEmoji?.Dispose();
+            }
+            return list.ToArray();
+        }
+
+        #endregion
+
         void GetFontSize(out int rows, out int cols)
         {
             rows = 7;
@@ -452,6 +614,7 @@ namespace AntdUI
             ['7'] = new[] { 0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b01000, 0b01000 },
             ['8'] = new[] { 0b01110, 0b10001, 0b10001, 0b01110, 0b10001, 0b10001, 0b01110 },
             ['9'] = new[] { 0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b00010, 0b01100 },
+
             ['A'] = new[] { 0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001 },
             ['B'] = new[] { 0b11110, 0b10001, 0b10001, 0b11110, 0b10001, 0b10001, 0b11110 },
             ['C'] = new[] { 0b01110, 0b10001, 0b10000, 0b10000, 0b10000, 0b10001, 0b01110 },
@@ -478,6 +641,7 @@ namespace AntdUI
             ['X'] = new[] { 0b10001, 0b10001, 0b01010, 0b00100, 0b01010, 0b10001, 0b10001 },
             ['Y'] = new[] { 0b10001, 0b10001, 0b01010, 0b00100, 0b00100, 0b00100, 0b00100 },
             ['Z'] = new[] { 0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b10000, 0b11111 },
+
             ['a'] = new[] { 0, 0, 0b01110, 0b00001, 0b01111, 0b10001, 0b01111 },
             ['b'] = new[] { 0b10000, 0b10000, 0b11110, 0b10001, 0b10001, 0b10001, 0b11110 },
             ['c'] = new[] { 0, 0, 0b01111, 0b10000, 0b10000, 0b10000, 0b01111 },
@@ -504,6 +668,7 @@ namespace AntdUI
             ['x'] = new[] { 0, 0, 0b10001, 0b01010, 0b00100, 0b01010, 0b10001 },
             ['y'] = new[] { 0, 0, 0b10001, 0b10001, 0b10001, 0b01111, 0b00001, 0b01110 },
             ['z'] = new[] { 0, 0, 0b11111, 0b00010, 0b00100, 0b01000, 0b11111 },
+
             ['-'] = new[] { 0, 0, 0, 0b11111, 0, 0, 0 },
             ['.'] = new[] { 0, 0, 0, 0, 0, 0b01100, 0b01100 },
             [':'] = new[] { 0, 0b01100, 0b01100, 0, 0b01100, 0b01100, 0 },
@@ -533,7 +698,31 @@ namespace AntdUI
             [';'] = new[] { 0, 0b01100, 0b01100, 0, 0b01100, 0b00100, 0 },
             ['"'] = new[] { 0b01010, 0b01010, 0b01010, 0, 0, 0, 0 },
             ['\''] = new[] { 0b00100, 0b00100, 0b00100, 0, 0, 0, 0 },
-            ['_'] = new[] { 0, 0, 0, 0, 0, 0, 0b11111 }
+            ['_'] = new[] { 0, 0, 0, 0, 0, 0, 0b11111 },
+            ['×'] = new[] { 0, 0b10001, 0b01010, 0b00100, 0b01010, 0b10001, 0 },
+            ['≤'] = new[] { 0, 0b00010, 0b00100, 0b01000, 0b00100, 0b00010, 0b11111 },
+            ['≥'] = new[] { 0, 0b01000, 0b00100, 0b00010, 0b00100, 0b01000, 0b11111 },
+
+            ['°'] = new[] { 0b00100, 0b01010, 0b10001, 0b01010, 0b00100, 0, 0 },
+            ['Ω'] = new[] { 0, 0b01110, 0b10001, 0b10001, 0b10001, 0b01010, 0b10001 },
+            ['∑'] = new[] { 0, 0b11111, 0b00100, 0b01000, 0b00100, 0b00010, 0b11111 },
+            ['£'] = new[] { 0b01110, 0b10000, 0b11110, 0b10000, 0b11110, 0b10000, 0b11111 },
+            ['•'] = new[] { 0, 0, 0, 0b00100, 0, 0, 0 },
+            ['…'] = new[] { 0, 0, 0, 0, 0b10101, 0b10101, 0b10101 },
+            ['→'] = new[] { 0, 0b00100, 0b00010, 0b11111, 0b00010, 0b00100, 0 },
+            ['←'] = new[] { 0, 0b00100, 0b01000, 0b11111, 0b01000, 0b00100, 0 },
+            ['↑'] = new[] { 0, 0b00100, 0b01110, 0b10101, 0b00100, 0b00100, 0 },
+            ['↓'] = new[] { 0, 0b00100, 0b00100, 0b10101, 0b01110, 0b00100, 0 },
+            ['⇒'] = new[] { 0b00100, 0b00010, 0b11111, 0b00010, 0b00100, 0, 0 },
+            ['⇐'] = new[] { 0b00100, 0b01000, 0b11111, 0b01000, 0b00100, 0, 0 },
+            ['⇑'] = new[] { 0b00100, 0b01110, 0b10101, 0b00100, 0b00100, 0, 0 },
+            ['⇓'] = new[] { 0b00100, 0b00100, 0b10101, 0b01110, 0b00100, 0, 0 },
+            ['○'] = new[] { 0b01110, 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b01110 },
+            ['●'] = new[] { 0b01110, 0b11111, 0b11111, 0b11111, 0b11111, 0b11111, 0b01110 },
+            ['◇'] = new[] { 0, 0b00100, 0b01010, 0b10001, 0b01010, 0b00100, 0 },
+            ['◆'] = new[] { 0, 0b00100, 0b01110, 0b11111, 0b01110, 0b00100, 0 },
+            ['♥'] = new[] { 0, 0b01010, 0b10101, 0b10001, 0b01010, 0b00100, 0 },
+            ['♦'] = new[] { 0, 0, 0b00100, 0b01010, 0b00100, 0, 0 }
         };
 
         /// <summary>
