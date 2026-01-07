@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -330,22 +329,21 @@ namespace AntdUI
             return null;
         }
 
-        void filter_PopupEndEventMethod(object sender, CancelEventArgs e)
+        internal bool Filter_PopupEndEventMethod(FilterOption option)
         {
             if (FilterPopupEnd != null)
             {
-                if (sender is Popover.Config config)
+                var arg = new TableFilterPopupEndEventArgs(option, FilterList());
+                FilterPopupEnd(this, arg);
+                if (arg.Cancel) return false;
+                else
                 {
-                    var arg = new TableFilterPopupEndEventArgs(config.Tag is FilterOption option ? option : null, FilterList());
-                    FilterPopupEnd(sender, arg);
-                    e.Cancel = arg.Cancel;
+                    inEditMode = false;
+                    OnMouseLeave(EventArgs.Empty);
+                    return true;
                 }
             }
-            if (e.Cancel == false)
-            {
-                inEditMode = false;
-                OnMouseLeave(EventArgs.Empty);
-            }
+            return true;
         }
 
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
@@ -488,7 +486,7 @@ namespace AntdUI
                         var focusColumn = it.cell.COLUMN;
                         IList<object>? customSource = null;
                         Font? fnt = null;
-                        int filterHeight = 0;
+                        int? filterHeight = null;
                         if (FilterPopupBegin != null)
                         {
                             var arg = new TableFilterPopupBeginEventArgs(focusColumn);
@@ -499,52 +497,17 @@ namespace AntdUI
                             filterHeight = arg.Height;
                         }
                         fnt ??= Font;
-                        var editor = new FilterControl(this, focusColumn, customSource)
+                        var editor = new FilterControl(this, fnt, focusColumn, customSource);
+                        if (filterHeight.HasValue) editor.Height = (int)(filterHeight.Value * Dpi);
+                        editor.Set(new Popover.Config(this, editor)
                         {
-                            Font = fnt
-                        };
-                        if (filterHeight > 0) editor.Height = filterHeight;
-                        Point location = PointToScreen(col.rect_filter.Location);
-                        Point locaionOrigin = location;
-                        location.X -= (focusColumn.Fixed ? 0 : ScrollBar.ValueX);
-                        if (fixedColumnR != null && fixedColumnR.Contains(columns!.IndexOf(focusColumn)))
-                        {
-                            int gap = (int)(_gap.Width * Dpi);
-                            location.X -= (showFixedColumnR ? gap : gap * 2);
-                        }
-                        location.X += col.rect_filter.Width / 2;
-                        location.Y += col.rect_filter.Height;
-                        Rectangle? rectScreen = Screen.FromPoint(location).WorkingArea;
-                        TAlign align = TAlign.Bottom;
-                        if (rectScreen.HasValue)
-                        {
-                            if (location.X - (editor.Width / 2) < rectScreen.Value.Left)
-                            {
-                                align = TAlign.Right;
-                                location.X = editor.Width / 2;
-                            }
-                            else if (location.X + editor.Width > rectScreen.Value.Right)
-                            {
-                                align = TAlign.Left;
-                                location.X = rectScreen.Value.Right - editor.Width / 2;
-                            }
-                            else if (location.Y + editor.Height > rectScreen.Value.Bottom)
-                            {
-                                align = TAlign.Top;
-                                location.Y = locaionOrigin.Y;
-                            }
-                        }
-
-                        Popover.open(new Popover.Config(this, editor)
-                        {
-                            Dpi = (fnt.Size / 9F) * Dpi,
+                            Dpi = (fnt.Size / 10F) * Dpi,
                             Tag = focusColumn.Filter,
-                            ArrowAlign = align,
+                            ArrowAlign = TAlign.Bottom,
                             Font = fnt,
-                            CustomPoint = new Rectangle(location, Size.Empty),
-                            Padding = new Size(6, 6),
-                            OnClosing = filter_PopupEndEventMethod
-                        });
+                            Offset = col.rect_filter,
+                            Padding = new Size(6, 6)
+                        }.open());
                     }
                     else if (it.cell.COLUMN.SortOrder)
                     {

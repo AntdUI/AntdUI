@@ -7,25 +7,6 @@
 namespace AntdUI
 {
     /// <summary>
-    /// 筛选数据源
-    /// </summary>
-    public enum FilterSource
-    {
-        /// <summary>
-        /// 当前筛选结果集
-        /// </summary>
-        Current = 0,
-        /// <summary>
-        /// 先从当前筛选结果集获取数据源，如果没有数据则从原始数据源获取
-        /// </summary>
-        CurrentFirst = 1,
-        /// <summary>
-        /// 始终从原始数据源获取数据
-        /// </summary>
-        DataSource = 2,
-    }
-
-    /// <summary>
     /// 筛选条件
     /// </summary>
     public enum FilterConditions

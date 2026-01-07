@@ -32,8 +32,8 @@ namespace AntdUI
                 Radius = (int)(config.Radius * Dpi);
                 ArrowSize = (int)(config.ArrowSize * Dpi);
 
-                int sp = (int)Math.Round(config.Gap * Dpi), paddingx = 10 + (int)(config.Padding.Width * Dpi),
-                paddingy = 10 + (int)(config.Padding.Height * Dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
+                int sp = (int)Math.Round(config.Gap * Dpi), paddingx = (int)(config.Padding.Width * Dpi),
+                paddingy = (int)(config.Padding.Height * Dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (config.Content is Control control)
                 {
@@ -163,6 +163,18 @@ namespace AntdUI
                 new CalculateCoordinate(this, config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
                 SetLocation(x, y);
             }
+        }
+
+        public void LoadOffset(Rectangle rect)
+        {
+            new CalculateCoordinate(this, config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, rect).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+            SetLocation(x, y);
+            PrintCache();
+            if (form == null) return;
+            var flocation = new Point(TargetRect.Location.X + rectContent.X, TargetRect.Location.Y + rectContent.Y);
+            var fsize = new Size(rectContent.Width, rectContent.Height);
+            form.Location = flocation;
+            form.MaximumSize = form.MinimumSize = form.Size = fsize;
         }
 
         public override string name => nameof(Popover);

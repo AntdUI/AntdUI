@@ -654,7 +654,7 @@ namespace AntdUI
         /// <summary>
         /// 筛选栏高度
         /// </summary>
-        public int Height { get; set; } = 0;
+        public int? Height { get; set; }
         /// <summary>
         /// 是否取消弹出
         /// </summary>
@@ -662,9 +662,24 @@ namespace AntdUI
 
         #region 设置
 
+        public TableFilterPopupBeginEventArgs SetCustomSource(System.Collections.Generic.IList<object>? value)
+        {
+            CustomSource = value;
+            return this;
+        }
         public TableFilterPopupBeginEventArgs SetHandled(bool value = true)
         {
             Cancel = value;
+            return this;
+        }
+        public TableFilterPopupBeginEventArgs SetFont(Font? value)
+        {
+            Font = value;
+            return this;
+        }
+        public TableFilterPopupBeginEventArgs SetHeight(int? value)
+        {
+            Height = value;
             return this;
         }
 
