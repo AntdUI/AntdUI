@@ -131,11 +131,6 @@ namespace AntdUI
                 dataTmp.ClearFilter();
                 return;
             }
-            var dir = new Dictionary<string, List<object?>>(columns.Count);
-            foreach (var col in columns)
-            {
-                if (col.Visible && col.Filter != null && col.Filter.Enabled) dir.Add(col.Key, col.Filter.FilterValues!);
-            }
             dataTmp.rowsFilter = IFilterList();
             FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(FilterList()));
             OnUpdateSummaries();
@@ -170,6 +165,7 @@ namespace AntdUI
             // 检查单元格值是否存在于筛选值列表中
             foreach (var filterValue in filterValues)
             {
+                if (filterValue == null && cellValue == null) return true;
                 if (filterValue?.Equals(cellValue) ?? false) return true;
             }
             return false;
@@ -257,56 +253,28 @@ namespace AntdUI
         internal void UpdateFilter() => Table?.UpdateFilter();
 
         /// <summary>
-        /// 外部应用筛选 (当前列)
+        /// 外部应用筛选
         /// </summary>
-        /// <param name="condition">条件</param>
-        /// <param name="filterValues">单个筛选值</param>
-        public bool Apply(FilterConditions condition, object filterValue)
+        /// <param name="filterValue">单个筛选值（列数据）</param>
+        public bool Apply(object filterValue) => Apply(new object[] { filterValue });
+
+        /// <summary>
+        /// 外部应用筛选
+        /// </summary>
+        /// <param name="filterValues">筛选值（列数据）</param>
+        public bool Apply(params object[] filterValues)
         {
-            if (Column == null) return false;
-            object[] filterValues = new object[] { filterValue };
-            return Apply(Column, condition, filterValues);
+            FilterValues = new List<object?>(filterValues);
+            UpdateFilter();
+            return Enabled;
         }
 
         /// <summary>
         /// 外部应用筛选
         /// </summary>
-        /// <param name="column">筛选列</param>
-        /// <param name="condition">条件</param>
-        /// <param name="filterValues">单个筛选值</param>
-        public bool Apply(Column column, FilterConditions condition, object filterValue)
+        /// <param name="filterValues">筛选值（列数据）</param>
+        public bool Apply(IList<object> filterValues)
         {
-            object[] filterValues = new object[] { filterValue };
-            return Apply(column, condition, filterValues);
-        }
-
-        /// <summary>
-        /// 外部应用筛选 (当前列)
-        /// </summary>
-        /// <param name="condition">条件</param>
-        /// <param name="filterValues">筛选值</param>
-        /// <returns></returns>
-        public bool Apply(FilterConditions condition, object[] filterValues)
-        {
-            if (Column == null) return false;
-            return Apply(Column, condition, filterValues);
-        }
-
-        /// <summary>
-        /// 外部应用筛选
-        /// </summary>
-        /// <param name="column">筛选列</param>
-        /// <param name="condition">条件</param>
-        /// <param name="filterValues">筛选值</param>
-        /// <returns></returns>
-        public bool Apply(Column column, FilterConditions condition, object[] filterValues)
-        {
-            if (column == null || condition == FilterConditions.None) return false;
-
-            Column = column;
-            Table = column.PARENT;
-
-            Condition = condition;
             FilterValues = new List<object?>(filterValues);
             UpdateFilter();
             return Enabled;

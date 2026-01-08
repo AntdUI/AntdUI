@@ -460,7 +460,7 @@ namespace AntdUI
                     }
                     else if (it.row.IsColumn && it.cell is TCellColumn col)
                     {
-                        if (it.cell.COLUMN.Filter != null&& col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
+                        if (it.cell.COLUMN.Filter != null && col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
                         {
                             //点击筛选
                             var focusColumn = it.cell.COLUMN;

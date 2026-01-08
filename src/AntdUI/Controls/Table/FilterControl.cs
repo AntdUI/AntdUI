@@ -20,8 +20,6 @@ namespace AntdUI
         public const string SVG_LESS = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M889.2 163.4c15.8 31.6 3 70-28.6 85.8L335.2 512l525.4 262.8c31.6 15.8 44.4 54.2 28.6 85.8s-54.2 44.4-85.8 28.6l-640-320C141.6 558.4 128 536.2 128 512s13.6-46.4 35.4-57.2l640-320c31.6-15.8 70-3 85.8 28.6z\"></path></svg>";
         public const string SVG_CONTAIN = "<svg viewBox=\"0 0 1024 1024\"><path d=\"M656.512 213.333333a42.666667 42.666667 0 0 1 42.410667 47.232l-54.826667 512A42.666667 42.666667 0 0 1 601.6 810.666667H399.530667a42.666667 42.666667 0 0 1-42.453334-47.232l54.869334-512A42.666667 42.666667 0 0 1 454.357333 213.333333h202.154667z m189.141333 194.816l71.68 1.194667-6.656 54.186667-90.496-0.512c-21.248 0-37.418667 5.632-48.512 16.981333-11.093333 11.221333-18.005333 27.946667-20.650666 50.176l-5.205334 43.989333-0.725333 8.789334-0.256 6.058666c0 34.432 17.536 51.626667 52.650667 51.626667h25.514666l13.312-0.469333 16.426667-0.853334 30.421333-2.218666 11.690667-0.938667-5.674667 54.656c-29.994667 3.114667-55.765333 4.693333-77.354666 4.693333h-20.992c-70.528 0-105.813333-32.128-105.813334-96.341333 0-8.448 0.469333-17.28 1.493334-26.496l4.992-41.002667c5.205333-41.002667 18.901333-71.850667 41.002666-92.501333 22.186667-20.650667 53.589333-31.018667 94.165334-31.018667h18.986666zM493.482667 298.666667h-58.837334L386.56 693.504h128l9.173333-0.170667c72.106667-2.944 114.048-40.96 125.696-114.005333l1.28-9.344 4.693334-38.826667 0.810666-8.789333a220.586667 220.586667 0 0 0 0.682667-16.853333c0-32.128-8.917333-56.32-26.666667-72.661334-15.914667-14.805333-39.082667-22.954667-69.461333-24.448l-10.410667-0.256h-70.144L493.482667 298.666667zM254.72 407.466667c35.2 0 61.824 8.405333 79.786667 25.173333 18.133333 16.810667 27.221333 39.125333 27.221333 66.986667l-0.085333 2.773333-0.938667 13.226667-20.992 177.194666H191.146667c-25.6 0-46.08-7.253333-61.525334-21.845333-15.36-14.506667-22.997333-33.365333-22.997333-56.490667 0-5.205333 0.213333-9.173333 0.682667-11.818666 2.986667-21.248 8.362667-38.058667 16.170666-50.517334 7.850667-12.458667 19.242667-21.461333 34.133334-27.008 14.933333-5.674667 34.474667-8.490667 58.666666-8.490666h86.016l0.512-4.181334a38.954667 38.954667 0 0 0 0.469334-7.168c0-13.312-4.437333-24.021333-13.312-32.170666-8.874667-8.192-22.741333-12.330667-41.514667-12.330667h-13.141333c-30.464 0-57.813333 0.853333-82.005334 2.517333l7.68-52.181333 21.632-1.365333 32.085334-1.621334 18.090666-0.597333 21.845334-0.085333z m-43.52 159.872c-12.970667-0.341333-23.338667 2.133333-30.976 7.466666-6.570667 4.48-10.965333 11.946667-13.098667 22.4l-0.896 5.461334-0.512 6.144c0 9.898667 2.773333 17.493333 8.32 22.826666a31.146667 31.146667 0 0 0 18.304 7.552l6.016 0.298667h89.173334l8.661333-71.68-84.992-0.469333z m332.501333-104.32c35.584 0 53.333333 17.408 53.333334 52.309333l-0.256 5.589333-0.725334 8.746667-5.162666 41.813333c-5.12 42.154667-26.026667 64.469333-62.634667 66.986667l-7.04 0.213333h-69.162667l21.504-175.658666h70.144z\"></path></svg>";
 
-        string BLANK_FIELD = Localization.Get("Filter.Blank", "(空白)");
-
         #region Ctor
 
         IList<object>? CustomSource;
@@ -36,8 +34,8 @@ namespace AntdUI
             realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
-            if (Option.Table == null) Option.Table = table;
-            if (Option.Column == null) Option.Column = currentColumn;
+            Option.Table = table;
+            Option.Column = currentColumn;
             inputSearch.PlaceholderText = Localization.Get("Filter.Search", "搜索") + " " + currentColumn.Title;
             InitConditions();
             InitFilterEdit();
@@ -68,6 +66,7 @@ namespace AntdUI
                 var edit = new Select
                 {
                     Margin = new Padding(0),
+                    PlaceholderText = Localization.Get("Filter", "筛选"),
                     Dock = DockStyle.Fill,
                     List = true,
                     AutoPrefixSvg = true
@@ -90,6 +89,7 @@ namespace AntdUI
                 var edit = new InputNumber
                 {
                     Margin = new Padding(0),
+                    PlaceholderText = Localization.Get("Filter", "筛选"),
                     Dock = DockStyle.Fill,
                     DecimalPlaces = type == typeof(int) || type == typeof(short) || type == typeof(long) ? 0 : 7
                 };
@@ -107,6 +107,7 @@ namespace AntdUI
                 var edit = new DatePicker
                 {
                     Margin = new Padding(0),
+                    PlaceholderText = Localization.Get("Filter", "筛选"),
                     Dock = DockStyle.Fill
                 };
                 tablePanel.Controls.Add(edit, 1, 0);
@@ -140,6 +141,7 @@ namespace AntdUI
                 var edit = new Input
                 {
                     Margin = new Padding(0),
+                    PlaceholderText = Localization.Get("Filter", "筛选"),
                     Dock = DockStyle.Fill
                 };
                 tablePanel.Controls.Add(edit, 1, 0);
@@ -164,6 +166,7 @@ namespace AntdUI
             var items = new List<AntItem[]>(count);
             var selects = GetColumnSelect();
             var dir = new Dictionary<string, List<object>>(count);
+            AntItem[]? item_null = null;
             foreach (var val in values)
             {
                 bool check = list.Contains(val);
@@ -172,7 +175,11 @@ namespace AntdUI
                 if (value == null)
                 {
                     if (Option.AllowNull == false) continue;
-                    items.Add(new AntItem[] { new AntItem("tag", value), new AntItem("check", false), new AntItem("text", BLANK_FIELD) });
+                    if (item_null == null)
+                    {
+                        item_null = new AntItem[] { new AntItem("tag"), new AntItem("check", check), new AntItem("text", new CellText().SetText("(空白)", "Filter.Blank").SetFore(Style.Db.TextTertiary)) };
+                        items.Add(item_null);
+                    }
                 }
                 else
                 {
@@ -569,7 +576,11 @@ namespace AntdUI
                 var tmp = new List<object?>(list.Count);
                 foreach (var it in list)
                 {
-                    if (it[1].value is bool check && check && it[0].value is List<object> data) tmp.AddRange(data);
+                    if (it[1].value is bool check && check)
+                    {
+                        if (it[0].value is List<object> data) tmp.AddRange(data);
+                        else tmp.Add(null);
+                    }
                 }
                 if (tmp.Count == _table.dataTmp.RowsCache.Length) Option.FilterValues = null;
                 else Option.FilterValues = tmp;

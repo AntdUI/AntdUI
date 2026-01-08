@@ -60,10 +60,13 @@ namespace AntdUI
                         }
                     }
                     rectContent.Offset(shadow, shadow);
-                    tempContent = new Bitmap(control.Width, control.Height);
-                    control.Size = new Size(tempContent.Width, tempContent.Height);
-                    control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
+                    control.Size = new Size(control.Width, control.Height);
                     SetSize(w + paddingx2, h + paddingy2);
+                    BeginInvoke(() =>
+                    {
+                        tempContent = new Bitmap(control.Width, control.Height);
+                        control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
+                    });
                 }
                 else if (config.Content is IList<Popover.TextRow> list)
                 {
@@ -205,6 +208,7 @@ namespace AntdUI
             var fsize = new Size(rectContent.Width, rectContent.Height);
             form = new DoubleBufferForm(this, control, config.Focus)
             {
+                StartPosition = FormStartPosition.Manual,
                 FormBorderStyle = FormBorderStyle.None,
                 Location = flocation,
                 MaximumSize = fsize,
@@ -213,7 +217,6 @@ namespace AntdUI
             };
             control.Disposed += Control_Disposed;
             form.Show(this);
-            form.Location = flocation;
             PARENT = form;
             parent = control.FindPARENT();
             config.OnControlLoad?.Invoke();
