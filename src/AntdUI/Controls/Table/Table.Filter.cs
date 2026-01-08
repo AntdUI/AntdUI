@@ -71,10 +71,7 @@ namespace AntdUI
             var filteredRows = IFilterList();
             if (filteredRows == null) return null;
             var data = new List<object>(filteredRows.Length);
-            foreach (var it in filteredRows)
-            {
-                foreach (var row in filteredRows) data.Add(row.record);
-            }
+            foreach (var it in filteredRows) data.Add(it.record);
             return data.ToArray();
         }
 

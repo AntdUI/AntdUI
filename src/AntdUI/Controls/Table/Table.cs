@@ -2253,6 +2253,21 @@ namespace AntdUI
                 return null;
             }
         }
+
+        #region 设置
+
+        public ColumnSelect SetItems(params SelectItem[] list)
+        {
+            Items = new List<SelectItem>(list);
+            return this;
+        }
+        public ColumnSelect SetItems(IList<SelectItem> list)
+        {
+            Items = new List<SelectItem>(list);
+            return this;
+        }
+
+        #endregion
     }
 
     /// <summary>

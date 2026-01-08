@@ -329,22 +329,7 @@ namespace AntdUI
             return null;
         }
 
-        internal bool Filter_PopupEndEventMethod(FilterOption option)
-        {
-            if (FilterPopupEnd != null)
-            {
-                var arg = new TableFilterPopupEndEventArgs(option, FilterList());
-                FilterPopupEnd(this, arg);
-                if (arg.Cancel) return false;
-                else
-                {
-                    inEditMode = false;
-                    OnMouseLeave(EventArgs.Empty);
-                    return true;
-                }
-            }
-            return true;
-        }
+        internal bool Filter_PopupEndEventMethod(FilterOption option) => OnFilterPopupEnd(option);
 
         void MouseUpRow(RowTemplate[] rows, DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
         {
@@ -484,30 +469,22 @@ namespace AntdUI
                     {
                         //点击筛选
                         var focusColumn = it.cell.COLUMN;
-                        IList<object>? customSource = null;
-                        Font? fnt = null;
-                        int? filterHeight = null;
-                        if (FilterPopupBegin != null)
+                        if (OnFilterPopupBegin(focusColumn, out var customSource, out var fnt, out var filterHeight))
                         {
-                            var arg = new TableFilterPopupBeginEventArgs(focusColumn);
-                            FilterPopupBegin(this, arg);
-                            if (arg.Cancel) return false;
-                            customSource = arg.CustomSource;
-                            fnt = arg.Font;
-                            filterHeight = arg.Height;
+                            fnt ??= Font;
+                            var editor = new FilterControl(this, fnt, focusColumn, customSource);
+                            if (filterHeight.HasValue) editor.Height = filterHeight.Value;
+                            editor.Set(new Popover.Config(this, editor)
+                            {
+                                Dpi = (fnt.Size / 10F) * Dpi,
+                                Tag = focusColumn.Filter,
+                                ArrowAlign = TAlign.Bottom,
+                                Font = fnt,
+                                Offset = col.rect_filter,
+                                Padding = new Size(6, 6)
+                            }.open());
                         }
-                        fnt ??= Font;
-                        var editor = new FilterControl(this, fnt, focusColumn, customSource);
-                        if (filterHeight.HasValue) editor.Height = (int)(filterHeight.Value * Dpi);
-                        editor.Set(new Popover.Config(this, editor)
-                        {
-                            Dpi = (fnt.Size / 10F) * Dpi,
-                            Tag = focusColumn.Filter,
-                            ArrowAlign = TAlign.Bottom,
-                            Font = fnt,
-                            Offset = col.rect_filter,
-                            Padding = new Size(6, 6)
-                        }.open());
+                        else return false;
                     }
                     else if (it.cell.COLUMN.SortOrder)
                     {

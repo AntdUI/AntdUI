@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using static AntdUI.Table;
 
 namespace AntdUI
 {
@@ -25,12 +24,14 @@ namespace AntdUI
 
         #region Ctor
 
+        IList<object>? CustomSource;
         public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource)
         {
             InitializeComponent();
             Font = font;
             _table = table;
             _column = currentColumn;
+            CustomSource = customSource;
             dv.VirtualMode = table.VirtualMode;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
             if (Option.Table == null) Option.Table = table;
@@ -38,7 +39,7 @@ namespace AntdUI
             inputSearch.PlaceholderText = Localization.Get("Filter.Search", "搜索") + " " + currentColumn.Title;
             InitConditions();
             InitFilterEdit();
-            InitFilterValues(customSource);
+            InitFilterValues();
 
             btn_clean.Enabled = Option.Enabled;
         }
@@ -60,7 +61,7 @@ namespace AntdUI
 
         private void InitFilterEdit()
         {
-            if (FocusedColumn is ColumnSelect columnSelect)
+            if (_column is ColumnSelect columnSelect)
             {
                 var edit = new Select
                 {
@@ -80,7 +81,7 @@ namespace AntdUI
                 return;
             }
 
-            var type = FocusedColumn.Filter?.DataType;
+            var type = _column.Filter?.DataType;
             if (type == null) type = typeof(string);
             if (type == typeof(decimal) || type == typeof(double) || type == typeof(float) || type == typeof(int) || type == typeof(short) || type == typeof(long))
             {
@@ -145,35 +146,28 @@ namespace AntdUI
             }
         }
 
-        private void InitFilterValues(IList<object>? customSource)
+        private void InitFilterValues()
         {
-            dv.DataSource = null;
-            var row = _table.IFilterList(_column.Key);
-            //if (customSource != null && customSource.Count > 0) InitFilterValuesCore(row, customSource);
-            //else
-            //{
-            //}
             var source = TableView.dataTmp?.rows;
-            if (source == null) return;
-            InitFilterValuesCore(row, source);
+            if (source == null)
+            {
+                dv.Tag = dv.DataSource = null;
+                return;
+            }
+            if (CustomSource != null && CustomSource.Count > 0) LoadListCustom(source, CustomSource);
+            else LoadList(_table.IFilterList(_column.Key), source);
         }
-        private void InitFilterValuesCore(IList<Table.IRow> values, IList<Table.IRow> list)
+        private void LoadList(IList<Table.IRow> values, IList<Table.IRow> list)
         {
             int count = values.Count, check_count = 0;
             var items = new List<AntItem[]>(count);
-            Dictionary<object, SelectItem> selects;
-            if (FocusedColumn is ColumnSelect columnSelect)
-            {
-                selects = new Dictionary<object, SelectItem>(columnSelect.Items.Count);
-                foreach (var it in columnSelect.Items) selects.Add(it.Tag, it);
-            }
-            else selects = new Dictionary<object, SelectItem>(0);
+            var selects = GetColumnSelect();
             var dir = new Dictionary<string, List<object>>(count);
             foreach (var val in values)
             {
                 bool check = list.Contains(val);
                 if (check) check_count++;
-                var value = val[FocusedColumn.Key];
+                var value = val[_column.Key];
                 if (value == null)
                 {
                     if (Option.AllowNull == false) continue;
@@ -182,8 +176,8 @@ namespace AntdUI
                 else
                 {
                     string text;
-                    if (FocusedColumn.Render == null) text = FocusedColumn.GetDisplayText(value) ?? "";
-                    else text = FocusedColumn.Render(value, val.record, val.i)?.ToString() ?? "";
+                    if (_column.Render == null) text = _column.GetDisplayText(value) ?? "";
+                    else text = _column.Render(value, val.record, val.i)?.ToString() ?? "";
                     if (dir.TryGetValue(text, out var tmp)) tmp.Add(value);
                     else
                     {
@@ -195,6 +189,43 @@ namespace AntdUI
                 }
             }
             dv.Tag = dv.DataSource = items;
+        }
+        private void LoadListCustom(IList<Table.IRow> values, IList<object> list)
+        {
+            var has = new List<object?>(values.Count);
+            foreach (var val in values) has.Add(val[_column.Key]);
+
+            int count = list.Count, check_count = 0;
+            var items = new List<AntItem[]>(count);
+            var selects = GetColumnSelect();
+            var dir = new Dictionary<string, List<object>>(count);
+            foreach (var value in list)
+            {
+                bool check = has.Contains(value);
+                if (check) check_count++;
+
+                string text = _column.GetDisplayText(value) ?? "";
+                if (dir.TryGetValue(text, out var tmp)) tmp.Add(value);
+                else
+                {
+                    var tmps = new List<object> { value };
+                    dir.Add(text, tmps);
+                    if (selects.TryGetValue(value, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.IconSvg)) });
+                    else items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", text) });
+                }
+            }
+            dv.Tag = dv.DataSource = items;
+        }
+        private Dictionary<object, SelectItem> GetColumnSelect()
+        {
+            Dictionary<object, SelectItem> selects;
+            if (_column is ColumnSelect columnSelect)
+            {
+                selects = new Dictionary<object, SelectItem>(columnSelect.Items.Count);
+                foreach (var it in columnSelect.Items) selects.Add(it.Tag, it);
+            }
+            else selects = new Dictionary<object, SelectItem>(0);
+            return selects;
         }
 
         #region 初始参数
@@ -208,7 +239,7 @@ namespace AntdUI
             {
                 foreach (var it in _table.rows[0].cells)
                 {
-                    if (it.COLUMN.Key == _column.Key && it is TCellColumn col)
+                    if (it.COLUMN.Key == _column.Key && it is Table.TCellColumn col)
                     {
                         layered.LoadOffset(col.rect_filter);
                         return;
@@ -230,7 +261,7 @@ namespace AntdUI
 
         #region Properties
 
-        public FilterOption Option => FocusedColumn.Filter!;
+        public FilterOption Option => _column.Filter!;
 
         protected Table _table;
 
@@ -251,6 +282,7 @@ namespace AntdUI
         object[]? cc;
         void Search()
         {
+            count++;
             var search = inputSearch.Text;
             if (dv.Tag is List<AntItem[]> list)
             {
@@ -515,7 +547,7 @@ namespace AntdUI
             inputSearch.Text = string.Empty;
             Option.ClearFilter();
             btn_clean.Enabled = false;
-            InitFilterValues(null);
+            InitFilterValues();
             LoadOffset();
         }
 
@@ -542,14 +574,11 @@ namespace AntdUI
                 {
                     LoadOffset();
                     btn_clean.Enabled = Option.Enabled;
-                    InitFilterValues(null);
+                    InitFilterValues();
                 }
             }
         }
 
-        private void dv_CheckedChanged(object sender, TableCheckEventArgs e)
-        {
-            count++;
-        }
+        private void dv_CheckedChanged(object sender, TableCheckEventArgs e) => count++;
     }
 }
