@@ -202,7 +202,7 @@
 > [![UploadDragger](Icon/UploadDragger.png)](Control/UploadDragger.md)
 
 
-### Data Display `18`
+### Data Display `21`
 
 #### [Avatar](Control/Avatar.md)
 
@@ -244,6 +244,10 @@
 > Picture preview box.
 
 > [![Preview](Icon/Preview.png)](Control/Preview.md)
+
+#### [ImagePreview](Control/ImagePreview.md)
+
+> Picture preview control.
 
 #### [Popover](Control/Popover.md)
 
@@ -302,12 +306,18 @@
 #### [Label](Control/Label.md)
 
 > Display a paragraph of text.
->
+
 #### [LabelTime](Control/LabelTime.md)
 
 > Display time text.
 
 > [![LabelTime](Icon/LabelTime.png)](Control/LabelTime.md)
+
+#### [LabelLed](Control/LabelLed.md)
+
+> Display a segment of LED style text.
+
+> [![LabelLed](Icon/LabelLed.jpg)](Control/LabelLed.md)
 
 
 ### Feedback `8`

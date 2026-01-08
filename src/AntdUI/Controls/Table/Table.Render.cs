@@ -192,7 +192,7 @@ namespace AntdUI
                 }
                 else showFixedColumnL = showFixedColumnR = false;
 
-                if (summarys.Length > 0) PaintFixedSummary(g, rect, rect_read, summarys, brush_fore, brush_foreEnable, brush_forecolumn, column_font, sx, sy, _radius);
+                if (summarys.Length > 0) sFixedB = PaintFixedSummary(g, rect, rect_read, summarys, brush_fore, brush_foreEnable, brush_forecolumn, column_font, sx, sy, _radius);
                 else sFixedB = -1;
 
                 #endregion
@@ -1002,7 +1002,7 @@ namespace AntdUI
         }
 
         int sFixedB = -1;
-        void PaintFixedSummary(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
+        int PaintFixedSummary(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (ScrollBar.ShowY)
             {
@@ -1012,7 +1012,7 @@ namespace AntdUI
                     if (sy + rect_read.Height < lastrow.row.RECT.Bottom)
                     {
                         int scrollBar = ScrollBar.ShowX ? ScrollBar.SIZE : 0, h = lastrow.row.RECT.Bottom - shows[0].row.RECT.Y;
-                        sFixedB = lastrow.row.RECT.Bottom - rect_read.Bottom + scrollBar;
+                        int sFixedB = lastrow.row.RECT.Bottom - rect_read.Bottom + scrollBar;
 
                         var rect_Fixed = new Rectangle(rect_read.X, rect_read.Bottom - h - scrollBar, rect_read.Width, h + scrollBar);
 
@@ -1071,11 +1071,13 @@ namespace AntdUI
                         }
                         g.ResetClip();
                         clipath?.Dispose();
+
+                        return sFixedB;
                     }
-                    else sFixedB = -1;
                 }
                 catch { }
             }
+            return -1;
         }
 
         void PaintFixedSummaryL(Canvas g, Rectangle rect, Rectangle rect_read, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)

@@ -1319,16 +1319,23 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
+            var it = GetItemMouseHover(x, y);
+            if (tmp == it) return;
+            tmp = it;
             CloseTip();
-            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            if (it == null) return;
+            OpenTip(it);
+        }
+
+        SegmentedItem? tmp;
+        SegmentedItem? GetItemMouseHover(int x, int y)
+        {
+            if (items == null || items.Count == 0) return null;
             foreach (var it in items)
             {
-                if (it.Enabled && it.Rect.Contains(x, y))
-                {
-                    OpenTip(it);
-                    return;
-                }
+                if (it.Enabled && it.Rect.Contains(x, y)) return it;
             }
+            return null;
         }
 
         #region Tip
@@ -1368,6 +1375,7 @@ namespace AntdUI
         {
             base.OnMouseLeave(e);
             SetCursor(false);
+            tmp = null;
             CloseTip();
             if (items == null || items.Count == 0) return;
             int change = 0;
@@ -1386,6 +1394,7 @@ namespace AntdUI
         {
             base.OnLeave(e);
             SetCursor(false);
+            tmp = null;
             CloseTip();
             if (items == null || items.Count == 0) return;
             int change = 0;

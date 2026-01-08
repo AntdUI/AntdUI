@@ -584,6 +584,7 @@ namespace AntdUI
         }
         public AnimationLinearConfig SetValueColor(int value, bool sw, int add, int? max = null, int? min = null)
         {
+            if (max.HasValue && value > max.Value) value = max.Value;
             Value = value;
             if (sw)
             {

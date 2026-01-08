@@ -415,9 +415,8 @@ namespace AntdUI
 
         void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
         {
-            var rect = new Rectangle(cache.rect.X - 20, cache.rect.Y - 20, cache.rect.Width + 40, cache.rect.Height + 40);
-            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, rect);
-            else g.String(text, cache.font ?? font, brush, rect);
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect);
+            else g.String(text, cache.font ?? font, brush, cache.rect);
         }
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }

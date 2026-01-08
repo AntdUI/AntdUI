@@ -588,11 +588,7 @@ namespace AntdUI
             /// </summary>
             public IRow[] rows
             {
-                get
-                {
-                    if (rowsFilter == null) return _rowsCache;
-                    return rowsFilter;
-                }
+                get => rowsFilter ?? _rowsCache;
                 set => _rowsCache = value;
             }
 

@@ -296,7 +296,7 @@ namespace AntdUI.Chat
                                 if (it.emoji)
                                 {
                                     if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) PaintItemTextEmoji(g, fore, it, svg);
-                                    else g.String(it.text, font, fore, new Rectangle(it.rect.X - 20, it.rect.Y - 20, it.rect.Width + 40, it.rect.Height + 40));
+                                    else g.String(it.text, font, fore, it.rect);
                                 }
                                 else g.String(it.text, Font, fore, it.rect);
                                 break;
@@ -419,7 +419,8 @@ namespace AntdUI.Chat
 
         #region 鼠标
 
-        TextChatItem? mouseDown;
+        IChatItem? mouseDown;
+        int mouseDT = 0;
         Point oldMouseDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -433,18 +434,20 @@ namespace AntdUI.Chat
                 {
                     if (it.show && it.Contains(e.Location, 0, scrolly))
                     {
+                        mouseDT = 0;
+                        mouseDown = it;
                         if (it is TextChatItem text)
                         {
                             text.SelectionLength = 0;
                             if (e.Button == MouseButtons.Left)
                             {
-                                if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) OnItemIconClick(it, e);
+                                if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) mouseDT = 2;
                                 else if (text.ContainsRead(e.X, e.Y, 0, scrolly))
                                 {
+                                    mouseDownMove = false;
+                                    mouseDT = 1;
                                     oldMouseDown = e.Location;
                                     text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
-
-                                    mouseDown = text;
                                 }
                             }
                         }
@@ -460,15 +463,21 @@ namespace AntdUI.Chat
         {
             base.OnMouseMove(e);
             int scrolly = ScrollBar.Value;
-            if (mouseDown != null)
+            if (mouseDT == 1 && mouseDown is TextChatItem textChatItem)
             {
-                mouseDownMove = true;
+                int cx = e.X - oldMouseDown.X, cy = e.Y - oldMouseDown.Y;
+                if (mouseDownMove) OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy);
+                else
+                {
+                    int threshold = (int)(Config.TouchThreshold * Dpi);
+                    if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold)
+                    {
+                        OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy);
+                        mouseDownMove = true;
+                    }
+                    else return;
+                }
                 SetCursor(CursorType.IBeam);
-                var index = GetCaretPostion(mouseDown, oldMouseDown.X + (e.X - oldMouseDown.X), oldMouseDown.Y + scrolly + (e.Y - oldMouseDown.Y));
-                mouseDown.SelectionLength = Math.Abs(index - mouseDown.selectionStart);
-                if (index > mouseDown.selectionStart) mouseDown.selectionStartTemp = mouseDown.selectionStart;
-                else mouseDown.selectionStartTemp = index;
-                Invalidate();
             }
             else if (ScrollBar.MouseMove(e.X, e.Y))
             {
@@ -492,11 +501,6 @@ namespace AntdUI.Chat
                                 else ibeam++;
                             }
                         }
-                        //if (it.Contains(e.Location, 0, (int)scrollY.Value, out var change))
-                        //{
-                        //    hand++;
-                        //}
-                        //if (change) count++;
                     }
                 }
                 if (hand > 0) SetCursor(true);
@@ -508,26 +512,65 @@ namespace AntdUI.Chat
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (mouseDown != null && mouseDownMove)
+            if (mouseDown == null)
             {
-                int scrolly = ScrollBar.Value;
-                var index = GetCaretPostion(mouseDown, e.X, e.Y + scrolly);
-                if (mouseDown.selectionStart == index) mouseDown.SelectionLength = 0;
-                else if (index > mouseDown.selectionStart)
-                {
-                    mouseDown.SelectionLength = Math.Abs(index - mouseDown.selectionStart);
-                    mouseDown.SelectionStart = mouseDown.selectionStart;
-                }
-                else
-                {
-                    mouseDown.SelectionLength = Math.Abs(index - mouseDown.selectionStart);
-                    mouseDown.SelectionStart = index;
-                }
-                Invalidate();
+                mouseDownMove = false;
+                mouseDT = 0;
+                return;
             }
+            if (mouseDown is TextChatItem text) OnTextChatItemClick(e, text, e.X, e.Y);
             mouseDown = null;
+            mouseDownMove = false;
+            mouseDT = 0;
             ScrollBar.MouseUp();
         }
+
+        #region 鼠标交互
+
+        protected virtual void OnTextChatItemMove(TextChatItem text, int x, int y)
+        {
+            var index = GetCaretPostion(text, x, y);
+            if (text.selectionStart == index) text.SelectionLength = 0;
+            else if (index > text.selectionStart)
+            {
+                text.SelectionLength = Math.Abs(index - text.selectionStart);
+                text.SelectionStart = text.selectionStart;
+            }
+            else
+            {
+                text.SelectionLength = Math.Abs(index - text.selectionStart);
+                text.SelectionStart = index;
+            }
+            Invalidate();
+        }
+        protected virtual void OnTextChatItemClick(MouseEventArgs e, TextChatItem text, int x, int y)
+        {
+            int scrolly = ScrollBar.Value;
+            if (mouseDownMove) OnTextChatItemMove(text, x, y + scrolly);
+            else if (mouseDT == 2)
+            {
+                if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) OnItemIconClick(text, e);
+            }
+            else if (EnabledClickImage && mouseDT == 1)
+            {
+                var bmp = text.ContainsReadImage(x, y, 0, scrolly);
+                if (bmp == null) return;
+                var id = bmp.i.ToString() + bmp.text.Length;
+                if (text.image_cache.TryGetValue(id, out var img))
+                {
+                    var bmpup = OnItemImageClick(text, e, img);
+                    if (bmpup != null)
+                    {
+                        text.image_cache[id].Dispose();
+                        text.image_cache[id] = bmpup;
+                        Invalidate();
+                    }
+                    return;
+                }
+            }
+        }
+
+        #endregion
 
         protected override void OnMouseLeave(EventArgs e)
         {
@@ -583,8 +626,21 @@ namespace AntdUI.Chat
         [Description("消息头像单击时发生"), Category("行为")]
         public event ClickEventHandler? ItemIconClick;
 
+        /// <summary>
+        /// 消息图片单击时发生
+        /// </summary>
+        [Description("消息图片单击时发生"), Category("行为")]
+        public event ClickImageEventHandler? ItemImageClick;
+
         protected virtual void OnItemClick(IChatItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new ChatItemEventArgs(item, e));
         protected virtual void OnItemIconClick(IChatItem item, MouseEventArgs e) => ItemIconClick?.Invoke(this, new ChatItemEventArgs(item, e));
+        protected virtual Image? OnItemImageClick(IChatItem item, MouseEventArgs e, Image img)
+        {
+            if (ItemImageClick == null) return null;
+            var arge = new ChatItemImageClickEventArgs(item, e, img);
+            ItemImageClick(this, new ChatItemImageClickEventArgs(item, e, img));
+            return arge.ImageUpdated;
+        }
 
         #endregion
 

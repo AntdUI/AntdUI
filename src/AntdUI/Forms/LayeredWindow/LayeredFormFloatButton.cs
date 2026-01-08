@@ -386,19 +386,22 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
-            if (x == -1 || y == -1)
-            {
-                CloseTip();
-                return;
-            }
+            var it = GetItemMouseHover(x, y);
+            if (tmp == it) return;
+            tmp = it;
+            CloseTip();
+            if (it == null) return;
+            OpenTip(it);
+        }
+
+        FloatButton.ConfigBtn? tmp;
+        FloatButton.ConfigBtn? GetItemMouseHover(int x, int y)
+        {
             foreach (var it in config.Btns)
             {
-                if (it.Enabled && !it.Loading && it.rect.Contains(x, y))
-                {
-                    OpenTip(it);
-                    return;
-                }
+                if (it.Enabled && !it.Loading && it.rect.Contains(x, y)) return it;
             }
+            return null;
         }
 
         #region Tip
@@ -438,6 +441,7 @@ namespace AntdUI
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            tmp = null;
             CloseTip();
             int count = 0;
             foreach (var it in config.Btns)

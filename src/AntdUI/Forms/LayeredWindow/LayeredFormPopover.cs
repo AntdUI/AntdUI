@@ -32,8 +32,8 @@ namespace AntdUI
                 Radius = (int)(config.Radius * Dpi);
                 ArrowSize = (int)(config.ArrowSize * Dpi);
 
-                int sp = (int)Math.Round(config.Gap * Dpi), paddingx = 10 + (int)(config.Padding.Width * Dpi),
-                paddingy = 10 + (int)(config.Padding.Height * Dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
+                int sp = (int)Math.Round(config.Gap * Dpi), paddingx = (int)(config.Padding.Width * Dpi),
+                paddingy = (int)(config.Padding.Height * Dpi), paddingx2 = paddingx * 2, paddingy2 = paddingy * 2;
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (config.Content is Control control)
                 {
@@ -60,10 +60,13 @@ namespace AntdUI
                         }
                     }
                     rectContent.Offset(shadow, shadow);
-                    tempContent = new Bitmap(control.Width, control.Height);
-                    control.Size = new Size(tempContent.Width, tempContent.Height);
-                    control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
+                    control.Size = new Size(control.Width, control.Height);
                     SetSize(w + paddingx2, h + paddingy2);
+                    BeginInvoke(() =>
+                    {
+                        tempContent = new Bitmap(control.Width, control.Height);
+                        control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
+                    });
                 }
                 else if (config.Content is IList<Popover.TextRow> list)
                 {
@@ -165,6 +168,18 @@ namespace AntdUI
             }
         }
 
+        public void LoadOffset(Rectangle rect)
+        {
+            new CalculateCoordinate(this, config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, rect).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+            SetLocation(x, y);
+            PrintCache();
+            if (form == null) return;
+            var flocation = new Point(TargetRect.Location.X + rectContent.X, TargetRect.Location.Y + rectContent.Y);
+            var fsize = new Size(rectContent.Width, rectContent.Height);
+            form.Location = flocation;
+            form.MaximumSize = form.MinimumSize = form.Size = fsize;
+        }
+
         public override string name => nameof(Popover);
 
         public override void LoadOK()
@@ -193,6 +208,7 @@ namespace AntdUI
             var fsize = new Size(rectContent.Width, rectContent.Height);
             form = new DoubleBufferForm(this, control, config.Focus)
             {
+                StartPosition = FormStartPosition.Manual,
                 FormBorderStyle = FormBorderStyle.None,
                 Location = flocation,
                 MaximumSize = fsize,
@@ -201,7 +217,6 @@ namespace AntdUI
             };
             control.Disposed += Control_Disposed;
             form.Show(this);
-            form.Location = flocation;
             PARENT = form;
             parent = control.FindPARENT();
             config.OnControlLoad?.Invoke();

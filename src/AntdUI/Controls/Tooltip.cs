@@ -264,6 +264,8 @@ namespace AntdUI
         bool multiline = false;
         int? maxWidth;
         int arrowSize = 0, arrowX = -1;
+        // 新增：记录上一次用于定位的 rect（用于判断是否需要更新位置）
+        Rectangle? _lastRect;
         public TooltipForm(Control control, string txt, ITooltipConfig component) : base(240)
         {
             PARENT = control;
@@ -284,6 +286,7 @@ namespace AntdUI
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
+                _lastRect = config.Offset.Value;
                 var align = ArrowAlign;
                 new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
@@ -291,6 +294,7 @@ namespace AntdUI
             }
             else
             {
+                _lastRect = null;
                 var align = ArrowAlign;
                 new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
@@ -299,9 +303,10 @@ namespace AntdUI
         }
         public TooltipForm(Control control, Rectangle rect, string txt, ITooltipConfig component, bool hasmax = false) : base(240)
         {
+            PARENT = control;
             ocontrol = control;
             control.SetTopMost(Handle);
-            CloseMode = CloseMode.Leave;
+            CloseMode = CloseMode.Click;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
@@ -310,9 +315,9 @@ namespace AntdUI
             CustomWidth = component.CustomWidth;
             Back = component.Back;
             Fore = component.Fore;
+            _lastRect = rect;
             var screen = Screen.FromControl(control).WorkingArea;
-            if (hasmax) maxWidth = control.Width;
-            else maxWidth = screen.Width;
+            maxWidth = hasmax ? control.Width : screen.Width;
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
@@ -330,7 +335,10 @@ namespace AntdUI
 
         public bool SetText(Rectangle rect, string text)
         {
-            if (Text == text) return false;
+            // 关键修复：文本相同但 rect 变化时，也要更新位置
+            bool sameText = Text == text, sameRect = _lastRect.HasValue && _lastRect.Value == rect;
+            if (sameText && sameRect) return false;
+            _lastRect = rect;
             Text = text;
             int gap = 0;
             Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));

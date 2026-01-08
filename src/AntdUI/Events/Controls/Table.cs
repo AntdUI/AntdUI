@@ -272,7 +272,7 @@ namespace AntdUI
 
         #region 设置
 
-        public TableColumnIndexChangingEventArgs SetHandled(bool value = true)
+        public TableColumnIndexChangingEventArgs SetCancel(bool value = true)
         {
             Cancel = value;
             return this;
@@ -639,22 +639,27 @@ namespace AntdUI
         /// 筛选列
         /// </summary>
         public Column Column { get; private set; }
+
         /// <summary>
         /// 筛选选项
         /// </summary>
-        public FilterOption? Option { get { return Column.Filter; } }
+        public FilterOption? Option => Column.Filter;
+
         /// <summary>
         /// 当前列的自定义数据源
         /// </summary>
         public System.Collections.Generic.IList<object>? CustomSource { get; set; }
+
         /// <summary>
         /// 筛选栏字体
         /// </summary>
         public Font? Font { get; set; }
+
         /// <summary>
         /// 筛选栏高度
         /// </summary>
-        public int Height { get; set; } = 0;
+        public int? Height { get; set; }
+
         /// <summary>
         /// 是否取消弹出
         /// </summary>
@@ -662,9 +667,29 @@ namespace AntdUI
 
         #region 设置
 
-        public TableFilterPopupBeginEventArgs SetHandled(bool value = true)
+        public TableFilterPopupBeginEventArgs SetCustomSource(System.Collections.Generic.IList<object>? value)
+        {
+            CustomSource = value;
+            return this;
+        }
+        public TableFilterPopupBeginEventArgs SetCustomSource(params object[] value)
+        {
+            CustomSource = value;
+            return this;
+        }
+        public TableFilterPopupBeginEventArgs SetCancel(bool value = true)
         {
             Cancel = value;
+            return this;
+        }
+        public TableFilterPopupBeginEventArgs SetFont(Font? value)
+        {
+            Font = value;
+            return this;
+        }
+        public TableFilterPopupBeginEventArgs SetHeight(int? value)
+        {
+            Height = value;
             return this;
         }
 
@@ -685,16 +710,19 @@ namespace AntdUI
         /// </summary>
         public object[]? Records { get; internal set; }
     }
+
     public class TableFilterPopupEndEventArgs : TableFilterDataChangedEventArgs
     {
-        public TableFilterPopupEndEventArgs(FilterOption? option, object[]? records) : base(records)
+        public TableFilterPopupEndEventArgs(FilterOption option, object[]? records) : base(records)
         {
             Option = option;
         }
+
         /// <summary>
         /// 当前筛选参数
         /// </summary>
-        public FilterOption? Option { get; internal set; }
+        public FilterOption Option { get; private set; }
+
         /// <summary>
         /// 是否取消弹出
         /// </summary>
@@ -702,7 +730,7 @@ namespace AntdUI
 
         #region 设置
 
-        public TableFilterPopupEndEventArgs SetHandled(bool value = true)
+        public TableFilterPopupEndEventArgs SetCancel(bool value = true)
         {
             Cancel = value;
             return this;

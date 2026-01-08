@@ -941,6 +941,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            tmp = null;
             CloseTip();
 
         }
@@ -989,21 +990,27 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
+            var it = GetItemMouseHover(x, y);
+            if (tmp == it) return;
+            tmp = it;
             CloseTip();
-            if (x == -1 || y == -1 || items == null || items.Count == 0) return;
+            if (it == null) return;
+            OpenTip(it);
+        }
+
+        CollapseGroupButton? tmp;
+        CollapseGroupButton? GetItemMouseHover(int x, int y)
+        {
+            if (items == null || items.Count == 0) return null;
             foreach (var item in items)
             {
                 if (item.buttons == null || item.buttons.Count == 0) continue;
                 foreach (var btn in item.buttons)
                 {
-                    if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
-                    if (btn.rect.Contains(x, y))
-                    {
-                        OpenTip(btn);
-                        return;
-                    }
+                    if (btn.Show && btn.Visible && btn.Enabled && btn.rect.Contains(x, y)) return btn;
                 }
             }
+            return null;
         }
 
         #region Tip

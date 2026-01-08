@@ -134,6 +134,7 @@ namespace AntdUI
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                     var tmp_input = CreateInput(cell, sx, sy, multiline, val, rect);
+                    tmp_input.Name = "edit_" + i_col + "_" + i_row;
                     if (columnSelect.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (columnSelect.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -178,6 +179,7 @@ namespace AntdUI
                 {
                     for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                     var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
+                    tmp_input.Name = "edit_" + i_col + "_" + i_row;
                     if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                     else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -218,6 +220,7 @@ namespace AntdUI
                         {
                             for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
                             var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
+                            tmp_input.Name = "edit_" + i_col + "_" + i_row;
                             if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
                             else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
@@ -438,15 +441,10 @@ namespace AntdUI
                 if (e.KeyChar == 13)
                 {
                     e.Handled = true;
-
                     // 使用存储的单元格信息触发 CellEnter 事件
-                    if (_currentEdit != null)
-                    {
-                        SetFocusedCell(null);
-                        OnCellEditEnter(sender, _currentEdit);
-                    }
-
                     EditModeClose();
+                    if (_currentEdit == null) return;
+                    OnCellEditEnter(sender, _currentEdit);
                 }
             }
         }

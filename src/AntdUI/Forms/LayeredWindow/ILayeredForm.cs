@@ -425,7 +425,6 @@ namespace AntdUI
                 timeHover = hoverStopwatch.Elapsed + TimeSpan.FromMilliseconds(Config.MouseHoverDelay);
                 if (taskHover == null)
                 {
-                    OnMouseHover(-1, -1);
                     taskHover = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         if (hoverStopwatch.Elapsed < timeHover) return true;

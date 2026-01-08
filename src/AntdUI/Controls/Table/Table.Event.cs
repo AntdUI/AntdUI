@@ -218,7 +218,7 @@ namespace AntdUI
         protected virtual void OnCellEditEnter(object sender, TableCellEditEnterEventArgs e)
         {
             CellEditEnter?.Invoke(sender, e);
-            Table_CellEditEnter(e);
+            if (EnableFocusNavigation) FocusNavigation(e);
         }
 
         #endregion
@@ -402,11 +402,47 @@ namespace AntdUI
         /// </summary>
         [Description("筛选窗口弹出前发生"), Category("行为")]
         public event TableFilterPopupBeginEventHandler? FilterPopupBegin;
+
+        protected virtual bool OnFilterPopupBegin(Column column, out System.Collections.Generic.IList<object>? customSource, out Font? font, out int? height)
+        {
+            if (FilterPopupBegin == null)
+            {
+                customSource = null;
+                font = null;
+                height = null;
+                return true;
+            }
+            else
+            {
+                var args = new TableFilterPopupBeginEventArgs(column);
+                FilterPopupBegin(this, args);
+                customSource = args.CustomSource;
+                font = args.Font;
+                height = args.Height;
+                if (args.Cancel) return false;
+                return true;
+            }
+        }
+
         /// <summary>
         /// 筛选窗口关闭前发生
         /// </summary>
         [Description("筛选窗口关闭前发生"), Category("行为")]
         public event TableFilterPopupEndEventHandler? FilterPopupEnd;
+
+        protected virtual bool OnFilterPopupEnd(FilterOption option)
+        {
+            if (FilterPopupEnd == null) return true;
+            var args = new TableFilterPopupEndEventArgs(option, FilterList());
+            FilterPopupEnd(this, args);
+            if (args.Cancel) return false;
+            else
+            {
+                inEditMode = false;
+                OnMouseLeave(EventArgs.Empty);
+                return true;
+            }
+        }
 
         /// <summary>
         /// 筛选数据变更后发生

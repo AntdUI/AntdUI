@@ -31,6 +31,7 @@ namespace Demo.Controls
             pagination1 = new AntdUI.Pagination();
             table1 = new AntdUI.Table();
             panel1 = new System.Windows.Forms.Panel();
+            checkboxSummaryCustomize = new AntdUI.Checkbox();
             checkboxFocusNavigation = new AntdUI.Checkbox();
             selectFocusedStyle = new AntdUI.Select();
             selectEditStyle = new AntdUI.Select();
@@ -46,7 +47,6 @@ namespace Demo.Controls
             checkRowsDragSort = new AntdUI.Checkbox();
             checkColumnDragSort = new AntdUI.Checkbox();
             checkFixedHeader = new AntdUI.Checkbox();
-            checkboxSummaryCustomize = new AntdUI.Checkbox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -83,6 +83,7 @@ namespace Demo.Controls
             table1.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
             table1.CellImpactHeight = false;
             table1.Dock = DockStyle.Fill;
+            table1.EmptyHeader = true;
             table1.Gap = 12;
             table1.Location = new Point(0, 132);
             table1.Name = "table1";
@@ -93,9 +94,9 @@ namespace Demo.Controls
             table1.CellButtonClick += table1_CellButtonClick;
             table1.CellBeginEdit += table1_CellBeginEdit;
             table1.RowPaint += table1_RowPaint;
+            table1.SortRowsTree += table1_SortRowsTree;
             table1.FilterPopupEnd += table1_FilterPopupEnd;
             table1.FilterDataChanged += table1_FilterDataChanged;
-            table1.SortRowsTree += table1_SortRowsTree;
             // 
             // panel1
             // 
@@ -122,6 +123,18 @@ namespace Demo.Controls
             panel1.Name = "panel1";
             panel1.Size = new Size(1300, 58);
             panel1.TabIndex = 1;
+            // 
+            // checkboxSummaryCustomize
+            // 
+            checkboxSummaryCustomize.AutoSizeMode = AntdUI.TAutoSize.Width;
+            checkboxSummaryCustomize.Dock = DockStyle.Left;
+            checkboxSummaryCustomize.LocalizationText = "Table.{id}";
+            checkboxSummaryCustomize.Location = new Point(1531, 0);
+            checkboxSummaryCustomize.Name = "checkboxSummaryCustomize";
+            checkboxSummaryCustomize.Size = new Size(101, 41);
+            checkboxSummaryCustomize.TabIndex = 13;
+            checkboxSummaryCustomize.Text = "自定义汇总";
+            checkboxSummaryCustomize.CheckedChanged += checkboxSummaryCustomize_CheckedChanged;
             // 
             // checkboxFocusNavigation
             // 
@@ -312,18 +325,6 @@ namespace Demo.Controls
             checkFixedHeader.TabIndex = 0;
             checkFixedHeader.Text = "固定表头";
             checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
-            // 
-            // checkboxSummaryCustomize
-            // 
-            checkboxSummaryCustomize.AutoSizeMode = AntdUI.TAutoSize.Width;
-            checkboxSummaryCustomize.Dock = DockStyle.Left;
-            checkboxSummaryCustomize.LocalizationText = "Table.{id}";
-            checkboxSummaryCustomize.Location = new Point(1531, 0);
-            checkboxSummaryCustomize.Name = "checkboxSummaryCustomize";
-            checkboxSummaryCustomize.Size = new Size(101, 41);
-            checkboxSummaryCustomize.TabIndex = 13;
-            checkboxSummaryCustomize.Text = "自定义汇总";
-            checkboxSummaryCustomize.CheckedChanged += checkboxSummaryCustomize_CheckedChanged;
             // 
             // Table
             // 

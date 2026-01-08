@@ -201,7 +201,7 @@
 > [![UploadDragger](Icon/UploadDragger.png)](Control/UploadDragger.md)
 
 
-### 数据展示 `18`
+### 数据展示 `21`
 
 #### [Avatar 头像](Control/Avatar.md)
 
@@ -244,6 +244,10 @@
 > 图片预览框
 
 > [![Preview](Icon/Preview.png)](Control/Preview.md)
+
+#### [ImagePreview 图片预览](Control/ImagePreview.md)
+
+> 图片预览控件
 
 #### [Popover 气泡卡片](Control/Popover.md)
 
@@ -308,6 +312,16 @@
 > 显示时间文本。
 
 > [![LabelTime](Icon/LabelTime.png)](Control/LabelTime.md)
+
+#### [LabelLed LED文本控件](Control/LabelLed.md)
+
+> 显示一段LED样式的文本。
+
+> [![LabelLed](Icon/LabelLed.jpg)](Control/LabelLed.md)
+
+#### [HyperlinkLabel 超链接文本](Control/HyperlinkLabel.md)
+
+> 显示带有超链接的文本，支持自定义样式和事件处理。
 
 
 ### 反馈 `8`

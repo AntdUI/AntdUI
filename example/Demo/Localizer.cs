@@ -29,22 +29,16 @@ namespace Demo
                 case "ItemsPerPage":
                     return "Per/Page";
 
+                case "Filter":
+                    return "Filter";
                 case "Filter.Clean":
                     return "Clean";
-                case "Filter.ByView":
-                    return "ByView";
-                case "Filter.Auto":
-                    return "Auto";
-                case "Filter.DataSource":
-                    return "Source";
                 case "Filter.SelectAll":
                     return "(Select All)";
                 case "Filter.Blank":
                     return "(Blank)";
                 case "Filter.Search":
                     return "Search";
-                case "Filter.Width":
-                    return "200";
 
                 case "Filter.Equal":
                     return "Equal";
@@ -588,6 +582,8 @@ namespace Demo
                     return "ScrollBar AvoidHeader";
                 case "Table.checkboxFocusNavigation":
                     return "FocusNavigation";
+                case "Table.checkboxSummaryCustomize":
+                    return "CustomSummary";
                 case "Table.Column.name":
                     return "Name";
                 case "Table.Column.checkTitle":
@@ -600,6 +596,8 @@ namespace Demo
                     return "Enable";
                 case "Table.Column.age":
                     return "Age";
+                case "Table.Column.hobby":
+                    return "Hobby";
                 case "Table.Column.address":
                     return "Address";
                 case "Table.Column.date":
@@ -634,6 +632,16 @@ namespace Demo
                     return "Sydney No. 1 Lake Park";
                 case "Table.Data.AddressNum":
                     return "London, Park Lane no.";
+                case "Table.Data.Books":
+                    return "Books";
+                case "Table.Data.Travel":
+                    return "Travel";
+                case "Table.Data.Social":
+                    return "Social";
+                case "Table.Data.Sports":
+                    return "Sports";
+                case "Table.Data.FormatSummary":
+                    return "{0} {1} in total";
 
                 //Tabs ----------------------------
                 case "Tabs.Text":

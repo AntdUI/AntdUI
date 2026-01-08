@@ -1369,54 +1369,101 @@ namespace AntdUI
 
         protected override bool CanMouseMove { get; set; } = true;
 
+        MenuItem? tmpItem;
         protected override void OnMouseHover(int x, int y)
         {
-            CloseTip();
-            if (x == -1 || y == -1) return;
-            CloseDropDown();
-            if (items == null || items.Count == 0) return;
-            if (scroll_show)
+            if (items == null || items.Count == 0)
             {
-                if (rect_r.Contains(x, y))
+                CloseTip();
+                CloseDropDown();
+                return;
+            }
+            if (scroll_show && rect_r.Contains(x, y))
+            {
+                tmpItem = null;
+                CloseTip();
+                if (subForm == null)
                 {
                     var list = new List<MenuItem>(items.Count);
-                    foreach (var it in items)
+                    foreach (var item in items)
                     {
-                        if (it.rect.X > (rect_r.X - it.rect.Width)) list.Add(it);
+                        if (item.rect.X > (rect_r.X - item.rect.Width)) list.Add(item);
                     }
                     subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
                     subForm.Show(this);
-                    return;
                 }
+                return;
             }
             int sy = ScrollBar.Value;
+            var it = GetItemMouseHover(items, x, y, sy, out int drop);
+            if (it == null)
+            {
+                tmpItem = null;
+                CloseTip();
+                CloseDropDown();
+            }
+            else
+            {
+                if (tmpItem == it) return;
+                CloseTip();
+                CloseDropDown();
+                tmpItem = it;
+                switch (drop)
+                {
+                    case 0:
+                        if (OpenDropDown(it)) OpenTip(it, it.Rect);
+                        break;
+                    case 1:
+                        OpenDropDown(it);
+                        break;
+                    case 2:
+                        OpenTip(it, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - sy, it.rect.Width, rect_r.Height));
+                        break;
+                }
+            }
+        }
+
+        MenuItem? GetItemMouseHover(MenuItemCollection items, int x, int y, int sy, out int drop)
+        {
+            drop = 0;
             if (collapsed)
             {
                 foreach (var it in items)
                 {
-                    if (it.show && it.rect.Contains(x, y + sy))
-                    {
-                        if (OpenDropDown(it)) OpenTip(it, it.Rect);
-                        return;
-                    }
+                    if (it.show && it.rect.Contains(x, y + sy)) return it;
                 }
             }
-            else if (mode == TMenuMode.Inline) return;
+            else if (mode == TMenuMode.Inline) return null;
             else if (mode == TMenuMode.InlineNoText)
             {
-                foreach (var it in items) IMouseHover(it, x, y, sy);
+                drop = 2;
+                return GetItemMouseHover(items, x, y, sy);
             }
             else
             {
-                foreach (var it in items)
+                if (Trigger == Trigger.Hover)
                 {
-                    if (it.show && it.rect.Contains(x, y + sy))
+                    drop = 1;
+                    foreach (var it in items)
                     {
-                        if (Trigger == Trigger.Hover) OpenDropDown(it);
-                        return;
+                        if (it.show && it.rect.Contains(x, y + sy)) return it;
                     }
                 }
             }
+            return null;
+        }
+        MenuItem? GetItemMouseHover(MenuItemCollection items, int x, int y, int sy)
+        {
+            foreach (var it in items)
+            {
+                if (it.show && it.rect.Contains(x, y + sy)) return it;
+                if (it.items != null && it.items.Count > 0)
+                {
+                    var item = GetItemMouseHover(it.items, x, y, sy);
+                    if (item != null) return item;
+                }
+            }
+            return null;
         }
 
         void IMouseHover(MenuItem it, int x, int y, int sy)
@@ -1433,7 +1480,6 @@ namespace AntdUI
         #region Tip
 
         TooltipForm? toolTip;
-
         public void CloseTip()
         {
             toolTip?.IClose();
@@ -1467,6 +1513,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            tmpItem = null;
             if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             CloseTip();
             ScrollBar.Leave();

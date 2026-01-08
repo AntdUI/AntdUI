@@ -1,4 +1,4 @@
-﻿// Copyright (C) Tom <17379620>. All Rights Reserved.
+// Copyright (C) Tom <17379620>. All Rights Reserved.
 // AntdUI WinForm Library | Licensed under Apache-2.0 License
 // Gitee: https://gitee.com/AntdUI/AntdUI
 // GitHub: https://github.com/AntdUI/AntdUI

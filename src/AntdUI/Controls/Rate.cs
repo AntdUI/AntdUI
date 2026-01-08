@@ -476,6 +476,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            tmp = null;
             _Leave();
         }
 
@@ -536,20 +537,26 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
         protected override void OnMouseHover(int x, int y)
         {
+            var i = GetItemMouseHover(x, y);
+            if (tmp == i) return;
+            tmp = i;
             CloseTip();
-            if (x == -1 || y == -1) return;
+            if (i.HasValue)
+            {
+                if (Tooltips != null && Tooltips.Length > i) OpenTip(rect_stars[i.Value].rect, Tooltips[i.Value]);
+            }
+            else _Leave();
+        }
+
+        int? tmp;
+        int? GetItemMouseHover(int x, int y)
+        {
             for (int i = 0; i < rect_stars.Length; i++)
             {
                 var it = rect_stars[i];
-                if (it.rect_mouse.Contains(x, y))
-                {
-                    if (Tooltips != null && Tooltips.Length > i) OpenTip(it.rect, Tooltips[i]);
-                    else CloseTip();
-                    return;
-                }
+                if (it.rect_mouse.Contains(x, y)) return i;
             }
-            //全部都没激活
-            _Leave();
+            return null;
         }
 
         #region Tip

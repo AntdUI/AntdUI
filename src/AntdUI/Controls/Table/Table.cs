@@ -196,6 +196,12 @@ namespace AntdUI
         [Description("焦点离开清空选中"), Category("行为"), DefaultValue(false)]
         public bool LostFocusClearSelection { get; set; }
 
+        /// <summary>
+        /// 鼠标点击穿透
+        /// </summary>
+        [Description("鼠标点击穿透"), Category("行为"), DefaultValue(true)]
+        public bool MouseClickPenetration { get; set; } = true;
+
         bool bordered = false;
         /// <summary>
         /// 显示列边框
@@ -897,6 +903,12 @@ namespace AntdUI
         /// </summary>
         [Description("省略文字提示"), Category("行为"), DefaultValue(true)]
         public bool ShowTip { get; set; } = true;
+
+        /// <summary>
+        /// 筛选实时生效
+        /// </summary>
+        [Description("筛选实时生效"), Category("行为"), DefaultValue(false)]
+        public bool FilterRealTime { get; set; }
 
         /// <summary>
         /// 超出文字提示配置
@@ -2253,6 +2265,21 @@ namespace AntdUI
                 return null;
             }
         }
+
+        #region 设置
+
+        public ColumnSelect SetItems(params SelectItem[] list)
+        {
+            Items = new List<SelectItem>(list);
+            return this;
+        }
+        public ColumnSelect SetItems(IList<SelectItem> list)
+        {
+            Items = new List<SelectItem>(list);
+            return this;
+        }
+
+        #endregion
     }
 
     /// <summary>

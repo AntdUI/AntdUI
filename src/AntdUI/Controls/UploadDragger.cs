@@ -535,9 +535,9 @@ namespace AntdUI
         [Flags]
         public enum FilterType
         {
-            ALL = 1,
-            Img = 2,
-            Imgs = 3,
+            ALL = 0,
+            Img = 1,
+            Imgs = 2,
             Video = 4
         }
 
