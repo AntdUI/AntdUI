@@ -88,7 +88,7 @@
 ➡️| [**Transfer** 穿梭框](doc/wiki/zh/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger** 拖拽上传](doc/wiki/zh/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| 数据展示 `21` | 动画 | 禁用 |
+⬇️| 数据展示 `22` | 动画 | 禁用 |
 ➡️| [**Avatar** 头像](doc/wiki/zh/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge** 徽标数](doc/wiki/zh/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar** 日历](doc/wiki/zh/Control/Calendar.md) | ✅ | ❎ |
@@ -108,6 +108,7 @@
 ➡️| [**Tour** 漫游式引导](doc/wiki/zh/Control/Tour.md) | ✅ | ❎ |
 ➡️| [**Label** 文本](doc/wiki/zh/Control/Label.md) | ✅ | ❎ |
 ➡️| [**LabelTime** 时间文本](doc/wiki/zh/Control/LabelTime.md) | ✅ | ❎ |
+➡️| [**LabelLed** LED文本](doc/wiki/zh/Control/LabelLed.md) | ✅ | ❎ |
 ➡️| [**HyperlinkLabel** 超链接文本](doc/wiki/zh/Control/HyperlinkLabel.md) | ✅ | ❎ |
 ➡️| **Chart** 图表 | ✅ | ❎ |
 ||||

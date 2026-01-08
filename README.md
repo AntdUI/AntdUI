@@ -87,7 +87,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Transfer**](doc/wiki/en/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| Data Display `21` | Animation | Disable |
+⬇️| Data Display `22` | Animation | Disable |
 ➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
@@ -107,6 +107,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Tree**](doc/wiki/en/Control/Tree.md) | ✅ | ✅ |
 ➡️| [**Label**](doc/wiki/en/Control/Label.md) | ✅ | ❎ |
 ➡️| [**LabelTime**](doc/wiki/en/Control/LabelTime.md) | ✅ | ❎ |
+➡️| [**LabelLed**](doc/wiki/en/Control/LabelLed.md) | ✅ | ❎ |
 ➡️| [**HyperlinkLabel**](doc/wiki/en/Control/HyperlinkLabel.md) | ✅ | ❎ |
 ➡️| **Chart** | ✅ | ❎ |
 ||||

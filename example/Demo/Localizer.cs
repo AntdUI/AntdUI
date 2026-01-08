@@ -29,14 +29,10 @@ namespace Demo
                 case "ItemsPerPage":
                     return "Per/Page";
 
+                case "Filter":
+                    return "Filter";
                 case "Filter.Clean":
                     return "Clean";
-                case "Filter.ByView":
-                    return "ByView";
-                case "Filter.Auto":
-                    return "Auto";
-                case "Filter.DataSource":
-                    return "Source";
                 case "Filter.SelectAll":
                     return "(Select All)";
                 case "Filter.Blank":
