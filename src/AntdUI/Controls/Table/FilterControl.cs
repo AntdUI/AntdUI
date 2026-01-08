@@ -25,6 +25,7 @@ namespace AntdUI
         #region Ctor
 
         IList<object>? CustomSource;
+        bool realTime = false;
         public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource)
         {
             InitializeComponent();
@@ -32,6 +33,7 @@ namespace AntdUI
             _table = table;
             _column = currentColumn;
             CustomSource = customSource;
+            realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
             if (Option.Table == null) Option.Table = table;
@@ -138,8 +140,7 @@ namespace AntdUI
                 var edit = new Input
                 {
                     Margin = new Padding(0),
-                    Dock = DockStyle.Fill,
-                    Text = Option.FilterValues != null && Option.FilterValues.Count == 1 && Option.FilterValues[0] != DBNull.Value ? Option.FilterValues[0]?.ToString() ?? string.Empty : string.Empty
+                    Dock = DockStyle.Fill
                 };
                 tablePanel.Controls.Add(edit, 1, 0);
                 edit.TextChanged += Edit_TextChanged;
@@ -282,7 +283,6 @@ namespace AntdUI
         object[]? cc;
         void Search()
         {
-            count++;
             var search = inputSearch.Text;
             if (dv.Tag is List<AntItem[]> list)
             {
@@ -322,6 +322,7 @@ namespace AntdUI
                         dv.DataSource = nl;
                     }
                 }
+                Apply();
             }
         }
         void Search(object[]? value)
@@ -354,6 +355,8 @@ namespace AntdUI
             }
             else return FilterCondition(condition, val, value);
         }
+
+        #region 筛选核心
 
         public static bool FilterCondition(FilterConditions condition, object? val, object? value)
         {
@@ -495,6 +498,8 @@ namespace AntdUI
 
         #endregion
 
+        #endregion
+
         private void SelectCondition_Changed(object sender, ObjectNEventArgs e)
         {
             if (e.Value is FilterConditions condition)
@@ -579,6 +584,28 @@ namespace AntdUI
             }
         }
 
-        private void dv_CheckedChanged(object sender, TableCheckEventArgs e) => count++;
+        void Apply()
+        {
+            count++;
+            if (realTime)
+            {
+                if (_table.dataTmp == null) return;
+                if (dv.DataSource is List<AntItem[]> list)
+                {
+                    var tmp = new List<object?>(list.Count);
+                    foreach (var it in list)
+                    {
+                        if (it[1].value is bool check && check && it[0].value is List<object> data) tmp.AddRange(data);
+                    }
+                    if (tmp.Count == _table.dataTmp.RowsCache.Length) Option.FilterValues = null;
+                    else Option.FilterValues = tmp;
+                    Option.UpdateFilter();
+                    LoadOffset();
+                    btn_clean.Enabled = Option.Enabled;
+                }
+            }
+        }
+
+        private void dv_CheckedChanged(object sender, TableCheckEventArgs e) => Apply();
     }
 }

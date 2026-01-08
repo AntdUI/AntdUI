@@ -460,30 +460,28 @@ namespace AntdUI
                     }
                     else if (it.row.IsColumn && it.cell is TCellColumn col)
                     {
-                        if (it.cell.COLUMN.Filter != null)
+                        if (it.cell.COLUMN.Filter != null&& col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
                         {
-                            if (col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
+                            //点击筛选
+                            var focusColumn = it.cell.COLUMN;
+                            if (OnFilterPopupBegin(focusColumn, out var customSource, out var fnt, out var filterHeight))
                             {
-                                //点击筛选
-                                var focusColumn = it.cell.COLUMN;
-                                if (OnFilterPopupBegin(focusColumn, out var customSource, out var fnt, out var filterHeight))
+                                fnt ??= Font;
+                                var editor = new FilterControl(this, fnt, focusColumn, customSource);
+                                if (filterHeight.HasValue) editor.Height = filterHeight.Value;
+                                editor.Set(new Popover.Config(this, editor)
                                 {
-                                    fnt ??= Font;
-                                    var editor = new FilterControl(this, fnt, focusColumn, customSource);
-                                    if (filterHeight.HasValue) editor.Height = filterHeight.Value;
-                                    editor.Set(new Popover.Config(this, editor)
-                                    {
-                                        Dpi = (fnt.Size / 10F) * Dpi,
-                                        Tag = focusColumn.Filter,
-                                        ArrowAlign = TAlign.Bottom,
-                                        Font = fnt,
-                                        Offset = col.rect_filter,
-                                        Padding = new Size(6, 6)
-                                    }.open());
-                                }
+                                    Dpi = (fnt.Size / 10F) * Dpi,
+                                    Tag = focusColumn.Filter,
+                                    ArrowAlign = TAlign.Bottom,
+                                    Font = fnt,
+                                    Offset = col.rect_filter,
+                                    Padding = new Size(6, 6)
+                                }.open());
                             }
+                            return;
                         }
-                        else if (it.cell.COLUMN.SortOrder)
+                        if (it.cell.COLUMN.SortOrder)
                         {
                             //点击排序
                             SortMode sortMode = SortMode.NONE;

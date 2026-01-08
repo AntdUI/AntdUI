@@ -214,7 +214,7 @@ namespace AntdUI
         /// <summary>
         /// 是否已启用筛选
         /// </summary>
-        public bool Enabled => FilterValues != null && FilterValues.Count > 0;
+        public bool Enabled => FilterValues != null;
 
         /// <summary>
         /// 列数据类型 (默认string)

@@ -905,6 +905,12 @@ namespace AntdUI
         public bool ShowTip { get; set; } = true;
 
         /// <summary>
+        /// 筛选实时生效
+        /// </summary>
+        [Description("筛选实时生效"), Category("行为"), DefaultValue(false)]
+        public bool FilterRealTime { get; set; }
+
+        /// <summary>
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
