@@ -814,15 +814,37 @@ namespace AntdUI
             var db = CellContains(rows, false, x, y);
             if (db == null || db.mode == CELLDBMode.Summary)
             {
+                tmp = null;
                 CloseTip();
                 OnCellHover();
             }
             else
             {
                 OnCellHover(db.cell.ROW.RECORD, db.cell.ROW.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), new MouseEventArgs(MouseButtons.None, 0, x, y, 0));
-                if (db.mode == 0) MouseHoverRow(db);
+                if (db.mode == 0)
+                {
+                    var it = MouseHoverRow(db);
+                    if (tmp == it) return;
+                    tmp = it;
+                    CloseTip();
+                    if (it == null) return;
+                    if (it is CellLink btn_template)
+                    {
+                        if (btn_template.Tooltip != null) OpenTip(RealRect(btn_template.Rect, db.offset_xi, db.offset_y), btn_template.Tooltip);
+                    }
+                    else if (it is CellImage img_template)
+                    {
+                        if (img_template.Tooltip != null) OpenTip(RealRect(img_template.Rect, db.offset_xi, db.offset_y), img_template.Tooltip);
+                    }
+                    else if (it is CELL cell)
+                    {
+                        var text = cell.ToString();
+                        if (!string.IsNullOrEmpty(text) && !db.col.LineBreak && cell.MinWidth > cell.RECT_REAL.Width + 1) OpenTip(RealRect(cell.RECT_REAL, db.offset_xi, db.offset_y), text);
+                    }
+                }
             }
         }
+        object? tmp;
 
         bool MouseMoveRow(CELLDB db, MouseEventArgs e)
         {
@@ -892,36 +914,23 @@ namespace AntdUI
             }
             return false;
         }
-        bool MouseHoverRow(CELLDB db)
+        object? MouseHoverRow(CELLDB db)
         {
-            if (db.cell is TCellCheck) return false;
-            else if (db.cell is TCellRadio) return false;
-            else if (db.cell is TCellSwitch) return false;
+            if (db.cell is TCellCheck) return null;
+            else if (db.cell is TCellRadio) return null;
+            else if (db.cell is TCellSwitch) return null;
             else if (db.cell is Template template)
             {
                 var tipcel = MouseHoverCell(template, db.x, db.y);
-                if (tipcel == null) CloseTip();
+                if (tipcel == null) return null;
                 else
                 {
-                    if (tipcel is CellLink btn_template)
-                    {
-                        if (btn_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRect(btn_template.Rect, db.offset_xi, db.offset_y), btn_template.Tooltip);
-                    }
-                    else if (tipcel is CellImage img_template)
-                    {
-                        if (img_template.Tooltip == null) CloseTip();
-                        else OpenTip(RealRect(img_template.Rect, db.offset_xi, db.offset_y), img_template.Tooltip);
-                    }
+                    if (tipcel is CellLink btn_template) return btn_template;
+                    else if (tipcel is CellImage img_template) return img_template;
                 }
             }
-            else if (ShowTip)
-            {
-                var text = db.cell.ToString();
-                if (!string.IsNullOrEmpty(text) && !db.col.LineBreak && db.cell.MinWidth > db.cell.RECT_REAL.Width + 1) OpenTip(RealRect(db.cell.RECT_REAL, db.offset_xi, db.offset_y), text);
-                else CloseTip();
-            }
-            return false;
+            else if (ShowTip) return db.cell;
+            return null;
         }
         ICell? MouseHoverCell(Template template, int x, int y)
         {
