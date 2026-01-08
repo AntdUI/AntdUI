@@ -196,6 +196,12 @@ namespace AntdUI
         [Description("焦点离开清空选中"), Category("行为"), DefaultValue(false)]
         public bool LostFocusClearSelection { get; set; }
 
+        /// <summary>
+        /// 鼠标点击穿透
+        /// </summary>
+        [Description("鼠标点击穿透"), Category("行为"), DefaultValue(true)]
+        public bool MouseClickPenetration { get; set; } = true;
+
         bool bordered = false;
         /// <summary>
         /// 显示列边框
