@@ -9,23 +9,23 @@ using System;
 namespace AntdUI
 {
     [Flags]
-    public enum CloseMode
+    public enum CloseMode : int
     {
         /// <summary>
         /// 不做任何处理
         /// </summary>
-        None,
+        None = 0,
         /// <summary>
         /// 点击下拉其他区域
         /// </summary>
-        Click,
+        Click = 1,
         /// <summary>
         /// 离开下拉或控件
         /// </summary>
-        Leave,
+        Leave = 2,
         /// <summary>
         /// 不包含控件
         /// </summary>
-        NoControl
+        NoControl = 4
     }
 }
