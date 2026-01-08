@@ -36,10 +36,10 @@ namespace Demo.Controls
                         return value;
                     }
                 },
-                new AntdUI.ColumnSelect("hobby", "爱好") { Items=new List<AntdUI.SelectItem>(){ new AntdUI.SelectItem(EHobbies.读书.ToString(), (int)EHobbies.读书) {IconSvg= "BookOutlined" }, new AntdUI.SelectItem(EHobbies.旅游.ToString(), (int)EHobbies.旅游) { IconSvg = "GlobalOutlined" }, new AntdUI.SelectItem(EHobbies.社交.ToString(), (int)EHobbies.社交) { IconSvg = "CommentOutlined" }, new AntdUI.SelectItem(EHobbies.运动.ToString(), (int)EHobbies.运动) { IconSvg = "DribbbleOutlined" } } }.SetAlign().SetLocalizationTitleID("Table.Column."),
+                new AntdUI.ColumnSelect("hobby", "爱好").SetItems(GetEHobbies()).SetAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column.").SetSummaryItem(AntdUI.TSummaryType.AVG),
                 new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetSummaryItem(AntdUI.TSummaryType.Custom,"20后 {0:0} 位"),
+                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetDisplayFormat("yyyy-MM-dd").SetSummaryItem(AntdUI.TSummaryType.Custom,"20后 {0:0} 位"),
                 new AntdUI.Column("tag", "Tag"),
                 new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
@@ -256,10 +256,12 @@ namespace Demo.Controls
             table1.Summary = new Dictionary<string, object>
             {
                 { "age", dataList.Any() ?(int)dataList.Average(x => x.age) : 0},
-                { "address", $"共{dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length)}地址"} ,
-                { "hobby", $"共{dataList.Select(x => x.hobby).Distinct().Count()}种爱好" }
+                { "address", FormatSummaryStr(dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length),"address","地址")} ,
+                { "hobby", FormatSummaryStr(dataList.Select(x => x.hobby).Distinct().Count(),"hobby","爱好") }
             };
         }
+
+        string FormatSummaryStr(int count, string id, string text) => string.Format(AntdUI.Localization.Get("Table.Data.FormatSummary", $"共{0}种{1}"), count, AntdUI.Localization.Get("Table.Column." + id, text));
 
         #endregion
 
@@ -558,6 +560,7 @@ namespace Demo.Controls
         {
             public TestClass(int index, int start, string name, int age)
             {
+                var random = new Random();
                 id = (index + 1);
                 if (start == 1) _online = new AntdUI.CellBadge(AntdUI.TState.Success, AntdUI.Localization.Get("Table.Data.Online", "在线"));
                 else if (start == 2) _online = new AntdUI.CellBadge(AntdUI.TState.Processing, AntdUI.Localization.Get("Table.Data.Online.Processing", "处置"));
@@ -567,10 +570,10 @@ namespace Demo.Controls
                 _name = name;
                 _age = age;
                 _date = DateTime.Now.Date.AddYears(-age);
-                _hobby = new Random().Next(0, 3);
+                _hobby = random.Next(0, 3);
                 _address = AntdUI.Localization.GetLangI("Table.Data.Address" + id, null);
                 if (_address == null) _address = AntdUI.Localization.GetLangI("Table.Data.AddressNum", null);
-                if (_address == null) _address = (new Random().Next(DateTime.Now.Second) > 5 ? "东湖" : "西湖") + "区湖底公园" + id + "号";
+                if (_address == null) _address = (random.Next(DateTime.Now.Second) > 5 ? "东湖" : "西湖") + "区湖底公园" + id + "号";
                 else _address += id;
 
                 _enable = start % 2 == 0;
@@ -791,6 +794,16 @@ namespace Demo.Controls
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public static List<AntdUI.SelectItem> GetEHobbies()
+        {
+            return new List<AntdUI.SelectItem> {
+              new AntdUI.SelectItem((int)EHobbies.读书).SetIcon("BookOutlined").SetText("读书","Table.Data.Books"),
+              new AntdUI.SelectItem((int)EHobbies.旅游).SetIcon("GlobalOutlined").SetText("旅游","Table.Data.Travel"),
+              new AntdUI.SelectItem((int)EHobbies.社交).SetIcon("CommentOutlined").SetText("社交","Table.Data.Social"),
+              new AntdUI.SelectItem((int)EHobbies.运动).SetIcon("DribbbleOutlined").SetText("运动","Table.Data.Sports")
+            };
         }
     }
 }
