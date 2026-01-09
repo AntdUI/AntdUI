@@ -2,7 +2,7 @@
 
 ## Preface
 
-[Winforms](https://github.com/dotnet/winforms) currently does not support cross platform support in `NET 9.0`, only AOT compilation running on Windows. To learn more information, you can follow the official team. If cross platform considerations are still necessary, please refer to the following:
+[Winforms](https://github.com/dotnet/winforms) currently does not support cross platform support in `NET 9.0` and `NET 10.0`, only AOT compilation running on Windows. To learn more information, you can follow the official team. If cross platform considerations are still necessary, please refer to the following:
 
 - [Avalonia](https://github.com/avaloniaui/avalonia)
 - [.NET MAUI](https://github.com/dotnet/maui)
@@ -18,9 +18,13 @@ Don't want to change too much?
 
 ## AOT
 
-> [Winforms](https://github.com/dotnet/winforms) currently does not support AOT. Add `_SuppressWinFormsTrimError = true` in `csproj` to ignore unsupported prompts
+> [Winforms](https://github.com/dotnet/winforms) currently does not support AOT in `.NET 9.0` and below. Add `_SuppressWinFormsTrimError = true` in `csproj` to ignore unsupported prompts
+> 
+> **Important Note**: In `.NET 10.0`, WinForms has built-in support for AOT, **no need** to add `WinFormsComInterop` reference
 
-### 1. Add [WinFormsComInterop](https://github.com/kant2002/WinFormsComInterop) reference
+### 1. Add [WinFormsComInterop](https://github.com/kant2002/WinFormsComInterop) reference (Only for .NET 9.0 and below)
+
+**This step is only required if you are using .NET 9.0 or lower**
 
 **Search for `WinFormsComInterop` on NuGet**, reference it to the project, and add the following code in `Program.cs`:
 

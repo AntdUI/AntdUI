@@ -2,7 +2,7 @@
 
 ## 前言
 
-[Winforms](https://github.com/dotnet/winforms) 目前 `NET 9.0` 并不支持跨平台，仅仅是支持在 Windows 上运行的 AOT 编译。要了解更多信息，您可以跟踪官方团队。如果仍需要考虑跨平台请参考如下：
+[Winforms](https://github.com/dotnet/winforms) 目前 `NET 9.0` 和 `NET 10.0` 并不支持跨平台，仅仅是支持在 Windows 上运行的 AOT 编译。要了解更多信息，您可以跟踪官方团队。如果仍需要考虑跨平台请参考如下：
 
 - [Avalonia](https://github.com/avaloniaui/avalonia)
 - [.NET MAUI](https://github.com/dotnet/maui)
@@ -18,9 +18,13 @@
 
 ## AOT
 
-> [Winforms](https://github.com/dotnet/winforms) 目前是不支持AOT的。`csproj` 中添加 `_SuppressWinFormsTrimError = true` 才可以互忽略不支持提示
+> [Winforms](https://github.com/dotnet/winforms) 目前在 `.NET 9.0` 及以下版本不支持AOT。`csproj` 中添加 `_SuppressWinFormsTrimError = true` 才可以忽略不支持提示
+> 
+> **重要提示**：在 `.NET 10.0` 版本中，WinForms 已内置对 AOT 的支持，**不需要**添加 `WinFormsComInterop` 引用
 
-### 1、添加 [WinFormsComInterop](https://github.com/kant2002/WinFormsComInterop) 引用
+### 1、添加 [WinFormsComInterop](https://github.com/kant2002/WinFormsComInterop) 引用（仅适用于 .NET 9.0 及以下版本）
+
+**仅当您使用 .NET 9.0 或更低版本时需要此步骤**
 
 **NuGet 搜索 `WinFormsComInterop`**，引用到项目中并在 `Program.cs` 中添加以下代码：
 
