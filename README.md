@@ -9,7 +9,7 @@
 [![Download](https://img.shields.io/nuget/dt/antdui?style=flat-square)](https://www.nuget.org/packages/AntdUI)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
-[中文](README.zh.md)・English・[Document](doc/wiki/en/Home.md)・[UpdateLog](doc/wiki/en/UpdateLog.md)・[Demo](https://github.com/AntdUI/AntdUI-Demo)
+[中文](README.zh.md)・English・[Document](doc/wiki/en/Home.md)・[UpdateLog](doc/wiki/en/UpdateLog.md)・[Demo](https://github.com/AntdUI/AntdUI-Demo)・[Thanks](doc/wiki/en/Thanks.md)
 
 </div>
 
@@ -18,14 +18,6 @@
 ### 🦄 Introduce
 
 Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend design elements. Using pure GDI graphics, no image resources required, fully supports AOT.
-
-### 🗳️ Gitee 2025 Open Source Project
-
-[🍀 Come and vote for me quickly！](https://gitee.com/activity/2025opensource?ident=IQOXCY)
-
-[![2025opensource](doc/pre/2025opensource.png)](https://gitee.com/activity/2025opensource?ident=IQOXCY)
-
-> The voting process will end on January 9, 2026. Everyone has only one vote for each project.
 
 ### ✨ Features
 

@@ -1,98 +1,104 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
-## DPI
+## DPI 适配指南
 
-> 按照文档3部即可完成DPI适配，前提是窗口继承 [BaseForm](Form/BaseForm.md)，
-> [Window](Form/Window.md) / [BorderlessForm](Form/BorderlessForm.md) 皆继承于 [BaseForm](Form/BaseForm.md) ，`AutoHandDpi = true` 便会启用缩放使能
+### 核心要求
 
-### 1、修改VS缩放
+> 要实现 DPI 适配，**必须继承 AntdUI 提供的窗口类**，如：
+> - `AntdUI.BaseForm`
+> - `AntdUI.Window`
+> - `AntdUI.BorderlessForm`
+> 
+> 这些窗口类内部已处理 DPI 缩放逻辑，`AutoHandDpi = true` 会自动启用缩放功能
 
-> **应使用100%缩放来设计界面**，否则在其他分辨率倍数上会显示不全
+### 适配步骤
+
+#### 1. 设计器缩放设置（2.2.10 以下版本必填，2.2.10 及以上版本可选）
+
+> **对于 2.2.10 及以上版本**：已适配 `AutoScaleMode.Dpi` 和 `AutoScaleMode.Font`，**无需强制使用 100% 缩放设计**，可直接在当前 DPI 下设计界面
+> 
+> **对于 2.2.10 以下版本**：**必须使用 100% 缩放设计界面**，否则在其他 DPI 倍数下可能显示不全
+
+##### 设置方法（2.2.10 以下版本或需要时）
 
 #### .NET Core 系列 👏
 
-[解决 Visual Studio 中 Windows 窗体设计器的 HDPI/缩放问题](https://learn.microsoft.com/zh-cn/visualstudio/designers/disable-dpi-awareness?view=vs-2022)
+[修复 Visual Studio 中 Windows 窗体设计器的 HDPI/缩放问题](https://learn.microsoft.com/zh-cn/visualstudio/designers/disable-dpi-awareness?view=vs-2022)
 
-> 在 Visual Studio 2022 版本 17.8 或更高版本中将项目文件 `.csproj` 中的属性 `ForceDesignerDPIUnaware` 设置为 `true`
->
->```xml
-><PropertyGroup>
->   ...
->   <ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
-></PropertyGroup>
+> 在 Visual Studio 中，将项目文件 `.csproj` 中的属性 `ForceDesignerDPIUnaware` 设置为 `true`
 
-#### 使用CMD启动VS
+```xml
+<PropertyGroup>
+   <ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
+</PropertyGroup>
+```
 
-> 可创建固定快捷方式
-
+**方法 2：命令行启动 VS**
 ```shell
 devenv.exe /noScale
 ```
 
-#### 修改系统缩放
+**方法 3：修改系统缩放**
+将 Windows 桌面缩放修改至 `100%`
 
-Windows 桌面右键显示设置 将缩放修改至 `100%`
+#### 2. 启用 DPI 感知
 
+> **必须启用 DPI 感知**，否则在高 DPI 下会被系统强制拉伸导致模糊
 
-### 2、启用DPI感知
-
-#### .NET Core 系列 👏
+##### .NET Core 系列
 
 > [Application.SetHighDpiMode(HighDpiMode.SystemAware)](https://learn.microsoft.com/zh-cn/dotnet/api/system.windows.forms.application.sethighdpimode?view=windowsdesktop-8.0)
-> ``` csharp
-> internal static class Program
-> {
->     /// <summary>
->     ///  The main entry point for the application.
->     /// </summary>
->     [STAThread]
->     static void Main()
->     {
->         ...
->         Application.SetHighDpiMode(HighDpiMode.SystemAware);
->         Application.Run(new Form1());
->     }
-> }
-> ```
 
-#### .NET Framework
+```csharp
+internal static class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        // 设置 DPI 感知模式，选择适合你的模式
+        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+        
+        Application.Run(new YourForm()); // 确保 YourForm 继承自 AntdUI 窗口类
+    }
+}
+```
 
-> 通过清单启用 [Windows 窗体中的高 DPI 支持](https://learn.microsoft.com/zh-cn/dotnet/desktop/winforms/high-dpi-support-in-windows-forms?view=netframeworkdesktop-4.8)
+##### .NET Framework
+通过清单文件启用高 DPI 支持，详见 [Windows 窗体中的高 DPI 支持](https://learn.microsoft.com/zh-cn/dotnet/desktop/winforms/high-dpi-support-in-windows-forms?view=netframeworkdesktop-4.8)
 
-### 3、HDPI 下为何设计器与编译后的布局不一致
+### 支持的 DPI 感知模式
 
-> 将每个`.Designer.cs` 中的 `AutoScaleMode` 移除/恢复默认值，移除 `AutoScaleDimensions` 和 `AutoScaleFactor` 也不受影响
+| 模式 | 描述 |
+| :-- | :-- |
+| `PerMonitor` | 当前显示器 DPI |
+| `PerMonitorV2` | 当前显示器 DPI（增强版，推荐） |
+| `DpiUnawareGdiScaled` | 完全不感知（GDI 优化） |
+| `SystemAware` | 系统 DPI |
+| `DpiUnaware` | 完全不感知 |
 
----
+### 布局异常处理
 
-### 4、其他问题
+> 如果启用 DPI 感知后布局仍有异常，可尝试以下解决方案：
 
-#### 适配DPI后字体依旧模糊
+#### 1. 使用推荐 DPI 适配
 
-> [解决字体模糊问题](BlurredFont.md)
+> 需要将每个 `.Designer.cs` 中的 `AutoScaleMode` 移除/恢复默认值，移除 `AutoScaleDimensions` 和 `AutoScaleFactor` 也不受影响
 
-#### 字体存在锯齿 （beta🔴）
+#### 2. 切换 DPI 模式
 
-> [AntdUI.Config.TextRenderingHighQuality](Config.md#文本高质量呈现)
-> ``` csharp
-> internal static class Program
-> {
->     /// <summary>
->     ///  The main entry point for the application.
->     /// </summary>
->     [STAThread]
->     static void Main()
->     {
->         ...
->         AntdUI.Config.TextRenderingHighQuality = true;
->         Application.Run(new Form1());
->     }
-> }
-> ```
+```csharp
+// 在程序启动时设置
+AntdUI.Config.DpiMode = DpiMode.Compatible;
+```
 
-#### 字体没有垂直居中 （beta🔴）
+### 其他优化建议
 
-> ``` csharp
-> AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI", "宋体"); //需要修正的字体列表
-> ```
-> ![CorrectionTextRendering](Img/CorrectionTextRendering.jpg)
+1. **字体模糊问题**
+   ```csharp
+   AntdUI.Config.TextRenderingHighQuality = true;
+   ```
+
+2. **字体垂直居中问题**
+   ```csharp
+   AntdUI.Config.SetCorrectionTextRendering("Microsoft YaHei UI", "宋体");
+   ```

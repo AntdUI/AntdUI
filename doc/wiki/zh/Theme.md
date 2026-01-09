@@ -70,6 +70,62 @@ var dir = new Dictionary<string, string> {
 AntdUI.Style.LoadCustom(dir);
 ```
 
+---
+
+### 主题切换配置
+
+#### 1. 全局主题配置
+
+> 在 `Program.cs` 中全局设置主题切换配置
+
+``` csharp
+// 设置全局主题切换配置
+AntdUI.Config.Theme()
+    .Dark("#000", "#fff") // 深色模式背景色和文本色
+    .Light("#fff", "#000"); // 浅色模式背景色和文本色
+```
+
+#### 2. 窗口主题配置
+
+> 基于 `AntdUI.BaseForm` 的窗口可以定制主题切换配置
+
+``` csharp
+// 在窗口中设置主题切换配置
+public partial class Form1 : AntdUI.BaseForm
+{
+    public Form1()
+    {
+        InitializeComponent();
+        
+        // 定制窗口主题切换配置
+        Theme()
+            .Dark("#1e1e1e", "#ffffff") // 深色模式背景色和文本色
+            .Light("#ffffff", "#000000") // 浅色模式背景色和文本色
+            .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // 页面头部颜色
+            .Button(btnTheme); // 主题切换按钮
+    }
+    
+    // 主题切换按钮点击事件
+    private void btnTheme_Click(object sender, EventArgs e)
+    {
+        // 切换主题模式
+        AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
+    }
+}
+```
+
+#### 3. 主题切换配置方法
+
+| 方法 | 描述 | 参数 |
+| :-- | :-- | :-- |
+| **Dark** | 设置深色模式颜色 | Color back, Color fore / string back, string fore |
+| **Light** | 设置浅色模式颜色 | Color back, Color fore / string back, string fore |
+| **Header** | 设置页面头部颜色 | PageHeader header, Color light, Color dark / string light, string dark |
+| **Button** | 设置主题切换按钮 | Button button |
+| **Call** | 设置主题切换回调 | Action<bool> call |
+| **Light** | 设置浅色模式回调 | Action call |
+| **Dark** | 设置深色模式回调 | Action call |
+
 
 ### 静态帮助类
 

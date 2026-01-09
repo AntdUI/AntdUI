@@ -10,7 +10,7 @@
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0)
 
-中文・[English](README.md)・[文档](doc/wiki/zh/Home.md)・[更新日志](doc/wiki/zh/UpdateLog.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)
+中文・[English](README.md)・[文档](doc/wiki/zh/Home.md)・[更新日志](doc/wiki/zh/UpdateLog.md)・[演示](https://gitee.com/mubaiyanghua/antdui-demo)・[鸣谢](doc/wiki/zh/Thanks.md)
 
 </div>
 
@@ -19,14 +19,6 @@
 ### 🦄 介绍
 
 基于 Ant Design 设计语言的 WinForm UI 界面库，致力于将现代美观的前端设计风格带入到桌面应用程序中。采用纯GDI绘图，不需任何图片资源，全面支持AOT，最低兼容 `.NET Framework 4.0`
-
-### 🗳️ Gitee 2025 年度开源项目
-
-[🍀 快来给我投票吧！](https://gitee.com/activity/2025opensource?ident=IQOXCY)
-
-[![2025opensource](doc/pre/2025opensource.png)](https://gitee.com/activity/2025opensource?ident=IQOXCY)
-
-> 投票环节于 2026/1/9 结束，每人每个项目只有一票。
 
 ### ✨ 特性
 

@@ -70,6 +70,62 @@ var dir = new Dictionary<string, string> {
 AntdUI.Style.LoadCustom(dir);
 ```
 
+---
+
+### Theme Switching Configuration
+
+#### 1. Global Theme Configuration
+
+> Set global theme switching configuration in `Program.cs`
+
+``` csharp
+// Set global theme switching configuration
+AntdUI.Config.Theme()
+    .Dark("#000", "#fff") // Dark mode background and text color
+    .Light("#fff", "#000"); // Light mode background and text color
+```
+
+#### 2. Window Theme Configuration
+
+> Windows based on `AntdUI.BaseForm` can customize theme switching configuration
+
+``` csharp
+// Set theme switching configuration in window
+public partial class Form1 : AntdUI.BaseForm
+{
+    public Form1()
+    {
+        InitializeComponent();
+        
+        // Customize window theme switching configuration
+        Theme()
+            .Dark("#1e1e1e", "#ffffff") // Dark mode background and text color
+            .Light("#ffffff", "#000000") // Light mode background and text color
+            .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // Page header color
+            .Button(btnTheme); // Theme switch button
+    }
+    
+    // Theme switch button click event
+    private void btnTheme_Click(object sender, EventArgs e)
+    {
+        // Toggle theme mode
+        AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
+    }
+}
+```
+
+#### 3. Theme Switching Configuration Methods
+
+| Method | Description | Parameters |
+| :-- | :-- | :-- |
+| **Dark** | Set dark mode colors | Color back, Color fore / string back, string fore |
+| **Light** | Set light mode colors | Color back, Color fore / string back, string fore |
+| **Header** | Set page header colors | PageHeader header, Color light, Color dark / string light, string dark |
+| **Button** | Set theme switch button | Button button |
+| **Call** | Set theme switch callback | Action<bool> call |
+| **Light** | Set light mode callback | Action call |
+| **Dark** | Set dark mode callback | Action call |
+
 
 ### Static Help Class
 
