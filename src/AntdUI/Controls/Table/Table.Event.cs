@@ -450,6 +450,8 @@ namespace AntdUI
         [Description("筛选数据变更后发生"), Category("行为")]
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
 
+        protected virtual void OnFilterDataChanged(object[] records) => FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(records));
+
         /// <summary>
         /// 每行或行自定义汇总计算结束时发生
         /// </summary>

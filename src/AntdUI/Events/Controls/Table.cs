@@ -698,9 +698,7 @@ namespace AntdUI
 
     public class TableFilterDataChangedEventArgs : EventArgs
     {
-        public TableFilterDataChangedEventArgs()
-        { }
-        public TableFilterDataChangedEventArgs(object[]? records)
+        public TableFilterDataChangedEventArgs(object[] records)
         {
             Records = records;
         }
@@ -708,7 +706,7 @@ namespace AntdUI
         /// <summary>
         /// 筛选后的记录
         /// </summary>
-        public object[]? Records { get; internal set; }
+        public object[] Records { get; internal set; }
     }
 
     public class TableFilterPopupEndEventArgs : TableFilterDataChangedEventArgs
