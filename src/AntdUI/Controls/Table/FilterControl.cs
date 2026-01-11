@@ -24,13 +24,16 @@ namespace AntdUI
 
         IList<object>? CustomSource;
         bool realTime = false;
-        public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource)
+        int offsetX, offsetY;
+        public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource, int offsetx, int offsety)
         {
             InitializeComponent();
             Font = font;
             _table = table;
             _column = currentColumn;
             CustomSource = customSource;
+            offsetX = offsetx;
+            offsetY = offsety;
             realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
@@ -249,7 +252,7 @@ namespace AntdUI
                 {
                     if (it.COLUMN.Key == _column.Key && it is Table.TCellColumn col)
                     {
-                        layered.LoadOffset(col.rect_filter);
+                        layered.LoadOffset(new System.Drawing.Rectangle(col.rect_filter.X + offsetX, col.rect_filter.Y + offsetY, col.rect_filter.Width, col.rect_filter.Height));
                         return;
                     }
                 }
