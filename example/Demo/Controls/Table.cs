@@ -261,7 +261,7 @@ namespace Demo.Controls
             };
         }
 
-        string FormatSummaryStr(int count, string id, string text) => string.Format(AntdUI.Localization.Get("Table.Data.FormatSummary", $"共{0}种{1}"), count, AntdUI.Localization.Get("Table.Column." + id, text));
+        string FormatSummaryStr(int count, string id, string text) => string.Format(AntdUI.Localization.Get("Table.Data.FormatSummary", "共{0}种{1}"), count, AntdUI.Localization.Get("Table.Column." + id, text));
 
         #endregion
 
