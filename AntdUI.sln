@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33829.357
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{B9AB491E-DDF2-4E3D-97FA-622E36504B91}"
 EndProject
@@ -18,6 +18,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FontTest", "example\FontTest\FontTest.csproj", "{94493153-4FF8-4F33-8589-D72A8563AF52}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntdUI.EmojiFluentFlat", "src\AntdUI.EmojiFluentFlat\AntdUI.EmojiFluentFlat.csproj", "{3A032088-E22D-BFA0-83BC-B0CD61CAD7BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3762ED79-94BC-42B3-A024-E0F1F375BCEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphemeSplitterTest", "test\GraphemeSplitterTest\GraphemeSplitterTest.csproj", "{01ACFED0-8673-06F4-52A8-D45E69339517}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,10 @@ Global
 		{3A032088-E22D-BFA0-83BC-B0CD61CAD7BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A032088-E22D-BFA0-83BC-B0CD61CAD7BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A032088-E22D-BFA0-83BC-B0CD61CAD7BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01ACFED0-8673-06F4-52A8-D45E69339517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01ACFED0-8673-06F4-52A8-D45E69339517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01ACFED0-8673-06F4-52A8-D45E69339517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01ACFED0-8673-06F4-52A8-D45E69339517}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +68,7 @@ Global
 		{796C3020-70CB-464D-A67A-66BCC566C6D8} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 		{94493153-4FF8-4F33-8589-D72A8563AF52} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 		{3A032088-E22D-BFA0-83BC-B0CD61CAD7BF} = {5243A57B-3E12-49E1-BA51-CBB5D786193F}
+		{01ACFED0-8673-06F4-52A8-D45E69339517} = {3762ED79-94BC-42B3-A024-E0F1F375BCEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B151716-3D07-4DA4-8C4D-2D2BBE164EAA}

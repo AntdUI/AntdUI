@@ -1,4 +1,4 @@
-[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)d)
+[Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
 Built in AntDesign color algorithm
 
@@ -6,75 +6,86 @@ Built in AntDesign color algorithm
 
 ---
 
-Default brand color
+## Default Brand Colors
 
-mode|HEX|
-:--:|:--:|
-Light|#1677FF|
-Dark|#1668DC|
+| Mode | HEX |
+| :--: | :--: |
+| Light | #1677FF |
+| Dark | #1668DC |
 
-### method
+---
 
-Name | Description | Parameters | Auto Color Matching |
-:--|:--|:--|:--:|
-**SetPrimary** | Set brand color | Color primary |✅|
-**SetSuccess** | Set success color | Color success |✅|
-**SetWarning** | Set warning color | Color warning |✅|
-**SetError** | Set error color | Color error |✅|
-**SetInfo** | Set info color | Color info |✅|
+## Theme Color Customization
 
+### 1. Smart Color System Generation (Recommended)
 
-#### Custom Theme
+By setting base colors through the following methods, the system will **automatically calculate and generate a complete color system** including hover, pressed, and other state variations, ensuring visual consistency:
 
-> Global setting theme color
+| Method | Description | Parameters | Auto Color System |
+| :-- | :-- | :-- | :--: |
+| **SetPrimary** | Set brand primary color | Color primary | ✅ |
+| **SetSuccess** | Set success color | Color success | ✅ |
+| **SetWarning** | Set warning color | Color warning | ✅ |
+| **SetError** | Set error color | Color error | ✅ |
+| **SetInfo** | Set info color | Color info | ✅ |
 
-``` csharp
-AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154));
-```
-
-> Set a separate theme color for the Button
+#### Usage Example
 
 ``` csharp
-AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154), "Button");
-```
-
-#### Current theme setting brand color
-
-``` csharp
+// Automatically generates a complete brand color system (including hover, pressed states)
 AntdUI.Style.SetPrimary(Color.FromArgb(0, 173, 154));
 ```
 
-#### Enable dark mode
+### 2. Single Color Value Setting
 
-> Window background and font color need to be set by oneself
+The following method **only sets a single color value** and does not automatically generate a color system, suitable for scenarios where precise control over specific colors is needed:
+
+#### Global Single Color Value Setting
 
 ``` csharp
-AntdUI.Config.IsDark = true;
+// Only sets a single primary color value, no color system generated
+AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154));
 ```
 
-#### Retrieve color card database
+#### Component-Specific Color Value Setting
 
 ``` csharp
-var primary = AntdUI.Style.Db.Primary;// Get the current theme brand color
+// Only sets a single primary color value for Button component, no color system generated
+AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154), "Button");
 ```
 
-#### Color card configuration file
+### 3. Color System Configuration File
 
-> Suggest using HEX format
+Batch set colors through configuration files, **HEX format is recommended**:
 
 ``` csharp
-var dir = new Dictionary<string, string> {
-    { "Primary", "#1677FF" },
-    { "PrimaryButton", "#1677FF" } // Set a separate theme color for the Button
+var colorConfig = new Dictionary<string, string> {
+    { "Primary", "#ED4192" },          // Brand primary color
+    { "PrimaryButton", "#E0282E" },    // Primary color for Button only
+    { "Success", "#52C41A" },          // Success color
+    { "Warning", "#FAAD14" },          // Warning color
+    { "Error", "#F5222D" },            // Error color
+    { "Info", "#1890FF" }              // Info color
 };
-AntdUI.Style.LoadCustom(dir);
+AntdUI.Style.LoadCustom(colorConfig);
 ```
 
 ---
 
-### Theme Switching Configuration
+## Theme Mode Management
 
-#### 1. Global Theme Configuration
+### 1. Enable Dark Mode
+
+> After enabling dark mode, window background and font colors need to be set manually
+
+``` csharp
+// Enable dark mode
+AntdUI.Config.IsDark = true;
+```
+
+### 2. Theme Switching Configuration
+
+#### Global Theme Configuration
 
 > Set global theme switching configuration in `Program.cs`
 
@@ -85,7 +96,7 @@ AntdUI.Config.Theme()
     .Light("#fff", "#000"); // Light mode background and text color
 ```
 
-#### 2. Window Theme Configuration
+#### Window Theme Configuration
 
 > Windows based on `AntdUI.BaseForm` can customize theme switching configuration
 
@@ -114,7 +125,7 @@ public partial class Form1 : AntdUI.BaseForm
 }
 ```
 
-#### 3. Theme Switching Configuration Methods
+#### Theme Switching Configuration Methods
 
 | Method | Description | Parameters |
 | :-- | :-- | :-- |
@@ -126,23 +137,35 @@ public partial class Form1 : AntdUI.BaseForm
 | **Light** | Set light mode callback | Action call |
 | **Dark** | Set dark mode callback | Action call |
 
+---
 
-### Static Help Class
+## Color Tools
 
-#### color conversion
+### Access Color System Database
 
-Name | Description | Return Value | Parameters |
-:--|:--|:--|:--|
-**ToHSV** | Color to HSV | HSV | Color color |
-**HSVToColor** | HSV to Color | Color | HSV hsv, float alpha = 1 |
-**HSVToColor** | HSV to Color | Color | float hue, float saturation, float value, float alpha = 1 |
+``` csharp
+// Get current theme's color systems
+var primaryPalette = AntdUI.Style.Db.Primary; // Brand primary color system
+var successPalette = AntdUI.Style.Db.Success; // Success color system
+var warningPalette = AntdUI.Style.Db.Warning; // Warning color system
+var errorPalette = AntdUI.Style.Db.Error;     // Error color system
+var infoPalette = AntdUI.Style.Db.Info;       // Info color system
+```
+
+### Color Conversion Methods
+
+| Method | Description | Return Value | Parameters |
+| :-- | :-- | :-- | :-- |
+| **ToHSV** | Color to HSV | HSV | Color color |
+| **HSVToColor** | HSV to Color | Color | HSV hsv, float alpha = 1 |
+| **HSVToColor** | HSV to Color | Color | float hue, float saturation, float value, float alpha = 1 |
 ||||
-**ToHSL** | Color to HSL | HSL | Color color |
-**HSLToColor** | HSL to Color | Color | HSL hsl, float alpha = 1 |
-**HSLToColor** | HSL to Color | Color | float hue, float saturation, float lightness, float alpha = 1 |
+| **ToHSL** | Color to HSL | HSL | Color color |
+| **HSLToColor** | HSL to Color | Color | HSL hsl, float alpha = 1 |
+| **HSLToColor** | HSL to Color | Color | float hue, float saturation, float lightness, float alpha = 1 |
 ||||
-**ToColor** | HEX to RGB | Color | string hex |
-**ToHex** | RGB to HEX | string | Color color |
+| **ToColor** | HEX to RGB | Color | string hex |
+| **ToHex** | RGB to HEX | string | Color color |
 ||||
-**rgba** | | Color | int r, int g, int b, float alpha = 1 |
-**rgba** | | Color | Color color, float alpha = 1 |
+| **rgba** | Convert to color | Color | int r, int g, int b, float alpha = 1 |
+| **rgba** | Convert to color | Color | Color color, float alpha = 1 |

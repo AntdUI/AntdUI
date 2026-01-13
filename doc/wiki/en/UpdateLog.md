@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.11` 2026-01-13
+
+- ➕ Table SelectedIndexsReal
+- ➕ TextChatItem Time
+- ➕ Input global cache
+- ✍️ Table filter misalignment
+- ✍️ Table enhanced method concurrency exception
+- ✍️ Table filter misalignment under stacked headers
+- ✍️ Table no data after clearing filter
+- ✍️ Table filter greater than less than judgment
+- ✍️ Modal title blocked by close button
+- ✍️ Grapheme cluster Emoji sticking
+- ✍️ DrawText exception
+
 ### `2.2.10` 2026-01-08
 
 - ➕ LabelLed
