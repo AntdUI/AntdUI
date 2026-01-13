@@ -66,18 +66,29 @@ namespace AntdUI
         /// 获取筛选数据 (无筛选数据时返回当前视图数据)
         /// </summary>
         /// <returns>筛选后的数据对象数组（注意：返回的是原始数据对象的引用）</returns>
-        public object[]? FilterList()
+        public object[] FilterList() => FilterList(IFilterList());
+        internal object[] FilterList(IRow[]? row)
         {
-            var filteredRows = IFilterList();
-            if (filteredRows == null) return null;
-            var data = new List<object>(filteredRows.Length);
-            foreach (var it in filteredRows) data.Add(it.record);
+            if (row == null)
+            {
+                if (dataTmp == null) return new object[0];
+                var list = new List<object>(dataTmp.RowsCache.Length);
+                foreach (var it in dataTmp.RowsCache) list.Add(it.record);
+                return list.ToArray();
+            }
+            var data = new List<object>(row.Length);
+            foreach (var it in row) data.Add(it.record);
             return data.ToArray();
         }
 
         public IRow[]? IFilterList()
         {
-            if (dataTmp == null || columns == null) return null;
+            if (dataTmp == null) return null;
+            return IFilterList(dataTmp);
+        }
+        internal IRow[]? IFilterList(TempTable dataTmp)
+        {
+            if (columns == null) return null;
             var dir = new Dictionary<string, List<object?>>(columns.Count);
             foreach (var col in columns)
             {
@@ -131,8 +142,9 @@ namespace AntdUI
                 dataTmp.ClearFilter();
                 return;
             }
-            dataTmp.rowsFilter = IFilterList();
-            FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(FilterList()));
+            var tmp = IFilterList(dataTmp);
+            dataTmp.rowsFilter = tmp;
+            OnFilterDataChanged(FilterList(tmp));
             OnUpdateSummaries();
             if (LoadLayout()) Invalidate();
         }

@@ -135,6 +135,18 @@ namespace AntdUI.Chat
         [Description("点击图片使能"), Category("行为"), DefaultValue(false)]
         public bool EnabledClickImage { get; set; }
 
+        /// <summary>
+        /// 仅焦点项才显示时间
+        /// </summary>
+        [Description("仅焦点项才显示时间"), Category("行为"), DefaultValue(false)]
+        public bool ShowTimeFocused { get; set; }
+
+        /// <summary>
+        /// 焦点消息项
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IChatItem? FocusedChatItem { get; protected set; }
+
         #endregion
 
         #region 方法
@@ -245,6 +257,7 @@ namespace AntdUI.Chat
                         using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(ChatList), ColorScheme)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
+                            if (ShowTimeFocused && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
                         }
                         if (text.Me)
                         {
@@ -439,16 +452,13 @@ namespace AntdUI.Chat
                         if (it is TextChatItem text)
                         {
                             text.SelectionLength = 0;
-                            if (e.Button == MouseButtons.Left)
+                            if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) mouseDT = 2;
+                            else if (text.ContainsRead(e.X, e.Y, 0, scrolly))
                             {
-                                if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) mouseDT = 2;
-                                else if (text.ContainsRead(e.X, e.Y, 0, scrolly))
-                                {
-                                    mouseDownMove = false;
-                                    mouseDT = 1;
-                                    oldMouseDown = e.Location;
-                                    text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
-                                }
+                                mouseDownMove = false;
+                                mouseDT = 1;
+                                oldMouseDown = e.Location;
+                                text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
                             }
                         }
                         OnItemClick(it, e);
@@ -465,9 +475,11 @@ namespace AntdUI.Chat
             int scrolly = ScrollBar.Value;
             if (mouseDT == 1 && mouseDown is TextChatItem textChatItem)
             {
+                FocusedChatItem = textChatItem;
+                if (ShowTimeFocused) Invalidate(textChatItem.rect);
                 int cx = e.X - oldMouseDown.X, cy = e.Y - oldMouseDown.Y;
                 if (mouseDownMove) OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy);
-                else
+                else if (e.Button == MouseButtons.Left)
                 {
                     int threshold = (int)(Config.TouchThreshold * Dpi);
                     if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold)
@@ -487,8 +499,10 @@ namespace AntdUI.Chat
                 {
                     if (it.show && it.Contains(e.Location, 0, scrolly))
                     {
+                        count++;
                         if (it is TextChatItem text)
                         {
+                            FocusedChatItem = text;
                             if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) hand++;
                             else if (text.ContainsRead(e.X, e.Y, 0, scrolly))
                             {
@@ -1086,6 +1100,12 @@ namespace AntdUI.Chat
         [Description("本人"), Category("行为"), DefaultValue(false)]
         public bool Me { get; set; }
 
+        /// <summary>
+        /// 时间
+        /// </summary>
+        [Description("时间"), Category("数据"), DefaultValue(null)]
+        public string? Time { get; set; }
+
         Image? _icon;
         /// <summary>
         /// 图标
@@ -1204,6 +1224,12 @@ namespace AntdUI.Chat
             rect_text = new Rectangle(rect_read.X + spilt, rect_read.Y + spilt, msglen.Width - spilt2, msglen.Height - spilt2);
 
             foreach (var it in cache_font) it.SetOffset(rect_text.X, rect_text.Y);
+            var timeText = Time;
+            if (timeText != null)
+            {
+                var size_time = g.MeasureString(timeText, font);
+                rect_time = new Rectangle(Me ? rect_read.Left : rect_read.Right - size_time.Width, rect_name.Top, size_time.Width, size_time.Height);
+            }
 
             return rect.Height;
         }
@@ -1212,6 +1238,7 @@ namespace AntdUI.Chat
         internal Rectangle rect_name { get; set; }
         internal Rectangle rect_text { get; set; }
         internal Rectangle rect_icon { get; set; }
+        internal Rectangle rect_time { get; set; }
 
         internal bool ContainsRead(int x, int y, int sx, int sy) => rect_text.Contains(new Point(x + sx, y + sy));
         internal bool ContainsReadIcon(int x, int y, int sx, int sy) => rect_icon.Contains(new Point(x + sx, y + sy));
@@ -1315,6 +1342,18 @@ namespace AntdUI.Chat
         public TextChatItem SetTag(object? value)
         {
             Tag = value;
+            return this;
+        }
+
+        public TextChatItem SetTime(DateTime value)
+        {
+            if (value.ToString("yyyyMMdd") == DateTime.Now.ToString("yyyyMMdd")) Time = value.ToString("HH:mm:ss");
+            else Time = value.ToString("yyyy-MM-dd HH:mm:ss");
+            return this;
+        }
+        public TextChatItem SetTime(string? value)
+        {
+            Time = value;
             return this;
         }
 

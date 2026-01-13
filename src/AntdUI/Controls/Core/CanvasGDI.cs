@@ -596,8 +596,8 @@ namespace AntdUI.Core
             }
             else
             {
-                bool wrap = format.HasFlag(StringFormatFlags.NoWrap);
-                bool ellipsis = format.HasFlag(StringTrimming.EllipsisCharacter);
+                bool wrap = format.HasFlag(FormatFlags.NoWrap);
+                bool ellipsis = format.HasFlag(FormatFlags.EllipsisCharacter);
 
                 int y;
                 if (format.HasFlag(FormatFlags.VerticalCenter)) y = rect.Y + (rect.Height - sizeT.Height) / 2;

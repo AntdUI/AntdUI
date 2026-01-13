@@ -24,13 +24,16 @@ namespace AntdUI
 
         IList<object>? CustomSource;
         bool realTime = false;
-        public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource)
+        int offsetX, offsetY;
+        public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource, int offsetx, int offsety)
         {
             InitializeComponent();
             Font = font;
             _table = table;
             _column = currentColumn;
             CustomSource = customSource;
+            offsetX = offsetx;
+            offsetY = offsety;
             realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
@@ -249,7 +252,7 @@ namespace AntdUI
                 {
                     if (it.COLUMN.Key == _column.Key && it is Table.TCellColumn col)
                     {
-                        layered.LoadOffset(col.rect_filter);
+                        layered.LoadOffset(new System.Drawing.Rectangle(col.rect_filter.X + offsetX, col.rect_filter.Y + offsetY, col.rect_filter.Width, col.rect_filter.Height));
                         return;
                     }
                 }
@@ -381,45 +384,58 @@ namespace AntdUI
                 };
             }
 
-            // 处理int?
-            if (TryGetNullableValue(val, out int intVal) && TryGetNullableValue(value, out int intValue)) return CompareNumeric(intVal, intValue, condition);
-
-            // 处理double?
-            if (TryGetNullableValue(val, out double doubleVal) && TryGetNullableValue(value, out double doubleValue)) return CompareNumeric(doubleVal, doubleValue, condition);
-
-            // 处理float?
-            if (TryGetNullableValue(val, out float floatVal) && TryGetNullableValue(value, out float floatValue)) return CompareNumeric(floatVal, floatValue, condition);
-
-            if (TryGetNullableValue(val, out decimal decimalVal) && TryGetNullableValue(value, out decimal decimalValue)) return CompareNumeric(decimalVal, decimalValue, condition);
-
-
-            // 处理bool?
-            if (TryGetNullableValue(val, out bool boolVal) && TryGetNullableValue(value, out bool boolValue))
+            // 处理int
+            if (TryGetValue(val, out int intVal))
             {
-                if (condition == FilterConditions.Equal || condition == FilterConditions.NotEqual)
-                {
-                    return condition == FilterConditions.Equal
-                        ? boolVal == boolValue
-                        : boolVal != boolValue;
-                }
-                return false; // bool仅支持Equal/NotEqual
+                if (TryGetValue(value, out int intValue)) return CompareNumeric(intVal, intValue, condition);
+                else if (int.TryParse(value.ToString(), out intValue)) return CompareNumeric(intVal, intValue, condition);
             }
 
-            // 处理DateTime?
-            if (TryGetNullableValue(val, out DateTime dateTimeVal) && TryGetNullableValue(value, out DateTime dateTimeValue)) return CompareDateTime(dateTimeVal, dateTimeValue, condition);
+            // 处理double
+            if (TryGetValue(val, out double doubleVal))
+            {
+                if (TryGetValue(value, out double doubleValue)) return CompareNumeric(doubleVal, doubleValue, condition);
+                else if (double.TryParse(value.ToString(), out doubleValue)) return CompareNumeric(doubleVal, doubleValue, condition);
+            }
 
+            // 处理float
+            if (TryGetValue(val, out float floatVal))
+            {
+                if (TryGetValue(value, out float floatValue)) return CompareNumeric(floatVal, floatValue, condition);
+                else if (float.TryParse(value.ToString(), out floatValue)) return CompareNumeric(floatVal, floatValue, condition);
+            }
+
+            // 处理decimal
+            if (TryGetValue(val, out decimal decimalVal))
+            {
+                if (TryGetValue(value, out decimal decimalValue)) return CompareNumeric(decimalVal, decimalValue, condition);
+                else if (decimal.TryParse(value.ToString(), out decimalValue)) return CompareNumeric(decimalVal, decimalValue, condition);
+            }
+
+            // 处理bool
+            if (TryGetValue(val, out bool boolVal))
+            {
+                if (TryGetValue(value, out bool boolValue)) return CompareBool(boolVal, boolValue, condition);
+                else if (bool.TryParse(value.ToString(), out boolValue)) return CompareBool(boolVal, boolValue, condition);
+            }
+
+            // 处理DateTime
+            if (TryGetValue(val, out DateTime dateTimeVal))
+            {
+                if (TryGetValue(value, out DateTime dateTimeValue)) return CompareDateTime(dateTimeVal, dateTimeValue, condition);
+                else if (DateTime.TryParse(value.ToString(), out dateTimeValue)) return CompareDateTime(dateTimeVal, dateTimeValue, condition);
+            }
 
             // 处理string
             if (val is string strVal && value is string strValue) return CompareString(strVal, strValue, condition);
 
             // 兜底处理 - 尝试转换为字符串
-            string valStr = val.ToString() ?? string.Empty;
-            string valueStr = value.ToString() ?? string.Empty;
+            string valStr = val.ToString() ?? string.Empty, valueStr = value.ToString() ?? string.Empty;
             return CompareString(valStr, valueStr, condition);
         }
 
         // 安全获取可空类型值的辅助方法
-        private static bool TryGetNullableValue<T>(object obj, out T value) where T : struct
+        private static bool TryGetValue<T>(object obj, out T value) where T : struct
         {
             value = default;
 
@@ -455,8 +471,7 @@ namespace AntdUI
         private static bool CompareNumeric<T>(T val, T value, FilterConditions condition) where T : IComparable<T>
         {
             // 验证条件是否适用于数值类型
-            if (condition is FilterConditions.Contain or FilterConditions.NotContain)
-                return false;
+            if (condition is FilterConditions.Contain or FilterConditions.NotContain) return false;
 
             int comparison = val.CompareTo(value);
             return condition switch
@@ -470,11 +485,22 @@ namespace AntdUI
             };
         }
 
+        private static bool CompareBool(bool val, bool value, FilterConditions condition)
+        {
+            // bool仅支持Equal/NotEqual
+            if (condition == FilterConditions.Equal || condition == FilterConditions.NotEqual)
+            {
+                return condition == FilterConditions.Equal
+                    ? val == value
+                    : val != value;
+            }
+            return false;
+        }
+
         private static bool CompareDateTime(DateTime val, DateTime value, FilterConditions condition)
         {
             // 验证条件是否适用于日期类型
-            if (condition is FilterConditions.Contain or FilterConditions.NotContain)
-                return false;
+            if (condition is FilterConditions.Contain or FilterConditions.NotContain) return false;
 
             int comparison = val.CompareTo(value);
             return condition switch

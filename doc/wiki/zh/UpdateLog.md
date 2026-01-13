@@ -1,5 +1,19 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.11` 2026-01-13
+
+- ➕ Table SelectedIndexsReal
+- ➕ TextChatItem Time
+- ➕ Input 全局缓存
+- ✍️ Table 筛选错位
+- ✍️ Table 增强方法并发异常
+- ✍️ Table 筛选堆叠表头下错位
+- ✍️ Table 清空筛选后无数据
+- ✍️ Table 筛选大于小于判断
+- ✍️ Modal 标题被关闭按钮遮挡
+- ✍️ 字符簇 Emoji 粘连
+- ✍️ DrawText 异常
+
 ### `2.2.10` 2026-01-08
 
 - ➕ LabelLed

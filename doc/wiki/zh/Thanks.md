@@ -14,10 +14,10 @@
 
 | 项目分类 | 项目名称 | 开源协议 | 项目地址 |
 | :-- | :-- | :-- | :-- |
-| Input 控件灵感 | **STTextBox** | MIT License | <br>Gitee: [https://gitee.com/DebugST/STTextBox](https://gitee.com/DebugST/STTextBox)<br>GitHub: [https://github.com/DebugST/STTextBox](https://github.com/DebugST/STTextBox) |
-| SVG 代码 | **SVG.NET** | MS-PL License | <br>GitHub: [https://github.com/svg-net/SVG](https://github.com/svg-net/SVG) |
-| Win32 部分 | **Vanara** | MIT License | <br>GitHub: [https://github.com/dahall/Vanara](https://github.com/dahall/Vanara) |
-| 日历中的农历 | **ChineseCalendar** | MIT License | <br>Gitee: [https://gitee.com/lipz89/ChineseCalendar](https://gitee.com/lipz89/ChineseCalendar) |
+| Input 控件灵感 | **STTextBox** | MIT License | Gitee: [https://gitee.com/DebugST/STTextBox](https://gitee.com/DebugST/STTextBox) <br> GitHub: [https://github.com/DebugST/STTextBox](https://github.com/DebugST/STTextBox) |
+| SVG 代码 | **SVG.NET** | MS-PL License | GitHub: [https://github.com/svg-net/SVG](https://github.com/svg-net/SVG) |
+| Win32 部分 | **Vanara** | MIT License | GitHub: [https://github.com/dahall/Vanara](https://github.com/dahall/Vanara) |
+| 日历中的农历 | **ChineseCalendar** | MIT License | Gitee: [https://gitee.com/lipz89/ChineseCalendar](https://gitee.com/lipz89/ChineseCalendar) |
 
 #### 采用 MIT 协议的项目
 

@@ -14,10 +14,10 @@ Thanks to the following open source projects for their inspiration and code:
 
 | Project Category | Project Name | License | Project Address |
 | :-- | :-- | :-- | :-- |
-| Input Control Inspiration | **STTextBox** | MIT License | <br>Gitee: [https://gitee.com/DebugST/STTextBox](https://gitee.com/DebugST/STTextBox)<br>GitHub: [https://github.com/DebugST/STTextBox](https://github.com/DebugST/STTextBox) |
-| SVG Code | **SVG.NET** | MS-PL License | <br>GitHub: [https://github.com/svg-net/SVG](https://github.com/svg-net/SVG) |
-| Win32 Parts | **Vanara** | MIT License | <br>GitHub: [https://github.com/dahall/Vanara](https://github.com/dahall/Vanara) |
-| Lunar Calendar | **ChineseCalendar** | MIT License | <br>Gitee: [https://gitee.com/lipz89/ChineseCalendar](https://gitee.com/lipz89/ChineseCalendar) |
+| Input Control Inspiration | **STTextBox** | MIT License | Gitee: [https://gitee.com/DebugST/STTextBox](https://gitee.com/DebugST/STTextBox) <br> GitHub: [https://github.com/DebugST/STTextBox](https://github.com/DebugST/STTextBox) |
+| SVG Code | **SVG.NET** | MS-PL License | GitHub: [https://github.com/svg-net/SVG](https://github.com/svg-net/SVG) |
+| Win32 Parts | **Vanara** | MIT License | GitHub: [https://github.com/dahall/Vanara](https://github.com/dahall/Vanara) |
+| Lunar Calendar | **ChineseCalendar** | MIT License | Gitee: [https://gitee.com/lipz89/ChineseCalendar](https://gitee.com/lipz89/ChineseCalendar) |
 
 #### Projects Using MIT License
 
