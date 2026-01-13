@@ -199,100 +199,55 @@ namespace AntdUI
         static bool ShouldBreak(int nRightType, List<int> lstHistoryBreakType)
         {
             int nLeftType = lstHistoryBreakType[lstHistoryBreakType.Count - 1];
-            // The urles from: https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules
-            // ÷    Boundary (allow break here)
-            // ×    No boundary(do not allow break here)
-            // GB*  LeftChar_Property (÷ | ×) RightChar_Property
 
-            // Break at the start and end of text, unless the text is empty.
-            // GB1 	sot     ÷   Any
-            // GB2 	Any     ÷   eot
-            // for GB1 and GB2 not need code
-
-            // Do not break between a CR and LF. Otherwise, break before and after controls.
-            // GB3  CR × LF
-            // GB4  (Control | CR | LF) ÷
-            // GB5  ÷ (Control | CR | LF)
+            // GB3: CR × LF (不换行)
             if (nLeftType == CR && nRightType == LF) return false;
-            if (nLeftType == Control || nLeftType == CR || nLeftType == LF) return true;
-            if (nRightType == Control || nRightType == CR || nRightType == LF) return true;
 
-            // Do not break Hangul syllable sequences.
-            // GB6  L × (L | V | LV | LVT)
-            // GB7  (LV | V) × (V | T)
-            // GB8  (LVT | T) × T
+            // GB4 & GB5: (Control | CR | LF) ÷ and ÷ (Control | CR | LF)
+            if (nLeftType == Control || nLeftType == CR || nLeftType == LF || nRightType == Control || nRightType == CR || nRightType == LF) return true;
+
+            // GB6-GB8: Hangul syllable sequences (不换行)
             if (nLeftType == L && (nRightType == L || nRightType == V || nRightType == LV || nRightType == LVT)) return false;
             if ((nLeftType == LV || nLeftType == V) && (nRightType == V || nRightType == T)) return false;
-            if ((nLeftType == LVT || nLeftType == T) && (nRightType == T)) return false;
+            if ((nLeftType == LVT || nLeftType == T) && nRightType == T) return false;
 
-            // Do not break before extending characters or ZWJ.
-            // GB9  × (Extend | ZWJ)
+            // GB9: × (Extend | ZWJ) (不换行)
             if (nRightType == Extend || nRightType == ZWJ) return false;
 
-            // Do not break before SpacingMarks, or after Prepend characters.
-            // GB9a × SpacingMark
-            // GB9b Prepend ×
+            // GB9a: × SpacingMark (不换行)
             if (nRightType == SpacingMark) return false;
+
+            // GB9b: Prepend × (不换行)
             if (nLeftType == Prepend) return false;
 
-            // Do not break within emoji modifier sequences or emoji zwj sequences.
-            // GB11 \p{Extended_Pictographic} Extend* ZWJ × \p{Extended_Pictographic}
+            // GB11: \p{Extended_Pictographic} Extend* ZWJ × \p{Extended_Pictographic}
             if (nRightType == Extended_Pictographic)
             {
+                // 检查前一个字符是否是ZWJ
                 if (lstHistoryBreakType.Count >= 2 && lstHistoryBreakType[lstHistoryBreakType.Count - 1] == ZWJ)
                 {
-                    bool foundEPPrecedingZWJ = false;
-                    // 从ZWJ前一个字符开始向前查找
-                    for (int i = lstHistoryBreakType.Count - 2; i >= 0; i--)
+                    // 检查ZWJ前面是否有Extended_Pictographic
+                    int i = lstHistoryBreakType.Count - 2;
+                    while (i >= 0 && (lstHistoryBreakType[i] == Extend || lstHistoryBreakType[i] == ZWJ))
                     {
-                        if (lstHistoryBreakType[i] == Extend || lstHistoryBreakType[i] == Extended_Pictographic)
-                        {
-                            if (lstHistoryBreakType[i] == Extended_Pictographic)
-                            {
-                                foundEPPrecedingZWJ = true;
-                                break;
-                            }
-                            continue; // Extend*
-                        }
-                        else break; // 遇到非Extend或EP字符，终止查找
+                        i--;
                     }
-                    if (foundEPPrecedingZWJ) return false; // GB11: \p{Extended_Pictographic} Extend* ZWJ × \p{Extended_Pictographic}
-                }
-
-                // 新增: 处理表情序列的连续Extended_Pictographic
-                // 根据Unicode 17.0.0, 连续的EP有时也不应断开
-                if (lstHistoryBreakType[lstHistoryBreakType.Count - 1] == Extended_Pictographic)
-                {
-                    // 检查是否有ZWJ在历史记录中
-                    for (int i = lstHistoryBreakType.Count - 2; i >= 0; i--)
-                    {
-                        if (lstHistoryBreakType[i] == ZWJ) return false; // ZWJ序列中的EP不应断开
-                        else if (lstHistoryBreakType[i] != Extend && lstHistoryBreakType[i] != Extended_Pictographic)
-                        {
-                            break; // 遇到非相关字符，终止检查
-                        }
-                    }
+                    if (i >= 0 && lstHistoryBreakType[i] == Extended_Pictographic) return false;
                 }
             }
-            // Do not break within emoji flag sequences. That is,
-            // do not break between regional indicator (RI) symbols if there is an odd number of RI characters before the break point.
-            // GB12  sot (RI RI)* RI     ×   RI
-            // GB13  [^RI] (RI RI)* RI   ×   RI
-            //if (nLeftRICount % 2 == 1 && nRightType == Regional_Indicator) return false;
+
+            // GB12-GB13: emoji flag sequences (不换行)
             if (nRightType == Regional_Indicator)
             {
-                int nLeftRICount = 0;
+                int count = 0;
                 for (int i = lstHistoryBreakType.Count - 1; i >= 0; i--)
                 {
-                    if (lstHistoryBreakType[i] != Regional_Indicator)
-                    {
-                        break;
-                    }
-                    nLeftRICount++;
+                    if (lstHistoryBreakType[i] == Regional_Indicator) count++;
+                    else break;
                 }
-                if (nLeftRICount % 2 == 1) return false;
+                if (count % 2 == 1) return false; // 奇数个区域指示符
             }
-            return true;
+            return true; // 默认允许断开
         }
 
         static int GetBreakProperty(int nCodePoint)
@@ -305,10 +260,12 @@ namespace AntdUI
                 case 0x00D4E: return Prepend;              // Lo       MALAYALAM LETTER DOT REPH
                 case 0x110BD: return Prepend;              // Cf       KAITHI NUMBER SIGN
                 case 0x110CD: return Prepend;              // Cf       KAITHI NUMBER SIGN ABOVE
+                case 0x113D1: return Prepend;              // Lo       TULU-TIGALARI REPHA
                 case 0x1193F: return Prepend;              // Lo       DIVES AKURU PREFIXED NASAL SIGN
                 case 0x11941: return Prepend;              // Lo       DIVES AKURU INITIAL RA
                 case 0x11A3A: return Prepend;              // Lo       ZANABAZAR SQUARE CLUSTER-INITIAL LETTER RA
                 case 0x11D46: return Prepend;              // Lo       MASARAM GONDI REPHA
+                case 0x11F02: return Prepend;              // Lo       KAWI SIGN REPHA
                 case 0x0000D: return CR;                   // Cc       <control-000D>
                 case 0x0000A: return LF;                   // Cc       <control-000A>
                 case 0x000AD: return Control;              // Cf       SOFT HYPHEN
