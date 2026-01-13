@@ -1011,6 +1011,42 @@ namespace AntdUI
 
         #region 方法
 
+        #region 数据
+
+        /// <summary>
+        /// 选中真实行
+        /// </summary>
+        public int[] SelectedIndexsReal()
+        {
+            if (SortData == null || selectedIndex.Length < 1) return selectedIndex;
+            if (selectedIndex.Length == 1 && selectedIndex[0] == 0) return selectedIndex;
+            var list = new List<int>(SortData.Length);
+            foreach (var it in selectedIndex) list.Add(SortData[it - 1] + 1);
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// 选中真实行数据
+        /// </summary>
+        public object[] SelectedsReal()
+        {
+            if (rows == null || SortData == null || selectedIndex.Length < 1) return new object[0];
+            if (selectedIndex.Length == 1 && selectedIndex[0] == 0) return new object[0];
+            var dir = new Dictionary<int, object>(rows.Length);
+            foreach (var it in rows)
+            {
+                if (it.INDEX_REAL > -1) dir.Add(it.INDEX_REAL, it.RECORD);
+            }
+            var list = new List<object>(SortData.Length);
+            foreach (var it in selectedIndex)
+            {
+                if (dir.TryGetValue((SortData[it - 1]), out var r)) list.Add(r);
+            }
+            return list.ToArray();
+        }
+
+        #endregion
+
         /// <summary>
         /// 刷新界面
         /// </summary>
@@ -1458,9 +1494,7 @@ namespace AntdUI
             if (SortData == null)
             {
                 if (dataTmp == null || dataTmp.rows.Length == 0) return new int[0];
-                var list = new int[dataTmp.rows.Length];
-                for (int i = 0; i < dataTmp.rows.Length; i++) list[i] = i;
-                return list;
+                return dataTmp.GetInts();
             }
             else return SortData;
         }
@@ -1481,18 +1515,8 @@ namespace AntdUI
         public object[] SortList()
         {
             if (dataTmp == null || dataTmp.rows.Length == 0) return new object[0];
-            if (SortData == null)
-            {
-                var list = new object[dataTmp.rows.Length];
-                for (int i = 0; i < dataTmp.rows.Length; i++) list[i] = dataTmp.rows[i].record;
-                return list;
-            }
-            else
-            {
-                var list = new List<object>(dataTmp.rows.Length);
-                foreach (var i in SortData) list.Add(dataTmp.rows[i].record);
-                return list.ToArray();
-            }
+            if (SortData == null) return dataTmp.GetRecord();
+            else return dataTmp.GetRecord(SortData);
         }
 
         /// <summary>
@@ -1506,14 +1530,19 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
                 return;
             }
-            if (dataTmp == null || dataTmp.rows.Length == 0) return;
-            var list = new List<int>(dataTmp.rows.Length);
-            foreach (var it in data)
+            if (dataTmp == null) return;
+            lock (dataTmp)
             {
-                int index = SetSortList(it, dataTmp.rows);
-                if (index > -1) list.Add(index);
+                var rows = dataTmp.rows;
+                if (rows.Length == 0) return;
+                var list = new List<int>(rows.Length);
+                foreach (var it in data)
+                {
+                    int index = SetSortList(it, rows);
+                    if (index > -1) list.Add(index);
+                }
+                SortData = list.ToArray();
             }
-            SortData = list.ToArray();
             if (LoadLayout()) Invalidate();
         }
 
@@ -1635,7 +1664,7 @@ namespace AntdUI
 
             if (toString)
             {
-                foreach (var row in dataTmp.rows)
+                dataTmp.ForRow(row =>
                 {
                     var data = new List<object?>(row.cells.Count);
                     foreach (var cell in row.cells)
@@ -1657,11 +1686,11 @@ namespace AntdUI
                         else data.Add(obj);
                     }
                     dt.Rows.Add(data.ToArray());
-                }
+                });
             }
             else
             {
-                foreach (var row in dataTmp.rows)
+                dataTmp.ForRow(row =>
                 {
                     var data = new List<object?>(row.cells.Count);
                     foreach (var cell in row.cells)
@@ -1671,7 +1700,7 @@ namespace AntdUI
                         data.Add(obj);
                     }
                     dt.Rows.Add(data.ToArray());
-                }
+                });
             }
             return dt;
         }

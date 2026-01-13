@@ -134,16 +134,19 @@ namespace AntdUI.Chat
         /// </summary>
         [Description("点击图片使能"), Category("行为"), DefaultValue(false)]
         public bool EnabledClickImage { get; set; }
+
         /// <summary>
         /// 仅焦点项才显示时间
         /// </summary>
         [Description("仅焦点项才显示时间"), Category("行为"), DefaultValue(false)]
-        public bool ShowTimeFocused { get; set;  }
+        public bool ShowTimeFocused { get; set; }
+
         /// <summary>
         /// 焦点消息项
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IChatItem? FocusedChatItem { get; protected set; } = null;
+        public IChatItem? FocusedChatItem { get; protected set; }
+
         #endregion
 
         #region 方法
@@ -254,9 +257,7 @@ namespace AntdUI.Chat
                         using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(ChatList), ColorScheme)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
-                            bool showTime = text.Time != null;
-                            if (ShowTimeFocused) showTime = text.Equals(FocusedChatItem);
-                            if (showTime) g.String(text.TimeText, Font, brush, text.rect_time, SFL);
+                            if (ShowTimeFocused && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
                         }
                         if (text.Me)
                         {
@@ -474,11 +475,11 @@ namespace AntdUI.Chat
             int scrolly = ScrollBar.Value;
             if (mouseDT == 1 && mouseDown is TextChatItem textChatItem)
             {
-                FocusedChatItem= textChatItem;
+                FocusedChatItem = textChatItem;
                 if (ShowTimeFocused) Invalidate(textChatItem.rect);
                 int cx = e.X - oldMouseDown.X, cy = e.Y - oldMouseDown.Y;
                 if (mouseDownMove) OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy);
-                else
+                else if (e.Button == MouseButtons.Left)
                 {
                     int threshold = (int)(Config.TouchThreshold * Dpi);
                     if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold)
@@ -501,7 +502,7 @@ namespace AntdUI.Chat
                         count++;
                         if (it is TextChatItem text)
                         {
-                            FocusedChatItem= text;
+                            FocusedChatItem = text;
                             if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) hand++;
                             else if (text.ContainsRead(e.X, e.Y, 0, scrolly))
                             {
@@ -1103,17 +1104,8 @@ namespace AntdUI.Chat
         /// 时间
         /// </summary>
         [Description("时间"), Category("数据"), DefaultValue(null)]
-        public DateTime? Time {  get; set; }
-        public string? TimeText
-        {
-            get
-            {
-                if (Time == null) return null;
-                string timeText = "HH:mm:ss";
-                if (Time.Value.Date == DateTime.Now.Date)  return Time.Value.ToString(timeText);
-                return Time.Value.ToString($"yyyy-MM-dd {timeText}");
-            }
-        }
+        public string? Time { get; set; }
+
         Image? _icon;
         /// <summary>
         /// 图标
@@ -1232,14 +1224,12 @@ namespace AntdUI.Chat
             rect_text = new Rectangle(rect_read.X + spilt, rect_read.Y + spilt, msglen.Width - spilt2, msglen.Height - spilt2);
 
             foreach (var it in cache_font) it.SetOffset(rect_text.X, rect_text.Y);
-            string? timeText = TimeText;
+            var timeText = Time;
             if (timeText != null)
             {
                 var size_time = g.MeasureString(timeText, font);
                 rect_time = new Rectangle(Me ? rect_read.Left : rect_read.Right - size_time.Width, rect_name.Top, size_time.Width, size_time.Height);
             }
-            else
-                rect_time = Rectangle.Empty;
 
             return rect.Height;
         }
@@ -1354,11 +1344,19 @@ namespace AntdUI.Chat
             Tag = value;
             return this;
         }
-        public TextChatItem SetTime(DateTime? value)
+
+        public TextChatItem SetTime(DateTime value)
+        {
+            if (value.ToString("yyyyMMdd") == DateTime.Now.ToString("yyyyMMdd")) Time = value.ToString("HH:mm:ss");
+            else Time = value.ToString("yyyy-MM-dd HH:mm:ss");
+            return this;
+        }
+        public TextChatItem SetTime(string? value)
         {
             Time = value;
             return this;
         }
+
         #endregion
 
         public void DisposeCache()

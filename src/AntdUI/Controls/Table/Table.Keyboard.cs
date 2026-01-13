@@ -17,9 +17,7 @@ namespace AntdUI
                 case Keys.Control | Keys.A:
                     if (MultipleRows && dataTmp != null)
                     {
-                        var list = new int[dataTmp.rows.Length];
-                        for (int i = 0; i < dataTmp.rows.Length; i++) list[i] = (i + 1);
-                        SelectedIndexs = list;
+                        SelectedIndexs = dataTmp.GetInts(1);
                         if (HandShortcutKeys) return true;
                     }
                     break;

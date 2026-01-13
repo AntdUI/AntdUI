@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -206,20 +207,11 @@ namespace AntdUI
                         }
                         else if (code == "del")
                         {
-                            if (obj is int i)
-                            {
-                                if (i >= 0 && i < dataTmp.rows.Length)
-                                {
-                                    var rows = new List<IRow>(dataTmp.rows.Length);
-                                    rows.AddRange(dataTmp.rows);
-                                    rows.RemoveAt(i);
-                                    dataTmp.rows = ChangeList(rows);
-                                    if (LoadLayout()) Invalidate();
-                                }
-                            }
+                            if (obj is int i) DelData(i);
                             else if (obj is string)
                             {
                                 dataTmp.rows = new IRow[0];
+                                SortData = null; // 清空排序数据
                                 if (LoadLayout()) Invalidate();
                             }
                         }
@@ -276,6 +268,7 @@ namespace AntdUI
                     case ListChangedType.Reset:
                         if (dataTmp == null) return;
                         dataTmp.rows = new IRow[0];
+                        SortData = null; // 清空排序数据
                         if (LoadLayout()) Invalidate();
                         break;
                     case ListChangedType.ItemMoved:
@@ -330,17 +323,32 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
             }
         }
-        void BindingItemDeleted(object? sender, int i)
+        void BindingItemDeleted(object? sender, int i) => DelData(i);
+
+        void DelData(int i)
         {
             if (dataTmp == null) return;
-            if (sender is IList list)
+            if (i >= 0 && i < dataTmp.rows.Length)
             {
                 var rows = new List<IRow>(dataTmp.rows.Length);
                 rows.AddRange(dataTmp.rows);
                 rows.RemoveAt(i);
+                DelSortData(dataTmp.rows, i);
                 dataTmp.rows = ChangeList(rows);
                 if (LoadLayout()) Invalidate();
             }
+        }
+        void DelSortData(IRow[] rows, int i_del)
+        {
+            if (SortData == null || i_del < 0 || i_del >= rows.Length) return;
+            var newSortData = new List<int>(rows.Length - 1);
+            foreach (int originalIndex in SortData)
+            {
+                if (originalIndex == i_del) continue;
+                int adjustedIndex = originalIndex > i_del ? originalIndex - 1 : originalIndex;
+                if (adjustedIndex >= 0 && adjustedIndex < rows.Length - 1) newSortData.Add(adjustedIndex);
+            }
+            SortData = newSortData.Count > 0 ? newSortData.ToArray() : null;
         }
 
         int? RealRowIndex(object row, IRow[] rows)
@@ -589,7 +597,13 @@ namespace AntdUI
             public IRow[] rows
             {
                 get => rowsFilter ?? _rowsCache;
-                set => _rowsCache = value;
+                set
+                {
+                    lock (_rowsCache)
+                    {
+                        _rowsCache = value;
+                    }
+                }
             }
 
             /// <summary>
@@ -608,6 +622,62 @@ namespace AntdUI
             /// 数据 - 行
             /// </summary>
             public IRow[]? summary { get; set; }
+
+            public void ForRowI(Action<int> action)
+            {
+                lock (_rowsCache)
+                {
+                    var tmp = rowsFilter ?? _rowsCache;
+                    for (int i = 0; i < tmp.Length; i++) action(i);
+                }
+            }
+            public void ForRow(Action<IRow> action)
+            {
+                lock (_rowsCache)
+                {
+                    var tmp = rowsFilter ?? _rowsCache;
+                    for (int i = 0; i < tmp.Length; i++) action(tmp[i]);
+                }
+            }
+
+            public int[] GetInts(int count = 0)
+            {
+                lock (_rowsCache)
+                {
+                    var tmp = rowsFilter ?? _rowsCache;
+                    var list = new int[tmp.Length];
+                    for (int i = 0; i < tmp.Length; i++) list[i] = (i + count);
+                    return list;
+                }
+            }
+
+            public object[] GetRecord()
+            {
+                lock (_rowsCache)
+                {
+                    var tmp = rowsFilter ?? _rowsCache;
+                    var list = new object[tmp.Length];
+                    for (int i = 0; i < tmp.Length; i++) list[i] = tmp[i].record;
+                    return list;
+                }
+            }
+            public object[] GetRecord(int[] sortData)
+            {
+                lock (_rowsCache)
+                {
+                    var tmp = rowsFilter ?? _rowsCache;
+                    var list = new List<object>(tmp.Length);
+                    foreach (var i in sortData)
+                    {
+                        try
+                        {
+                            list.Add(tmp[i].record);
+                        }
+                        catch { }
+                    }
+                    return list.ToArray();
+                }
+            }
         }
 
         internal class TempiColumn

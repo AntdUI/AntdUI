@@ -467,7 +467,8 @@ namespace AntdUI
                             if (OnFilterPopupBegin(focusColumn, out var customSource, out var fnt, out var filterHeight))
                             {
                                 fnt ??= Font;
-                                var editor = new FilterControl(this, fnt, focusColumn, customSource, col.offsetx, col.offsety);
+                                int tmp_offset = col.offsetx - db.offset_x;
+                                var editor = new FilterControl(this, fnt, focusColumn, customSource, tmp_offset, col.offsety);
                                 if (filterHeight.HasValue) editor.Height = filterHeight.Value;
                                 editor.Set(new Popover.Config(this, editor)
                                 {
@@ -475,7 +476,7 @@ namespace AntdUI
                                     Tag = focusColumn.Filter,
                                     ArrowAlign = TAlign.Bottom,
                                     Font = fnt,
-                                    Offset = new Rectangle(col.rect_filter.X + col.offsetx, col.rect_filter.Y + col.offsety, col.rect_filter.Width, col.rect_filter.Height),
+                                    Offset = new Rectangle(col.rect_filter.X + tmp_offset, col.rect_filter.Y + col.offsety, col.rect_filter.Width, col.rect_filter.Height),
                                     Padding = new Size(6, 6)
                                 }.open());
                             }
