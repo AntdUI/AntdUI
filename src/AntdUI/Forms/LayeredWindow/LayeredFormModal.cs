@@ -192,7 +192,7 @@ namespace AntdUI
 
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
-                    int tmpicon = 0;
+                    int icon_size = g.MeasureString(Config.NullText, fontTitle).Height;
                     if (config.Content is Control control)
                     {
                         Win32.WindowTheme(control, Config.IsDark);
@@ -217,22 +217,23 @@ namespace AntdUI
                             }
                             else
                             {
-                                var sizeTitle = g.MeasureText(config.Title, fontTitle, wp - cpaddingx2);
+                                int wwt = wp - cpaddingx2 - (config.CloseIcon ? icon_size : 0);
+                                var sizeTitle = g.MeasureText(config.Title, fontTitle, wwt);
 
                                 int h = sizeTitle.Height + gap + control.Height + butt_h + cpaddingy2;
 
-                                rectTitle = new Rectangle(paddingx, paddingy, wp - cpaddingx2, sizeTitle.Height + gap);
+                                rectTitle = new Rectangle(paddingx, paddingy, wwt, sizeTitle.Height + gap);
                                 rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                                 Size = new Size(w, h + paddingy * 2);
                             }
                         }
                         else
                         {
-                            var sizeT = g.MeasureString(Config.NullText, fontTitle);
-                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x) - cpaddingx2;
-                            var sizeTitle = g.MeasureText(config.Title, fontTitle, ww);
+                            int icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x) - cpaddingx2,
+                            wwt = ww - (config.CloseIcon ? icon_size : 0);
+                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wwt);
                             int h = sizeTitle.Height + gap + control.Height + butt_h + cpaddingy2;
-                            rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
+                            rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wwt, sizeTitle.Height + gap);
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
                             if (config.UseIconPadding)
                             {
@@ -243,12 +244,7 @@ namespace AntdUI
                             control.Location = new Point(rectContent.X, rectContent.Y);
                             Size = new Size(w, h + paddingy * 2);
                         }
-                        if (config.CloseIcon)
-                        {
-                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Height;
-                            int close_size = tmpicon;
-                            rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
-                        }
+                        if (config.CloseIcon) rect_close = new Rectangle(rectTitle.Right, rectTitle.Y, icon_size, icon_size);
                         control.Location = new Point(rectContent.X, rectContent.Y);
                         control.Size = new Size(rectContent.Width, rectContent.Height);
                     }
@@ -258,8 +254,9 @@ namespace AntdUI
                         var texts = new List<Rectangle>(list.Count);
                         if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
-                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wp - cpaddingx2);
-                            rectTitle = new Rectangle(paddingx, paddingy, wp - cpaddingx2, sizeTitle.Height + gap);
+                            int wwt = wp - cpaddingx2 - (config.CloseIcon ? icon_size : 0);
+                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wwt);
+                            rectTitle = new Rectangle(paddingx, paddingy, wwt, sizeTitle.Height + gap);
 
                             int has_y = paddingy + sizeTitle.Height + gap + cpaddingy, h_temp = 0;
                             foreach (var txt in list)
@@ -277,10 +274,10 @@ namespace AntdUI
                         }
                         else
                         {
-                            var sizeT = g.MeasureString(Config.NullText, fontTitle);
-                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x) - cpaddingx2, h;
-                            var sizeTitle = g.MeasureText(config.Title, fontTitle, ww);
-                            rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
+                            int icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x) - cpaddingx2, h,
+                            wwt = ww - (config.CloseIcon ? icon_size : 0);
+                            var sizeTitle = g.MeasureText(config.Title, fontTitle, wwt);
+                            rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wwt, sizeTitle.Height + gap);
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
                             if (config.UseIconPadding)
                             {
@@ -313,12 +310,7 @@ namespace AntdUI
                             }
                             Size = new Size(w, h + paddingy * 2);
                         }
-                        if (config.CloseIcon)
-                        {
-                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Height;
-                            int close_size = tmpicon;
-                            rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
-                        }
+                        if (config.CloseIcon) rect_close = new Rectangle(rectTitle.Right, rectTitle.Y, icon_size, icon_size);
                         return texts.ToArray();
                     }
                     else
@@ -327,44 +319,40 @@ namespace AntdUI
                         var content = config.Content.ToString();
                         if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
-                            Size sizeTitle = g.MeasureText(config.Title, fontTitle, wp - cpaddingx2), sizeContent = g.MeasureText(content, Font, wp - cpaddingx2);
+                            int wwt = wp - cpaddingx2 - (config.CloseIcon ? icon_size : 0);
+                            Size sizeTitle = g.MeasureText(config.Title, fontTitle, wwt), sizeContent = g.MeasureText(content, Font, wp - cpaddingx2);
                             int h = sizeTitle.Height + gap + sizeContent.Height + butt_h + cpaddingy2;
 
-                            rectTitle = new Rectangle(paddingx, paddingy, wp - cpaddingx2, sizeTitle.Height + gap);
+                            rectTitle = new Rectangle(paddingx, paddingy, wwt, sizeTitle.Height + gap);
                             rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
 
                             Size = new Size(w, h + paddingy * 2);
                         }
                         else
                         {
-                            var sizeT = g.MeasureString(Config.NullText, fontTitle);
-                            int icon_size = tmpicon = sizeT.Height, icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x) - cpaddingx2, h;
+                            int icon_size_x = (int)(icon_size * 0.54F), ww = wp - (icon_size + icon_size_x) - cpaddingx2, h,
+                            wwt = ww - (config.CloseIcon ? icon_size : 0);
                             if (config.UseIconPadding)
                             {
                                 wp = ww + cpaddingx2;
-                                Size sizeTitle = g.MeasureText(config.Title, fontTitle, ww), sizeContent = g.MeasureText(content, Font, ww);
+                                Size sizeTitle = g.MeasureText(config.Title, fontTitle, wwt), sizeContent = g.MeasureText(content, Font, ww);
                                 h = sizeTitle.Height + gap + sizeContent.Height + butt_h + cpaddingy2;
 
-                                rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
+                                rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wwt, sizeTitle.Height + gap);
                                 rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, ww, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             }
                             else
                             {
-                                Size sizeTitle = g.MeasureText(config.Title, fontTitle, ww), sizeContent = g.MeasureText(content, Font, wp - cpaddingx2);
+                                Size sizeTitle = g.MeasureText(config.Title, fontTitle, wwt), sizeContent = g.MeasureText(content, Font, wp - cpaddingx2);
                                 h = sizeTitle.Height + gap + sizeContent.Height + butt_h + cpaddingy2;
 
-                                rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, ww, sizeTitle.Height + gap);
+                                rectTitle = new Rectangle(paddingx + icon_size + icon_size_x, paddingy, wwt, sizeTitle.Height + gap);
                                 rectContent = new Rectangle(paddingx + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             }
                             rectIcon = new Rectangle(paddingx, rectTitle.Y + (rectTitle.Height - icon_size) / 2, icon_size, icon_size);
                             Size = new Size(w, h + paddingy * 2);
                         }
-                        if (config.CloseIcon)
-                        {
-                            if (tmpicon == 0) tmpicon = g.MeasureString(Config.NullText, fontTitle).Height;
-                            int close_size = tmpicon;
-                            rect_close = new Rectangle(rectTitle.Right - close_size, rectTitle.Y, close_size, close_size);
-                        }
+                        if (config.CloseIcon) rect_close = new Rectangle(rectTitle.Right, rectTitle.Y, icon_size, icon_size);
                     }
                     return new Rectangle[0];
                 }
