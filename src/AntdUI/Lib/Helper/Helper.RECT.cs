@@ -1231,5 +1231,44 @@ namespace AntdUI
             }
             return null;
         }
+
+        /// <summary>
+        /// 判断列表项是否需要渲染（只要有部分在可视区域内就返回true）
+        /// </summary>
+        /// <param name="rect">容器可视区域</param>
+        /// <param name="sy">滚动条垂直偏移量</param>
+        /// <param name="item_rect">列表项的原始区域</param>
+        /// <returns>true=需要渲染（有重叠），false=无需渲染（完全不可见）</returns>
+        public static bool IsItemVisible(this Rectangle rect, int sy, Rectangle item_rect) => (item_rect.Y < sy + rect.Height) && (item_rect.Bottom > sy);
+
+        /// <summary>
+        /// 判断列表项是否需要渲染（只要有部分在可视区域内就返回true）
+        /// </summary>
+        /// <param name="rect">容器可视区域</param>
+        /// <param name="sx">滚动条水平偏移量</param>
+        /// <param name="sy">滚动条垂直偏移量</param>
+        /// <param name="item_rect">列表项的原始区域</param>
+        public static bool IsItemVisible(this Rectangle rect, int sx, int sy, Rectangle item_rect) => (item_rect.X < sx + rect.Width) && (item_rect.Right > sx) && (item_rect.Y < sy + rect.Height) && (item_rect.Bottom > sy);
+
+        /// <summary>
+        /// 判断列表项是否需要渲染（只要有部分在可视区域内就返回true）
+        /// </summary>
+        /// <param name="rect">容器可视区域</param>
+        /// <param name="sx">滚动条水平偏移量</param>
+        /// <param name="sy">滚动条垂直偏移量</param>
+        /// <param name="item_rect">列表项的原始区域</param>
+        /// <param name="expand">是否展开</param>
+        /// <param name="expandHeight">展开后高度</param>
+        public static bool IsItemVisibleExpand(this Rectangle rect, int sx, int sy, Rectangle item_rect, bool expand, int expandHeight) => (item_rect.X < sx + rect.Width) && (item_rect.Right > sx) && (item_rect.Y < sy + rect.Height) && ((item_rect.Bottom + (expand ? expandHeight : 0)) > sy);
+
+        /// <summary>
+        /// 判断列表项是否需要渲染（只要有部分在可视区域内就返回true）
+        /// </summary>
+        /// <param name="rect">容器可视区域</param>
+        /// <param name="sy">滚动条垂直偏移量</param>
+        /// <param name="item_rect">列表项的原始区域</param>
+        /// <param name="expand">是否展开</param>
+        /// <param name="expandHeight">展开后高度</param>
+        public static bool IsItemVisibleExpand(this Rectangle rect, int sy, Rectangle item_rect, bool expand, int expandHeight) => (item_rect.Y < sy + rect.Height) && ((item_rect.Bottom + (expand ? expandHeight : 0)) > sy);
     }
 }

@@ -224,7 +224,7 @@ namespace AntdUI.Chat
                 return;
             }
             var g = e.Canvas;
-            float sy = ScrollBar.Value, radius = Dpi * 8F;
+            int sy = ScrollBar.Value, radius = (int)(Dpi * 8F);
             g.TranslateTransform(0, -sy);
             using (var selection = new SolidBrush(SelectionColor))
             using (var selectionme = new SolidBrush(SelectionColorMe))
@@ -245,9 +245,9 @@ namespace AntdUI.Chat
 
         readonly FormatFlags SFL = FormatFlags.Top | FormatFlags.HorizontalCenter;
 
-        void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
+        void PaintItem(Canvas g, IChatItem it, Rectangle rect, int sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
         {
-            it.show = it.rect.Y > sy - rect.Height - it.rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
+            it.show = rect.IsItemVisible(sy, it.rect);
             if (it.show)
             {
                 if (it is TextChatItem text)
@@ -257,7 +257,7 @@ namespace AntdUI.Chat
                         using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(ChatList), ColorScheme)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
-                            if (ShowTimeFocused && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
+                            if (ShowTimeFocused && FocusedChatItem == it && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
                         }
                         if (text.Me)
                         {

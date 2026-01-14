@@ -881,7 +881,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
+                it.show = it.Show && it.Visible && rect.IsItemVisibleExpand(sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
                     if (it.Depth == -1) g.Fill(brush_split, it.Rect);
@@ -900,11 +900,11 @@ namespace AntdUI
                 }
             }
         }
-        void PaintItemExpand(Canvas g, Rectangle rect, float sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush brush_split)
+        void PaintItemExpand(Canvas g, Rectangle rect, int sy, MenuItemCollection items, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, SolidBrush brush_split)
         {
             foreach (var it in items)
             {
-                it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height - (it.Expand ? it.SubHeight : 0) && it.rect.Bottom < sy + rect.Height + it.rect.Height;
+                it.show = it.Show && it.Visible && rect.IsItemVisibleExpand(sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
                     if (it.Depth == -1) g.Fill(brush_split, it.Rect);
@@ -2684,8 +2684,8 @@ namespace AntdUI
 
         #endregion
 
-        internal float SubY { get; set; }
-        internal float SubHeight { get; set; }
+        internal int SubY { get; set; }
+        internal int SubHeight { get; set; }
 
         internal int ExpandHeight { get; set; }
         internal int ExpandRHeight { get; set; }
