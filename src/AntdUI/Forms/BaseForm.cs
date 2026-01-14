@@ -50,7 +50,10 @@ namespace AntdUI
                 if (dark == value) return;
                 dark = value;
                 mode = dark ? TAMode.Dark : TAMode.Light;
-                if (IsHandleCreated) Win32.WindowTheme(this, value);
+                if (IsHandleCreated)
+                {
+                    if (Win32.WindowTheme(this, value)) SetThemeOK(value);
+                }
             }
         }
 
@@ -103,8 +106,10 @@ namespace AntdUI
                 }
                 else SetTheme(themeConfig);
             }
-            if (mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark)) Win32.WindowTheme(this, true);
+            bool dark = mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark);
+            if (Win32.WindowTheme(this, dark, true)) SetThemeOK(dark);
         }
+        protected virtual void SetThemeOK(bool dark) { }
         internal void SetTheme(ThemeConfig themeConfig)
         {
             if (themeConfig.pageheader == null && (themeConfig.headerLight.HasValue || themeConfig.headerDark.HasValue)) themeConfig.pageheader = GetPageHeader(Controls);
