@@ -1538,21 +1538,29 @@ namespace AntdUI
                 var list = new List<int>(rows.Length);
                 foreach (var it in data)
                 {
-                    int index = SetSortList(it, rows);
-                    if (index > -1) list.Add(index);
+                    var index = GetRowIndex(it, rows);
+                    if (index.HasValue) list.Add(index.Value);
                 }
                 SortData = list.ToArray();
             }
             if (LoadLayout()) Invalidate();
         }
 
-        int SetSortList(object it, IRow[] rows)
+        int? GetRowIndex(object it, IRow[] rows)
         {
             for (int i = 0; i < rows.Length; i++)
             {
                 if (rows[i].record == it) return i;
             }
-            return -1;
+            return null;
+        }
+        int? GetRowIndexReal(object record, IRow[] rows)
+        {
+            foreach (var it in rows)
+            {
+                if (it.record == record) return it.i;
+            }
+            return null;
         }
 
         /// <summary>

@@ -395,28 +395,77 @@ namespace AntdUI
         {
             x = CenterX();
             y = TopY();
-            if (collision && ScreenArea.IsTop(x, y))
+            if (collision)
             {
-                y = BottomY();
-                rect_arrow = ArrowBottom(x, y);
+                if (ScreenArea.IsTop(x, y))
+                {
+                    y = BottomY();
+                    if (ScreenArea.IsRight(x, y))
+                    {
+                        x = R();
+                        rect_arrow = ArrowBR(x, y);
+                    }
+                    else if (ScreenArea.IsLeft(x, y))
+                    {
+                        x = L();
+                        rect_arrow = ArrowBL(x, y);
+                    }
+                    else rect_arrow = ArrowBottom(x, y);
+                    return;
+                }
+                else if (ScreenArea.IsRight(x, y))
+                {
+                    x = R();
+                    rect_arrow = ArrowTR(x, y);
+                    return;
+                }
+                else if (ScreenArea.IsLeft(x, y))
+                {
+                    x = L();
+                    rect_arrow = ArrowTL(x, y);
+                    return;
+                }
             }
-            else
-            {
-                inverted = true;
-                rect_arrow = ArrowTop(x, y);
-            }
+            inverted = true;
+            rect_arrow = ArrowTop(x, y);
         }
         void Bottom(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)
         {
             x = CenterX();
             y = BottomY();
-            if (collision && ScreenArea.IsBottom(x, y))
+            if (collision)
             {
-                y = TopY();
-                inverted = true;
-                rect_arrow = ArrowTop(x, y);
+                if (ScreenArea.IsBottom(x, y))
+                {
+                    y = TopY();
+                    inverted = true;
+                    if (ScreenArea.IsRight(x, y))
+                    {
+                        x = R();
+                        rect_arrow = ArrowTR(x, y);
+                    }
+                    else if (ScreenArea.IsLeft(x, y))
+                    {
+                        x = L();
+                        rect_arrow = ArrowTL(x, y);
+                    }
+                    else rect_arrow = ArrowTop(x, y);
+                    return;
+                }
+                else if (ScreenArea.IsRight(x, y))
+                {
+                    x = R();
+                    rect_arrow = ArrowBR(x, y);
+                    return;
+                }
+                else if (ScreenArea.IsLeft(x, y))
+                {
+                    x = L();
+                    rect_arrow = ArrowBL(x, y);
+                    return;
+                }
             }
-            else rect_arrow = ArrowBottom(x, y);
+            rect_arrow = ArrowBottom(x, y);
         }
 
         void Left(bool collision, out int x, out int y, ref bool inverted, out Point[]? rect_arrow)

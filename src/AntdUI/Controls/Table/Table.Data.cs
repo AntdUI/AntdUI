@@ -310,7 +310,7 @@ namespace AntdUI
                 if (row == null) return;
                 if (eq)
                 {
-                    var tmp = RealRowIndex(row, dataTmp.rows);
+                    var tmp = GetRowIndex(row, dataTmp.rows);
                     if (tmp.HasValue) i = tmp.Value;
                 }
                 var cells = GetRow(row, dataTmp.columns.Length);
@@ -324,7 +324,19 @@ namespace AntdUI
             }
         }
         void BindingItemDeleted(object? sender, int i) => DelData(i);
-
+        public int[]? SortDelList(int i)
+        {
+            if (dataTmp == null) return null;
+            if (i >= 0 && i < dataTmp.rows.Length) DelSortData(dataTmp.rows, i);
+            return SortData;
+        }
+        public int[]? SortDelList(object record)
+        {
+            if (dataTmp == null) return null;
+            var i = GetRowIndexReal(record, dataTmp.rows);
+            if (i.HasValue) DelSortData(dataTmp.rows, i.Value);
+            return SortData;
+        }
         void DelData(int i)
         {
             if (dataTmp == null) return;
@@ -338,26 +350,17 @@ namespace AntdUI
                 if (LoadLayout()) Invalidate();
             }
         }
-        void DelSortData(IRow[] rows, int i_del)
+        void DelSortData(IRow[] rows, int i)
         {
-            if (SortData == null || i_del < 0 || i_del >= rows.Length) return;
+            if (SortData == null || i < 0 || i >= rows.Length) return;
             var newSortData = new List<int>(rows.Length - 1);
             foreach (int originalIndex in SortData)
             {
-                if (originalIndex == i_del) continue;
-                int adjustedIndex = originalIndex > i_del ? originalIndex - 1 : originalIndex;
+                if (originalIndex == i) continue;
+                int adjustedIndex = originalIndex > i ? originalIndex - 1 : originalIndex;
                 if (adjustedIndex >= 0 && adjustedIndex < rows.Length - 1) newSortData.Add(adjustedIndex);
             }
             SortData = newSortData.Count > 0 ? newSortData.ToArray() : null;
-        }
-
-        int? RealRowIndex(object row, IRow[] rows)
-        {
-            for (int i = 0; i < rows.Length; i++)
-            {
-                if (rows[i].record == row) return i;
-            }
-            return null;
         }
 
         #endregion
