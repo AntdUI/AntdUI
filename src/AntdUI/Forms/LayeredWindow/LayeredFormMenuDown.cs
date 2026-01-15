@@ -4,7 +4,6 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -45,24 +44,10 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
             Items = LoadLayout(items, point);
-
-            //BUG: 在水平模式（TMenuMode.Horizontal）下，原代码使用了CLocation方法来定位子菜单，但这个方法的定位逻辑导致子菜单与主菜单重叠。
-            //if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow);
-            //else
-            //{
-            //    var screen = Screen.FromPoint(point).WorkingArea;
-            //    int x = point.X + control.Width - rect.X - shadow, y = point.Y + rect.Y + shadow;
-            //    if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + shadow;
-            //    if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + shadow;
-            //    SetLocationO(x, y);
-            //}
-
-            //
             var screen = Screen.FromPoint(point).WorkingArea;
-            int offsetX = control.DropDownOffset.X, offsetY = control.DropDownOffset.Y;
+            int offsetX = (int)(control.DropDownOffset.Width * Dpi), offsetY = (int)(control.DropDownOffset.Height * Dpi);
             int x, y;
-
-            if (control.Mode == TMenuMode.Horizontal)
+            if (control.IsModeHorizontal)
             {
                 // 水平模式：子菜单显示在主菜单项下方
                 x = point.X + rect.X;
@@ -72,12 +57,13 @@ namespace AntdUI
                 if (x + TargetRect.Width > screen.Right) x = point.X + rect.Right - TargetRect.Width;
 
                 // 上下方向判断：计算可用空间并决定显示方向
-                int spaceBelow = screen.Bottom - y - Math.Abs(offsetY);
-                int spaceAbove = point.Y + rect.Y - screen.Top - Math.Abs(offsetY);
-                y = (spaceBelow < TargetRect.Height && spaceAbove > spaceBelow && spaceAbove >= TargetRect.Height)
-                    ? point.Y + rect.Y - TargetRect.Height - Math.Abs(offsetY)  // 向上
-                    : y + offsetY;  // 向下
-
+                int spaceBelow = screen.Bottom - y - offsetY, spaceAbove = point.Y + rect.Y - screen.Top - offsetY;
+                if ((spaceBelow < TargetRect.Height && spaceAbove > spaceBelow && spaceAbove >= TargetRect.Height))
+                {
+                    animateConfig.Inverted = true;
+                    y = point.Y + rect.Y - TargetRect.Height + shadow2 - offsetY; // 向上
+                }
+                else y += offsetY; // 向下
                 x += offsetX;
             }
             else
@@ -87,9 +73,9 @@ namespace AntdUI
                 y = point.Y + rect.Y + shadow + offsetY;
             }
 
-            // 统一边界限制
-            x = Math.Max(screen.Left, Math.Min(x, screen.Right - TargetRect.Width));
-            y = Math.Max(screen.Top, Math.Min(y, screen.Bottom - TargetRect.Height));
+            // 边界限制
+            x = System.Math.Max(screen.Left, System.Math.Min(x, screen.Right - TargetRect.Width));
+            y = System.Math.Max(screen.Top, System.Math.Min(y, screen.Bottom - TargetRect.Height));
 
             SetLocationO(x, y);
             Init();

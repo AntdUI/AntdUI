@@ -115,7 +115,6 @@ namespace AntdUI
                     }
                 }
             }
-            for (int i = 0; i < font_widths.Count; i++) font_widths[i].i = i;
             cache_font = font_widths.ToArray();
             SetStyle();
         }

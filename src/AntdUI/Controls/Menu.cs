@@ -234,6 +234,15 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 菜单类型是否需要弹出下拉
+        /// </summary>
+        public bool IsModeNeedDropDown => IsModeHorizontal || mode == TMenuMode.Vertical;
+        /// <summary>
+        /// 菜单类型是否横向
+        /// </summary>
+        public bool IsModeHorizontal => mode == TMenuMode.Horizontal || mode == TMenuMode.Horizontal_Arrow;
+
+        /// <summary>
         /// 触发下拉的行为
         /// </summary>
         [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Hover)]
@@ -349,7 +358,6 @@ namespace AntdUI
             }
         }
 
-
         #region 下拉
 
         /// <summary>
@@ -373,8 +381,8 @@ namespace AntdUI
         /// <summary>
         /// 下拉菜单偏移量（水平模式下子菜单相对主菜单的偏移）
         /// </summary>
-        [Description("下拉菜单偏移量"), Category("外观"), DefaultValue(typeof(Point), "0, 0")]
-        public Point DropDownOffset { get; set; } = new Point(0, 0);
+        [Description("下拉菜单偏移量"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
+        public Size DropDownOffset { get; set; } = new Size(0, 0);
 
         #endregion
 
@@ -619,6 +627,18 @@ namespace AntdUI
                             rect_r_ico = new Rectangle(rect_r.X + ico_xy, rect_r.Y + ico_xy, ico_size, ico_size);
                         }
                     }
+                    else if (mode == TMenuMode.Horizontal_Arrow)
+                    {
+                        int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : icon_size;
+                        ChangeListHorizontalArrow(rect, g, items!, ref x, icon_size, arrow_size, gap, gap2, divider, sp, sp2, iconsp);
+                        scroll_show = x > rect.Width;
+                        if (scroll_show)
+                        {
+                            rect_r = new Rectangle(rect.Right - rect.Height, rect.Y, rect.Height, rect.Height);
+                            int ico_size = (int)(rect_r.Height * .6F), ico_xy = (rect_r.Height - ico_size) / 2;
+                            rect_r_ico = new Rectangle(rect_r.X + ico_xy, rect_r.Y + ico_xy, ico_size, ico_size);
+                        }
+                    }
                     else
                     {
                         scroll_show = false;
@@ -818,10 +838,65 @@ namespace AntdUI
                         if (it.Visible) x += size + sp;
                     }
                 }
-                if (it.Sub?.Count > 0)
+                if (it.items?.Count > 0) it.SubY = rect.Height; // 子菜单从主菜单底部开始
+            }
+        }
+        void ChangeListHorizontalArrow(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int arrow_size, int gap, int gap2, int divider, int sp, int sp2, int iconsp)
+        {
+            int i = 0;
+            foreach (var it in items)
+            {
+                it.Index = i;
+                i++;
+                it.PARENT = this;
+                if (it is MenuDividerItem)
                 {
-                    it.SubY = rect.Height; // 子菜单从主菜单底部开始
+                    it.SetRectDivider(new Rectangle(rect.X + x, rect.Y, divider, rect.Height));
+                    x += divider + sp;
                 }
+                else
+                {
+                    int width = g.MeasureText(it.Text, it.Font ?? Font).Width;
+                    if (it.HasIcon)
+                    {
+                        int tmp = icon_size + iconsp;
+                        int usew = gap2 + tmp, y = (rect.Height - icon_size) / 2;
+                        if (it.CanExpand)
+                        {
+                            int size = width + gap2 + tmp + sp + arrow_size / 2;
+                            var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
+                            it.ico_rect = new Rectangle(_rect.X + gap, _rect.Y + y, icon_size, icon_size);
+                            it.SetRect(_rect, new Rectangle(_rect.X + gap + tmp, _rect.Y, _rect.Width - usew, _rect.Height), arrow_size, sp);
+                            if (it.Visible) x += size + sp;
+                        }
+                        else
+                        {
+                            int size = width + gap2 + tmp;
+                            var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
+                            it.ico_rect = new Rectangle(_rect.X + gap, _rect.Y + y, icon_size, icon_size);
+                            it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap + tmp, _rect.Y, _rect.Width - usew, _rect.Height));
+                            if (it.Visible) x += size + sp;
+                        }
+                    }
+                    else
+                    {
+                        if (it.CanExpand)
+                        {
+                            int size = width + gap2 + sp + arrow_size / 2;
+                            var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
+                            it.SetRect(_rect, new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height), arrow_size, sp);
+                            if (it.Visible) x += size + sp;
+                        }
+                        else
+                        {
+                            int size = width + gap2;
+                            var _rect = new Rectangle(rect.X + x, rect.Y, size, rect.Height);
+                            it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height));
+                            if (it.Visible) x += size + sp;
+                        }
+                    }
+                }
+                if (it.items?.Count > 0) it.SubY = rect.Height; // 子菜单从主菜单底部开始
             }
         }
 
@@ -1005,7 +1080,7 @@ namespace AntdUI
                     {
                         if (it.CanExpand)
                         {
-                            if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                            if (IsModeNeedDropDown) PaintBack(g, back_active, it.rect, radius);
                             PaintTextIconExpand(g, it, fore_active);
                         }
                         else
@@ -1031,7 +1106,7 @@ namespace AntdUI
                     {
                         if (it.CanExpand)
                         {
-                            if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                            if (IsModeNeedDropDown) PaintBack(g, back_active, it.rect, radius);
                             PaintTextIconExpand(g, it, fore_active);
                         }
                         else
@@ -1056,7 +1131,7 @@ namespace AntdUI
                 {
                     if (it.CanExpand)
                     {
-                        if (mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) PaintBack(g, back_active, it.rect, radius);
+                        if (IsModeNeedDropDown) PaintBack(g, back_active, it.rect, radius);
                         using (var pen = new Pen(fore_active, Dpi * 2))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
@@ -1123,6 +1198,14 @@ namespace AntdUI
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.arr_rect, .4F));
+                    }
+                }
+                else if (mode == TMenuMode.Horizontal_Arrow)
+                {
+                    using (var pen = new Pen(fore, Dpi * 2))
+                    {
+                        pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(-1, .4F));
                     }
                 }
             }
@@ -1266,7 +1349,7 @@ namespace AntdUI
                             {
                                 if (can)
                                 {
-                                    if ((mode == TMenuMode.Horizontal || mode == TMenuMode.Vertical) && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
+                                    if (IsModeNeedDropDown && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
                                     {
                                         if (subForm == null) OpenDropDown(item);
                                         else CloseDropDown();
@@ -2569,8 +2652,8 @@ namespace AntdUI
             }
             else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
 
-            int ur = _rect.Right - icon_size - gap - scx;
-            arr_rect = new Rectangle(ur, _rect.Y + y, icon_size, icon_size);
+            int ur = _rect.Right - arrow_size - gap - scx;
+            arr_rect = new Rectangle(ur, _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
 
             exr = 0;
             if (Button != null)
@@ -2607,6 +2690,16 @@ namespace AntdUI
             arr_rect = new Rectangle(_rect.Right - (arrow_size - sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
             Show = true;
             return usew;
+        }
+        internal void SetRect(Rectangle _rect, Rectangle rect_text, int arrow_size, int sp)
+        {
+            Depth = 0;
+            rect = _rect;
+            txt_rect = rect_text;
+
+            arr_rect = new Rectangle(_rect.Right - (arrow_size + sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
+
+            Show = true;
         }
         internal void SetRectNoArr(Rectangle _rect, Rectangle rect_text)
         {
