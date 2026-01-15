@@ -1521,6 +1521,50 @@ namespace AntdUI
 
         #endregion
 
+        #region 搜索
+
+        /// <summary>
+        /// 搜索筛选
+        /// </summary>
+        /// <param name="search">搜索文本</param>
+        public void Search(string? search)
+        {
+            var old = pauseLayout;
+            PauseLayout = true;
+            if (search == null || string.IsNullOrEmpty(search)) FunSearch(items);
+            else FunSearch(items, search);
+            PauseLayout = old;
+        }
+        void FunSearch(TreeItemCollection? items)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                FunSearch(item.items);
+                item.Visible = true;
+            }
+        }
+        int FunSearch(TreeItemCollection? items, string text)
+        {
+            if (items == null) return 0;
+            int total = 0;
+            foreach (var item in items)
+            {
+                int count = FunSearch(item.items, text);
+                total += count;
+                bool show = (item.Name?.Contains(text) ?? false) || (item.Text?.Contains(text) ?? false);
+                if (show)
+                {
+                    item.Visible = true;
+                    total++;
+                }
+                else item.Visible = count > 0;
+            }
+            return total;
+        }
+
+        #endregion
+
         public TreeItem? HitTest(int x, int y, out TreeCType type)
         {
             if (items == null || items.Count == 0)

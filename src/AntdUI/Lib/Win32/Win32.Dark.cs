@@ -114,6 +114,9 @@ namespace AntdUI
         [DllImport("dwmapi.dll")]
         public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref uint attrValue, int attrSize);
 
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, IntPtr pvAttribute, int attrSize);
+
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string? pszSubIdList);
 
@@ -133,13 +136,17 @@ namespace AntdUI
             return false;
         }
 
-        public static bool SetWindowBorderColor(IntPtr handle, System.Drawing.Color color)
+        public static bool SetWindowBorderColor(IntPtr handle, System.Drawing.Color? color)
+        {
+            if (color.HasValue) return SetWindowBorderColor(handle, color.Value.R | (uint)color.Value.G << 8 | (uint)color.Value.B << 16);
+            else return SetWindowBorderColor(handle, 0xFFFFFFFF);
+        }
+
+        public static bool SetWindowBorderColor(IntPtr handle, uint color)
         {
             try
             {
-                uint rgb = color.R | (uint)color.G << 8 | (uint)color.B << 16;
-                //uint rgb = dark ? 0x00232323u : 0x00E0E0E0u;
-                return DwmSetWindowAttribute(handle, DWMWA_BORDER_COLOR, ref rgb, sizeof(uint)) == 0;
+                return DwmSetWindowAttribute(handle, DWMWA_BORDER_COLOR, ref color, sizeof(uint)) == 0;
             }
             catch { }
             return false;

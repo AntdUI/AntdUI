@@ -19,7 +19,7 @@ namespace AntdUI
 
         public void Change(bool dark)
         {
-            oncallbefore?.Invoke(dark);
+            ChangeBefore(dark);
             form.Dark = dark;
             if (btn != null) btn.Toggle = dark;
             if (dark)
@@ -37,6 +37,50 @@ namespace AntdUI
                 if (foreLight.HasValue) form.ForeColor = foreLight.Value;
             }
             oncall?.Invoke(dark);
+        }
+        void ChangeBefore(bool dark)
+        {
+            ChangeBeforeFormBorderColor(dark);
+            oncallbefore?.Invoke(dark);
+        }
+        void ChangeBeforeFormBorderColor(bool dark)
+        {
+            if (formBorderColor == null) return;
+            if (form is Window window)
+            {
+                if (formBorderColor is Color[] colors) window.BorderColor = dark ? colors[1] : colors[0];
+                else if (formBorderColor is string code)
+                {
+                    switch (code)
+                    {
+                        case "border":
+                            window.BorderColor = Style.Get(Colour.BorderColor, dark ? TAMode.Dark : TAMode.Light);
+                            break;
+                        case "primary":
+                            window.BorderColor = Style.Get(Colour.Primary, dark ? TAMode.Dark : TAMode.Light);
+                            break;
+                    }
+                }
+            }
+            else if (form is BorderlessForm borderlessForm)
+            {
+                if (borderlessForm.UseDwm || borderlessForm.BorderWidth > 0)
+                {
+                    if (formBorderColor is Color[] colors) borderlessForm.BorderColor = dark ? colors[1] : colors[0];
+                    else if (formBorderColor is string code)
+                    {
+                        switch (code)
+                        {
+                            case "border":
+                                borderlessForm.BorderColor = Style.Get(Colour.BorderColor, dark ? TAMode.Dark : TAMode.Light);
+                                break;
+                            case "primary":
+                                borderlessForm.BorderColor = Style.Get(Colour.Primary, dark ? TAMode.Dark : TAMode.Light);
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         internal void HandleEvent(EventType id, object? tag)
@@ -248,6 +292,50 @@ namespace AntdUI
 
         #endregion
 
+        #region 窗口
+
+        internal object? formBorderColor;
+        /// <summary>
+        /// 设置窗口边框颜色
+        /// </summary>
+        /// <param name="light">浅色模式颜色</param>
+        /// <param name="dark">深色模式颜色</param>
+        public IThemeConfig FormBorderColor(Color light, Color dark)
+        {
+            formBorderColor = new Color[] { light, dark };
+            return this;
+        }
+
+        /// <summary>
+        /// 设置窗口边框颜色（主题色风格）
+        /// </summary>
+        public IThemeConfig FormBorderColorPrimary()
+        {
+            formBorderColor = "primary";
+            return this;
+        }
+
+        /// <summary>
+        /// 设置窗口边框颜色
+        /// </summary>
+        public IThemeConfig FormBorderColor()
+        {
+            formBorderColor = "border";
+            return this;
+        }
+
+        /// <summary>
+        /// 清空窗口边框颜色
+        /// </summary>
+        /// <returns></returns>
+        public IThemeConfig ClearFormBorderColor()
+        {
+            formBorderColor = null;
+            return this;
+        }
+
+        #endregion
+
         public IThemeConfig SetConfig(IThemeConfig config)
         {
             callLight ??= config.callLight;
@@ -265,6 +353,7 @@ namespace AntdUI
             if (headerDark == null) headerDark = config.headerDark;
 
             btn ??= config.btn;
+            formBorderColor ??= config.formBorderColor;
 
             return this;
         }
