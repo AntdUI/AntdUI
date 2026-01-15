@@ -349,6 +349,7 @@ namespace AntdUI
             }
         }
 
+
         #region 下拉
 
         /// <summary>
@@ -368,6 +369,12 @@ namespace AntdUI
         /// </summary>
         [Description("下拉图标边距比例"), Category("外观"), DefaultValue(0.25F)]
         public float DropIconGap { get; set; } = 0.25F;
+
+        /// <summary>
+        /// 下拉菜单偏移量（水平模式下子菜单相对主菜单的偏移）
+        /// </summary>
+        [Description("下拉菜单偏移量"), Category("外观"), DefaultValue(typeof(Point), "0, 0")]
+        public Point DropDownOffset { get; set; } = new Point(0, 0);
 
         #endregion
 
@@ -810,6 +817,10 @@ namespace AntdUI
                         it.SetRectNoArr(_rect, new Rectangle(_rect.X + gap, _rect.Y, _rect.Width - gap2, _rect.Height));
                         if (it.Visible) x += size + sp;
                     }
+                }
+                if (it.Sub?.Count > 0)
+                {
+                    it.SubY = rect.Height; // 子菜单从主菜单底部开始
                 }
             }
         }
