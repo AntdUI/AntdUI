@@ -44,15 +44,40 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             var point = control.PointToScreen(Point.Empty);
             Items = LoadLayout(items, point);
-            if (control.Mode == TMenuMode.Horizontal) CLocation(control, TAlignFrom.BL, rect, true, -shadow);
+            var screen = Screen.FromPoint(point).WorkingArea;
+            int offsetX = (int)(control.DropDownOffset.Width * Dpi), offsetY = (int)(control.DropDownOffset.Height * Dpi);
+            int x, y;
+            if (control.IsModeHorizontal)
+            {
+                // 水平模式：子菜单显示在主菜单项下方
+                x = point.X + rect.X;
+                y = point.Y + rect.Bottom;
+
+                // 左右对齐判断
+                if (x + TargetRect.Width > screen.Right) x = point.X + rect.Right - TargetRect.Width;
+
+                // 上下方向判断：计算可用空间并决定显示方向
+                int spaceBelow = screen.Bottom - y - offsetY, spaceAbove = point.Y + rect.Y - screen.Top - offsetY;
+                if ((spaceBelow < TargetRect.Height && spaceAbove > spaceBelow && spaceAbove >= TargetRect.Height))
+                {
+                    animateConfig.Inverted = true;
+                    y = point.Y + rect.Y - TargetRect.Height + shadow2 - offsetY; // 向上
+                }
+                else y += offsetY; // 向下
+                x += offsetX;
+            }
             else
             {
-                var screen = Screen.FromPoint(point).WorkingArea;
-                int x = point.X + control.Width - rect.X - shadow, y = point.Y + rect.Y + shadow;
-                if (screen.Right < x + TargetRect.Width) x = x - ((x + TargetRect.Width) - screen.Right) + shadow;
-                if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + shadow;
-                SetLocationO(x, y);
+                // 垂直模式：子菜单显示在主菜单项右侧
+                x = point.X + control.Width - rect.X - shadow + offsetX;
+                y = point.Y + rect.Y + shadow + offsetY;
             }
+
+            // 边界限制
+            x = System.Math.Max(screen.Left, System.Math.Min(x, screen.Right - TargetRect.Width));
+            y = System.Math.Max(screen.Top, System.Math.Min(y, screen.Bottom - TargetRect.Height));
+
+            SetLocationO(x, y);
             Init();
         }
 

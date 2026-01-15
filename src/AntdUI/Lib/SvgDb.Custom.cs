@@ -22,7 +22,7 @@ namespace AntdUI
         }
 
         static string Rest(string svg) => "<svg " + svg.Replace("[VBD", "viewBox=\"").Replace("[VB2", "viewBox=\"0 0 1024 1024\">").Replace("[PD", "<path d=\"").Replace("[PE", "</path>").Replace("[PG", "\"></path>") + "</svg>";
-        
+
         static string YS(string svg)
         {
             return svg.Replace("viewBox=\"0 0 1024 1024\">", "[VB2").Replace("viewBox=\"", "[VBD").Replace("<path d=\"", "[PD").Replace("\"></path>", "[PG").Replace("</path>", "[PE");

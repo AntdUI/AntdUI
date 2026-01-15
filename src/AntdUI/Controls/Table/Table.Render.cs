@@ -226,7 +226,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    it.SHOW = it.ShowExpand && it.Type == RowType.None && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
+                    it.SHOW = it.ShowExpand && it.Type == RowType.None && rect_read.IsItemVisible(sy, it.RECT);
                     if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
@@ -249,7 +249,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    it.SHOW = it.ShowExpand && (it.Type == RowType.None || it.Type == RowType.Column) && (it.RECT.Y >= sy && it.RECT.Y <= sy + rect_read.Height || it.RECT.Bottom >= sy && it.RECT.Bottom <= sy + rect_read.Height);
+                    it.SHOW = it.ShowExpand && (it.Type == RowType.None || it.Type == RowType.Column) && rect_read.IsItemVisible(sy, it.RECT);
                     if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
@@ -274,7 +274,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    it.SHOW = it.RECT.Y > sy - it.RECT.Height && it.RECT.Bottom < sy + rect_read.Height + it.RECT.Height;
+                    it.SHOW = rect_read.IsItemVisible(sy, it.RECT);
                     if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;

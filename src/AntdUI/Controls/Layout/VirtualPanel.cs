@@ -941,14 +941,13 @@ namespace AntdUI
             {
                 int sy = ScrollBar.Value;
                 var rect = e.Rect;
-                rect.Offset(0, sy);
                 g.TranslateTransform(0, -sy);
                 int r = (int)(radius * Dpi);
                 foreach (var it in items)
                 {
                     if (it.SHOW)
                     {
-                        it.SHOW_RECT = rect.Contains(rect.X, it.RECT.Y) || rect.Contains(rect.X, it.RECT.Bottom);
+                        it.SHOW_RECT = rect.IsItemVisible(sy, it.RECT);
                         if (it.SHOW_RECT)
                         {
                             var state = g.Save();

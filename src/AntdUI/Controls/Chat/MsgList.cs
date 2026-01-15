@@ -127,9 +127,9 @@ namespace AntdUI.Chat
 
         readonly FormatFlags SFL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis,
              SFR = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
-        void PaintItem(Canvas g, MsgItem it, Rectangle rect, float sy, Font font_text, Font font_time, int radius)
+        void PaintItem(Canvas g, MsgItem it, Rectangle rect, int sy, Font font_text, Font font_time, int radius)
         {
-            it.show = it.Show && it.Visible && it.rect.Y > sy - rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
+            it.show = it.Show && it.Visible && rect.IsItemVisible(sy, it.rect);
             if (it.show)
             {
                 if (it.Select)

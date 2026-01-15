@@ -19,6 +19,7 @@ namespace AntdUI
 
         public void Change(bool dark)
         {
+            oncallbefore?.Invoke(dark);
             form.Dark = dark;
             if (btn != null) btn.Toggle = dark;
             if (dark)
@@ -49,7 +50,7 @@ namespace AntdUI
         #region 回调
 
         internal Action? callLight, callDark;
-        internal Action<bool>? oncall;
+        internal Action<bool>? oncall, oncallbefore;
 
         /// <summary>
         /// 设置回调
@@ -57,6 +58,15 @@ namespace AntdUI
         public virtual IThemeConfig Call(Action<bool>? call)
         {
             oncall = call;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置回调(之前)
+        /// </summary>
+        public virtual IThemeConfig CallBefore(Action<bool>? call)
+        {
+            oncallbefore = call;
             return this;
         }
 
@@ -243,6 +253,7 @@ namespace AntdUI
             callLight ??= config.callLight;
             callDark ??= config.callDark;
             oncall ??= config.oncall;
+            oncallbefore ??= config.oncallbefore;
 
             if (backLight == null) backLight = config.backLight;
             if (foreLight == null) foreLight = config.foreLight;

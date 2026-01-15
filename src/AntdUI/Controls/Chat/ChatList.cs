@@ -224,7 +224,7 @@ namespace AntdUI.Chat
                 return;
             }
             var g = e.Canvas;
-            float sy = ScrollBar.Value, radius = Dpi * 8F;
+            int sy = ScrollBar.Value, radius = (int)(Dpi * 8F);
             g.TranslateTransform(0, -sy);
             using (var selection = new SolidBrush(SelectionColor))
             using (var selectionme = new SolidBrush(SelectionColorMe))
@@ -245,9 +245,9 @@ namespace AntdUI.Chat
 
         readonly FormatFlags SFL = FormatFlags.Top | FormatFlags.HorizontalCenter;
 
-        void PaintItem(Canvas g, IChatItem it, Rectangle rect, float sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
+        void PaintItem(Canvas g, IChatItem it, Rectangle rect, int sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
         {
-            it.show = it.rect.Y > sy - rect.Height - it.rect.Height && it.rect.Bottom < ScrollBar.Value + ScrollBar.ReadSize + it.rect.Height;
+            it.show = rect.IsItemVisible(sy, it.rect);
             if (it.show)
             {
                 if (it is TextChatItem text)
@@ -257,7 +257,7 @@ namespace AntdUI.Chat
                         using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(ChatList), ColorScheme)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
-                            if (ShowTimeFocused && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
+                            if (ShowTimeFocused && FocusedChatItem == it && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
                         }
                         if (text.Me)
                         {
@@ -278,25 +278,35 @@ namespace AntdUI.Chat
             }
         }
 
+        void PaintTextSelected(Canvas g, TextChatItem text, SolidBrush selection)
+        {
+            if (text.selectionLength > 0 && text.cache_font.Length > text.selectionStartTemp)
+            {
+                try
+                {
+                    int start = text.selectionStartTemp, end = start + text.selectionLength - 1;
+                    if (end > text.cache_font.Length - 1) end = text.cache_font.Length - 1;
+                    var first = text.cache_font[start];
+
+                    var list = new Dictionary<int, CacheFont>(6);
+                    for (int i = start; i <= end; i++)
+                    {
+                        var it = text.cache_font[i];
+                        if (it.ret) list.Add(it.line + 1, it);
+                        else
+                        {
+                            if (list.ContainsKey(it.line)) list.Remove(it.line);
+                            g.Fill(selection, it.rect);
+                        }
+                    }
+                    foreach (var it in list) g.Fill(selection, it.Value.rect.X, it.Value.rect.Y, it.Value.width, it.Value.rect.Height);
+                }
+                catch { }
+            }
+        }
         void PaintItemText(Canvas g, TextChatItem text, SolidBrush fore, SolidBrush selection)
         {
-            if (text.selectionLength > 0)
-            {
-                int end = text.selectionStartTemp + text.selectionLength - 1;
-                if (end > text.cache_font.Length - 1) end = text.cache_font.Length - 1;
-                CacheFont first = text.cache_font[text.selectionStartTemp];
-                for (int i = text.selectionStartTemp; i <= end; i++)
-                {
-                    var last = text.cache_font[i];
-                    if (i == end) g.Fill(selection, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
-                    else if (first.rect.Y != last.rect.Y || last.retun)
-                    {
-                        last = text.cache_font[i - 1];
-                        g.Fill(selection, new Rectangle(first.rect.X, first.rect.Y, last.rect.Right - first.rect.X, first.rect.Height));
-                        first = text.cache_font[i];
-                    }
-                }
-            }
+            PaintTextSelected(g, text, selection);
             if (text.HasEmoji)
             {
                 using (var font = new Font(EmojiFont, Font.Size))
@@ -478,13 +488,13 @@ namespace AntdUI.Chat
                 FocusedChatItem = textChatItem;
                 if (ShowTimeFocused) Invalidate(textChatItem.rect);
                 int cx = e.X - oldMouseDown.X, cy = e.Y - oldMouseDown.Y;
-                if (mouseDownMove) OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy);
+                if (mouseDownMove) OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy, false);
                 else if (e.Button == MouseButtons.Left)
                 {
                     int threshold = (int)(Config.TouchThreshold * Dpi);
                     if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold)
                     {
-                        OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy);
+                        OnTextChatItemMove(textChatItem, oldMouseDown.X + cx, oldMouseDown.Y + scrolly + cy, false);
                         mouseDownMove = true;
                     }
                     else return;
@@ -541,26 +551,34 @@ namespace AntdUI.Chat
 
         #region 鼠标交互
 
-        protected virtual void OnTextChatItemMove(TextChatItem text, int x, int y)
+        protected virtual void OnTextChatItemMove(TextChatItem text, int x, int y, bool end)
         {
             var index = GetCaretPostion(text, x, y);
-            if (text.selectionStart == index) text.SelectionLength = 0;
-            else if (index > text.selectionStart)
+            if (end)
             {
-                text.SelectionLength = Math.Abs(index - text.selectionStart);
-                text.SelectionStart = text.selectionStart;
+                if (text.selectionStart == index) text.SelectionLength = 0;
+                else if (index > text.selectionStart)
+                {
+                    if (text.SetSelectionLength(Math.Abs(index - text.selectionStart))) Invalidate();
+                }
+                else
+                {
+                    bool set_e = text.SetSelectionLength(Math.Abs(index - text.selectionStart)), set_s = text.SetSelectionStart(index);
+                    if (set_s || set_e) Invalidate();
+                }
             }
             else
             {
-                text.SelectionLength = Math.Abs(index - text.selectionStart);
-                text.SelectionStart = index;
+                bool set_e = text.SetSelectionLength(Math.Abs(index - text.selectionStart));
+                if (index > text.selectionStart) text.selectionStartTemp = text.selectionStart;
+                else text.selectionStartTemp = index;
+                Invalidate();
             }
-            Invalidate();
         }
         protected virtual void OnTextChatItemClick(MouseEventArgs e, TextChatItem text, int x, int y)
         {
             int scrolly = ScrollBar.Value;
-            if (mouseDownMove) OnTextChatItemMove(text, x, y + scrolly);
+            if (mouseDownMove) OnTextChatItemMove(text, x, y + scrolly, true);
             else if (mouseDT == 2)
             {
                 if (text.ContainsReadIcon(e.X, e.Y, 0, scrolly)) OnItemIconClick(text, e);
@@ -680,8 +698,9 @@ namespace AntdUI.Chat
             {
                 if (it is TextChatItem text && text.SelectionLength > 0)
                 {
-                    text.SelectionStart = 0;
-                    text.selectionLength = text.cache_font.Length;
+                    mouseDownMove = false;
+                    bool set_s = text.SetSelectionStart(0), set_e = text.SetSelectionLength(text.cache_font.Length);
+                    if (set_s || set_e) Invalidate();
                     return;
                 }
             }
@@ -887,6 +906,7 @@ namespace AntdUI.Chat
             item.HasEmoji = false;
             int font_height = 0;
             var font_widths = new List<CacheFont>(item.Text.Length);
+            int index = 0;
             GraphemeSplitter.EachT(item.Text, 0, (str, type, nStart, nLen, nType) =>
             {
                 string it = str.Substring(nStart, nLen);
@@ -903,7 +923,8 @@ namespace AntdUI.Chat
                                 imgWidth = max_width;
                                 imgHeight = (int)(imgHeight * scaleRatio);
                             }
-                            font_widths.Add(new CacheFont(it, false, imgWidth, type).SetImageHeight(imgHeight));
+                            font_widths.Add(new CacheFont(index, it, false, imgWidth, type).SetImageHeight(imgHeight));
+                            index++;
                         }
                         else
                         {
@@ -917,8 +938,9 @@ namespace AntdUI.Chat
                                     imgWidth = max_width;
                                     imgHeight = (int)(imgHeight * scaleRatio);
                                 }
-                                font_widths.Add(new CacheFont(it, false, imgWidth, type).SetImageHeight(imgHeight));
+                                font_widths.Add(new CacheFont(index, it, false, imgWidth, type).SetImageHeight(imgHeight));
                                 if (!item.image_cache.TryAdd(id_base64, image)) image.Dispose();
+                                index++;
                             }
                         }
                         break;
@@ -927,7 +949,8 @@ namespace AntdUI.Chat
                         if (item.image_cache.TryGetValue(id_svg, out var bmp_svg))
                         {
                             int svgWidth = bmp_svg.Width, svgHeight = bmp_svg.Height;
-                            font_widths.Add(new CacheFont(it, false, svgWidth, type).SetImageHeight(svgHeight));
+                            font_widths.Add(new CacheFont(index, it, false, svgWidth, type).SetImageHeight(svgHeight));
+                            index++;
                         }
                         else
                         {
@@ -935,8 +958,9 @@ namespace AntdUI.Chat
                             if (svgImage != null)
                             {
                                 int svgWidth = svgImage.Width, svgHeight = svgImage.Height;
-                                font_widths.Add(new CacheFont(it, false, svgWidth, type).SetImageHeight(svgHeight));
+                                font_widths.Add(new CacheFont(index, it, false, svgWidth, type).SetImageHeight(svgHeight));
                                 if (!item.image_cache.TryAdd(id_svg, svgImage)) svgImage.Dispose();
+                                index++;
                             }
                         }
                         break;
@@ -944,7 +968,7 @@ namespace AntdUI.Chat
                         if (nType == 18 || (nType == 4 && SvgDb.Emoji.ContainsKey(it)))
                         {
                             item.HasEmoji = true;
-                            font_widths.Add(new CacheFont(it, true, 0, type));
+                            font_widths.Add(new CacheFont(index, it, true, 0, type));
                         }
                         else
                         {
@@ -952,15 +976,16 @@ namespace AntdUI.Chat
                             {
                                 var sizefont = FixFontWidth(g);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                font_widths.Add(new CacheFont(it, false, sizefont.Width, type));
+                                font_widths.Add(new CacheFont(index, it, false, sizefont.Width, type));
                             }
                             else
                             {
                                 var sizefont = FixFontWidth(g, it);
                                 if (font_height < sizefont.Height) font_height = sizefont.Height;
-                                font_widths.Add(new CacheFont(it, false, sizefont.Width, type));
+                                font_widths.Add(new CacheFont(index, it, false, sizefont.Width, type));
                             }
                         }
+                        index++;
                         break;
                 }
                 return true;
@@ -975,11 +1000,9 @@ namespace AntdUI.Chat
                     if (it.emoji) it.width = tmp;
                 }
             }
-
-            for (int j = 0; j < font_widths.Count; j++) { font_widths[j].i = j; }
             item.cache_font = font_widths.ToArray();
 
-            int usex = 0, usey = 0, oy = 0, maxx = 0, maxy = 0, tmp_font_height = font_height;
+            int usex = 0, usey = 0, line = 0, oy = 0, maxx = 0, maxy = 0, tmp_font_height = font_height;
             if (item.HasEmoji)
             {
                 tmp_font_height = (int)(font_height * EmojiRatio);
@@ -990,12 +1013,15 @@ namespace AntdUI.Chat
             {
                 if (it.text == "\r")
                 {
-                    it.retun = true;
+                    it.ret = true;
+                    it.line = line;
                     continue;
                 }
                 if (it.text == "\n" || it.text == "\r\n")
                 {
-                    it.retun = true;
+                    it.ret = true;
+                    it.line = line;
+                    line++;
                     usey += tmp_font_height;
                     usex = 0;
                     continue;
@@ -1009,7 +1035,9 @@ namespace AntdUI.Chat
                     }
                     else usey += tmp_font_height;
                     usex = 0;
+                    line++;
                 }
+                it.line = line;
                 if (it.imageHeight.HasValue)
                 {
                     it.rect = new Rectangle(usex, usey + oy, it.width, it.imageHeight.Value);
@@ -1020,7 +1048,6 @@ namespace AntdUI.Chat
                 if (maxy < it.rect.Bottom) maxy = it.rect.Bottom;
                 usex += it.width;
             }
-
             return new Size(maxx + spilt, maxy + spilt);
         }
 
@@ -1265,7 +1292,6 @@ namespace AntdUI.Chat
 
         internal bool HasEmoji = false;
         internal CacheFont[] cache_font = new CacheFont[0];
-
         internal int selectionStart = 0, selectionStartTemp = 0, selectionLength = 0;
         /// <summary>
         /// 所选文本的起点
@@ -1276,16 +1302,23 @@ namespace AntdUI.Chat
             get => selectionStart;
             set
             {
-                if (value < 0) value = 0;
-                else if (value > 0)
-                {
-                    if (cache_font == null) value = 0;
-                    else if (value > cache_font.Length) value = cache_font.Length;
-                }
-                if (selectionStart == value) return;
-                selectionStart = selectionStartTemp = value;
-                Invalidate();
+                if (SetSelectionStart(value)) Invalidate();
             }
+        }
+
+        internal bool SetSelectionStart(int value)
+        {
+            bool r = false;
+            if (value < 0) value = 0;
+            else if (value > 0)
+            {
+                if (cache_font == null) value = 0;
+                else if (value > cache_font.Length) value = cache_font.Length;
+            }
+            if (selectionStart == value) return false;
+
+            selectionStart = selectionStartTemp = value;
+            return r;
         }
 
         /// <summary>
@@ -1297,10 +1330,15 @@ namespace AntdUI.Chat
             get => selectionLength;
             set
             {
-                if (selectionLength == value) return;
-                selectionLength = value;
-                Invalidate();
+                if (SetSelectionLength(value)) Invalidate();
             }
+        }
+
+        internal bool SetSelectionLength(int value)
+        {
+            if (selectionLength == value) return false;
+            selectionLength = value;
+            return true;
         }
 
         #endregion
@@ -1403,15 +1441,18 @@ namespace AntdUI.Chat
 
     internal class CacheFont
     {
-        public CacheFont(string _text, bool _emoji, int _width, GraphemeSplitter.STRE_TYPE Type)
+        public CacheFont(int index, string _text, bool _emoji, int _width, GraphemeSplitter.STRE_TYPE Type)
         {
+            i = index;
             text = _text;
             emoji = _emoji;
             width = _width;
             type = Type;
         }
         public int i { get; set; }
+        public int line { get; set; }
         public string text { get; set; }
+
         Rectangle _rect;
         public Rectangle rect
         {
@@ -1419,9 +1460,13 @@ namespace AntdUI.Chat
             set { _rect = value; }
         }
         internal void SetOffset(int x, int y) => _rect.Offset(x, y);
+
+        public bool ret { get; set; }
         public bool emoji { get; set; }
-        public bool retun { get; set; }
         public int width { get; set; }
+
+        public override string ToString() => text;
+
         public GraphemeSplitter.STRE_TYPE type { get; set; }
         public int? imageHeight { get; set; }
 

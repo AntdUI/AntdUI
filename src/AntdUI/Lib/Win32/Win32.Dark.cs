@@ -27,11 +27,12 @@ namespace AntdUI
             }
         }
 
-        public static bool WindowTheme(Form form, bool dark)
+        public static bool WindowTheme(Form form, bool dark, bool one = false)
         {
             var r = UseImmersiveDarkMode(form.Handle, dark);
             if (r)
             {
+                if (one && !dark) return r;
                 var code = dark ? "DarkMode_Explorer" : "ClearMode_Explorer";
                 foreach (Control it in form.Controls) WindowTheme(it, code);
             }
@@ -110,11 +111,15 @@ namespace AntdUI
         [DllImport("dwmapi.dll")]
         public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref uint attrValue, int attrSize);
+
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string? pszSubIdList);
 
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+        private const int DWMWA_BORDER_COLOR = 34;
         public static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
         {
             if (OS.Win10OrGreater(17763))
@@ -125,6 +130,18 @@ namespace AntdUI
                 return DwmSetWindowAttribute(handle, attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
             }
 
+            return false;
+        }
+
+        public static bool SetWindowBorderColor(IntPtr handle, System.Drawing.Color color)
+        {
+            try
+            {
+                uint rgb = color.R | (uint)color.G << 8 | (uint)color.B << 16;
+                //uint rgb = dark ? 0x00232323u : 0x00E0E0E0u;
+                return DwmSetWindowAttribute(handle, DWMWA_BORDER_COLOR, ref rgb, sizeof(uint)) == 0;
+            }
+            catch { }
             return false;
         }
 

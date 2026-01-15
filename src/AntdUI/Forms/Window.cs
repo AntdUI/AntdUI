@@ -32,6 +32,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 窗口边框颜色
+        /// </summary>
+        [Description("窗口边框颜色，设置为null时使用系统默认强调色"), Category("外观"), DefaultValue(null)]
+        public Color? BorderColor { get; set; }
+
         WState winState = WState.Restore;
         WState WinState
         {
@@ -220,6 +226,8 @@ namespace AntdUI
             oldmargin = margin;
             DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
         }
+
+        protected override void SetThemeOK(bool dark) => Win32.SetWindowBorderColor(Handle, BorderColor ?? Style.Db.BorderColor);
 
         public override void RefreshDWM() => DwmArea();
 

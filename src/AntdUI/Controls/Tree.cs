@@ -538,7 +538,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                it.show = IsShowRect(rect, sx, sy, it);
+                it.show = rect.IsItemVisibleExpand(sx, sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
                     PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
@@ -563,16 +563,7 @@ namespace AntdUI
                 else ShowFalse(it.items);
             }
         }
-        bool IsShowRect(Rectangle rect, int sx, int sy, TreeItem it)
-        {
-            if (it.Visible)
-            {
-                bool inVisibleX = (it.rect.X <= (sx + rect.Width)) && (it.rect.Right >= sx),
-                    inVisibleY = (it.rect.Y <= (sy + rect.Height)) && ((it.Expand ? it.rect.Bottom + (int)Math.Ceiling(it.SubHeight) : it.rect.Bottom) >= sy);
-                if (inVisibleY && inVisibleX) return true;
-            }
-            return false;
-        }
+
         void ShowFalse(TreeItemCollection? items)
         {
             if (items == null) return;
@@ -2265,8 +2256,8 @@ namespace AntdUI
 
         #endregion
 
-        internal float SubY { get; set; }
-        internal float SubHeight { get; set; }
+        internal int SubY { get; set; }
+        internal int SubHeight { get; set; }
         internal int? ExpandHeightTMP { get; set; }
         internal int ExpandHeight { get; set; }
         internal int ExpandRHeight { get; set; }
