@@ -451,6 +451,7 @@ namespace AntdUI
             bool ProgState = false;
             thread = new AnimationTask(control, () =>
             {
+                if (GRun()) return true;
                 Animation(ref ProgState);
                 control.Invalidate();
                 return true;
@@ -462,11 +463,24 @@ namespace AntdUI
             bool ProgState = false;
             thread = new AnimationTask(control, () =>
             {
+                if (GRun()) return true;
                 Animation(ref ProgState);
                 control.Print();
                 return true;
             }, 10);
         }
+
+        bool GRun()
+        {
+            if (Count > 0)
+            {
+                Count--;
+                return true;
+            }
+            return false;
+        }
+
+        public int Count = 0;
 
         void Animation(ref bool ProgState)
         {
@@ -628,9 +642,11 @@ namespace AntdUI
         private void Parent_VisibleChanged(object? sender, EventArgs e) => LoadVisible();
         private void Parent_LocationChanged(object? sender, EventArgs e)
         {
+            spin_core.Count++;
             LoadVisible();
             if (control is Form form) SetLocation(form.Location);
             else SetLocation(control.PointToScreen(Point.Empty));
+            PrintCache();
         }
         private void Parent_SizeChanged(object? sender, EventArgs e)
         {

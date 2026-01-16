@@ -665,6 +665,7 @@ namespace AntdUI
 
         public override void RunLoading()
         {
+            base.RunLoading();
             if (loading)
             {
                 if (loadingend) return;

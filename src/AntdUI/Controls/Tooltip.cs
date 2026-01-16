@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -464,64 +465,96 @@ namespace AntdUI
 
         #endregion
 
-        readonly Dictionary<Control, string> dic = new Dictionary<Control, string>();
+        ConcurrentDictionary<Control, string> dic = new ConcurrentDictionary<Control, string>();
 
         [Description("设置是否提示"), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         [Localizable(true)]
         public string? GetTip(Control item)
         {
-            if (dic.TryGetValue(item, out string? value)) return value;
+            if (dic.TryGetValue(item, out var value)) return value;
             return null;
         }
         public void SetTip(Control control, string? val)
         {
             if (val == null)
             {
-                if (dic.ContainsKey(control))
+                if (dic.TryRemove(control, out _))
                 {
-                    dic.Remove(control);
                     control.MouseEnter -= Control_Enter;
                     control.MouseLeave -= Control_Leave;
                     control.Leave -= Control_Leave;
                 }
                 return;
             }
-            if (dic.ContainsKey(control)) dic[control] = val.Trim();
+            if (dic.TryGetValue(control, out var tmp))
+            {
+                var valn = val.Trim();
+                dic.AddOrUpdate(control, valn, (a, b) => valn);
+            }
             else
             {
-                dic.Add(control, val.Trim());
-                control.MouseEnter += Control_Enter;
-                control.MouseLeave += Control_Leave;
-                control.Leave -= Control_Leave;
+                if (dic.TryAdd(control, val.Trim()))
+                {
+                    control.MouseEnter += Control_Enter;
+                    control.MouseLeave += Control_Leave;
+                    control.Leave -= Control_Leave;
+                }
             }
         }
 
-        readonly List<Control> dic_in = new List<Control>();
+        #region 核心显示
+
+        List<Control> dic_in = new List<Control>();
         private void Control_Leave(object? sender, EventArgs e)
         {
-            if (sender != null && sender is Control obj)
+            if (sender is Control obj)
+            {
                 lock (dic_in) dic_in.Remove(obj);
+            }
         }
 
         private void Control_Enter(object? sender, EventArgs e)
         {
-            if (sender != null && sender is Control obj)
+            if (sender is Control control)
             {
-                lock (dic_in) dic_in.Add(obj);
-                ITask.Run(() =>
-                {
-                    Thread.Sleep(Delay);
-                    if (dic_in.Contains(obj))
-                    {
-                        obj.BeginInvoke(new Action(() =>
-                        {
-                            new TooltipForm(obj, dic[obj], this).Show();
-                        }));
-                    }
-                });
+                var parent = control.FindPARENT();
+                lock (dic_in) dic_in.Add(control);
+                if (parent == null) OpenTip(control);
+                else OpenTip(parent, control);
             }
         }
+
+        static ConcurrentDictionary<Form, TooltipForm> cache = new ConcurrentDictionary<Form, TooltipForm>();
+        void OpenTip(Form form, Control control)
+        {
+            if (cache.TryRemove(form, out var tmp)) tmp.IClose();
+            ITask.Run(() =>
+            {
+                Thread.Sleep(Delay);
+                if (dic_in.Contains(control) && dic.TryGetValue(control, out var str))
+                {
+                    control.BeginInvoke(new Action(() =>
+                    {
+                        var tooltip = new TooltipForm(control, str, this);
+                        tooltip.Show();
+                        tooltip.Disposed += (a, b) => cache.TryRemove(form, out _);
+                        cache.TryAdd(form, tooltip);
+                    }));
+                }
+            });
+        }
+
+        void OpenTip(Control control)
+        {
+            ITask.Run(() =>
+            {
+                Thread.Sleep(Delay);
+                if (dic_in.Contains(control) && dic.TryGetValue(control, out var str)) control.BeginInvoke(new Action(() => new TooltipForm(control, str, this).Show()));
+            });
+        }
+
+        #endregion
     }
 
     #region 核心渲染
