@@ -6,6 +6,7 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -136,6 +137,8 @@ namespace AntdUI
             }
         }
 
+        #region 选中状态
+
         bool AnimationCheck = false;
         float AnimationCheckValue = 0;
         bool _checked = false;
@@ -149,10 +152,48 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                ThreadCheck?.Dispose();
-                try
+                OnCheck();
+                CheckState = value ? CheckState.Checked : CheckState.Unchecked;
+                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
+                OnPropertyChanged();
+            }
+        }
+
+        internal CheckState checkStateOld = CheckState.Unchecked;
+        CheckState checkState = CheckState.Unchecked;
+        /// <summary>
+        /// 选中状态
+        /// </summary>
+        public CheckState CheckState
+        {
+            get => checkState;
+            set
+            {
+                if (checkState == value) return;
+                checkState = value;
+                bool __checked = value == CheckState.Checked;
+                if (_checked != __checked)
                 {
-                    if (PARENT.PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
+                    _checked = __checked;
+                    OnCheck();
+                }
+                if (value != CheckState.Unchecked) checkStateOld = value;
+            }
+        }
+
+        void OnCheck()
+        {
+            ThreadCheck?.Dispose();
+            try
+            {
+                if (PARENT.PARENT.IsHandleCreated && Config.HasAnimation(nameof(Table)))
+                {
+                    if (!_checked && checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                    {
+                        AnimationCheckValue = 1F;
+                        OnPropertyChanged();
+                    }
+                    else
                     {
                         AnimationCheck = true;
                         ThreadCheck = new AnimationTask(new AnimationLinearFConfig(PARENT.PARENT, i =>
@@ -160,16 +201,15 @@ namespace AntdUI
                             AnimationCheckValue = i;
                             OnPropertyChanged();
                             return true;
-                        }, 20).SetValue(AnimationCheckValue, value, 0.2F).SetEnd(() => AnimationCheck = false));
+                        }, 20).SetValue(AnimationCheckValue, _checked, 0.2F).SetEnd(() => AnimationCheck = false));
                     }
-                    else AnimationCheckValue = value ? 1F : 0F;
                 }
-                catch { }
-                CheckedChanged?.Invoke(this, new BoolEventArgs(value));
-                OnPropertyChanged();
+                else AnimationCheckValue = _checked ? 1F : 0F;
             }
+            catch { }
         }
 
+        #endregion
 
         AnimationTask? ThreadCheck, ThreadHover;
 
@@ -248,6 +288,11 @@ namespace AntdUI
         public CellCheckbox SetChecked(bool value = true)
         {
             _checked = value;
+            return this;
+        }
+        public CellCheckbox SetChecked(CheckState value)
+        {
+            checkState = value;
             return this;
         }
         public CellCheckbox SetEnabled(bool value = false)

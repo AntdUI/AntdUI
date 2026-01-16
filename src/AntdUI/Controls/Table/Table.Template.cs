@@ -1142,7 +1142,7 @@ namespace AntdUI
                         if (columnCheck.CheckState == CheckState.Indeterminate || (columnCheck.checkStateOld == CheckState.Indeterminate && !columnCheck.Checked))
                         {
                             g.Draw(Colour.BorderColor.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path_check);
-                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), colorScheme)), PaintBlock(RECT_REAL));
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), colorScheme)), Checkbox.PaintBlock(RECT_REAL));
                         }
                         else
                         {
@@ -1166,7 +1166,7 @@ namespace AntdUI
                     {
                         g.Fill(Colour.BgBase.Get(nameof(Checkbox), colorScheme), path_check);
                         g.Draw(Colour.BorderColor.Get(nameof(Checkbox), colorScheme), PARENT.check_border, path_check);
-                        g.Fill(Colour.Primary.Get(nameof(Checkbox), colorScheme), PaintBlock(RECT_REAL));
+                        g.Fill(Colour.Primary.Get(nameof(Checkbox), colorScheme), Checkbox.PaintBlock(RECT_REAL));
                     }
                     else if (columnCheck.Checked)
                     {
