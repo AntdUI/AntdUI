@@ -1,5 +1,25 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.12` 2026-01-16
+
+- ➕ Window BorderColor
+- ➕ ThemeConfig CallBefore
+- ➕ ThemeConfig FormBorderColor
+- ➕ Table SortDelList 方法 用于刷新排序删除行
+- ➕ Menu 下拉偏移量 属性
+- ➕ Menu Horizontal_Arrow 横向箭头
+- ➕ Tree Search 搜索筛选
+- ➕ Message/Notification 跟随窗口
+- ➕ Checkbox CheckState
+- ➕ 下拉上下居中弹出左右碰撞
+- ✍️ Menu 菜单水平模式下主菜单和子菜单重叠问题
+- ✍️ ChatList 反向选择文本
+- ✍️ Table 空绑定异常
+- ✍️ BorderlessForm 阴影在 TopMost 异常
+- ✍️ TooltipComponent 不自动消失
+- ✍️ ImagePreview 开放 LoadImg
+- ✍️ 优化藏渲染
+
 ### `2.2.11` 2026-01-13
 
 - ➕ Table SelectedIndexsReal

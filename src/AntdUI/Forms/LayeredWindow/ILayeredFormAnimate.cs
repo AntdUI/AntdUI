@@ -15,7 +15,7 @@ namespace AntdUI
 {
     public abstract class ILayeredFormAnimate : ILayeredForm
     {
-        internal static Dictionary<string, List<ILayeredFormAnimate>> list = new Dictionary<string, List<ILayeredFormAnimate>>();
+        internal static ConcurrentDictionary<string, List<ILayeredFormAnimate>> list = new ConcurrentDictionary<string, List<ILayeredFormAnimate>>();
 
         internal string key = "";
         public abstract string name { get; }
@@ -29,18 +29,29 @@ namespace AntdUI
         public int ReadY => end_Y;
         public int ReadB => end_Y + TargetRect.Height;
 
+        object[]? OffsetInWindow { get; set; }
+
         internal bool SetPosition(Target target, bool InWindow)
         {
+            Rectangle? offset = null;
             Rectangle workingArea;
             if (target.Value is Form form)
             {
-                if (InWindow || Config.ShowInWindow) workingArea = new Rectangle(form.Location, form.Size);
+                if (InWindow || Config.ShowInWindow)
+                {
+                    workingArea = new Rectangle(form.Location, form.Size);
+                    offset = workingArea;
+                }
                 else workingArea = Screen.FromControl(form).WorkingArea;
             }
             else if (target.Value is Control control)
             {
                 var point = control.PointToScreen(Point.Empty);
-                if (InWindow || Config.ShowInWindow) workingArea = new Rectangle(point, control.Size);
+                if (InWindow || Config.ShowInWindow)
+                {
+                    workingArea = new Rectangle(point, control.Size);
+                    offset = workingArea;
+                }
                 else workingArea = Screen.FromPoint(point).WorkingArea;
             }
             else throw new ArgumentException("Target must be Form or Control");
@@ -52,42 +63,104 @@ namespace AntdUI
                     if (TopY(workingArea, out var resultTop)) return true;
                     int xt = start_X = end_X = workingArea.X + (workingArea.Width - width) / 2;
                     end_Y = resultTop;
+                    if (offset.HasValue) OffsetInWindow = new object[] { target, end_Y - offset.Value.Y };
                     SetLocation(xt, start_Y = end_Y - height / 2);
                     break;
                 case TAlignFrom.Bottom:
                     if (BottomY(workingArea, out var resultBottom)) return true;
                     int xb = start_X = end_X = workingArea.X + (workingArea.Width - width) / 2;
                     end_Y = resultBottom;
+                    if (offset.HasValue) OffsetInWindow = new object[] { target, offset.Value.Bottom - end_Y };
                     SetLocation(xb, start_Y = end_Y + height / 2);
                     break;
                 case TAlignFrom.TL:
                     if (TopY(workingArea, out var resultTL)) return true;
                     end_X = workingArea.X;
+                    if (offset.HasValue) OffsetInWindow = new object[] { target, resultTL - offset.Value.Y };
                     SetLocation(start_X = end_X - width / 3, start_Y = end_Y = resultTL);
                     break;
                 case TAlignFrom.TR:
                     if (TopY(workingArea, out var resultTR)) return true;
                     end_X = workingArea.X + workingArea.Width - width;
+                    if (offset.HasValue) OffsetInWindow = new object[] { target, resultTR - offset.Value.Y };
                     SetLocation(start_X = end_X + width / 3, start_Y = end_Y = resultTR);
                     break;
                 case TAlignFrom.BL:
                     if (BottomY(workingArea, out var resultBL)) return true;
                     end_X = workingArea.X;
+                    if (offset.HasValue) OffsetInWindow = new object[] { target, offset.Value.Bottom - resultBL };
                     SetLocation(start_X = end_X - width / 3, start_Y = end_Y = resultBL);
                     break;
                 case TAlignFrom.BR:
                     if (BottomY(workingArea, out var resultBR)) return true;
                     end_X = workingArea.X + workingArea.Width - width;
+                    if (offset.HasValue) OffsetInWindow = new object[] { target, offset.Value.Bottom - resultBR };
                     SetLocation(start_X = end_X + width / 3, start_Y = end_Y = resultBR);
                     break;
             }
             Add();
             return false;
         }
+        internal void SetPosition(Target target, int offset)
+        {
+            var workingArea = GetWorkingArea(target);
+            int width = TargetRect.Width, height = TargetRect.Height;
+            var keynew = Align.ToString() + "|" + workingArea.X + "|" + workingArea.Y + "|" + workingArea.Right + "|" + workingArea.Bottom;
+            if (list.TryRemove(key, out var tmplist)) list.TryAdd(keynew, tmplist);
+            key = keynew;
+            switch (Align)
+            {
+                case TAlignFrom.Top:
+                    end_X = workingArea.X + (workingArea.Width - width) / 2;
+                    end_Y = workingArea.Y + offset;
+                    start_X = end_X;
+                    start_Y = end_Y - height / 2;
+                    break;
+                case TAlignFrom.Bottom:
+                    end_X = workingArea.X + (workingArea.Width - width) / 2;
+                    end_Y = workingArea.Bottom - offset;
+                    start_X = end_X;
+                    start_Y = end_Y + height / 2;
+                    break;
+                case TAlignFrom.TL:
+                    end_X = workingArea.X;
+                    end_Y = workingArea.Y + offset;
+                    start_X = end_X - width / 3;
+                    start_Y = end_Y;
+                    break;
+                case TAlignFrom.TR:
+                    end_X = workingArea.X + workingArea.Width - width;
+                    end_Y = workingArea.Y + offset;
+                    start_Y = end_Y;
+                    start_X = end_X + width / 3;
+                    break;
+                case TAlignFrom.BL:
+                    end_X = workingArea.X;
+                    end_Y = workingArea.Bottom - offset;
+                    start_Y = end_Y;
+                    start_X = end_X - width / 3;
+                    break;
+                case TAlignFrom.BR:
+                default:
+                    end_X = workingArea.X + workingArea.Width - width;
+                    end_Y = workingArea.Bottom - offset;
+                    start_Y = end_Y;
+                    start_X = end_X + width / 3;
+                    break;
+            }
+            SetLocation(end_X, end_Y);
+        }
+        internal Rectangle GetWorkingArea(Target target)
+        {
+            if (target.Value is Form form) return new Rectangle(form.Location, form.Size);
+            else if (target.Value is Control control) return new Rectangle(control.PointToScreen(Point.Empty), control.Size);
+            else return Rectangle.Empty;
+
+        }
         void Add()
         {
             if (list.TryGetValue(key, out var its)) its.Add(this);
-            else list.Add(key, new List<ILayeredFormAnimate> { this });
+            else list.TryAdd(key, new List<ILayeredFormAnimate> { this });
         }
 
         #region 核心
@@ -226,12 +299,33 @@ namespace AntdUI
             SetLocationY(y);
             end_Y = y;
             start_Y = y - TargetRect.Height / 2;
+            SetPositionOffsetInWindow(y);
         }
         internal void SetPositionYB(int y)
         {
             SetLocationY(y);
             end_Y = y;
             start_Y = y + TargetRect.Height / 2;
+            SetPositionOffsetInWindow(y);
+        }
+        internal void SetPositionOffsetInWindow(int y)
+        {
+            if (OffsetInWindow == null) return;
+            var target = (Target)OffsetInWindow[0];
+            var workingArea = GetWorkingArea(target);
+            switch (Align)
+            {
+                case TAlignFrom.Top:
+                case TAlignFrom.TL:
+                case TAlignFrom.TR:
+                    OffsetInWindow = new object[] { target, y - workingArea.Y };
+                    break;
+                case TAlignFrom.Bottom:
+                case TAlignFrom.BL:
+                case TAlignFrom.BR:
+                    OffsetInWindow = new object[] { target, workingArea.Bottom - y };
+                    break;
+            }
         }
 
         #endregion
@@ -280,7 +374,26 @@ namespace AntdUI
             }
         }
 
-        public virtual void RunLoading() { }
+        Form? tmp_parent;
+        public virtual void RunLoading()
+        {
+            if (OffsetInWindow == null) return;
+            var target = (Target)OffsetInWindow[0];
+            var parent = target.Parent();
+            if (parent == null) return;
+            tmp_parent = parent;
+            parent.LocationChanged += Parent_LSChanged;
+            parent.SizeChanged += Parent_LSChanged;
+        }
+
+        private void Parent_LSChanged(object? sender, EventArgs e)
+        {
+            if (OffsetInWindow == null) return;
+            var target = (Target)OffsetInWindow[0];
+            var offset = (int)OffsetInWindow[1];
+            SetPosition(target, offset);
+            PrintCache();
+        }
 
         #endregion
 
@@ -288,6 +401,7 @@ namespace AntdUI
 
         internal AnimationTask StopAnimation()
         {
+            DisposeEvent();
             task_start?.Dispose();
             var t = Animation.TotalFrames(10, 200);
             return new AnimationTask(start_X == end_X ? (i) =>
@@ -394,13 +508,22 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            DisposeEvent();
             task_start?.Dispose();
             if (list.TryGetValue(key, out var layeredFormAnimateList) && layeredFormAnimateList.Contains(this))
             {
-                if (layeredFormAnimateList.Count == 1) list.Remove(key);
+                if (layeredFormAnimateList.Count == 1) list.TryRemove(key, out _);
                 else layeredFormAnimateList.Remove(this);
             }
             base.Dispose(disposing);
+        }
+
+        void DisposeEvent()
+        {
+            if (tmp_parent == null) return;
+            tmp_parent.LocationChanged -= Parent_LSChanged;
+            tmp_parent.SizeChanged -= Parent_LSChanged;
+            tmp_parent = null;
         }
     }
 

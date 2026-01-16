@@ -14,25 +14,34 @@ Table 表格 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Gap** | 间距 | int | 12 |
+**Gaps** | 间距 | Size | `12, 12` |
+**GapCell** | 单元格内间距 | int`?` | 6 |
+**GapTree** | 树间距 | int | 12 |
 **Radius** | 圆角 | int | 0 |
 **FixedHeader** | 固定表头 | bool | true |
 **VisibleHeader** | 显示表头 | bool | true |
 **Bordered** | 显示列边框 | bool | false |
 **RowHeight** | 行高 | int`?` | `null` |
 **RowHeightHeader** | 表头行高 | int`?` | `null` |
+**CellImpactHeight** | 单元格调整高度 | bool`?` | `null` |
 ||||
 **CheckSize** | 复选框大小 | int | 16 |
 **SwitchSize** | 开关大小 | int | 16 |
 **TreeButtonSize** | 树开关按钮大小 | int | 16 |
 **DragHandleSize** | 拖拽手柄大小 | int | 24 |
 **DragHandleIconSize** | 拖拽手柄图标大小 | int | 14 |
+**SortOrderSize** | 排序大小 | int`?` | `null` |
 ||||
 **EnableHeaderResizing** | 手动调整列头宽度 | bool | false |
 **ColumnDragSort** | 列拖拽排序 | bool | false |
 **LostFocusClearSelection** | 焦点离开清空选中 | bool | false |
+**MouseClickPenetration** | 鼠标点击穿透 | bool | true |
+**ScrollBarAvoidHeader** | 滚动条从表头下方开始绘制 | bool | false |
 **AutoSizeColumnsMode** | 列宽自动调整模式 | [ColumnsMode](Enum.md#columnsmode) | Auto |
+**VirtualMode** | 虚拟模式 | bool | false |
 ||||
 **ClipboardCopy** | 行复制 | bool | true |
+**ClipboardCopyFocusedCell** | 是否启用单元格复制 | bool | false |
 **EditMode** | 编辑模式 | [TEditMode](Enum.md#teditmode) | None |
 **ShowTip** | 省略文字提示 | bool | true |
 **HandShortcutKeys** 🔴 | 处理快捷键 | bool | true |
@@ -45,19 +54,29 @@ Table 表格 👚
 **EmptyHeader** | 空是否显示表头 | bool | false |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+**RowHoverBg** | 表格行悬浮背景色 | Color`?` | `null` |
 **RowSelectedBg** | 表格行选中背景色 | Color`?` | `null` |
 **RowSelectedFore** | 表格行选中字色 | Color`?` | `null` |
 **BorderColor** | 表格边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 1F |
+**BorderCellWidth** | 单元格边框宽度 | float | 1F |
+**BorderHigh** | 高精度边框（已过时） | bool`?` | `null` |
+**BorderRenderMode** | 边框渲染模式 | TableBorderMode | None |
 **ColumnFont** | 表头字体 | Font`?` | `null` |
 **ColumnBack** | 表头背景色 | Color`?` | `null` |
 **ColumnFore** | 表头文本色 | Color`?` | `null` |
 ||||
+**CellFocusedStyle** | 焦点列样式 | TableCellFocusedStyle`?` | `null` |
+**CellFocusedBg** | 焦点列背景色 | Color`?` | `null` |
+**CellFocusedBorder** | 焦点列边框色 | Color`?` | `null` |
+||||
 **SelectedIndex** | 选中行 | int | -1 |
-**SelectedIndexs** 🔴 | 选中多行 | int[] | |
+**SelectedIndexs** | 选中多行 | int[] | |
 **MultipleRows** | 多选行 | bool | false |
 ||||
 **Columns** | 表格列的配置 | [ColumnCollection](TableColumn.md#column) | `null` |
 **DataSource** | 数据数组 | [object](TableCell.md#icell)`?` | `支持DataTable，Class等` |
+**Summary** | 总结栏 | object`?` | `null` |
 
 ### 方法
 
@@ -95,6 +114,7 @@ Table 表格 👚
 **CellClick** | 单击时发生 | void | MouseEventArgs args `点击`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号`, Rectangle rect `表格区域` |
 **CellDoubleClick** | 双击时发生 | void | MouseEventArgs args `点击`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号`, Rectangle rect `表格区域` |
 **CellButtonClick** | 单击按钮时发生 | void | CellLink btn `触发按钮`, MouseEventArgs args `点击`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号` |
+**CellFocused** | 单元格获得焦点时发生 | void | object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号` |
 ||||
 **CellBeginEdit** | 编辑前发生 | bool `返回true继续编辑` | object? value `数值`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号` |
 **CellBeginEditInputStyle** | 编辑前文本框样式发生 | void | object? value `数值`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号`, ref Input input `文本框对象` |
@@ -102,6 +122,7 @@ Table 表格 👚
 ||||
 **SetRowStyle** | 设置行样式 | [CellStyleInfo?](#cellstyleinfo) | object? record `原始行`, int rowIndex `行序号` |
 **SortRows** | 行排序时发生 | void | int columnIndex `列序号` |
+**FilterChanged** | 筛选条件更改时发生 | void | Column column `列对象` |
 
 > 奇偶交替背景色
 

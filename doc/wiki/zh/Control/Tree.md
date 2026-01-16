@@ -19,14 +19,21 @@ Tree 树形控件 👚
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
 **Gap** | 间距 | int | 8 |
+**GapIndent** | 间距缩进 | int`?` | `null` |
 **Radius** | 圆角 | int | 6 |
 **Round** | 圆角样式 | bool | false |
 **IconRatio** | 图标比例 | float | 1F |
 **Checkable** | 节点前添加 Checkbox 复选框 | bool | false |
 **CheckStrictly** | Checkable 状态下节点选择完全受控 `父子节点选中状态不再关联` | bool | true |
 **BlockNode** | 节点占据一行 | bool | false |
+**Multiple** | 支持点选多个节点 | bool | false |
 ||||
 **Items** | 数据 `TreeItem[]` | [TreeItem[]](#treeitem) | [] |
+**SelectItem** | 选择项 | [TreeItem](#treeitem)`?` | `null` |
+||||
+**Empty** | 是否显示空样式 | bool | true |
+**EmptyText** | 数据为空显示文字 | string`?` | `null` |
+**EmptyImage** | 数据为空显示图片 | Image`?` | `null` |
 ||||
 **PauseLayout** | 暂停布局 | bool | false |
 
@@ -36,6 +43,8 @@ Tree 树形控件 👚
 :--|:--|:--|:--|
 **SelectChanged** | Select 属性值更改时发生 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
 **CheckedChanged** | Checked 属性值更改时发生 | void | [TreeItem](#treeitem) item `数值`, bool value `选中值` |
+**BeforeExpand** | Expand 更改前发生 | void | [TreeItem](#treeitem) item `数值`, bool value `展开值` |
+**AfterExpand** | Expand 更改后发生 | void | [TreeItem](#treeitem) item `数值`, bool value `展开值` |
 **NodeMouseClick** | 点击项事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
 **NodeMouseDoubleClick** | 双击项事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
 **NodeMouseMove** | 移动项事件 | void | [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域`, bool hover `悬停值` |

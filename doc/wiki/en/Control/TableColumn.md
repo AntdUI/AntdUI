@@ -17,6 +17,7 @@ Name | Description | Type | Default Value |
 **ColAlign** | Header Align | ColumnAlign`?` | `null` |
 **Width** | Column Width | string`?` ||
 **MaxWidth** | Maximum width of column | string`?` ||
+**MinWidth** | Column minimum width | string`?` ||
 ||||
 **Fixed** | Is the column fixed | bool |false|
 **Ellipsis** | Exceeding the width will be automatically omitted | bool |false|
@@ -24,9 +25,15 @@ Name | Description | Type | Default Value |
 **ColBreak** | Automatic line wrapping in the header | bool |false|
 **SortOrder** | Enable sorting | bool |false|
 **SortMode** | Sort Mode | SortMode |NONE|
+**ReadOnly** | Read only | bool |false|
 **Editable** | Column editable | bool |true|
 **DragSort** | Column can be dragged and dropped | bool |true|
 **KeyTree** | Tree Column | string`?` ||
+||||
+**HasFilter** | Has filter | bool |false| (Read only)
+**Filter** | User filter options | FilterOption`?` ||
+**DisplayFormat** | Display format | string`?` ||
+**SummaryItem** | Summary column options | SummaryItemOption`?` ||
 ||||
 **Style** | Column Style | CellStyleInfo`?` ||
 **ColStyle** | Title column style | CellStyleInfo`?` ||

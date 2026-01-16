@@ -18,8 +18,6 @@ Input 输入框 👚
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |
 **BackExtend** | 背景渐变色 | string`?` | `null` |
-**BackHover** | 悬停背景颜色 | Color`?` | `null` |
-**BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
 **BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
@@ -67,20 +65,29 @@ Input 输入框 👚
 **MaxLength** | 文本最大长度 | int | 32767 |
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
-**IconRatioRight** | 右图标比例 | float | `null` |
+**IconRatioRight** | 右图标比例 | float`?` | `null` |
 **IconGap** | 图标与文字间距比例 | float | 0.25F |
+**PaddGap** | 边框间距比例 | float | 0.4F |
 **Prefix** | 前缀 | Image`?` | `null` |
 **PrefixFore** | 前缀前景色 | Color`?` | `null` |
 **PrefixSvg** | 前缀SVG | string`?` | `null` |
 **PrefixText** | 前缀文本 | string`?` | `null` |
+🌏 **LocalizationPrefixText** | 国际化前缀文本 | string`?` | `null` |
+**HasPrefix** | 是否包含前缀 | bool | `false` |
 ||||
 **Suffix** | 后缀 | Image`?` | `null` |
 **SuffixFore** | 后缀前景色 | Color`?` | `null` |
 **SuffixSvg** | 后缀SVG | string`?` | `null` |
 **SuffixText** | 后缀文本 | string`?` | `null` |
+🌏 **LocalizationSuffixText** | 国际化后缀文本 | string`?` | `null` |
+**HasSuffix** | 是否包含后缀 | bool | `false` |
 ||||
-**JoinLeft** | 连接左边 `组合按钮` | bool | false |
-**JoinRight** | 连接右边 `组合按钮` | bool | false |
+**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
+**JoinLeft** | 连接左边 `组合按钮` `已过时` | bool | false |
+**JoinRight** | 连接右边 `组合按钮` `已过时` | bool | false |
+||||
+**AdapterSystemMnemonic** | 适配系统助记词 | bool | false |
+**HandShortcutKeys** | 处理快捷键 `已过时` | bool | true |
 ||||
 **RightToLeft** | 反向 | RightToLeft | No |
 
@@ -89,7 +96,8 @@ Input 输入框 👚
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **AppendText** | 将文本追加到当前文本中 | void | string text `追加的文本` |
-**InsertText** | 在指定位置插入文本 | void | string text `插入的文本`, int index `插入位置` |
+**AppendText** | 追加文本到末尾 | void | string text `追加的文本`, TextOpConfig config `文本配置` |
+**InsertText** | 在指定位置插入文本 | void | int startIndex `开始位置`, string text `文本`, TextOpConfig config `文本配置` |
 **Clear** | 清除所有文本 | void ||
 **ClearUndo** | 清除撤消缓冲区信息 | void ||
 **Copy** | 复制 | void ||
@@ -103,9 +111,14 @@ Input 输入框 👚
 **DeselectAll** | 取消全部选中 | void ||
 **ScrollToCaret** | 内容滚动到当前插入符号位置 | void ||
 **ScrollToEnd** | 内容滚动到最下面 | void ||
-**ScrollLine** | 滚动一行 | void | bool down `是否向下滚动` |
-**SetStyle** | 设置文本样式 | void | int start `起始位置`, int length `长度`, Font font `字体`, Color? fore `前景色`, Color? back `背景色` |
+**ScrollLine** | 滚动到指定行 | void | int i `行索引` |
+**EnterText** | 当前位置插入文本 | void | string text `文本`, bool ismax `是否限制MaxLength` |
+**SetStyle** | 设置样式 | bool | int start `第一个字符的位置`, int length `字符长度`, Font? font `字体`, Color? fore `文本颜色`, Color? back `背景颜色` |
+**SetStyle** | 设置样式 | bool | TextStyle style `文本样式`, bool rd `是否渲染` |
 **ClearStyle** | 清空样式 | void ||
+**GetSelectionText** | 获取当前选中文本 | string? ||
+**SelectedText** | 获取设置当前选中文本 | string? ||
+||||
 **AnimationBlink** | 开始闪烁动画 | void | int interval `动画间隔时长（毫秒）`, params Color[] colors `色彩值` |
 **AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, params Color[] colors `色彩值` |
 **AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, int transition_interval `过度动画间隔时长（毫秒）`, AnimationType animationType `过度动画类型`, params Color[] colors `色彩值` |

@@ -78,64 +78,58 @@ namespace AntdUI
                     ScrollBar.SetVrSize(is_exceed ? x : 0, y);
                     return rect;
                 }
-                else
-                {
-                    ScrollBar.SetVrSize(0, 0);
-                    dividers = new int[0][];
-                    rows = null;
-                }
             }
             else
             {
                 var _rows = LayoutDesign(rect, dataTmp, out bool Processing, out var Columns, out var ColWidth, out int KeyTreeIndex);
-                if (visibleHeader && EmptyHeader && _rows.Count == 0)
+                if (Columns.Count > 0)
                 {
-                    rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
-                    ScrollBar.SetVrSize(is_exceed ? x : 0, y);
-                    ThreadState?.Dispose(); ThreadState = null;
-                    return rect;
-                }
-                else if (_rows.Count > 0)
-                {
-                    rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
-                    if (scrollBarAvoidHeader && visibleHeader && fixedHeader)
+                    if (visibleHeader && EmptyHeader && _rows.Count == 0)
                     {
-                        int headerHeight = rows[0].Height;
-                        if (headerHeight > 0 && rect.Height > headerHeight)
-                        {
-                            y -= headerHeight;
-                            rect = new Rectangle(rect.X, rect.Y + headerHeight, rect.Width, rect.Height - headerHeight);
-                        }
+                        rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
+                        ScrollBar.SetVrSize(is_exceed ? x : 0, y);
+                        ThreadState?.Dispose(); ThreadState = null;
+                        return rect;
                     }
-                    ScrollBar.SetVrSize(is_exceed ? x : 0, y);
-                    if (Processing && Config.HasAnimation(nameof(Table)))
+                    else if (_rows.Count > 0)
                     {
-                        if (ThreadState == null)
+                        rows = LayoutDesign(rect, _rows, Columns, ColWidth, KeyTreeIndex, out int x, out int y, out bool is_exceed);
+                        if (scrollBarAvoidHeader && visibleHeader && fixedHeader)
                         {
-                            ThreadState = new AnimationTask(new AnimationLinearConfig(this, i =>
+                            int headerHeight = rows[0].Height;
+                            if (headerHeight > 0 && rect.Height > headerHeight)
                             {
-                                AnimationStateValue = i / 100F;
-                                Invalidate();
-                                return true;
-                            }, 50, 100, 5));
+                                y -= headerHeight;
+                                rect = new Rectangle(rect.X, rect.Y + headerHeight, rect.Width, rect.Height - headerHeight);
+                            }
                         }
+                        ScrollBar.SetVrSize(is_exceed ? x : 0, y);
+                        if (Processing && Config.HasAnimation(nameof(Table)))
+                        {
+                            if (ThreadState == null)
+                            {
+                                ThreadState = new AnimationTask(new AnimationLinearConfig(this, i =>
+                                {
+                                    AnimationStateValue = i / 100F;
+                                    Invalidate();
+                                    return true;
+                                }, 50, 100, 5));
+                            }
+                        }
+                        else
+                        {
+                            ThreadState?.Dispose();
+                            ThreadState = null;
+                        }
+                        return rect;
                     }
-                    else
-                    {
-                        ThreadState?.Dispose();
-                        ThreadState = null;
-                    }
-                    return rect;
-                }
-                else
-                {
-                    ThreadState?.Dispose();
-                    ThreadState = null;
-                    ScrollBar.SetVrSize(0, 0);
-                    dividers = new int[0][];
-                    rows = null;
                 }
             }
+            ThreadState?.Dispose();
+            ThreadState = null;
+            ScrollBar.SetVrSize(0, 0);
+            dividers = new int[0][];
+            rows = null;
             return Rectangle.Empty;
         }
 

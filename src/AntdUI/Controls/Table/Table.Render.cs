@@ -1299,11 +1299,6 @@ namespace AntdUI
 
         #region 复选/选择框
 
-        internal static RectangleF PaintBlock(RectangleF rect)
-        {
-            float size = rect.Height * 0.2F, size2 = size * 2F;
-            return new RectangleF(rect.X + size, rect.Y + size, rect.Width - size2, rect.Height - size2);
-        }
         internal static PointF[] PaintArrow(RectangleF rect)
         {
             float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;

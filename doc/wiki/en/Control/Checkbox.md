@@ -22,6 +22,7 @@ Name | Description | Type | Default Value |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextAlign** 🔴 | Text position | ContentAlignment | MiddleLeft |
 **Checked** | Checked state | bool | false |
+**CheckState** | Checked state | CheckState | Unchecked |
 **AutoCheck** | Click to automatically change the selected status | bool | true |
 ||||
 **RightToLeft** | Reverse | RightToLeft | No |

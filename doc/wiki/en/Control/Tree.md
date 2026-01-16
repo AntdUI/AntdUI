@@ -18,14 +18,21 @@ Name | Description | Type | Default Value |
 **BackActive** | Activate background color | Color`?` | `null` |
 ||||
 **Gap** | Gap | int | 8 |
+**GapIndent** | Gap indent | int`?` | `null` |
 **Radius** | Rounded corners | int | 6 |
 **Round** | Rounded corner style | bool | false |
 **IconRatio** | Icon Scale | float | 1F |
 **Checkable** | Add Checkbox checkbox in front of the node | bool | false |
 **CheckStrictly** | Node selection is fully controlled in Checkable state `The selected status of parent-child nodes is no longer associated` | bool | true |
 **BlockNode** | Nodes occupy a row | bool | false |
+**Multiple** | Support selecting multiple nodes | bool | false |
 ||||
 **Items** | Data `TreeItem[]` | [TreeItem[]](#treeitem) | [] |
+**SelectItem** | Selected item | [TreeItem](#treeitem)`?` | `null` |
+||||
+**Empty** | Is it displayed | bool | true |
+**EmptyText** | Display text when data is empty | string`?` | `null` |
+**EmptyImage** | Display image with empty data | Image`?` | `null` |
 ||||
 **PauseLayout** | Pause Layout | bool | false |
 
@@ -35,6 +42,8 @@ Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **SelectChanged** | Occurred when the value of the Select attribute is changed | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
 **CheckedChanged** | Occurred when the value of the Checked attribute is changed | void | [TreeItem](#treeitem) item, bool value `Select Value` |
+**BeforeExpand** | Occurred before Expand is changed | void | [TreeItem](#treeitem) item, bool value `Expand value` |
+**AfterExpand** | Occurred after Expand is changed | void | [TreeItem](#treeitem) item, bool value `Expand value` |
 **NodeMouseClick** | Click Item Event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
 **NodeMouseDoubleClick** | Double click event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
 **NodeMouseMove** | Mobile event | void | [TreeItem](#treeitem) item, Rectangle rect, bool hover |

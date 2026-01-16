@@ -109,11 +109,18 @@ public partial class Form1 : AntdUI.BaseForm
         InitializeComponent();
         
         // Customize window theme switching configuration
-        Theme()
-            .Dark("#1e1e1e", "#ffffff") // Dark mode background and text color
-            .Light("#ffffff", "#000000") // Light mode background and text color
-            .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // Page header color
-            .Button(btnTheme); // Theme switch button
+Theme()
+    .Dark("#1e1e1e", "#ffffff") // Dark mode background and text color
+    .Light("#ffffff", "#000000") // Light mode background and text color
+    .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // Page header color
+    .Button(btnTheme) // Theme switch button
+    .CallBefore(dark => Console.WriteLine("Before theme switch: " + dark)) // Theme switch before callback
+    .Call(dark => Console.WriteLine("After theme switch: " + dark)) // Theme switch callback
+    .FormBorderColor(Color.LightGray, Color.DarkGray) // Custom window border color
+    // Or use primary color style window border
+    // .FormBorderColorPrimary()
+    // Or use default border color
+    // .FormBorderColor()
     }
     
     // Theme switch button click event
@@ -134,8 +141,13 @@ public partial class Form1 : AntdUI.BaseForm
 | **Header** | Set page header colors | PageHeader header, Color light, Color dark / string light, string dark |
 | **Button** | Set theme switch button | Button button |
 | **Call** | Set theme switch callback | Action<bool> call |
+| **CallBefore** | Set theme switch before callback | Action<bool> call |
 | **Light** | Set light mode callback | Action call |
 | **Dark** | Set dark mode callback | Action call |
+| **FormBorderColor** | Set window border color | Color light, Color dark |
+| **FormBorderColorPrimary** | Set window border color (primary color style) | None |
+| **FormBorderColor** | Set window border color (default border color) | None |
+| **ClearFormBorderColor** | Clear window border color | None |
 
 ---
 

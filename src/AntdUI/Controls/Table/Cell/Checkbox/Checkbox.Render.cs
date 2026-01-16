@@ -39,21 +39,35 @@ namespace AntdUI
                     var color = fill ?? Colour.Primary.Get(nameof(Checkbox), ColorScheme);
                     if (AnimationCheck)
                     {
-                        float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
-                        g.Fill(Helper.ToColor(alpha, color), path);
-                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
+                        var alpha = 255 * AnimationCheckValue;
+                        if (checkState == System.Windows.Forms.CheckState.Indeterminate || (checkStateOld == System.Windows.Forms.CheckState.Indeterminate && !_checked))
                         {
-                            g.DrawLines(pen, icon_rect.CheckArrow());
+                            g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), ColorScheme)), Checkbox.PaintBlock(icon_rect));
                         }
-                        if (_checked)
+                        else
                         {
-                            float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue), alpha2 = 100 * (1F - AnimationCheckValue);
-                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
+                            var dot = dot_size * 0.3F;
+                            g.Fill(Helper.ToColor(alpha, color), path);
+                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
                             {
-                                g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
+                                g.DrawLines(pen, icon_rect.CheckArrow());
                             }
+                            if (_checked)
+                            {
+                                float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue), alpha2 = 100 * (1F - AnimationCheckValue);
+                                using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
+                                {
+                                    g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
+                                }
+                            }
+                            g.Draw(color, bor2, path);
                         }
-                        g.Draw(color, bor2, path);
+                    }
+                    else if (checkState == System.Windows.Forms.CheckState.Indeterminate)
+                    {
+                        g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
+                        g.Fill(Colour.Primary.Get(nameof(Checkbox), ColorScheme), Checkbox.PaintBlock(icon_rect));
                     }
                     else if (_checked)
                     {

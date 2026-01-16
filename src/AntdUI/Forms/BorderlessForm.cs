@@ -102,12 +102,12 @@ namespace AntdUI
             }
         }
 
-        Color borderColor = Color.FromArgb(180, 0, 0, 0);
+        Color? borderColor;
         /// <summary>
         /// 边框颜色
         /// </summary>
-        [Description("边框颜色"), Category("外观"), DefaultValue(typeof(Color), "180, 0, 0, 0")]
-        public Color BorderColor
+        [Description("边框颜色"), Category("外观"), DefaultValue(null)]
+        public Color? BorderColor
         {
             get => borderColor;
             set
@@ -256,6 +256,11 @@ namespace AntdUI
                 Win32.DwmSetWindowAttribute(Handle, 2, ref v, 4);
                 DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
             }
+        }
+
+        protected override void SetThemeOK(bool dark)
+        {
+            if (DwmEnabled) Win32.SetWindowBorderColor(Handle, BorderColor);
         }
 
         const nint SIZE_RESTORED = 0;

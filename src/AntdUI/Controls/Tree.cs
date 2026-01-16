@@ -625,7 +625,7 @@ namespace AntdUI
                             if (item.CheckState == CheckState.Indeterminate || (item.checkStateOld == CheckState.Indeterminate && !item.Checked))
                             {
                                 g.Draw(Colour.BorderColor.Get(nameof(Tree), ColorScheme), bor2, path_check);
-                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Tree), ColorScheme)), PaintBlock(item.check_rect));
+                                g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Tree), ColorScheme)), Checkbox.PaintBlock(item.check_rect));
                             }
                             else
                             {
@@ -648,7 +648,7 @@ namespace AntdUI
                         else if (item.CheckState == CheckState.Indeterminate)
                         {
                             g.Draw(Colour.BorderColor.Get(nameof(Tree), ColorScheme), bor2, path_check);
-                            g.Fill(Colour.Primary.Get(nameof(Tree), ColorScheme), PaintBlock(item.check_rect));
+                            g.Fill(Colour.Primary.Get(nameof(Tree), ColorScheme), Checkbox.PaintBlock(item.check_rect));
                         }
                         else if (item.Checked)
                         {
@@ -660,7 +660,7 @@ namespace AntdUI
                     else
                     {
                         g.Fill(Colour.FillQuaternary.Get(nameof(Tree), "bgDisabled", ColorScheme), path_check);
-                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Colour.TextQuaternary.Get(nameof(Tree), "foreDisabled", ColorScheme), PaintBlock(item.check_rect));
+                        if (item.CheckState == CheckState.Indeterminate) g.Fill(Colour.TextQuaternary.Get(nameof(Tree), "foreDisabled", ColorScheme), Checkbox.PaintBlock(item.check_rect));
                         else if (item.Checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Tree), "foreDisabled", ColorScheme), bor2, PaintArrow(item.check_rect));
                         g.Draw(Colour.BorderColorDisable.Get(nameof(Tree), "borderColorDisabled", ColorScheme), bor2, path_check);
                     }
@@ -703,11 +703,6 @@ namespace AntdUI
 
         }
 
-        internal RectangleF PaintBlock(RectangleF rect)
-        {
-            float size = rect.Height * 0.2F, size2 = size * 2F;
-            return new RectangleF(rect.X + size, rect.Y + size, rect.Width - size2, rect.Height - size2);
-        }
         internal PointF[] PaintArrow(RectangleF rect)
         {
             float size = rect.Height * 0.15F, size2 = rect.Height * 0.2F, size3 = rect.Height * 0.26F;
@@ -1521,6 +1516,50 @@ namespace AntdUI
 
         #endregion
 
+        #region 搜索
+
+        /// <summary>
+        /// 搜索筛选
+        /// </summary>
+        /// <param name="search">搜索文本</param>
+        public void Search(string? search)
+        {
+            var old = pauseLayout;
+            PauseLayout = true;
+            if (search == null || string.IsNullOrEmpty(search)) FunSearch(items);
+            else FunSearch(items, search);
+            PauseLayout = old;
+        }
+        void FunSearch(TreeItemCollection? items)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                FunSearch(item.items);
+                item.Visible = true;
+            }
+        }
+        int FunSearch(TreeItemCollection? items, string text)
+        {
+            if (items == null) return 0;
+            int total = 0;
+            foreach (var item in items)
+            {
+                int count = FunSearch(item.items, text);
+                total += count;
+                bool show = (item.Name?.Contains(text) ?? false) || (item.Text?.Contains(text) ?? false);
+                if (show)
+                {
+                    item.Visible = true;
+                    total++;
+                }
+                else item.Visible = count > 0;
+            }
+            return total;
+        }
+
+        #endregion
+
         public TreeItem? HitTest(int x, int y, out TreeCType type)
         {
             if (items == null || items.Count == 0)
@@ -1944,15 +1983,14 @@ namespace AntdUI
             ThreadCheck = null;
             if (PARENT != null && PARENT.IsHandleCreated && (ParentItem == null || ParentItem.expand) && show && Config.HasAnimation(nameof(Tree)))
             {
-                AnimationCheck = true;
                 if (!_checked && checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
                 {
-                    AnimationCheck = false;
                     AnimationCheckValue = 1F;
                     Invalidate();
                 }
                 else
                 {
+                    AnimationCheck = true;
                     ThreadCheck = new AnimationTask(new AnimationLinearFConfig(PARENT, i =>
                     {
                         AnimationCheckValue = i;

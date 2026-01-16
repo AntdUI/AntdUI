@@ -24,9 +24,6 @@ namespace AntdUI
                 ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.ResizeRedraw, true);
             UpdateStyles();
-            //置顶窗体
-            //TopMost = BorderlessForm.TopMost;
-            //BorderlessForm.BringToFront();
             ShowInTaskbar = false;
             FormBorderStyle = FormBorderStyle.None;
             Icon = form.Icon;
@@ -35,6 +32,7 @@ namespace AntdUI
             memDc = Win32.CreateCompatibleDC(Win32.screenDC);
             ISize();
         }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -52,8 +50,9 @@ namespace AntdUI
             {
                 var cp = base.CreateParams;
                 cp.ExStyle |= 0x08000000 | 0x00080000;
-                if (form != null && form.ShadowPierce) cp.ExStyle |= 0x20;
-                cp.Parent = IntPtr.Zero;
+                if (form == null) return cp;
+                if (form.ShadowPierce) cp.ExStyle |= 0x20;
+                cp.Parent = form.Handle;
                 return cp;
             }
         }
@@ -214,7 +213,7 @@ namespace AntdUI
                     g.Image(bitbmp, new Rectangle(shadow2, 0, bitmap.Width - shadow4, shadow), new Rectangle(shadow2, 0, bitbmp.Width - shadow4, shadow), GraphicsUnit.Pixel);
 
                     g.ResetClip();
-                    if (form.BorderWidth > 0) g.Draw(form.BorderColor, form.BorderWidth * form.Dpi, path);
+                    if (form.BorderWidth > 0 && form.BorderColor.HasValue) g.Draw(form.BorderColor.Value, form.BorderWidth * form.Dpi, path);
                 }
             }
             return bitmap;

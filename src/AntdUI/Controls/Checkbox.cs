@@ -104,6 +104,8 @@ namespace AntdUI
             }
         }
 
+        #region 选中状态
+
         bool AnimationCheck = false;
         float AnimationCheckValue = 0;
         bool _checked = false;
@@ -118,8 +120,49 @@ namespace AntdUI
             {
                 if (_checked == value) return;
                 _checked = value;
-                ThreadCheck?.Dispose();
-                if (IsHandleCreated && Config.HasAnimation(nameof(Checkbox), Name))
+                OnCheck();
+                CheckState = value ? CheckState.Checked : CheckState.Unchecked;
+                OnCheckedChanged(value);
+                OnPropertyChanged(nameof(Checked));
+            }
+        }
+
+        internal CheckState checkStateOld = CheckState.Unchecked;
+        CheckState checkState = CheckState.Unchecked;
+        /// <summary>
+        /// 选中状态
+        /// </summary>
+        [Description("选中状态"), Category("行为"), DefaultValue(CheckState.Unchecked)]
+        public CheckState CheckState
+        {
+            get => checkState;
+            set
+            {
+                if (checkState == value) return;
+                checkState = value;
+                bool __checked = value == CheckState.Checked;
+                if (_checked == __checked) Invalidate();
+                else
+                {
+                    _checked = __checked;
+                    OnCheck();
+                }
+                if (value != CheckState.Unchecked) checkStateOld = value;
+                OnPropertyChanged(nameof(CheckState));
+            }
+        }
+
+        void OnCheck()
+        {
+            ThreadCheck?.Dispose();
+            if (IsHandleCreated && Config.HasAnimation(nameof(Checkbox), Name))
+            {
+                if (!_checked && checkStateOld == CheckState.Checked && CheckState == CheckState.Indeterminate)
+                {
+                    AnimationCheckValue = 1F;
+                    Invalidate();
+                }
+                else
                 {
                     AnimationCheck = true;
                     ThreadCheck = new AnimationTask(new AnimationLinearFConfig(this, i =>
@@ -127,14 +170,17 @@ namespace AntdUI
                         AnimationCheckValue = i;
                         Invalidate();
                         return true;
-                    }, 20).SetValue(AnimationCheckValue, value, 0.2F).SetEnd(() => AnimationCheck = false));
+                    }, 20).SetValue(AnimationCheckValue, _checked, 0.2F).SetEnd(() => AnimationCheck = false));
                 }
-                else AnimationCheckValue = value ? 1F : 0F;
+            }
+            else
+            {
+                AnimationCheckValue = _checked ? 1F : 0F;
                 Invalidate();
-                OnCheckedChanged(value);
-                OnPropertyChanged(nameof(Checked));
             }
         }
+
+        #endregion
 
         /// <summary>
         /// 点击时自动改变选中状态
@@ -268,21 +314,35 @@ namespace AntdUI
                     var color = fill ?? Colour.Primary.Get(nameof(Checkbox), ColorScheme);
                     if (AnimationCheck)
                     {
-                        float dot = dot_size * 0.3F, alpha = 255 * AnimationCheckValue;
-                        g.Fill(Helper.ToColor(alpha, color), path);
-                        using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
+                        var alpha = 255 * AnimationCheckValue;
+                        if (checkState == CheckState.Indeterminate || (checkStateOld == CheckState.Indeterminate && !_checked))
                         {
-                            g.DrawLines(pen, icon_rect.CheckArrow());
+                            g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), ColorScheme)), PaintBlock(icon_rect));
                         }
-                        if (_checked)
+                        else
                         {
-                            float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue), alpha2 = 100 * (1F - AnimationCheckValue);
-                            using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
+                            var dot = dot_size * 0.3F;
+                            g.Fill(Helper.ToColor(alpha, color), path);
+                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
                             {
-                                g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
+                                g.DrawLines(pen, icon_rect.CheckArrow());
                             }
+                            if (_checked)
+                            {
+                                float max = icon_rect.Height + ((rect.Height - icon_rect.Height) * AnimationCheckValue), alpha2 = 100 * (1F - AnimationCheckValue);
+                                using (var brush = new SolidBrush(Helper.ToColor(alpha2, color)))
+                                {
+                                    g.FillEllipse(brush, new RectangleF(icon_rect.X + (icon_rect.Width - max) / 2F, icon_rect.Y + (icon_rect.Height - max) / 2F, max, max));
+                                }
+                            }
+                            g.Draw(color, bor2, path);
                         }
-                        g.Draw(color, bor2, path);
+                    }
+                    else if (checkState == CheckState.Indeterminate)
+                    {
+                        g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
+                        g.Fill(Colour.Primary.Get(nameof(Checkbox), ColorScheme), PaintBlock(icon_rect));
                     }
                     else if (_checked)
                     {
@@ -303,6 +363,12 @@ namespace AntdUI
                     g.Draw(Colour.BorderColorDisable.Get(nameof(Checkbox), "borderColorDisabled", ColorScheme), bor2, path);
                 }
             }
+        }
+
+        internal static RectangleF PaintBlock(RectangleF rect)
+        {
+            float size = rect.Height * 0.2F, size2 = size * 2F;
+            return new RectangleF(rect.X + size, rect.Y + size, rect.Width - size2, rect.Height - size2);
         }
 
         #endregion

@@ -134,3 +134,53 @@ Name | Description | Type | Default Value |
 #### CellDivider
 
 > Divider
+
+#### CellCheckbox
+
+> Checkbox
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Fore** | Font color | Color`?` ||
+**Font** | Font | Font`?` ||
+**Fill** | Fill color | Color`?` ||
+**Enabled** | Enabled | bool | true |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
+||||
+**Text** | Text | string`?` ||
+🌏 **LocalizationText** | International Text | string`?` ||
+||||
+**Checked** | Checked state | bool | false |
+**CheckState** | Checked state | CheckState | Unchecked |
+
+#### CellRadio
+
+> Radio
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Fore** | Font color | Color`?` ||
+**Font** | Font | Font`?` ||
+**Fill** | Fill color | Color`?` ||
+**Enabled** | Enabled | bool | true |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
+||||
+**Text** | Text | string`?` ||
+🌏 **LocalizationText** | International Text | string`?` ||
+||||
+**Checked** | Checked state | bool | false |
+
+#### CellSwitch
+
+> Switch
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Fore** | Font color | Color`?` ||
+**Enabled** | Enabled | bool | true |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
+||||
+**Text** | Text | string`?` ||
+🌏 **LocalizationText** | International Text | string`?` ||
+||||
+**Checked** | Checked state | bool | false |

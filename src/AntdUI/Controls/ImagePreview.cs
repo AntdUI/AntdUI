@@ -437,7 +437,11 @@ namespace AntdUI
         #endregion
 
         Size ImgSize = new Size();
-        void LoadImg(bool r = true)
+        /// <summary>
+        /// 加载图片
+        /// </summary>
+        /// <param name="r">是否渲染</param>
+        public void LoadImg(bool r = true)
         {
             autoDpi = true;
             if (items == null) return;
