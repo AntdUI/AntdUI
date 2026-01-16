@@ -147,7 +147,14 @@ namespace AntdUI
         /// 阴影使能
         /// </summary>
         public static bool ShadowEnabled { get; set; } = true;
-
+        /// <summary>
+        /// 阴影大小 (默认10DPI)
+        /// </summary>
+        public static int ShadowSize {  get; set; } = 10;
+        /// <summary>
+        /// 阴影透明度 (默认0.2f)
+        /// </summary>
+        public static float ShadowOpacity { get; set; } = 0.2F;
         /// <summary>
         /// 焦点边框使能
         /// </summary>

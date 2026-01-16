@@ -31,7 +31,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void success(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Success, align, font, autoClose));
+        public static void success(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null, Color? back = null, Color? fore = null) => open(new Config(form, title, text, TType.Success, align, font, autoClose, back, fore));
 
         /// <summary>
         /// 信息通知
@@ -42,7 +42,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void info(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Info, align, font, autoClose));
+        public static void info(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null, Color? back = null, Color? fore = null) => open(new Config(form, title, text, TType.Info, align, font, autoClose, back, fore));
 
         /// <summary>
         /// 警告通知
@@ -53,7 +53,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void warn(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Warn, align, font, autoClose));
+        public static void warn(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null, Color? back = null, Color? fore = null) => open(new Config(form, title, text, TType.Warn, align, font, autoClose, back, fore));
 
         /// <summary>
         /// 失败通知
@@ -64,7 +64,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void error(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.Error, align, font, autoClose));
+        public static void error(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null, Color? back = null, Color? fore = null) => open(new Config(form, title, text, TType.Error, align, font, autoClose, back, fore));
 
         /// <summary>
         /// 普通通知
@@ -75,7 +75,7 @@ namespace AntdUI
         /// <param name="align">位置</param>
         /// <param name="font">字体</param>
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
-        public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.None, align, font, autoClose));
+        public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null, Color? back = null, Color? fore = null) => open(new Config(form, title, text, TType.None, align, font, autoClose, back, fore));
 
         /// <summary>
         /// Notification 通知提醒框
@@ -166,6 +166,11 @@ namespace AntdUI
                 Icon = icon;
             }
             public Config(Target target, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose)
+            : this(target, title, text, icon, align, font, autoClose, null, null) { }
+
+            public Config(Target target, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose, Color? back)
+            : this(target, title, text, icon, align, font, autoClose, back, null) { }
+            public Config(Target target, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose, Color? back, Color? fore)
             {
                 Target = target;
                 Font = font;
@@ -174,6 +179,8 @@ namespace AntdUI
                 Align = align;
                 Icon = icon;
                 if (autoClose.HasValue) AutoClose = autoClose.Value;
+                Back = back;
+                Fore = fore;
             }
 
             #region 窗口
@@ -183,6 +190,8 @@ namespace AntdUI
             public Config(Form form, string title, string text, TType icon, TAlignFrom align) : this(new Target(form), title, text, icon, align) { }
             public Config(Form form, string title, string text, TType icon, TAlignFrom align, Font? font) : this(new Target(form), title, text, icon, align, font) { }
             public Config(Form form, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose) : this(new Target(form), title, text, icon, align, font, autoClose) { }
+            public Config(Form form, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose, Color? back) : this(new Target(form), title, text, icon, align, font, autoClose, back) { }
+            public Config(Form form, string title, string text, TType icon, TAlignFrom align, Font? font, int? autoClose, Color? back, Color? fore) : this(new Target(form), title, text, icon, align, font, autoClose, back, fore) { }
 
             #endregion
 
@@ -308,7 +317,14 @@ namespace AntdUI
             /// 是否启用声音
             /// </summary>
             public bool EnableSound { get; set; }
-
+            /// <summary>
+            /// 自定义背景色
+            /// </summary>
+            public Color? Back {  get; set; }
+            /// <summary>
+            /// 自定义前景色
+            /// </summary>
+            public Color? Fore { get; set; }
             #region 设置
 
             public Config SetID(string? value)
@@ -340,7 +356,8 @@ namespace AntdUI
                 LocalizationText = localization;
                 return this;
             }
-
+            public Config SetBack(Color? value) {  Back = value; return this; }
+            public Config SetFore(Color? value) {  Fore = value; return this; }
             #region 图标
 
             public Config SetIcon(TType icon = TType.Success)
@@ -493,7 +510,7 @@ namespace AntdUI
     {
         Font font_title;
         internal Notification.Config config;
-        int shadow_size = 10;
+        int shadow_size = Config.ShadowSize;
         public NotificationFrm(Notification.Config _config, string? id)
         {
             config = _config;
@@ -563,7 +580,7 @@ namespace AntdUI
             {
                 using (var path = DrawShadow(g, rect, rect_read))
                 {
-                    g.Fill(Colour.BgElevated.Get(nameof(Notification)), path);
+                    g.Fill(config.Back ?? Colour.BgElevated.Get(nameof(Notification)), path);
                 }
                 if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification", TAMode.Auto);
@@ -588,7 +605,7 @@ namespace AntdUI
                     }
                     else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(nameof(Notification)), .6F);
                 }
-                using (var brush = new SolidBrush(Colour.TextBase.Get(nameof(Notification))))
+                using (var brush = new SolidBrush(config.Fore ?? Colour.TextBase.Get(nameof(Notification))))
                 {
                     g.DrawText(config.Title, font_title, brush, rect_title, s_f_left);
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left_left);
@@ -622,7 +639,7 @@ namespace AntdUI
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.Image(shadow_temp.Bitmap, rect_client, 0.2F);
+                g.Image(shadow_temp.Bitmap, rect_client, Config.ShadowOpacity);
             }
             return path;
         }
