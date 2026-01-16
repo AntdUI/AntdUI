@@ -134,3 +134,53 @@
 #### CellDivider
 
 > 分割线
+
+#### CellCheckbox
+
+> 复选框
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Fore** | 字体颜色 | Color`?` ||
+**Font** | 字体 | Font`?` ||
+**Fill** | 填充颜色 | Color`?` ||
+**Enabled** | 启用 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
+||||
+**Text** | 文本 | string`?` ||
+🌏 **LocalizationText** | 国际化文本 | string`?` ||
+||||
+**Checked** | 选中状态 | bool | false |
+**CheckState** | 选中状态 | CheckState | Unchecked |
+
+#### CellRadio
+
+> 单选框
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Fore** | 字体颜色 | Color`?` ||
+**Font** | 字体 | Font`?` ||
+**Fill** | 填充颜色 | Color`?` ||
+**Enabled** | 启用 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
+||||
+**Text** | 文本 | string`?` ||
+🌏 **LocalizationText** | 国际化文本 | string`?` ||
+||||
+**Checked** | 选中状态 | bool | false |
+
+#### CellSwitch
+
+> 开关
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Fore** | 字体颜色 | Color`?` ||
+**Enabled** | 启用 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
+||||
+**Text** | 文本 | string`?` ||
+🌏 **LocalizationText** | 国际化文本 | string`?` ||
+||||
+**Checked** | 选中状态 | bool | false |

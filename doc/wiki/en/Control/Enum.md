@@ -280,3 +280,14 @@ Name | Description |
 **None** | None |
 **Clockwise_90** | Clockwise 90° |
 **CounterClockwise_90** | CounterClockwise 90° |
+
+***
+
+## TVariant
+
+Variant
+
+Name | Description |
+:--|:--|
+**Outlined** | Outlined |
+**Underlined** | Underlined |

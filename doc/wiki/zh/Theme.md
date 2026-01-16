@@ -109,11 +109,18 @@ public partial class Form1 : AntdUI.BaseForm
         InitializeComponent();
         
         // 定制窗口主题切换配置
-        Theme()
-            .Dark("#1e1e1e", "#ffffff") // 深色模式背景色和文本色
-            .Light("#ffffff", "#000000") // 浅色模式背景色和文本色
-            .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // 页面头部颜色
-            .Button(btnTheme); // 主题切换按钮
+Theme()
+    .Dark("#1e1e1e", "#ffffff") // 深色模式背景色和文本色
+    .Light("#ffffff", "#000000") // 浅色模式背景色和文本色
+    .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // 页面头部颜色
+    .Button(btnTheme) // 主题切换按钮
+    .CallBefore(dark => Console.WriteLine("主题切换前：" + dark)) // 主题切换前回调
+    .Call(dark => Console.WriteLine("主题切换后：" + dark)) // 主题切换后回调
+    .FormBorderColor(Color.LightGray, Color.DarkGray) // 自定义窗口边框颜色
+    // 或者使用主题色风格的窗口边框
+    // .FormBorderColorPrimary()
+    // 或者使用默认边框色
+    // .FormBorderColor()
     }
     
     // 主题切换按钮点击事件
@@ -134,8 +141,13 @@ public partial class Form1 : AntdUI.BaseForm
 | **Header** | 设置页面头部颜色 | PageHeader header, Color light, Color dark / string light, string dark |
 | **Button** | 设置主题切换按钮 | Button button |
 | **Call** | 设置主题切换回调 | Action<bool> call |
+| **CallBefore** | 设置主题切换前回调 | Action<bool> call |
 | **Light** | 设置浅色模式回调 | Action call |
 | **Dark** | 设置深色模式回调 | Action call |
+| **FormBorderColor** | 设置窗口边框颜色 | Color light, Color dark |
+| **FormBorderColorPrimary** | 设置窗口边框颜色（主题色风格） | 无 |
+| **FormBorderColor** | 设置窗口边框颜色（默认边框色） | 无 |
+| **ClearFormBorderColor** | 清空窗口边框颜色 | 无 |
 
 ---
 

@@ -13,28 +13,37 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Gap** | Gap | int | 12 |
+**Gaps** | Gap | Size | `12, 12` |
+**GapCell** | Cell padding | int`?` | 6 |
+**GapTree** | Tree gap | int | 12 |
 **Radius** | Rounded corners | int | 0 |
 **FixedHeader** | Fixed header | bool | true |
 **VisibleHeader** | Display header | bool | true |
 **Bordered** | Display Bordered | bool | false |
 **RowHeight** | Row height | int`?` | `null` |
 **RowHeightHeader** | Header row height | int`?` | `null` |
+**CellImpactHeight** | Cell adjustment height | bool`?` | `null` |
 ||||
 **CheckSize** | Checkbox size | int | 16 |
 **SwitchSize** | Switch size | int | 16 |
 **TreeButtonSize** | Tree switch button size | int | 16 |
 **DragHandleSize** | Drag and drop handle size | int | 24 |
 **DragHandleIconSize** | Drag and drop handle icon size | int | 14 |
+**SortOrderSize** | Sort size | int`?` | `null` |
 ||||
 **EnableHeaderResizing** | Manually adjust the column head width | bool | false |
 **ColumnDragSort** | Column drag and drop sorting | bool | false |
 **LostFocusClearSelection** | Loss of focus, clear selection | bool | false |
+**MouseClickPenetration** | Mouse click penetration | bool | true |
+**ScrollBarAvoidHeader** | Scrollbar starts drawing from below the header | bool | false |
 **AutoSizeColumnsMode** | Column width automatic adjustment mode | [ColumnsMode](Enum.md#columnsmode) | Auto |
+**VirtualMode** | Virtual mode | bool | false |
 ||||
 **ClipboardCopy** | Copy rows | bool | true |
+**ClipboardCopyFocusedCell** | Whether to enable cell copying | bool | false |
 **EditMode** | Edit mode | [TEditMode](Enum.md#teditmode) | None |
 **ShowTip** | Omit text prompts | bool | true |
-**HandShortcutKeys** 🔴 | Process shortcut keys | bool | true |
+**HandShortcutKeys** | Process shortcut keys | bool | true |
 ||||
 **DefaultExpand** | Whether to expand by default `Tree` | bool | false |
 ||||
@@ -44,19 +53,29 @@ Name | Description | Type | Default Value |
 **EmptyHeader** | Is the header displayed when empty | bool | false |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
+**RowHoverBg** | Table row hover background color | Color`?` | `null` |
 **RowSelectedBg** | Select background color for table rows | Color`?` | `null` |
 **RowSelectedFore** | Table row selection color | Color`?` | `null` |
 **BorderColor** | Table Border Color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 1F |
+**BorderCellWidth** | Cell border width | float | 1F |
+**BorderHigh** | High-precision border (obsolete) | bool`?` | `null` |
+**BorderRenderMode** | Border render mode | TableBorderMode | None |
 **ColumnFont** | Header font | Font`?` | `null` |
 **ColumnBack** | Header background color | Color`?` | `null` |
 **ColumnFore** | Header text color | Color`?` | `null` |
 ||||
+**CellFocusedStyle** | Focus column style | TableCellFocusedStyle`?` | `null` |
+**CellFocusedBg** | Focus column background color | Color`?` | `null` |
+**CellFocusedBorder** | Focus column border color | Color`?` | `null` |
+||||
 **SelectedIndex** | Select Index | int | -1 |
-**SelectedIndexs** 🔴 | Select multiple rows | int[] | |
+**SelectedIndexs** | Select multiple rows | int[] | |
 **MultipleRows** | Enable Multiple Choice Rows | bool | false |
 ||||
 **Columns** | Table column configuration | [ColumnCollection](TableColumn.md#column) | `null` |
 **DataSource** | Data | [object](TableCell.md#icell)`?` | `Support DataTable, Class, etc` |
+**Summary** | Summary column | object`?` | `null` |
 
 ### Method
 
@@ -94,6 +113,7 @@ Name | Description | Return Value | Parameters |
 **CellClick** | Appears when clicking on a cell | void | MouseEventArgs args, object? record, int rowIndex, int columnIndex, Rectangle rect |
 **CellDoubleClick** | Occurred when double clicking a cell | void | MouseEventArgs args, object? record, int rowIndex, int columnIndex, Rectangle rect |
 **CellButtonClick** | Appears when the button is clicked | void | CellLink btn, MouseEventArgs args, object? record, int rowIndex, int columnIndex |
+**CellFocused** | Occurs when a cell gains focus | void | object? record, int rowIndex, int columnIndex |
 ||||
 **CellBeginEdit** | Occurred before editing | bool `Return true to continue editing` | object? value, object? record, int rowIndex, int columnIndex |
 **CellBeginEditInputStyle** | Text box style before editing occurs | void | object? value, object? record, int rowIndex, int columnIndex, ref Input input |
@@ -101,6 +121,7 @@ Name | Description | Return Value | Parameters |
 ||||
 **SetRowStyle** | Set row style | [CellStyleInfo?](#cellstyleinfo) | object? record, int rowIndex |
 **SortRows** | Occurred during row sorting | void | int columnIndex |
+**FilterChanged** | Occurs when filter conditions change | void | Column column |
 
 > Alternating background colors
 

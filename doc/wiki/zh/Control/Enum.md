@@ -279,4 +279,15 @@ Tab类型
 :--|:--|
 **None** | 不旋转 |
 **Clockwise_90** | 顺时针90° |
-**CounterClockwise_90** | 逆时针90° |
+**CounterClockwise_90** | 逆时针
+
+***
+
+## TVariant
+
+形态
+
+名称 | 描述 |
+:--|:--|
+**Outlined** | 外框 |
+**Underlined** | 下划线  |

@@ -17,6 +17,7 @@
 **ColAlign** | 表头对齐方式 | ColumnAlign`?` | `null` |
 **Width** | 列宽度 | string`?` ||
 **MaxWidth** | 列最大宽度 | string`?` ||
+**MinWidth** | 列最小宽度 | string`?` ||
 ||||
 **Fixed** | 列是否固定 | bool |false|
 **Ellipsis** | 超过宽度将自动省略 | bool |false|
@@ -24,9 +25,15 @@
 **ColBreak** | 表头自动换行 | bool |false|
 **SortOrder** | 启用排序 | bool |false|
 **SortMode** | 排序模式 | SortMode |NONE|
+**ReadOnly** | 只读 | bool |false|
 **Editable** | 列可编辑 | bool |true|
 **DragSort** | 列可拖拽 | bool |true|
 **KeyTree** | 树形列 | string`?` ||
+||||
+**HasFilter** | 存在筛选 | bool |false| (只读)
+**Filter** | 用户筛选选项 | FilterOption`?` ||
+**DisplayFormat** | 格式化显示 | string`?` ||
+**SummaryItem** | 汇总栏选项 | SummaryItemOption`?` ||
 ||||
 **Style** | 列样式 | CellStyleInfo`?` ||
 **ColStyle** | 标题列样式 | CellStyleInfo`?` ||

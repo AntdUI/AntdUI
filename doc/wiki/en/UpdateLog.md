@@ -1,5 +1,25 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.12` 2026-01-16
+
+- ➕ Window BorderColor
+- ➕ ThemeConfig CallBefore
+- ➕ ThemeConfig FormBorderColor
+- ➕ Table SortDelList method for refreshing sorted deleted rows
+- ➕ Menu dropdown offset property
+- ➕ Menu Horizontal_Arrow horizontal arrow
+- ➕ Tree Search filtering
+- ➕ Message/Notification follows window
+- ➕ Checkbox CheckState
+- ➕ Dropdown top-bottom center popup left-right collision
+- ✍️ Menu main menu and submenu overlap issue in horizontal mode
+- ✍️ ChatList reverse text selection
+- ✍️ Table empty binding exception
+- ✍️ BorderlessForm shadow abnormality in TopMost
+- ✍️ TooltipComponent does not automatically disappear
+- ✍️ ImagePreview exposes LoadImg
+- ✍️ Optimize hidden rendering
+
 ### `2.2.11` 2026-01-13
 
 - ➕ Table SelectedIndexsReal

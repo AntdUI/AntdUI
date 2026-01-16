@@ -17,8 +17,6 @@ Name | Description | Type | Default Value |
 **ForeColor** | Text color | Color`?` | `null` |
 **BackColor** | Background color | Color`?` | `null` |
 **BackExtend** | Background gradient color | string`?` | `null` |
-**BackHover** | Hover background color | Color`?` | `null` |
-**BackActive** | Activate background color | Color`?` | `null` |
 ||||
 **BackgroundImage** | Background image | Image`?` | `null` |
 **BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
@@ -66,20 +64,29 @@ Name | Description | Type | Default Value |
 **MaxLength** | Maximum Text Length | int | 32767 |
 ||||
 **IconRatio** | Icon Scale | float | 0.7F |
-**IconRatioRight** | Right icon ratio | float | `null` |
+**IconRatioRight** | Right icon ratio | float`?` | `null` |
 **IconGap** | Ratio of icon to text spacing | float | 0.25F |
+**PaddGap** | Border spacing ratio | float | 0.4F |
 **Prefix** | Prefix | Image`?` | `null` |
 **PrefixFore** | Prefix foreground | Color`?` | `null` |
 **PrefixSvg** | Prefix SVG | string`?` | `null` |
 **PrefixText** | Prefix text | string`?` | `null` |
+🌏 **LocalizationPrefixText** | International Prefix Text | string`?` | `null` |
+**HasPrefix** | Whether to include prefix | bool | `false` |
 ||||
 **Suffix** | Suffix | Image`?` | `null` |
 **SuffixFore** | Suffix foreground | Color`?` | `null` |
 **SuffixSvg** | Suffix SVG | string`?` | `null` |
 **SuffixText** | Suffix text | string`?` | `null` |
+🌏 **LocalizationSuffixText** | International Suffix Text | string`?` | `null` |
+**HasSuffix** | Whether to include suffix | bool | `false` |
 ||||
-**JoinLeft** | Connect left area `Combination button` | bool | false |
-**JoinRight** | Connect right area `Combination button` | bool | false |
+**JoinMode** | Join Mode | [TJoinMode](Enum.md#tjoinmode) | None |
+**JoinLeft** | Connect left area `Combination button` `Obsolete` | bool | false |
+**JoinRight** | Connect right area `Combination button` `Obsolete` | bool | false |
+||||
+**AdapterSystemMnemonic** | Adapt to system mnemonics | bool | false |
+**HandShortcutKeys** | Handle shortcut keys `Obsolete` | bool | true |
 ||||
 **RightToLeft** | Reverse | RightToLeft | No |
 
@@ -88,7 +95,8 @@ Name | Description | Type | Default Value |
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **AppendText** | Append text to the current text | void | string text `Additional Text` |
-**InsertText** | Insert text at the specified position | void | string text `Inserted text`, int index `Insertion position` |
+**AppendText** | Append text to the end | void | string text `Additional Text`, TextOpConfig config `Text configuration` |
+**InsertText** | Insert text at the specified position | void | int startIndex `Start position`, string text `Text`, TextOpConfig config `Text configuration` |
 **Clear** | Clear all text | void ||
 **ClearUndo** | Clear undo buffer information | void ||
 **Copy** | Copy | void ||
@@ -102,9 +110,14 @@ Name | Description | Return Value | Parameters |
 **DeselectAll** | Uncheck All | void ||
 **ScrollToCaret** | Scroll the content to the current insertion symbol position | void ||
 **ScrollToEnd** | Scroll to the bottom of the content | void ||
-**ScrollLine** | Scroll one line | void | bool down `Whether to scroll down` |
-**SetStyle** | Set text style | void | int start `Start position`, int length `Length`, Font font `Font`, Color? fore `Foreground color`, Color? back `Background color` |
+**ScrollLine** | Scroll to the specified line | void | int i `Line index` |
+**EnterText** | Insert text at current position | void | string text `Text`, bool ismax `Whether to limit MaxLength` |
+**SetStyle** | Set style | bool | int start `First character position`, int length `Character length`, Font? font `Font`, Color? fore `Text color`, Color? back `Background color` |
+**SetStyle** | Set style | bool | TextStyle style `Text style`, bool rd `Whether to render` |
 **ClearStyle** | Clear style | void ||
+**GetSelectionText** | Get the currently selected text | string? ||
+**SelectedText** | Get or set the currently selected text | string? ||
+||||
 **AnimationBlink** | Start blinking animation | void | int interval `Animation interval (milliseconds)`, params Color[] colors `Color values` |
 **AnimationBlinkTransition** | Start color transition blinking animation | void | int interval `Animation interval (milliseconds)`, params Color[] colors `Color values` |
 **AnimationBlinkTransition** | Start color transition blinking animation | void | int interval `Animation interval (milliseconds)`, int transition_interval `Transition animation interval (milliseconds)`, AnimationType animationType `Transition animation type`, params Color[] colors `Color values` |
