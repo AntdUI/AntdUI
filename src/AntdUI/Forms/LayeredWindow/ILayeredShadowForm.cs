@@ -20,7 +20,7 @@ namespace AntdUI
         {
             if (ShadowEnabled)
             {
-                shadow = (int)(10 * Dpi);
+                shadow = (int)(Config.ShadowSize * Dpi);
                 shadow2 = shadow * 2;
             }
         }

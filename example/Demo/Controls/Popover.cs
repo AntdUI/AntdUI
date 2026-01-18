@@ -17,9 +17,6 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
-
-            AntdUI.Config.ShadowOpacity = 0.35f;
-            AntdUI.Config.ShadowSize = 16;
         }
 
         private void button1_Click(object sender, EventArgs e)

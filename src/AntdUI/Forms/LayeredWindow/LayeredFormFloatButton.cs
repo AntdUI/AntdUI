@@ -7,7 +7,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -338,12 +337,7 @@ namespace AntdUI
                         it.shadow_temp = path2.PaintShadowO(it.rect.Width, it.rect.Height, 14);
                     }
                 }
-                using (var attributes = new ImageAttributes())
-                {
-                    var matrix = new ColorMatrix { Matrix33 = 0.2F };
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.Image(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + 6, it.rect.Width, it.rect.Height), 0, 0, it.rect.Width, it.rect.Height, GraphicsUnit.Pixel, attributes);
-                }
+                g.Image(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + (int)(4 * g.Dpi), it.rect.Width, it.rect.Height), it.rect, Config.ShadowOpacity);
             }
             return path;
         }

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -1080,15 +1079,11 @@ namespace AntdUI
                     }
                     if (shadow_dir_tmp.TryGetValue(id, out var shadow_temp))
                     {
-                        using (var attributes = new ImageAttributes())
-                        {
-                            var matrix = new ColorMatrix();
-                            if (it.AnimationHover) matrix.Matrix33 = it.AnimationHoverValue;
-                            else if (it.Hover) matrix.Matrix33 = shadowOpacityHover;
-                            else matrix.Matrix33 = shadowOpacity;
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp, new Rectangle(it.RECT_S.X + shadowOffsetX, it.RECT_S.Y + shadowOffsetY, it.RECT_S.Width, it.RECT_S.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        float opacity;
+                        if (it.AnimationHover) opacity = it.AnimationHoverValue;
+                        else if (it.Hover) opacity = shadowOpacityHover;
+                        else opacity = shadowOpacity;
+                        g.Image(shadow_temp, new Rectangle(it.RECT_S.X + shadowOffsetX, it.RECT_S.Y + shadowOffsetY, it.RECT_S.Width, it.RECT_S.Height), opacity);
                     }
                 }
             }

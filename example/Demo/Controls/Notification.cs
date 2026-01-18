@@ -21,7 +21,7 @@ namespace Demo.Controls
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info(form, "Notification " + button1.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.TL, Font, null, Color.Black, Color.WhiteSmoke);
+            AntdUI.Notification.info(form, "Notification " + button1.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.TL, Font);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -40,7 +40,7 @@ namespace Demo.Controls
 
         private void button3_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info(form, "Notification " + button3.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.BL, Font, null, Color.Yellow, null);
+            AntdUI.Notification.info(form, "Notification " + button3.Text, "Hello, Ant Design!", AntdUI.TAlignFrom.BL, Font);
         }
 
         private void button4_Click(object sender, EventArgs e)
