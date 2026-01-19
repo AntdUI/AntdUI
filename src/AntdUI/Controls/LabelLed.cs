@@ -539,13 +539,12 @@ namespace AntdUI
             {
                 var rect = new Rectangle(0, 0, size, size);
                 Font? fontEmoji = null;
-                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    string txt = str.Substring(nStart, nLen);
                     if (cache.TryGetValue(txt, out var find)) list.Add(find);
                     else
                     {
-                        if (nType == 18 || nType == 4)
+                        if (ntype == 18 || ntype == 4)
                         {
                             if (fontEmoji == null) fontEmoji = new Font(EmojiFont, Font.Size);
                             using (var bmp = new Bitmap(size, size))
@@ -573,7 +572,6 @@ namespace AntdUI
                             }
                         }
                     }
-                    return true;
                 });
                 fontEmoji?.Dispose();
             }

@@ -246,16 +246,14 @@ namespace AntdUI.Core
             {
                 var characters = new List<TMPChar>(text.Length);
                 int emojiCount = 0;
-                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    string txt = str.Substring(nStart, nLen);
-                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
                     }
                     else characters.Add(new TMPChar(txt, false));
-                    return true;
                 });
                 if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters));
                 else return MeasureString(text, font, width, format);
@@ -268,16 +266,14 @@ namespace AntdUI.Core
             {
                 var characters = new List<TMPChar>(text.Length);
                 int emojiCount = 0;
-                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    string txt = str.Substring(nStart, nLen);
-                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
                     }
                     else characters.Add(new TMPChar(txt, false));
-                    return true;
                 });
                 if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters));
                 else return MeasureString(text, font, width, format);
@@ -387,16 +383,14 @@ namespace AntdUI.Core
                 if (text == null) return;
                 var characters = new List<TMPChar>(text.Length);
                 int emojiCount = 0;
-                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    string txt = str.Substring(nStart, nLen);
-                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
                     }
                     else characters.Add(new TMPChar(txt, false));
-                    return true;
                 });
                 if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
                 else String(text, font, brush, rect, format);
@@ -555,16 +549,14 @@ namespace AntdUI.Core
                 if (text == null) return;
                 var characters = new List<TMPChar>(text.Length);
                 int emojiCount = 0;
-                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    string txt = str.Substring(nStart, nLen);
-                    if ((nType == 18 || nType == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
                     }
                     else characters.Add(new TMPChar(txt, false));
-                    return true;
                 });
                 if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
                 else String(text, font, brush, rect, format);
