@@ -131,13 +131,13 @@ namespace AntdUI
                         config.Mask = config.MaskClosable = false;
                         var dialogResultN = DialogResult.None;
                         ModalCount++;
-                        dialogResultN = new LayeredFormModal(config).ShowDialog();
+                        dialogResultN = new LayeredFormModal(config, true).ShowDialog();
                         ModalCount--;
                         return dialogResultN;
                     }
                     if (!form.IsHandleCreated) config.Mask = config.MaskClosable = false;
                     if (form.InvokeRequired) return ITask.Invoke(form, new Func<DialogResult>(() => open(config)));
-                    var frm = new LayeredFormModal(config);
+                    var frm = new LayeredFormModal(config, false);
                     ModalCount++;
                     DialogResult dialogResult;
                     if (config.Mask) dialogResult = form.ShowDialogMask(frm);
@@ -152,13 +152,13 @@ namespace AntdUI
                         config.Mask = config.MaskClosable = false;
                         var dialogResultN = DialogResult.None;
                         ModalCount++;
-                        dialogResultN = new LayeredFormModal(config).ShowDialog();
+                        dialogResultN = new LayeredFormModal(config, false).ShowDialog();
                         ModalCount--;
                         return dialogResultN;
                     }
                     if (!control.IsHandleCreated) config.Mask = config.MaskClosable = false;
                     if (control.InvokeRequired) return ITask.Invoke(control, new Func<DialogResult>(() => open(config)));
-                    var frm = new LayeredFormModal(config);
+                    var frm = new LayeredFormModal(config, false);
                     ModalCount++;
                     DialogResult dialogResult;
                     if (config.Mask) dialogResult = control.ShowDialogMask(frm);
@@ -171,7 +171,7 @@ namespace AntdUI
                     config.Mask = config.MaskClosable = false;
                     var dialogResultN = DialogResult.None;
                     ModalCount++;
-                    dialogResultN = new LayeredFormModal(config).ShowDialog();
+                    dialogResultN = new LayeredFormModal(config, true).ShowDialog();
                     ModalCount--;
                     return dialogResultN;
                 }

@@ -705,8 +705,7 @@ namespace AntdUI
                 {
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
-                        bool flag = true;
-                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, new ClosingPageEventArgs(page));
+                        bool flag = owner.IOnClosingPage(page);
                         if (flag) owner.Pages.Remove(page);
                         return true;
                     }
@@ -1451,8 +1450,7 @@ namespace AntdUI
                 {
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
-                        bool flag = true;
-                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, new ClosingPageEventArgs(page));
+                        bool flag = owner.IOnClosingPage(page);
                         if (flag) owner.Pages.Remove(page);
                         return true;
                     }
@@ -2325,8 +2323,7 @@ namespace AntdUI
                 {
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
-                        bool flag = true;
-                        if (owner.ClosingPage != null) flag = owner.ClosingPage.Invoke(owner, new ClosingPageEventArgs(page));
+                        bool flag = owner.IOnClosingPage(page);
                         if (flag) owner.Pages.Remove(page);
                         return true;
                     }

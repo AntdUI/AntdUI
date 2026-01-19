@@ -434,13 +434,16 @@ namespace AntdUI
             set
             {
                 if (_select == value) return;
-                int old = _select;
-                _select = value;
-                style.SelectedIndexChanged(value, old);
-                Invalidate();
-                ShowPage(_select);
-                OnSelectedIndexChanged(value);
-                OnPropertyChanged(nameof(SelectedIndex));
+                if (OnSelectedIndexChanging(value))
+                {
+                    int old = _select;
+                    _select = value;
+                    style.SelectedIndexChanged(value, old);
+                    Invalidate();
+                    ShowPage(_select);
+                    OnSelectedIndexChanged(value);
+                    OnPropertyChanged(nameof(SelectedIndex));
+                }
             }
         }
 
@@ -733,15 +736,11 @@ namespace AntdUI
                         if (it.Contains(x, y))
                         {
                             if (style.MouseClick(it, i, x, y)) return;
-                            if (TabClick == null)
+                            if (OnTabClick(it, i, style, e))
                             {
                                 SelectedIndex = i;
                                 return;
                             }
-                            var args = new TabsItemEventArgs(it, i, style, e);
-                            TabClick(this, args);
-                            if (args.Cancel) return;
-                            SelectedIndex = i;
                         }
                         else Invalidate();
                         return;
@@ -772,12 +771,6 @@ namespace AntdUI
             int dx = (rect1.X + rect1.Width / 2) - (rect2.X + rect2.Width / 2), dy = (rect1.Y + rect1.Height / 2) - (rect2.Y + rect2.Height / 2);
             return Math.Sqrt(dx * dx + dy * dy);
         }
-
-        /// <summary>
-        /// 点击标签时发生
-        /// </summary>
-        [Description("点击标签时发生"), Category("行为")]
-        public event TabsItemEventHandler? TabClick;
 
         int hover_i = -1;
         int Hover_i
@@ -1565,21 +1558,31 @@ namespace AntdUI
         [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
         public event IntEventHandler? SelectedIndexChanged;
 
+        /// <summary>
+        /// SelectedIndex 属性值更改前发生
+        /// </summary>
+        [Description("SelectedIndex 属性值更改前发生"), Category("行为")]
+        public event TabsIndexChangingEventHandler? SelectedIndexChanging;
+
         protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
+        protected virtual bool OnSelectedIndexChanging(int e)
+        {
+            if (SelectedIndexChanging == null) return true;
+            var args = new TabsIndexChangingEventArgs(e);
+            SelectedIndexChanging(this, args);
+            if (args.Cancel) return false;
+            return true;
+        }
 
         internal void MouseChangeIndex(TabPage page)
         {
             if (items == null) return;
             int index = items.IndexOf(page);
-            if (TabClick == null)
+            if (OnTabClick(items[index], index, style, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)))
             {
                 SelectedIndex = index;
                 return;
             }
-            var args = new TabsItemEventArgs(items[index], index, style, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
-            TabClick(this, args);
-            if (args.Cancel) return;
-            SelectedIndex = index;
         }
 
         /// <summary>
@@ -1587,6 +1590,30 @@ namespace AntdUI
         /// </summary>
         [Description("关闭页面前发生"), Category("行为")]
         public event ClosingPageEventHandler? ClosingPage;
+
+        protected virtual bool OnClosingPage(TabPage item)
+        {
+            if (ClosingPage == null) return true;
+            var args = new ClosingPageEventArgs(item);
+            return ClosingPage(this, args);
+        }
+
+        internal bool IOnClosingPage(TabPage item) => OnClosingPage(item);
+
+        /// <summary>
+        /// 点击标签时发生
+        /// </summary>
+        [Description("点击标签时发生"), Category("行为")]
+        public event TabsItemEventHandler? TabClick;
+
+        protected virtual bool OnTabClick(TabPage item, int index, IStyle style, MouseEventArgs e)
+        {
+            if (TabClick == null) return true;
+            var args = new TabsItemEventArgs(item, index, style, e);
+            TabClick(this, args);
+            if (args.Cancel) return false;
+            return true;
+        }
 
         #endregion
 
