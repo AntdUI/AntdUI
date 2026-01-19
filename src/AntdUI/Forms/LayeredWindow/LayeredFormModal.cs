@@ -16,9 +16,10 @@ namespace AntdUI
     {
         internal Modal.Config config;
         Panel? panel_main;
-        public LayeredFormModal(Modal.Config _config)
+        public LayeredFormModal(Modal.Config _config, bool istop)
         {
             config = _config;
+            isTop = istop;
             SetStyle(
                 ControlStyles.UserPaint |
                 ControlStyles.AllPaintingInWmPaint |
@@ -367,18 +368,17 @@ namespace AntdUI
             config.Layered = this;
             if (config.Content is Modal.UserControl tmp) tmp.Layered = this;
 
-            if (config.Target.Value is Form form)
+            if (isTop) StartPosition = FormStartPosition.CenterScreen;
+            else if (config.Target.Value is Form form)
             {
-                if (form.WindowState == FormWindowState.Minimized || !form.Visible) StartPosition = FormStartPosition.CenterScreen;
-                else
-                {
-                    StartPosition = FormStartPosition.Manual;
-                    Top = form.Top + (form.Height - Height) / 2;
-                    Left = form.Left + (form.Width - Width) / 2;
-                }
+                StartPosition = FormStartPosition.Manual;
+                Top = form.Top + (form.Height - Height) / 2;
+                Left = form.Left + (form.Width - Width) / 2;
             }
             else StartPosition = FormStartPosition.CenterScreen;
         }
+
+        bool isTop = false;
 
         /// <summary>
         /// 是否正在加载
@@ -423,6 +423,7 @@ namespace AntdUI
                 };
                 SystemSoundHelper.PlaySound(soundType);
             }
+            if (isTop) Activate();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]

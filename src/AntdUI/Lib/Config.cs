@@ -149,6 +149,16 @@ namespace AntdUI
         public static bool ShadowEnabled { get; set; } = true;
 
         /// <summary>
+        /// 阴影大小 (默认10像素)
+        /// </summary>
+        public static int ShadowSize { get; set; } = 10;
+
+        /// <summary>
+        /// 阴影透明度 (默认0.2f)
+        /// </summary>
+        public static float ShadowOpacity { get; set; } = 0.2F;
+
+        /// <summary>
         /// 焦点边框使能
         /// </summary>
         public static bool FocusBorderEnabled { get; set; } = true;

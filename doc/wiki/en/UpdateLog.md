@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.13` 2026-01-19
+
+- ➕ Config ShadowSize
+- ➕ Config ShadowOpacity
+- ➕ Tabs SelectedIndexChanging
+- ➕ Notification Back, Fore
+- ➕ Message Back, Fore
+- ✍️ ContextMenuStrip exception
+- ✍️ ImagePreview dynamically loads and does not display on both sides
+- ✍️ Modal main window hidden but not popped up
+- ✍️ Drawer Shadow Adaptation DPI
+
 ### `2.2.12` 2026-01-16
 
 - ➕ Window BorderColor

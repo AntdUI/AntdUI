@@ -309,6 +309,19 @@ namespace AntdUI
             /// </summary>
             public bool EnableSound { get; set; }
 
+            #region 样式
+
+            /// <summary>
+            /// 自定义背景色
+            /// </summary>
+            public Color? Back { get; set; }
+            /// <summary>
+            /// 自定义前景色
+            /// </summary>
+            public Color? Fore { get; set; }
+
+            #endregion
+
             #region 设置
 
             public Config SetID(string? value)
@@ -338,6 +351,17 @@ namespace AntdUI
             {
                 text = value;
                 LocalizationText = localization;
+                return this;
+            }
+
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
                 return this;
             }
 
@@ -472,6 +496,11 @@ namespace AntdUI
             public string Text { get; set; }
 
             /// <summary>
+            /// 文本颜色
+            /// </summary>
+            public Color? Fore { get; set; }
+
+            /// <summary>
             /// 点击回调
             /// </summary>
             public Func<bool> Call { get; set; }
@@ -481,11 +510,20 @@ namespace AntdUI
             /// </summary>
             public object? Tag { get; set; }
 
+            #region 设置
+
+            public ConfigLink SetFore(Color? value)
+            {
+                Fore = value;
+                return this;
+            }
             public ConfigLink SetTag(object? value)
             {
                 Tag = value;
                 return this;
             }
+
+            #endregion
         }
     }
 
@@ -493,14 +531,14 @@ namespace AntdUI
     {
         Font font_title;
         internal Notification.Config config;
-        int shadow_size = 10;
+        int shadow_size = 0;
         public NotificationFrm(Notification.Config _config, string? id)
         {
             config = _config;
             Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Target.SetTopMost(Handle);
-            shadow_size = (int)(shadow_size * Dpi);
+            if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
             font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
@@ -561,9 +599,17 @@ namespace AntdUI
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(rbmp).High())
             {
-                using (var path = DrawShadow(g, rect, rect_read))
+                using (var path = DrawShadow(g, rect, rect_read, out int radius))
                 {
-                    g.Fill(Colour.BgElevated.Get(nameof(Notification)), path);
+                    g.Fill(config.Back ?? Colour.BgElevated.Get(name), path);
+                    if (radius > -1)
+                    {
+                        int bor = (int)(Dpi), bor2 = bor * 2;
+                        using (var path2 = new Rectangle(rect_read.X + bor, rect_read.Y + bor, rect_read.Width - bor2, rect_read.Height - bor2).RoundPath(radius))
+                        {
+                            g.Draw(Colour.BorderColor.Get(name), bor, path2);
+                        }
+                    }
                 }
                 if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Notification", TAMode.Auto);
@@ -574,30 +620,31 @@ namespace AntdUI
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                         {
-                            g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(Notification))), path);
+                            g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(name)), path);
                         }
-                        g.PaintIconClose(rect_close, Colour.Text.Get(nameof(Notification)), .6F);
+                        g.PaintIconClose(rect_close, Colour.Text.Get(name), .6F);
                     }
                     else if (close_button.Switch)
                     {
                         using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                         {
-                            g.Fill(Colour.FillSecondary.Get(nameof(Notification)), path);
+                            g.Fill(Colour.FillSecondary.Get(name), path);
                         }
-                        g.PaintIconClose(rect_close, Colour.Text.Get(nameof(Notification)), .6F);
+                        g.PaintIconClose(rect_close, Colour.Text.Get(name), .6F);
                     }
-                    else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(nameof(Notification)), .6F);
+                    else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(name), .6F);
                 }
-                using (var brush = new SolidBrush(Colour.TextBase.Get(nameof(Notification))))
+                using (var brush = new SolidBrush(config.Fore ?? Colour.TextBase.Get(name)))
                 {
                     g.DrawText(config.Title, font_title, brush, rect_title, s_f_left);
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
                 if (config.Link != null)
                 {
-                    using (var pen = new Pen(Colour.Primary.Get(nameof(Notification)), Dpi))
+                    var linkcolor = config.Link.Fore ?? Colour.Primary.Get(name);
+                    using (var pen = new Pen(linkcolor, Dpi))
                     {
-                        g.DrawText(config.Link.Text, Font, Colour.Primary.Get(nameof(Notification)), rect_link_text, s_f);
+                        g.DrawText(config.Link.Text, Font, linkcolor, rect_link_text, s_f);
                         g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
                     }
                 }
@@ -612,18 +659,21 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read, out int r)
         {
-            var path = rect_read.RoundPath((int)(config.Radius * Dpi));
-            if (Config.ShadowEnabled)
+            r = -1;
+            var radius = (int)(config.Radius * Dpi);
+            var path = rect_read.RoundPath(radius);
+            if (shadow_size > 0)
             {
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.Image(shadow_temp.Bitmap, rect_client, 0.2F);
+                g.Image(shadow_temp.Bitmap, rect_client, Config.ShadowOpacity);
             }
+            else r = radius;
             return path;
         }
 
@@ -700,7 +750,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get(nameof(Notification), TAMode.Auto).A;
+                close_button.MaxValue = Colour.FillSecondary.Get(name, TAMode.Auto).A;
                 close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
                 if (close_button.Switch)

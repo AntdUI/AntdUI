@@ -21,7 +21,6 @@ namespace AntdUI
         public LayeredFormContextMenuStrip(ContextMenuStrip.Config _config) : base(250)
         {
             var point = _config.Location ?? MousePosition;
-            PARENT = this;
             CloseMode = CloseMode.Click | CloseMode.NoControl;
             if (_config.TopMost)
             {

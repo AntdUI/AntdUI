@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.13` 2026-01-19
+
+- ➕ Config ShadowSize
+- ➕ Config ShadowOpacity
+- ➕ Tabs SelectedIndexChanging
+- ➕ Notification Back, Fore
+- ➕ Message Back, Fore
+- ✍️ ContextMenuStrip 异常
+- ✍️ ImagePreview 动态加载左右不显示
+- ✍️ Modal 主窗口隐藏未弹出
+- ✍️ Drawer 阴影适配DPI
+
 ### `2.2.12` 2026-01-16
 
 - ➕ Window BorderColor

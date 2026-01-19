@@ -43,6 +43,30 @@ namespace AntdUI
         #endregion
     }
 
+    public class TabsIndexChangingEventArgs : IntEventArgs
+    {
+        public TabsIndexChangingEventArgs(int value) : base(value)
+        {
+        }
+
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+        public bool Cancel { get; set; }
+
+        #region 设置
+
+        public TabsIndexChangingEventArgs SetCancel(bool value = true)
+        {
+            Cancel = value;
+            return this;
+        }
+
+        #endregion
+    }
+
+    public delegate void TabsIndexChangingEventHandler(object sender, TabsIndexChangingEventArgs e);
+
     /// <summary>
     /// 点击事件
     /// </summary>

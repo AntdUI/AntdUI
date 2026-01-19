@@ -350,6 +350,19 @@ namespace AntdUI
             /// </summary>
             public int? MaxWidth { get; set; }
 
+            #region 样式
+
+            /// <summary>
+            /// 自定义背景色
+            /// </summary>
+            public Color? Back { get; set; }
+            /// <summary>
+            /// 自定义前景色
+            /// </summary>
+            public Color? Fore { get; set; }
+
+            #endregion
+
             public void OK(string text)
             {
                 Icon = TType.Success;
@@ -390,6 +403,17 @@ namespace AntdUI
             {
                 text = value;
                 LocalizationText = localization;
+                return this;
+            }
+
+            public Config SetBack(Color? value)
+            {
+                Back = value;
+                return this;
+            }
+            public Config SetFore(Color? value)
+            {
+                Fore = value;
                 return this;
             }
 
@@ -582,14 +606,14 @@ namespace AntdUI
     internal class MessageFrm : ILayeredFormAnimate
     {
         internal Message.Config config;
-        int shadow_size = 10;
+        int shadow_size = 0;
         public MessageFrm(Message.Config _config, string? id)
         {
             config = _config;
             Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Target.SetTopMost(Handle);
-            shadow_size = (int)(shadow_size * Dpi);
+            if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             loading = _config.Call != null;
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
@@ -712,17 +736,25 @@ namespace AntdUI
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(rbmp).High())
             {
-                using (var path = DrawShadow(g, rect, rect_read))
+                using (var path = DrawShadow(g, rect, rect_read, out int radius))
                 {
-                    g.Fill(Colour.BgElevated.Get(nameof(Message)), path);
+                    g.Fill(config.Back ?? Colour.BgElevated.Get(name), path);
+                    if (radius > -1)
+                    {
+                        int bor = (int)(Dpi), bor2 = bor * 2;
+                        using (var path2 = new Rectangle(rect_read.X + bor, rect_read.Y + bor, rect_read.Width - bor2, rect_read.Height - bor2).RoundPath(radius))
+                        {
+                            g.Draw(Colour.BorderColor.Get(name), bor, path2);
+                        }
+                    }
                 }
                 if (loading)
                 {
                     var bor3 = 3F * Dpi;
-                    g.DrawEllipse(Colour.Fill.Get(nameof(Message)), bor3, rect_loading);
+                    g.DrawEllipse(Colour.Fill.Get(name), bor3, rect_loading);
                     if (AnimationLoadingValue > -1)
                     {
-                        using (var pen = new Pen(Colour.Primary.Get(nameof(Message)), bor3))
+                        using (var pen = new Pen(Colour.Primary.Get(name), bor3))
                         {
                             pen.StartCap = pen.EndCap = LineCap.Round;
                             g.DrawArc(pen, rect_loading, AnimationLoadingValue, 100);
@@ -731,7 +763,7 @@ namespace AntdUI
                 }
                 else if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rect_icon);
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message", TAMode.Auto);
-                using (var brush = new SolidBrush(Colour.TextBase.Get(nameof(Message))))
+                using (var brush = new SolidBrush(config.Fore ?? Colour.TextBase.Get(name)))
                 {
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left);
                 }
@@ -746,18 +778,21 @@ namespace AntdUI
         /// <param name="g">GDI</param>
         /// <param name="rect_client">客户区域</param>
         /// <param name="rect_read">真实区域</param>
-        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read)
+        GraphicsPath DrawShadow(Canvas g, Rectangle rect_client, Rectangle rect_read, out int r)
         {
-            var path = rect_read.RoundPath((int)(config.Radius * Dpi));
-            if (Config.ShadowEnabled)
+            r = -1;
+            var radius = (int)(config.Radius * Dpi);
+            var path = rect_read.RoundPath(radius);
+            if (shadow_size > 0)
             {
                 if (shadow_temp == null || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
                 {
                     shadow_temp?.Dispose();
                     shadow_temp = path.PaintShadow(rect_client.Width, rect_client.Height);
                 }
-                g.Image(shadow_temp.Bitmap, rect_client, .2F);
+                g.Image(shadow_temp.Bitmap, rect_client, Config.ShadowOpacity);
             }
+            else r = radius;
             return path;
         }
 
