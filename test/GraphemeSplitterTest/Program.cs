@@ -38,7 +38,6 @@ namespace GraphemeSplitterTest
             {
                 string substring = str.Substring(start, length);
                 Console.WriteLine($"{index++}: '{substring}' (长度: {length})");
-                return true;
             });
             Console.WriteLine("\n测试完成");
         }
@@ -60,7 +59,6 @@ namespace GraphemeSplitterTest
                 Console.WriteLine($"{(ok ? "✅" : "❌")} {index++}: '{substring}' (长度: {length})");
                 if (!ok)
                 { }
-                return true;
             });
             Console.WriteLine("\n测试完成");
         }
@@ -79,7 +77,6 @@ namespace GraphemeSplitterTest
                 string substring = str.Substring(start, length);
                 var ok = SvgDb.Emoji.ContainsKey(substring);
                 Console.WriteLine($"{(ok ? "✅" : "❌")} {index++}: '{substring}' (长度: {length})");
-                return true;
             });
             Console.WriteLine("\n测试完成");
         }
