@@ -21,3 +21,4 @@ bin-release/
 /.claude
 /packages
 *.snk
+build.log
