@@ -63,6 +63,7 @@ namespace AntdUI
         {
             obj = null;
             invoke = false;
+            if (Value == null) return true;
             if (Value is Control t && t.IsHandleCreated)
             {
                 obj = t;

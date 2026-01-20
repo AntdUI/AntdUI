@@ -21,7 +21,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Value")]
     [DefaultEvent("ValueChanged")]
-    public class ColorPicker : IControl, SubLayeredForm
+    public partial class ColorPicker : IControl, IColorPicker, SubLayeredForm
     {
         public ColorPicker() : base(ControlType.Select)
         {
@@ -268,6 +268,7 @@ namespace AntdUI
         /// </summary>
         [Description("显示还原按钮"), Category("行为"), DefaultValue(false)]
         public bool ShowReset { get; set; }
+
         bool hasvalue = false;
         /// <summary>
         /// 是否包含值
@@ -343,7 +344,7 @@ namespace AntdUI
         /// 菜单弹出位置
         /// </summary>
         [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
-        public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
+        public TAlignFrom Align { get; set; } = TAlignFrom.BL;
 
         /// <summary>
         /// 下拉箭头是否显示
@@ -452,7 +453,7 @@ namespace AntdUI
                 int size_color = (int)(rect_read.Height * .75F);
                 if (Enabled)
                 {
-                    if ((hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
+                    if ((hasFocus && AntdUI.Config.FocusBorderEnabled) && WaveSize > 0)
                     {
                         float wave = (WaveSize * Dpi / 2), wave2 = wave * 2;
                         using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(_radius + wave))
@@ -710,7 +711,7 @@ namespace AntdUI
             {
                 if (_mouseDown == value) return;
                 _mouseDown = value;
-                if (Config.HasAnimation(nameof(ColorPicker)) && WaveSize > 0)
+                if (AntdUI.Config.HasAnimation(nameof(ColorPicker)) && WaveSize > 0)
                 {
                     ThreadFocus?.Dispose();
                     AnimationFocus = true;
@@ -742,7 +743,7 @@ namespace AntdUI
                 _mouseHover = value;
                 if (Enabled)
                 {
-                    if (Config.HasAnimation(nameof(ColorPicker)) && !ExtraMouseDown)
+                    if (AntdUI.Config.HasAnimation(nameof(ColorPicker)) && !ExtraMouseDown)
                     {
                         ThreadHover?.Dispose();
                         AnimationHover = true;

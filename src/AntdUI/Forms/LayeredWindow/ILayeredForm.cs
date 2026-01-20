@@ -151,6 +151,11 @@ namespace AntdUI
             target_rect.X = x;
             target_rect.Y = y;
         }
+        public virtual void SetLocationCenter(Rectangle screen)
+        {
+            target_rect.X = screen.X + (screen.Width - target_rect.Width) / 2;
+            target_rect.Y = screen.Y + (screen.Height - target_rect.Height) / 2;
+        }
 
         #endregion
 
