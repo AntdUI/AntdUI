@@ -22,9 +22,11 @@ namespace AntdUI
             foreach (string s in datas)
             {
                 var i = s.IndexOf(":");
-                Emoji.Add(s.Substring(0, i), s.Substring(i + 1));
+                Emoji.Add(s.Substring(0, i), Rest(s.Substring(i + 1)));
             }
         }
+
+        static string Rest(string svg) => "<svg " + svg.Replace("[VBD", "viewBox=\"").Replace("[VB2", "viewBox=\"0 0 1024 1024\">").Replace("[PD", "<path d=\"").Replace("[PE", "</path>").Replace("[PG", "\"></path>") + "</svg>";
 
         /// <summary>
         /// 压缩字符串
