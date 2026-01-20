@@ -5,7 +5,6 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -31,11 +30,11 @@ namespace AntdUI
             var text = Text;
             if (force)
             {
-                ClearCacheFont();
+                fix_cache_font.Clear();
                 return Helper.GDI(g =>
                 {
                     float dpi = Dpi;
-                    int font_height = FixCacheFontHeight(g), rdcount = 0;
+                    int font_height = fix_cache_font.Height(g, Font), rdcount = 0;
                     if (isempty)
                     {
                         TextTotalLine = 0;
@@ -63,7 +62,7 @@ namespace AntdUI
                 {
                     return Helper.GDI(g =>
                     {
-                        int font_height = FixCacheFontHeight(g);
+                        int font_height = fix_cache_font.Height(g, Font);
                         if (text == null)
                         {
                             CaretInfo.Height = font_height;
@@ -94,18 +93,16 @@ namespace AntdUI
             }
             else
             {
-                if (force || cache_font == null) ClearCacheFont();
-                GraphemeSplitter.Each(text, 0, (str, nStart, nLen, nType) =>
+                if (force || cache_font == null) fix_cache_font.Clear();
+                GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    string txt = str.Substring(nStart, nLen);
-                    if (nType == 18 || nType == 4)
+                    if (ntype == 18 || ntype == 4)
                     {
                         HasEmoji = true;
                         font_widths.Add(new CacheFont(index, txt, true, 0));
                     }
-                    else font_widths.Add(new CacheFont(index, txt, false, FixCacheFontWidth(g, txt)));
+                    else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
                     index++;
-                    return true;
                 });
                 if (HasEmoji)
                 {
@@ -119,41 +116,10 @@ namespace AntdUI
             SetStyle();
         }
 
-        #region 缓存字体
-
-        ConcurrentDictionary<string, int> font_cache_dir = new ConcurrentDictionary<string, int>();
-        int? cache_font_null;
-        int FixCacheFontWidth(Canvas g, string txt)
-        {
-            if (txt == "\t") return FixCacheFontWidth(g, " ", Font) * 8;
-            else if (txt == "\n" || txt == "\r\n") return FixCacheFontWidth(g, " ", Font);
-            else return FixCacheFontWidth(g, txt, Font);
-        }
-        int FixCacheFontWidth(Canvas g, string txt, Font font)
-        {
-            if (font_cache_dir.TryGetValue(txt, out var find)) return find;
-            else
-            {
-                int tmp = g.MeasureString(txt, font).Width;
-                font_cache_dir.TryAdd(txt, tmp);
-                return tmp;
-            }
-        }
-        int FixCacheFontHeight(Canvas g)
-        {
-            if (cache_font_null.HasValue) return cache_font_null.Value;
-            int tmp = g.MeasureString(Config.NullText, Font).Height;
-            cache_font_null = tmp;
-            return tmp;
-        }
-
-        void ClearCacheFont()
-        {
-            cache_font_null = null;
-            font_cache_dir.Clear();
-        }
-
-        #endregion
+        /// <summary>
+        /// 缓存计算字体
+        /// </summary>
+        TFixFont fix_cache_font = new TFixFont();
 
         internal class CacheFont
         {

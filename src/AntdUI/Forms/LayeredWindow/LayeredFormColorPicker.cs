@@ -18,10 +18,12 @@ namespace AntdUI
         int gap = 12, w = 258, h = 224, dot_size = 16, dot_bor_size = 2, line_h = 8, panel_color = 28, panel_color_input = 0, btn_size = 24;//260
         int offy = 0;
         Color Value, ValueNAlpha, ValueHue, ValueDefault;
-        Action<Color> action;
+        Action<Color>? action;
         TColorMode mode;
         bool AllowClear = false, ShowClose = false, ShowReset = false, Dfont = false;
         TAMode ColorScheme;
+
+        #region 初始化
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             ColorScheme = control.ColorScheme;
@@ -42,26 +44,83 @@ namespace AntdUI
             var hsv = ValueNAlpha.ToHSV();
             hsv.s = hsv.v = 1;
             ValueHue = hsv.HSVToColor();
-            Radius = (int)(control.Radius * Dpi);
-            Radius2 = (int)(Radius * 0.75F);
             PARENT = control;
             action = _action;
-            int colors_h = 160;
-            if (Dpi != 1F)
-            {
-                colors_h = (int)(colors_h * Dpi);
 
-                gap = (int)(gap * Dpi);
-                dot_size = (int)(dot_size * Dpi);
-                dot_bor_size = (int)(dot_bor_size * Dpi);
-                btn_size = (int)(btn_size * Dpi);
-                line_h = (int)(line_h * Dpi);
-                panel_color = (int)(panel_color * Dpi);
-                w = (int)(w * Dpi);
-                h = (int)(h * Dpi);
+            int colors_h = InitDpi(Dpi, control.Radius, 8, 160);
+            InitWidth(ref colors_h);
+            int yb = InitSize(control, colors_h);
+
+            CLocation(control, control.Align, control.DropDownArrow, ArrowSize);
+
+            inputs = InitInput(control, yb);
+        }
+        public LayeredFormColorPicker(ColorPicker.Config config)
+        {
+            ColorScheme = config.ColorScheme;
+            config.Target.SetTopMost(Handle);
+            AllowClear = config.AllowClear;
+            ShowClose = config.ShowClose;
+            ShowReset = config.ShowReset;
+            config.Target.SetFont(config.Font, this);
+            if (config.FontRatio != 1F && config.Font == null)
+            {
+                Dfont = true;
+                Font = new Font(Font.FontFamily, Font.Size * config.FontRatio);
+            }
+            mode = config.Mode;
+            color_alpha = Value = ValueDefault = config.Value ?? Style.Db.Primary;
+            ValueNAlpha = Color.FromArgb(255, Value);
+            var hsv = ValueNAlpha.ToHSV();
+            hsv.s = hsv.v = 1;
+            ValueHue = hsv.HSVToColor();
+            action = config.Call;
+
+            int colors_h = InitDpi(Dpi, config.Radius, config.ArrowSize, 160);
+            InitWidth(ref colors_h);
+            int yb = InitSize(config, colors_h);
+
+            if (config.Target.Value is Control control)
+            {
+                var calculateCoordinate = new CalculateCoordinate(this, control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset);
+                calculateCoordinate.Auto(config.Align, animateConfig, true, out int rx, out int ry, out ArrowLine);
+                SetLocation(rx, ry);
+            }
+            else
+            {
+                var screen = Screen.FromPoint(MousePosition).WorkingArea;
+                SetLocationCenter(screen);
+            }
+            inputs = InitInput(config, yb);
+        }
+
+        int InitDpi(float dpi, int radius, int arrowSize, int colors_h)
+        {
+            Radius = (int)(radius * dpi);
+            Radius2 = (int)(Radius * 0.75F);
+
+            if (dpi == 1F)
+            {
+                ArrowSize = arrowSize;
+                return colors_h;
             }
 
-            if (control.Mode == TColorMode.Rgb)
+            ArrowSize = (int)(arrowSize * dpi);
+            gap = (int)(gap * dpi);
+            dot_size = (int)(dot_size * dpi);
+            dot_bor_size = (int)(dot_bor_size * dpi);
+            btn_size = (int)(btn_size * dpi);
+            line_h = (int)(line_h * dpi);
+            panel_color = (int)(panel_color * dpi);
+            w = (int)(w * dpi);
+            h = (int)(h * dpi);
+
+            return (int)(colors_h * dpi);
+        }
+
+        void InitWidth(ref int colors_h)
+        {
+            if (mode == TColorMode.Rgb)
             {
                 w = Helper.GDI(g =>
                 {
@@ -75,7 +134,10 @@ namespace AntdUI
                 h += chxc;
             }
             else panel_color_input = Helper.GDI(g => (int)(g.MeasureString("255%", Font).Height * 1.52F));
+        }
 
+        int InitSize(IColorPicker config, int colors_h)
+        {
             int y = 0;
 
             if (AllowClear || ShowClose || ShowReset)
@@ -102,7 +164,7 @@ namespace AntdUI
             rect_hue = new Rectangle(gap, rect_colors.Bottom + gap, w - gap * 3 - panel_color, line_h);
             int yb = rect_hue.Bottom + gap;
             int line_h2 = line_h / 2;
-            if (control.DisabledAlpha)
+            if (config.DisabledAlpha)
             {
                 rect_alpha = rect_alpha_big = new Rectangle(-1, -1, 0, 0);
                 rect_hue.Offset(0, line_h + line_h2 / 2);
@@ -131,16 +193,15 @@ namespace AntdUI
             }
 
             h += panel_color_input + gap;
-
             SetSize(w, h);
-            CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
-
-            inputs = InitInput(control, yb);
+            return yb;
         }
+
+        #endregion
 
         #region 文本框
 
-        InputRect[] InitInput(ColorPicker control, int yb)
+        InputRect[] InitInput(IColorPicker config, int yb)
         {
             InputRect[] inputs;
             int wave = (int)(4 * Dpi), wave2 = wave * 2;
@@ -150,10 +211,10 @@ namespace AntdUI
                 if (RunAnimation) return;
                 Print();
             };
-            switch (control.Mode)
+            switch (config.Mode)
             {
                 case TColorMode.Rgb:
-                    if (control.DisabledAlpha)
+                    if (config.DisabledAlpha)
                     {
                         int wr4 = rect_input.Width / 3 - wave;
                         Rectangle rect_r = new Rectangle(rect_input.X, rect_input.Y, wr4, rect_input.Height),
@@ -276,7 +337,7 @@ namespace AntdUI
 
         #endregion
 
-        int ArrowSize = 8;
+        int ArrowSize = 0;
 
         public override string name => nameof(ColorPicker);
 
@@ -288,7 +349,7 @@ namespace AntdUI
             hsv.s = hsv.v = 1;
             ValueHue = hsv.HSVToColor();
 
-            action(Value);
+            action?.Invoke(Value);
             colors_mouse = null;
             bmp_hue?.Dispose();
             bmp_hue = null;
@@ -337,7 +398,7 @@ namespace AntdUI
                     inputs[0].input.Text = Value.ToHex();
                     break;
             }
-            action(Value);
+            action?.Invoke(Value);
             isinput = true;
         }
         protected override void OnMouseDown(MouseButtons button, int clicks, int x, int y, int delta)
