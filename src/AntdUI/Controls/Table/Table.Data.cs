@@ -83,7 +83,7 @@ namespace AntdUI
             return false;
         }
 
-        void ExtractData(object? dataSource)
+        bool ExtractData(object? dataSource)
         {
             if (dataSource is DataTable table)
             {
@@ -104,6 +104,7 @@ namespace AntdUI
                     }
                     var _columns = columns.ToArray();
                     dataTmp = new TempTable(_columns, rows.ToArray(), ExtractSummary(_columns));
+                    return true;
                 }
             }
             else if (dataSource is IList list)
@@ -114,8 +115,10 @@ namespace AntdUI
                     var rows = new List<IRow>(list.Count + 1);
                     for (int i = 0; i < list.Count; i++) GetRowAuto(ref rows, list[i], i, ref columns);
                     dataTmp = new TempTable(columns, rows.ToArray(), ExtractSummary(columns));
+                    return true;
                 }
             }
+            return false;
         }
 
         IRow[]? ExtractSummary(TempiColumn[] columns)
@@ -284,7 +287,11 @@ namespace AntdUI
 
         void BindingItemAdded(object? sender, int i)
         {
-            if (dataTmp == null) return;
+            if (dataTmp == null)
+            {
+                if (ExtractData(dataSource) && LoadLayout()) Invalidate();
+                return;
+            }
             if (sender is IList list)
             {
                 var row = list[i];
