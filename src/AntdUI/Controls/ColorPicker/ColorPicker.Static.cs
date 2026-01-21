@@ -119,6 +119,11 @@ namespace AntdUI
             public bool ShowReset { get; set; }
 
             /// <summary>
+            /// 预设的颜色
+            /// </summary>
+            public Color[]? Presets { get; set; }
+
+            /// <summary>
             /// 确定回调
             /// </summary>
             public Action<Color>? Call { get; set; }
@@ -195,6 +200,16 @@ namespace AntdUI
                 ShowReset = value;
                 return this;
             }
+            public Config SetPresets(params Color[] value)
+            {
+                Presets = value;
+                return this;
+            }
+            public Config ClearPresets()
+            {
+                Presets = null;
+                return this;
+            }
 
             public Config SetAlign(TAlignFrom value)
             {
@@ -253,6 +268,7 @@ namespace AntdUI
         bool AllowClear { get; set; }
         bool ShowClose { get; set; }
         bool ShowReset { get; set; }
+        Color[]? Presets { get; set; }
         TColorMode Mode { get; set; }
         TAMode ColorScheme { get; set; }
         TAlignFrom Align { get; set; }

@@ -269,6 +269,13 @@ namespace AntdUI
         [Description("显示还原按钮"), Category("行为"), DefaultValue(false)]
         public bool ShowReset { get; set; }
 
+        /// <summary>
+        /// 预设的颜色
+        /// </summary>
+        [Browsable(false)]
+        [Description("预设的颜色"), Category("数据"), DefaultValue(null)]
+        public Color[]? Presets { get; set; }
+
         bool hasvalue = false;
         /// <summary>
         /// 是否包含值
