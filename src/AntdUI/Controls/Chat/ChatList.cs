@@ -44,8 +44,8 @@ namespace AntdUI.Chat
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue("Segoe UI Emoji")]
-        public string EmojiFont { get; set; } = "Segoe UI Emoji";
+        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        public string? EmojiFont { get; set; }
 
         /// <summary>
         /// 表情图标比例
@@ -309,7 +309,7 @@ namespace AntdUI.Chat
             PaintTextSelected(g, text, selection);
             if (text.HasEmoji)
             {
-                using (var font = new Font(EmojiFont, Font.Size))
+                using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))
                 {
                     foreach (var it in text.cache_font)
                     {

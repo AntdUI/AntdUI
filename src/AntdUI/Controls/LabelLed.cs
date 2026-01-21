@@ -71,8 +71,8 @@ namespace AntdUI
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue("Segoe UI Emoji")]
-        public string EmojiFont { get; set; } = "Segoe UI Emoji";
+        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        public string? EmojiFont { get; set; }
 
         int dotSize = 4;
         /// <summary>
@@ -546,7 +546,7 @@ namespace AntdUI
                     {
                         if (ntype == 18 || ntype == 4)
                         {
-                            if (fontEmoji == null) fontEmoji = new Font(EmojiFont, Font.Size);
+                            if (fontEmoji == null) fontEmoji = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
                             using (var bmp = new Bitmap(size, size))
                             {
                                 using (var g = Graphics.FromImage(bmp).HighLay())

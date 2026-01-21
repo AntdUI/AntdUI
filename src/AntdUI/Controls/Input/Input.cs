@@ -693,8 +693,8 @@ namespace AntdUI
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue("Segoe UI Emoji")]
-        public string EmojiFont { get; set; } = "Segoe UI Emoji";
+        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        public string? EmojiFont { get; set; }
 
         #region 原生文本框
 

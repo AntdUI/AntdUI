@@ -359,7 +359,7 @@ namespace AntdUI
                 }
                 else if (HasEmoji)
                 {
-                    using (var font = new Font(EmojiFont, Font.Size))
+                    using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))
                     {
                         foreach (var it in tmp)
                         {

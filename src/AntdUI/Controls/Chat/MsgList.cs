@@ -140,7 +140,7 @@ namespace AntdUI.Chat
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);
-                            g.String(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
+                            g.DrawText(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
                             g.String(it.Time, it.TimeFont ?? font_time, brush, it.rect_time, SFR);
                         }
                         catch { }
@@ -154,8 +154,8 @@ namespace AntdUI.Chat
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);
-                            if (it.TextColor.HasValue) g.String(it.Text, it.TextFont ?? font_text, it.TextColor.Value, it.rect_text, it.TextFormat ?? SFL);
-                            else g.String(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
+                            if (it.TextColor.HasValue) g.DrawText(it.Text, it.TextFont ?? font_text, it.TextColor.Value, it.rect_text, it.TextFormat ?? SFL);
+                            else g.DrawText(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
                             if (it.TimeColor.HasValue) g.String(it.Time, it.TimeFont ?? font_time, it.TimeColor.Value, it.rect_time, SFR);
                             else g.String(it.Time, it.TimeFont ?? font_time, brush, it.rect_time, SFR);
                         }

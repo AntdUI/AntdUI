@@ -208,6 +208,16 @@ namespace AntdUI
         public static bool TextRenderingHighQuality { get; set; }
 
         /// <summary>
+        /// Emoji使能
+        /// </summary>
+        public static bool EmojiEnabled { get; set; } = true;
+
+        /// <summary>
+        /// Emoji字体
+        /// </summary>
+        public static string EmojiFont { get; set; } = "Segoe UI Emoji";
+
+        /// <summary>
         /// 是否使用钩子
         /// </summary>
 #if DEBUG
