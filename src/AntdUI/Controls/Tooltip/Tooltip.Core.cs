@@ -139,6 +139,46 @@ namespace AntdUI
         public int? CustomWidth { get; set; }
         public Color? Back { get; set; }
         public Color? Fore { get; set; }
+
+        #region 设置
+
+        public TooltipConfig SetFont(Font? value)
+        {
+            Font = value;
+            return this;
+        }
+        public TooltipConfig SetRadius(int value = 0)
+        {
+            Radius = value;
+            return this;
+        }
+        public TooltipConfig SetArrow(int? value)
+        {
+            ArrowSize = value;
+            return this;
+        }
+        public TooltipConfig SetArrow(TAlign value)
+        {
+            ArrowAlign = value;
+            return this;
+        }
+        public TooltipConfig SetCustomWidth(int? value)
+        {
+            CustomWidth = value;
+            return this;
+        }
+        public TooltipConfig SetBack(Color? value)
+        {
+            Back = value;
+            return this;
+        }
+        public TooltipConfig SetFore(Color? value)
+        {
+            Fore = value;
+            return this;
+        }
+
+        #endregion
     }
 
     internal interface ITooltipConfig

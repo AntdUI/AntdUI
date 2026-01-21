@@ -1089,9 +1089,4 @@ namespace AntdUI
             }
         }
     }
-
-    public interface ControlEvent
-    {
-        void LoadCompleted();
-    }
 }

@@ -1004,7 +1004,7 @@ namespace AntdUI
                                 if (it.ExpandTemp == null)
                                 {
                                     it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
-                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay())
+                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(true))
                                     {
                                         g2.TranslateTransform(0, -it.rect.Bottom);
                                         PaintItemExpand(g2, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);

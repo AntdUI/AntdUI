@@ -672,7 +672,7 @@ namespace AntdUI
             var rbmp = new Bitmap(rect_read.Width, rect_read.Height);
             if (visible)
             {
-                using (var g = Graphics.FromImage(rbmp).HighLay(true))
+                using (var g = Graphics.FromImage(rbmp).HighLay())
                 {
                     using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get(nameof(Spin)), .8F)))
                     {

@@ -51,12 +51,8 @@ namespace AntdUI
 
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
-            if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            else
-            {
-                sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
-                sf.FormatFlags &= ~StringFormatFlags.LineLimit;
-            }
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
 
             if (!ffs.TryAdd(key, sf)) sf.Dispose();
 
