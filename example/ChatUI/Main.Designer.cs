@@ -62,12 +62,12 @@ namespace ChatUI
             msgItem3.Icon = Properties.Resources.antd;
             msgItem3.Name = "AntdUI";
             msgItem3.Select = true;
-            msgItem3.Text = "Tom：❤AntDesign设计语言的Winform界面库";
+            msgItem3.Text = "Tom：❤️AntDesign设计语言的Winform界面库";
             msgItem3.Time = "前天";
             msgItem4.Count = 1;
             msgItem4.Icon = Properties.Resources.av1;
             msgItem4.Name = "Tom";
-            msgItem4.Text = "晚上一起 Crazy Day 4";
+            msgItem4.Text = "晚上一起 🍔 Crazy Day 4";
             msgItem4.Time = "疯狂星期四";
             msgList.Items.Add(msgItem1);
             msgList.Items.Add(msgItem2);

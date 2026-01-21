@@ -24,7 +24,7 @@ namespace Demo.Controls
 
             table1.Columns = new AntdUI.ColumnCollection {
                 new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetTree("Sub").SetLocalizationTitleID("Table.Column."),
+                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
                 new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
                 new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
@@ -192,6 +192,27 @@ namespace Demo.Controls
             {
                 foreach (var it in table1.Columns) it.Filter = null;
             }
+        }
+
+        void checkTree_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (e.Value)
+            {
+                foreach (var it in table1.Columns)
+                {
+                    switch (it.Key)
+                    {
+                        case "name":
+                            it.SetTree("Sub");
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var it in table1.Columns) it.KeyTree = null;
+            }
+            table1.Refresh();
         }
 
         void selectEditMode_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)

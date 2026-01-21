@@ -578,6 +578,8 @@ namespace Demo
                     return "EditStyle";
                 case "Table.selectFocusedStyle":
                     return "FocusedStyle";
+                case "Table.checkTree":
+                    return "Tree";
                 case "Table.checkScrollBarAvoidHeader":
                     return "ScrollBar AvoidHeader";
                 case "Table.checkboxFocusNavigation":
