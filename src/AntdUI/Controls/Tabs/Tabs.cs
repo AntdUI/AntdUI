@@ -365,6 +365,25 @@ namespace AntdUI
             return rect_dir;
         }
 
+
+        TRotate rotate = TRotate.None;
+        /// <summary>
+        /// 旋转（用于 Left/Right 时竖排显示）
+        /// </summary>
+        [Description("旋转（用于 Left/Right 时竖排显示）"), Category("外观"), DefaultValue(TRotate.None)]
+        public TRotate Rotate
+        {
+            get => rotate;
+            set
+            {
+                if (rotate == value) return;
+                rotate = value;
+                LoadLayout(true); // 重新布局
+                Invalidate();
+                OnPropertyChanged(nameof(Rotate));
+            }
+        }
+
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, _padding);
 
         #region 数据

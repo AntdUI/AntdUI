@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace AntdUI
 {
@@ -130,6 +131,7 @@ namespace AntdUI
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, gap2, out int ico_size, out int ico_gap, out int close_size, out int xy2, out int rw);
                     int? rw_tmp = tabs.TextCenter ? rw : null;
+                    bool verticalText = (owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None;
                     switch (tabs.Alignment)
                     {
                         case TabAlignment.Bottom:
@@ -186,17 +188,75 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     bool close = closable && !it.Key.ReadOnly;
-                                    Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap), rect_line = new Rectangle(rect_it.X + xy2 - barSize, rect_it.Y + barPadding, barSize, rect_it.Height - barPadding2);
-                                    if (close)
+                                    // 计算项高度：当竖排文字时要包含 icon / text / close 的垂直空间
+                                    int textHeight = it.Value.Height;
+                                    int itemHeight;
+                                    if (verticalText)
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true, rw_tmp, rw).SetLine(rect_line));
-                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true, rw_tmp, rw).SetLine(rect_line));
+                                        int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                        int closePart = (close) ? close_size + ico_gap : 0;
+                                        // top gap + iconPart + text + closePart + bottom gap
+                                        itemHeight = gap + iconPart + textHeight + closePart + gap;
                                     }
                                     else
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp).SetLine(rect_line));
-                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true, rw_tmp).SetLine(rect_line));
+                                        itemHeight = it.Value.Height + gap;
                                     }
+
+                                    Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, itemHeight);
+                                    Rectangle rect_line = new Rectangle(rect_it.X + xy2 - barSize, rect_it.Y + barPadding, barSize, rect_it.Height - barPadding2);
+
+                                    TabPageRect p;
+                                    if (verticalText)
+                                    {
+                                        // 使用简单构造后手动设置 ico/close/text 布局（避免原构造器的横向约束）
+                                        p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp).SetLine(rect_line);
+                                        // 根据旋转方向决定 icon 在上还是在下：顺时针 90 度 -> icon 在上；逆时针 -> icon 在下
+                                        bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                        // icon 顶部水平居中
+                                        if (it.Key.HasIcon)
+                                        {
+                                            int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                            int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                            p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                        }
+                                        else p.Rect_Ico = Rectangle.Empty;
+
+                                        // close 底部水平居中
+                                        if (close)
+                                        {
+                                            int cs = close_size;
+                                            int cx = rect_it.X + (rect_it.Width - cs) / 2;
+                                            int cy = iconOnTop ? rect_it.Bottom - gap - cs : rect_it.Y + gap;
+                                            p.Rect_Close = new Rectangle(cx, cy, cs, cs);
+                                        }
+                                        else p.Rect_Close = Rectangle.Empty;
+
+                                        // 文本区域放在 icon 与 close 之间，水平居中
+                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int th = Math.Max(0, textBottom - textTop);
+                                        int textW = rw_tmp ?? it.Value.Width;
+                                        int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                        p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                    }
+                                    else
+                                    {
+                                        // 原有横向布局（图标/文本/关闭在一行）
+                                        if (close)
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true, rw_tmp, rw).SetLine(rect_line);
+                                            else p = new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true, rw_tmp, rw).SetLine(rect_line);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp).SetLine(rect_line);
+                                            else p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp).SetLine(rect_line);
+                                        }
+                                    }
+
+                                    rect_list.Add(p);
                                     it.Key.SetRect(rect_it);
                                     xy += rect_it.Height;
                                 }
@@ -218,17 +278,68 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     bool close = closable && !it.Key.ReadOnly;
-                                    Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap), rect_line = new Rectangle(rect_it.X, rect_it.Y + barPadding, barSize, rect_it.Height - barPadding2);
-                                    if (close)
+
+                                    int textHeight = it.Value.Height;
+                                    int itemHeight;
+                                    if (verticalText)
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, false, rw_tmp, rw).SetLine(rect_line));
-                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, false, rw_tmp, rw).SetLine(rect_line));
+                                        int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                        int closePart = (close) ? close_size + ico_gap : 0;
+                                        itemHeight = gap + iconPart + textHeight + closePart + gap;
                                     }
                                     else
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp).SetLine(rect_line));
-                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, false, rw_tmp).SetLine(rect_line));
+                                        itemHeight = it.Value.Height + gap;
                                     }
+
+                                    Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, itemHeight);
+                                    Rectangle rect_line = new Rectangle(rect_it.X, rect_it.Y + barPadding, barSize, rect_it.Height - barPadding2);
+
+                                    TabPageRect p;
+                                    if (verticalText)
+                                    {
+                                        p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp).SetLine(rect_line);
+                                        bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                        if (it.Key.HasIcon)
+                                        {
+                                            int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                            int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                            p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                        }
+                                        else p.Rect_Ico = Rectangle.Empty;
+
+                                        if (close)
+                                        {
+                                            int cs = close_size;
+                                            int cx = rect_it.X + (rect_it.Width - cs) / 2;
+                                            int cy = iconOnTop ? rect_it.Bottom - gap - cs : rect_it.Y + gap;
+                                            p.Rect_Close = new Rectangle(cx, cy, cs, cs);
+                                        }
+                                        else p.Rect_Close = Rectangle.Empty;
+
+                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int th = Math.Max(0, textBottom - textTop);
+                                        int textW = rw_tmp ?? it.Value.Width;
+                                        int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                        p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                    }
+                                    else
+                                    {
+                                        if (close)
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, false, rw_tmp, rw).SetLine(rect_line);
+                                            else p = new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, false, rw_tmp, rw).SetLine(rect_line);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp).SetLine(rect_line);
+                                            else p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp).SetLine(rect_line);
+                                        }
+                                    }
+
+                                    rect_list.Add(p);
                                     it.Key.SetRect(rect_it);
                                     xy += rect_it.Height;
                                 }
@@ -339,9 +450,11 @@ namespace AntdUI
                 var rect_dir = new Dictionary<TabPage, Size>(items.Count);
                 int i = 0;
                 int? tmp = null;
+                bool verticalText = (owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None;
                 foreach (var item in items)
                 {
                     var size = g.MeasureString(item.Text, owner.Font);
+                    if (verticalText) size = new Size(size.Height, size.Width);
                     rect_dir.Add(item, size);
                     if (rw < size.Width) rw = size.Width;
                     if (item.Visible && tmp == null) tmp = i;
@@ -362,8 +475,8 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + gap2 + ico_size + ico_gap;
-                                    else w = it.Value.Width + gap2;
+                                    if (it.Key.HasIcon) w = verticalText ? Math.Max(rw, ico_size) + gap2 : it.Value.Width + gap2 + ico_size + ico_gap;
+                                    else w = verticalText ? rw + gap2 : it.Value.Width + gap2;
                                     w += close_size + ico_gap;
                                     if (sizewh < w) sizewh = w;
                                 }
@@ -376,8 +489,8 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + gap2 + ico_size + ico_gap;
-                                    else w = it.Value.Width + gap2;
+                                    if (it.Key.HasIcon) w = verticalText ? Math.Max(rw, ico_size) + gap2 : it.Value.Width + gap2 + ico_size + ico_gap;
+                                    else w = verticalText ? rw + gap2 : it.Value.Width + gap2;
                                     if (sizewh < w) sizewh = w;
                                 }
                             }
@@ -508,7 +621,6 @@ namespace AntdUI
                         else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
                         else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
-                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
                 else
                 {
@@ -524,8 +636,25 @@ namespace AntdUI
                         else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
                         else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
-                    g.String(page.Text, owner.Font, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme), rects.Rect_Text, owner.s_c);
                 }
+
+                if ((owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None)
+                {
+                    var state = g.Save();
+                    float cx = rects.Rect_Text.X + rects.Rect_Text.Width / 2f;
+                    float cy = rects.Rect_Text.Y + rects.Rect_Text.Height / 2f;
+                    g.TranslateTransform(cx, cy);
+                    float angle = owner.Rotate == TRotate.Clockwise_90 ? 90f : -90f;
+                    g.RotateTransform(angle);
+                    var drawRect = new RectangleF(-rects.Rect_Text.Height / 2f, -rects.Rect_Text.Width / 2f, rects.Rect_Text.Height, rects.Rect_Text.Width);
+                    g.String(page.Text, owner.Font, brush, drawRect, owner.s_c);
+                    g.Restore(state);
+                }
+                else
+                {
+                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                }
+
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
             void PaintBar(Canvas g, RectangleF rect, SolidBrush brush)
@@ -889,6 +1018,7 @@ namespace AntdUI
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, gap2, out int ico_size, out int ico_gap, out int close_size, out int xy2, out int rw);
                     int? rw_tmp = tabs.TextCenter ? rw : null;
+                    bool verticalText = (owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None;
                     switch (tabs.Alignment)
                     {
                         case TabAlignment.Bottom:
@@ -941,17 +1071,66 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     bool close = closable && !it.Key.ReadOnly;
-                                    Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
-                                    if (close)
+
+                                    int textHeight = it.Value.Height;
+                                    int itemHeight;
+                                    if (verticalText)
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true, rw_tmp, rw));
-                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true, rw_tmp, rw));
+                                        int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                        int closePart = (close) ? close_size + ico_gap : 0;
+                                        itemHeight = gap + iconPart + textHeight + closePart + gap;
                                     }
                                     else
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp));
-                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true, rw_tmp));
+                                        itemHeight = it.Value.Height + gap;
                                     }
+
+                                    Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, itemHeight);
+                                    TabPageRect p;
+                                    if (verticalText)
+                                    {
+                                        p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
+                                        bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                        if (it.Key.HasIcon)
+                                        {
+                                            int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                            int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                            p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                        }
+                                        else p.Rect_Ico = Rectangle.Empty;
+
+                                        if (close)
+                                        {
+                                            int cs = close_size;
+                                            int cx = rect_it.X + (rect_it.Width - cs) / 2;
+                                            int cy = iconOnTop ? rect_it.Bottom - gap - cs : rect_it.Y + gap;
+                                            p.Rect_Close = new Rectangle(cx, cy, cs, cs);
+                                        }
+                                        else p.Rect_Close = Rectangle.Empty;
+
+                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int th = Math.Max(0, textBottom - textTop);
+                                        int textW = rw_tmp ?? it.Value.Width;
+                                        int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                        p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                    }
+                                    else
+                                    {
+                                        if (close)
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true, rw_tmp, rw);
+                                            else p = new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true, rw_tmp, rw);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp);
+                                            else p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
+                                        }
+                                    }
+
+                                    rect_list.Add(p);
                                     it.Key.SetRect(rect_it);
                                     xy += rect_it.Height + cardgap;
                                 }
@@ -969,17 +1148,67 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     bool close = closable && !it.Key.ReadOnly;
-                                    Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
-                                    if (close)
+
+                                    int textHeight = it.Value.Height;
+                                    int itemHeight;
+                                    if (verticalText)
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, false, rw_tmp, rw));
-                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, false, rw_tmp, rw));
+                                        int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                        int closePart = (close) ? close_size + ico_gap : 0;
+                                        itemHeight = gap + iconPart + textHeight + closePart + gap;
                                     }
                                     else
                                     {
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp));
-                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, false, rw_tmp));
+                                        itemHeight = it.Value.Height + gap;
                                     }
+
+                                    Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, itemHeight);
+
+                                    TabPageRect p;
+                                    if (verticalText)
+                                    {
+                                        p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                        bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                        if (it.Key.HasIcon)
+                                        {
+                                            int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                            int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                            p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                        }
+                                        else p.Rect_Ico = Rectangle.Empty;
+
+                                        if (close)
+                                        {
+                                            int cs = close_size;
+                                            int cx = rect_it.X + (rect_it.Width - cs) / 2;
+                                            int cy = iconOnTop ? rect_it.Bottom - gap - cs : rect_it.Y + gap;
+                                            p.Rect_Close = new Rectangle(cx, cy, cs, cs);
+                                        }
+                                        else p.Rect_Close = Rectangle.Empty;
+
+                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int th = Math.Max(0, textBottom - textTop);
+                                        int textW = rw_tmp ?? it.Value.Width;
+                                        int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                        p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                    }
+                                    else
+                                    {
+                                        if (close)
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, false, rw_tmp, rw);
+                                            else p = new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, false, rw_tmp, rw);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp);
+                                            else p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                        }
+                                    }
+
+                                    rect_list.Add(p);
                                     it.Key.SetRect(rect_it);
                                     xy += rect_it.Height + cardgap;
                                 }
@@ -1082,9 +1311,11 @@ namespace AntdUI
                 var rect_dir = new Dictionary<TabPage, Size>(items.Count);
                 int i = 0;
                 int? tmp = null;
+                bool verticalText = (owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None;
                 foreach (var item in items)
                 {
                     var size = g.MeasureString(item.Text, owner.Font);
+                    if (verticalText) size = new Size(size.Height, size.Width);
                     rect_dir.Add(item, size);
                     if (rw < size.Width) rw = size.Width;
                     if (item.Visible && tmp == null) tmp = i;
@@ -1105,8 +1336,8 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + gap2 + ico_size + ico_gap;
-                                    else w = it.Value.Width + gap2;
+                                    if (it.Key.HasIcon) w = verticalText ? Math.Max(rw, ico_size) + gap2 : it.Value.Width + gap2 + ico_size + ico_gap;
+                                    else w = verticalText ? rw + gap2 : it.Value.Width + gap2;
                                     w += close_size + ico_gap;
                                     if (sizewh < w) sizewh = w;
                                 }
@@ -1119,8 +1350,8 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + gap2 + ico_size + ico_gap;
-                                    else w = it.Value.Width + gap2;
+                                    if (it.Key.HasIcon) w = verticalText ? Math.Max(rw, ico_size) + gap2 : it.Value.Width + gap2 + ico_size + ico_gap;
+                                    else w = verticalText ? rw + gap2 : it.Value.Width + gap2;
                                     if (sizewh < w) sizewh = w;
                                 }
                             }
@@ -1397,7 +1628,7 @@ namespace AntdUI
                         else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
                         else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
-                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                    //g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
                 else
                 {
@@ -1413,7 +1644,24 @@ namespace AntdUI
                         else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
                         else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
-                    g.String(page.Text, owner.Font, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme), rects.Rect_Text, owner.s_c);
+                    //g.String(page.Text, owner.Font, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme), rects.Rect_Text, owner.s_c);
+                }
+
+                if ((owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None)
+                {
+                    var state = g.Save();
+                    float cx = rects.Rect_Text.X + rects.Rect_Text.Width / 2f;
+                    float cy = rects.Rect_Text.Y + rects.Rect_Text.Height / 2f;
+                    g.TranslateTransform(cx, cy);
+                    float angle = owner.Rotate == TRotate.Clockwise_90 ? 90f : -90f;
+                    g.RotateTransform(angle);
+                    var drawRect = new RectangleF(-rects.Rect_Text.Height / 2f, -rects.Rect_Text.Width / 2f, rects.Rect_Text.Height, rects.Rect_Text.Width);
+                    g.String(page.Text, owner.Font, brush, drawRect, owner.s_c);
+                    g.Restore(state);
+                }
+                else
+                {
+                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
@@ -1638,6 +1886,7 @@ namespace AntdUI
                     var rect_list = new List<TabPageRect>(items.Count);
                     var rect_dir = GetDir(tabs, g, items, gap, gap2, out int ico_size, out int ico_gap, out int close_size, out int xy2, out int rw);
                     int? rw_tmp = tabs.TextCenter ? rw : null;
+                    bool verticalText = (owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None;
                     if (closable != CloseType.none)
                     {
                         switch (tabs.Alignment)
@@ -1690,17 +1939,65 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
-                                        if (it.Key.ReadOnly)
+                                        int textHeight = it.Value.Height;
+                                        int itemHeight;
+                                        if (verticalText)
                                         {
-                                            if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp));
-                                            else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true, rw_tmp));
+                                            int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                            int closePart = (!it.Key.ReadOnly) ? close_size + ico_gap : 0;
+                                            itemHeight = gap + iconPart + textHeight + closePart + gap;
                                         }
                                         else
                                         {
-                                            if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true, rw_tmp, rw));
-                                            else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true, rw_tmp, rw));
+                                            itemHeight = it.Value.Height + gap;
                                         }
+
+                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, itemHeight);
+                                        TabPageRect p;
+                                        if (verticalText)
+                                        {
+                                            p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
+                                            bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                            if (it.Key.HasIcon)
+                                            {
+                                                int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                                int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                                p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                            }
+                                            else p.Rect_Ico = Rectangle.Empty;
+
+                                            if (!it.Key.ReadOnly)
+                                            {
+                                                int cs = close_size;
+                                                int cx = rect_it.X + (rect_it.Width - cs) / 2;
+                                                int cy = iconOnTop ? rect_it.Bottom - gap - cs : rect_it.Y + gap;
+                                                p.Rect_Close = new Rectangle(cx, cy, cs, cs);
+                                            }
+                                            else p.Rect_Close = Rectangle.Empty;
+
+                                            int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                            int textBottom = rect_it.Bottom - gap - ((!it.Key.ReadOnly) ? (close_size + ico_gap) : 0);
+                                            int th = Math.Max(0, textBottom - textTop);
+                                            int textW = rw_tmp ?? it.Value.Width;
+                                            int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                            p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.ReadOnly)
+                                            {
+                                                if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp);
+                                                else p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
+                                            }
+                                            else
+                                            {
+                                                if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true, rw_tmp, rw);
+                                                else p = new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true, rw_tmp, rw);
+                                            }
+                                        }
+
+                                        rect_list.Add(p);
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
@@ -1717,17 +2014,67 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
-                                        if (it.Key.ReadOnly)
+
+                                        int textHeight = it.Value.Height;
+                                        int itemHeight;
+                                        if (verticalText)
                                         {
-                                            if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp));
-                                            else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, false, rw_tmp));
+                                            int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                            int closePart = (!it.Key.ReadOnly) ? close_size + ico_gap : 0;
+                                            itemHeight = gap + iconPart + textHeight + closePart + gap;
                                         }
                                         else
                                         {
-                                            if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, false, rw_tmp, rw));
-                                            else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, false, rw_tmp, rw));
+                                            itemHeight = it.Value.Height + gap;
                                         }
+
+                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, itemHeight);
+
+                                        TabPageRect p;
+                                        if (verticalText)
+                                        {
+                                            p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                            bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                            if (it.Key.HasIcon)
+                                            {
+                                                int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                                int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                                p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                            }
+                                            else p.Rect_Ico = Rectangle.Empty;
+
+                                            if (!it.Key.ReadOnly)
+                                            {
+                                                int cs = close_size;
+                                                int cx = rect_it.X + (rect_it.Width - cs) / 2;
+                                                int cy = iconOnTop ? rect_it.Bottom - gap - cs : rect_it.Y + gap;
+                                                p.Rect_Close = new Rectangle(cx, cy, cs, cs);
+                                            }
+                                            else p.Rect_Close = Rectangle.Empty;
+
+                                            int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                            int textBottom = rect_it.Bottom - gap - (!it.Key.ReadOnly ? (close_size + ico_gap) : 0);
+                                            int th = Math.Max(0, textBottom - textTop);
+                                            int textW = rw_tmp ?? it.Value.Width;
+                                            int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                            p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.ReadOnly)
+                                            {
+                                                if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp);
+                                                else p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                            }
+                                            else
+                                            {
+                                                if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, false, rw_tmp, rw);
+                                                else p = new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, false, rw_tmp, rw);
+                                            }
+                                        }
+
+                                        rect_list.Add(p);
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
@@ -1819,9 +2166,46 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, it.Value.Height + gap);
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp));
-                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true, rw_tmp));
+                                        int textHeight = it.Value.Height;
+                                        int itemHeight;
+                                        if (verticalText)
+                                        {
+                                            int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                            itemHeight = gap + iconPart + textHeight + gap;
+                                        }
+                                        else
+                                        {
+                                            itemHeight = it.Value.Height + gap;
+                                        }
+                                        Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, itemHeight);
+                                        TabPageRect p;
+                                        if (verticalText)
+                                        {
+                                            p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
+                                            bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                            if (it.Key.HasIcon)
+                                            {
+                                                int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                                int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                                p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                            }
+                                            else p.Rect_Ico = Rectangle.Empty;
+
+                                            int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                            int textBottom = rect_it.Bottom - gap;
+                                            int th = Math.Max(0, textBottom - textTop);
+                                            int textW = rw_tmp ?? it.Value.Width;
+                                            int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                            p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true, rw_tmp);
+                                            else p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
+                                        }
+
+                                        rect_list.Add(p);
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
@@ -1838,9 +2222,46 @@ namespace AntdUI
                                 {
                                     if (it.Key.Visible)
                                     {
-                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, it.Value.Height + gap);
-                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp));
-                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, false, rw_tmp));
+                                        int textHeight = it.Value.Height;
+                                        int itemHeight;
+                                        if (verticalText)
+                                        {
+                                            int iconPart = it.Key.HasIcon ? ico_size + ico_gap : 0;
+                                            itemHeight = gap + iconPart + textHeight + gap;
+                                        }
+                                        else
+                                        {
+                                            itemHeight = it.Value.Height + gap;
+                                        }
+                                        Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, itemHeight);
+                                        TabPageRect p;
+                                        if (verticalText)
+                                        {
+                                            p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                            bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+
+                                            if (it.Key.HasIcon)
+                                            {
+                                                int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
+                                                int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
+                                                p.Rect_Ico = new Rectangle(ico_x, ico_y, ico_size, ico_size);
+                                            }
+                                            else p.Rect_Ico = Rectangle.Empty;
+
+                                            int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
+                                            int textBottom = rect_it.Bottom - gap;
+                                            int th = Math.Max(0, textBottom - textTop);
+                                            int textW = rw_tmp ?? it.Value.Width;
+                                            int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
+                                            p.Rect_Text = new Rectangle(tx, textTop, textW, th);
+                                        }
+                                        else
+                                        {
+                                            if (it.Key.HasIcon) p = new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, false, rw_tmp);
+                                            else p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                        }
+
+                                        rect_list.Add(p);
                                         it.Key.SetRect(rect_it);
                                         xy += rect_it.Height + cardgap;
                                     }
@@ -1928,9 +2349,11 @@ namespace AntdUI
                 var rect_dir = new Dictionary<TabPage, Size>(items.Count);
                 int i = 0;
                 int? tmp = null;
+                bool verticalText = (owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None;
                 foreach (var item in items)
                 {
                     var size = g.MeasureString(item.Text, owner.Font);
+                    if (verticalText) size = new Size(size.Height, size.Width);
                     rect_dir.Add(item, size);
                     if (rw < size.Width) rw = size.Width;
                     if (item.Visible && tmp == null) tmp = i;
@@ -1951,8 +2374,8 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + gap2 + ico_size + ico_gap;
-                                    else w = it.Value.Width + gap2;
+                                    if (it.Key.HasIcon) w = verticalText ? Math.Max(rw, ico_size) + gap2 : it.Value.Width + gap2 + ico_size + ico_gap;
+                                    else w = verticalText ? rw + gap2 : it.Value.Width + gap2;
                                     w += close_size + ico_gap;
                                     if (sizewh < w) sizewh = w;
                                 }
@@ -1965,8 +2388,8 @@ namespace AntdUI
                                 if (it.Key.Visible)
                                 {
                                     int w;
-                                    if (it.Key.HasIcon) w = it.Value.Width + gap2 + ico_size + ico_gap;
-                                    else w = it.Value.Width + gap2;
+                                    if (it.Key.HasIcon) w = verticalText ? Math.Max(rw, ico_size) + gap2 : it.Value.Width + gap2 + ico_size + ico_gap;
+                                    else w = verticalText ? rw + gap2 : it.Value.Width + gap2;
                                     if (sizewh < w) sizewh = w;
                                 }
                             }
@@ -2274,7 +2697,7 @@ namespace AntdUI
                         else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
                         else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
-                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
+                    // g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
                 else
                 {
@@ -2290,7 +2713,23 @@ namespace AntdUI
                         else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
                         else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
-                    g.String(page.Text, owner.Font, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme), rects.Rect_Text, owner.s_c);
+                    //g.String(page.Text, owner.Font, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme), rects.Rect_Text, owner.s_c);
+                }
+                if ((owner.Alignment == TabAlignment.Left || owner.Alignment == TabAlignment.Right) && owner.Rotate != TRotate.None)
+                {
+                    var state = g.Save();
+                    float cx = rects.Rect_Text.X + rects.Rect_Text.Width / 2f;
+                    float cy = rects.Rect_Text.Y + rects.Rect_Text.Height / 2f;
+                    g.TranslateTransform(cx, cy);
+                    float angle = owner.Rotate == TRotate.Clockwise_90 ? 90f : -90f;
+                    g.RotateTransform(angle);
+                    var drawRect = new RectangleF(-rects.Rect_Text.Height / 2f, -rects.Rect_Text.Width / 2f, rects.Rect_Text.Height, rects.Rect_Text.Width);
+                    g.String(page.Text, owner.Font, brush, drawRect, owner.s_c);
+                    g.Restore(state);
+                }
+                else
+                {
+                    g.String(page.Text, owner.Font, brush, rects.Rect_Text, owner.s_c);
                 }
                 owner.PaintBadge(g, page, rects.Rect_Text);
             }
