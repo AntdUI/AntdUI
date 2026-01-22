@@ -140,31 +140,26 @@ namespace AntdUI
                                 {
                                     bool close = closable && !it.Key.ReadOnly;
                                     Rectangle rect_it;
+                                    int width = it.Value.Width;
+
+                                    if (it.Key.HasIcon && width == 0) width = ico_size + ico_gap;
+                                    else
+                                    {
+                                        if (it.Key.HasIcon) width += ico_size + ico_gap * 2;
+                                        if (close) width += close_size + ico_gap;
+                                    }
+
+                                    rect_it = new Rectangle(rect.X + xy, y, width + gap2, xy2);
+
                                     if (close)
                                     {
-                                        if (it.Key.HasIcon)
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap2 + ico_size + close_size + ico_gap * 2, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true).SetLine(barPadding, barPadding2, barSize));
-                                        }
-                                        else
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap2 + close_size + ico_gap, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true).SetLine(barPadding, barPadding2, barSize));
-                                        }
+                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true).SetLine(barPadding, barPadding2, barSize));
+                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true).SetLine(barPadding, barPadding2, barSize));
                                     }
                                     else
                                     {
-                                        if (it.Key.HasIcon)
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap2 + ico_size + ico_gap, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true).SetLine(barPadding, barPadding2, barSize));
-                                        }
-                                        else
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, y, it.Value.Width + gap2, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true).SetLine(barPadding, barPadding2, barSize));
-                                        }
+                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true).SetLine(barPadding, barPadding2, barSize));
+                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true).SetLine(barPadding, barPadding2, barSize));
                                     }
                                     it.Key.SetRect(rect_it);
                                     xy += rect_it.Width;
@@ -196,7 +191,11 @@ namespace AntdUI
                                         // top gap + iconPart + text + closePart + bottom gap
                                         itemHeight = gap + iconPart + textHeight + closePart + gap;
                                     }
-                                    else itemHeight = it.Value.Height + gap;
+                                    else
+                                    {
+                                        if (it.Key.HasIcon && textHeight == 0) itemHeight = ico_size + gap;
+                                        else itemHeight = textHeight + gap;
+                                    }
 
                                     Rectangle rect_it = new Rectangle(rect.X, rect.Y + xy, xy2, itemHeight);
                                     Rectangle rect_line = new Rectangle(rect_it.X + xy2 - barSize, rect_it.Y + barPadding, barSize, rect_it.Height - barPadding2);
@@ -237,10 +236,10 @@ namespace AntdUI
                                         // 如果图标在上，从顶部推进
                                         if (hasIcon && iconOnTop) textTop += ico_size + ico_gap;
                                         // 如果关闭在上，从顶部推进（当 close 放上时）
-                                        if (hasClose && !iconOnTop) textTop += close_size + ico_gap; 
+                                        if (hasClose && !iconOnTop) textTop += close_size + ico_gap;
 
                                         // 如果关闭在下，从底部收缩
-                                        if (hasClose && iconOnTop) textBottom -= close_size + ico_gap; 
+                                        if (hasClose && iconOnTop) textBottom -= close_size + ico_gap;
                                         // 如果图标在下，从底部收缩
                                         if (hasIcon && !iconOnTop) textBottom -= ico_size + ico_gap;
 
@@ -295,7 +294,11 @@ namespace AntdUI
                                         int closePart = (close) ? close_size + ico_gap : 0;
                                         itemHeight = gap + iconPart + textHeight + closePart + gap;
                                     }
-                                    else itemHeight = it.Value.Height + gap;
+                                    else
+                                    {
+                                        if (it.Key.HasIcon && textHeight == 0) itemHeight = ico_size + gap;
+                                        else itemHeight = textHeight + gap;
+                                    }
 
                                     Rectangle rect_it = new Rectangle(x, rect.Y + xy, xy2, itemHeight);
                                     Rectangle rect_line = new Rectangle(rect_it.X, rect_it.Y + barPadding, barSize, rect_it.Height - barPadding2);
@@ -376,31 +379,26 @@ namespace AntdUI
                                 {
                                     bool close = closable && !it.Key.ReadOnly;
                                     Rectangle rect_it;
+                                    int width = it.Value.Width;
+
+                                    if (it.Key.HasIcon && width == 0) width = ico_size + ico_gap;
+                                    else
+                                    {
+                                        if (it.Key.HasIcon) width += ico_size + ico_gap * 2;
+                                        if (close) width += close_size + ico_gap;
+                                    }
+
+                                    rect_it = new Rectangle(rect.X + xy, rect.Y, width + gap2, xy2);
+
                                     if (close)
                                     {
-                                        if (it.Key.HasIcon)
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap2 + ico_size + close_size + ico_gap * 2, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true).SetLineB(barPadding, barPadding2, barSize));
-                                        }
-                                        else
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap2 + close_size + ico_gap, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true).SetLineB(barPadding, barPadding2, barSize));
-                                        }
+                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, close_size, ico_gap, true).SetLineB(barPadding, barPadding2, barSize));
+                                        else rect_list.Add(new TabPageRect(rect_it, false, it.Value, gap, close_size, ico_gap, true).SetLineB(barPadding, barPadding2, barSize));
                                     }
                                     else
                                     {
-                                        if (it.Key.HasIcon)
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap2 + ico_size + ico_gap, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true).SetLineB(barPadding, barPadding2, barSize));
-                                        }
-                                        else
-                                        {
-                                            rect_it = new Rectangle(rect.X + xy, rect.Y, it.Value.Width + gap2, xy2);
-                                            rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true).SetLineB(barPadding, barPadding2, barSize));
-                                        }
+                                        if (it.Key.HasIcon) rect_list.Add(new TabPageRect(rect_it, it.Value, gap, ico_size, ico_gap, true).SetLineB(barPadding, barPadding2, barSize));
+                                        else rect_list.Add(new TabPageRect(rect_it, it.Value, gap, true).SetLineB(barPadding, barPadding2, barSize));
                                     }
                                     it.Key.SetRect(rect_it);
                                     xy += rect_it.Width;
@@ -516,7 +514,9 @@ namespace AntdUI
                         {
                             if (it.Key.Visible)
                             {
-                                int h = it.Value.Height + gap;
+                                int h;
+                                if (it.Key.HasIcon && it.Value.Height == 0) h = ico_size + gap;
+                                else h = it.Value.Height + gap;
                                 if (sizewh < h) sizewh = h;
                             }
                         }

@@ -391,6 +391,10 @@ namespace AntdUI
 
         #region 数据
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new ControlCollection Controls => base.Controls;
+
         TabCollection? items;
         /// <summary>
         /// 数据
