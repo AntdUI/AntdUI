@@ -229,8 +229,10 @@ namespace AntdUI
                                     {
                                         p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
                                         bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+                                        bool hasIcon = it.Key.HasIcon;
+                                        bool hasClose = close;
 
-                                        if (it.Key.HasIcon)
+                                        if (hasIcon)
                                         {
                                             int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
                                             int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
@@ -238,7 +240,7 @@ namespace AntdUI
                                         }
                                         else p.Rect_Ico = Rectangle.Empty;
 
-                                        if (close)
+                                        if (hasClose)
                                         {
                                             int cs = close_size;
                                             int cx = rect_it.X + (rect_it.Width - cs) / 2;
@@ -247,8 +249,15 @@ namespace AntdUI
                                         }
                                         else p.Rect_Close = Rectangle.Empty;
 
-                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
-                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int textTop = rect_it.Y + gap;
+                                        int textBottom = rect_it.Bottom - gap;
+
+                                        if (hasIcon && iconOnTop) textTop += ico_size + ico_gap;
+                                        if (hasClose && !iconOnTop) textTop += close_size + ico_gap;
+
+                                        if (hasClose && iconOnTop) textBottom -= close_size + ico_gap;
+                                        if (hasIcon && !iconOnTop) textBottom -= ico_size + ico_gap;
+
                                         int th = Math.Max(0, textBottom - textTop);
                                         int textW = rw_tmp ?? it.Value.Width;
                                         int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
@@ -301,10 +310,12 @@ namespace AntdUI
                                     TabPageRect p;
                                     if (owner.IsRotate)
                                     {
-                                        p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp);
+                                        p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp);
                                         bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+                                        bool hasIcon = it.Key.HasIcon;
+                                        bool hasClose = close;
 
-                                        if (it.Key.HasIcon)
+                                        if (hasIcon)
                                         {
                                             int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
                                             int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
@@ -312,7 +323,7 @@ namespace AntdUI
                                         }
                                         else p.Rect_Ico = Rectangle.Empty;
 
-                                        if (close)
+                                        if (hasClose)
                                         {
                                             int cs = close_size;
                                             int cx = rect_it.X + (rect_it.Width - cs) / 2;
@@ -321,8 +332,15 @@ namespace AntdUI
                                         }
                                         else p.Rect_Close = Rectangle.Empty;
 
-                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
-                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int textTop = rect_it.Y + gap;
+                                        int textBottom = rect_it.Bottom - gap;
+
+                                        if (hasIcon && iconOnTop) textTop += ico_size + ico_gap;
+                                        if (hasClose && !iconOnTop) textTop += close_size + ico_gap;
+
+                                        if (hasClose && iconOnTop) textBottom -= close_size + ico_gap;
+                                        if (hasIcon && !iconOnTop) textBottom -= ico_size + ico_gap;
+
                                         int th = Math.Max(0, textBottom - textTop);
                                         int textW = rw_tmp ?? it.Value.Width;
                                         int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);

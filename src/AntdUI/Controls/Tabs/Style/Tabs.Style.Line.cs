@@ -205,11 +205,14 @@ namespace AntdUI
                                     {
                                         // 使用简单构造后手动设置 ico/close/text 布局（避免原构造器的横向约束）
                                         p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp).SetLine(rect_line);
+
                                         // 根据旋转方向决定 icon 在上还是在下：顺时针 90 度 -> icon 在上；逆时针 -> icon 在下
                                         bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+                                        bool hasIcon = it.Key.HasIcon;
+                                        bool hasClose = close;
 
-                                        // icon 顶部水平居中
-                                        if (it.Key.HasIcon)
+                                        // icon 水平居中，垂直放置（上或下）
+                                        if (hasIcon)
                                         {
                                             int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
                                             int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
@@ -217,8 +220,8 @@ namespace AntdUI
                                         }
                                         else p.Rect_Ico = Rectangle.Empty;
 
-                                        // close 底部水平居中
-                                        if (close)
+                                        // close 水平居中，放在另一端（与 icon 相对）
+                                        if (hasClose)
                                         {
                                             int cs = close_size;
                                             int cx = rect_it.X + (rect_it.Width - cs) / 2;
@@ -227,9 +230,20 @@ namespace AntdUI
                                         }
                                         else p.Rect_Close = Rectangle.Empty;
 
-                                        // 文本区域放在 icon 与 close 之间，水平居中
-                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
-                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        // 根据 icon 与 close 实际放置位置，分别在上/下端预留空间，文本区域为中间区
+                                        int textTop = rect_it.Y + gap;
+                                        int textBottom = rect_it.Bottom - gap;
+
+                                        // 如果图标在上，从顶部推进
+                                        if (hasIcon && iconOnTop) textTop += ico_size + ico_gap;
+                                        // 如果关闭在上，从顶部推进（当 close 放上时）
+                                        if (hasClose && !iconOnTop) textTop += close_size + ico_gap; 
+
+                                        // 如果关闭在下，从底部收缩
+                                        if (hasClose && iconOnTop) textBottom -= close_size + ico_gap; 
+                                        // 如果图标在下，从底部收缩
+                                        if (hasIcon && !iconOnTop) textBottom -= ico_size + ico_gap;
+
                                         int th = Math.Max(0, textBottom - textTop);
                                         int textW = rw_tmp ?? it.Value.Width;
                                         int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
@@ -289,10 +303,12 @@ namespace AntdUI
                                     TabPageRect p;
                                     if (owner.IsRotate)
                                     {
-                                        p = new TabPageRect(rect_it, it.Value, gap, false, rw_tmp).SetLine(rect_line);
+                                        p = new TabPageRect(rect_it, it.Value, gap, true, rw_tmp).SetLine(rect_line);
                                         bool iconOnTop = owner.Rotate == TRotate.Clockwise_90;
+                                        bool hasIcon = it.Key.HasIcon;
+                                        bool hasClose = close;
 
-                                        if (it.Key.HasIcon)
+                                        if (hasIcon)
                                         {
                                             int ico_x = rect_it.X + (rect_it.Width - ico_size) / 2;
                                             int ico_y = iconOnTop ? rect_it.Y + gap : rect_it.Bottom - gap - ico_size;
@@ -300,7 +316,7 @@ namespace AntdUI
                                         }
                                         else p.Rect_Ico = Rectangle.Empty;
 
-                                        if (close)
+                                        if (hasClose)
                                         {
                                             int cs = close_size;
                                             int cx = rect_it.X + (rect_it.Width - cs) / 2;
@@ -309,8 +325,15 @@ namespace AntdUI
                                         }
                                         else p.Rect_Close = Rectangle.Empty;
 
-                                        int textTop = rect_it.Y + gap + (it.Key.HasIcon ? (ico_size + ico_gap) : 0);
-                                        int textBottom = rect_it.Bottom - gap - (close ? (close_size + ico_gap) : 0);
+                                        int textTop = rect_it.Y + gap;
+                                        int textBottom = rect_it.Bottom - gap;
+
+                                        if (hasIcon && iconOnTop) textTop += ico_size + ico_gap;
+                                        if (hasClose && !iconOnTop) textTop += close_size + ico_gap;
+
+                                        if (hasClose && iconOnTop) textBottom -= close_size + ico_gap;
+                                        if (hasIcon && !iconOnTop) textBottom -= ico_size + ico_gap;
+
                                         int th = Math.Max(0, textBottom - textTop);
                                         int textW = rw_tmp ?? it.Value.Width;
                                         int tx = rect_it.X + Math.Max(0, (rect_it.Width - textW) / 2);
