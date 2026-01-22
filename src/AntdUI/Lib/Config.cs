@@ -27,6 +27,11 @@ namespace AntdUI
             {
                 mode = value;
                 EventHub.Dispatch(EventType.THEME, value);
+                if (Style.tmp_primary.HasValue) Style.SetPrimaryCore(Style.tmp_primary.Value);
+                if (Style.tmp_success.HasValue) Style.SetSuccessCore(Style.tmp_success.Value);
+                if (Style.tmp_warning.HasValue) Style.SetWarningCore(Style.tmp_warning.Value);
+                if (Style.tmp_error.HasValue) Style.SetErrorCore(Style.tmp_error.Value);
+                if (Style.tmp_info.HasValue) Style.SetInfoCore(Style.tmp_info.Value);
             }
         }
 

@@ -657,31 +657,22 @@ namespace AntdUI
             var state = g.Save();
             try
             {
-                if (CellPaintBegin == null) PaintItemCore(g, columnIndex, it, enable, Font, fore);
-                else
+                if (OnCellPaintBegin(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.Type, it.ROW.INDEX, columnIndex, it.COLUMN, out var CellFore, out var CellBack, out var CellFont))
                 {
-                    var arge = new TablePaintBeginEventArgs(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.Type, it.ROW.INDEX, columnIndex, it.COLUMN);
-                    CellPaintBegin(this, arge);
-                    if (arge.Handled)
+                    if (CellBack != null)
                     {
-                        if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
+                        using (CellBack)
+                        {
+                            g.Fill(CellBack, it.RECT);
+                        }
                     }
-                    else
+                    using (CellFont)
+                    using (CellFore)
                     {
-                        if (arge.CellBack != null)
-                        {
-                            using (arge.CellBack)
-                            {
-                                g.Fill(arge.CellBack, it.RECT);
-                            }
-                        }
-                        using (arge.CellFont)
-                        using (arge.CellFore)
-                        {
-                            PaintItemCore(g, columnIndex, it, enable, arge.CellFont ?? Font, arge.CellFore ?? fore);
-                        }
+                        PaintItemCore(g, columnIndex, it, enable, CellFont ?? Font, CellFore ?? fore);
                     }
                 }
+                else if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
                 OnCellPaint(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.Type, it.ROW.INDEX, columnIndex, it.COLUMN);
             }
             catch { }

@@ -288,7 +288,40 @@ namespace AntdUI
             else colors.Add(key, value);
         }
 
+        internal static Color? tmp_primary;
         public static void SetPrimary(Color primary)
+        {
+            tmp_primary = primary;
+            SetPrimaryCore(primary);
+        }
+        internal static Color? tmp_success;
+        public static void SetSuccess(Color success)
+        {
+            tmp_success = success;
+            SetSuccessCore(success);
+        }
+        internal static Color? tmp_warning;
+        public static void SetWarning(Color warning)
+        {
+            tmp_warning = warning;
+            SetWarningCore(warning);
+        }
+        internal static Color? tmp_error;
+        public static void SetError(Color error)
+        {
+            tmp_error = error;
+            SetErrorCore(error);
+        }
+        internal static Color? tmp_info;
+        public static void SetInfo(Color info)
+        {
+            tmp_info = info;
+            SetInfoCore(info);
+        }
+
+        #region 设置主题
+
+        internal static void SetPrimaryCore(Color primary)
         {
             var colors = primary.GenerateColors();
             Colour.Primary.Set(colors[5]);
@@ -306,9 +339,11 @@ namespace AntdUI
                 Colour.PrimaryHover.Set(colors[6]);
                 Colour.PrimaryActive.Set(colors[4]);
             }
+            var mode = colors[5].ColorMode();
+            Colour.PrimaryColor.Set(mode ? Color.Black : Color.White);
             EventHub.Dispatch(EventType.THEME_PRIMARY);
         }
-        public static void SetSuccess(Color success)
+        internal static void SetSuccessCore(Color success)
         {
             var colors = success.GenerateColors();
             Colour.Success.Set(colors[5]);
@@ -318,8 +353,10 @@ namespace AntdUI
             Colour.SuccessActive.Set(colors[6]);
             if (Config.Mode == TMode.Light) Colour.SuccessActive.Set(colors[6]);
             else Colour.SuccessActive.Set(colors[4]);
+            var mode = colors[5].ColorMode();
+            Colour.SuccessColor.Set(mode ? Color.Black : Color.White);
         }
-        public static void SetWarning(Color warning)
+        internal static void SetWarningCore(Color warning)
         {
             var colors = warning.GenerateColors();
             Colour.Warning.Set(colors[5]);
@@ -329,8 +366,10 @@ namespace AntdUI
             Colour.WarningActive.Set(colors[6]);
             if (Config.Mode == TMode.Light) Colour.WarningActive.Set(colors[6]);
             else Colour.WarningActive.Set(colors[4]);
+            var mode = colors[5].ColorMode();
+            Colour.WarningColor.Set(mode ? Color.Black : Color.White);
         }
-        public static void SetError(Color error)
+        internal static void SetErrorCore(Color error)
         {
             var colors = error.GenerateColors();
             Colour.Error.Set(colors[5]);
@@ -346,8 +385,10 @@ namespace AntdUI
                 Colour.ErrorHover.Set(colors[6]);
                 Colour.ErrorActive.Set(colors[4]);
             }
+            var mode = colors[5].ColorMode();
+            Colour.ErrorColor.Set(mode ? Color.Black : Color.White);
         }
-        public static void SetInfo(Color info)
+        internal static void SetInfoCore(Color info)
         {
             var colors = info.GenerateColors();
             Colour.Info.Set(colors[5]);
@@ -357,7 +398,11 @@ namespace AntdUI
             Colour.InfoActive.Set(colors[6]);
             if (Config.Mode == TMode.Light) Colour.InfoActive.Set(colors[6]);
             else Colour.InfoActive.Set(colors[4]);
+            var mode = colors[5].ColorMode();
+            Colour.InfoColor.Set(mode ? Color.Black : Color.White);
         }
+
+        #endregion
 
         /// <summary>
         /// 加载自定义主题
@@ -396,7 +441,21 @@ namespace AntdUI
         /// 色彩模式（浅色、暗色）
         /// </summary>
         /// <returns>true Light;false Dark</returns>
-        public static bool ColorMode(this Color color) => ((color.R * 299 + color.G * 587 + color.B * 114) / 1000) > 128;
+        public static bool ColorMode(this Color color)
+        {
+            // 将RGB值转换为0-1的浮点数
+            double r = color.R / 255.0, g = color.G / 255.0, b = color.B / 255.0;
+
+            // WCAG标准的伽马校正（修正人眼对暗色调的感知）
+            r = r <= 0.03928 ? r / 12.92 : Math.Pow((r + 0.055) / 1.055, 2.4);
+            g = g <= 0.03928 ? g / 12.92 : Math.Pow((g + 0.055) / 1.055, 2.4);
+            b = b <= 0.03928 ? b / 12.92 : Math.Pow((b + 0.055) / 1.055, 2.4);
+
+            // 计算相对亮度（WCAG标准公式）
+            double relativeLuminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            // 阈值越低，越难判定为浅色（需背景更亮才会显示浅色前景）
+            return relativeLuminance > 0.5;
+        }
 
         #region 生成色卡
 
