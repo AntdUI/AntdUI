@@ -11,7 +11,7 @@
 		<Product>AntdUI.EmojiFluentFlat</Product>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
-		<Version>2025.1.31.0</Version>
+		<Version>2026.1.23.0</Version>
 		<Description>👚 基于 Ant Design 设计语言的 Winform 界面库</Description>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<LangVersion>9.0</LangVersion>
@@ -28,10 +28,20 @@
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageReadmeFile>README_EmojiFluentFlat.md</PackageReadmeFile>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>../../key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="../logo_fluentFlat.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<None Include="../../doc/wiki/README_EmojiFluentFlat.md">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
