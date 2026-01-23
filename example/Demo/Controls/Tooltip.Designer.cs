@@ -258,10 +258,10 @@ namespace Demo.Controls
             // tooltip1
             // 
             tooltip1.Location = new Point(142, 3);
-            tooltip1.MaximumSize = new Size(335, 51);
-            tooltip1.MinimumSize = new Size(335, 51);
+            tooltip1.MaximumSize = new Size(323, 45);
+            tooltip1.MinimumSize = new Size(323, 45);
             tooltip1.Name = "tooltip1";
-            tooltip1.Size = new Size(335, 51);
+            tooltip1.Size = new Size(323, 45);
             tooltip1.TabIndex = 1;
             tooltip1.Text = "Thanks for using antd. Have a nice day!";
             // 

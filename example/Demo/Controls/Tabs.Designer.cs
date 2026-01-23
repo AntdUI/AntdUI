@@ -33,6 +33,9 @@ namespace Demo.Controls
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
             tabs3 = new AntdUI.Tabs();
+            tabPage16 = new AntdUI.TabPage();
+            tabPage17 = new AntdUI.TabPage();
+            tabPage18 = new AntdUI.TabPage();
             divider3 = new AntdUI.Divider();
             tabs_close = new AntdUI.Tabs();
             divider2 = new AntdUI.Divider();
@@ -68,9 +71,6 @@ namespace Demo.Controls
             tabPage15 = new AntdUI.TabPage();
             label15 = new AntdUI.Label();
             divider1 = new AntdUI.Divider();
-            tabPage16 = new AntdUI.TabPage();
-            tabPage17 = new AntdUI.TabPage();
-            tabPage18 = new AntdUI.TabPage();
             panel1.SuspendLayout();
             tabs3.SuspendLayout();
             tabs1.SuspendLayout();
@@ -125,9 +125,6 @@ namespace Demo.Controls
             // tabs3
             // 
             tabs3.Centered = true;
-            tabs3.Controls.Add(tabPage16);
-            tabs3.Controls.Add(tabPage17);
-            tabs3.Controls.Add(tabPage18);
             tabs3.Cursor = Cursors.Hand;
             tabs3.Dock = DockStyle.Top;
             tabs3.Gap = 12;
@@ -140,6 +137,35 @@ namespace Demo.Controls
             tabs3.Style = styleLine1;
             tabs3.TabIndex = 3;
             tabs3.Text = "tabs3";
+            // 
+            // tabPage16
+            // 
+            tabPage16.Badge = "99";
+            tabPage16.Dock = DockStyle.Fill;
+            tabPage16.IconSvg = "AppleFilled";
+            tabPage16.Location = new Point(0, 39);
+            tabPage16.Name = "tabPage16";
+            tabPage16.Size = new Size(750, 81);
+            tabPage16.TabIndex = 0;
+            tabPage16.Text = "Tab1";
+            // 
+            // tabPage17
+            // 
+            tabPage17.Dock = DockStyle.Fill;
+            tabPage17.Location = new Point(0, 39);
+            tabPage17.Name = "tabPage17";
+            tabPage17.Size = new Size(750, 81);
+            tabPage17.TabIndex = 1;
+            tabPage17.Text = "Tab2";
+            // 
+            // tabPage18
+            // 
+            tabPage18.Dock = DockStyle.Fill;
+            tabPage18.Location = new Point(0, 39);
+            tabPage18.Name = "tabPage18";
+            tabPage18.Size = new Size(750, 81);
+            tabPage18.TabIndex = 2;
+            tabPage18.Text = "Tab3";
             // 
             // divider3
             // 
@@ -182,21 +208,6 @@ namespace Demo.Controls
             // 
             // tabs1
             // 
-            tabs1.Controls.Add(tabPage1);
-            tabs1.Controls.Add(tabPage2);
-            tabs1.Controls.Add(tabPage3);
-            tabs1.Controls.Add(tabPage4);
-            tabs1.Controls.Add(tabPage5);
-            tabs1.Controls.Add(tabPage6);
-            tabs1.Controls.Add(tabPage7);
-            tabs1.Controls.Add(tabPage8);
-            tabs1.Controls.Add(tabPage9);
-            tabs1.Controls.Add(tabPage10);
-            tabs1.Controls.Add(tabPage11);
-            tabs1.Controls.Add(tabPage12);
-            tabs1.Controls.Add(tabPage13);
-            tabs1.Controls.Add(tabPage14);
-            tabs1.Controls.Add(tabPage15);
             tabs1.Dock = DockStyle.Top;
             tabs1.Gap = 12;
             tabs1.Location = new Point(0, 28);
@@ -224,10 +235,11 @@ namespace Demo.Controls
             // tabPage1
             // 
             tabPage1.Controls.Add(label1);
+            tabPage1.Dock = DockStyle.Fill;
             tabPage1.IconSvg = "AppleFilled";
-            tabPage1.Location = new Point(3, 38);
+            tabPage1.Location = new Point(0, 39);
             tabPage1.Name = "tabPage1";
-            tabPage1.Size = new Size(744, 79);
+            tabPage1.Size = new Size(750, 81);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Tab1";
             // 
@@ -236,7 +248,7 @@ namespace Demo.Controls
             label1.Dock = DockStyle.Fill;
             label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(744, 79);
+            label1.Size = new Size(750, 81);
             label1.TabIndex = 0;
             label1.Text = "Content of Tab Pane 1";
             label1.TextAlign = ContentAlignment.TopLeft;
@@ -244,9 +256,10 @@ namespace Demo.Controls
             // tabPage2
             // 
             tabPage2.Controls.Add(label2);
-            tabPage2.Location = new Point(0, 0);
+            tabPage2.Dock = DockStyle.Fill;
+            tabPage2.Location = new Point(0, 39);
             tabPage2.Name = "tabPage2";
-            tabPage2.Size = new Size(0, 0);
+            tabPage2.Size = new Size(750, 81);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Tab2";
             // 
@@ -255,7 +268,7 @@ namespace Demo.Controls
             label2.Dock = DockStyle.Fill;
             label2.Location = new Point(0, 0);
             label2.Name = "label2";
-            label2.Size = new Size(0, 0);
+            label2.Size = new Size(750, 81);
             label2.TabIndex = 1;
             label2.Text = "Content of Tab Pane 2";
             label2.TextAlign = ContentAlignment.TopLeft;
@@ -263,9 +276,10 @@ namespace Demo.Controls
             // tabPage3
             // 
             tabPage3.Controls.Add(label3);
-            tabPage3.Location = new Point(0, 0);
+            tabPage3.Dock = DockStyle.Fill;
+            tabPage3.Location = new Point(0, 39);
             tabPage3.Name = "tabPage3";
-            tabPage3.Size = new Size(0, 0);
+            tabPage3.Size = new Size(750, 81);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Tab3";
             // 
@@ -274,7 +288,7 @@ namespace Demo.Controls
             label3.Dock = DockStyle.Fill;
             label3.Location = new Point(0, 0);
             label3.Name = "label3";
-            label3.Size = new Size(0, 0);
+            label3.Size = new Size(750, 81);
             label3.TabIndex = 1;
             label3.Text = "Content of Tab Pane 3";
             label3.TextAlign = ContentAlignment.TopLeft;
@@ -282,9 +296,10 @@ namespace Demo.Controls
             // tabPage4
             // 
             tabPage4.Controls.Add(label4);
-            tabPage4.Location = new Point(0, 0);
+            tabPage4.Dock = DockStyle.Fill;
+            tabPage4.Location = new Point(0, 39);
             tabPage4.Name = "tabPage4";
-            tabPage4.Size = new Size(0, 0);
+            tabPage4.Size = new Size(750, 81);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Tab4";
             // 
@@ -293,7 +308,7 @@ namespace Demo.Controls
             label4.Dock = DockStyle.Fill;
             label4.Location = new Point(0, 0);
             label4.Name = "label4";
-            label4.Size = new Size(0, 0);
+            label4.Size = new Size(750, 81);
             label4.TabIndex = 1;
             label4.Text = "Content of Tab Pane 4";
             label4.TextAlign = ContentAlignment.TopLeft;
@@ -301,9 +316,10 @@ namespace Demo.Controls
             // tabPage5
             // 
             tabPage5.Controls.Add(label5);
-            tabPage5.Location = new Point(0, 0);
+            tabPage5.Dock = DockStyle.Fill;
+            tabPage5.Location = new Point(0, 39);
             tabPage5.Name = "tabPage5";
-            tabPage5.Size = new Size(0, 0);
+            tabPage5.Size = new Size(750, 81);
             tabPage5.TabIndex = 4;
             tabPage5.Text = "Tab5";
             // 
@@ -312,7 +328,7 @@ namespace Demo.Controls
             label5.Dock = DockStyle.Fill;
             label5.Location = new Point(0, 0);
             label5.Name = "label5";
-            label5.Size = new Size(0, 0);
+            label5.Size = new Size(750, 81);
             label5.TabIndex = 1;
             label5.Text = "Content of Tab Pane 5";
             label5.TextAlign = ContentAlignment.TopLeft;
@@ -320,9 +336,10 @@ namespace Demo.Controls
             // tabPage6
             // 
             tabPage6.Controls.Add(label6);
-            tabPage6.Location = new Point(0, 0);
+            tabPage6.Dock = DockStyle.Fill;
+            tabPage6.Location = new Point(0, 39);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new Size(0, 0);
+            tabPage6.Size = new Size(750, 81);
             tabPage6.TabIndex = 5;
             tabPage6.Text = "Tab6";
             // 
@@ -331,7 +348,7 @@ namespace Demo.Controls
             label6.Dock = DockStyle.Fill;
             label6.Location = new Point(0, 0);
             label6.Name = "label6";
-            label6.Size = new Size(0, 0);
+            label6.Size = new Size(750, 81);
             label6.TabIndex = 1;
             label6.Text = "Content of Tab Pane 6";
             label6.TextAlign = ContentAlignment.TopLeft;
@@ -339,9 +356,10 @@ namespace Demo.Controls
             // tabPage7
             // 
             tabPage7.Controls.Add(label7);
-            tabPage7.Location = new Point(0, 0);
+            tabPage7.Dock = DockStyle.Fill;
+            tabPage7.Location = new Point(0, 39);
             tabPage7.Name = "tabPage7";
-            tabPage7.Size = new Size(0, 0);
+            tabPage7.Size = new Size(750, 81);
             tabPage7.TabIndex = 6;
             tabPage7.Text = "Tab7";
             // 
@@ -350,7 +368,7 @@ namespace Demo.Controls
             label7.Dock = DockStyle.Fill;
             label7.Location = new Point(0, 0);
             label7.Name = "label7";
-            label7.Size = new Size(0, 0);
+            label7.Size = new Size(750, 81);
             label7.TabIndex = 1;
             label7.Text = "Content of Tab Pane 7";
             label7.TextAlign = ContentAlignment.TopLeft;
@@ -358,9 +376,10 @@ namespace Demo.Controls
             // tabPage8
             // 
             tabPage8.Controls.Add(label8);
-            tabPage8.Location = new Point(0, 0);
+            tabPage8.Dock = DockStyle.Fill;
+            tabPage8.Location = new Point(0, 39);
             tabPage8.Name = "tabPage8";
-            tabPage8.Size = new Size(0, 0);
+            tabPage8.Size = new Size(750, 81);
             tabPage8.TabIndex = 7;
             tabPage8.Text = "Tab8";
             // 
@@ -369,7 +388,7 @@ namespace Demo.Controls
             label8.Dock = DockStyle.Fill;
             label8.Location = new Point(0, 0);
             label8.Name = "label8";
-            label8.Size = new Size(0, 0);
+            label8.Size = new Size(750, 81);
             label8.TabIndex = 1;
             label8.Text = "Content of Tab Pane 8";
             label8.TextAlign = ContentAlignment.TopLeft;
@@ -377,9 +396,10 @@ namespace Demo.Controls
             // tabPage9
             // 
             tabPage9.Controls.Add(label9);
-            tabPage9.Location = new Point(0, 0);
+            tabPage9.Dock = DockStyle.Fill;
+            tabPage9.Location = new Point(0, 39);
             tabPage9.Name = "tabPage9";
-            tabPage9.Size = new Size(0, 0);
+            tabPage9.Size = new Size(750, 81);
             tabPage9.TabIndex = 8;
             tabPage9.Text = "Tab9";
             // 
@@ -388,7 +408,7 @@ namespace Demo.Controls
             label9.Dock = DockStyle.Fill;
             label9.Location = new Point(0, 0);
             label9.Name = "label9";
-            label9.Size = new Size(0, 0);
+            label9.Size = new Size(750, 81);
             label9.TabIndex = 1;
             label9.Text = "Content of Tab Pane 9";
             label9.TextAlign = ContentAlignment.TopLeft;
@@ -396,9 +416,10 @@ namespace Demo.Controls
             // tabPage10
             // 
             tabPage10.Controls.Add(label10);
-            tabPage10.Location = new Point(0, 0);
+            tabPage10.Dock = DockStyle.Fill;
+            tabPage10.Location = new Point(0, 39);
             tabPage10.Name = "tabPage10";
-            tabPage10.Size = new Size(0, 0);
+            tabPage10.Size = new Size(750, 81);
             tabPage10.TabIndex = 9;
             tabPage10.Text = "Tab10";
             // 
@@ -407,7 +428,7 @@ namespace Demo.Controls
             label10.Dock = DockStyle.Fill;
             label10.Location = new Point(0, 0);
             label10.Name = "label10";
-            label10.Size = new Size(0, 0);
+            label10.Size = new Size(750, 81);
             label10.TabIndex = 1;
             label10.Text = "Content of Tab Pane 10";
             label10.TextAlign = ContentAlignment.TopLeft;
@@ -415,9 +436,10 @@ namespace Demo.Controls
             // tabPage11
             // 
             tabPage11.Controls.Add(label11);
-            tabPage11.Location = new Point(0, 0);
+            tabPage11.Dock = DockStyle.Fill;
+            tabPage11.Location = new Point(0, 39);
             tabPage11.Name = "tabPage11";
-            tabPage11.Size = new Size(0, 0);
+            tabPage11.Size = new Size(750, 81);
             tabPage11.TabIndex = 10;
             tabPage11.Text = "Tab11";
             // 
@@ -426,7 +448,7 @@ namespace Demo.Controls
             label11.Dock = DockStyle.Fill;
             label11.Location = new Point(0, 0);
             label11.Name = "label11";
-            label11.Size = new Size(0, 0);
+            label11.Size = new Size(750, 81);
             label11.TabIndex = 1;
             label11.Text = "Content of Tab Pane 11";
             label11.TextAlign = ContentAlignment.TopLeft;
@@ -434,9 +456,10 @@ namespace Demo.Controls
             // tabPage12
             // 
             tabPage12.Controls.Add(label12);
-            tabPage12.Location = new Point(0, 0);
+            tabPage12.Dock = DockStyle.Fill;
+            tabPage12.Location = new Point(0, 39);
             tabPage12.Name = "tabPage12";
-            tabPage12.Size = new Size(0, 0);
+            tabPage12.Size = new Size(750, 81);
             tabPage12.TabIndex = 11;
             tabPage12.Text = "Tab12";
             // 
@@ -445,7 +468,7 @@ namespace Demo.Controls
             label12.Dock = DockStyle.Fill;
             label12.Location = new Point(0, 0);
             label12.Name = "label12";
-            label12.Size = new Size(0, 0);
+            label12.Size = new Size(750, 81);
             label12.TabIndex = 1;
             label12.Text = "Content of Tab Pane 12";
             label12.TextAlign = ContentAlignment.TopLeft;
@@ -453,9 +476,10 @@ namespace Demo.Controls
             // tabPage13
             // 
             tabPage13.Controls.Add(label13);
-            tabPage13.Location = new Point(0, 0);
+            tabPage13.Dock = DockStyle.Fill;
+            tabPage13.Location = new Point(0, 39);
             tabPage13.Name = "tabPage13";
-            tabPage13.Size = new Size(0, 0);
+            tabPage13.Size = new Size(750, 81);
             tabPage13.TabIndex = 12;
             tabPage13.Text = "Tab13";
             // 
@@ -464,7 +488,7 @@ namespace Demo.Controls
             label13.Dock = DockStyle.Fill;
             label13.Location = new Point(0, 0);
             label13.Name = "label13";
-            label13.Size = new Size(0, 0);
+            label13.Size = new Size(750, 81);
             label13.TabIndex = 1;
             label13.Text = "Content of Tab Pane 13";
             label13.TextAlign = ContentAlignment.TopLeft;
@@ -472,9 +496,10 @@ namespace Demo.Controls
             // tabPage14
             // 
             tabPage14.Controls.Add(label14);
-            tabPage14.Location = new Point(0, 0);
+            tabPage14.Dock = DockStyle.Fill;
+            tabPage14.Location = new Point(0, 39);
             tabPage14.Name = "tabPage14";
-            tabPage14.Size = new Size(0, 0);
+            tabPage14.Size = new Size(750, 81);
             tabPage14.TabIndex = 13;
             tabPage14.Text = "Tab14";
             // 
@@ -483,7 +508,7 @@ namespace Demo.Controls
             label14.Dock = DockStyle.Fill;
             label14.Location = new Point(0, 0);
             label14.Name = "label14";
-            label14.Size = new Size(0, 0);
+            label14.Size = new Size(750, 81);
             label14.TabIndex = 1;
             label14.Text = "Content of Tab Pane 14";
             label14.TextAlign = ContentAlignment.TopLeft;
@@ -491,9 +516,10 @@ namespace Demo.Controls
             // tabPage15
             // 
             tabPage15.Controls.Add(label15);
-            tabPage15.Location = new Point(0, 0);
+            tabPage15.Dock = DockStyle.Fill;
+            tabPage15.Location = new Point(0, 39);
             tabPage15.Name = "tabPage15";
-            tabPage15.Size = new Size(0, 0);
+            tabPage15.Size = new Size(750, 81);
             tabPage15.TabIndex = 14;
             tabPage15.Text = "Tab15";
             // 
@@ -502,7 +528,7 @@ namespace Demo.Controls
             label15.Dock = DockStyle.Fill;
             label15.Location = new Point(0, 0);
             label15.Name = "label15";
-            label15.Size = new Size(0, 0);
+            label15.Size = new Size(750, 81);
             label15.TabIndex = 1;
             label15.Text = "Content of Tab Pane 15";
             label15.TextAlign = ContentAlignment.TopLeft;
@@ -518,32 +544,6 @@ namespace Demo.Controls
             divider1.Size = new Size(750, 28);
             divider1.TabIndex = 0;
             divider1.Text = "基本用法";
-            // 
-            // tabPage16
-            // 
-            tabPage16.Badge = "99";
-            tabPage16.IconSvg = "AppleFilled";
-            tabPage16.Location = new Point(3, 38);
-            tabPage16.Name = "tabPage16";
-            tabPage16.Size = new Size(744, 79);
-            tabPage16.TabIndex = 0;
-            tabPage16.Text = "Tab1";
-            // 
-            // tabPage17
-            // 
-            tabPage17.Location = new Point(0, 0);
-            tabPage17.Name = "tabPage17";
-            tabPage17.Size = new Size(0, 0);
-            tabPage17.TabIndex = 1;
-            tabPage17.Text = "Tab2";
-            // 
-            // tabPage18
-            // 
-            tabPage18.Location = new Point(0, 0);
-            tabPage18.Name = "tabPage18";
-            tabPage18.Size = new Size(0, 0);
-            tabPage18.TabIndex = 2;
-            tabPage18.Text = "Tab3";
             // 
             // Tabs
             // 

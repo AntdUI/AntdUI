@@ -38,9 +38,9 @@ namespace Demo.Controls
             divider2 = new AntdUI.Divider();
             divider3 = new AntdUI.Divider();
             stackPanel3 = new AntdUI.StackPanel();
+            buttonError = new AntdUI.Button();
             btnWindow = new AntdUI.Button();
             btnControl = new AntdUI.Button();
-            buttonError = new AntdUI.Button();
             stackPanel1.SuspendLayout();
             stackPanel2.SuspendLayout();
             stackPanel3.SuspendLayout();
@@ -175,6 +175,18 @@ namespace Demo.Controls
             stackPanel3.Size = new Size(596, 48);
             stackPanel3.TabIndex = 3;
             // 
+            // buttonError
+            // 
+            buttonError.AutoSizeMode = AntdUI.TAutoSize.Width;
+            buttonError.LocalizationText = "Spin.{id}";
+            buttonError.Location = new Point(300, 3);
+            buttonError.Name = "buttonError";
+            buttonError.Size = new Size(109, 42);
+            buttonError.TabIndex = 4;
+            buttonError.Text = "带错误回调";
+            buttonError.Type = AntdUI.TTypeMini.Error;
+            buttonError.Click += buttonError_Click;
+            // 
             // btnWindow
             // 
             btnWindow.AutoSizeMode = AntdUI.TAutoSize.Width;
@@ -198,18 +210,6 @@ namespace Demo.Controls
             btnControl.Text = "上面控件";
             btnControl.Type = AntdUI.TTypeMini.Primary;
             btnControl.Click += btnControl_Click;
-            // 
-            // buttonError
-            // 
-            buttonError.AutoSizeMode = AntdUI.TAutoSize.Width;
-            buttonError.LocalizationText = "Spin.{id}";
-            buttonError.Location = new Point(300, 3);
-            buttonError.Name = "buttonError";
-            buttonError.Size = new Size(109, 42);
-            buttonError.TabIndex = 4;
-            buttonError.Text = "带错误回调";
-            buttonError.Type = AntdUI.TTypeMini.Error;
-            buttonError.Click += buttonError_Click;
             // 
             // Spin
             // 

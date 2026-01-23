@@ -181,6 +181,7 @@ namespace Demo.Controls
             ic4.TextAlign = HorizontalAlignment.Center;
             ic4.VerifyKeyboard += VerifyKeyboard;
             ic4.TextChanged += CodeTextChanged;
+            ic4.GotFocus += CodeGotFocus;
             ic4.KeyPress += CodeKeyPress;
             // 
             // ic3
@@ -194,6 +195,7 @@ namespace Demo.Controls
             ic3.TextAlign = HorizontalAlignment.Center;
             ic3.VerifyKeyboard += VerifyKeyboard;
             ic3.TextChanged += CodeTextChanged;
+            ic3.GotFocus += CodeGotFocus;
             ic3.KeyPress += CodeKeyPress;
             // 
             // ic2
@@ -207,6 +209,7 @@ namespace Demo.Controls
             ic2.TextAlign = HorizontalAlignment.Center;
             ic2.VerifyKeyboard += VerifyKeyboard;
             ic2.TextChanged += CodeTextChanged;
+            ic2.GotFocus += CodeGotFocus;
             ic2.KeyPress += CodeKeyPress;
             // 
             // ic1
@@ -220,6 +223,7 @@ namespace Demo.Controls
             ic1.TextAlign = HorizontalAlignment.Center;
             ic1.VerifyKeyboard += VerifyKeyboard;
             ic1.TextChanged += CodeTextChanged;
+            ic1.GotFocus += CodeGotFocus;
             ic1.KeyPress += CodeKeyPress;
             // 
             // panel5
@@ -237,10 +241,10 @@ namespace Demo.Controls
             input10.Dock = DockStyle.Fill;
             input10.JoinMode = AntdUI.TJoinMode.Right;
             input10.LocalizationPlaceholderText = "Input.{id}";
-            input10.Location = new Point(59, 0);
+            input10.Location = new Point(57, 0);
             input10.Name = "input10";
             input10.PlaceholderText = "输入点什么搜索";
-            input10.Size = new Size(161, 50);
+            input10.Size = new Size(163, 50);
             input10.TabIndex = 0;
             // 
             // button1
@@ -251,7 +255,7 @@ namespace Demo.Controls
             button1.LocalizationText = "Input.Search";
             button1.Location = new Point(0, 0);
             button1.Name = "button1";
-            button1.Size = new Size(59, 50);
+            button1.Size = new Size(57, 50);
             button1.TabIndex = 1;
             button1.Text = "搜索";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -308,7 +312,7 @@ namespace Demo.Controls
             input19.Location = new Point(0, 0);
             input19.Name = "input19";
             input19.PlaceholderText = "输入点什么搜索";
-            input19.Size = new Size(161, 50);
+            input19.Size = new Size(163, 50);
             input19.TabIndex = 0;
             // 
             // button3
@@ -317,9 +321,9 @@ namespace Demo.Controls
             button3.Dock = DockStyle.Right;
             button3.JoinMode = AntdUI.TJoinMode.Right;
             button3.LocalizationText = "Input.Search";
-            button3.Location = new Point(161, 0);
+            button3.Location = new Point(163, 0);
             button3.Name = "button3";
-            button3.Size = new Size(59, 50);
+            button3.Size = new Size(57, 50);
             button3.TabIndex = 1;
             button3.Text = "搜索";
             button3.Type = AntdUI.TTypeMini.Primary;
@@ -690,6 +694,6 @@ namespace Demo.Controls
         private AntdUI.Input ic3;
         private AntdUI.Input ic2;
         private AntdUI.Input ic1;
-        private AntdUI.  Label label1;
+        private AntdUI.Label label1;
     }
 }

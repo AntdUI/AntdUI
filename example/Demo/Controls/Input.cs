@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -31,6 +32,34 @@ namespace Demo.Controls
             }
         }
 
+        #region 验证码逻辑
+
+        private void CodeGotFocus(object sender, EventArgs e)
+        {
+            if (sender is AntdUI.Input input)
+            {
+                var input_next = FindNullInput(input);
+                if (input_next == null) return;
+                BeginInvoke(input_next.Focus);
+            }
+        }
+
+        AntdUI.Input FindNullInput(AntdUI.Input input)
+        {
+            int index = input.TabIndex - 1;
+            AntdUI.Input tmp = null;
+            while (true)
+            {
+                var find = tableLayoutPanel1.Controls.Find("ic" + index, false);
+                if (find.Length == 1 && find[0] is AntdUI.Input next)
+                {
+                    index--;
+                    if (string.IsNullOrWhiteSpace(next.Text)) tmp = next;
+                }
+                else return tmp;
+            }
+        }
+
         private void CodeTextChanged(object sender, EventArgs e)
         {
             if (sender is AntdUI.Input input)
@@ -43,9 +72,27 @@ namespace Demo.Controls
                         input_next.Text = "";
                         input_next.Focus();
                     }
-                }
-                else
-                {
+                    else
+                    {
+                        input10.Focus();
+                        tableLayoutPanel1.Enabled = false;
+                        AntdUI.Spin.open(tableLayoutPanel1, async config =>
+                        {
+                            await Task.Delay(1000);
+                            ic1.Clear();
+                            ic2.Clear();
+                            ic3.Clear();
+                            ic4.Clear();
+                        }, () =>
+                        {
+                            BeginInvoke(() =>
+                            {
+                                tableLayoutPanel1.Enabled = true;
+                                ic1.Focus();
+                            });
+                        });
+                        AntdUI.Message.info(form, AntdUI.Localization.Get("Input.Code2", "验证码：") + ic1.Text + " " + ic2.Text + " " + ic3.Text + " " + ic4.Text);
+                    }
                 }
             }
         }
@@ -85,9 +132,11 @@ namespace Demo.Controls
 
         private void CodeKeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == 8 && sender is AntdUI.Input input && input.Text.Length == 0)
+            if (e.KeyChar == 8 && sender is AntdUI.Input input)
             {
                 //Back
+                input.Clear();
+                input.ClearUndo();
                 var find = tableLayoutPanel1.Controls.Find("ic" + (input.TabIndex - 1), false);
                 if (find.Length == 1 && find[0] is AntdUI.Input input_next)
                 {
@@ -96,5 +145,7 @@ namespace Demo.Controls
                 }
             }
         }
+
+        #endregion
     }
 }

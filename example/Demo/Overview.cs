@@ -19,7 +19,6 @@ namespace Demo
             InitializeComponent();
             windowBar.Text += " " + windowBar.ProductVersion;
             TopMost = top;
-            colorTheme.ValueChanged += ColorTheme_ValueChanged;
             var globals = new AntdUI.SelectItem[] {
                 new AntdUI.SelectItem("中文","zh-CN"),
                 new AntdUI.SelectItem("English","en-US")
@@ -333,21 +332,14 @@ namespace Demo
 
         private void btn_mode_Click(object sender, EventArgs e)
         {
-            if (setcolor)
-            {
-                var color = AntdUI.Style.Db.Primary;
-                AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
-                Dark = AntdUI.Config.IsDark;
-                AntdUI.Style.SetPrimary(color);
-            }
-            else
-            {
-                AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
-                Dark = AntdUI.Config.IsDark;
-            }
-
-            btn_mode.Toggle = Dark;
+            btn_mode.Toggle = AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
             OnSizeChanged(e);
+        }
+
+        private void colorTheme_ValueChanged(object sender, AntdUI.ColorEventArgs e)
+        {
+            AntdUI.Style.SetPrimary(e.Value);
+            Refresh();
         }
 
         private void btn_setting_Click(object sender, EventArgs e)
@@ -449,14 +441,6 @@ namespace Demo
                     }
                 });
             }
-        }
-
-        bool setcolor = false;
-        private void ColorTheme_ValueChanged(object sender, AntdUI.ColorEventArgs e)
-        {
-            setcolor = true;
-            AntdUI.Style.SetPrimary(e.Value);
-            Refresh();
         }
 
         #region 搜索

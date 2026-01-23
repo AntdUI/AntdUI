@@ -310,14 +310,14 @@ namespace Demo.Controls
             checkFixedHeader.Text = "固定表头";
             checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
             // 
-            // Table
+            // TableAOT
             // 
             Controls.Add(table1);
             Controls.Add(pagination1);
             Controls.Add(panel1);
             Controls.Add(header1);
             Font = new Font("Microsoft YaHei UI", 12F);
-            Name = "Table";
+            Name = "TableAOT";
             Size = new Size(1300, 676);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

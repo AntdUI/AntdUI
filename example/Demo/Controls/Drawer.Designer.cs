@@ -94,9 +94,9 @@ namespace Demo.Controls
             radio2.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio2.Checked = true;
             radio2.Dock = DockStyle.Left;
-            radio2.Location = new Point(258, 0);
+            radio2.Location = new Point(236, 0);
             radio2.Name = "radio2";
-            radio2.Size = new Size(86, 46);
+            radio2.Size = new Size(79, 46);
             radio2.TabIndex = 1;
             radio2.Text = "right";
             // 
@@ -104,9 +104,9 @@ namespace Demo.Controls
             // 
             radio4.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio4.Dock = DockStyle.Left;
-            radio4.Location = new Point(184, 0);
+            radio4.Location = new Point(169, 0);
             radio4.Name = "radio4";
-            radio4.Size = new Size(74, 46);
+            radio4.Size = new Size(67, 46);
             radio4.TabIndex = 3;
             radio4.Text = "left";
             // 
@@ -114,9 +114,9 @@ namespace Demo.Controls
             // 
             radio3.AutoSizeMode = AntdUI.TAutoSize.Width;
             radio3.Dock = DockStyle.Left;
-            radio3.Location = new Point(76, 0);
+            radio3.Location = new Point(69, 0);
             radio3.Name = "radio3";
-            radio3.Size = new Size(108, 46);
+            radio3.Size = new Size(100, 46);
             radio3.TabIndex = 2;
             radio3.Text = "bottom";
             // 
@@ -126,7 +126,7 @@ namespace Demo.Controls
             radio1.Dock = DockStyle.Left;
             radio1.Location = new Point(0, 0);
             radio1.Name = "radio1";
-            radio1.Size = new Size(76, 46);
+            radio1.Size = new Size(69, 46);
             radio1.TabIndex = 0;
             radio1.Text = "top";
             // 
@@ -135,7 +135,7 @@ namespace Demo.Controls
             button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.Location = new Point(18, 10);
             button1.Name = "button1";
-            button1.Size = new Size(77, 47);
+            button1.Size = new Size(72, 46);
             button1.TabIndex = 0;
             button1.Text = "Open";
             button1.Type = AntdUI.TTypeMini.Primary;

@@ -1,5 +1,24 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.14` 2026-01-23
+
+- ➕ ColorPicker static method
+- ➕ ColorPicker Presets preset colors
+- ➕ Config EmojiEnabled
+- ➕ ControlPopup Pause Close
+- ➕ Tabs tags vertical mode Rotate
+- ➕ Chat alignment color card
+- ➕ Color card automatically adapts to dark colors
+- ➕ Enrich TooltipConfig settings
+- ✍️ Table binding empty collection insertion data not displayed
+- ✍️ Correct ColorMode to determine brightness
+- ✍️ Tabs only have abnormal layout of tags under the icon
+- ✍️ Calendar large font misalignment
+- ✍️ Align font calculation cache
+- ✍️ Net48 DPI perception
+- ✍️ Text spaces are missing
+- ✍️ Calendar open in multiple languages
+
 ### `2.2.13` 2026-01-19
 
 - ➕ Config ShadowSize

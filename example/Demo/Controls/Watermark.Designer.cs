@@ -335,7 +335,6 @@ namespace Demo.Controls
             colorPicker.ShowText = true;
             colorPicker.Size = new System.Drawing.Size(125, 46);
             colorPicker.TabIndex = 3;
-            colorPicker.Value = System.Drawing.Color.FromArgb(22, 119, 255);
             colorPicker.ValueChanged += colorPicker_ValueChanged;
             // 
             // Watermark

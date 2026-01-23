@@ -102,7 +102,7 @@ namespace Demo.Controls
             button1.LocalizationText = "Battery.Add";
             button1.Location = new Point(3, 7);
             button1.Name = "button1";
-            button1.Size = new Size(83, 38);
+            button1.Size = new Size(77, 38);
             button1.TabIndex = 0;
             button1.Text = "加电量";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -112,9 +112,9 @@ namespace Demo.Controls
             // 
             button2.AutoSizeMode = AntdUI.TAutoSize.Width;
             button2.LocalizationText = "Battery.Subtract";
-            button2.Location = new Point(92, 7);
+            button2.Location = new Point(86, 7);
             button2.Name = "button2";
-            button2.Size = new Size(83, 38);
+            button2.Size = new Size(77, 38);
             button2.TabIndex = 1;
             button2.Text = "减电量";
             button2.Type = AntdUI.TTypeMini.Success;

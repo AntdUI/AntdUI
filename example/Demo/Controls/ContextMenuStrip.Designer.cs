@@ -53,7 +53,7 @@ namespace Demo.Controls
             button1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button1.Location = new Point(14, 93);
             button1.Name = "button1";
-            button1.Size = new Size(71, 47);
+            button1.Size = new Size(65, 46);
             button1.TabIndex = 2;
             button1.Text = "Click";
             button1.Type = AntdUI.TTypeMini.Primary;
@@ -70,7 +70,7 @@ namespace Demo.Controls
             button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button2.Location = new Point(100, 93);
             button2.Name = "button2";
-            button2.Size = new Size(116, 47);
+            button2.Size = new Size(110, 46);
             button2.TabIndex = 2;
             button2.Text = "NotifyIcon";
             button2.Type = AntdUI.TTypeMini.Primary;

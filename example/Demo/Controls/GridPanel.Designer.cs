@@ -152,7 +152,7 @@ namespace Demo.Controls
             // button10
             // 
             button10.Ghost = true;
-            button10.Location = new Point(500, 385);
+            button10.Location = new Point(500, 384);
             button10.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button10.Name = "button10";
             button10.Radius = 0;
@@ -163,7 +163,7 @@ namespace Demo.Controls
             // 
             // button9
             // 
-            button9.Location = new Point(0, 385);
+            button9.Location = new Point(0, 384);
             button9.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button9.Name = "button9";
             button9.Radius = 0;
@@ -175,7 +175,7 @@ namespace Demo.Controls
             // 
             // button8
             // 
-            button8.Location = new Point(666, 266);
+            button8.Location = new Point(667, 266);
             button8.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             button8.Name = "button8";
             button8.Radius = 0;

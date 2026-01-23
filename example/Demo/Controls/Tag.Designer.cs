@@ -107,7 +107,7 @@ namespace Demo.Controls
             tag16.LocalizationText = "Tag.{id}";
             tag16.Location = new Point(13, 13);
             tag16.Name = "tag16";
-            tag16.Size = new Size(107, 27);
+            tag16.Size = new Size(98, 25);
             tag16.TabIndex = 0;
             tag16.Text = "自定义图标";
             // 
@@ -146,7 +146,7 @@ namespace Demo.Controls
             tag15.BorderWidth = 0F;
             tag15.Location = new Point(265, 45);
             tag15.Name = "tag15";
-            tag15.Size = new Size(65, 27);
+            tag15.Size = new Size(59, 25);
             tag15.TabIndex = 2;
             tag15.Text = "default";
             // 
@@ -155,7 +155,7 @@ namespace Demo.Controls
             tag10.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag10.Location = new Point(265, 13);
             tag10.Name = "tag10";
-            tag10.Size = new Size(65, 27);
+            tag10.Size = new Size(59, 25);
             tag10.TabIndex = 2;
             tag10.Text = "default";
             // 
@@ -165,7 +165,7 @@ namespace Demo.Controls
             tag14.BorderWidth = 0F;
             tag14.Location = new Point(216, 45);
             tag14.Name = "tag14";
-            tag14.Size = new Size(45, 27);
+            tag14.Size = new Size(39, 25);
             tag14.TabIndex = 2;
             tag14.Text = "info";
             tag14.Type = AntdUI.TTypeMini.Info;
@@ -175,7 +175,7 @@ namespace Demo.Controls
             tag9.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag9.Location = new Point(216, 13);
             tag9.Name = "tag9";
-            tag9.Size = new Size(45, 27);
+            tag9.Size = new Size(39, 25);
             tag9.TabIndex = 2;
             tag9.Text = "info";
             tag9.Type = AntdUI.TTypeMini.Info;
@@ -186,7 +186,7 @@ namespace Demo.Controls
             tag13.BorderWidth = 0F;
             tag13.Location = new Point(139, 45);
             tag13.Name = "tag13";
-            tag13.Size = new Size(72, 27);
+            tag13.Size = new Size(66, 25);
             tag13.TabIndex = 2;
             tag13.Text = "warning";
             tag13.Type = AntdUI.TTypeMini.Warn;
@@ -196,7 +196,7 @@ namespace Demo.Controls
             tag8.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag8.Location = new Point(139, 13);
             tag8.Name = "tag8";
-            tag8.Size = new Size(72, 27);
+            tag8.Size = new Size(66, 25);
             tag8.TabIndex = 2;
             tag8.Text = "warning";
             tag8.Type = AntdUI.TTypeMini.Warn;
@@ -207,7 +207,7 @@ namespace Demo.Controls
             tag12.BorderWidth = 0F;
             tag12.Location = new Point(85, 45);
             tag12.Name = "tag12";
-            tag12.Size = new Size(51, 27);
+            tag12.Size = new Size(46, 25);
             tag12.TabIndex = 2;
             tag12.Text = "error";
             tag12.Type = AntdUI.TTypeMini.Error;
@@ -217,7 +217,7 @@ namespace Demo.Controls
             tag7.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag7.Location = new Point(85, 13);
             tag7.Name = "tag7";
-            tag7.Size = new Size(51, 27);
+            tag7.Size = new Size(46, 25);
             tag7.TabIndex = 2;
             tag7.Text = "error";
             tag7.Type = AntdUI.TTypeMini.Error;
@@ -228,7 +228,7 @@ namespace Demo.Controls
             tag11.BorderWidth = 0F;
             tag11.Location = new Point(13, 45);
             tag11.Name = "tag11";
-            tag11.Size = new Size(68, 27);
+            tag11.Size = new Size(62, 25);
             tag11.TabIndex = 2;
             tag11.Text = "success";
             tag11.Type = AntdUI.TTypeMini.Success;
@@ -238,7 +238,7 @@ namespace Demo.Controls
             tag6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag6.Location = new Point(13, 13);
             tag6.Name = "tag6";
-            tag6.Size = new Size(68, 27);
+            tag6.Size = new Size(62, 25);
             tag6.TabIndex = 2;
             tag6.Text = "success";
             tag6.Type = AntdUI.TTypeMini.Success;
@@ -280,10 +280,10 @@ namespace Demo.Controls
             tag5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag5.CloseIcon = true;
             tag5.Dock = DockStyle.Left;
-            tag5.Location = new Point(148, 0);
+            tag5.Location = new Point(134, 0);
             tag5.Name = "tag5";
             tag5.Padding = new Padding(0, 0, 6, 0);
-            tag5.Size = new Size(74, 27);
+            tag5.Size = new Size(67, 25);
             tag5.TabIndex = 3;
             tag5.Text = "Tag 3";
             // 
@@ -292,10 +292,10 @@ namespace Demo.Controls
             tag4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag4.CloseIcon = true;
             tag4.Dock = DockStyle.Left;
-            tag4.Location = new Point(74, 0);
+            tag4.Location = new Point(67, 0);
             tag4.Name = "tag4";
             tag4.Padding = new Padding(0, 0, 6, 0);
-            tag4.Size = new Size(74, 27);
+            tag4.Size = new Size(67, 25);
             tag4.TabIndex = 2;
             tag4.Text = "Tag 2";
             // 
@@ -307,7 +307,7 @@ namespace Demo.Controls
             tag3.Location = new Point(0, 0);
             tag3.Name = "tag3";
             tag3.Padding = new Padding(0, 0, 6, 0);
-            tag3.Size = new Size(74, 27);
+            tag3.Size = new Size(67, 25);
             tag3.TabIndex = 1;
             tag3.Text = "Tag 1";
             // 
@@ -317,7 +317,7 @@ namespace Demo.Controls
             tag2.CloseIcon = true;
             tag2.Location = new Point(72, 13);
             tag2.Name = "tag2";
-            tag2.Size = new Size(140, 27);
+            tag2.Size = new Size(130, 25);
             tag2.TabIndex = 2;
             tag2.Text = "Prevent Default";
             // 
@@ -326,7 +326,7 @@ namespace Demo.Controls
             tag1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             tag1.Location = new Point(13, 13);
             tag1.Name = "tag1";
-            tag1.Size = new Size(55, 27);
+            tag1.Size = new Size(50, 25);
             tag1.TabIndex = 1;
             tag1.Text = "Tag 1";
             // 

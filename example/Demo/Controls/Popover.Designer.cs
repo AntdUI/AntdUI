@@ -248,7 +248,7 @@ namespace Demo.Controls
             button2.LocalizationText = "Popover.{id}";
             button2.Location = new Point(145, 17);
             button2.Name = "button2";
-            button2.Size = new Size(182, 47);
+            button2.Size = new Size(173, 46);
             button2.TabIndex = 7;
             button2.Text = "自定义控件内容弹出";
             button2.Type = AntdUI.TTypeMini.Primary;
@@ -260,7 +260,7 @@ namespace Demo.Controls
             button1.LocalizationText = "Popover.{id}";
             button1.Location = new Point(14, 17);
             button1.Name = "button1";
-            button1.Size = new Size(100, 47);
+            button1.Size = new Size(93, 46);
             button1.TabIndex = 7;
             button1.Text = "普通弹出";
             button1.Type = AntdUI.TTypeMini.Primary;

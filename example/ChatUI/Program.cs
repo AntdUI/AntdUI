@@ -15,7 +15,8 @@ namespace ChatUI
         static void Main()
         {
             AntdUI.Config.TextRenderingHighQuality = true;
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            AntdUI.Config.Theme().Header("f3f3f3", "111111").Light("f7f7f7").Dark("202020").FormBorderColor();
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             AntdUI.SvgDb.Emoji = AntdUI.FluentFlat.Emoji;
             Application.Run(new Main());
         }
