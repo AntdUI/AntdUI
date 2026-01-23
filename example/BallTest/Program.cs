@@ -17,15 +17,9 @@ namespace BallTest
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             // 创建并显示圆球窗体
-            var ballForm = new BallLayeredForm();
-            ballForm.Show();
-
-            // 运行应用程序消息循环
-            Application.Run();
+            Application.Run(new BallLayeredForm());
         }
     }
 }
