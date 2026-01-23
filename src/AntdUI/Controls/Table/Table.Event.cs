@@ -266,6 +266,21 @@ namespace AntdUI
         [Description("绘制单元格之前发生"), Category("行为")]
         public event CellPaintBeginEventHandler? CellPaintBegin;
 
+        protected virtual bool OnCellPaintBegin(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, RowType rowType, int rowIndex, int index, Column column, out SolidBrush? CellFore, out Brush? CellBack, out Font? CellFont)
+        {
+            CellFore = null;
+            CellBack = null;
+            CellFont = null;
+            if (CellPaintBegin == null) return true;
+            var arge = new TablePaintBeginEventArgs(canvas, rect, rectreal, record, rowType, rowIndex, index, column);
+            CellPaintBegin(this, arge);
+            CellFore = arge.CellFore;
+            CellBack = arge.CellBack;
+            CellFont = arge.CellFont;
+            if (arge.Handled) return false;
+            return true;
+        }
+
         public delegate CellStyleInfo? SetRowStyleEventHandler(object sender, TableSetRowStyleEventArgs e);
         /// <summary>
         /// 设置行样式

@@ -265,7 +265,7 @@ namespace AntdUI
             {
                 using (var bmp = new Bitmap(Width, Height))
                 {
-                    using (var g2 = Graphics.FromImage(bmp).HighLay())
+                    using (var g2 = Graphics.FromImage(bmp).HighLay(true))
                     {
                         PaintText(g2, Text, ShadowColor ?? _fore, rect);
                     }

@@ -253,7 +253,7 @@ namespace AntdUI
             else if (dpi.HasValue) Dpi = dpi.Value / 96F;
             else
             {
-#if NET40 || NET46
+#if NET40 || NET46 || NET48
                 Dpi = Config.Dpi;
 #else
                 Dpi = DeviceDpi / 96F;
@@ -271,7 +271,7 @@ namespace AntdUI
             {
                 // 低字节是水平DPI，高字节是垂直DPI
                 int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
-                InitDpi(dpiX);
+                InitDpi(Math.Max(dpiX, dpiY));
             }
             base.WndProc(ref m);
         }

@@ -86,51 +86,48 @@ namespace Demo.Controls
             // collapse1
             // 
             collapse1.Dock = DockStyle.Top;
+            collapse1.FontExpand = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
             collapse1.Items.Add(collapseItem1);
             collapse1.Items.Add(collapseItem2);
             collapse1.Items.Add(collapseItem3);
             collapse1.Location = new Point(0, 28);
             collapse1.Name = "collapse1";
-            collapse1.FontExpand = new Font("Microsoft YaHei UI", 12F, FontStyle.Bold);
             collapse1.Size = new Size(723, 448);
             collapse1.TabIndex = 0;
-            collapse1.ButtonClick += new AntdUI.CollapseButtonClickEventHandler(collapse1_ButtonClickChanged);
+            collapse1.ButtonClick += collapse1_ButtonClickChanged;
             // 
             // collapseItem1
             // 
-            collapseGroupButton7.IconSvg = "";
-            collapseGroupButton7.Name = "SWITCH";
-            collapseGroupButton7.SwitchMode = true;
-            collapseGroupButton7.Checked = true;
-            collapseGroupButton7.CheckedText = "启用";
-            collapseGroupButton7.UnCheckedText = "停用";
-            collapseGroupButton7.Width = 80;
-            collapseGroupButton7.CheckedChanged += new AntdUI.CollapseSwitchCheckedChangedEventHandler(switchButton_CheckedChanged);
-            collapseGroupButton1.IconSvg = "";
-            collapseGroupButton1.Name = "ADD";
-            collapseGroupButton1.EditType = AntdUI.EButtonEditTypes.Button;
-            collapseGroupButton1.Text = "+";
-            collapseGroupButton1.Tooltip = "增加";
-            collapseGroupButton2.IconSvg = "";
-            collapseGroupButton2.Name = "DEL";
-            collapseGroupButton2.Text = "-";
+            collapseGroupButton1.Checked = true;
+            collapseGroupButton1.CheckedText = "启用";
+            collapseGroupButton1.EditType = AntdUI.EButtonEditTypes.Switch;
+            collapseGroupButton1.Name = "SWITCH";
+            collapseGroupButton1.SwitchMode = true;
+            collapseGroupButton1.UnCheckedText = "停用";
+            collapseGroupButton1.Width = 80;
             collapseGroupButton2.EditType = AntdUI.EButtonEditTypes.Button;
-            collapseGroupButton2.Tooltip = "减少";
-            collapseGroupButton9.IconSvg = "EditOutlined";
-            collapseGroupButton9.Name = "EDIT";
-            collapseGroupButton9.Width = 200;
-            collapseGroupButton9.EditType = AntdUI.EButtonEditTypes.Input;
-            collapseItem1.Buttons.Add(collapseGroupButton7);
+            collapseGroupButton2.Name = "ADD";
+            collapseGroupButton2.Text = "+";
+            collapseGroupButton2.Tooltip = "增加";
+            collapseGroupButton3.EditType = AntdUI.EButtonEditTypes.Button;
+            collapseGroupButton3.Name = "DEL";
+            collapseGroupButton3.Text = "-";
+            collapseGroupButton3.Tooltip = "减少";
+            collapseGroupButton4.EditType = AntdUI.EButtonEditTypes.Input;
+            collapseGroupButton4.IconSvg = "EditOutlined";
+            collapseGroupButton4.Name = "EDIT";
+            collapseGroupButton4.Width = 200;
             collapseItem1.Buttons.Add(collapseGroupButton1);
             collapseItem1.Buttons.Add(collapseGroupButton2);
-            collapseItem1.Buttons.Add(collapseGroupButton9);
+            collapseItem1.Buttons.Add(collapseGroupButton3);
+            collapseItem1.Buttons.Add(collapseGroupButton4);
             collapseItem1.Controls.Add(label1);
+            collapseItem1.IconSvg = "PlusCircleOutlined";
             collapseItem1.Location = new Point(-702, -48);
             collapseItem1.Name = "collapseItem1";
             collapseItem1.Size = new Size(702, 48);
             collapseItem1.TabIndex = 0;
             collapseItem1.Text = "This is panel header 1";
-            collapseItem1.IconSvg = "PlusCircleOutlined";
             // 
             // label1
             // 
@@ -144,36 +141,35 @@ namespace Demo.Controls
             // 
             // collapseItem2
             // 
-            collapseGroupButton3.IconSvg = "StepForwardOutlined";
-            collapseGroupButton3.Name = "Last";
-            collapseGroupButton3.Text = "最前";
-            collapseGroupButton4.IconSvg = "CaretRightOutlined";
-            collapseGroupButton4.Name = "Next";
-            collapseGroupButton4.Text = "前进";
-            collapseGroupButton5.IconSvg = "CaretLeftOutlined";
-            collapseGroupButton5.Name = "Back";
-            collapseGroupButton5.Text = "后退";
-            collapseGroupButton6.IconSvg = "StepBackwardOutlined";
-            collapseGroupButton6.Name = "First";
-            collapseGroupButton6.Select = true;
-            collapseGroupButton6.Text = "最后";
-            collapseGroupButton10.IconSvg = "SearchOutlined";
-            collapseGroupButton10.Name = "EDIT1";
-            collapseGroupButton10.Width = 200;
-            collapseGroupButton10.EditType = AntdUI.EButtonEditTypes.Input;
-            collapseGroupButton10.TextChanged += new AntdUI.CollapseEditChangedEventHandler(edit1_TextChanged);
-            collapseItem2.Buttons.Add(collapseGroupButton3);
-            collapseItem2.Buttons.Add(collapseGroupButton4);
+            collapseGroupButton5.IconSvg = "StepForwardOutlined";
+            collapseGroupButton5.Name = "Last";
+            collapseGroupButton5.Text = "最前";
+            collapseGroupButton6.IconSvg = "CaretRightOutlined";
+            collapseGroupButton6.Name = "Next";
+            collapseGroupButton6.Text = "前进";
+            collapseGroupButton7.IconSvg = "CaretLeftOutlined";
+            collapseGroupButton7.Name = "Back";
+            collapseGroupButton7.Text = "后退";
+            collapseGroupButton8.IconSvg = "StepBackwardOutlined";
+            collapseGroupButton8.Name = "First";
+            collapseGroupButton8.Select = true;
+            collapseGroupButton8.Text = "最后";
+            collapseGroupButton9.EditType = AntdUI.EButtonEditTypes.Input;
+            collapseGroupButton9.IconSvg = "SearchOutlined";
+            collapseGroupButton9.Name = "EDIT1";
+            collapseGroupButton9.Width = 200;
             collapseItem2.Buttons.Add(collapseGroupButton5);
             collapseItem2.Buttons.Add(collapseGroupButton6);
-            collapseItem2.Buttons.Add(collapseGroupButton10);
+            collapseItem2.Buttons.Add(collapseGroupButton7);
+            collapseItem2.Buttons.Add(collapseGroupButton8);
+            collapseItem2.Buttons.Add(collapseGroupButton9);
             collapseItem2.Controls.Add(label2);
+            collapseItem2.IconSvg = "AreaChartOutlined";
             collapseItem2.Location = new Point(-702, -48);
             collapseItem2.Name = "collapseItem2";
             collapseItem2.Size = new Size(702, 48);
             collapseItem2.TabIndex = 1;
             collapseItem2.Text = "This is panel header 2";
-            collapseItem2.IconSvg = "AreaChartOutlined";
             // 
             // label2
             // 
@@ -187,29 +183,27 @@ namespace Demo.Controls
             // 
             // collapseItem3
             // 
-            collapseGroupButton8.IconSvg = "";
-            collapseGroupButton8.Name = "SWITCH";
-            collapseGroupButton8.SwitchMode = true;
-            collapseGroupButton8.Checked = true;
-            collapseGroupButton8.CheckedText = "ON";
-            collapseGroupButton8.UnCheckedText = "OFF";
-            collapseGroupButton8.Width = 80;
-            collapseGroupButton8.Tooltip = "ON/OFF";
-            collapseGroupButton8.CheckedChanged += new AntdUI.CollapseSwitchCheckedChangedEventHandler(switchButton_CheckedChanged);
+            collapseGroupButton10.Checked = true;
+            collapseGroupButton10.CheckedText = "ON";
+            collapseGroupButton10.EditType = AntdUI.EButtonEditTypes.Switch;
+            collapseGroupButton10.Name = "SWITCH";
+            collapseGroupButton10.SwitchMode = true;
+            collapseGroupButton10.Tooltip = "ON/OFF";
+            collapseGroupButton10.UnCheckedText = "OFF";
+            collapseGroupButton10.Width = 80;
+            collapseGroupButton11.EditType = AntdUI.EButtonEditTypes.Custom;
             collapseGroupButton11.IconSvg = "EditOutlined";
             collapseGroupButton11.Name = "CustomEdit";
             collapseGroupButton11.Width = 200;
-            collapseGroupButton11.EditType = AntdUI.EButtonEditTypes.Custom;
-            collapseGroupButton11.CustomInputEdit += new AntdUI.CollapseCustomInputEditEventHandler(CollapseGroupButton11_CustomInputEdit);
-            collapseItem3.Buttons.Add(collapseGroupButton8);
+            collapseItem3.Buttons.Add(collapseGroupButton10);
             collapseItem3.Buttons.Add(collapseGroupButton11);
             collapseItem3.Controls.Add(label3);
+            collapseItem3.IconSvg = "DotChartOutlined";
             collapseItem3.Location = new Point(-702, -48);
             collapseItem3.Name = "collapseItem3";
             collapseItem3.Size = new Size(702, 48);
             collapseItem3.TabIndex = 2;
             collapseItem3.Text = "This is panel header 3";
-            collapseItem3.IconSvg = "DotChartOutlined";
             // 
             // label3
             // 
@@ -252,7 +246,7 @@ namespace Demo.Controls
             // 
             collapseItem4.Controls.Add(label4);
             collapseItem4.Expand = true;
-            collapseItem4.Location = new Point(19, 66);
+            collapseItem4.Location = new Point(19, 64);
             collapseItem4.Name = "collapseItem4";
             collapseItem4.Size = new Size(685, 48);
             collapseItem4.TabIndex = 0;

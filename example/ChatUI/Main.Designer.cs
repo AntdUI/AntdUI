@@ -29,12 +29,17 @@ namespace ChatUI
             AntdUI.Chat.MsgItem msgItem3 = new AntdUI.Chat.MsgItem();
             AntdUI.Chat.MsgItem msgItem4 = new AntdUI.Chat.MsgItem();
             win = new AntdUI.PageHeader();
+            colorTheme = new AntdUI.ColorPicker();
+            btn_mode = new AntdUI.Button();
             msgList = new AntdUI.Chat.MsgList();
             chatList = new AntdUI.Chat.ChatList();
+            win.SuspendLayout();
             SuspendLayout();
             // 
             // win
             // 
+            win.Controls.Add(colorTheme);
+            win.Controls.Add(btn_mode);
             win.Dock = DockStyle.Top;
             win.Location = new Point(0, 0);
             win.Name = "win";
@@ -45,29 +50,55 @@ namespace ChatUI
             win.TabIndex = 0;
             win.Text = "AntdUI GPT";
             // 
+            // colorTheme
+            // 
+            colorTheme.Dock = DockStyle.Right;
+            colorTheme.Location = new Point(529, 0);
+            colorTheme.Name = "colorTheme";
+            colorTheme.Padding = new Padding(4);
+            colorTheme.Size = new Size(36, 36);
+            colorTheme.TabIndex = 10;
+            colorTheme.ValueChanged += colorTheme_ValueChanged;
+            // 
+            // btn_mode
+            // 
+            btn_mode.Dock = DockStyle.Right;
+            btn_mode.Ghost = true;
+            btn_mode.IconSvg = "SunOutlined";
+            btn_mode.Location = new Point(565, 0);
+            btn_mode.Name = "btn_mode";
+            btn_mode.Radius = 0;
+            btn_mode.Size = new Size(36, 36);
+            btn_mode.TabIndex = 9;
+            btn_mode.ToggleIconSvg = "MoonOutlined";
+            btn_mode.WaveSize = 0;
+            btn_mode.Click += btn_mode_Click;
+            // 
             // msgList
             // 
-            msgList.BackColor = Color.White;
             msgList.Dock = DockStyle.Left;
             msgItem1.Icon = Properties.Resources.aduskin;
             msgItem1.Name = "WPF / Flutter UI";
             msgItem1.Text = "AduSkin：我初三就上班啦";
             msgItem1.Time = "10:24";
+            msgItem2.Badge = "99+";
             msgItem2.Count = 999;
             msgItem2.Icon = Properties.Resources.av2;
             msgItem2.Name = "宝宝";
             msgItem2.Text = "今天给你买一束花";
             msgItem2.Time = "13:14";
+            msgItem3.Badge = "5";
             msgItem3.Count = 5;
             msgItem3.Icon = Properties.Resources.antd;
             msgItem3.Name = "AntdUI";
             msgItem3.Select = true;
-            msgItem3.Text = "Tom：❤AntDesign设计语言的Winform界面库";
+            msgItem3.Text = "Tom：❤️AntDesign设计语言的Winform界面库";
             msgItem3.Time = "前天";
+            msgItem4.Badge = "";
             msgItem4.Count = 1;
             msgItem4.Icon = Properties.Resources.av1;
             msgItem4.Name = "Tom";
-            msgItem4.Text = "晚上一起 Crazy Day 4";
+            msgItem4.Text = "晚上一起 🍔 Crazy Day 4";
             msgItem4.Time = "疯狂星期四";
             msgList.Items.Add(msgItem1);
             msgList.Items.Add(msgItem2);
@@ -98,6 +129,7 @@ namespace ChatUI
             Name = "Main";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "ChatUI";
+            win.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -106,5 +138,7 @@ namespace ChatUI
         private AntdUI.PageHeader win;
         private AntdUI.Chat.MsgList msgList;
         private AntdUI.Chat.ChatList chatList;
+        private AntdUI.ColorPicker colorTheme;
+        private AntdUI.Button btn_mode;
     }
 }

@@ -38,32 +38,7 @@ namespace AntdUI
 
             Culture = new CultureInfo(CultureID);
             YDR = CultureID.StartsWith("en");
-            if (YDR)
-            {
-                YearFormat = "yyyy";
-                MonthFormat = "MMM";
-                MondayButton = "Mon";
-                TuesdayButton = "Tue";
-                WednesdayButton = "Wed";
-                ThursdayButton = "Thu";
-                FridayButton = "Fri";
-                SaturdayButton = "Sat";
-                SundayButton = "Sun";
-                s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter;
-            }
-            else
-            {
-                YearFormat = "yyyy年";
-                MonthFormat = "MM月";
-                MondayButton = "一";
-                TuesdayButton = "二";
-                WednesdayButton = "三";
-                ThursdayButton = "四";
-                FridayButton = "五";
-                SaturdayButton = "六";
-                SundayButton = "日";
-                s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
-            }
+            Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
 
             Date = DateTime.Now;
         }
@@ -1323,9 +1298,16 @@ namespace AntdUI
 
             int t_top = 34, t_button = showButtonToDay ? 38 : 0;
             int year_width = 60, year2_width = 88, month_width = 40;
+            Helper.GDI(g =>
+            {
+                var size = g.MeasureString(Config.NullText, Font);
+                t_top = (int)(size.Height * 1.76F);
+                year_width = (int)(size.Height * 3.12F);
+                year2_width = (int)(size.Height * 4.66F);
+                month_width = year_width;
+            });
             if (dpi != 1F)
             {
-                t_top = (int)(t_top * dpi);
                 if (showButtonToDay) t_button = (int)(t_button * dpi);
                 year_width = (int)(year_width * dpi);
                 year2_width = (int)(year2_width * dpi);
@@ -1517,32 +1499,7 @@ namespace AntdUI
                     Culture = new CultureInfo(CultureID);
                     button_text = Localization.Get("ToDay", "今天");
                     YDR = CultureID.StartsWith("en");
-                    if (YDR)
-                    {
-                        YearFormat = "yyyy";
-                        MonthFormat = "MMM";
-                        MondayButton = "Mon";
-                        TuesdayButton = "Tue";
-                        WednesdayButton = "Wed";
-                        ThursdayButton = "Thu";
-                        FridayButton = "Fri";
-                        SaturdayButton = "Sat";
-                        SundayButton = "Sun";
-                        s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter;
-                    }
-                    else
-                    {
-                        YearFormat = "yyyy年";
-                        MonthFormat = "MM月";
-                        MondayButton = "一";
-                        TuesdayButton = "二";
-                        WednesdayButton = "三";
-                        ThursdayButton = "四";
-                        FridayButton = "五";
-                        SaturdayButton = "六";
-                        SundayButton = "日";
-                        s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
-                    }
+                    Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
                     LoadLayout();
                     break;
             }

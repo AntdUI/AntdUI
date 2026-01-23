@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -11,23 +12,86 @@ using System.Drawing.Imaging;
 
 namespace AntdUI.Core
 {
+    /// <summary>
+    /// GDI+ 实现的画布类
+    /// 继承自 Canvas 接口，使用 GDI+ 进行图形绘制
+    /// </summary>
     public class CanvasGDI : Canvas
     {
+        /// <summary>
+        /// GDI+ 绘图上下文
+        /// </summary>
         public Graphics g;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="gdi">GDI+ 绘图上下文</param>
         public CanvasGDI(Graphics gdi)
         {
             g = gdi;
+            // 设置 DPI 缩放因子
             if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
-            else Dpi = gdi.DpiX / 96F;
+            else Dpi = Math.Max(gdi.DpiX, gdi.DpiY) / 96F;
         }
 
         #region MeasureString
 
+        /// <summary>
+        /// 测量文本字符串的大小
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Center);
+
+        /// <summary>
+        /// 测量文本字符串的大小，限制最大宽度
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Center);
+
+        /// <summary>
+        /// 测量文本字符串的大小
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <param name="format">StringFormat格式化对象</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureString(string? text, Font font, int width, StringFormat format) => g.MeasureString(text, font, width, format).Size();
+
+        /// <summary>
+        /// 测量文本字符串的大小
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <param name="format">FormatFlags格式化标志，默认为居中</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Center) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
+
+        /// <summary>
+        /// 测量文本中每个字符的范围
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="rect">测量区域</param>
+        /// <param name="format">FormatFlags格式化标志，默认为居中</param>
+        /// <returns>字符范围数组</returns>
         public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Center) => g.MeasureCharacterRanges(text, font, rect, Helper.TF(format, true));
+
+        /// <summary>
+        /// 测量文本中每个字符的范围
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="rect">测量区域</param>
+        /// <param name="format">StringFormat格式化对象</param>
+        /// <returns>字符范围数组</returns>
         public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, StringFormat format) => g.MeasureCharacterRanges(text, font, rect, format);
 
         #endregion
@@ -237,83 +301,125 @@ namespace AntdUI.Core
 
         #region MeasureText
 
+        /// <summary>
+        /// 测量文本的大小
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Center);
+
+        /// <summary>
+        /// 测量文本的大小，限制最大宽度
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Center);
+
+        /// <summary>
+        /// 测量文本的大小
+        /// 支持表情符号的特殊处理
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <param name="format">StringFormat格式化对象</param>
+        /// <returns>文本的大小</returns>
         public Size MeasureText(string? text, Font font, int width, StringFormat format)
         {
-            if (SvgDb.Emoji.Count == 0 || text == null) return MeasureString(text, font, width, format);
+            if (text == null) return MeasureString(text, font, width, format);
             else
             {
                 var characters = new List<TMPChar>(text.Length);
                 int emojiCount = 0;
                 GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
+                    if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
                     }
                     else characters.Add(new TMPChar(txt, false));
                 });
-                if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters));
-                else return MeasureString(text, font, width, format);
-            }
-        }
-        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center)
-        {
-            if (SvgDb.Emoji.Count == 0 || text == null) return MeasureString(text, font, width, format);
-            else
-            {
-                var characters = new List<TMPChar>(text.Length);
-                int emojiCount = 0;
-                GraphemeSplitter.Each(text, (txt, ntype) =>
-                {
-                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
-                    {
-                        characters.Add(new TMPChar(txt, true));
-                        emojiCount++;
-                    }
-                    else characters.Add(new TMPChar(txt, false));
-                });
-                if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters));
+                if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters), format.FormatFlags.HasFlag(StringFormatFlags.NoWrap));
                 else return MeasureString(text, font, width, format);
             }
         }
 
+        /// <summary>
+        /// 测量文本的大小
+        /// 支持表情符号的特殊处理
+        /// </summary>
+        /// <param name="text">要测量的文本</param>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <param name="format">FormatFlags格式化标志，默认为居中</param>
+        /// <returns>文本的大小</returns>
+        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center)
+        {
+            if (text == null) return MeasureString(text, font, width, format);
+            else
+            {
+                var characters = new List<TMPChar>(text.Length);
+                int emojiCount = 0;
+                GraphemeSplitter.Each(text, (txt, ntype) =>
+                {
+                    if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
+                    {
+                        characters.Add(new TMPChar(txt, true));
+                        emojiCount++;
+                    }
+                    else characters.Add(new TMPChar(txt, false));
+                });
+                if (emojiCount > 0) return MeasureText(ref characters, width, MeasureText(font, width, ref characters), format.HasFlag(FormatFlags.NoWrap));
+                else return MeasureString(text, font, width, format);
+            }
+        }
+
+        /// <summary>
+        /// 测量文本中每个字符的宽度
+        /// 为字符列表中的每个字符计算宽度，并返回行高
+        /// </summary>
+        /// <param name="font">文本使用的字体</param>
+        /// <param name="width">最大宽度</param>
+        /// <param name="characters">字符列表，将被修改以包含每个字符的宽度</param>
+        /// <returns>文本的行高</returns>
         int MeasureText(Font font, int width, ref List<TMPChar> characters)
         {
+            // 获取行高，使用空文本测量
             int h = MeasureString(Config.NullText, font).Height;
-            bool h_change = false;
+
+            // 遍历每个字符，计算宽度
             foreach (var it in characters)
             {
+                // 表情符号的宽度等于行高
                 if (it.emoji) it.w = h;
-                else
-                {
-                    var size = MeasureString(it.txt, font, width);
-                    it.w = size.Width;
-                    if (h > size.Height)
-                    {
-                        h = size.Height;
-                        h_change = true;
-                    }
-                }
-            }
-            if (h_change)
-            {
-                foreach (var it in characters)
-                {
-                    if (it.emoji) it.w = h;
-                }
+                // 普通文本使用MeasureString测量宽度
+                else it.w = MeasureString(it.txt, font, width).Width;
             }
             return h;
         }
 
-        Size MeasureText(ref List<TMPChar> characters, int width, int height)
+        /// <summary>
+        /// 根据字符列表测量文本的大小
+        /// 考虑换行和表情符号的特殊处理
+        /// </summary>
+        /// <param name="characters">字符列表，包含每个字符的宽度信息</param>
+        /// <param name="width">最大宽度，小于等于0表示不限制宽度</param>
+        /// <param name="height">单行高度</param>
+        /// <param name="nowrap">是否换行</param>
+        /// <returns>文本的总大小</returns>
+        Size MeasureText(ref List<TMPChar> characters, int width, int height, bool nowrap)
         {
-            int w = 0, h = height;
+            int w = 0, h = height; // 初始宽度为0，初始高度为单行高度
+
+            // 如果限制了宽度
             if (width > 0)
             {
-                int x = 0, line = 0;
+                int x = 0, line = 0; // 当前行的X位置，当前行数
+
                 for (int i = 0; i < characters.Count; i++)
                 {
                     var it = characters[i];
@@ -322,6 +428,7 @@ namespace AntdUI.Core
                         x += it.w;
                         if (x + DrawTextNextChar(characters, i + 1) > width)
                         {
+                            // 换行处理：当前X位置加上下一个字符宽度是否超过最大宽度
                             x = 0;
                             h += height;
                             line++;
@@ -333,33 +440,67 @@ namespace AntdUI.Core
                         x += it.w;
                         if (x + DrawTextNextChar(characters, i + 1) > width)
                         {
+                            // 换行处理：当前X位置加上下一个字符宽度是否超过最大宽度
                             x = 0;
                             h += height;
                             line++;
                         }
                         else w += it.w;
                     }
+
+                    // 记录字符所在行号
                     it.line = line;
                 }
-                if (w > width) w = width;
+                // 确保最终宽度不超过最大宽度
+                if (w > width)
+                {
+                    w = width;
+                    if (nowrap) h = height;
+                }
             }
             else
             {
+                // 不限制宽度，直接累加所有字符宽度
                 foreach (var it in characters) w += it.w;
             }
             return new Size(w, h);
         }
 
+        /// <summary>
+        /// 临时字符类，用于存储字符信息
+        /// 包括字符内容、是否为表情符号、宽度和所在行号
+        /// </summary>
         internal class TMPChar
         {
+            /// <summary>
+            /// 构造函数
+            /// </summary>
+            /// <param name="t">字符内容</param>
+            /// <param name="e">是否为表情符号</param>
             public TMPChar(string t, bool e)
             {
                 txt = t;
                 emoji = e;
             }
+
+            /// <summary>
+            /// 字符内容
+            /// </summary>
             public string txt { get; set; }
+
+            /// <summary>
+            /// 是否为表情符号
+            /// </summary>
             public bool emoji { get; set; }
+
+            /// <summary>
+            /// 字符宽度
+            /// </summary>
             public int w { get; set; }
+
+            /// <summary>
+            /// 字符所在行号
+            /// </summary>
             public int line { get; set; }
         }
 
@@ -377,40 +518,33 @@ namespace AntdUI.Core
 
         public void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat format)
         {
-            if (SvgDb.Emoji.Count == 0) String(text, font, brush, rect, format);
-            else
+            if (text == null) return;
+            var characters = new List<TMPChar>(text.Length);
+            int emojiCount = 0;
+            GraphemeSplitter.Each(text, (txt, ntype) =>
             {
-                if (text == null) return;
-                var characters = new List<TMPChar>(text.Length);
-                int emojiCount = 0;
-                GraphemeSplitter.Each(text, (txt, ntype) =>
+                if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
                 {
-                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
-                    {
-                        characters.Add(new TMPChar(txt, true));
-                        emojiCount++;
-                    }
-                    else characters.Add(new TMPChar(txt, false));
-                });
-                if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
-                else String(text, font, brush, rect, format);
-            }
+                    characters.Add(new TMPChar(txt, true));
+                    emojiCount++;
+                }
+                else characters.Add(new TMPChar(txt, false));
+            });
+            if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
+            else String(text, font, brush, rect, format);
         }
 
         void DrawText(string? text, Font font, Brush brush, Rectangle rect, List<TMPChar> characters, StringFormat format)
         {
             CorrectionTextRendering.CORE(font, text, ref rect);
+            bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap), ellipsis = format.Trimming.HasFlag(StringTrimming.EllipsisCharacter);
             int lineHeight = MeasureText(font, rect.Width, ref characters);
-            var sizeT = MeasureText(ref characters, rect.Width, lineHeight);
+            var sizeT = MeasureText(ref characters, rect.Width, lineHeight, wrap);
             if (Config.TextRenderingHighQuality)
             {
                 using (var path = new GraphicsPath())
                 {
                     float fontsize = StringPathFontSize(font);
-
-                    bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
-                    bool ellipsis = format.Trimming.HasFlag(StringTrimming.EllipsisCharacter);
-
                     int y;
                     if (format.LineAlignment == StringAlignment.Center) y = rect.Y + (rect.Height - sizeT.Height) / 2;
                     else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
@@ -423,9 +557,6 @@ namespace AntdUI.Core
             }
             else
             {
-                bool wrap = format.FormatFlags.HasFlag(StringFormatFlags.NoWrap);
-                bool ellipsis = format.Trimming.HasFlag(StringTrimming.EllipsisCharacter);
-
                 int y;
                 if (format.LineAlignment == StringAlignment.Center) y = rect.Y + (rect.Height - sizeT.Height) / 2;
                 else if (format.LineAlignment == StringAlignment.Far) y = rect.Bottom - sizeT.Height;
@@ -447,6 +578,7 @@ namespace AntdUI.Core
                     x = rect.X + (rect.Width - DrawTextLineWidth(characters, use_line)) / 2;
                     break;
             }
+            Font? tmp_font = null;
             for (int i = 0; i < characters.Count; i++)
             {
                 var it = characters[i];
@@ -472,16 +604,10 @@ namespace AntdUI.Core
                             break;
                     }
                 }
-                if (it.emoji)
-                {
-                    var svg = SvgDb.Emoji[it.txt];
-                    var rect_ico = new Rectangle(x + use_x, y + use_y, lineHeight, lineHeight);
-                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
-                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
-                }
-                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
                 use_x += it.w;
             }
+            tmp_font?.Dispose();
         }
         void DrawText(List<TMPChar> characters, int x, int y, Font font, Brush brush, int lineHeight, Rectangle rect, bool wrap, bool ellipsis, StringAlignment alignment)
         {
@@ -495,6 +621,7 @@ namespace AntdUI.Core
                     x = rect.X + (rect.Width - DrawTextLineWidth(characters, use_line)) / 2;
                     break;
             }
+            Font? tmp_font = null;
             for (int i = 0; i < characters.Count; i++)
             {
                 var it = characters[i];
@@ -520,18 +647,11 @@ namespace AntdUI.Core
                             break;
                     }
                 }
-                if (it.emoji)
-                {
-                    var svg = SvgDb.Emoji[it.txt];
-                    var rect_ico = new Rectangle(x + use_x, y + use_y, lineHeight, lineHeight);
-                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
-                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
-                }
-                else String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
                 use_x += it.w;
             }
+            tmp_font?.Dispose();
         }
-
 
         public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
@@ -543,40 +663,33 @@ namespace AntdUI.Core
 
         public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
-            if (SvgDb.Emoji.Count == 0) String(text, font, brush, rect, format);
-            else
+            if (text == null) return;
+            var characters = new List<TMPChar>(text.Length);
+            int emojiCount = 0;
+            GraphemeSplitter.Each(text, (txt, ntype) =>
             {
-                if (text == null) return;
-                var characters = new List<TMPChar>(text.Length);
-                int emojiCount = 0;
-                GraphemeSplitter.Each(text, (txt, ntype) =>
+                if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
                 {
-                    if ((ntype == 18 || ntype == 4) && SvgDb.Emoji.ContainsKey(txt))
-                    {
-                        characters.Add(new TMPChar(txt, true));
-                        emojiCount++;
-                    }
-                    else characters.Add(new TMPChar(txt, false));
-                });
-                if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
-                else String(text, font, brush, rect, format);
-            }
+                    characters.Add(new TMPChar(txt, true));
+                    emojiCount++;
+                }
+                else characters.Add(new TMPChar(txt, false));
+            });
+            if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
+            else String(text, font, brush, rect, format);
         }
 
         void DrawText(string? text, Font font, Brush brush, Rectangle rect, List<TMPChar> characters, FormatFlags format)
         {
             CorrectionTextRendering.CORE(font, text, ref rect);
+            bool wrap = format.HasFlag(FormatFlags.NoWrap), ellipsis = format.HasFlag(FormatFlags.EllipsisCharacter);
             int lineHeight = MeasureText(font, rect.Width, ref characters);
-            var sizeT = MeasureText(ref characters, rect.Width, lineHeight);
+            var sizeT = MeasureText(ref characters, rect.Width, lineHeight, wrap);
             if (Config.TextRenderingHighQuality)
             {
                 using (var path = new GraphicsPath())
                 {
                     float fontsize = StringPathFontSize(font);
-
-                    bool wrap = format.HasFlag(FormatFlags.NoWrap);
-                    bool ellipsis = format.HasFlag(FormatFlags.EllipsisCharacter);
-
                     int y;
                     if (format.HasFlag(FormatFlags.VerticalCenter)) y = rect.Y + (rect.Height - sizeT.Height) / 2;
                     else if (format.HasFlag(FormatFlags.Bottom)) y = rect.Bottom - sizeT.Height;
@@ -588,9 +701,6 @@ namespace AntdUI.Core
             }
             else
             {
-                bool wrap = format.HasFlag(FormatFlags.NoWrap);
-                bool ellipsis = format.HasFlag(FormatFlags.EllipsisCharacter);
-
                 int y;
                 if (format.HasFlag(FormatFlags.VerticalCenter)) y = rect.Y + (rect.Height - sizeT.Height) / 2;
                 else if (format.HasFlag(FormatFlags.Bottom)) y = rect.Bottom - sizeT.Height;
@@ -605,6 +715,7 @@ namespace AntdUI.Core
             int use_x = 0, use_y = 0, use_line = 0;
             if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, use_line)) / 2;
             else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, use_line);
+            Font? tmp_font = null;
             for (int i = 0; i < characters.Count; i++)
             {
                 var it = characters[i];
@@ -623,22 +734,17 @@ namespace AntdUI.Core
                     if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
                     else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
                 }
-                if (it.emoji)
-                {
-                    var svg = SvgDb.Emoji[it.txt];
-                    var rect_ico = new Rectangle(x + use_x, y + use_y, lineHeight, lineHeight);
-                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
-                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
-                }
-                else path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
                 use_x += it.w;
             }
+            tmp_font?.Dispose();
         }
         void DrawText(List<TMPChar> characters, int x, int y, Font font, Brush brush, int lineHeight, Rectangle rect, bool wrap, bool ellipsis, FormatFlags format)
         {
             int use_x = 0, use_y = 0, use_line = 0;
             if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, use_line)) / 2;
             else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, use_line);
+            Font? tmp_font = null;
             for (int i = 0; i < characters.Count; i++)
             {
                 var it = characters[i];
@@ -657,18 +763,29 @@ namespace AntdUI.Core
                     if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
                     else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
                 }
-                if (it.emoji)
-                {
-                    var svg = SvgDb.Emoji[it.txt];
-                    var rect_ico = new Rectangle(x + use_x, y + use_y, lineHeight, lineHeight);
-                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
-                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
-                }
-                else String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
                 use_x += it.w;
             }
+            tmp_font?.Dispose();
         }
 
+        bool DrawTextEmoji(Brush brush, TMPChar it, Font font, int x, int y, int size, ref Font? tmp_font)
+        {
+            if (it.emoji)
+            {
+                var rect_ico = new Rectangle(x, y, size, size);
+                if (SvgDb.Emoji.TryGetValue(it.txt, out var svg))
+                {
+                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
+                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                    return false;
+                }
+                tmp_font ??= new Font(Config.EmojiFont, font.Size);
+                String(it.txt, tmp_font, brush, rect_ico);
+                return false;
+            }
+            return true;
+        }
         int DrawTextLineWidth(List<TMPChar> characters, int i)
         {
             int w = 0;

@@ -1,5 +1,24 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.14` 2026-01-23
+
+- ➕ ColorPicker 静态方法
+- ➕ ColorPicker Presets 预设颜色
+- ➕ Config EmojiEnabled
+- ➕ ControlPopup 暂停关闭
+- ➕ Tabs 标签竖直模式 Rotate
+- ➕ Chat 对齐色卡
+- ➕ 色卡自动适配暗色
+- ➕ 丰富 TooltipConfig 设置
+- ✍️ Table 绑定空集合插入数据不显示
+- ✍️ 修正 ColorMode 判断亮度
+- ✍️ Tabs 仅图标下标签布局异常
+- ✍️ Calendar 大字体错位
+- ✍️ 对齐字体计算缓存
+- ✍️ net48 DPI 感知
+- ✍️ 文本空格丢失
+- ✍️ 日历开放多语言
+
 ### `2.2.13` 2026-01-19
 
 - ➕ Config ShadowSize

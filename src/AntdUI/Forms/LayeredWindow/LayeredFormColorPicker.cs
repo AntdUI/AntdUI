@@ -24,6 +24,7 @@ namespace AntdUI
         TAMode ColorScheme;
 
         #region 初始化
+
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             ColorScheme = control.ColorScheme;
@@ -51,7 +52,7 @@ namespace AntdUI
             InitWidth(ref colors_h);
             int yb = InitSize(control, colors_h);
 
-            CLocation(control, control.Align, control.DropDownArrow, ArrowSize);
+            CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
 
             inputs = InitInput(control, yb);
         }
@@ -83,7 +84,7 @@ namespace AntdUI
             if (config.Target.Value is Control control)
             {
                 var calculateCoordinate = new CalculateCoordinate(this, control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset);
-                calculateCoordinate.Auto(config.Align, animateConfig, true, out int rx, out int ry, out ArrowLine);
+                calculateCoordinate.Auto(config.Placement, animateConfig, true, out int rx, out int ry, out ArrowLine);
                 SetLocation(rx, ry);
             }
             else
@@ -193,6 +194,8 @@ namespace AntdUI
             }
 
             h += panel_color_input + gap;
+            h += InitColors(config, h);
+
             SetSize(w, h);
             return yb;
         }
@@ -337,6 +340,51 @@ namespace AntdUI
 
         #endregion
 
+        #region 色卡
+
+        ColorRect[]? preset_color;
+        int InitColors(IColorPicker config, int y)
+        {
+            if (config.Presets == null || config.Presets.Length == 0) return 0;
+
+            int w = rect_colors.Width;
+
+            int count = (int)Math.Floor(w * 1F / btn_size);
+            if (count % 2 == 1) count--;
+            int tmp_w = btn_size * count, color_gap = (w - tmp_w) / (count - 1), x = (w - (tmp_w + color_gap * (count - 1))) / 2,
+                h = 0, use_x = 0, tsize = btn_size + color_gap;
+
+            var list = new List<ColorRect>(config.Presets.Length);
+            foreach (var it in config.Presets)
+            {
+                list.Add(new ColorRect
+                {
+                    color = it,
+                    rect = new Rectangle(rect_colors.X + x + use_x, y + h, btn_size, btn_size)
+                });
+                use_x += tsize;
+                if (use_x > w)
+                {
+                    h += tsize;
+                    use_x = 0;
+                }
+            }
+            if (use_x > 0) h += tsize;
+
+            preset_color = list.ToArray();
+
+            return h + gap - color_gap;
+        }
+
+        class ColorRect
+        {
+            public Color color { get; set; }
+            public bool hover { get; set; }
+            public Rectangle rect { get; set; }
+        }
+
+        #endregion
+
         int ArrowSize = 0;
 
         public override string name => nameof(ColorPicker);
@@ -469,7 +517,21 @@ namespace AntdUI
                 else if (ShowClose && rect_close.Contains(x, y)) IClose();
                 else if (ShowReset && rect_reset.Contains(x, y))
                 {
-                    if (Value != ValueDefault) ChangeColor(ValueDefault);
+                    if (Value != ValueDefault)
+                    {
+                        ChangeColor(ValueDefault);
+                        SetValue();
+                    }
+                }
+                if (preset_color == null) return;
+                foreach (var it in preset_color)
+                {
+                    if (it.rect.Contains(x, y))
+                    {
+                        ChangeColor(it.color);
+                        SetValue();
+                        return;
+                    }
                 }
             }
         }
@@ -502,6 +564,26 @@ namespace AntdUI
                 {
                     hover_reset = hover;
                     count++;
+                }
+            }
+            if (preset_color != null)
+            {
+                foreach (var it in preset_color)
+                {
+                    if (it.rect.Contains(x, y))
+                    {
+                        if (it.hover) continue;
+                        else
+                        {
+                            it.hover = true;
+                            count++;
+                        }
+                    }
+                    else if (it.hover)
+                    {
+                        it.hover = false;
+                        count++;
+                    }
                 }
             }
             if (count > 0) Print();
@@ -726,6 +808,34 @@ namespace AntdUI
                     using (var path = rect_color.RoundPath(Radius))
                     {
                         g.Fill(brush_val, path);
+                    }
+                }
+
+                #endregion
+
+                #region 色卡集
+
+                if (preset_color != null)
+                {
+                    using (var pen = new Pen(Colour.TextQuaternary.Get(name, ColorScheme), Dpi))
+                    {
+                        foreach (var it in preset_color)
+                        {
+                            using (var path = it.rect.RoundPath(Radius2))
+                            {
+                                g.Fill(it.color, path);
+                                g.Draw(pen, path);
+                                if (it.hover)
+                                {
+                                    int size = dot_bor_size * 2, size2 = size * 2;
+                                    var rect_color = new Rectangle(it.rect.X - size, it.rect.Y - size, it.rect.Width + size2, it.rect.Height + size2);
+                                    using (var path_hove = rect_color.RoundPath(Radius2 + size))
+                                    {
+                                        g.Draw(pen, path_hove);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

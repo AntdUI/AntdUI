@@ -345,7 +345,7 @@ namespace AntdUI
             else if (dpi.HasValue) Dpi = dpi.Value / 96F;
             else
             {
-#if NET40 || NET46
+#if NET40 || NET46 || NET48
                 Dpi = Config.Dpi;
 #else
                 Dpi = DeviceDpi / 96F;
@@ -361,7 +361,7 @@ namespace AntdUI
         {
             var mousePosition = MousePosition;
             if (ALLRECT().Contains(mousePosition)) return;
-            IClose();
+            if (ICanClose()) IClose();
         }
 
         public void IMOUSEMOVE()
@@ -372,9 +372,10 @@ namespace AntdUI
                 var rect = ALLRECT();
                 if (IMOUSEMOVEAfter(mousePosition.X, mousePosition.Y, rect)) return;
                 if (rect.Contains(mousePosition)) return;
-                IClose();
+                if (ICanClose()) IClose();
             }
         }
+        public virtual bool ICanClose() => true;
         public virtual bool IMOUSEMOVEAfter(int x, int y, Rectangle rect) => false;
 
         public bool IKEYS(Keys keys)
@@ -579,5 +580,15 @@ namespace AntdUI
     public interface SubLayeredForm
     {
         ILayeredForm? SubForm();
+    }
+
+    public interface ControlEvent
+    {
+        void LoadCompleted();
+    }
+
+    public interface ControlPopup
+    {
+        bool Locked { get; }
     }
 }

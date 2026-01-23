@@ -51,12 +51,8 @@ namespace AntdUI
 
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
-            if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            else
-            {
-                sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
-                sf.FormatFlags &= ~StringFormatFlags.LineLimit;
-            }
+            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
 
             if (!ffs.TryAdd(key, sf)) sf.Dispose();
 
@@ -342,6 +338,11 @@ namespace AntdUI
             return false;
         }
 
+        /// <summary>
+        /// 解析渐变颜色代码，将其拆分为颜色和位置数组
+        /// </summary>
+        /// <param name="code">渐变颜色代码</param>
+        /// <returns>拆分后的字符串数组</returns>
         static string[] BrushEx(string code)
         {
             var arr = code.Split(new string[] { " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -369,6 +370,13 @@ namespace AntdUI
             return new string[0];
         }
 
+        /// <summary>
+        /// 根据渐变代码和颜色数组创建线性渐变画刷
+        /// </summary>
+        /// <param name="code">渐变颜色代码</param>
+        /// <param name="cs">颜色数组</param>
+        /// <param name="rect">绘制区域</param>
+        /// <returns>线性渐变画刷</returns>
         static LinearGradientBrush BrushEx(string code, string[] cs, Rectangle rect)
         {
             if (cs.Length > 2 && float.TryParse(cs[0], out float deg)) return BrushEx(rect, deg, cs, code.Contains("%"), 1);
@@ -376,6 +384,15 @@ namespace AntdUI
             else return BrushEx(rect, 0, cs, code.Contains("%"));
         }
 
+        /// <summary>
+        /// 根据矩形区域、角度、颜色数组创建线性渐变画刷
+        /// </summary>
+        /// <param name="rect">绘制区域</param>
+        /// <param name="deg">渐变角度</param>
+        /// <param name="cs">颜色数组</param>
+        /// <param name="_in">是否包含百分比位置</param>
+        /// <param name="start">颜色数组的起始索引</param>
+        /// <returns>线性渐变画刷</returns>
         static LinearGradientBrush BrushEx(Rectangle rect, float deg, string[] cs, bool _in, int start = 0)
         {
             if (cs.Length > (2 + start))
@@ -766,6 +783,12 @@ namespace AntdUI
             return path;
         }
 
+        /// <summary>
+        /// 创建圆角矩形路径的核心方法
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <param name="radius">圆角半径</param>
+        /// <returns>圆角矩形路径</returns>
         static GraphicsPath RoundPathCore(RectangleF rect, float radius)
         {
             var path = new GraphicsPath();
@@ -798,12 +821,24 @@ namespace AntdUI
             else path.AddRectangle(rect);
             return path;
         }
+        
+        /// <summary>
+        /// 创建胶囊形状路径的核心方法
+        /// </summary>
+        /// <param name="rect">矩形区域</param>
+        /// <returns>胶囊形状路径</returns>
         static GraphicsPath CapsulePathCore(RectangleF rect)
         {
             var path = new GraphicsPath();
             AddCapsule(path, rect);
             return path;
         }
+        
+        /// <summary>
+        /// 向路径添加胶囊形状
+        /// </summary>
+        /// <param name="path">要添加胶囊形状的路径</param>
+        /// <param name="rect">矩形区域</param>
         static void AddCapsule(GraphicsPath path, RectangleF rect)
         {
             float diameter;
@@ -1173,6 +1208,16 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 根据对齐方式计算徽章的位置
+        /// </summary>
+        /// <param name="rect">父容器矩形</param>
+        /// <param name="align">对齐方式</param>
+        /// <param name="x">X轴偏移量</param>
+        /// <param name="y">Y轴偏移量</param>
+        /// <param name="w">徽章宽度</param>
+        /// <param name="h">徽章高度</param>
+        /// <returns>徽章的最终位置和大小</returns>
         static Rectangle PaintBadge(Rectangle rect, TAlign align, int x, int y, int w, int h)
         {
             switch (align)

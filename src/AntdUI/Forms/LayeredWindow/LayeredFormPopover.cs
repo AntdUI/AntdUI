@@ -225,6 +225,12 @@ namespace AntdUI
             base.LoadOK();
             if (parent != null) parent.VisibleChanged += Parent_VisibleChanged;
         }
+        public override bool ICanClose()
+        {
+            if (config.Content is ControlPopup controlPopup && controlPopup.Locked) return false;
+            return true;
+        }
+
         private void Parent_VisibleChanged(object? sender, EventArgs e)
         {
             if (form == null) return;

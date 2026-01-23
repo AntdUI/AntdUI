@@ -26,6 +26,21 @@ namespace Demo
                 case "NoData":
                     return "No data";
 
+                case "Mon":
+                    return "Mon";
+                case "Tue":
+                    return "Tue";
+                case "Wed":
+                    return "Wed";
+                case "Thu":
+                    return "Thu";
+                case "Fri":
+                    return "Fri";
+                case "Sat":
+                    return "Sat";
+                case "Sun":
+                    return "Sun";
+
                 case "ItemsPerPage":
                     return "Per/Page";
 
@@ -316,6 +331,8 @@ namespace Demo
                     return "Combination";
                 case "Input.Code":
                     return "Please enter verification code";
+                case "Input.Code2":
+                    return "Code: ";
                 case "Input.Tao":
                     return "Tao, I like it";
                 case "Input.input2":
@@ -578,6 +595,8 @@ namespace Demo
                     return "EditStyle";
                 case "Table.selectFocusedStyle":
                     return "FocusedStyle";
+                case "Table.checkTree":
+                    return "Tree";
                 case "Table.checkScrollBarAvoidHeader":
                     return "ScrollBar AvoidHeader";
                 case "Table.checkboxFocusNavigation":

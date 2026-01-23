@@ -119,6 +119,11 @@ namespace AntdUI
             public bool ShowReset { get; set; }
 
             /// <summary>
+            /// 预设的颜色
+            /// </summary>
+            public Color[]? Presets { get; set; }
+
+            /// <summary>
             /// 确定回调
             /// </summary>
             public Action<Color>? Call { get; set; }
@@ -126,7 +131,7 @@ namespace AntdUI
             /// <summary>
             /// 弹出方向
             /// </summary>
-            public TAlignFrom Align { get; set; } = TAlignFrom.BL;
+            public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
             /// <summary>
             /// 偏移量
@@ -195,12 +200,23 @@ namespace AntdUI
                 ShowReset = value;
                 return this;
             }
-
-            public Config SetAlign(TAlignFrom value)
+            public Config SetPresets(params Color[] value)
             {
-                Align = value;
+                Presets = value;
                 return this;
             }
+            public Config ClearPresets()
+            {
+                Presets = null;
+                return this;
+            }
+
+            public Config SetPlacement(TAlignFrom value)
+            {
+                Placement = value;
+                return this;
+            }
+            public Config SetAlign(TAlignFrom value) => SetPlacement(value);
 
             public Config SetOffset(Rectangle? value)
             {
@@ -253,8 +269,9 @@ namespace AntdUI
         bool AllowClear { get; set; }
         bool ShowClose { get; set; }
         bool ShowReset { get; set; }
+        Color[]? Presets { get; set; }
         TColorMode Mode { get; set; }
         TAMode ColorScheme { get; set; }
-        TAlignFrom Align { get; set; }
+        TAlignFrom Placement { get; set; }
     }
 }

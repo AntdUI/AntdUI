@@ -116,6 +116,14 @@ namespace AntdUI
             return rectlr;
         }
 
+        /// <summary>
+        /// 计算左侧图标和文本的矩形区域
+        /// </summary>
+        /// <param name="rect">父容器矩形</param>
+        /// <param name="text_height">文本高度</param>
+        /// <param name="icon_rect">输出的图标矩形区域</param>
+        /// <param name="text_rect">输出的文本矩形区域</param>
+        /// <param name="size">图标大小比例，默认为0.8</param>
         public static void IconRectL(this Rectangle rect, int text_height, out Rectangle icon_rect, out Rectangle text_rect, float size = .8F)
         {
             int h = (int)(text_height * size);
@@ -128,6 +136,12 @@ namespace AntdUI
 
         #region DisplayRectangle
 
+        /// <summary>
+        /// 根据内边距缩小矩形区域
+        /// </summary>
+        /// <param name="rect">原始矩形</param>
+        /// <param name="padding">内边距</param>
+        /// <returns>缩小后的矩形</returns>
         public static Rectangle DeflateRect(this Rectangle rect, Padding padding)
         {
             rect.X += padding.Left;
@@ -136,6 +150,13 @@ namespace AntdUI
             rect.Height -= padding.Vertical;
             return rect;
         }
+        
+        /// <summary>
+        /// 根据内边距放大尺寸
+        /// </summary>
+        /// <param name="size">原始尺寸</param>
+        /// <param name="padding">内边距</param>
+        /// <returns>放大后的尺寸</returns>
         public static Size DeflateSize(this Size size, Padding padding)
         {
             size.Width += padding.Horizontal;
@@ -293,7 +314,24 @@ namespace AntdUI
                 return rect;
             }
         }
+        /// <summary>
+        /// 根据内边距和额外偏移计算矩形区域
+        /// </summary>
+        /// <param name="rect">原始矩形</param>
+        /// <param name="padding">内边距</param>
+        /// <param name="x">左侧额外偏移</param>
+        /// <param name="y">顶部额外偏移</param>
+        /// <param name="r">右侧额外偏移</param>
+        /// <param name="b">底部额外偏移</param>
+        /// <returns>计算后的矩形</returns>
         public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b) => new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - x - r, rect.Height - padding.Vertical - y - b);
+        
+        /// <summary>
+        /// 根据多个内边距计算矩形区域
+        /// </summary>
+        /// <param name="rect">原始矩形</param>
+        /// <param name="paddings">内边距数组</param>
+        /// <returns>计算后的矩形</returns>
         public static Rectangle PaddingRect(this Rectangle rect, params Padding[] paddings)
         {
             foreach (var padding in paddings)
@@ -362,9 +400,11 @@ namespace AntdUI
         /// 得到真实渲染区域
         /// </summary>
         /// <param name="rect">容器区域</param>
-        /// <param name="size">动画区域</param>
-        /// <param name="joinLeft">连接左边</param>
-        /// <param name="joinRight">连接右边</param>
+        /// <param name="size">边框大小</param>
+        /// <param name="joinMode">连接模式</param>
+        /// <param name="joinLeft">是否连接左边</param>
+        /// <param name="joinRight">是否连接右边</param>
+        /// <returns>真实渲染区域</returns>
         public static Rectangle ReadRect(this Rectangle rect, float size, TJoinMode joinMode, bool joinLeft, bool joinRight)
         {
             int pr = (int)Math.Ceiling(size), pr2 = pr * 2;

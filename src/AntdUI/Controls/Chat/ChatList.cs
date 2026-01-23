@@ -44,8 +44,8 @@ namespace AntdUI.Chat
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue("Segoe UI Emoji")]
-        public string EmojiFont { get; set; } = "Segoe UI Emoji";
+        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        public string? EmojiFont { get; set; }
 
         /// <summary>
         /// 表情图标比例
@@ -64,14 +64,14 @@ namespace AntdUI.Chat
         /// <summary>
         /// 选中颜色
         /// </summary>
-        [Description("选中颜色"), Category("外观"), DefaultValue(typeof(Color), "60, 96, 165, 250")]
-        public Color SelectionColor = Color.FromArgb(60, 96, 165, 250);
+        [Description("选中颜色"), Category("外观"), DefaultValue(null)]
+        public Color? SelectionColor { get; set; }
 
         /// <summary>
         /// 选中颜色(我)
         /// </summary>
-        [Description("选中颜色(我)"), Category("外观"), DefaultValue(typeof(Color), "96, 165, 250")]
-        public Color SelectionColorMe = Color.FromArgb(96, 165, 250);
+        [Description("选中颜色(我)"), Category("外观"), DefaultValue(null)]
+        public Color? SelectionColorMe { get; set; }
 
         /// <summary>
         /// 气泡文本颜色(对方)
@@ -226,17 +226,15 @@ namespace AntdUI.Chat
             var g = e.Canvas;
             int sy = ScrollBar.Value, radius = (int)(Dpi * 8F);
             g.TranslateTransform(0, -sy);
-            using (var selection = new SolidBrush(SelectionColor))
-            using (var selectionme = new SolidBrush(SelectionColorMe))
-            using (var foreBubble = new SolidBrush(ForeBubble ?? Color.Black))
-            using (var bgBubble = new SolidBrush(BackBubble ?? Color.White))
+            using (var foreBubble = new SolidBrush(ForeBubble ?? Colour.Text.Get(nameof(ChatList), ColorScheme)))
+            using (var bgBubble = new SolidBrush(BackBubble ?? Colour.BgBase.Get(nameof(ChatList), ColorScheme)))
             using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get(nameof(ChatList), ColorScheme)))
 
-            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Color.White))
-            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Color.FromArgb(0, 153, 255)))
-            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Color.FromArgb(0, 134, 224)))
+            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Colour.PrimaryColor.Get(nameof(ChatList), ColorScheme)))
+            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Colour.Primary.Get(nameof(ChatList), ColorScheme)))
+            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Colour.PrimaryActive.Get(nameof(ChatList), ColorScheme)))
             {
-                foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius, selection, selectionme, foreBubble, bgBubble, bgActiveBubble, foreBubbleme, bgBubbleme, bgActiveBubbleme);
+                foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius, foreBubble, bgBubble, bgActiveBubble, foreBubbleme, bgBubbleme, bgActiveBubbleme);
             }
             g.ResetTransform();
             ScrollBar.Paint(g, ColorScheme);
@@ -245,7 +243,7 @@ namespace AntdUI.Chat
 
         readonly FormatFlags SFL = FormatFlags.Top | FormatFlags.HorizontalCenter;
 
-        void PaintItem(Canvas g, IChatItem it, Rectangle rect, int sy, float radius, SolidBrush selection, SolidBrush selectionme, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
+        void PaintItem(Canvas g, IChatItem it, Rectangle rect, int sy, float radius, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
         {
             it.show = rect.IsItemVisible(sy, it.rect);
             if (it.show)
@@ -263,13 +261,13 @@ namespace AntdUI.Chat
                         {
                             g.Fill(bgbubbleme, path);
                             if (text.selectionLength > 0) g.Fill(bgActiveBubbleme, path);
-                            PaintItemText(g, text, forebubbleme, selectionme);
+                            PaintItemText(g, text, forebubbleme);
                         }
                         else
                         {
                             g.Fill(bgbubble, path);
                             if (text.selectionLength > 0) g.Fill(bgActiveBubble, path);
-                            PaintItemText(g, text, forebubble, selection);
+                            PaintItemText(g, text, forebubble);
                         }
                     }
                     if (IconLess) return;
@@ -278,7 +276,7 @@ namespace AntdUI.Chat
             }
         }
 
-        void PaintTextSelected(Canvas g, TextChatItem text, SolidBrush selection)
+        void PaintTextSelected(Canvas g, TextChatItem text)
         {
             if (text.selectionLength > 0 && text.cache_font.Length > text.selectionStartTemp)
             {
@@ -287,29 +285,31 @@ namespace AntdUI.Chat
                     int start = text.selectionStartTemp, end = start + text.selectionLength - 1;
                     if (end > text.cache_font.Length - 1) end = text.cache_font.Length - 1;
                     var first = text.cache_font[start];
-
-                    var list = new Dictionary<int, CacheFont>(6);
-                    for (int i = start; i <= end; i++)
+                    using (var brush = new SolidBrush(text.Me ? (SelectionColorMe ?? Colour.Fill.Get(nameof(ChatList), ColorScheme)) : (SelectionColor ?? Color.FromArgb(102, 0, 127, 255))))
                     {
-                        var it = text.cache_font[i];
-                        if (it.ret) list.Add(it.line + 1, it);
-                        else
+                        var list = new Dictionary<int, CacheFont>(6);
+                        for (int i = start; i <= end; i++)
                         {
-                            if (list.ContainsKey(it.line)) list.Remove(it.line);
-                            g.Fill(selection, it.rect);
+                            var it = text.cache_font[i];
+                            if (it.ret) list.Add(it.line + 1, it);
+                            else
+                            {
+                                if (list.ContainsKey(it.line)) list.Remove(it.line);
+                                g.Fill(brush, it.rect);
+                            }
                         }
+                        foreach (var it in list) g.Fill(brush, it.Value.rect.X, it.Value.rect.Y, it.Value.width, it.Value.rect.Height);
                     }
-                    foreach (var it in list) g.Fill(selection, it.Value.rect.X, it.Value.rect.Y, it.Value.width, it.Value.rect.Height);
                 }
                 catch { }
             }
         }
-        void PaintItemText(Canvas g, TextChatItem text, SolidBrush fore, SolidBrush selection)
+        void PaintItemText(Canvas g, TextChatItem text, SolidBrush fore)
         {
-            PaintTextSelected(g, text, selection);
+            PaintTextSelected(g, text);
             if (text.HasEmoji)
             {
-                using (var font = new Font(EmojiFont, Font.Size))
+                using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))
                 {
                     foreach (var it in text.cache_font)
                     {
@@ -324,10 +324,10 @@ namespace AntdUI.Chat
                                 else g.String(it.text, Font, fore, it.rect);
                                 break;
                             case GraphemeSplitter.STRE_TYPE.SVG:
-                                PaintItemTextSvg(g, text, fore, selection, it);
+                                PaintItemTextSvg(g, text, fore, it);
                                 break;
                             case GraphemeSplitter.STRE_TYPE.BASE64IMG:
-                                PaintItemTextBasee64(g, text, fore, selection, it);
+                                PaintItemTextBasee64(g, text, fore, it);
                                 break;
                         }
                     }
@@ -343,10 +343,10 @@ namespace AntdUI.Chat
                             g.String(it.text, Font, fore, it.rect);
                             break;
                         case GraphemeSplitter.STRE_TYPE.SVG:
-                            PaintItemTextSvg(g, text, fore, selection, it);
+                            PaintItemTextSvg(g, text, fore, it);
                             break;
                         case GraphemeSplitter.STRE_TYPE.BASE64IMG:
-                            PaintItemTextBasee64(g, text, fore, selection, it);
+                            PaintItemTextBasee64(g, text, fore, it);
                             break;
                     }
                 }
@@ -355,20 +355,14 @@ namespace AntdUI.Chat
             if (text.showlinedot)
             {
                 int size = (int)(2 * Dpi), w = size * 3;
-                if (text.cache_font.Length > 0)
+                using (var brush = new SolidBrush(Colour.Primary.Get(nameof(ChatList), ColorScheme)))
                 {
-                    var rect = text.cache_font[text.cache_font.Length - 1].rect;
-                    using (var brush = new SolidBrush(Color.FromArgb(0, 153, 255)))
+                    if (text.cache_font.Length > 0)
                     {
+                        var rect = text.cache_font[text.cache_font.Length - 1].rect;
                         g.Fill(brush, new Rectangle(rect.Right - w / 2, rect.Bottom - size, w, size));
                     }
-                }
-                else
-                {
-                    using (var brush = new SolidBrush(Color.FromArgb(0, 153, 255)))
-                    {
-                        g.Fill(brush, new Rectangle(text.rect_read.X + (text.rect_read.Width - w) / 2, text.rect_read.Bottom - size, w, size));
-                    }
+                    else g.Fill(brush, new Rectangle(text.rect_read.X + (text.rect_read.Width - w) / 2, text.rect_read.Bottom - size, w, size));
                 }
             }
         }
@@ -396,7 +390,7 @@ namespace AntdUI.Chat
                 if (!image_cache.TryAdd(it.text, bmp_svg)) bmp_svg.Dispose();
             }
         }
-        void PaintItemTextSvg(Canvas g, TextChatItem text, SolidBrush fore, SolidBrush selection, CacheFont it)
+        void PaintItemTextSvg(Canvas g, TextChatItem text, SolidBrush fore, CacheFont it)
         {
             var id = it.i.ToString() + it.text.Length;
             if (text.image_cache.TryGetValue(id, out var bmp)) g.Image(it.rect, bmp, TFit.Cover, 0, false);
@@ -408,7 +402,7 @@ namespace AntdUI.Chat
                 if (!text.image_cache.TryAdd(id, bmp_svg)) bmp_svg.Dispose();
             }
         }
-        void PaintItemTextBasee64(Canvas g, TextChatItem text, SolidBrush fore, SolidBrush selection, CacheFont it)
+        void PaintItemTextBasee64(Canvas g, TextChatItem text, SolidBrush fore, CacheFont it)
         {
             var id = it.i.ToString() + it.text.Length;
             if (text.image_cache.TryGetValue(id, out var bmp)) g.Image(it.rect, bmp, TFit.Contain, 0, false);

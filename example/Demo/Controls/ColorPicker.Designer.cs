@@ -69,7 +69,6 @@ namespace Demo.Controls
             colorPicker3.Name = "colorPicker3";
             colorPicker3.Size = new Size(46, 46);
             colorPicker3.TabIndex = 26;
-            colorPicker3.Value = Color.FromArgb(22, 119, 255);
             // 
             // colorPicker1
             // 
@@ -79,7 +78,6 @@ namespace Demo.Controls
             colorPicker1.ShowText = true;
             colorPicker1.Size = new Size(125, 46);
             colorPicker1.TabIndex = 26;
-            colorPicker1.Value = Color.FromArgb(22, 119, 255);
             // 
             // colorPicker2
             // 
@@ -94,7 +92,6 @@ namespace Demo.Controls
             colorPicker2.Size = new Size(46, 46);
             colorPicker2.TabIndex = 26;
             colorPicker2.Text = "C";
-            colorPicker2.Value = Color.FromArgb(22, 119, 255);
             // 
             // ColorPicker
             // 

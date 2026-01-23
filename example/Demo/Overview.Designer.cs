@@ -153,7 +153,7 @@ namespace Demo
             colorTheme.Padding = new Padding(5);
             colorTheme.Size = new Size(40, 40);
             colorTheme.TabIndex = 8;
-            colorTheme.Value = Color.FromArgb(22, 119, 255);
+            colorTheme.ValueChanged += colorTheme_ValueChanged;
             // 
             // Overview
             // 

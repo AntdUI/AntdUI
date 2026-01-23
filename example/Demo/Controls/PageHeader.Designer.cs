@@ -70,9 +70,9 @@ namespace Demo.Controls
             button1.AutoSizeMode = AntdUI.TAutoSize.Width;
             button1.Dock = DockStyle.Right;
             button1.LocalizationText = "PageHeader.Type";
-            button1.Location = new Point(657, 0);
+            button1.Location = new Point(639, 0);
             button1.Name = "button1";
-            button1.Size = new Size(75, 36);
+            button1.Size = new Size(93, 36);
             button1.TabIndex = 0;
             button1.Text = "显示返回";
             button1.ToggleType = AntdUI.TTypeMini.Primary;
@@ -154,6 +154,7 @@ namespace Demo.Controls
             Name = "PageHeader";
             Size = new Size(740, 402);
             pageHeader1.ResumeLayout(false);
+            pageHeader1.PerformLayout();
             ResumeLayout(false);
         }
 

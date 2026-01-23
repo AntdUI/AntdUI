@@ -27,6 +27,9 @@ namespace Demo.Controls
 
         private void InitializeComponent()
         {
+            AntdUI.ImagePreviewItem imagePreviewItem1 = new AntdUI.ImagePreviewItem();
+            AntdUI.ImagePreviewItem imagePreviewItem2 = new AntdUI.ImagePreviewItem();
+            AntdUI.ImagePreviewItem imagePreviewItem3 = new AntdUI.ImagePreviewItem();
             header1 = new AntdUI.PageHeader();
             panel1 = new FlowLayoutPanel();
             button1 = new AntdUI.Button();
@@ -34,6 +37,7 @@ namespace Demo.Controls
             button3 = new AntdUI.Button();
             button4 = new AntdUI.Button();
             divider1 = new AntdUI.Divider();
+            imagePreview1 = new AntdUI.ImagePreview();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -71,7 +75,7 @@ namespace Demo.Controls
             button1.LocalizationText = "Preview.{id}";
             button1.Location = new Point(3, 3);
             button1.Name = "button1";
-            button1.Size = new Size(166, 47);
+            button1.Size = new Size(157, 46);
             button1.TabIndex = 0;
             button1.Text = "弹出一张图片预览";
             button1.Click += button1_Click;
@@ -81,9 +85,9 @@ namespace Demo.Controls
             button2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button2.BorderWidth = 1F;
             button2.LocalizationText = "Preview.{id}";
-            button2.Location = new Point(175, 3);
+            button2.Location = new Point(166, 3);
             button2.Name = "button2";
-            button2.Size = new Size(166, 47);
+            button2.Size = new Size(157, 46);
             button2.TabIndex = 0;
             button2.Text = "弹出多张图片预览";
             button2.Click += button2_Click;
@@ -93,9 +97,9 @@ namespace Demo.Controls
             button3.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button3.BorderWidth = 1F;
             button3.LocalizationText = "Preview.{id}";
-            button3.Location = new Point(347, 3);
+            button3.Location = new Point(329, 3);
             button3.Name = "button3";
-            button3.Size = new Size(133, 47);
+            button3.Size = new Size(125, 46);
             button3.TabIndex = 1;
             button3.Text = "动态加载图片";
             button3.Click += button3_Click;
@@ -105,9 +109,9 @@ namespace Demo.Controls
             button4.AutoSizeMode = AntdUI.TAutoSize.Auto;
             button4.BorderWidth = 1F;
             button4.LocalizationText = "Preview.{id}";
-            button4.Location = new Point(3, 56);
+            button4.Location = new Point(3, 55);
             button4.Name = "button4";
-            button4.Size = new Size(215, 47);
+            button4.Size = new Size(205, 46);
             button4.TabIndex = 2;
             button4.Text = "弹出多张图片带文字预览";
             button4.Click += button4_Click;
@@ -124,8 +128,30 @@ namespace Demo.Controls
             divider1.TabIndex = 5;
             divider1.Text = "基本";
             // 
+            // imagePreview1
+            // 
+            imagePreview1.Dock = DockStyle.Fill;
+            imagePreviewItem1.Call = null;
+            imagePreviewItem1.CallProg = null;
+            imagePreviewItem1.Img = Properties.Resources.bg7;
+            imagePreviewItem2.Call = null;
+            imagePreviewItem2.CallProg = null;
+            imagePreviewItem2.Img = Properties.Resources.bg2;
+            imagePreviewItem3.Call = null;
+            imagePreviewItem3.CallProg = null;
+            imagePreviewItem3.Img = Properties.Resources.bg5;
+            imagePreview1.Image.Add(imagePreviewItem1);
+            imagePreview1.Image.Add(imagePreviewItem2);
+            imagePreview1.Image.Add(imagePreviewItem3);
+            imagePreview1.Location = new Point(0, 212);
+            imagePreview1.Name = "imagePreview1";
+            imagePreview1.Size = new Size(614, 234);
+            imagePreview1.TabIndex = 6;
+            imagePreview1.Text = "imagePreview1";
+            // 
             // Preview
             // 
+            Controls.Add(imagePreview1);
             Controls.Add(panel1);
             Controls.Add(divider1);
             Controls.Add(header1);
@@ -146,5 +172,6 @@ namespace Demo.Controls
         private AntdUI.Button button2;
         private AntdUI.Button button3;
         private AntdUI.Button button4;
+        private AntdUI.ImagePreview imagePreview1;
     }
 }

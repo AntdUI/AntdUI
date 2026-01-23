@@ -168,11 +168,15 @@ namespace AntdUI
             }
         }
 
-        Color _value = Colour.Primary.Get(nameof(ColorPicker));
+        Color? _value;
         [Description("颜色的值"), Category("值"), DefaultValue(typeof(Color), "Transparent")]
         public Color Value
         {
-            get => _value;
+            get
+            {
+                if (DesignMode) return _value ?? Color.Transparent;
+                return GetDefColor;
+            }
             set
             {
                 hasvalue = true;
@@ -184,6 +188,7 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Value));
             }
         }
+        Color GetDefColor => _value ?? Colour.Primary.Get(nameof(ColorPicker));
 
         bool showText = false;
         /// <summary>
@@ -269,6 +274,13 @@ namespace AntdUI
         [Description("显示还原按钮"), Category("行为"), DefaultValue(false)]
         public bool ShowReset { get; set; }
 
+        /// <summary>
+        /// 预设的颜色
+        /// </summary>
+        [Browsable(false)]
+        [Description("预设的颜色"), Category("数据"), DefaultValue(null)]
+        public Color[]? Presets { get; set; }
+
         bool hasvalue = false;
         /// <summary>
         /// 是否包含值
@@ -312,7 +324,7 @@ namespace AntdUI
                     hasvalue = false;
                     _value = def;
                     Invalidate();
-                    OnValueChanged(_value);
+                    OnValueChanged(GetDefColor);
                 }
                 else _value = def;
             }
@@ -344,7 +356,7 @@ namespace AntdUI
         /// 菜单弹出位置
         /// </summary>
         [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
-        public TAlignFrom Align { get; set; } = TAlignFrom.BL;
+        public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
         /// <summary>
         /// 下拉箭头是否显示
@@ -491,20 +503,21 @@ namespace AntdUI
                         {
                             if (HasValue)
                             {
+                                var val = GetDefColor;
                                 switch (mode)
                                 {
                                     case TColorMode.Hex:
-                                        g.String("#" + _value.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
+                                        g.String("#" + val.ToHex(), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
                                         break;
                                     case TColorMode.Rgb:
-                                        if (_value.A == 255) g.String(string.Format("rgb({0},{1},{2})", _value.R, _value.G, _value.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
-                                        else g.String(string.Format("rgba({0},{1},{2},{3})", _value.R, _value.G, _value.B, Math.Round(_value.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
+                                        if (val.A == 255) g.String(string.Format("rgb({0},{1},{2})", val.R, val.G, val.B), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
+                                        else g.String(string.Format("rgba({0},{1},{2},{3})", val.R, val.G, val.B, Math.Round(val.A / 255D, 2)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
                                         break;
                                 }
                             }
                             else g.String("Transparent", Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
                         }
-                        else g.String(ValueFormatChanged(this, new ColorEventArgs(_value)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
+                        else g.String(ValueFormatChanged(this, new ColorEventArgs(GetDefColor)), Font, brush, new Rectangle(rect_read.X + wi, rect_read.Y, rect_read.Width - wi, rect_read.Height), s_f);
                     }
                 }
                 else
@@ -545,7 +558,7 @@ namespace AntdUI
                 else
                 {
                     PaintAlpha(g, r, rect_color);
-                    g.Fill(_value, path);
+                    g.Fill(GetDefColor, path);
                 }
             }
         }
@@ -907,17 +920,17 @@ namespace AntdUI
                             switch (mode)
                             {
                                 case TColorMode.Rgb:
-                                    font_size = g.MeasureString(_value.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font);
+                                    font_size = g.MeasureString(GetDefColor.A == 255 ? "rgb(255,255,255)" : "rgba(255,255,255,0.99)", Font);
                                     break;
                                 case TColorMode.Hex:
                                 default:
-                                    font_size = g.MeasureString(_value.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
+                                    font_size = g.MeasureString(GetDefColor.A == 255 ? "#DDDCCC" : "#DDDDCCCC", Font);
                                     break;
                             }
                         }
                         else font_size = g.MeasureString("Transparent", Font);
                     }
-                    else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(_value)), Font);
+                    else font_size = g.MeasureString(ValueFormatChanged(this, new ColorEventArgs(GetDefColor)), Font);
                     int gap = (int)(font_size.Height * 1.02F) + (int)(WaveSize * Dpi);
                     if (showText)
                     {

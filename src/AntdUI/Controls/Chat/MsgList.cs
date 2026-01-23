@@ -134,13 +134,13 @@ namespace AntdUI.Chat
             {
                 if (it.Select)
                 {
-                    g.Fill(BackActive ?? Color.FromArgb(0, 153, 255), it.rect);
-                    using (var brush = new SolidBrush(ForeActive ?? Color.White))
+                    g.Fill(BackActive ?? Colour.Primary.Get(nameof(MsgList), ColorScheme), it.rect);
+                    using (var brush = new SolidBrush(ForeActive ?? Colour.PrimaryColor.Get(nameof(MsgList), ColorScheme)))
                     {
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);
-                            g.String(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
+                            g.DrawText(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
                             g.String(it.Time, it.TimeFont ?? font_time, brush, it.rect_time, SFR);
                         }
                         catch { }
@@ -154,8 +154,8 @@ namespace AntdUI.Chat
                         try
                         {
                             g.String(it.Name, Font, brush, it.rect_name, SFL);
-                            if (it.TextColor.HasValue) g.String(it.Text, it.TextFont ?? font_text, it.TextColor.Value, it.rect_text, it.TextFormat ?? SFL);
-                            else g.String(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
+                            if (it.TextColor.HasValue) g.DrawText(it.Text, it.TextFont ?? font_text, it.TextColor.Value, it.rect_text, it.TextFormat ?? SFL);
+                            else g.DrawText(it.Text, it.TextFont ?? font_text, brush, it.rect_text, it.TextFormat ?? SFL);
                             if (it.TimeColor.HasValue) g.String(it.Time, it.TimeFont ?? font_time, it.TimeColor.Value, it.rect_time, SFR);
                             else g.String(it.Time, it.TimeFont ?? font_time, brush, it.rect_time, SFR);
                         }
@@ -167,11 +167,12 @@ namespace AntdUI.Chat
                     g.Image(it.rect_icon, it.Icon, IconFit, radius, IconRound);
                     if (it.Badge != null)
                     {
+                        var color = it.BadgeBack ?? Colour.Error.Get(nameof(MsgList), ColorScheme);
                         if (string.IsNullOrEmpty(it.Badge))
                         {
                             int badge_size = it.rect_time.Height / 2, xy = badge_size / 3;
                             var rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
-                            g.FillEllipse(it.BadgeBack ?? Color.Red, rect_badge);
+                            g.FillEllipse(color, rect_badge);
                         }
                         else
                         {
@@ -182,16 +183,16 @@ namespace AntdUI.Chat
                                 rect_badge = new Rectangle(it.rect_icon.Right - badgesize.Width + badgesize.Width / 3, it.rect_icon.Y - badgesize.Height / 3, badgesize.Width, badgesize.Height);
                                 using (var path = rect_badge.RoundPath(6 * Dpi))
                                 {
-                                    g.Fill(it.BadgeBack ?? Color.Red, path);
+                                    g.Fill(color, path);
                                 }
                             }
                             else
                             {
                                 int badge_size = badgesize.Width > badgesize.Height ? badgesize.Width : badgesize.Height, xy = badge_size / 3;
                                 rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
-                                g.FillEllipse(it.BadgeBack ?? Color.Red, rect_badge);
+                                g.FillEllipse(color, rect_badge);
                             }
-                            g.String(it.Badge, font_time, it.BadgeFore ?? Color.White, rect_badge);
+                            g.String(it.Badge, font_time, it.BadgeFore ?? Colour.ErrorColor.Get(nameof(MsgList), ColorScheme), rect_badge);
                         }
                     }
                 }

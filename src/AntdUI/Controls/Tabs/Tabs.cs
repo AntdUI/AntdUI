@@ -90,6 +90,7 @@ namespace AntdUI
             {
                 if (alignment == value) return;
                 alignment = value;
+                SetIsRotate();
                 LoadLayout(true);
                 OnPropertyChanged(nameof(Alignment));
             }
@@ -365,9 +366,34 @@ namespace AntdUI
             return rect_dir;
         }
 
+        TRotate rotate = TRotate.None;
+        /// <summary>
+        /// 旋转（用于 Left/Right 时竖排显示）
+        /// </summary>
+        [Description("旋转（用于 Left/Right 时竖排显示）"), Category("外观"), DefaultValue(TRotate.None)]
+        public TRotate Rotate
+        {
+            get => rotate;
+            set
+            {
+                if (rotate == value) return;
+                rotate = value;
+                SetIsRotate();
+                LoadLayout(true); // 重新布局
+                OnPropertyChanged(nameof(Rotate));
+            }
+        }
+
+        internal bool IsRotate = false;
+        void SetIsRotate() => IsRotate = (alignment == TabAlignment.Left || alignment == TabAlignment.Right) && rotate != TRotate.None;
+
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, _padding);
 
         #region 数据
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new ControlCollection Controls => base.Controls;
 
         TabCollection? items;
         /// <summary>
@@ -1044,6 +1070,7 @@ namespace AntdUI
                     {
                         case TabAlignment.Left:
                         case TabAlignment.Right:
+                            if (IsRotate) size = last.Width;
                             rect_r = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
                             break;
                         case TabAlignment.Top:
@@ -1060,8 +1087,9 @@ namespace AntdUI
             }
         }
 
-        public virtual Rectangle PaintExceedPre(Rectangle rect, int size)
+        public virtual Rectangle PaintExceedPre(Rectangle rect, Rectangle rect_btn)
         {
+            int size = IsRotate ? rect_btn.Width : rect_btn.Height;
             switch (typExceed)
             {
                 case TabTypExceed.Button:
@@ -1140,7 +1168,7 @@ namespace AntdUI
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
                         int gap = (int)(_gap * Dpi), gap2 = gap * 2;
-                        int size = last.Height, icosize = (int)(size * 0.4F);
+                        int size = IsRotate ? last.Width : last.Height, icosize = (int)(size * 0.4F);
                         var rect_cr = new Rectangle(last.X, rect.Bottom - size, last.Width, size);
                         if (scroll_y > 0)
                         {
@@ -1256,7 +1284,7 @@ namespace AntdUI
                 case TabAlignment.Right:
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
-                        int size = (int)(last.Height * .6F);
+                        int size = (int)((IsRotate ? last.Width : last.Height) * .6F);
                         using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get(nameof(Tabs), ColorScheme)))
                         using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get(nameof(Tabs), ColorScheme)))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Dpi))
@@ -1359,7 +1387,7 @@ namespace AntdUI
                 case TabAlignment.Right:
                     if (scroll_y > 0 || scroll_max != scroll_y)
                     {
-                        int gap = (int)(_gap * Dpi), gap2 = gap * 2, size = (int)(last.Height * .6F);
+                        int gap = (int)(_gap * Dpi), gap2 = gap * 2, size = (int)((IsRotate ? last.Width : last.Height) * .6F);
                         using (var brush = new SolidBrush(scrollback ?? Colour.FillSecondary.Get(nameof(Tabs), ColorScheme)))
                         using (var brush_hover = new SolidBrush(ScrollBackHover ?? Colour.Primary.Get(nameof(Tabs), ColorScheme)))
                         using (var pen = new Pen(scrollfore ?? color, 2F * Dpi))

@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -27,6 +28,11 @@ namespace AntdUI
             {
                 mode = value;
                 EventHub.Dispatch(EventType.THEME, value);
+                if (Style.tmp_primary.HasValue) Style.SetPrimaryCore(Style.tmp_primary.Value);
+                if (Style.tmp_success.HasValue) Style.SetSuccessCore(Style.tmp_success.Value);
+                if (Style.tmp_warning.HasValue) Style.SetWarningCore(Style.tmp_warning.Value);
+                if (Style.tmp_error.HasValue) Style.SetErrorCore(Style.tmp_error.Value);
+                if (Style.tmp_info.HasValue) Style.SetInfoCore(Style.tmp_info.Value);
             }
         }
 
@@ -208,6 +214,16 @@ namespace AntdUI
         public static bool TextRenderingHighQuality { get; set; }
 
         /// <summary>
+        /// Emoji使能
+        /// </summary>
+        public static bool EmojiEnabled { get; set; } = true;
+
+        /// <summary>
+        /// Emoji字体
+        /// </summary>
+        public static string EmojiFont { get; set; } = "Segoe UI Emoji";
+
+        /// <summary>
         /// 是否使用钩子
         /// </summary>
 #if DEBUG
@@ -275,7 +291,7 @@ namespace AntdUI
             if (!_dpi_custom.HasValue) EventHub.Dispatch(EventType.DPI, dpi);
         }
 
-        internal static void SetDpi(Graphics g) => SetDpi(g.DpiX / 96F);
+        internal static void SetDpi(Graphics g) => SetDpi(Math.Max(g.DpiX, g.DpiY) / 96F);
 
         #endregion
 

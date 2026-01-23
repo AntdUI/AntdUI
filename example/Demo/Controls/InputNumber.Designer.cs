@@ -36,9 +36,9 @@ namespace Demo.Controls
             input6 = new AntdUI.InputNumber();
             panel1 = new System.Windows.Forms.Panel();
             panel2 = new System.Windows.Forms.Panel();
-            divider1 = new AntdUI.Divider();
-            inputNumberWithValueFormatter = new AntdUI.InputNumber();
             inputNumberWithoutValueFormatter = new AntdUI.InputNumber();
+            inputNumberWithValueFormatter = new AntdUI.InputNumber();
+            divider1 = new AntdUI.Divider();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -149,18 +149,18 @@ namespace Demo.Controls
             panel2.Size = new Size(555, 214);
             panel2.TabIndex = 0;
             // 
-            // divider1
+            // inputNumberWithoutValueFormatter
             // 
-            divider1.Dock = DockStyle.Top;
-            divider1.Font = new Font("Microsoft YaHei UI", 10F);
-            divider1.LocalizationText = "InputNumber.{id}";
-            divider1.Location = new Point(0, 0);
-            divider1.Name = "divider1";
-            divider1.Orientation = AntdUI.TOrientation.Left;
-            divider1.Size = new Size(555, 28);
-            divider1.TabIndex = 1;
-            divider1.TabStop = false;
-            divider1.Text = "常规";
+            inputNumberWithoutValueFormatter.DecimalPlaces = 2;
+            inputNumberWithoutValueFormatter.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
+            inputNumberWithoutValueFormatter.Location = new Point(18, 152);
+            inputNumberWithoutValueFormatter.Name = "inputNumberWithoutValueFormatter";
+            inputNumberWithoutValueFormatter.Radius = 0;
+            inputNumberWithoutValueFormatter.Size = new Size(220, 44);
+            inputNumberWithoutValueFormatter.TabIndex = 3;
+            inputNumberWithoutValueFormatter.Text = "10,000.00";
+            inputNumberWithoutValueFormatter.ThousandsSeparator = true;
+            inputNumberWithoutValueFormatter.Value = new decimal(new int[] { 10000, 0, 0, 0 });
             // 
             // inputNumberWithValueFormatter
             // 
@@ -175,18 +175,18 @@ namespace Demo.Controls
             inputNumberWithValueFormatter.ThousandsSeparator = true;
             inputNumberWithValueFormatter.Value = new decimal(new int[] { 10000, 0, 0, 0 });
             // 
-            // inputNumberWithoutValueFormatter
+            // divider1
             // 
-            inputNumberWithoutValueFormatter.DecimalPlaces = 2;
-            inputNumberWithoutValueFormatter.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
-            inputNumberWithoutValueFormatter.Location = new Point(18, 152);
-            inputNumberWithoutValueFormatter.Name = "inputNumberWithoutValueFormatter";
-            inputNumberWithoutValueFormatter.Radius = 0;
-            inputNumberWithoutValueFormatter.Size = new Size(220, 44);
-            inputNumberWithoutValueFormatter.TabIndex = 3;
-            inputNumberWithoutValueFormatter.Text = "10,000.00";
-            inputNumberWithoutValueFormatter.ThousandsSeparator = true;
-            inputNumberWithoutValueFormatter.Value = new decimal(new int[] { 10000, 0, 0, 0 });
+            divider1.Dock = DockStyle.Top;
+            divider1.Font = new Font("Microsoft YaHei UI", 10F);
+            divider1.LocalizationText = "InputNumber.{id}";
+            divider1.Location = new Point(0, 0);
+            divider1.Name = "divider1";
+            divider1.Orientation = AntdUI.TOrientation.Left;
+            divider1.Size = new Size(555, 28);
+            divider1.TabIndex = 1;
+            divider1.TabStop = false;
+            divider1.Text = "常规";
             // 
             // InputNumber
             // 
