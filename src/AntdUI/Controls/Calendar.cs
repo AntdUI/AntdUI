@@ -1323,9 +1323,16 @@ namespace AntdUI
 
             int t_top = 34, t_button = showButtonToDay ? 38 : 0;
             int year_width = 60, year2_width = 88, month_width = 40;
+            Helper.GDI(g =>
+            {
+                var size = g.MeasureString(Config.NullText, Font);
+                t_top = (int)(size.Height * 1.76F);
+                year_width = (int)(size.Height * 3.12F);
+                year2_width = (int)(size.Height * 4.66F);
+                month_width = year_width;
+            });
             if (dpi != 1F)
             {
-                t_top = (int)(t_top * dpi);
                 if (showButtonToDay) t_button = (int)(t_button * dpi);
                 year_width = (int)(year_width * dpi);
                 year2_width = (int)(year2_width * dpi);

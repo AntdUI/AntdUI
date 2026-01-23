@@ -356,7 +356,7 @@ namespace AntdUI
         /// 菜单弹出位置
         /// </summary>
         [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
-        public TAlignFrom Align { get; set; } = TAlignFrom.BL;
+        public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
         /// <summary>
         /// 下拉箭头是否显示

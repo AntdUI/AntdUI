@@ -52,7 +52,7 @@ namespace AntdUI
             InitWidth(ref colors_h);
             int yb = InitSize(control, colors_h);
 
-            CLocation(control, control.Align, control.DropDownArrow, ArrowSize);
+            CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
 
             inputs = InitInput(control, yb);
         }
@@ -84,7 +84,7 @@ namespace AntdUI
             if (config.Target.Value is Control control)
             {
                 var calculateCoordinate = new CalculateCoordinate(this, control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset);
-                calculateCoordinate.Auto(config.Align, animateConfig, true, out int rx, out int ry, out ArrowLine);
+                calculateCoordinate.Auto(config.Placement, animateConfig, true, out int rx, out int ry, out ArrowLine);
                 SetLocation(rx, ry);
             }
             else

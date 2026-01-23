@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -31,7 +32,7 @@ namespace AntdUI.Core
             g = gdi;
             // 设置 DPI 缩放因子
             if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
-            else Dpi = gdi.DpiX / 96F;
+            else Dpi = Math.Max(gdi.DpiX, gdi.DpiY) / 96F;
         }
 
         #region MeasureString

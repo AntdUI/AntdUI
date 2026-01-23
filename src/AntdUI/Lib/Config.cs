@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -290,7 +291,7 @@ namespace AntdUI
             if (!_dpi_custom.HasValue) EventHub.Dispatch(EventType.DPI, dpi);
         }
 
-        internal static void SetDpi(Graphics g) => SetDpi(g.DpiX / 96F);
+        internal static void SetDpi(Graphics g) => SetDpi(Math.Max(g.DpiX, g.DpiY) / 96F);
 
         #endregion
 

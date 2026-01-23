@@ -131,7 +131,7 @@ namespace AntdUI
             /// <summary>
             /// 弹出方向
             /// </summary>
-            public TAlignFrom Align { get; set; } = TAlignFrom.BL;
+            public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
             /// <summary>
             /// 偏移量
@@ -211,11 +211,12 @@ namespace AntdUI
                 return this;
             }
 
-            public Config SetAlign(TAlignFrom value)
+            public Config SetPlacement(TAlignFrom value)
             {
-                Align = value;
+                Placement = value;
                 return this;
             }
+            public Config SetAlign(TAlignFrom value) => SetPlacement(value);
 
             public Config SetOffset(Rectangle? value)
             {
@@ -271,6 +272,6 @@ namespace AntdUI
         Color[]? Presets { get; set; }
         TColorMode Mode { get; set; }
         TAMode ColorScheme { get; set; }
-        TAlignFrom Align { get; set; }
+        TAlignFrom Placement { get; set; }
     }
 }
