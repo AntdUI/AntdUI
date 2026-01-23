@@ -58,32 +58,7 @@ namespace AntdUI
 
             Culture = new CultureInfo(CultureID);
             YDR = CultureID.StartsWith("en");
-            if (YDR)
-            {
-                YearFormat = "yyyy";
-                MonthFormat = "MMM";
-                MondayButton = "Mon";
-                TuesdayButton = "Tue";
-                WednesdayButton = "Wed";
-                ThursdayButton = "Thu";
-                FridayButton = "Fri";
-                SaturdayButton = "Sat";
-                SundayButton = "Sun";
-                s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter;
-            }
-            else
-            {
-                YearFormat = "yyyy年";
-                MonthFormat = "MM月";
-                MondayButton = "一";
-                TuesdayButton = "二";
-                WednesdayButton = "三";
-                ThursdayButton = "四";
-                FridayButton = "五";
-                SaturdayButton = "六";
-                SundayButton = "日";
-                s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter; s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
-            }
+            Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
 
             #endregion
 

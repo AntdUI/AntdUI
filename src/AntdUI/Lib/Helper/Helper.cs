@@ -14,6 +14,12 @@ namespace AntdUI
 {
     public static partial class Helper
     {
+        /// <summary>
+        /// 计算两个浮点数的和，并保留3位小数
+        /// </summary>
+        /// <param name="val">第一个浮点数</param>
+        /// <param name="add">要添加的浮点数</param>
+        /// <returns>计算结果</returns>
         public static float Calculate(this float val, float add) => (float)Math.Round(val + add, 3);
 
         /// <summary>
@@ -23,11 +29,18 @@ namespace AntdUI
         public static Size Size(this SizeF size) => new Size((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height));
 
         /// <summary>
-        /// SizeF转Size（向上取整）
+        /// SizeF转Size（向上取整），并添加偏移量
         /// </summary>
         /// <param name="size">SizeF</param>
+        /// <param name="p">要添加的偏移量</param>
         public static Size Size(this SizeF size, float p) => new Size((int)Math.Ceiling(size.Width + p), (int)Math.Ceiling(size.Height + p));
 
+        /// <summary>
+        /// 调整Size大小，根据DPI缩放因子添加偏移量
+        /// </summary>
+        /// <param name="size">原始Size</param>
+        /// <param name="p">要添加的偏移量（像素单位）</param>
+        /// <returns>调整后的Size</returns>
         public static Size Size(this Size size, int p)
         {
             if (p > 0)
@@ -38,6 +51,14 @@ namespace AntdUI
             }
             return size;
         }
+        
+        /// <summary>
+        /// 调整Size大小，根据Canvas的DPI缩放因子添加偏移量
+        /// </summary>
+        /// <param name="size">原始Size</param>
+        /// <param name="g">Canvas对象</param>
+        /// <param name="p">要添加的偏移量（像素单位）</param>
+        /// <returns>调整后的Size</returns>
         public static Size Size(this Size size, Canvas g, int p)
         {
             if (p > 0)
@@ -49,12 +70,28 @@ namespace AntdUI
             return size;
         }
 
+        /// <summary>
+        /// 调整Size大小，根据DPI缩放因子分别添加宽度和高度偏移量
+        /// </summary>
+        /// <param name="size">原始Size</param>
+        /// <param name="w">要添加的宽度偏移量（像素单位）</param>
+        /// <param name="h">要添加的高度偏移量（像素单位）</param>
+        /// <returns>调整后的Size</returns>
         public static Size Size(this Size size, int w, int h)
         {
             if (w > 0) size.Width += (int)(w * Config.Dpi);
             if (h > 0) size.Height += (int)(h * Config.Dpi);
             return size;
         }
+        
+        /// <summary>
+        /// 调整Size大小，根据Canvas的DPI缩放因子分别添加宽度和高度偏移量
+        /// </summary>
+        /// <param name="size">原始Size</param>
+        /// <param name="g">Canvas对象</param>
+        /// <param name="w">要添加的宽度偏移量（像素单位）</param>
+        /// <param name="h">要添加的高度偏移量（像素单位）</param>
+        /// <returns>调整后的Size</returns>
         public static Size Size(this Size size, Canvas g, int w, int h)
         {
             if (w > 0) size.Width += (int)(w * g.Dpi);
@@ -62,14 +99,44 @@ namespace AntdUI
             return size;
         }
 
+        /// <summary>
+        /// 根据字体大小调整Size，用于计算文本的最佳显示大小
+        /// </summary>
+        /// <param name="size">原始Size</param>
+        /// <param name="font">字体对象</param>
+        /// <returns>调整后的Size</returns>
         public static Size SizeEm(this Size size, Font font) => new Size(size.Width + (int)Math.Round(size.Width * 0.135f), size.Height + (int)Math.Round(font.Size * 0.17f));
 
+        /// <summary>
+        /// 根据浮点数alpha值创建带透明度的颜色
+        /// </summary>
+        /// <param name="alpha">透明度值（0-255）</param>
+        /// <param name="color">原始颜色</param>
+        /// <returns>带透明度的颜色</returns>
         public static Color ToColor(float alpha, Color color) => ToColor((int)alpha, color);
 
+        /// <summary>
+        /// 根据归一化的alpha值（0-1）创建带透明度的颜色
+        /// </summary>
+        /// <param name="val">归一化的透明度值（0-1）</param>
+        /// <param name="color">原始颜色</param>
+        /// <returns>带透明度的颜色</returns>
         public static Color ToColorN(float val, Color color) => ToColor((int)(val * color.A), color);
 
+        /// <summary>
+        /// 根据整数alpha值创建带透明度的颜色
+        /// </summary>
+        /// <param name="alpha">透明度值（0-255）</param>
+        /// <param name="color">原始颜色</param>
+        /// <returns>带透明度的颜色</returns>
         public static Color ToColor(int alpha, Color color) => Color.FromArgb(Style.rgbbyte(alpha), color);
 
+        /// <summary>
+        /// 查找控件的父级Form
+        /// </summary>
+        /// <param name="control">要查找的控件</param>
+        /// <param name="mdi">是否查找MDI父窗口</param>
+        /// <returns>找到的Form，找不到则返回null</returns>
         public static Form? FindPARENT(this Control? control, bool mdi = false)
         {
             if (control == null) return null;
@@ -87,6 +154,13 @@ namespace AntdUI
             else if (control.Parent != null) return FindPARENT(control.Parent, mdi);
             return null;
         }
+        
+        /// <summary>
+        /// 查找Target的父级Form
+        /// </summary>
+        /// <param name="target">要查找的Target</param>
+        /// <param name="mdi">是否查找MDI父窗口</param>
+        /// <returns>找到的Form，找不到则返回null</returns>
         public static Form? FindPARENT(this Target? target, bool mdi = false)
         {
             if (target == null) return null;
@@ -105,6 +179,12 @@ namespace AntdUI
             return null;
         }
 
+        /// <summary>
+        /// 查找控件的所有父级Form
+        /// </summary>
+        /// <param name="control">要查找的控件</param>
+        /// <param name="mdi">是否查找MDI父窗口</param>
+        /// <returns>父级Form列表</returns>
         public static List<Control> FindPARENTs(this Control control, bool mdi = false)
         {
             var list = new List<Control>(2);
@@ -140,6 +220,12 @@ namespace AntdUI
             return list;
         }
 
+        /// <summary>
+        /// 根据控件的TopMost属性设置窗口置顶
+        /// </summary>
+        /// <param name="control">参考控件</param>
+        /// <param name="hand">要设置的窗口句柄</param>
+        /// <returns>是否设置成功</returns>
         public static bool SetTopMost(this Control? control, IntPtr hand)
         {
             var form = control.FindPARENT();
@@ -150,6 +236,13 @@ namespace AntdUI
             }
             return false;
         }
+        
+        /// <summary>
+        /// 根据Target的TopMost属性设置窗口置顶
+        /// </summary>
+        /// <param name="target">参考Target</param>
+        /// <param name="hand">要设置的窗口句柄</param>
+        /// <returns>是否设置成功</returns>
         public static bool SetTopMost(this Target? target, IntPtr hand)
         {
             var form = target.FindPARENT();
@@ -161,29 +254,18 @@ namespace AntdUI
             return false;
         }
 
+        /// <summary>
+        /// 设置窗口置顶
+        /// </summary>
+        /// <param name="hand">要设置的窗口句柄</param>
         public static void SetTopMost(IntPtr hand) => Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
 
-        public static bool AreDateTimeArraysEqual(DateTime[]? array1, DateTime[]? array2)
-        {
-            // 两个都为null，视为相等
-            if (array1 == null && array2 == null) return true;
-
-            // 其中一个为null，另一个不为null，视为不相等
-            if (array1 == null || array2 == null) return false;
-
-            // 长度不同，视为不相等
-            if (array1.Length != array2.Length) return false;
-
-            // 逐个比较元素
-            for (int i = 0; i < array1.Length; i++)
-            {
-                if (!array1[i].Equals(array2[i])) return false;
-            }
-
-            // 所有元素都相等
-            return true;
-        }
-
+        /// <summary>
+        /// 等待WaitHandle信号
+        /// </summary>
+        /// <param name="handle">WaitHandle对象</param>
+        /// <param name="close">如果句柄已关闭是否返回true</param>
+        /// <returns>true表示已关闭或出错，false表示等待成功</returns>
         public static bool Wait(this System.Threading.WaitHandle? handle, bool close = true)
         {
             if (handle == null) return true;
@@ -200,6 +282,13 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 等待WaitHandle信号，带超时时间
+        /// </summary>
+        /// <param name="handle">WaitHandle对象</param>
+        /// <param name="timeout">超时时间（毫秒）</param>
+        /// <param name="close">如果句柄已关闭是否返回true</param>
+        /// <returns>true表示已关闭或出错，false表示等待成功</returns>
         public static bool Wait(this System.Threading.WaitHandle? handle, int timeout, bool close = true)
         {
             if (handle == null) return true;
@@ -215,6 +304,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 设置EventWaitHandle信号
+        /// </summary>
+        /// <param name="handle">EventWaitHandle对象</param>
+        /// <returns>true表示已关闭或出错，false表示设置成功</returns>
         public static bool SetWait(this System.Threading.EventWaitHandle? handle)
         {
             if (handle == null) return true;
@@ -229,6 +323,12 @@ namespace AntdUI
                 return true;
             }
         }
+        
+        /// <summary>
+        /// 重置EventWaitHandle信号
+        /// </summary>
+        /// <param name="handle">EventWaitHandle对象</param>
+        /// <returns>true表示已关闭或出错，false表示重置成功</returns>
         public static bool ResetWait(this System.Threading.EventWaitHandle? handle)
         {
             if (handle == null) return true;
@@ -243,6 +343,12 @@ namespace AntdUI
                 return true;
             }
         }
+        
+        /// <summary>
+        /// 等待并释放EventWaitHandle
+        /// </summary>
+        /// <param name="handle">EventWaitHandle对象</param>
+        /// <param name="set">释放前是否设置信号</param>
         public static void WaitDispose(this System.Threading.EventWaitHandle? handle, bool set = true)
         {
             if (handle == null) return;
@@ -258,6 +364,11 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 检查CancellationTokenSource是否已取消
+        /// </summary>
+        /// <param name="token">CancellationTokenSource对象</param>
+        /// <returns>true表示已取消或出错，false表示正常</returns>
         public static bool Wait(this System.Threading.CancellationTokenSource? token)
         {
             try
@@ -271,6 +382,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 检查CancellationTokenSource是否已取消或控件是否已释放
+        /// </summary>
+        /// <param name="token">CancellationTokenSource对象</param>
+        /// <param name="control">要检查的控件</param>
+        /// <returns>true表示已取消、已释放或出错，false表示正常</returns>
         public static bool Wait(this System.Threading.CancellationTokenSource? token, Control control)
         {
             try
@@ -284,78 +401,35 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 检查列表索引是否越界
+        /// </summary>
+        /// <param name="list">要检查的列表</param>
+        /// <param name="index">要检查的索引</param>
+        /// <returns>true表示越界，false表示正常</returns>
         public static bool ListExceed(this IList? list, int index)
         {
             if (list == null || list.Count <= index || index < 0) return true;
             return false;
         }
 
-        public static bool DateExceed(DateTime date, DateTime? min, DateTime? max)
-        {
-            if (min.HasValue && min.Value >= date) return false;
-            if (max.HasValue && max.Value <= date) return false;
-            return true;
-        }
-
-        public static bool DateExceedMonth(DateTime date, int num, DateTime? min, DateTime? max)
-        {
-            try
-            {
-                return DateExceedMonth(date.AddMonths(num), min, max);
-            }
-            catch { return false; }
-        }
-        public static bool DateExceedMonth(DateTime date, DateTime? min, DateTime? max)
-        {
-            // 检查目标月份是否早于minDate所在的月份
-            if (min.HasValue)
-            {
-                // 如果目标月份比minDate的月份还早，禁用
-                if (date.Year < min.Value.Year || (date.Year == min.Value.Year && date.Month < min.Value.Month)) return false;
-            }
-            // 检查目标月份是否晚于maxDate所在的月份
-            if (max.HasValue)
-            {
-                // 如果目标月份比maxDate的月份还晚，禁用
-                if (date.Year > max.Value.Year || (date.Year == max.Value.Year && date.Month > max.Value.Month)) return false;
-            }
-            // 目标月份在允许范围内
-            return true;
-        }
-
-        public static bool DateExceedYear(DateTime date, int num, DateTime? min, DateTime? max)
-        {
-            try
-            {
-                return DateExceedYear(date.AddYears(num), min, max);
-            }
-            catch { return false; }
-        }
-        public static bool DateExceedYear(DateTime date, DateTime? min, DateTime? max)
-        {
-            if (min.HasValue && min.Value >= date) return false;
-            if (max.HasValue)
-            {
-                if (max.Value.Year == date.Year) return true;
-                if (max.Value <= date) return false;
-            }
-            return true;
-        }
-
-        public static bool DateExceedRelax(DateTime date, DateTime? min, DateTime? max)
-        {
-            if (min.HasValue && min.Value > date) return false;
-            if (max.HasValue && max.Value < date) return false;
-            return true;
-        }
-
         #region 剪贴板
 
+        /// <summary>
+        /// 获取剪贴板文本（线程安全）
+        /// </summary>
+        /// <param name="control">用于调用Invoke的控件</param>
+        /// <returns>剪贴板文本，获取失败返回null</returns>
         public static string? ClipboardGetText(this Control control)
         {
             if (control.InvokeRequired) return ITask.Invoke(control, new Func<string?>(() => ClipboardGetText()));
             return ClipboardGetText();
         }
+        
+        /// <summary>
+        /// 获取剪贴板文本
+        /// </summary>
+        /// <returns>剪贴板文本，获取失败返回null</returns>
         public static string? ClipboardGetText()
         {
             if (Win32.GetClipBoardText(out var text)) return text;
@@ -371,11 +445,24 @@ namespace AntdUI
                 }
             }
         }
+        
+        /// <summary>
+        /// 设置剪贴板文本（线程安全）
+        /// </summary>
+        /// <param name="control">用于调用Invoke的控件</param>
+        /// <param name="text">要设置的文本，null表示清空剪贴板</param>
+        /// <returns>是否设置成功</returns>
         public static bool ClipboardSetText(this Control control, string? text)
         {
             if (control.InvokeRequired) return ITask.Invoke(control, new Func<bool>(() => ClipboardSetText(text)));
             return ClipboardSetText(text);
         }
+        
+        /// <summary>
+        /// 设置剪贴板文本
+        /// </summary>
+        /// <param name="text">要设置的文本，null表示清空剪贴板</param>
+        /// <returns>是否设置成功</returns>
         public static bool ClipboardSetText(string? text)
         {
             if (Win32.SetClipBoardText(text)) return true;
@@ -396,6 +483,10 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 检查当前进程是否以管理员身份运行
+        /// </summary>
+        /// <returns>true表示以管理员身份运行，false表示不是</returns>
         public static bool IsAdmin()
         {
             using (var id = System.Security.Principal.WindowsIdentity.GetCurrent())
@@ -405,13 +496,13 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 判断文本是否包含拼音
+        /// 判断文本是否包含搜索词，支持拼音搜索，并返回匹配权重
         /// </summary>
         /// <param name="search">搜索文字</param>
         /// <param name="text">全文本</param>
-        /// <param name="py">拼音</param>
+        /// <param name="py">拼音数组</param>
         /// <param name="select">是否需要选中</param>
-        /// <returns>返回权重</returns>
+        /// <returns>匹配权重，值越大匹配度越高</returns>
         public static int SearchContains(string search, string text, string[] py, out bool select)
         {
             select = false;
@@ -441,6 +532,11 @@ namespace AntdUI
             return score;
         }
 
+        /// <summary>
+        /// 根据权重对搜索结果进行排序
+        /// </summary>
+        /// <param name="list">搜索结果列表</param>
+        /// <returns>排序后的对象列表</returns>
         public static List<object>? SearchWeightSort(this List<iItemSearchWeigth> list)
         {
             if (list.Count > 0)
@@ -452,6 +548,13 @@ namespace AntdUI
             }
             return null;
         }
+        
+        /// <summary>
+        /// 根据权重对搜索结果进行排序，并转换为指定类型
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="list">搜索结果列表</param>
+        /// <returns>排序后的指定类型列表</returns>
         public static List<T>? SearchWeightSort<T>(this List<iItemSearchWeigth> list)
         {
             if (list.Count > 0)
@@ -466,6 +569,13 @@ namespace AntdUI
             }
             return null;
         }
+        
+        /// <summary>
+        /// 根据权重对泛型搜索结果进行排序
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="list">泛型搜索结果列表</param>
+        /// <returns>排序后的指定类型列表</returns>
         public static List<T>? SearchWeightSort<T>(this List<ItemSearchWeigth<T>> list)
         {
             if (list.Count > 0)
@@ -477,6 +587,12 @@ namespace AntdUI
             }
             return null;
         }
+        
+        /// <summary>
+        /// 根据权重对搜索结果进行排序，并转换为对象数组
+        /// </summary>
+        /// <param name="list">搜索结果列表</param>
+        /// <returns>排序后的对象数组</returns>
         public static object[]? SearchWeightSortArray(this List<iItemSearchWeigth> list)
         {
             if (list.Count > 0)
@@ -488,6 +604,13 @@ namespace AntdUI
             }
             return null;
         }
+        
+        /// <summary>
+        /// 根据权重对搜索结果进行排序，并转换为指定类型数组
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="list">搜索结果列表</param>
+        /// <returns>排序后的指定类型数组</returns>
         public static T[]? SearchWeightSortArray<T>(this List<iItemSearchWeigth> list)
         {
             if (list.Count > 0)
@@ -502,6 +625,13 @@ namespace AntdUI
             }
             return null;
         }
+        
+        /// <summary>
+        /// 根据权重对泛型搜索结果进行排序，并转换为指定类型数组
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="list">泛型搜索结果列表</param>
+        /// <returns>排序后的指定类型数组</returns>
         public static T[]? SearchWeightSortArray<T>(this List<ItemSearchWeigth<T>> list)
         {
             if (list.Count > 0)
