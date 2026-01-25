@@ -467,8 +467,8 @@ namespace AntdUI
                             if (OnFilterPopupBegin(focusColumn, out var customSource, out var fnt, out var filterHeight))
                             {
                                 fnt ??= Font;
-                                int tmp_offset = col.offsetx - db.offset_x;
-                                var editor = new FilterControl(this, fnt, focusColumn, customSource, tmp_offset, col.offsety);
+                                int tmp_offset = col.offsetx - db.offset_xi;
+                                var editor = new FilterControl(this, fnt, focusColumn, customSource);
                                 if (filterHeight.HasValue) editor.Height = filterHeight.Value;
                                 editor.Set(new Popover.Config(this, editor)
                                 {
@@ -1182,6 +1182,37 @@ namespace AntdUI
             cell = null;
             return false;
         }
+
+        internal int GetCellOffsetX(CELL cell)
+        {
+            if (showFixedColumnL && fixedColumnL != null)
+            {
+                if (fixedColumnL.Contains(cell.INDEX)) return 0;
+            }
+            if (showFixedColumnR && fixedColumnR != null)
+            {
+                if (fixedColumnR.Contains(cell.INDEX))
+                {
+                    try
+                    {
+                        var lastrow = rows![0];
+                        var rect_read = ClientRectangle.PaddingRect(Padding, borderWidth);
+                        int sx = ScrollBar.ValueX, rectR = rect_read.Right - (ScrollBar.ShowY ? ScrollBar.SIZE : 0);
+                        CELL last = lastrow.cells[fixedColumnR[0]];
+                        if (sx + rectR < last.RECT.Right)
+                        {
+                            showFixedColumnR = true;
+                            sFixedR = last.RECT.Right - rectR;
+                        }
+                        else showFixedColumnR = false;
+                    }
+                    catch { }
+                    return sFixedR;
+                }
+            }
+            return ScrollBar.ValueX;
+        }
+
 
         #endregion
 
