@@ -49,7 +49,7 @@ namespace AntdUI
             action = _action;
 
             int colors_h = InitDpi(Dpi, control.Radius, 8, 160);
-            InitWidth(ref colors_h);
+            InitWidth(control, ref colors_h);
             int yb = InitSize(control, colors_h);
 
             CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
@@ -78,7 +78,7 @@ namespace AntdUI
             action = config.Call;
 
             int colors_h = InitDpi(Dpi, config.Radius, config.ArrowSize, 160);
-            InitWidth(ref colors_h);
+            InitWidth(config, ref colors_h);
             int yb = InitSize(config, colors_h);
 
             if (config.Target.Value is Control control)
@@ -119,15 +119,16 @@ namespace AntdUI
             return (int)(colors_h * dpi);
         }
 
-        void InitWidth(ref int colors_h)
+        void InitWidth(IColorPicker config, ref int colors_h)
         {
             if (mode == TColorMode.Rgb)
             {
                 w = Helper.GDI(g =>
                 {
-                    var size = g.MeasureString("255%", Font);
+                    var size = g.MeasureString("255 %", Font);
                     panel_color_input = (int)(size.Height * 1.52F);
-                    return (size.Width + size.Height) * 4;
+                    if (config.DisabledAlpha) return (size.Width + size.Height) * 3 + ((int)(4 * Dpi) * 2);
+                    else return (size.Width + size.Height) * 4 + ((int)(4 * Dpi) * 3);
                 });
                 int chtmp = (int)Math.Ceiling(w * .62F);
                 int chxc = chtmp - colors_h;
@@ -347,9 +348,8 @@ namespace AntdUI
         {
             if (config.Presets == null || config.Presets.Length == 0) return 0;
 
-            int w = rect_colors.Width;
-
-            int count = (int)Math.Floor(w * 1F / btn_size);
+            int w = rect_colors.Width, mingap = (int)(4 * Dpi);
+            int count = (int)Math.Floor(w * 1F / (btn_size + mingap));
             if (count % 2 == 1) count--;
             int tmp_w = btn_size * count, color_gap = (w - tmp_w) / (count - 1), x = (w - (tmp_w + color_gap * (count - 1))) / 2,
                 h = 0, use_x = 0, tsize = btn_size + color_gap;
@@ -363,7 +363,7 @@ namespace AntdUI
                     rect = new Rectangle(rect_colors.X + x + use_x, y + h, btn_size, btn_size)
                 });
                 use_x += tsize;
-                if (use_x > w)
+                if ((use_x + btn_size) > w)
                 {
                     h += tsize;
                     use_x = 0;

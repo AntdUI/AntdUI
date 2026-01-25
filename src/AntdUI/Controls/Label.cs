@@ -931,7 +931,7 @@ namespace AntdUI
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
                 return Helper.GDI(g =>
                 {
-                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font, textMultiLine && autoSize == TAutoSize.Height ? Width : 0);
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {
