@@ -417,7 +417,7 @@ namespace AntdUI
             if (it.SID)
             {
                 if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
-                else if (selectedValue == it.Tag)
+                else if (it.Tag.Equals(selectedValue))
                 {
                     using (var path = it.Rect.RoundPath(Radius))
                     {
@@ -741,7 +741,7 @@ namespace AntdUI
                     }
                     else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
                 }
-                if (selectedValue == item.Tag) sy = y;
+                if (item.Tag.Equals(selectedValue)) sy = y;
                 y += item_height;
             }
             return item;

@@ -478,8 +478,22 @@ namespace AntdUI
             if (showok)
             {
                 if (items == null) return;
-                if (items.Count <= index || index < 0) return;
-                for (int i = 0; i < items.Count; i++) items[i].Showed = i == index;
+                BeginInvoke(() =>
+                {
+                    if (items.Count <= index || index < 0) return;
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        var page = items[i];
+                        bool show = i == index;
+                        page.Showed = show;
+                        if (show)
+                        {
+                            page.BringToFront();
+                            page.Dock = DockStyle.Fill;
+                        }
+                        else page.Dock = DockStyle.None;
+                    }
+                });
             }
         }
 
@@ -1908,11 +1922,6 @@ namespace AntdUI
                 if (showed == value) return;
                 showed = value;
                 ShowedChanged?.Invoke(this, EventArgs.Empty);
-                if (value)
-                {
-                    if (IsHandleCreated) BeginInvoke(BringToFront);
-                    else BringToFront();
-                }
             }
         }
 

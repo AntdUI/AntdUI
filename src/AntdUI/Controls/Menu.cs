@@ -1949,6 +1949,44 @@ namespace AntdUI
 
         #endregion
 
+        #region 查找
+
+        /// <summary>
+        /// 根据节点id查询节点
+        /// </summary>
+        public MenuItem? FindID(string id) => FindID(items, id);
+
+        MenuItem? FindID(MenuItemCollection? items, string id)
+        {
+            if (items == null) return null;
+            foreach (var sub in items)
+            {
+                if (sub.ID == id) return sub;
+                var preItem = FindID(sub.items, id);
+                if (preItem != null) return preItem;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 根据节点name查询节点
+        /// </summary>
+        public MenuItem? FindName(string id) => FindName(items, id);
+
+        MenuItem? FindName(MenuItemCollection? items, string id)
+        {
+            if (items == null) return null;
+            foreach (var sub in items)
+            {
+                if (sub.Name == id) return sub;
+                var preItem = FindName(sub.items, id);
+                if (preItem != null) return preItem;
+            }
+            return null;
+        }
+
+        #endregion
+
         #region 事件
 
         /// <summary>
