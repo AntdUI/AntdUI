@@ -302,7 +302,7 @@ namespace AntdUI
             PaintOperationButtons(g);
         }
 
-        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter, sfL = FormatFlags.Left | FormatFlags.VerticalCenter, sfR = FormatFlags.Right | FormatFlags.VerticalCenter;
+        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis, sfL = FormatFlags.Left | FormatFlags.VerticalCenter, sfR = FormatFlags.Right | FormatFlags.VerticalCenter;
         private void PaintListPanel(Canvas g, Rectangle rect, Rectangle rect_com, Rectangle rect_title, Rectangle rect_checkbox, string title, ScrollBar scroll, bool selectAll, bool isTarget)
         {
             // 获取颜色
