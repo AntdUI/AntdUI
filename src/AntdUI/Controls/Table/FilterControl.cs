@@ -172,7 +172,7 @@ namespace AntdUI
                 bool check = list.Contains(val);
                 if (check) check_count++;
                 var value = val[_column.Key];
-                if (value == null)
+                if (value.IsNull())
                 {
                     if (Option.AllowNull == false) continue;
                     if (item_null == null)

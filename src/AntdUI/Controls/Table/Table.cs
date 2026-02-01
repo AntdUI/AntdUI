@@ -2583,16 +2583,32 @@ namespace AntdUI
         /// <returns></returns>
         internal static string? GetDisplayText(object? value, string? format)
         {
-            if (value == null || value == DBNull.Value) return null;
+            if (value.IsNull()) return null;
             else
             {
-                if (format == null || string.IsNullOrEmpty(format)) return value?.ToString();
+                if (format == null || string.IsNullOrEmpty(format))
+                {
+                    if (value is IList<ICell> cells)
+                    {
+                        var cs = new List<string?>(cells.Count);
+                        foreach (var it in cells)
+                        {
+                            var str = it.ToString();
+                            if (str != null) cs.Add(str);
+                        }
+                        if (cs.Count > 0) return string.Join(" ", cs);
+                    }
+                    return value?.ToString();
+                }
                 try
                 {
                     if (format.Contains("{0:")) return string.Format(format, value);
                     return string.Format("{0:" + format + "}", value);
                 }
-                catch { return value?.ToString(); }
+                catch
+                {
+                    return value?.ToString();
+                }
             }
         }
 

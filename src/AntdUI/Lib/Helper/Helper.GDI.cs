@@ -821,7 +821,7 @@ namespace AntdUI
             else path.AddRectangle(rect);
             return path;
         }
-        
+
         /// <summary>
         /// 创建胶囊形状路径的核心方法
         /// </summary>
@@ -833,7 +833,7 @@ namespace AntdUI
             AddCapsule(path, rect);
             return path;
         }
-        
+
         /// <summary>
         /// 向路径添加胶囊形状
         /// </summary>
