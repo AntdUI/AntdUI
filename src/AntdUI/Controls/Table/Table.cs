@@ -107,7 +107,7 @@ namespace AntdUI
             {
                 if (dataTmp == null || dataTmp.rows.Length == 0) return null;
                 if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
-                if (SortData == null) return dataTmp.rows[index];
+                if (SortData == null || SortData.Length - 1 < index) return dataTmp.rows[index];
                 return dataTmp.rows[SortData[index]];
             }
         }
