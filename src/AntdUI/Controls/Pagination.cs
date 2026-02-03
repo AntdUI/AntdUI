@@ -584,7 +584,7 @@ namespace AntdUI
                     if (TextDesc == null) showTotal = OnShowTotalChanged(current, total, pageSize, total_page);
                     else showTotal = TextDesc;
 
-                    int pyrn = Helper.GDI(g =>
+                    int pyrn = this.GDI(g =>
                     {
                         var dir = new Dictionary<int, int>();
                         int min = 100, max_size = rect.Height;
@@ -791,7 +791,7 @@ namespace AntdUI
             int wsize = (int)(5 * Dpi) * 2;
             if (pageSizeOptions == null || pageSizeOptions.Length == 0)
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var size = g.MeasureString(placeholder, Font);
                     return size.Width + wsize + size.Height;
@@ -799,7 +799,7 @@ namespace AntdUI
             }
             else
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var size = g.MeasureString(placeholder, Font);
                     return size.Width + wsize + (int)Math.Ceiling(size.Height * 1.8F);

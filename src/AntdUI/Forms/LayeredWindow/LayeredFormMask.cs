@@ -22,6 +22,7 @@ namespace AntdUI
         {
             owner = _owner;
             TopMost = _owner.TopMost;
+            SetDpi(_owner);
             HasBor = owner.FormFrame(out Radius, out Bor);
             if (owner is Window window)
             {
@@ -42,6 +43,7 @@ namespace AntdUI
         {
             owner = _owner;
             control = _control;
+            SetDpi(_owner, _control);
             TopMost = _owner.TopMost;
             var point = _control.PointToScreen(Point.Empty);
             SetSize(_control.Size);
@@ -217,7 +219,7 @@ namespace AntdUI
                 temp = new Bitmap(rect_read.Width, rect_read.Height);
                 if (visible)
                 {
-                    using (var g = Graphics.FromImage(temp).High())
+                    using (var g = Graphics.FromImage(temp).High(Dpi))
                     {
                         using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                         {

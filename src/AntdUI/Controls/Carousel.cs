@@ -559,7 +559,7 @@ namespace AntdUI
             if (AnimationChangeAuto)
             {
                 bmp = new Bitmap(rect.Width, AnimationChangeMax + rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                     var bmo = items[0].Img;
@@ -569,7 +569,7 @@ namespace AntdUI
             else
             {
                 bmp = new Bitmap(rect.Width, AnimationChangeMax);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                 }
@@ -584,7 +584,7 @@ namespace AntdUI
             if (AnimationChangeAuto)
             {
                 bmp = new Bitmap(AnimationChangeMax + rect.Width, rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                     var bmo = items[0].Img;
@@ -594,7 +594,7 @@ namespace AntdUI
             else
             {
                 bmp = new Bitmap(AnimationChangeMax, rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                 }

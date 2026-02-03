@@ -31,7 +31,7 @@ namespace AntdUI
             if (force)
             {
                 fix_cache_font.Clear();
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     float dpi = Dpi;
                     int font_height = fix_cache_font.Height(g, Font), rdcount = 0;
@@ -60,7 +60,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    return Helper.GDI(g =>
+                    return this.GDI(g =>
                     {
                         int font_height = fix_cache_font.Height(g, Font);
                         if (text == null)
@@ -599,7 +599,7 @@ namespace AntdUI
             {
                 int icon_size = (int)(read_height * iconratio), icon_right_size = icon_size;
                 if (iconratioRight.HasValue) icon_right_size = (int)(read_height * iconratioRight.Value);
-                if (has_prefixText) Helper.GDI(g => RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_right_size, icon_right_size));
+                if (has_prefixText) this.GDI(g => RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_right_size, icon_right_size));
                 else if (has_prefix) RectLR(rect, read_height, sps, sps2, icon_size, icon_size, icon_right_size, icon_right_size);
                 else RectR(rect, read_height, sps, sps2, icon_right_size, icon_right_size);
             }
@@ -609,7 +609,7 @@ namespace AntdUI
                 {
                     if (has_prefixText || has_suffixText)
                     {
-                        Helper.GDI(g =>
+                        this.GDI(g =>
                         {
                             if (has_prefixText && has_suffixText) RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, g.MeasureString(suffixText, Font).Width, read_height);
                             else

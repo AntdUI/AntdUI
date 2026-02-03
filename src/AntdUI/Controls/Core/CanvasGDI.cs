@@ -4,7 +4,6 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -32,7 +31,19 @@ namespace AntdUI.Core
             g = gdi;
             // 设置 DPI 缩放因子
             if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
-            else Dpi = Math.Max(gdi.DpiX, gdi.DpiY) / 96F;
+            else Dpi = Helper.GetDpi(gdi.DpiX, gdi.DpiY);
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="gdi">GDI+ 绘图上下文</param>
+        public CanvasGDI(Graphics gdi, float dpi)
+        {
+            g = gdi;
+            // 设置 DPI 缩放因子
+            Dpi = dpi;
+            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
         }
 
         #region MeasureString
@@ -1061,7 +1072,7 @@ namespace AntdUI.Core
                     {
                         using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
                         {
-                            using (var g2 = Graphics.FromImage(bmp).High())
+                            using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                             {
                                 PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
                             }
@@ -1096,7 +1107,7 @@ namespace AntdUI.Core
                     {
                         using (var bmp = new Bitmap((int)rect.Width, (int)rect.Height))
                         {
-                            using (var g2 = Graphics.FromImage(bmp).High())
+                            using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                             {
                                 PaintImg(g2, new RectangleF(0, 0, rect.Width, rect.Height), image, fit);
                             }
@@ -1553,7 +1564,7 @@ namespace AntdUI.Core
 
         #region DPI
 
-        public float Dpi { get; private set; }
+        public float Dpi { get; private set; } = 1F;
 
         #endregion
     }

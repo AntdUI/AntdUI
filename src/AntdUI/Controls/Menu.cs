@@ -610,7 +610,7 @@ namespace AntdUI
                 var _rect = ClientRectangle;
                 var rect = _rect.PaddingRect(Padding);
                 int x = 0, y = 0, icon_count = 0;
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio);
@@ -1004,7 +1004,7 @@ namespace AntdUI
                                 if (it.ExpandTemp == null)
                                 {
                                     it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
-                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(true))
+                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
                                     {
                                         g2.TranslateTransform(0, -it.rect.Bottom);
                                         PaintItemExpand(g2, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);

@@ -216,12 +216,12 @@ namespace AntdUI
                     using (var bmpo = new Bitmap(_rect.Width, _rect.Height))
                     using (var bmpo2 = new Bitmap(_rect.Width, _rect.Height))
                     {
-                        using (var g = Graphics.FromImage(bmpo).High())
+                        using (var g = Graphics.FromImage(bmpo).High(Dpi))
                         {
                             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
                             g.Image(rect, image, imageFit, _radius, round);
                         }
-                        using (var g = Graphics.FromImage(bmpo2).High())
+                        using (var g = Graphics.FromImage(bmpo2).High(Dpi))
                         {
                             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
                             g.Image(rect, value, imageFit, _radius, round);

@@ -264,7 +264,7 @@ namespace AntdUI
             if (CanLayout())
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     int gap = (int)(Gap * Dpi), split = (!milestoneMode ? 1 : milestoneTimelineThickness) * (int)Dpi;
                     var _splits = new List<RectangleF>(items!.Count);

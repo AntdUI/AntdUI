@@ -22,7 +22,6 @@ namespace AntdUI
                 ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.AllPaintingInWmPaint, true);
             UpdateStyles();
-            InitDpi();
         }
 
         public void SetCursor(bool val)
@@ -245,19 +244,17 @@ namespace AntdUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual bool AutoHandDpi { get; set; } = true;
 
-        public float Dpi { get; private set; }
 
-        void InitDpi(int? dpi = null)
+        float? dpi;
+        public float Dpi
         {
-            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
-            else if (dpi.HasValue) Dpi = dpi.Value / 96F;
-            else
+            get
             {
-#if NET40 || NET46 || NET48
-                Dpi = Config.Dpi;
-#else
-                Dpi = DeviceDpi / 96F;
-#endif
+                if (Config._dpi_custom.HasValue) return Config._dpi_custom.Value;
+                if (dpi.HasValue) return dpi.Value;
+                var _dpi = Helper.GetScreenDpi(this);
+                dpi = _dpi;
+                return _dpi;
             }
         }
 
@@ -269,9 +266,12 @@ namespace AntdUI
         {
             if (m.Msg == 0x02E0)
             {
+                var old = Dpi;
                 // 低字节是水平DPI，高字节是垂直DPI
                 int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
-                InitDpi(Math.Max(dpiX, dpiY));
+                var _dpi = Helper.GetDpi(dpiX, dpiY);
+                dpi = _dpi;
+                if (AutoHandDpi) BeginInvoke(() => Helper.DpiChangeAuto(_dpi, old, this));
             }
             base.WndProc(ref m);
         }

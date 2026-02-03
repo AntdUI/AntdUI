@@ -178,7 +178,8 @@ namespace AntdUI
             if (bitbmp == null)
             {
                 bitbmp = new Bitmap(shadow6, shadow6);
-                using (var g = Graphics.FromImage(bitbmp).High())
+                bitbmp.SetResolution(form.Dpi, form.Dpi);
+                using (var g = Graphics.FromImage(bitbmp).High(form.Dpi))
                 {
                     using (var path = new Rectangle(shadow, shadow, shadow6 - shadow2, shadow6 - shadow2).RoundPath(radius))
                     {
@@ -188,7 +189,7 @@ namespace AntdUI
                 }
             }
             var bitmap = new Bitmap(shadow_rect.Width, shadow_rect.Height);
-            using (var g = Graphics.FromImage(bitmap).High())
+            using (var g = Graphics.FromImage(bitmap).High(form.Dpi))
             {
                 using (var path = rect_read.RoundPath(radius))
                 {

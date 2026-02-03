@@ -4,7 +4,6 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -258,16 +257,21 @@ namespace AntdUI
         /// </summary>
         public static DpiMode DpiMode { get; set; } = DpiMode.Default;
 
-        static bool dpione = true;
-        static float _dpi = 1F;
+        static float? dpi;
         internal static float? _dpi_custom;
         public static float Dpi
         {
             get
             {
-                if (dpione) Helper.GDI(g => g.DpiX);
                 if (_dpi_custom.HasValue) return _dpi_custom.Value;
-                return _dpi;
+                else if (dpi.HasValue) return dpi.Value;
+                else
+                {
+                    var _dpi = Helper.GDI(g => Helper.GetDpi(g.DpiX, g.DpiY));
+                    dpi = _dpi;
+                    EventHub.Dispatch(EventType.DPI, _dpi);
+                    return _dpi;
+                }
             }
         }
 
@@ -280,18 +284,8 @@ namespace AntdUI
             if (_dpi_custom == dpi) return;
             _dpi_custom = dpi;
             if (dpi.HasValue) EventHub.Dispatch(EventType.DPI, dpi.Value);
-            else EventHub.Dispatch(EventType.DPI, _dpi);
+            else EventHub.Dispatch(EventType.DPI, Config.dpi);
         }
-
-        internal static void SetDpi(float dpi)
-        {
-            dpione = false;
-            if (_dpi == dpi) return;
-            _dpi = dpi;
-            if (!_dpi_custom.HasValue) EventHub.Dispatch(EventType.DPI, dpi);
-        }
-
-        internal static void SetDpi(Graphics g) => SetDpi(Math.Max(g.DpiX, g.DpiY) / 96F);
 
         #endregion
 

@@ -1875,7 +1875,7 @@ namespace AntdUI
                 if (rect.Width == 0 || rect.Height == 0) return null;
                 LoadLayout(rect);
                 var bmp = new Bitmap(rect.Width, rect.Height);
-                using (var g = Graphics.FromImage(bmp).High())
+                using (var g = Graphics.FromImage(bmp).High(Dpi))
                 {
                     try
                     {

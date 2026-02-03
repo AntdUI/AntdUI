@@ -248,6 +248,7 @@ namespace AntdUI
                 return;
             }
             topMost = config.Form.SetTopMost(Handle);
+            SetDpi(config.Form);
             HasBor = config.Form.FormFrame(out Radius, out Bor);
             if (config.Form is Window window)
             {
@@ -355,7 +356,7 @@ namespace AntdUI
         Bitmap PrintBmp(Rectangle rect_read, Rectangle rect)
         {
             var bmp = new Bitmap(rect_read.Width, rect_read.Height);
-            using (var g = Graphics.FromImage(bmp).High())
+            using (var g = Graphics.FromImage(bmp).High(Dpi))
             {
                 using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                 {

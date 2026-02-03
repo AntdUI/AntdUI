@@ -201,7 +201,7 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(rbmp).HighLay())
+            using (var g = Graphics.FromImage(rbmp).HighLay(Dpi))
             {
                 if (ShadowEnabled)
                 {
@@ -400,7 +400,7 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(rbmp).HighLay())
+            using (var g = Graphics.FromImage(rbmp).HighLay(Dpi))
             {
                 if (ShadowEnabled)
                 {

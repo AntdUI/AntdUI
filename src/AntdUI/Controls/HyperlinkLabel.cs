@@ -265,7 +265,7 @@ namespace AntdUI
             {
                 using (var bmp = new Bitmap(Width, Height))
                 {
-                    using (var g2 = Graphics.FromImage(bmp).HighLay(true))
+                    using (var g2 = Graphics.FromImage(bmp).HighLay(Dpi, true))
                     {
                         PaintText(g2, Text, ShadowColor ?? _fore, rect);
                     }
@@ -479,7 +479,7 @@ namespace AntdUI
         {
             get
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var font_size = g.MeasureText(_plainText ?? Config.NullText, Font);
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;

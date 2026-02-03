@@ -2269,7 +2269,7 @@ namespace AntdUI
         {
             get
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var font_size = MeasureText(g, Text, out int txt_height);
                     int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(WaveSize * Dpi), wave2 = wave;

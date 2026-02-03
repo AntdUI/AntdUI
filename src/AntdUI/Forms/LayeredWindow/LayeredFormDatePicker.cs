@@ -28,6 +28,7 @@ namespace AntdUI
             PARENT = control = _control;
             ColorScheme = _control.ColorScheme;
             _control.Parent.SetTopMost(Handle);
+            SetDpi(_control);
             Font = _control.Font;
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
@@ -510,7 +511,7 @@ namespace AntdUI
             }
         }
 
-        void LoadLayout() => Helper.GDI(g => LoadLayout(g));
+        void LoadLayout() => this.GDI(g => LoadLayout(g));
         void LoadLayout(Canvas g)
         {
             var size = g.MeasureString(Config.NullText, Font);

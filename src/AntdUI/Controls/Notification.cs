@@ -538,11 +538,12 @@ namespace AntdUI
             Tag = id;
             if (config.TopMost) Helper.SetTopMost(Handle);
             else config.Target.SetTopMost(Handle);
+            SetDpi(config.Target);
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
             font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
-            Helper.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
+            this.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
             close_button = new ITaskOpacity(name, this);
         }
 
@@ -597,7 +598,7 @@ namespace AntdUI
             var rect = TargetRectXY;
             var rect_read = rect.PaddingRect(Padding, shadow_size);
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(rbmp).High())
+            using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {
                 using (var path = DrawShadow(g, rect, rect_read, out int radius))
                 {

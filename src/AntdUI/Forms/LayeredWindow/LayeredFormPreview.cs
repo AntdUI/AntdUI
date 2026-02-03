@@ -438,7 +438,7 @@ namespace AntdUI
         public override Bitmap? PrintBit()
         {
             var rbmp = new Bitmap(TargetRect.Width, TargetRect.Height);
-            using (var g = Graphics.FromImage(rbmp).High())
+            using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {
                 using (var brush = new SolidBrush(Color.FromArgb(115, 0, 0, 0)))
                 {

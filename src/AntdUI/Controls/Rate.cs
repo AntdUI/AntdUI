@@ -184,25 +184,25 @@ namespace AntdUI
                     using (var bmp_diy_active = new Bitmap(bmp_size, bmp_size))
                     {
                         Rectangle rect_diy = new Rectangle(0, 0, bmp_size, bmp_size), rect_icon = new Rectangle(0, 0, size, size);
-                        using (var g2 = Graphics.FromImage(bmp_diy).HighLay(true))
+                        using (var g2 = Graphics.FromImage(bmp_diy).HighLay(Dpi, true))
                         {
                             using (var brush = new SolidBrush(Colour.FillSecondary.Get(nameof(Rate), ColorScheme)))
                             {
                                 g2.String(character, font, brush, rect_diy);
                             }
                         }
-                        using (var g2 = Graphics.FromImage(bmp_diy_active).HighLay(true))
+                        using (var g2 = Graphics.FromImage(bmp_diy_active).HighLay(Dpi, true))
                         {
                             using (var brush = new SolidBrush(fill))
                             {
                                 g2.String(character, font, brush, rect_diy);
                             }
                         }
-                        using (var g2 = Graphics.FromImage(icon).High())
+                        using (var g2 = Graphics.FromImage(icon).High(Dpi))
                         {
                             g2.Image(bmp_diy, rect_icon);
                         }
-                        using (var g2 = Graphics.FromImage(icon_active).High())
+                        using (var g2 = Graphics.FromImage(icon_active).High(Dpi))
                         {
                             g2.Image(bmp_diy_active, rect_icon);
                         }

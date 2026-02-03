@@ -29,6 +29,7 @@ namespace AntdUI
         {
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             AllowClear = control.AllowClear;
             ShowClose = control.ShowClose;
             ShowReset = control.ShowReset;
@@ -60,6 +61,7 @@ namespace AntdUI
         {
             ColorScheme = config.ColorScheme;
             config.Target.SetTopMost(Handle);
+            SetDpi(config.Target);
             AllowClear = config.AllowClear;
             ShowClose = config.ShowClose;
             ShowReset = config.ShowReset;
@@ -123,7 +125,7 @@ namespace AntdUI
         {
             if (mode == TColorMode.Rgb)
             {
-                w = Helper.GDI(g =>
+                w = this.GDI(g =>
                 {
                     var size = g.MeasureString("255 %", Font);
                     panel_color_input = (int)(size.Height * 1.52F);
@@ -135,7 +137,7 @@ namespace AntdUI
                 colors_h = chtmp;
                 h += chxc;
             }
-            else panel_color_input = Helper.GDI(g => (int)(g.MeasureString("255%", Font).Height * 1.52F));
+            else panel_color_input = this.GDI(g => (int)(g.MeasureString("255%", Font).Height * 1.52F));
         }
 
         int InitSize(IColorPicker config, int colors_h)
@@ -181,7 +183,7 @@ namespace AntdUI
 
             int gap2 = gap * 2, gap_2 = gap / 2;
             bmp_dot_12 = new Bitmap(gap2, gap2);
-            using (var g2 = Graphics.FromImage(bmp_dot_12).High())
+            using (var g2 = Graphics.FromImage(bmp_dot_12).High(Dpi))
             {
                 using (var brush = new SolidBrush(Colour.BgBase.Get(name, ColorScheme)))
                 {
@@ -696,7 +698,7 @@ namespace AntdUI
 
                 using (var bmp = new Bitmap(rect_colors.Width, rect_colors.Height))
                 {
-                    using (var g2 = Graphics.FromImage(bmp).High())
+                    using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                     {
                         PaintColors(g2, new Rectangle(0, 0, bmp.Width, bmp.Height));
                     }
@@ -716,7 +718,7 @@ namespace AntdUI
                 if (bmp_hue == null)
                 {
                     bmp_hue = new Bitmap(rect_hue.Width, rect_hue.Height);
-                    using (var g2 = Graphics.FromImage(bmp_hue).High())
+                    using (var g2 = Graphics.FromImage(bmp_hue).High(Dpi))
                     {
                         PaintHue(g2, new Rectangle(0, 0, bmp_hue.Width, bmp_hue.Height));
                     }
@@ -738,7 +740,7 @@ namespace AntdUI
                     if (bmp_alpha_read == null)
                     {
                         bmp_alpha_read = new Bitmap(rect_alpha.Width, rect_alpha.Height);
-                        using (var g2 = Graphics.FromImage(bmp_alpha_read).High())
+                        using (var g2 = Graphics.FromImage(bmp_alpha_read).High(Dpi))
                         {
                             PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha_read.Width, bmp_alpha_read.Height), false);
                         }
@@ -748,7 +750,7 @@ namespace AntdUI
                     if (bmp_alpha == null)
                     {
                         bmp_alpha = new Bitmap(rect_alpha.Width, rect_alpha.Height);
-                        using (var g2 = Graphics.FromImage(bmp_alpha).High())
+                        using (var g2 = Graphics.FromImage(bmp_alpha).High(Dpi))
                         {
                             PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha.Width, bmp_alpha.Height), true);
                         }

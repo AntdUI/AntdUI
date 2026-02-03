@@ -363,7 +363,7 @@ namespace AntdUI.Captcha
         Bitmap DrawDefaultImage(Rectangle rect)
         {
             var bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(bmp).HighLay())
+            using (var g = Graphics.FromImage(bmp).HighLay(Dpi))
             {
                 // 绘制一个简单的风景图作为示例
                 using (var brush = new LinearGradientBrush(rect, Style.Db.PrimaryBg, Style.Db.PrimaryColor, 90f))

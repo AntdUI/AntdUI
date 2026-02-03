@@ -293,6 +293,7 @@ namespace AntdUI
             else
             {
                 config.Target.SetTopMost(Handle);
+                SetDpi(config.Target);
                 if (config.Target is Form form)
                 {
                     SetSize(form.Size);
@@ -320,7 +321,7 @@ namespace AntdUI
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
             if (config.Enabled)
             {
-                using (var g = Graphics.FromImage(rbmp).HighLay())
+                using (var g = Graphics.FromImage(rbmp).HighLay(Dpi))
                 using (var brush = new SolidBrush(config.ForeColor ?? Colour.FillSecondary.Get(nameof(Watermark))))
                 {
                     // 计算水印间距

@@ -153,7 +153,7 @@ namespace AntdUI
             public void LoadLayout(Tabs tabs, Rectangle rect, TabCollection items)
             {
                 owner = tabs;
-                rects = Helper.GDI(g =>
+                rects = tabs.GDI(g =>
                 {
                     int gap = (int)(tabs.Gap * owner.Dpi), gap2 = gap * 2, xy = 0, cardgap = (int)(Gap * owner.Dpi);
 
@@ -753,7 +753,7 @@ namespace AntdUI
                 {
                     using (var bmp = new Bitmap(rect_t.Width, rect_t.Height))
                     {
-                        using (var g = Graphics.FromImage(bmp).High())
+                        using (var g = Graphics.FromImage(bmp).High(owner.Dpi))
                         {
                             using (var path = Helper.RoundPath(rect_page, radius, TL, TR, BR, BL))
                             using (var pen_bg = new Pen(BorderActive ?? Colour.BorderColor.Get(nameof(Tabs), owner.ColorScheme), bor))

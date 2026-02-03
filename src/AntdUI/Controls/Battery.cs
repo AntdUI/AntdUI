@@ -219,7 +219,7 @@ namespace AntdUI
                     {
                         using (var bmp = new Bitmap(e.Rect.Width, e.Rect.Height))
                         {
-                            using (var g2 = Graphics.FromImage(bmp).High())
+                            using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                             {
                                 Color _color;
                                 if (_value > ValueWarn) _color = fillfully;

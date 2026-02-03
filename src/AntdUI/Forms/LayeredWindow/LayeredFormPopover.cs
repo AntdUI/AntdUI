@@ -25,9 +25,10 @@ namespace AntdUI
             config = _config;
             CloseMode = CloseMode.Click;
             topMost = config.Control.SetTopMost(Handle);
+            SetDpi(config.Control);
             Font = config.Font ?? config.Control.Font;
 
-            Helper.GDI(g =>
+            this.GDI(g =>
             {
                 Radius = (int)(config.Radius * Dpi);
                 ArrowSize = (int)(config.ArrowSize * Dpi);

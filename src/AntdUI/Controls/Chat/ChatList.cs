@@ -831,7 +831,7 @@ namespace AntdUI.Chat
             if (CanLayout())
             {
                 var rect = ClientRectangle;
-                int y = Helper.GDI(g =>
+                int y = this.GDI(g =>
                 {
                     int y = 0;
                     var size = g.MeasureString(Config.NullText, Font).Height;
@@ -862,7 +862,7 @@ namespace AntdUI.Chat
                 {
                     var rect = ClientRectangle;
                     int old = chatItem.rect.Height;
-                    Helper.GDI(g =>
+                    this.GDI(g =>
                     {
                         var size = g.MeasureString(Config.NullText, Font).Height;
                         int item_height = (int)Math.Ceiling(size * 1.714),

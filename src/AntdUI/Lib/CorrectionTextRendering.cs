@@ -27,10 +27,7 @@ namespace AntdUI
             enable = true;
             using (var font = new Font(familie, defFontSize))
             {
-                int size = Helper.GDI(g =>
-                {
-                    return (int)(g.MeasureString(defTextChinese, font).Height * 1.2F);
-                });
+                int size = Helper.GDI(g => (int)(g.MeasureString(defTextChinese, font).Height * 1.2F));
                 float valChinese = GetFontOffset(font, size, defTextChinese);
                 float valEnglish = GetFontOffset(font, size, defTextEnglish);
                 if (valChinese <= 1 && valChinese >= -1)

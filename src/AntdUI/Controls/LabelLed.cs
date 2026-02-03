@@ -342,7 +342,7 @@ namespace AntdUI
                 {
                     using (var bmp = new Bitmap(Width, Height))
                     {
-                        using (var g2 = Graphics.FromImage(bmp).HighLay())
+                        using (var g2 = Graphics.FromImage(bmp).HighLay(Dpi))
                         {
                             RenderLed(g2, ClientRectangle.PaddingRect(Padding), patterns, fontSize.Value, fontSize.Value, ShadowColor ?? fore, false);
                         }
@@ -361,7 +361,7 @@ namespace AntdUI
                 {
                     using (var bmp = new Bitmap(Width, Height))
                     {
-                        using (var g2 = Graphics.FromImage(bmp).HighLay())
+                        using (var g2 = Graphics.FromImage(bmp).HighLay(Dpi))
                         {
                             RenderLed(g2, ClientRectangle.PaddingRect(Padding), patterns, rows, cols, ShadowColor ?? fore, false);
                         }
@@ -549,7 +549,7 @@ namespace AntdUI
                             if (fontEmoji == null) fontEmoji = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
                             using (var bmp = new Bitmap(size, size))
                             {
-                                using (var g = Graphics.FromImage(bmp).HighLay())
+                                using (var g = Graphics.FromImage(bmp).HighLay(Dpi))
                                 {
                                     g.String(txt, fontEmoji, Brushes.White, rect);
                                 }
@@ -562,7 +562,7 @@ namespace AntdUI
                         {
                             using (var bmp = new Bitmap(size, size))
                             {
-                                using (var g = Graphics.FromImage(bmp).HighLay())
+                                using (var g = Graphics.FromImage(bmp).HighLay(Dpi))
                                 {
                                     g.String(txt, font, Brushes.White, rect);
                                 }

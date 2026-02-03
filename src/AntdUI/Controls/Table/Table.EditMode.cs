@@ -327,7 +327,7 @@ namespace AntdUI
             int bor = (int)((wavesize + borwidth / 2F) * Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
             if (EditAutoHeight)
             {
-                int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
+                int texth = this.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
                 if (h > rect.Height)
                 {
                     rh = h - bor2;
@@ -342,7 +342,7 @@ namespace AntdUI
             int bor = (int)((wavesize + borwidth / 2F) * Dpi), bor2 = bor * 2, ry = rect.Y, rh = rect.Height;
             if (EditAutoHeight)
             {
-                int texth = Helper.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
+                int texth = this.GDI(g => g.MeasureString(Config.NullText, Font).Height), sps = (int)(texth * .4F), sps2 = sps * 2, h = texth + sps2 + bor2;
                 if (h > rect.Height)
                 {
                     rh = h;

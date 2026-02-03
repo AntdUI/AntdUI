@@ -155,7 +155,7 @@ namespace AntdUI
             public void LoadLayout(Tabs tabs, Rectangle rect, TabCollection items)
             {
                 owner = tabs;
-                rects = Helper.GDI(g =>
+                rects = tabs.GDI(g =>
                 {
                     int gap = (int)(tabs.Gap * tabs.Dpi), gap2 = gap * 2, xy = 0, cardgap = (int)(Gap * tabs.Dpi);
                     var rect_list = new List<TabPageRect>(items.Count);

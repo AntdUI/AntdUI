@@ -415,7 +415,7 @@ namespace AntdUI
         {
             if (CanLayout(out bool hd))
             {
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Dpi), border2 = border * 2, offset = (int)(offsetY * Dpi);
                     Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);

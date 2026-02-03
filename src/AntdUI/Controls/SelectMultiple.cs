@@ -339,7 +339,7 @@ namespace AntdUI
                         }
                     }
                 }
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var _style_left = new List<SelectItem?>(selectedValue.Length);
                     List<Rectangle> _rect_left = new List<Rectangle>(selectedValue.Length), _rect_left_txt = new List<Rectangle>(selectedValue.Length), _rect_left_del = new List<Rectangle>(selectedValue.Length);

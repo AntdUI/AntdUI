@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace AntdUI
 {
     partial class Helper
     {
-        internal static void DpiAuto(float dpi, Control control)
+        public static void DpiAuto(float dpi, Control control)
         {
             if (dpi == 1F)
             {
@@ -26,8 +27,7 @@ namespace AntdUI
             }
             if (Config.DpiMode == DpiMode.Compatible)
             {
-                control.Scale(new SizeF(dpi, dpi));
-                DpiLS(dpi, control.Controls);
+                DpiCompatible(dpi, control);
                 return;
             }
             if (control is Form form)
@@ -41,7 +41,7 @@ namespace AntdUI
                     default:
                         if (form.WindowState == FormWindowState.Maximized)
                         {
-                            form.Scale(new SizeF(dpi, dpi));
+                            DpiCompatible(dpi, control);
                             return;
                         }
                         DpiLS(dpi, form, DpiInfo(form.Controls));
@@ -50,6 +50,40 @@ namespace AntdUI
             }
             else DpiLS(dpi, DpiInfo(control));
         }
+        public static void DpiChangeAuto(float dpi, float dpiold, Control control)
+        {
+            if (dpi == dpiold) return;
+            var revert_dpi = 1F / dpiold;
+            if (Config.DpiMode == DpiMode.Compatible)
+            {
+                DpiCompatible(revert_dpi, control);
+                DpiCompatible(dpi, control);
+                return;
+            }
+            if (control is Form form)
+            {
+                switch (form.AutoScaleMode)
+                {
+                    case AutoScaleMode.Font:
+                    case AutoScaleMode.Dpi:
+                        DpiLS(revert_dpi, control.Controls);
+                        DpiLS(dpi, control.Controls);
+                        break;
+                    default:
+                        DpiCompatible(revert_dpi, control);
+                        DpiCompatible(dpi, control);
+                        break;
+                }
+            }
+            else DpiLS(dpi, DpiInfo(control));
+        }
+
+        public static void DpiCompatible(float dpi, Control control)
+        {
+            control.Scale(new SizeF(dpi, dpi));
+            DpiLS(dpi, control.Controls);
+        }
+
         static Dictionary<Control, AnchorDock> DpiInfo(Control control)
         {
             var dir = new Dictionary<Control, AnchorDock>(control.Controls.Count + 1) {
@@ -197,5 +231,42 @@ namespace AntdUI
             else if (control is StackPanel stackpanel) stackpanel.IOnSizeChanged();
             foreach (Control it in control.Controls) ControlEvent(it);
         }
+
+        #region Win32
+
+        public static float GetScreenDpi(Control control)
+        {
+            var targetScreen = Screen.FromPoint(Control.MousePosition); // 根据坐标找到对应屏幕
+            var rawDpi = GetScreenDpiByApi(targetScreen);
+            if (rawDpi.HasValue) return rawDpi.Value;
+#if NET40 || NET46 || NET48
+            return Config.Dpi;
+#else
+            return control.DeviceDpi / 96F;
+#endif
+        }
+
+        /// <summary>
+        /// 通过API获取指定屏幕的DPI（无临时窗体，高效）
+        /// </summary>
+        /// <param name="targetScreen">目标屏幕</param>
+        /// <param name="dpiType">DPI类型（默认有效DPI）</param>
+        /// <returns>指定屏幕的DPI值（X/Y通常相等）</returns>
+        public static float? GetScreenDpiByApi(Screen targetScreen, Win32.MonitorDpiType dpiType = Win32.MonitorDpiType.MDT_Effective_DPI)
+        {
+            // Win8.1以下系统（Build < 9600）不支持该API，返回默认96DPI
+            if (OS.Version.Build < 9600) return null;
+            // 稳妥获取屏幕句柄hMonitor（避免依赖Screen.HashCode的内部实现）
+            Rectangle screenRect = targetScreen.Bounds;
+            var hMonitor = Win32.MonitorFromRect(ref screenRect, Win32.MONITOR_DEFAULTTONEAREST);
+            if (Win32.GetDpiForMonitor(hMonitor, dpiType, out uint dpiX, out uint dpiY) == 0) return GetDpi(dpiX, dpiY);
+            return null;
+        }
+
+        public static float GetDpi(uint dpiX, uint dpiY) => Math.Max(dpiX, dpiY) / 96F;
+        public static float GetDpi(int dpiX, int dpiY) => Math.Max(dpiX, dpiY) / 96F;
+        public static float GetDpi(float dpiX, float dpiY) => Math.Max(dpiX, dpiY) / 96F;
+
+        #endregion
     }
 }

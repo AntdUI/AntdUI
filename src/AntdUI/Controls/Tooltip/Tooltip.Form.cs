@@ -23,6 +23,7 @@ namespace AntdUI
             PARENT = control;
             ocontrol = control;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             CloseMode = CloseMode.Leave;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
@@ -35,7 +36,7 @@ namespace AntdUI
             var screen = Screen.FromControl(control).WorkingArea;
             maxWidth = screen.Width;
             int gap = 0;
-            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            this.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 _lastRect = config.Offset.Value;
@@ -58,6 +59,7 @@ namespace AntdUI
             PARENT = control;
             ocontrol = control;
             control.SetTopMost(Handle);
+            SetDpi(control);
             CloseMode = CloseMode.Click;
             Text = txt;
             Font = component.Font ?? Config.Font ?? control.Font;
@@ -71,7 +73,7 @@ namespace AntdUI
             var screen = Screen.FromControl(control).WorkingArea;
             maxWidth = hasmax ? control.Width : screen.Width;
             int gap = 0;
-            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            this.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
             new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
@@ -93,7 +95,7 @@ namespace AntdUI
             _lastRect = rect;
             Text = text;
             int gap = 0;
-            Helper.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            this.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
             new CalculateCoordinate(this, ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
@@ -149,7 +151,7 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(rbmp).High())
+            using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {
                 this.Render(g, rect, multiline, arrowSize, arrowX, s_c, s_l);
             }

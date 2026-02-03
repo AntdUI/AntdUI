@@ -390,7 +390,7 @@ namespace AntdUI
         {
             get
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     if (label == null)
                     {

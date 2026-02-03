@@ -875,7 +875,7 @@ namespace AntdUI
             {
                 if (_select >= items!.Count) _select = items.Count - 1;
                 Rectangle _rect = ClientRectangle.PaddingRect(Padding), rect = _rect.PaddingRect(Margin);
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size_t = g.MeasureString(Config.NullText, Font);
                     int text_heigth = size_t.Height, sp = (int)(text_heigth * icongap), _igap = (int)(igap * Dpi), gap = (int)(size_t.Height * itemGap), gap2 = gap * 2;

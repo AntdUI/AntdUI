@@ -387,7 +387,7 @@ namespace AntdUI
                 var rect = ClientRectangle;
                 int x = 0, y = 0;
                 bool has = HasSub(items!);
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Dpi) : icon_size, gap = (int)(_gap * Dpi), gapI = gap / 2, height = icon_size + gap * 2;
@@ -549,7 +549,7 @@ namespace AntdUI
                             if (it.ExpandTemp == null)
                             {
                                 it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
-                                using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(true))
+                                using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
                                 {
                                     g2.TranslateTransform(tx, -it.rect.Bottom);
                                     PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);

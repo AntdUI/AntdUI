@@ -214,7 +214,7 @@ namespace AntdUI
                 rect_toRight = new Rectangle(buttonX, buttonY, buttonSize, buttonSize);
                 rect_toLeft = new Rectangle(buttonX, buttonY + buttonSize + buttonGap, buttonSize, buttonSize);
 
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     int useY = rect.Y, rh = g.MeasureString(Config.NullText, Font).Height, check_size = (int)(rh * 0.7), gap = (int)(rh * 0.26), gap2 = gap * 2;
 

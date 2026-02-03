@@ -520,7 +520,7 @@ namespace AntdUI
         {
             get
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var font_size = g.MeasureString(Config.NullText, Font);
                     int gap = (int)(font_size.Height * 1.02F);
