@@ -244,7 +244,7 @@ namespace BallTest
             // 创建一个与目标区域大小相同的位图，使用32位ARGB格式
             var bitmap = new Bitmap(rect.Width, rect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            using (var g = Graphics.FromImage(bitmap).HighLay())
+            using (var g = Graphics.FromImage(bitmap).HighLay(Dpi))
             {
                 // 绘制渐变圆球
                 int centerX = rect.Width / 2, centerY = rect.Height / 2, bor = (int)(_borderWidth * Dpi);

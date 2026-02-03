@@ -234,7 +234,7 @@ namespace Demo.Controls
                 {
                     bmp?.Dispose();
                     bmp = new Bitmap(e.Rect.Width, e.Rect.Height);
-                    using (var g2 = AntdUI.Helper.High(Graphics.FromImage(bmp)))
+                    using (var g2 = AntdUI.Helper.High(Graphics.FromImage(bmp), dpi))
                     {
                         g2.Image(new Rectangle(0, 0, bmp.Width, bmp.Height), image, AntdUI.TFit.Fill, e.Radius, AntdUI.TShape.Default);
                     }
