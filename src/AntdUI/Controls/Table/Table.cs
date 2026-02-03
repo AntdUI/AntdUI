@@ -71,6 +71,7 @@ namespace AntdUI
                 ScrollBar.Clear();
                 selects.Clear();
                 hovers = -1;
+                selectedIndex = new int[0];
                 ExtractHeaderFixed();
                 ExtractData();
                 OnUpdateSummaries();
