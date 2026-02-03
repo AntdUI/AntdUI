@@ -1,5 +1,23 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.15` 2026-02-03
+
+- ➕ Carouse DotFocusedColor
+- ➕ Menu FindID/FindName 方法
+- ➕ Tree SelectID/SelectName 方法
+- ✍️ Table 浮动列筛选弹出错位
+- ✍️ Table CellTag[] 筛选值可视化错误
+- ✍️ Table 使用 this[i] 时可能崩溃
+- ✍️ Table 修改数据源 未清空 SelectedIndex
+- ✍️ ColorPicker 色卡集 坐标
+- ✍️ Label Auto.Height
+- ✍️ Tabs 打开多标签后卡顿
+- ✍️ Dropdown SelectedValue 选中
+- ✍️ Transfer 内容过长缩略显示
+- ✍️ Tree Visible 隐藏后依旧渲染
+- ✍️ Tree Select 未展开父级
+- ✍️ DPI 适配 PerMonitorV2
+
 ### `2.2.14` 2026-01-23
 
 - ➕ ColorPicker 静态方法
