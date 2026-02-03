@@ -24,16 +24,13 @@ namespace AntdUI
 
         IList<object>? CustomSource;
         bool realTime = false;
-        int offsetX, offsetY;
-        public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource, int offsetx, int offsety)
+        public FilterControl(Table table, System.Drawing.Font font, Column currentColumn, IList<object>? customSource)
         {
             InitializeComponent();
             Font = font;
             _table = table;
             _column = currentColumn;
             CustomSource = customSource;
-            offsetX = offsetx;
-            offsetY = offsety;
             realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
@@ -175,7 +172,7 @@ namespace AntdUI
                 bool check = list.Contains(val);
                 if (check) check_count++;
                 var value = val[_column.Key];
-                if (value == null)
+                if (value.IsNull())
                 {
                     if (Option.AllowNull == false) continue;
                     if (item_null == null)
@@ -252,7 +249,9 @@ namespace AntdUI
                 {
                     if (it.COLUMN.Key == _column.Key && it is Table.TCellColumn col)
                     {
-                        layered.LoadOffset(new System.Drawing.Rectangle(col.rect_filter.X + offsetX, col.rect_filter.Y + offsetY, col.rect_filter.Width, col.rect_filter.Height));
+                        var offset_xi = _table.GetCellOffsetX(it);
+                        int tmp_offset = col.offsetx - offset_xi;
+                        layered.LoadOffset(new System.Drawing.Rectangle(col.rect_filter.X + tmp_offset, col.rect_filter.Y + col.offsety, col.rect_filter.Width, col.rect_filter.Height));
                         return;
                     }
                 }

@@ -183,7 +183,7 @@ namespace AntdUI
 
             #endregion
 
-            rectsContent = Helper.GDI(g =>
+            rectsContent = this.GDI(g =>
             {
                 int gap = (int)Math.Round(8F * Dpi), paddingx = (int)Math.Round(config.Padding.Width * Dpi), paddingy = (int)Math.Round(config.Padding.Height * Dpi),
                 cpaddingx = (int)Math.Round(config.ContentPadding.Width * Dpi), cpaddingy = (int)Math.Round(config.ContentPadding.Height * Dpi), cpaddingx2 = cpaddingx * 2, cpaddingy2 = cpaddingy * 2,
@@ -490,7 +490,7 @@ namespace AntdUI
             stringTL = FormatFlags.Left | FormatFlags.Top | FormatFlags.EllipsisCharacter;
         protected override void OnPaint(PaintEventArgs e)
         {
-            var g = e.Graphics.High();
+            var g = e.Graphics.High(Dpi);
             if (config.IconCustom != null) g.PaintIcons(config.IconCustom, rectIcon);
             else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rectIcon, "Modal", TAMode.Auto);
             if (config.CloseIcon)

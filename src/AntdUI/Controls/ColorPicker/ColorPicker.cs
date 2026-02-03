@@ -572,11 +572,11 @@ namespace AntdUI
                 bmp_alpha = new Bitmap((int)rect.Width, (int)rect.Height);
                 using (var tmp = new Bitmap(bmp_alpha.Width, bmp_alpha.Height))
                 {
-                    using (var g2 = Graphics.FromImage(tmp).High())
+                    using (var g2 = Graphics.FromImage(tmp).High(Dpi))
                     {
                         PaintAlpha(g2, rect);
                     }
-                    using (var g2 = Graphics.FromImage(bmp_alpha).High())
+                    using (var g2 = Graphics.FromImage(bmp_alpha).High(Dpi))
                     {
                         g2.Image(new Rectangle(0, 0, bmp_alpha.Width, bmp_alpha.Height), tmp, TFit.Fill, radius, false);
                     }
@@ -910,7 +910,7 @@ namespace AntdUI
         {
             get
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     Size font_size;
                     if (ValueFormatChanged == null)

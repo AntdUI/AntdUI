@@ -478,8 +478,22 @@ namespace AntdUI
             if (showok)
             {
                 if (items == null) return;
-                if (items.Count <= index || index < 0) return;
-                for (int i = 0; i < items.Count; i++) items[i].Showed = i == index;
+                BeginInvoke(() =>
+                {
+                    if (items.Count <= index || index < 0) return;
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        var page = items[i];
+                        bool show = i == index;
+                        page.Showed = show;
+                        if (show)
+                        {
+                            page.BringToFront();
+                            page.Dock = DockStyle.Fill;
+                        }
+                        else page.Dock = DockStyle.None;
+                    }
+                });
             }
         }
 
@@ -1178,7 +1192,7 @@ namespace AntdUI
                             {
                                 bitblock_l?.Dispose();
                                 bitblock_l = new Bitmap(rect_l.Width, rect_l.Height);
-                                using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay(Dpi))
                                 {
                                     using (var brush = new SolidBrush(color))
                                     {
@@ -1199,7 +1213,7 @@ namespace AntdUI
                             {
                                 bitblock_r?.Dispose();
                                 bitblock_r = new Bitmap(rect_r.Width, rect_r.Height);
-                                using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay(Dpi))
                                 {
                                     using (var brush = new SolidBrush(color))
                                     {
@@ -1233,7 +1247,7 @@ namespace AntdUI
                             {
                                 bitblock_l?.Dispose();
                                 bitblock_l = new Bitmap(rect_l.Width, rect_l.Height);
-                                using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay(Dpi))
                                 {
                                     using (var brush = new SolidBrush(color))
                                     {
@@ -1254,7 +1268,7 @@ namespace AntdUI
                             {
                                 bitblock_r?.Dispose();
                                 bitblock_r = new Bitmap(rect_r.Width, rect_r.Height);
-                                using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay(Dpi))
                                 {
                                     using (var brush = new SolidBrush(color))
                                     {
@@ -1402,7 +1416,7 @@ namespace AntdUI
                                 {
                                     bitblock_l?.Dispose();
                                     bitblock_l = new Bitmap(Rect_l.Width, Rect_l.Height);
-                                    using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                    using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay(Dpi))
                                     {
                                         using (var path = new Rectangle(0, 0, bitblock_l.Width, gap).RoundPath(gap, false, false, true, true))
                                         {
@@ -1436,7 +1450,7 @@ namespace AntdUI
                                 {
                                     bitblock_r?.Dispose();
                                     bitblock_r = new Bitmap(Rect_r.Width, Rect_r.Height);
-                                    using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                    using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay(Dpi))
                                     {
                                         using (var path = new Rectangle(0, gap, bitblock_r.Width, gap).RoundPath(gap, true, true, false, false))
                                         {
@@ -1484,7 +1498,7 @@ namespace AntdUI
                                 {
                                     bitblock_l?.Dispose();
                                     bitblock_l = new Bitmap(Rect_l.Width, Rect_l.Height);
-                                    using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay())
+                                    using (var g_bmp = Graphics.FromImage(bitblock_l).HighLay(Dpi))
                                     {
                                         using (var path = new Rectangle(0, 0, gap, bitblock_l.Height).RoundPath(gap, false, true, true, false))
                                         {
@@ -1518,7 +1532,7 @@ namespace AntdUI
                                 {
                                     bitblock_r?.Dispose();
                                     bitblock_r = new Bitmap(Rect_r.Width, Rect_r.Height);
-                                    using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay())
+                                    using (var g_bmp = Graphics.FromImage(bitblock_r).HighLay(Dpi))
                                     {
                                         using (var path = new Rectangle(gap, 0, gap, bitblock_r.Height).RoundPath(gap, true, false, false, true))
                                         {
@@ -1908,11 +1922,6 @@ namespace AntdUI
                 if (showed == value) return;
                 showed = value;
                 ShowedChanged?.Invoke(this, EventArgs.Empty);
-                if (value)
-                {
-                    if (IsHandleCreated) BeginInvoke(BringToFront);
-                    else BringToFront();
-                }
             }
         }
 

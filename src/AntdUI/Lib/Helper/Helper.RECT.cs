@@ -150,7 +150,7 @@ namespace AntdUI
             rect.Height -= padding.Vertical;
             return rect;
         }
-        
+
         /// <summary>
         /// 根据内边距放大尺寸
         /// </summary>
@@ -325,7 +325,7 @@ namespace AntdUI
         /// <param name="b">底部额外偏移</param>
         /// <returns>计算后的矩形</returns>
         public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b) => new Rectangle(rect.X + padding.Left + x, rect.Y + padding.Top + y, rect.Width - padding.Horizontal - x - r, rect.Height - padding.Vertical - y - b);
-        
+
         /// <summary>
         /// 根据多个内边距计算矩形区域
         /// </summary>

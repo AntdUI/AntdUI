@@ -21,6 +21,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ValueTimeHorizontal = control.ValueTimeHorizontal;
             ShowButtonNow = control.ShowButtonNow;
             ShowH = control.Format.Contains("H");
@@ -209,7 +210,7 @@ namespace AntdUI
 
         void LoadLayout(int count)
         {
-            Helper.GDI(g =>
+            this.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
                 int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;

@@ -610,7 +610,7 @@ namespace AntdUI
                 var _rect = ClientRectangle;
                 var rect = _rect.PaddingRect(Padding);
                 int x = 0, y = 0, icon_count = 0;
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio);
@@ -1004,7 +1004,7 @@ namespace AntdUI
                                 if (it.ExpandTemp == null)
                                 {
                                     it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
-                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(true))
+                                    using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
                                     {
                                         g2.TranslateTransform(0, -it.rect.Bottom);
                                         PaintItemExpand(g2, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
@@ -1945,6 +1945,44 @@ namespace AntdUI
                 }
                 Remove(item, it.items);
             }
+        }
+
+        #endregion
+
+        #region 查找
+
+        /// <summary>
+        /// 根据节点id查询节点
+        /// </summary>
+        public MenuItem? FindID(string id) => FindID(items, id);
+
+        MenuItem? FindID(MenuItemCollection? items, string id)
+        {
+            if (items == null) return null;
+            foreach (var sub in items)
+            {
+                if (sub.ID == id) return sub;
+                var preItem = FindID(sub.items, id);
+                if (preItem != null) return preItem;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 根据节点name查询节点
+        /// </summary>
+        public MenuItem? FindName(string id) => FindName(items, id);
+
+        MenuItem? FindName(MenuItemCollection? items, string id)
+        {
+            if (items == null) return null;
+            foreach (var sub in items)
+            {
+                if (sub.Name == id) return sub;
+                var preItem = FindName(sub.items, id);
+                if (preItem != null) return preItem;
+            }
+            return null;
         }
 
         #endregion

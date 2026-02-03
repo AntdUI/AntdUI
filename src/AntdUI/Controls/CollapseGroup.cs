@@ -164,7 +164,7 @@ namespace AntdUI
                 if (pauseLayout || items == null || items.Count == 0 || (_rect.Width == 0 || _rect.Height == 0)) return;
                 var rect = ClientRectangle.DeflateRect(Padding);
                 int y = rect.Y;
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int gap = (int)(4 * Dpi), csize = (rect.Width - (gap * (columnCount - 1))) / columnCount, icon_size = csize / 2, height = size.Height + gap * 2;

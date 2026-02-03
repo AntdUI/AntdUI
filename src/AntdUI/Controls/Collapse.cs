@@ -310,7 +310,7 @@ namespace AntdUI
 
         internal void LoadLayout(Rectangle rect, CollapseItemCollection items)
         {
-            Helper.GDI(g =>
+            this.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font);
                 int gap = (int)(_gap * Dpi), gap_x = (int)(HeaderPadding.Width * Dpi), gap_y = (int)(HeaderPadding.Height * Dpi),

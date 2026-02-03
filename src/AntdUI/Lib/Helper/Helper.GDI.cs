@@ -458,6 +458,15 @@ namespace AntdUI
             else return new LinearGradientBrush(rect, cs[start].Trim().ToColor(), cs[start + 1].Trim().ToColor(), 270 + deg);
         }
 
+        public static Canvas High(this Graphics g, float dpi)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            if (Config.TextRenderingHint.HasValue) g.TextRenderingHint = Config.TextRenderingHint.Value;
+            return new Core.CanvasGDI(g, dpi);
+        }
+
         public static Canvas High(this Graphics g)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -467,14 +476,53 @@ namespace AntdUI
             return new Core.CanvasGDI(g);
         }
 
+        public static Canvas HighLay(this Graphics g, float dpi, bool text = false)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            if (text) g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            return new Core.CanvasGDI(g, dpi);
+        }
+
         public static Canvas HighLay(this Graphics g, bool text = false)
         {
-            Config.SetDpi(g);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             if (text) g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             return new Core.CanvasGDI(g);
+        }
+
+        public static void GDI(this IControl control, Action<Canvas> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    action(g.HighLay(control.Dpi));
+                }
+            }
+        }
+        public static void GDI(this BaseForm form, Action<Canvas> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    action(g.HighLay(form.Dpi));
+                }
+            }
+        }
+        public static void GDI(this ILayeredForm form, Action<Canvas> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    action(g.HighLay(form.Dpi));
+                }
+            }
         }
 
         public static void GDI(Action<Canvas> action)
@@ -484,6 +532,37 @@ namespace AntdUI
                 using (var g = Graphics.FromImage(bmp))
                 {
                     action(g.HighLay());
+                }
+            }
+        }
+
+        public static T GDI<T>(this IControl control, Func<Canvas, T> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    return action(g.HighLay(control.Dpi));
+                }
+            }
+        }
+        public static T GDI<T>(this BaseForm form, Func<Canvas, T> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    return action(g.HighLay(form.Dpi));
+                }
+            }
+        }
+        public static T GDI<T>(this ILayeredForm form, Func<Canvas, T> action)
+        {
+            using (var bmp = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    return action(g.HighLay(form.Dpi));
                 }
             }
         }
@@ -821,7 +900,7 @@ namespace AntdUI
             else path.AddRectangle(rect);
             return path;
         }
-        
+
         /// <summary>
         /// 创建胶囊形状路径的核心方法
         /// </summary>
@@ -833,7 +912,7 @@ namespace AntdUI
             AddCapsule(path, rect);
             return path;
         }
-        
+
         /// <summary>
         /// 向路径添加胶囊形状
         /// </summary>

@@ -32,6 +32,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
             ClickEnd = control.ClickEnd;
@@ -59,6 +60,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
+            SetDpi(control);
             control.Parent.SetTopMost(Handle);
             if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
             ScrollBar = new ScrollBar(this, control.ColorScheme);
@@ -90,6 +92,7 @@ namespace AntdUI
             ColorScheme = control.ColorScheme;
             CloseMode = CloseMode.Leave;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             MaxCount = 7;
             DPadding = new Size(12, 5);
@@ -133,6 +136,7 @@ namespace AntdUI
             Tag = cell;
             CloseMode = CloseMode.Leave;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = cell.DropDownValue;
             ClickEnd = cell.DropDownClickEnd;
@@ -169,6 +173,7 @@ namespace AntdUI
             Font = control.Font;
             lay = parent;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
             ClickEnd = parent.ClickEnd;
@@ -198,6 +203,7 @@ namespace AntdUI
             Font = control.Font;
             lay = parent;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
             ClickEnd = parent.ClickEnd;
@@ -227,6 +233,7 @@ namespace AntdUI
             lay = parent;
             Tag = cell;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = cell.DropDownValue;
             ClickEnd = parent.ClickEnd;
@@ -417,7 +424,7 @@ namespace AntdUI
             if (it.SID)
             {
                 if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
-                else if (selectedValue == it.Tag)
+                else if (it.Tag.Equals(selectedValue))
                 {
                     using (var path = it.Rect.RoundPath(Radius))
                     {
@@ -547,7 +554,7 @@ namespace AntdUI
         #region 布局
 
         int tmpW = 0, tmp_padd = 0;
-        List<ObjectItem> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => Helper.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
+        List<ObjectItem> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => this.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
         List<ObjectItem> LoadLayout(Canvas g, bool autoWidth, int width, IList<object> items, bool init)
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;
@@ -741,7 +748,7 @@ namespace AntdUI
                     }
                     else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
                 }
-                if (selectedValue == item.Tag) sy = y;
+                if (item.Tag.Equals(selectedValue)) sy = y;
                 y += item_height;
             }
             return item;

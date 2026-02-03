@@ -599,7 +599,7 @@ namespace AntdUI
         {
             get
             {
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
                     var font_size = g.MeasureText(Text ?? Config.NullText, Font);
                     int count = 0;

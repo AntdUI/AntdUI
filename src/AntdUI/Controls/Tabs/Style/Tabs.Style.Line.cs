@@ -123,7 +123,7 @@ namespace AntdUI
             {
                 rect_ful = rect;
                 owner = tabs;
-                rects = Helper.GDI(g =>
+                rects = tabs.GDI(g =>
                 {
                     int gap = (int)(tabs.Gap * tabs.Dpi), gap2 = gap * 2, xy = 0;
                     int barSize = (int)(Size * tabs.Dpi), barPadding = (int)(Padding * tabs.Dpi), barPadding2 = barPadding * 2;
@@ -717,7 +717,7 @@ namespace AntdUI
                 ThreadBar?.Dispose();
                 TabPageRect oldTab = rects[old], newTab = rects[value];
                 owner.TabFocusMove(oldTab, newTab, value, rects.Length);
-                Helper.GDI(g =>
+                owner.GDI(g =>
                 {
                     RectangleF OldValue = oldTab.Rect_Line, NewValue = newTab.Rect_Line;
                     if (AnimationBarValue.Height == 0) AnimationBarValue = OldValue;

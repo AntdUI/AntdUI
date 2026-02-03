@@ -25,9 +25,10 @@ namespace AntdUI
             form = tmp;
             TopMost = config.TopMost;
             if (!config.TopMost) config.Target.SetTopMost(Handle);
+            SetDpi(config.Target);
             config.Target.SetFont(config.Font, this);
 
-            Helper.GDI(g =>
+            this.GDI(g =>
             {
                 BadgeSize = (int)Math.Round(BadgeSize * Dpi);
                 _config.MarginX = (int)Math.Round(_config.MarginX * Dpi);
@@ -208,7 +209,7 @@ namespace AntdUI
             use_primary = 0;
             var rect = TargetRectXY;
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(rbmp).High())
+            using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {
                 foreach (var it in config.Btns)
                 {

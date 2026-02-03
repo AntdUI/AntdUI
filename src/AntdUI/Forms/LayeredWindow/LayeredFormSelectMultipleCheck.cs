@@ -28,6 +28,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = new List<object>(control.SelectedValue.Length);
             selectedValue.AddRange(control.SelectedValue);
@@ -62,6 +63,7 @@ namespace AntdUI
             Font = control.Font;
             lay = parent;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = new List<object>(control.SelectedValue.Length);
             selectedValue.AddRange(control.SelectedValue);
@@ -441,7 +443,7 @@ namespace AntdUI
         #region 布局
 
         int tmpW = 0, tmp_padd = 0;
-        List<ObjectItemCheck> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => Helper.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
+        List<ObjectItemCheck> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => this.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
         List<ObjectItemCheck> LoadLayout(Canvas g, bool autoWidth, int width, IList<object> items, bool init)
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;

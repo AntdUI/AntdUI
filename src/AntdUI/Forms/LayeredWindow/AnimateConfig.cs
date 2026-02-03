@@ -40,7 +40,7 @@ namespace AntdUI
         {
             if (Config.HasAnimation(name))
             {
-                var t = Animation.TotalFrames(10, 80);
+                var t = Animation.TotalFrames(10, 100);
                 if (form is SpinForm)
                 {
                     task = new AnimationTask(i =>
@@ -90,7 +90,7 @@ namespace AntdUI
             if (Config.HasAnimation(name))
             {
                 call_end();
-                var t = Animation.TotalFrames(10, 80);
+                var t = Animation.TotalFrames(10, 100);
                 task = new AnimationTask((i) =>
                 {
                     var val = Animation.Animate(i, t, 1F, AnimationType.Ball);

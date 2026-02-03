@@ -24,8 +24,8 @@ namespace AntdUI
                 ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.ResizeRedraw, true);
             UpdateStyles();
-            InitDpi();
             FormBorderStyle = FormBorderStyle.None;
+            StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
             actionLoadMessage = LoadMessage;
@@ -272,7 +272,7 @@ namespace AntdUI
             {
                 // 低字节是水平DPI，高字节是垂直DPI
                 int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
-                InitDpi(dpiX);
+                dpi = Helper.GetDpi(dpiX, dpiY);
             }
             else if (m.Msg == 0x000A) messageHandler?.SetEnabled(m.WParam != IntPtr.Zero);
             else if (UFocus && m.Msg == 0x21)
@@ -337,21 +337,43 @@ namespace AntdUI
 
         #region DPI
 
-        public float Dpi { get; private set; }
-
-        void InitDpi(int? dpi = null)
+        float? dpi;
+        public float Dpi
         {
-            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
-            else if (dpi.HasValue) Dpi = dpi.Value / 96F;
-            else
+            get
             {
-#if NET40 || NET46 || NET48
-                Dpi = Config.Dpi;
-#else
-                Dpi = DeviceDpi / 96F;
-#endif
+                if (Config._dpi_custom.HasValue) return Config._dpi_custom.Value;
+                if (dpi.HasValue) return dpi.Value;
+                var _dpi = Helper.GetScreenDpi(this);
+                dpi = _dpi;
+                return _dpi;
             }
         }
+
+        internal void SetDpi(Target target)
+        {
+            if (target.Value is BaseForm baseForm) SetDpi(baseForm);
+            else if (target.Value is ILayeredForm layeredForm) SetDpi(layeredForm);
+            else if (target.Value is IControl icontrol) SetDpi(icontrol);
+        }
+        internal void SetDpi(Form? form)
+        {
+            if (form is BaseForm baseForm) SetDpi(baseForm);
+            else if (form is ILayeredForm layeredForm) SetDpi(layeredForm);
+        }
+        internal void SetDpi(Control? control)
+        {
+            if (control is IControl icontrol) SetDpi(icontrol);
+        }
+        internal void SetDpi(Form? form, Control? control)
+        {
+            if (form is BaseForm baseForm) SetDpi(baseForm);
+            else if (form is ILayeredForm layeredForm) SetDpi(layeredForm);
+            else if (control is IControl icontrol) SetDpi(icontrol);
+        }
+        internal void SetDpi(BaseForm form) => dpi = form.Dpi;
+        internal void SetDpi(ILayeredForm form) => dpi = form.Dpi;
+        internal void SetDpi(IControl control) => dpi = control.Dpi;
 
         #endregion
 

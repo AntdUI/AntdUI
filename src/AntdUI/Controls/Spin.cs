@@ -582,6 +582,7 @@ namespace AntdUI
             Font = _control.Font;
             config = _config;
             _control.SetTopMost(Handle);
+            SetDpi(_parent, _control);
             if (_control is Form form)
             {
                 SetSize(form.Size);
@@ -672,7 +673,7 @@ namespace AntdUI
             var rbmp = new Bitmap(rect_read.Width, rect_read.Height);
             if (visible)
             {
-                using (var g = Graphics.FromImage(rbmp).HighLay())
+                using (var g = Graphics.FromImage(rbmp).HighLay(Dpi))
                 {
                     using (var brush = new SolidBrush(config.Back ?? Style.rgba(Colour.BgBase.Get(nameof(Spin)), .8F)))
                     {

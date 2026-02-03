@@ -1,5 +1,23 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.15` 2026-02-03
+
+- ➕ Carouse DotFocusedColor
+- ➕ Menu FindID/FindName method
+- ➕ Tree SelectID/SelectName method
+- ✍️ Table floating column filtering pops up with misalignment
+- ✍️ Table CellTag [] Filter value visualization error
+- ✍️ Table may crash when using this [i]
+- ✍️ Table modified data source not cleared SelectIndex
+- ✍️ ColorPicker color card set coordinates
+- ✍️ Label Auto.Height
+- ✍️ Tabs freezes after opening multiple tags
+- ✍️ Dropdown SelectedValue selected
+- ✍️ Transfer content is too long and displayed in thumbnail format
+- ✍️ Tree Visible still renders after hiding
+- ✍️ Tree Select has not expanded parent level
+- ✍️ DPI adaptation to PerMonitorV2
+
 ### `2.2.14` 2026-01-23
 
 - ➕ ColorPicker static method

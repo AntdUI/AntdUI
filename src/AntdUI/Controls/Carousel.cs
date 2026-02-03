@@ -123,6 +123,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 焦点面板指示点
+        /// </summary>
+        [Description("焦点面板指示点颜色"), Category("外观"), DefaultValue(null)]
+        public Color? DotFocusedColor { get; set; }
+
         CarouselItemCollection? items;
         /// <summary>
         /// 图片集合
@@ -515,7 +521,7 @@ namespace AntdUI
             }
             if (dot_list.Length > 0)
             {
-                using (var brush = new SolidBrush(Colour.BgBase.Get(nameof(Carousel), ColorScheme)))
+                using (var brush = new SolidBrush(DotFocusedColor ?? Colour.BgBase.Get(nameof(Carousel), ColorScheme)))
                 using (var brush2 = new SolidBrush(Color.FromArgb(77, brush.Color)))
                 {
                     if (round || radius > 0)
@@ -553,7 +559,7 @@ namespace AntdUI
             if (AnimationChangeAuto)
             {
                 bmp = new Bitmap(rect.Width, AnimationChangeMax + rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                     var bmo = items[0].Img;
@@ -563,7 +569,7 @@ namespace AntdUI
             else
             {
                 bmp = new Bitmap(rect.Width, AnimationChangeMax);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                 }
@@ -578,7 +584,7 @@ namespace AntdUI
             if (AnimationChangeAuto)
             {
                 bmp = new Bitmap(AnimationChangeMax + rect.Width, rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                     var bmo = items[0].Img;
@@ -588,7 +594,7 @@ namespace AntdUI
             else
             {
                 bmp = new Bitmap(AnimationChangeMax, rect.Height);
-                using (var g2 = Graphics.FromImage(bmp).High())
+                using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                 {
                     PaintBmp(items, select_range, g2, radius);
                 }

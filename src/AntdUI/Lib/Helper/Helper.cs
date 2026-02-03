@@ -51,7 +51,7 @@ namespace AntdUI
             }
             return size;
         }
-        
+
         /// <summary>
         /// 调整Size大小，根据Canvas的DPI缩放因子添加偏移量
         /// </summary>
@@ -83,7 +83,7 @@ namespace AntdUI
             if (h > 0) size.Height += (int)(h * Config.Dpi);
             return size;
         }
-        
+
         /// <summary>
         /// 调整Size大小，根据Canvas的DPI缩放因子分别添加宽度和高度偏移量
         /// </summary>
@@ -154,7 +154,7 @@ namespace AntdUI
             else if (control.Parent != null) return FindPARENT(control.Parent, mdi);
             return null;
         }
-        
+
         /// <summary>
         /// 查找Target的父级Form
         /// </summary>
@@ -236,7 +236,7 @@ namespace AntdUI
             }
             return false;
         }
-        
+
         /// <summary>
         /// 根据Target的TopMost属性设置窗口置顶
         /// </summary>
@@ -323,7 +323,7 @@ namespace AntdUI
                 return true;
             }
         }
-        
+
         /// <summary>
         /// 重置EventWaitHandle信号
         /// </summary>
@@ -343,7 +343,7 @@ namespace AntdUI
                 return true;
             }
         }
-        
+
         /// <summary>
         /// 等待并释放EventWaitHandle
         /// </summary>
@@ -413,6 +413,16 @@ namespace AntdUI
             return false;
         }
 
+#if NET40 || NET46 || NET48
+        public static bool IsNull(this object? value)
+#else
+        public static bool IsNull([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] this object? value)
+#endif
+        {
+            if (value == null || value is DBNull) return true;
+            return false;
+        }
+
         #region 剪贴板
 
         /// <summary>
@@ -425,7 +435,7 @@ namespace AntdUI
             if (control.InvokeRequired) return ITask.Invoke(control, new Func<string?>(() => ClipboardGetText()));
             return ClipboardGetText();
         }
-        
+
         /// <summary>
         /// 获取剪贴板文本
         /// </summary>
@@ -445,7 +455,7 @@ namespace AntdUI
                 }
             }
         }
-        
+
         /// <summary>
         /// 设置剪贴板文本（线程安全）
         /// </summary>
@@ -457,7 +467,7 @@ namespace AntdUI
             if (control.InvokeRequired) return ITask.Invoke(control, new Func<bool>(() => ClipboardSetText(text)));
             return ClipboardSetText(text);
         }
-        
+
         /// <summary>
         /// 设置剪贴板文本
         /// </summary>
@@ -548,7 +558,7 @@ namespace AntdUI
             }
             return null;
         }
-        
+
         /// <summary>
         /// 根据权重对搜索结果进行排序，并转换为指定类型
         /// </summary>
@@ -569,7 +579,7 @@ namespace AntdUI
             }
             return null;
         }
-        
+
         /// <summary>
         /// 根据权重对泛型搜索结果进行排序
         /// </summary>
@@ -587,7 +597,7 @@ namespace AntdUI
             }
             return null;
         }
-        
+
         /// <summary>
         /// 根据权重对搜索结果进行排序，并转换为对象数组
         /// </summary>
@@ -604,7 +614,7 @@ namespace AntdUI
             }
             return null;
         }
-        
+
         /// <summary>
         /// 根据权重对搜索结果进行排序，并转换为指定类型数组
         /// </summary>
@@ -625,7 +635,7 @@ namespace AntdUI
             }
             return null;
         }
-        
+
         /// <summary>
         /// 根据权重对泛型搜索结果进行排序，并转换为指定类型数组
         /// </summary>

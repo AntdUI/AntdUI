@@ -387,7 +387,7 @@ namespace AntdUI
                 var rect = ClientRectangle;
                 int x = 0, y = 0;
                 bool has = HasSub(items!);
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
                     int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Dpi) : icon_size, gap = (int)(_gap * Dpi), gapI = gap / 2, height = icon_size + gap * 2;
@@ -538,7 +538,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                it.show = rect.IsItemVisibleExpand(sx, sy, it.rect, it.Expand, it.SubHeight);
+                it.show = it.Visible && rect.IsItemVisibleExpand(sx, sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
                     PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
@@ -549,7 +549,7 @@ namespace AntdUI
                             if (it.ExpandTemp == null)
                             {
                                 it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
-                                using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(true))
+                                using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
                                 {
                                     g2.TranslateTransform(tx, -it.rect.Bottom);
                                     PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
@@ -1278,28 +1278,158 @@ namespace AntdUI
 
         #region 方法
 
+        #region 选择指定项
+
         /// <summary>
         /// 选择指定项
         /// </summary>
-        public bool Select(TreeItem item, bool focus = true) => Select(items, item, focus);
+        public bool Select(TreeItem item, bool focus = true) => Select(items, item, null, focus);
 
-        bool Select(TreeItemCollection? items, TreeItem item, bool focus)
+        bool Select(TreeItemCollection? items, TreeItem item, List<TreeItem>? list, bool focus)
         {
             if (items == null || items.Count == 0) return false;
-            foreach (var it in items)
+            if (list == null)
             {
-                if (it == item)
+                foreach (var it in items)
                 {
-                    selectItem = item;
-                    it.Select = true;
-                    OnSelectChanged(it, TreeCType.None, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
-                    if (focus) Focus(it);
-                    return true;
+                    if (it == item)
+                    {
+                        Select(it, list, focus);
+                        return true;
+                    }
+                    if (it.Expand)
+                    {
+                        if (Select(it.items, item, null, focus)) return true;
+                    }
+                    else
+                    {
+                        if (Select(it.items, item, new List<TreeItem>() { it }, focus)) return true;
+                    }
                 }
-                if (Select(it.items, item, focus)) return true;
+            }
+            else
+            {
+                foreach (var it in items)
+                {
+                    if (it == item)
+                    {
+                        Select(it, list, focus);
+                        return true;
+                    }
+                    var list_nb = new List<TreeItem>(list);
+                    if (!it.Expand) list_nb.Add(it);
+                    if (Select(it.items, item, list_nb, focus)) return true;
+                }
             }
             return false;
         }
+        void Select(TreeItem it, List<TreeItem>? list, bool focus)
+        {
+            int count = 0;
+            if (list != null)
+            {
+                foreach (var sub in list)
+                {
+                    if (sub.ISetExpand(true)) count++;
+                }
+            }
+            selectItem = it;
+            it.SetSelectNR(true);
+            if (count > 0) ChangeList(true);
+            else Invalidate();
+            OnSelectChanged(it, TreeCType.None, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+            if (focus) Focus(it);
+        }
+
+        /// <summary>
+        /// 选择指定项（ID）
+        /// </summary>
+        public bool SelectID(string id, bool focus = true) => SelectID(items, id, null, focus);
+
+        bool SelectID(TreeItemCollection? items, string id, List<TreeItem>? list, bool focus)
+        {
+            if (items == null || items.Count == 0) return false;
+            if (list == null)
+            {
+                foreach (var it in items)
+                {
+                    if (it.ID == id)
+                    {
+                        Select(it, list, focus);
+                        return true;
+                    }
+                    if (it.Expand)
+                    {
+                        if (SelectID(it.items, id, null, focus)) return true;
+                    }
+                    else
+                    {
+                        if (SelectID(it.items, id, new List<TreeItem>() { it }, focus)) return true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var it in items)
+                {
+                    if (it.ID == id)
+                    {
+                        Select(it, list, focus);
+                        return true;
+                    }
+                    var list_nb = new List<TreeItem>(list);
+                    if (!it.Expand) list_nb.Add(it);
+                    if (SelectID(it.items, id, list_nb, focus)) return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 选择指定项（Name）
+        /// </summary>
+        public bool SelectName(string name, bool focus = true) => SelectName(items, name, null, focus);
+
+        bool SelectName(TreeItemCollection? items, string name, List<TreeItem>? list, bool focus)
+        {
+            if (items == null || items.Count == 0) return false;
+            if (list == null)
+            {
+                foreach (var it in items)
+                {
+                    if (it.Name == name)
+                    {
+                        Select(it, list, focus);
+                        return true;
+                    }
+                    if (it.Expand)
+                    {
+                        if (SelectName(it.items, name, null, focus)) return true;
+                    }
+                    else
+                    {
+                        if (SelectName(it.items, name, new List<TreeItem>() { it }, focus)) return true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var it in items)
+                {
+                    if (it.Name == name)
+                    {
+                        Select(it, list, focus);
+                        return true;
+                    }
+                    var list_nb = new List<TreeItem>(list);
+                    if (!it.Expand) list_nb.Add(it);
+                    if (SelectName(it.items, name, list_nb, focus)) return true;
+                }
+            }
+            return false;
+        }
+
+        #endregion
 
         /// <summary>
         /// 设置全部 Visible
@@ -2126,6 +2256,17 @@ namespace AntdUI
                 select = value;
                 Invalidate();
             }
+        }
+
+        internal void SetSelectNR(bool value = true)
+        {
+            if (select == value) return;
+            if (value && PARENT != null)
+            {
+                PARENT.USelect(false);
+                PARENT.SelectItem = this;
+            }
+            select = value;
         }
 
         internal void SetSelect(bool value = true)

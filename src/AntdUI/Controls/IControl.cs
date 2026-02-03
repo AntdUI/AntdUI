@@ -50,7 +50,6 @@ namespace AntdUI
                     break;
             }
             UpdateStyles();
-            InitDpi();
         }
 
         #region 属性
@@ -289,18 +288,32 @@ namespace AntdUI
 
         #region DPI
 
-        public float Dpi { get; private set; }
-
-        void InitDpi()
+        float? dpi;
+        public float Dpi
         {
-            if (Config._dpi_custom.HasValue) Dpi = Config._dpi_custom.Value;
-            else
+            get
             {
-#if NET40 || NET46 || NET48
-                Dpi = Config.Dpi;
-#else
-                Dpi = DeviceDpi / 96F;
-#endif
+                if (Config._dpi_custom.HasValue) return Config._dpi_custom.Value;
+                if (dpi.HasValue) return dpi.Value;
+                var form = this.FindPARENT();
+                if (form is BaseForm baseForm)
+                {
+                    var _dpi = baseForm.Dpi;
+                    dpi = _dpi;
+                    return _dpi;
+                }
+                else if (form is ILayeredForm layeredForm)
+                {
+                    var _dpi = layeredForm.Dpi;
+                    dpi = _dpi;
+                    return _dpi;
+                }
+                else
+                {
+                    var _dpi = Helper.GetScreenDpi(this);
+                    dpi = _dpi;
+                    return _dpi;
+                }
             }
         }
 
@@ -308,7 +321,7 @@ namespace AntdUI
         protected override void OnDpiChangedBeforeParent(EventArgs e)
         {
             base.OnDpiChangedBeforeParent(e);
-            InitDpi();
+            dpi = null;
         }
 #endif
 
@@ -859,7 +872,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return;
             base.OnPaint(e);
-            var g = e.Graphics.High();
+            var g = e.Graphics.High(Dpi);
             try
             {
                 var args = new DrawEventArgs(g, rect);
@@ -875,7 +888,7 @@ namespace AntdUI
             var rect = ClientRectangle;
             if (rect.Width == 0 || rect.Height == 0) return null;
             var bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(bmp).High())
+            using (var g = Graphics.FromImage(bmp).High(Dpi))
             {
                 try
                 {

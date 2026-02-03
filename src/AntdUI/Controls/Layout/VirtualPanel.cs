@@ -442,7 +442,7 @@ namespace AntdUI
             var _rect = ClientRectangle;
             if (_rect.Width == 0 || _rect.Height == 0) return;
             var rect = _rect.PaddingRect(Padding);
-            var val = Helper.GDI(g =>
+            var val = this.GDI(g =>
             {
                 int gap = (int)Math.Round(Gap * Dpi), use_x = rect.X, use_y = rect.Y + gap, last_len = 0, max_height = 0;
                 int shadow = (int)(Shadow * Dpi), shadow2 = shadow * 2, r = (int)(radius * Dpi);
@@ -985,7 +985,7 @@ namespace AntdUI
                             sy -= BlurBarHeight;
                             var rect = ClientRectangle;
                             var bmp = new Bitmap(rect.Width, BlurBarHeight);
-                            using (var g = Graphics.FromImage(bmp).HighLay())
+                            using (var g = Graphics.FromImage(bmp).HighLay(Dpi))
                             {
                                 rect.Offset(0, sy);
                                 g.TranslateTransform(0, -sy);

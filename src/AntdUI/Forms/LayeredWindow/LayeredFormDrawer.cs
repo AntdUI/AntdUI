@@ -39,6 +39,7 @@ namespace AntdUI
         {
             config = _config;
             topMost = config.Form.SetTopMost(Handle);
+            SetDpi(config.Form);
             Font = config.Form.Font;
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi) * 2;
             padding = (int)Math.Round(config.Padding * Dpi);
@@ -646,7 +647,7 @@ namespace AntdUI
         {
             Rectangle rect_t = TargetRectXY, rect = HasBor ? new Rectangle(FrmBor, 0, rect_t.Width - FrmBor * 2, rect_t.Height - FrmBor) : rect_t;
             var rbmp = new Bitmap(rect_t.Width, rect_t.Height);
-            using (var g = Graphics.FromImage(rbmp).High())
+            using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {
                 var rect_read = DrawShadow(g, rect);
                 using (var path = rect_read.RoundPath(FrmRadius))

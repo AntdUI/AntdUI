@@ -433,7 +433,7 @@ namespace AntdUI
             {
                 using (var bmp = new Bitmap(Width, Height))
                 {
-                    using (var g2 = Graphics.FromImage(bmp).HighLay(true))
+                    using (var g2 = Graphics.FromImage(bmp).HighLay(Dpi, true))
                     {
                         PaintText(g2, Text, ShadowColor ?? _fore, rect_read);
                     }
@@ -929,9 +929,9 @@ namespace AntdUI
             get
             {
                 bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
-                return Helper.GDI(g =>
+                return this.GDI(g =>
                 {
-                    var font_size = g.MeasureText(Text ?? Config.NullText, Font);
+                    var font_size = g.MeasureText(Text ?? Config.NullText, Font, textMultiLine && autoSize == TAutoSize.Height ? Width : 0);
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
                     if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                     {

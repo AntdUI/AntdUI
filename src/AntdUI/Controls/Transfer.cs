@@ -214,7 +214,7 @@ namespace AntdUI
                 rect_toRight = new Rectangle(buttonX, buttonY, buttonSize, buttonSize);
                 rect_toLeft = new Rectangle(buttonX, buttonY + buttonSize + buttonGap, buttonSize, buttonSize);
 
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     int useY = rect.Y, rh = g.MeasureString(Config.NullText, Font).Height, check_size = (int)(rh * 0.7), gap = (int)(rh * 0.26), gap2 = gap * 2;
 
@@ -302,7 +302,7 @@ namespace AntdUI
             PaintOperationButtons(g);
         }
 
-        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter, sfL = FormatFlags.Left | FormatFlags.VerticalCenter, sfR = FormatFlags.Right | FormatFlags.VerticalCenter;
+        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis, sfL = FormatFlags.Left | FormatFlags.VerticalCenter, sfR = FormatFlags.Right | FormatFlags.VerticalCenter;
         private void PaintListPanel(Canvas g, Rectangle rect, Rectangle rect_com, Rectangle rect_title, Rectangle rect_checkbox, string title, ScrollBar scroll, bool selectAll, bool isTarget)
         {
             // 获取颜色

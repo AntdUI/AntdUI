@@ -183,7 +183,7 @@ namespace AntdUI
             if (VirtualMode)
             {
                 var dpi = Dpi;
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     int gap = (int)(_gap.Height * Dpi) * 2;
 
@@ -278,7 +278,7 @@ namespace AntdUI
             bool is_exceed = false;
             var rect_real = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
             var rowlist = new List<RowTemplate>(_rows.Count);
-            Helper.GDI(g =>
+            this.GDI(g =>
             {
                 var dpi = Dpi;
                 var font_size = g.MeasureString(Config.NullText, Font);

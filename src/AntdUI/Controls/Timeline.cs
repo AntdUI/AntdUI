@@ -116,7 +116,7 @@ namespace AntdUI
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
                 int y = rect.Y;
-                Helper.GDI(g =>
+                this.GDI(g =>
                 {
                     var size_def = g.MeasureString(Config.NullText, Font);
                     int text_size = size_def.Height;

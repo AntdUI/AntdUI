@@ -1051,7 +1051,7 @@ namespace AntdUI
                     {
                         using (var bmp = new Bitmap(rect.Width, rect.Height))
                         {
-                            using (var g2 = Graphics.FromImage(bmp).High())
+                            using (var g2 = Graphics.FromImage(bmp).High(Dpi))
                             {
                                 using (var path_prog = new RectangleF(-_w, 0, _w * 2, rect.Height).RoundPath(radius))
                                 {

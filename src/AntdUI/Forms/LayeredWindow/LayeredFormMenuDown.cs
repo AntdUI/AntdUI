@@ -29,6 +29,7 @@ namespace AntdUI
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             PARENT = control;
             select_x = 0;
             Font = control.Font;
@@ -89,6 +90,7 @@ namespace AntdUI
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             control.Parent.SetTopMost(Handle);
+            SetDpi(control);
             select_x = sx;
             PARENT = control;
             Font = parent.Font;
@@ -373,7 +375,7 @@ namespace AntdUI
         #region 布局
 
         int tmp_padd = 0;
-        List<IMenuItem> LoadLayout(IList<MenuItem> items, Point point) => Helper.GDI(g => LoadLayout(g, items, point));
+        List<IMenuItem> LoadLayout(IList<MenuItem> items, Point point) => this.GDI(g => LoadLayout(g, items, point));
         List<IMenuItem> LoadLayout(Canvas g, IList<MenuItem> items, Point point)
         {
             var text_height = g.MeasureString(Config.NullText, Font).Height;

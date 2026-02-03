@@ -352,7 +352,7 @@ namespace AntdUI.Chat
             var rect = ClientRectangle;
             if (items == null || items.Count == 0 || (rect.Width == 0 || rect.Height == 0)) return;
             int y = 0;
-            Helper.GDI(g =>
+            this.GDI(g =>
             {
                 var size = g.MeasureString(Config.NullText, Font).Height;
                 int item_height = (int)Math.Ceiling(size * 3.856),

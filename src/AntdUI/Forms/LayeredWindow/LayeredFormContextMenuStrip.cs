@@ -28,6 +28,7 @@ namespace AntdUI
                 CloseMode = CloseMode.Leave;
             }
             else _config.Target.SetTopMost(Handle);
+            SetDpi(config.Target);
             config = _config;
             config.Target.SetFont(config.Font, this);
             rectsContent = LoadLayout(config.Items);
@@ -145,6 +146,7 @@ namespace AntdUI
             Font = parent.Font;
             if (_config.TopMost) Helper.SetTopMost(Handle);
             else _config.Target.SetTopMost(Handle);
+            SetDpi(config.Target);
             rectsContent = LoadLayout(subs);
             ScrollBar = new ScrollBar(this, TAMode.Auto);
             ParentRect = parent.TargetRect;
@@ -199,7 +201,7 @@ namespace AntdUI
 
         InRect[] LoadLayout(IContextMenuStripItem[] Items)
         {
-            return Helper.GDI(g =>
+            return this.GDI(g =>
             {
                 Radius = (int)(config.Radius * Dpi);
 

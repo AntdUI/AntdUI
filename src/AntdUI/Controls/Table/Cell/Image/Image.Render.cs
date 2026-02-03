@@ -21,7 +21,7 @@ namespace AntdUI
             {
                 using (var bmp = new Bitmap(Rect.Width, Rect.Height))
                 {
-                    using (var g2 = Graphics.FromImage(bmp).High())
+                    using (var g2 = Graphics.FromImage(bmp).High(g.Dpi))
                     {
                         if (ImageSvg != null)
                         {

@@ -235,7 +235,7 @@ namespace AntdUI
             if (CanLayout())
             {
                 var rect = ClientRectangle.PaddingRect(Padding).PaddingRect(Margin);
-                hs = Helper.GDI(g =>
+                hs = this.GDI(g =>
                 {
                     var hs = new List<Rectangle>(items!.Count);
                     var size_t = g.MeasureString(Config.NullText, Font);
