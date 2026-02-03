@@ -538,7 +538,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                it.show = rect.IsItemVisibleExpand(sx, sy, it.rect, it.Expand, it.SubHeight);
+                it.show = it.Visible && rect.IsItemVisibleExpand(sx, sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
                     PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
