@@ -135,9 +135,9 @@ namespace AntdUI
                         ModalCount--;
                         return dialogResultN;
                     }
-                    if (form.WindowState == FormWindowState.Minimized) form.WindowState = FormWindowState.Normal;
                     if (!form.IsHandleCreated) config.Mask = config.MaskClosable = false;
                     if (form.InvokeRequired) return ITask.Invoke(form, new Func<DialogResult>(() => open(config)));
+                    if (form.WindowState == FormWindowState.Minimized) form.WindowState = FormWindowState.Normal;
                     var frm = new LayeredFormModal(config, false);
                     ModalCount++;
                     DialogResult dialogResult;

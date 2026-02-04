@@ -24,7 +24,7 @@ namespace AntdUI
         /// <param name="control">所属控件</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static Form? open(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0) => open(new Config(control, call, items, sleep));
+        public static Form? open(Control control, Action<IContextMenuStrip> call, IContextMenuStripItem[] items, int sleep = 0) => open(new Config(control, call, items, sleep));
 
         /// <summary>
         /// ContextMenuStrip 右键菜单
@@ -33,7 +33,7 @@ namespace AntdUI
         /// <param name="notifyIcon">托盘</param>
         /// <param name="call">点击回调</param>
         /// <param name="items">内容</param>
-        public static Form? open(Control control, NotifyIcon notifyIcon, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
+        public static Form? open(Control control, NotifyIcon notifyIcon, Action<IContextMenuStrip> call, IContextMenuStripItem[] items, int sleep = 0)
         {
             var form = open(new Config(control, call, items, sleep)
             {
@@ -68,7 +68,7 @@ namespace AntdUI
         /// </summary>
         public class Config
         {
-            public Config(Target target, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0)
+            public Config(Target target, Action<IContextMenuStrip> call, IContextMenuStripItem[] items, int sleep = 0)
             {
                 Target = target;
                 Call = call;
@@ -76,7 +76,7 @@ namespace AntdUI
                 CallSleep = sleep;
             }
 
-            public Config(Control control, Action<ContextMenuStripItem> call, IContextMenuStripItem[] items, int sleep = 0) : this(new Target(control), call, items, sleep)
+            public Config(Control control, Action<IContextMenuStrip> call, IContextMenuStripItem[] items, int sleep = 0) : this(new Target(control), call, items, sleep)
             {
             }
 
@@ -140,7 +140,7 @@ namespace AntdUI
             /// <summary>
             /// 点击回调
             /// </summary>
-            public Action<ContextMenuStripItem> Call { get; set; }
+            public Action<IContextMenuStrip> Call { get; set; }
 
             /// <summary>
             /// 关闭回调
@@ -262,7 +262,7 @@ namespace AntdUI
     /// <summary>
     /// 右键菜单项
     /// </summary>
-    public class ContextMenuStripItem : IContextMenuStripItem
+    public class ContextMenuStripItem : IContextMenuStripItem, IContextMenuStrip
     {
         /// <summary>
         /// 右键菜单项
@@ -431,7 +431,201 @@ namespace AntdUI
     /// <summary>
     /// 右键菜单分割项
     /// </summary>
-    public class ContextMenuStripItemDivider : IContextMenuStripItem { }
+    public class ContextMenuStripItemDivider : IContextMenuStripItem
+    {
+    }
+
+    /// <summary>
+    /// 右键菜单并排按钮项
+    /// </summary>
+    public class ContextMenuStripItemButtons : IContextMenuStripItem
+    {
+        public ContextMenuStripItemButtons()
+        {
+        }
+        public ContextMenuStripItemButtons(params ContextMenuStripItemButton[] value)
+        {
+            Items = value;
+        }
+
+        /// <summary>
+        /// 按钮集合
+        /// </summary>
+        public ContextMenuStripItemButton[]? Items { get; set; }
+
+        public float FontRatio { get; set; } = 0.7F;
+
+        /// <summary>
+        /// 是否正方形
+        /// </summary>
+        public bool Square { get; set; }
+
+        #region 设置
+
+        public ContextMenuStripItemButtons Set(params ContextMenuStripItemButton[] value)
+        {
+            Items = value;
+            return this;
+        }
+
+        public ContextMenuStripItemButtons SetFontRatio(float value = 1F)
+        {
+            FontRatio = value;
+            return this;
+        }
+        public ContextMenuStripItemButtons SetSquare(bool value = true)
+        {
+            Square = value;
+            return this;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// 右键菜单项
+    /// </summary>
+    public class ContextMenuStripItemButton : IContextMenuStripItem, IContextMenuStrip
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        public string? ID { get; set; }
+
+        string? _text;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        public string? Text
+        {
+            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID });
+            set => _text = value;
+        }
+
+        /// <summary>
+        /// 国际化（文本）
+        /// </summary>
+        public string? LocalizationText { get; set; }
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        public Color? Fore { get; set; }
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        public Image? Icon { get; set; }
+
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        public string? IconSvg { get; set; }
+
+        internal bool HasIcon => IconSvg != null || Icon != null;
+
+        /// <summary>
+        /// 使能
+        /// </summary>
+        public bool Enabled { get; set; } = true;
+
+        /// <summary>
+        /// 选中
+        /// </summary>
+        public bool Checked { get; set; }
+
+        /// <summary>
+        /// 用户定义数据
+        /// </summary>
+        public object? Tag { get; set; }
+
+        #region 设置
+
+        public ContextMenuStripItemButton SetFore(Color? value)
+        {
+            Fore = value;
+            return this;
+        }
+        public ContextMenuStripItemButton SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public ContextMenuStripItemButton SetText(string value, string? localization = null)
+        {
+            Text = value;
+            LocalizationText = localization;
+            return this;
+        }
+
+        #region 图标
+
+        public ContextMenuStripItemButton SetIcon(Image? img)
+        {
+            Icon = img;
+            return this;
+        }
+
+        public ContextMenuStripItemButton SetIcon(string? svg)
+        {
+            IconSvg = svg;
+            return this;
+        }
+
+        #endregion
+
+        public ContextMenuStripItemButton SetEnabled(bool value = false)
+        {
+            Enabled = value;
+            return this;
+        }
+        public ContextMenuStripItemButton SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
+    }
+
+    public interface IContextMenuStrip
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        string? ID { get; set; }
+
+        /// <summary>
+        /// 文本
+        /// </summary>
+        string? Text { get; set; }
+
+        /// <summary>
+        /// 使能
+        /// </summary>
+        bool Enabled { get; set; }
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        Image? Icon { get; set; }
+
+        /// <summary>
+        /// 图标SVG
+        /// </summary>
+        string? IconSvg { get; set; }
+
+        /// <summary>
+        /// 选中
+        /// </summary>
+        bool Checked { get; set; }
+
+        /// <summary>
+        /// 用户定义数据
+        /// </summary>
+        object? Tag { get; set; }
+    }
 
     public class IContextMenuStripItem
     {

@@ -577,10 +577,10 @@ namespace AntdUI
         Spin.Config config;
         public SpinForm(Control _control, Form? _parent, Spin.Config _config)
         {
+            config = _config;
             control = _control;
             parent = _parent;
             Font = _control.Font;
-            config = _config;
             _control.SetTopMost(Handle);
             SetDpi(_parent, _control);
             if (_control is Form form)
