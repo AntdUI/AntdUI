@@ -285,9 +285,30 @@ namespace AntdUI
             public bool TopMost { get; set; }
 
             /// <summary>
-            /// 超链接回调
+            /// 超链接
             /// </summary>
-            public ConfigLink? Link { get; set; }
+            public IConfigControl? Link
+            {
+                get
+                {
+                    if (Links == null || Links.Length == 0) return null;
+                    return Links[0];
+                }
+                set
+                {
+                    if (value == null) Links = null;
+                    else
+                    {
+                        if (Links == null || Links.Length == 0) Links = new IConfigControl[] { value };
+                        else Links[0] = value;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// 超链接组合
+            /// </summary>
+            public IConfigControl[]? Links { get; set; }
 
             /// <summary>
             /// 关闭回调
@@ -469,20 +490,26 @@ namespace AntdUI
 
             public Config SetLink(string text, Func<bool> call)
             {
-                Link = new ConfigLink(text, call);
+                Links = new IConfigControl[] { new ConfigLink(text, call) };
                 return this;
             }
 
             public Config SetLink(string text, object tag, Func<bool> call)
             {
-                Link = new ConfigLink(text, call).SetTag(tag);
+                Links = new IConfigControl[] { new ConfigLink(text, call).SetTag(tag) };
+                return this;
+            }
+
+            public Config SetLink(params IConfigControl[] value)
+            {
+                Links = value;
                 return this;
             }
 
             #endregion
         }
 
-        public class ConfigLink
+        public class ConfigLink : IConfigControl
         {
             public ConfigLink(string text, Func<bool> call)
             {
@@ -524,6 +551,40 @@ namespace AntdUI
             }
 
             #endregion
+
+            #region 内部
+
+            public bool Contains(int x, int y) => RectText.Contains(x, y);
+
+            internal Rectangle Rect { get; set; }
+            internal Rectangle RectText { get; set; }
+
+            #endregion
+        }
+
+        public interface IConfigControl
+        {
+            /// <summary>
+            /// 连接文本
+            /// </summary>
+            string Text { get; set; }
+
+            /// <summary>
+            /// 文本颜色
+            /// </summary>
+            Color? Fore { get; set; }
+
+            /// <summary>
+            /// 点击回调
+            /// </summary>
+            Func<bool> Call { get; set; }
+
+            /// <summary>
+            /// 用户定义数据
+            /// </summary>
+            object? Tag { get; set; }
+
+            bool Contains(int x, int y);
         }
     }
 
@@ -640,17 +701,26 @@ namespace AntdUI
                     g.DrawText(config.Title, font_title, brush, rect_title, s_f_left);
                     g.DrawText(config.Text, Font, brush, rect_txt, s_f_left_left);
                 }
-                if (config.Link != null)
+                PrintLink(g);
+            }
+            return rbmp;
+        }
+
+        void PrintLink(Canvas g)
+        {
+            if (config.Links == null) return;
+            foreach (var it in config.Links)
+            {
+                if (it is Notification.ConfigLink link)
                 {
-                    var linkcolor = config.Link.Fore ?? Colour.Primary.Get(name);
+                    var linkcolor = link.Fore ?? Colour.Primary.Get(name);
                     using (var pen = new Pen(linkcolor, Dpi))
                     {
-                        g.DrawText(config.Link.Text, Font, linkcolor, rect_link_text, s_f);
-                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(rect_links));
+                        g.DrawText(link.Text, Font, linkcolor, link.RectText, s_f);
+                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(link.Rect));
                     }
                 }
             }
-            return rbmp;
         }
 
         SafeBitmap? shadow_temp;
@@ -678,8 +748,11 @@ namespace AntdUI
             return path;
         }
 
+        #endregion
+
+        #region 布局
+
         Rectangle rect_icon, rect_title, rect_txt, rect_close;
-        Rectangle rect_link_text, rect_links;
         Size RenderMeasure(Canvas g, int shadow)
         {
             int shadow2 = shadow * 2;
@@ -708,13 +781,8 @@ namespace AntdUI
 
                 if (size_desc.Height > 0) h += size_desc.Height + sp;
 
-                if (config.Link != null)
-                {
-                    var size_link = g.MeasureText(config.Link.Text, Font, 10000, s_f);
-                    rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
-                    rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
-                    h += size_link.Height + sp;
-                }
+                MeasureButton(g, ref h, sp, rect_title.X, rect_txt.Bottom, max_width);
+
                 return new Size(max_width + paddingx * 2 + shadow2, h + paddingy * 2 + shadow2);
             }
             else
@@ -731,14 +799,34 @@ namespace AntdUI
 
                 if (size_desc.Height > 0) h += size_desc.Height + sp;
 
-                if (config.Link != null)
-                {
-                    var size_link = g.MeasureText(config.Link.Text, Font, 10000, s_f);
-                    rect_link_text = new Rectangle(rect_title.X, rect_txt.Bottom + sp, size_link.Width, size_link.Height);
-                    rect_links = new Rectangle(rect_link_text.Right, rect_link_text.Y, rect_link_text.Height, rect_link_text.Height);
-                    h += size_link.Height + sp;
-                }
+                MeasureButton(g, ref h, sp, rect_title.X, rect_txt.Bottom, max_width);
+
                 return new Size(max_width + icon_size + icon_sp + paddingx * 2 + shadow2, h + paddingy * 2 + shadow2);
+            }
+        }
+
+        void MeasureButton(Canvas g, ref int h, int sp, int x, int y, int w)
+        {
+            if (config.Links == null) return;
+            int ry = y + sp, uw = 0, count = 0;
+            foreach (var it in config.Links)
+            {
+                if (it is Notification.ConfigLink link)
+                {
+                    var size_link = g.MeasureText(link.Text, Font, 10000, s_f);
+                    int rw = size_link.Width + size_link.Height + sp, rh = size_link.Height + sp;
+                    if (uw + rw > w)
+                    {
+                        ry += rh;
+                        h += rh;
+                        uw = 0;
+                    }
+                    else if (count == 0) h += rh;
+                    link.RectText = new Rectangle(x + uw, ry, size_link.Width, size_link.Height);
+                    link.Rect = new Rectangle(link.RectText.Right, link.RectText.Y, link.RectText.Height, link.RectText.Height);
+                    uw += rw;
+                    count++;
+                }
             }
         }
 
@@ -760,15 +848,26 @@ namespace AntdUI
                     return;
                 }
             }
-            if (config.Link != null) SetCursor(rect_link_text.Contains(e.X, e.Y));
+            if (config.Links != null)
+            {
+                int hand = 0;
+                foreach (var it in config.Links)
+                {
+                    if (it.Contains(e.X, e.Y)) hand++;
+                }
+                SetCursor(hand > 0);
+            }
             base.OnMouseMove(e);
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (config.Link != null && rect_link_text.Contains(e.X, e.Y))
+            if (config.Links != null)
             {
-                if (!config.Link.Call()) return;
+                foreach (var it in config.Links)
+                {
+                    if (it.Contains(e.X, e.Y) && it.Call()) return;
+                }
             }
             if (config.ClickClose) CloseMe();
             base.OnMouseClick(e);

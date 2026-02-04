@@ -391,10 +391,6 @@ namespace AntdUI
 
         #region 数据
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new ControlCollection Controls => base.Controls;
-
         TabCollection? items;
         /// <summary>
         /// 数据
@@ -478,22 +474,26 @@ namespace AntdUI
             if (showok)
             {
                 if (items == null) return;
-                BeginInvoke(() =>
+                try
                 {
-                    if (items.Count <= index || index < 0) return;
-                    for (int i = 0; i < items.Count; i++)
+                    BeginInvoke(() =>
                     {
-                        var page = items[i];
-                        bool show = i == index;
-                        page.Showed = show;
-                        if (show)
+                        if (items.Count <= index || index < 0) return;
+                        for (int i = 0; i < items.Count; i++)
                         {
-                            page.BringToFront();
-                            page.Dock = DockStyle.Fill;
+                            var page = items[i];
+                            bool show = i == index;
+                            page.Showed = show;
+                            if (show)
+                            {
+                                page.BringToFront();
+                                page.Dock = DockStyle.Fill;
+                            }
+                            else page.Dock = DockStyle.None;
                         }
-                        else page.Dock = DockStyle.None;
-                    }
-                });
+                    });
+                }
+                catch { }
             }
         }
 
@@ -504,7 +504,7 @@ namespace AntdUI
             bitblock_r?.Dispose();
             if (items == null || items.Count == 0) return;
             foreach (var it in items) it.Dispose();
-            items.Clear();
+            items.Dispose();
             base.Dispose(disposing);
         }
 

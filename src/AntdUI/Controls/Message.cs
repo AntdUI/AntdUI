@@ -797,6 +797,10 @@ namespace AntdUI
             return path;
         }
 
+        #endregion
+
+        #region 布局
+
         Rectangle rect_icon, rect_loading, rect_txt;
         Size RenderMeasure(Canvas g, int shadow)
         {

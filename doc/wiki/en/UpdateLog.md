@@ -1,6 +1,16 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.16` 2026-02-04
+
+- ➕ The Notification Links property supports multiple hyperlinks
+- ➕ ContextMenuStrip ContextMenuStripItemButtons
+- ✍️ ContextMenuStrip exception
+- ✍️ Cannot see after minimizing the asynchronous execution of Modal
+- ✍️ Clear user controls from Tabs
+
 ### `2.2.15` 2026-02-03
+
+> ⚠ ContextMenuStrip right-click menu cannot be used properly
 
 - ➕ Carouse DotFocusedColor
 - ➕ Menu FindID/FindName method

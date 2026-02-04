@@ -208,6 +208,8 @@ namespace AntdUI
 
         #region 删除
 
+        public void Dispose() => list.Clear();
+
         public void Clear()
         {
             if (action_del != null)

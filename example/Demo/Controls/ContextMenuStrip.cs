@@ -23,6 +23,12 @@ namespace Demo.Controls
 
             menulist = new AntdUI.IContextMenuStripItem[]
             {
+                new AntdUI.ContextMenuStripItemButtons(
+                    new AntdUI.ContextMenuStripItemButton().SetIcon("LikeOutlined").SetText("喜欢"),
+                    new AntdUI.ContextMenuStripItemButton().SetIcon("DislikeOutlined").SetText("差评"),
+                    new AntdUI.ContextMenuStripItemButton().SetIcon("ShareAltOutlined").SetText("分享"),
+                    new AntdUI.ContextMenuStripItemButton().SetIcon("BellOutlined").SetText("提醒")),
+                new AntdUI.ContextMenuStripItemDivider(),
                 new AntdUI.ContextMenuStripItem("返回", "Alt+向左键").SetIcon(svg_back),
                 new AntdUI.ContextMenuStripItem("刷新", "Ctrl+R").SetIcon(svg_refresh),
                 new AntdUI.ContextMenuStripItemDivider(),
@@ -81,7 +87,7 @@ namespace Demo.Controls
             }
         }
 
-        private void RightKey(AntdUI.ContextMenuStripItem it)
+        private void RightKey(AntdUI.IContextMenuStrip it)
         {
             if (it.Text.Equals("新增"))
             {
