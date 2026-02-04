@@ -126,7 +126,7 @@ namespace AntdUI
             {
                 if (config.Target.Value is Form form)
                 {
-                    if (form.WindowState == FormWindowState.Minimized || !form.Visible)
+                    if (!form.Visible)
                     {
                         config.Mask = config.MaskClosable = false;
                         var dialogResultN = DialogResult.None;
@@ -135,6 +135,7 @@ namespace AntdUI
                         ModalCount--;
                         return dialogResultN;
                     }
+                    if (form.WindowState == FormWindowState.Minimized) form.WindowState = FormWindowState.Normal;
                     if (!form.IsHandleCreated) config.Mask = config.MaskClosable = false;
                     if (form.InvokeRequired) return ITask.Invoke(form, new Func<DialogResult>(() => open(config)));
                     var frm = new LayeredFormModal(config, false);
