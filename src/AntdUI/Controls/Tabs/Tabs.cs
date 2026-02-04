@@ -488,8 +488,14 @@ namespace AntdUI
                             {
                                 page.BringToFront();
                                 page.Dock = DockStyle.Fill;
+                                Controls.Add(page);
                             }
-                            else page.Dock = DockStyle.None;
+                            else
+                            {
+                                if (page.Dock == DockStyle.None) continue;
+                                page.Dock = DockStyle.None;
+                                Controls.Remove(page);
+                            }
                         }
                     });
                 }
@@ -1688,13 +1694,7 @@ namespace AntdUI
                 if (render) it.LoadLayout(true);
                 else it.Invalidate();
             };
-            action_add = item =>
-            {
-                item.PARENT = it;
-                item.Dock = DockStyle.Fill;
-                if (it.InvokeRequired) it.Invoke(() => it.Controls.Add(item));
-                else it.Controls.Add(item);
-            };
+            action_add = item => item.PARENT = it;
             action_del = (item, index) =>
             {
                 if (index == -1) it.SelectedIndex = 0;
