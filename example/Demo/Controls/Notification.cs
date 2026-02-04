@@ -30,12 +30,11 @@ namespace Demo.Controls
             {
                 Radius = 10,
                 FontStyleTitle = FontStyle.Bold,
-                Link = new AntdUI.Notification.ConfigLink("前往查看", () =>
-                {
-                    MessageBox.Show("点击超链接");
-                    return true;
-                })
-            });
+            }.SetLink("前往查看", () =>
+            {
+                MessageBox.Show("点击超链接");
+                return true;
+            }));
         }
 
         private void button3_Click(object sender, EventArgs e)

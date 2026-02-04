@@ -1,6 +1,16 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.16` 2026-02-04
+
+- ➕ Notification Links 属性支持多个超链接
+- ➕ ContextMenuStrip ContextMenuStripItemButtons
+- ✍️ ContextMenuStrip 异常
+- ✍️ Modal 异步执行最小化后看不到
+- ✍️ Tabs 清空用户控件
+
 ### `2.2.15` 2026-02-03
+
+> ⚠ ContextMenuStrip 右键菜单无法正常使用
 
 - ➕ Carouse DotFocusedColor
 - ➕ Menu FindID/FindName 方法
