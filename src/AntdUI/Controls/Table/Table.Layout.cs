@@ -797,9 +797,8 @@ namespace AntdUI
         /// <param name="is_exceed">是否超出容器宽度</param>
         Dictionary<int, int> CalculateWidth(Rectangle rect, int heightEs, bool change, ref Rectangle rect_read, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int gap2, int check_size, int sort_size, ref bool is_exceed)
         {
-            bool showX = heightEs > rect_read.Bottom;
-            int use_width = rect.Width, ex_width = showX ? ScrollBar.SIZE : 0;
-            float max_width = ex_width;
+            int use_width = rect.Width;
+            float max_width = 0;
             Dictionary<int, float> col_width_tmp = new Dictionary<int, float>(col_width.Count);
             foreach (var it in read_width)
             {
@@ -836,10 +835,11 @@ namespace AntdUI
                 else max_width += it.Value.value;
             }
 
-            var width_cell = new Dictionary<int, int>(read_width.Count);
+            Dictionary<int, int> width_cell;
             if (max_width > rect.Width)
             {
                 is_exceed = true;
+                width_cell = new Dictionary<int, int>(read_width.Count);
                 foreach (var it in read_width)
                 {
                     if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
@@ -860,52 +860,102 @@ namespace AntdUI
             }
             else
             {
-                var fill_count = new List<int>(col_width.Count);
-                foreach (var it in read_width)
+                bool showX = heightEs > rect_read.Bottom;
+                if (AutoSizeColumnsMode == ColumnsMode.Fill)
                 {
-                    if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
-                    else if (col_width.TryGetValue(it.Key, out var value))
-                    {
-                        if (value is int val_int)
-                        {
-                            if (val_int == -1) width_cell.Add(it.Key, it.Value.value);
-                            else if (val_int == -2) fill_count.Add(it.Key);
-                            else width_cell.Add(it.Key, val_int);
-                        }
-                        else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
-                    }
-                    else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
-                    else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
-                    else width_cell.Add(it.Key, (int)Math.Ceiling(use_width * (it.Value.value / max_width)));
-                }
-                int sum_wi = 0;
-                foreach (var it in width_cell) sum_wi += it.Value;
-                if (fill_count.Count > 0)
-                {
-                    int width = (rect.Width - sum_wi) / fill_count.Count;
-                    foreach (var it in fill_count) width_cell.Add(it, width);
-                    sum_wi = rect.Width;
-                }
-                if (rect_read.Width > sum_wi)
-                {
-                    if (AutoSizeColumnsMode == ColumnsMode.Fill)
+                    int ex_width = showX ? ScrollBar.SIZE : 0;
+                    max_width += ex_width;
+                    width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width, gap2, check_size, sort_size, out int sum_width);
+                    if (rect_read.Width > sum_width)
                     {
                         int tmpw = rect_read.Width - ex_width;
-                        int fill_wi = 0;
-                        foreach (var it in col_width_tmp) fill_wi += (int)Math.Round(it.Value);
-                        sum_wi -= fill_wi;
-                        int tw = tmpw - fill_wi;
+                        int fill_width = 0;
+                        foreach (var it in col_width_tmp) fill_width += (int)Math.Round(it.Value);
+                        sum_width -= fill_width;
+                        int tw = tmpw - fill_width;
                         //填充
                         var percentage = new Dictionary<int, int>(width_cell.Count);
                         foreach (var it in width_cell)
                         {
                             if (col_width_tmp.TryGetValue(it.Key, out _)) percentage.Add(it.Key, it.Value);
-                            else percentage.Add(it.Key, (int)Math.Round(tw * (it.Value * 1.0 / sum_wi)));
+                            else percentage.Add(it.Key, (int)Math.Round(tw * (it.Value * 1.0 / sum_width)));
                         }
                         width_cell = percentage;
                     }
-                    else if (change) rect_read.Width = sum_wi;
+                    return width_cell;
                 }
+                else
+                {
+                    int sum_width;
+                    if (showX && max_width + ScrollBar.SIZE > use_width) width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width += ScrollBar.SIZE, gap2, check_size, sort_size, out sum_width);
+                    else width_cell = CalculateWidth(rect, col_width, read_width, use_width, gap2, check_size, sort_size, out sum_width);
+                    if (change && rect_read.Width > sum_width) rect_read.Width = sum_width;
+                    return width_cell;
+                }
+            }
+            return width_cell;
+        }
+        Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width,
+            int use_width, float max_width, int gap2, int check_size, int sort_size, out int sum_width)
+        {
+            var width_cell = new Dictionary<int, int>(read_width.Count);
+            var fill_count = new List<int>(col_width.Count);
+            foreach (var it in read_width)
+            {
+                if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
+                else if (col_width.TryGetValue(it.Key, out var value))
+                {
+                    if (value is int val_int)
+                    {
+                        if (val_int == -1) width_cell.Add(it.Key, it.Value.value);
+                        else if (val_int == -2) fill_count.Add(it.Key);
+                        else width_cell.Add(it.Key, val_int);
+                    }
+                    else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
+                }
+                else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
+                else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
+                else width_cell.Add(it.Key, (int)Math.Ceiling(use_width * (it.Value.value / max_width)));
+            }
+            sum_width = 0;
+            foreach (var it in width_cell) sum_width += it.Value;
+            if (fill_count.Count > 0)
+            {
+                int width = (rect.Width - sum_width) / fill_count.Count;
+                foreach (var it in fill_count) width_cell.Add(it, width);
+                sum_width = rect.Width;
+            }
+            return width_cell;
+        }
+        Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width,
+            int use_width, int gap2, int check_size, int sort_size, out int sum_width)
+        {
+            var width_cell = new Dictionary<int, int>(read_width.Count);
+            var fill_count = new List<int>(col_width.Count);
+            foreach (var it in read_width)
+            {
+                if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
+                else if (col_width.TryGetValue(it.Key, out var value))
+                {
+                    if (value is int val_int)
+                    {
+                        if (val_int == -1) width_cell.Add(it.Key, it.Value.value);
+                        else if (val_int == -2) fill_count.Add(it.Key);
+                        else width_cell.Add(it.Key, val_int);
+                    }
+                    else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
+                }
+                else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
+                else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
+                else width_cell.Add(it.Key, it.Value.value);
+            }
+            sum_width = 0;
+            foreach (var it in width_cell) sum_width += it.Value;
+            if (fill_count.Count > 0)
+            {
+                int width = (rect.Width - sum_width) / fill_count.Count;
+                foreach (var it in fill_count) width_cell.Add(it, width);
+                sum_width = rect.Width;
             }
             return width_cell;
         }

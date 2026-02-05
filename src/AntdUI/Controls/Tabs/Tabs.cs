@@ -484,18 +484,8 @@ namespace AntdUI
                             var page = items[i];
                             bool show = i == index;
                             page.Showed = show;
-                            if (show)
-                            {
-                                page.BringToFront();
-                                page.Dock = DockStyle.Fill;
-                                Controls.Add(page);
-                            }
-                            else
-                            {
-                                if (page.Dock == DockStyle.None) continue;
-                                page.Dock = DockStyle.None;
-                                Controls.Remove(page);
-                            }
+                            if (show) Controls.Add(page);
+                            else Controls.Remove(page);
                         }
                     });
                 }
@@ -1730,6 +1720,7 @@ namespace AntdUI
                ControlStyles.ContainerControl |
                ControlStyles.UserPaint, true);
             UpdateStyles();
+            Dock = DockStyle.Fill;
         }
 
         #region 属性
