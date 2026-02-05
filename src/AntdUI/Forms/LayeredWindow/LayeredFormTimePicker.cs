@@ -20,7 +20,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ValueTimeHorizontal = control.ValueTimeHorizontal;
             ShowButtonNow = control.ShowButtonNow;

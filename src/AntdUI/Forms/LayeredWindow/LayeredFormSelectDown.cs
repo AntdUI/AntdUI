@@ -31,7 +31,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
@@ -61,7 +61,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             SetDpi(control);
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
@@ -91,7 +91,7 @@ namespace AntdUI
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             CloseMode = CloseMode.Leave;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             MaxCount = 7;
@@ -135,7 +135,7 @@ namespace AntdUI
             ColorScheme = control.ColorScheme;
             Tag = cell;
             CloseMode = CloseMode.Leave;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = cell.DropDownValue;
@@ -172,7 +172,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             lay = parent;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
@@ -202,7 +202,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             lay = parent;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = control.SelectedValue;
@@ -232,7 +232,7 @@ namespace AntdUI
             Font = control.Font;
             lay = parent;
             Tag = cell;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = cell.DropDownValue;

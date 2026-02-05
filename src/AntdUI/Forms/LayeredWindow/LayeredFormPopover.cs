@@ -16,7 +16,6 @@ namespace AntdUI
     internal class LayeredFormPopover : ILayeredShadowFormOpacity
     {
         Popover.Config config;
-        internal bool topMost = false;
         Form? form;
 
         int ArrowSize = 8;
@@ -24,7 +23,7 @@ namespace AntdUI
         {
             config = _config;
             CloseMode = CloseMode.Click;
-            topMost = config.Control.SetTopMost(Handle);
+            SetTopMost(config.Control, Handle);
             SetDpi(config.Control);
             Font = config.Font ?? config.Control.Font;
 
@@ -226,17 +225,14 @@ namespace AntdUI
             base.LoadOK();
             if (parent != null) parent.VisibleChanged += Parent_VisibleChanged;
         }
-        public override bool ICanClose()
-        {
-            if (config.Content is ControlPopup controlPopup && controlPopup.Locked) return false;
-            return true;
-        }
 
         private void Parent_VisibleChanged(object? sender, EventArgs e)
         {
             if (form == null) return;
             form.Visible = parent!.Visible;
         }
+
+        #region 关闭
 
         private void Control_Disposed(object? sender, EventArgs e) => IClose();
 
@@ -278,6 +274,30 @@ namespace AntdUI
             form?.Dispose();
             base.Dispose(disposing);
         }
+
+        List<Form> forms = new List<Form>();
+        public void CloseLockedAdd(Form form)
+        {
+            lock (forms)
+            {
+                forms.Add(form);
+            }
+        }
+        public void CloseLockedDel(Form form)
+        {
+            lock (forms)
+            {
+                forms.Remove(form);
+            }
+        }
+        public override bool ICanClose()
+        {
+            if (config.Content is ControlPopup controlPopup && controlPopup.Locked) return false;
+            if (forms.Count > 0) return false;
+            return true;
+        }
+
+        #endregion
 
         Rectangle rectTitle, rectContent;
         InRect[]? rectsContent;

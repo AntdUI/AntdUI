@@ -581,7 +581,7 @@ namespace AntdUI
             control = _control;
             parent = _parent;
             Font = _control.Font;
-            _control.SetTopMost(Handle);
+            SetTopMost(_control, Handle);
             SetDpi(_parent, _control);
             if (_control is Form form)
             {

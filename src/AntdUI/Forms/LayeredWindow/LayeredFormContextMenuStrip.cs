@@ -22,13 +22,8 @@ namespace AntdUI
         {
             config = _config;
             var point = config.Location ?? MousePosition;
-            CloseMode = CloseMode.Click | CloseMode.NoControl;
-            if (config.TopMost)
-            {
-                Helper.SetTopMost(Handle);
-                CloseMode = CloseMode.Leave;
-            }
-            else config.Target.SetTopMost(Handle);
+            CloseMode = config.TopMost ? CloseMode.Leave : (CloseMode.Click | CloseMode.NoControl);
+            SetTopMost(config.Target, Handle, config.TopMost);
             SetDpi(config.Target);
             config.Target.SetFont(config.Font, this);
             rectsContent = LoadLayout(config.Items);
@@ -144,8 +139,7 @@ namespace AntdUI
             Guid = guid;
             PARENT = parent;
             Font = parent.Font;
-            if (_config.TopMost) Helper.SetTopMost(Handle);
-            else _config.Target.SetTopMost(Handle);
+            SetTopMost(config.Target, Handle, _config.TopMost);
             SetDpi(config.Target);
             rectsContent = LoadLayout(subs);
             ScrollBar = new ScrollBar(this, TAMode.Auto);

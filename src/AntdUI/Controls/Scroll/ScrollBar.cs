@@ -310,12 +310,8 @@ namespace AntdUI
         public void SizeChange(Rectangle rect)
         {
             Rect = rect;
-            if (SIZE > 0)
-            {
-                RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
-                RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
-            }
-            else RectX = RectY = rect;
+            RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
+            RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
             SetShow(oldx, oldy);
         }
 

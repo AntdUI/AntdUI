@@ -20,7 +20,6 @@ namespace AntdUI
         int padding = 24;
         ILayeredForm? formMask;
         public bool isclose = false;
-        internal bool topMost = false;
         public LayeredFormDrawer(Drawer.Config _config, ILayeredForm mask) : this(_config)
         {
             formMask = mask;
@@ -38,7 +37,7 @@ namespace AntdUI
         public LayeredFormDrawer(Drawer.Config _config)
         {
             config = _config;
-            topMost = config.Form.SetTopMost(Handle);
+            SetTopMost(config.Form, Handle);
             SetDpi(config.Form);
             Font = config.Form.Font;
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi) * 2;

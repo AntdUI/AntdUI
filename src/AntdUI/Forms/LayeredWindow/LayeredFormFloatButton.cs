@@ -24,7 +24,7 @@ namespace AntdUI
             if (tmp == null) throw new Exception("FloatButton need a parent Form");
             form = tmp;
             TopMost = config.TopMost;
-            if (!config.TopMost) config.Target.SetTopMost(Handle);
+            if (!config.TopMost) SetTopMost(config.Target, Handle);
             SetDpi(config.Target);
             config.Target.SetFont(config.Font, this);
 
