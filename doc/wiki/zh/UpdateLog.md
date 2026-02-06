@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.17` 2026-02-06
+
+- ➕ Transfer 丰富搜索框 ShowSearch
+- ➕ Transfer ChangeToBottom,PanelBack
+- ➕ Transfer InputStyle
+- ✍️ Tabs 隐藏项遮挡
+- ✍️ Table AutoSizeColumnsMode
+- ✍️ Notification ConfigLink 鼠标碰撞
+- ✍️ Table 滚动条SIZE=0 交互异常
+- ✍️ Popover 使用 DatePicker 等控件鼠标超出部分会关闭
+- 🧹 Transfer 重构样式
+
 ### `2.2.16` 2026-02-04
 
 - ➕ Notification Links 属性支持多个超链接

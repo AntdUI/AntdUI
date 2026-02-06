@@ -871,6 +871,8 @@ namespace Demo
                     return "Source: ";
                 case "Transfer.TargetT":
                     return "Target: ";
+                case "Transfer.search":
+                    return "Search here";
 
                 //Chart ----------------------------
                 case "Chart.Text":

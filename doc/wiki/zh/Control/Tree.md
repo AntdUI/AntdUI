@@ -48,17 +48,29 @@ Tree 树形控件 👚
 **NodeMouseClick** | 点击项事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
 **NodeMouseDoubleClick** | 双击项事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
 **NodeMouseMove** | 移动项事件 | void | [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域`, bool hover `悬停值` |
+**NodeMouseDown** | 鼠标按下事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
+**NodeMouseUp** | 鼠标松开事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
 
 ### 方法
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **ExpandAll** | 展开全部 | void | bool value `true 展开、false 收起` |
-**GetCheckeds** | 获取所有选中项 | List<[TreeItem](#treeitem)> ||
-**Select** | 选择指定项 | bool | [TreeItem](#treeitem) item |
-**USelect** | 取消全部选择 | void ||
-**SetCheckeds** | 全选/全不选 | void ||
-**Focus** | 跳转指定项 | bool | [TreeItem](#treeitem) item |
+**GetCheckeds** | 获取所有选中项 | List<[TreeItem](#treeitem)> | bool Indeterminate `是否包含 Indeterminate` = true |
+**Select** | 选择指定项 | bool | [TreeItem](#treeitem) item, bool focus `设置焦点` = true |
+**SelectID** | 选择指定项（ID） | bool | string id `ID`, bool focus `设置焦点` = true |
+**SelectName** | 选择指定项（Name） | bool | string name `名称`, bool focus `设置焦点` = true |
+**USelect** | 取消全部选择 | void | bool clear `清空选择项` = true |
+**SetCheckeds** | 全选/全不选 | void | bool check `是否选中` |
+**Focus** | 跳转指定项 | void | [TreeItem](#treeitem) item, int gap `间隙` = 0, bool force `强制` = false |
+**VisibleAll** | 设置全部 Visible | void | bool value `是否可见` = true |
+**Remove** | 移除菜单 | void | [TreeItem](#treeitem) item `项` |
+**ReverseCheckItem** | 反选节点项 | void | [TreeItem](#treeitem) item `项` |
+**GetSelects** | 获取所有选择项 | List<[TreeItem](#treeitem)> | 无 |
+**FindID** | 根据节点id查询节点 | [TreeItem](#treeitem)`?` | string id `ID` |
+**FindName** | 根据节点name查询节点 | [TreeItem](#treeitem)`?` | string name `名称` |
+**Search** | 搜索筛选 | void | string search `搜索文本` |
+**HitTest** | 命中测试 | [TreeItem](#treeitem)`?` | int x `X坐标`, int y `Y坐标`, out TreeCType type `类型` |
 
 
 ### 数据
@@ -76,9 +88,12 @@ Tree 树形控件 👚
 **SubTitle** | 子标题 | string | `null` |
 🌏 **LocalizationSubTitle** | 国际化子标题 | string`?` | `null` |
 **Fore** | 字体颜色 | Color`?` |`null`|
+**ForeSub** | 子文本颜色 | Color`?` |`null`|
 **Back** | 背景颜色 | Color`?` |`null`|
 **Visible** | 是否显示 | bool | true |
 **Enabled** | 禁用状态 | bool | true |
+**Checkable** | 节点前添加 Checkbox 复选框 | bool | true |
+**Loading** | 加载状态 | bool | false |
 **Expand** | 展开 | bool | true |
 **CanExpand** | 是否可以展开 | bool | `只读` |
 **Checked** | 选中状态 | bool | false |

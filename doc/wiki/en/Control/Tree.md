@@ -47,17 +47,29 @@ Name | Description | Return Value | Parameters |
 **NodeMouseClick** | Click Item Event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
 **NodeMouseDoubleClick** | Double click event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
 **NodeMouseMove** | Mobile event | void | [TreeItem](#treeitem) item, Rectangle rect, bool hover |
+**NodeMouseDown** | Mouse down event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
+**NodeMouseUp** | Mouse up event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
 
 ### Method
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **ExpandAll** | Expand all | void | bool value `true expand, false collapse` |
-**GetCheckeds** | Get all selected items | List<[TreeItem](#treeitem)> ||
-**Select** | Select specified item | bool | [TreeItem](#treeitem) item |
-**USelect** | Deselect all | void ||
-**SetCheckeds** | Select All/Select None | void ||
-**Focus** | Jump to specified item | bool | [TreeItem](#treeitem) item |
+**GetCheckeds** | Get all selected items | List<[TreeItem](#treeitem)> | bool Indeterminate `whether to include Indeterminate` = true |
+**Select** | Select specified item | bool | [TreeItem](#treeitem) item, bool focus `set focus` = true |
+**SelectID** | Select specified item (ID) | bool | string id `ID`, bool focus `set focus` = true |
+**SelectName** | Select specified item (Name) | bool | string name `name`, bool focus `set focus` = true |
+**USelect** | Deselect all | void | bool clear `clear selection` = true |
+**SetCheckeds** | Select All/Select None | void | bool check `whether to select` |
+**Focus** | Jump to specified item | void | [TreeItem](#treeitem) item, int gap `gap` = 0, bool force `force` = false |
+**VisibleAll** | Set all Visible | void | bool value `whether visible` = true |
+**Remove** | Remove menu | void | [TreeItem](#treeitem) item `item` |
+**ReverseCheckItem** | Reverse select node item | void | [TreeItem](#treeitem) item `item` |
+**GetSelects** | Get all selected items | List<[TreeItem](#treeitem)> | None |
+**FindID** | Find node by ID | [TreeItem](#treeitem)`?` | string id `ID` |
+**FindName** | Find node by name | [TreeItem](#treeitem)`?` | string name `name` |
+**Search** | Search filter | void | string search `search text` |
+**HitTest** | Hit test | [TreeItem](#treeitem)`?` | int x `X coordinate`, int y `Y coordinate`, out TreeCType type `type` |
 
 
 ### Data

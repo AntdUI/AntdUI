@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.17` 2026-02-06
+
+- ➕ Transfer enriched search box ShowSearch
+- ➕ Transfer ChangeToBottom, PanelBack
+- ➕ Transfer InputStyle
+- ✍️ Tabs hidden items blocking
+- ✍️ Table AutoSizeColumnsMode
+- ✍️ Notification ConfigLink mouse collision
+- ✍️ Table scrollbar SIZE=0 interaction exception
+- ✍️ Popover using DatePicker and other controls will close when mouse goes beyond
+- 🧹 Transfer refactored styles
+
 ### `2.2.16` 2026-02-04
 
 - ➕ The Notification Links property supports multiple hyperlinks

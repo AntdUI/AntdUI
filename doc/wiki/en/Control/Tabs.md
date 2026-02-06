@@ -20,8 +20,11 @@ Name | Description | Type | Default Value |
 ||||
 **Alignment** | Alignment | TabAlignment |Top|
 **Centered** | Centered display of tags | bool | false |
+**TextCenter** | Text centered alignment (only effective in Left/Right direction) | bool | false |
 ||||
 **TypExceed** | Exceeding UI type | [TabTypExceed](Enum.md#tabtypexceed) | Button |
+**EnableSwitch** | Switch enable | bool | true |
+**EnablePageScrolling** | Mouse wheel switch focus page enable | bool | true |
 **ScrollBack** | Scroll bar color | Color`?` | `null` |
 **ScrollBackHover** | Scroll bar hover color | Color`?` | `null` |
 **ScrollFore** | Scroll bar text color | Color`?` | `null` |
@@ -29,10 +32,13 @@ Name | Description | Type | Default Value |
 ||||
 **Gap** | Gap | int | 8 |
 **IconRatio** | Icon Scale | float | 0.7F |
+**IconGap** | Icon to text spacing ratio | float | 0.25F |
 **ItemSize** | Custom item size | int? | `null` |
 ||||
 **Type** | Type | [TabType](Enum.md#tabtype) | Line |
 **Style** | Style type | [IStyle](#istyle) | `Nonnull` |
+**Rotate** | Rotate (used for vertical display in Left/Right) | [TRotate](Enum.md#trotate) | None |
+**DragOrder** | Drag order | bool | false |
 ||||
 **TabMenuVisible** | Whether to display the head | bool | true |
 ||||
@@ -53,7 +59,9 @@ Name | Description | Return Value | Parameters |
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **SelectedIndexChanged** | Occurred when the SelectedIndex property value is changed | void | int index |
+**SelectedIndexChanging** | Occurred before the SelectedIndex property value is changed | bool | int index |
 **ClosingPage** | Occurred before closing the page | bool | [TabPage](#tabpage) page |
+**TabClick** | Occurred when clicking on a tab | bool | [TabPage](#tabpage) page, int index |
 
 ### IStyle
 

@@ -10,7 +10,8 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | Belonging window | Form`?` | `Cannot use mask when empty` |
+**Target** | Belonging target | object`?` | `null` |
+**Form** | Belonging window | Form`?` | `Cannot use mask when empty` | `deprecated, use Target instead` |
 **Title** | Title | string | `Required` |
 **Content** | Control/Content | object | `Required` |
 **Width** | Modal width | int | 416 |
@@ -22,7 +23,18 @@ Name | Description | Type | Default Value |
 **CloseIcon** | Display close icon | bool | false |
 **Tag** | User defined data | object`?` | `null` |
 ||||
-**Padding** | Padding | Size | 24, 20 |
+**ContentPadding** | Content padding | Size | 24, 20 |
+**UseIconPadding** | Use icon padding | bool | true |
+**ColorScheme** | Color scheme | [TColorScheme](Enum.md#tcolorscheme) | Primary |
+**ManualActivateParent** | Manually activate parent | bool | false |
+**DefaultFocus** | Default focus | Control`?` | `null` |
+**DefaultAcceptButton** | Default accept button | [Button](#button)`?` | `null` |
+**EnableSound** | Enable sound | bool | true |
+**Resizable** | Resizable | bool | false |
+**MinimumSize** | Minimum size | Size | 300, 200 |
+**MaximumSize** | Maximum size | Size | 1600, 900 |
+**IconCustom** | Custom icon | Bitmap`?` | `null` |
+||||
 **BtnHeight** | Button bar height | int | 38 |
 **CancelText** | Cancel button text | string | "Cancel" |
 **CancelFont** | Cancel button font | Font`?` | `null` |
@@ -30,6 +42,9 @@ Name | Description | Type | Default Value |
 **OkType** | Confirm button type | [TTypeMini](Enum.md#ttypemini) | Primary |
 **OkFont** | Confirm button Font | Font`?` | `null` |
 **OnOk** | Confirm callback | `Func<Config, bool>?` | `null` |
+**OnCancel** | Cancel callback | `Func<Config, bool>?` | `null` |
+**OnClose** | Close callback | Action<[TCloseType](Enum.md#tclosetype)> | `null` |
+**OnMaskClick** | Mask click callback | Action | `null` |
 ||||
 **Btns** | Custom button | [Btn[]](#modal.btn) | `null` |
 **OnBtns** | Custom button callback | Action<[Button](#button)> | `null` |
@@ -38,6 +53,7 @@ Name | Description | Type | Default Value |
 **LoadingDisableCancel** | Disable the cancel button during loading | bool | false |
 **Draggable** | Drag and drop window | bool | true |
 **Close()** | Active close | void | |
+**DialogResult** | Dialog result | [DialogResult](Enum.md#dialogresult) | None |
 
 ### Modal.Btn
 
@@ -51,6 +67,17 @@ Name | Description | Type | Default Value |
 **Fore** | Text color | Color`?` | `null` |
 **Back** | background color | Color`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |
+
+### Modal.TextLine
+
+> Text content
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Text** | Text content | string | `Required` |
+**Font** | Font | Font`?` | `null` |
+**Fore** | Text color | Color`?` | `null` |
+**Alignment** | Text alignment | ContentAlignment | MiddleLeft |
 
 ***
 

@@ -137,10 +137,15 @@ namespace Demo.Controls
             // transfer1
             // 
             transfer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            transfer1.LocalizationSearchPlaceholderSource = "Transfer.search";
+            transfer1.LocalizationSearchPlaceholderTarget = "Transfer.search";
             transfer1.Location = new Point(0, 110);
             transfer1.MinimumSize = new Size(300, 200);
             transfer1.Name = "transfer1";
             transfer1.Padding = new System.Windows.Forms.Padding(8);
+            transfer1.SearchPlaceholderSource = "请输入搜索内容";
+            transfer1.SearchPlaceholderTarget = "请输入搜索内容";
+            transfer1.ShowSearch = true;
             transfer1.Size = new Size(800, 390);
             transfer1.TabIndex = 0;
             // 

@@ -59,6 +59,14 @@ AntdUI.Config.TouchEnabled = true;
 AntdUI.Config.ShadowEnabled = false;
 ```
 
+### Emoji Enabled
+
+> Default Emoji enabled
+
+``` csharp
+AntdUI.Config.EmojiEnabled = true;
+```
+
 ### ScrollBar Hidden Style
 
 > Default continuous display `false`

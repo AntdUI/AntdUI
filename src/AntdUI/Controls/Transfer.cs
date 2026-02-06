@@ -1117,11 +1117,10 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                hover_to_right.Dispose();
-                hover_to_left.Dispose();
-            }
+            hover_to_right.Dispose();
+            hover_to_left.Dispose();
+            input_source?.Dispose();
+            input_target?.Dispose();
             base.Dispose(disposing);
         }
 

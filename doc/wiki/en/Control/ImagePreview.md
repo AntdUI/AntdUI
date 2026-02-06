@@ -5,84 +5,101 @@
 
 > Used for resident display and preview of images, supporting multiple interactive operations and custom configurations.
 
-- DefaultProperty：Image
+- DefaultProperty：SelectIndex
 - DefaultEvent：SelectIndexChanged
 
 ### Property
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Items** | Image item collection | ImagePreviewItemCollection | `New Collection` |
+**Image** | Image item collection | ImagePreviewItemCollection | `New Collection` |
 **SelectIndex** | Currently selected image index | int | 0 |
-**Image** | Directly set image | Image`?` | `null` |
-**Call** | Async loading image delegate | Func<Image>`?` | `null` |
-**CallProg** | Async loading with progress delegate | Func<Action<Image, float>, Task>`?` | `null` |
-**Fit** | Image fit mode | [TImageFit](Enum.md#timagefit) | Contain |
-**FlipX** | Horizontal flip | bool | false |
-**FlipY** | Vertical flip | bool | false |
-**Zoom** | Zoom ratio | float | 1F |
-**ZoomStep** | Zoom step | float | 0.1F |
-**ZoomMin** | Minimum zoom ratio | float | 0.1F |
-**ZoomMax** | Maximum zoom ratio | float | 10F |
-**Button** | Show default buttons | bool | true |
-**ButtonSize** | Button size | int | 32 |
-**ButtonIconSize** | Button icon size | int | 18 |
-**ButtonMargin** | Button margin | int | 10 |
-**ButtonGap** | Button gap | int | 10 |
-**ButtonAutoHide** | Auto hide buttons | bool | false |
-**ButtonAutoHideDelay** | Auto hide delay(ms) | int | 2000 |
-**CustomButtons** | Custom button collection | ImagePreviewButtonCollection | `New Collection` |
+**Fit** | Image fit mode | [TFit](Enum.md#tfit) | Contain |
+**ShowBtn** | Show buttons | bool | true |
+**ShowDefaultBtn** | Show default buttons | bool | true |
+**BtnSize** | Button size | Size | `42, 46` |
+**BtnIconSize** | Button icon size | int | 18 |
+**BtnLRSize** | Left/right button size | int | 40 |
+**ContainerPadding** | Container padding | int | 24 |
+**BtnPadding** | Button padding | Size | `12, 32` |
+**CustomButton** | Custom button collection | ImagePreviewButtonCollection | `New Collection` |
 
 ### Method
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**LoadImg** | Load image | void | bool `Reset` |
-**PlayGif** | Play GIF animation | void | Image `Image`, FrameDimension `Frame Dimension`, int `Frame Count` |
-**ScaleImg** | Scale image | RectangleF | Rectangle `Control Rectangle`, float `DPI` |
+**LoadImg** | Load image | void | bool `Render` |
+**ZoomToControl** | Zoom image to fit control | void |  |
+**FlipY** | Flip image vertically | void |  |
+**FlipX** | Flip image horizontally | void |  |
+**RotateL** | Rotate image left | void |  |
+**RotateR** | Rotate image right | void |  |
+**ZoomOut** | Zoom out image | void |  |
+**ZoomIn** | Zoom in image | void |  |
 
 ### Event
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **SelectIndexChanged** | Occurred when selected image index changed | void | int `Index` |
-**ButtonClick** | Occurred when button is clicked | void | ImagePreviewButton `Button` |
+**ButtonClick** | Occurred when button is clicked | void | ImagePreviewItem `Item`, string `Button ID`, object`?` `Tag` |
+
+### Data
+
+#### ImagePreviewItem
+
+> Image item
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
+**Img** | Image | Image`?` | `null` |
+**Call** | Async loading image delegate | Func<int, ImagePreviewItem, Image>`?` | `null` |
+**CallProg** | Async loading with progress delegate | Func<int, ImagePreviewItem, Action<float, string?>, Image>`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
+
+#### ImagePreviewButton
+
+> Custom button
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Name** | Button name | string | `null` |
+**IconSvg** | Icon SVG | string | `null` |
+**Tag** | User defined data | object`?` | `null` |
 
 ### Example
 
 ```csharp
 // Basic usage
-imagePreview1.Image = Image.FromFile("test.jpg");
+var item = new ImagePreviewItem().SetImage(Image.FromFile("test.jpg"));
+imagePreview1.Image.Add(item);
 
 // Add multiple images
-imagePreview1.Items.Add(new ImagePreviewItem(Image.FromFile("img1.jpg")));
-imagePreview1.Items.Add(new ImagePreviewItem(Image.FromFile("img2.jpg")));
-imagePreview1.Items.Add(new ImagePreviewItem(Image.FromFile("img3.jpg")));
+imagePreview1.Image.Add(new ImagePreviewItem().SetImage(Image.FromFile("img1.jpg")));
+imagePreview1.Image.Add(new ImagePreviewItem().SetImage(Image.FromFile("img2.jpg")));
+imagePreview1.Image.Add(new ImagePreviewItem().SetImage(Image.FromFile("img3.jpg")));
 
 // Async loading
-imagePreview1.Call = () => {
+imagePreview1.Image.Add(new ImagePreviewItem().SetImage((index, item) => {
     // Simulate async loading
     Thread.Sleep(1000);
     return Image.FromFile("async.jpg");
-};
+}));
 
 // Async loading with progress
-imagePreview1.CallProg = async (setImg) => {
+imagePreview1.Image.Add(new ImagePreviewItem().SetImage((index, item, progress) => {
     // Simulate download progress
     for (int i = 0; i <= 100; i += 10) {
-        await Task.Delay(100);
+        Thread.Sleep(100);
         // Update progress
-        setImg(null, i / 100f);
+        progress(i / 100f, $"Loading {i}%");
     }
     // Loading complete
-    setImg(Image.FromFile("prog.jpg"), 1f);
-};
+    return Image.FromFile("prog.jpg");
+}));
 
 // Add custom button
-var customBtn = new ImagePreviewButton()
-    .SetSvg("<svg>...</svg>")
-    .SetOnClick(btn => {
-        MessageBox.Show("Custom button clicked");
-    });
-imagePreview1.CustomButtons.Add(customBtn);
+var customBtn = new ImagePreviewButton().SetName("custom").SetIcon("<svg>...</svg>");
+imagePreview1.CustomButton.Add(customBtn);
 ```

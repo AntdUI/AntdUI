@@ -20,6 +20,7 @@ Name | Description | Type | Default Value |
 **DotSize** | Panel indicator dot size | Size | 28 × 4 |
 **DotMargin** | Panel indicator dot margin | int | 12 |
 **DotPosition** | Position of panel indicator dot | [TAlignMini](Enum.md#talignmini) | None |
+**DotFocusedColor** | Focused panel indicator dot color | Color`?` | `null` |
 ||||
 **Radius** | Rounded corners | int | 0 |
 **Round** | Rounded corner style | bool | false |

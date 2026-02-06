@@ -11,7 +11,8 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Form** | Belonging window | Form | `Required` |
+**Target** | Belonging target | Target | `Required` |
+**Form** | Belonging window (obsolete, use Target) | Form | `Required` |
 **Icon** | Icon | [TType](Enum.md#ttype) | None |
 **Font** | Font | Font`?` | `null` |
 **Text** | Text | string | `Required` |
@@ -27,11 +28,15 @@ Name | Description | Type | Default Value |
 **Padding** | Padding | Size | 24, 20 |
 **AutoClose** | Automatic shutdown time(s) `0 equals not closing` | int | 6 |
 **ClickClose** | Can I click to close it | bool | true |
-**CloseIcon** | Display close icon | bool | false |
+**CloseIcon** | Display close icon | bool | true |
 **TopMost** | Topped | bool | false |
 **Tag** | User defined data | object`?` | `null` |
 **Link** | Hyperlink | [Modal.ConfigLink](#modal.configlink)`?` | `null` |
+**Links** | Hyperlink combination | IConfigControl[]`?` | `null` |
 **ShowInWindow** | Pop up in the window | bool | false |
+**EnableSound** | Whether to enable sound | bool | false |
+**Back** | Custom background color | Color`?` | `null` |
+**Fore** | Custom foreground color | Color`?` | `null` |
 **OnClose** | Close callback | Action`?` | `null` |
 
 #### Method
