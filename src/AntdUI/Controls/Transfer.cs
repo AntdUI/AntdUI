@@ -37,11 +37,97 @@ namespace AntdUI
         [Description("右侧列表标题"), Category("数据"), DefaultValue(null), Localizable(true)]
         public string? TargetTitle { get; set; }
 
-        ///// <summary>
-        ///// 是否显示搜索框
-        ///// </summary>
-        //[Description("是否显示搜索框"), Category("行为"), DefaultValue(false)]
-        //public bool ShowSearch { get; set; } = false;
+        #region 搜索框
+
+        bool showSearch = false;
+        /// <summary>
+        /// 是否显示搜索框
+        /// </summary>
+        [Description("是否显示搜索框"), Category("行为"), DefaultValue(false)]
+        public bool ShowSearch
+        {
+            get => showSearch;
+            set
+            {
+                if (showSearch == value) return;
+                showSearch = value;
+                LoadLayout();
+            }
+        }
+
+        string? placeholderSource, placeholderTarget;
+        /// <summary>
+        /// 搜索的水印文本
+        /// </summary>
+        [Description("搜索的水印文本 源"), Category("行为"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? SearchPlaceholderSource
+        {
+            get => placeholderSource;
+            set
+            {
+                if (placeholderSource == value) return;
+                placeholderSource = value;
+                if (input_source == null) return;
+                input_source.LocalizationPlaceholderText = placeholderSourceLocalization;
+                input_source.PlaceholderText = placeholderSource;
+            }
+        }
+
+        /// <summary>
+        /// 搜索的水印文本
+        /// </summary>
+        [Description("搜索的水印文本 目标"), Category("行为"), DefaultValue(null)]
+        [Localizable(true)]
+        public string? SearchPlaceholderTarget
+        {
+            get => placeholderTarget;
+            set
+            {
+                if (placeholderTarget == value) return;
+                placeholderTarget = value;
+                if (input_target == null) return;
+                input_target.LocalizationPlaceholderText = placeholderTargetLocalization;
+                input_target.PlaceholderText = placeholderTarget;
+            }
+        }
+
+        string? placeholderSourceLocalization, placeholderTargetLocalization;
+        /// <summary>
+        /// 搜索的水印文本 源
+        /// </summary>
+        [Description("搜索的水印文本 源"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSearchPlaceholderSource
+        {
+            get => placeholderSourceLocalization;
+            set
+            {
+                if (placeholderSourceLocalization == value) return;
+                placeholderSourceLocalization = value;
+                if (input_source == null) return;
+                input_source.LocalizationPlaceholderText = placeholderSourceLocalization;
+                input_source.PlaceholderText = placeholderSource;
+            }
+        }
+
+        /// <summary>
+        /// 搜索的水印文本 目标
+        /// </summary>
+        [Description("搜索的水印文本 目标"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSearchPlaceholderTarget
+        {
+            get => placeholderTargetLocalization;
+            set
+            {
+                if (placeholderTargetLocalization == value) return;
+                placeholderTargetLocalization = value;
+                if (input_target == null) return;
+                input_target.LocalizationPlaceholderText = placeholderTargetLocalization;
+                input_target.PlaceholderText = placeholderTarget;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// 是否显示全选勾选框
@@ -56,22 +142,29 @@ namespace AntdUI
         public bool OneWay { get; set; }
 
         /// <summary>
+        /// 改变后到最下面
+        /// </summary>
+        [Description("改变后到最下面"), Category("行为"), DefaultValue(false)]
+        public bool ChangeToBottom { get; set; }
+
+        /// <summary>
         /// 列表项高度
         /// </summary>
         [Description("列表项高度"), Category("外观"), DefaultValue(null)]
         public int? ItemHeight { get; set; }
 
         /// <summary>
-        /// 列表项圆角
-        /// </summary>
-        [Description("列表项圆角"), Category("外观"), DefaultValue(4)]
-        public int ItemRadius { get; set; } = 4;
-
-        /// <summary>
         /// 列表框圆角
         /// </summary>
         [Description("列表框圆角"), Category("外观"), DefaultValue(6)]
         public int PanelRadius { get; set; } = 6;
+
+        /// <summary>
+        /// 列表框背景颜色
+        /// </summary>
+        [Description("列表框背景颜色"), Category("外观"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? PanelBack { get; set; }
 
         /// <summary>
         /// 列表框边框颜色
@@ -195,10 +288,13 @@ namespace AntdUI
             return false;
         }
 
-        Rectangle rect_source, rect_source_com, rect_sourceTitle, rect_sourceCheckbox, rect_sourceCheckboxText, rect_toRight;
-        Rectangle rect_target, rect_target_com, rect_targetTitle, rect_targetCheckbox, rect_targetCheckboxText, rect_toLeft;
+        Rectangle rect_source, rect_source_com, rect_source_input, rect_sourceTitle, rect_sourceCheckbox, rect_sourceCheckboxText, rect_toRight;
+        Rectangle rect_target, rect_target_com, rect_target_input, rect_targetTitle, rect_targetCheckbox, rect_targetCheckboxText, rect_toLeft;
+        Point[]? rect_source_line, rect_target_line;
+        Input? input_source, input_target;
         internal void LoadLayout(bool print = true)
         {
+            if (pause) return;
             if (CanLayout())
             {
                 var rect = DisplayRectangle;
@@ -216,33 +312,101 @@ namespace AntdUI
 
                 this.GDI(g =>
                 {
-                    int useY = rect.Y, rh = g.MeasureString(Config.NullText, Font).Height, check_size = (int)(rh * 0.7), gap = (int)(rh * 0.26), gap2 = gap * 2;
+                    int useY = rect.Y, txt_height = g.MeasureString(Config.NullText, Font).Height, check_size = (int)(txt_height * 0.8F), gap = (int)(txt_height * 0.4F), gap2 = gap * 2;
+                    int gapx = (int)(txt_height * 0.6F), gapx2 = gapx * 2;
+                    int head_height = txt_height * 2, item_height = (int)(txt_height * 1.6F);
+
+                    #region 头部
 
                     if (ShowSelectAll)
                     {
-                        int y = useY + gap, yi = y + (rh - check_size) / 2;
-                        rect_sourceCheckbox = new Rectangle(rect_source.X + gap, yi, check_size, check_size);
-                        rect_targetCheckbox = new Rectangle(rect_target.X + gap, yi, check_size, check_size);
-                        int ux = gap2 + check_size;
-                        rect_sourceCheckboxText = new Rectangle(rect_source.X + ux, y, rect_source.Width - ux - gap, rh);
-                        rect_targetCheckboxText = new Rectangle(rect_target.X + ux, y, rect_target.Width - ux - gap, rh);
+                        int yi = useY + (head_height - check_size) / 2;
+                        rect_sourceCheckbox = new Rectangle(rect_source.X + gapx, yi, check_size, check_size);
+                        rect_targetCheckbox = new Rectangle(rect_target.X + gapx, yi, check_size, check_size);
+                        int ux = gapx2 + check_size, ux2 = ux + gapx;
+                        rect_sourceCheckboxText = new Rectangle(rect_source.X + ux, useY, rect_source.Width - ux2, head_height);
+                        rect_targetCheckboxText = new Rectangle(rect_target.X + ux, useY, rect_target.Width - ux2, head_height);
 
-                        rect_sourceTitle = new Rectangle(rect_source.X + ux, y, rect_source.Width - ux - gap2, rh);
-                        rect_targetTitle = new Rectangle(rect_target.X + ux, y, rect_target.Width - ux - gap2, rh);
+                        rect_sourceTitle = new Rectangle(rect_source.X + ux, useY, rect_source.Width - ux2, head_height);
+                        rect_targetTitle = new Rectangle(rect_target.X + ux, useY, rect_target.Width - ux2, head_height);
                     }
                     else
                     {
-                        rect_sourceTitle = new Rectangle(rect_source.X + gap, useY + gap, rect_source.Width - gap2, rh);
-                        rect_targetTitle = new Rectangle(rect_target.X + gap, useY + gap, rect_target.Width - gap2, rh);
+                        rect_sourceTitle = new Rectangle(rect_source.X + gapx, useY, rect_source.Width - gapx2, head_height);
+                        rect_targetTitle = new Rectangle(rect_target.X + gapx, useY, rect_target.Width - gapx2, head_height);
                     }
-                    useY += rh + gap2;
 
-                    int listHeight = rect_source.Height - useY - gap2, lh;
+                    rect_source_line = new Point[] { new Point(rect_source.X, rect_sourceTitle.Bottom), new Point(rect_source.Right, rect_sourceTitle.Bottom) };
+                    rect_target_line = new Point[] { new Point(rect_target.X, rect_targetTitle.Bottom), new Point(rect_target.Right, rect_targetTitle.Bottom) };
+
+                    useY += head_height;
+
+                    #endregion
+
+                    #region 搜索栏
+
+                    if (showSearch)
+                    {
+                        int h = head_height;
+                        rect_source_input = new Rectangle(rect_source.X + gap, useY + gap, rect_source.Width - gap2, h);
+                        rect_target_input = new Rectangle(rect_target.X + gap, useY + gap, rect_target.Width - gap2, h);
+                        if (input_source == null)
+                        {
+                            input_source = new Input
+                            {
+                                PrefixSvg = "SearchOutlined",
+                                LocalizationPlaceholderText = placeholderSourceLocalization,
+                                PlaceholderText = placeholderSource,
+                                Location = rect_source_input.Location,
+                                Size = rect_source_input.Size,
+                                Text = sourceSearchText
+                            };
+                            OnInputStyle(input_source, true);
+                            Controls.Add(input_source);
+                            input_source.TextChanged += input_source_TextChanged;
+                        }
+                        else
+                        {
+                            input_source.Location = rect_source_input.Location;
+                            input_source.Size = rect_source_input.Size;
+                        }
+                        if (input_target == null)
+                        {
+                            input_target = new Input
+                            {
+                                PrefixSvg = "SearchOutlined",
+                                LocalizationPlaceholderText = placeholderTargetLocalization,
+                                PlaceholderText = placeholderTarget,
+                                Location = rect_target_input.Location,
+                                Size = rect_target_input.Size,
+                                Text = targetSearchText
+                            };
+                            OnInputStyle(input_target, false);
+                            Controls.Add(input_target);
+                            input_target.TextChanged += input_target_TextChanged;
+                        }
+                        else
+                        {
+                            input_target.Location = rect_target_input.Location;
+                            input_target.Size = rect_target_input.Size;
+                        }
+                        useY += h + gap2;
+                    }
+                    else
+                    {
+                        input_source?.Dispose();
+                        input_target?.Dispose();
+                        input_source = input_target = null;
+                    }
+
+                    #endregion
+
+                    int listHeight = rect_source.Height - useY + rect.Y, lh;
                     if (ItemHeight.HasValue) lh = (int)(ItemHeight.Value * Dpi);
-                    else lh = rh + gap2;
+                    else lh = item_height;
 
-                    rect_source_com = new Rectangle(rect_source.X + gap, useY, rect_source.Width - gap2, listHeight);
-                    rect_target_com = new Rectangle(rect_target.X + gap, useY, rect_target.Width - gap2, listHeight);
+                    rect_source_com = new Rectangle(rect_source.X, useY, rect_source.Width, listHeight);
+                    rect_target_com = new Rectangle(rect_target.X, useY, rect_target.Width, listHeight);
 
                     if (items == null) return;
                     List<TransferItem> sourceItems = new List<TransferItem>(items.Count), targetItems = new List<TransferItem>(items.Count);
@@ -254,8 +418,9 @@ namespace AntdUI
                             else sourceItems.Add(it);
                         }
                     }
-                    int y1 = CalculateLayout(g, sourceItems, rect_source_com, lh, gap, gap2, check_size);
-                    int y2 = CalculateLayout(g, targetItems, rect_target_com, lh, gap, gap2, check_size);
+
+                    int y1 = CalculateLayout(g, sourceItems, rect_source_com, lh, gap, gap2, gapx, gapx2, check_size);
+                    int y2 = CalculateLayout(g, targetItems, rect_target_com, lh, gap, gap2, gapx, gapx2, check_size);
 
                     ScrollBarSource.SizeChange(rect_source_com);
                     ScrollBarTarget.SizeChange(rect_target_com);
@@ -268,16 +433,16 @@ namespace AntdUI
             }
         }
 
-        int CalculateLayout(Canvas g, List<TransferItem> list, Rectangle rect, int rh, int gap, int gap2, int check_size)
+        int CalculateLayout(Canvas g, List<TransferItem> list, Rectangle rect, int rh, int gap, int gap2, int gapx, int gapx2, int check_size)
         {
             int usey = 0;
             foreach (var it in list)
             {
                 it.PARENT = this;
                 it.rect = new Rectangle(rect.X, rect.Y + usey, rect.Width, rh);
-                it.rect_check = new Rectangle(rect.X + gap, rect.Y + usey + (rh - check_size) / 2, check_size, check_size);
-                int ux = gap2 + check_size;
-                it.rect_text = new Rectangle(rect.X + ux, rect.Y + usey, rect.Width - ux - gap, rh);
+                it.rect_check = new Rectangle(rect.X + gapx, rect.Y + usey + (rh - check_size) / 2, check_size, check_size);
+                int ux = gapx2 + check_size;
+                it.rect_text = new Rectangle(rect.X + ux, rect.Y + usey, rect.Width - ux - gapx, rh);
                 usey += rh;
             }
             return usey;
@@ -293,158 +458,141 @@ namespace AntdUI
             var g = e.Canvas;
 
             // 绘制源列表
-            PaintListPanel(g, rect_source, rect_source_com, rect_sourceTitle, rect_sourceCheckbox, SourceTitle ?? Localization.Get("Transfer.Source", "源列表"), ScrollBarSource, sourceSelectAll, false);
+            PaintListPanel(g, rect_source, rect_source_com, rect_sourceTitle, rect_sourceCheckbox, rect_source_line, SourceTitle ?? Localization.Get("Transfer.Source", "源列表"), ScrollBarSource, sourceSelectAll, false);
 
             // 绘制目标列表
-            PaintListPanel(g, rect_target, rect_target_com, rect_targetTitle, rect_targetCheckbox, TargetTitle ?? Localization.Get("Transfer.Target", "目标列表"), ScrollBarTarget, targetSelectAll, true);
+            PaintListPanel(g, rect_target, rect_target_com, rect_targetTitle, rect_targetCheckbox, rect_target_line, TargetTitle ?? Localization.Get("Transfer.Target", "目标列表"), ScrollBarTarget, targetSelectAll, true);
 
             // 绘制操作按钮
             PaintOperationButtons(g);
         }
 
         readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis, sfL = FormatFlags.Left | FormatFlags.VerticalCenter, sfR = FormatFlags.Right | FormatFlags.VerticalCenter;
-        private void PaintListPanel(Canvas g, Rectangle rect, Rectangle rect_com, Rectangle rect_title, Rectangle rect_checkbox, string title, ScrollBar scroll, bool selectAll, bool isTarget)
+        private void PaintListPanel(Canvas g, Rectangle rect, Rectangle rect_com, Rectangle rect_title, Rectangle rect_checkbox, Point[]? rect_line, string title, ScrollBar scroll, CheckState selectAll, bool isTarget)
         {
-            // 获取颜色
-            Color borderColor = BorderColor ?? Colour.BorderColor.Get(nameof(Transfer), ColorScheme), foreColor = ForeColor ?? Colour.Text.Get(nameof(Transfer), ColorScheme), foreActive = ForeActive ?? Colour.Primary.Get(nameof(Transfer), ColorScheme);
-
             // 绘制面板边框和背景
-            using (var path = rect.RoundPath(PanelRadius * Dpi))
+            var panelRadius = (int)(PanelRadius * Dpi);
+            using (var path = rect.RoundPath(panelRadius))
             {
-                using (var brush = new SolidBrush(Colour.FillQuaternary.Get(nameof(Transfer), ColorScheme)))
+                ScrollBarSource.Radius = ScrollBarTarget.Radius = panelRadius;
+                using (var brush = new SolidBrush(PanelBack ?? Colour.BgContainer.Get(nameof(Transfer), ColorScheme)))
                 {
                     g.Fill(brush, path);
                 }
-                using (var pen = new Pen(borderColor))
+
+                PaintListItems(g, rect_com, rect_title, title, scroll, isTarget, panelRadius);
+
+                using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(nameof(Transfer), ColorScheme), Dpi))
                 {
                     g.Draw(pen, path);
+                    g.DrawLines(pen, rect_line!);
                 }
             }
 
-            if (items != null)
+            // 绘制全选复选框
+            if (ShowSelectAll) PaintCheck(g, rect_checkbox, selectAll);
+        }
+
+        private void PaintListItems(Canvas g, Rectangle rect_com, Rectangle rect_title, string title, ScrollBar scroll, bool isTarget, int panelRadius)
+        {
+            if (items == null) return;
+            int count = 0, selectedCount = 0;
+            var state = g.Save();
+            if (scroll.ShowY)
             {
-                int count = 0, selectedCount = 0;
-                var state = g.Save();
-                g.SetClip(rect_com);
-                g.TranslateTransform(0, -scroll.ValueY);
-                float radius = ItemRadius * Dpi;
+                using (var path = rect_com.RoundPath(panelRadius, false, false, true, true))
+                {
+                    g.SetClip(path);
+                }
+            }
+            else g.SetClip(rect_com);
+            g.TranslateTransform(0, -scroll.ValueY);
+            var name = nameof(Transfer);
+            using (var fore = new SolidBrush(ForeColor ?? Colour.Text.Get(name, ColorScheme)))
+            using (var foreActive = new SolidBrush(ForeActive ?? Colour.Text.Get(name, ColorScheme)))
+            {
                 foreach (var it in items)
                 {
                     if (it.Visible && it.IsTarget == isTarget)
                     {
                         count++;
-                        if (it.selected) selectedCount++;
                         // 绘制项背景
-                        using (var path = it.rect.RoundPath(radius))
+                        if (it.selected)
                         {
-                            if (it.selected)
+                            selectedCount++;
+                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
                             {
-                                using (var brush = new SolidBrush(BackActive ?? Colour.FillTertiary.Get(nameof(Transfer), ColorScheme)))
-                                {
-                                    g.Fill(brush, path);
-                                }
+                                g.Fill(brush, it.rect);
                             }
-                            else if (it.Hover)
+                        }
+                        if (it.Hover)
+                        {
+                            using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
                             {
-                                using (var brush = new SolidBrush(BackHover ?? Colour.FillSecondary.Get(nameof(Transfer), ColorScheme)))
-                                {
-                                    g.Fill(brush, path);
-                                }
+                                g.Fill(brush, it.rect);
                             }
                         }
 
-                        // 绘制复选框
-                        using (var path = it.rect_check.RoundPath(it.rect_check.Height * .2F))
-                        {
-                            if (it.selected)
-                            {
-                                g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
-                                g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Dpi, it.rect_check.CheckArrow());
-                            }
-                            else g.Draw(Colour.BorderColor.Get(nameof(Transfer), ColorScheme), 2F * Dpi, path);
-                        }
+                        PaintItemCheck(g, it);
 
                         // 绘制项文本
-                        using (var brush = new SolidBrush(it.selected ? foreActive : foreColor))
-                        {
-                            g.String(it.Text, Font, brush, it.rect_text, sf);
-                        }
+                        if (it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
+                        else g.String(it.Text, Font, Colour.TextQuaternary.Get(name, ColorScheme), it.rect_text, sf);
                     }
                 }
                 g.Restore(state);
 
                 // 绘制标题/数量
                 string countText = $"{selectedCount}/{count}";
-                using (var brush = new SolidBrush(foreColor))
-                {
-                    g.String(title, Font, brush, rect_title, sfL);
-                    g.String(countText, Font, brush, rect_title, sfR);
-                }
 
-                // 绘制滚动条
-                if (scroll.Show) scroll.Paint(g, ColorScheme);
+                g.String(title, Font, fore, rect_title, sfL);
+                g.String(countText, Font, fore, rect_title, sfR);
             }
 
-            #region 绘制搜索框
+            // 绘制滚动条
+            if (scroll.Show) scroll.Paint(g, ColorScheme);
+        }
 
-            // 绘制搜索框
-            //if (ShowSearch)
-            //{
-            //    var searchRect = new Rectangle(rect.X + 10, contentTop, rect.Width - 20, 30);
-            //    using (var path = new GraphicsPath())
-            //    {
-            //        path.AddRoundedRectangle(searchRect, 4);
-            //        using (var brush = new SolidBrush(Style.Db.FillTertiary))
-            //        {
-            //            g.FillPath(brush, path);
-            //        }
-            //        using (var pen = new Pen(borderColor))
-            //        {
-            //            g.DrawPath(pen, path);
-            //        }
-            //    }
-
-            //    // 绘制搜索图标
-            //    var searchIconRect = new Rectangle(searchRect.X + 5, searchRect.Y + 5, 20, 20);
-            //    g.DrawSvg(g,"search", searchIconRect, foreColor);
-
-            //    // 绘制搜索文本
-            //    var searchTextRect = new Rectangle(searchRect.X + 30, searchRect.Y, searchRect.Width - 35, searchRect.Height);
-            //    string searchText = isSource ? sourceSearchText : targetSearchText;
-            //    if (string.IsNullOrEmpty(searchText))
-            //    {
-            //        using (var brush = new SolidBrush(Color.FromArgb(150, foreColor.R, foreColor.G, foreColor.B)))
-            //        using (var font = new Font(Font.FontFamily, 9))
-            //        {
-            //            g.DrawString("搜索", font, brush, searchTextRect, new StringFormat { LineAlignment = StringAlignment.Center });
-            //        }
-            //    }
-            //    else
-            //    {
-            //        using (var brush = new SolidBrush(foreColor))
-            //        using (var font = new Font(Font.FontFamily, 9))
-            //        {
-            //            g.DrawString(searchText, font, brush, searchTextRect, new StringFormat { LineAlignment = StringAlignment.Center });
-            //        }
-            //    }
-
-            //    contentTop += 40;
-            //}
-
-            #endregion
-
-            // 绘制全选复选框
-            if (ShowSelectAll)
+        private void PaintCheck(Canvas g, Rectangle rect_checkbox, CheckState state)
+        {
+            using (var path = rect_checkbox.RoundPath(rect_checkbox.Height * .2F))
             {
-                // 绘制复选框
-                using (var path = rect_checkbox.RoundPath(rect_checkbox.Height * .2F))
+                switch (state)
                 {
-                    if (selectAll)
-                    {
+                    case CheckState.Checked:
                         g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
                         g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Dpi, rect_checkbox.CheckArrow());
+                        break;
+                    case CheckState.Indeterminate:
+                        g.Draw(Colour.BorderColor.Get(nameof(Transfer), ColorScheme), 2F * Dpi, path);
+                        g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), Checkbox.PaintBlock(rect_checkbox));
+                        break;
+                    case CheckState.Unchecked:
+                        g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Dpi, path);
+                        break;
+                }
+            }
+        }
+
+        private void PaintItemCheck(Canvas g, TransferItem it)
+        {
+            var name = nameof(Transfer);
+            using (var path = it.rect_check.RoundPath(it.rect_check.Height * .2F))
+            {
+                if (it.Enabled)
+                {
+                    if (it.selected)
+                    {
+                        g.Fill(Colour.Primary.Get(name, ColorScheme), path);
+                        g.DrawLines(Colour.BgBase.Get(name, ColorScheme), 2.6F * Dpi, it.rect_check.CheckArrow());
                     }
-                    else g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Dpi, path);
+                    else g.Draw(Colour.BorderColor.Get(name, ColorScheme), 2F * Dpi, path);
+                }
+                else
+                {
+                    g.Fill(Colour.FillQuaternary.Get(name, ColorScheme), path);
+                    if (it.selected) g.DrawLines(Colour.TextQuaternary.Get(name, ColorScheme), 2.6F * Dpi, it.rect_check.CheckArrow());
+                    g.Draw(Colour.BorderColorDisable.Get(name, ColorScheme), 2F * Dpi, path);
                 }
             }
         }
@@ -530,7 +678,7 @@ namespace AntdUI
                 if (items == null) return;
                 foreach (var it in items)
                 {
-                    if (it.Visible)
+                    if (it.Visible && it.Enabled)
                     {
                         if (it.IsTarget) it.Hover = it.rect.Contains(e.X, e.Y + sy2);
                         else it.Hover = it.rect.Contains(e.X, e.Y + sy1);
@@ -542,6 +690,7 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (showSearch) Focus();
             if (ScrollBarSource.MouseDownY(e.X, e.Y) && ScrollBarTarget.MouseDownY(e.X, e.Y))
             {
                 base.OnMouseDown(e);
@@ -554,38 +703,48 @@ namespace AntdUI
                         if (rect_sourceCheckbox.Contains(e.X, e.Y) || rect_sourceCheckboxText.Contains(e.X, e.Y))
                         {
                             // 切换全选状态
-                            bool newState = sourceSelectAll = !sourceSelectAll;
-                            int check_count = 0;
+                            bool newState = sourceSelectAll == CheckState.Unchecked ? true : false;
+                            int count = 0, check_count = 0;
                             // 更新所有项的选中状态
                             foreach (var it in items)
                             {
-                                if (it.Visible)
+                                if (it.Visible && it.Enabled)
                                 {
                                     if (it.IsTarget) continue;
+                                    count++;
                                     it.selected = newState;
                                     if (it.selected) check_count++;
                                 }
                             }
-                            hover_to_right.Enable = check_count > 0;
-                            LoadLayout();
+                            if (count > 0)
+                            {
+                                sourceSelectAll = newState ? CheckState.Checked : CheckState.Unchecked;
+                                hover_to_right.Enable = check_count > 0;
+                                LoadLayout();
+                            }
                             return;
                         }
                         if (rect_targetCheckbox.Contains(e.X, e.Y) || rect_targetCheckboxText.Contains(e.X, e.Y))
                         {
                             // 切换全选状态
-                            bool newState = targetSelectAll = !targetSelectAll;
-                            int check_count = 0;
+                            bool newState = targetSelectAll == CheckState.Unchecked ? true : false;
+                            int count = 0, check_count = 0;
                             // 更新所有项的选中状态
                             foreach (var it in items)
                             {
-                                if (it.Visible && it.IsTarget)
+                                if (it.Visible && it.Enabled && it.IsTarget)
                                 {
+                                    count++;
                                     it.selected = newState;
                                     if (it.selected) check_count++;
                                 }
                             }
-                            hover_to_left.Enable = !OneWay && check_count > 0;
-                            LoadLayout();
+                            if (count > 0)
+                            {
+                                targetSelectAll = newState ? CheckState.Checked : CheckState.Unchecked;
+                                hover_to_left.Enable = !OneWay && check_count > 0;
+                                LoadLayout();
+                            }
                             return;
                         }
                     }
@@ -593,25 +752,27 @@ namespace AntdUI
                     if (rect_source.Contains(e.X, e.Y))
                     {
                         int sy = ScrollBarSource.ValueY;
-                        int count = 0, check_count = 0;
+                        int change = 0, count = 0, check_count = 0;
                         foreach (var it in items)
                         {
-                            if (it.Visible)
+                            if (it.Visible && it.Enabled)
                             {
                                 if (it.IsTarget) continue;
                                 if (it.rect.Contains(e.X, e.Y + sy))
                                 {
-                                    // 切换选中状态
                                     it.selected = !it.selected;
-                                    count++;
-                                    if (it.selected) check_count++;
+                                    change++;
                                 }
+                                count++;
+                                if (it.selected) check_count++;
                             }
                         }
-                        if (count > 0)
+                        if (change > 0)
                         {
                             // 更新全选状态
-                            hover_to_right.Enable = sourceSelectAll = check_count > 0;
+                            if (check_count > 0) sourceSelectAll = check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
+                            else sourceSelectAll = CheckState.Unchecked;
+                            hover_to_right.Enable = check_count > 0;
                             Invalidate();
                         }
                     }
@@ -620,24 +781,26 @@ namespace AntdUI
                     if (rect_target.Contains(e.X, e.Y))
                     {
                         int sy = ScrollBarTarget.ValueY;
-                        int count = 0, check_count = 0;
+                        int change = 0, count = 0, check_count = 0;
                         foreach (var it in items)
                         {
-                            if (it.Visible && it.IsTarget)
+                            if (it.Visible && it.Enabled && it.IsTarget)
                             {
                                 if (it.rect.Contains(e.X, e.Y + sy))
                                 {
-                                    // 切换选中状态
                                     it.selected = !it.selected;
-                                    count++;
-                                    if (it.selected) check_count++;
+                                    change++;
                                 }
+                                count++;
+                                if (it.selected) check_count++;
                             }
                         }
-                        if (count > 0)
+                        if (change > 0)
                         {
-                            targetSelectAll = check_count > 0;
-                            hover_to_left.Enable = !OneWay && targetSelectAll;
+                            if (check_count > 0) targetSelectAll = check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
+                            else targetSelectAll = CheckState.Unchecked;
+                            hover_to_left.Enable = !OneWay && check_count > 0;
+                            Invalidate();
                         }
                     }
                 }
@@ -714,8 +877,9 @@ namespace AntdUI
         /// <summary>
         /// 触发穿梭框选项变化事件
         /// </summary>
-        /// <param name="e">事件参数</param>
-        protected virtual void OnTransferChanged(TransferEventArgs e) => TransferChanged?.Invoke(this, e);
+        /// <param name="sourceItems">源列表项</param>
+        /// <param name="targetItems">目标列表项</param>
+        protected virtual void OnTransferChanged(List<TransferItem> sourceItems, List<TransferItem> targetItems) => TransferChanged?.Invoke(this, new TransferEventArgs(sourceItems, targetItems));
 
         /// <summary>
         /// 搜索事件参数
@@ -753,8 +917,43 @@ namespace AntdUI
         /// <summary>
         /// 触发搜索事件
         /// </summary>
+        /// <param name="searchText">搜索文本</param>
+        /// <param name="isSource">是否为源列表搜索</param>
+        protected virtual void OnSearch(string searchText, bool isSource) => Search?.Invoke(this, new SearchEventArgs(searchText, isSource));
+
+        /// <summary>
+        /// 输入样式事件参数
+        /// </summary>
+        public class InputStyleEventArgs : EventArgs
+        {
+            /// <summary>
+            /// 文本框
+            /// </summary>
+            public Input Input { get; }
+
+            /// <summary>
+            /// 是否为源列表样式
+            /// </summary>
+            public bool IsSource { get; }
+
+            public InputStyleEventArgs(Input input, bool isSource)
+            {
+                Input = input;
+                IsSource = isSource;
+            }
+        }
+
+        /// <summary>
+        /// 输入样式事件
+        /// </summary>
+        [Description("输入样式事件"), Category("行为")]
+        public event EventHandler<InputStyleEventArgs>? InputStyle;
+
+        /// <summary>
+        /// 触发搜索事件
+        /// </summary>
         /// <param name="e">事件参数</param>
-        protected virtual void OnSearch(SearchEventArgs e) => Search?.Invoke(this, e);
+        protected virtual void OnInputStyle(Input input, bool isSource) => InputStyle?.Invoke(this, new InputStyleEventArgs(input, isSource));
 
         #endregion
 
@@ -767,6 +966,9 @@ namespace AntdUI
             hover_to_left = new ITaskOpacity(nameof(Transfer), this);
             ScrollBarSource = new ScrollBar(this);
             ScrollBarTarget = new ScrollBar(this);
+            ScrollBarSource.Back = ScrollBarTarget.Back = false;
+            ScrollBarSource.RT = ScrollBarTarget.RT = false;
+            ScrollBarSource.RB = ScrollBarTarget.RB = true;
         }
 
         #endregion
@@ -775,7 +977,7 @@ namespace AntdUI
 
         private string sourceSearchText = "", targetSearchText = "";
 
-        private bool sourceSelectAll = false, targetSelectAll = false;
+        private CheckState sourceSelectAll = CheckState.Unchecked, targetSelectAll = CheckState.Unchecked;
 
         private ITaskOpacity hover_to_right, hover_to_left;
 
@@ -785,7 +987,7 @@ namespace AntdUI
 
         private void InitializeItems()
         {
-            sourceSelectAll = targetSelectAll = false;
+            sourceSelectAll = targetSelectAll = CheckState.Unchecked;
             // 应用过滤
             ApplyFilter();
         }
@@ -819,12 +1021,12 @@ namespace AntdUI
                     if (it.IsTarget)
                     {
                         it.Visible = et || it.Text?.IndexOf(targetSearchText, StringComparison.OrdinalIgnoreCase) >= 0;
-                        if (it.Visible && it.selected) check_target++;
+                        if (it.Visible && it.Enabled && it.selected) check_target++;
                     }
                     else
                     {
                         it.Visible = es || it.Text?.IndexOf(sourceSearchText, StringComparison.OrdinalIgnoreCase) >= 0;
-                        if (it.Visible && it.selected) check_source++;
+                        if (it.Visible && it.Enabled && it.selected) check_source++;
                     }
                 }
             }
@@ -838,61 +1040,74 @@ namespace AntdUI
         private void MoveSelectedItemsToRight()
         {
             if (items == null) return;
-            sourceSelectAll = targetSelectAll = false;
-            int changed = 0;
-            List<TransferItem> sourceItems = new List<TransferItem>(items.Count), targetItems = new List<TransferItem>(items.Count);
+            sourceSelectAll = targetSelectAll = CheckState.Unchecked;
+            List<TransferItem> sourceItems = new List<TransferItem>(items.Count), targetItems = new List<TransferItem>(items.Count),
+                changeItems = new List<TransferItem>(items.Count);
             foreach (var it in items)
             {
-                if (it.Visible)
+                if (it.Visible && it.Enabled)
                 {
                     if (it.IsTarget) targetItems.Add(it);
                     else if (it.selected)
                     {
+                        changeItems.Add(it);
                         targetItems.Add(it);
                         it.selected = false;
                         it.IsTarget = true;
-                        changed++;
                     }
                     else sourceItems.Add(it);
                 }
             }
-
-            if (changed > 0)
+            if (changeItems.Count > 0)
             {
+                if (ChangeToBottom)
+                {
+                    pause = true;
+                    foreach (var it in changeItems) items.Remove(it);
+                    items.AddRange(changeItems);
+                    pause = false;
+                }
                 ApplyFilter();
-                OnTransferChanged(new TransferEventArgs(sourceItems, targetItems));
+                OnTransferChanged(sourceItems, targetItems);
             }
         }
 
+        bool pause = false;
         private void MoveSelectedItemsToLeft()
         {
             if (items == null || OneWay) return;
-
-            int changed = 0;
-            List<TransferItem> sourceItems = new List<TransferItem>(items.Count), targetItems = new List<TransferItem>(items.Count);
-            sourceSelectAll = targetSelectAll = false;
+            List<TransferItem> sourceItems = new List<TransferItem>(items.Count), targetItems = new List<TransferItem>(items.Count),
+                changeItems = new List<TransferItem>(items.Count);
+            sourceSelectAll = targetSelectAll = CheckState.Unchecked;
             foreach (var it in items)
             {
-                if (it.Visible)
+                if (it.Visible && it.Enabled)
                 {
                     if (it.IsTarget)
                     {
                         if (it.selected)
                         {
+                            changeItems.Add(it);
                             sourceItems.Add(it);
                             it.selected = false;
                             it.IsTarget = false;
-                            changed++;
                         }
                         else targetItems.Add(it);
                     }
                     else sourceItems.Add(it);
                 }
             }
-            if (changed > 0)
+            if (changeItems.Count > 0)
             {
+                if (ChangeToBottom)
+                {
+                    pause = true;
+                    foreach (var it in changeItems) items.Remove(it);
+                    items.AddRange(changeItems);
+                    pause = false;
+                }
                 ApplyFilter();
-                OnTransferChanged(new TransferEventArgs(sourceItems, targetItems));
+                OnTransferChanged(sourceItems, targetItems);
             }
         }
 
@@ -902,11 +1117,10 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                hover_to_right.Dispose();
-                hover_to_left.Dispose();
-            }
+            hover_to_right.Dispose();
+            hover_to_left.Dispose();
+            input_source?.Dispose();
+            input_target?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -933,7 +1147,7 @@ namespace AntdUI
             var sourceItems = new List<TransferItem>(items.Count);
             foreach (var it in items)
             {
-                if (it.Visible)
+                if (it.Visible && it.Enabled)
                 {
                     if (it.IsTarget) continue;
                     sourceItems.Add(it);
@@ -952,7 +1166,7 @@ namespace AntdUI
             var targetItems = new List<TransferItem>(items.Count);
             foreach (var it in items)
             {
-                if (it.Visible && it.IsTarget) targetItems.Add(it);
+                if (it.Visible && it.Enabled && it.IsTarget) targetItems.Add(it);
             }
             return targetItems;
         }
@@ -963,8 +1177,10 @@ namespace AntdUI
         /// <param name="text">搜索文本</param>
         public void SetSourceSearchText(string text)
         {
+            if (sourceSearchText == text) return;
             sourceSearchText = text;
-            OnSearch(new SearchEventArgs(text, true));
+            if (input_source != null) input_source.Text = text;
+            OnSearch(text, true);
             ApplyFilter();
         }
 
@@ -974,9 +1190,21 @@ namespace AntdUI
         /// <param name="text">搜索文本</param>
         public void SetTargetSearchText(string text)
         {
+            if (targetSearchText == text) return;
             targetSearchText = text;
-            OnSearch(new SearchEventArgs(text, false));
+            if (input_target != null) input_target.Text = text;
+            OnSearch(text, false);
             ApplyFilter();
+        }
+
+        private void input_source_TextChanged(object? sender, EventArgs e)
+        {
+            if (sender is Input input) SetSourceSearchText(input.Text);
+        }
+
+        private void input_target_TextChanged(object? sender, EventArgs e)
+        {
+            if (sender is Input input) SetTargetSearchText(input.Text);
         }
 
         #endregion
@@ -1057,7 +1285,7 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                Invalidate();
+                PARENT?.Invalidate();
             }
         }
 
@@ -1080,7 +1308,7 @@ namespace AntdUI
             {
                 if (selected == value) return;
                 selected = value;
-                Invalidate();
+                PARENT?.Invalidate();
             }
         }
 
@@ -1097,17 +1325,47 @@ namespace AntdUI
             {
                 if (hover == value) return;
                 hover = value;
-                Invalidate();
+                PARENT?.Invalidate();
             }
         }
 
         #endregion
 
+        bool visible = true;
         /// <summary>
-        /// 是否可见
+        /// 是否显示
         /// </summary>
-        [Description("是否可见"), Category("行为"), DefaultValue(true)]
-        public bool Visible { get; set; } = true;
+        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        public bool Visible
+        {
+            get => visible;
+            set
+            {
+                if (visible == value) return;
+                visible = value;
+                PARENT?.LoadLayout();
+            }
+        }
+
+        #region 禁用
+
+        bool enabled = true;
+        /// <summary>
+        /// 禁用状态
+        /// </summary>
+        [Description("禁用状态"), Category("行为"), DefaultValue(true)]
+        public bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (enabled == value) return;
+                enabled = value;
+                PARENT?.Invalidate();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// 是否在目标列表
@@ -1122,7 +1380,6 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle rect_text { get; set; }
         internal Rectangle rect_check { get; set; }
-        void Invalidate() => PARENT?.Invalidate();
 
         #endregion
 
@@ -1149,13 +1406,25 @@ namespace AntdUI
 
         public TransferItem SetVisible(bool value = false)
         {
-            Visible = value;
+            visible = value;
+            return this;
+        }
+
+        public TransferItem SetEnabled(bool value = false)
+        {
+            enabled = value;
             return this;
         }
 
         public TransferItem SetSelected(bool value = true)
         {
             selected = value;
+            return this;
+        }
+
+        public TransferItem SetTarget(bool value = true)
+        {
+            IsTarget = value;
             return this;
         }
 

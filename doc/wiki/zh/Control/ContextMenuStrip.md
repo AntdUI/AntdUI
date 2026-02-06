@@ -12,16 +12,24 @@ ContextMenuStrip 右键菜单
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Target** | 所属目标 | Target | `必填` |
 **Control** | 所属控件 | Form | `必填` |
 **Items** | 菜单内容 `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | [] |
 **Font** | 字体 | Font |`null`|
 **Radius** | 圆角 | int | 6 |
+**Gap** | 间距比例 | float | 0.286 |
+**IconRatio** | 图标比例 | float | 1.14 |
+**IconGap** | 图标间距 | float | 0.6 |
+**CheckRatio** | 复选框比例 | float | 0.8 |
+**PaddRatio** | 内边距比例 | float[] | [0.72, 0.432] |
 **TopMost** | 是否置顶 | bool |false|
 **CallSleep** | 延迟回调 | int |0|
 **UFocus** | 是否抢占焦点 | bool |false|
 **Location** | 自定义坐标 | Point`?` |`null`|
-**Align** | 方向 | [TAlignFrom](Enum.md#talignfrom) | BR |
+**Align** | 方向 | [TAlign](Enum.md#talign) | BR |
 **Call** | 点击回调 | Action<ContextMenuStripItem> | `必填` |
+**OnClose** | 关闭回调 | Action | `null` |
+**ColorScheme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
 
 ### 数据
 
@@ -47,6 +55,32 @@ ContextMenuStrip 右键菜单
 > 分割线
 
 ***
+
+#### ContextMenuStripItemButtons
+
+> 并排按钮项
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**Items** | 按钮集合 | ContextMenuStripItemButton[] | `null` |
+**FontRatio** | 字体比例 | float | 0.7 |
+**Square** | 是否正方形 | bool | false |
+
+#### ContextMenuStripItemButton
+
+> 并排按钮项元素
+
+名称 | 描述 | 类型 | 默认值 |
+:--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
+**Text** | 文本 | string | `必填` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**Fore** | 文字颜色 | Color`?` | `null` |
+**Icon** | 图标 | Image`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
+**Enabled** 🔴 | 使能 | bool | true |
+**Checked** | 选中 | bool | false |
+**Tag** | 用户定义数据 | object`?` | `null` |
 
 ### 示例
 

@@ -28,7 +28,7 @@ namespace AntdUI
             CloseMode = CloseMode.Leave;
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             PARENT = control;
             select_x = 0;
@@ -89,7 +89,7 @@ namespace AntdUI
             Guid = guid;
             ColorScheme = control.ColorScheme;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             select_x = sx;
             PARENT = control;

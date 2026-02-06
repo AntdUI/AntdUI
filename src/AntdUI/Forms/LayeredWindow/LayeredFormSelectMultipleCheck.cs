@@ -27,7 +27,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = new List<object>(control.SelectedValue.Length);
@@ -62,7 +62,7 @@ namespace AntdUI
             PARENT = control;
             Font = control.Font;
             lay = parent;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             ScrollBar = new ScrollBar(this, control.ColorScheme);
             selectedValue = new List<object>(control.SelectedValue.Length);

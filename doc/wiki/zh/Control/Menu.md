@@ -23,9 +23,15 @@ Menu 导航菜单 👚
 **Indent** | 常规缩进 `和Tree那样缩进` | bool | false |
 **ShowSubBack** | 显示子菜单背景 | bool | false |
 **Unique** | 只保持一个子菜单的展开 | bool | false |
-**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
-**Gap** | 间距 | int | 0 |
+**Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Hover |
+**Gap** | 间距 | int`?` | `null` |
 **IconRatio** | 图标比例 | float | 1.2F |
+**IconGap** | 图标与文字间距比例 | int`?` | `null` |
+**itemMargin** | 菜单项外间距 | int`?` | `null` |
+**InlineIndent** | 缩进宽度 | int`?` | `null` |
+**ArrowRatio** | 箭头比例 | float`?` | `null` |
+**MouseRightCtrl** | 鼠标右键控制 | bool | true |
+**ScrollBarBlock** | 滚动条遮挡 | bool | false |
 ||||
 **Theme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
 **Mode** | 菜单类型 | [TMenuMode](Enum.md#tmenumode) | Inline |
@@ -34,6 +40,11 @@ Menu 导航菜单 👚
 ||||
 **Items** | 数据 `MenuItem[]` | [MenuItem[]](#menuitem) | [] |
 ||||
+**DropDownPadding** | 下拉边距 | Size | 16 × 10 |
+**DropIconRatio** | 下拉图标比例 | float | 0.7 |
+**DropIconGap** | 下拉图标边距比例 | float | 0.25 |
+**DropDownOffset** | 下拉菜单偏移量 | Size | 0 × 0 |
+**TooltipConfig** | 超出文字提示配置 | TooltipConfig`?` | `null` |
 **PauseLayout** | 暂停布局 | bool | false |
 
 ### 事件
@@ -41,6 +52,9 @@ Menu 导航菜单 👚
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **SelectChanged** | Select 属性值更改时发生 | void | [MenuItem](#menuitem) item `项` |
+**ItemClick** | 点击项时发生 | void | [MenuItem](#menuitem) item `项` |
+**SelectChanging** | Select 属性值更改前发生 | bool | [MenuItem](#menuitem) item `项` |
+**CustomButtonClick** | 自定义按钮点击时发生 | void | MenuButton button `按钮`, [MenuItem](#menuitem) item `项` |
 
 ### 方法
 
@@ -52,6 +66,12 @@ Menu 导航菜单 👚
 ||||
 **Select** | 选中菜单 | void | MenuItem item `项`, bool focus `设置焦点` = true |
 **Remove** | 移除菜单 | void | MenuItem item `项` |
+**USelect** | 取消全部选择 | void | 无 |
+**HitTest** | 命中测试 | MenuItem`?` | int x `X坐标`, int y `Y坐标` |
+**GetSelectIndex** | 获取选中项索引 | int | MenuItem item `项` |
+**FindID** | 根据节点id查询节点 | MenuItem`?` | string id `ID` |
+**FindName** | 根据节点name查询节点 | MenuItem`?` | string name `名称` |
+**Focus** | 设置焦点 | void | MenuItem menuItem `菜单项`, bool force `强制` = false |
 
 
 ### 数据

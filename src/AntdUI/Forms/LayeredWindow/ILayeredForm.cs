@@ -309,6 +309,7 @@ namespace AntdUI
         {
             try
             {
+                popover?.CloseLockedDel(this);
                 if (IsDisposed) return;
                 IClosing();
                 if (InvokeRequired) Invoke(Dispose);
@@ -580,6 +581,60 @@ namespace AntdUI
             taskTouch?.Dispose();
             taskTouch = null;
             base.OnMouseWheel(e);
+        }
+
+        #endregion
+
+        #region 置顶
+
+        public bool topMost = false;
+
+        /// <summary>
+        /// 根据控件的TopMost属性设置窗口置顶
+        /// </summary>
+        /// <param name="control">参考控件</param>
+        /// <param name="hand">要设置的窗口句柄</param>
+        /// <returns>是否设置成功</returns>
+        public void SetTopMost(Control? control, IntPtr hand, bool top = false) => SetTopMostCore(control.FindPARENT(), hand, top);
+
+        /// <summary>
+        /// 根据Target的TopMost属性设置窗口置顶
+        /// </summary>
+        /// <param name="target">参考Target</param>
+        /// <param name="hand">要设置的窗口句柄</param>
+        /// <returns>是否设置成功</returns>
+        public void SetTopMost(Target? target, IntPtr hand, bool top = false) => SetTopMostCore(target.FindPARENT(), hand, top);
+
+        LayeredFormPopover? popover;
+        void SetTopMostCore(Form? form, IntPtr hand, bool top = false)
+        {
+            if (top)
+            {
+                SetTopMostCore(hand);
+                if (form == null) return;
+                if (form is LayeredFormPopover layeredFormPopover)
+                {
+                    popover = layeredFormPopover;
+                    popover.CloseLockedAdd(this);
+                }
+            }
+            else
+            {
+                if (form == null) return;
+                if (form is LayeredFormPopover layeredFormPopover)
+                {
+                    popover = layeredFormPopover;
+                    popover.CloseLockedAdd(this);
+                    if (layeredFormPopover.topMost) SetTopMostCore(hand);
+                    return;
+                }
+                if (form.TopMost || (form is ILayeredForm layered && layered.topMost)) SetTopMostCore(hand);
+            }
+        }
+        void SetTopMostCore(IntPtr hand)
+        {
+            topMost = true;
+            Helper.SetTopMost(hand);
         }
 
         #endregion

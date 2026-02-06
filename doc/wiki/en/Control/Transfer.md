@@ -17,10 +17,12 @@ Name | Description | Type | Default Value |
 ||||
 **ShowSelectAll** | Display all check box | bool | true |
 **OneWay** | Is it unidirectional mode `only from left to right` | bool | false |
+**ShowSearch** | Whether to show search box | bool | true |
+**ChangeToBottom** | Whether to display buttons at the bottom | bool |
 ||||
 **ItemHeight** | List item height | int? | `null` |
-**ItemRadius** | Rounded corners of list items | int | 4 |
-**PanelRadius** | List box rounded corners | int | 6 |
+**PanelRadius** | List box rounded corners | int | 6 | false |
+**PanelBack** | Panel background color | Color`?` | `null` |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
 **BackColor** | Background color | Color`?` | `null` |
@@ -43,6 +45,7 @@ Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **TransferChanged** | Shuttle box option change event | void |  |
 **Search** | search event | void |  |
+**InputStyle** | Input style event | void | Input input `input box`, bool isSource `whether it is a source list` |
 
 ### Method
 

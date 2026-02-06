@@ -484,12 +484,8 @@ namespace AntdUI
                             var page = items[i];
                             bool show = i == index;
                             page.Showed = show;
-                            if (show)
-                            {
-                                page.BringToFront();
-                                page.Dock = DockStyle.Fill;
-                            }
-                            else page.Dock = DockStyle.None;
+                            if (show) Controls.Add(page);
+                            else Controls.Remove(page);
                         }
                     });
                 }
@@ -1688,13 +1684,7 @@ namespace AntdUI
                 if (render) it.LoadLayout(true);
                 else it.Invalidate();
             };
-            action_add = item =>
-            {
-                item.PARENT = it;
-                item.Dock = DockStyle.Fill;
-                if (it.InvokeRequired) it.Invoke(() => it.Controls.Add(item));
-                else it.Controls.Add(item);
-            };
+            action_add = item => item.PARENT = it;
             action_del = (item, index) =>
             {
                 if (index == -1) it.SelectedIndex = 0;
@@ -1730,6 +1720,7 @@ namespace AntdUI
                ControlStyles.ContainerControl |
                ControlStyles.UserPaint, true);
             UpdateStyles();
+            Dock = DockStyle.Fill;
         }
 
         #region 属性

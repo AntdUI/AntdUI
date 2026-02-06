@@ -28,7 +28,7 @@ namespace AntdUI
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             ColorScheme = control.ColorScheme;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             AllowClear = control.AllowClear;
             ShowClose = control.ShowClose;
@@ -60,7 +60,7 @@ namespace AntdUI
         public LayeredFormColorPicker(ColorPicker.Config config)
         {
             ColorScheme = config.ColorScheme;
-            config.Target.SetTopMost(Handle);
+            SetTopMost(config.Target, Handle);
             SetDpi(config.Target);
             AllowClear = config.AllowClear;
             ShowClose = config.ShowClose;

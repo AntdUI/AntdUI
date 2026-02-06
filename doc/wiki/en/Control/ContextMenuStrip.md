@@ -8,16 +8,24 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Target** | Target | Target | `Required` |
 **Control** | Belonging Control | Form | `Required` |
 **Items** | Menu content `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | [] |
 **Font** | Font | Font |`null`|
 **Radius** | Rounded corners | int | 6 |
+**Gap** | Gap ratio | float | 0.286 |
+**IconRatio** | Icon ratio | float | 1.14 |
+**IconGap** | Icon gap | float | 0.6 |
+**CheckRatio** | Checkbox ratio | float | 0.8 |
+**PaddRatio** | Padding ratio | float[] | [0.72, 0.432] |
 **TopMost** | Topped | bool |false|
 **CallSleep** | Delay callback | int |0|
 **UFocus** | Whether to seize the focus | bool |false|
 **Location** | Custom coordinates | Point`?` |`null`|
-**Align** | Align | [TAlignFrom](Enum.md#talignfrom) | BR |
+**Align** | Align | [TAlign](Enum.md#talign) | BR |
 **Call** | Click on callback | Action<ContextMenuStripItem> | `Required` |
+**OnClose** | Close callback | Action | `null` |
+**ColorScheme** | Color scheme | [TAMode](Enum.md#tamode) | Auto |
 
 ### Data
 
@@ -43,6 +51,32 @@ Name | Description | Type | Default Value |
 > Divider
 
 ***
+
+#### ContextMenuStripItemButtons
+
+> Side-by-side button items
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Items** | Button collection | ContextMenuStripItemButton[] | `null` |
+**FontRatio** | Font ratio | float | 0.7 |
+**Square** | Whether square | bool | false |
+
+#### ContextMenuStripItemButton
+
+> Side-by-side button item element
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
+**Text** | Text | string | `Required` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Fore** | Text color | Color`?` | `null` |
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**Enabled** 🔴 | Enable | bool | true |
+**Checked** | Checked | bool | false |
+**Tag** | User defined data | object`?` | `null` |
 
 ### Example
 

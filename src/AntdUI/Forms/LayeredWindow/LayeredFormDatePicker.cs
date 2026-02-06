@@ -27,7 +27,7 @@ namespace AntdUI
         {
             PARENT = control = _control;
             ColorScheme = _control.ColorScheme;
-            _control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(_control);
             Font = _control.Font;
             minDate = _control.MinDate;

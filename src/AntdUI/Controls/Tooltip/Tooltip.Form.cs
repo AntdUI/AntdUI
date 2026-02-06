@@ -22,7 +22,7 @@ namespace AntdUI
         {
             PARENT = control;
             ocontrol = control;
-            control.Parent.SetTopMost(Handle);
+            SetTopMost(control.Parent, Handle);
             SetDpi(control);
             CloseMode = CloseMode.Leave;
             Text = txt;
@@ -58,7 +58,7 @@ namespace AntdUI
         {
             PARENT = control;
             ocontrol = control;
-            control.SetTopMost(Handle);
+            SetTopMost(control, Handle);
             SetDpi(control);
             CloseMode = CloseMode.Click;
             Text = txt;

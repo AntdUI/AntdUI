@@ -18,10 +18,12 @@ Transfer 穿梭框 👚
 ||||
 **ShowSelectAll** | 是否显示全选勾选框 | bool | true |
 **OneWay** | 是否单向模式 `只能从左到右` | bool | false |
+**ShowSearch** | 是否显示搜索框 | bool | true |
+**ChangeToBottom** | 是否将按钮显示在底部 | bool | false |
 ||||
 **ItemHeight** | 列表项高度 | int? | `null` |
-**ItemRadius** | 列表项圆角 | int | 4 |
 **PanelRadius** | 列表框圆角 | int | 6 |
+**PanelBack** | 面板背景颜色 | Color`?` | `null` |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **BackColor** | 背景颜色 | Color`?` | `null` |
@@ -54,6 +56,7 @@ Transfer 穿梭框 👚
 :--|:--|:--|:--|
 **TransferChanged** | 穿梭框选项变化事件 | void |  |
 **Search** | 搜索事件 | void |  |
+**InputStyle** | 输入框样式事件 | void | Input input `输入框`, bool isSource `是否为源列表` |
 
 ### 数据
 

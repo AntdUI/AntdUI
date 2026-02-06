@@ -59,6 +59,14 @@ AntdUI.Config.TouchEnabled = true;
 AntdUI.Config.ShadowEnabled = false;
 ```
 
+### Emoji使能
+
+> 默认启用Emoji
+
+``` csharp
+AntdUI.Config.EmojiEnabled = true;
+```
+
 ### 滚动条隐藏样式
 
 > 默认一直显示 `false`

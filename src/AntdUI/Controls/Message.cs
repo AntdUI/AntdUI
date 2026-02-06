@@ -611,8 +611,7 @@ namespace AntdUI
         {
             config = _config;
             Tag = id;
-            if (config.TopMost) Helper.SetTopMost(Handle);
-            else config.Target.SetTopMost(Handle);
+            SetTopMost(config.Target, Handle, config.TopMost);
             SetDpi(config.Target);
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             loading = _config.Call != null;

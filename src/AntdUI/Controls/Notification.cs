@@ -511,16 +511,33 @@ namespace AntdUI
 
         public class ConfigLink : IConfigControl
         {
+            public ConfigLink() { }
+
+            public ConfigLink(string text)
+            {
+                _text = text;
+            }
+
             public ConfigLink(string text, Func<bool> call)
             {
-                Text = text;
+                _text = text;
                 Call = call;
             }
 
+            string? _text;
             /// <summary>
-            /// 连接文本
+            /// 文本
             /// </summary>
-            public string Text { get; set; }
+            public string? Text
+            {
+                get => Localization.GetLangI(LocalizationText, _text);
+                set => _text = value;
+            }
+
+            /// <summary>
+            /// 国际化（文本）
+            /// </summary>
+            public string? LocalizationText { get; set; }
 
             /// <summary>
             /// 文本颜色
@@ -528,9 +545,14 @@ namespace AntdUI
             public Color? Fore { get; set; }
 
             /// <summary>
+            /// 是否显示标签
+            /// </summary>
+            public bool Link { get; set; } = true;
+
+            /// <summary>
             /// 点击回调
             /// </summary>
-            public Func<bool> Call { get; set; }
+            public Func<bool>? Call { get; set; }
 
             /// <summary>
             /// 用户定义数据
@@ -539,9 +561,20 @@ namespace AntdUI
 
             #region 设置
 
+            public ConfigLink SetText(string? value, string? localization = null)
+            {
+                _text = value;
+                LocalizationText = localization;
+                return this;
+            }
             public ConfigLink SetFore(Color? value)
             {
                 Fore = value;
+                return this;
+            }
+            public ConfigLink SetLink(bool value = false)
+            {
+                Link = value;
                 return this;
             }
             public ConfigLink SetTag(object? value)
@@ -554,10 +587,11 @@ namespace AntdUI
 
             #region 内部
 
-            public bool Contains(int x, int y) => RectText.Contains(x, y);
+            public bool Contains(int x, int y) => Rect.Contains(x, y);
 
             internal Rectangle Rect { get; set; }
             internal Rectangle RectText { get; set; }
+            internal Rectangle RectArrow { get; set; }
 
             #endregion
         }
@@ -565,9 +599,9 @@ namespace AntdUI
         public interface IConfigControl
         {
             /// <summary>
-            /// 连接文本
+            /// 文本
             /// </summary>
-            string Text { get; set; }
+            string? Text { get; set; }
 
             /// <summary>
             /// 文本颜色
@@ -577,7 +611,7 @@ namespace AntdUI
             /// <summary>
             /// 点击回调
             /// </summary>
-            Func<bool> Call { get; set; }
+            Func<bool>? Call { get; set; }
 
             /// <summary>
             /// 用户定义数据
@@ -597,8 +631,7 @@ namespace AntdUI
         {
             config = _config;
             Tag = id;
-            if (config.TopMost) Helper.SetTopMost(Handle);
-            else config.Target.SetTopMost(Handle);
+            SetTopMost(config.Target, Handle, config.TopMost);
             SetDpi(config.Target);
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             config.Target.SetFontConfig(config.Font, this);
@@ -717,7 +750,7 @@ namespace AntdUI
                     using (var pen = new Pen(linkcolor, Dpi))
                     {
                         g.DrawText(link.Text, Font, linkcolor, link.RectText, s_f);
-                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(link.Rect));
+                        if (link.Link) g.DrawLines(pen, TAlignMini.Right.TriangleLines(link.RectArrow));
                     }
                 }
             }
@@ -822,8 +855,9 @@ namespace AntdUI
                         uw = 0;
                     }
                     else if (count == 0) h += rh;
-                    link.RectText = new Rectangle(x + uw, ry, size_link.Width, size_link.Height);
-                    link.Rect = new Rectangle(link.RectText.Right, link.RectText.Y, link.RectText.Height, link.RectText.Height);
+                    link.Rect = new Rectangle(x + uw, ry, size_link.Width + size_link.Height, size_link.Height);
+                    link.RectText = new Rectangle(link.Rect.X, link.Rect.Y, size_link.Width, link.Rect.Height);
+                    link.RectArrow = new Rectangle(link.RectText.Right, link.Rect.Y, link.Rect.Height, link.Rect.Height);
                     uw += rw;
                     count++;
                 }
@@ -866,6 +900,7 @@ namespace AntdUI
             {
                 foreach (var it in config.Links)
                 {
+                    if (it.Call == null) continue;
                     if (it.Contains(e.X, e.Y) && it.Call()) return;
                 }
             }

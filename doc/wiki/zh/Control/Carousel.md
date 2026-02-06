@@ -21,6 +21,7 @@ Carousel 走马灯 👚
 **DotSize** | 面板指示点大小 | Size | 28 × 4 |
 **DotMargin** | 面板指示点边距 | int | 12 |
 **DotPosition** | 面板指示点位置 | [TAlignMini](Enum.md#talignmini) | None |
+**DotFocusedColor** | 焦点面板指示点颜色 | Color`?` | `null` |
 ||||
 **Radius** | 圆角 | int | 0 |
 **Round** | 圆角样式 | bool | false |

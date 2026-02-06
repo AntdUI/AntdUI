@@ -21,8 +21,11 @@ Tabs 标签页 👚
 ||||
 **Alignment** | 位置 | TabAlignment |Top|
 **Centered** | 标签居中展示 | bool | false |
+**TextCenter** | 文本是否居中对齐（仅在Left/Right方向生效） | bool | false |
 ||||
 **TypExceed** | 超出UI类型 | [TabTypExceed](Enum.md#tabtypexceed) | Button |
+**EnableSwitch** | 切换使能 | bool | true |
+**EnablePageScrolling** | 鼠标滚轮切换焦点页使能 | bool | true |
 **ScrollBack** | 滚动条颜色 | Color`?` | `null` |
 **ScrollBackHover** | 滚动条悬停颜色 | Color`?` | `null` |
 **ScrollFore** | 滚动条文本颜色 | Color`?` | `null` |
@@ -30,10 +33,13 @@ Tabs 标签页 👚
 ||||
 **Gap** | 间距 | int | 8 |
 **IconRatio** | 图标比例 | float | 0.7F |
+**IconGap** | 图标与文字间距比例 | float | 0.25F |
 **ItemSize** | 自定义项大小 | int? | `null` |
 ||||
 **Type** | 类型 | [TabType](Enum.md#tabtype) | Line |
 **Style** | 样式类型 | [IStyle](#istyle) | `非空` |
+**Rotate** | 旋转（用于 Left/Right 时竖排显示） | [TRotate](Enum.md#trotate) | None |
+**DragOrder** | 拖动顺序 | bool | false |
 ||||
 **TabMenuVisible** | 是否显示头 | bool | true |
 ||||
@@ -54,7 +60,9 @@ Tabs 标签页 👚
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **SelectedIndexChanged** | SelectedIndex 属性值更改时发生 | void | int index `序号` |
+**SelectedIndexChanging** | SelectedIndex 属性值更改前发生 | bool | int index `序号` |
 **ClosingPage** | 关闭页面前发生 | bool | [TabPage](#tabpage) `页` page |
+**TabClick** | 点击标签时发生 | bool | [TabPage](#tabpage) `页` page, int index `序号` |
 
 ### IStyle
 

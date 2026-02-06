@@ -292,7 +292,7 @@ namespace AntdUI
             }
             else
             {
-                config.Target.SetTopMost(Handle);
+                SetTopMost(config.Target, Handle);
                 SetDpi(config.Target);
                 if (config.Target is Form form)
                 {
