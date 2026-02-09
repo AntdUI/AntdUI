@@ -1388,6 +1388,7 @@ namespace AntdUI
                             return;
                         }
                         row.SetValue(columnCheck.Key, value);
+                        OnCheckedChanged(value, row.record, row.i, i_cel, columnCheck);
                     }
                     else if (obj is int tmp_int)
                     {
@@ -1397,6 +1398,7 @@ namespace AntdUI
                             return;
                         }
                         row.SetValue(columnCheck.Key, value_int);
+                        OnCheckedChanged(value, row.record, row.i, i_cel, columnCheck);
                     }
                     index.Add(row.i);
                 });
