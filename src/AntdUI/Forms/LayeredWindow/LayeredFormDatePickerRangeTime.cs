@@ -130,10 +130,10 @@ namespace AntdUI
 
                 calendar_year = CalendarHelper.Year(value, minDate, maxDate, out year_str);
 
-                rect_left.Enable = Helper.DateExceedMonth(value.AddMonths(-1), minDate, maxDate);
-                rect_right.Enable = Helper.DateExceedMonth(value.AddMonths(1), minDate, maxDate);
-                rect_lefts.Enable = Helper.DateExceedYear(value.AddYears(-1), minDate, maxDate);
-                rect_rights.Enable = Helper.DateExceedYear(value.AddYears(1), minDate, maxDate);
+                rect_left.Enable = Helper.DateExceedMonth(value, -1, minDate, maxDate);
+                rect_right.Enable = Helper.DateExceedMonth(value, 1, minDate, maxDate);
+                rect_lefts.Enable = Helper.DateExceedYear(value, -1, minDate, maxDate);
+                rect_rights.Enable = Helper.DateExceedYear(value, 1, minDate, maxDate);
                 LoadLayoutDiv();
 
                 if (badge_action == null) return;
@@ -992,227 +992,249 @@ namespace AntdUI
             {
                 if (button == MouseButtons.Left)
                 {
-                    if (rect_lefts.Contains(x, y))
+                    try
                     {
-                        if (ShowType == TDatePicker.Year) Date = _Date.AddYears(-10);
-                        else Date = _Date.AddYears(-1);
-                        Print();
-                    }
-                    else if (rect_rights.Contains(x, y))
-                    {
-                        if (ShowType == TDatePicker.Year) Date = _Date.AddYears(10);
-                        else Date = _Date.AddYears(1);
-                        Print();
-                    }
-                    if (showType == TDatePicker.Date)
-                    {
-                        if (rect_left.Contains(x, y))
+                        if (rect_lefts.Contains(x, y))
                         {
-                            Date = _Date.AddMonths(-1);
+                            if (ShowType == TDatePicker.Year) Date = _Date.AddYears(-10);
+                            else Date = _Date.AddYears(-1);
                             Print();
                         }
-                        else if (rect_right.Contains(x, y))
+                        else if (rect_rights.Contains(x, y))
                         {
-                            Date = _Date.AddMonths(1);
+                            if (ShowType == TDatePicker.Year) Date = _Date.AddYears(10);
+                            else Date = _Date.AddYears(1);
                             Print();
                         }
-                        else if (rect_year.Contains(x, y))
+                        if (showType == TDatePicker.Date)
                         {
-                            ShowType = TDatePicker.Year;
-                            Print();
-                        }
-                        else if (rect_month.Contains(x, y))
-                        {
-                            ShowType = TDatePicker.Month;
-                            Print();
-                        }
-                        else if (rect_button.Contains(x, y))
-                        {
-                            //此刻
-                            SelTMP = null;
-                            oldTime = Date = DateTime.Parse(DateTime.Now.ToString(control.Format));
-                            Print();
-                            ScrollTime(calendar_time!, oldTime.Value);
-                        }
-                        else if (rect_buttonok.Contains(x, y))
-                        {
-                            SelTMP = null;
-                            if (SelDate == null)
+                            if (rect_left.Contains(x, y))
                             {
-                                if (oldTime.HasValue)
+                                Date = _Date.AddMonths(-1);
+                                Print();
+                            }
+                            else if (rect_right.Contains(x, y))
+                            {
+                                Date = _Date.AddMonths(1);
+                                Print();
+                            }
+                            else if (rect_year.Contains(x, y))
+                            {
+                                ShowType = TDatePicker.Year;
+                                Print();
+                            }
+                            else if (rect_month.Contains(x, y))
+                            {
+                                ShowType = TDatePicker.Month;
+                                Print();
+                            }
+                            else if (rect_button.Contains(x, y))
+                            {
+                                //此刻
+                                SelTMP = null;
+                                oldTime = Date = DateTime.Parse(DateTime.Now.ToString(control.Format));
+                                Print();
+                                ScrollTime(calendar_time!, oldTime.Value);
+                            }
+                            else if (rect_buttonok.Contains(x, y))
+                            {
+                                SelTMP = null;
+                                if (SelDate == null)
+                                {
+                                    if (oldTime.HasValue)
+                                    {
+                                        if (EndFocused)
+                                        {
+                                            if (oldTimeStart.HasValue)
+                                            {
+                                                if (oldTime.Value > oldTimeStart.Value) SelDate = new DateTime[] { oldTimeStart.Value, oldTime.Value };
+                                                else SelDate = new DateTime[] { oldTime.Value, oldTimeStart.Value };
+                                                action(SelDate);
+                                                IClose();
+                                            }
+                                            return;
+                                        }
+                                        oldTimeStart = oldTime;
+                                        oldTime = null;
+                                        EndFocused = true;
+                                        Print();
+                                    }
+                                }
+                                else
                                 {
                                     if (EndFocused)
                                     {
-                                        if (oldTimeStart.HasValue)
+                                        if (oldTime.HasValue)
                                         {
-                                            if (oldTime.Value > oldTimeStart.Value) SelDate = new DateTime[] { oldTimeStart.Value, oldTime.Value };
-                                            else SelDate = new DateTime[] { oldTime.Value, oldTimeStart.Value };
+                                            SelDate[1] = oldTime.Value;
                                             action(SelDate);
-                                            IClose();
                                         }
-                                        return;
+                                        IClose();
                                     }
-                                    oldTimeStart = oldTime;
-                                    oldTime = null;
-                                    EndFocused = true;
-                                    Print();
+                                    else
+                                    {
+                                        if (oldTime.HasValue)
+                                        {
+                                            SelDate[0] = oldTime.Value;
+                                            action(SelDate);
+                                        }
+                                        IClose();
+                                    }
                                 }
                             }
                             else
                             {
-                                if (EndFocused)
+                                if (left_buttons != null)
                                 {
-                                    if (oldTime.HasValue)
+                                    int sx = y + ScrollButtons!.ValueY;
+                                    foreach (var it in left_buttons)
                                     {
-                                        SelDate[1] = oldTime.Value;
-                                        action(SelDate);
-                                    }
-                                    IClose();
-                                }
-                                else
-                                {
-                                    if (oldTime.HasValue)
-                                    {
-                                        SelDate[0] = oldTime.Value;
-                                        action(SelDate);
-                                    }
-                                    IClose();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (left_buttons != null)
-                            {
-                                int sx = y + ScrollButtons!.ValueY;
-                                foreach (var it in left_buttons)
-                                {
-                                    if (it.Contains(x, sx))
-                                    {
-                                        action_btns(it.Tag);
-                                        IClose();
-                                        return;
-                                    }
-                                }
-                            }
-                            if (calendar_day != null)
-                            {
-                                foreach (var it in calendar_day)
-                                {
-                                    if (it.enable)
-                                    {
-                                        if (rect_div[it.id].Contains(x, y))
+                                        if (it.Contains(x, sx))
                                         {
-                                            SelTMP = null;
-                                            if (oldTime.HasValue) oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, oldTime.Value.Hour, oldTime.Value.Minute, oldTime.Value.Second);
-                                            else if (SelDate == null)
-                                            {
-                                                var now = DateTime.Now;
-                                                oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, now.Hour, now.Minute, now.Second);
-                                            }
-                                            else
-                                            {
-                                                var tmp = EndFocused ? SelDate[1] : SelDate[0];
-                                                oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, tmp.Hour, tmp.Minute, tmp.Second);
-                                            }
-                                            Print();
-                                            if (calendar_time != null) ScrollTime(calendar_time, oldTime.Value);
+                                            action_btns(it.Tag);
+                                            IClose();
                                             return;
                                         }
                                     }
                                 }
-                            }
-                            if (calendar_time != null)
-                            {
-                                foreach (var it in calendar_time)
+                                if (calendar_day != null)
                                 {
-                                    switch (it.rx)
+                                    foreach (var it in calendar_day)
                                     {
-                                        case 1:
-                                            if (it.Contains(x, y + ScrollM.Value))
+                                        if (it.enable)
+                                        {
+                                            if (rect_div[it.id].Contains(x, y))
                                             {
                                                 SelTMP = null;
-                                                if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, it.t, oldTime.Value.Second);
+                                                if (oldTime.HasValue) oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, oldTime.Value.Hour, oldTime.Value.Minute, oldTime.Value.Second);
                                                 else if (SelDate == null)
                                                 {
                                                     var now = DateTime.Now;
-                                                    oldTime = new DateTime(now.Year, now.Month, now.Day, 0, it.t, 0);
+                                                    oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, now.Hour, now.Minute, now.Second);
                                                 }
                                                 else
                                                 {
                                                     var tmp = EndFocused ? SelDate[1] : SelDate[0];
-                                                    oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, it.t, tmp.Second);
+                                                    oldTime = new DateTime(it.date.Year, it.date.Month, it.date.Day, tmp.Hour, tmp.Minute, tmp.Second);
                                                 }
                                                 Print();
-                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
+                                                if (calendar_time != null) ScrollTime(calendar_time, oldTime.Value);
                                                 return;
                                             }
-                                            break;
-                                        case 2:
-                                            if (it.Contains(x, y + ScrollS.Value))
-                                            {
-                                                SelTMP = null;
-                                                if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, oldTime.Value.Minute, it.t);
-                                                else if (SelDate == null)
+                                        }
+                                    }
+                                }
+                                if (calendar_time != null)
+                                {
+                                    foreach (var it in calendar_time)
+                                    {
+                                        switch (it.rx)
+                                        {
+                                            case 1:
+                                                if (it.Contains(x, y + ScrollM.Value))
                                                 {
-                                                    var now = DateTime.Now;
-                                                    oldTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, it.t);
+                                                    SelTMP = null;
+                                                    if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, it.t, oldTime.Value.Second);
+                                                    else if (SelDate == null)
+                                                    {
+                                                        var now = DateTime.Now;
+                                                        oldTime = new DateTime(now.Year, now.Month, now.Day, 0, it.t, 0);
+                                                    }
+                                                    else
+                                                    {
+                                                        var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                        oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, it.t, tmp.Second);
+                                                    }
+                                                    Print();
+                                                    if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
+                                                    return;
                                                 }
-                                                else
+                                                break;
+                                            case 2:
+                                                if (it.Contains(x, y + ScrollS.Value))
                                                 {
-                                                    var tmp = EndFocused ? SelDate[1] : SelDate[0];
-                                                    oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, tmp.Minute, it.t);
+                                                    SelTMP = null;
+                                                    if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, oldTime.Value.Hour, oldTime.Value.Minute, it.t);
+                                                    else if (SelDate == null)
+                                                    {
+                                                        var now = DateTime.Now;
+                                                        oldTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, it.t);
+                                                    }
+                                                    else
+                                                    {
+                                                        var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                        oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, tmp.Minute, it.t);
+                                                    }
+                                                    Print();
+                                                    if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
+                                                    return;
                                                 }
-                                                Print();
-                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
-                                                return;
-                                            }
-                                            break;
-                                        case 0:
-                                        default:
-                                            if (it.Contains(x, y + ScrollH.Value))
-                                            {
-                                                SelTMP = null;
-                                                if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, it.t, oldTime.Value.Minute, oldTime.Value.Second);
-                                                else if (SelDate == null)
+                                                break;
+                                            case 0:
+                                            default:
+                                                if (it.Contains(x, y + ScrollH.Value))
                                                 {
-                                                    var now = DateTime.Now;
-                                                    oldTime = new DateTime(now.Year, now.Month, now.Day, it.t, 0, 0);
+                                                    SelTMP = null;
+                                                    if (oldTime.HasValue) oldTime = new DateTime(oldTime.Value.Year, oldTime.Value.Month, oldTime.Value.Day, it.t, oldTime.Value.Minute, oldTime.Value.Second);
+                                                    else if (SelDate == null)
+                                                    {
+                                                        var now = DateTime.Now;
+                                                        oldTime = new DateTime(now.Year, now.Month, now.Day, it.t, 0, 0);
+                                                    }
+                                                    else
+                                                    {
+                                                        var tmp = EndFocused ? SelDate[1] : SelDate[0];
+                                                        oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, it.t, tmp.Minute, tmp.Second);
+                                                    }
+                                                    Print();
+                                                    if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
+                                                    return;
                                                 }
-                                                else
-                                                {
-                                                    var tmp = EndFocused ? SelDate[1] : SelDate[0];
-                                                    oldTime = new DateTime(tmp.Year, tmp.Month, tmp.Day, it.t, tmp.Minute, tmp.Second);
-                                                }
-                                                Print();
-                                                if (ValueTimeHorizontal) ScrollTime(calendar_time, oldTime.Value);
-                                                return;
-                                            }
-                                            break;
+                                                break;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    else if (showType == TDatePicker.Month)
-                    {
-                        if (rect_year2.Contains(x, y))
+                        else if (showType == TDatePicker.Month)
                         {
-                            ShowType = TDatePicker.Year;
-                            Print();
-                        }
-                        else
-                        {
-                            if (calendar_month != null)
+                            if (rect_year2.Contains(x, y))
                             {
-                                foreach (var it in calendar_month)
+                                ShowType = TDatePicker.Year;
+                                Print();
+                            }
+                            else
+                            {
+                                if (calendar_month != null)
+                                {
+                                    foreach (var it in calendar_month)
+                                    {
+                                        if (it.enable)
+                                        {
+                                            if (rect_div[it.id].Contains(x, y))
+                                            {
+                                                Date = it.date;
+                                                ShowType = TDatePicker.Date;
+                                                Print();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (showType == TDatePicker.Year)
+                        {
+                            if (calendar_year != null)
+                            {
+                                foreach (var it in calendar_year)
                                 {
                                     if (it.enable)
                                     {
                                         if (rect_div[it.id].Contains(x, y))
                                         {
                                             Date = it.date;
-                                            ShowType = TDatePicker.Date;
+                                            ShowType = TDatePicker.Month;
                                             Print();
                                             return;
                                         }
@@ -1221,25 +1243,7 @@ namespace AntdUI
                             }
                         }
                     }
-                    else if (showType == TDatePicker.Year)
-                    {
-                        if (calendar_year != null)
-                        {
-                            foreach (var it in calendar_year)
-                            {
-                                if (it.enable)
-                                {
-                                    if (rect_div[it.id].Contains(x, y))
-                                    {
-                                        Date = it.date;
-                                        ShowType = TDatePicker.Month;
-                                        Print();
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    catch { }
                 }
             }
         }
@@ -1252,44 +1256,48 @@ namespace AntdUI
             else if (ScrollS.Contains(x, y)) ScrollS.MouseWheel(delta);
             else
             {
-                if (delta > 0)
+                try
                 {
-                    if (ShowType == TDatePicker.Month)
+                    if (delta > 0)
                     {
-                        if (rect_lefts.Enable) Date = _Date.AddYears(-1);
-                        else return;
-                    }
-                    else if (ShowType == TDatePicker.Year)
-                    {
-                        if (rect_lefts.Enable) Date = _Date.AddYears(-10);
-                        else return;
+                        if (ShowType == TDatePicker.Month)
+                        {
+                            if (rect_lefts.Enable) Date = _Date.AddYears(-1);
+                            else return;
+                        }
+                        else if (ShowType == TDatePicker.Year)
+                        {
+                            if (rect_lefts.Enable) Date = _Date.AddYears(-10);
+                            else return;
+                        }
+                        else
+                        {
+                            if (rect_left.Enable) Date = _Date.AddMonths(-1);
+                            else return;
+                        }
+                        Print();
                     }
                     else
                     {
-                        if (rect_left.Enable) Date = _Date.AddMonths(-1);
-                        else return;
+                        if (ShowType == TDatePicker.Month)
+                        {
+                            if (rect_rights.Enable) Date = _Date.AddYears(1);
+                            else return;
+                        }
+                        else if (ShowType == TDatePicker.Year)
+                        {
+                            if (rect_rights.Enable) Date = _Date.AddYears(10);
+                            else return;
+                        }
+                        else
+                        {
+                            if (rect_right.Enable) Date = _Date.AddMonths(1);
+                            else return;
+                        }
+                        Print();
                     }
-                    Print();
                 }
-                else
-                {
-                    if (ShowType == TDatePicker.Month)
-                    {
-                        if (rect_rights.Enable) Date = _Date.AddYears(1);
-                        else return;
-                    }
-                    else if (ShowType == TDatePicker.Year)
-                    {
-                        if (rect_rights.Enable) Date = _Date.AddYears(10);
-                        else return;
-                    }
-                    else
-                    {
-                        if (rect_right.Enable) Date = _Date.AddMonths(1);
-                        else return;
-                    }
-                    Print();
-                }
+                catch { }
             }
         }
         protected override bool OnTouchScrollY(int value)
