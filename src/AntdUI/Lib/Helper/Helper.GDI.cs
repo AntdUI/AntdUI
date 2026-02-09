@@ -481,7 +481,7 @@ namespace AntdUI
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            if (text) g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            if (text) g.TextRenderingHint = Config.TextRenderingHint ?? System.Drawing.Text.TextRenderingHint.AntiAlias;
             return new Core.CanvasGDI(g, dpi);
         }
 

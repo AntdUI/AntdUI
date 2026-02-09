@@ -61,7 +61,7 @@ namespace ChineseCalendar
             {
                 return From(date).DayString;
             }
-            catch 
+            catch
             {
                 return null;
             }

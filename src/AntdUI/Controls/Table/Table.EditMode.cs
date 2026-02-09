@@ -261,6 +261,46 @@ namespace AntdUI
                     return true;
                 }
             }
+            else if (value is uint)
+            {
+                if (uint.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is short)
+            {
+                if (short.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is ushort)
+            {
+                if (ushort.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is long)
+            {
+                if (long.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
+            else if (value is ulong)
+            {
+                if (ulong.TryParse(_value, out var v))
+                {
+                    read = v;
+                    return true;
+                }
+            }
             else if (value is double)
             {
                 if (double.TryParse(_value, out var v))

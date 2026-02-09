@@ -97,22 +97,6 @@ namespace AntdUI
             }
         }
 
-        /// <summary>
-        /// 获取指定行的数据
-        /// </summary>
-        /// <param name="index">序号</param>
-        /// <returns>行</returns>
-        public IRow? this[int index]
-        {
-            get
-            {
-                if (dataTmp == null || dataTmp.rows.Length == 0) return null;
-                if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
-                if (SortData == null || SortData.Length - 1 < index) return dataTmp.rows[index];
-                return dataTmp.rows[SortData[index]];
-            }
-        }
-
         Color? fore;
         /// <summary>
         /// 文字颜色
@@ -1045,6 +1029,31 @@ namespace AntdUI
             }
             return list.ToArray();
         }
+
+        /// <summary>
+        /// 获取指定行的数据
+        /// </summary>
+        /// <param name="index">序号</param>
+        /// <returns>行</returns>
+        public IRow? this[int index] => GetRow(index);
+
+        /// <summary>
+        /// 获取指定行的数据
+        /// </summary>
+        /// <param name="index">序号</param>
+        /// <returns>行</returns>
+        public IRow? GetRow(int index)
+        {
+            if (dataTmp == null || dataTmp.rows.Length == 0) return null;
+            if (index < 0 || dataTmp.rows.Length - 1 < index) return null;
+            if (SortData == null || SortData.Length - 1 < index) return dataTmp.rows[index];
+            return dataTmp.rows[SortData[index]];
+        }
+
+        /// <summary>
+        /// 行总数
+        /// </summary>
+        public int RowCount => dataTmp?.rows.Length ?? 0;
 
         #endregion
 
