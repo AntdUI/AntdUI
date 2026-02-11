@@ -44,15 +44,21 @@ namespace AntdUI
             // 处理文本截断方式
             if (flags.HasFlag(FormatFlags.EllipsisCharacter)) sf.Trimming = StringTrimming.EllipsisCharacter;
 
-            // 处理换行设置
-            if (flags.HasFlag(FormatFlags.NoWrap)) sf.FormatFlags |= StringFormatFlags.NoWrap;
-
             if (flags.HasFlag(FormatFlags.HotkeyPrefixShow)) sf.HotkeyPrefix |= System.Drawing.Text.HotkeyPrefix.Show;
 
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
-            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
+            // 处理换行设置
+            if (flags.HasFlag(FormatFlags.NoWrap))
+            {
+                sf.FormatFlags |= StringFormatFlags.NoWrap | StringFormatFlags.MeasureTrailingSpaces;
+                if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
+            }
+            else
+            {
+                if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+                else sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
+            }
 
             if (!ffs.TryAdd(key, sf)) sf.Dispose();
 

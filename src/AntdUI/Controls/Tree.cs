@@ -1669,21 +1669,34 @@ namespace AntdUI
                 item.Visible = true;
             }
         }
-        int FunSearch(TreeItemCollection? items, string text)
+        int FunSearch(TreeItemCollection? items, string search)
         {
             if (items == null) return 0;
             int total = 0;
             foreach (var item in items)
             {
-                int count = FunSearch(item.items, text);
+                int count = FunSearch(item.items, search);
                 total += count;
-                bool show = (item.Name?.Contains(text) ?? false) || (item.Text?.Contains(text) ?? false);
-                if (show)
+                var pinyin = item.Text;
+                if (pinyin == null) item.Visible = count > 0;
+                else
                 {
-                    item.Visible = true;
-                    total++;
+                    if (item.PY == null)
+                    {
+                        item.PY = new string[] {
+                            pinyin.ToLower(),
+                            Pinyin.GetPinyin(pinyin).ToLower(),
+                            Pinyin.GetInitials(pinyin).ToLower()
+                        };
+                    }
+                    int score = Helper.SearchContains(search, pinyin, item.PY, out _);
+                    if (score > 0)
+                    {
+                        item.Visible = true;
+                        total++;
+                    }
+                    else item.Visible = count > 0;
                 }
-                else item.Visible = count > 0;
             }
             return total;
         }
@@ -2574,6 +2587,21 @@ namespace AntdUI
         public TreeItem SetTag(object? value)
         {
             Tag = value;
+            return this;
+        }
+
+        internal string[]? PY { get; set; }
+        public TreeItem SetPinyin(string? value)
+        {
+            if (value == null) PY = new string[0];
+            else
+            {
+                PY = new string[] {
+                    value.ToLower(),
+                    Pinyin.GetPinyin(value).ToLower(),
+                    Pinyin.GetInitials(value).ToLower()
+                };
+            }
             return this;
         }
 

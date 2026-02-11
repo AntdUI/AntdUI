@@ -50,7 +50,6 @@ namespace AntdUI
 
             CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
             Init();
-
         }
 
         SubLayeredForm? lay;
@@ -83,6 +82,11 @@ namespace AntdUI
             tmpItemHeight = itemHeight;
             CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
+        }
+
+        public override void SizeChange()
+        {
+            if (PARENT is SelectMultiple control) CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
         }
 
         public void Rload(List<object> value)

@@ -1652,7 +1652,7 @@ namespace AntdUI
         /// </summary>
         protected virtual bool ShowPlaceholder => true;
         protected virtual bool HasLeft() => false;
-        protected virtual int[] UseLeft(Rectangle rect, int font_height, bool delgap) => new int[] { 0, 0 };
+        protected virtual int[] UseLeft(Rectangle rect, int font_height) => new int[] { 0, 0 };
         protected virtual void UseLeftAutoHeight(int height, int y) { }
 
         protected virtual void IBackSpaceKey() { }
