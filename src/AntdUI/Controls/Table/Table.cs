@@ -69,7 +69,6 @@ namespace AntdUI
                 SortData = null;
                 focusedxy = null;
                 ScrollBar.Clear();
-                selects.Clear();
                 hovers = -1;
                 selectedIndex = new int[0];
                 ExtractHeaderFixed();
@@ -2012,7 +2011,7 @@ namespace AntdUI
     /// <summary>
     /// 复选框表头
     /// </summary>
-    public class ColumnCheck : Column
+    public class ColumnCheck : ColumnICheck
     {
         public ColumnCheck(string key) : base(key, "")
         {
@@ -2119,17 +2118,12 @@ namespace AntdUI
         internal bool NoTitle { get; set; } = true;
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
-
-        /// <summary>
-        /// 插槽
-        /// </summary>
-        public new Func<object?, object, int, object?>? Render { get; }
     }
 
     /// <summary>
     /// 单选框表头
     /// </summary>
-    public class ColumnRadio : Column
+    public class ColumnRadio : ColumnICheck
     {
         /// <summary>
         /// 单选框表头
@@ -2152,17 +2146,12 @@ namespace AntdUI
         }
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
-
-        /// <summary>
-        /// 插槽
-        /// </summary>
-        public new Func<object?, object, int, object?>? Render { get; }
     }
 
     /// <summary>
     /// 开关表头
     /// </summary>
-    public class ColumnSwitch : Column
+    public class ColumnSwitch : ColumnICheck
     {
         /// <summary>
         /// 开关表头
@@ -2190,11 +2179,49 @@ namespace AntdUI
         }
 
         public Func<bool, object?, int, int, bool>? Call { get; set; }
+    }
+
+    public class ColumnICheck : Column
+    {
+        public ColumnICheck(string key, string title) : base(key, title)
+        {
+        }
+
+        public ColumnICheck(string key, string title, ColumnAlign align) : base(key, title, align) { }
 
         /// <summary>
         /// 插槽
         /// </summary>
         public new Func<object?, object, int, object?>? Render { get; }
+
+        #region 插槽
+
+        internal Func<object?, bool>? _in;
+        internal Func<bool, object?>? _out;
+        public ColumnICheck SetRender(Func<object?, bool> IN, Func<bool, object?> OUT)
+        {
+            _in = IN;
+            _out = OUT;
+            return this;
+        }
+        public ColumnICheck SetRender<T>(Func<T, bool> IN, Func<bool, object?> OUT)
+        {
+            _in = value =>
+            {
+                if (value is T t) return IN(t);
+                throw new Exception("error value type");
+            };
+            _out = OUT;
+            return this;
+        }
+        public ColumnICheck SetRenderClear()
+        {
+            _in = null;
+            _out = null;
+            return this;
+        }
+
+        #endregion
     }
 
     public class TemplateColumn : Column

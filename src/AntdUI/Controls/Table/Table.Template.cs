@@ -129,6 +129,8 @@ namespace AntdUI
             internal bool AnimationHover = false;
             internal AnimationTask? ThreadHover;
 
+            public bool Select { get; set; }
+
             #endregion
 
             public bool CanExpand { get; set; }
