@@ -484,16 +484,6 @@ namespace AntdUI
                             var page = items[i];
                             bool show = i == index;
                             page.Showed = show;
-                            if (show)
-                            {
-                                if (page.needDpi)
-                                {
-                                    page.needDpi = false;
-                                    Helper.DpiAuto(Dpi, page);
-                                }
-                                Controls.Add(page);
-                            }
-                            else Controls.Remove(page);
                         }
                     });
                 }
@@ -1692,7 +1682,12 @@ namespace AntdUI
                 if (render) it.LoadLayout(true);
                 else it.Invalidate();
             };
-            action_add = item => item.PARENT = it;
+            action_add = item =>
+            {
+                item.PARENT = it;
+                if (it.InvokeRequired) it.Invoke(() => it.Controls.Add(item));
+                else it.Controls.Add(item);
+            };
             action_del = (item, index) =>
             {
                 if (index == -1) it.SelectedIndex = 0;
@@ -1732,8 +1727,6 @@ namespace AntdUI
         }
 
         #region 属性
-
-        internal bool needDpi = true;
 
         Image? icon;
         /// <summary>
@@ -1911,17 +1904,28 @@ namespace AntdUI
 
         #region 隐藏显示
 
-        bool showed = false;
+        DockStyle olddock = DockStyle.Fill;
+
+        bool? showed;
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Description("显示的"), Category("外观"), DefaultValue(false)]
         public bool Showed
         {
-            get => showed;
+            get => showed ?? false;
             internal set
             {
                 if (showed == value) return;
                 showed = value;
+                if (value) Dock = olddock;
+                else
+                {
+                    olddock = Dock;
+                    int w = Width, h = Height;
+                    Dock = DockStyle.None;
+                    Location = new Point(-w * 2, -h * 2);
+                    Size = new Size(w, h);
+                }
                 ShowedChanged?.Invoke(this, EventArgs.Empty);
             }
         }
