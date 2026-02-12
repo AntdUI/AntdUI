@@ -44,15 +44,21 @@ namespace AntdUI
             // 处理文本截断方式
             if (flags.HasFlag(FormatFlags.EllipsisCharacter)) sf.Trimming = StringTrimming.EllipsisCharacter;
 
-            // 处理换行设置
-            if (flags.HasFlag(FormatFlags.NoWrap)) sf.FormatFlags |= StringFormatFlags.NoWrap;
-
             if (flags.HasFlag(FormatFlags.HotkeyPrefixShow)) sf.HotkeyPrefix |= System.Drawing.Text.HotkeyPrefix.Show;
 
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
-            sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
+            // 处理换行设置
+            if (flags.HasFlag(FormatFlags.NoWrap))
+            {
+                sf.FormatFlags |= StringFormatFlags.NoWrap | StringFormatFlags.MeasureTrailingSpaces;
+                if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
+            }
+            else
+            {
+                if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+                else sf.FormatFlags &= ~StringFormatFlags.MeasureTrailingSpaces;
+            }
 
             if (!ffs.TryAdd(key, sf)) sf.Dispose();
 
@@ -481,7 +487,7 @@ namespace AntdUI
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            if (text) g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            if (text) g.TextRenderingHint = Config.TextRenderingHint ?? System.Drawing.Text.TextRenderingHint.AntiAlias;
             return new Core.CanvasGDI(g, dpi);
         }
 

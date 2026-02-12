@@ -50,6 +50,24 @@ namespace ChineseCalendar
         }
 
         /// <summary>
+        /// 转换一个公历日期为农历日期
+        /// </summary>
+        /// <param name="date">公历日期</param>
+        /// <exception cref="ArgumentOutOfRangeException">日期超出范围</exception>
+        /// <returns>农历日期</returns>
+        public static string? FromDayString(DateTime date)
+        {
+            try
+            {
+                return From(date).DayString;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// 指定年月日索引，月/日可以为负数，负数表示倒数
         /// </summary>
         /// <param name="year">年份，范围为1901-2100</param>

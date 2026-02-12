@@ -660,7 +660,7 @@ namespace AntdUI
                     int ul = -1;
                     if (HasLeft())
                     {
-                        var useLeft = UseLeft(rect, CaretInfo.Height, false);
+                        var useLeft = UseLeft(rect, CaretInfo.Height);
                         if (useLeft[0] > 0 || useLeft[1] > 0)
                         {
                             int ux = useLeft[0], uy = useLeft[1];
@@ -683,7 +683,7 @@ namespace AntdUI
         {
             int ul = -1, sp = (int)(read_height * icongap);
             var round = RectLR(sp, sps, w_L, h_L, w_R, h_R, rect, out int hasx, out int hasr);
-            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
+            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasr, rect.Height), CaretInfo.Height) : new int[] { 0, 0 };
             if (multiline)
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h_L) / 2, w_L, h_L);
@@ -702,7 +702,7 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, text_y + uy, rect.Width - hasr - ux, read_height - uy);
+                    rect_text = new Rectangle(rect.X + hasx + ux, text_y + uy / 2, rect.Width - hasr - ux, read_height - uy);
                     ul = uy;
                 }
                 else rect_text = new Rectangle(rect.X + hasx, text_y, rect.Width - hasr, read_height);
@@ -756,7 +756,7 @@ namespace AntdUI
             int ul = -1, sp = (int)(read_height * icongap);
             bool round = RectL(sp, sps, w, rect, false, out int hasx);
             int hasx2 = hasx + sps;
-            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
+            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height) : new int[] { 0, 0 };
             if (multiline)
             {
                 int y = rect.Y + sps, h = rect.Height - sps2;
@@ -775,7 +775,7 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, ry + uy, rect.Width - hasx2 - ux, read_height - uy);
+                    rect_text = new Rectangle(rect.X + hasx + ux, ry + uy / 2, rect.Width - hasx2 - ux, read_height - uy);
                     ul = uy;
                 }
                 else rect_text = new Rectangle(rect.X + hasx, ry, rect.Width - hasx2, read_height);
@@ -790,7 +790,7 @@ namespace AntdUI
             int ul = -1, sp = (int)(read_height * icongap);
             bool round = RectL(sp, sps, w, rect, true, out int hasx);
             int hasx2 = hasx + sps;
-            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height, true) : new int[] { 0, 0 };
+            var useLeft = HasLeft() ? UseLeft(new Rectangle(rect.X + hasx, rect.Y, rect.Width - hasx, rect.Height), CaretInfo.Height) : new int[] { 0, 0 };
             if (multiline)
             {
                 rect_l = new Rectangle(rect.X + sps, rect.Y + sps + (read_height - h) / 2, w, h);
@@ -808,7 +808,7 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, text_y + uy, rect.Width - hasx2 - ux, read_height - uy);
+                    rect_text = new Rectangle(rect.X + hasx + ux, text_y + uy / 2, rect.Width - hasx2 - ux, read_height - uy);
                     ul = uy;
                 }
                 else rect_text = new Rectangle(rect.X + hasx, text_y, rect.Width - hasx2, read_height);
@@ -848,7 +848,7 @@ namespace AntdUI
             int hasr2 = hasr + sps;
             if (HasLeft())
             {
-                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), CaretInfo.Height, false);
+                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), CaretInfo.Height);
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
@@ -880,7 +880,7 @@ namespace AntdUI
             int hasr2 = hasr + sps;
             if (HasLeft())
             {
-                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), CaretInfo.Height, false);
+                var useLeft = UseLeft(new Rectangle(rect.X, rect.Y, rect.Width - sp, rect.Height), CaretInfo.Height);
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];

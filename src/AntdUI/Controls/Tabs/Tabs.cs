@@ -484,7 +484,15 @@ namespace AntdUI
                             var page = items[i];
                             bool show = i == index;
                             page.Showed = show;
-                            if (show) Controls.Add(page);
+                            if (show)
+                            {
+                                if (page.needDpi)
+                                {
+                                    page.needDpi = false;
+                                    Helper.DpiAuto(Dpi, page);
+                                }
+                                Controls.Add(page);
+                            }
                             else Controls.Remove(page);
                         }
                     });
@@ -1724,6 +1732,8 @@ namespace AntdUI
         }
 
         #region 属性
+
+        internal bool needDpi = true;
 
         Image? icon;
         /// <summary>

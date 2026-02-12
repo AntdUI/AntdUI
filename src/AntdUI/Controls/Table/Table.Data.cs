@@ -17,7 +17,6 @@ namespace AntdUI
     {
         internal TempTable? dataTmp = null;
         bool dataOne = true;
-        List<int> selects = new List<int>();
         int hovers = -1;
         void ExtractData()
         {

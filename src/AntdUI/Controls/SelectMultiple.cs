@@ -322,7 +322,7 @@ namespace AntdUI
 
         protected override bool HasLeft() => selectedValue.Length > 0;
 
-        protected override int[] UseLeft(Rectangle rect_read, int font_height, bool delgap)
+        protected override int[] UseLeft(Rectangle rect_read, int font_height)
         {
             if (selectedValue.Length > 0)
             {
@@ -347,7 +347,7 @@ namespace AntdUI
                     if (AutoHeight || rect_read.Height > height * 2)
                     {
                         //多行
-                        int y = gap, usex = delgap ? 0 : y, usey = 0;
+                        int y = gap, usex = y, usey = 0;
                         for (int i = 0; i < selectedValue.Length; i++)
                         {
                             var it = selectedValue[i];
@@ -368,7 +368,7 @@ namespace AntdUI
                                 if (AutoHeight)
                                 {
                                     usey += height + gap;
-                                    usex = delgap ? 0 : y;
+                                    usex = y;
                                 }
                                 else if ((usey + height + gap) + (height + gap) > rect_read.Height)//超出
                                 {
@@ -383,7 +383,7 @@ namespace AntdUI
                                 else
                                 {
                                     usey += height + gap;
-                                    usex = delgap ? 0 : y;
+                                    usex = y;
                                 }
                             }
                             _style_left.Add(style);
@@ -410,11 +410,11 @@ namespace AntdUI
                         rect_left_txts = _rect_left_txt.ToArray();
                         rect_left_dels = _rect_left_del.ToArray();
                         rect_lefts = _rect_left.ToArray();
-                        return new int[] { usex - (delgap ? 0 : gap), usey };
+                        return new int[] { usex, usey };
                     }
                     else
                     {
-                        int y = (rect_read.Height - height) / 2, use = delgap ? 0 : y;
+                        int y = (rect_read.Height - height) / 2, use = y;
                         for (int i = 0; i < selectedValue.Length; i++)
                         {
                             var it = selectedValue[i];
@@ -465,7 +465,7 @@ namespace AntdUI
                         rect_left_txts = _rect_left_txt.ToArray();
                         rect_left_dels = _rect_left_del.ToArray();
                         rect_lefts = _rect_left.ToArray();
-                        return new int[] { use - (delgap ? 0 : gap), 0 };
+                        return new int[] { use, 0 };
                     }
                 });
             }
@@ -478,6 +478,7 @@ namespace AntdUI
             {
                 int pr = (int)Math.Round((WaveSize + BorderWidth / 2F) * Dpi) * 2, gap = (int)(Gap * Dpi) * 4;
                 Height = (height + Padding.Top + Padding.Vertical + pr) + y + gap;
+                subForm?.SizeChange();
             }
         }
 

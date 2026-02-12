@@ -219,8 +219,9 @@ namespace AntdUI
                         return;
                     }
                     var cells = new List<CELL>(_columns.Count);
-                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
-                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.i, row.record);
+                    int check_count = 0;
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, ref check_count, column, row, column.Key);
+                    if (cells.Count > 0) AddRows(ref _rows, cells.ToArray(), row.i, row.record, check_count);
                 });
             }
             else
@@ -233,8 +234,9 @@ namespace AntdUI
                         return;
                     }
                     var cells = new List<CELL>(_columns.Count);
-                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key);
-                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
+                    int check_count = 0;
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, ref check_count, column, row, column.Key);
+                    if (cells.Count > 0) ForTree(ref _rows, ref processing, AddRows(ref _rows, cells.ToArray(), row.i, row.record, check_count), row, _columns, KeyTree, KeyTreeINDEX, 0, true);
                 });
             }
             if (dataTmp.summary != null)
@@ -242,16 +244,16 @@ namespace AntdUI
                 foreach (var row in dataTmp.summary)
                 {
                     var cells = new List<CELL>(_columns.Count);
-                    foreach (var column in _columns) AddRows(ref cells, ref processing, column, row, column.Key, true);
+                    int check_count = 0;
+                    foreach (var column in _columns) AddRows(ref cells, ref processing, ref check_count, column, row, column.Key, true);
                     if (cells.Count > 0)
                     {
                         rowSummary++;
-                        var tmp = AddRows(ref _rows, cells.ToArray(), row.i, row.record);
+                        var tmp = AddRows(ref _rows, cells.ToArray(), row.i, row.record, 0);
                         tmp.Type = RowType.Summary;
                     }
                 }
             }
-
             dataOne = false;
             Processing = processing > 0;
             Columns = _columns;
@@ -743,8 +745,9 @@ namespace AntdUI
                     {
                         var row_tree = new IRow(i, list_tree[i], item_tree);
                         var cells_tree = new List<CELL>(_columns.Count);
-                        foreach (var column in _columns) AddRows(ref cells_tree, ref processing, column, row_tree, column.Key);
-                        var _row = AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record);
+                        int check_count = 0;
+                        foreach (var column in _columns) AddRows(ref cells_tree, ref processing, ref check_count, column, row_tree, column.Key);
+                        var _row = AddRows(ref _rows, cells_tree.ToArray(), row.i, row_tree.record, check_count);
                         _row.INDEX_REAL_KEY = i;
                         if (ForTree(ref _rows, ref processing, _row, row_tree, _columns, KeyTree, KeyTreeINDEX, depth + 1, show)) count++;
                     }
@@ -981,16 +984,16 @@ namespace AntdUI
         #endregion
 
         float check_radius = 0F, check_border = 1F;
-        void AddRows(ref List<CELL> cells, ref int processing, Column column, IRow row, string key, bool summary = false)
+        void AddRows(ref List<CELL> cells, ref int processing, ref int check, Column column, IRow row, string key, bool summary = false)
         {
             if (summary)
             {
                 if (row.cells.TryGetValue(key, out var ov))
                 {
                     var value = OGetValue(ov, row.record, out var property, out var rv);
-                    AddRows(ref cells, ref processing, column, rv, value, property, summary);
+                    AddRows(ref cells, ref processing, ref check, column, rv, value, property, summary);
                 }
-                else AddRows(ref cells, ref processing, column, null, null, null, summary);
+                else AddRows(ref cells, ref processing, ref check, column, null, null, null, summary);
             }
             else
             {
@@ -998,10 +1001,10 @@ namespace AntdUI
                 else if (row.cells.TryGetValue(key, out var ov))
                 {
                     var value = OGetValue(ov, row.record, out var property, out var rv);
-                    if (column.Render == null) AddRows(ref cells, ref processing, column, rv, value, property, summary);
-                    else AddRows(ref cells, ref processing, column, rv, column.Render(value, row.record, row.i), property, summary);
+                    if (column.Render == null) AddRows(ref cells, ref processing, ref check, column, rv, value, property, summary);
+                    else AddRows(ref cells, ref processing, ref check, column, rv, column.Render(value, row.record, row.i), property, summary);
                 }
-                else AddRows(ref cells, ref processing, column, null, column.Render?.Invoke(null, row.record, row.i), null, summary);
+                else AddRows(ref cells, ref processing, ref check, column, null, column.Render?.Invoke(null, row.record, row.i), null, summary);
             }
         }
 
@@ -1014,10 +1017,10 @@ namespace AntdUI
         /// <param name="ov">原始值</param>
         /// <param name="value">真值</param>
         /// <param name="prop">反射</param>
-        void AddRows(ref List<CELL> cells, ref int processing, Column column, object? ov, object? value, PropertyDescriptor? prop, bool summary)
+        void AddRows(ref List<CELL> cells, ref int processing, ref int check, Column column, object? ov, object? value, PropertyDescriptor? prop, bool summary)
         {
             if (value == null) cells.Add(new TCellText(this, column, prop, ov, null));
-            else cells.Add(GetCELL(column, ref processing, ov, value, prop, summary));
+            else cells.Add(GetCELL(column, ref processing, ref check, ov, value, prop, summary));
             if (ov is INotifyPropertyChanged notify)
             {
                 notify.PropertyChanged -= Notify_PropertyChanged;
@@ -1025,52 +1028,32 @@ namespace AntdUI
             }
         }
 
-        CELL GetCELL(Column column, ref int processing, object? ov, object value, PropertyDescriptor? prop, bool summary)
+        CELL GetCELL(Column column, ref int processing, ref int check, object? ov, object value, PropertyDescriptor? prop, bool summary)
         {
             if (summary) return AddRows(column, ref processing, ov, value, prop);
             else if (column is ColumnCheck columnCheck)
             {
                 //复选框
                 has_check = true;
-                bool value_check = false, val_int = false;
-                if (value is bool check) value_check = check;
-                else if (value is int check_int)
-                {
-                    value_check = check_int > 0;
-                    val_int = true;
-                }
+                bool value_check = GetCheckValue(columnCheck, value, out bool val_int);
+                if (value_check) check++;
                 return new TCellCheck(this, columnCheck, prop, ov, value_check, val_int);
             }
             else if (column is ColumnRadio columnRadio)
             {
                 //单选框
                 has_check = true;
-                bool value_check = false, val_int = false;
-                if (value is bool check) value_check = check;
-                else if (value is int check_int)
-                {
-                    value_check = check_int > 0;
-                    val_int = true;
-                }
+                bool value_check = GetCheckValue(columnRadio, value, out bool val_int);
+                if (value_check) check++;
                 return new TCellRadio(this, columnRadio, prop, ov, value_check, val_int);
             }
             else if (column is ColumnSwitch columnSwitch)
             {
                 //开关
-                bool value_check = false, val_int = false;
-                if (value is bool check) value_check = check;
-                else if (value is int check_int)
-                {
-                    value_check = check_int > 0;
-                    val_int = true;
-                }
+                bool value_check = GetCheckValue(columnSwitch, value, out bool val_int);
                 return new TCellSwitch(this, columnSwitch, prop, ov, value_check, val_int);
             }
-            else if (column is ColumnSelect columnSelect)
-            {
-                //键值类型
-                return new TCellSelect(this, columnSelect, prop, ov, value);
-            }
+            else if (column is ColumnSelect columnSelect) return new TCellSelect(this, columnSelect, prop, ov, value);//键值类型
             else return AddRows(column, ref processing, ov, value, prop);
         }
         CELL AddRows(Column column, ref int processing, object? ov, object value, PropertyDescriptor? prop)
@@ -1105,11 +1088,12 @@ namespace AntdUI
             else return new TCellText(this, column, prop, ov, value);
         }
 
-        RowTemplate AddRows(ref List<RowTemplate?> rows, CELL[] cells, int row_i, object record)
+        RowTemplate AddRows(ref List<RowTemplate?> rows, CELL[] cells, int row_i, object record, int check_count)
         {
             var row = new RowTemplate(this, cells, row_i, record);
             if (enableDir.Contains(record)) row.ENABLE = false;
             foreach (var it in row.cells) it.SetROW(row);
+            if (check_count > 0) row.Select = true;
             rows.Add(row);
             return row;
         }
@@ -1133,14 +1117,7 @@ namespace AntdUI
                             ForRow(dataTmp, 0, dataTmp.rows.Length, row =>
                             {
                                 if (row == null) return;
-                                if (row[checkColumn.Key] is bool tmp)
-                                {
-                                    if (tmp) check_count++;
-                                }
-                                else if (row[checkColumn.Key] is int tmp_int)
-                                {
-                                    if (tmp_int == 1) check_count++;
-                                }
+                                if (GetCheckValue(checkColumn, row[checkColumn.Key], out _)) check_count++;
                             });
                         }
                         else
@@ -1227,6 +1204,36 @@ namespace AntdUI
             }
             return ov;
         }
+
+        #region 获取复选值
+
+        internal bool GetCheckValue(ColumnICheck column, object? value, out bool val_int)
+        {
+            if (column._in == null) return GetCheckValue(value, out val_int);
+            else
+            {
+                val_int = false;
+                return column._in(value);
+            }
+        }
+        internal bool GetCheckValueAuto(Column column, object? value, out bool val_int)
+        {
+            if (column is ColumnICheck columnCheck) return GetCheckValue(columnCheck, value, out val_int);
+            else return GetCheckValue(value, out val_int);
+        }
+        internal bool GetCheckValue(object? value, out bool val_int)
+        {
+            val_int = false;
+            if (value is bool check) return check;
+            else if (value is int check_int)
+            {
+                val_int = true;
+                return check_int > 0;
+            }
+            return false;
+        }
+
+        #endregion
 
         #region MVVM
 
@@ -1323,38 +1330,27 @@ namespace AntdUI
             }
             else if (cel is TCellCheck check)
             {
-                if (value is bool b)
+                if (cel.COLUMN is ColumnCheck checkColumn)
                 {
-                    check.Checked = b;
-                    if (b) selects.Add(row.INDEX_REAL);
-                    else selects.Remove(row.INDEX_REAL);
+                    var b = GetCheckValue(checkColumn, value, out _);
+                    row.Select = check.Checked = b;
+                    if (checkColumn.NoTitle)
+                    {
+                        if (pauseLayout) return;
+                        IsCheckAll(cel_i, checkColumn);
+                    }
                 }
-                else if (value is int b_int)
-                {
-                    check.Checked = b_int == 1;
-                    if (check.Checked) selects.Add(row.INDEX_REAL);
-                    else selects.Remove(row.INDEX_REAL);
-                }
-                if (cel.COLUMN is ColumnCheck checkColumn && checkColumn.NoTitle)
-                {
-                    if (pauseLayout) return;
-                    IsCheckAll(cel_i, checkColumn);
-                }
+                else row.Select = check.Checked = GetCheckValue(value, out _);
                 Invalidate();
             }
             else if (cel is TCellRadio radio)
             {
-                if (value is bool b)
-                {
-                    radio.Checked = b;
-                    if (b) selects.Add(row.INDEX_REAL);
-                    else selects.Remove(row.INDEX_REAL);
-                }
+                row.Select = radio.Checked = GetCheckValueAuto(cel.COLUMN, value, out _);
                 Invalidate();
             }
             else if (cel is TCellSwitch _switch)
             {
-                if (value is bool b) _switch.Checked = b;
+                _switch.Checked = GetCheckValueAuto(cel.COLUMN, value, out _);
                 Invalidate();
             }
             else
@@ -1370,58 +1366,95 @@ namespace AntdUI
             int t_count = 0;
             bool old = pauseLayout;
             pauseLayout = true;
-            if (VirtualMode)
+            if (columnCheck._out == null)
             {
-                if (dataTmp == null) return;
-                var index = new List<int>(dataTmp.rows.Length);
-                int value_int = value ? 1 : 0;
-                ForRow(dataTmp, 0, dataTmp.rows.Length, row =>
+                if (VirtualMode)
                 {
-                    if (row == null) return;
-                    t_count++;
-                    var obj = row[columnCheck.Key];
-                    if (obj is bool tmp)
+                    if (dataTmp == null) return;
+                    var index = new List<int>(dataTmp.rows.Length);
+                    int value_int = value ? 1 : 0;
+                    ForRow(dataTmp, 0, dataTmp.rows.Length, row =>
                     {
-                        if (tmp == value)
+                        if (row == null) return;
+                        t_count++;
+                        var obj = row[columnCheck.Key];
+                        if (obj is bool tmp)
                         {
-                            index.Add(row.i);
-                            return;
+                            if (tmp == value)
+                            {
+                                index.Add(row.i);
+                                return;
+                            }
+                            row.SetValue(columnCheck.Key, value);
+                            OnCheckedChanged(value, row.record, row.i, i_cel, columnCheck);
                         }
-                        row.SetValue(columnCheck.Key, value);
-                    }
-                    else if (obj is int tmp_int)
+                        else if (obj is int tmp_int)
+                        {
+                            if (tmp_int == value_int)
+                            {
+                                index.Add(row.i);
+                                return;
+                            }
+                            row.SetValue(columnCheck.Key, value_int);
+                            OnCheckedChanged(value, row.record, row.i, i_cel, columnCheck);
+                        }
+                        index.Add(row.i);
+                    });
+                    foreach (var it in rows) it.Select = value;
+                }
+                else
+                {
+                    for (int i_row = 1; i_row < rows.Length; i_row++)
                     {
-                        if (tmp_int == value_int)
+                        var item = rows[i_row].cells[i_cel];
+                        if (item.ROW.Type == RowType.Summary) continue;
+                        if (item is TCellCheck checkCell)
                         {
-                            index.Add(row.i);
-                            return;
+                            t_count++;
+                            if (checkCell.Checked == value) continue;
+                            item.ROW.Select = checkCell.Checked = value;
+                            if (checkCell.ValInt)
+                            {
+                                SetValue(item, checkCell.Checked ? 1 : 0);
+                                OnCheckedChanged(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN);
+                            }
+                            else
+                            {
+                                SetValue(item, checkCell.Checked);
+                                OnCheckedChanged(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN);
+                            }
                         }
-                        row.SetValue(columnCheck.Key, value_int);
                     }
-                    index.Add(row.i);
-                });
-                selects.Clear();
-                if (value) selects.AddRange(index);
+                }
             }
             else
             {
-                for (int i_row = 1; i_row < rows.Length; i_row++)
+                if (VirtualMode)
                 {
-                    var item = rows[i_row].cells[i_cel];
-                    if (item.ROW.Type == RowType.Summary) continue;
-                    if (item is TCellCheck checkCell)
+                    if (dataTmp == null) return;
+                    var index = new List<int>(dataTmp.rows.Length);
+                    ForRow(dataTmp, 0, dataTmp.rows.Length, row =>
                     {
+                        if (row == null) return;
                         t_count++;
-                        if (checkCell.Checked == value) continue;
-                        checkCell.Checked = value;
-                        if (checkCell.ValInt)
+                        row.SetValue(columnCheck.Key, columnCheck._out(value));
+                        OnCheckedChanged(value, row.record, row.i, i_cel, columnCheck);
+                        index.Add(row.i);
+                    });
+                    foreach (var it in rows) it.Select = value;
+                }
+                else
+                {
+                    for (int i_row = 1; i_row < rows.Length; i_row++)
+                    {
+                        var item = rows[i_row].cells[i_cel];
+                        if (item.ROW.Type == RowType.Summary) continue;
+                        if (item is TCellCheck checkCell)
                         {
-                            SetValue(item, checkCell.Checked ? 1 : 0);
-                            OnCheckedChanged(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN);
-                        }
-                        else
-                        {
-                            SetValue(item, checkCell.Checked);
+                            t_count++;
+                            if (checkCell.Checked == value) continue;
+                            item.ROW.Select = checkCell.Checked = value;
+                            SetValue(item, columnCheck._out(value));
                             OnCheckedChanged(value, rows[i_row].RECORD, i_row, i_cel, item.COLUMN);
                         }
                     }
@@ -1444,14 +1477,7 @@ namespace AntdUI
                 {
                     if (row == null) return;
                     t_count++;
-                    if (row[column.Key] is bool tmp)
-                    {
-                        if (tmp) check_count++;
-                    }
-                    else if (row[column.Key] is int tmp_int)
-                    {
-                        if (tmp_int == 1) check_count++;
-                    }
+                    if (GetCheckValue(column, row[column.Key], out _)) check_count++;
                 });
             }
             else
@@ -1478,8 +1504,12 @@ namespace AntdUI
         void SetValueCheck(CELL_CHECK cel, bool value)
         {
             cel.Checked = value;
-            if (cel.ValInt) SetValue(cel, value ? 1 : 0);
-            else SetValue(cel, value);
+            if (cel.COLUMN is ColumnICheck columnCheck && columnCheck._out != null) SetValue(cel, columnCheck._out(value));
+            else
+            {
+                if (cel.ValInt) SetValue(cel, value ? 1 : 0);
+                else SetValue(cel, value);
+            }
         }
         void SetValue(CELL cel, object? value)
         {

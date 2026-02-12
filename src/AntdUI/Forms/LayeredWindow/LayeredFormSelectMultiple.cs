@@ -101,6 +101,11 @@ namespace AntdUI
             };
         }
 
+        public override void SizeChange()
+        {
+            if (PARENT is SelectMultiple control) CLocation(control, control.Placement, control.DropDownArrow, ArrowSize);
+        }
+
         float tmpItemHeight = 0F;
 
         #endregion
@@ -749,6 +754,7 @@ namespace AntdUI
     internal abstract class ISelectMultiple : ILayeredShadowForm
     {
         public virtual void SetValues(object[] value) { }
+        public virtual void SizeChange() { }
         public virtual void SetValues(List<object> value) { }
         public virtual void ClearValues() { }
         public virtual void TextChange(string val)

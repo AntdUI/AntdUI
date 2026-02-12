@@ -1018,14 +1018,41 @@ namespace AntdUI
             {
                 foreach (var it in items)
                 {
+                    var pinyin = it.Text;
                     if (it.IsTarget)
                     {
-                        it.Visible = et || it.Text?.IndexOf(targetSearchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                        if (pinyin == null) it.Visible = et;
+                        else
+                        {
+                            if (it.PY == null)
+                            {
+                                it.PY = new string[] {
+                                    pinyin.ToLower(),
+                                    Pinyin.GetPinyin(pinyin).ToLower(),
+                                    Pinyin.GetInitials(pinyin).ToLower()
+                                };
+                            }
+                            int score = Helper.SearchContains(targetSearchText, pinyin, it.PY, out _);
+                            it.Visible = et || score > 0;
+                        }
                         if (it.Visible && it.Enabled && it.selected) check_target++;
                     }
                     else
                     {
-                        it.Visible = es || it.Text?.IndexOf(sourceSearchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                        if (pinyin == null) it.Visible = es;
+                        else
+                        {
+                            if (it.PY == null)
+                            {
+                                it.PY = new string[] {
+                                    pinyin.ToLower(),
+                                    Pinyin.GetPinyin(pinyin).ToLower(),
+                                    Pinyin.GetInitials(pinyin).ToLower()
+                                };
+                            }
+                            int score = Helper.SearchContains(sourceSearchText, pinyin, it.PY, out _);
+                            it.Visible = es || score > 0;
+                        }
                         if (it.Visible && it.Enabled && it.selected) check_source++;
                     }
                 }
@@ -1431,6 +1458,21 @@ namespace AntdUI
         public TransferItem SetTag(object? value)
         {
             Tag = value;
+            return this;
+        }
+
+        internal string[]? PY { get; set; }
+        public TransferItem SetPinyin(string? value)
+        {
+            if (value == null) PY = new string[0];
+            else
+            {
+                PY = new string[] {
+                    value.ToLower(),
+                    Pinyin.GetPinyin(value).ToLower(),
+                    Pinyin.GetInitials(value).ToLower()
+                };
+            }
             return this;
         }
 
