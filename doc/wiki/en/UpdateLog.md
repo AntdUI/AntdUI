@@ -1,5 +1,18 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.18` 2026-02-12
+
+- ➕ Table Rich Editing Modes Reflection Types uint/short/long
+- ➕ Transfer Pinyin Fuzzy Search
+- ➕ Table ColumnCheck/ColumnRadio/ColumnSwitch Format Slot
+- ✍️ Table virtual rows do not trigger CheckedChanged
+- ✍️ DatePicker Calendar Maximum Value Issue
+- ✍️ Menu Alignment Unfolding Animation Text Quality
+- ✍️ Tab page DPI adaptation
+- ✍️ Button regression bug
+- ✍️ SelectMultiple AutoHeight: Multiple line cursor misalignment
+- ✍️ Table Initial Data Activation Rows
+
 ### `2.2.17` 2026-02-06
 
 - ➕ Transfer enriched search box ShowSearch

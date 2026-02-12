@@ -25,8 +25,8 @@ namespace Demo.Controls
                                     "one st menu item","two nd menu item","three rd menu item"
                                 }
                             } }
-                        },
-                        new AntdUI.SelectItem("子菜单2")
+                        }.SetText("子菜单1","Select.sub menu 1"),
+                        new AntdUI.SelectItem("子菜单2").SetText("子菜单2","Select.sub menu 2")
                     }
                 },
                 new AntdUI.SelectItem("two"){ Sub=new List<object>{ "five menu item", "six six six menu item"} },

@@ -537,6 +537,10 @@ namespace Demo
                     return "Enter search freely";
                 case "Select.select8":
                     return "(Select)";
+                case "Select.sub menu 1":
+                    return "Sub menu 1";
+                case "Select.sub menu 2":
+                    return "Sub menu 2";
 
                 //Slider ----------------------------
                 case "Slider.Text":

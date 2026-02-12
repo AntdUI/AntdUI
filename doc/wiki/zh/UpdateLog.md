@@ -1,5 +1,18 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.18` 2026-02-12
+
+- ➕ Table 丰富编辑模式反射类型 uint/short/long
+- ➕ Transfer 拼音模糊搜索
+- ➕ Table ColumnCheck/ColumnRadio/ColumnSwitch 格式化插槽
+- ✍️ Table 虚拟行 不触发 CheckedChanged
+- ✍️ DatePicker 日历 最大值问题
+- ✍️ Menu 对齐展开动画文本质量
+- ✍️ Tabs 页面 DPI适配
+- ✍️ Button 回归BUG
+- ✍️ SelectMultiple AutoHeight 多行光标错位
+- ✍️ Table 初始数据激活行
+
 ### `2.2.17` 2026-02-06
 
 - ➕ Transfer 丰富搜索框 ShowSearch
