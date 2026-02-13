@@ -235,7 +235,7 @@ namespace AntdUI
         [Description("链接与周围字符之间的距离"), Category("Appearance"), DefaultValue(typeof(Padding), "2, 0, 2, 0")]
         public Padding LinkPadding
         {
-            get { return _linkPadding; }
+            get => _linkPadding;
             set
             {
                 _linkPadding = value;
@@ -261,25 +261,26 @@ namespace AntdUI
             var rect = ReadRectangle;
 
             Color _fore = fore ?? Style.Get(Colour.Text, nameof(HyperlinkLabel));
+            var linkPadding = Helper.SetPadding(Dpi, _linkPadding);
             if (shadow > 0)
             {
                 using (var bmp = new Bitmap(Width, Height))
                 {
                     using (var g2 = Graphics.FromImage(bmp).HighLay(Dpi, true))
                     {
-                        PaintText(g2, Text, ShadowColor ?? _fore, rect);
+                        PaintText(g2, Text, ShadowColor ?? _fore, rect, linkPadding);
                     }
                     Helper.Blur(bmp, shadow);
                     g.Image(bmp, new Rectangle(shadowOffsetX, shadowOffsetY, bmp.Width, bmp.Height), shadowOpacity);
                 }
             }
-            PaintText(g, Text, _fore, rect);
+            PaintText(g, Text, _fore, rect, linkPadding);
         }
 
-        void PaintText(Canvas g, string? text, Color color, Rectangle rect)
+        void PaintText(Canvas g, string? text, Color color, Rectangle rect, Padding linkPadding)
         {
             // 计算文本的总尺寸以支持对齐
-            var totalSize = CalculateTextSize(g, text);
+            var totalSize = CalculateTextSize(g, text, linkPadding);
 
             // 根据 TextAlign 计算起始位置
             int startX = rect.X, startY = rect.Y;
@@ -340,15 +341,15 @@ namespace AntdUI
                     g.DrawText(part.Text, Font, color, part.Bounds);
                     usex += size.Width;
                 }
-                else if (part.Hover) PaintText(g, rect, part, startX, ref usex, ref usey, Colour.PrimaryActive, hoverStyle);
-                else PaintText(g, rect, part, startX, ref usex, ref usey, Colour.Primary, normalStyle);
+                else if (part.Hover) PaintText(g, rect, linkPadding, part, startX, ref usex, ref usey, Colour.PrimaryActive, hoverStyle);
+                else PaintText(g, rect, linkPadding, part, startX, ref usex, ref usey, Colour.Primary, normalStyle);
             }
         }
-        void PaintText(Canvas g, Rectangle rect, LinkPart part, int startX, ref int usex, ref int usey, Colour colour, LinkAppearance? style)
+        void PaintText(Canvas g, Rectangle rect, Padding linkPadding, LinkPart part, int startX, ref int usex, ref int usey, Colour colour, LinkAppearance? style)
         {
             if (style == null)
             {
-                var size = g.MeasureText(part.Text, Font).DeflateSize(LinkPadding);
+                var size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
                 if (usex + size.Width > rect.Right && usex > startX)
                 {
                     usex = startX;
@@ -363,7 +364,7 @@ namespace AntdUI
             {
                 using (var font = new Font(Font, style.LinkStyle & ~FontStyle.Underline))
                 {
-                    var size = g.MeasureText(part.Text, Font).DeflateSize(LinkPadding);
+                    var size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
                     if (usex + size.Width > rect.Right && usex > startX)
                     {
                         usex = startX;
@@ -372,14 +373,14 @@ namespace AntdUI
                     part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
                     g.DrawText(part.Text, font, style.LinkColor ?? Style.Get(colour, nameof(HyperlinkLabel)), part.Bounds);
 
-                    PaintText(g, style, Style.Get(colour, nameof(HyperlinkLabel)), part.Bounds);
+                    PaintText(g, style, Style.Get(colour, nameof(HyperlinkLabel)), part.Bounds, linkPadding);
 
                     usex += size.Width;
                 }
             }
         }
 
-        private Size CalculateTextSize(Canvas g, string? text)
+        private Size CalculateTextSize(Canvas g, string? text, Padding linkPadding)
         {
             if (string.IsNullOrEmpty(text) || _linkParts.Length == 0) return Size.Empty;
 
@@ -393,7 +394,7 @@ namespace AntdUI
                 {
                     using (var font = new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline))
                     {
-                        partSize = g.MeasureText(part.Text, font).DeflateSize(LinkPadding);
+                        partSize = g.MeasureText(part.Text, font).DeflateSize(linkPadding);
                     }
                 }
                 totalWidth += partSize.Width;
@@ -401,13 +402,13 @@ namespace AntdUI
             }
             return new Size(totalWidth, maxHeight);
         }
-        void PaintText(Canvas g, LinkAppearance style, Color color, Rectangle rect)
+        void PaintText(Canvas g, LinkAppearance style, Color color, Rectangle rect, Padding linkPadding)
         {
             if (style.UnderlineThickness > 0)
             {
                 using var pen = new Pen(style.UnderlineColor ?? color, style.UnderlineThickness * Dpi);
                 int y = rect.Bottom;
-                g.DrawLine(pen, rect.Left + LinkPadding.Left, y, rect.Right - LinkPadding.Right, y);
+                g.DrawLine(pen, rect.Left + linkPadding.Left, y, rect.Right - linkPadding.Right, y);
             }
         }
 
@@ -485,8 +486,8 @@ namespace AntdUI
                     if (string.IsNullOrWhiteSpace(Text)) font_size.Width = 0;
 
                     // 应用链接内边距和控件边距
-                    int totalWidth = font_size.Width + (_linkParts.Length * LinkPadding.Horizontal) + Padding.Horizontal;
-                    int totalHeight = font_size.Height + LinkPadding.Vertical + Padding.Vertical;
+                    int totalWidth = font_size.Width + (_linkParts.Length * (int)(_linkPadding.Horizontal * Dpi)) + Padding.Horizontal;
+                    int totalHeight = font_size.Height + (int)(_linkPadding.Vertical * Dpi) + Padding.Vertical;
 
                     return new Size(totalWidth, totalHeight);
                 });
