@@ -1,5 +1,10 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.2.19` 2026-02-13
+
+- ✍️ Roll back old versions of Tabs
+- ✍️ Simplify DPI
+
 ### `2.2.18` 2026-02-12
 
 - ➕ Table Rich Editing Modes Reflection Types uint/short/long
