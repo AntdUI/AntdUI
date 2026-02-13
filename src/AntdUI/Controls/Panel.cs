@@ -62,9 +62,20 @@ namespace AntdUI
 
         #region 阴影
 
-        Padding _padding = new Padding(0);
+        [Obsolete("use InnerPadding")]
         [Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
         public Padding padding
+        {
+            get => InnerPadding;
+            set => InnerPadding = value;
+        }
+
+        Padding _padding = new Padding(0);
+        /// <summary>
+        /// 内边距
+        /// </summary>
+        [Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
+        public Padding InnerPadding
         {
             get => _padding;
             set
@@ -74,7 +85,8 @@ namespace AntdUI
                 shadow_temp?.Dispose();
                 shadow_temp = null;
                 IOnSizeChanged();
-                OnPropertyChanged(nameof(padding));
+                OnPropertyChanged(nameof(InnerPadding));
+
             }
         }
 
@@ -456,7 +468,7 @@ namespace AntdUI
             return path;
         }
 
-        public override Rectangle ReadRectangle => ClientRectangle.DeflateRect(_padding).PaddingRect(this, shadowAlign, borderWidth / 2F);
+        public override Rectangle ReadRectangle => ClientRectangle.DeflateRect(_padding, Dpi).PaddingRect(this, shadowAlign, borderWidth / 2F);
 
         public override GraphicsPath RenderRegion => ReadRectangle.RoundPath(radius * Dpi);
 

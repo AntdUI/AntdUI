@@ -417,8 +417,8 @@ namespace AntdUI
             {
                 this.GDI(g =>
                 {
-                    int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Dpi), border2 = border * 2, offset = (int)(offsetY * Dpi);
-                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - rightGap, crect.Height - offset);
+                    int txtHeight = g.MeasureString(Config.NullText, Font).Height, txtTW = 0, border = (int)(borderWidth * Dpi), border2 = border * 2, offset = (int)(offsetY * Dpi), _rightGap = (int)(rightGap * Dpi);
+                    Rectangle crect = ClientRectangle.PaddingRect(Padding), rect = new Rectangle(crect.X, crect.Y + offset, crect.Width - _rightGap, crect.Height - offset);
                     if (showAdd) rect.Width -= rect.Height;
                     int paddx = (int)(txtHeight * tabGapRatio), paddx2 = paddx * 2, gap = (int)(txtHeight * tabIconGapRatio), gap2 = gap * 2,
                     ico_size = (int)(txtHeight * tabIconRatio), close_size = (int)(txtHeight * tabCloseRatio), close_i_size = (int)(txtHeight * TabCloseIconRatio),

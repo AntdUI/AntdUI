@@ -152,6 +152,35 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 根据内边距缩小矩形区域
+        /// </summary>
+        /// <param name="rect">原始矩形</param>
+        /// <param name="padding">内边距</param>
+        /// <returns>缩小后的矩形</returns>
+        public static Rectangle DeflateRect(this Rectangle rect, Padding padding, float dpi)
+        {
+            if (padding.All == 0) return rect;
+            else if (padding.All > 0)
+            {
+                int padd = (int)(padding.All * dpi), padd2 = padd * 2;
+                rect.X += padd;
+                rect.Y += padd;
+                rect.Width -= padd2;
+                rect.Height -= padd2;
+                return rect;
+            }
+            else
+            {
+                int x = (int)(padding.Left * dpi), y = (int)(padding.Top * dpi), r = (int)(padding.Right * dpi), b = (int)(padding.Bottom * dpi);
+                rect.X += x;
+                rect.Y += y;
+                rect.Width -= (x + r);
+                rect.Height -= (y + b);
+                return rect;
+            }
+        }
+
+        /// <summary>
         /// 根据内边距放大尺寸
         /// </summary>
         /// <param name="size">原始尺寸</param>

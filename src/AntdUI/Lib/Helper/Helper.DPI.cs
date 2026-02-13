@@ -36,7 +36,6 @@ namespace AntdUI
                 {
                     case AutoScaleMode.Font:
                     case AutoScaleMode.Dpi:
-                        DpiLS(dpi, control.Controls);
                         break;
                     default:
                         if (form.WindowState == FormWindowState.Maximized)
@@ -66,8 +65,6 @@ namespace AntdUI
                 {
                     case AutoScaleMode.Font:
                     case AutoScaleMode.Dpi:
-                        DpiLS(revert_dpi, control.Controls);
-                        DpiLS(dpi, control.Controls);
                         break;
                     default:
                         DpiCompatible(revert_dpi, control);
@@ -78,11 +75,7 @@ namespace AntdUI
             else DpiLS(dpi, DpiInfo(control));
         }
 
-        public static void DpiCompatible(float dpi, Control control)
-        {
-            control.Scale(new SizeF(dpi, dpi));
-            DpiLS(dpi, control.Controls);
-        }
+        public static void DpiCompatible(float dpi, Control control) => control.Scale(new SizeF(dpi, dpi));
 
         static Dictionary<Control, AnchorDock> DpiInfo(Control control)
         {
@@ -164,25 +157,6 @@ namespace AntdUI
                     if (splitContainer.Panel1MinSize > 0) splitContainer.Panel1MinSize = (int)(splitContainer.Panel1MinSize * dpi);
                     if (splitContainer.Panel2MinSize > 0) splitContainer.Panel2MinSize = (int)(splitContainer.Panel2MinSize * dpi);
                 }
-                else if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
-                else if (control is HyperlinkLabel hyperlink) hyperlink.LinkPadding = SetPadding(dpi, hyperlink.LinkPadding);
-                else if (control is TabHeader tabHeader)
-                {
-                    if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
-                }
-            }
-        }
-        static void DpiLS(float dpi, Control.ControlCollection controls)
-        {
-            foreach (Control control in controls)
-            {
-                if (control is Panel panel) panel.padding = SetPadding(dpi, panel.padding);
-                else if (control is HyperlinkLabel hyperlink) hyperlink.LinkPadding = SetPadding(dpi, hyperlink.LinkPadding);
-                else if (control is TabHeader tabHeader)
-                {
-                    if (tabHeader.RightGap > 0) tabHeader.RightGap = (int)(tabHeader.RightGap * dpi);
-                }
-                if (controls.Count > 0) DpiLS(dpi, control.Controls);
             }
         }
 

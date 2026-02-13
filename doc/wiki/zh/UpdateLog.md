@@ -1,5 +1,10 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.2.19` 2026-02-13
+
+- ✍️ Tabs 回滚旧版本
+- ✍️ 简化 DPI
+
 ### `2.2.18` 2026-02-12
 
 - ➕ Table 丰富编辑模式反射类型 uint/short/long
