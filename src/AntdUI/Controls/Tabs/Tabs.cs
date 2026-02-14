@@ -496,9 +496,7 @@ namespace AntdUI
             style.Dispose();
             bitblock_l?.Dispose();
             bitblock_r?.Dispose();
-            if (items == null || items.Count == 0) return;
-            foreach (var it in items) it.Dispose();
-            items.Dispose();
+            items?.Dispose();
             base.Dispose(disposing);
         }
 
