@@ -45,7 +45,7 @@ namespace Demo.Controls
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.LocalizationDescription = "Divider.Description";
-            header1.LocalizationText = "Divider.Text";
+            header1.LocalizationText = "Divider";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);
@@ -115,7 +115,7 @@ namespace Demo.Controls
             // 
             // divider3
             // 
-            divider3.LocalizationText = "Divider.Text";
+            divider3.LocalizationText = "Divider";
             divider3.Location = new Point(521, 3);
             divider3.Name = "divider3";
             divider3.Size = new Size(29, 317);

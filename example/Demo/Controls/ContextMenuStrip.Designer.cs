@@ -39,7 +39,7 @@ namespace Demo.Controls
             header1.Dock = System.Windows.Forms.DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.LocalizationDescription = "ContextMenuStrip.Description";
-            header1.LocalizationText = "ContextMenuStrip.Text";
+            header1.LocalizationText = "ContextMenuStrip";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);

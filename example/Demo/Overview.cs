@@ -361,44 +361,10 @@ namespace Demo
         {
             if (e.Value is string lang)
             {
-                btn_global.Loading = true;
                 if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
                 else AntdUI.Localization.Provider = null;
                 AntdUI.Localization.SetLanguage(lang);
                 Refresh();
-                AntdUI.ITask.Run(() =>
-                {
-                    int ScrollBarValue = virtualPanel.ScrollBar.Value;
-                    virtualPanel.PauseLayout = true;
-                    virtualPanel.Items.Clear();
-                    LoadList();
-
-                    string search = txt_search.Text;
-                    if (string.IsNullOrEmpty(search)) virtualPanel.Empty = false;
-                    else
-                    {
-                        virtualPanel.Empty = true;
-                        string searchLower = search.ToLower();
-                        var titles = new List<TItem>(virtualPanel.Items.Count);
-                        foreach (var it in virtualPanel.Items)
-                        {
-                            if (it is VItem item) it.Visible = item.data.id.Contains(search) || item.data.key.Contains(search) || item.data.keyword.Contains(searchLower) || item.data.keywordmini.Contains(searchLower);
-                            else if (it is TItem itemTitle) titles.Add(itemTitle);
-                        }
-                        foreach (var it in titles)
-                        {
-                            int count = 0;
-                            foreach (var item in it.data)
-                            {
-                                if (item.Visible) count++;
-                            }
-                            it.Visible = count > 0;
-                        }
-                    }
-
-                    virtualPanel.ScrollBar.Value = ScrollBarValue;
-                    virtualPanel.PauseLayout = false;
-                }, () => btn_global.Loading = false);
             }
         }
 
@@ -465,11 +431,11 @@ namespace Demo
                 {
                     virtualPanel.Empty = true;
                     string searchLower = search.ToLower();
-                    var titles = new List<TItem>(virtualPanel.Items.Count);
+                    var titles = new List<AntdUI.TItem>(virtualPanel.Items.Count);
                     foreach (var it in virtualPanel.Items)
                     {
                         if (it is VItem item) it.Visible = item.data.id.Contains(search) || item.data.key.Contains(search) || item.data.keyword.Contains(searchLower) || item.data.keywordmini.Contains(searchLower);
-                        else if (it is TItem itemTitle) titles.Add(itemTitle);
+                        else if (it is AntdUI.TItem itemTitle) titles.Add(itemTitle);
                     }
                     foreach (var it in titles)
                     {
@@ -587,29 +553,47 @@ namespace Demo
 
 
             var dir = new Dictionary<string, IList[]> {
-                { AntdUI.Localization.Get("General", "通用"), dir_General },
-                { AntdUI.Localization.Get("Layout", "布局"), dir_Layout },
-                { AntdUI.Localization.Get("Navigation", "导航"), dir_Navigation },
-                { AntdUI.Localization.Get("DataEntry", "数据录入"), dir_DataEntry },
-                { AntdUI.Localization.Get("DataDisplay", "数据展示"), dir_DataDisplay },
-                { AntdUI.Localization.Get("Feedback", "反馈"), dir_Feedback },
-                { AntdUI.Localization.Get("Other", "其他"), dir_Other }
+                { "General", dir_General },
+                { "Layout", dir_Layout },
+                { "Navigation", dir_Navigation },
+                { "DataEntry", dir_DataEntry },
+                { "DataDisplay", dir_DataDisplay },
+                { "Feedback", dir_Feedback },
+                { "Other", dir_Other }
             };
 
             var list = new List<AntdUI.VirtualItem>(dir.Count + dir_General.Length + dir_Layout.Length + dir_Navigation.Length + dir_DataEntry.Length + dir_DataDisplay.Length + dir_Feedback.Length);
 
-            bool china = true;
-            if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("en")) china = false;
             foreach (var it in dir)
             {
                 var list_sub = new List<AntdUI.VirtualItem>(it.Value.Length);
-                foreach (var item in it.Value) list_sub.Add(new VItem(item, china));
-                list.Add(new TItem(it.Key, list_sub));
+                foreach (var item in it.Value) list_sub.Add(new VItem(item));
+                list.Add(new AntdUI.TItem(GetChinaGroup(it.Key), it.Key, list_sub.ToArray()));
                 list.AddRange(list_sub);
             }
             virtualPanel.Items.AddRange(list);
             windowBar.Loading = false;
             virtualPanel.BlurBar = windowBar;
+        }
+        string GetChinaGroup(string key)
+        {
+            switch (key)
+            {
+                case "General":
+                    return "通用";
+                case "Layout":
+                    return "布局";
+                case "Navigation":
+                    return "导航";
+                case "DataEntry":
+                    return "数据录入";
+                case "DataDisplay":
+                    return "数据展示";
+                case "Feedback":
+                    return "反馈";
+                default:
+                    return "其他";
+            }
         }
 
         string ShieldSvg(string color)
@@ -638,57 +622,15 @@ namespace Demo
 
         #region 渲染
 
-        class TItem : AntdUI.VirtualItem
-        {
-            string title, count;
-            public List<AntdUI.VirtualItem> data;
-            public TItem(string t, List<AntdUI.VirtualItem> d)
-            {
-                CanClick = false;
-                data = d;
-                title = t;
-                count = d.Count.ToString();
-            }
-
-            public override void Paint(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
-            {
-                using (var font_title = new Font(e.Panel.Font, FontStyle.Bold))
-                using (var font_count = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * .74F, e.Panel.Font.Style))
-                {
-                    var size = AntdUI.Helper.Size(g.MeasureString(title, font_title));
-                    g.String(title, font_title, AntdUI.Style.Db.Text, new Rectangle(e.Rect.X + x, e.Rect.Y, e.Rect.Width, e.Rect.Height), AntdUI.FormatFlags.Left | AntdUI.FormatFlags.VerticalCenter | AntdUI.FormatFlags.NoWrap);
-
-                    var rect_count = new Rectangle(e.Rect.X + x + size.Width + gap, e.Rect.Y + (e.Rect.Height - size.Height) / 2, size.Height, size.Height);
-                    using (var path = AntdUI.Helper.RoundPath(rect_count, e.Radius))
-                    {
-                        g.Fill(AntdUI.Style.Db.TagDefaultBg, path);
-                        g.Draw(AntdUI.Style.Db.DefaultBorder, sp, path);
-                    }
-                    g.String(count, font_count, AntdUI.Style.Db.Text, rect_count, AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrap);
-                }
-            }
-
-            int gap = 8, sp = 1, x = 30;
-            public override Size Size(AntdUI.Canvas g, AntdUI.VirtualPanelArgs e)
-            {
-                var dpi = g.Dpi;
-                gap = (int)(8 * dpi);
-                sp = (int)(1 * dpi);
-                x = (int)(30 * dpi);
-                return new Size(e.Rect.Width, (int)(44 * dpi));
-            }
-        }
-
         class VItem : AntdUI.VirtualShadowItem
         {
             public IList data;
-            string name;
-            public VItem(IList d, bool china)
+            string LocalizationName;
+            public VItem(IList d)
             {
                 data = d;
                 Tag = d.id;
-                if (china) name = data.id + " " + data.key;
-                else name = data.id;
+                LocalizationName = d.key + " " + d.id;
             }
 
             AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Left | AntdUI.FormatFlags.VerticalCenter;
@@ -709,14 +651,13 @@ namespace Demo
                 {
                     using (var font_title = new Font(e.Panel.Font.FontFamily, 11F, FontStyle.Bold))
                     {
-                        g.String(name, font_title, fore, rect_title, s_f);
+                        g.String(AntdUI.Localization.Get(data.id, LocalizationName), font_title, fore, rect_title, s_f);
                     }
                 }
                 using (var brush = new SolidBrush(AntdUI.Style.Db.Split))
                 {
                     g.Fill(brush, rect_line);
                 }
-                //g.Fill(Color.Blue, rect_ico);
                 try
                 {
                     var bmp = AntdUI.Config.IsDark ? data.imgs[1] : data.imgs[0];

@@ -54,7 +54,7 @@ namespace FontTest
                     if (text.Length > 1) text = text.Substring(0, 1);
                     using (var font = new Font(select1.Text, (int)inputNumber1.Value))
                     {
-                        int size = AntdUI.Helper.GDI(g => (int)(AntdUI.Helper.Size(g.MeasureString("中文Qq", font)).Height * 1.2F));
+                        int size = AntdUI.Helper.GDI(g => (int)(g.MeasureString("中文Qq", font).Height * 1.2F));
                         var pic = new PictureBox
                         {
                             Margin = new Padding(1, 1, 0, 0),
@@ -100,7 +100,7 @@ namespace FontTest
 
                     #endregion
 
-                    var font_size = AntdUI.Helper.Size(g.MeasureString(text, font));
+                    var font_size = g.MeasureString(text, font);
                     int y = (bmp.Height - font_size.Height) / 2, height = font_size.Height;
 
                     float ready = ry + rheight / 2F;
