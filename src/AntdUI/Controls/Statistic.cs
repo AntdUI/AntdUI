@@ -325,7 +325,7 @@ namespace AntdUI
                     }
                     use_x += pie_size + padd;
                 }
-                var rect_real = new Rectangle(rect.X + padd + use_x, rect.Y, rect.Width - padd * 2-use_x, rect.Height);
+                var rect_real = new Rectangle(rect.X + padd + use_x, rect.Y, rect.Width - padd * 2 - use_x, rect.Height);
                 var rect_text = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, h_text);
                 var rect_value = new Rectangle(rect_real.X, rect_real.Y + rect_text.Height + gap, rect_real.Width, h_value);
                 g.String(text, Font, Colour.TextTertiary.Get(nameof(Statistic), ColorScheme), rect_text, sf);

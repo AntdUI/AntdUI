@@ -1033,7 +1033,18 @@ namespace AntdUI
         {
             BlurBar = null;
             _event?.WaitDispose();
+            if (shadow_dir_tmp.Count > 0)
+            {
+                lock (shadow_dir_tmp)
+                {
+                    foreach (var item in shadow_dir_tmp) item.Value.Dispose();
+                    shadow_dir_tmp.Clear();
+                }
+            }
             base.Dispose(disposing);
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items) it.Dispose(this, true);
+            items.Dispose();
         }
 
         #endregion
@@ -1051,6 +1062,14 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
+                    if (Config.HasAnimation(nameof(VirtualPanel), Name) && BlurBar != null) _event.SetWait();
+                    break;
+                case EventType.LANG:
+                    CellCount = -1;
+                    if (items == null || items.Count == 0) return;
+                    foreach (var it in items) it.Dispose(this, false);
+                    LoadLayout();
+                    Invalidate();
                     if (Config.HasAnimation(nameof(VirtualPanel), Name) && BlurBar != null) _event.SetWait();
                     break;
             }
@@ -1301,6 +1320,8 @@ namespace AntdUI
         public virtual bool MouseMove(VirtualPanel sender, VirtualPanelMouseArgs e) => true;
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
+
+        public virtual void Dispose(VirtualPanel sender, bool disposed) { }
 
         public void Invalidate() => invalidate?.Invoke(this, null);
         public void Invalidate(Rectangle rect) => invalidate?.Invoke(this, rect);
