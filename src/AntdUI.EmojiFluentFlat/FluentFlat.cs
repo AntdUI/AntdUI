@@ -26,25 +26,7 @@ namespace AntdUI
             }
         }
 
-        static string Rest(string svg) => "<svg " + svg.Replace("[VBD", "viewBox=\"").Replace("[VB2", "viewBox=\"0 0 1024 1024\">").Replace("[PD", "<path d=\"").Replace("[PE", "</path>").Replace("[PG", "\"></path>") + "</svg>";
-
-        /// <summary>
-        /// 压缩字符串
-        /// </summary>
-        /// <param name="text">待压缩的字符串</param>
-        /// <returns>压缩后的 Base64 编码字符串</returns>
-        static string CompressString(string text)
-        {
-            var buffer = Encoding.UTF8.GetBytes(text);
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-                {
-                    gZipStream.Write(buffer, 0, buffer.Length);
-                }
-                return Convert.ToBase64String(memoryStream.ToArray());
-            }
-        }
+        static string Rest(string svg) => "<svg " + svg.Replace("[VBD", "viewBox=\"").Replace("[VB3", "viewBox=\"0 0 32 32\">").Replace( "[VB3N", "viewBox=\"0 0 32 32\" fill=\"none\">").Replace("[VB2", "viewBox=\"0 0 1024 1024\">").Replace("[PD", "<path d=\"").Replace("[PE", "</path>").Replace("[PG", "\"></path>").Replace("fillNA", "fill=\"none\"") + "</svg>";
 
         /// <summary>
         /// 解压缩字符串
