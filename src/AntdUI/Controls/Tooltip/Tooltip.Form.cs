@@ -26,7 +26,7 @@ namespace AntdUI
             SetDpi(control);
             CloseMode = CloseMode.Leave;
             Text = txt;
-            Font = component.Font ?? Config.Font ?? control.Font;
+            Font = component.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
@@ -62,7 +62,7 @@ namespace AntdUI
             SetDpi(control);
             CloseMode = CloseMode.Click;
             Text = txt;
-            Font = component.Font ?? Config.Font ?? control.Font;
+            Font = component.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;

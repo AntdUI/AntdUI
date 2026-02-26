@@ -455,7 +455,7 @@ namespace AntdUI
             var g = e.Canvas;
             var rect_read = ReadRectangle;
             float _radius = round ? rect_read.Height : radius * Dpi;
-            using (var path = Path(rect_read, _radius))
+            using (var path = Helper.PathJoin(rect_read, _radius, joinMode, joinLeft, joinRight))
             {
                 Color _fore = fore ?? Colour.Text.Get(nameof(ColorPicker), ColorScheme), _back = back ?? Colour.BgContainer.Get(nameof(ColorPicker), ColorScheme),
                     _border = borderColor ?? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme),
@@ -609,30 +609,6 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        internal GraphicsPath Path(Rectangle rect, float radius)
-        {
-            switch (joinMode)
-            {
-                case TJoinMode.Left:
-                    return rect.RoundPath(radius, true, false, false, true);
-                case TJoinMode.Right:
-                    return rect.RoundPath(radius, false, true, true, false);
-                case TJoinMode.LR:
-                case TJoinMode.TB:
-                    return rect.RoundPath(0);
-                case TJoinMode.Top:
-                    return rect.RoundPath(radius, true, true, false, false);
-                case TJoinMode.Bottom:
-                    return rect.RoundPath(radius, false, false, true, true);
-                case TJoinMode.None:
-                default:
-                    if (joinLeft && joinRight) return rect.RoundPath(0);
-                    else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
-                    else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
-                    return rect.RoundPath(radius);
-            }
-        }
-
         #region 点击动画
 
         internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, Color color, float radius)
@@ -664,15 +640,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, joinLeft, joinRight);
 
-        public override GraphicsPath RenderRegion
-        {
-            get
-            {
-                var rect_read = ReadRectangle;
-                float _radius = round ? rect_read.Height : radius * Dpi;
-                return Path(rect_read, _radius);
-            }
-        }
+        public override GraphicsPath RenderRegion => Helper.PathJoin(ReadRectangle, radius, Dpi, round, joinMode, joinLeft, joinRight);
 
         #endregion
 

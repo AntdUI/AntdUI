@@ -234,6 +234,7 @@ namespace AntdUI
         /// <summary>
         /// 默认字体
         /// </summary>
+        [System.Obsolete]
         public static Font? Font { get; set; }
 
         #region 滚动条

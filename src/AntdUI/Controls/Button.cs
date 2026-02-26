@@ -1206,7 +1206,7 @@ namespace AntdUI
             if (is_default)
             {
                 GetDefaultColorConfig(out var _fore, out var _color, out var _back_hover, out var _back_active);
-                using (var path = Path(rect_read, _radius))
+                using (var path = Helper.PathJoin(rect_read, _radius, shape, joinMode, joinLeft, joinRight))
                 {
                     #region 动画
 
@@ -1282,7 +1282,7 @@ namespace AntdUI
             else
             {
                 GetColorConfig(out var _fore, out var _fore_hover, out var _fore_active, out var _back, out var _back_hover, out var _back_active);
-                using (var path = Path(rect_read, _radius))
+                using (var path = Helper.PathJoin(rect_read, _radius, shape, joinMode, joinLeft, joinRight))
                 {
                     #region 动画
 
@@ -1561,7 +1561,7 @@ namespace AntdUI
             {
                 float wave = (WaveSize * Dpi / 2), wave2 = wave * 2, r = radius + wave;
                 var rect_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2);
-                using (var path_focus = Path(rect_focus, r))
+                using (var path_focus = Helper.PathJoin(rect_focus, r, shape, joinMode, joinLeft, joinRight))
                 {
                     g.Draw(Colour.PrimaryBorder.Get(nameof(Button), ColorScheme), wave, path_focus);
                 }
@@ -1944,36 +1944,6 @@ namespace AntdUI
 
         #endregion
 
-        public GraphicsPath Path(RectangleF rect, float radius)
-        {
-            if (shape == TShape.Circle)
-            {
-                var path = new GraphicsPath();
-                path.AddEllipse(rect);
-                return path;
-            }
-            switch (joinMode)
-            {
-                case TJoinMode.Left:
-                    return rect.RoundPath(radius, true, false, false, true);
-                case TJoinMode.Right:
-                    return rect.RoundPath(radius, false, true, true, false);
-                case TJoinMode.LR:
-                case TJoinMode.TB:
-                    return rect.RoundPath(0);
-                case TJoinMode.Top:
-                    return rect.RoundPath(radius, true, true, false, false);
-                case TJoinMode.Bottom:
-                    return rect.RoundPath(radius, false, false, true, true);
-                case TJoinMode.None:
-                default:
-                    if (joinLeft && joinRight) return rect.RoundPath(0);
-                    else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
-                    else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
-                    return rect.RoundPath(radius);
-            }
-        }
-
         #endregion
 
         #region 帮助
@@ -2122,14 +2092,8 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
 
-        public override GraphicsPath RenderRegion
-        {
-            get
-            {
-                var rect = ReadRectangle;
-                return Path(rect, (shape == TShape.Round || shape == TShape.Circle) ? rect.Height : radius * Dpi);
-            }
-        }
+        public override GraphicsPath RenderRegion => Helper.PathJoin(ReadRectangle, radius, Dpi, shape, joinMode, joinLeft, joinRight);
+
         #endregion
 
         #endregion
@@ -2141,7 +2105,7 @@ namespace AntdUI
             if (RespondRealAreas)
             {
                 var rect_read = ReadRectangle;
-                using (var path = Path(rect_read, radius * Dpi))
+                using (var path = Helper.PathJoin(rect_read, radius, Dpi, shape, joinMode, joinLeft, joinRight))
                 {
                     ExtraMouseHover = path.IsVisible(e.X, e.Y);
                 }
@@ -2380,7 +2344,7 @@ namespace AntdUI
                 if (RespondRealAreas)
                 {
                     var rect_read = ReadRectangle;
-                    using (var path = Path(rect_read, radius * Dpi))
+                    using (var path = Helper.PathJoin(rect_read, radius, Dpi, shape, joinMode, joinLeft, joinRight))
                     {
                         return path.IsVisible(x, y);
                     }

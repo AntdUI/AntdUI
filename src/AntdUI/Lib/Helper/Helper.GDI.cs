@@ -956,6 +956,61 @@ namespace AntdUI
             path.CloseFigure();
         }
 
+        public static GraphicsPath PathJoin(RectangleF rect, int radius, float dpi, TShape shape, TJoinMode joinMode, bool joinLeft, bool joinRight)
+        {
+            switch (shape)
+            {
+                case TShape.Circle:
+                    var path = new GraphicsPath();
+                    path.AddEllipse(rect);
+                    return path;
+                case TShape.Round:
+                    return PathJoin(rect, rect.Height, joinMode, joinLeft, joinRight);
+            }
+            return PathJoin(rect, radius * dpi, joinMode, joinLeft, joinRight);
+        }
+        public static GraphicsPath PathJoin(RectangleF rect, float radius, TShape shape, TJoinMode joinMode, bool joinLeft, bool joinRight)
+        {
+            switch (shape)
+            {
+                case TShape.Circle:
+                    var path = new GraphicsPath();
+                    path.AddEllipse(rect);
+                    return path;
+                case TShape.Round:
+                    return PathJoin(rect, rect.Height, joinMode, joinLeft, joinRight);
+            }
+            return PathJoin(rect, radius, joinMode, joinLeft, joinRight);
+        }
+        public static GraphicsPath PathJoin(RectangleF rect, int radius, float dpi, bool round, TJoinMode joinMode, bool joinLeft, bool joinRight)
+        {
+            if (round) return PathJoin(rect, rect.Height, joinMode, joinLeft, joinRight);
+            return PathJoin(rect, radius * dpi, joinMode, joinLeft, joinRight);
+        }
+        internal static GraphicsPath PathJoin(RectangleF rect, float radius, TJoinMode joinMode, bool joinLeft, bool joinRight)
+        {
+            switch (joinMode)
+            {
+                case TJoinMode.Left:
+                    return rect.RoundPath(radius, true, false, false, true);
+                case TJoinMode.Right:
+                    return rect.RoundPath(radius, false, true, true, false);
+                case TJoinMode.LR:
+                case TJoinMode.TB:
+                    return rect.RoundPath(0);
+                case TJoinMode.Top:
+                    return rect.RoundPath(radius, true, true, false, false);
+                case TJoinMode.Bottom:
+                    return rect.RoundPath(radius, false, false, true, true);
+                case TJoinMode.None:
+                default:
+                    if (joinLeft && joinRight) return rect.RoundPath(0);
+                    else if (joinLeft) return rect.RoundPath(radius, false, true, true, false);
+                    else if (joinRight) return rect.RoundPath(radius, true, false, false, true);
+                    return rect.RoundPath(radius);
+            }
+        }
+
         #endregion
 
         #region 图标渲染
