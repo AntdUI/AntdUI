@@ -342,7 +342,7 @@ namespace AntdUI
             }
             var g = e.Canvas;
             float border = borderWidth * Dpi, _radius = radius * Dpi;
-            var s_f = FormatFlags.Center | FormatFlags.NoWrap;
+            var s_f = FormatFlags.Default;
             if (Enabled)
             {
                 Color fore = Colour.Text.Get(nameof(Pagination), ColorScheme), color = fill ?? Colour.Primary.Get(nameof(Pagination), ColorScheme);

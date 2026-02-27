@@ -1551,6 +1551,240 @@ namespace AntdUI
             ScrollY.Value = lineHeight * i;
         }
 
+        #region 字符串搜索
+
+        /// <summary>
+        /// 查找指定字符串在文本中首次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <returns>首次出现的字符簇索引，未找到返回 -1</returns>
+        public int IndexOf(string value) => IndexOf(value, 0, StringComparison.CurrentCulture);
+
+        /// <summary>
+        /// 从指定位置开始查找字符串首次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引</param>
+        /// <returns>首次出现的字符簇索引，未找到返回 -1</returns>
+        public int IndexOf(string value, int startIndex) => IndexOf(value, startIndex, StringComparison.CurrentCulture);
+
+        /// <summary>
+        /// 从指定位置开始，在指定范围内查找字符串首次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引</param>
+        /// <param name="count">要搜索的字符簇数量</param>
+        /// <returns>首次出现的字符簇索引，未找到返回 -1</returns>
+        public int IndexOf(string value, int startIndex, int count) => IndexOf(value, startIndex, count, StringComparison.CurrentCulture);
+
+        /// <summary>
+        /// 查找指定字符串在文本中首次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="comparisonType">字符串比较类型</param>
+        /// <returns>首次出现的字符簇索引，未找到返回 -1</returns>
+        public int IndexOf(string value, StringComparison comparisonType) => IndexOf(value, 0, comparisonType);
+
+        /// <summary>
+        /// 从指定位置开始查找字符串首次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引</param>
+        /// <param name="comparisonType">字符串比较类型</param>
+        /// <returns>首次出现的字符簇索引，未找到返回 -1</returns>
+        public int IndexOf(string value, int startIndex, StringComparison comparisonType)
+        {
+            if (cache_font == null) return -1;
+            return IndexOf(cache_font, value, startIndex, null, comparisonType);
+        }
+
+        /// <summary>
+        /// 从指定位置开始，在指定范围内查找字符串首次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引</param>
+        /// <param name="count">要搜索的字符簇数量</param>
+        /// <param name="comparisonType">字符串比较类型</param>
+        /// <returns>首次出现的字符簇索引，未找到返回 -1</returns>
+        public int IndexOf(string value, int startIndex, int count, StringComparison comparisonType)
+        {
+            if (cache_font == null) return -1;
+            return IndexOf(cache_font, value, startIndex, count, comparisonType);
+        }
+
+        int IndexOf(CacheFont[] cache_font, string value, int startIndex, int? count, StringComparison comparisonType)
+        {
+            if (startIndex < 0) startIndex = 0;
+            if (startIndex >= cache_font.Length) return -1;
+            if (count.HasValue)
+            {
+                if (count < 0) count = 0;
+                if (startIndex + count > cache_font.Length) count = cache_font.Length - startIndex;
+            }
+            else count = cache_font.Length - startIndex;
+
+            var valueParts = IndexSplitter(value);
+            int valueLength = valueParts.Length;
+            if (valueLength == 0 || valueLength > count) return -1;
+
+            for (int i = startIndex; i <= startIndex + count - valueLength; i++)
+            {
+                if (IndexOf(cache_font, i, valueLength, valueParts, comparisonType)) return i;
+            }
+            return -1;
+        }
+
+        bool IndexOf(CacheFont[] cache_font, int start, int valueLength, string[] valueParts, StringComparison comparisonType)
+        {
+            for (int i = 0; i < valueLength; i++)
+            {
+                int currentPos = start + i;
+                if (currentPos >= cache_font.Length) return false;
+                if (!string.Equals(cache_font[currentPos].text, valueParts[i], comparisonType)) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 查找指定字符串在文本中最后一次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <returns>最后一次出现的字符簇索引，未找到返回 -1</returns>
+        public int LastIndexOf(string value)
+        {
+            if (cache_font == null) return -1;
+            return LastIndexOf(cache_font, value, cache_font.Length - 1, null, StringComparison.CurrentCulture);
+        }
+
+        /// <summary>
+        /// 从指定位置开始向前查找字符串最后一次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引（从该位置向前搜索）</param>
+        /// <returns>最后一次出现的字符簇索引，未找到返回 -1</returns>
+        public int LastIndexOf(string value, int startIndex) => LastIndexOf(value, startIndex, StringComparison.CurrentCulture);
+
+        /// <summary>
+        /// 从指定位置开始，在指定范围内向前查找字符串最后一次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引（从该位置向前搜索）</param>
+        /// <param name="count">要搜索的字符簇数量</param>
+        /// <returns>最后一次出现的字符簇索引，未找到返回 -1</returns>
+        public int LastIndexOf(string value, int startIndex, int count) => LastIndexOf(value, startIndex, count, StringComparison.CurrentCulture);
+
+        /// <summary>
+        /// 查找指定字符串在文本中最后一次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="comparisonType">字符串比较类型</param>
+        /// <returns>最后一次出现的字符簇索引，未找到返回 -1</returns>
+        public int LastIndexOf(string value, StringComparison comparisonType)
+        {
+            if (cache_font == null) return -1;
+            return LastIndexOf(value, cache_font.Length - 1, comparisonType);
+        }
+
+        /// <summary>
+        /// 从指定位置开始向前查找字符串最后一次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引（从该位置向前搜索）</param>
+        /// <param name="comparisonType">字符串比较类型</param>
+        /// <returns>最后一次出现的字符簇索引，未找到返回 -1</returns>
+        public int LastIndexOf(string value, int startIndex, StringComparison comparisonType)
+        {
+            if (cache_font == null) return -1;
+            return LastIndexOf(cache_font, value, startIndex, null, comparisonType);
+        }
+
+        /// <summary>
+        /// 从指定位置开始，在指定范围内向前查找字符串最后一次出现的位置（基于字符簇索引）
+        /// </summary>
+        /// <param name="value">要查找的字符串</param>
+        /// <param name="startIndex">开始搜索的字符簇索引（从该位置向前搜索）</param>
+        /// <param name="count">要搜索的字符簇数量</param>
+        /// <param name="comparisonType">字符串比较类型</param>
+        /// <returns>最后一次出现的字符簇索引，未找到返回 -1</returns>
+        public int LastIndexOf(string value, int startIndex, int count, StringComparison comparisonType)
+        {
+            if (cache_font == null) return -1;
+            return LastIndexOf(cache_font, value, startIndex, count, comparisonType);
+        }
+
+        int LastIndexOf(CacheFont[] cache_font, string value, int startIndex, int? count, StringComparison comparisonType)
+        {
+            if (startIndex < 0) startIndex = 0;
+            if (startIndex >= cache_font.Length) startIndex = cache_font.Length - 1;
+            if (count.HasValue)
+            {
+                if (count < 0) count = 0;
+                if (count > startIndex + 1) count = startIndex + 1;
+            }
+            else count = startIndex + 1;
+
+            var valueParts = IndexSplitter(value);
+            int valueLength = valueParts.Length;
+            if (valueLength == 0 || valueLength > count) return -1;
+
+            int endIndex = startIndex - count.Value + 1;
+            if (endIndex < 0) endIndex = 0;
+
+            for (int i = startIndex; i >= endIndex; i--)
+            {
+                if (i + valueLength > cache_font.Length) continue;
+                if (IndexOf(cache_font, i, valueLength, valueParts, comparisonType)) return i;
+            }
+            return -1;
+        }
+
+        string[] IndexSplitter(string value)
+        {
+            var valueParts = new List<string>(value.Length);
+            GraphemeSplitter.Each(value, (txt, ntype) => valueParts.Add(txt));
+            return valueParts.ToArray();
+        }
+
+        #endregion
+
+        #region 字符串操作
+
+        /// <summary>
+        /// 从指定字符簇位置开始截取子字符串
+        /// </summary>
+        /// <param name="startIndex">开始截取的字符簇索引</param>
+        /// <returns>从指定位置开始的子字符串</returns>
+        public string Substring(int startIndex)
+        {
+            if (cache_font == null) return "";
+            return Substring(cache_font, startIndex, cache_font.Length - startIndex);
+        }
+
+        /// <summary>
+        /// 从指定字符簇位置开始截取指定长度的子字符串
+        /// </summary>
+        /// <param name="startIndex">开始截取的字符簇索引</param>
+        /// <param name="length">要截取的字符簇数量</param>
+        /// <returns>截取的子字符串</returns>
+        public string Substring(int startIndex, int length)
+        {
+            if (cache_font == null) return "";
+            if (length < 0) length = 0;
+            if (startIndex + length > cache_font.Length) length = cache_font.Length - startIndex;
+            return Substring(cache_font, startIndex, length);
+        }
+
+        string Substring(CacheFont[] cache_font, int startIndex, int length)
+        {
+            if (startIndex < 0) startIndex = 0;
+            if (startIndex >= cache_font.Length) return "";
+            var result = new System.Text.StringBuilder(length);
+            for (int i = startIndex; i < startIndex + length; i++) result.Append(cache_font[i].text);
+            return result.ToString();
+        }
+
+        #endregion
+
         #endregion
 
         #region 重写
@@ -2060,6 +2294,7 @@ namespace AntdUI
             ThreadHover?.Dispose();
             CaretInfo.Dispose();
             ThreadAnimateBlink?.Dispose();
+            fix_cache_font.Dispose();
             base.Dispose(disposing);
         }
         AnimationTask? ThreadHover;

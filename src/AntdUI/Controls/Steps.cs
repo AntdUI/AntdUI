@@ -429,7 +429,7 @@ namespace AntdUI
         #region 渲染
 
         readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter,
-            stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
+            stringCenter = FormatFlags.Default;
 
         protected override void OnDraw(DrawEventArgs e)
         {

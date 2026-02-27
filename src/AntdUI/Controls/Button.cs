@@ -422,7 +422,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        FormatFlags sf = FormatFlags.Center | FormatFlags.NoWrap | FormatFlags.HotkeyPrefixShow;
+        FormatFlags sf = FormatFlags.Default | FormatFlags.HotkeyPrefixShow;
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>
         /// 文本位置

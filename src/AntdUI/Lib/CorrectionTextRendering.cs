@@ -75,7 +75,7 @@ namespace AntdUI
             {
                 using (var g_o = Graphics.FromImage(bmp).High())
                 {
-                    g_o.String(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), FormatFlags.Center | FormatFlags.NoWrap);
+                    g_o.String(text, font, Brushes.Black, new Rectangle(0, 0, bmp.Width, bmp.Height), FormatFlags.Default);
                 }
                 TextRealY(bmp, out var ry, out var rheight);
                 float ready = ry + rheight / 2F;

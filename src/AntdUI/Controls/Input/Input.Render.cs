@@ -14,7 +14,7 @@ namespace AntdUI
     {
         #region 渲染
 
-        internal FormatFlags sf_center = FormatFlags.Center | FormatFlags.NoWrap;
+        internal FormatFlags sf_center = FormatFlags.Default;
         internal FormatFlags sf_placeholder = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         public new virtual void Invalidate() => base.Invalidate();
