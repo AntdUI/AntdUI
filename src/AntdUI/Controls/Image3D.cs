@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -195,6 +196,46 @@ namespace AntdUI
 
         #endregion
 
+        #region 悬浮
+
+        /// <summary>
+        /// 启用悬浮交互
+        /// </summary>
+        [Description("启用悬浮交互"), Category("外观"), DefaultValue(false)]
+        public bool EnableHover { get; set; }
+
+        /// <summary>
+        /// 悬浮前景
+        /// </summary>
+        [Description("悬浮前景"), Category("外观"), DefaultValue(null)]
+        public Color? HoverFore { get; set; }
+
+        /// <summary>
+        /// 悬浮背景
+        /// </summary>
+        [Description("悬浮背景"), Category("外观"), DefaultValue(null)]
+        public Color? HoverBack { get; set; }
+
+        /// <summary>
+        /// 悬浮图标
+        /// </summary>
+        [Description("悬浮图标"), Category("外观"), DefaultValue(null)]
+        public Image? HoverImage { get; set; }
+
+        /// <summary>
+        /// 悬浮图标SVG
+        /// </summary>
+        [Description("悬浮图标SVG"), Category("外观"), DefaultValue(null)]
+        public string? HoverImageSvg { get; set; }
+
+        /// <summary>
+        /// 悬浮图标比例
+        /// </summary>
+        [Description("悬浮图标比例"), Category("外观"), DefaultValue(.4F)]
+        public float HoverImageRatio { get; set; } = .4F;
+
+        #endregion
+
         #endregion
 
         #region 动画
@@ -316,6 +357,14 @@ namespace AntdUI
             FillRect(g, rect, back, _radius, round);
             if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);
             else g.Image(rect, image, imageFit, _radius, round);
+            if (Hover)
+            {
+                int size = (int)((rect.Width > rect.Height ? rect.Height : rect.Width) * HoverImageRatio);
+                FillRect(g, rect, HoverBack ?? Colour.TextTertiary.Get(nameof(Image3D), ColorScheme), _radius, round);
+                var rect_hover = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
+                if (HoverImage != null) g.Image(HoverImage, rect_hover);
+                if (HoverImageSvg != null) g.GetImgExtend(HoverImageSvg, rect_hover, HoverFore ?? Colour.BgBase.Get(nameof(Image3D), ColorScheme));
+            }
             base.OnDraw(e);
         }
 
@@ -335,6 +384,33 @@ namespace AntdUI
         }
 
         #endregion
+
+        #endregion
+
+        #region 键盘
+
+        bool hover = false;
+        bool Hover
+        {
+            get => hover;
+            set
+            {
+                if (hover == value) return;
+                hover = value;
+                Invalidate();
+            }
+        }
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if (EnableHover) Hover = true;
+            else if (Hover) Hover = false;
+        }
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            Hover = false;
+        }
 
         #endregion
     }
