@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：SplitterMoved
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -17,6 +17,7 @@ Name | Description | Type | Default Value |
 **ArrowColor** | Arrow Color | Color`?` | `null` |
 **ArrawColorHover** | Arrow hover color | Color`?` | `null` |
 **ArrawBackColor** | Arrow background color | Color`?` | `null` |
+**ArrawBackHover** | Mouse hover arrow background color | Color`?` | `null` |
 ||||
 **SplitterWidth** | Thickness of the splitter | int | 4 |
 **SplitterSize** | Slide size | int | 20 |
@@ -29,14 +30,14 @@ Name | Description | Type | Default Value |
 **SplitPanelState** | Current folding state | bool | true |
 **Lazy** | Delayed rendering | bool | true |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **Collapse** | Collapse | void | |
 **Expand** | Expand | void | |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

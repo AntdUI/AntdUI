@@ -8,7 +8,7 @@
 - DefaultProperty：Items
 - DefaultEvent：ItemClick
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -20,7 +20,7 @@ Name | Description | Type | Default Value |
 ||||
 **PauseLayout** | Pause Layout | bool | false |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -33,12 +33,15 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Name** | Name | string`?` | `null` |
-**Text** | Text | string | `Required` |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
 **Icon** | Icon | Image`?` | `null` |
 **IconSvg** | Icon SVG | string`?` | `null` |
 **Visible** | Is it displayed | bool | true |
 **Description** | Description | string`?` | `null` |
+🌏 **LocalizationDescription** | International Description | string`?` | `null` |
 **Type** | Color Type | [TTypeMini](Enum.md#ttypemini) | Primary |
 **Fill** | Fill color | Color`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |

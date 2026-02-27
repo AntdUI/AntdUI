@@ -8,38 +8,40 @@
 - DefaultProperty：Text
 - DefaultEvent：LinkClicked
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Text** | Text content, support `<a href="...">...</a>` syntax | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**NormalStyle** | Normal state link style | LinkAppearance | `Default Style` |
-**HoverStyle** | Hover state link style | LinkAppearance | `Default Style` |
-**LinkPadding** | Distance between link and surrounding characters | int | 2 |
-**LinkAutoNavigation** | Whether to automatically open links | bool | true |
-**TextAlign** | Text alignment | ContentAlignment | TopLeft |
-**Shadow** | Enable shadow effect | bool | false |
-**ShadowSize** | Shadow size | int | 2 |
-**ShadowColor** | Shadow color | Color | Color.FromArgb(255, 0, 0, 0) |
-**ShadowOpacity** | Shadow opacity | float | 0.2F |
-**ShadowOffset** | Shadow offset | Point | 1, 1 |
+**TextAlign** | Text position | ContentAlignment | MiddleLeft |
+**Shadow** | Shadow size | int | 0 |
+**ShadowColor** | Shadow color | Color`?` | `null` |
+**ShadowOpacity** | Shadow opacity | float | 0.3F |
+**ShadowOffsetX** | Shadow offset X | int | 0 |
+**ShadowOffsetY** | Shadow offset Y | int | 0 |
+**NormalStyle** | Link style in normal state | LinkAppearance`?` | `null` |
+**HoverStyle** | Link style when mouse hovers | LinkAppearance`?` | `null` |
+**LinkPadding** | Distance between links and surrounding characters | Padding | 2, 0, 2, 0 |
+**LinkAutoNavigation** | Automatically open hyperlinks with default browser | bool | false |
+**AutoSize** | Auto size | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+**ForeColor** | Text color | Color`?` | `null` |
 
-### LinkAppearance Property
+### LinkAppearance Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Color** | Link color | Color | Color.FromArgb(255, 10, 76, 178) |
-**HoverColor** | Hover color | Color | Color.FromArgb(255, 79, 126, 194) |
-**FontStyle** | Font style | FontStyle | FontStyle.Regular |
-**Underline** | Underline | bool | true |
-**HoverUnderline** | Hover underline | bool | true |
+**LinkColor** | Link text color | Color`?` | `null` |
+**LinkStyle** | Link font style | FontStyle | Regular |
+**UnderlineColor** | Underline color | Color`?` | `null` |
+**UnderlineThickness** | Underline thickness (0 for no underline) | int | 1 |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**LinkClicked** | Occurred when a link is clicked | void | string `href`, string `text` |
+**LinkClicked** | Occurred when a link is clicked | void | LinkClickedEventArgs `e` |
 
 ### Example
 

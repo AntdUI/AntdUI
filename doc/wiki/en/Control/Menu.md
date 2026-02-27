@@ -8,7 +8,7 @@
 - DefaultProperty：Items
 - DefaultEvent：SelectChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -19,6 +19,7 @@ Name | Description | Type | Default Value |
 ||||
 **Radius** | Rounded corners | int | 6 |
 **Round** | Rounded corner style | bool | false |
+**FocusMode** | Focus mode | [TFocusMode](Enum.md#tfocusmode) | None |
 **Indent** | Tree like indentation | bool | false |
 **ShowSubBack** | Display submenu background | bool | false |
 **Unique** | Keep only one submenu expanded | bool | false |
@@ -32,7 +33,7 @@ Name | Description | Type | Default Value |
 **MouseRightCtrl** | Mouse right control | bool | true |
 **ScrollBarBlock** | Scroll bar block | bool | false |
 ||||
-**Theme** | Color mode | [TAMode](Enum.md#tamode) | Auto |
+**Theme** | Color mode (Obsolete, use ColorScheme) | [TAMode](Enum.md#tamode) | Auto |
 **Mode** | Menu Type | [TMenuMode](Enum.md#tmenumode) | Inline |
 **AutoCollapse** | Auto Collapse | bool | false |
 **Collapsed** | Whether to fold or not | bool | false |
@@ -46,7 +47,7 @@ Name | Description | Type | Default Value |
 **TooltipConfig** | Text overflow tooltip config | TooltipConfig`?` | `null` |
 **PauseLayout** | Pause Layout | bool | false |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -55,7 +56,7 @@ Name | Description | Return Value | Parameters |
 **SelectChanging** | Occurred before the Select attribute value changes | bool | [MenuItem](#menuitem) item |
 **CustomButtonClick** | Occurred when custom button is clicked | void | MenuButton button, [MenuItem](#menuitem) item |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

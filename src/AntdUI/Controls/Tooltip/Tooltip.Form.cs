@@ -26,7 +26,7 @@ namespace AntdUI
             SetDpi(control);
             CloseMode = CloseMode.Leave;
             Text = txt;
-            Font = component.Font ?? Config.Font ?? control.Font;
+            Font = component.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
@@ -62,7 +62,7 @@ namespace AntdUI
             SetDpi(control);
             CloseMode = CloseMode.Click;
             Text = txt;
-            Font = component.Font ?? Config.Font ?? control.Font;
+            Font = component.Font ?? control.Font;
             ArrowSize = component.ArrowSize;
             Radius = component.Radius;
             ArrowAlign = component.ArrowAlign;
@@ -146,7 +146,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrap, s_l = FormatFlags.Left | FormatFlags.VerticalCenter;
+        readonly FormatFlags s_c = FormatFlags.Default, s_l = FormatFlags.Left | FormatFlags.VerticalCenter;
         public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;

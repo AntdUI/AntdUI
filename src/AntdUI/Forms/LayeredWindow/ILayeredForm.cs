@@ -28,7 +28,6 @@ namespace AntdUI
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
             Size = new Size(0, 0);
-            actionLoadMessage = LoadMessage;
             actionCursor = val => SetCursor(val);
             memDc = Win32.CreateCompatibleDC(Win32.screenDC);
         }
@@ -42,19 +41,22 @@ namespace AntdUI
         public Control? PARENT;
         public Func<Keys, bool>? KeyCall;
 
-        Action actionLoadMessage;
         MessageHandler? messageHandler;
         public virtual void LoadMessage()
         {
-            if (messageHandler == null)
+            if (messageHandler == null && FunRun)
             {
-                if (InvokeRequired)
-                {
-                    Invoke(actionLoadMessage);
-                    return;
-                }
                 if (CloseMode == CloseMode.None) return;
-                messageHandler = new MessageHandler(this);
+                try
+                {
+                    if (InvokeRequired)
+                    {
+                        Invoke(LoadMessage);
+                        return;
+                    }
+                    messageHandler = new MessageHandler(this);
+                }
+                catch { }
             }
         }
 
@@ -67,13 +69,13 @@ namespace AntdUI
         bool FunRun = true;
         protected override void Dispose(bool disposing)
         {
+            FunRun = false;
             try
             {
                 base.Dispose(disposing);
             }
             catch { }
             handle = null;
-            FunRun = false;
             messageHandler?.Dispose();
             messageHandler = null;
             Win32.Dispose(memDc, ref hBitmap, ref oldBits);

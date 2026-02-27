@@ -8,30 +8,37 @@
 - DefaultProperty：Items
 - DefaultEvent：ExpandChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**AutoSize** | Auto size | bool | false |
 **ForeColor** | Text color | Color`?` | `null` |
+**ForeActive** | Text active color | Color`?` | `null` |
 **HeaderBg** | Head background | Color`?` | `null` |
-**HeaderPadding** | Head margin | Size | 16, 12 |
-**ContentPadding** | Content margin | Size | 16, 16 |
+**HeaderPadding** | Head padding | Size | 16, 12 |
+**ContentPadding** | Content padding | Size | 16, 16 |
 ||||
 **BorderWidth** | Border width | float | 1F |
 **BorderColor** | Border color | Color`?` | `null` |
 ||||
-**Radius** | Rounded corners | int |6 |
+**Radius** | Rounded corners | int | 6 |
 **Gap** | Gap | int | 0 |
 **Unique** | Keep only one unfolded | bool | false |
+**UniqueFull** | One expanded full | bool | false |
+**AnimationSpeed** | Expand/collapse animation speed | int | 100 |
+**FontExpand** | Expanded title font | Font`?` | `null` |
+**TooltipConfig** | Text overflow tooltip configuration | TooltipConfig`?` | `null` |
 ||||
-**Items** | Data `CollapseItem[]` | [CollapseItem[]](#collapseitem) | [] |
+**Items** | Data collection | CollapseItemCollection | - |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ExpandChanged** | Occurrence when Expand attribute value changes | void | [CollapseItem](#collapseitem) value, bool Expand `Expand or not` |
-
+**ExpandChanged** | Occurs when Expand property value changes | void | [CollapseItem](#collapseitem) value, bool Expand `Expand or not` |
+**ExpandingChanged** | Occurs when Expanding property value changes | void | [CollapseItem](#collapseitem) value, bool Expand `Expand or not` |
+**ButtonClick** | Occurs when button on CollapseItem is clicked | void | [CollapseItem](#collapseitem) value, CollapseGroupButton button `Button` |
 
 ### Data
 
@@ -41,7 +48,8 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Expand** | Expand | bool | true |
-**Full** 🔴 | Is the remaining space fully filled | bool | false |
-**Text** | Text | string`?` | `null` |
-🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Expand** | Whether to expand | bool | false |
+**Full** | Whether to fill remaining space | bool | false |
+**Text** | Text | string | "" |
+🌏 **LocalizationText** | International text | string`?` | `null` |
+**Buttons** | Button collection | CollapseGroupButtonCollection | - |

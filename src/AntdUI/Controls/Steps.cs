@@ -23,7 +23,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Current")]
     [DefaultEvent("ItemClick")]
-    public class Steps : IControl
+    public class Steps : IControl, IEventListener
     {
         #region 属性
 
@@ -233,6 +233,17 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             ChangeList();
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    ChangeList();
+                    break;
+            }
         }
 
         bool pauseLayout = false;
@@ -418,7 +429,7 @@ namespace AntdUI
         #region 渲染
 
         readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter,
-            stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
+            stringCenter = FormatFlags.Default;
 
         protected override void OnDraw(DrawEventArgs e)
         {

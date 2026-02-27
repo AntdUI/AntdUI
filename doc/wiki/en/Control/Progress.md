@@ -8,7 +8,7 @@
 - DefaultProperty：Value
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -33,14 +33,21 @@ Name | Description | Type | Default Value |
 **Value** | Progress bar `0F-1F` | float | 0F |
 **Loading** | Loading State | bool | false |
 **LoadingFull** | Animated Full | bool | false |
-**Loading** | Loading State | bool | false |
 **Animation** | Animation duration | int | 200 |
+**UseTextCenter** | Center text display | bool | false |
 ||||
 **Steps** | Total number of steps in the progress bar | int | 3 |
 **StepSize** | Step size | int | 14 |
 **StepGap** | Step gap | int | 2 |
+||||
+**IconCircle** | Icon under circular progress | Image`?` | `null` |
+**IconSvgCircle** | Icon SVG under circular progress | string`?` | `null` |
+**IconCircleAngle** | Whether the circular icon rotates | bool | false |
+**IconCirclePadding** | Circular icon margin | int | 8 |
+**IconCircleColor** | Circular icon color | Color`?` | `null` |
+**ContainerControl** | Window object | ContainerControl`?` | `null` |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

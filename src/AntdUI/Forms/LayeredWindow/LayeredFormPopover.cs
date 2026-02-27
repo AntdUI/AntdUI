@@ -307,7 +307,7 @@ namespace AntdUI
         #region 渲染
 
         readonly FormatFlags stringLeft = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter,
-            stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
+            stringCenter = FormatFlags.Default;
 
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {

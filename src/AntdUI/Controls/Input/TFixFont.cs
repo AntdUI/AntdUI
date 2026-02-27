@@ -4,12 +4,13 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Collections.Concurrent;
 using System.Drawing;
 
 namespace AntdUI
 {
-    public class TFixFont
+    public class TFixFont : IDisposable
     {
         ConcurrentDictionary<string, int> font_dir = new ConcurrentDictionary<string, int>();
         int? font_null;
@@ -50,5 +51,7 @@ namespace AntdUI
             font_null = null;
             font_dir.Clear();
         }
+
+        public void Dispose() => Clear();
     }
 }

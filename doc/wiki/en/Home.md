@@ -129,11 +129,11 @@
 
 > [![DatePicker](Icon/DatePicker.png)](Control/DatePicker.md)
 
-#### [DatePickerRange](Control/DatePicker.md#datepickerrange)
+#### [DatePickerRange](Control/DatePickerRange.md)
 
 > Control for entering or selecting a date range.
 
-> [![DatePickerRange](Icon/DatePickerRange.png)](Control/DatePicker.md#datepickerrange)
+> [![DatePickerRange](Icon/DatePickerRange.png)](Control/DatePickerRange.md)
 
 #### [Input](Control/Input.md)
 
@@ -141,11 +141,11 @@
 
 > [![Input](Icon/Input.png)](Control/Input.md)
 
-#### [InputNumber](Control/Input.md#inputnumber)
+#### [InputNumber](Control/InputNumber.md)
 
 > Enter a number within certain range with the mouse or keyboard.
 
-> [![InputNumber](Icon/InputNumber.png)](Control/Input.md#inputnumber)
+> [![InputNumber](Icon/InputNumber.png)](Control/InputNumber.md)
 
 #### [Radio](Control/Radio.md)
 
@@ -171,11 +171,11 @@
 
 > [![Slider](Icon/Slider.png)](Control/Slider.md)
 
-#### [SliderRange](Control/Slider.md#sliderrange)
+#### [SliderRange](Control/SliderRange.md)
 
 > A Slider component for displaying current value and intervals in range.
 
-> [![SliderRange](Icon/SliderRange.png)](Control/Slider.md#sliderrange)
+> [![SliderRange](Icon/SliderRange.png)](Control/SliderRange.md)
 
 #### [Switch](Control/Switch.md)
 

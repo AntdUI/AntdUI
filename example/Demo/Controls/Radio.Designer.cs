@@ -60,7 +60,7 @@ namespace Demo.Controls
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.LocalizationDescription = "Radio.Description";
-            header1.LocalizationText = "Radio.Text";
+            header1.LocalizationText = "Radio";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);

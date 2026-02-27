@@ -1,5 +1,19 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.0` 2026-02-27
+
+- ➕ VirtualPanel/Segmented/Breadcrumb/Menu/Tree/Steps/Timeline 适配语言切换
+- ➕ Input IndexOf LastIndexOf / Substring 方法
+- ➕ Image3D EnableHover
+- ➕ Statistic 统计数值
+- ✍️ Tabs 释放异常
+- ✍️ Panel 阴影深度异常
+- ✍️ Menu 对齐 Item.Rect 方法
+- ✍️ Menu 分割线错位
+- ✍️ JoinMode 样式
+- ✍️ 未正常渲染 Emoji 换行文本位置
+- ✍️ Emoji vulcan_salute_flat_light 色彩
+
 ### `2.2.19` 2026-02-13
 
 - ✍️ Tabs 回滚旧版本

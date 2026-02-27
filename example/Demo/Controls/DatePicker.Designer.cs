@@ -56,7 +56,7 @@ namespace Demo.Controls
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
             header1.LocalizationDescription = "DatePicker.Description";
-            header1.LocalizationText = "DatePicker.Text";
+            header1.LocalizationText = "DatePicker";
             header1.Location = new Point(0, 0);
             header1.Name = "header1";
             header1.Padding = new Padding(0, 0, 0, 10);

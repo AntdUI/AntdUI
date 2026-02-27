@@ -8,13 +8,13 @@
 - DefaultProperty：SelectIndex
 - DefaultEvent：SelectIndexChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Image** | Image item collection | ImagePreviewItemCollection | `New Collection` |
 **SelectIndex** | Currently selected image index | int | 0 |
-**Fit** | Image fit mode | [TFit](Enum.md#tfit) | Contain |
+**Fit** | Image fit mode | [TFit](Enum.md#tfit) | `null` |
 **ShowBtn** | Show buttons | bool | true |
 **ShowDefaultBtn** | Show default buttons | bool | true |
 **BtnSize** | Button size | Size | `42, 46` |
@@ -24,7 +24,7 @@ Name | Description | Type | Default Value |
 **BtnPadding** | Button padding | Size | `12, 32` |
 **CustomButton** | Custom button collection | ImagePreviewButtonCollection | `New Collection` |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -37,7 +37,7 @@ Name | Description | Return Value | Parameters |
 **ZoomOut** | Zoom out image | void |  |
 **ZoomIn** | Zoom in image | void |  |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -82,21 +82,21 @@ imagePreview1.Image.Add(new ImagePreviewItem().SetImage(Image.FromFile("img3.jpg
 
 // Async loading
 imagePreview1.Image.Add(new ImagePreviewItem().SetImage((index, item) => {
-    // Simulate async loading
-    Thread.Sleep(1000);
-    return Image.FromFile("async.jpg");
+	// Simulate async loading
+	Thread.Sleep(1000);
+	return Image.FromFile("async.jpg");
 }));
 
 // Async loading with progress
 imagePreview1.Image.Add(new ImagePreviewItem().SetImage((index, item, progress) => {
-    // Simulate download progress
-    for (int i = 0; i <= 100; i += 10) {
-        Thread.Sleep(100);
-        // Update progress
-        progress(i / 100f, $"Loading {i}%");
-    }
-    // Loading complete
-    return Image.FromFile("prog.jpg");
+	// Simulate download progress
+	for (int i = 0; i <= 100; i += 10) {
+		Thread.Sleep(100);
+		// Update progress
+		progress(i / 100f, $"Loading {i}%");
+	}
+	// Loading complete
+	return Image.FromFile("prog.jpg");
 }));
 
 // Add custom button

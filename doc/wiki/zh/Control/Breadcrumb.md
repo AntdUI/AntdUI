@@ -14,12 +14,12 @@ Breadcrumb 面包屑 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ForeColor** | 文字颜色 | Color`?` | `null` |
-**ForeActive** | 激活字体颜色 | Color`?` | `null` |
+**ForeActive** | 激活文字颜色 | Color`?` | `null` |
 ||||
 **Radius** | 圆角 | int | 4 |
 **Gap** | 间距 | int | 12 |
 ||||
-**Items** | 数据 `BreadcrumbItem[]` | [BreadcrumbItem[]](#breadcrumbitem) | [] |
+**Items** | 数据 | BreadcrumbItemCollection | [] |
 ||||
 **PauseLayout** | 暂停布局 | bool | false |
 
@@ -36,9 +36,9 @@ Breadcrumb 面包屑 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**ID** | ID | string`?` |`null`|
+**ID** | ID | string`?` | `null` |
 **Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string | `null` |
-**Text** | 文本 | string | `必填` |
+**IconSvg** | 图标SVG | string`?` | `null` |
+**Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

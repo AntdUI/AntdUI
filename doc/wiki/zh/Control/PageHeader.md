@@ -25,8 +25,8 @@ PageHeader 页头 👚
 🌏 **LocalizationDescription** | 国际化描述文本 | string`?` | `null` |
 **UseTitleFont** | 使用标题大小 | bool | false |
 **UseTextBold** | 标题使用粗体 | bool | true |
-**UseSubCenter** 🔴 | 副标题居中 | bool | false |
-**UseLeftMargin** 🔴 | 使用左边边距 | bool | true |
+**UseSubCenter** | 副标题居中 | bool | false |
+**UseLeftMargin** | 使用左边边距 | bool | true |
 **SubFont** | 副标题字体 | Font`Font` | `null` |
 ||||
 **Gap** | 间隔 | int`?` | `null` |
@@ -44,7 +44,7 @@ PageHeader 页头 👚
 **FullBox** | 是否显示全屏按钮 | bool | false |
 **DragMove** | 是否可以拖动位置 | bool | true |
 **CloseSize** | 关闭按钮大小 | int | 48 |
-**MDI** 🔴 | 是否仅对父窗口生效 | bool | false |
+**MDI** | 是否仅对父窗口生效 | bool | false |
 ||||
 **UseSystemStyleColor** | 使用系统颜色 | bool | false |
 **CancelButton** | 点击退出关闭 | bool | false |

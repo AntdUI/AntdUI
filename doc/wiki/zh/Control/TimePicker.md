@@ -21,6 +21,8 @@ TimePicker 时间选择框 👚
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **ShowIcon** | 是否显示图标 | bool | true |
 **ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
+**ShowButtonNow** | 显示此刻 | bool | true |
+**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
 
 
 ### 事件
@@ -28,3 +30,4 @@ TimePicker 时间选择框 👚
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **ValueChanged** | Value 属性值更改时发生 | void | TimeSpan value `控件当前时间` |
+**ExpandDropChanged** | 下拉展开 属性值更改时发生 | void | bool value `展开状态` |

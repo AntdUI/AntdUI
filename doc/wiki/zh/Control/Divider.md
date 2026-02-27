@@ -20,3 +20,4 @@ Divider 分割线 👚
 **Thickness** | 厚度 | float | 0.6F |
 **ColorSplit** | 线颜色 | Color`?` | `null` |
 **Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |

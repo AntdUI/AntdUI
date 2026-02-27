@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -23,7 +23,7 @@ Name | Description | Type | Default Value |
 **BackgroundImage** | Background image | Image`?` | `null` |
 **BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**BorderWidth** | Border width | float | 0F |
+**BorderWidth** | Border width | float | 1F |
 ||||
 **Radius** | Rounded corners | int | 6 |
 **Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
@@ -39,7 +39,7 @@ Name | Description | Type | Default Value |
 **ImageSvg** | Image SVG | string`?` | `null` |
 **ImageSize** | Image size `Default automatic size` | Size | 0 × 0 |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

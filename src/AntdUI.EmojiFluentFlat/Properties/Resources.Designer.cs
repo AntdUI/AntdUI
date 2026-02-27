@@ -59,7 +59,7 @@ namespace AntdUI.Properties {
                 resourceCulture = value;
             }
         }
-
+        
         internal static string D {
             get {
                 return ResourceManager.GetString("D", resourceCulture);

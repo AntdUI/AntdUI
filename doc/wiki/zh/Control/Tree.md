@@ -41,15 +41,15 @@ Tree 树形控件 👚
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**SelectChanged** | Select 属性值更改时发生 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
-**CheckedChanged** | Checked 属性值更改时发生 | void | [TreeItem](#treeitem) item `数值`, bool value `选中值` |
-**BeforeExpand** | Expand 更改前发生 | void | [TreeItem](#treeitem) item `数值`, bool value `展开值` |
-**AfterExpand** | Expand 更改后发生 | void | [TreeItem](#treeitem) item `数值`, bool value `展开值` |
-**NodeMouseClick** | 点击项事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
-**NodeMouseDoubleClick** | 双击项事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
-**NodeMouseMove** | 移动项事件 | void | [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域`, bool hover `悬停值` |
-**NodeMouseDown** | 鼠标按下事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
-**NodeMouseUp** | 鼠标松开事件 | void | MouseEventArgs args `点击`, [TreeItem](#treeitem) item `数值`, Rectangle rect `项区域` |
+**SelectChanged** | Select 属性值更改时发生 | void | [TreeItem](#treeitem) item `项`, Rectangle rect `项区域`, TreeCType type `类型`, MouseEventArgs args `点击` |
+**CheckedChanged** | Checked 属性值更改时发生 | void | [TreeItem](#treeitem) item `项`, bool value `选中值` |
+**BeforeExpand** | Expand 更改前发生 | bool `返回true继续展开` | [TreeItem](#treeitem) item `项`, bool value `展开值` |
+**AfterExpand** | Expand 更改后发生 | void | [TreeItem](#treeitem) item `项`, bool value `展开值` |
+**NodeMouseClick** | 点击项事件 | void | [TreeItem](#treeitem) item `项`, Rectangle rect `项区域`, TreeCType type `类型`, MouseEventArgs args `点击` |
+**NodeMouseDoubleClick** | 双击项事件 | void | [TreeItem](#treeitem) item `项`, Rectangle rect `项区域`, TreeCType type `类型`, MouseEventArgs args `点击` |
+**NodeMouseMove** | 移动项事件 | void | [TreeItem](#treeitem) item `项`, Rectangle rect `项区域`, bool hover `悬停值` |
+**NodeMouseDown** | 鼠标按下事件 | void | [TreeItem](#treeitem) item `项`, Rectangle rect `项区域`, TreeCType type `类型`, MouseEventArgs args `点击` |
+**NodeMouseUp** | 鼠标松开事件 | void | [TreeItem](#treeitem) item `项`, Rectangle rect `项区域`, TreeCType type `类型`, MouseEventArgs args `点击` |
 
 ### 方法
 

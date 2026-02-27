@@ -81,21 +81,13 @@ namespace AntdUI
         public void SetFontConfig(Font? font, Form form)
         {
             if (Value is Control t) form.Font = font ?? t.Font;
-            else
-            {
-                if (font != null) form.Font = font;
-                else if (Config.Font != null) form.Font = Config.Font;
-            }
+            else if (font != null) form.Font = font;
         }
         public void SetFontConfig(Font? font, Form form, object user)
         {
             if (user is Control control) form.Font = control.Font;
             else if (Value is Control t) form.Font = font ?? t.Font;
-            else
-            {
-                if (font != null) form.Font = font;
-                else if (Config.Font != null) form.Font = Config.Font;
-            }
+            else if (font != null) form.Font = font;
         }
         public void SetIcon(Form form)
         {

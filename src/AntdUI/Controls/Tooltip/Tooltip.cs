@@ -91,7 +91,7 @@ namespace AntdUI
         #region 渲染
 
         int arrowSize = 0;
-        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrap, s_l = FormatFlags.Left | FormatFlags.VerticalCenter;
+        readonly FormatFlags s_c = FormatFlags.Default, s_l = FormatFlags.Left | FormatFlags.VerticalCenter;
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;

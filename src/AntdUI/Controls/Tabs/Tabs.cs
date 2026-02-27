@@ -496,9 +496,7 @@ namespace AntdUI
             style.Dispose();
             bitblock_l?.Dispose();
             bitblock_r?.Dispose();
-            if (items == null || items.Count == 0) return;
-            foreach (var it in items) it.Dispose();
-            items.Dispose();
+            items?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -574,7 +572,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrapEllipsis, s_f = FormatFlags.Center | FormatFlags.NoWrap;
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrapEllipsis, s_f = FormatFlags.Default;
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0 || !_tabMenuVisible) return;

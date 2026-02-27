@@ -24,7 +24,7 @@ Tag 标签页 👚
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
 **BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
-**BorderWidth** | 边框宽度 | float | 0F |
+**BorderWidth** | 边框宽度 | float | 1F |
 ||||
 **Radius** | 圆角 | int | 6 |
 **Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |

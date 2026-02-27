@@ -8,7 +8,7 @@
 - DefaultProperty：Items
 - DefaultEvent：SelectIndexChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -19,35 +19,47 @@ Name | Description | Type | Default Value |
 **Full** | Is it fully covered | bool | false |
 **Radius** | Rounded corners | int | 6 |
 **Round** | Rounded corner style | bool | false |
-||||
+|||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeHover** | Hover text color | Color`?` | `null` |
 **ForeActive** | Activate text color | Color`?` | `null` |
 **BackColor** | Background color | Color`?` | `null` |
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Activate background color | Color`?` | `null` |
-||||
+|||
 **Gap** | Gap | int | 0 |
+**ItemGap** | Item gap | float | 0.6F |
 **Vertical** | Is it vertical | bool | false |
 **IconAlign** | Icon alignment direction | [TAlignMini](Enum.md#talignmini) | Top |
 **IconRatio** | Icon Scale | float`?` | `null` |
 **IconGap** | Ratio of icon to text spacing | float | 0.2F |
-||||
+|||
 **BarPosition** | Bar position | [TAlignMini](Enum.md#talignmini) | None |
+**BarBg** | Show bar background | bool | false |
+**BarColor** | Bar background color | Color`?` | `null` |
 **BarSize** | Bar size | float | 3F |
 **BarPadding** | Bar padding | int | 0 |
 **BarRadius** | Bar rounded corners | int | 0 |
-||||
-**Items** | Set `SegmentedItem[]` | [SegmentedItem[]](#segmenteditem) | [] |
-**SelectIndex** | Select Index | int | 0 |
-||||
+|||
+**BorderWidth** | Border width | float | 0F |
+**BorderColor** | Border color | Color`?` | `null` |
+**ItemBorderWidth** | Item border width | float | 0F |
+**ItemBorderColor** | Item border color | Color`?` | `null` |
+|||
+**RightToLeft** | Reverse | RightToLeft | No |
+**TooltipConfig** | Text prompt configuration | TooltipConfig`?` | `null` |
+|||
+**Items** | Set `SegmentedItemCollection` | SegmentedItemCollection | `null` |
+**SelectIndex** | Select Index | int | -1 |
+|||
 **PauseLayout** | Pause Layout | bool | false |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **SelectIndexChanged** | Occurred when the SelectIndex property value is changed | void | int index |
+**SelectIndexChanging** | Occurred before the SelectIndex property value is changed | bool | int index |
 **ItemClick** | Occurrence upon item click | void | MouseEventArgs e, SegmentedItem value |
 
 ### Data

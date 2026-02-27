@@ -1,12 +1,11 @@
 [首页](../Home.md)・[更新日志](../UpdateLog.md)・[配置](../Config.md)・[主题](../Theme.md)
 
 ## Table
-
-Table 表格 👚
+👚
 
 > 展示行列数据。
 
-- 默认属性：Text
+- 默认属性：Columns
 - 默认事件：CellClick
 
 ### 属性
@@ -43,10 +42,20 @@ Table 表格 👚
 **ClipboardCopy** | 行复制 | bool | true |
 **ClipboardCopyFocusedCell** | 是否启用单元格复制 | bool | false |
 **EditMode** | 编辑模式 | [TEditMode](Enum.md#teditmode) | None |
+**EditSelection** | 编辑模式下的默认文本选择动作 | [TEditSelection](Enum.md#teditselection) | None |
+**EditInputStyle** | 编辑模式输入框样式 | [TEditInputStyle](Enum.md#teditinputstyle) | Default |
+**EditAutoHeight** | 编辑模式自动高度 | bool | false |
+**EditLostFocus** | 失去焦点退出编辑模式 | bool | true |
 **ShowTip** | 省略文字提示 | bool | true |
-**HandShortcutKeys** 🔴 | 处理快捷键 | bool | true |
+**HandShortcutKeys** | 处理快捷键 | bool | true |
 ||||
 **DefaultExpand** | 默认是否展开 `树` | bool | false |
+**TreeArrowStyle** | 树表格的箭头样式 | TableTreeStyle | Button |
+**FilterRealTime** | 筛选实时生效 | bool | false |
+**AnimationTime** | 动画时长（ms） | int | 100 |
+**SummaryCustomize** | 是否启用内置汇总定制功能 | bool | false |
+**PauseLayout** | 暂停布局 | bool | false |
+**TooltipConfig** | 超出文字提示配置 | TooltipConfig`?` | `null` |
 ||||
 **Empty** | 是否显示空样式 | bool | true |
 **EmptyText** | 数据为空显示文字 | string | No data |
@@ -82,20 +91,38 @@ Table 表格 👚
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**ScrollLine** | 滚动到指定行 | void | int i |
-**CopyData** | 复制表格数据 | void |int row `行`|
-**CopyData** | 复制表格数据 | void |int row `行`, int column `列`|
-**EnterEditMode** | 进入编辑模式 | void |int row `行`, int column `列`|
-**SortIndex** | 获取排序序号 | int[] ||
-**SortList** | 获取排序数据 | object[] ||
-**SortColumnsIndex** | 获取表头排序序号 | int[] ||
-**SortList** | 获取排序数据 | object[] ||
-**ScrollLine** | 滚动到指定行 | void | int i `行`,bool force `是否强制滚动` |
+**SelectedIndexsReal** | 选中真实行 | int[] ||
+**SelectedsReal** | 选中真实行数据 | object[] ||
+**GetRow** | 获取指定行的数据 | IRow`?` | int index `序号` |
+**RowCount** | 行总数 | int ||
+**Refresh** | 刷新界面 | void ||
+**Refresh<T>** | 刷新界面（适用AntList<T>场景） | void | AntList<T>? list `数据列表` |
+**SetSelected** | 设置选中行 | void | object record `行数据`, bool expand `是否展开关联父级` |
 **GetRowEnable** | 获取行使能 | bool | int i `行` |
+**GetRowEnable** | 获取行使能 | bool | object record `行对象` |
 **SetRowEnable** | 设置行使能 | void | int i `行`, bool value `值`, bool ui `是否刷新ui` |
+**SetRowEnable** | 设置行使能 | void | object record `行对象`, bool value `值`, bool ui `是否刷新ui` |
+**ScrollLine** | 滚动到指定行 | int `返回滚动量` | int i `行`, bool force `是否强制滚动` |
+**ScrollLine** | 滚动到指定行 | int `返回滚动量` | object record `行对象`, bool force `是否强制滚动` |
+**ScrollToEnd** | 内容滚动到最下面 | void ||
+**ScrollColumn** | 滚动到指定列 | int `返回滚动量` | int i `列`, bool force `是否强制滚动` |
+**ScrollColumn** | 滚动到指定列 | int `返回滚动量` | string column `表头key`, bool force `是否强制滚动` |
+**ScrollColumn** | 滚动到指定列 | int `返回滚动量` | Column column `表头`, bool force `是否强制滚动` |
+**CopyData** | 复制表格数据 | bool | int row `行` |
+**CopyData** | 复制表格数据 | bool | int[] row `行数组` |
+**CopyData** | 复制表格数据 | bool | int row `行`, int column `列` |
+**CopyData** | 复制表格数据 | bool | CELL cell `单元格` |
+**SortIndex** | 获取排序序号 | int[] ||
+**SetSortIndex** | 设置排序序号 | void | int[]? data `序号数据` |
+**SortList** | 获取排序数据 | object[] ||
+**SetSortList** | 设置排序数据 | void | object[]? data `排序数据` |
+**SortColumnsIndex** | 获取表头排序序号 | int[] ||
+**SetSortColumnsIndex** | 设置表头排序序号 | void | int[]? data `序号数据` |
+**SortColumnsList** | 获取表头排序数据 | Column[] ||
+**GetColumnRealIndex** | 获取表头真实索引 | int | Column column `表头` |
 **ToDataTable** | 导出表格数据 | DataTable`?` ||
 **LoadLayout** | 刷新布局 | void ||
-**Refresh** | 刷新界面 | void ||
+**EnterEditMode** | 进入编辑模式 | void | int row `行`, int column `列` |
 ||||
 **ExpandAll** | 展开全部 | void ||
 **Expand** | 展开或折叠 | void | object record `行元数据`, bool value `折叠值` |
@@ -114,7 +141,7 @@ Table 表格 👚
 **CellClick** | 单击时发生 | void | MouseEventArgs args `点击`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号`, Rectangle rect `表格区域` |
 **CellDoubleClick** | 双击时发生 | void | MouseEventArgs args `点击`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号`, Rectangle rect `表格区域` |
 **CellButtonClick** | 单击按钮时发生 | void | CellLink btn `触发按钮`, MouseEventArgs args `点击`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号` |
-**CellFocused** | 单元格获得焦点时发生 | void | object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号` |
+**CellFocused** | 单元格获得焦点时发生 | void | object? record `原始行`, RowType type `行类型`, int rowIndex `行序号`, int columnIndex `列序号`, Column column `列对象`, Rectangle rect `表格区域` |
 ||||
 **CellBeginEdit** | 编辑前发生 | bool `返回true继续编辑` | object? value `数值`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号` |
 **CellBeginEditInputStyle** | 编辑前文本框样式发生 | void | object? value `数值`, object? record `原始行`, int rowIndex `行序号`, int columnIndex `列序号`, ref Input input `文本框对象` |
@@ -123,20 +150,22 @@ Table 表格 👚
 **SetRowStyle** | 设置行样式 | [CellStyleInfo?](#cellstyleinfo) | object? record `原始行`, int rowIndex `行序号` |
 **SortRows** | 行排序时发生 | void | int columnIndex `列序号` |
 **FilterChanged** | 筛选条件更改时发生 | void | Column column `列对象` |
+**SummaryCustomizeChanged** | 汇总定制功能状态更改时发生 | void | bool value `状态值` |
+**SelectIndexChanged** | 选中索引更改时发生 | void | |
 
 > 奇偶交替背景色
 
 ```csharp
 private AntdUI.Table.CellStyleInfo? table1_SetRowStyle(object sender, AntdUI.TableSetRowStyleEventArgs e)
 {
-    if (e.Index % 2 == 0)
-    {
-        return new AntdUI.Table.CellStyleInfo
-        {
-            BackColor = Color.WhiteSmoke
-        };
-    }
-    return null;
+	if (e.Index % 2 == 0)
+	{
+		return new AntdUI.Table.CellStyleInfo
+		{
+			BackColor = Color.WhiteSmoke
+		};
+	}
+	return null;
 }
 ```
 

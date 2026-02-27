@@ -8,7 +8,7 @@
 - DefaultProperty：Items
 - DefaultEvent：SelectChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -36,21 +36,21 @@ Name | Description | Type | Default Value |
 ||||
 **PauseLayout** | Pause Layout | bool | false |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectChanged** | Occurred when the value of the Select attribute is changed | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
+**SelectChanged** | Occurred when the value of the Select attribute is changed | void | [TreeItem](#treeitem) item, Rectangle rect, TreeCType type, MouseEventArgs args |
 **CheckedChanged** | Occurred when the value of the Checked attribute is changed | void | [TreeItem](#treeitem) item, bool value `Select Value` |
-**BeforeExpand** | Occurred before Expand is changed | void | [TreeItem](#treeitem) item, bool value `Expand value` |
+**BeforeExpand** | Occurred before Expand is changed | bool `Return true to continue expanding` | [TreeItem](#treeitem) item, bool value `Expand value` |
 **AfterExpand** | Occurred after Expand is changed | void | [TreeItem](#treeitem) item, bool value `Expand value` |
-**NodeMouseClick** | Click Item Event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
-**NodeMouseDoubleClick** | Double click event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
+**NodeMouseClick** | Click Item Event | void | [TreeItem](#treeitem) item, Rectangle rect, TreeCType type, MouseEventArgs args |
+**NodeMouseDoubleClick** | Double click event | void | [TreeItem](#treeitem) item, Rectangle rect, TreeCType type, MouseEventArgs args |
 **NodeMouseMove** | Mobile event | void | [TreeItem](#treeitem) item, Rectangle rect, bool hover |
-**NodeMouseDown** | Mouse down event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
-**NodeMouseUp** | Mouse up event | void | MouseEventArgs args, [TreeItem](#treeitem) item, Rectangle rect |
+**NodeMouseDown** | Mouse down event | void | [TreeItem](#treeitem) item, Rectangle rect, TreeCType type, MouseEventArgs args |
+**NodeMouseUp** | Mouse up event | void | [TreeItem](#treeitem) item, Rectangle rect, TreeCType type, MouseEventArgs args |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

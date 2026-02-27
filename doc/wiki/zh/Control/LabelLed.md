@@ -17,7 +17,7 @@ LED文本控件 👚
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 |||
 **FontSize** | 字体大小 | int`?` | `null` |
-**EmojiFont** | Emoji字体 | string | `Segoe UI Emoji` |
+**EmojiFont** | Emoji字体 | string`?` | `null` |
 |||
 **DotSize** | 点阵大小 | int | 4 |
 **DotGap** | 点阵距离 | int | 2 |

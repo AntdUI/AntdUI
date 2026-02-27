@@ -21,7 +21,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("SelectChanged")]
-    public class Menu : IControl, SubLayeredForm
+    public class Menu : IControl, SubLayeredForm, IEventListener
     {
         #region 属性
 
@@ -517,6 +517,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             ChangeList();
+            this.AddListener();
             var item = GetSelectItem(out var sub);
             if (item != null)
             {
@@ -577,6 +578,16 @@ namespace AntdUI
         {
             ChangeList();
             base.OnSizeChanged(e);
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    ChangeList();
+                    break;
+            }
         }
 
         int collapseWidth = 0, collapsedWidth = 0;
@@ -970,7 +981,7 @@ namespace AntdUI
                 it.show = it.Show && it.Visible && rect.IsItemVisibleExpand(sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
-                    if (it.Depth == -1) g.Fill(brush_split, it.Rect);
+                    if (it.Depth == -1) g.Fill(brush_split, it.rect);
                     else
                     {
                         PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -993,7 +1004,7 @@ namespace AntdUI
                 it.show = it.Show && it.Visible && rect.IsItemVisibleExpand(sy, it.rect, it.Expand, it.SubHeight);
                 if (it.show)
                 {
-                    if (it.Depth == -1) g.Fill(brush_split, it.Rect);
+                    if (it.Depth == -1) g.Fill(brush_split, it.rect);
                     else
                     {
                         PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
@@ -1135,7 +1146,7 @@ namespace AntdUI
                         using (var pen = new Pen(fore_active, Dpi * 2))
                         {
                             pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                            g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
+                            g.DrawLines(pen, it.arrow_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
                         }
                     }
                     else PaintBack(g, back_active, it.rect, radius);
@@ -1145,7 +1156,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore_enabled, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
+                        g.DrawLines(pen, it.arrow_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
                     }
                 }
                 PaintTextIcon(g, it, fore_enabled, radius);
@@ -1189,7 +1200,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
+                        g.DrawLines(pen, it.arrow_rect.TriangleLinesVertical(it.GetArrowProg(), .4F));
                     }
                 }
                 else if (mode == TMenuMode.Vertical)
@@ -1197,7 +1208,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.arr_rect, .4F));
+                        g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.arrow_rect, .4F));
                     }
                 }
                 else if (mode == TMenuMode.Horizontal_Arrow)
@@ -1205,7 +1216,7 @@ namespace AntdUI
                     using (var pen = new Pen(fore, Dpi * 2))
                     {
                         pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        g.DrawLines(pen, it.arr_rect.TriangleLinesVertical(-1, .4F));
+                        g.DrawLines(pen, it.arrow_rect.TriangleLinesVertical(-1, .4F));
                     }
                 }
             }
@@ -1505,7 +1516,7 @@ namespace AntdUI
                 switch (drop)
                 {
                     case 0:
-                        if (OpenDropDown(it)) OpenTip(it, it.Rect);
+                        if (OpenDropDown(it)) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
                         break;
                     case 1:
                         OpenDropDown(it);
@@ -2082,7 +2093,7 @@ namespace AntdUI
         {
             if (it.items == null || it.items.Count == 0) return true;
             select_x = 0;
-            subForm = new LayeredFormMenuDown(this, radius, it.Rect, it.items);
+            subForm = new LayeredFormMenuDown(this, radius, it.Rect(0, ScrollBar.ValueY), it.items);
             subForm.Show(this);
             return false;
         }
@@ -2647,17 +2658,38 @@ namespace AntdUI
 
         #region 布局
 
-        /// <summary>
-        /// 菜单坐标位置
-        /// </summary>
-        public Rectangle Rect
+        public Rectangle Rect() => Rect("");
+        public Rectangle Rect(int x, int y) => Rect("", x, y);
+        public Rectangle Rect(string type, int x = 0, int y = 0)
         {
-            get
+            if (x > 0 || y > 0)
             {
-                if (PARENT == null) return rect;
-                int y = PARENT.ScrollBar.Value;
-                if (y != 0F) return new Rectangle(rect.X, rect.Y - y, rect.Width, rect.Height);
-                return rect;
+                switch (type)
+                {
+                    case "Text":
+                        return new Rectangle(txt_rect.X - x, txt_rect.Y - y, txt_rect.Width, txt_rect.Height);
+                    case "Sub":
+                        return new Rectangle(rect.X - x, rect.Y - y, rect.Width, rect.Height + (Expand ? SubHeight : 0));
+                    case "Icon":
+                        return new Rectangle(ico_rect.X - x, ico_rect.Y - y, ico_rect.Width, ico_rect.Height);
+                    case "Arrow":
+                        return new Rectangle(arrow_rect.X - x, arrow_rect.Y - y, arrow_rect.Width, arrow_rect.Height);
+                    default:
+                        return new Rectangle(rect.X - x, rect.Y - y, rect.Width, rect.Height);
+                }
+            }
+            switch (type)
+            {
+                case "Text":
+                    return txt_rect;
+                case "Sub":
+                    return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height + (Expand ? SubHeight : 0));
+                case "Icon":
+                    return ico_rect;
+                case "Arrow":
+                    return arrow_rect;
+                default:
+                    return rect;
             }
         }
 
@@ -2691,7 +2723,7 @@ namespace AntdUI
             else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
 
             int ur = _rect.Right - arrow_size - gap - scx;
-            arr_rect = new Rectangle(ur, _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
+            arrow_rect = new Rectangle(ur, _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
 
             exr = 0;
             if (Button != null)
@@ -2725,7 +2757,7 @@ namespace AntdUI
                 txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
             }
             else txt_rect = new Rectangle(_rect.X + x, _rect.Y, _rect.Width - usew, _rect.Height);
-            arr_rect = new Rectangle(_rect.Right - (arrow_size - sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
+            arrow_rect = new Rectangle(_rect.Right - (arrow_size - sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
             Show = true;
             return usew;
         }
@@ -2735,7 +2767,7 @@ namespace AntdUI
             rect = _rect;
             txt_rect = rect_text;
 
-            arr_rect = new Rectangle(_rect.Right - (arrow_size + sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
+            arrow_rect = new Rectangle(_rect.Right - (arrow_size + sp), _rect.Y + (_rect.Height - arrow_size) / 2, arrow_size, arrow_size);
 
             Show = true;
         }
@@ -2755,7 +2787,7 @@ namespace AntdUI
         }
 
         internal Rectangle rect { get; set; }
-        internal Rectangle arr_rect { get; set; }
+        internal Rectangle arrow_rect { get; set; }
 
         internal bool Contains(int x, int y, int sx, int sy, out MenuButton? btn)
         {

@@ -128,11 +128,11 @@
 
 > [![DatePicker](Icon/DatePicker.png)](Control/DatePicker.md)
 
-#### [DatePickerRange 日期范围选择框](Control/DatePicker.md#datepickerrange)
+#### [DatePickerRange 日期范围选择框](Control/DatePickerRange.md)
 
 > 输入或选择日期范围的控件。
 
-> [![DatePickerRange](Icon/DatePickerRange.png)](Control/DatePicker.md#datepickerrange)
+> [![DatePickerRange](Icon/DatePickerRange.png)](Control/DatePickerRange.md)
 
 #### [Input 输入框](Control/Input.md)
 
@@ -140,11 +140,11 @@
 
 > [![Input](Icon/Input.png)](Control/Input.md)
 
-#### [InputNumber 数字输入框](Control/Input.md#inputnumber)
+#### [InputNumber 数字输入框](Control/InputNumber.md)
 
 > 通过鼠标或键盘，输入范围内的数值
 
-> [![InputNumber](Icon/InputNumber.png)](Control/Input.md#inputnumber)
+> [![InputNumber](Icon/InputNumber.png)](Control/InputNumber.md)
 
 #### [Radio 单选框](Control/Radio.md)
 
@@ -170,11 +170,11 @@
 
 > [![Slider](Icon/Slider.png)](Control/Slider.md)
 
-#### [SliderRange 滑动范围输入条](Control/Slider.md#sliderrange)
+#### [SliderRange 滑动范围输入条](Control/SliderRange.md)
 
 > 滑动型范围输入器
 
-> [![SliderRange](Icon/SliderRange.png)](Control/Slider.md#sliderrange)
+> [![SliderRange](Icon/SliderRange.png)](Control/SliderRange.md)
 
 #### [Switch 开关](Control/Switch.md)
 

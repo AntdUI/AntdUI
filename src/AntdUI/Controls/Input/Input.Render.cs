@@ -14,7 +14,7 @@ namespace AntdUI
     {
         #region 渲染
 
-        internal FormatFlags sf_center = FormatFlags.Center | FormatFlags.NoWrap;
+        internal FormatFlags sf_center = FormatFlags.Default;
         internal FormatFlags sf_placeholder = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         public new virtual void Invalidate() => base.Invalidate();
@@ -31,7 +31,7 @@ namespace AntdUI
         {
             float _radius = round ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-            using (var path = Path(rect_read, _radius))
+            using (var path = Helper.PathJoin(rect_read, _radius, joinMode, JoinLeft, JoinRight))
             {
                 Color _back = back ?? Colour.BgContainer.Get(nameof(Input), ColorScheme),
                     _fore = fore ?? Colour.Text.Get(nameof(Input), ColorScheme),
@@ -431,7 +431,7 @@ namespace AntdUI
             {
                 if (AnimationFocusValue > 0)
                 {
-                    using (var path_click = Helper.RoundPath(rect, radius, round))
+                    using (var path_click = Helper.PathJoin(rect, radius, joinMode, JoinLeft, JoinRight))
                     {
                         path_click.AddPath(path, false);
                         g.Fill(Helper.ToColor(AnimationFocusValue, color), path_click);
@@ -440,7 +440,7 @@ namespace AntdUI
             }
             else if (ExtraMouseDown && WaveSize > 0)
             {
-                using (var path_click = Helper.RoundPath(rect, radius, round))
+                using (var path_click = Helper.PathJoin(rect, radius, joinMode, JoinLeft, JoinRight))
                 {
                     path_click.AddPath(path, false);
                     g.Fill(Color.FromArgb(30, color), path_click);
@@ -452,39 +452,7 @@ namespace AntdUI
 
         public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight);
 
-        public override GraphicsPath RenderRegion
-        {
-            get
-            {
-                var rect_read = ReadRectangle;
-                float _radius = round ? rect_read.Height : radius * Dpi;
-                return Path(rect_read, _radius);
-            }
-        }
-
-        internal GraphicsPath Path(RectangleF rect, float radius)
-        {
-            switch (joinMode)
-            {
-                case TJoinMode.Left:
-                    return rect.RoundPath(radius, true, false, false, true);
-                case TJoinMode.Right:
-                    return rect.RoundPath(radius, false, true, true, false);
-                case TJoinMode.LR:
-                case TJoinMode.TB:
-                    return rect.RoundPath(0);
-                case TJoinMode.Top:
-                    return rect.RoundPath(radius, true, true, false, false);
-                case TJoinMode.Bottom:
-                    return rect.RoundPath(radius, false, false, true, true);
-                case TJoinMode.None:
-                default:
-                    if (JoinLeft && JoinRight) return rect.RoundPath(0);
-                    else if (JoinLeft) return rect.RoundPath(radius, false, true, true, false);
-                    else if (JoinRight) return rect.RoundPath(radius, true, false, false, true);
-                    return rect.RoundPath(radius);
-            }
-        }
+        public override GraphicsPath RenderRegion => Helper.PathJoin(ReadRectangle, radius, Dpi, round, joinMode, JoinLeft, JoinRight);
 
         #endregion
 

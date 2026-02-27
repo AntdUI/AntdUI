@@ -8,7 +8,7 @@
 - DefaultProperty：Value
 - DefaultEvent：ValueChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -33,11 +33,11 @@ Name | Description | Type | Default Value |
 **ShowSymbol** | Display custom symbol (length<4) | bool | false |
 **Text** | Text | string | `""` |
 ||||
-**JoinLeft** 🔴 | Connect left area `Combination button` | bool | false |
-**JoinRight** 🔴 | Connect right area `Combination button` | bool | false |
 **JoinMode** | Combination mode | [TJoinMode](Enum.md#tjoinmode) | None |
+**JoinLeft** | Connect left area `Combination button` (Obsolete, use JoinMode) | bool | false |
+**JoinRight** | Connect right area `Combination button` (Obsolete, use JoinMode) | bool | false |
 ||||
-**Value** | Value of color | Color | Style.Db.Primary `Theme color` |
+**Value** | Value of color | Color | Colour.Primary.Get(nameof(ColorPicker)) `Theme color` |
 **DisabledAlpha** | Disable transparency | bool | false |
 **AllowClear** | Support clearing | bool | false |
 **ShowClose** | Display the close button | bool | false |
@@ -51,14 +51,14 @@ Name | Description | Type | Default Value |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | true |
 **DropDownFontRatio** | Dropdown font ratio | float | 0.9F |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **ClearValue** | Clear value | void | |
 **ClearValue** | Clear value | void | Color def `Default Color` |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

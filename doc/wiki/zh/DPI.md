@@ -52,14 +52,14 @@ devenv.exe /noScale
 ```csharp
 internal static class Program
 {
-    [STAThread]
-    static void Main()
-    {
-        // 设置 DPI 感知模式，选择适合你的模式
-        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-        
-        Application.Run(new YourForm()); // 确保 YourForm 继承自 AntdUI 窗口类
-    }
+	[STAThread]
+	static void Main()
+	{
+		// 设置 DPI 感知模式，选择适合你的模式
+		Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+		
+		Application.Run(new YourForm()); // 确保 YourForm 继承自 AntdUI 窗口类
+	}
 }
 ```
 

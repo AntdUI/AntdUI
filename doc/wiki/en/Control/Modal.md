@@ -10,50 +10,49 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Target** | Belonging target | object`?` | `null` |
+**Target** | Belonging target | Target | `Required` |
 **Form** | Belonging window | Form`?` | `Cannot use mask when empty` | `deprecated, use Target instead` |
-**Title** | Title | string | `Required` |
+**Title** | Title | string`?` | `null` |
 **Content** | Control/Content | object | `Required` |
+**ContentPadding** | Content padding | Size | 0, 0 |
+**UseIconPadding** | Use icon padding | bool | true |
 **Width** | Modal width | int | 416 |
 **Font** | Font | Font`?` | `null` |
-**Icon** | Icon | [TType](Enum.md#ttype) | None |
-**Keyboard** | Does it support disabling keyboard ESC | bool | true |
+**ColorScheme** | Color scheme | [TAMode](Enum.md#tamode) | Auto |
+**Keyboard** | Does it support keyboard ESC | bool | true |
 **Mask** | Display Mask | bool | true |
 **MaskClosable** | Click whether to allow the mask to be closed | bool | true |
-**CloseIcon** | Display close icon | bool | false |
-**Tag** | User defined data | object`?` | `null` |
-||||
-**ContentPadding** | Content padding | Size | 24, 20 |
-**UseIconPadding** | Use icon padding | bool | true |
-**ColorScheme** | Color scheme | [TColorScheme](Enum.md#tcolorscheme) | Primary |
 **ManualActivateParent** | Manually activate parent | bool | false |
-**DefaultFocus** | Default focus | Control`?` | `null` |
-**DefaultAcceptButton** | Default accept button | [Button](#button)`?` | `null` |
-**EnableSound** | Enable sound | bool | true |
-**Resizable** | Resizable | bool | false |
-**MinimumSize** | Minimum size | Size | 300, 200 |
-**MaximumSize** | Maximum size | Size | 1600, 900 |
-**IconCustom** | Custom icon | Bitmap`?` | `null` |
-||||
-**BtnHeight** | Button bar height | int | 38 |
-**CancelText** | Cancel button text | string | "Cancel" |
+**CloseIcon** | Display close icon | bool | false |
+**DefaultFocus** | Default focus | bool | false |
+**DefaultAcceptButton** | Default accept button | bool | true |
 **CancelFont** | Cancel button font | Font`?` | `null` |
+**OkFont** | Confirm button font | Font`?` | `null` |
+**BtnHeight** | Button bar height | int | 38 |
+**Padding** | Padding | Size | 24, 20 |
+**CancelText** | Cancel button text | string`?` | "Cancel" |
 **OkText** | Confirm button text | string | "OK" |
 **OkType** | Confirm button type | [TTypeMini](Enum.md#ttypemini) | Primary |
-**OkFont** | Confirm button Font | Font`?` | `null` |
+**Icon** | Icon | [TType](Enum.md#ttype) | None |
+**IconCustom** | Custom icon | IconInfo`?` | `null` |
 **OnOk** | Confirm callback | `Func<Config, bool>?` | `null` |
-**OnCancel** | Cancel callback | `Func<Config, bool>?` | `null` |
-**OnClose** | Close callback | Action<[TCloseType](Enum.md#tclosetype)> | `null` |
-**OnMaskClick** | Mask click callback | Action | `null` |
-||||
-**Btns** | Custom button | [Btn[]](#modal.btn) | `null` |
-**OnBtns** | Custom button callback | Action<[Button](#button)> | `null` |
-**OnButtonStyle** | Custom button style callback | Action<string, [Button](Button)> | `null` |
-||||
+**Tag** | User defined data | object`?` | `null` |
 **LoadingDisableCancel** | Disable the cancel button during loading | bool | false |
 **Draggable** | Drag and drop window | bool | true |
+**EnableSound** | Enable sound | bool | false |
+**Btns** | Custom button | [Btn[]](#modal.btn) | `null` |
+**OnBtns** | Custom button callback | `Func<Button, bool>?` | `null` |
+**OnButtonStyle** | Custom button style callback | Action<string, Button>`?` | `null` |
+**Resizable** | Resizable | bool | false |
+**MinimumSize** | Minimum size | Size`?` | `null` |
+**MaximumSize** | Maximum size | Size`?` | `null` |
+
+#### Methods
+
+Name | Description | Return Type | Parameters |
+:--|:--|:--|:--|
 **Close()** | Active close | void | |
-**DialogResult** | Dialog result | [DialogResult](Enum.md#dialogresult) | None |
+**DialogResult()** | Set dialog result | void | DialogResult result = DialogResult.OK |
 
 ### Modal.Btn
 
@@ -65,7 +64,8 @@ Name | Description | Type | Default Value |
 **Text** | Button text | string | `Required` |
 **Type** | Button type | [TTypeMini](Enum.md#ttypemini) | Default |
 **Fore** | Text color | Color`?` | `null` |
-**Back** | background color | Color`?` | `null` |
+**Back** | Background color | Color`?` | `null` |
+**DialogResult** | Dialog result | DialogResult | None |
 **Tag** | User defined data | object`?` | `null` |
 
 ### Modal.TextLine
@@ -75,9 +75,10 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Text** | Text content | string | `Required` |
-**Font** | Font | Font`?` | `null` |
+**Gap** | Gap | int | 0 |
 **Fore** | Text color | Color`?` | `null` |
-**Alignment** | Text alignment | ContentAlignment | MiddleLeft |
+**Font** | Font | Font`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 
 ***
 
@@ -86,15 +87,15 @@ Name | Description | Type | Default Value |
 ~~~csharp
 public partial class UserControl1 : UserControl, AntdUI.ControlEvent
 {
-    public void LoadCompleted()
-    {
-        System.Diagnostics.Debug.WriteLine("Load");
-    }
+	public void LoadCompleted()
+	{
+		System.Diagnostics.Debug.WriteLine("Load");
+	}
 
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-        System.Diagnostics.Debug.WriteLine("Close");
-    }
+	protected override void Dispose(bool disposing)
+	{
+		base.Dispose(disposing);
+		System.Diagnostics.Debug.WriteLine("Close");
+	}
 }
 ~~~

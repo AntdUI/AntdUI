@@ -34,11 +34,11 @@ ColorPicker 颜色选择器 👚
 **ShowSymbol** | 显示自定义符号(长度<4) | bool | false |
 **Text** | 文本 | string | `""` |
 ||||
-**JoinLeft** 🔴 | 连接左边 `组合按钮` | bool | false |
-**JoinRight** 🔴 | 连接右边 `组合按钮` | bool | false |
 **JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
+**JoinLeft** | 连接左边 `组合按钮`（已过时，使用JoinMode） | bool | false |
+**JoinRight** | 连接右边 `组合按钮`（已过时，使用JoinMode） | bool | false |
 ||||
-**Value** | 颜色的值 | Color | Style.Db.Primary `主题色` |
+**Value** | 颜色的值 | Color | Colour.Primary.Get(nameof(ColorPicker)) `主题色` |
 **DisabledAlpha** | 禁用透明度 | bool | false |
 **AllowClear** | 支持清除 | bool | false |
 **ShowClose** | 显示关闭按钮 | bool | false |

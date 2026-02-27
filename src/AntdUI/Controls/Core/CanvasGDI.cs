@@ -54,7 +54,7 @@ namespace AntdUI.Core
         /// <param name="text">要测量的文本</param>
         /// <param name="font">文本使用的字体</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Center);
+        public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Default);
 
         /// <summary>
         /// 测量文本字符串的大小，限制最大宽度
@@ -63,7 +63,7 @@ namespace AntdUI.Core
         /// <param name="font">文本使用的字体</param>
         /// <param name="width">最大宽度</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Center);
+        public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Default);
 
         /// <summary>
         /// 测量文本字符串的大小
@@ -83,7 +83,7 @@ namespace AntdUI.Core
         /// <param name="width">最大宽度</param>
         /// <param name="format">FormatFlags格式化标志，默认为居中</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Center) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
+        public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Default) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
 
         /// <summary>
         /// 测量文本中每个字符的范围
@@ -93,7 +93,7 @@ namespace AntdUI.Core
         /// <param name="rect">测量区域</param>
         /// <param name="format">FormatFlags格式化标志，默认为居中</param>
         /// <returns>字符范围数组</returns>
-        public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Center) => g.MeasureCharacterRanges(text, font, rect, Helper.TF(format, true));
+        public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Default) => g.MeasureCharacterRanges(text, font, rect, Helper.TF(format, true));
 
         /// <summary>
         /// 测量文本中每个字符的范围
@@ -152,14 +152,14 @@ namespace AntdUI.Core
             else g.DrawString(text, font, brush, rect, format);
         }
 
-        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
+        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Default)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
+        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Default)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -173,14 +173,14 @@ namespace AntdUI.Core
             }
             else g.DrawString(text, font, brush, rect, Helper.TF(format));
         }
-        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Center)
+        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Default)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center)
+        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Default)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -318,7 +318,7 @@ namespace AntdUI.Core
         /// <param name="text">要测量的文本</param>
         /// <param name="font">文本使用的字体</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Center);
+        public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Default);
 
         /// <summary>
         /// 测量文本的大小，限制最大宽度
@@ -327,7 +327,7 @@ namespace AntdUI.Core
         /// <param name="font">文本使用的字体</param>
         /// <param name="width">最大宽度</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Center);
+        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Default);
 
         /// <summary>
         /// 测量文本的大小
@@ -368,7 +368,7 @@ namespace AntdUI.Core
         /// <param name="width">最大宽度</param>
         /// <param name="format">FormatFlags格式化标志，默认为居中</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center)
+        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Default)
         {
             if (text == null) return MeasureString(text, font, width, format);
             else
@@ -399,18 +399,18 @@ namespace AntdUI.Core
         /// <returns>文本的行高</returns>
         int MeasureText(Font font, int width, ref List<TMPChar> characters)
         {
-            // 获取行高，使用空文本测量
-            int h = MeasureString(Config.NullText, font).Height;
-
-            // 遍历每个字符，计算宽度
-            foreach (var it in characters)
+            using (var cache = new TFixFont())
             {
-                // 表情符号的宽度等于行高
-                if (it.emoji) it.w = h;
-                // 普通文本使用MeasureString测量宽度
-                else it.w = MeasureString(it.txt, font, width).Width;
+                int h = cache.Height(this, font);
+                // 遍历每个字符，计算宽度
+                foreach (var it in characters)
+                {
+                    if (it.emoji) it.w = h;
+                    else if (it.txt == "\r" || it.txt == "\n" || it.txt == "\r\n") it.w = 0;
+                    else it.w = cache.Width(this, font, it.txt);
+                }
+                return h;
             }
-            return h;
         }
 
         /// <summary>
@@ -448,17 +448,30 @@ namespace AntdUI.Core
                     }
                     else
                     {
-                        x += it.w;
-                        if (x + DrawTextNextChar(characters, i + 1) > width)
+                        if (it.txt == "\r")
                         {
-                            // 换行处理：当前X位置加上下一个字符宽度是否超过最大宽度
+                            it.line = line;
+                            continue;
+                        }
+                        if (it.txt == "\n" || it.txt == "\r\n")
+                        {
                             x = 0;
                             h += height;
                             line++;
                         }
-                        else w += it.w;
+                        else
+                        {
+                            x += it.w;
+                            if (x + DrawTextNextChar(characters, i + 1) > width)
+                            {
+                                // 换行处理：当前X位置加上下一个字符宽度是否超过最大宽度
+                                x = 0;
+                                h += height;
+                                line++;
+                            }
+                            else w += it.w;
+                        }
                     }
-
                     // 记录字符所在行号
                     it.line = line;
                 }
@@ -597,7 +610,7 @@ namespace AntdUI.Core
                 {
                     string ellipsisText = "...";
                     Size ellipsisSize = MeasureString(ellipsisText, font);
-                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Center));
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Default));
                     return;
                 }
                 if (use_line < it.line)
@@ -615,7 +628,7 @@ namespace AntdUI.Core
                             break;
                     }
                 }
-                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Default));
                 use_x += it.w;
             }
             tmp_font?.Dispose();
@@ -664,7 +677,7 @@ namespace AntdUI.Core
             tmp_font?.Dispose();
         }
 
-        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
+        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Default)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -672,7 +685,7 @@ namespace AntdUI.Core
             }
         }
 
-        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
+        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Default)
         {
             if (text == null) return;
             var characters = new List<TMPChar>(text.Length);
@@ -734,7 +747,7 @@ namespace AntdUI.Core
                 {
                     string ellipsisText = "...";
                     Size ellipsisSize = MeasureString(ellipsisText, font);
-                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Center));
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Default));
                     return;
                 }
                 if (use_line < it.line)
@@ -745,7 +758,7 @@ namespace AntdUI.Core
                     if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
                     else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
                 }
-                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Default));
                 use_x += it.w;
             }
             tmp_font?.Dispose();

@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -16,15 +16,16 @@ Name | Description | Type | Default Value |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextTitle** | Title | string`?` | `null` |
 🌏 **LocalizationTextTitle** | International Title | string`?` | `null` |
+**TextAlign** | Text alignment | ContentAlignment | MiddleLeft |
 **Radius** | Rounded corners | int | 6 |
 **BorderWidth** | Border width | float | 0F |
 **Icon** | Style | [TType](Enum.md#ttype) | None |
-**IconSvg** | Custom icon | string`?` | `null` |
-**CloseIcon** | Show close icon | bool | false |
-**IconRatio** | Icon ratio | float | 0.86F |
-**IconGap** | Icon text gap ratio | float | 0.4F |
+**IconSvg** | Custom icon SVG | string`?` | `null` |
+**CloseIcon** | Whether to show close icon | bool | false |
+**IconRatio** | Icon ratio | float`?` | `null` |
+**IconGap** | Icon text gap ratio | float`?` | `null` |
 **Loop** | Text carousel | bool | false |
-**LoopOverflow** | Carousel only when text overflows | bool | false |
+**LoopOverflow** | Overflow carousel | bool | false |
 **LoopSpeed** | Text carousel speed | int | 10 |
 **LoopInfinite** | Endless carousel text | bool | true |
 **LoopPauseOnMouseEnter** | Pause carousel on mouse enter | bool | true |

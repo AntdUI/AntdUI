@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.0` 2026-02-27
+
+- ➕ VirtualPanel/Segmented/Breadcrumb/Menu/Tree/Steps/Timeline adaptation language switching
+- ➕ Input IndexOf LastIndexOf/Substring method
+- ➕ Image3D EnableHover
+- ➕ Statistical values
+- ✍️ Tabs release exception
+- ✍️ Panel shadow depth anomaly
+- ✍️ Menu Alignment Item. React Method
+- ✍️ Menu segmentation line misalignment
+- ✍️ JoinMode style
+- ✍️ Failed to render emoji line break text position properly
+- ✍️ Emoji Vulcan_Salute_flattlight Color
+
 ### `2.2.19` 2026-02-13
 
 - ✍️ Roll back old versions of Tabs

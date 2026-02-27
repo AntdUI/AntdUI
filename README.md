@@ -27,6 +27,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 - 💎 Superior shadow effects on Winforms
 - 📦 Borderless window with native window features
 - 👚 Theme configuration, black and white mode
+- 📐 Interactive Security Zone
 - 🌍 Internationale
 - 🦜 SVG vector graphics
 - 👓 DPI adaptation
@@ -66,14 +67,14 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Checkbox**](doc/wiki/en/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker**](doc/wiki/en/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker**](doc/wiki/en/Control/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange**](doc/wiki/en/Control/DatePicker.md#datepickerrange) | ✅ | ✅ |
+➡️| [**DatePickerRange**](doc/wiki/en/Control/DatePickerRange.md) | ✅ | ✅ |
 ➡️| [**Input**](doc/wiki/en/Control/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber**](doc/wiki/en/Control/Input.md#inputnumber) | ✅ | ✅ |
+➡️| [**InputNumber**](doc/wiki/en/Control/InputNumber.md) | ✅ | ✅ |
 ➡️| [**Radio**](doc/wiki/en/Control/Radio.md) | ✅ | ✅ |
 ➡️| [**Rate**](doc/wiki/en/Control/Rate.md) | ✅ | ❎ |
 ➡️| [**Select**](doc/wiki/en/Control/Select.md) | ✅ | ✅ |
 ➡️| [**Slider**](doc/wiki/en/Control/Slider.md) | ✅ | ❎ |
-➡️| [**SliderRange**](doc/wiki/en/Control/Slider.md#sliderrange) | ✅ | ❎ |
+➡️| [**SliderRange**](doc/wiki/en/Control/SliderRange.md) | ✅ | ❎ |
 ➡️| [**Switch**](doc/wiki/en/Control/Switch.md) | ✅ | ✅ |
 ➡️| [**TimePicker**](doc/wiki/en/Control/TimePicker.md) | ✅ | ✅ |
 ➡️| [**Transfer**](doc/wiki/en/Control/Transfer.md) | ✅ | ❎ |
@@ -121,7 +122,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Signal**](doc/wiki/en/Control/Signal.md) | ✅ | ❎ |
 ➡️| [**Shield**](doc/wiki/en/Control/Shield.md) | ❎ | ❎ |
 ➡️| [**ContextMenuStrip**](doc/wiki/en/Control/ContextMenuStrip.md) | ✅ | ❎ |
-➡️| **Image3D** | ✅ | ❎ |
+➡️| [**Image3D**](doc/wiki/en/Control/Image3D.md) | ✅ | ❎ |
 
 ### 🐿️ Donation
 ![Payment](doc/pre/Payment.png)

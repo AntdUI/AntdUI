@@ -52,14 +52,14 @@ Change Windows desktop scaling to `100%`
 ```csharp
 internal static class Program
 {
-    [STAThread]
-    static void Main()
-    {
-        // Set DPI awareness mode, choose the one that suits you
-        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-        
-        Application.Run(new YourForm()); // Ensure YourForm inherits from AntdUI window class
-    }
+	[STAThread]
+	static void Main()
+	{
+		// Set DPI awareness mode, choose the one that suits you
+		Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+		
+		Application.Run(new YourForm()); // Ensure YourForm inherits from AntdUI window class
+	}
 }
 ```
 

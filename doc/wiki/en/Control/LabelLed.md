@@ -1,15 +1,16 @@
 [Home](../Home.md)・[UpdateLog](../UpdateLog.md)・[Config](../Config.md)・[Theme](../Theme.md)
 
 ## LabelLed
+👚
 
-LED Text Control 👚
+> LED Text Control
 
 > Display a segment of LED style text.
 
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -17,7 +18,7 @@ Name | Description | Type | Default Value |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 |||
 **FontSize** | Font size | int`?` | `null` |
-**EmojiFont** | Emoji Font | string | `Segoe UI Emoji` |
+**EmojiFont** | Emoji Font | string`?` | `null` |
 |||
 **DotSize** | Dot size | int | 4 |
 **DotGap** | Dot distance | int | 2 |

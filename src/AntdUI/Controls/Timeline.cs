@@ -21,7 +21,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("ItemClick")]
-    public class Timeline : IControl
+    public class Timeline : IControl, IEventListener
     {
         #region 属性
 
@@ -77,6 +77,17 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             ChangeList();
+            this.AddListener();
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    ChangeList();
+                    break;
+            }
         }
 
 

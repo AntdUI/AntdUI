@@ -18,15 +18,20 @@ Transfer 穿梭框 👚
 ||||
 **ShowSelectAll** | 是否显示全选勾选框 | bool | true |
 **OneWay** | 是否单向模式 `只能从左到右` | bool | false |
-**ShowSearch** | 是否显示搜索框 | bool | true |
+**ShowSearch** | 是否显示搜索框 | bool | false |
 **ChangeToBottom** | 是否将按钮显示在底部 | bool | false |
+||||
+**SearchPlaceholderSource** | 源列表搜索水印文本 | string? | `null` |
+**SearchPlaceholderTarget** | 目标列表搜索水印文本 | string? | `null` |
+🌏 **LocalizationSearchPlaceholderSource** | 源列表搜索水印文本国际化 | string? | `null` |
+🌏 **LocalizationSearchPlaceholderTarget** | 目标列表搜索水印文本国际化 | string? | `null` |
 ||||
 **ItemHeight** | 列表项高度 | int? | `null` |
 **PanelRadius** | 列表框圆角 | int | 6 |
 **PanelBack** | 面板背景颜色 | Color`?` | `null` |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
-**BackColor** | 背景颜色 | Color`?` | `null` |
+**ForeActive** | 激活文字颜色 | Color`?` | `null` |
 **BackHover** | 悬停背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 **ButtonForeColor** | 按钮文字颜色 | Color`?` | `null` |
@@ -38,7 +43,7 @@ Transfer 穿梭框 👚
 **BorderColor** | 边框颜色 | Color`?` | `null` |
 **BorderWidth** | 边框宽度 | float | 0F |
 ||||
-**Items** | 数据 [TransferItem](#transferitem) | List<[TransferItem](#transferitem)> | [] |
+**Items** | 数据 [TransferItem](#transferitem) | TransferItemCollection | [] |
 
 ### 方法
 
@@ -54,9 +59,9 @@ Transfer 穿梭框 👚
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**TransferChanged** | 穿梭框选项变化事件 | void |  |
-**Search** | 搜索事件 | void |  |
-**InputStyle** | 输入框样式事件 | void | Input input `输入框`, bool isSource `是否为源列表` |
+**TransferChanged** | 穿梭框选项变化事件 | void | TransferEventArgs e `事件参数，包含源列表和目标列表项` |
+**Search** | 搜索事件 | void | SearchEventArgs e `事件参数，包含搜索文本和是否为源列表` |
+**InputStyle** | 输入框样式事件 | void | InputStyleEventArgs e `事件参数，包含输入框和是否为源列表` |
 
 ### 数据
 

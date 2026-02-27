@@ -21,7 +21,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("SelectIndexChanged")]
-    public class Segmented : IControl
+    public class Segmented : IControl, IEventListener
     {
         public Segmented()
         {
@@ -1268,6 +1268,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             ChangeItems();
+            this.AddListener();
         }
 
         protected override void OnMarginChanged(EventArgs e)
@@ -1286,6 +1287,16 @@ namespace AntdUI
         {
             ChangeItems();
             base.OnFontChanged(e);
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    ChangeItems();
+                    break;
+            }
         }
 
         #endregion

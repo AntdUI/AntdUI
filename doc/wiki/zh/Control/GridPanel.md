@@ -14,7 +14,7 @@ GridPanel 格栅布局 👚
 :--|:--|:--|:--|
 **Span** | 跨度 | string | 50% 50%;50% 50% |
 **Gap** | 间距 | int | 0 |
-**PauseLayout** | 暂停布局 | bool | false ||
+**PauseLayout** | 暂停布局 | bool | false |
 
 ### 扩展属性
 

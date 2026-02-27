@@ -17,15 +17,19 @@ Dropdown 选择器 👚
 **Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **MaxCount** | 列表最多显示条数 | int | 4 |
-**DropDownRadius** 🔴 | 下拉圆角 | int`?` | `null` |
+**DropDownRadius** | 下拉圆角 | int`?` | `null` |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
 **DropDownPadding** | 下拉边距 | Size | 12, 5 |
+**DropDownTextAlign** | 下拉文本方向 | [TAlign](Enum.md#talign) | Left |
 **ClickEnd** | 点击到最里层 `无节点才能点击` | bool | false |
+**Empty** | 为空依旧下拉 | bool | false |
 ||||
-**Items** | 数据 [更多样式](../DropdownStyles.md) | object[] | [] |
+**Items** | 数据 [更多样式](../DropdownStyles.md) | BaseCollection | - |
+**SelectedValue** | 选中值 | object`?` | `null` |
 
 ### 事件
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **SelectedValueChanged** | SelectedValue 属性值更改时发生 | void | object? value `数值` |
+**ItemClick** | 点击项时发生 | void | object? value `点击项` |

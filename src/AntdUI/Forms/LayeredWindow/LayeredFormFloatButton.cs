@@ -201,7 +201,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags stringCenter = FormatFlags.Center | FormatFlags.NoWrap;
+        readonly FormatFlags stringCenter = FormatFlags.Default;
 
         int use_primary = 0;
         public override Bitmap? PrintBit()

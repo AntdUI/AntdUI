@@ -21,7 +21,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("ItemClick")]
-    public class Breadcrumb : IControl
+    public class Breadcrumb : IControl, IEventListener
     {
         #region 属性
 
@@ -117,6 +117,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             ChangeItems();
+            this.AddListener();
         }
 
         protected override void OnMarginChanged(EventArgs e)
@@ -135,6 +136,16 @@ namespace AntdUI
         {
             ChangeItems();
             base.OnFontChanged(e);
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    ChangeItems();
+                    break;
+            }
         }
 
         #endregion

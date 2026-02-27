@@ -429,6 +429,7 @@ namespace AntdUI.Chat
                 foreach (var it in items) it.Dispose();
             }
             DisposeCache();
+            fix_cache_font.Dispose();
             base.Dispose(disposing);
         }
 

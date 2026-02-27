@@ -70,7 +70,7 @@ namespace FontTest
             {
                 #region 绘制原始
 
-                var s_f = AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrap;
+                var s_f = AntdUI.FormatFlags.Default;
 
                 using (var bmp_o = new Bitmap(size, size))
                 {
@@ -94,7 +94,7 @@ namespace FontTest
 
                     #endregion
 
-                    var font_size = AntdUI.Helper.Size(g.MeasureString(text, font));
+                    var font_size = g.MeasureString(text, font);
                     int y = (bmp.Height - font_size.Height) / 2, height = font_size.Height;
 
                     float ready = ry + rheight / 2F;

@@ -1472,7 +1472,7 @@ namespace AntdUI
                 switch (Align)
                 {
                     case ColumnAlign.Center:
-                        return FormatFlags.Center | FormatFlags.NoWrap;
+                        return FormatFlags.Default;
                     case ColumnAlign.Left:
                         return FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
                     case ColumnAlign.Right:

@@ -75,7 +75,7 @@ AntdUI.Config.EmojiEnabled = true;
 AntdUI.Config.ScrollBarHide = false;
 ```
 
-### MinimumSize of ScrollBar Y 🔴
+### MinimumSize of ScrollBar Y
 
 > Default `30`
 
@@ -114,7 +114,7 @@ AntdUI.Config.ShowInWindowByNotification = true;
 AntdUI.Config.NoticeWindowOffsetXY = 0;
 ```
 
-### Close Message/Notification immediately after exceeding the display limit 🔴
+### Close Message/Notification immediately after exceeding the display limit
 
 > Default, wait for old ones to close before displaying
 
@@ -128,7 +128,7 @@ AntdUI.Config.NoticeOverflowClose = false;
 AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 ```
 
-### Text Rendering HighQuality 🔴
+### Text Rendering HighQuality
 
 ``` csharp
 AntdUI.Config.TextRenderingHighQuality = true;

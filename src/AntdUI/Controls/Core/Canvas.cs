@@ -19,7 +19,7 @@ namespace AntdUI
         Size MeasureString(string? text, Font font, int width);
         [Obsolete("use FormatFlags")]
         Size MeasureString(string? text, Font font, int width, StringFormat format);
-        Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Center);
+        Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Default);
 
         #endregion
 
@@ -34,10 +34,10 @@ namespace AntdUI
         [Obsolete("use FormatFlags")]
         void String(string? text, Font font, Brush brush, RectangleF rect, StringFormat format);
 
-        void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center);
-        void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center);
-        void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Center);
-        void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center);
+        void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Default);
+        void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Default);
+        void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Default);
+        void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Default);
 
         void String(string? text, Font font, Color color, int x, int y);
         void String(string? text, Font font, Brush brush, int x, int y);
@@ -56,8 +56,8 @@ namespace AntdUI
         Size MeasureText(string? text, Font font, int width);
         [Obsolete("use FormatFlags")]
         Size MeasureText(string? text, Font font, int width, StringFormat format);
-        Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center);
-        Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Center);
+        Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Default);
+        Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Default);
         Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, StringFormat format);
 
         #endregion
@@ -69,8 +69,8 @@ namespace AntdUI
         [Obsolete("use FormatFlags")]
         void DrawText(string? text, Font font, Brush brush, Rectangle rect, StringFormat format);
 
-        void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center);
-        void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center);
+        void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Default);
+        void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Default);
 
         #endregion
 

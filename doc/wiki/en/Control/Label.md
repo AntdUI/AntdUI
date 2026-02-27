@@ -8,12 +8,13 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **AutoSize** | Auto Size | bool | false |
 **AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+**AutoSizePadding** | Auto size padding (only MiddleCenter) | bool | false |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
 **ColorExtend** | Text gradient color | string`?` | `null` |
@@ -25,6 +26,7 @@ Name | Description | Type | Default Value |
 **TextMultiLine** | Multiple lines | bool | true |
 ||||
 **IconRatio** | Icon Scale | float | 0.7F |
+**IconGap** | Icon and text gap | int | 0 |
 **Prefix** | Prefix text | string`?` | `null` |
 🌏 **LocalizationPrefix** | International Prefix | string`?` | `null` |
 **PrefixSvg** | Prefix SVG | string`?` | `null` |
@@ -35,7 +37,7 @@ Name | Description | Type | Default Value |
 **SuffixColor** | Suffix color | Color`?` | `null` |
 **Highlight** | Full display of tags | bool | true |
 **ShowTooltip** | Exceeding text display Tooltip | bool | true |
-**Rotate** 🔴 | Rotate | [TRotate](Enum.md#trotate) | None |
+**Rotate** | Rotate | [TRotate](Enum.md#trotate) | None |
 ||||
 **Shadow** | Shadow size | int | 0 |
 **ShadowColor** | Shadow color | Color`?` | `null` |

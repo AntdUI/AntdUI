@@ -574,14 +574,14 @@ namespace AntdUI
                 if (LoadingProgressStr != null)
                 {
                     rect_loading.Offset(0, loading_size);
-                    g.String(LoadingProgressStr, Font, color, rect_loading, FormatFlags.Center | FormatFlags.NoWrap);
+                    g.String(LoadingProgressStr, Font, color, rect_loading, FormatFlags.Default);
                 }
             }
             else if (LoadingProgressStr != null)
             {
                 g.DrawEllipse(Colour.Error.Get(name), bor6, rect_loading);
                 rect_loading.Offset(0, loading_size);
-                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(name), rect_loading, FormatFlags.Center | FormatFlags.NoWrap);
+                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(name), rect_loading, FormatFlags.Default);
             }
         }
 
