@@ -11,9 +11,9 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Target** | Belonging target | Target | `Required` |
-**Form** 🔴 | Belonging window | Form | `Required` |
-**Control** 🔴 | Belonging Control | Control`?` ||
-**Font** | Font | Font`?` ||
+**Form** | Belonging window | Form | `Required` |
+**Control** | Belonging Control | Control`?` ||
+**Font** | Font | Font`?` | `null` |
 **Align** | Align | [TAlign](Enum.md#talign) | BR |
 **Vertical** | Is it in the vertical direction | bool | true |
 **TopMost** | Topped | bool | false |
@@ -31,21 +31,20 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Name** | Name | string | `null` |
-**Text** | Text | string`?` | `null` |
-🌏 **LocalizationText** | International Text | string`?` | `null` |
-**Fore** | Text color | Color`?` | `null` |
 **Enabled** | Enable | bool | true |
 **Loading** | Loading | bool | false |
 **LoadingValue** | Loading progress | float | 0.3F |
-**Round** | Rounded corner style | bool | true |
-**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
-**Radius** | Rounded corners | int | 6 |
-**Tag** | User defined data | object`?` | `null` |
-||||
+**Fore** | Text color | Color`?` | `null` |
 **Icon** | Custom Icon | Image`?` | `null` |
 **IconSvg** | Custom Icon SVG | string`?` | `null` |
-**IconSize** | Icon size `Default automatic size` | Size`?` | `null` |
-||||
+**IconSize** | Icon size | Size`?` | `null` |
+**Text** | Text and other content | string`?` | `null` |
+🌏 **LocalizationText** | Internationalization (Text) | string`?` | `null` |
+**Tooltip** | Tooltip | string`?` | `null` |
+🌏 **LocalizationTooltip** | Internationalization (Tooltip) | string`?` | `null` |
+**Type** | Set button type | [TTypeMini](Enum.md#ttypemini) | Default |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | true |
 **Badge** | Badge text | string`?` | `null` |
 **BadgeSvg** | Badge SVG | string`?` | `null` |
 **BadgeAlign** | Badge align | [TAlign](Enum.md#talign) | TR |
@@ -57,6 +56,4 @@ Name | Description | Type | Default Value |
 **BadgeBack** | Badge background color | Color`?` | `null` |
 **BadgeBorderColor** | Badge border color | Color`?` | `null` |
 **BadgeBorderWidth** | Badge border width | float`?` | `null` |
-||||
-**Tooltip** | The content of bubbles | string`?` | `null` |
-🌏 **LocalizationTooltip** | International tooltip | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |

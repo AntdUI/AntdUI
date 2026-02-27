@@ -37,7 +37,7 @@ namespace AntdUI
                 g.Fill(Style.Db.TagDefaultBg, path);
                 g.Draw(Style.Db.DefaultBorder, sp, path);
             }
-            g.String(Count, font_count, Style.Db.Text, rect_count, FormatFlags.Center);
+            g.String(Count, font_count, Style.Db.Text, rect_count, FormatFlags.Default);
         }
 
         internal int sp = 1, rl = 0;

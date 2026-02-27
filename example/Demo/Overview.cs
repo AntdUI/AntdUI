@@ -630,7 +630,7 @@ namespace Demo
             {
                 data = d;
                 Tag = d.id;
-                LocalizationName = d.key + " " + d.id;
+                LocalizationName = d.id + " " + d.key;
             }
 
             AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Left | AntdUI.FormatFlags.VerticalCenter;

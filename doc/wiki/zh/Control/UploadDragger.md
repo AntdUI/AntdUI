@@ -26,15 +26,15 @@ UploadDragger 拖拽上传 👚
 ||||
 **IconRatio** | 图标比例 | float | 1.92F |
 **Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `InboxOutlined` |
 ||||
 **BorderWidth** | 边框宽度 | float | 1F |
 **BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderStyle** | 边框样式 | DashStyle | Solid |
+**BorderStyle** | 边框样式 | DashStyle | Dash |
 ||||
-**ClickHand** 🔴 | 点击上传 | bool | true |
-**Multiselect** 🔴 | 多个文件 | bool | true |
-**Filter** 🔴 | 文件名筛选器字符串 | string`?` | `null` 参考 OpenFileDialog 格式 |
+**ClickHand** | 点击上传 | bool | true |
+**Multiselect** | 多个文件 | bool | true |
+**Filter** | 文件名筛选器字符串 | string`?` | `null` 参考 OpenFileDialog 格式 |
 
 ### 方法
 

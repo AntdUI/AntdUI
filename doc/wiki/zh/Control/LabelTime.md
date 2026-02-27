@@ -13,7 +13,6 @@ LabelTime 时间文本 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**AutoWidth** 🔴 | 自动宽度 | bool | false |
-||||
-**ForeColor** | 文字颜色 | Color |  |
 **ShowTime** | 是否显示秒 | bool | true |
+**AutoWidth** | 自动宽度 | bool | false |
+**DragMove** | 是否可以拖动位置 | bool | true |

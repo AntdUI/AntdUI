@@ -26,7 +26,7 @@ Name | Description | Type | Default Value |
 **WaveSize** | Wave size `Click animation` | int | 4 |
 **Gap** | Distance between button and border | int | 2 |
 ||||
-**Loading** 🔴 | Loading | bool | false |
+**Loading** | Loading | bool | false |
 
 ### Event
 

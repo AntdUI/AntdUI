@@ -26,7 +26,7 @@ Carousel 走马灯 👚
 **Radius** | 圆角 | int | 0 |
 **Round** | 圆角样式 | bool | false |
 ||||
-**Image** | 图片集合 `CarouselItem[]` | [CarouselItem[]](#carouselitem) | [] |
+**Image** | 图片集合 `CarouselItemCollection` | [CarouselItemCollection](#carouselitem) | [] |
 **ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Cover |
 **SelectIndex** | 选择序号 | int | 0 |
 
@@ -42,5 +42,6 @@ Carousel 走马灯 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Img** | 图片 | Image`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

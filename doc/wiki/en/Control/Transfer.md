@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：TransferChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -17,15 +17,20 @@ Name | Description | Type | Default Value |
 ||||
 **ShowSelectAll** | Display all check box | bool | true |
 **OneWay** | Is it unidirectional mode `only from left to right` | bool | false |
-**ShowSearch** | Whether to show search box | bool | true |
-**ChangeToBottom** | Whether to display buttons at the bottom | bool |
+**ShowSearch** | Whether to show search box | bool | false |
+**ChangeToBottom** | Whether to display buttons at the bottom | bool | false |
+||||
+**SearchPlaceholderSource** | Source list search placeholder text | string? | `null` |
+**SearchPlaceholderTarget** | Target list search placeholder text | string? | `null` |
+🌏 **LocalizationSearchPlaceholderSource** | Source list search placeholder text localization | string? | `null` |
+🌏 **LocalizationSearchPlaceholderTarget** | Target list search placeholder text localization | string? | `null` |
 ||||
 **ItemHeight** | List item height | int? | `null` |
-**PanelRadius** | List box rounded corners | int | 6 | false |
+**PanelRadius** | List box rounded corners | int | 6 |
 **PanelBack** | Panel background color | Color`?` | `null` |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
-**BackColor** | Background color | Color`?` | `null` |
+**ForeActive** | Active text color | Color`?` | `null` |
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Activate background color | Color`?` | `null` |
 **ButtonForeColor** | Button text color | Color`?` | `null` |
@@ -37,17 +42,17 @@ Name | Description | Type | Default Value |
 **BorderColor** | Border color | Color`?` | `null` |
 **BorderWidth** | Border width | float | 0F |
 ||||
-**Items** | Data [TransferItem](#transferitem) | List<[TransferItem](#transferitem)> | [] |
+**Items** | Data [TransferItem](#transferitem) | TransferItemCollection | [] |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**TransferChanged** | Shuttle box option change event | void |  |
-**Search** | search event | void |  |
-**InputStyle** | Input style event | void | Input input `input box`, bool isSource `whether it is a source list` |
+**TransferChanged** | Shuttle box option change event | void | TransferEventArgs e `Event parameters, including source and target list items` |
+**Search** | Search event | void | SearchEventArgs e `Event parameters, including search text and whether it is a source list` |
+**InputStyle** | Input style event | void | InputStyleEventArgs e `Event parameters, including input box and whether it is a source list` |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

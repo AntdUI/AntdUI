@@ -8,14 +8,14 @@
 - DefaultProperty：Value
 - DefaultEvent：ValueChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Fill** | Colour | Color`?` | `null` |
 **FillHover** | Hover color | Color`?` | `null` |
 **FillActive** | Activate color | Color`?` | `null` |
-**TrackColor** 🔴 | Slide color | Color`?` | `null` |
+**TrackColor** | Slide color | Color`?` | `null` |
 ||||
 **MinValue** | Minimum value | int | 0 |
 **MaxValue** | Maximum value | int | 100 |
@@ -28,10 +28,10 @@ Name | Description | Type | Default Value |
 **DotSizeActive** | Click to activate size | int | 12 |
 ||||
 **Dots** | Can only be dragged onto the scale | bool | false |
-**Marks** | Tick marks `SliderMarkItem[]` | [SliderMarkItem[]](#slidermarkitem) | [] |
+**Marks** | Tick marks `SliderMarkItemCollection` | SliderMarkItemCollection | `null` |
 **MarkTextGap** | Scale text spacing | int | 4 |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -49,27 +49,3 @@ Name | Description | Type | Default Value |
 **Fore** | Text color | Color`?` | `null` |
 **Text** | Text | string`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |
-
-
-***
-
-
-## SliderRange
-👚
-
-> A Slider component for displaying current value and intervals in range. Inherited from [Slider](Slider)
-
-- DefaultProperty：Value
-- DefaultEvent：ValueChanged
-
-### Property
-
-Name | Description | Type | Default Value |
-:--|:--|:--|:--|
-**Value2** | Value2 | int | 10 |
-
-### Event
-
-Name | Description | Return Value | Parameters |
-:--|:--|:--|:--|
-**Value2Changed** | Occurred when the value of the Value2 property is changed | void | int value2 |

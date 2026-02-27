@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -17,7 +17,7 @@ Name | Description | Type | Default Value |
 **TextDesc** | Text description | string`?` | `null` |
 **Radius** | Rounded corners | int | 8 |
 ||||
-**ForeColor** | Text color | Color`?` | `null` ||
+**ForeColor** | Text color | Color`?` | `null` |
 **Back** | Background color | Color`?` | `null` |
 ||||
 **BackgroundImage** | Background image | Image`?` | `null` |
@@ -25,17 +25,17 @@ Name | Description | Type | Default Value |
 ||||
 **IconRatio** | Icon Scale | float | 1.92F |
 **Icon** | Icon | Image`?` | `null` |
-**IconSvg** | Icon SVG | string`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `InboxOutlined` |
 ||||
 **BorderWidth** | Border width | float | 1F |
 **BorderColor** | Border color | Color`?` | `null` |
-**BorderStyle** | Border Style | DashStyle | Solid |
+**BorderStyle** | Border Style | DashStyle | Dash |
 ||||
-**ClickHand** 🔴 | Click to upload | bool | true |
-**Multiselect** 🔴 | Multiple files | bool | true |
-**Filter** 🔴 | Filename filter string | string`?` | `null` Refer to OpenFileDialog format |
+**ClickHand** | Click to upload | bool | true |
+**Multiselect** | Multiple files | bool | true |
+**Filter** | Filename filter string | string`?` | `null` Refer to OpenFileDialog format |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -43,7 +43,7 @@ Name | Description | Return Value | Parameters |
 **SetFilter** | Set commonly used filters | void | FilterType filterType [Flags] |
 
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

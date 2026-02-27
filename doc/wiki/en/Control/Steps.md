@@ -8,7 +8,7 @@
 - DefaultProperty：Current
 - DefaultEvent：ItemClick
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -18,11 +18,18 @@ Name | Description | Type | Default Value |
 **Status** | The status of the current step | [TStepState](Enum.md#tstepstate) | Process |
 **Vertical** | Vertical direction | bool | false |
 **Gap** | Gap | int | 8 |
-**Items** | Data `StepsItem[]` | [StepsItem[]](#stepsitem) | [] |
-||||
+**Items** | Data `StepsItemCollection` | StepsItemCollection | `null` |
+|||
+**MilestoneMode** | New milestone mode | bool | false |
+**MilestoneAnimation** | Whether to display animation in milestone mode | bool | true |
+**MilestoneType** | Display type of milestone time point | [TMilestoneType](Enum.md#tmilestonetype) | Day |
+**MilestoneCurrentCompleted** | Current milestone completed | bool | false |
+**MilestoneTimeFormat** | Milestone time point display format | string`?` | `null` |
+**MilestoneTimelineThickness** | Display thickness of milestone timeline | int | 16 |
+|||
 **PauseLayout** | Pause Layout | bool | false |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -47,4 +54,7 @@ Name | Description | Type | Default Value |
 🌏 **LocalizationSubTitle** | International Subtitle | string`?` | `null` |
 **Description** | Description | string`?` | `null` |
 🌏 **LocalizationDescription** | International Description | string`?` | `null` |
+**MilestoneTimePoint** | Milestone time point | DateTime`?` | `null` |
+**BackColor** | Timeline background color | Color`?` | `null` |
+**ForeColor** | Timeline foreground color | Color`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |

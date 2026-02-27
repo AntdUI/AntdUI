@@ -8,7 +8,7 @@
 - DefaultProperty：Value
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -24,5 +24,5 @@ Name | Description | Type | Default Value |
 **FillFully** | Full charge color | Color | 0, 210, 121 |
 **FillWarn** | Warning battery color | Color | 250, 173, 20 |
 **FillDanger** | Dangerous battery color | Color | 255, 77, 79 |
-**ValueWarn** 🔴 | Warning battery threshold | int | 30 |
-**ValueDanger** 🔴 | Dangerous electricity threshold | int | 20 |
+**ValueWarn** | Warning battery threshold | int | 30 |
+**ValueDanger** | Dangerous battery threshold | int | 20 |

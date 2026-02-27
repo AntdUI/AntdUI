@@ -8,7 +8,7 @@
 - DefaultProperty：Image
 - DefaultEvent：SelectIndexChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -25,11 +25,11 @@ Name | Description | Type | Default Value |
 **Radius** | Rounded corners | int | 0 |
 **Round** | Rounded corner style | bool | false |
 ||||
-**Image** | Image Collection `CarouselItem[]` | [CarouselItem[]](#carouselitem) | [] |
+**Image** | Image Collection `CarouselItemCollection` | [CarouselItemCollection](#carouselitem) | [] |
 **ImageFit** | Image layout | [TFit](Enum.md#tfit) | Cover |
 **SelectIndex** | Select index | int | 0 |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -41,5 +41,6 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Img** | Image | Image`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |

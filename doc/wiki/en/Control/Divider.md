@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -19,3 +19,4 @@ Name | Description | Type | Default Value |
 **Thickness** | Thickness | float | 0.6F |
 **ColorSplit** | Line color | Color`?` | `null` |
 **Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International text | string`?` | `null` |

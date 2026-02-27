@@ -34,12 +34,19 @@ Progress 进度条 👚
 **Value** | 进度条 `0F-1F` | float | 0F |
 **Loading** | 加载状态 | bool | false |
 **LoadingFull** | 动画铺满 | bool | false |
-**Loading** | 加载状态 | bool | false |
 **Animation** | 动画时长 | int | 200 |
+**UseTextCenter** | 使文本居中显示 | bool | false |
 ||||
 **Steps** | 进度条总共步数 | int | 3 |
 **StepSize** | 步数大小 | int | 14 |
 **StepGap** | 步数间隔 | int | 2 |
+||||
+**IconCircle** | 圆形进度下的图标 | Image`?` | `null` |
+**IconSvgCircle** | 圆形进度下的图标SVG | string`?` | `null` |
+**IconCircleAngle** | 圆形图标是否旋转 | bool | false |
+**IconCirclePadding** | 圆形图标边距 | int | 8 |
+**IconCircleColor** | 圆形图标颜色 | Color`?` | `null` |
+**ContainerControl** | 窗口对象 | ContainerControl`?` | `null` |
 
 ### 事件
 

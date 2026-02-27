@@ -8,12 +8,14 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Back** | Background color | Color`?` | `null` |
+**BackExtend** | Background gradient color | string`?` | `null` |
 **Radius** | Rounded corners | int | 6 |
+**RadiusAlign** | Rounded corners direction | [TAlignRound](Enum.md#talignround) | ALL |
 **ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | Arrow size | int | 8 |
 ||||
@@ -32,4 +34,5 @@ Name | Description | Type | Default Value |
 **ShadowOffsetX** | Shadow offset X | int | 0 |
 **ShadowOffsetY** | Shadow offset Y | int | 0 |
 **ShadowAlign** | Shadow direction | [TAlignMini](Enum.md#talignmini) | None |
-**padding** | padding | Padding | 0, 0, 0, 0 |
+**InnerPadding** | Inner padding | Padding | 0, 0, 0, 0 |
+**padding** | padding | Padding | 0, 0, 0, 0 | `obsolete, use InnerPadding` |

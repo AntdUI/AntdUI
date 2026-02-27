@@ -25,5 +25,5 @@ Battery 电量 👚
 **FillFully** | 满电颜色 | Color | 0, 210, 121 |
 **FillWarn** | 警告电量颜色 | Color | 250, 173, 20 |
 **FillDanger** | 危险电量颜色 | Color | 255, 77, 79 |
-**ValueWarn** 🔴 | 警告电量阈值 | int | 30 |
-**ValueDanger** 🔴 | 危险电量阈值 | int | 20 |
+**ValueWarn** | 警告电量阈值 | int | 30 |
+**ValueDanger** | 危险电量阈值 | int | 20 |

@@ -15,32 +15,34 @@ HyperlinkLabel 超链接文本 👚
 :--|:--|:--|:--|
 **Text** | 文本内容，支持 `<a href="...">...</a>` 语法 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**NormalStyle** | 正常状态链接样式 | LinkAppearance | `默认样式` |
-**HoverStyle** | 悬停状态链接样式 | LinkAppearance | `默认样式` |
-**LinkPadding** | 链接与周围字符的距离 | int | 2 |
-**LinkAutoNavigation** | 是否自动打开链接 | bool | true |
-**TextAlign** | 文本对齐方式 | ContentAlignment | TopLeft |
-**Shadow** | 启用阴影效果 | bool | false |
-**ShadowSize** | 阴影大小 | int | 2 |
-**ShadowColor** | 阴影颜色 | Color | Color.FromArgb(255, 0, 0, 0) |
-**ShadowOpacity** | 阴影透明度 | float | 0.2F |
-**ShadowOffset** | 阴影偏移量 | Point | 1, 1 |
+**TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
+**Shadow** | 阴影大小 | int | 0 |
+**ShadowColor** | 阴影颜色 | Color`?` | `null` |
+**ShadowOpacity** | 阴影透明度 | float | 0.3F |
+**ShadowOffsetX** | 阴影偏移X | int | 0 |
+**ShadowOffsetY** | 阴影偏移Y | int | 0 |
+**NormalStyle** | 常规状态下链接的样式 | LinkAppearance`?` | `null` |
+**HoverStyle** | 鼠标悬停时链接的样式 | LinkAppearance`?` | `null` |
+**LinkPadding** | 链接与周围字符之间的距离 | Padding | 2, 0, 2, 0 |
+**LinkAutoNavigation** | 自动调用默认浏览器打开超链接 | bool | false |
+**AutoSize** | 自动大小 | bool | false |
+**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
+**ForeColor** | 文字颜色 | Color`?` | `null` |
 
 ### LinkAppearance 属性
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Color** | 链接颜色 | Color | Color.FromArgb(255, 10, 76, 178) |
-**HoverColor** | 悬停颜色 | Color | Color.FromArgb(255, 79, 126, 194) |
-**FontStyle** | 字体样式 | FontStyle | FontStyle.Regular |
-**Underline** | 下划线 | bool | true |
-**HoverUnderline** | 悬停下划线 | bool | true |
+**LinkColor** | 链接呈现的文本颜色 | Color`?` | `null` |
+**LinkStyle** | 链接的字体样式 | FontStyle | Regular |
+**UnderlineColor** | 下划线颜色 | Color`?` | `null` |
+**UnderlineThickness** | 下划线厚度（0为不显示下划线） | int | 1 |
 
 ### 事件
 
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
-**LinkClicked** | 当点击链接时发生 | void | string `href`, string `text` |
+**LinkClicked** | 当点击链接时发生 | void | LinkClickedEventArgs `e` |
 
 ### 示例
 

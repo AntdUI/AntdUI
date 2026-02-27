@@ -8,7 +8,7 @@
 - DefaultProperty：Value
 - DefaultEvent：ValueChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -20,10 +20,13 @@ Name | Description | Type | Default Value |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
 **ShowIcon** | Display icon or not | bool | true |
 **ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
+**ShowButtonNow** | Show now button | bool | true |
+**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
 
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **ValueChanged** | Occurred when the value of the Value property is changed | void | TimeSpan value |
+**ExpandDropChanged** | Occurred when the value of the ExpandDrop property is changed | void | bool value |

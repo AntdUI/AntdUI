@@ -5,7 +5,7 @@
 
 > Add watermark to page or control, support text and image watermark.
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -13,28 +13,25 @@ Name | Description | Type | Default Value |
 **Rotate** | Rotation angle | int | -22 |
 **Width** | Watermark width | int | 200 |
 **Height** | Watermark height | int | 100 |
-**Gap** | Watermark gap | Size | 0, 0 |
-**Offset** | Watermark offset | Point | 0, 0 |
-**AutoResize** | Auto resize | bool | true |
-**Monitor** | Screen watermark | bool | false |
-**SubFontSizeRatio** | Sub content font size ratio | float | 0.8F |
+**Gap** | Watermark gap [x, y] | int[] | [100, 100] |
+**Offset** | Watermark offset [x, y] | int[] | [50, 50] |
+**IsScreen** | Screen watermark | bool | false |
+**SubFontSize** | Sub content font size ratio | float | 0.8F |
 **Font** | Font | Font`?` | `null` |
-**ForeColor** | Font color | Color | Color.FromArgb(255, 0, 0, 0) |
-**SubFont** | Sub content font | Font`?` | `null` |
-**SubForeColor** | Sub content font color | Color`?` | `null` |
-**Align** | Alignment | ContentAlignment | MiddleCenter |
+**ForeColor** | Font color | Color`?` | `null` |
+**TextAlign** | Text alignment | FormatFlags | Center |
+**Enabled** | Enabled | bool | true |
 **Content** | Watermark content | string | `null` |
 **SubContent** | Sub watermark content | string`?` | `null` |
 **Image** | Watermark image | Image`?` | `null` |
-**Svg** | SVG watermark | string`?` | `null` |
-**SvgColor** | SVG color | Color`?` | `null` |
+**ImageSvg** | Watermark image SVG | string`?` | `null` |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**open** | Open watermark | LayeredFormWatermark | Control `target`, string `content`, string `subContent` |
-**open** | Open watermark | LayeredFormWatermark | Config `config` |
+**open** | Open watermark | Form`?` | Control `target`, string `content`, string `subContent` |
+**open** | Open watermark | Form`?` | Config `config` |
 
 ### Example
 
@@ -44,9 +41,9 @@ Watermark.open(this, "AntdUI Watermark", "2024-01-01");
 
 // Full configuration
 var config = new Watermark.Config(this, "AntdUI")
-    .SetSub("Powered by AntdUI")
-    .SetOpacity(0.2f)
-    .SetRotate(-30)
-    .SetGap(150, 150);
+	.SetSub("Powered by AntdUI")
+	.SetOpacity(0.2f)
+	.SetRotate(-30)
+	.SetGap(150, 150);
 Watermark.open(config);
 ```

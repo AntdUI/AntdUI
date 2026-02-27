@@ -15,7 +15,7 @@ ImagePreview 图片预览 👚
 :--|:--|:--|:--|
 **Image** | 图片集合 | ImagePreviewItemCollection | `新集合` |
 **SelectIndex** | 当前选中的图片索引 | int | 0 |
-**Fit** | 图片适应方式 | [TFit](Enum.md#tfit) | Contain |
+**Fit** | 图片适应方式 | [TFit](Enum.md#tfit) | `null` |
 **ShowBtn** | 是否显示按钮 | bool | true |
 **ShowDefaultBtn** | 是否显示默认按钮 | bool | true |
 **BtnSize** | 按钮大小 | Size | `42, 46` |
@@ -83,21 +83,21 @@ imagePreview1.Image.Add(new ImagePreviewItem().SetImage(Image.FromFile("img3.jpg
 
 // 异步加载图片
 imagePreview1.Image.Add(new ImagePreviewItem().SetImage((index, item) => {
-    // 模拟异步加载
-    Thread.Sleep(1000);
-    return Image.FromFile("async.jpg");
+	// 模拟异步加载
+	Thread.Sleep(1000);
+	return Image.FromFile("async.jpg");
 }));
 
 // 带进度的异步加载
 imagePreview1.Image.Add(new ImagePreviewItem().SetImage((index, item, progress) => {
-    // 模拟下载进度
-    for (int i = 0; i <= 100; i += 10) {
-        Thread.Sleep(100);
-        // 更新进度
-        progress(i / 100f, $"加载中 {i}%");
-    }
-    // 加载完成
-    return Image.FromFile("prog.jpg");
+	// 模拟下载进度
+	for (int i = 0; i <= 100; i += 10) {
+		Thread.Sleep(100);
+		// 更新进度
+		progress(i / 100f, $"加载中 {i}%");
+	}
+	// 加载完成
+	return Image.FromFile("prog.jpg");
 }));
 
 // 添加自定义按钮

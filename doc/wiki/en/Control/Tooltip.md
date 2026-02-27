@@ -8,20 +8,22 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Font** | Font | Color | `System default` |
-**Text** | Text | string | `Required` |
+**Font** | Font | Font | `System default` |
+**Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 ||||
 **Radius** | Rounded corners | int | 6 |
-**ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | None |
-**ArrowSize** | Arrow size | int | 8 |
+**ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | Top |
+**ArrowSize** | Arrow size | int`?` | `null` |
 **CustomWidth** | Custom Width | int`?` | `null` |
+**Back** | Background color | Color`?` | `null` |
+**Fore** | Foreground color | Color`?` | `null` |
 
-### Static Method
+### Static Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -50,4 +52,4 @@ Name | Description | Type | Default Value |
 **ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | Arrow size | int | 8 |
 **Offset** | Offset | Rectangle / RectangleF | `null` |
-**CustomWidth** 🔴 | Custom Width | int`?` | `null` |
+**CustomWidth** | Custom Width | int`?` | `null` |

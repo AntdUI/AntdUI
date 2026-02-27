@@ -8,15 +8,15 @@
 - DefaultProperty：Value
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Value** | Signal strength | int | 0 `0-5` |
-||||
+|||
 **StyleLine** | Enable line style | bool | false |
-**Loading** 🔴 | Loading State | bool | false |
-||||
+**Loading** | Loading State | bool | false |
+|||
 **Fill** | Fill color | Color`?` | `null` |
 **FillFully** | Full grid color | Color`?` | `null` |
 **FillWarn** | Warning color | Color`?` | `null` |

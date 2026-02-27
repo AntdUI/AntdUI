@@ -63,13 +63,13 @@ ComWrappers.RegisterForMarshalling(WinFormsComInterop.WebView2.WebView2ComWrappe
 <?xml version="1.0" encoding="utf-8" ?>
 <Directives>
   <Application>
-    <Assembly Name="System.Resources.Extensions">
-      <Type Name="System.Resources.Extensions.RuntimeResourceSet" Dynamic="Required All" />
-      <Type Name="System.Resources.Extensions.DeserializingResourceReader" Dynamic="Required All" />
-    </Assembly>
-    <Assembly Name="System.Drawing">
-      <Type Name="System.Drawing.Bitmap" Dynamic="Required All" />
-    </Assembly>
+	<Assembly Name="System.Resources.Extensions">
+	  <Type Name="System.Resources.Extensions.RuntimeResourceSet" Dynamic="Required All" />
+	  <Type Name="System.Resources.Extensions.DeserializingResourceReader" Dynamic="Required All" />
+	</Assembly>
+	<Assembly Name="System.Drawing">
+	  <Type Name="System.Drawing.Bitmap" Dynamic="Required All" />
+	</Assembly>
   </Application>
 </Directives>
 ```

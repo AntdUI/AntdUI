@@ -45,7 +45,7 @@ Input 输入框 👚
 **IsTextEmpty** | 文本是否为空 | bool | true |
 **TextTotalLine** | 文本总行数 | int | 0 |
 **ImeMode** | IME(输入法编辑器)状态 | ImeMode | NoControl |
-**EmojiFont** | Emoji字体 | string | Segoe UI Emoj |
+**EmojiFont** | Emoji字体 | string`?` | `null` |
 **AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
 **Multiline** | 多行文本 | bool | false |
 **WordWrap** | 自动换行 | bool | true |
@@ -118,10 +118,15 @@ Input 输入框 👚
 **ClearStyle** | 清空样式 | void ||
 **GetSelectionText** | 获取当前选中文本 | string? ||
 **SelectedText** | 获取设置当前选中文本 | string? ||
+**IndexOf** | 查找指定字符串首次出现的位置 | int | string value `要查找的字符串` |
+**IndexOf** | 从指定位置开始查找字符串首次出现的位置 | int | string value `要查找的字符串`, int startIndex `开始搜索的位置` |
+**LastIndexOf** | 查找指定字符串最后一次出现的位置 | int | string value `要查找的字符串` |
+**Substring** | 从指定位置开始截取子字符串 | string | int startIndex `开始截取的位置` |
+**Substring** | 从指定位置开始截取指定长度的子字符串 | string | int startIndex `开始截取的位置`, int length `要截取的长度` |
 ||||
 **AnimationBlink** | 开始闪烁动画 | void | int interval `动画间隔时长（毫秒）`, params Color[] colors `色彩值` |
 **AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, params Color[] colors `色彩值` |
-**AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, int transition_interval `过度动画间隔时长（毫秒）`, AnimationType animationType `过度动画类型`, params Color[] colors `色彩值` |
+**AnimationBlinkTransition** | 开始颜色过渡闪烁动画 | void | int interval `动画间隔时长（毫秒）`, int transition_interval `过渡动画间隔时长（毫秒）`, AnimationType animationType `过渡动画类型`, params Color[] colors `色彩值` |
 **StopAnimationBlink** | 停止闪烁动画 | void ||
 
 ### 事件
@@ -143,63 +148,30 @@ Input 输入框 👚
 ``` csharp
 private void Input1_VerifyChar(object sender, AntdUI.InputVerifyCharEventArgs e)
 {
-    NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-    string decimalSeparator = numberFormatInfo.NumberDecimalSeparator,
-        groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
-    string keyInput = e.Char.ToString();
-    if (char.IsDigit(e.Char))
-    {
-        e.Result = true; // 数字可以
-    }
-    else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
-    {
-        e.Result = true; // 小数分隔符可以
-    }
-    else if (e.Char == '\b')
-    {
-        e.Result = true; // Backspace键可以
-    }
-    else if (e.Char == '。')
-    {
-        e.ReplaceText = ".";
-        e.Result = true; // 中文句号替换为英文句号
-    }
-    else
-    {
-        e.Result = false;
-    }
+	NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+	string decimalSeparator = numberFormatInfo.NumberDecimalSeparator,
+		groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
+	string keyInput = e.Char.ToString();
+	if (char.IsDigit(e.Char))
+	{
+		e.Result = true; // 数字可以
+	}
+	else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
+	{
+		e.Result = true; // 小数分隔符可以
+	}
+	else if (e.Char == '\b')
+	{
+		e.Result = true; // Backspace键可以
+	}
+	else if (e.Char == '。')
+	{
+		e.ReplaceText = ".";
+		e.Result = true; // 中文句号替换为英文句号
+	}
+	else
+	{
+		e.Result = false;
+	}
 }
 ```
-
-***
-
-
-## InputNumber
-
-InputNumber 数字输入框 👚
-
-> 通过鼠标或键盘，输入范围内的数值。继承于 [Input](#input)
-
-- 默认属性：Value
-- 默认事件：ValueChanged
-
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
-:--|:--|:--|:--|
-**Minimum** | 最小值 | decimal`?` | `null` |
-**Maximum** | 最大值 | decimal`?` | `null` |
-**Value** | 当前值 | decimal | 0 |
-||||
-**ShowControl** | 显示控制器 | bool | true |
-**DecimalPlaces** | 显示的小数点位数 | int | 0 |
-**ThousandsSeparator** | 是否显示千分隔符 | bool | false |
-**Hexadecimal** | 值是否应以十六进制显示 | bool | false |
-**InterceptArrowKeys** | 当按下箭头键时，是否持续增加/减少 | bool | true |
-**Increment** | 每次单击箭头键时增加/减少的数量 | decimal | 1 |
-
-### 事件
-
-名称 | 描述 | 返回值 | 参数 |
-:--|:--|:--|:--|
-**ValueChanged** | Value 属性值更改时发生 | void | decimal value `当前值` |

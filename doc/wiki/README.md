@@ -14,6 +14,7 @@ Ant Design for WinForms, which deeply integrates Ant Design's modern design conc
 - 💎 Winform 上最阴影的阴影效果	|	Superior shadow effects on Winforms
 - 📦 无边框窗口，拥有原生窗口特性	|	Borderless window with native window features
 - 👚 主题配置​，黑白模式	|	Theme configuration, black and white mode
+- 📐 交互安全区	|	Interactive Security Zone
 - 🌍 全球化支持	|	Internationale
 - 🦜 SVG 矢量图	|	SVG vector graphics
 - 👓 DPI 适配	|	DPI adaptation

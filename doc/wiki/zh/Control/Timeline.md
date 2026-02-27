@@ -34,12 +34,15 @@ Timeline 时间轴 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**ID** | ID | string`?` | `null` |
 **Name** | 名称 | string`?` | `null` |
-**Text** | 文本 | string | `必填` |
+**Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
 **Visible** | 是否显示 | bool | true |
 **Description** | 详情描述 | string`?` | `null` |
+🌏 **LocalizationDescription** | 国际化详情描述 | string`?` | `null` |
 **Type** | 颜色类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
 **Fill** | 填充颜色 | Color`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |

@@ -13,4 +13,4 @@ FlowPanel 流动布局 👚
 **AutoScroll** | 是否显示滚动条 | bool | false |
 **Align** | 布局方向 | [TAlignFlow](Enum.md#talignflow) | LeftCenter |
 **Gap** | 间距 | int | 0 |
-**PauseLayout** | 暂停布局 | bool | false ||
+**PauseLayout** | 暂停布局 | bool | false |

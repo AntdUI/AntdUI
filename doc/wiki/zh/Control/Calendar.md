@@ -23,21 +23,25 @@ Calendar 日历 👚
 **Value** | 控件当前日期 | DateTime | `DateTime.Now` |
 **MinDate** | 最小日期 | DateTime`?` | `null` |
 **MaxDate** | 最大日期 | DateTime`?` | `null` |
+||||
+**Back** | 背景颜色 | Color`?` | `null` |
+**BackExtend** | 背景渐变色 | string`?` | `null` |
+**Fore** | 文字颜色 | Color`?` | `null` |
 
 ### 日期上的徽标
 
 ~~~ csharp
 BadgeAction = dates =>
 {
-    // dates 参数为 DateTime[] 数组长度固定为2，返回UI上显示的开始日期与结束日期
-    // DateTime start_date = dates[0], end_date = dates[1];
-    var now = dates[1];
-    return new List<AntdUI.DateBadge> {
-        new AntdUI.DateBadge(now.ToString("yyyy-MM-dd"),0,Color.FromArgb(112, 237, 58)),
-        new AntdUI.DateBadge(now.AddDays(1).ToString("yyyy-MM-dd"),5),
-        new AntdUI.DateBadge(now.AddDays(-2).ToString("yyyy-MM-dd"),99),
-        new AntdUI.DateBadge(now.AddDays(-6).ToString("yyyy-MM-dd"),998),
-    };
+	// dates 参数为 DateTime[] 数组长度固定为2，返回UI上显示的开始日期与结束日期
+	// DateTime start_date = dates[0], end_date = dates[1];
+	var now = dates[1];
+	return new List<AntdUI.DateBadge> {
+		new AntdUI.DateBadge(now.ToString("yyyy-MM-dd"),0,Color.FromArgb(112, 237, 58)),
+		new AntdUI.DateBadge(now.AddDays(1).ToString("yyyy-MM-dd"),5),
+		new AntdUI.DateBadge(now.AddDays(-2).ToString("yyyy-MM-dd"),99),
+		new AntdUI.DateBadge(now.AddDays(-6).ToString("yyyy-MM-dd"),998),
+	};
 };
 ~~~
 
@@ -46,6 +50,9 @@ BadgeAction = dates =>
 名称 | 描述 | 返回值 | 参数 |
 :--|:--|:--|:--|
 **LoadBadge** | 加载徽标 | void | |
+**SetBadge** | 设置徽标 | void | Dictionary<string, DateBadge> dir |
+**SetBadge** | 设置徽标 | void | IList<DateBadge> dir |
+**SetMinMax** | 设置最小最大日期 | void | DateTime min, DateTime max |
 
 ### 事件
 

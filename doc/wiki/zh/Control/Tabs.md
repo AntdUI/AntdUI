@@ -6,7 +6,7 @@ Tabs 标签页 👚
 
 > 选项卡切换组件。
 
-- 默认属性：TabPages
+- 默认属性：Pages
 - 默认事件：SelectedIndexChanged
 
 ### 属性
@@ -54,6 +54,7 @@ Tabs 标签页 👚
 **SelectTab** | 选中项 | void | string tabPageName |
 **SelectTab** | 选中项 | void | [TabPage](#tabpage) tabPage |
 **SelectTab** | 选中项 | void | int index `序号` |
+**ContainsTabPage** | 判断鼠标是否在标签上 | [TabPage](#tabpage)`?` | int x `X坐标`, int y `Y坐标` |
 
 ### 事件
 

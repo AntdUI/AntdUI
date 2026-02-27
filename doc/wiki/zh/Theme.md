@@ -60,12 +60,12 @@ AntdUI.Style.Set(AntdUI.Colour.Primary, Color.FromArgb(0, 173, 154), "Button");
 
 ``` csharp
 var colorConfig = new Dictionary<string, string> {
-    { "Primary", "#ED4192" },          // 品牌主色
-    { "PrimaryButton", "#E0282E" },    // 为 Button 单独设置主色
-    { "Success", "#52C41A" },          // 成功色
-    { "Warning", "#FAAD14" },          // 警告色
-    { "Error", "#F5222D" },            // 错误色
-    { "Info", "#1890FF" }              // 信息色
+	{ "Primary", "#ED4192" },          // 品牌主色
+	{ "PrimaryButton", "#E0282E" },    // 为 Button 单独设置主色
+	{ "Success", "#52C41A" },          // 成功色
+	{ "Warning", "#FAAD14" },          // 警告色
+	{ "Error", "#F5222D" },            // 错误色
+	{ "Info", "#1890FF" }              // 信息色
 };
 AntdUI.Style.LoadCustom(colorConfig);
 ```
@@ -92,8 +92,8 @@ AntdUI.Config.IsDark = true;
 ``` csharp
 // 设置全局主题切换配置
 AntdUI.Config.Theme()
-    .Dark("#000", "#fff") // 深色模式背景色和文本色
-    .Light("#fff", "#000"); // 浅色模式背景色和文本色
+	.Dark("#000", "#fff") // 深色模式背景色和文本色
+	.Light("#fff", "#000"); // 浅色模式背景色和文本色
 ```
 
 #### 窗口主题配置
@@ -104,31 +104,31 @@ AntdUI.Config.Theme()
 // 在窗口中设置主题切换配置
 public partial class Form1 : AntdUI.BaseForm
 {
-    public Form1()
-    {
-        InitializeComponent();
-        
-        // 定制窗口主题切换配置
+	public Form1()
+	{
+		InitializeComponent();
+		
+		// 定制窗口主题切换配置
 Theme()
-    .Dark("#1e1e1e", "#ffffff") // 深色模式背景色和文本色
-    .Light("#ffffff", "#000000") // 浅色模式背景色和文本色
-    .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // 页面头部颜色
-    .Button(btnTheme) // 主题切换按钮
-    .CallBefore(dark => Console.WriteLine("主题切换前：" + dark)) // 主题切换前回调
-    .Call(dark => Console.WriteLine("主题切换后：" + dark)) // 主题切换后回调
-    .FormBorderColor(Color.LightGray, Color.DarkGray) // 自定义窗口边框颜色
-    // 或者使用主题色风格的窗口边框
-    // .FormBorderColorPrimary()
-    // 或者使用默认边框色
-    // .FormBorderColor()
-    }
-    
-    // 主题切换按钮点击事件
-    private void btnTheme_Click(object sender, EventArgs e)
-    {
-        // 切换主题模式
-        AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
-    }
+	.Dark("#1e1e1e", "#ffffff") // 深色模式背景色和文本色
+	.Light("#ffffff", "#000000") // 浅色模式背景色和文本色
+	.Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // 页面头部颜色
+	.Button(btnTheme) // 主题切换按钮
+	.CallBefore(dark => Console.WriteLine("主题切换前：" + dark)) // 主题切换前回调
+	.Call(dark => Console.WriteLine("主题切换后：" + dark)) // 主题切换后回调
+	.FormBorderColor(Color.LightGray, Color.DarkGray) // 自定义窗口边框颜色
+	// 或者使用主题色风格的窗口边框
+	// .FormBorderColorPrimary()
+	// 或者使用默认边框色
+	// .FormBorderColor()
+	}
+	
+	// 主题切换按钮点击事件
+	private void btnTheme_Click(object sender, EventArgs e)
+	{
+		// 切换主题模式
+		AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
+	}
 }
 ```
 

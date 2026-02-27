@@ -44,7 +44,7 @@ Name | Description | Type | Default Value |
 **IsTextEmpty** | Is text empty | bool | true |
 **TextTotalLine** | Total lines of text | int | 0 |
 **ImeMode** | IME (Input Method Editor) Status | ImeMode | NoControl |
-**EmojiFont** | EmojiFont | string | Segoe UI Emoj |
+**EmojiFont** | EmojiFont | string`?` | `null` |
 **AcceptsTab** | Does multi line editing allow the input of tab characters | bool | false |
 **Multiline** | Multiline | bool | false |
 **WordWrap** | Auto wrap | bool | true |
@@ -117,6 +117,11 @@ Name | Description | Return Value | Parameters |
 **ClearStyle** | Clear style | void ||
 **GetSelectionText** | Get the currently selected text | string? ||
 **SelectedText** | Get or set the currently selected text | string? ||
+**IndexOf** | Find the first occurrence of a specified string | int | string value `String to find` |
+**IndexOf** | Find the first occurrence of a string starting from the specified position | int | string value `String to find`, int startIndex `Start search position` |
+**LastIndexOf** | Find the last occurrence of a specified string | int | string value `String to find` |
+**Substring** | Extract substring starting from the specified position | string | int startIndex `Start position` |
+**Substring** | Extract substring of specified length starting from the specified position | string | int startIndex `Start position`, int length `Length to extract` |
 ||||
 **AnimationBlink** | Start blinking animation | void | int interval `Animation interval (milliseconds)`, params Color[] colors `Color values` |
 **AnimationBlinkTransition** | Start color transition blinking animation | void | int interval `Animation interval (milliseconds)`, params Color[] colors `Color values` |
@@ -142,62 +147,30 @@ Name | Description | Return Value | Parameters |
 ``` csharp
 private void Input1_VerifyChar(object sender, AntdUI.InputVerifyCharEventArgs e)
 {
-    NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-    string decimalSeparator = numberFormatInfo.NumberDecimalSeparator,
-        groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
-    string keyInput = e.Char.ToString();
-    if (char.IsDigit(e.Char))
-    {
-        e.Result = true; // Numbers can be
-    }
-    else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
-    {
-        e.Result = true; // The decimal separator can be used
-    }
-    else if (e.Char == '\b')
-    {
-        e.Result = true; // The Backspace key can be used
-    }
-    else if (e.Char == '。')
-    {
-        e.ReplaceText = ".";
-        e.Result = true; // Replace Chinese period with English period
-    }
-    else
-    {
-        e.Result = false;
-    }
+	NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+	string decimalSeparator = numberFormatInfo.NumberDecimalSeparator,
+		groupSeparator = numberFormatInfo.NumberGroupSeparator, negativeSign = numberFormatInfo.NegativeSign;
+	string keyInput = e.Char.ToString();
+	if (char.IsDigit(e.Char))
+	{
+		e.Result = true; // Numbers can be
+	}
+	else if (keyInput.Equals(decimalSeparator) || keyInput.Equals(groupSeparator) || keyInput.Equals(negativeSign))
+	{
+		e.Result = true; // The decimal separator can be used
+	}
+	else if (e.Char == '\b')
+	{
+		e.Result = true; // The Backspace key can be used
+	}
+	else if (e.Char == '。')
+	{
+		e.ReplaceText = ".";
+		e.Result = true; // Replace Chinese period with English period
+	}
+	else
+	{
+		e.Result = false;
+	}
 }
 ```
-
-***
-
-
-## InputNumber
-👚
-
-> Enter a number within certain range with the mouse or keyboard. Inherited from [Input](#input)
-
-- DefaultProperty：Value
-- DefaultEvent：ValueChanged
-
-### Property
-
-Name | Description | Type | Default Value |
-:--|:--|:--|:--|
-**Minimum** | Minimum value | decimal`?` | `null` |
-**Maximum** | Maximum value | decimal`?` | `null` |
-**Value** | Current value | decimal | 0 |
-||||
-**ShowControl** | Controller | bool | true |
-**DecimalPlaces** | Number of decimal places displayed | int | 0 |
-**ThousandsSeparator** | Do you want to display the thousand separator | bool | false |
-**Hexadecimal** | Should values be displayed in hexadecimal format | bool | false |
-**InterceptArrowKeys** | Does the arrow key continuously increase/decrease when pressed | bool | true |
-**Increment** | The amount of increase/decrease each time the arrow key is clicked | decimal | 1 |
-
-### Event
-
-Name | Description | Return Value | Parameters |
-:--|:--|:--|:--|
-**ValueChanged** | Occurred when the value of the Value property is changed | void | decimal value |

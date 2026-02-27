@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -16,8 +16,10 @@ Name | Description | Type | Default Value |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **Fill** | Colour | Color`?` | `null` |
 **ForeColor** | Text color | Color`?` | `null` |
+**Indicator** | Loading indicator | Image`?` | `null` |
+**IndicatorSvg** | Loading indicator SVG | string`?` | `null` |
 
-### Method
+### Methods
 
 > All `IControl` that inherit FHIR trol support the `Spin` method
 
@@ -39,6 +41,9 @@ Name | Description | Type | Default Value |
 **Radius** | Rounded corners | int`?` | `null` |
 **Font** | Font | Font`?` | `null` |
 **Value** | Progress | float`?` | `null` |
+**Rate** | Progress rate | float`?` | `null` |
+**Indicator** | Loading indicator | Image`?` | `null` |
+**IndicatorSvg** | Loading indicator SVG | string`?` | `null` |
 
 ***
 
@@ -46,19 +51,19 @@ Name | Description | Type | Default Value |
 
 ```csharp
 panel1.Spin(config => {
-    // Time consuming code
-    sleep(1000);
+	// Time consuming code
+	sleep(1000);
 },()=>{
-    //Loading completed
+	//Loading completed
 });
 ```
 
 ```csharp
 AntdUI.Spin.open(panel1, config => {
-    // Time consuming code
-    sleep(1000);
+	// Time consuming code
+	sleep(1000);
 },()=>{
-    //Loading completed
+	//Loading completed
 });
 ```
 

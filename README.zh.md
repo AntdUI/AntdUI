@@ -28,6 +28,7 @@
 - 💎 Winform 上最阴影的阴影效果
 - 📦 无边框窗口，拥有原生窗口特性
 - 👚 主题配置​，黑白模式
+- 📐 交互安全区
 - 🌍 全球化支持
 - 🦜 SVG 矢量图
 - 👓 DPI 适配
@@ -67,14 +68,14 @@
 ➡️| [**Checkbox** 多选框](doc/wiki/zh/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker** 颜色选择器](doc/wiki/zh/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker** 日期选择框](doc/wiki/zh/Control/DatePicker.md) | ✅ | ✅ |
-➡️| [**DatePickerRange** 日期范围选择框](doc/wiki/zh/Control/DatePicker.md#datepickerrange) | ✅ | ✅ |
+➡️| [**DatePickerRange** 日期范围选择框](doc/wiki/zh/Control/DatePickerRange.md) | ✅ | ✅ |
 ➡️| [**Input** 输入框](doc/wiki/zh/Control/Input.md) | ✅ | ✅ |
-➡️| [**InputNumber** 数字输入框](doc/wiki/zh/Control/Input.md#inputnumber) | ✅ | ✅ |
+➡️| [**InputNumber** 数字输入框](doc/wiki/zh/Control/InputNumber.md) | ✅ | ✅ |
 ➡️| [**Radio** 单选框](doc/wiki/zh/Control/Radio.md) | ✅ | ✅ |
 ➡️| [**Rate** 评分](doc/wiki/zh/Control/Rate.md) | ✅ | ❎ |
 ➡️| [**Select** 选择器](doc/wiki/zh/Control/Select.md) | ✅ | ✅ |
 ➡️| [**Slider** 滑动输入条](doc/wiki/zh/Control/Slider.md) | ✅ | ❎ |
-➡️| [**SliderRange** 滑动范围输入条](doc/wiki/zh/Control/Slider.md#sliderrange) | ✅ | ❎ |
+➡️| [**SliderRange** 滑动范围输入条](doc/wiki/zh/Control/SliderRange.md) | ✅ | ❎ |
 ➡️| [**Switch** 开关](doc/wiki/zh/Control/Switch.md) | ✅ | ✅ |
 ➡️| [**TimePicker** 时间选择框](doc/wiki/zh/Control/TimePicker.md) | ✅ | ✅ |
 ➡️| [**Transfer** 穿梭框](doc/wiki/zh/Control/Transfer.md) | ✅ | ❎ |
@@ -123,7 +124,7 @@
 ➡️| [**Signal** 信号强度](doc/wiki/zh/Control/Signal.md) | ✅ | ❎ |
 ➡️| [**Shield** 徽章](doc/wiki/zh/Control/Shield.md) | ❎ | ❎ |
 ➡️| [**ContextMenuStrip** 右键菜单](doc/wiki/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |
-➡️| **Image3D** 图片3D | ✅ | ❎ |
+➡️| [**Image3D** 图片3D](doc/wiki/zh/Control/Image3D.md) | ✅ | ❎ |
 
 ### 🐿️ 捐赠
 ![Payment](doc/pre/Payment.png)

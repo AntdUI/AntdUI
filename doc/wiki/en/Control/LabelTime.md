@@ -8,11 +8,10 @@
 - DefaultProperty：ShowTime
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoWidth** 🔴 | Auto Width | bool | false |
-||||
-**ForeColor** | Text color | Color |  |
 **ShowTime** | Display seconds | bool | true |
+**AutoWidth** | Auto Width | bool | false |
+**DragMove** | Can drag position | bool | true |

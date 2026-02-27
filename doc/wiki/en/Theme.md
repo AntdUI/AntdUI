@@ -60,12 +60,12 @@ Batch set colors through configuration files, **HEX format is recommended**:
 
 ``` csharp
 var colorConfig = new Dictionary<string, string> {
-    { "Primary", "#ED4192" },          // Brand primary color
-    { "PrimaryButton", "#E0282E" },    // Primary color for Button only
-    { "Success", "#52C41A" },          // Success color
-    { "Warning", "#FAAD14" },          // Warning color
-    { "Error", "#F5222D" },            // Error color
-    { "Info", "#1890FF" }              // Info color
+	{ "Primary", "#ED4192" },          // Brand primary color
+	{ "PrimaryButton", "#E0282E" },    // Primary color for Button only
+	{ "Success", "#52C41A" },          // Success color
+	{ "Warning", "#FAAD14" },          // Warning color
+	{ "Error", "#F5222D" },            // Error color
+	{ "Info", "#1890FF" }              // Info color
 };
 AntdUI.Style.LoadCustom(colorConfig);
 ```
@@ -92,8 +92,8 @@ AntdUI.Config.IsDark = true;
 ``` csharp
 // Set global theme switching configuration
 AntdUI.Config.Theme()
-    .Dark("#000", "#fff") // Dark mode background and text color
-    .Light("#fff", "#000"); // Light mode background and text color
+	.Dark("#000", "#fff") // Dark mode background and text color
+	.Light("#fff", "#000"); // Light mode background and text color
 ```
 
 #### Window Theme Configuration
@@ -104,31 +104,31 @@ AntdUI.Config.Theme()
 // Set theme switching configuration in window
 public partial class Form1 : AntdUI.BaseForm
 {
-    public Form1()
-    {
-        InitializeComponent();
-        
-        // Customize window theme switching configuration
+	public Form1()
+	{
+		InitializeComponent();
+		
+		// Customize window theme switching configuration
 Theme()
-    .Dark("#1e1e1e", "#ffffff") // Dark mode background and text color
-    .Light("#ffffff", "#000000") // Light mode background and text color
-    .Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // Page header color
-    .Button(btnTheme) // Theme switch button
-    .CallBefore(dark => Console.WriteLine("Before theme switch: " + dark)) // Theme switch before callback
-    .Call(dark => Console.WriteLine("After theme switch: " + dark)) // Theme switch callback
-    .FormBorderColor(Color.LightGray, Color.DarkGray) // Custom window border color
-    // Or use primary color style window border
-    // .FormBorderColorPrimary()
-    // Or use default border color
-    // .FormBorderColor()
-    }
-    
-    // Theme switch button click event
-    private void btnTheme_Click(object sender, EventArgs e)
-    {
-        // Toggle theme mode
-        AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
-    }
+	.Dark("#1e1e1e", "#ffffff") // Dark mode background and text color
+	.Light("#ffffff", "#000000") // Light mode background and text color
+	.Header(header1, Color.FromArgb(240, 242, 245), Color.FromArgb(18, 18, 18)) // Page header color
+	.Button(btnTheme) // Theme switch button
+	.CallBefore(dark => Console.WriteLine("Before theme switch: " + dark)) // Theme switch before callback
+	.Call(dark => Console.WriteLine("After theme switch: " + dark)) // Theme switch callback
+	.FormBorderColor(Color.LightGray, Color.DarkGray) // Custom window border color
+	// Or use primary color style window border
+	// .FormBorderColorPrimary()
+	// Or use default border color
+	// .FormBorderColor()
+	}
+	
+	// Theme switch button click event
+	private void btnTheme_Click(object sender, EventArgs e)
+	{
+		// Toggle theme mode
+		AntdUI.Config.IsDark = !AntdUI.Config.IsDark;
+	}
 }
 ```
 

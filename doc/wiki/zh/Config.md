@@ -114,7 +114,7 @@ AntdUI.Config.ShowInWindowByNotification = true;
 AntdUI.Config.NoticeWindowOffsetXY = 0;
 ```
 
-### 通知超出显示后立即关闭旧的（Message/Notification） 🔴
+### 通知超出显示后立即关闭旧的（Message/Notification）
 
 > 默认超出后等待有旧的关闭才显示
 
@@ -128,7 +128,7 @@ AntdUI.Config.NoticeOverflowClose = false;
 AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 ```
 
-### 文本高质量呈现 🔴
+### 文本高质量呈现
 
 ``` csharp
 AntdUI.Config.TextRenderingHighQuality = true;

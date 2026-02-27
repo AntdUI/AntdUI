@@ -22,7 +22,7 @@ Checkbox 多选框 👚
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
-**UseMnemonic** | 是否使用助记键 | bool | true |
+**UseMnemonic** | 助记键 | bool | true |
 **Checked** | 选中状态 | bool | false |
 **CheckState** | 选中状态 | CheckState | Unchecked |
 **AutoCheck** | 点击时自动改变选中状态 | bool | true |

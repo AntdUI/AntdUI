@@ -5,21 +5,21 @@
 
 > Tabs make it easy to explore and switch between different views.
 
-- DefaultProperty：TabPages
+- DefaultProperty：Pages
 - DefaultEvent：SelectedIndexChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ForeColor** | Text color | Color`?` | `null` |
 ||||
-**Fill** | Colour | Color`?` | `null` |
+**Fill** | Color | Color`?` | `null` |
 **FillHover** | Hover color | Color`?` | `null` |
-**FillActive** | Activate color | Color`?` | `null` |
+**FillActive** | Active color | Color`?` | `null` |
 ||||
-**Alignment** | Alignment | TabAlignment |Top|
-**Centered** | Centered display of tags | bool | false |
+**Alignment** | Alignment | TabAlignment | Top |
+**Centered** | Centered display of tabs | bool | false |
 **TextCenter** | Text centered alignment (only effective in Left/Right direction) | bool | false |
 ||||
 **TypExceed** | Exceeding UI type | [TabTypExceed](Enum.md#tabtypexceed) | Button |
@@ -28,10 +28,10 @@ Name | Description | Type | Default Value |
 **ScrollBack** | Scroll bar color | Color`?` | `null` |
 **ScrollBackHover** | Scroll bar hover color | Color`?` | `null` |
 **ScrollFore** | Scroll bar text color | Color`?` | `null` |
-**ScrollForeHover** | Scroll bar hovering text color | Color`?` | `null` |
+**ScrollForeHover** | Scroll bar hover text color | Color`?` | `null` |
 ||||
 **Gap** | Gap | int | 8 |
-**IconRatio** | Icon Scale | float | 0.7F |
+**IconRatio** | Icon ratio | float | 0.7F |
 **IconGap** | Icon to text spacing ratio | float | 0.25F |
 **ItemSize** | Custom item size | int? | `null` |
 ||||
@@ -40,21 +40,22 @@ Name | Description | Type | Default Value |
 **Rotate** | Rotate (used for vertical display in Left/Right) | [TRotate](Enum.md#trotate) | None |
 **DragOrder** | Drag order | bool | false |
 ||||
-**TabMenuVisible** | Whether to display the head | bool | true |
+**TabMenuVisible** | Whether to display the header | bool | true |
 ||||
-**Pages** | Set `TabCollection` | [TabCollection](#tabpage) | [] |
-**SelectedIndex** | Select Index | int | 0 |
-**SelectedTab** | Current item | [TabPage](#tabpage)`?` |`null`|
+**Pages** | Collection `TabCollection` | [TabCollection](#tabpage) | [] |
+**SelectedIndex** | Selected index | int | 0 |
+**SelectedTab** | Current item | [TabPage](#tabpage)`?` | `null` |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**SelectTab** | Selected items | void | string tabPageName |
-**SelectTab** | Selected items | void | [TabPage](#tabpage) tabPage |
-**SelectTab** | Selected items | void | int index |
+**SelectTab** | Select tab | void | string tabPageName |
+**SelectTab** | Select tab | void | [TabPage](#tabpage) tabPage |
+**SelectTab** | Select tab | void | int index |
+**ContainsTabPage** | Check if mouse is on tab | [TabPage](#tabpage)`?` | int x, int y |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|

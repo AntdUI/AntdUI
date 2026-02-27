@@ -24,13 +24,13 @@ namespace AntdUI
                 }
                 if (bmp_ac == null) bmp_ac = Value.SvgToBmp(icon_size, icon_size, Style.Db.PrimaryColor);
                 g.Image(bmp_ac, rect_icon);
-                g.String(Key, e.Panel.Font, Style.Db.PrimaryColor, rect_text, FormatFlags.Center | FormatFlags.NoWrap);
+                g.String(Key, e.Panel.Font, Style.Db.PrimaryColor, rect_text, FormatFlags.Default);
             }
             else
             {
                 if (bmp == null) bmp = Value.SvgToBmp(icon_size, icon_size, Style.Db.Text);
                 g.Image(bmp, rect_icon);
-                g.String(Key, e.Panel.Font, Style.Db.Text, rect_text, FormatFlags.Center | FormatFlags.NoWrap);
+                g.String(Key, e.Panel.Font, Style.Db.Text, rect_text, FormatFlags.Default);
 
             }
         }

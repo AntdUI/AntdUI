@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：SelectedIndexChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -19,21 +19,30 @@ Name | Description | Type | Default Value |
 **DropDownRadius** | Pull down rounded corner | int`?` | `null` |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
 **DropDownPadding** | Pull down margin | Size | 12, 5 |
+**DropDownTextAlign** | Dropdown text alignment | [TAlign](Enum.md#talign) | Left |
 **ClickEnd** | Click to the end `No nodes to click` | bool | false |
 **ClickSwitchDropdown** | Click to switch dropdown menu | bool | true |
 **CloseIcon** | Display close icon | bool | false |
-||||
-**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | [] |
+**Empty** | Empty still dropdown | bool | false |
+**AutoPrefixSvg** | Auto set dropdown prefix | bool | false |
+**AutoText** | Auto set text | bool | true |
+**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
+**DropDownEmptyClose** | Dropdown empty close | bool | false |
+**EnterDropDown** | Allow enter key to trigger dropdown | bool | true |
+**ShowIcon** | Show icon | bool | true |
+|||
+**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | `null` |
 **SelectedIndex** | Select Index | int | -1 |
 **SelectedValue** | Select Value | object`?` | `null` |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **SelectedIndexChanged** | Occurred when the SelectedIndex property value is changed | void | int index |
 **SelectedIndexsChanged** | Occurred when changing the multi-layer tree structure | void | int x `Column`, int y `Row` |
 **SelectedValueChanged** | Occurred when the SelectedValue property value is changed | void | object? value |
+**ExpandDropChanged** | Occurred when the ExpandDrop property value is changed | void | bool value |
 **FilterChanged** | Control filter Text changes that occur | IList<object>`?` | string value `Search For` |
 **ClosedItem** | Occurred when closing a certain item | void | object? value |
 

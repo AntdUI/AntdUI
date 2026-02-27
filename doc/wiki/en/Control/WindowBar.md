@@ -6,7 +6,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value | 
 :--|:--|:--|:--|

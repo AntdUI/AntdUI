@@ -8,7 +8,7 @@
 - DefaultProperty：Current
 - DefaultEvent：ValueChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -17,10 +17,13 @@ Name | Description | Type | Default Value |
 **PageSize** | Number of data items per page | int | 10 |
 **MaxPageTotal** | Maximum display total page count | int | 0 |
 **PageTotal** | Total pages | int | 1 `Read only` |
+**RecordsPerPageText** | Records per page text, label reminder text | string`?` | `null` |
 ||||
 **ShowSizeChanger** | Do you want to display the `PageSize` switcher | bool | false |
 **SizeChangerWidth** | `SizeChanger` Width | int | 0 `0 Auto Width` |
 **PageSizeOptions** | Specify how many `dropdown selections` can be displayed per page | int[]? | null |
+**DropDownRadius** | Dropdown rounded corners | int`?` | `null` |
+**SizeChangerTabStop** | Whether to allow PageSize switcher to get focus via Tab key | bool | true |
 ||||
 **Fill** | Colour | Color`?` | `null` |
 ||||

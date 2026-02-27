@@ -16,7 +16,7 @@ Slider 滑动输入条 👚
 **Fill** | 颜色 | Color`?` | `null` |
 **FillHover** | 悬停颜色 | Color`?` | `null` |
 **FillActive** | 激活颜色 | Color`?` | `null` |
-**TrackColor** 🔴 | 滑轨颜色 | Color`?` | `null` |
+**TrackColor** | 滑轨颜色 | Color`?` | `null` |
 ||||
 **MinValue** | 最小值 | int | 0 |
 **MaxValue** | 最大值 | int | 100 |
@@ -50,28 +50,3 @@ Slider 滑动输入条 👚
 **Fore** | 文本颜色 | Color`?` | `null` |
 **Text** | 文本 | string`?` | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |
-
-
-***
-
-
-## SliderRange
-
-SliderRange 滑动范围输入条 👚
-
-> 滑动型输入器，展示当前值和可选范围。继承于 [Slider](Slider)
-
-- 默认属性：Value
-- 默认事件：ValueChanged
-
-### 属性
-
-名称 | 描述 | 类型 | 默认值 |
-:--|:--|:--|:--|
-**Value2** | 当前值2 | int | 10 |
-
-### 事件
-
-名称 | 描述 | 返回值 | 参数 |
-:--|:--|:--|:--|
-**Value2Changed** | Value 属性值更改时发生 | void | int value2 `当前值` |

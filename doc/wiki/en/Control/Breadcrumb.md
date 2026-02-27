@@ -8,7 +8,7 @@
 - DefaultProperty：Items
 - DefaultEvent：ItemClick
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -18,11 +18,11 @@ Name | Description | Type | Default Value |
 **Radius** | Rounded corners | int | 4 |
 **Gap** | Gap | int | 12 |
 ||||
-**Items** | Data `BreadcrumbItem[]` | [BreadcrumbItem[]](#breadcrumbitem) | [] |
+**Items** | Data | BreadcrumbItemCollection | [] |
 ||||
 **PauseLayout** | Pause Layout | bool | false |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -35,9 +35,9 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**ID** | ID | string`?` |`null`|
+**ID** | ID | string`?` | `null` |
 **Icon** | Icon | Image`?` | `null` |
-**IconSvg** | Icon SVG | string | `null` |
-**Text** | Text | string | `Required` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |

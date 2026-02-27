@@ -5,10 +5,10 @@
 
 > A table displays rows of data.
 
-- DefaultProperty：Text
+- DefaultProperty：Columns
 - DefaultEvent：CellClick
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -42,10 +42,20 @@ Name | Description | Type | Default Value |
 **ClipboardCopy** | Copy rows | bool | true |
 **ClipboardCopyFocusedCell** | Whether to enable cell copying | bool | false |
 **EditMode** | Edit mode | [TEditMode](Enum.md#teditmode) | None |
+**EditSelection** | Default text selection action in edit mode | [TEditSelection](Enum.md#teditselection) | None |
+**EditInputStyle** | Edit mode input box style | [TEditInputStyle](Enum.md#teditinputstyle) | Default |
+**EditAutoHeight** | Edit mode auto height | bool | false |
+**EditLostFocus** | Lose focus to exit edit mode | bool | true |
 **ShowTip** | Omit text prompts | bool | true |
 **HandShortcutKeys** | Process shortcut keys | bool | true |
 ||||
 **DefaultExpand** | Whether to expand by default `Tree` | bool | false |
+**TreeArrowStyle** | Tree table arrow style | TableTreeStyle | Button |
+**FilterRealTime** | Filter real-time effect | bool | false |
+**AnimationTime** | Animation duration (ms) | int | 100 |
+**SummaryCustomize** | Whether to enable built-in summary customization | bool | false |
+**PauseLayout** | Pause layout | bool | false |
+**TooltipConfig** | Omitted text prompt configuration | TooltipConfig`?` | `null` |
 ||||
 **Empty** | Display empty style or not | bool | true |
 **EmptyText** | Display text when data is empty | string | No data |
@@ -77,24 +87,40 @@ Name | Description | Type | Default Value |
 **DataSource** | Data | [object](TableCell.md#icell)`?` | `Support DataTable, Class, etc` |
 **Summary** | Summary column | object`?` | `null` |
 
-### Method
+### Methods
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
-**ScrollLine** | Scroll to the specified line | void | int i |
-**CopyData** | Copy table data | void |int row|
-**CopyData** | Copy table data | void |int row, int column |
-**EnterEditMode** | Enter editing mode | void |int row, int column |
+**ScrollLine** | Scroll to the specified line | int | int i, bool force `Force scrolling` |
+**ScrollLine** | Scroll to the specified line | int | object record, bool force `Force scrolling` |
+**ScrollColumn** | Scroll to the specified column | int | int i, bool force `Force scrolling` |
+**ScrollColumn** | Scroll to the specified column | int | string column, bool force `Force scrolling` |
+**ScrollColumn** | Scroll to the specified column | int | Column column, bool force `Force scrolling` |
+**ScrollToEnd** | Scroll to the bottom | void ||
+**CopyData** | Copy table data | bool | int row |
+**CopyData** | Copy table data | bool | int[] row |
+**CopyData** | Copy table data | bool | int row, int column |
+**CopyData** | Copy table data | bool | CELL cell |
+**EnterEditMode** | Enter editing mode | void | int row, int column |
 **SortIndex** | Get sorting sequence number | int[] ||
 **SortList** | Get sorted data | object[] ||
 **SortColumnsIndex** | Obtain the sorting sequence number of the header | int[] ||
-**SortList** | Get sorted data | object[] ||
-**ScrollLine** | Scroll to the specified line | void | int i,bool force `Force scrolling` |
-**GetRowEnable** | Obtain the ability to exercise | bool | int i |
-**SetRowEnable** | Set exercise capability | void | int i, bool value, bool ui `Refresh UI` |
+**SortColumnsList** | Get header sort data | Column[] ||
+**SetSortIndex** | Set sort index | void | int[] data |
+**SetSortList** | Set sort list | void | object[] data |
+**SetSortColumnsIndex** | Set header sort index | void | int[] data |
+**GetRow** | Get the specified row data | IRow`?` | int index |
+**GetRowEnable** | Get row enable | bool | int i |
+**GetRowEnable** | Get row enable | bool | object record |
+**SetRowEnable** | Set row enable | void | int i, bool value, bool ui `Refresh UI` |
+**SetRowEnable** | Set row enable | void | object record, bool value, bool ui `Refresh UI` |
+**SetSelected** | Set selected row | void | object record, bool expand `Whether to expand` |
+**SelectedIndexsReal** | Get selected real rows | int[] ||
+**SelectedsReal** | Get selected real row data | object[] ||
 **ToDataTable** | Export table data | DataTable`?` ||
-**LoadLayout** | Refresh Layout | void ||
+**LoadLayout** | Refresh Layout | bool ||
 **Refresh** | Refresh UI | void ||
+**Refresh** | Refresh UI | void | AntList<T> list |
 ||||
 **ExpandAll** | Expand all | void ||
 **Expand** | Unfold or fold | void | object record `Row metadata`, bool value `fold` |
@@ -104,7 +130,7 @@ Name | Description | Return Value | Parameters |
 **ContainsMergedRegion** | Determine whether the merged cells exist | bool | CellRange range |
 **ClearMergedRegion** | Clear all merged cells | void ||
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
@@ -113,7 +139,7 @@ Name | Description | Return Value | Parameters |
 **CellClick** | Appears when clicking on a cell | void | MouseEventArgs args, object? record, int rowIndex, int columnIndex, Rectangle rect |
 **CellDoubleClick** | Occurred when double clicking a cell | void | MouseEventArgs args, object? record, int rowIndex, int columnIndex, Rectangle rect |
 **CellButtonClick** | Appears when the button is clicked | void | CellLink btn, MouseEventArgs args, object? record, int rowIndex, int columnIndex |
-**CellFocused** | Occurs when a cell gains focus | void | object? record, int rowIndex, int columnIndex |
+**CellFocused** | Occurs when a cell gains focus | void | object? record, RowType type, int rowIndex, int columnIndex, Column column, Rectangle rect |
 ||||
 **CellBeginEdit** | Occurred before editing | bool `Return true to continue editing` | object? value, object? record, int rowIndex, int columnIndex |
 **CellBeginEditInputStyle** | Text box style before editing occurs | void | object? value, object? record, int rowIndex, int columnIndex, ref Input input |
@@ -122,20 +148,22 @@ Name | Description | Return Value | Parameters |
 **SetRowStyle** | Set row style | [CellStyleInfo?](#cellstyleinfo) | object? record, int rowIndex |
 **SortRows** | Occurred during row sorting | void | int columnIndex |
 **FilterChanged** | Occurs when filter conditions change | void | Column column |
+**SummaryCustomizeChanged** | Occurred when summary customize changed | void | bool value |
+**SelectIndexChanged** | Occurred when selected index changed | void | |
 
 > Alternating background colors
 
 ```csharp
 private AntdUI.Table.CellStyleInfo? table1_SetRowStyle(object sender, AntdUI.TableSetRowStyleEventArgs e)
 {
-    if (e.Index % 2 == 0)
-    {
-        return new AntdUI.Table.CellStyleInfo
-        {
-            BackColor = Color.WhiteSmoke
-        };
-    }
-    return null;
+	if (e.Index % 2 == 0)
+	{
+		return new AntdUI.Table.CellStyleInfo
+		{
+			BackColor = Color.WhiteSmoke
+		};
+	}
+	return null;
 }
 ```
 

@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -24,7 +24,7 @@ Name | Description | Type | Default Value |
 **BackColor** | Background color | Color`?` | `null` |
 **BackExtend** | Background gradient color | string`?` | `null` |
 **BackHover** | Hover background color | Color`?` | `null` |
-**BackActive** | Activate background color | Color`?` | `null` |
+**BackActive** | Active background color | Color`?` | `null` |
 ||||
 **DefaultBack** | Default type background color | Color`?` | `null` |
 **DefaultBorderColor** | Default type border color | Color`?` | `null` |

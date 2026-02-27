@@ -8,7 +8,7 @@
 - DefaultProperty：Text
 - DefaultEvent：Click
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -16,11 +16,11 @@ Name | Description | Type | Default Value |
 **AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
-**Fill** | Fill color | Color`?` | `null` |
+**Fill** | Color | Color`?` | `null` |
 **State** | State | [TState](Enum.md#tstate) | Default |
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**TextAlign** | Text position | ContentAlignment | MiddleCenter |
+**TextAlign** | Text position | ContentAlignment | MiddleLeft |
 ||||
-**DotRatio** 🔴 | Dot ratio | float | 0.4F |
-**Gap** 🔴 | Gap | int | 0 |
+**DotRatio** | Dot ratio | float | 0.4F |
+**Gap** | Gap | int | 0 |

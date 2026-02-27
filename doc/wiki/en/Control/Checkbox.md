@@ -8,7 +8,7 @@
 - DefaultProperty：Checked
 - DefaultEvent：CheckedChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
@@ -21,13 +21,14 @@ Name | Description | Type | Default Value |
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextAlign** | Text position | ContentAlignment | MiddleLeft |
+**UseMnemonic** | Mnemonic key | bool | true |
 **Checked** | Checked state | bool | false |
 **CheckState** | Checked state | CheckState | Unchecked |
-**AutoCheck** | Click to automatically change the selected status | bool | true |
+**AutoCheck** | Auto check on click | bool | true |
 ||||
 **RightToLeft** | Reverse | RightToLeft | No |
 
-### Event
+### Events
 
 Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
