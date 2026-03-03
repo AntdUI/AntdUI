@@ -70,7 +70,7 @@ namespace FontTest
             {
                 #region 绘制原始
 
-                var s_f = AntdUI.FormatFlags.Default;
+                var s_f = AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrap;
 
                 using (var bmp_o = new Bitmap(size, size))
                 {

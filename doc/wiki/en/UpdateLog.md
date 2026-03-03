@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.1` 2026-03-03
+
+- ➕ Table ShowCheckBg
+- ➕ Table Public SetFocusedCell
+- ✍️ Menu ShowSubBack misaligned
+- ✍️ Table MVVM Uncheck Background Issue
+- ✍️ Table Merge Cells with Non True Width
+- ✍️ FloatButton shadow not displayed
+- ✍️ ChatList scrollbar interaction
+- ✍️ Select Sub Level 3 and above cannot set tags to represent name through SelectedValue
+- ✍️ Rollback text with default line breaks
+
 ### `2.3.0` 2026-02-27
 
 - ➕ VirtualPanel/Segmented/Breadcrumb/Menu/Tree/Steps/Timeline adaptation language switching

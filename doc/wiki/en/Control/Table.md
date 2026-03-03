@@ -48,6 +48,7 @@ Name | Description | Type | Default Value |
 **EditLostFocus** | Lose focus to exit edit mode | bool | true |
 **ShowTip** | Omit text prompts | bool | true |
 **HandShortcutKeys** | Process shortcut keys | bool | true |
+**ShowCheckBg** | Display checkbox background | bool | true |
 ||||
 **DefaultExpand** | Whether to expand by default `Tree` | bool | false |
 **TreeArrowStyle** | Tree table arrow style | TableTreeStyle | Button |
