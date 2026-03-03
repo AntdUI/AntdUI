@@ -323,7 +323,6 @@ namespace AntdUI
             {
                 if (collapsed == value) return;
                 collapsed = value;
-                ChangeList(true);
                 OnPropertyChanged(nameof(Collapsed));
             }
         }
@@ -987,9 +986,9 @@ namespace AntdUI
                         PaintIt(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
                         if (!collapsed && (it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
                         {
-                            if (ShowSubBack) g.Fill(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
                             var state = g.Save();
                             if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
+                            if (ShowSubBack) g.Fill(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
                             PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split);
                             g.Restore(state);
                         }
@@ -1956,6 +1955,14 @@ namespace AntdUI
                 }
                 Remove(item, it.items);
             }
+        }
+
+        public void SetCollapsed(bool value)
+        {
+            if (collapsed == value) return;
+            collapsed = value;
+            ChangeList(true);
+            OnPropertyChanged(nameof(Collapsed));
         }
 
         #endregion
