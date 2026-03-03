@@ -262,38 +262,51 @@ namespace AntdUI
                 }
                 else if (item is SelectItem itp && itp.Sub != null && itp.Sub.Count > 0)
                 {
-                    foreach (var sub in itp.Sub)
-                    {
-                        if (val.Equals(sub))
-                        {
-                            ChangeValue(i, sub);
-                            return;
-                        }
-                        else if (sub is SelectItem it2 && it2.Tag.Equals(val))
-                        {
-                            ChangeValue(i, sub);
-                            return;
-                        }
-                    }
+                    if (FindSelectItemInSub(itp.Sub, val, i))
+                        return;
                 }
                 else if (item is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
                 {
-                    foreach (var sub in group.Sub)
-                    {
-                        if (val.Equals(sub))
-                        {
-                            ChangeValue(i, sub);
-                            return;
-                        }
-                        else if (sub is SelectItem it2 && it2.Tag.Equals(val))
-                        {
-                            ChangeValue(i, sub);
-                            return;
-                        }
-                    }
+                    if (FindSelectItemInSub(group.Sub, val, i))
+                        return;
                 }
             }
             ChangeValue(items.IndexOf(val), val);
+        }
+
+        /// <summary>
+        /// 在子项中查找匹配的 SelectItem 或 GroupSelectItem，并触发 ChangeValue。
+        /// </summary>
+        /// <param name="subItems">要查找的子项集合。</param>
+        /// <param name="val">要匹配的值。</param>
+        /// <param name="parentIndex">父项的索引，用于 ChangeValue。</param>
+        /// <returns>如果找到匹配项并成功触发 ChangeValue，则返回 true；否则返回 false。</returns>
+        private bool FindSelectItemInSub(IList<Object> subItems, object val, int parentIndex)
+        {
+            foreach (var sub in subItems)
+            {
+                if (val.Equals(sub))
+                {
+                    ChangeValue(parentIndex, sub);
+                    return true;
+                }
+                else if (sub is SelectItem it && it.Tag?.Equals(val) == true)
+                {
+                    ChangeValue(parentIndex, sub);
+                    return true;
+                }
+                else if (sub is SelectItem itp && itp.Sub != null && itp.Sub.Count > 0)
+                {
+                    if (FindSelectItemInSub(itp.Sub, val, parentIndex))
+                        return true;
+                }
+                else if (sub is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0)
+                {
+                    if (FindSelectItemInSub(group.Sub, val, parentIndex))
+                        return true;
+                }
+            }
+            return false;
         }
 
         internal void DropDownChange(int x, int y, object value, SelectItem? item, string text)

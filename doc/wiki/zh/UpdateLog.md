@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.1` 2026-03-03
+
+- ➕ Table ShowCheckBg
+- ➕ Table 公开 SetFocusedCell
+- ✍️ Menu ShowSubBack 错位
+- ✍️ Table 未MVVM 取消复选背景问题
+- ✍️ Table 合并单元格 非真实宽度
+- ✍️ FloatButton 阴影不显示
+- ✍️ ChatList 滚动条交互
+- ✍️ Select Sub 三层及以上 无法通过 SelectedValue 设置 tag 以表示 name
+- ✍️ 回滚 文字默认换行
+
 ### `2.3.0` 2026-02-27
 
 - ➕ VirtualPanel/Segmented/Breadcrumb/Menu/Tree/Steps/Timeline 适配语言切换

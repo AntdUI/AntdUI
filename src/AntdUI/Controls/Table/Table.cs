@@ -475,7 +475,7 @@ namespace AntdUI
         }
 
         int[]? focusedxy;
-        private void SetFocusedCell(CELL? value)
+        public void SetFocusedCell(CELL? value)
         {
             if (value == null)
             {
@@ -881,6 +881,12 @@ namespace AntdUI
         /// </summary>
         [Description("处理快捷键"), Category("行为"), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
+
+        /// <summary>
+        /// 显示复选背景
+        /// </summary>
+        [Description("显示复选背景"), Category("行为"), DefaultValue(true)]
+        public bool ShowCheckBg { get; set; } = true;
 
         /// <summary>
         /// 省略文字提示

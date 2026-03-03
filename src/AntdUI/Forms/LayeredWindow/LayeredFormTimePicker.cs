@@ -115,7 +115,6 @@ namespace AntdUI
 
         string button_text = Localization.Get("Now", "此刻");
         string OKButton = Localization.Get("OK", "确定");
-        readonly FormatFlags s_f = FormatFlags.Default;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
@@ -179,7 +178,7 @@ namespace AntdUI
                                 break;
                         }
                         if (it.hover) g.Fill(Colour.FillTertiary.Get(name, ColorScheme), path);
-                        g.String(it.v, Font, brush_fore, it.rect_read, s_f);
+                        g.String(it.v, Font, brush_fore, it.rect_read);
                     }
                 }
                 g.Restore(state2);
@@ -191,14 +190,14 @@ namespace AntdUI
 
                 if (ShowButtonNow)
                 {
-                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_button, s_f);
-                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_button, s_f);
-                    else g.String(button_text, Font, color_active, rect_button, s_f);
+                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_button);
+                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_button);
+                    else g.String(button_text, Font, color_active, rect_button);
                 }
 
-                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_buttonok, s_f);
-                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_buttonok, s_f);
-                else g.String(OKButton, Font, color_active, rect_buttonok, s_f);
+                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_buttonok);
+                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_buttonok);
+                else g.String(OKButton, Font, color_active, rect_buttonok);
             }
         }
 

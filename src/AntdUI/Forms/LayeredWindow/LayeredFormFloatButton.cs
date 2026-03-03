@@ -201,8 +201,6 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags stringCenter = FormatFlags.Default;
-
         int use_primary = 0;
         public override Bitmap? PrintBit()
         {
@@ -310,7 +308,7 @@ namespace AntdUI
                             if (it.hover) g.Fill(back_hover, path);
                             if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect_icon, fore);
                             else if (it.Icon != null) g.Image(it.Icon, it.rect_icon);
-                            else g.String(it.Text, Font, fore, it.rect_read, stringCenter);
+                            else g.String(it.Text, Font, fore, it.rect_read);
                         }
                         it.PaintBadge(Font, it.rect_read, g, TAMode.Auto);
                     }
@@ -338,7 +336,7 @@ namespace AntdUI
                         it.shadow_temp = path2.PaintShadowO(it.rect.Width, it.rect.Height, 14);
                     }
                 }
-                g.Image(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + (int)(4 * g.Dpi), it.rect.Width, it.rect.Height), it.rect, Config.ShadowOpacity);
+                g.Image(it.shadow_temp, new Rectangle(it.rect.X, it.rect.Y + (int)(4 * g.Dpi), it.rect.Width, it.rect.Height), Config.ShadowOpacity);
             }
             return path;
         }

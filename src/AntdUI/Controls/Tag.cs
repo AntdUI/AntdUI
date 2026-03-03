@@ -206,7 +206,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        FormatFlags sf = FormatFlags.Default;
+        FormatFlags sf = FormatFlags.Center | FormatFlags.NoWrap;
 
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>

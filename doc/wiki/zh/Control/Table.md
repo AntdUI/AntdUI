@@ -48,6 +48,7 @@
 **EditLostFocus** | 失去焦点退出编辑模式 | bool | true |
 **ShowTip** | 省略文字提示 | bool | true |
 **HandShortcutKeys** | 处理快捷键 | bool | true |
+**ShowCheckBg** | 显示复选背景 | bool | true |
 ||||
 **DefaultExpand** | 默认是否展开 `树` | bool | false |
 **TreeArrowStyle** | 树表格的箭头样式 | TableTreeStyle | Button |

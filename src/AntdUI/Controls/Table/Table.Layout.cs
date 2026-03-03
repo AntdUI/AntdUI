@@ -1500,10 +1500,27 @@ namespace AntdUI
             else column.CheckState = System.Windows.Forms.CheckState.Unchecked;
         }
 
+        void SetValueCheckRow(RowTemplate row)
+        {
+            int select_count = 0;
+            foreach (var it in row.cells)
+            {
+                if (it is TCellCheck cellCheck)
+                {
+                    if (cellCheck.Checked) select_count++;
+                }
+                else if (it is TCellRadio cellRadio)
+                {
+                    if (cellRadio.Checked) select_count++;
+                }
+            }
+            row.Select = select_count > 0;
+        }
         void SetValueCheck(CELL_CHECK cel) => SetValueCheck(cel, !cel.Checked);
         void SetValueCheck(CELL_CHECK cel, bool value)
         {
             cel.Checked = value;
+            SetValueCheckRow(cel.ROW);
             if (cel.COLUMN is ColumnICheck columnCheck && columnCheck._out != null) SetValue(cel, columnCheck._out(value));
             else
             {

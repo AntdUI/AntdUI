@@ -26,7 +26,7 @@ namespace AntdUI
             }
         }
 
-        static string Rest(string svg) => "<svg " + svg.Replace("[VBD", "viewBox=\"").Replace("[VB3", "viewBox=\"0 0 32 32\">").Replace( "[VB3N", "viewBox=\"0 0 32 32\" fill=\"none\">").Replace("[VB2", "viewBox=\"0 0 1024 1024\">").Replace("[PD", "<path d=\"").Replace("[PE", "</path>").Replace("[PG", "\"></path>").Replace("fillNA", "fill=\"none\"") + "</svg>";
+        static string Rest(string svg) => "<svg " + svg.Replace("[VBD", "viewBox=\"").Replace("[VB3", "viewBox=\"0 0 32 32\">").Replace("[VB3N", "viewBox=\"0 0 32 32\" fill=\"none\">").Replace("[VB2", "viewBox=\"0 0 1024 1024\">").Replace("[PD", "<path d=\"").Replace("[PE", "</path>").Replace("[PG", "\"></path>").Replace("fillNA", "fill=\"none\"") + "</svg>";
 
         /// <summary>
         /// 解压缩字符串

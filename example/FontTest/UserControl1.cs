@@ -68,7 +68,7 @@ namespace FontTest
             flowLayoutPanel1.ResumeLayout();
         }
 
-        readonly AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Default;
+        readonly AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Center | AntdUI.FormatFlags.NoWrap;
         Bitmap GetFont(Font font, int size, string text, out int oy)
         {
             var bmp = new Bitmap(size, size);

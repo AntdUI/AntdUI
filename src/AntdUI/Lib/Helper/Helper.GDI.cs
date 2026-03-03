@@ -27,7 +27,7 @@ namespace AntdUI
         /// <param name="measure">是否测量</param>
         public static StringFormat TF(FormatFlags flags, bool measure = false)
         {
-            var key = (int)flags + "_" + measure;
+            var key = (int)flags + "_" + (measure ? "1" : "0");
             if (ffs.TryGetValue(key, out var r)) return r;
             var sf = new StringFormat(StringFormat.GenericTypographic);
 
@@ -1290,7 +1290,7 @@ namespace AntdUI
                             var rect_badge = PaintBadge(rect, badegConfig.BadgeAlign, hasx, hasy, size_badge, size_badge);
                             g.FillEllipse(color, rect_badge);
                             if (borsize > 0) g.DrawEllipse(borcolor, borsize, rect_badge);
-                            g.String(badegConfig.Badge, font, fore, rect_badge, FormatFlags.Default);
+                            g.String(badegConfig.Badge, font, fore, rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                         }
                         else
                         {
@@ -1301,7 +1301,7 @@ namespace AntdUI
                                 g.Fill(color, path);
                                 if (borsize > 0) g.Draw(borcolor, borsize, path);
                             }
-                            g.String(badegConfig.Badge, font, fore, rect_badge, FormatFlags.Default);
+                            g.String(badegConfig.Badge, font, fore, rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                         }
                     }
                 }
@@ -1331,7 +1331,7 @@ namespace AntdUI
                         var rect_badge = PaintBadge(rect, badge.Align, hasx, hasy, size_badge, size_badge);
                         g.FillEllipse(color, rect_badge);
                         g.DrawEllipse(Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), borsize, rect_badge);
-                        g.String(badge.Content, font, Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), rect_badge, FormatFlags.Default);
+                        g.String(badge.Content, font, Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                     }
                     else
                     {
@@ -1342,7 +1342,7 @@ namespace AntdUI
                             g.Fill(color, path);
                             g.Draw(Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), borsize, path);
                         }
-                        g.String(badge.Content, font, Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), rect_badge, FormatFlags.Default);
+                        g.String(badge.Content, font, Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                     }
                 }
             }
@@ -1413,7 +1413,7 @@ namespace AntdUI
 
         public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image = null, int offset = 0)
         {
-            PaintEmpty(g, rect, font, fore, text, image, offset, FormatFlags.Default);
+            PaintEmpty(g, rect, font, fore, text, image, offset, FormatFlags.Center);
         }
 
         [Obsolete("use FormatFlags")]

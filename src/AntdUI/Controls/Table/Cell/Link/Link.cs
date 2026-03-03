@@ -56,7 +56,7 @@ namespace AntdUI
         /// </summary>
         public string? LocalizationText { get; set; }
 
-        internal FormatFlags s_f = FormatFlags.Default;
+        internal FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrap;
 
         ContentAlignment textAlign = ContentAlignment.MiddleCenter;
         /// <summary>

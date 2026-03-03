@@ -141,8 +141,17 @@ namespace AntdUI
                     var frm = new LayeredFormModal(config, false);
                     ModalCount++;
                     DialogResult dialogResult;
-                    if (config.Mask) dialogResult = form.ShowDialogMask(frm);
-                    else dialogResult = frm.ShowDialog();
+                    ILayeredFormOpacity? mask = null;
+                    try
+                    {
+                        if (config.Mask) dialogResult = form.ShowDialogMask(frm, out mask);
+                        else dialogResult = frm.ShowDialog();
+                    }
+                    catch
+                    {
+                        mask?.IClose();
+                        throw;
+                    }
                     ModalCount--;
                     return dialogResult;
                 }
@@ -162,8 +171,17 @@ namespace AntdUI
                     var frm = new LayeredFormModal(config, false);
                     ModalCount++;
                     DialogResult dialogResult;
-                    if (config.Mask) dialogResult = control.ShowDialogMask(frm);
-                    else dialogResult = frm.ShowDialog();
+                    ILayeredFormOpacity? mask = null;
+                    try
+                    {
+                        if (config.Mask) dialogResult = control.ShowDialogMask(frm, out mask);
+                        else dialogResult = frm.ShowDialog();
+                    }
+                    catch
+                    {
+                        mask?.IClose();
+                        throw;
+                    }
                     ModalCount--;
                     return dialogResult;
                 }

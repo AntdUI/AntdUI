@@ -566,7 +566,7 @@ namespace AntdUI
                                     PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
                                 }
                             }
-                            g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), new Rectangle(0, 0, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandProg);
+                            g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
                         }
                         else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
                     }
