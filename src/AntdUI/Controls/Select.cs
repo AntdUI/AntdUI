@@ -274,6 +274,13 @@ namespace AntdUI
             ChangeValue(items.IndexOf(val), val);
         }
 
+        /// <summary>
+        /// 在子项中查找匹配的 SelectItem 或 GroupSelectItem，并触发 ChangeValue。
+        /// </summary>
+        /// <param name="subItems">要查找的子项集合。</param>
+        /// <param name="val">要匹配的值。</param>
+        /// <param name="parentIndex">父项的索引，用于 ChangeValue。</param>
+        /// <returns>如果找到匹配项并成功触发 ChangeValue，则返回 true；否则返回 false。</returns>
         private bool FindSelectItemInSub(IList<Object> subItems, object val, int parentIndex)
         {
             foreach (var sub in subItems)

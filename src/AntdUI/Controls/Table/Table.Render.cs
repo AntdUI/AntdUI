@@ -520,7 +520,7 @@ namespace AntdUI
             if (row.style != null && row.style.BackColor.HasValue) g.Fill(row.style.BackColor.Value, row.row.RECT);
             if (row.row.Type == RowType.None)
             {
-                if (selectedIndex.Contains(row.row.INDEX) || row.row.Select)
+                if (selectedIndex.Contains(row.row.INDEX) || (row.row.Select && ShowCheckBg))
                 {
                     g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get(nameof(Table), ColorScheme), row.row.RECT);
                     if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get(nameof(Table), ColorScheme)), row.row.RECT);
