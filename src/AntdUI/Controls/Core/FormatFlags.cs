@@ -53,8 +53,6 @@ namespace AntdUI
 
         DirectionVertical = 512,
 
-        Default = Center | NoWrap,
-
         /// <summary>
         /// 垂直水平居中（组合值）
         /// </summary>

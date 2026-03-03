@@ -572,7 +572,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrapEllipsis, s_f = FormatFlags.Default;
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.NoWrapEllipsis, s_f = FormatFlags.Center | FormatFlags.NoWrap;
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0 || !_tabMenuVisible) return;

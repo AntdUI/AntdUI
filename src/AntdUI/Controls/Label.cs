@@ -84,7 +84,7 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        FormatFlags stringCNoWrap = FormatFlags.Default,
+        FormatFlags stringCNoWrap = FormatFlags.Center | FormatFlags.NoWrap,
             sf = FormatFlags.Left | FormatFlags.VerticalCenter;
         ContentAlignment textAlign = ContentAlignment.MiddleLeft;
         /// <summary>

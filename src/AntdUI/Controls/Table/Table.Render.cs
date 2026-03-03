@@ -1264,9 +1264,20 @@ namespace AntdUI
 
             #region 绘制内容
 
-            if (fz) g.TranslateTransform((rect.Width - first.RECT.Width) / 2, -(rect.Height - first.RECT.Height) / 2);
-            else g.TranslateTransform((rect.Width - first.RECT.Width) / 2, (rect.Height - first.RECT.Height) / 2);
-
+            if (first.mergeW != rect.Width)
+            {
+                first.mergeW = rect.Width;
+                int ox = 0;
+                if (first.ROW.KeyTreeINDEX == first.COLUMN.INDEX)
+                {
+                    int treesize = (int)(TreeButtonSize * Dpi), gapTree = (int)(_gapTree * Dpi);
+                    ox = gapTree * first.ROW.ExpandDepth + (gapTree + treesize);
+                }
+                var gap = new TableGaps(_gap, Dpi);
+                var font_size = g.MeasureString(Config.NullText, Font);
+                var text_size = first.GetSize(g, Font, font_size, rect.Width, gap);
+                first.SetSize(g, Font, text_size, rect, ox, gap);
+            }
             PaintItem(g, first, first.ROW.ENABLE, first.ROW.ENABLE ? fore : foreEnable);
 
             #endregion
@@ -1472,7 +1483,7 @@ namespace AntdUI
                 switch (Align)
                 {
                     case ColumnAlign.Center:
-                        return FormatFlags.Default;
+                        return FormatFlags.Center | FormatFlags.NoWrap;
                     case ColumnAlign.Left:
                         return FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
                     case ColumnAlign.Right:

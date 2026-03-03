@@ -319,7 +319,7 @@ namespace AntdUI.Chat
                                 if (it.emoji)
                                 {
                                     if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) PaintItemTextEmoji(g, fore, it, svg);
-                                    else g.String(it.text, font, fore, it.rect);
+                                    else g.String(it.text, font, fore, it.rect, FormatFlags.Center | FormatFlags.NoWrap);
                                 }
                                 else g.String(it.text, Font, fore, it.rect);
                                 break;
@@ -531,6 +531,7 @@ namespace AntdUI.Chat
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            ScrollBar.MouseUp();
             if (mouseDown == null)
             {
                 mouseDownMove = false;
@@ -541,7 +542,6 @@ namespace AntdUI.Chat
             mouseDown = null;
             mouseDownMove = false;
             mouseDT = 0;
-            ScrollBar.MouseUp();
         }
 
         #region 鼠标交互

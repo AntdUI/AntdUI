@@ -14,7 +14,7 @@ namespace AntdUI
     {
         #region 渲染
 
-        internal FormatFlags sf_center = FormatFlags.Default;
+        readonly internal FormatFlags sf_center = FormatFlags.Center | FormatFlags.NoWrap;
         internal FormatFlags sf_placeholder = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         public new virtual void Invalidate() => base.Invalidate();
@@ -355,7 +355,7 @@ namespace AntdUI
             {
                 if (IsPassWord)
                 {
-                    foreach (var it in tmp) g.String(PassWordChar, it.font ?? Font, fore, it.rect);
+                    foreach (var it in tmp) g.String(PassWordChar, it.font ?? Font, fore, it.rect, sf_center);
                 }
                 else if (HasEmoji)
                 {
@@ -409,14 +409,14 @@ namespace AntdUI
 
         void String(Canvas g, Font font, CacheFont cache, Brush brush)
         {
-            if (cache.fore.HasValue) g.String(cache.text, cache.font ?? font, cache.fore.Value, cache.rect);
-            else g.String(cache.text, cache.font ?? font, brush, cache.rect);
+            if (cache.fore.HasValue) g.String(cache.text, cache.font ?? font, cache.fore.Value, cache.rect, sf_center);
+            else g.String(cache.text, cache.font ?? font, brush, cache.rect, sf_center);
         }
 
         void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
         {
-            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect);
-            else g.String(text, cache.font ?? font, brush, cache.rect);
+            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect, sf_center);
+            else g.String(text, cache.font ?? font, brush, cache.rect, sf_center);
         }
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }

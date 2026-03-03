@@ -412,7 +412,7 @@ namespace AntdUI
                         float uks = ProgValue(it.Value);
                         if (!string.IsNullOrWhiteSpace(it.Text))
                         {
-                            var s_f = FormatFlags.Default;
+                            var s_f = FormatFlags.Center | FormatFlags.NoWrap;
                             if (it.Fore.HasValue)
                             {
                                 using (var fore2 = new SolidBrush(it.Fore.Value))

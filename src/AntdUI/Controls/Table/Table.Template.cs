@@ -872,33 +872,42 @@ namespace AntdUI
                     {
                         if (PARENT.tmpcol_width.TryGetValue(INDEX, out int w))
                         {
-                            var size2 = g.MeasureText(value, font, w - gap.x2);
+                            var size2 = g.MeasureText(value, font, w - gap.x2, FormatFlags.Center);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (COLUMN.Width.EndsWith("%") && float.TryParse(COLUMN.Width.TrimEnd('%'), out var f))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap.x2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(width * (f / 100F)) - gap.x2, FormatFlags.Center);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else if (int.TryParse(COLUMN.Width, out var i))
                         {
-                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * g.Dpi) - gap.x2);
+                            var size2 = g.MeasureText(value, font, (int)Math.Ceiling(i * g.Dpi) - gap.x2, FormatFlags.Center);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                         else
                         {
-                            var size2 = g.MeasureText(value, font, width - gap.x2);
+                            var size2 = g.MeasureText(value, font, width - gap.x2, FormatFlags.Center);
                             MinWidth = size2.Width;
                             return new Size(size2.Width + gap.x2, size2.Height);
                         }
                     }
+                    else
+                    {
+                        var size = g.MeasureText(value, font, 0, FormatFlags.Center);
+                        MinWidth = size.Width;
+                        return new Size(size.Width + gap.x2, size.Height);
+                    }
                 }
-                var size = g.MeasureText(value, font);
-                MinWidth = size.Width;
-                return new Size(size.Width + gap.x2, size.Height);
+                else
+                {
+                    var size = g.MeasureText(value, font);
+                    MinWidth = size.Width;
+                    return new Size(size.Width + gap.x2, size.Height);
+                }
             }
 
             #endregion
@@ -1262,7 +1271,7 @@ namespace AntdUI
             /// </summary>
             public int MinWidth { get; set; }
 
-            internal int offsetx = 0, offsety = 0;
+            internal int offsetx = 0, offsety = 0, mergeW = -1;
             public bool CONTAIN(int x, int y) => RECT.Contains(x, y);
             public bool CONTAIN_REAL(int x, int y) => RECT_REAL.Contains(x - offsetx, y - offsety);
 

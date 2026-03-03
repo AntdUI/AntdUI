@@ -542,7 +542,7 @@ namespace AntdUI
         #region 渲染帮助
 
         readonly FormatFlags sEllipsis = FormatFlags.Left | FormatFlags.Top | FormatFlags.EllipsisCharacter;
-        FormatFlags sc = FormatFlags.Default, sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+        FormatFlags sc = FormatFlags.Center | FormatFlags.NoWrap, sf = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         /// <summary>
         /// 渲染文字

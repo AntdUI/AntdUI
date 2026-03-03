@@ -54,7 +54,7 @@ namespace AntdUI.Core
         /// <param name="text">要测量的文本</param>
         /// <param name="font">文本使用的字体</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Default);
+        public Size MeasureString(string? text, Font font) => MeasureString(text, font, 0, FormatFlags.Center);
 
         /// <summary>
         /// 测量文本字符串的大小，限制最大宽度
@@ -63,7 +63,7 @@ namespace AntdUI.Core
         /// <param name="font">文本使用的字体</param>
         /// <param name="width">最大宽度</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Default);
+        public Size MeasureString(string? text, Font font, int width) => MeasureString(text, font, width, FormatFlags.Center);
 
         /// <summary>
         /// 测量文本字符串的大小
@@ -83,7 +83,7 @@ namespace AntdUI.Core
         /// <param name="width">最大宽度</param>
         /// <param name="format">FormatFlags格式化标志，默认为居中</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Default) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
+        public Size MeasureString(string? text, Font font, int width, FormatFlags format = FormatFlags.Center) => g.MeasureString(text, font, width, Helper.TF(format, true)).Size();
 
         /// <summary>
         /// 测量文本中每个字符的范围
@@ -93,7 +93,7 @@ namespace AntdUI.Core
         /// <param name="rect">测量区域</param>
         /// <param name="format">FormatFlags格式化标志，默认为居中</param>
         /// <returns>字符范围数组</returns>
-        public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Default) => g.MeasureCharacterRanges(text, font, rect, Helper.TF(format, true));
+        public Region[] MeasureCharacterRanges(string? text, Font font, Rectangle rect, FormatFlags format = FormatFlags.Center) => g.MeasureCharacterRanges(text, font, rect, Helper.TF(format, true));
 
         /// <summary>
         /// 测量文本中每个字符的范围
@@ -152,14 +152,14 @@ namespace AntdUI.Core
             else g.DrawString(text, font, brush, rect, format);
         }
 
-        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Default)
+        public void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Default)
+        public void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -173,14 +173,14 @@ namespace AntdUI.Core
             }
             else g.DrawString(text, font, brush, rect, Helper.TF(format));
         }
-        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Default)
+        public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
             {
                 String(text, font, brush, rect, format);
             }
         }
-        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Default)
+        public void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center)
         {
             if (text == null) return;
             CorrectionTextRendering.CORE(font, text, ref rect);
@@ -318,7 +318,7 @@ namespace AntdUI.Core
         /// <param name="text">要测量的文本</param>
         /// <param name="font">文本使用的字体</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Default);
+        public Size MeasureText(string? text, Font font) => MeasureText(text, font, 0, FormatFlags.Center);
 
         /// <summary>
         /// 测量文本的大小，限制最大宽度
@@ -327,7 +327,7 @@ namespace AntdUI.Core
         /// <param name="font">文本使用的字体</param>
         /// <param name="width">最大宽度</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Default);
+        public Size MeasureText(string? text, Font font, int width) => MeasureText(text, font, width, FormatFlags.Center);
 
         /// <summary>
         /// 测量文本的大小
@@ -368,7 +368,7 @@ namespace AntdUI.Core
         /// <param name="width">最大宽度</param>
         /// <param name="format">FormatFlags格式化标志，默认为居中</param>
         /// <returns>文本的大小</returns>
-        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Default)
+        public Size MeasureText(string? text, Font font, int width, FormatFlags format = FormatFlags.Center)
         {
             if (text == null) return MeasureString(text, font, width, format);
             else
@@ -610,7 +610,7 @@ namespace AntdUI.Core
                 {
                     string ellipsisText = "...";
                     Size ellipsisSize = MeasureString(ellipsisText, font);
-                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Default));
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Center));
                     return;
                 }
                 if (use_line < it.line)
@@ -628,7 +628,7 @@ namespace AntdUI.Core
                             break;
                     }
                 }
-                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Default));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center | FormatFlags.NoWrap));
                 use_x += it.w;
             }
             tmp_font?.Dispose();
@@ -671,13 +671,13 @@ namespace AntdUI.Core
                             break;
                     }
                 }
-                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), FormatFlags.Center | FormatFlags.NoWrap);
                 use_x += it.w;
             }
             tmp_font?.Dispose();
         }
 
-        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Default)
+        public void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
             {
@@ -685,7 +685,7 @@ namespace AntdUI.Core
             }
         }
 
-        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Default)
+        public void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
         {
             if (text == null) return;
             var characters = new List<TMPChar>(text.Length);
@@ -747,7 +747,7 @@ namespace AntdUI.Core
                 {
                     string ellipsisText = "...";
                     Size ellipsisSize = MeasureString(ellipsisText, font);
-                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Default));
+                    path.AddString(ellipsisText, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, ellipsisSize.Width, lineHeight), Helper.TF(FormatFlags.Center));
                     return;
                 }
                 if (use_line < it.line)
@@ -758,7 +758,7 @@ namespace AntdUI.Core
                     if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
                     else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
                 }
-                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Default));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) path.AddString(it.txt, font.FontFamily, (int)font.Style, fontsize, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), Helper.TF(FormatFlags.Center | FormatFlags.NoWrap));
                 use_x += it.w;
             }
             tmp_font?.Dispose();
@@ -787,7 +787,7 @@ namespace AntdUI.Core
                     if (format.HasFlag(FormatFlags.HorizontalCenter)) x = rect.X + (rect.Width - DrawTextLineWidth(characters, it.line)) / 2;
                     else if (format.HasFlag(FormatFlags.Right)) x = rect.Right - DrawTextLineWidth(characters, it.line);
                 }
-                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight));
+                if (DrawTextEmoji(brush, it, font, x + use_x, y + use_y, lineHeight, ref tmp_font)) String(it.txt, font, brush, new Rectangle(x + use_x, y + use_y, it.w, lineHeight), FormatFlags.Center | FormatFlags.NoWrap);
                 use_x += it.w;
             }
             tmp_font?.Dispose();
@@ -805,7 +805,7 @@ namespace AntdUI.Core
                     return false;
                 }
                 tmp_font ??= new Font(Config.EmojiFont, font.Size);
-                String(it.txt, tmp_font, brush, rect_ico);
+                String(it.txt, tmp_font, brush, rect_ico, FormatFlags.Center | FormatFlags.NoWrap);
                 return false;
             }
             return true;
@@ -984,6 +984,29 @@ namespace AntdUI.Core
                         var matrix = new ColorMatrix { Matrix33 = opacity };
                         attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
                         g.DrawImage(bmp, rect, 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    }
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+        public bool Image(Image bmp, Rectangle rect, int w, int h, float opacity)
+        {
+            try
+            {
+                lock (bmp)
+                {
+                    if (opacity >= 1F)
+                    {
+                        g.DrawImage(bmp, rect);
+                        return true;
+                    }
+                    using (var attributes = new ImageAttributes())
+                    {
+                        var matrix = new ColorMatrix { Matrix33 = opacity };
+                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                        g.DrawImage(bmp, rect, 0, 0, w, h, GraphicsUnit.Pixel, attributes);
                     }
                     return true;
                 }
