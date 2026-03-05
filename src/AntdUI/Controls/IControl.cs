@@ -650,10 +650,10 @@ namespace AntdUI
                 switch (m.Msg)
                 {
                     case WM_POINTERDOWN:
-                        Vanara.PInvoke.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
+                        Win32.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
                         break;
                     case WM_POINTERUP:
-                        Vanara.PInvoke.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
+                        Win32.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
                         break;
                     default:
                         base.WndProc(ref m);

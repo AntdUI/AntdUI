@@ -28,7 +28,7 @@ namespace AntdUI
         /// <param name="owner">任何实现 System.Windows.Forms.IWin32Window（表示将拥有模式对话框的顶级窗口）的对象。</param>
         public DialogResult ShowDialog(IWin32Window? owner = null)
         {
-            IntPtr hwndOwner = owner == null ? GetActiveWindow() : owner.Handle;
+            IntPtr hwndOwner = owner == null ? Win32.User32.GetActiveWindow() : owner.Handle;
             var dialog = (IFileOpenDialog)new FileOpenDialog();
             try
             {
@@ -63,9 +63,6 @@ namespace AntdUI
 
         [DllImport("shell32.dll")]
         static extern int SHCreateShellItem(IntPtr pidlParent, IntPtr psfParent, IntPtr pidl, out IShellItem ppsi);
-
-        [DllImport("user32.dll")]
-        static extern IntPtr GetActiveWindow();
 
         const uint ERROR_CANCELLED = 0x800704C7;
         [ComImport]

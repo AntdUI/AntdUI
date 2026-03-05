@@ -100,7 +100,7 @@ namespace AntdUI
             new CalculateCoordinate(this, ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
-            if (Print() == RenderResult.OK) return false;
+            if (Print() == Win32.RenderResult.OK) return false;
             else return true;
         }
 

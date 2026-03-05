@@ -435,7 +435,7 @@ namespace AntdUI
                 alpha = _alpha;
                 bmp_tmp ??= Printmap();
                 if (bmp_tmp == null) return;
-                if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
+                if (Print(bmp_tmp) == Win32.RenderResult.Invalid) bmp_tmp = null;
             }
         }
         void SetAnimateValueY(int y, byte _alpha)
@@ -446,7 +446,7 @@ namespace AntdUI
                 alpha = _alpha;
                 bmp_tmp ??= Printmap();
                 if (bmp_tmp == null) return;
-                if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
+                if (Print(bmp_tmp) == Win32.RenderResult.Invalid) bmp_tmp = null;
             }
         }
         internal void SetAnimateValueY(int y)
@@ -456,7 +456,7 @@ namespace AntdUI
                 SetLocationY(y);
                 bmp_tmp ??= Printmap();
                 if (bmp_tmp == null) return;
-                if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
+                if (Print(bmp_tmp) == Win32.RenderResult.Invalid) bmp_tmp = null;
             }
         }
         void SetAnimateValue(int x, int y, byte _alpha)
@@ -467,7 +467,7 @@ namespace AntdUI
                 alpha = _alpha;
                 bmp_tmp ??= Printmap();
                 if (bmp_tmp == null) return;
-                if (Print(bmp_tmp) == RenderResult.Invalid) bmp_tmp = null;
+                if (Print(bmp_tmp) == Win32.RenderResult.Invalid) bmp_tmp = null;
             }
         }
 

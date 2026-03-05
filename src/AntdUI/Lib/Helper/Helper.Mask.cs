@@ -156,8 +156,8 @@ namespace AntdUI
                     if (form.FormBorderStyle == FormBorderStyle.None) return false;
                     if (OS.Win11) Radius = (int)System.Math.Round(8 * baseForm.Dpi); //Win11
                     if (form is Window || form is FormNoBar) return false;//无边框处理
-                    var rect = new Vanara.PInvoke.RECT();
-                    Vanara.PInvoke.User32.AdjustWindowRectEx(ref rect, Vanara.PInvoke.User32.WindowStyles.WS_OVERLAPPEDWINDOW | Vanara.PInvoke.User32.WindowStyles.WS_CLIPCHILDREN, false, Vanara.PInvoke.User32.WindowStylesEx.WS_EX_CONTROLPARENT | Vanara.PInvoke.User32.WindowStylesEx.WS_EX_APPWINDOW);
+                    var rect = new Win32.RECT();
+                    Win32.User32.AdjustWindowRectEx(ref rect, Win32.User32.WindowStyles.WS_OVERLAPPEDWINDOW | Win32.User32.WindowStyles.WS_CLIPCHILDREN, false, Win32.User32.WindowStylesEx.WS_EX_CONTROLPARENT | Win32.User32.WindowStylesEx.WS_EX_APPWINDOW);
                     Padd = rect.bottom;
                     return true;
                 }
@@ -166,8 +166,8 @@ namespace AntdUI
                     if (form.FormBorderStyle == FormBorderStyle.None) return false;
                     if (OS.Win11) Radius = (int)System.Math.Round(8 * Config.Dpi); //Win11
                     if (form is Window || form is FormNoBar) return false;//无边框处理
-                    var rect = new Vanara.PInvoke.RECT();
-                    Vanara.PInvoke.User32.AdjustWindowRectEx(ref rect, Vanara.PInvoke.User32.WindowStyles.WS_OVERLAPPEDWINDOW | Vanara.PInvoke.User32.WindowStyles.WS_CLIPCHILDREN, false, Vanara.PInvoke.User32.WindowStylesEx.WS_EX_CONTROLPARENT | Vanara.PInvoke.User32.WindowStylesEx.WS_EX_APPWINDOW);
+                    var rect = new Win32.RECT();
+                    Win32.User32.AdjustWindowRectEx(ref rect, Win32.User32.WindowStyles.WS_OVERLAPPEDWINDOW | Win32.User32.WindowStyles.WS_CLIPCHILDREN, false, Win32.User32.WindowStylesEx.WS_EX_CONTROLPARENT | Win32.User32.WindowStylesEx.WS_EX_APPWINDOW);
                     Padd = rect.bottom;
                     return true;
                 }
