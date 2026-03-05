@@ -186,7 +186,6 @@ namespace AntdUI
                     }
                     else
                     {
-
                         while (true)
                         {
                             if (token.Wait(config.Control)) return false;
