@@ -9,9 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Vanara.PInvoke;
-using static Vanara.PInvoke.DwmApi;
-using static Vanara.PInvoke.User32;
 
 namespace AntdUI
 {
@@ -110,7 +107,7 @@ namespace AntdUI
         {
             if (OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
             else DwmEnabled = false;
-            DisableProcessWindowsGhosting();
+            Win32.User32.DisableProcessWindowsGhosting();
             if (WindowState == FormWindowState.Maximized) rmax = true;
             if (FormBorderStyle != FormBorderStyle.None && !rmax)
             {
@@ -150,7 +147,7 @@ namespace AntdUI
 
         protected override void OnLoad(EventArgs e)
         {
-            SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_FRAMECHANGED);
+            Win32.User32.SetWindowPos(Handle, Win32.HWND.NULL, 0, 0, 0, 0, Win32.User32.SetWindowPosFlags.SWP_NOZORDER | Win32.User32.SetWindowPosFlags.SWP_NOOWNERZORDER | Win32.User32.SetWindowPosFlags.SWP_NOMOVE | Win32.User32.SetWindowPosFlags.SWP_NOSIZE | Win32.User32.SetWindowPosFlags.SWP_FRAMECHANGED);
             base.OnLoad(e);
         }
 
@@ -158,25 +155,25 @@ namespace AntdUI
         private void InvalidateNonclient()
         {
             if (eNonclient) return;
-            UpdateWindow(Handle);
-            SetWindowPos(Handle, HWND.NULL, 0, 0, 0, 0, SetWindowPosFlags.SWP_FRAMECHANGED | SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOCOPYBITS | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOOWNERZORDER | SetWindowPosFlags.SWP_NOREPOSITION | SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOZORDER);
+            Win32.User32.UpdateWindow(Handle);
+            Win32.User32.SetWindowPos(Handle, Win32.HWND.NULL, 0, 0, 0, 0, Win32.User32.SetWindowPosFlags.SWP_FRAMECHANGED | Win32.User32.SetWindowPosFlags.SWP_NOACTIVATE | Win32.User32.SetWindowPosFlags.SWP_NOCOPYBITS | Win32.User32.SetWindowPosFlags.SWP_NOMOVE | Win32.User32.SetWindowPosFlags.SWP_NOOWNERZORDER | Win32.User32.SetWindowPosFlags.SWP_NOREPOSITION | Win32.User32.SetWindowPosFlags.SWP_NOSIZE | Win32.User32.SetWindowPosFlags.SWP_NOZORDER);
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            switch ((WindowMessage)m.Msg)
+            switch ((Win32.User32.WindowMessage)m.Msg)
             {
-                case WindowMessage.WM_ACTIVATE:
+                case Win32.User32.WindowMessage.WM_ACTIVATE:
                     DwmArea();
                     break;
-                case WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
+                case Win32.User32.WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
                     if (WmNCCalcSize(ref m)) return;
                     break;
-                case WindowMessage.WM_SIZE:
+                case Win32.User32.WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
-                case WindowMessage.WM_ACTIVATEAPP:
-                case WindowMessage.WM_NCACTIVATE:
+                case Win32.User32.WindowMessage.WM_ACTIVATEAPP:
+                case Win32.User32.WindowMessage.WM_NCACTIVATE:
                     if (DwmEnabled) InvalidateNonclient();
                     else
                     {
@@ -209,7 +206,7 @@ namespace AntdUI
         bool iszoomed = false;
         bool ISZoomed()
         {
-            bool value = IsZoomed(Handle);
+            bool value = Win32.User32.IsZoomed(Handle);
             if (iszoomed == value) return value;
             iszoomed = value;
             DwmArea();
@@ -224,7 +221,7 @@ namespace AntdUI
             else margin = 1;
             if (oldmargin == margin) return;
             oldmargin = margin;
-            DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
+            Win32.DwmApi.DwmExtendFrameIntoClientArea(Handle, new Win32.DwmApi.MARGINS(margin));
         }
 
         protected override void SetThemeOK(bool dark) => Win32.SetWindowBorderColor(Handle, BorderColor);
@@ -391,10 +388,10 @@ namespace AntdUI
         public override bool ResizableMouseMove()
         {
             var retval = HitTest(PointToClient(MousePosition));
-            if (retval != HitTestValues.HTNOWHERE)
+            if (retval != Win32.User32.HitTestValues.HTNOWHERE)
             {
                 var mode = retval;
-                if (mode != HitTestValues.HTCLIENT && winState == WState.Restore)
+                if (mode != Win32.User32.HitTestValues.HTCLIENT && winState == WState.Restore)
                 {
                     SetCursorHit(mode);
                     return true;
@@ -410,10 +407,10 @@ namespace AntdUI
         public override bool ResizableMouseMove(Point point)
         {
             var retval = HitTest(point);
-            if (retval != HitTestValues.HTNOWHERE)
+            if (retval != Win32.User32.HitTestValues.HTNOWHERE)
             {
                 var mode = retval;
-                if (mode != HitTestValues.HTCLIENT && winState == WState.Restore)
+                if (mode != Win32.User32.HitTestValues.HTCLIENT && winState == WState.Restore)
                 {
                     SetCursorHit(mode);
                     return true;
@@ -511,9 +508,9 @@ namespace AntdUI
             if (ISZoomed())
             {
 #if NET40
-                var nccsp = (RECT)Marshal.PtrToStructure(m.LParam, typeof(RECT));
+                var nccsp = (Win32.RECT)Marshal.PtrToStructure(m.LParam, typeof(Win32.RECT));
 #else
-                var nccsp = Marshal.PtrToStructure<RECT>(m.LParam);
+                var nccsp = Marshal.PtrToStructure<Win32.RECT>(m.LParam);
 #endif
                 var borders = GetNonClientMetrics();
 
@@ -547,8 +544,8 @@ namespace AntdUI
         {
             var screenRect = ClientRectangle;
             screenRect.Offset(-Bounds.Left, -Bounds.Top);
-            var rect = new RECT(screenRect);
-            AdjustWindowRectEx(ref rect, (WindowStyles)CreateParams.Style, false, (WindowStylesEx)CreateParams.ExStyle);
+            var rect = new Win32.RECT(screenRect);
+            Win32.User32.AdjustWindowRectEx(ref rect, (Win32.User32.WindowStyles)CreateParams.Style, false, (Win32.User32.WindowStylesEx)CreateParams.ExStyle);
             return new Padding
             {
                 Top = screenRect.Top - rect.top,

@@ -1146,8 +1146,8 @@ namespace AntdUI
                             if (form is BaseForm form_win) form_win.DraggableMouseDown();
                             else
                             {
-                                Vanara.PInvoke.User32.ReleaseCapture();
-                                Vanara.PInvoke.User32.SendMessage(form.Handle, 0x0112, 61456 | 2, IntPtr.Zero);
+                                Win32.User32.ReleaseCapture();
+                                Win32.User32.SendMessage(form.Handle, 0x0112, 61456 | 2, IntPtr.Zero);
                             }
                         }
                     }

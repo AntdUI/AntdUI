@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -192,8 +191,7 @@ namespace AntdUI
                         {
                             if (GetValue(value, _value, out var o))
                             {
-                                cellText.value = _value;
-                                if (it.RECORD is DataRow datarow) cellText.VALUE = cellText.value = _value;
+                                cellText.SetValue(o);
                                 SetValue(cell, o);
                                 if (multiline) LoadLayout();
                             }

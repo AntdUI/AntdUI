@@ -206,8 +206,6 @@ namespace AntdUI
             foreach (Control it in control.Controls) ControlEvent(it);
         }
 
-        #region Win32
-
         public static float GetScreenDpi(Control control)
         {
             var targetScreen = Screen.FromPoint(Control.MousePosition); // 根据坐标找到对应屏幕
@@ -226,21 +224,19 @@ namespace AntdUI
         /// <param name="targetScreen">目标屏幕</param>
         /// <param name="dpiType">DPI类型（默认有效DPI）</param>
         /// <returns>指定屏幕的DPI值（X/Y通常相等）</returns>
-        public static float? GetScreenDpiByApi(Screen targetScreen, Win32.MonitorDpiType dpiType = Win32.MonitorDpiType.MDT_Effective_DPI)
+        public static float? GetScreenDpiByApi(Screen targetScreen, Win32.User32.MonitorDpiType dpiType = Win32.User32.MonitorDpiType.MDT_Effective_DPI)
         {
             // Win8.1以下系统（Build < 9600）不支持该API，返回默认96DPI
             if (OS.Version.Build < 9600) return null;
             // 稳妥获取屏幕句柄hMonitor（避免依赖Screen.HashCode的内部实现）
             Rectangle screenRect = targetScreen.Bounds;
-            var hMonitor = Win32.MonitorFromRect(ref screenRect, Win32.MONITOR_DEFAULTTONEAREST);
-            if (Win32.GetDpiForMonitor(hMonitor, dpiType, out uint dpiX, out uint dpiY) == 0) return GetDpi(dpiX, dpiY);
+            var hMonitor = Win32.User32.MonitorFromRect(ref screenRect, Win32.User32.MONITOR_DEFAULTTONEAREST);
+            if (Win32.User32.GetDpiForMonitor(hMonitor, dpiType, out uint dpiX, out uint dpiY) == 0) return GetDpi(dpiX, dpiY);
             return null;
         }
 
         public static float GetDpi(uint dpiX, uint dpiY) => Math.Max(dpiX, dpiY) / 96F;
         public static float GetDpi(int dpiX, int dpiY) => Math.Max(dpiX, dpiY) / 96F;
         public static float GetDpi(float dpiX, float dpiY) => Math.Max(dpiX, dpiY) / 96F;
-
-        #endregion
     }
 }

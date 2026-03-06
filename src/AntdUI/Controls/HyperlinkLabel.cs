@@ -642,16 +642,7 @@ namespace AntdUI
         {
             if (LinkAutoNavigation && Uri.TryCreate(href, UriKind.Absolute, out _))
             {
-                try
-                {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = href,
-                        UseShellExecute = true
-                    });
-                    return;
-                }
-                catch { }
+                if (href.ProcessShellOpen()) return;
             }
             LinkClicked?.Invoke(this, new LinkClickedEventArgs(href, text));
         }

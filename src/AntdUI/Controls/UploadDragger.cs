@@ -551,63 +551,18 @@ namespace AntdUI
 
     public sealed class FileDropHandler : IMessageFilter, IDisposable
     {
-        #region native members
-
-        [DllImport("user32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint message, ChangeFilterAction action, in ChangeFilterStruct pChangeFilterStruct);
-
-        [DllImport("shell32.dll", SetLastError = false, CallingConvention = CallingConvention.Winapi)]
-        private static extern void DragAcceptFiles(IntPtr hWnd, bool fAccept);
-
-        [DllImport("shell32.dll", SetLastError = false, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Winapi)]
-        private static extern uint DragQueryFile(IntPtr hWnd, uint iFile, StringBuilder? lpszFile, int cch);
-
-        [DllImport("shell32.dll", SetLastError = false, CallingConvention = CallingConvention.Winapi)]
-        private static extern void DragFinish(IntPtr hDrop);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct ChangeFilterStruct
-        {
-            public uint CbSize;
-            public ChangeFilterStatu ExtStatus;
-        }
-
-        private enum ChangeFilterAction : uint
-        {
-            MSGFLT_RESET,
-            MSGFLT_ALLOW,
-            MSGFLT_DISALLOW
-        }
-
-        private enum ChangeFilterStatu : uint
-        {
-            MSGFLTINFO_NONE,
-            MSGFLTINFO_ALREADYALLOWED_FORWND,
-            MSGFLTINFO_ALREADYDISALLOWED_FORWND,
-            MSGFLTINFO_ALLOWED_HIGHER
-        }
-
-        private const uint WM_COPYGLOBALDATA = 0x0049;
-        private const uint WM_COPYDATA = 0x004A;
-        private const uint WM_DROPFILES = 0x0233;
-
-        #endregion
-
-        const uint GetIndexCount = 0xFFFFFFFFU;
-
         Control ContainerControl;
 
         public FileDropHandler(Control containerControl)
         {
             ContainerControl = containerControl;
             if (containerControl.IsDisposed) throw new ObjectDisposedException("control");
-            var status = new ChangeFilterStruct { CbSize = 8 };
+            var status = new Win32.User32.ChangeFilterStruct { CbSize = 8 };
 
-            if (!ChangeWindowMessageFilterEx(containerControl.Handle, WM_DROPFILES, ChangeFilterAction.MSGFLT_ALLOW, in status)) throw new Win32Exception(Marshal.GetLastWin32Error());
-            if (!ChangeWindowMessageFilterEx(containerControl.Handle, WM_COPYGLOBALDATA, ChangeFilterAction.MSGFLT_ALLOW, in status)) throw new Win32Exception(Marshal.GetLastWin32Error());
-            if (!ChangeWindowMessageFilterEx(containerControl.Handle, WM_COPYDATA, ChangeFilterAction.MSGFLT_ALLOW, in status)) throw new Win32Exception(Marshal.GetLastWin32Error());
-            DragAcceptFiles(containerControl.Handle, true);
+            if (!Win32.User32.ChangeWindowMessageFilterEx(containerControl.Handle, Win32.User32.WM_DROPFILES, Win32.User32.ChangeFilterAction.MSGFLT_ALLOW, in status)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (!Win32.User32.ChangeWindowMessageFilterEx(containerControl.Handle, Win32.User32.WM_COPYGLOBALDATA, Win32.User32.ChangeFilterAction.MSGFLT_ALLOW, in status)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (!Win32.User32.ChangeWindowMessageFilterEx(containerControl.Handle, Win32.User32.WM_COPYDATA, Win32.User32.ChangeFilterAction.MSGFLT_ALLOW, in status)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            Win32.Shell32.DragAcceptFiles(containerControl.Handle, true);
 
             Application.AddMessageFilter(this);
         }
@@ -616,7 +571,7 @@ namespace AntdUI
         {
             if (ContainerControl == null || ContainerControl.IsDisposed) return false;
             if (ContainerControl.AllowDrop) return ContainerControl.AllowDrop = false;
-            if (m.Msg == WM_DROPFILES)
+            if (m.Msg == Win32.User32.WM_DROPFILES)
             {
                 var point = Control.MousePosition;
                 var rect = ContainerControl.RectangleToScreen(ContainerControl.ClientRectangle);
@@ -624,7 +579,7 @@ namespace AntdUI
                 {
                     var handle = m.WParam;
 
-                    var fileCount = DragQueryFile(handle, GetIndexCount, null, 0);
+                    var fileCount = Win32.Shell32.DragQueryFile(handle, Win32.Shell32.GetIndexCount, null, 0);
 
                     var fileNames = new string[fileCount];
 
@@ -632,9 +587,9 @@ namespace AntdUI
                     var charLength = sb.Capacity;
                     for (uint i = 0; i < fileCount; i++)
                     {
-                        if (DragQueryFile(handle, i, sb, charLength) > 0) fileNames[i] = sb.ToString();
+                        if (Win32.Shell32.DragQueryFile(handle, i, sb, charLength) > 0) fileNames[i] = sb.ToString();
                     }
-                    DragFinish(handle);
+                    Win32.Shell32.DragFinish(handle);
                     ContainerControl.AllowDrop = true;
                     ContainerControl.DoDragDrop(fileNames, DragDropEffects.All);
                     ContainerControl.AllowDrop = false;

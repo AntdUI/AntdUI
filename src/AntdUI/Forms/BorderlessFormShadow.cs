@@ -29,16 +29,16 @@ namespace AntdUI
             Icon = form.Icon;
             ShowIcon = false;
             Text = form.Text;
-            memDc = Win32.CreateCompatibleDC(Win32.screenDC);
+            memDc = Win32.Render.CreateCompatibleDC(Win32.Render.screenDC);
             ISize();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            Win32.Render.Dispose(memDc, ref hBitmap, ref oldBits);
             if (memDc == IntPtr.Zero) return;
-            Win32.DeleteDC(memDc);
+            Win32.Render.DeleteDC(memDc);
             memDc = IntPtr.Zero;
         }
 
@@ -146,7 +146,7 @@ namespace AntdUI
                     using (var bmp = PrintBit())
                     {
                         if (bmp == null) return;
-                        Win32.SetBits(memDc, bmp, shadow_rect, Handle, 255, out hBitmap, out oldBits);
+                        Win32.Render.SetBits(memDc, bmp, shadow_rect, Handle, 255, out hBitmap, out oldBits);
                     }
                 }
                 catch { }
@@ -164,7 +164,7 @@ namespace AntdUI
                 }
                 try
                 {
-                    Win32.SetBits(memDc, shadow_rect, Handle, 255);
+                    Win32.Render.SetBits(memDc, shadow_rect, Handle, 255);
                 }
                 catch { }
             }
@@ -173,7 +173,7 @@ namespace AntdUI
         Bitmap? bitbmp;
         Bitmap PrintBit()
         {
-            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            Win32.Render.Dispose(memDc, ref hBitmap, ref oldBits);
             int radius = (int)(form.Radius * form.Dpi), shadow = (int)(form.Shadow * form.Dpi), shadow2 = shadow * 2, shadow4 = shadow * 4, shadow6 = shadow * 6;
             if (bitbmp == null)
             {

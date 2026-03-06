@@ -29,7 +29,7 @@ namespace AntdUI
             ShowInTaskbar = false;
             Size = new Size(0, 0);
             actionCursor = val => SetCursor(val);
-            memDc = Win32.CreateCompatibleDC(Win32.screenDC);
+            memDc = Win32.Render.CreateCompatibleDC(Win32.Render.screenDC);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -78,9 +78,9 @@ namespace AntdUI
             handle = null;
             messageHandler?.Dispose();
             messageHandler = null;
-            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            Win32.Render.Dispose(memDc, ref hBitmap, ref oldBits);
             if (memDc == IntPtr.Zero) return;
-            Win32.DeleteDC(memDc);
+            Win32.Render.DeleteDC(memDc);
             memDc = IntPtr.Zero;
         }
 
@@ -165,11 +165,11 @@ namespace AntdUI
         public Bitmap? Printmap()
         {
             RenderCache = false;
-            Win32.Dispose(memDc, ref hBitmap, ref oldBits);
+            Win32.Render.Dispose(memDc, ref hBitmap, ref oldBits);
             return PrintBit();
         }
 
-        public RenderResult Print(bool fore = false)
+        public Win32.RenderResult Print(bool fore = false)
         {
             if (CanRender(out var handle))
             {
@@ -177,29 +177,29 @@ namespace AntdUI
                 {
                     using (var bmp = Printmap())
                     {
-                        if (bmp == null) return RenderResult.Skip;
+                        if (bmp == null) return Win32.RenderResult.Skip;
                         return Render(handle, alpha, bmp, target_rect);
                     }
                 }
                 catch { }
-                return RenderResult.Error;
+                return Win32.RenderResult.Error;
             }
-            else return RenderResult.Skip;
+            else return Win32.RenderResult.Skip;
         }
-        public RenderResult Print(Bitmap bmp)
+        public Win32.RenderResult Print(Bitmap bmp)
         {
             if (CanRender(out var handle)) return Render(handle, alpha, bmp, target_rect);
-            else return RenderResult.Skip;
+            else return Win32.RenderResult.Skip;
         }
-        public RenderResult Print(Bitmap bmp, Rectangle rect)
+        public Win32.RenderResult Print(Bitmap bmp, Rectangle rect)
         {
             using (bmp)
             {
                 if (CanRender(out var handle)) return Render(handle, alpha, bmp, rect);
-                else return RenderResult.Skip;
+                else return Win32.RenderResult.Skip;
             }
         }
-        public RenderResult PrintCache(bool fore = false)
+        public Win32.RenderResult PrintCache(bool fore = false)
         {
             if (CanRender(out var handle))
             {
@@ -208,42 +208,42 @@ namespace AntdUI
                     return Render(handle, alpha, target_rect);
                 }
                 catch { }
-                return RenderResult.Error;
+                return Win32.RenderResult.Error;
             }
-            else return RenderResult.Skip;
+            else return Win32.RenderResult.Skip;
         }
 
         public bool RenderCache = false;
         IntPtr hBitmap, oldBits;
-        RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
+        Win32.RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
             if (InvokeRequired)
             {
                 try
                 {
-                    if (IsDisposed || Disposing) return RenderResult.Skip;
-                    if (RenderCache) return Invoke(() => Win32.SetBits(memDc, rect, handle, alpha));
+                    if (IsDisposed || Disposing) return Win32.RenderResult.Skip;
+                    if (RenderCache) return Invoke(() => Win32.Render.SetBits(memDc, rect, handle, alpha));
                     RenderCache = true;
-                    return Invoke(() => Win32.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits));
+                    return Invoke(() => Win32.Render.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits));
                 }
                 catch { }
             }
-            if (RenderCache) return Win32.SetBits(memDc, rect, handle, alpha);
+            if (RenderCache) return Win32.Render.SetBits(memDc, rect, handle, alpha);
             RenderCache = true;
-            return Win32.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits);
+            return Win32.Render.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits);
         }
-        RenderResult Render(IntPtr handle, byte alpha, Rectangle rect)
+        Win32.RenderResult Render(IntPtr handle, byte alpha, Rectangle rect)
         {
             if (InvokeRequired)
             {
                 try
                 {
-                    if (IsDisposed || Disposing) return RenderResult.Skip;
-                    return Invoke(() => Win32.SetBits(memDc, rect, handle, alpha));
+                    if (IsDisposed || Disposing) return Win32.RenderResult.Skip;
+                    return Invoke(() => Win32.Render.SetBits(memDc, rect, handle, alpha));
                 }
                 catch { }
             }
-            return Win32.SetBits(memDc, rect, handle, alpha);
+            return Win32.Render.SetBits(memDc, rect, handle, alpha);
         }
 
         Action<bool> actionCursor;

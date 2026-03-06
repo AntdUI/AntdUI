@@ -566,7 +566,7 @@ namespace AntdUI
                             AnimationHoverValue = i;
                             PARENT.Invalidate();
                             return true;
-                        }, 10).SetValue(AnimationHoverValue, _checked, 0.1F).SetEnd(() =>
+                        }, 10).SetValue(AnimationHoverValue, value, 0.1F).SetEnd(() =>
                         {
                             AnimationHover = false;
                             PARENT.Invalidate();
@@ -855,6 +855,8 @@ namespace AntdUI
             /// 值
             /// </summary>
             public string? value { get; set; }
+
+            public void SetValue(object? txt) => value = COLUMN.GetDisplayText(txt);
 
             #region 布局
 

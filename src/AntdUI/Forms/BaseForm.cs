@@ -8,8 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using Vanara.PInvoke;
-using static Vanara.PInvoke.User32;
 
 namespace AntdUI
 {
@@ -303,8 +301,8 @@ namespace AntdUI
         public virtual void DraggableMouseDown()
         {
             if (IsFull) return;
-            ReleaseCapture();
-            SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
+            Win32.User32.ReleaseCapture();
+            Win32.User32.SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
         }
 
         #endregion
@@ -320,10 +318,10 @@ namespace AntdUI
             if (WindowState == FormWindowState.Normal)
             {
                 var retval = HitTest(PointToClient(MousePosition));
-                if (retval != HitTestValues.HTNOWHERE)
+                if (retval != Win32.User32.HitTestValues.HTNOWHERE)
                 {
                     var mode = retval;
-                    if (mode != HitTestValues.HTCLIENT)
+                    if (mode != Win32.User32.HitTestValues.HTCLIENT)
                     {
                         SetCursorHit(mode);
                         return true;
@@ -342,10 +340,10 @@ namespace AntdUI
             if (WindowState == FormWindowState.Normal)
             {
                 var retval = HitTest(point);
-                if (retval != HitTestValues.HTNOWHERE)
+                if (retval != Win32.User32.HitTestValues.HTNOWHERE)
                 {
                     var mode = retval;
-                    if (mode != HitTestValues.HTCLIENT)
+                    if (mode != Win32.User32.HitTestValues.HTCLIENT)
                     {
                         SetCursorHit(mode);
                         return true;
@@ -364,12 +362,12 @@ namespace AntdUI
         {
             Point pointScreen = MousePosition;
             var mode = HitTest(PointToClient(pointScreen));
-            if (mode != HitTestValues.HTCLIENT)
+            if (mode != Win32.User32.HitTestValues.HTCLIENT)
             {
                 is_resizable = true;
                 SetCursorHit(mode);
-                ReleaseCapture();
-                SendMessage(Handle, WindowMessage.WM_NCLBUTTONDOWN, mode, Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
+                Win32.User32.ReleaseCapture();
+                Win32.User32.SendMessage(Handle, Win32.User32.WindowMessage.WM_NCLBUTTONDOWN, mode, Win32.Macros.MAKELPARAM(pointScreen.X, pointScreen.Y));
                 is_resizable = false;
                 return true;
             }
@@ -385,51 +383,51 @@ namespace AntdUI
         /// </summary>
         [Description("鼠标拖拽大小使能"), Category("交互"), DefaultValue(true)]
         public bool EnableHitTest { get; set; } = true;
-        internal HitTestValues HitTest(Point point)
+        internal Win32.User32.HitTestValues HitTest(Point point)
         {
             if (Window.CanHandMessage && EnableHitTest)
             {
                 float htSize = 8F * Dpi, htSize2 = htSize * 2;
-                GetWindowRect(Handle, out var lpRect);
+                Win32.User32.GetWindowRect(Handle, out var lpRect);
 
                 var rect = new Rectangle(Point.Empty, lpRect.Size);
 
-                var hitTestValue = HitTestValues.HTCLIENT;
+                var hitTestValue = Win32.User32.HitTestValues.HTCLIENT;
                 var x = point.X;
                 var y = point.Y;
 
-                if (x < rect.Left + htSize2 && y < rect.Top + htSize2) hitTestValue = HitTestValues.HTTOPLEFT;
-                else if (x >= rect.Left + htSize2 && x <= rect.Right - htSize2 && y <= rect.Top + htSize) hitTestValue = HitTestValues.HTTOP;
-                else if (x > rect.Right - htSize2 && y <= rect.Top + htSize2) hitTestValue = HitTestValues.HTTOPRIGHT;
-                else if (x <= rect.Left + htSize && y >= rect.Top + htSize2 && y <= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTLEFT;
-                else if (x >= rect.Right - htSize && y >= rect.Top * 2 + htSize && y <= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTRIGHT;
-                else if (x <= rect.Left + htSize2 && y >= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTBOTTOMLEFT;
-                else if (x > rect.Left + htSize2 && x < rect.Right - htSize2 && y >= rect.Bottom - htSize) hitTestValue = HitTestValues.HTBOTTOM;
-                else if (x >= rect.Right - htSize2 && y >= rect.Bottom - htSize2) hitTestValue = HitTestValues.HTBOTTOMRIGHT;
+                if (x < rect.Left + htSize2 && y < rect.Top + htSize2) hitTestValue = Win32.User32.HitTestValues.HTTOPLEFT;
+                else if (x >= rect.Left + htSize2 && x <= rect.Right - htSize2 && y <= rect.Top + htSize) hitTestValue = Win32.User32.HitTestValues.HTTOP;
+                else if (x > rect.Right - htSize2 && y <= rect.Top + htSize2) hitTestValue = Win32.User32.HitTestValues.HTTOPRIGHT;
+                else if (x <= rect.Left + htSize && y >= rect.Top + htSize2 && y <= rect.Bottom - htSize2) hitTestValue = Win32.User32.HitTestValues.HTLEFT;
+                else if (x >= rect.Right - htSize && y >= rect.Top * 2 + htSize && y <= rect.Bottom - htSize2) hitTestValue = Win32.User32.HitTestValues.HTRIGHT;
+                else if (x <= rect.Left + htSize2 && y >= rect.Bottom - htSize2) hitTestValue = Win32.User32.HitTestValues.HTBOTTOMLEFT;
+                else if (x > rect.Left + htSize2 && x < rect.Right - htSize2 && y >= rect.Bottom - htSize) hitTestValue = Win32.User32.HitTestValues.HTBOTTOM;
+                else if (x >= rect.Right - htSize2 && y >= rect.Bottom - htSize2) hitTestValue = Win32.User32.HitTestValues.HTBOTTOMRIGHT;
 
                 return hitTestValue;
             }
-            else return HitTestValues.HTCLIENT;
+            else return Win32.User32.HitTestValues.HTCLIENT;
         }
 
-        internal void SetCursorHit(HitTestValues mode)
+        internal void SetCursorHit(Win32.User32.HitTestValues mode)
         {
             switch (mode)
             {
-                case HitTestValues.HTTOP:
-                case HitTestValues.HTBOTTOM:
+                case Win32.User32.HitTestValues.HTTOP:
+                case Win32.User32.HitTestValues.HTBOTTOM:
                     LoadCursors(32645);
                     break;
-                case HitTestValues.HTLEFT:
-                case HitTestValues.HTRIGHT:
+                case Win32.User32.HitTestValues.HTLEFT:
+                case Win32.User32.HitTestValues.HTRIGHT:
                     LoadCursors(32644);
                     break;
-                case HitTestValues.HTTOPLEFT:
-                case HitTestValues.HTBOTTOMRIGHT:
+                case Win32.User32.HitTestValues.HTTOPLEFT:
+                case Win32.User32.HitTestValues.HTBOTTOMRIGHT:
                     LoadCursors(32642);
                     break;
-                case HitTestValues.HTTOPRIGHT:
-                case HitTestValues.HTBOTTOMLEFT:
+                case Win32.User32.HitTestValues.HTTOPRIGHT:
+                case Win32.User32.HitTestValues.HTBOTTOMLEFT:
                     LoadCursors(32643);
                     break;
             }
@@ -437,9 +435,9 @@ namespace AntdUI
 
         internal void LoadCursors(int id)
         {
-            var handle = LoadCursor(IntPtr.Zero, id);
+            var handle = Win32.User32.LoadCursor(IntPtr.Zero, id);
             if (handle == IntPtr.Zero) return;
-            User32.SetCursor(handle);
+            Win32.User32.SetCursor(handle);
         }
 
         #endregion

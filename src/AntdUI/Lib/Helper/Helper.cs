@@ -258,7 +258,7 @@ namespace AntdUI
         /// 设置窗口置顶
         /// </summary>
         /// <param name="hand">要设置的窗口句柄</param>
-        public static void SetTopMost(IntPtr hand) => Vanara.PInvoke.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Vanara.PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
+        public static void SetTopMost(IntPtr hand) => Win32.User32.SetWindowPos(hand, new IntPtr(-1), 0, 0, 0, 0, Win32.User32.SetWindowPosFlags.SWP_NOACTIVATE);
 
         /// <summary>
         /// 等待WaitHandle信号
@@ -442,7 +442,7 @@ namespace AntdUI
         /// <returns>剪贴板文本，获取失败返回null</returns>
         public static string? ClipboardGetText()
         {
-            if (Win32.GetClipBoardText(out var text)) return text;
+            if (Win32.User32.GetClipBoardText(out var text)) return text;
             else
             {
                 try
@@ -475,7 +475,7 @@ namespace AntdUI
         /// <returns>是否设置成功</returns>
         public static bool ClipboardSetText(string? text)
         {
-            if (Win32.SetClipBoardText(text)) return true;
+            if (Win32.User32.SetClipBoardText(text)) return true;
             else
             {
                 try
@@ -684,6 +684,115 @@ namespace AntdUI
         /// <param name="y2">向量2 Y</param>
         /// <returns>叉乘结果</returns>
         private static float CrossProduct(int x1, int y1, int x2, int y2) => (x1 * (float)y2) - (y1 * (float)x2);
+
+        /// <summary>
+        /// 是否触屏
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsTouch()
+        {
+            uint extra = Win32.User32.GetMessageExtraInfo();
+            bool isTouchOrPen = ((extra & 0xFFFFFF00) == 0xFF515700);
+            if (isTouchOrPen) return ((extra & 0x00000080) == 0x00000080);
+            return false;
+        }
+
+        /// <summary>
+        /// 打开屏幕键盘
+        /// </summary>
+        public static bool OpenOsk()
+        {
+            if (OpenTabTip()) return true;
+            var windir = Environment.GetEnvironmentVariable("WINDIR");
+            if (windir == null) return ProcessShellOpen("osk.exe");
+            var path = System.IO.Path.Combine(windir, "sysnative", "osk.exe");
+            if (System.IO.File.Exists(path)) return ProcessShellOpen(path);
+            path = System.IO.Path.Combine(windir, "system32", "osk.exe");
+            if (System.IO.File.Exists(path)) return ProcessShellOpen(path);
+            return ProcessShellOpen("osk.exe");
+        }
+
+        internal static bool OpenTabTip()
+        {
+            var commonFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
+            if (commonFilesPath.Contains("Program Files (x86)")) commonFilesPath = commonFilesPath.Replace("Program Files (x86)", "Program Files");
+            var tabTipPath = System.IO.Path.Combine(commonFilesPath, @"microsoft shared\ink\TabTip.exe");
+            if (System.IO.File.Exists(tabTipPath))
+            {
+                var check = HasTabTip(out _);
+                if (check) return true;
+                return ProcessShellOpen(tabTipPath);
+            }
+            return false;
+        }
+
+        internal static bool HasTabTip(out IntPtr handle)
+        {
+            handle = Win32.User32.FindWindow("IPTIP_Main_Window", "");
+            if (Win32.IsValidHandle(handle))
+            {
+                var isVisible = IsWindowVisibleByHandle(handle);
+                if (isVisible.HasValue) return isVisible.Value;
+            }
+            var textInputHandle = FindTextInputWindow();
+            return Win32.IsValidHandle(textInputHandle);
+        }
+
+        internal static IntPtr FindTextInputWindow()
+        {
+            // enumerating Windows Store Container windows and try to find Window with caption 'Microsoft Text Input Application'
+            IntPtr lastProbed = IntPtr.Zero;
+            do
+            {
+                lastProbed = Win32.User32.FindWindowEx(IntPtr.Zero, lastProbed, "ApplicationFrameWindow", "");
+                if (Win32.IsValidHandle(lastProbed))
+                {
+                    var textInput = Win32.User32.FindWindowEx(lastProbed, IntPtr.Zero, "Windows.UI.Core.CoreWindow", "Microsoft Text Input Application");
+                    return textInput;
+                }
+            } while (Win32.IsValidHandle(lastProbed));
+
+            return IntPtr.Zero;
+        }
+        internal static bool? IsWindowVisibleByHandle(IntPtr handle)
+        {
+            var style = Win32.User32.GetWindowLong(handle, -16);
+            // if is disabled - not visible
+            if ((style & 0x08000000) != 0) return false;
+            // if has visible style - visible :)
+            if ((style & 0x10000000) != 0) return true;
+
+            // DWM Window can be cloaked
+            // see https://social.msdn.microsoft.com/Forums/vstudio/en-US/f8341376-6015-4796-8273-31e0be91da62/difference-between-actually-visible-and-not-visiblewhich-are-there-but-we-cant-see-windows-of?forum=vcgeneral
+            int cloaked;
+            if (Win32.DwmApi.DwmGetWindowAttribute(handle, 14, out cloaked, 4) == 0)
+            {
+                if (cloaked != 0) return false;
+            }
+            // undefined
+            return null;
+        }
+        internal static bool CloseTabTip()
+        {
+            if (HasTabTip(out var handle))
+            {
+                Win32.User32.SendMessage(handle, Win32.User32.WindowMessage.WM_SYSCOMMAND, 0xF060, IntPtr.Zero);
+                return true;
+            }
+            return false;
+        }
+
+        internal static bool ProcessShellOpen(this string file)
+        {
+            try
+            {
+                var pro = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { UseShellExecute = true, FileName = file });
+                if (pro == null) return false;
+                return true;
+            }
+            catch { }
+            return false;
+        }
     }
 
     internal class AnchorDock

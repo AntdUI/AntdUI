@@ -358,6 +358,8 @@ namespace AntdUI
             }
         }
 
+        #region 前缀
+
         Image? prefix;
         /// <summary>
         /// 前缀
@@ -395,6 +397,9 @@ namespace AntdUI
         }
 
         string? prefixText;
+        /// <summary>
+        /// 前缀文本
+        /// </summary>
         [Description("前缀文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? PrefixText
@@ -432,9 +437,25 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 前缀宽度
+        /// </summary>
+        [Description("前缀宽度"), Category("外观"), DefaultValue(null)]
+        public int? PrefixWidth { get; set; }
+
+        /// <summary>
+        /// 前缀对齐方式
+        /// </summary>
+        [Description("前缀对齐方式"), Category("外观"), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
+        public FormatFlags PrefixFormat { get; set; } = FormatFlags.Center | FormatFlags.NoWrap;
+
+        /// <summary>
         /// 是否包含前缀
         /// </summary>
         public virtual bool HasPrefix => prefixSvg != null || prefix != null;
+
+        #endregion
+
+        #region 后缀
 
         Image? suffix;
         /// <summary>
@@ -473,6 +494,9 @@ namespace AntdUI
         }
 
         string? suffixText;
+        /// <summary>
+        /// 后缀文本
+        /// </summary>
         [Description("后缀文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? SuffixText
@@ -510,9 +534,23 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 后缀宽度
+        /// </summary>
+        [Description("后缀宽度"), Category("外观"), DefaultValue(null)]
+        public int? SuffixWidth { get; set; }
+
+        /// <summary>
+        /// 后缀对齐方式
+        /// </summary>
+        [Description("后缀对齐方式"), Category("外观"), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
+        public FormatFlags SuffixFormat { get; set; } = FormatFlags.Center | FormatFlags.NoWrap;
+
+        /// <summary>
         /// 是否包含后缀
         /// </summary>
         public virtual bool HasSuffix => suffixSvg != null || suffix != null;
+
+        #endregion
 
         #endregion
 
@@ -1812,6 +1850,7 @@ namespace AntdUI
             HasFocus = true;
             CaretInfo.Show = true;
             ExtraMouseDown = true;
+            if (Helper.IsTouch()) Helper.OpenOsk();
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -1846,22 +1885,22 @@ namespace AntdUI
                 //case 0x0105://WM_SYSKEYUP
                 //    if (HandKeyUp(GetKeyBoard(m.WParam.ToInt32()))) return;
                 //    break;
-                case Win32.WM_IME_STARTCOMPOSITION:
-                    m_hIMC = Win32.ImmGetContext(Handle);
+                case Win32.Imm32.WM_IME_STARTCOMPOSITION:
+                    m_hIMC = Win32.Imm32.ImmGetContext(Handle);
                     OnImeStartPrivate(m_hIMC);
                     break;
-                case Win32.WM_IME_ENDCOMPOSITION:
-                    Win32.ImmReleaseContext(Handle, m_hIMC);
+                case Win32.Imm32.WM_IME_ENDCOMPOSITION:
+                    Win32.Imm32.ImmReleaseContext(Handle, m_hIMC);
                     break;
-                case Win32.WM_IME_COMPOSITION:
-                    if (((int)m.LParam & Win32.GCS_RESULTSTR) == Win32.GCS_RESULTSTR)
+                case Win32.Imm32.WM_IME_COMPOSITION:
+                    if (((int)m.LParam & Win32.Imm32.GCS_RESULTSTR) == Win32.Imm32.GCS_RESULTSTR)
                     {
 #if NET40 || NET46 || NET48 || NET6_0
                         m.Result = (IntPtr)1;
 #else
                         m.Result = 1;
 #endif
-                        OnImeResultStrPrivate(m_hIMC, Win32.ImmGetCompositionString(m_hIMC, Win32.GCS_RESULTSTR));
+                        OnImeResultStrPrivate(m_hIMC, Win32.Imm32.ImmGetCompositionString(m_hIMC, Win32.Imm32.GCS_RESULTSTR));
                         return;
                     }
                     break;
@@ -2046,24 +2085,24 @@ namespace AntdUI
             {
                 var point = CaretInfo.Rect.Location;
                 point.Offset(0, -ScrollY.Value);
-                var CandidateForm = new Win32.CANDIDATEFORM()
+                var CandidateForm = new Win32.Imm32.CANDIDATEFORM()
                 {
-                    dwStyle = Win32.CFS_CANDIDATEPOS,
+                    dwStyle = Win32.Imm32.CFS_CANDIDATEPOS,
                     ptCurrentPos = point,
                 };
-                Win32.ImmSetCandidateWindow(hIMC, ref CandidateForm);
-                var CompositionForm = new Win32.COMPOSITIONFORM()
+                Win32.Imm32.ImmSetCandidateWindow(hIMC, ref CandidateForm);
+                var CompositionForm = new Win32.Imm32.COMPOSITIONFORM()
                 {
-                    dwStyle = Win32.CFS_FORCE_POSITION,
+                    dwStyle = Win32.Imm32.CFS_FORCE_POSITION,
                     ptCurrentPos = point,
                 };
-                Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
-                var logFont = new Win32.LOGFONT()
+                Win32.Imm32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
+                var logFont = new Win32.Imm32.LOGFONT()
                 {
                     lfHeight = CaretInfo.Rect.Height,
                     lfFaceName = Font.Name + "\0"
                 };
-                Win32.ImmSetCompositionFont(hIMC, ref logFont);
+                Win32.Imm32.ImmSetCompositionFont(hIMC, ref logFont);
             }
             catch { }
         }
@@ -2071,12 +2110,12 @@ namespace AntdUI
         {
             try
             {
-                var CompositionForm = new Win32.COMPOSITIONFORM()
+                var CompositionForm = new Win32.Imm32.COMPOSITIONFORM()
                 {
-                    dwStyle = Win32.CFS_FORCE_POSITION,
+                    dwStyle = Win32.Imm32.CFS_FORCE_POSITION,
                     ptCurrentPos = CaretInfo.Rect.Location
                 };
-                Win32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
+                Win32.Imm32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
                 if (strResult != null && !string.IsNullOrEmpty(strResult))
                 {
                     var chars = new List<string>(strResult.Length);

@@ -8,8 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using static Vanara.PInvoke.DwmApi;
-using static Vanara.PInvoke.User32;
 
 namespace AntdUI
 {
@@ -214,28 +212,28 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            var msg = (WindowMessage)m.Msg;
+            var msg = (Win32.User32.WindowMessage)m.Msg;
             switch (msg)
             {
-                case WindowMessage.WM_ERASEBKGND:
+                case Win32.User32.WindowMessage.WM_ERASEBKGND:
                     m.Result = IntPtr.Zero;
                     return;
-                case WindowMessage.WM_ACTIVATE:
-                case WindowMessage.WM_NCPAINT:
+                case Win32.User32.WindowMessage.WM_ACTIVATE:
+                case Win32.User32.WindowMessage.WM_NCPAINT:
                     DwmArea();
                     break;
-                case WindowMessage.WM_NCHITTEST:
+                case Win32.User32.WindowMessage.WM_NCHITTEST:
                     m.Result = TRUE;
                     return;
-                case WindowMessage.WM_SIZE:
+                case Win32.User32.WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
-                case WindowMessage.WM_MOUSEMOVE:
-                case WindowMessage.WM_NCMOUSEMOVE:
+                case Win32.User32.WindowMessage.WM_MOUSEMOVE:
+                case Win32.User32.WindowMessage.WM_NCMOUSEMOVE:
                     if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseMove(PointToClient(MousePosition));
                     break;
-                case WindowMessage.WM_LBUTTONDOWN:
-                case WindowMessage.WM_NCLBUTTONDOWN:
+                case Win32.User32.WindowMessage.WM_LBUTTONDOWN:
+                case Win32.User32.WindowMessage.WM_NCLBUTTONDOWN:
                     if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseDown();
                     break;
             }
@@ -253,8 +251,8 @@ namespace AntdUI
                 if (oldmargin == margin) return;
                 oldmargin = margin;
                 var v = 2;
-                Win32.DwmSetWindowAttribute(Handle, 2, ref v, 4);
-                DwmExtendFrameIntoClientArea(Handle, new MARGINS(margin));
+                Win32.DwmApi.DwmSetWindowAttribute(Handle, 2, ref v, 4);
+                Win32.DwmApi.DwmExtendFrameIntoClientArea(Handle, new Win32.DwmApi.MARGINS(margin));
             }
         }
 
@@ -280,7 +278,7 @@ namespace AntdUI
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.Style |= (int)WindowStyles.WS_MINIMIZEBOX;
+                cp.Style |= (int)Win32.User32.WindowStyles.WS_MINIMIZEBOX;
                 return cp;
             }
         }
@@ -367,7 +365,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             if (UseDwm && OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
-            DisableProcessWindowsGhosting();
+            Win32.User32.DisableProcessWindowsGhosting();
             base.OnHandleCreated(e);
             HandMessage();
             DwmArea();
@@ -410,8 +408,8 @@ namespace AntdUI
                     }
                 });
             }
-            ReleaseCapture();
-            SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
+            Win32.User32.ReleaseCapture();
+            Win32.User32.SendMessage(Handle, 0x0112, 61456 | 2, IntPtr.Zero);
             end = false;
             if (handmax)
             {
@@ -440,10 +438,10 @@ namespace AntdUI
             if (winState == WState.Restore)
             {
                 var retval = HitTest(PointToClient(MousePosition));
-                if (retval != HitTestValues.HTNOWHERE)
+                if (retval != Win32.User32.HitTestValues.HTNOWHERE)
                 {
                     var mode = retval;
-                    if (mode != HitTestValues.HTCLIENT)
+                    if (mode != Win32.User32.HitTestValues.HTCLIENT)
                     {
                         SetCursorHit(mode);
                         return true;
@@ -462,10 +460,10 @@ namespace AntdUI
             if (winState == WState.Restore)
             {
                 var retval = HitTest(point);
-                if (retval != HitTestValues.HTNOWHERE)
+                if (retval != Win32.User32.HitTestValues.HTNOWHERE)
                 {
                     var mode = retval;
-                    if (mode != HitTestValues.HTCLIENT)
+                    if (mode != Win32.User32.HitTestValues.HTCLIENT)
                     {
                         SetCursorHit(mode);
                         return true;

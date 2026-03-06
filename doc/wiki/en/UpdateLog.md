@@ -1,5 +1,18 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.2` 2026-03-06
+
+- ➕ Input touch screen triggers on-screen keyboard
+- ➕ Input PrefixWidth，PrefixFormat
+- ➕ Rich Task Asynchronous
+- ➕ Segmented item shadow
+- ✍️ Panel shadow asynchronous loading
+- ✍️ Table ColumnSwitch floating animation exception
+- ✍️ Table Display Format: The editing format is not displayed according to the preset
+- ✍️ Table Filter Alignment ShowCheckBg
+- ✍️ LabelLED does not display in Chinese
+- ✍️ Thai script cluster
+
 ### `2.3.1` 2026-03-03
 
 - ➕ Table ShowCheckBg

@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -82,8 +81,7 @@ namespace AntdUI
             {
                 if (_padding == value) return;
                 _padding = value;
-                shadow_temp?.Dispose();
-                shadow_temp = null;
+                shadow_temp.Change();
                 IOnSizeChanged();
                 OnPropertyChanged(nameof(InnerPadding));
 
@@ -102,8 +100,7 @@ namespace AntdUI
             {
                 if (shadow == value) return;
                 shadow = value;
-                shadow_temp?.Dispose();
-                shadow_temp = null;
+                shadow_temp.Change();
                 IOnSizeChanged();
                 OnPropertyChanged(nameof(Shadow));
             }
@@ -122,8 +119,7 @@ namespace AntdUI
             {
                 if (shadowColor == value) return;
                 shadowColor = value;
-                shadow_temp?.Dispose();
-                shadow_temp = null;
+                shadow_temp.Change();
                 Invalidate();
                 OnPropertyChanged(nameof(ShadowColor));
             }
@@ -141,8 +137,7 @@ namespace AntdUI
             {
                 if (shadowOffsetX == value) return;
                 shadowOffsetX = value;
-                shadow_temp?.Dispose();
-                shadow_temp = null;
+                shadow_temp.Change();
                 IOnSizeChanged();
                 OnPropertyChanged(nameof(ShadowOffsetX));
             }
@@ -160,8 +155,7 @@ namespace AntdUI
             {
                 if (shadowOffsetY == value) return;
                 shadowOffsetY = value;
-                shadow_temp?.Dispose();
-                shadow_temp = null;
+                shadow_temp.Change();
                 IOnSizeChanged();
                 OnPropertyChanged(nameof(ShadowOffsetY));
             }
@@ -238,8 +232,7 @@ namespace AntdUI
             {
                 if (shadowAlign == value) return;
                 shadowAlign = value;
-                shadow_temp?.Dispose();
-                shadow_temp = null;
+                shadow_temp.Change();
                 IOnSizeChanged();
                 OnPropertyChanged(nameof(ShadowAlign));
             }
@@ -441,7 +434,12 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
-        Bitmap? shadow_temp;
+        AsyncShadow shadow_temp;
+        public Panel()
+        {
+            shadow_temp = new AsyncShadow(this, rect => rect.RoundPath(radius, shadowAlign, radiusAlign));
+        }
+
         /// <summary>
         /// 绘制阴影
         /// </summary>
@@ -453,17 +451,11 @@ namespace AntdUI
             var path = rect_read.RoundPath(radius, shadowAlign, radiusAlign);
             if (shadow > 0)
             {
-                int shadow = (int)(Shadow * Dpi), shadowOffsetX = (int)(ShadowOffsetX * Dpi), shadowOffsetY = (int)(ShadowOffsetY * Dpi);
-                if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || (shadow_temp.Width != rect_client.Width || shadow_temp.Height != rect_client.Height))
-                {
-                    shadow_temp?.Dispose();
-                    shadow_temp = path.PaintShadowO(rect_client.Width, rect_client.Height, shadowColor ?? Colour.TextBase.Get(nameof(Panel), ColorScheme), shadow);
-                }
                 float opacity;
                 if (AnimationHover) opacity = AnimationHoverValue;
                 else if (ExtraMouseHover) opacity = shadowOpacityHover;
                 else opacity = shadowOpacity;
-                g.Image(shadow_temp, new Rectangle(rect_client.X + shadowOffsetX, rect_client.Y + shadowOffsetY, rect_client.Width, rect_client.Height), opacity);
+                shadow_temp.Draw(g, rect_client, rect_read, Dpi, shadow, ShadowOffsetX, ShadowOffsetY, shadowColor ?? Colour.TextBase.Get(nameof(Panel), ColorScheme), opacity);
             }
             return path;
         }
@@ -534,8 +526,7 @@ namespace AntdUI
             ThreadHover?.Dispose();
             ThreadHover = null;
             ShadowOpacityAnimation = false;
-            shadow_temp?.Dispose();
-            shadow_temp = null;
+            shadow_temp.Dispose();
             base.Dispose(disposing);
         }
         AnimationTask? ThreadHover;
@@ -585,8 +576,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    shadow_temp?.Dispose();
-                    shadow_temp = null;
+                    shadow_temp.Change();
                     break;
             }
         }

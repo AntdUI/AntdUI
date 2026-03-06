@@ -1,5 +1,18 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.2` 2026-03-06
+
+- ➕ Input 触屏触发屏幕键盘
+- ➕ Input PrefixWidth，PrefixFormat
+- ➕ 丰富 Task 异步
+- ➕ Segmented 项阴影
+- ✍️ Panel 阴影异步加载
+- ✍️ Table ColumnSwitch 悬浮动画异常
+- ✍️ Table DisplayFormat 编辑格式未按照预设显示
+- ✍️ Table 筛选对齐 ShowCheckBg
+- ✍️ LabelLed 中文不显示
+- ✍️ 泰文 字素簇
+
 ### `2.3.1` 2026-03-03
 
 - ➕ Table ShowCheckBg
