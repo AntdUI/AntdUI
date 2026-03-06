@@ -358,6 +358,8 @@ namespace AntdUI
             }
         }
 
+        #region 前缀
+
         Image? prefix;
         /// <summary>
         /// 前缀
@@ -395,6 +397,9 @@ namespace AntdUI
         }
 
         string? prefixText;
+        /// <summary>
+        /// 前缀文本
+        /// </summary>
         [Description("前缀文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? PrefixText
@@ -432,9 +437,25 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 前缀宽度
+        /// </summary>
+        [Description("前缀宽度"), Category("外观"), DefaultValue(null)]
+        public int? PrefixWidth { get; set; }
+
+        /// <summary>
+        /// 前缀对齐方式
+        /// </summary>
+        [Description("前缀对齐方式"), Category("外观"), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
+        public FormatFlags PrefixFormat { get; set; } = FormatFlags.Center | FormatFlags.NoWrap;
+
+        /// <summary>
         /// 是否包含前缀
         /// </summary>
         public virtual bool HasPrefix => prefixSvg != null || prefix != null;
+
+        #endregion
+
+        #region 后缀
 
         Image? suffix;
         /// <summary>
@@ -473,6 +494,9 @@ namespace AntdUI
         }
 
         string? suffixText;
+        /// <summary>
+        /// 后缀文本
+        /// </summary>
         [Description("后缀文本"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? SuffixText
@@ -510,9 +534,23 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 后缀宽度
+        /// </summary>
+        [Description("后缀宽度"), Category("外观"), DefaultValue(null)]
+        public int? SuffixWidth { get; set; }
+
+        /// <summary>
+        /// 后缀对齐方式
+        /// </summary>
+        [Description("后缀对齐方式"), Category("外观"), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
+        public FormatFlags SuffixFormat { get; set; } = FormatFlags.Center | FormatFlags.NoWrap;
+
+        /// <summary>
         /// 是否包含后缀
         /// </summary>
         public virtual bool HasSuffix => suffixSvg != null || suffix != null;
+
+        #endregion
 
         #endregion
 

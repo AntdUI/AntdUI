@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -430,6 +432,103 @@ namespace AntdUI
 
         #endregion
 
+        #region 阴影
+
+        int shadow = 0;
+        /// <summary>
+        /// 阴影大小
+        /// </summary>
+        [Description("阴影"), Category("外观"), DefaultValue(0)]
+        public int Shadow
+        {
+            get => shadow;
+            set
+            {
+                if (shadow == value) return;
+                shadow = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnPropertyChanged(nameof(Shadow));
+            }
+        }
+
+        Color? shadowColor;
+        /// <summary>
+        /// 阴影颜色
+        /// </summary>
+        [Description("阴影颜色"), Category("阴影"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ShadowColor
+        {
+            get => shadowColor;
+            set
+            {
+                if (shadowColor == value) return;
+                shadowColor = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                Invalidate();
+                OnPropertyChanged(nameof(ShadowColor));
+            }
+        }
+
+        int shadowOffsetX = 0;
+        /// <summary>
+        /// 阴影偏移X
+        /// </summary>
+        [Description("阴影偏移X"), Category("阴影"), DefaultValue(0)]
+        public int ShadowOffsetX
+        {
+            get => shadowOffsetX;
+            set
+            {
+                if (shadowOffsetX == value) return;
+                shadowOffsetX = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnPropertyChanged(nameof(ShadowOffsetX));
+            }
+        }
+
+        int shadowOffsetY = 0;
+        /// <summary>
+        /// 阴影偏移Y
+        /// </summary>
+        [Description("阴影偏移Y"), Category("阴影"), DefaultValue(0)]
+        public int ShadowOffsetY
+        {
+            get => shadowOffsetY;
+            set
+            {
+                if (shadowOffsetY == value) return;
+                shadowOffsetY = value;
+                shadow_temp?.Dispose();
+                shadow_temp = null;
+                OnPropertyChanged(nameof(ShadowOffsetY));
+            }
+        }
+
+        float shadowOpacity = 0.2F;
+        /// <summary>
+        /// 阴影透明度
+        /// </summary>
+        [Description("阴影透明度"), Category("阴影"), DefaultValue(0.2F)]
+        public float ShadowOpacity
+        {
+            get => shadowOpacity;
+            set
+            {
+                if (shadowOpacity == value) return;
+                if (value < 0) value = 0;
+                else if (value > 1) value = 1;
+                shadowOpacity = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ShadowOpacity));
+            }
+        }
+
+        #endregion
+
         RightToLeft rightToLeft = RightToLeft.No;
         [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
         public override RightToLeft RightToLeft
@@ -490,6 +589,7 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ThreadBar?.Dispose();
+            shadow_temp?.Dispose();
             base.Dispose(disposing);
         }
         bool AnimationBar = false;
@@ -784,6 +884,7 @@ namespace AntdUI
                     if (AnimationBar) return true;
                     using (var path = TabSelectRect.RoundPath(_radius, Round))
                     {
+                        DrawShadow(g, it.Rect, path);
                         g.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
                         if (_itemBorderWidth > 0) g.Draw(_itemBorderColor ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), (int)(_itemBorderWidth * Dpi), path);
                     }
@@ -847,6 +948,33 @@ namespace AntdUI
                 case TAlignMini.Bottom:
                 default:
                     return new RectangleF(rect.X + barPadding, rect.Bottom - barSize, rect.Width - barPadding2, barSize);
+            }
+        }
+
+        Bitmap? shadow_temp;
+        /// <summary>
+        /// 绘制阴影
+        /// </summary>
+        void DrawShadow(Canvas g, Rectangle rect_real, GraphicsPath path)
+        {
+            if (shadow > 0)
+            {
+                int shadow = (int)(Shadow * Dpi), shadow2 = shadow * 2, shadowOffsetX = (int)(ShadowOffsetX * Dpi), shadowOffsetY = (int)(ShadowOffsetY * Dpi);
+                var rect = new Rectangle(rect_real.X - shadow, rect_real.Y - shadow, rect_real.Width + shadow2, rect_real.Height + shadow2);
+                if (shadow_temp == null || shadow_temp.PixelFormat == PixelFormat.DontCare || (shadow_temp.Width != rect.Width || shadow_temp.Height != rect.Height))
+                {
+                    shadow_temp?.Dispose();
+                    shadow_temp = new Bitmap(rect.Width, rect.Height);
+                    {
+                        using (var g2 = Graphics.FromImage(shadow_temp).HighLay())
+                        {
+                            g2.TranslateTransform(-rect_real.X + shadow, -rect_real.Y + shadow);
+                            g2.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
+                        }
+                        Helper.Blur(shadow_temp, shadow);
+                    }
+                }
+                g.Image(shadow_temp, new Rectangle(rect.X + shadowOffsetX, rect.Y + shadowOffsetY, rect.Width, rect.Height), shadowOpacity);
             }
         }
 

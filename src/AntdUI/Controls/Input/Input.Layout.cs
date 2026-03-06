@@ -599,7 +599,7 @@ namespace AntdUI
             {
                 int icon_size = (int)(read_height * iconratio), icon_right_size = icon_size;
                 if (iconratioRight.HasValue) icon_right_size = (int)(read_height * iconratioRight.Value);
-                if (has_prefixText) this.GDI(g => RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_right_size, icon_right_size));
+                if (has_prefixText) this.GDI(g => RectLR(rect, read_height, sps, sps2, MeasurePrefix(g), read_height, icon_right_size, icon_right_size));
                 else if (has_prefix) RectLR(rect, read_height, sps, sps2, icon_size, icon_size, icon_right_size, icon_right_size);
                 else RectR(rect, read_height, sps, sps2, icon_right_size, icon_right_size);
             }
@@ -611,7 +611,7 @@ namespace AntdUI
                     {
                         this.GDI(g =>
                         {
-                            if (has_prefixText && has_suffixText) RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, g.MeasureString(suffixText, Font).Width, read_height);
+                            if (has_prefixText && has_suffixText) RectLR(rect, read_height, sps, sps2, MeasurePrefix(g), read_height, MeasureSuffix(g), read_height);
                             else
                             {
                                 if (has_prefix || has_suffix)
@@ -621,24 +621,24 @@ namespace AntdUI
                                         if (has_suffix)
                                         {
                                             int icon_size = (int)(read_height * (iconratioRight ?? iconratio));
-                                            RectLR(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width, read_height, icon_size, icon_size);
+                                            RectLR(rect, read_height, sps, sps2, MeasurePrefix(g), read_height, icon_size, icon_size);
                                         }
-                                        else RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width);
+                                        else RectL(rect, read_height, sps, sps2, MeasurePrefix(g));
                                     }
                                     else
                                     {
                                         if (has_prefix)
                                         {
                                             int icon_size = (int)(read_height * iconratio);
-                                            RectLR(rect, read_height, sps, sps2, icon_size, icon_size, g.MeasureString(suffixText, Font).Width, read_height);
+                                            RectLR(rect, read_height, sps, sps2, icon_size, icon_size, MeasureSuffix(g), read_height);
                                         }
-                                        else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Width);
+                                        else RectR(rect, read_height, sps, sps2, MeasureSuffix(g));
                                     }
                                 }
                                 else
                                 {
-                                    if (has_prefixText) RectL(rect, read_height, sps, sps2, g.MeasureString(prefixText, Font).Width);
-                                    else RectR(rect, read_height, sps, sps2, g.MeasureString(suffixText, Font).Width);
+                                    if (has_prefixText) RectL(rect, read_height, sps, sps2, MeasurePrefix(g));
+                                    else RectR(rect, read_height, sps, sps2, MeasureSuffix(g));
                                 }
                             }
                         });
@@ -678,6 +678,16 @@ namespace AntdUI
                     if (ul > -1) UseLeftAutoHeight(read_height, ul);
                 }
             }
+        }
+        int MeasurePrefix(Canvas g)
+        {
+            if (PrefixWidth == null) return g.MeasureString(prefixText, Font).Width;
+            return (int)(PrefixWidth * Dpi);
+        }
+        int MeasureSuffix(Canvas g)
+        {
+            if (SuffixWidth == null) return g.MeasureString(suffixText, Font).Width;
+            return (int)(SuffixWidth * Dpi);
         }
         void RectLR(Rectangle rect, int read_height, int sps, int sps2, int w_L, int h_L, int w_R, int h_R)
         {
