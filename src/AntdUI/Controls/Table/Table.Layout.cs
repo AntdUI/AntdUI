@@ -1325,7 +1325,7 @@ namespace AntdUI
             else if (cel is TCellText text)
             {
                 if (value is IList<ICell> || value is ICell) LoadLayout();
-                else text.value = value?.ToString();
+                else text.SetValue(value);
                 Invalidate();
             }
             else if (cel is TCellCheck check)

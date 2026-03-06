@@ -856,6 +856,8 @@ namespace AntdUI
             /// </summary>
             public string? value { get; set; }
 
+            public void SetValue(object? txt) => value = COLUMN.GetDisplayText(txt);
+
             #region 布局
 
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
