@@ -283,12 +283,65 @@ namespace AntdUI
 #endif
         }
 
-        public static Task<TResult> Run<TResult>(Func<TResult> action)
+        public static Task<TResult> Run<TResult>(Func<TResult> function)
+        {
+#if NET40
+            return Task.Factory.StartNew(function);
+#else
+            return Task.Run(function);
+#endif
+        }
+        public static Task<TResult> Run<TResult>(Func<TResult> function, CancellationToken cancellationToken)
+        {
+#if NET40
+            return Task.Factory.StartNew(function, cancellationToken);
+#else
+            return Task.Run(function, cancellationToken);
+#endif
+        }
+
+        public static Task Run(Action action)
         {
 #if NET40
             return Task.Factory.StartNew(action);
 #else
             return Task.Run(action);
+#endif
+        }
+
+        public static Task Run(Func<Task?> function)
+        {
+#if NET40
+            return Task.Factory.StartNew(function);
+#else
+            return Task.Run(function);
+#endif
+        }
+
+        public static Task Run(Func<Task?> function, CancellationToken cancellationToken)
+        {
+#if NET40
+            return Task.Factory.StartNew(function, cancellationToken);
+#else
+            return Task.Run(function, cancellationToken);
+#endif
+        }
+
+        public static Task<TResult> Run<TResult>(Func<Task<TResult>?> function)
+        {
+#if NET40
+            return Task.Factory.StartNew(function).Unwrap();
+#else
+            return Task.Run(function);
+#endif
+        }
+
+        public static Task<TResult> Run<TResult>(Func<Task<TResult>?> function, CancellationToken cancellationToken)
+        {
+#if NET40
+            return Task.Factory.StartNew(function, cancellationToken).Unwrap();
+#else
+            return Task.Run(function, cancellationToken);
 #endif
         }
 
