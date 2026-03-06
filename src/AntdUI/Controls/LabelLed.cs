@@ -544,14 +544,14 @@ namespace AntdUI
                     if (cache.TryGetValue(txt, out var find)) list.Add(find);
                     else
                     {
-                        if (ntype == 18 || ntype == 4)
+                        if (ntype == 18)
                         {
                             if (fontEmoji == null) fontEmoji = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
                             using (var bmp = new Bitmap(size, size))
                             {
                                 using (var g = Graphics.FromImage(bmp).HighLay(Dpi))
                                 {
-                                    g.String(txt, fontEmoji, Brushes.White, rect);
+                                    g.String(txt, fontEmoji, Brushes.White, rect, FormatFlags.Center | FormatFlags.NoWrap);
                                 }
                                 var tmp = Helper.ConvertImageToDotMatrix(bmp, true);
                                 cache.TryAdd(txt, tmp);
@@ -564,7 +564,7 @@ namespace AntdUI
                             {
                                 using (var g = Graphics.FromImage(bmp).HighLay(Dpi))
                                 {
-                                    g.String(txt, font, Brushes.White, rect);
+                                    g.String(txt, font, Brushes.White, rect, FormatFlags.Center | FormatFlags.NoWrap);
                                 }
                                 var tmp = Helper.ConvertImageToDotMatrix(bmp, true);
                                 cache.TryAdd(txt, tmp);

@@ -347,7 +347,7 @@ namespace AntdUI.Core
                 int emojiCount = 0;
                 GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
+                    if (Config.EmojiEnabled && ntype == 18)
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
@@ -377,7 +377,7 @@ namespace AntdUI.Core
                 int emojiCount = 0;
                 GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
+                    if (Config.EmojiEnabled && ntype == 18)
                     {
                         characters.Add(new TMPChar(txt, true));
                         emojiCount++;
@@ -547,7 +547,7 @@ namespace AntdUI.Core
             int emojiCount = 0;
             GraphemeSplitter.Each(text, (txt, ntype) =>
             {
-                if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
+                if (Config.EmojiEnabled && ntype == 18)
                 {
                     characters.Add(new TMPChar(txt, true));
                     emojiCount++;
@@ -692,7 +692,7 @@ namespace AntdUI.Core
             int emojiCount = 0;
             GraphemeSplitter.Each(text, (txt, ntype) =>
             {
-                if (Config.EmojiEnabled && (ntype == 18 || ntype == 4))
+                if (Config.EmojiEnabled && ntype == 18)
                 {
                     characters.Add(new TMPChar(txt, true));
                     emojiCount++;
