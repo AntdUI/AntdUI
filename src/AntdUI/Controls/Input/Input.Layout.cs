@@ -96,7 +96,7 @@ namespace AntdUI
                 if (force || cache_font == null) fix_cache_font.Clear();
                 GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
-                    if (ntype == 18)
+                    if (GraphemeSplitter.IsEmoji(ntype, txt))
                     {
                         HasEmoji = true;
                         font_widths.Add(new CacheFont(index, txt, true, 0));

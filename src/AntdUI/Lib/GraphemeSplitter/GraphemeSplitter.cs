@@ -226,5 +226,7 @@ namespace AntdUI
             if (nCharLen != 0) nCounter++;
             return nCounter;
         }
+
+        public static bool IsEmoji(int type, string txt) => type == 18 || (type == 4 && SvgDb.Emoji.ContainsKey(txt));
     }
 }
