@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -1221,6 +1222,86 @@ namespace AntdUI
             targetSearchText = text;
             if (input_target != null) input_target.Text = text;
             OnSearch(text, false);
+            ApplyFilter();
+        }
+
+        /// <summary>
+        /// 按指定顺序设置目标项（通过TransferItem引用）
+        /// </summary>
+        /// <param name="targetItems">目标项集合，按顺序排列</param>
+        public void SetTargetItems(IEnumerable<TransferItem> targetItems)
+        {
+            if (items == null) return;
+            pause = true;
+            foreach (var it in items) it.IsTarget = false;
+            var targetList = new List<TransferItem>();
+            foreach (var targetItem in targetItems)
+            {
+                if (items.Contains(targetItem))
+                {
+                    targetItem.IsTarget = true;
+                    targetList.Add(targetItem);
+                }
+            }
+            var sourceItems = items.Where(it => !it.IsTarget).ToList();
+            items.Dispose();
+            foreach (var it in sourceItems) items.Add(it);
+            foreach (var it in targetList) items.Add(it);
+            pause = false;
+            ApplyFilter();
+        }
+
+        /// <summary>
+        /// 按指定顺序设置目标项（通过ID匹配）
+        /// </summary>
+        /// <param name="targetIds">目标项ID集合，按顺序排列</param>
+        public void SetTargetItemsById(IEnumerable<string> targetIds)
+        {
+            if (items == null) return;
+            pause = true;
+            foreach (var it in items) it.IsTarget = false;
+            var targetList = new List<TransferItem>();
+            foreach (var targetId in targetIds)
+            {
+                var item = items.FirstOrDefault(it => it.ID == targetId);
+                if (item != null)
+                {
+                    item.IsTarget = true;
+                    targetList.Add(item);
+                }
+            }
+            var sourceItems = items.Where(it => !it.IsTarget).ToList();
+            items.Dispose();
+            foreach (var it in sourceItems) items.Add(it);
+            foreach (var it in targetList) items.Add(it);
+            pause = false;
+            ApplyFilter();
+        }
+
+        /// <summary>
+        /// 按指定顺序设置目标项（通过Value匹配）
+        /// </summary>
+        /// <param name="targetValues">目标项Value集合，按顺序排列</param>
+        public void SetTargetItemsByValue(IEnumerable<object> targetValues)
+        {
+            if (items == null) return;
+            pause = true;
+            foreach (var it in items) it.IsTarget = false;
+            var targetList = new List<TransferItem>();
+            foreach (var targetValue in targetValues)
+            {
+                var item = items.FirstOrDefault(it => Equals(it.Value, targetValue));
+                if (item != null)
+                {
+                    item.IsTarget = true;
+                    targetList.Add(item);
+                }
+            }
+            var sourceItems = items.Where(it => !it.IsTarget).ToList();
+            items.Dispose();
+            foreach (var it in sourceItems) items.Add(it);
+            foreach (var it in targetList) items.Add(it);
+            pause = false;
             ApplyFilter();
         }
 
