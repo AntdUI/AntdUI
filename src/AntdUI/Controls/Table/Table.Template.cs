@@ -15,18 +15,141 @@ namespace AntdUI
 {
     partial class Table
     {
+        internal class RowList
+        {
+            Dictionary<int, RowTemplate> dir_index;
+            Dictionary<int, RowTemplate> dir_index_r;
+            Dictionary<object, RowTemplate> dir_r;
+            public RowList(List<RowTemplate> data)
+            {
+                dir_index = new Dictionary<int, RowTemplate>(data.Count);
+                dir_index_r = new Dictionary<int, RowTemplate>(data.Count);
+                dir_r = new Dictionary<object, RowTemplate>(data.Count);
+                foreach (var it in data)
+                {
+                    dir_index.Add(it.INDEX, it);
+                    dir_r.Add(it.RECORD, it);
+                    if (dir_index_r.ContainsKey(it.INDEX_REAL)) continue;
+                    dir_index_r.Add(it.INDEX_REAL, it);
+                }
+                List = data.ToArray();
+            }
+            public RowTemplate[] List { get; }
+
+            public RowTemplate? this[int index]
+            {
+                get
+                {
+                    if (dir_index.TryGetValue(index, out var tmp)) return tmp;
+                    return null;
+                }
+            }
+
+            public RowTemplate? Real(int index)
+            {
+                if (dir_index_r.TryGetValue(index, out var tmp)) return tmp;
+                return null;
+            }
+            public RowTemplate? Record(object record)
+            {
+                if (dir_r.TryGetValue(record, out var tmp)) return tmp;
+                return null;
+            }
+
+            public Dictionary<int, object> RealDir()
+            {
+                var dir = new Dictionary<int, object>(List.Length);
+                foreach (var it in List)
+                {
+                    if (it.INDEX_REAL > -1) dir.Add(it.INDEX_REAL, it.RECORD);
+                }
+                return dir;
+            }
+
+            public RowTemplate First => List[0];
+
+            public int HeaderHeight => List[0].Height;
+
+            public int Length => List.Length;
+
+            public void SetSelect(bool value)
+            {
+                foreach (var it in List) it.Select = value;
+            }
+
+            public void SetHover(int row)
+            {
+                for (int i = 0; i < List.Length; i++) List[i].hover = i == row;
+            }
+
+            public void HoverLeave()
+            {
+                foreach (var it in List) HoverLeave(it);
+            }
+            public int HoverLeave(CELLDB db)
+            {
+                int countmove = 0;
+                for (int i = 1; i < List.Length; i++)
+                {
+                    var row = List[i];
+                    if (row.INDEX == db.i_row)
+                    {
+                        if (db.cell is TCellSort sort)
+                        {
+                            sort.Hover = sort.Contains(db.x, db.y);
+                            if (sort.Hover) countmove++;
+                        }
+                        List[i].Hover = true;
+                    }
+                    else HoverLeave(List[i]);
+                }
+                return countmove;
+            }
+            void HoverLeave(RowTemplate row)
+            {
+                row.Hover = false;
+                foreach (var cel in row.cells)
+                {
+                    if (cel is TCellSort sort) sort.Hover = false;
+                    else if (cel is Template template) ILeave(template);
+                }
+            }
+
+            void ILeave(Template template)
+            {
+                foreach (var it in template.Value)
+                {
+                    if (it is CellLink btn) btn.ExtraMouseHover = false;
+                    else if (it is CellCheckbox checkbox) checkbox.ExtraMouseHover = false;
+                    else if (it is CellRadio radio) radio.ExtraMouseHover = false;
+                    else if (it is CellSwitch _switch) _switch.ExtraMouseHover = false;
+                }
+            }
+        }
+
         /// <summary>
         /// 行数据
         /// </summary>
         internal class RowTemplate : IROW
         {
             Table PARENT;
-            public RowTemplate(Table table, CELL[] cell, int i, object value)
+            public RowTemplate(Table table, CELL[] cell, int i, object record)
             {
                 PARENT = table;
                 cells = cell;
-                RECORD = value;
+                RECORD = record;
                 INDEX_REAL = i;
+            }
+            public RowTemplate(Table table, CELL[] cell, IRow data)
+            {
+                PARENT = table;
+                cells = cell;
+                RD = data;
+                RECORD = data.record;
+                INDEX_REAL = data.i;
+                Depth = data.depth;
+                CanExpand = data.can_expand;
+                Expand = data.expand;
             }
 
             /// <summary>
@@ -136,12 +259,13 @@ namespace AntdUI
             public bool CanExpand { get; set; }
 
             public bool Expand { get; set; }
-            public bool ShowExpand { get; set; } = true;
 
-            internal int ExpandDepth { get; set; }
+            public int Depth { get; set; }
+
+            public IRow? RD { get; set; }
+
             internal int INDEX_REAL_KEY { get; set; }
-            internal int KeyTreeINDEX { get; set; } = -1;
-            internal Rectangle RectExpand;
+            internal Rectangle RectExpand { get; set; }
         }
 
         public interface IROW
@@ -1031,7 +1155,7 @@ namespace AntdUI
                 if (value.IconSvg != null) g.GetImgExtend(value.IconSvg, rect_icon, color);
                 else if (value.Icon != null) g.Image(value.Icon, rect_icon);
 
-                if (COLUMN.CellType != SelectCellType.Icon && rect_text != Rectangle.Empty) g.DrawText(value.Text, font, color, rect_text);
+                if (COLUMN.CellType != SelectCellType.Icon && rect_text != Rectangle.Empty) g.DrawText(value.Text, font, color, rect_text, FormatFlags.Center | FormatFlags.NoWrap);
             }
 
             #endregion

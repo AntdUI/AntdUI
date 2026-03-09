@@ -28,11 +28,11 @@ namespace AntdUI
                 try
                 {
                     var _row = rows[row];
-                    var item = RealCELL(_row.cells[column], rows, row, column, out var crect);
+                    var item = RealCELL(_row.cells[column], rows.List, row, column, out var crect);
                     EditModeClose();
                     if (CanEditMode(item))
                     {
-                        ScrollLine(crect.Y, crect.Bottom, rows);
+                        ScrollLine(crect.Y, crect.Bottom, rows.List);
                         if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY);
                         else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
                         else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);
@@ -131,7 +131,7 @@ namespace AntdUI
 
                 BeginInvoke(() =>
                 {
-                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                    rows.SetHover(i_row);
                     var tmp_input = CreateInput(cell, sx, sy, multiline, val, rect);
                     tmp_input.Name = "edit_" + i_col + "_" + i_row;
                     if (columnSelect.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
@@ -176,7 +176,7 @@ namespace AntdUI
 
                 BeginInvoke(() =>
                 {
-                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                    rows.SetHover(i_row);
                     var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                     tmp_input.Name = "edit_" + i_col + "_" + i_row;
                     if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
@@ -216,7 +216,7 @@ namespace AntdUI
 
                         BeginInvoke(() =>
                         {
-                            for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                            rows.SetHover(i_row);
                             var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                             tmp_input.Name = "edit_" + i_col + "_" + i_row;
                             if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;

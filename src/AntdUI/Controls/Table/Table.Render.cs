@@ -27,11 +27,11 @@ namespace AntdUI
             {
                 using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
-                    PaintTable(g, rows, e.Rect, e.Rect.PaddingRect(Padding, borderWidth), column_font);
+                    PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, borderWidth), column_font);
                 }
             }
-            else PaintTable(g, rows, e.Rect, e.Rect.PaddingRect(Padding, borderWidth), columnfont);
-            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, e.Rect, rows[0].RECT.Height);
+            else PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, borderWidth), columnfont);
+            if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, e.Rect, rows.First.RECT.Height);
             ScrollBar.Paint(g, ColorScheme);
             base.OnDraw(e);
         }
@@ -226,7 +226,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    it.SHOW = it.ShowExpand && it.Type == RowType.None && rect_read.IsItemVisible(sy, it.RECT);
+                    it.SHOW = it.Type == RowType.None && rect_read.IsItemVisible(sy, it.RECT);
                     if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
@@ -249,7 +249,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    it.SHOW = it.ShowExpand && (it.Type == RowType.None || it.Type == RowType.Column) && rect_read.IsItemVisible(sy, it.RECT);
+                    it.SHOW = (it.Type == RowType.None || it.Type == RowType.Column) && rect_read.IsItemVisible(sy, it.RECT);
                     if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
                 }
                 showIndex++;
@@ -672,7 +672,7 @@ namespace AntdUI
                         PaintItemCore(g, columnIndex, it, enable, CellFont ?? Font, CellFore ?? fore);
                     }
                 }
-                else if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
+                else if (it.ROW.CanExpand) PaintItemArrow(g, it, enable, fore);
                 OnCellPaint(g, it.RECT, it.RECT_REAL, it.ROW.RECORD, it.ROW.Type, it.ROW.INDEX, columnIndex, it.COLUMN);
             }
             catch { }
@@ -698,7 +698,7 @@ namespace AntdUI
                 text.Print(g, ColorScheme, font, fore, enable);
             }
             if (dragHeader != null && dragHeader.enable && dragHeader.i == it.COLUMN.INDEX_REAL) g.Fill(Colour.FillSecondary.Get(nameof(Table), ColorScheme), it.RECT);
-            if (it.ROW.CanExpand && it.ROW.KeyTreeINDEX == columnIndex) PaintItemArrow(g, it, enable, fore);
+            if (it.ROW.CanExpand) PaintItemArrow(g, it, enable, fore);
         }
         void PaintItemFocus(Canvas g, CELL it, bool enable)
         {
@@ -1268,10 +1268,10 @@ namespace AntdUI
             {
                 first.mergeW = rect.Width;
                 int ox = 0;
-                if (first.ROW.KeyTreeINDEX == first.COLUMN.INDEX)
+                if (first.COLUMN.EqualsKeyTree(TreeKey))
                 {
                     int treesize = (int)(TreeButtonSize * Dpi), gapTree = (int)(_gapTree * Dpi);
-                    ox = gapTree * first.ROW.ExpandDepth + (gapTree + treesize);
+                    ox = gapTree * first.ROW.Depth + (gapTree + treesize);
                 }
                 var gap = new TableGaps(_gap, Dpi);
                 var font_size = g.MeasureString(Config.NullText, Font);

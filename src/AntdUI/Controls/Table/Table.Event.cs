@@ -388,6 +388,13 @@ namespace AntdUI
         [Description("展开改变时发生"), Category("行为")]
         public event ExpandEventHandler? ExpandChanged;
 
+        protected virtual bool OnExpandChanged(object record, bool value)
+        {
+            ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, value));
+            return true;
+        }
+
+
         #region 筛选
 
         /// <summary>
