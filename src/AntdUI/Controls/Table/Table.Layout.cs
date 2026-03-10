@@ -19,15 +19,11 @@ namespace AntdUI
             if (LoadLayout()) Invalidate();
         }
 
-        string? show_oldrect;
         protected override void OnSizeChanged(EventArgs e)
         {
             var rect = ClientRectangle;
             if (IsHandleCreated && rect.Width > 1 && rect.Height > 1)
             {
-                string show_rect = rect.Width + "_" + rect.Height;
-                if (show_oldrect == show_rect) return;
-                show_oldrect = show_rect;
                 LoadLayout(rect);
                 EditModeClose();
                 base.OnSizeChanged(e);
@@ -46,7 +42,6 @@ namespace AntdUI
                 if (pauseLayout) return false;
                 var rect = ClientRectangle;
                 if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
-                else show_oldrect = null;
                 return true;
             }
             return false;

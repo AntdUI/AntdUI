@@ -135,7 +135,7 @@ namespace AntdUI
         }
         bool ScrollIFToX(Rectangle r, bool rd = true)
         {
-            string tmp = r.X.ToString() + cache_font?.Length.ToString();
+            string tmp = r.X.ToString() + cache_font?.Count.ToString();
             if (tmp == oldtmpX) return false;
             oldtmpX = tmp;
             int caretX = CaretInfo.X - ScrollX.Value, threshold = (int)(rect_text.Width * 0.3f);

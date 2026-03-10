@@ -258,7 +258,7 @@ namespace AntdUI
             }
             g.Restore(state);
         }
-        void PaintText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
+        void PaintText(Canvas g, Color _fore, int w, int h, List<CacheFont> cache_font)
         {
             var state = g.Save();
             g.TranslateTransform(-ScrollX.Value, -ScrollY.Value);
@@ -274,9 +274,9 @@ namespace AntdUI
             PaintText(g, _fore, cache_font, tmp);
             g.Restore(state);
         }
-        List<CacheFont> PCSText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
+        List<CacheFont> PCSText(Canvas g, Color _fore, int w, int h, List<CacheFont> cache_font)
         {
-            var tmp = new List<CacheFont>(cache_font.Length);
+            var tmp = new List<CacheFont>(cache_font.Count);
             if (IsPassWord)
             {
                 if (ScrollY.Show)
@@ -337,7 +337,7 @@ namespace AntdUI
             }
             return tmp;
         }
-        void PaintText(Canvas g, Color _fore, CacheFont[] cache_font, List<CacheFont> tmp)
+        void PaintText(Canvas g, Color _fore, List<CacheFont> cache_font, List<CacheFont> tmp)
         {
             using (var fore = new SolidBrush(_fore))
             {
@@ -366,14 +366,14 @@ namespace AntdUI
                 }
             }
         }
-        void PaintTextSelected(Canvas g, CacheFont[] cache_font)
+        void PaintTextSelected(Canvas g, List<CacheFont> cache_font)
         {
-            if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !BanInput)
+            if (selectionLength > 0 && cache_font.Count > selectionStartTemp && !BanInput)
             {
                 try
                 {
                     int start = selectionStartTemp, end = start + selectionLength - 1;
-                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
+                    if (end > cache_font.Count - 1) end = cache_font.Count - 1;
                     var first = cache_font[start];
                     using (var brush = new SolidBrush(selection))
                     {

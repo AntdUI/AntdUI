@@ -21,7 +21,7 @@ namespace AntdUI
 
         #region 确定字体宽度
 
-        CacheFont[]? cache_font;
+        List<CacheFont>? cache_font;
         CacheCaret[]? cache_caret;
         bool HasEmoji = false;
         bool FixFontWidth(bool force = false)
@@ -50,14 +50,7 @@ namespace AntdUI
             }
             else
             {
-                if (isempty)
-                {
-                    TextTotalLine = 0;
-                    bool set_x = ScrollX.SetValue(0), set_y = ScrollY.SetValue(0);
-                    cache_font = null;
-                    cache_caret = null;
-                    return CalculateRect() || set_x || set_y;
-                }
+                if (isempty) return CleanCacheFont();
                 else
                 {
                     return this.GDI(g =>
@@ -94,26 +87,29 @@ namespace AntdUI
             else
             {
                 if (force || cache_font == null) fix_cache_font.Clear();
+                int tmpH = fontHeight;
                 GraphemeSplitter.Each(text, (txt, ntype) =>
                 {
                     if (GraphemeSplitter.IsEmoji(ntype, txt))
                     {
                         HasEmoji = true;
-                        font_widths.Add(new CacheFont(index, txt, true, 0));
+                        font_widths.Add(new CacheFont(index, txt, true, tmpH));
                     }
                     else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
                     index++;
                 });
-                if (HasEmoji)
-                {
-                    foreach (var it in font_widths)
-                    {
-                        if (it.emoji) it.width = fontHeight;
-                    }
-                }
             }
-            cache_font = font_widths.ToArray();
+            cache_font = font_widths;
             SetStyle();
+        }
+
+        bool CleanCacheFont()
+        {
+            TextTotalLine = 0;
+            bool set_x = ScrollX.SetValue(0), set_y = ScrollY.SetValue(0);
+            cache_font = null;
+            cache_caret = null;
+            return CalculateRect() || set_x || set_y;
         }
 
         /// <summary>
@@ -258,7 +254,7 @@ namespace AntdUI
                     HandTextAlign(cache_font);
                 }
 
-                if (cache_font.Length == 0)
+                if (cache_font.Count == 0)
                 {
                     TextTotalLine = 0;
                     isempty = true;
@@ -268,14 +264,14 @@ namespace AntdUI
                     return true;
                 }
 
-                var last = cache_font[cache_font.Length - 1];
+                var last = cache_font[cache_font.Count - 1];
 
-                var carets = new List<CacheCaret>(cache_font.Length + 2)
+                var carets = new List<CacheCaret>(cache_font.Count + 2)
                 {
                     new CacheCaret { x = cache_font[0].rect.X, y = rect_text.Y, i = 0,index=0 }
                 };
                 int tmp = 1;
-                for (int i = 0; i < cache_font.Length; i++)
+                for (int i = 0; i < cache_font.Count; i++)
                 {
                     var it = cache_font[i];
                     if (it.ret)
@@ -317,7 +313,7 @@ namespace AntdUI
                 carets.Add(new CacheCaret
                 {
                     index = tmp,
-                    i = cache_font.Length,
+                    i = cache_font.Count,
                     x = last.rect.Right,
                     y = last.rect.Y
                 });
@@ -379,7 +375,7 @@ namespace AntdUI
 
         #region 处理文本方向
 
-        void HandTextAlign(CacheFont[] cache_font)
+        void HandTextAlign(List<CacheFont> cache_font)
         {
             int usex = 0;
             if (ModeRange)
@@ -391,10 +387,10 @@ namespace AntdUI
                 rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
 
                 int tabindex = GetTabIndex(cache_font);
-                List<int> i_l = new List<int>(cache_font.Length), i_r = new List<int>(i_l.Count);
+                List<int> i_l = new List<int>(cache_font.Count), i_r = new List<int>(i_l.Count);
                 if (tabindex == -1)
                 {
-                    for (int i = 0; i < cache_font.Length; i++)
+                    for (int i = 0; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
                         it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
@@ -415,7 +411,7 @@ namespace AntdUI
                     cache_font[tabindex].rect = new Rectangle(left.Right, left.Y, 0, left.Height);
 
                     int user = 0;
-                    for (int i = tabindex + 1; i < cache_font.Length; i++)
+                    for (int i = tabindex + 1; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
                         it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
@@ -427,7 +423,7 @@ namespace AntdUI
                 {
                     cache_font[0].rect = new Rectangle(rect_d_r.X, rect_d_r.Y, cache_font[0].width, CaretInfo.Height);
                     int user = 0;
-                    for (int i = tabindex + 1; i < cache_font.Length; i++)
+                    for (int i = tabindex + 1; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
                         it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
@@ -508,12 +504,12 @@ namespace AntdUI
                 HandTextAlignCore(cache_font);
             }
         }
-        void HandTextAlignCore(CacheFont[] cache_font)
+        void HandTextAlignCore(List<CacheFont> cache_font)
         {
             if (textalign == HorizontalAlignment.Right)
             {
                 int y = -1;
-                var list = new List<CacheFont>(cache_font.Length);
+                var list = new List<CacheFont>(cache_font.Count);
                 foreach (var it in cache_font)
                 {
                     if (it.rect.Y != y)
@@ -528,7 +524,7 @@ namespace AntdUI
             else if (textalign == HorizontalAlignment.Center)
             {
                 int y = -1;
-                var list = new List<CacheFont>(cache_font.Length);
+                var list = new List<CacheFont>(cache_font.Count);
                 foreach (var it in cache_font)
                 {
                     if (it.rect.Y != y)
@@ -577,7 +573,7 @@ namespace AntdUI
                 list.Clear();
             }
         }
-        int GetTabIndex(CacheFont[] cache_font)
+        int GetTabIndex(List<CacheFont> cache_font)
         {
             foreach (var it in cache_font)
             {
