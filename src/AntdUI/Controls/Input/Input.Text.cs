@@ -39,22 +39,7 @@ namespace AntdUI
         {
             var value = _text.Insert(start, text);
             _text = value;
-            int index = 0;
-            var font_widths = new List<CacheFont>(text.Length);
-            this.GDI(g =>
-            {
-                GraphemeSplitter.Each(text, (txt, ntype) =>
-                {
-                    if (GraphemeSplitter.IsEmoji(ntype, txt))
-                    {
-                        HasEmoji = true;
-                        font_widths.Add(new CacheFont(index, txt, true, fix_cache_font.Height(g, Font)));
-                    }
-                    else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
-                    index++;
-                });
-            });
-            len = index;
+            var font_widths = FixFontWidth(text, out len);
             if (cache_font == null) cache_font = font_widths;
             else cache_font.InsertRange(start, font_widths);
             isempty = false;
@@ -70,22 +55,7 @@ namespace AntdUI
         {
             var value = _text + text;
             _text = value;
-            int index = 0;
-            var font_widths = new List<CacheFont>(text.Length);
-            this.GDI(g =>
-            {
-                GraphemeSplitter.Each(text, (txt, ntype) =>
-                {
-                    if (GraphemeSplitter.IsEmoji(ntype, txt))
-                    {
-                        HasEmoji = true;
-                        font_widths.Add(new CacheFont(index, txt, true, fix_cache_font.Height(g, Font)));
-                    }
-                    else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
-                    index++;
-                });
-            });
-            len = index;
+            var font_widths = FixFontWidth(text, out len);
             if (cache_font == null) cache_font = font_widths;
             else cache_font.AddRange(font_widths);
             isempty = false;

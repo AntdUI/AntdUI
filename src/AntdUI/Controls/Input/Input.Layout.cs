@@ -43,7 +43,7 @@ namespace AntdUI
                         cache_font = null;
                         cache_caret = null;
                     }
-                    else FixFontWidth(g, text, force, ref font_height);
+                    else FixFontWidth(g, text, force, font_height);
                     CaretInfo.Height = font_height;
                     return CalculateRect() || rdcount > 0;
                 });
@@ -61,7 +61,7 @@ namespace AntdUI
                             CaretInfo.Height = font_height;
                             return false;
                         }
-                        FixFontWidth(g, text, force, ref font_height);
+                        FixFontWidth(g, text, force, font_height);
                         CaretInfo.Height = font_height;
                         return CalculateRect();
                     });
@@ -69,15 +69,28 @@ namespace AntdUI
             }
         }
 
-        void FixFontWidth(Canvas g, string text, bool force, ref int fontHeight)
+        void FixFontWidth(Canvas g, string text, bool force, int fontHeight)
         {
-            var font_widths = new List<CacheFont>(text.Length);
+            if (force || cache_font == null) fix_cache_font.Clear();
+            cache_font = FixFontWidth(g, text, fontHeight, out _);
+            SetStyle();
+        }
+
+        List<CacheFont> FixFontWidth(string text, out int length)
+        {
+            int len = 0;
+            var font_widths = this.GDI(g => FixFontWidth(g, text, null, out len));
+            length = len;
+            return font_widths;
+        }
+
+        List<CacheFont> FixFontWidth(Canvas g, string text, int? fontHeight, out int length)
+        {
             int index = 0;
+            var font_widths = new List<CacheFont>(text.Length);
             if (IsPassWord)
             {
-                var sizefont = g.MeasureString(PassWordChar, Font);
-                int w = sizefont.Width;
-                if (fontHeight < sizefont.Height) fontHeight = sizefont.Height;
+                int w = fix_cache_font.Width(g, Font, PassWordChar);
                 foreach (char it in text)
                 {
                     font_widths.Add(new CacheFont(index, it.ToString(), false, w));
@@ -86,21 +99,35 @@ namespace AntdUI
             }
             else
             {
-                if (force || cache_font == null) fix_cache_font.Clear();
-                int tmpH = fontHeight;
-                GraphemeSplitter.Each(text, (txt, ntype) =>
+                if (fontHeight.HasValue)
                 {
-                    if (GraphemeSplitter.IsEmoji(ntype, txt))
+                    GraphemeSplitter.Each(text, (txt, ntype) =>
                     {
-                        HasEmoji = true;
-                        font_widths.Add(new CacheFont(index, txt, true, tmpH));
-                    }
-                    else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
-                    index++;
-                });
+                        if (GraphemeSplitter.IsEmoji(ntype, txt))
+                        {
+                            HasEmoji = true;
+                            font_widths.Add(new CacheFont(index, txt, true, fontHeight.Value));
+                        }
+                        else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        index++;
+                    });
+                }
+                else
+                {
+                    GraphemeSplitter.Each(text, (txt, ntype) =>
+                    {
+                        if (GraphemeSplitter.IsEmoji(ntype, txt))
+                        {
+                            HasEmoji = true;
+                            font_widths.Add(new CacheFont(index, txt, true, fix_cache_font.Height(g, Font)));
+                        }
+                        else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        index++;
+                    });
+                }
             }
-            cache_font = font_widths;
-            SetStyle();
+            length = index;
+            return font_widths;
         }
 
         bool CleanCacheFont()
