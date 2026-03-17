@@ -33,7 +33,7 @@ namespace AntdUI
             CustomSource = customSource;
             realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
-            dv.ShowCheckBg = table.ShowCheckBg;
+            //dv.ShowCheckBg = table.ShowCheckBg;
             dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
             Option.Table = table;
             Option.Column = currentColumn;

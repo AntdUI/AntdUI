@@ -55,6 +55,7 @@ namespace AntdUI
             dv.Name = "dv";
             dv.Size = new System.Drawing.Size(200, 200);
             dv.TabIndex = 2;
+            dv.ShowCheckBg = false;
             dv.CheckedChanged += dv_CheckedChanged;
             // 
             // inputSearch

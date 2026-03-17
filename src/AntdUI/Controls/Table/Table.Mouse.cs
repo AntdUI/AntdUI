@@ -1295,9 +1295,30 @@ namespace AntdUI
                     list.Add(new SortModel(i_r, obj?.ToString()));
                 }
             }
+         
             return list;
         }
+        /// <summary>
+        /// 按列SortMode排序
+        /// </summary>
+        /// <param name="col">列</param>
+        public void Sort(Column col)
+        {
+            if (col == null) return;
+            bool emptySortData = SortData == null;
+            if (col.SortMode == SortMode.ASC)
+                SortDataASC(col);
+            else if (col.SortMode == SortMode.DESC)
+                SortDataDESC(col);
+            else
+                SortData = null;
 
+            if (emptySortData && SortData == null) return;
+
+            LoadLayout();
+            Invalidate();
+            OnSortRows(col.INDEX);
+        }
         void SortDataASC(Column column)
         {
             var list = SortDatas(column);
