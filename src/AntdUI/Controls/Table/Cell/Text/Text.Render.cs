@@ -43,7 +43,7 @@ namespace AntdUI
             return new Size(size.Width, size.Height);
         }
 
-        Rectangle RectL, RectR;
+        public Rectangle RectL, RectR;
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             int width = rect.Width;

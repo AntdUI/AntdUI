@@ -90,7 +90,7 @@ namespace AntdUI
             }
         }
 
-        bool nullText = false;
+        public bool nullText = false;
         public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {
             nullText = string.IsNullOrWhiteSpace(Text);
@@ -106,7 +106,7 @@ namespace AntdUI
             }
         }
 
-        Rectangle RectText, RectIcon;
+        public Rectangle RectText, RectIcon;
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)
         {
             int width = rect.Width;

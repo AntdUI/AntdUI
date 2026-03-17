@@ -61,8 +61,8 @@ namespace AntdUI
 
         #region 阴影
 
-        [Obsolete("use InnerPadding")]
-        [Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Obsolete("use InnerPadding"), Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
         public Padding padding
         {
             get => InnerPadding;

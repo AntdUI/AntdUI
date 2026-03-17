@@ -648,6 +648,7 @@ namespace AntdUI
         /// <summary>
         /// 高精度边框
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("use BorderRenderMode")]
         [Description("高精度边框"), Category("边框"), DefaultValue(null)]
         public bool? BorderHigh

@@ -27,6 +27,7 @@ namespace AntdUI
         /// <summary>
         /// 色彩模式
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("use ColorScheme"), Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
         public TAMode Mode
         {

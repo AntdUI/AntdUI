@@ -101,15 +101,6 @@ namespace AntdUI
                 var font_size = g.MeasureString(checkedText.Length > uncheckedText.Length ? checkedText : uncheckedText, Font ?? font);
                 return new Size(font_size.Width + (int)(font_size.Height * 1.2F), font_size.Height);
             }
-            //nullText = string.IsNullOrWhiteSpace(Text);
-            //if (nullText)
-            //{
-            //}
-            //else
-            //{
-            //    var font_size = g.MeasureText(Text, Font ?? font);
-            //    return new Size(font_size.Width + font_size.Height + gap.x, font_size.Height + gap.x);
-            //}
         }
 
         public override void SetRect(Canvas g, Font font, Rectangle rect, Size size, int maxwidth, TableGaps gap)

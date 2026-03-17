@@ -635,6 +635,7 @@ namespace AntdUI
         /// <summary>
         /// 处理快捷键
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete, Description("处理快捷键"), Category("行为"), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
 

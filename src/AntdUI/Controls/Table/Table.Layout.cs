@@ -1413,7 +1413,7 @@ namespace AntdUI
                 t_count = rows.Length - 1;
                 for (int row_i = 1; row_i < rows.Length; row_i++)
                 {
-                    var it = rows[row_i];
+                    var it = rows.List[row_i];
                     if (it.Type == RowType.Summary) t_count--;
                     else
                     {
