@@ -1782,6 +1782,10 @@ namespace AntdUI
             action = render =>
             {
                 if (it.PARENT == null) return;
+                if (it.items != null)
+                {
+                    foreach (var item in it.items) item.PARENT = it.PARENT;
+                }
                 if (render) it.PARENT.ChangeList(true);
                 else it.PARENT.Invalidate();
             };

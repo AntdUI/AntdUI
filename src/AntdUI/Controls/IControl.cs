@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -346,7 +347,24 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public Task Spin(string text, Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
+        public Task Spin(string text, Action<Spin.Config> action, Action? end = null) => Spin(new Spin.Config(text), action, end);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(Action<Spin.Config> action, CancellationTokenSource? token, Action? end = null) => Spin(new Spin.Config().SetCancel(token), action, end);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(string text, Action<Spin.Config> action, CancellationTokenSource? token, Action? end = null) => Spin(new Spin.Config(text).SetCancel(token), action, end);
 
         /// <summary>
         /// Spin 加载中
@@ -373,7 +391,24 @@ namespace AntdUI
         /// <param name="text">加载文本</param>
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
-        public Task Spin(string text, Func<Spin.Config, Task> action, Action? end = null) => Spin(new Spin.Config { Text = text }, action, end);
+        public Task Spin(string text, Func<Spin.Config, Task> action, Action? end = null) => Spin(new Spin.Config(text), action, end);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(Func<Spin.Config, Task> action, CancellationTokenSource? token, Action? end = null) => Spin(new Spin.Config().SetCancel(token), action, end);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        public Task Spin(string text, Func<Spin.Config, Task> action, CancellationTokenSource? token, Action? end = null) => Spin(new Spin.Config(text).SetCancel(token), action, end);
 
         /// <summary>
         /// Spin 加载中
