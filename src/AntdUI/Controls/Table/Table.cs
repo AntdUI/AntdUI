@@ -884,6 +884,12 @@ namespace AntdUI
         public bool FilterRealTime { get; set; }
 
         /// <summary>
+        /// 筛选显示复选背景
+        /// </summary>
+        [Description("筛选显示复选背景"), Category("行为"), DefaultValue(null)]
+        public bool? FilterShowCheckBg { get; set; }
+
+        /// <summary>
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
@@ -1518,6 +1524,22 @@ namespace AntdUI
             if (LoadLayout()) Invalidate();
         }
 
+        /// <summary>
+        /// 按列SortMode排序
+        /// </summary>
+        /// <param name="col">列</param>
+        public void Sort(Column col)
+        {
+            bool emptySortData = SortData == null;
+            if (col.SortMode == SortMode.ASC) SortDataASC(col);
+            else if (col.SortMode == SortMode.DESC) SortDataDESC(col);
+            else SortData = null;
+            if (emptySortData && SortData == null) return;
+            LoadLayout();
+            Invalidate();
+            OnSortRows(col.INDEX);
+        }
+
         int? GetRowIndex(object it, IRow[] rows)
         {
             for (int i = 0; i < rows.Length; i++)
@@ -1629,7 +1651,7 @@ namespace AntdUI
                 dir_columns = new Dictionary<string, Column>(dataTmp.columns.Length);
                 var columns = new Dictionary<string, DataColumn>(dataTmp.columns.Length);
                 foreach (var column in dataTmp.columns) columns.Add(column.key, new DataColumn(column.key) { Caption = column.text });
-                foreach (var item in rows[0].cells)
+                foreach (var item in rows.List[0].cells)
                 {
                     var column = item.COLUMN;
                     dir_columns.Add(column.Key, column);
