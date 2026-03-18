@@ -67,11 +67,45 @@ namespace AntdUI
         [Description("显示的水印文本E"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationPlaceholderEnd { get; set; }
 
+        #region 隐藏
+
         /// <summary>
         /// 水印文本
         /// </summary>
         [Browsable(false), Description("水印文本"), Category("行为"), DefaultValue(null)]
         public override string? PlaceholderText => null;
+
+        /// <summary>
+        /// 是否显示滚动条
+        /// </summary>
+        [Browsable(false), Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        public override bool AutoScroll => false;
+
+        /// <summary>
+        /// 多行文本
+        /// </summary>
+        [Browsable(false), Description("多行文本"), Category("行为"), DefaultValue(false)]
+        public override bool Multiline => false;
+
+        /// <summary>
+        /// 自动换行
+        /// </summary>
+        [Browsable(false), Description("自动换行"), Category("行为"), DefaultValue(false)]
+        public override bool WordWrap => false;
+
+        /// <summary>
+        /// 使用密码框
+        /// </summary>
+        [Browsable(false), Description("使用密码框"), Category("行为"), DefaultValue(false)]
+        public override bool UseSystemPasswordChar => false;
+
+        /// <summary>
+        /// 自定义密码字符
+        /// </summary>
+        [Browsable(false), Description("自定义密码字符"), Category("行为"), DefaultValue((char)0)]
+        public override char PasswordChar => base.PasswordChar;
+
+        #endregion
 
         string dateFormat = "yyyy-MM-dd";
         bool ShowTime = false;
@@ -286,14 +320,7 @@ namespace AntdUI
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
-            if (showicon)
-            {
-                using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
-                {
-                    if (bmp == null) return;
-                    g.Image(bmp, rect_r);
-                }
-            }
+            if (showicon) g.Svg(SvgDb.IcoDate, rect_r, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
         }
 
         #endregion
@@ -597,7 +624,7 @@ namespace AntdUI
                     else g.Fill(brush, new RectangleF(rect_d_r.X, rect_read.Bottom - h, rect_d_r.Width, h));
                 }
             }
-            g.GetImgExtend(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
+            g.Svg(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
         }
 
         #endregion

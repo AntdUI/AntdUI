@@ -1930,14 +1930,7 @@ namespace AntdUI
             }
             if (iconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(iconSvg, rect, color))
-                {
-                    if (_bmp != null)
-                    {
-                        g.Image(_bmp, rect, opacity);
-                        count++;
-                    }
-                }
+                if (g.Svg(iconSvg, rect, opacity, color)) count++;
             }
             return count > 0;
         }

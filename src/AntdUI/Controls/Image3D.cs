@@ -363,7 +363,7 @@ namespace AntdUI
                 FillRect(g, rect, HoverBack ?? Colour.TextTertiary.Get(nameof(Image3D), ColorScheme), _radius, round);
                 var rect_hover = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
                 if (HoverImage != null) g.Image(HoverImage, rect_hover);
-                if (HoverImageSvg != null) g.GetImgExtend(HoverImageSvg, rect_hover, HoverFore ?? Colour.BgBase.Get(nameof(Image3D), ColorScheme));
+                if (HoverImageSvg != null) g.Svg(HoverImageSvg, rect_hover, HoverFore ?? Colour.BgBase.Get(nameof(Image3D), ColorScheme));
             }
             base.OnDraw(e);
         }

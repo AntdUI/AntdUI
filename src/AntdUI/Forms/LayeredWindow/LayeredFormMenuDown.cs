@@ -359,7 +359,7 @@ namespace AntdUI
         void PaintIcon(Canvas g, OMenuItem it, Color fore)
         {
             if (it.Val.Icon != null) g.Image(it.Val.Icon, it.RectIcon);
-            if (it.Val.IconSvg != null) g.GetImgExtend(it.Val.IconSvg, it.RectIcon, fore);
+            if (it.Val.IconSvg != null) g.Svg(it.Val.IconSvg, it.RectIcon, fore);
         }
         void PaintArrow(Canvas g, OMenuItem it, Color color)
         {

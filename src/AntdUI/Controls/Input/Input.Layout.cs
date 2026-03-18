@@ -220,14 +220,7 @@ namespace AntdUI
                 oldtmpY = oldtmpX = null;
                 ScrollX.Clear();
                 ScrollY.Clear();
-                if (ModeRange)
-                {
-                    int center = rect_text.Width / 2;
-                    int h2 = CaretInfo.Height / 2;
-                    rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
-                    rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                    rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
-                }
+                if (ModeRange) HandTextModeRange();
                 if (CaretInfo.SetXY(rect_text.X, rect_text.Y)) rdcount++;
             }
             else
@@ -399,6 +392,14 @@ namespace AntdUI
             if (SetCaretPostion()) rdcount++;
             return rdcount > 0;
         }
+        int HandTextModeRange()
+        {
+            int ico_size = CaretInfo.Height, center = rect_text.Width / 2, d_w = center - ico_size;
+            rect_d_ico = new Rectangle(rect_text.X + center - ico_size / 2, rect_text.Y + ((rect_text.Height - ico_size) / 2), ico_size, ico_size);
+            rect_d_l = new Rectangle(rect_text.X, rect_text.Y, d_w, rect_text.Height);
+            rect_d_r = new Rectangle(rect_text.X + center + ico_size, rect_text.Y, d_w, rect_text.Height);
+            return ico_size;
+        }
 
         #region 处理文本方向
 
@@ -407,12 +408,7 @@ namespace AntdUI
             int usex = 0;
             if (ModeRange)
             {
-                int center = rect_text.Width / 2;
-                int h2 = CaretInfo.Height / 2;
-                rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
-                rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
-
+                int ico_size = HandTextModeRange();
                 int tabindex = GetTabIndex(cache_font);
                 List<int> i_l = new List<int>(cache_font.Count), i_r = new List<int>(i_l.Count);
                 if (tabindex == -1)
@@ -420,7 +416,7 @@ namespace AntdUI
                     for (int i = 0; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, ico_size);
                         usex += it.width;
                         i_l.Add(i);
                     }
@@ -430,7 +426,7 @@ namespace AntdUI
                     for (int i = 0; i < tabindex; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, ico_size);
                         usex += it.width;
                         i_l.Add(i);
                     }
@@ -441,19 +437,19 @@ namespace AntdUI
                     for (int i = tabindex + 1; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, ico_size);
                         user += it.width;
                         i_r.Add(i);
                     }
                 }
                 else
                 {
-                    cache_font[0].rect = new Rectangle(rect_d_r.X, rect_d_r.Y, cache_font[0].width, CaretInfo.Height);
+                    cache_font[0].rect = new Rectangle(rect_d_r.X, rect_d_r.Y, cache_font[0].width, ico_size);
                     int user = 0;
                     for (int i = tabindex + 1; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, ico_size);
                         user += it.width;
                         i_r.Add(i);
                     }

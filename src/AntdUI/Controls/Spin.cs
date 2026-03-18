@@ -673,7 +673,7 @@ namespace AntdUI
                 g.RotateTransform(LineAngle);
                 var rect_center = new Rectangle(-size2, -size2, rprog_size, rprog_size);
                 if (config.Indicator != null) g.Image(config.Indicator, rect_center);
-                if (config.IndicatorSvg != null) g.GetImgExtend(config.IndicatorSvg, rect_center, color);
+                if (config.IndicatorSvg != null) g.Svg(config.IndicatorSvg, rect_center, color);
                 g.ResetTransform();
             }
             else

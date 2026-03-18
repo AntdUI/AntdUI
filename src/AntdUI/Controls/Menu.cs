@@ -968,7 +968,7 @@ namespace AntdUI
                         g.Fill(back_hover, path);
                     }
                 }
-                SvgExtend.GetImgExtend(g, "EllipsisOutlined", rect_r_ico, color_fore);
+                g.Svg("EllipsisOutlined", rect_r_ico, color_fore);
             }
             ScrollBar.Paint(g);
             base.OnDraw(e);
@@ -1238,14 +1238,14 @@ namespace AntdUI
                 }
                 if (it.IconActiveSvg != null)
                 {
-                    if (g.GetImgExtend(it.IconActiveSvg, it.ico_rect, fore)) count++;
+                    if (g.Svg(it.IconActiveSvg, it.ico_rect, fore)) count++;
                 }
                 if (count > 0) return;
             }
 
 
             if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
-            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
+            if (it.IconSvg != null) g.Svg(it.IconSvg, it.ico_rect, fore);
         }
         void PaintCustomButton(Canvas g, MenuItem it, Color fore, Color fore_active)
         {
@@ -1265,7 +1265,7 @@ namespace AntdUI
         void PaintCustomButtonIcon(Canvas g, MenuButton it, Color fore)
         {
             if (it.Icon != null) g.Image(it.Icon, it.rect);
-            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect, fore);
+            if (it.IconSvg != null) g.Svg(it.IconSvg, it.rect, fore);
         }
         void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
         {

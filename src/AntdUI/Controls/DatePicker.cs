@@ -135,6 +135,40 @@ namespace AntdUI
         [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
         public bool EnabledValueTextChange { get; set; }
 
+        #region 隐藏
+
+        /// <summary>
+        /// 是否显示滚动条
+        /// </summary>
+        [Browsable(false), Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        public override bool AutoScroll => false;
+
+        /// <summary>
+        /// 多行文本
+        /// </summary>
+        [Browsable(false), Description("多行文本"), Category("行为"), DefaultValue(false)]
+        public override bool Multiline => false;
+
+        /// <summary>
+        /// 自动换行
+        /// </summary>
+        [Browsable(false), Description("自动换行"), Category("行为"), DefaultValue(false)]
+        public override bool WordWrap => false;
+
+        /// <summary>
+        /// 使用密码框
+        /// </summary>
+        [Browsable(false), Description("使用密码框"), Category("行为"), DefaultValue(false)]
+        public override bool UseSystemPasswordChar => false;
+
+        /// <summary>
+        /// 自定义密码字符
+        /// </summary>
+        [Browsable(false), Description("自定义密码字符"), Category("行为"), DefaultValue((char)0)]
+        public override char PasswordChar => base.PasswordChar;
+
+        #endregion
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -164,14 +198,7 @@ namespace AntdUI
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
-            if (showicon)
-            {
-                using (var bmp = SvgDb.IcoDate.SvgToBmp(rect_r.Width, rect_r.Height, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
-                {
-                    if (bmp == null) return;
-                    g.Image(bmp, rect_r);
-                }
-            }
+            if (showicon) g.Svg(SvgDb.IcoDate, rect_r, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
         }
 
         #endregion

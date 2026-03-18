@@ -895,7 +895,7 @@ namespace AntdUI
             {
                 g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get(nameof(PageHeader), ColorScheme)), rect_close);
                 PrintClose(g, fore, rect_close_icon);
-                g.GetImgExtend(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme)));
+                g.Svg(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme)));
             }
             else if (hove_close.Switch)
             {
@@ -936,7 +936,7 @@ namespace AntdUI
         #region 渲染帮助
 
         Bitmap? temp_logo;
-        void PrintBack(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(BackIcon ?? SvgDb.IcoPageHeaderBack, rect_icon, color);
+        void PrintBack(Canvas g, Color color, Rectangle rect_icon) => g.Svg(BackIcon ?? SvgDb.IcoPageHeaderBack, rect_icon, color);
         void PrintBackHover(Canvas g, Color color, Rectangle rect_icon)
         {
             PrintBack(g, color, rect_icon);
@@ -944,13 +944,13 @@ namespace AntdUI
         }
         void PrintBackHover(Canvas g, Rectangle rect_icon) => PrintBack(g, Colour.Primary.Get(nameof(PageHeader), ColorScheme), rect_icon);
         void PrintBackDown(Canvas g, Rectangle rect_icon) => PrintBack(g, Colour.PrimaryActive.Get(nameof(PageHeader), ColorScheme), rect_icon);
-        void PrintClose(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppClose, rect_icon, color);
-        void PrintCloseHover(Canvas g, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme));
-        void PrintFull(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppFull, rect_icon, color);
-        void PrintFullRestore(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppFullRestore, rect_icon, color);
-        void PrintMax(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppMax, rect_icon, color);
-        void PrintRestore(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppRestore, rect_icon, color);
-        void PrintMin(Canvas g, Color color, Rectangle rect_icon) => g.GetImgCanvas(SvgDb.IcoAppMin, rect_icon, color);
+        void PrintClose(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppClose, rect_icon, color);
+        void PrintCloseHover(Canvas g, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme));
+        void PrintFull(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppFull, rect_icon, color);
+        void PrintFullRestore(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppFullRestore, rect_icon, color);
+        void PrintMax(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppMax, rect_icon, color);
+        void PrintRestore(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppRestore, rect_icon, color);
+        void PrintMin(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppMin, rect_icon, color);
         bool PrintLogo(Canvas g, string svg, Color color, Rectangle rect_icon)
         {
             if (temp_logo == null || temp_logo.Width != rect_icon.Width)

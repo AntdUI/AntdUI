@@ -219,12 +219,12 @@ namespace AntdUI
         {
             string? prefixText = PrefixText, suffixText = SuffixText;
             if (prefixText != null) g.String(prefixText, Font, prefixFore ?? _fore, rect_l, PrefixFormat);
-            else if (prefixSvg != null) g.GetImgExtend(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
+            else if (prefixSvg != null) g.Svg(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
             else if (prefix != null) g.Image(prefix, rect_l);
 
-            if (is_clear) g.GetImgExtend(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(nameof(Input), ColorScheme) : Colour.TextQuaternary.Get(nameof(Input), ColorScheme));
+            if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(nameof(Input), ColorScheme) : Colour.TextQuaternary.Get(nameof(Input), ColorScheme));
             else if (suffixText != null) g.String(suffixText, Font, suffixFore ?? _fore, rect_r, SuffixFormat);
-            else if (suffixSvg != null) g.GetImgExtend(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
+            else if (suffixSvg != null) g.Svg(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
             else if (suffix != null) g.Image(suffix, rect_r);
             else PaintRIcon(g, rect_r);
         }
@@ -353,7 +353,7 @@ namespace AntdUI
                         {
                             if (it.emoji)
                             {
-                                if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
+                                if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) g.Svg(svg, it.rect, fore.Color);
                                 else StringEmoji(g, it.text, font, it, fore);
                             }
                             else String(g, Font, it, fore);

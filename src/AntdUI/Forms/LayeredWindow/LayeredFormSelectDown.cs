@@ -477,9 +477,9 @@ namespace AntdUI
                         {
                             g.Fill(Colour.FillSecondary.Get(keyid, ColorScheme), path);
                         }
-                        g.PaintIconClose(it.RectClose, Colour.Text.Get(keyid, ColorScheme), .7F);
+                        g.PaintIconCore(it.RectClose, SvgDb.IcoErrorGhost, Colour.Text.Get(keyid, ColorScheme), .7F);
                     }
-                    else g.PaintIconClose(it.RectClose, Colour.TextTertiary.Get(keyid, ColorScheme), .7F);
+                    else g.PaintIconCore(it.RectClose, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(keyid, ColorScheme), .7F);
                 }
             }
             else g.Fill(brush_split, it.Rect);
@@ -530,14 +530,8 @@ namespace AntdUI
             }
             if (it.IconSvg != null)
             {
-                using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
-                {
-                    if (bmp != null)
-                    {
-                        if (it.Enable) g.Image(bmp, it.RectIcon);
-                        else g.Image(bmp, it.RectIcon, 0.25F);
-                    }
-                }
+                if (it.Enable) g.Svg(it.IconSvg, it.RectIcon, color);
+                else g.Svg(it.IconSvg, it.RectIcon, 0.25F, color);
             }
         }
         void DrawArrow(Canvas g, ObjectItem it, Color color)

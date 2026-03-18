@@ -1006,14 +1006,14 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, brush.Color);
+                        if (page.IconSvg != null) g.Svg(page.IconSvg, rects.Rect_Ico, brush.Color);
                     }
                     if (closable != CloseType.none && closshow)
                     {
-                        if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
-                        else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A, Colour.Text.Get(nameof(Tabs), owner.ColorScheme)));
-                        else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
-                        else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        if (rects.hover_close == null) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        else if (rects.hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A, Colour.Text.Get(nameof(Tabs), owner.ColorScheme)));
+                        else if (rects.hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
+                        else g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
                     PaintTextCore(g, rects, owner, page, brush);
                 }
@@ -1022,14 +1022,14 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        if (page.IconSvg != null) g.GetImgExtend(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        if (page.IconSvg != null) g.Svg(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
                     if (closable != CloseType.none && closshow)
                     {
-                        if (rects.hover_close == null) g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
-                        else if (rects.hover_close.Animation) g.PaintIconClose(rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A, Colour.Text.Get(nameof(Tabs), owner.ColorScheme)));
-                        else if (rects.hover_close.Switch) g.PaintIconClose(rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
-                        else g.PaintIconClose(rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        if (rects.hover_close == null) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        else if (rects.hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A, Colour.Text.Get(nameof(Tabs), owner.ColorScheme)));
+                        else if (rects.hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
+                        else g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
                     }
 
                     using (var brush_e = new SolidBrush(Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme)))

@@ -653,14 +653,7 @@ namespace AntdUI
         /// <param name="icon">图标名称</param>
         /// <param name="rect">矩形</param>
         /// <param name="color">颜色</param>
-        void DrawSvg(Canvas g, string icon, Rectangle rect, Color color)
-        {
-            using (var svg = SvgExtend.GetImgExtend(icon, rect, color))
-            {
-                if (svg == null) return;
-                g.Image(svg, rect);
-            }
-        }
+        void DrawSvg(Canvas g, string icon, Rectangle rect, Color color) => g.Svg(icon, rect, color);
 
         #endregion
 

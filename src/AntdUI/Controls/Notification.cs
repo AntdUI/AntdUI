@@ -717,7 +717,7 @@ namespace AntdUI
                         {
                             g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(name)), path);
                         }
-                        g.PaintIconClose(rect_close, Colour.Text.Get(name), .6F);
+                        g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get(name), .6F);
                     }
                     else if (close_button.Switch)
                     {
@@ -725,9 +725,9 @@ namespace AntdUI
                         {
                             g.Fill(Colour.FillSecondary.Get(name), path);
                         }
-                        g.PaintIconClose(rect_close, Colour.Text.Get(name), .6F);
+                        g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get(name), .6F);
                     }
-                    else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(name), .6F);
+                    else g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(name), .6F);
                 }
                 using (var brush = new SolidBrush(config.Fore ?? Colour.TextBase.Get(name)))
                 {

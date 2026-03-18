@@ -951,7 +951,7 @@ namespace AntdUI
                         g.Fill(Colour.FillTertiary.Get(nameof(Table), colorScheme), path_sort);
                     }
                 }
-                SvgExtend.GetImgExtend(g, SvgDb.IcoTableColumnSort, rect_ico, fore.Color);
+                g.Svg(SvgDb.IcoTableColumnSort, rect_ico, fore.Color);
             }
 
             #endregion
@@ -1152,7 +1152,7 @@ namespace AntdUI
             {
                 if (value == null) return;
                 var color = value.TagFore ?? PARENT.ForeColor ?? Colour.Text.Get(nameof(AntdUI.Select), colorScheme);
-                if (value.IconSvg != null) g.GetImgExtend(value.IconSvg, rect_icon, color);
+                if (value.IconSvg != null) g.Svg(value.IconSvg, rect_icon, color);
                 else if (value.Icon != null) g.Image(value.Icon, rect_icon);
 
                 if (COLUMN.CellType != SelectCellType.Icon && rect_text != Rectangle.Empty) g.DrawText(value.Text, font, color, rect_text, FormatFlags.Center | FormatFlags.NoWrap);
@@ -1247,12 +1247,12 @@ namespace AntdUI
             {
                 if (COLUMN.SortOrder)
                 {
-                    g.GetImgExtend(SvgDb.IcoTableSortUp, rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
-                    g.GetImgExtend(SvgDb.IcoTableSortDown, rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
+                    g.Svg(SvgDb.IcoTableSortUp, rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
+                    g.Svg(SvgDb.IcoTableSortDown, rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
                 }
                 if (COLUMN.HasFilter)
                 {
-                    g.GetImgExtend(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
+                    g.Svg(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(nameof(Table), colorScheme) : Colour.TextQuaternary.Get(nameof(Table), colorScheme));
                 }
                 if (COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, colorScheme, columnCheck);
                 else

@@ -671,9 +671,9 @@ namespace AntdUI
                 int size = (int)(rect.Height * ratio);
                 var rect_arrow = new Rectangle(rect.Right - size, rect.Y + (rect.Height - size) / 2, size, size);
                 rect_close = rect_arrow;
-                if (hover_close.Animation) g.PaintIconClose(rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(Alert), ColorScheme).A, Colour.Text.Get(nameof(Alert), ColorScheme)));
-                else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Colour.Text.Get(nameof(Alert), ColorScheme));
-                else g.PaintIconClose(rect_arrow, Colour.TextQuaternary.Get(nameof(Alert), ColorScheme));
+                if (hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(Alert), ColorScheme).A, Colour.Text.Get(nameof(Alert), ColorScheme)));
+                else if (hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.Text.Get(nameof(Alert), ColorScheme));
+                else g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.TextQuaternary.Get(nameof(Alert), ColorScheme));
             }
         }
 

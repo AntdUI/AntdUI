@@ -19,10 +19,10 @@ namespace AntdUI
         {
             if (Fore.HasValue) g.DrawText(Text, Font ?? font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
             else g.DrawText(Text, Font ?? font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
-            if (PrefixSvg != null) g.GetImgExtend(PrefixSvg, RectL, Fore ?? fore.Color);
+            if (PrefixSvg != null) g.Svg(PrefixSvg, RectL, Fore ?? fore.Color);
             else if (Prefix != null) g.Image(Prefix, RectL);
 
-            if (SuffixSvg != null) g.GetImgExtend(SuffixSvg, RectR, Fore ?? fore.Color);
+            if (SuffixSvg != null) g.Svg(SuffixSvg, RectR, Fore ?? fore.Color);
             else if (Suffix != null) g.Image(Suffix, RectR);
         }
 

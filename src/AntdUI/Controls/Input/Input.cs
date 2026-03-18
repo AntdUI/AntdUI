@@ -619,8 +619,11 @@ namespace AntdUI
         }
 
         bool autoscroll = false;
+        /// <summary>
+        /// 是否显示滚动条
+        /// </summary>
         [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
-        public bool AutoScroll
+        public virtual bool AutoScroll
         {
             get => autoscroll;
             set
@@ -816,7 +819,7 @@ namespace AntdUI
         /// 只读
         /// </summary>
         [Description("只读"), Category("行为"), DefaultValue(false)]
-        public bool ReadOnly
+        public virtual bool ReadOnly
         {
             get => readOnly;
             set
@@ -833,7 +836,7 @@ namespace AntdUI
         /// 多行文本
         /// </summary>
         [Description("多行文本"), Category("行为"), DefaultValue(false)]
-        public bool Multiline
+        public virtual bool Multiline
         {
             get => multiline;
             set
@@ -861,7 +864,7 @@ namespace AntdUI
         /// 自动换行
         /// </summary>
         [Description("自动换行"), Category("行为"), DefaultValue(true)]
-        public bool WordWrap
+        public virtual bool WordWrap
         {
             get => wordwrap;
             set
@@ -993,7 +996,7 @@ namespace AntdUI
         /// 使用密码框
         /// </summary>
         [Description("使用密码框"), Category("行为"), DefaultValue(false)]
-        public bool UseSystemPasswordChar
+        public virtual bool UseSystemPasswordChar
         {
             get => useSystemPasswordChar;
             set
@@ -1010,7 +1013,7 @@ namespace AntdUI
         /// 自定义密码字符
         /// </summary>
         [Description("自定义密码字符"), Category("行为"), DefaultValue((char)0)]
-        public char PasswordChar
+        public virtual char PasswordChar
         {
             get => passwordChar;
             set

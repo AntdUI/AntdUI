@@ -263,7 +263,7 @@ namespace AntdUI
         {
             int count = 0;
             if (it.Icon != null) { g.Image(it.Icon, it.ico_rect); count++; }
-            if (it.IconSvg != null && g.GetImgExtend(it.IconSvg, it.ico_rect, fore)) count++;
+            if (it.IconSvg != null && g.Svg(it.IconSvg, it.ico_rect, fore)) count++;
             return count == 0;
         }
 

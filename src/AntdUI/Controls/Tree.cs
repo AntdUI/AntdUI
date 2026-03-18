@@ -709,7 +709,7 @@ namespace AntdUI
             else
             {
                 if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
-                if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
+                if (item.IconSvg != null) g.Svg(item.IconSvg, item.ico_rect, color);
             }
 
         }

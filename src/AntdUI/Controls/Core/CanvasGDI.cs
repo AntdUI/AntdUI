@@ -800,8 +800,8 @@ namespace AntdUI.Core
                 var rect_ico = new Rectangle(x, y, size, size);
                 if (SvgDb.Emoji.TryGetValue(it.txt, out var svg))
                 {
-                    if (brush is SolidBrush solid) SvgExtend.GetImgExtend(this, svg, rect_ico, solid.Color);
-                    else SvgExtend.GetImgExtend(this, svg, rect_ico);
+                    if (brush is SolidBrush solid) Svg(svg, rect_ico, solid.Color);
+                    else Svg(svg, rect_ico);
                     return false;
                 }
                 tmp_font ??= new Font(Config.EmojiFont, font.Size);
@@ -1240,6 +1240,42 @@ namespace AntdUI.Core
                 currentWidth = (originWidth * destHeight) / originHeight;
             }
             g.Image(image, new RectangleF(rect.X + (destWidth - currentWidth) / 2, rect.Y + (destHeight - currentHeight) / 2, currentWidth, currentHeight), new RectangleF(0, 0, originWidth, originHeight), GraphicsUnit.Pixel);
+        }
+
+        #endregion
+
+        #region SVG
+
+        public bool Svg(string svg, Rectangle rect, float opacity, Color? color = null)
+        {
+            if (opacity >= 1) return Svg(svg, rect, color);
+            if (rect.Width > 0 && rect.Height > 0)
+            {
+                using (var bmp = SvgExtend.SvgToBmp(svg, rect.Width, rect.Height, color))
+                {
+                    if (bmp == null) return false;
+                    Image(bmp, rect, opacity);
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool Svg(string svg, Rectangle rect, Color? color = null)
+        {
+            if (rect.Width > 0 && rect.Height > 0)
+            {
+                var doc = SvgExtend.SvgDocument(svg);
+                if (doc == null) return false;
+                if (color.HasValue) doc.Fill = new Svg.SvgColourServer(color.Value);
+                doc.Width = rect.Width;
+                doc.Height = rect.Height;
+                var state = Save();
+                TranslateTransform(rect.X, rect.Y);
+                doc.Draw(this, rect.Size);
+                Restore(state);
+                return true;
+            }
+            return false;
         }
 
         #endregion

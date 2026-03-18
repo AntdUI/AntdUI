@@ -245,7 +245,7 @@ namespace AntdUI
                     PaintBack(g, rect_l_full);
                     Color _fore = fore ?? System.Drawing.Color.White;
                     if (logo != null) g.Image(logo, rect_logo);
-                    if (logoSvg != null) g.GetImgExtend(logoSvg, rect_logo, _fore);
+                    if (logoSvg != null) g.Svg(logoSvg, rect_logo, _fore);
                     PaintFore(g, Text, Font, _fore, rect_r, Bold);
                 }
             }
@@ -273,7 +273,7 @@ namespace AntdUI
                     PaintBack(g, rect_l_full, rect_r);
                     Color _label = labelFore ?? System.Drawing.Color.White;
                     if (logo != null) g.Image(logo, rect_logo);
-                    if (logoSvg != null) g.GetImgExtend(logoSvg, rect_logo, _label);
+                    if (logoSvg != null) g.Svg(logoSvg, rect_logo, _label);
                     PaintFore(g, Label, Font, _label, rect_l);
                     PaintFore(g, Text, Font, fore ?? System.Drawing.Color.White, rect_r, Bold);
                 }

@@ -208,7 +208,7 @@ namespace AntdUI
                 g.Image(bmp, it.RectImg);
                 count++;
             }
-            if (svg != null && g.GetImgExtend(svg, it.RectImg, color)) count++;
+            if (svg != null && g.Svg(svg, it.RectImg, color)) count++;
             return count == 0;
         }
 
