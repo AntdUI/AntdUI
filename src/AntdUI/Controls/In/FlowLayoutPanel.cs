@@ -31,13 +31,22 @@ namespace AntdUI.In
 
         #region 为空
 
+        /// <summary>
+        /// 是否显示空样式
+        /// </summary>
         [Description("是否显示空样式"), Category("外观"), DefaultValue(false)]
         public bool Empty { get; set; }
 
+        /// <summary>
+        /// 数据为空显示文字
+        /// </summary>
         [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
         [Localizable(true)]
         public string? EmptyText { get; set; }
 
+        /// <summary>
+        /// 数据为空显示图片
+        /// </summary>
         [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
 

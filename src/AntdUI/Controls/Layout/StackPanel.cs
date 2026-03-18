@@ -22,6 +22,8 @@ namespace AntdUI
     [Designer(typeof(IControlDesigner))]
     public class StackPanel : ContainerPanel
     {
+        #region 属性
+
         bool autoscroll = false;
         /// <summary>
         /// 是否显示滚动条
@@ -34,32 +36,12 @@ namespace AntdUI
             {
                 if (autoscroll == value) return;
                 autoscroll = value;
-                if (autoscroll) ScrollBar = new ScrollBar(this);
-                else ScrollBar = null;
-                if (IsHandleCreated) IOnSizeChanged();
+                InitScroll();
                 OnPropertyChanged(nameof(AutoScroll));
             }
         }
 
-        /// <summary>
-        /// 滚动条
-        /// </summary>
-        [Browsable(false)]
-        public ScrollBar? ScrollBar;
-
-        public override Rectangle DisplayRectangle
-        {
-            get
-            {
-                var rect = ClientRectangle.DeflateRect(Padding);
-                if (ScrollBar != null && ScrollBar.Show)
-                {
-                    if (ScrollBar.EnabledY) rect.Width -= ScrollBar.SIZE;
-                    else rect.Height -= ScrollBar.SIZE;
-                }
-                return rect;
-            }
-        }
+        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
 
         /// <summary>
         /// 是否垂直方向
@@ -67,14 +49,11 @@ namespace AntdUI
         [Description("是否垂直方向"), Category("外观"), DefaultValue(false)]
         public bool Vertical
         {
-            get => layoutengine.Vertical;
+            get => Panel.Vertical;
             set
             {
-                if (layoutengine.Vertical == value) return;
-                layoutengine.Vertical = value;
-                if (autoscroll) ScrollBar = new ScrollBar(this);
-                else ScrollBar = null;
-                if (IsHandleCreated) IOnSizeChanged();
+                Panel.Vertical = value;
+                InitScroll();
                 OnPropertyChanged(nameof(Vertical));
             }
         }
@@ -82,13 +61,10 @@ namespace AntdUI
         [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
         public override RightToLeft RightToLeft
         {
-            get => layoutengine.Reverse ? RightToLeft.Yes : RightToLeft.No;
+            get => Panel.RightToLeft;
             set
             {
-                var reverse = value == RightToLeft.Yes;
-                if (layoutengine.Reverse == reverse) return;
-                layoutengine.Reverse = reverse;
-                if (IsHandleCreated) IOnSizeChanged();
+                Panel.RightToLeft = value;
                 OnPropertyChanged(nameof(RightToLeft));
             }
         }
@@ -99,12 +75,10 @@ namespace AntdUI
         [Description("内容大小"), Category("外观"), DefaultValue(null)]
         public string? ItemSize
         {
-            get => layoutengine.ItemSize;
+            get => Panel.ItemSize;
             set
             {
-                if (layoutengine.ItemSize == value) return;
-                layoutengine.ItemSize = value;
-                if (IsHandleCreated) IOnSizeChanged();
+                Panel.ItemSize = value;
                 OnPropertyChanged(nameof(ItemSize));
             }
         }
@@ -115,60 +89,306 @@ namespace AntdUI
         [Description("间距"), Category("外观"), DefaultValue(0)]
         public int Gap
         {
-            get => layoutengine.Gap;
+            get => Panel.Gap;
             set
             {
-                if (layoutengine.Gap == value) return;
-                layoutengine.Gap = value;
-                if (IsHandleCreated) IOnSizeChanged();
+                Panel.Gap = value;
                 OnPropertyChanged(nameof(Gap));
             }
         }
 
-        bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
         public bool PauseLayout
         {
-            get => pauseLayout;
+            get => Panel.PauseLayout;
             set
             {
-                if (pauseLayout == value) return;
-                pauseLayout = value;
-                if (!value)
-                {
-                    Invalidate();
-                    IOnSizeChanged();
-                }
+                Panel.PauseLayout = value;
                 OnPropertyChanged(nameof(PauseLayout));
             }
         }
+
+        #endregion
 
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
             PaintBack(g);
             base.OnDraw(e);
-            ScrollBar?.Paint(g, ColorScheme);
         }
 
-        #region 布局
+        #region 方法
+
+        #region 滚动控件到视图
+
+        public void ScrollControlIntoView(Control activeControl) => Panel?.ScrollControlIntoView(activeControl);
+
+        #endregion
+
+        #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            Panel.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #region 核心
 
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            Panel.Size = Size;
+            //Panel.IOnSizeChanged();
+            InitScroll();
             IOnSizeChanged();
         }
 
         protected override void OnSizeChanged(EventArgs e)
         {
-            var rect = ClientRectangle;
             base.OnSizeChanged(e);
-            if (rect.Width == 0 || rect.Height == 0) return;
-            ScrollBar?.SizeChange(rect);
+            XScroll?.SetSize(Panel.Width);
+            YScroll?.SetSize(Panel.Height);
         }
 
-        StackLayout layoutengine = new StackLayout();
-        public override LayoutEngine LayoutEngine => layoutengine;
+        void InitScroll()
+        {
+            if (autoscroll)
+            {
+                if (Panel.Vertical)
+                {
+                    if (XScroll != null)
+                    {
+                        XScroll.ValueChanged -= Scroll_ValueChanged;
+                        XScroll.Dispose();
+                        XScroll = null;
+                    }
+                    if (YScroll == null)
+                    {
+                        int w = SystemInformation.VerticalScrollBarWidth, h = Panel.Height;
+                        YScroll = new YScrollBar
+                        {
+                            Name = "__BARY__",
+                            Visible = false,
+                            Radius = Radius,
+                            Dock = DockStyle.Right,
+                            MinimumSize = new Size(w, 0),
+                            Size = new Size(w, h)
+                        };
+                        YScroll.SetSize(h);
+                        YScroll.ValueChanged += Scroll_ValueChanged;
+                        base.Controls.Add(YScroll);
+                    }
+                }
+                else
+                {
+                    if (YScroll != null)
+                    {
+                        YScroll.ValueChanged -= Scroll_ValueChanged;
+                        YScroll.Dispose();
+                        YScroll = null;
+                    }
+                    if (XScroll == null)
+                    {
+                        int h = SystemInformation.HorizontalScrollBarHeight, w = Panel.Width;
+                        XScroll = new XScrollBar
+                        {
+                            Name = "__BARX__",
+                            Visible = false,
+                            Radius = Radius,
+                            Dock = DockStyle.Bottom,
+                            MinimumSize = new Size(0, h),
+                            Size = new Size(w, h)
+                        };
+                        XScroll.SetSize(w);
+                        XScroll.ValueChanged += Scroll_ValueChanged;
+                        base.Controls.Add(XScroll);
+                    }
+                }
+            }
+            else
+            {
+                if (YScroll != null)
+                {
+                    YScroll.ValueChanged -= Scroll_ValueChanged;
+                    YScroll.Dispose();
+                    YScroll = null;
+                }
+                if (XScroll != null)
+                {
+                    XScroll.ValueChanged -= Scroll_ValueChanged;
+                    XScroll.Dispose();
+                    XScroll = null;
+                }
+            }
+        }
+
+        private void Scroll_ValueChanged(object? sender, EventArgs e) => Panel?.IOnSizeChanged();
+
+        private StackPanelCore Panel;
+        public XScrollBar? XScroll;
+        public YScrollBar? YScroll;
+
+        public StackPanel()
+        {
+            Panel = new StackPanelCore(this)
+            {
+                Name = "__IN__",
+                Dock = DockStyle.Fill
+            };
+            base.Controls.Add(Panel);
+        }
+
+        class StackPanelCore : IControl
+        {
+            public StackPanel Panel;
+            public StackPanelCore(StackPanel core)
+            {
+                Panel = core;
+            }
+
+            /// <summary>
+            /// 是否垂直方向
+            /// </summary>
+            [Description("是否垂直方向"), Category("外观"), DefaultValue(false)]
+            public bool Vertical
+            {
+                get => layoutengine.Vertical;
+                set
+                {
+                    if (layoutengine.Vertical == value) return;
+                    layoutengine.Vertical = value;
+                    if (IsHandleCreated) IOnSizeChanged();
+                }
+            }
+
+            [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
+            public override RightToLeft RightToLeft
+            {
+                get => layoutengine.Reverse ? RightToLeft.Yes : RightToLeft.No;
+                set
+                {
+                    var reverse = value == RightToLeft.Yes;
+                    if (layoutengine.Reverse == reverse) return;
+                    layoutengine.Reverse = reverse;
+                    if (IsHandleCreated) IOnSizeChanged();
+                }
+            }
+
+            /// <summary>
+            /// 内容大小
+            /// </summary>
+            [Description("内容大小"), Category("外观"), DefaultValue(null)]
+            public string? ItemSize
+            {
+                get => layoutengine.ItemSize;
+                set
+                {
+                    if (layoutengine.ItemSize == value) return;
+                    layoutengine.ItemSize = value;
+                    if (IsHandleCreated) IOnSizeChanged();
+                }
+            }
+
+            /// <summary>
+            /// 间距
+            /// </summary>
+            [Description("间距"), Category("外观"), DefaultValue(0)]
+            public int Gap
+            {
+                get => layoutengine.Gap;
+                set
+                {
+                    if (layoutengine.Gap == value) return;
+                    layoutengine.Gap = value;
+                    if (IsHandleCreated) IOnSizeChanged();
+                }
+            }
+
+            bool pauseLayout = false;
+            [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+            public bool PauseLayout
+            {
+                get => pauseLayout;
+                set
+                {
+                    if (pauseLayout == value) return;
+                    pauseLayout = value;
+                    if (!value)
+                    {
+                        Invalidate();
+                        IOnSizeChanged();
+                    }
+                }
+            }
+
+            #region 布局
+
+            StackLayout layoutengine = new StackLayout();
+            public override LayoutEngine LayoutEngine => layoutengine;
+
+            #endregion
+
+            #region 控件添加和移除
+
+            protected override void OnControlAdded(ControlEventArgs e)
+            {
+                base.OnControlAdded(e);
+                e.Control!.GotFocus += Control_GotFocus;
+            }
+
+            protected override void OnControlRemoved(ControlEventArgs e)
+            {
+                base.OnControlRemoved(e);
+                e.Control!.GotFocus -= Control_GotFocus;
+            }
+
+            private void Control_GotFocus(object? sender, EventArgs e)
+            {
+                if (sender is Control control) ScrollControlIntoView(control);
+            }
+
+            #endregion
+
+            #region 滚动控件到视图
+
+            public void ScrollControlIntoView(Control activeControl)
+            {
+                if (Vertical)
+                {
+                    if (Panel.YScroll == null) return;
+                    if (Panel.YScroll.Visible)
+                    {
+                        Rectangle clientRect = ClientRectangle, controlRect = activeControl.Bounds;
+                        int value = Panel.YScroll.Value, max = Panel.YScroll.Maximum;
+                        if (controlRect.Top < clientRect.Top) Panel.YScroll.Value = Math.Max(0, value + controlRect.Top - clientRect.Top);
+                        else if (controlRect.Bottom > clientRect.Bottom) Panel.YScroll.Value = Math.Min(max, value + controlRect.Bottom - clientRect.Bottom);
+                    }
+                }
+                else
+                {
+                    if (Panel.XScroll == null) return;
+                    if (Panel.XScroll.Visible)
+                    {
+                        Rectangle clientRect = ClientRectangle, controlRect = activeControl.Bounds;
+                        int value = Panel.XScroll.Value, max = Panel.XScroll.Maximum;
+                        if (controlRect.Left < clientRect.Left) Panel.XScroll.Value = Math.Max(0, value + controlRect.Left - clientRect.Left);
+                        else if (controlRect.Right > clientRect.Right) Panel.XScroll.Value = Math.Min(max, value + controlRect.Right - clientRect.Right);
+                    }
+                }
+            }
+
+            #endregion
+
+            protected override void Dispose(bool disposing)
+            {
+                foreach (Control c in Controls) c.GotFocus -= Control_GotFocus;
+                base.Dispose(disposing);
+            }
+        }
+
+        #region 布局
+
         internal class StackLayout : LayoutEngine
         {
             /// <summary>
@@ -190,7 +410,7 @@ namespace AntdUI
 
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
-                if (container is StackPanel parent && parent.IsHandleCreated && parent.Controls.Count > 0)
+                if (container is StackPanelCore parent && parent.Panel.IsHandleCreated && parent.Controls.Count > 0)
                 {
                     if (parent.PauseLayout) return false;
                     var controls = new List<Control>(parent.Controls.Count);
@@ -200,7 +420,7 @@ namespace AntdUI
                     }
                     if (controls.Count > 0)
                     {
-                        var rect = parent.DisplayRectangle;
+                        var rect = parent.ClientRectangle;
                         int val = 0;
                         if (ItemSize == null || string.IsNullOrEmpty(ItemSize)) val = HandLayout(parent, controls, rect);
                         else
@@ -209,22 +429,35 @@ namespace AntdUI
                             else if (int.TryParse(ItemSize, out var i)) val = HandLayout(parent, controls, rect, (int)Math.Round(i * parent.Dpi));
                             else val = HandLayoutFill(parent, controls, rect);
                         }
-                        if (parent.ScrollBar != null)
-                        {
-                            bool old = parent.ScrollBar.Show;
-                            parent.ScrollBar.SetVrSize(val);
-                            if (old != parent.ScrollBar.Show) parent.BeginInvoke(parent.IOnSizeChanged);
-                        }
+                        SetMax(parent, val);
                     }
                 }
                 return false;
             }
 
-            int HandLayout(StackPanel parent, List<Control> controls, Rectangle rect)
+            int GetOffset(StackPanelCore parent)
+            {
+                if (Vertical)
+                {
+                    if (parent.Panel.YScroll == null) return 0;
+                    if (parent.Panel.YScroll.Visible) return parent.Panel.YScroll.Value;
+                }
+                else
+                {
+                    if (parent.Panel.XScroll == null) return 0;
+                    if (parent.Panel.XScroll.Visible) return parent.Panel.XScroll.Value;
+                }
+                return 0;
+            }
+            void SetMax(StackPanelCore parent, int val)
+            {
+                if (Vertical) parent.Panel.YScroll?.SetShow(val);
+                else parent.Panel.XScroll?.SetShow(val);
+            }
+            int HandLayout(StackPanelCore parent, List<Control> controls, Rectangle rect)
             {
                 int count = controls.Count;
-                int offset = 0, use = 0, gap = 0;
-                if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
+                int offset = GetOffset(parent), use = 0, gap = 0;
                 if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * parent.Dpi);
                 if (Vertical)
                 {
@@ -298,11 +531,10 @@ namespace AntdUI
                 }
                 return use;
             }
-            int HandLayout(StackPanel parent, List<Control> controls, Rectangle rect, int size)
+            int HandLayout(StackPanelCore parent, List<Control> controls, Rectangle rect, int size)
             {
                 int count = controls.Count;
-                int offset = 0, use = 0, gap = 0;
-                if (parent.ScrollBar != null) offset = parent.ScrollBar.Value;
+                int offset = GetOffset(parent), use = 0, gap = 0;
                 if (Gap > 0 && count > 1) gap = (int)Math.Round(Gap * parent.Dpi);
                 if (Vertical)
                 {
@@ -376,7 +608,7 @@ namespace AntdUI
                 }
                 return use;
             }
-            int HandLayoutFill(StackPanel parent, List<Control> controls, Rectangle rect)
+            int HandLayoutFill(StackPanelCore parent, List<Control> controls, Rectangle rect)
             {
                 int count = controls.Count;
                 int usex = 0, usey = 0, gap = 0;
@@ -455,105 +687,42 @@ namespace AntdUI
 
         #endregion
 
-        #region 鼠标
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (ScrollBar != null && ScrollBar.MouseDown(e.X, e.Y)) { OnTouchDown(e.X, e.Y); return; }
-            base.OnMouseDown(e);
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (ScrollBar != null && ScrollBar.MouseMove(e.X, e.Y) && OnTouchMove(e.X, e.Y)) return;
-            base.OnMouseMove(e);
-        }
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            ScrollBar?.MouseUp();
-            OnTouchUp();
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            base.OnMouseLeave(e);
-            ScrollBar?.Leave();
-        }
-
-        protected override void OnLeave(EventArgs e)
-        {
-            base.OnLeave(e);
-            ScrollBar?.Leave();
-        }
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            ScrollBar?.MouseWheel(e);
-            base.OnMouseWheel(e);
-        }
-        protected override bool OnTouchScrollX(int value)
-        {
-            if (ScrollBar != null && ScrollBar.EnabledX) return ScrollBar.MouseWheelXCore(value);
-            return false;
-        }
-        protected override bool OnTouchScrollY(int value)
-        {
-            if (ScrollBar != null && ScrollBar.EnabledY) return ScrollBar.MouseWheelYCore(value);
-            return false;
-        }
-
-        #endregion
-
-        #region 控件添加和移除
+        #region 控件
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            base.OnControlAdded(e);
-            e.Control!.GotFocus += Control_GotFocus;
-        }
-
-        protected override void OnControlRemoved(ControlEventArgs e)
-        {
-            base.OnControlRemoved(e);
-            e.Control!.GotFocus -= Control_GotFocus;
-        }
-
-        private void Control_GotFocus(object? sender, EventArgs e)
-        {
-            if (sender is Control control) ScrollControlIntoView(control);
-        }
-
-        #endregion
-
-        #region 滚动控件到视图
-
-        public void ScrollControlIntoView(Control activeControl)
-        {
-            if (ScrollBar == null) return;
-            if (ScrollBar.Show)
+            if (e.Control == null) return;
+            if (e.Control.Name == "__IN__" || e.Control.Name == "__BARX__" || e.Control.Name == "__BARY__")
             {
-                Rectangle clientRect = ClientRectangle, controlRect = activeControl.Bounds;
-                if (Vertical)
-                {
-                    if (controlRect.Top < clientRect.Top) ScrollBar.ValueY = Math.Max(0, ScrollBar.ValueY + controlRect.Top - clientRect.Top);
-                    else if (controlRect.Bottom > clientRect.Bottom) ScrollBar.ValueY = Math.Min(ScrollBar.MaxY, ScrollBar.ValueY + controlRect.Bottom - clientRect.Bottom);
-                }
-                else
-                {
-                    if (controlRect.Left < clientRect.Left) ScrollBar.ValueX = Math.Max(0, ScrollBar.ValueX + controlRect.Left - clientRect.Left);
-                    else if (controlRect.Right > clientRect.Right) ScrollBar.ValueX = Math.Min(ScrollBar.MaxX, ScrollBar.ValueX + controlRect.Right - clientRect.Right);
-                }
+                base.OnControlAdded(e);
+                return;
             }
+            if (DesignMode)
+            {
+                base.OnControlAdded(e);
+                return;
+            }
+            Add(e.Control);
         }
+
+        public void Remove(Control control) => Panel.Controls.Remove(control);
+        public void RemoveAt(int index) => Panel.Controls.RemoveAt(index);
+
+        public void Add(Control control) => Panel.Controls.Add(control);
+
+        public void Clear() => Panel.Controls.Clear();
+
+        [Browsable(false)]
+        public new ControlCollection Controls => Panel.Controls;
+
+        [Browsable(false)]
+        public Control? this[string name] => Panel.Controls.ContainsKey(name) ? Panel.Controls[name] : null;
+
+        [Browsable(false)]
+        public Control? this[int index] => (index >= 0 && index < Panel.Controls.Count) ? Panel.Controls[index] : null;
 
         #endregion
 
-        protected override void Dispose(bool disposing)
-        {
-            foreach (Control c in Controls) c.GotFocus -= Control_GotFocus;
-            ScrollBar?.Dispose();
-            base.Dispose(disposing);
-        }
+        #endregion
     }
 }

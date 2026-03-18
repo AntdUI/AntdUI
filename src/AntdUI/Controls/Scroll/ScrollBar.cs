@@ -415,12 +415,12 @@ namespace AntdUI
                                 if (RB && Radius > 0)
                                 {
                                     float radius = Radius * Dpi;
-                                    using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
+                                    using (var path = RectX.RoundPath(radius, false, false, true, true))
                                     {
                                         g.Fill(brush, path);
                                     }
                                 }
-                                else g.Fill(brush, new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height));
+                                else g.Fill(brush, RectX);
                             }
                         }
                     }
@@ -455,7 +455,7 @@ namespace AntdUI
                             if (RB && Radius > 0)
                             {
                                 float radius = Radius * Dpi;
-                                using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
+                                using (var path = RectX.RoundPath(radius, false, false, true, true))
                                 {
                                     g.Fill(brush, path);
                                 }
@@ -529,7 +529,7 @@ namespace AntdUI
                             if (RB && Radius > 0)
                             {
                                 float radius = Radius * Dpi;
-                                using (var path = Helper.RoundPath(new Rectangle(RectX.X, RectX.Y, RectX.Width, RectX.Height), radius, false, false, true, true))
+                                using (var path = RectX.RoundPath( radius, false, false, true, true))
                                 {
                                     g.Fill(brush, path);
                                 }
