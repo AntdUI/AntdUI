@@ -278,7 +278,7 @@ namespace AntdUI
                                         else if (sub.Hover) PaintBack(g, sub, hover, radius);
 
                                         if (sub.Icon != null) g.Image(sub.Icon, sub.ico_rect);
-                                        if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, fore_active.Color);
+                                        if (sub.IconSvg != null) g.Svg(sub.IconSvg, sub.ico_rect, fore_active.Color);
                                         g.String(sub.Text, Font, fore_active, sub.txt_rect, s_c);
                                     }
                                     else
@@ -293,14 +293,14 @@ namespace AntdUI
                                         else if (sub.Hover) PaintBack(g, sub, hover, radius);
 
                                         if (sub.Icon != null) g.Image(sub.Icon, sub.ico_rect);
-                                        if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, fore.Color);
+                                        if (sub.IconSvg != null) g.Svg(sub.IconSvg, sub.ico_rect, fore.Color);
                                         g.String(sub.Text, Font, fore, sub.txt_rect, s_c);
                                     }
                                 }
                                 else
                                 {
                                     if (sub.Icon != null) g.Image(sub.Icon, sub.ico_rect);
-                                    if (sub.IconSvg != null) g.GetImgExtend(sub.IconSvg, sub.ico_rect, brush_TextQuaternary.Color);
+                                    if (sub.IconSvg != null) g.Svg(sub.IconSvg, sub.ico_rect, brush_TextQuaternary.Color);
                                     g.String(sub.Text, Font, brush_TextQuaternary, sub.txt_rect, s_c);
                                 }
                             }
@@ -1095,8 +1095,7 @@ namespace AntdUI
                             CustomInputEdit(this, args);
                             if (args.Edit != null)
                             {
-                                args.Edit.Location = rect.Location;
-                                args.Edit.Size = new Size(Width ?? args.Edit.Width, rect.Size.Height);
+                                args.Edit.Bounds = new Rectangle(rect.X, rect.Y, Width ?? args.Edit.Width, rect.Size.Height);
                                 args.Edit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                                 Edit = args.Edit;
                             }

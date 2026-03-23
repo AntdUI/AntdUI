@@ -89,16 +89,16 @@ namespace AntdUI
                 switch (state)
                 {
                     case TType.Success:
-                        g.GetImgExtend(SvgDb.IcoSuccess, rect, back ?? Colour.Success.Get("IconComplete", ColorScheme));
+                        g.Svg(SvgDb.IcoSuccess, rect, back ?? Colour.Success.Get("IconComplete", ColorScheme));
                         break;
                     case TType.Error:
-                        g.GetImgExtend(SvgDb.IcoError, rect, back ?? Colour.Error.Get("IconError", ColorScheme));
+                        g.Svg(SvgDb.IcoError, rect, back ?? Colour.Error.Get("IconError", ColorScheme));
                         break;
                     case TType.Info:
-                        g.GetImgExtend(SvgDb.IcoInfo, rect, back ?? Colour.Info.Get("IconInfo", ColorScheme));
+                        g.Svg(SvgDb.IcoInfo, rect, back ?? Colour.Info.Get("IconInfo", ColorScheme));
                         break;
                     case TType.Warn:
-                        g.GetImgExtend(SvgDb.IcoWarn, rect, back ?? Colour.Warning.Get("IconWarn", ColorScheme));
+                        g.Svg(SvgDb.IcoWarn, rect, back ?? Colour.Warning.Get("IconWarn", ColorScheme));
                         break;
                     default:
                         break;

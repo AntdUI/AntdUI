@@ -680,7 +680,7 @@ namespace AntdUI
                         g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
                     }
                 }
-                g.PaintIconCore(RectAddIco, addIconSvg ?? "PlusOutlined", color);
+                g.Svg(addIconSvg ?? "PlusOutlined", RectAddIco, color);
             }
             g.Restore(state);
         }
@@ -739,7 +739,7 @@ namespace AntdUI
                 {
                     // 绘制图标
                     if (tab.Icon != null) g.Image(tab.Icon, tab.RectIcon);
-                    if (tab.IconSvg != null) g.GetImgExtend(tab.IconSvg, tab.RectIcon, color);
+                    if (tab.IconSvg != null) g.Svg(tab.IconSvg, tab.RectIcon, color);
                 }
             }
             tab.PaintBadge(Font, tab.Rect, g, ColorScheme);
@@ -761,7 +761,7 @@ namespace AntdUI
                     g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
                 }
             }
-            g.PaintIconClose(tab.RectCloseIco, color);
+            g.Svg(SvgDb.IcoErrorGhost, tab.RectCloseIco, color);
         }
 
         #region Loading

@@ -58,8 +58,7 @@ namespace AntdUI
                 Win32.WindowTheme(config.Content, Config.IsDark);
                 Helper.DpiAuto(Dpi, config.Content);
             }
-            config.Content.Location = Helper.OffScreenArea(tempContent.Width * 2, tempContent.Height * 2);
-            config.Content.Size = new Size(tempContent.Width, tempContent.Height);
+            config.Content.Bounds = new Rectangle(Helper.OffScreenArea(tempContent.Width * 2, tempContent.Height * 2), new Size(tempContent.Width, tempContent.Height));
             LoadContent();
             config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
             config.Form.LocationChanged += Form_LocationChanged;

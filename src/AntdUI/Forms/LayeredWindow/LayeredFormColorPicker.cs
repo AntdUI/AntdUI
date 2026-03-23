@@ -682,7 +682,7 @@ namespace AntdUI
                     {
                         g.Draw(hover_close ? Colour.BorderColor.Get(name, ColorScheme) : Colour.Split.Get(name, ColorScheme), Dpi, path);
                     }
-                    g.PaintIconClose(rect_close, Colour.TextTertiary.Get(name, ColorScheme), .8F);
+                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(name, ColorScheme), .8F);
                 }
 
                 if (ShowReset)
@@ -691,7 +691,7 @@ namespace AntdUI
                     {
                         g.Draw(hover_reset ? Colour.BorderColor.Get(name, ColorScheme) : Colour.Split.Get(name, ColorScheme), Dpi, path);
                     }
-                    g.PaintIconReset(rect_reset, ValueDefault, .8F);
+                    g.PaintIconCore(rect_reset, SvgDb.IcoStar, ValueDefault, .8F);
                 }
 
                 #region 调色板

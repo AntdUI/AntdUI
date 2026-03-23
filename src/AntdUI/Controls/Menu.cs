@@ -107,6 +107,7 @@ namespace AntdUI
         /// <summary>
         /// 色彩模式
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("use ColorScheme"), Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
         public TAMode Theme
         {
@@ -967,7 +968,7 @@ namespace AntdUI
                         g.Fill(back_hover, path);
                     }
                 }
-                SvgExtend.GetImgExtend(g, "EllipsisOutlined", rect_r_ico, color_fore);
+                g.Svg("EllipsisOutlined", rect_r_ico, color_fore);
             }
             ScrollBar.Paint(g);
             base.OnDraw(e);
@@ -1237,14 +1238,14 @@ namespace AntdUI
                 }
                 if (it.IconActiveSvg != null)
                 {
-                    if (g.GetImgExtend(it.IconActiveSvg, it.ico_rect, fore)) count++;
+                    if (g.Svg(it.IconActiveSvg, it.ico_rect, fore)) count++;
                 }
                 if (count > 0) return;
             }
 
 
             if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
-            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.ico_rect, fore);
+            if (it.IconSvg != null) g.Svg(it.IconSvg, it.ico_rect, fore);
         }
         void PaintCustomButton(Canvas g, MenuItem it, Color fore, Color fore_active)
         {
@@ -1264,7 +1265,7 @@ namespace AntdUI
         void PaintCustomButtonIcon(Canvas g, MenuButton it, Color fore)
         {
             if (it.Icon != null) g.Image(it.Icon, it.rect);
-            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect, fore);
+            if (it.IconSvg != null) g.Svg(it.IconSvg, it.rect, fore);
         }
         void PaintBack(Canvas g, Color color, Rectangle rect, float radius)
         {
@@ -2144,6 +2145,10 @@ namespace AntdUI
             action = render =>
             {
                 if (it.PARENT == null) return;
+                if (it.items != null)
+                {
+                    foreach (var item in it.items) item.PARENT = it.PARENT;
+                }
                 if (render) it.PARENT.ChangeList(true);
                 else it.PARENT.Invalidate();
             };

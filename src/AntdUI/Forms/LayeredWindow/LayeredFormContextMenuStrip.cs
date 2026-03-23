@@ -437,13 +437,7 @@ namespace AntdUI
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }
                             }
-                            if (item.IconSvg != null)
-                            {
-                                using (var bmp = item.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, item.Fore ?? brush.Color))
-                                {
-                                    if (bmp != null) g.Image(bmp, it.RectIcon);
-                                }
-                            }
+                            if (item.IconSvg != null) g.Svg(item.IconSvg, it.RectIcon, item.Fore ?? brush.Color);
                             else if (item.Icon != null) g.Image(item.Icon, it.RectIcon);
                         }
                         else
@@ -466,13 +460,7 @@ namespace AntdUI
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }
                             }
-                            if (item.IconSvg != null)
-                            {
-                                using (var bmp = item.IconSvg.SvgToBmp(it.RectIcon.Width, it.RectIcon.Height, brushEnabled.Color))
-                                {
-                                    if (bmp != null) g.Image(bmp, it.RectIcon);
-                                }
-                            }
+                            if (item.IconSvg != null) g.Svg(item.IconSvg, it.RectIcon, brushEnabled.Color);
                             else if (item.Icon != null) g.Image(item.Icon, it.RectIcon);
                         }
                     }
@@ -492,13 +480,7 @@ namespace AntdUI
                                 }
                                 if (btn_info.Enabled)
                                 {
-                                    if (btn_info.IconSvg != null)
-                                    {
-                                        using (var bmp = btn_info.IconSvg.SvgToBmp(btn.RectIcon.Width, btn.RectIcon.Height, btn_info.Fore ?? brush.Color))
-                                        {
-                                            if (bmp != null) g.Image(bmp, btn.RectIcon);
-                                        }
-                                    }
+                                    if (btn_info.IconSvg != null) g.Svg(btn_info.IconSvg, btn.RectIcon, btn_info.Fore ?? brush.Color);
                                     else if (btn_info.Icon != null) g.Image(btn_info.Icon, btn.RectIcon);
                                     g.DrawText(btn_info.Text, font_mini, brush, btn.RectText);
                                 }

@@ -544,13 +544,13 @@ namespace AntdUI.Captcha
             switch (state)
             {
                 case PuzzleCaptchaState.Success:
-                    g.GetImgExtend("CheckOutlined", icoRect, Style.Db.SuccessColor);
+                    g.Svg("CheckOutlined", icoRect, Style.Db.SuccessColor);
                     break;
                 case PuzzleCaptchaState.Failed:
-                    g.GetImgExtend("CloseOutlined", icoRect, Style.Db.ErrorColor);
+                    g.Svg("CloseOutlined", icoRect, Style.Db.ErrorColor);
                     break;
                 default:
-                    g.GetImgExtend("ArrowRightOutlined", icoRect, Style.Db.Text);
+                    g.Svg("ArrowRightOutlined", icoRect, Style.Db.Text);
                     break;
             }
         }

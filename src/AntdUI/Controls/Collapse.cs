@@ -687,7 +687,7 @@ namespace AntdUI
                 Rectangle ico_rect = new Rectangle(rect.X, rect.Y - gap, iconSize, iconSize);
 
                 if (item.Icon != null) g.Image(item.Icon, ico_rect);
-                else if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, ico_rect, fore.Color);
+                else if (item.IconSvg != null) g.Svg(item.IconSvg, ico_rect, fore.Color);
                 rect.X += iconSize + gap;
             }
             Font fnt = Font;
@@ -773,13 +773,13 @@ namespace AntdUI
                                 }
                                 if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
 
-                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, btn.Select || btn.AnimationClick ? fore_active.Color : btn.Fore ?? fore.Color);
+                                if (btn.IconSvg != null) g.Svg(btn.IconSvg, btn.ico_rect, btn.Select || btn.AnimationClick ? fore_active.Color : btn.Fore ?? fore.Color);
                                 g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
                             }
                             else
                             {
                                 if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
-                                if (btn.IconSvg != null) g.GetImgExtend(btn.IconSvg, btn.ico_rect, brush_TextQuaternary.Color);
+                                if (btn.IconSvg != null) g.Svg(btn.IconSvg, btn.ico_rect, brush_TextQuaternary.Color);
                                 g.String(btn.Text, Font, brush_TextQuaternary, btn.txt_rect, s_c);
                             }
                         }

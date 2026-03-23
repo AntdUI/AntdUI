@@ -405,7 +405,7 @@ namespace AntdUI
                     {
                         bool set_s, set_e = SetSelectionLength(0), set_caret = false;
                         var caret = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
-                        if (caret == null) set_s = SetSelectionStart(cache_font.Length);
+                        if (caret == null) set_s = SetSelectionStart(cache_font.Count);
                         else
                         {
                             set_s = SetSelectionStart(caret.i, false);
@@ -512,25 +512,14 @@ namespace AntdUI
                 else
                 {
                     int start = tmp, pos = CurrentPosIndex - 1;
-                    var texts = new List<string>(cache_font.Length);
-                    foreach (var it in cache_font)
-                    {
-                        if (start != it.i) texts.Add(it.text);
-                    }
-                    bool set_t = SetText(string.Join("", texts), true), set_s = SetSelectionStart(start, false), set_caret = SetCaretPostion(start == 0 ? 0 : pos, false);
+                    bool set_t = SetTextRemove(ref cache_font, start, 1), set_s = SetSelectionStart(start, false), set_caret = SetCaretPostion(start == 0 ? 0 : pos, false);
                     if (set_t || set_s || set_caret) Invalidate();
                 }
             }
         }
-        void ProcessBackSpaceKey(CacheFont[] cache_font, int start, int end)
+        void ProcessBackSpaceKey(List<CacheFont> cache_font, int start, int end)
         {
-            int end_temp = start + end;
-            var texts = new List<string>(end);
-            foreach (var it in cache_font)
-            {
-                if (it.i < start || it.i >= end_temp) texts.Add(it.text);
-            }
-            bool set_t = SetText(string.Join("", texts), true), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
+            bool set_t = SetTextRemove(ref cache_font, start, end), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
             if (set_t || set_s || set_e) Invalidate();
         }
 
@@ -550,18 +539,20 @@ namespace AntdUI
                 {
                     if (it.i < start || it.i >= end_temp) texts.Add(it.text);
                 }
-                bool set_t = SetText(string.Join("", texts), true), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
+                var dsadsa = string.Join("", texts);
+                bool set_t = SetTextRemove(ref cache_font, start, end), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
                 if (set_t || set_s || set_e) Invalidate();
             }
-            else if (selectionStart < cache_font.Length)
+            else if (selectionStart < cache_font.Count)
             {
                 int start = selectionStart;
-                var texts = new List<string>(cache_font.Length);
+                var texts = new List<string>(cache_font.Count);
                 foreach (var it in cache_font)
                 {
                     if (start != it.i) texts.Add(it.text);
                 }
-                bool set_t = SetText(string.Join("", texts), true), set_s = SetSelectionStart(start);
+                var tmp = string.Join("", texts);
+                bool set_t = SetTextRemove(ref cache_font, start, 1), set_s = SetSelectionStart(start);
                 if (set_t || set_s) Invalidate();
             }
         }
@@ -645,7 +636,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    int index = selectionStartTemp, cend = cache_font.Length - 1;
+                    int index = selectionStartTemp, cend = cache_font.Count - 1;
                     if (index > cend) index = cend;
                     var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y - CaretInfo.Rect.Height);
                     if (nearest == null || nearest.i == selectionStartTemp)
@@ -691,7 +682,7 @@ namespace AntdUI
                 else
                 {
                     int index = selectionStartTemp + selectionLength;
-                    if (index > cache_font.Length - 1) return;
+                    if (index > cache_font.Count - 1) return;
                     var nearest = GetCaretPostion(CaretInfo.Rect.X, CaretInfo.Rect.Y + CaretInfo.Rect.Height);
                     if (nearest == null || nearest.i == index) set_e = SetSelectionLength(selectionLength + 1);
                     else set_e = SetSelectionLength(selectionLength + (nearest.i - index));
@@ -762,9 +753,9 @@ namespace AntdUI
             if (ctrl && shift)
             {
                 int index = selectionStartTemp + selectionLength;
-                if (index > cache_font.Length - 1) return;
+                if (index > cache_font.Count - 1) return;
                 if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
-                SelectionLength += cache_font.Length - selectionStartTemp;
+                SelectionLength += cache_font.Count - selectionStartTemp;
             }
             else
             {
@@ -773,14 +764,14 @@ namespace AntdUI
                 {
                     if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
                     set_e = SetSelectionLength(0);
-                    set_s = SetSelectionStart(cache_font.Length);
+                    set_s = SetSelectionStart(cache_font.Count);
                 }
                 else
                 {
                     if (multiline)
                     {
                         int index = selectionStartTemp + selectionLength;
-                        if (index > cache_font.Length - 1) return;
+                        if (index > cache_font.Count - 1) return;
                         int start = FindEndY(cache_font, index) + 1;
                         if (start == index) return;
                         set_s = SetSelectionStart(start);
@@ -789,7 +780,7 @@ namespace AntdUI
                     {
                         if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
                         set_e = SetSelectionLength(0);
-                        set_s = SetSelectionStart(cache_font.Length);
+                        set_s = SetSelectionStart(cache_font.Count);
                     }
                 }
                 if (set_s || set_e) Invalidate();

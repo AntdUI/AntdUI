@@ -242,12 +242,10 @@ namespace AntdUI
                                 rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, ww, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             }
                             else rectContent = new Rectangle(paddingx + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
-                            control.Location = new Point(rectContent.X, rectContent.Y);
                             Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon) rect_close = new Rectangle(rectTitle.Right, rectTitle.Y, icon_size, icon_size);
-                        control.Location = new Point(rectContent.X, rectContent.Y);
-                        control.Size = new Size(rectContent.Width, rectContent.Height);
+                        control.Bounds = rectContent;
                     }
                     else if (config.Content is IList<Modal.TextLine> list)
                     {
@@ -501,7 +499,7 @@ namespace AntdUI
                     {
                         g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme)), path);
                     }
-                    g.PaintIconClose(rect_close, Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
+                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
                 }
                 else if (close_button.Switch)
                 {
@@ -509,9 +507,9 @@ namespace AntdUI
                     {
                         g.Fill(Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme), path);
                     }
-                    g.PaintIconClose(rect_close, Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
+                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
                 }
-                else g.PaintIconClose(rect_close, Colour.TextTertiary.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
+                else g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
             }
             using (var brush = new SolidBrush(Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme)))
             {

@@ -423,14 +423,8 @@ namespace AntdUI
             }
             if (it.IconSvg != null)
             {
-                using (var bmp = SvgExtend.GetImgExtend(it.IconSvg, it.RectIcon, color))
-                {
-                    if (bmp != null)
-                    {
-                        if (it.Enable) g.Image(bmp, it.RectIcon);
-                        else g.Image(bmp, it.RectIcon, 0.25F);
-                    }
-                }
+                if (it.Enable) g.Svg(it.IconSvg, it.RectIcon, color);
+                else g.Svg(it.IconSvg, it.RectIcon, 0.25F, color);
             }
         }
         void DrawArrow(Canvas g, ObjectItemCheck item, Color color)

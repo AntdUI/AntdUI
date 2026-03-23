@@ -137,8 +137,7 @@ namespace AntdUI
                 if (!control.MinimumSize.IsEmpty) control.MinimumSize = new Size((int)(control.MinimumSize.Width * dpi), (int)(control.MinimumSize.Height * dpi));
                 control.Padding = SetPadding(dpi, control.Padding);
                 control.Margin = SetPadding(dpi, control.Margin);
-                control.Size = new Size((int)(item.Value.Rect.Width * dpi), (int)(item.Value.Rect.Height * dpi));
-                control.Location = new Point((int)(item.Value.Rect.X * dpi), (int)(item.Value.Rect.Y * dpi));
+                control.Bounds = new Rectangle((int)(item.Value.Rect.X * dpi), (int)(item.Value.Rect.Y * dpi), (int)(item.Value.Rect.Width * dpi), (int)(item.Value.Rect.Height * dpi));
                 if (control is TableLayoutPanel tableLayout)
                 {
                     foreach (ColumnStyle it in tableLayout.ColumnStyles)

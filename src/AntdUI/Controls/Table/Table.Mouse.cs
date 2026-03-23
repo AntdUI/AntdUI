@@ -32,7 +32,7 @@ namespace AntdUI
                 base.OnMouseDown(e);
                 if (rows == null) return;
                 OnTouchDown(e.X, e.Y);
-                var db = CellContains(rows, true, e.X, e.Y);
+                var db = CellContains(rows.List, true, e.X, e.Y);
                 if (db == null || db.mode == CELLDBMode.Summary)
                 {
                     SetFocusedCell(null);
@@ -88,10 +88,17 @@ namespace AntdUI
                         }
                         if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
                         {
-                            if (db.cell.ROW.Expand) rows_Expand.Remove(db.cell.ROW.RECORD);
-                            else rows_Expand.Add(db.cell.ROW.RECORD);
-                            ExpandChanged?.Invoke(this, new TableExpandEventArgs(db.cell.ROW.RECORD, !db.cell.ROW.Expand));
-                            if (LoadLayout()) Invalidate();
+                            bool value = !db.cell.ROW.Expand;
+                            if (OnExpandChanged(db.cell.ROW.RECORD, value))
+                            {
+                                if (db.cell.ROW.RD == null) db.cell.ROW.Expand = value;
+                                else
+                                {
+                                    db.cell.ROW.Expand = db.cell.ROW.RD.expand = value;
+                                    if (db.cell.ROW.RD.SetValue("__EXPAND__", value) && isMVVM) return;
+                                }
+                                if (LoadLayout()) Invalidate();
+                            }
                             return;
                         }
                         MouseDownRow(e, it, db);
@@ -229,7 +236,7 @@ namespace AntdUI
                     if (rows == null) return;
                     var sortData = new List<int>(rows.Length);
                     int dim = dragBody.im, di = dragBody.i;
-                    foreach (var it in rows)
+                    foreach (var it in rows.List)
                     {
                         it.hover = false;
                         if (dragBody.im == it.INDEX)
@@ -241,10 +248,10 @@ namespace AntdUI
                     }
                     if (dim == di)
                     {
-                        var row = DragBodyTree(rows, dragBody);
+                        var row = DragBodyTree(rows.List, dragBody);
                         if (row != null)
                         {
-                            int from = rows[dragBody.i].INDEX_REAL_KEY, to = rows[dragBody.im].INDEX_REAL_KEY;
+                            int from = rows.List[dragBody.i].INDEX_REAL_KEY, to = rows.List[dragBody.im].INDEX_REAL_KEY;
                             //var keytree = columns![row.KeyTreeINDEX].KeyTree!;
                             //var list = ForTreeValue(GetRow(row.RECORD, keytree));
                             //if (list != null)
@@ -259,7 +266,7 @@ namespace AntdUI
                     else
                     {
                         SetIndex(dragBody.im);
-                        foreach (var it in rows)
+                        foreach (var it in rows.List)
                         {
                             int index = it.INDEX_REAL;
                             if (index > -1)
@@ -296,12 +303,12 @@ namespace AntdUI
                         EditModeClose();
                         if (summaryCustomize && e.Button == MouseButtons.Right)
                         {
-                            var celdb = CellContains(rows, false, e.X, e.Y);
+                            var celdb = CellContains(rows.List, false, e.X, e.Y);
                             if (celdb != null && celdb.mode == CELLDBMode.Summary) Summary_RClick(celdb);
                         }
                         return;
                     }
-                    MouseUpRow(rows, cellMDown, btnMDown, e);
+                    MouseUpRow(rows.List, cellMDown, btnMDown, e);
                 }
                 else
                 {
@@ -321,10 +328,10 @@ namespace AntdUI
 
         RowTemplate? DragBodyTree(RowTemplate[] rows, DragHeader dragBody)
         {
-            int fromDepth = rows[dragBody.i].ExpandDepth - 1;
+            int fromDepth = rows[dragBody.i].Depth - 1;
             for (int i = dragBody.i - 1; i > 1; i--)
             {
-                if (rows[i].ExpandDepth == fromDepth) return rows[i];
+                if (rows[i].Depth == fromDepth) return rows[i];
             }
             return null;
         }
@@ -676,10 +683,10 @@ namespace AntdUI
                 dragHeader.xr = e.X - dragHeader.x;
                 if (rows == null) return;
                 int xr = dragHeader.x + dragHeader.xr;
-                var cells = rows[0].cells;
+                var cells = rows.First.cells;
                 dragHeader.last = e.X > dragHeader.x;
 
-                var db = CellContains(rows, false, xr, e.Y);
+                var db = CellContains(rows.List, false, xr, e.Y);
                 if (db != null)
                 {
                     if (db.col.INDEX_REAL == dragHeader.i) dragHeader.im = -1;
@@ -703,7 +710,7 @@ namespace AntdUI
                 int yr = dragBody.x + dragBody.xr;
                 dragBody.last = e.Y > dragBody.x;
 
-                var db = CellContains(rows, false, e.X, yr);
+                var db = CellContains(rows.List, false, e.X, yr);
                 if (db != null)
                 {
                     if (db.i_row == dragBody.i) dragBody.im = -1;
@@ -712,28 +719,20 @@ namespace AntdUI
                     return;
                 }
                 int last_i = rows.Length - 1 - rowSummary;
-                if (rows[last_i].INDEX == dragBody.i) dragBody.im = -1;
-                else dragBody.im = rows[last_i].INDEX;
+                var last_row = rows.List[last_i];
+                if (last_row.INDEX == dragBody.i) dragBody.im = -1;
+                else dragBody.im = last_row.INDEX;
                 Invalidate();
                 return;
             }
             if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
                 if (rows == null || inEditMode) return;
-                var db = CellContains(rows, true, e.X, e.Y);
+                var db = CellContains(rows.List, true, e.X, e.Y);
                 if (db == null || db.mode == CELLDBMode.Summary)
                 {
-                    foreach (RowTemplate it in rows)
-                    {
-                        if (it.IsColumn) continue;
-                        hovers = -1;
-                        it.Hover = false;
-                        foreach (var cel_tmp in it.cells)
-                        {
-                            if (cel_tmp is TCellSort sort) sort.Hover = false;
-                            else if (cel_tmp is Template template) ILeave(template);
-                        }
-                    }
+                    hovers = -1;
+                    rows.HoverLeave();
                     SetCursor(false);
                 }
                 else
@@ -741,14 +740,8 @@ namespace AntdUI
                     hovers = db.cell.ROW.INDEX;
                     if (db.mode > 0)
                     {
-                        for (int i = 1; i < rows.Length; i++)
-                        {
-                            rows[i].Hover = false;
-                            foreach (var cel_tmp in rows[i].cells)
-                            {
-                                if (cel_tmp is Template template) ILeave(template);
-                            }
-                        }
+                        hovers = -1;
+                        rows.HoverLeave();
                         var cel = (TCellColumn)db.cell;
                         if (moveheaders.Length > 0)
                         {
@@ -769,29 +762,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        int countmove = 0;
-                        for (int i = 1; i < rows.Length; i++)
-                        {
-                            var row = rows[i];
-                            if (row.INDEX == db.i_row)
-                            {
-                                if (db.cell is TCellSort sort)
-                                {
-                                    sort.Hover = sort.Contains(db.x, db.y);
-                                    if (sort.Hover) countmove++;
-                                }
-                                rows[i].Hover = true;
-                            }
-                            else
-                            {
-                                rows[i].Hover = false;
-                                foreach (var cel_tmp in rows[i].cells)
-                                {
-                                    if (cel_tmp is TCellSort sort) sort.Hover = false;
-                                    else if (cel_tmp is Template template) ILeave(template);
-                                }
-                            }
-                        }
+                        int countmove = rows.HoverLeave(db);
                         if (countmove > 0) SetCursor(CursorType.SizeAll);
                         else
                         {
@@ -810,7 +781,7 @@ namespace AntdUI
         protected override void OnMouseHover(int x, int y)
         {
             if (rows == null || inEditMode) return;
-            var db = CellContains(rows, false, x, y);
+            var db = CellContains(rows.List, false, x, y);
             if (db == null || db.mode == CELLDBMode.Summary)
             {
                 tmp = null;
@@ -1374,28 +1345,9 @@ namespace AntdUI
             SetCursor(false);
             if (rows == null || inEditMode) return;
             hovers = -1;
-            foreach (var it in rows)
-            {
-                it.Hover = false;
-                foreach (var cel in it.cells)
-                {
-                    if (cel is TCellSort sort) sort.Hover = false;
-                    else if (cel is Template template) ILeave(template);
-                }
-            }
+            rows.HoverLeave();
             CloseTip();
             OnCellHover();
-        }
-
-        void ILeave(Template template)
-        {
-            foreach (var it in template.Value)
-            {
-                if (it is CellLink btn) btn.ExtraMouseHover = false;
-                else if (it is CellCheckbox checkbox) checkbox.ExtraMouseHover = false;
-                else if (it is CellRadio radio) radio.ExtraMouseHover = false;
-                else if (it is CellSwitch _switch) _switch.ExtraMouseHover = false;
-            }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

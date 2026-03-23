@@ -469,8 +469,10 @@ namespace AntdUI
         {
             get
             {
-                if (focusedxy == null || rows == null) return null;
-                return rows[focusedxy[1]].cells[focusedxy[0]];
+                if (focusedxy == null) return null;
+                var row = rows?[focusedxy[1]];
+                if (row == null) return null;
+                return row.cells[focusedxy[0]];
             }
         }
 
@@ -646,6 +648,7 @@ namespace AntdUI
         /// <summary>
         /// 高精度边框
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete("use BorderRenderMode")]
         [Description("高精度边框"), Category("边框"), DefaultValue(null)]
         public bool? BorderHigh
@@ -784,7 +787,7 @@ namespace AntdUI
             {
                 if (string.Join("", selectedIndex) == value.ToString()) return false;
                 selectedIndex = new int[1] { value };
-                if (focusedxy != null && rows?.Length > value) focusedxy[1] = value;
+                if (focusedxy != null && dataLen > value) focusedxy[1] = value;
                 return true;
             }
         }
@@ -810,22 +813,6 @@ namespace AntdUI
         public bool MultipleRows { get; set; }
 
         /// <summary>
-        /// 返回当前树表格字段名
-        /// </summary>
-        public string? KeyTreeCurrent
-        {
-            get
-            {
-                if (columns == null) return null;
-                foreach (var col in columns)
-                {
-                    if (col.KeyTree != null && !string.IsNullOrEmpty(col.KeyTree)) return col.KeyTree;
-                }
-                return null;
-            }
-        }
-
-        /// <summary>
         /// 当前视图的数据行数
         /// </summary>
         public int DisplayRowCount
@@ -833,13 +820,10 @@ namespace AntdUI
             get
             {
                 if (dataTmp == null || dataTmp.rows.Length == 0) return 0;
-                int count = dataTmp.rows.Length;
-                var keyTree = KeyTreeCurrent;
-                if (keyTree == null) return count;
-                for (int i = 0; i < count; i++)
+                int count = 0;
+                foreach (var it in dataTmp.rows)
                 {
-                    var value_tree = dataTmp.rows[i][keyTree];
-                    if (value_tree is IList list) count += list.Count;
+                    if (it.add) count++;
                 }
                 return count;
             }
@@ -899,6 +883,12 @@ namespace AntdUI
         /// </summary>
         [Description("筛选实时生效"), Category("行为"), DefaultValue(false)]
         public bool FilterRealTime { get; set; }
+
+        /// <summary>
+        /// 筛选显示复选背景
+        /// </summary>
+        [Description("筛选显示复选背景"), Category("行为"), DefaultValue(null)]
+        public bool? FilterShowCheckBg { get; set; }
 
         /// <summary>
         /// 超出文字提示配置
@@ -1022,11 +1012,7 @@ namespace AntdUI
         {
             if (rows == null || SortData == null || selectedIndex.Length < 1) return new object[0];
             if (selectedIndex.Length == 1 && selectedIndex[0] == 0) return new object[0];
-            var dir = new Dictionary<int, object>(rows.Length);
-            foreach (var it in rows)
-            {
-                if (it.INDEX_REAL > -1) dir.Add(it.INDEX_REAL, it.RECORD);
-            }
+            var dir = rows.RealDir();
             var list = new List<object>(SortData.Length);
             foreach (var it in selectedIndex)
             {
@@ -1058,7 +1044,7 @@ namespace AntdUI
         /// <summary>
         /// 行总数
         /// </summary>
-        public int RowCount => dataTmp?.rows.Length ?? 0;
+        public int RowCount => dataLen;
 
         #endregion
 
@@ -1100,34 +1086,38 @@ namespace AntdUI
             if (rows == null) return;
             for (int i = 0; i < rows.Length; i++)
             {
-                var row = rows[i];
-                if (row.RECORD == record)
+                var row = rows.Record(record);
+                if (row == null) return;
+                SelectedIndex = row.INDEX;
+                if (expand && !row.SHOW)
                 {
-                    SelectedIndex = row.INDEX;
-                    if (expand && !row.SHOW)
-                    {
-                        ExpandUp(rows, i);
-                        if (LoadLayout()) Invalidate();
-                    }
-                    return;
+                    ExpandUp(rows, i);
+                    if (LoadLayout()) Invalidate();
                 }
             }
         }
 
-        void ExpandUp(RowTemplate[] rows, int i)
+        void ExpandUp(RowList rows, int i)
         {
-            var id = rows[i].ExpandDepth - 1;
+            var it = rows[i];
+            if (it == null) return;
+            var id = it.Depth - 1;
             while (true)
             {
                 if (i < 1) return;
                 i--;
-                var it = rows[i];
+                it = rows[i];
+                if (it == null) return;
                 if (it.CanExpand)
                 {
-                    if (it.ExpandDepth == id)
+                    if (it.Depth == id)
                     {
-                        rows_Expand.Add(it.RECORD);
-                        id = it.ExpandDepth - 1;
+                        if (it.RD != null)
+                        {
+                            it.RD.expand = true;
+                            it.RD.SetValue("__EXPAND__", true);
+                        }
+                        id = it.Depth - 1;
                         if (id < 0) return;
                     }
                 }
@@ -1147,12 +1137,9 @@ namespace AntdUI
         /// <returns>是否禁用</returns>
         public bool GetRowEnable(int i)
         {
-            if (rows == null) return true;
-            foreach (var row in rows)
-            {
-                if (row.INDEX == i) return GetRowEnable(row.RECORD);
-            }
-            return true;
+            var row = rows?[i];
+            if (row == null) return true;
+            return GetRowEnable(row.RECORD);
         }
 
         /// <summary>
@@ -1174,15 +1161,9 @@ namespace AntdUI
         /// <param name="ui">是否刷新ui</param>
         public void SetRowEnable(int i, bool value = true, bool ui = true)
         {
-            if (rows == null) return;
-            foreach (var row in rows)
-            {
-                if (row.INDEX == i)
-                {
-                    SetRowEnable(row.RECORD, value, ui);
-                    return;
-                }
-            }
+            var row = rows?[i];
+            if (row == null) return;
+            SetRowEnable(row.RECORD, value, ui);
         }
 
         /// <summary>
@@ -1203,17 +1184,15 @@ namespace AntdUI
                 if (enableDir.Contains(record)) return;
                 else enableDir.Add(record);
             }
-            if (rows == null) return;
             try
             {
-                foreach (var row in rows)
+                var row = rows?.Record(record);
+                if (row == null) return;
+                if (row.RECORD == record)
                 {
-                    if (row.RECORD == record)
-                    {
-                        row.ENABLE = value;
-                        if (ui) Invalidate();
-                        return;
-                    }
+                    row.ENABLE = value;
+                    if (ui) Invalidate();
+                    return;
                 }
             }
             catch { }
@@ -1244,16 +1223,9 @@ namespace AntdUI
         public int ScrollLine(object record, bool force = false)
         {
             if (rows == null || !ScrollBar.ShowY) return 0;
-            foreach (var row in rows)
-            {
-                if (row.RECORD == record)
-                {
-                    int i = Array.IndexOf(rows, row);
-                    if (i < 0) return 0;
-                    return ScrollLine(i, rows, force);
-                }
-            }
-            return 0;
+            var row = rows?.Record(record);
+            if (row == null) return 0;
+            return ScrollLine(row.INDEX, rows!, force);
         }
 
         /// <summary>
@@ -1264,7 +1236,7 @@ namespace AntdUI
             if (ScrollBar.ShowY) ScrollBar.Value = ScrollBar.Max;
         }
 
-        int ScrollLine(int i, RowTemplate[] rows, bool force = false)
+        int ScrollLine(int i, RowList rows, bool force = false)
         {
             if (!ScrollBar.ShowY) return 0;
             int sy = ScrollBar.ValueY;
@@ -1274,12 +1246,12 @@ namespace AntdUI
                 int len = dataTmp.rows.Length * _RowHeight.Value;
                 var prog = (_RowHeight.Value * i) * 1F / len;
                 int y = (int)Math.Round(len * prog);
-                return ScrollLine(sy, y, y + _RowHeight.Value, rows, force);
+                return ScrollLine(sy, y, y + _RowHeight.Value, rows.List, force);
             }
             var it = rows[i];
-            if (!it.ShowExpand) i = NextIndexUp(rows, i);
-            var select = rows[i].RECT;
-            return ScrollLine(sy, select.Y, select.Bottom, rows, force);
+            if (it == null) return 0;
+            var select = it.RECT;
+            return ScrollLine(sy, select.Y, select.Bottom, rows.List, force);
         }
         int ScrollLine(int y, int b, RowTemplate[] rows, bool force = false)
         {
@@ -1326,7 +1298,7 @@ namespace AntdUI
         {
             if (rows == null || !ScrollBar.ShowX) return 0;
             int sx = ScrollBar.ValueX;
-            var rect = rows[0].cells[i].RECT;
+            var rect = rows.First.cells[i].RECT;
             if (force)
             {
                 ScrollBar.ValueX = rect.X;
@@ -1353,7 +1325,7 @@ namespace AntdUI
         {
             if (rows == null || !ScrollBar.ShowX) return 0;
             int sx = ScrollBar.ValueX;
-            foreach (var cellColumn in rows[0].cells)
+            foreach (var cellColumn in rows.First.cells)
             {
                 if (cellColumn.COLUMN.Key == column)
                 {
@@ -1387,7 +1359,7 @@ namespace AntdUI
         {
             if (rows == null || !ScrollBar.ShowX) return 0;
             int sx = ScrollBar.ValueX;
-            foreach (var cellColumn in rows[0].cells)
+            foreach (var cellColumn in rows.First.cells)
             {
                 if (cellColumn.COLUMN == column)
                 {
@@ -1419,18 +1391,16 @@ namespace AntdUI
         /// <param name="row">行</param>
         public bool CopyData(int row)
         {
-            if (rows != null)
+            try
             {
-                try
-                {
-                    var _row = rows[row];
-                    var vals = new List<string?>(_row.cells.Length);
-                    foreach (var cell in _row.cells) vals.Add(cell.ToString());
-                    this.ClipboardSetText(string.Join("\t", vals));
-                    return true;
-                }
-                catch { }
+                var _row = rows?[row];
+                if (_row == null) return false;
+                var vals = new List<string?>(_row.cells.Length);
+                foreach (var cell in _row.cells) vals.Add(cell.ToString());
+                this.ClipboardSetText(string.Join("\t", vals));
+                return true;
             }
+            catch { }
             return false;
         }
 
@@ -1448,6 +1418,7 @@ namespace AntdUI
                     foreach (var it in row)
                     {
                         var _row = rows[it];
+                        if (_row == null) continue;
                         var vals = new List<string?>(_row.cells.Length);
                         foreach (var cell in _row.cells) vals.Add(cell.ToString());
                         rowtmp.Add(string.Join("\t", vals));
@@ -1467,19 +1438,12 @@ namespace AntdUI
         /// <param name="column">列</param>
         public bool CopyData(int row, int column)
         {
-            if (rows != null)
-            {
-                try
-                {
-                    var _row = rows[row];
-                    var vals = _row.cells[column].ToString();
-                    if (vals == null) return false;
-                    this.ClipboardSetText(vals);
-                    return true;
-                }
-                catch { }
-            }
-            return false;
+            var _row = rows?[row];
+            if (_row == null) return false;
+            var vals = _row.cells[column].ToString();
+            if (vals == null) return false;
+            this.ClipboardSetText(vals);
+            return true;
         }
 
         /// <summary>
@@ -1561,6 +1525,22 @@ namespace AntdUI
             if (LoadLayout()) Invalidate();
         }
 
+        /// <summary>
+        /// 按列SortMode排序
+        /// </summary>
+        /// <param name="col">列</param>
+        public void Sort(Column col)
+        {
+            bool emptySortData = SortData == null;
+            if (col.SortMode == SortMode.ASC) SortDataASC(col);
+            else if (col.SortMode == SortMode.DESC) SortDataDESC(col);
+            else SortData = null;
+            if (emptySortData && SortData == null) return;
+            LoadLayout();
+            Invalidate();
+            OnSortRows(col.INDEX);
+        }
+
         int? GetRowIndex(object it, IRow[] rows)
         {
             for (int i = 0; i < rows.Length; i++)
@@ -1635,18 +1615,16 @@ namespace AntdUI
         /// <param name="column">列</param>
         public Rectangle CellRectangle(int row, int column)
         {
-            if (rows != null)
+            try
             {
-                try
-                {
-                    var _row = rows[row];
-                    var cel = _row.cells[column];
-                    var db = CellContains(rows, false, 0, 0);
-                    if (db == null) return RealRect(cel.RECT, 0, 0);
-                    else return RealRect(cel.RECT, db.offset_xi, db.offset_y);
-                }
-                catch { }
+                var _row = rows?[row];
+                if (_row == null) return Rectangle.Empty;
+                var cel = _row.cells[column];
+                var db = CellContains(rows!.List, false, 0, 0);
+                if (db == null) return RealRect(cel.RECT, 0, 0);
+                else return RealRect(cel.RECT, db.offset_xi, db.offset_y);
             }
+            catch { }
             return Rectangle.Empty;
         }
 
@@ -1674,7 +1652,7 @@ namespace AntdUI
                 dir_columns = new Dictionary<string, Column>(dataTmp.columns.Length);
                 var columns = new Dictionary<string, DataColumn>(dataTmp.columns.Length);
                 foreach (var column in dataTmp.columns) columns.Add(column.key, new DataColumn(column.key) { Caption = column.text });
-                foreach (var item in rows[0].cells)
+                foreach (var item in rows.List[0].cells)
                 {
                     var column = item.COLUMN;
                     dir_columns.Add(column.Key, column);
@@ -1736,39 +1714,22 @@ namespace AntdUI
         /// <param name="value">展开或折叠</param>
         public void ExpandAll(bool value = true)
         {
-            if (ExpandChanged == null)
+            if (dataTmp == null) return;
+            int count = 0;
+            foreach (var it in dataTmp.RowsCache)
             {
-                if (value)
+                if (it.expand == value) continue;
+                if (OnExpandChanged(it.record, value))
                 {
-                    if (rows == null) return;
-                    rows_Expand = new List<object>(rows.Length - 1);
-                    for (int i = 1; i < rows.Length; i++) rows_Expand.Add(rows[i].RECORD);
-                }
-                else rows_Expand.Clear();
-            }
-            else
-            {
-                if (value)
-                {
-                    if (rows == null) return;
-                    var temp = rows_Expand;
-                    rows_Expand = new List<object>(rows.Length - 1);
-                    rows_Expand.AddRange(temp);
-                    for (int i = 1; i < rows.Length; i++)
-                    {
-                        var record = rows[i].RECORD;
-                        if (rows_Expand.Contains(record)) continue;
-                        rows_Expand.Add(record);
-                        ExpandChanged(this, new TableExpandEventArgs(record, false));
-                    }
-                }
-                else
-                {
-                    foreach (var it in rows_Expand) ExpandChanged(this, new TableExpandEventArgs(it, false));
-                    rows_Expand.Clear();
+                    it.expand = value;
+                    if (it.SetValue("__EXPAND__", value) && isMVVM) continue;
+                    count++;
                 }
             }
-            if (LoadLayout()) Invalidate();
+            if (count > 0)
+            {
+                if (LoadLayout()) Invalidate();
+            }
         }
 
         /// <summary>
@@ -1778,22 +1739,20 @@ namespace AntdUI
         /// <param name="value">展开或折叠</param>
         public void Expand(object record, bool value = true)
         {
-            if (value)
+            if (dataTmp == null) return;
+            if (OnExpandChanged(record, value))
             {
-                if (rows_Expand.Contains(record)) return;
-                rows_Expand.Add(record);
-                ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, true));
-            }
-            else
-            {
-                if (rows_Expand.Contains(record))
+                foreach (var it in dataTmp.RowsCache)
                 {
-                    rows_Expand.Remove(record);
-                    ExpandChanged?.Invoke(this, new TableExpandEventArgs(record, false));
+                    if (it.record == record)
+                    {
+                        it.expand = value;
+                        if (it.SetValue("__EXPAND__", value) && isMVVM) return;
+                        if (LoadLayout()) Invalidate();
+                        return;
+                    }
                 }
-                else return;
             }
-            if (LoadLayout()) Invalidate();
         }
 
         #endregion
@@ -1801,7 +1760,7 @@ namespace AntdUI
         public CELL? HitTest(int x, int y)
         {
             if (rows == null) return null;
-            return CellContains(rows, false, x, y)?.cell;
+            return CellContains(rows.List, false, x, y)?.cell;
         }
 
         public CELL? HitTest(int x, int y, out int i_row, out int i_cel)
@@ -1811,7 +1770,7 @@ namespace AntdUI
                 i_row = i_cel = 0;
                 return null;
             }
-            var db = CellContains(rows, false, x, y);
+            var db = CellContains(rows.List, false, x, y);
             if (db == null)
             {
                 i_row = i_cel = 0;
@@ -1832,7 +1791,7 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var db = CellContains(rows, false, x, y);
+            var db = CellContains(rows.List, false, x, y);
             if (db == null)
             {
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
@@ -1859,7 +1818,7 @@ namespace AntdUI
                 r_x = r_y = offset_x = offset_xi = offset_y = i_row = i_cel = 0;
                 return null;
             }
-            var db = CellContains(rows, false, x, y);
+            var db = CellContains(rows.List, false, x, y);
             if (db == null)
             {
                 mode = CELLDBMode.None;
@@ -3010,6 +2969,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        internal bool EqualsKeyTree(string? value)
+        {
+            if (value == null) return false;
+            return KeyTree == value;
+        }
     }
 
     #endregion

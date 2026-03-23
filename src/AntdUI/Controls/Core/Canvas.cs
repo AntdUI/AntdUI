@@ -107,6 +107,13 @@ namespace AntdUI
 
         #endregion
 
+        #region SVG
+
+        bool Svg(string svg, Rectangle rect, float opacity, Color? color = null);
+        bool Svg(string svg, Rectangle rect, Color? color = null);
+
+        #endregion
+
         #region Fill
 
         void Fill(Brush brush, GraphicsPath path);

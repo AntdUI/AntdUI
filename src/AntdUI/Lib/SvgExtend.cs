@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
 using System.Drawing;
 
 namespace AntdUI
@@ -15,35 +16,9 @@ namespace AntdUI
             if (rect.Width > 0 && rect.Height > 0) return SvgToBmp(svg, rect.Width, rect.Height, color);
             return null;
         }
-        public static bool GetImgExtend(this Canvas g, string svg, Rectangle rect, Color? color = null)
-        {
-            if (rect.Width > 0 && rect.Height > 0)
-            {
-                using (var bmp = SvgToBmp(svg, rect.Width, rect.Height, color))
-                {
-                    if (bmp == null) return false;
-                    g.Image(bmp, rect);
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static bool GetImgCanvas(this Canvas g, string svg, Rectangle rect, Color? color = null)
-        {
-            if (rect.Width > 0 && rect.Height > 0)
-            {
-                var doc = SvgDocument(svg);
-                if (doc == null) return false;
-                if (color.HasValue) doc.Fill = new Svg.SvgColourServer(color.Value);
-                doc.Width = rect.Width;
-                doc.Height = rect.Height;
-                var state = g.Save();
-                g.TranslateTransform(rect.X, rect.Y);
-                doc.Draw(g, rect.Size);
-                g.Restore(state);
-            }
-            return false;
-        }
+
+        [Obsolete("use DrawSvg")]
+        public static bool GetImgExtend(this Canvas g, string svg, Rectangle rect, Color? color = null) => g.Svg(svg, rect, color);
 
         /// <summary>
         /// SVG转图片
@@ -115,7 +90,7 @@ namespace AntdUI
             return doc.Draw();
         }
 
-        static Svg.SvgDocument? SvgDocument(string svg)
+        internal static Svg.SvgDocument? SvgDocument(string svg)
         {
             if (svg.StartsWith("<svg")) return Svg.SvgDocument.FromSvg<Svg.SvgDocument>(svg);
             else if (svg.Contains("svg+xml;base64,"))

@@ -21,7 +21,7 @@ namespace AntdUI
 
         #region 确定字体宽度
 
-        CacheFont[]? cache_font;
+        List<CacheFont>? cache_font;
         CacheCaret[]? cache_caret;
         bool HasEmoji = false;
         bool FixFontWidth(bool force = false)
@@ -43,21 +43,14 @@ namespace AntdUI
                         cache_font = null;
                         cache_caret = null;
                     }
-                    else FixFontWidth(g, text, force, ref font_height);
+                    else FixFontWidth(g, text, force, font_height);
                     CaretInfo.Height = font_height;
                     return CalculateRect() || rdcount > 0;
                 });
             }
             else
             {
-                if (isempty)
-                {
-                    TextTotalLine = 0;
-                    bool set_x = ScrollX.SetValue(0), set_y = ScrollY.SetValue(0);
-                    cache_font = null;
-                    cache_caret = null;
-                    return CalculateRect() || set_x || set_y;
-                }
+                if (isempty) return CleanCacheFont();
                 else
                 {
                     return this.GDI(g =>
@@ -68,7 +61,7 @@ namespace AntdUI
                             CaretInfo.Height = font_height;
                             return false;
                         }
-                        FixFontWidth(g, text, force, ref font_height);
+                        FixFontWidth(g, text, force, font_height);
                         CaretInfo.Height = font_height;
                         return CalculateRect();
                     });
@@ -76,15 +69,28 @@ namespace AntdUI
             }
         }
 
-        void FixFontWidth(Canvas g, string text, bool force, ref int fontHeight)
+        void FixFontWidth(Canvas g, string text, bool force, int fontHeight)
         {
-            var font_widths = new List<CacheFont>(text.Length);
+            if (force || cache_font == null) fix_cache_font.Clear();
+            cache_font = FixFontWidth(g, text, fontHeight, out _);
+            SetStyle();
+        }
+
+        List<CacheFont> FixFontWidth(string text, out int length)
+        {
+            int len = 0;
+            var font_widths = this.GDI(g => FixFontWidth(g, text, null, out len));
+            length = len;
+            return font_widths;
+        }
+
+        List<CacheFont> FixFontWidth(Canvas g, string text, int? fontHeight, out int length)
+        {
             int index = 0;
+            var font_widths = new List<CacheFont>(text.Length);
             if (IsPassWord)
             {
-                var sizefont = g.MeasureString(PassWordChar, Font);
-                int w = sizefont.Width;
-                if (fontHeight < sizefont.Height) fontHeight = sizefont.Height;
+                int w = fix_cache_font.Width(g, Font, PassWordChar);
                 foreach (char it in text)
                 {
                     font_widths.Add(new CacheFont(index, it.ToString(), false, w));
@@ -93,27 +99,44 @@ namespace AntdUI
             }
             else
             {
-                if (force || cache_font == null) fix_cache_font.Clear();
-                GraphemeSplitter.Each(text, (txt, ntype) =>
+                if (fontHeight.HasValue)
                 {
-                    if (ntype == 18)
+                    GraphemeSplitter.Each(text, (txt, ntype) =>
                     {
-                        HasEmoji = true;
-                        font_widths.Add(new CacheFont(index, txt, true, 0));
-                    }
-                    else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
-                    index++;
-                });
-                if (HasEmoji)
+                        if (GraphemeSplitter.IsEmoji(ntype, txt))
+                        {
+                            HasEmoji = true;
+                            font_widths.Add(new CacheFont(index, txt, true, fontHeight.Value));
+                        }
+                        else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        index++;
+                    });
+                }
+                else
                 {
-                    foreach (var it in font_widths)
+                    GraphemeSplitter.Each(text, (txt, ntype) =>
                     {
-                        if (it.emoji) it.width = fontHeight;
-                    }
+                        if (GraphemeSplitter.IsEmoji(ntype, txt))
+                        {
+                            HasEmoji = true;
+                            font_widths.Add(new CacheFont(index, txt, true, fix_cache_font.Height(g, Font)));
+                        }
+                        else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        index++;
+                    });
                 }
             }
-            cache_font = font_widths.ToArray();
-            SetStyle();
+            length = index;
+            return font_widths;
+        }
+
+        bool CleanCacheFont()
+        {
+            TextTotalLine = 0;
+            bool set_x = ScrollX.SetValue(0), set_y = ScrollY.SetValue(0);
+            cache_font = null;
+            cache_caret = null;
+            return CalculateRect() || set_x || set_y;
         }
 
         /// <summary>
@@ -197,14 +220,7 @@ namespace AntdUI
                 oldtmpY = oldtmpX = null;
                 ScrollX.Clear();
                 ScrollY.Clear();
-                if (ModeRange)
-                {
-                    int center = rect_text.Width / 2;
-                    int h2 = CaretInfo.Height / 2;
-                    rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
-                    rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                    rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
-                }
+                if (ModeRange) HandTextModeRange();
                 if (CaretInfo.SetXY(rect_text.X, rect_text.Y)) rdcount++;
             }
             else
@@ -258,7 +274,7 @@ namespace AntdUI
                     HandTextAlign(cache_font);
                 }
 
-                if (cache_font.Length == 0)
+                if (cache_font.Count == 0)
                 {
                     TextTotalLine = 0;
                     isempty = true;
@@ -268,14 +284,14 @@ namespace AntdUI
                     return true;
                 }
 
-                var last = cache_font[cache_font.Length - 1];
+                var last = cache_font[cache_font.Count - 1];
 
-                var carets = new List<CacheCaret>(cache_font.Length + 2)
+                var carets = new List<CacheCaret>(cache_font.Count + 2)
                 {
                     new CacheCaret { x = cache_font[0].rect.X, y = rect_text.Y, i = 0,index=0 }
                 };
                 int tmp = 1;
-                for (int i = 0; i < cache_font.Length; i++)
+                for (int i = 0; i < cache_font.Count; i++)
                 {
                     var it = cache_font[i];
                     if (it.ret)
@@ -317,7 +333,7 @@ namespace AntdUI
                 carets.Add(new CacheCaret
                 {
                     index = tmp,
-                    i = cache_font.Length,
+                    i = cache_font.Count,
                     x = last.rect.Right,
                     y = last.rect.Y
                 });
@@ -376,28 +392,31 @@ namespace AntdUI
             if (SetCaretPostion()) rdcount++;
             return rdcount > 0;
         }
+        int HandTextModeRange()
+        {
+            int ico_size = CaretInfo.Height, center = rect_text.Width / 2, d_w = center - ico_size;
+            rect_d_ico = new Rectangle(rect_text.X + center - ico_size / 2, rect_text.Y + ((rect_text.Height - ico_size) / 2), ico_size, ico_size);
+            rect_d_l = new Rectangle(rect_text.X, rect_text.Y, d_w, rect_text.Height);
+            rect_d_r = new Rectangle(rect_text.X + center + ico_size, rect_text.Y, d_w, rect_text.Height);
+            return ico_size;
+        }
 
         #region 处理文本方向
 
-        void HandTextAlign(CacheFont[] cache_font)
+        void HandTextAlign(List<CacheFont> cache_font)
         {
             int usex = 0;
             if (ModeRange)
             {
-                int center = rect_text.Width / 2;
-                int h2 = CaretInfo.Height / 2;
-                rect_d_ico = new Rectangle(rect_text.X + center - h2, rect_text.Y + ((rect_text.Height - CaretInfo.Height) / 2), CaretInfo.Height, CaretInfo.Height);
-                rect_d_l = new Rectangle(rect_text.X, rect_text.Y, center - h2, rect_text.Height);
-                rect_d_r = new Rectangle(rect_d_l.Right + CaretInfo.Height, rect_text.Y, rect_d_l.Width, rect_text.Height);
-
+                int ico_size = HandTextModeRange();
                 int tabindex = GetTabIndex(cache_font);
-                List<int> i_l = new List<int>(cache_font.Length), i_r = new List<int>(i_l.Count);
+                List<int> i_l = new List<int>(cache_font.Count), i_r = new List<int>(i_l.Count);
                 if (tabindex == -1)
                 {
-                    for (int i = 0; i < cache_font.Length; i++)
+                    for (int i = 0; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, ico_size);
                         usex += it.width;
                         i_l.Add(i);
                     }
@@ -407,7 +426,7 @@ namespace AntdUI
                     for (int i = 0; i < tabindex; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_l.X + usex, rect_text.Y, it.width, ico_size);
                         usex += it.width;
                         i_l.Add(i);
                     }
@@ -415,22 +434,22 @@ namespace AntdUI
                     cache_font[tabindex].rect = new Rectangle(left.Right, left.Y, 0, left.Height);
 
                     int user = 0;
-                    for (int i = tabindex + 1; i < cache_font.Length; i++)
+                    for (int i = tabindex + 1; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, ico_size);
                         user += it.width;
                         i_r.Add(i);
                     }
                 }
                 else
                 {
-                    cache_font[0].rect = new Rectangle(rect_d_r.X, rect_d_r.Y, cache_font[0].width, CaretInfo.Height);
+                    cache_font[0].rect = new Rectangle(rect_d_r.X, rect_d_r.Y, cache_font[0].width, ico_size);
                     int user = 0;
-                    for (int i = tabindex + 1; i < cache_font.Length; i++)
+                    for (int i = tabindex + 1; i < cache_font.Count; i++)
                     {
                         var it = cache_font[i];
-                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rect_d_r.X + user, rect_text.Y, it.width, ico_size);
                         user += it.width;
                         i_r.Add(i);
                     }
@@ -508,12 +527,12 @@ namespace AntdUI
                 HandTextAlignCore(cache_font);
             }
         }
-        void HandTextAlignCore(CacheFont[] cache_font)
+        void HandTextAlignCore(List<CacheFont> cache_font)
         {
             if (textalign == HorizontalAlignment.Right)
             {
                 int y = -1;
-                var list = new List<CacheFont>(cache_font.Length);
+                var list = new List<CacheFont>(cache_font.Count);
                 foreach (var it in cache_font)
                 {
                     if (it.rect.Y != y)
@@ -528,7 +547,7 @@ namespace AntdUI
             else if (textalign == HorizontalAlignment.Center)
             {
                 int y = -1;
-                var list = new List<CacheFont>(cache_font.Length);
+                var list = new List<CacheFont>(cache_font.Count);
                 foreach (var it in cache_font)
                 {
                     if (it.rect.Y != y)
@@ -577,7 +596,7 @@ namespace AntdUI
                 list.Clear();
             }
         }
-        int GetTabIndex(CacheFont[] cache_font)
+        int GetTabIndex(List<CacheFont> cache_font)
         {
             foreach (var it in cache_font)
             {

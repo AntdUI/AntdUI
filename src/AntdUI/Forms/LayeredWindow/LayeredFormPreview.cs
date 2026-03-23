@@ -477,14 +477,8 @@ namespace AntdUI
                         }
                         foreach (var it in btns)
                         {
-                            using (var bmp = SvgExtend.GetImgExtend(it.svg, it.rect, it.hover ? colorHover : colorDefault))
-                            {
-                                if (bmp != null)
-                                {
-                                    if (it.enabled) g.Image(bmp, it.rect);
-                                    else g.Image(bmp, it.rect, 0.3F);
-                                }
-                            }
+                            if (it.enabled) g.Svg(it.svg, it.rect, it.hover ? colorHover : colorDefault);
+                            else g.Svg(it.svg, it.rect, 0.3F, it.hover ? colorHover : colorDefault);
                         }
                     }
                 }
@@ -587,20 +581,14 @@ namespace AntdUI
 
         void PaintBtn(Canvas g, SolidBrush brush, Rectangle rect, Rectangle rect_ico, string svg, bool hover, bool enabled)
         {
-            using (var bmp = SvgExtend.GetImgExtend(svg, rect_ico, Color.White))
+            if (hover)
             {
-                if (bmp != null)
-                {
-                    if (hover)
-                    {
-                        using (var brush_hover = new SolidBrush(Color.FromArgb(51, 0, 0, 0)))
-                        { g.FillEllipse(brush_hover, rect); }
-                    }
-                    else g.FillEllipse(brush, rect);
-                    if (enabled) g.Image(bmp, rect_ico);
-                    else g.Image(bmp, rect_ico, 0.3F);
-                }
+                using (var brush_hover = new SolidBrush(Color.FromArgb(51, 0, 0, 0)))
+                { g.FillEllipse(brush_hover, rect); }
             }
+            else g.FillEllipse(brush, rect);
+            if (enabled) g.Svg(svg, rect_ico, Color.White);
+            else g.Svg(svg, rect_ico, 0.3F, Color.White);
         }
 
         readonly Color colorDefault = Color.FromArgb(166, 255, 255, 255), colorHover = Color.FromArgb(217, 255, 255, 255);

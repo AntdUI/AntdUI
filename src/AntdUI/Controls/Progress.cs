@@ -945,7 +945,7 @@ namespace AntdUI
                         g.RotateTransform(_value_show * 360F);
                         var ico_rect = new Rectangle(xy2, xy2, iconSize, iconSize);
                         if (icon != null) g.Image(icon, ico_rect);
-                        if (iconSvg != null) g.GetImgExtend(iconSvg, ico_rect, IconCircleColor ?? Color.FromArgb(30, _back));
+                        if (iconSvg != null) g.Svg(iconSvg, ico_rect, IconCircleColor ?? Color.FromArgb(30, _back));
                     }
                     finally { g.Restore(state); }
                 }
@@ -954,7 +954,7 @@ namespace AntdUI
                     int xy = (rect_prog.Width - iconSize) / 2;
                     var ico_rect = new Rectangle(rect_prog.X + xy, rect_prog.Y + xy, iconSize, iconSize);
                     if (icon != null) g.Image(icon, ico_rect);
-                    if (iconSvg != null) g.GetImgExtend(iconSvg, ico_rect, Color.FromArgb(30, _back));//增加透明度}
+                    if (iconSvg != null) g.Svg(iconSvg, ico_rect, Color.FromArgb(30, _back));//增加透明度}
                 }
             }
             g.DrawEllipse(_back, w, rect_prog);

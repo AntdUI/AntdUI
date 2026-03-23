@@ -36,7 +36,7 @@ namespace AntdUI
                     int start = 0, end;
 
                     if (caret2.i > 0) start = FindStart(cache_font, caret2.i - 2);
-                    if (caret2.i >= cache_font.Length) end = cache_font.Length;
+                    if (caret2.i >= cache_font.Count) end = cache_font.Count;
                     else end = FindEnd(cache_font, caret2.i);
                     bool set_s2 = SetSelectionStart(start), set_e2 = SetSelectionLength(end - start);
                     if (set_s2 || set_e2) Invalidate();
@@ -286,7 +286,7 @@ namespace AntdUI
         /// <summary>
         /// 查找前面
         /// </summary>
-        int FindStart(CacheFont[] cache_font, int index)
+        int FindStart(List<CacheFont> cache_font, int index)
         {
             for (int i = index; i >= 0; i--)
             {
@@ -298,9 +298,9 @@ namespace AntdUI
         /// <summary>
         /// 查找后面
         /// </summary>
-        int FindEnd(CacheFont[] cache_font, int index)
+        int FindEnd(List<CacheFont> cache_font, int index)
         {
-            int end = cache_font.Length;
+            int end = cache_font.Count;
             for (int i = index; i < end; i++)
             {
                 if (sptext.Contains(cache_font[i].text)) return i;
@@ -311,7 +311,7 @@ namespace AntdUI
         /// <summary>
         /// 查找行前面
         /// </summary>
-        int FindStartY(CacheFont[] cache_font, int index)
+        int FindStartY(List<CacheFont> cache_font, int index)
         {
             int line = cache_font[index].line;
             int tmp = 0;
@@ -327,11 +327,11 @@ namespace AntdUI
         /// <summary>
         /// 查找行后面
         /// </summary>
-        int FindEndY(CacheFont[] cache_font, int index)
+        int FindEndY(List<CacheFont> cache_font, int index)
         {
             int line = cache_font[index].line;
             int tmp = 0;
-            int end = cache_font.Length;
+            int end = cache_font.Count;
             for (int i = index + 1; i < end; i++)
             {
                 if (cache_font[i].line == line) tmp = i;
@@ -400,7 +400,7 @@ namespace AntdUI
                 ChangeMouseHover(value, _mouseDown);
                 if (Enabled)
                 {
-                    OnAllowClear();
+                    if (OnAllowClear()) CalculateRect();
                     if (Config.HasAnimation(nameof(Input), Name) && HasAnimation && !ExtraMouseDown)
                     {
                         ThreadHover?.Dispose();

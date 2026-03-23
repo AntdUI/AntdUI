@@ -601,23 +601,29 @@ namespace AntdUI
             {
                 if (allowclear == value) return;
                 allowclear = value;
-                OnAllowClear();
+                if (OnAllowClear())
+                {
+                    CalculateRect();
+                    Invalidate();
+                }
                 OnPropertyChanged(nameof(AllowClear));
             }
         }
 
-        void OnAllowClear()
+        bool OnAllowClear()
         {
             bool _is_clear = !ReadOnly && allowclear && _mouseHover && (!isempty || HasValue);
-            if (is_clear == _is_clear) return;
+            if (is_clear == _is_clear) return false;
             is_clear = _is_clear;
-            CalculateRect();
-            Invalidate();
+            return true;
         }
 
         bool autoscroll = false;
+        /// <summary>
+        /// 是否显示滚动条
+        /// </summary>
         [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
-        public bool AutoScroll
+        public virtual bool AutoScroll
         {
             get => autoscroll;
             set
@@ -632,6 +638,7 @@ namespace AntdUI
         /// <summary>
         /// 处理快捷键
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Obsolete, Description("处理快捷键"), Category("行为"), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
 
@@ -694,35 +701,6 @@ namespace AntdUI
             }
         }
 
-        bool SetText(string value, bool active, bool changed = true)
-        {
-            value ??= "";
-            if (_text == value) return false;
-            _text = value;
-            isempty = string.IsNullOrEmpty(_text);
-            FixFontWidth();
-            OnAllowClear();
-            if (active) OnSetText(value, isempty);
-            if (!DesignMode)
-            {
-                if (isempty)
-                {
-                    if (selectionStart > 0) SetSelectionStart(0);
-                }
-                else if (cache_font != null) SetSelectionStart(cache_font.Length);
-            }
-            if (changed)
-            {
-                OnTextChanged(EventArgs.Empty);
-                OnPropertyChanged(nameof(Text));
-            }
-            return true;
-        }
-
-        protected virtual void OnSetText(string text, bool isempty)
-        {
-        }
-
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
@@ -780,7 +758,7 @@ namespace AntdUI
             else if (value > 0)
             {
                 if (cache_font == null) value = 0;
-                else if (value > cache_font.Length) value = cache_font.Length;
+                else if (value > cache_font.Count) value = cache_font.Count;
             }
             if (selectionStart == value)
             {
@@ -790,7 +768,7 @@ namespace AntdUI
             selectionStart = selectionStartTemp = value;
             if (caret)
             {
-                if (cache_font == null || cache_font.Length <= value) r = SetCaretPostion(value + 1, false);
+                if (cache_font == null || cache_font.Count <= value) r = SetCaretPostion(value + 1, false);
                 else
                 {
                     var it = cache_font[value];
@@ -831,17 +809,33 @@ namespace AntdUI
         public bool AcceptsTab { get; set; }
 
         /// <summary>
+        /// 失去焦点时是否隐藏选定内容
+        /// </summary>
+        [Description("失去焦点时是否隐藏选定内容"), Category("行为"), DefaultValue(true)]
+        public bool HideSelection { get; set; } = true;
+
+        /// <summary>
+        /// 使用默认右键菜单
+        /// </summary>
+        [Description("使用默认右键菜单"), Category("行为"), DefaultValue(true)]
+        public bool UseContextMenu { get; set; } = true;
+
+        /// <summary>
         /// 焦点离开清空选中
         /// </summary>
-        [Description("焦点离开清空选中"), Category("行为"), DefaultValue(true)]
-        public bool LostFocusClearSelection { get; set; } = true;
+        [Obsolete("use HideSelection"), Description("焦点离开清空选中"), Category("行为"), DefaultValue(true)]
+        public bool LostFocusClearSelection
+        {
+            get => HideSelection;
+            set => HideSelection = value;
+        }
 
         bool readOnly = false;
         /// <summary>
         /// 只读
         /// </summary>
         [Description("只读"), Category("行为"), DefaultValue(false)]
-        public bool ReadOnly
+        public virtual bool ReadOnly
         {
             get => readOnly;
             set
@@ -858,7 +852,7 @@ namespace AntdUI
         /// 多行文本
         /// </summary>
         [Description("多行文本"), Category("行为"), DefaultValue(false)]
-        public bool Multiline
+        public virtual bool Multiline
         {
             get => multiline;
             set
@@ -886,7 +880,7 @@ namespace AntdUI
         /// 自动换行
         /// </summary>
         [Description("自动换行"), Category("行为"), DefaultValue(true)]
-        public bool WordWrap
+        public virtual bool WordWrap
         {
             get => wordwrap;
             set
@@ -1018,7 +1012,7 @@ namespace AntdUI
         /// 使用密码框
         /// </summary>
         [Description("使用密码框"), Category("行为"), DefaultValue(false)]
-        public bool UseSystemPasswordChar
+        public virtual bool UseSystemPasswordChar
         {
             get => useSystemPasswordChar;
             set
@@ -1035,7 +1029,7 @@ namespace AntdUI
         /// 自定义密码字符
         /// </summary>
         [Description("自定义密码字符"), Category("行为"), DefaultValue((char)0)]
-        public char PasswordChar
+        public virtual char PasswordChar
         {
             get => passwordChar;
             set
@@ -1091,8 +1085,7 @@ namespace AntdUI
         /// <param name="text">追加的文本</param>
         public void AppendText(string text)
         {
-            var tmp = _text + text;
-            bool set_t = SetText(tmp, true), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
+            bool set_t = SetTextAppend(text, out _), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
             if (set_t || set_s) Invalidate();
         }
 
@@ -1103,9 +1096,8 @@ namespace AntdUI
         /// <param name="config">文本配置</param>
         public void AppendText(string text, TextOpConfig config)
         {
-            int start = cache_font == null ? 0 : (cache_font[cache_font.Length - 1].i + 1), length = GraphemeSplitter.EachCount(text), start_tmp = selectionStart;
-            var tmp = _text + text;
-            bool set_t = SetText(tmp, true), set_style = false, set_s = false;
+            int start = cache_font == null ? 0 : (cache_font[cache_font.Count - 1].i + 1), start_tmp = selectionStart;
+            bool set_t = SetTextAppend(text, out int length), set_style = false, set_s = false;
             if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
             {
                 var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);
@@ -1117,7 +1109,7 @@ namespace AntdUI
                     set_s = SetSelectionStart(start_tmp + length);
                     break;
                 case CursorBehavior.EndOfWholeText:
-                    if (cache_font != null) set_s = SetSelectionStart(cache_font.Length);
+                    if (cache_font != null) set_s = SetSelectionStart(cache_font.Count);
                     break;
             }
             if (config.Redraw && (set_t || set_s || set_style)) Invalidate();
@@ -1136,14 +1128,9 @@ namespace AntdUI
                 AppendText(text, config);
                 return;
             }
-            int start = startIndex, end = selectionLength, end_temp = start + end, length = GraphemeSplitter.EachCount(text);
-            var texts = new List<string>(end);
-            foreach (var it in cache_font)
-            {
-                if (it.i < start || it.i >= end_temp) texts.Add(it.text);
-            }
-            texts.Insert(start, text);
-            bool set_t = SetText(string.Join("", texts), true), set_style = false, set_s = false;
+            int start = selectionStartTemp, end = selectionLength;
+            if (end > 0) SetTextRemove(ref cache_font, start, end, true);
+            bool set_t = SetTextIn(text, startIndex, out int length), set_style = false, set_s = false;
             if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
             {
                 var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);
@@ -1155,7 +1142,7 @@ namespace AntdUI
                     set_s = SetSelectionStart(start + length);
                     break;
                 case CursorBehavior.EndOfWholeText:
-                    if (cache_font != null) set_s = SetSelectionStart(cache_font.Length);
+                    if (cache_font != null) set_s = SetSelectionStart(cache_font.Count);
                     break;
                 case CursorBehavior.StartOfNewText:
                     set_s = SetSelectionStart(start);
@@ -1319,7 +1306,7 @@ namespace AntdUI
         {
             if (cache_font == null) return false;
             int len = style.Start + style.Length;
-            if (style.Start < 0 || len > cache_font.Length) return false;
+            if (style.Start < 0 || len > cache_font.Count) return false;
             for (int i = style.Start; i < len; i++)
             {
                 var it = cache_font[i];
@@ -1338,7 +1325,7 @@ namespace AntdUI
             if (styles == null) return;
             styles = null;
             if (cache_font == null) return;
-            for (int i = 0; i < cache_font.Length; i++)
+            for (int i = 0; i < cache_font.Count; i++)
             {
                 var it = cache_font[i];
                 it.font = null;
@@ -1428,7 +1415,7 @@ namespace AntdUI
         public void SelectLast()
         {
             if (cache_font == null) return;
-            bool set_s = SetSelectionStart(cache_font.Length), set_e = SetSelectionLength(0), set_caret = SetCaretPostion(cache_font.Length + 1);
+            bool set_s = SetSelectionStart(cache_font.Count), set_e = SetSelectionLength(0), set_caret = SetCaretPostion(cache_font.Count + 1);
             if (set_s || set_e || set_caret) Invalidate();
         }
 
@@ -1438,7 +1425,7 @@ namespace AntdUI
         public void SelectAll()
         {
             if (cache_font == null) return;
-            bool set_s = SetSelectionStart(0), set_e = SetSelectionLength(cache_font.Length), set_caret = SetCaretPostion(cache_font.Length + 1);
+            bool set_s = SetSelectionStart(0), set_e = SetSelectionLength(cache_font.Count), set_caret = SetCaretPostion(cache_font.Count + 1);
             if (set_s || set_e || set_caret) Invalidate();
         }
 
@@ -1465,44 +1452,36 @@ namespace AntdUI
             {
                 if (selectionLength > 0)
                 {
-                    int start = selectionStartTemp, end = selectionLength, end_temp = start + end;
-                    if (ismax && (cache_font.Length - end + text.Length) > MaxLength)
+                    int start = selectionStartTemp, end = selectionLength;
+                    if (ismax && (cache_font.Count - end + text.Length) > MaxLength)
                     {
-                        if (MaxLength > cache_font.Length)
+                        if (MaxLength > cache_font.Count)
                         {
                             text = text.Substring(0, end);
                             if (text.Length == 0) return;
                         }
-                        else text = string.Empty;
+                        else return;
                     }
                     AddHistoryRecord();
-                    var texts = new List<string>(end);
-                    foreach (var it in cache_font)
-                    {
-                        if (it.i < start || it.i >= end_temp) texts.Add(it.text);
-                    }
-                    texts.Insert(start, text);
-                    if (SetText(string.Join("", texts), true, false)) rdcount++;
+                    SetTextRemove(ref cache_font, start, end, true);
+                    if (SetTextIn(text, start, out _, false)) rdcount++;
                     if (SetSelectionLength(0)) rdcount++;
                     offset = start;
                 }
                 else
                 {
                     int start = selectionStart - 1;
-                    if (ismax && (cache_font.Length + text.Length) > MaxLength)
+                    if (ismax && (cache_font.Count + text.Length) > MaxLength)
                     {
-                        if (MaxLength > cache_font.Length)
+                        if (MaxLength > cache_font.Count)
                         {
-                            text = text.Substring(0, MaxLength - cache_font.Length);
+                            text = text.Substring(0, MaxLength - cache_font.Count);
                             if (text.Length == 0) return;
                         }
                         else return;
                     }
                     AddHistoryRecord();
-                    var texts = new List<string>(cache_font.Length);
-                    foreach (var it in cache_font) texts.Add(it.text);
-                    texts.Insert(start + 1, text);
-                    if (SetText(string.Join("", texts), true, false)) rdcount++;
+                    if (SetTextIn(text, start + 1, out _, false)) rdcount++;
                     offset = start + 1;
                 }
             }
@@ -1549,7 +1528,7 @@ namespace AntdUI
                 {
                     int start = selectionStartTemp, end = selectionLength;
                     int end_temp = start + end;
-                    if (end_temp > cache_font.Length) end_temp = cache_font.Length;
+                    if (end_temp > cache_font.Count) end_temp = cache_font.Count;
                     var texts = new List<string>(end);
                     foreach (var it in cache_font)
                     {
@@ -1569,7 +1548,7 @@ namespace AntdUI
             if (cache_font != null)
             {
                 Rectangle r;
-                if (CurrentPosIndex >= cache_font.Length) r = cache_font[cache_font.Length - 1].rect;
+                if (CurrentPosIndex >= cache_font.Count) r = cache_font[cache_font.Count - 1].rect;
                 else r = cache_font[CurrentPosIndex].rect;
                 ScrollY.Value = r.Bottom;
             }
@@ -1650,16 +1629,16 @@ namespace AntdUI
             return IndexOf(cache_font, value, startIndex, count, comparisonType);
         }
 
-        int IndexOf(CacheFont[] cache_font, string value, int startIndex, int? count, StringComparison comparisonType)
+        int IndexOf(List<CacheFont> cache_font, string value, int startIndex, int? count, StringComparison comparisonType)
         {
             if (startIndex < 0) startIndex = 0;
-            if (startIndex >= cache_font.Length) return -1;
+            if (startIndex >= cache_font.Count) return -1;
             if (count.HasValue)
             {
                 if (count < 0) count = 0;
-                if (startIndex + count > cache_font.Length) count = cache_font.Length - startIndex;
+                if (startIndex + count > cache_font.Count) count = cache_font.Count - startIndex;
             }
-            else count = cache_font.Length - startIndex;
+            else count = cache_font.Count - startIndex;
 
             var valueParts = IndexSplitter(value);
             int valueLength = valueParts.Length;
@@ -1672,12 +1651,12 @@ namespace AntdUI
             return -1;
         }
 
-        bool IndexOf(CacheFont[] cache_font, int start, int valueLength, string[] valueParts, StringComparison comparisonType)
+        bool IndexOf(List<CacheFont> cache_font, int start, int valueLength, string[] valueParts, StringComparison comparisonType)
         {
             for (int i = 0; i < valueLength; i++)
             {
                 int currentPos = start + i;
-                if (currentPos >= cache_font.Length) return false;
+                if (currentPos >= cache_font.Count) return false;
                 if (!string.Equals(cache_font[currentPos].text, valueParts[i], comparisonType)) return false;
             }
             return true;
@@ -1691,7 +1670,7 @@ namespace AntdUI
         public int LastIndexOf(string value)
         {
             if (cache_font == null) return -1;
-            return LastIndexOf(cache_font, value, cache_font.Length - 1, null, StringComparison.CurrentCulture);
+            return LastIndexOf(cache_font, value, cache_font.Count - 1, null, StringComparison.CurrentCulture);
         }
 
         /// <summary>
@@ -1720,7 +1699,7 @@ namespace AntdUI
         public int LastIndexOf(string value, StringComparison comparisonType)
         {
             if (cache_font == null) return -1;
-            return LastIndexOf(value, cache_font.Length - 1, comparisonType);
+            return LastIndexOf(value, cache_font.Count - 1, comparisonType);
         }
 
         /// <summary>
@@ -1750,10 +1729,10 @@ namespace AntdUI
             return LastIndexOf(cache_font, value, startIndex, count, comparisonType);
         }
 
-        int LastIndexOf(CacheFont[] cache_font, string value, int startIndex, int? count, StringComparison comparisonType)
+        int LastIndexOf(List<CacheFont> cache_font, string value, int startIndex, int? count, StringComparison comparisonType)
         {
             if (startIndex < 0) startIndex = 0;
-            if (startIndex >= cache_font.Length) startIndex = cache_font.Length - 1;
+            if (startIndex >= cache_font.Count) startIndex = cache_font.Count - 1;
             if (count.HasValue)
             {
                 if (count < 0) count = 0;
@@ -1770,7 +1749,7 @@ namespace AntdUI
 
             for (int i = startIndex; i >= endIndex; i--)
             {
-                if (i + valueLength > cache_font.Length) continue;
+                if (i + valueLength > cache_font.Count) continue;
                 if (IndexOf(cache_font, i, valueLength, valueParts, comparisonType)) return i;
             }
             return -1;
@@ -1795,7 +1774,7 @@ namespace AntdUI
         public string Substring(int startIndex)
         {
             if (cache_font == null) return "";
-            return Substring(cache_font, startIndex, cache_font.Length - startIndex);
+            return Substring(cache_font, startIndex, cache_font.Count - startIndex);
         }
 
         /// <summary>
@@ -1808,14 +1787,14 @@ namespace AntdUI
         {
             if (cache_font == null) return "";
             if (length < 0) length = 0;
-            if (startIndex + length > cache_font.Length) length = cache_font.Length - startIndex;
+            if (startIndex + length > cache_font.Count) length = cache_font.Count - startIndex;
             return Substring(cache_font, startIndex, length);
         }
 
-        string Substring(CacheFont[] cache_font, int startIndex, int length)
+        string Substring(List<CacheFont> cache_font, int startIndex, int length)
         {
             if (startIndex < 0) startIndex = 0;
-            if (startIndex >= cache_font.Length) return "";
+            if (startIndex >= cache_font.Count) return "";
             var result = new System.Text.StringBuilder(length);
             for (int i = startIndex; i < startIndex + length; i++) result.Append(cache_font[i].text);
             return result.ToString();
@@ -1857,7 +1836,7 @@ namespace AntdUI
         {
             HasFocus = false;
             CaretInfo.Show = false;
-            if (LostFocusClearSelection) SelectionLength = 0;
+            if (HideSelection) SelectionLength = 0;
             ExtraMouseDown = false;
             base.OnLostFocus(e);
         }
@@ -1904,8 +1883,57 @@ namespace AntdUI
                         return;
                     }
                     break;
+                case 0x007B:
+                    if (UseContextMenu) OnOpenContentMenu();
+                    break;
             }
             base.WndProc(ref m);
+        }
+
+        protected virtual void OnOpenContentMenu()
+        {
+            var items = new List<IContextMenuStripItem>(8);
+            if (history_Log.Count > 0)
+            {
+                items.Add(new ContextMenuStripItem("撤销").SetID("Undo"));
+                items.Add(new ContextMenuStripItemDivider());
+            }
+            if (!IsPassWord || (IsPassWord && PasswordCopy))
+            {
+                items.Add(new ContextMenuStripItem("剪切").SetID("Cut").SetEnabled(selectionLength > 0));
+                items.Add(new ContextMenuStripItem("复制").SetID("Copy").SetEnabled(selectionLength > 0));
+            }
+            if (!IsPassWord || (IsPassWord && PasswordPaste)) items.Add(new ContextMenuStripItem("粘贴").SetID("Paste"));
+
+            items.Add(new ContextMenuStripItem("删除").SetID("Delete").SetEnabled(selectionLength > 0));
+            items.Add(new ContextMenuStripItemDivider());
+            items.Add(new ContextMenuStripItem("全选").SetID("SelectAll").SetEnabled(!isempty));
+
+            new ContextMenuStrip.Config(this, item =>
+            {
+                switch (item.ID)
+                {
+                    case "Undo":
+                        Undo();
+                        break;
+                    case "Cut":
+                        Cut();
+                        break;
+                    case "Copy":
+                        Copy();
+                        break;
+                    case "Paste":
+                        Paste();
+                        break;
+                    case "Delete":
+                        ProcessBackSpaceKey(false);
+                        break;
+                    case "SelectAll":
+                        SelectAll();
+                        break;
+                }
+            },
+            items.ToArray()).open();
         }
 
         #endregion

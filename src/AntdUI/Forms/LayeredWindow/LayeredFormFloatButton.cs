@@ -306,7 +306,7 @@ namespace AntdUI
 
                             g.Fill(back, path);
                             if (it.hover) g.Fill(back_hover, path);
-                            if (it.IconSvg != null) g.GetImgExtend(it.IconSvg, it.rect_icon, fore);
+                            if (it.IconSvg != null) g.Svg(it.IconSvg, it.rect_icon, fore);
                             else if (it.Icon != null) g.Image(it.Icon, it.rect_icon);
                             else g.String(it.Text, Font, fore, it.rect_read);
                         }

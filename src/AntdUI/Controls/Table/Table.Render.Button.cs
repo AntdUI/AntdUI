@@ -420,14 +420,7 @@ namespace AntdUI
             }
             if (btn.IconSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(btn.IconSvg, rect, color))
-                {
-                    if (_bmp != null)
-                    {
-                        g.Image(_bmp, rect, opacity);
-                        count++;
-                    }
-                }
+                if (g.Svg(btn.IconSvg, rect, opacity, color)) count++;
             }
             return count > 0;
         }
@@ -442,14 +435,7 @@ namespace AntdUI
             }
             if (btn.IconHoverSvg != null)
             {
-                using (var _bmp = SvgExtend.GetImgExtend(btn.IconHoverSvg, rect, color))
-                {
-                    if (_bmp != null)
-                    {
-                        g.Image(_bmp, rect, opacity);
-                        count++;
-                    }
-                }
+                if (g.Svg(btn.IconHoverSvg, rect, opacity, color)) count++;
             }
             return count > 0;
         }

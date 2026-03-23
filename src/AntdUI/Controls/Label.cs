@@ -536,7 +536,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     var rect_l = RecFixAuto(xOffset, icon_size, rect_read, font_size);
-                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
                     xOffset += icon_size + gap;
                 }
                 else if (has_prefixText)
@@ -567,7 +567,7 @@ namespace AntdUI
                     {
                         int icon_size = (int)(font_size.Height * iconratio);
                         var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                        g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                        g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
                     }
                     else if (has_suffixText)
                     {
@@ -591,7 +591,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(xOffset - icon_size - gap, icon_size, rect_read, font_size);
-                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
                 }
                 else if (has_prefixText)
                 {
@@ -605,7 +605,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(xOffset + text_width + gap, icon_size, rect_read, font_size);
-                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
                 }
                 else if (has_suffixText)
                 {
@@ -631,7 +631,7 @@ namespace AntdUI
                     int icon_size = (int)(font_size.Height * iconratio);
                     int suffixX = rightEdge - icon_size;
                     var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
                     rightEdge -= icon_size + gap;
                 }
                 else if (has_suffixText)
@@ -666,7 +666,7 @@ namespace AntdUI
                         int icon_size = (int)(font_size.Height * iconratio);
                         prefixX -= icon_size;
                         var rect_l = RecFixAuto(prefixX, icon_size, rect_read, font_size);
-                        g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                        g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
                     }
                     else if (has_prefixText)
                     {
@@ -692,7 +692,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(textX - icon_size - gap, icon_size, rect_read, font_size);
-                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
                 }
                 else if (has_prefixText)
                 {
@@ -706,7 +706,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(textX + text_width + gap, icon_size, rect_read, font_size);
-                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
                 }
                 else if (has_suffixText)
                 {
@@ -745,7 +745,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(cex, icon_size, rect_read, font_size);
-                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
                     cex += icon_size + gap;
                 }
                 else if (has_prefixText)
@@ -768,7 +768,7 @@ namespace AntdUI
                     int icon_size = (int)(font_size.Height * iconratio);
                     int suffixX = cex + text_width + gap;
                     Rectangle rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
                 }
                 else if (has_suffixText)
                 {
@@ -792,7 +792,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(cex - icon_size - gap, icon_size, rect_read, font_size);
-                    g.GetImgExtend(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
                 }
                 else if (has_prefixText)
                 {
@@ -806,7 +806,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(cex + text_width + gap, icon_size, rect_read, font_size);
-                    g.GetImgExtend(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
                 }
                 else if (has_suffixText)
                 {
@@ -924,7 +924,7 @@ namespace AntdUI
             return PSize;
         }
 
-        public Size PSize
+        public virtual Size PSize
         {
             get
             {

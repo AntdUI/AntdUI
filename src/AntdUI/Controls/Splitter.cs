@@ -310,12 +310,12 @@ namespace AntdUI
                 if (m_bIsArrowRegion)
                 {
                     g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get(nameof(Splitter)), points);
-                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get(nameof(Splitter)));
+                    g.Svg(arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get(nameof(Splitter)));
                 }
                 else
                 {
                     g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get(nameof(Splitter)), points);
-                    SvgExtend.GetImgExtend(g, arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get(nameof(Splitter)));
+                    g.Svg(arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get(nameof(Splitter)));
                 }
             }
         }

@@ -123,11 +123,34 @@ namespace AntdUI
             base.Dispose(disposing);
         }
 
+        #region 鼠标
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            spin_core.MouseMove(e.X, e.Y);
+        }
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (spin_core.MouseClick(e.X, e.Y, config)) spin_core.Dispose();
+        }
+
+        #endregion
+
         /// <summary>
         /// 配置
         /// </summary>
         public class Config
         {
+            public Config()
+            { }
+
+            public Config(string text)
+            {
+                Text = text;
+            }
+
             /// <summary>
             /// 文本
             /// </summary>
@@ -178,6 +201,37 @@ namespace AntdUI
             /// 进度速率
             /// </summary>
             public float? Rate { get; set; }
+
+            #region 取消按钮
+
+            /// <summary>
+            /// 取消令牌
+            /// </summary>
+            public CancellationToken? CancelToken => CancelTokenSource?.Token;
+
+            public void ThrowIfCancellationRequested() => CancelTokenSource?.Token.ThrowIfCancellationRequested();
+            public bool IsCancellationRequested => CancelTokenSource?.Token.IsCancellationRequested ?? false;
+
+            /// <summary>
+            /// 取消令牌源
+            /// </summary>
+            public CancellationTokenSource? CancelTokenSource { get; set; }
+
+            string? canceltext = Localization.Get("Cancel", "取消");
+            /// <summary>
+            /// 取消按钮文字
+            /// </summary>
+            public string? CancelText
+            {
+                get => canceltext;
+                set
+                {
+                    if (canceltext == value) return;
+                    canceltext = value;
+                }
+            }
+
+            #endregion
 
             #region 设置
 
@@ -231,6 +285,21 @@ namespace AntdUI
                 Rate = value;
                 return this;
             }
+            public Config SetCancel(string? value)
+            {
+                CancelText = value;
+                return this;
+            }
+            public Config SetCancelToken(CancellationTokenSource? value)
+            {
+                CancelTokenSource = value;
+                return this;
+            }
+            public Config SetCancel(CancellationTokenSource? value)
+            {
+                CancelTokenSource = value;
+                return this;
+            }
 
             #endregion
         }
@@ -256,7 +325,29 @@ namespace AntdUI
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
         /// <param name="error">发生错误时的回调</param>
-        public static Task open(Control control, string text, Action<Config> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config { Text = text }, action, end, error);
+        public static Task open(Control control, string text, Action<Config> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config(text), action, end, error);
+
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, Action<Config> action, CancellationTokenSource? token, Action? end = null, Action<Exception>? error = null) => open(control, new Config().SetCancel(token), action, end, error);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, string text, Action<Config> action, CancellationTokenSource? token, Action? end = null, Action<Exception>? error = null) => open(control, new Config(text).SetCancel(token), action, end, error);
 
         /// <summary>
         /// Spin 加载中
@@ -358,7 +449,29 @@ namespace AntdUI
         /// <param name="action">需要等待的委托</param>
         /// <param name="end">运行结束后的回调</param>
         /// <param name="error">发生错误时的回调</param>
-        public static Task open(Control control, string text, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config { Text = text }, action, end, error);
+        public static Task open(Control control, string text, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config(text), action, end, error);
+
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, Func<Config, Task> action, CancellationTokenSource? token, Action? end = null, Action<Exception>? error = null) => open(control, new Config().SetCancel(token), action, end, error);
+
+        /// <summary>
+        /// Spin 加载中
+        /// </summary>
+        /// <param name="control">控件主体</param>
+        /// <param name="text">加载文本</param>
+        /// <param name="action">需要等待的委托</param>
+        /// <param name="token">取消令牌</param>
+        /// <param name="end">运行结束后的回调</param>
+        /// <param name="error">发生错误时的回调</param>
+        public static Task open(Control control, string text, Func<Config, Task> action, CancellationTokenSource? token, Action? end = null, Action<Exception>? error = null) => open(control, new Config(text).SetCancel(token), action, end, error);
 
         /// <summary>
         /// Spin 加载中
@@ -521,12 +634,29 @@ namespace AntdUI
 
         float? rate;
         int mode = 0;
+        Rectangle? rect_button;
+        bool hover_button = false;
         public void Paint(Canvas g, Rectangle rect, Spin.Config config, Control control)
         {
             var font = config.Font ?? control.Font;
             if (prog_size == 0) prog_size = g.MeasureText(config.Text ?? Config.NullText, font).Height;
             int rprog_size = (int)(prog_size * 1.6F), size = (int)(prog_size * .2F), size2 = rprog_size / 2;
             var rect_prog = new Rectangle(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
+            if (config.CancelToken != null && config.CancelText != null)
+            {
+                var canceltext = config.CancelText;
+                var size_btn = g.MeasureText(canceltext, font).Size(12, 6);
+                var y = rect_prog.Bottom;
+                rect_prog.Offset(0, -rprog_size);
+                rect_button = new Rectangle(rect.X + (rect.Width - size_btn.Width) / 2, y, size_btn.Width, size_btn.Height);
+                using (var path = rect_button.Value.RoundPath(6 * g.Dpi))
+                {
+                    g.Fill(Colour.DefaultBg.Get(nameof(Spin)), path);
+                    if (hover_button) g.Fill(Colour.FillSecondary.Get(nameof(Spin)), path);
+                    g.Draw(Colour.DefaultBorder.Get(nameof(Spin)), g.Dpi, path);
+                    g.String(canceltext, font, Colour.Text.Get(nameof(Spin)), rect_button.Value, s_f);
+                }
+            }
             if (config.Text != null)
             {
                 var y = rect_prog.Bottom;
@@ -543,7 +673,7 @@ namespace AntdUI
                 g.RotateTransform(LineAngle);
                 var rect_center = new Rectangle(-size2, -size2, rprog_size, rprog_size);
                 if (config.Indicator != null) g.Image(config.Indicator, rect_center);
-                if (config.IndicatorSvg != null) g.GetImgExtend(config.IndicatorSvg, rect_center, color);
+                if (config.IndicatorSvg != null) g.Svg(config.IndicatorSvg, rect_center, color);
                 g.ResetTransform();
             }
             else
@@ -564,6 +694,21 @@ namespace AntdUI
                     }
                 }
             }
+        }
+
+        public void MouseMove(int x, int y)
+        {
+            if (rect_button.HasValue) hover_button = rect_button.Value.Contains(x, y);
+            else hover_button = false;
+        }
+        public bool MouseClick(int x, int y, Spin.Config config)
+        {
+            if (rect_button.HasValue && rect_button.Value.Contains(x, y))
+            {
+                config.CancelTokenSource?.Cancel();
+                return true;
+            }
+            return false;
         }
 
         public void Dispose() => Stop();
@@ -700,6 +845,25 @@ namespace AntdUI
                 }
             }
             return rbmp;
+        }
+
+        #endregion
+
+        #region 鼠标
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            spin_core.MouseMove(e.X, e.Y);
+        }
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (spin_core.MouseClick(e.X, e.Y, config))
+            {
+                spin_core.Dispose();
+                Close();
+            }
         }
 
         #endregion

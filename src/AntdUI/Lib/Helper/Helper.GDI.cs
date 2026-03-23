@@ -1033,43 +1033,23 @@ namespace AntdUI
                     }
                 }
             }
-            using (var bmp = SvgExtend.GetImgExtend(icon.Svg, rect, icon.Fill))
-            {
-                if (bmp == null) return;
-                g.Image(bmp, rect);
-            }
+            g.Svg(icon.Svg, rect, icon.Fill);
         }
         internal static void PaintIcons(this Canvas g, TType icon, Rectangle rect, string keyid, TAMode colorScheme)
         {
             switch (icon)
             {
                 case TType.Success:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme));
                     break;
                 case TType.Info:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme));
                     break;
                 case TType.Warn:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme));
                     break;
                 case TType.Error:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme)))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme));
                     break;
             }
         }
@@ -1084,32 +1064,16 @@ namespace AntdUI
                 switch (icon)
                 {
                     case TType.Success:
-                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme));
                         break;
                     case TType.Info:
-                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme));
                         break;
                     case TType.Warn:
-                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme));
                         break;
                     case TType.Error:
-                        using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme));
                         break;
                 }
             }
@@ -1118,39 +1082,19 @@ namespace AntdUI
                 switch (icon)
                 {
                     case TType.Success:
-                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Success.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(svg, rect, Colour.Success.Get(keyid, colorScheme));
                         break;
                     case TType.Info:
-                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Info.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(svg, rect, Colour.Info.Get(keyid, colorScheme));
                         break;
                     case TType.Warn:
-                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Warning.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(svg, rect, Colour.Warning.Get(keyid, colorScheme));
                         break;
                     case TType.Error:
-                        using (var bmp = SvgExtend.GetImgExtend(svg, rect, Colour.Error.Get(keyid, colorScheme)))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(svg, rect, Colour.Error.Get(keyid, colorScheme));
                         break;
                     default:
-                        using (var bmp = SvgExtend.GetImgExtend(svg, rect))
-                        {
-                            if (bmp == null) return;
-                            g.Image(bmp, rect);
-                        }
+                        g.Svg(svg, rect);
                         break;
                 }
             }
@@ -1160,57 +1104,18 @@ namespace AntdUI
             switch (icon)
             {
                 case TType.Success:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoSuccessGhost, rect, color))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoSuccessGhost, rect, color);
                     break;
                 case TType.Info:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoInfoGhost, rect, color))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoInfoGhost, rect, color);
                     break;
                 case TType.Warn:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoWarnGhost, rect, color))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoWarnGhost, rect, color);
                     break;
                 case TType.Error:
-                    using (var bmp = SvgExtend.GetImgExtend(SvgDb.IcoErrorGhost, rect, color))
-                    {
-                        if (bmp == null) return;
-                        g.Image(bmp, rect);
-                    }
+                    g.Svg(SvgDb.IcoErrorGhost, rect, color);
                     break;
             }
-        }
-        internal static void PaintIconClose(this Canvas g, Rectangle rect, Color color)
-        {
-            PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color);
-        }
-        internal static void PaintIconClose(this Canvas g, Rectangle rect, Color color, float dot)
-        {
-            PaintIconCore(g, rect, SvgDb.IcoErrorGhost, color, dot);
-        }
-        internal static void PaintIconReset(this Canvas g, Rectangle rect, Color color, float dot)
-        {
-            PaintIconCore(g, rect, SvgDb.IcoStar, color, dot);
-        }
-        /// <summary>
-        /// 绘制带圆背景的镂空图标
-        /// </summary>
-        internal static void PaintIconCoreGhost(this Canvas g, Rectangle rect, string svg, Color back, Color fore)
-        {
-            using (var brush = new SolidBrush(back))
-            {
-                g.FillEllipse(brush, rect);
-            }
-            g.GetImgExtend(svg, rect, fore);
         }
         internal static void PaintIconCore(this Canvas g, Rectangle rect, string svg, Color back, Color fore)
         {
@@ -1218,14 +1123,13 @@ namespace AntdUI
             {
                 g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
             }
-            g.GetImgExtend(svg, rect, fore);
+            g.Svg(svg, rect, fore);
         }
-        internal static void PaintIconCore(this Canvas g, Rectangle rect, string svg, Color color) => g.GetImgExtend(svg, rect, color);
         internal static void PaintIconCore(this Canvas g, Rectangle rect, string svg, Color color, float dot)
         {
             int size = (int)(rect.Height * dot);
             var rect_ico = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
-            g.GetImgExtend(svg, rect_ico, color);
+            g.Svg(svg, rect_ico, color);
         }
 
         #endregion
@@ -1244,7 +1148,7 @@ namespace AntdUI
                 {
                     var size_badge = g.MeasureString(Config.NullText, font).Height;
                     var rect_badge = PaintBadge(Rect, badegConfig.BadgeAlign, hasx, hasy, size_badge, size_badge);
-                    g.GetImgExtend(badegConfig.BadgeSvg, rect_badge, badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme));
+                    g.Svg(badegConfig.BadgeSvg, rect_badge, badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme));
                 }
             }
             else if (badegConfig.Badge != null)
@@ -1411,53 +1315,8 @@ namespace AntdUI
 
         #endregion
 
-        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image = null, int offset = 0)
-        {
-            PaintEmpty(g, rect, font, fore, text, image, offset, FormatFlags.Center);
-        }
+        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text = null, Image? image = null, int offset = 0) => PaintEmpty(g, rect, font, fore, text, image, offset, FormatFlags.Center);
 
-        [Obsolete("use FormatFlags")]
-        public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text, Image? image, int offset, StringFormat sf)
-        {
-            using (var brush = new SolidBrush(fore))
-            {
-                if (offset > 0)
-                {
-                    rect.Offset(0, offset);
-                    rect.Height -= offset;
-                }
-                string emptytext = text ?? Localization.Get("NoData", "暂无数据");
-                var bmp = image ?? Config.EmptyImage;
-                if (bmp != null)
-                {
-                    int gap = (int)(8 * g.Dpi);
-                    var size = g.MeasureString(emptytext, font);
-                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - bmp.Width) / 2, rect.Y + (rect.Height - bmp.Height) / 2 - size.Height, bmp.Width, bmp.Height), rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-                    g.Image(bmp, rect_img);
-                    g.String(emptytext, font, brush, rect_font, sf);
-                }
-                else if (Config.EmptyImageSvg != null)
-                {
-                    var size = g.MeasureString(emptytext, font);
-                    int gap = (int)(8 * g.Dpi), icon_size = (int)(size.Height * Config.EmptyImageRatio);
-
-                    Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
-                        rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
-
-                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, fore))
-                    {
-                        if (_bmp == null)
-                        {
-                            g.String(emptytext, font, brush, rect, sf);
-                            return;
-                        }
-                        else g.Image(_bmp, rect_img);
-                    }
-                    g.String(emptytext, font, brush, rect_font, sf);
-                }
-                else g.String(emptytext, font, brush, rect, sf);
-            }
-        }
         public static void PaintEmpty(this Canvas g, Rectangle rect, Font font, Color fore, string? text, Image? image, int offset, FormatFlags format)
         {
             using (var brush = new SolidBrush(fore))
@@ -1485,14 +1344,10 @@ namespace AntdUI
                     Rectangle rect_img = new Rectangle(rect.X + (rect.Width - icon_size) / 2, rect.Y + (rect.Height - icon_size) / 2 - size.Height, icon_size, icon_size),
                         rect_font = new Rectangle(rect.X, rect_img.Bottom + gap, rect.Width, size.Height);
 
-                    using (var _bmp = SvgExtend.GetImgExtend(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, fore))
+                    if (!g.Svg(Config.IsDark ? Config.EmptyImageSvg[1] : Config.EmptyImageSvg[0], rect_img, fore))
                     {
-                        if (_bmp == null)
-                        {
-                            g.String(emptytext, font, brush, rect, format);
-                            return;
-                        }
-                        else g.Image(_bmp, rect_img);
+                        g.String(emptytext, font, brush, rect, format);
+                        return;
                     }
                     g.String(emptytext, font, brush, rect_font, format);
                 }

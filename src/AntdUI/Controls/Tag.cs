@@ -400,9 +400,9 @@ namespace AntdUI
                         int size = (int)(rect_read.Height * .4F);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
                         rect_close = rect_arrow;
-                        if (hover_close.Animation) g.PaintIconClose(rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme)));
-                        else if (hover_close.Switch) g.PaintIconClose(rect_arrow, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme));
-                        else g.PaintIconClose(rect_arrow, Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme));
+                        if (hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme)));
+                        else if (hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme));
+                        else g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme));
                     }
                 }
             }
@@ -413,9 +413,9 @@ namespace AntdUI
                 rect_close = rect.r;
                 if (closeIcon)
                 {
-                    if (hover_close.Animation) g.PaintIconClose(rect.r, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme)), .8F);
-                    else if (hover_close.Switch) g.PaintIconClose(rect.r, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme), .8F);
-                    else g.PaintIconClose(rect.r, Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme), .8F);
+                    if (hover_close.Animation) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme)), .8F);
+                    else if (hover_close.Switch) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme), .8F);
+                    else g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme), .8F);
                 }
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
@@ -436,7 +436,7 @@ namespace AntdUI
         {
             if (imageSvg != null)
             {
-                g.GetImgExtend(imageSvg, GetImageRectCenter(font_size, rect_read), color);
+                g.Svg(imageSvg, GetImageRectCenter(font_size, rect_read), color);
                 return false;
             }
             else if (image != null)
@@ -474,7 +474,7 @@ namespace AntdUI
         /// <param name="rectl">图标区域</param>
         void PaintImage(Canvas g, Color? color, Rectangle rectl)
         {
-            if (imageSvg != null) g.GetImgExtend(imageSvg, GetImageRect(rectl), color);
+            if (imageSvg != null) g.Svg(imageSvg, GetImageRect(rectl), color);
             else if (image != null) g.Image(image, GetImageRect(rectl));
         }
 
@@ -595,7 +595,7 @@ namespace AntdUI
             return PSize;
         }
 
-        public Size PSize
+        public virtual Size PSize
         {
             get
             {

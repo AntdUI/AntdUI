@@ -709,7 +709,7 @@ namespace AntdUI
             else
             {
                 if (item.Icon != null) g.Image(item.Icon, item.ico_rect);
-                if (item.IconSvg != null) g.GetImgExtend(item.IconSvg, item.ico_rect, color);
+                if (item.IconSvg != null) g.Svg(item.IconSvg, item.ico_rect, color);
             }
 
         }
@@ -1782,6 +1782,10 @@ namespace AntdUI
             action = render =>
             {
                 if (it.PARENT == null) return;
+                if (it.items != null)
+                {
+                    foreach (var item in it.items) item.PARENT = it.PARENT;
+                }
                 if (render) it.PARENT.ChangeList(true);
                 else it.PARENT.Invalidate();
             };

@@ -612,7 +612,7 @@ namespace AntdUI
                 rect.Inflate(max, max);
             }
             if (it.Icon != null) { g.Image(it.Icon, rect); count++; }
-            if (it.IconSvg != null && g.GetImgExtend(it.IconSvg, rect, fore)) count++;
+            if (it.IconSvg != null && g.Svg(it.IconSvg, rect, fore)) count++;
             return count == 0;
         }
 

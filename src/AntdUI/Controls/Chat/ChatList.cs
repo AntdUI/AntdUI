@@ -958,7 +958,7 @@ namespace AntdUI.Chat
                         }
                         break;
                     default:
-                        if (ntype == 18 || (ntype == 4 && SvgDb.Emoji.ContainsKey(txt)))
+                        if (GraphemeSplitter.IsEmoji(ntype, txt))
                         {
                             item.HasEmoji = true;
                             font_widths.Add(new CacheFont(index, txt, true, 0, type));

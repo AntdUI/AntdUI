@@ -28,11 +28,12 @@ namespace AntdUI
                 try
                 {
                     var _row = rows[row];
-                    var item = RealCELL(_row.cells[column], rows, row, column, out var crect);
+                    if (_row == null) return false;
+                    var item = RealCELL(_row.cells[column], rows.List, row, column, out var crect);
                     EditModeClose();
                     if (CanEditMode(item))
                     {
-                        ScrollLine(crect.Y, crect.Bottom, rows);
+                        ScrollLine(crect.Y, crect.Bottom, rows.List);
                         if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY);
                         else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
                         else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);
@@ -131,7 +132,7 @@ namespace AntdUI
 
                 BeginInvoke(() =>
                 {
-                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                    rows.SetHover(i_row);
                     var tmp_input = CreateInput(cell, sx, sy, multiline, val, rect);
                     tmp_input.Name = "edit_" + i_col + "_" + i_row;
                     if (columnSelect.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
@@ -176,7 +177,7 @@ namespace AntdUI
 
                 BeginInvoke(() =>
                 {
-                    for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                    rows.SetHover(i_row);
                     var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                     tmp_input.Name = "edit_" + i_col + "_" + i_row;
                     if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
@@ -189,7 +190,7 @@ namespace AntdUI
                         bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
                         if (isok_end && !cf)
                         {
-                            if (GetValue(value, _value, out var o))
+                            if (GetValue(value, _value, cell.PROPERTY, out var o))
                             {
                                 cellText.SetValue(o);
                                 SetValue(cell, o);
@@ -216,7 +217,7 @@ namespace AntdUI
 
                         BeginInvoke(() =>
                         {
-                            for (int i = 0; i < rows.Length; i++) rows[i].hover = i == i_row;
+                            rows.SetHover(i_row);
                             var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                             tmp_input.Name = "edit_" + i_col + "_" + i_row;
                             if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
@@ -237,7 +238,7 @@ namespace AntdUI
                                     else
                                     {
                                         text.Text = _value;
-                                        if (GetValue(value, _value, out var o)) SetValue(cell, o);
+                                        if (GetValue(value, _value, cell.PROPERTY, out var o)) SetValue(cell, o);
                                     }
                                     OnCellEditComplete(it.RECORD, i_row, i_col, column);
                                 }
@@ -249,7 +250,86 @@ namespace AntdUI
             }
         }
 
-        bool GetValue(object? value, string _value, out object read)
+        bool GetValue(object? value, string _value, System.ComponentModel.PropertyDescriptor? Property, out object? read)
+        {
+            if (Property == null)
+            {
+                read = GetValue(value, _value);
+                return true;
+            }
+            else
+            {
+                try
+                {
+                    read = Property.Converter.ConvertFrom(_value);
+                    return true;
+                }
+                catch
+                {
+                    if (Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        read = GetValue(value, _value);
+                        return true;
+                    }
+                    else return GetValue(value, _value, out read);
+                }
+            }
+        }
+        object? GetValue(object? value, string _value)
+        {
+            if (value is int?)
+            {
+                if (int.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is uint?)
+            {
+                if (uint.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is short?)
+            {
+                if (short.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is ushort?)
+            {
+                if (ushort.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is long?)
+            {
+                if (long.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is ulong?)
+            {
+                if (ulong.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is double?)
+            {
+                if (double.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is decimal?)
+            {
+                if (decimal.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is float?)
+            {
+                if (float.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else if (value is DateTime?)
+            {
+                if (DateTime.TryParse(_value, out var v)) return v;
+                return null;
+            }
+            else return _value;
+        }
+        bool GetValue(object? value, string _value, out object? read)
         {
             if (value is int)
             {
@@ -336,7 +416,7 @@ namespace AntdUI
                 read = _value;
                 return true;
             }
-            read = _value;
+            read = null;
             return false;
         }
 

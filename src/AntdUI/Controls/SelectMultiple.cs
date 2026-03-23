@@ -518,7 +518,7 @@ namespace AntdUI
                                     g.Fill(GetStatusColor(true), path);
                                     if (tagBordered) g.Draw(brush, 1f * Dpi, path);
                                     var rect_del = rect_left_dels[i];
-                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
+                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
                                     g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                                 }
                                 else
@@ -531,7 +531,7 @@ namespace AntdUI
                                     if (style.TagFore.HasValue)
                                     {
                                         var rect_del = rect_left_dels[i];
-                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, style.TagFore.Value);
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, style.TagFore.Value);
                                         using (var brushf = new SolidBrush(style.TagFore.Value))
                                         {
                                             g.String(style.Text, Font, brushf, rect_left_txts[i], sf_center);
@@ -540,7 +540,7 @@ namespace AntdUI
                                     else
                                     {
                                         var rect_del = rect_left_dels[i];
-                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.PaintIconClose(rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
                                         g.String(style.Text, Font, brush, rect_left_txts[i], sf_center);
                                     }
                                 }

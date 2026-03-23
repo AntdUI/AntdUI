@@ -544,7 +544,7 @@ namespace AntdUI
                     if (cache.TryGetValue(txt, out var find)) list.Add(find);
                     else
                     {
-                        if (ntype == 18)
+                        if (GraphemeSplitter.IsEmoji(ntype, txt))
                         {
                             if (fontEmoji == null) fontEmoji = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
                             using (var bmp = new Bitmap(size, size))

@@ -79,7 +79,12 @@ namespace AntdUI
             if (selectedIndex.Length == 0) ScrollBar.ValueY -= 50;
             else if (selectedIndex[0] > 1)
             {
-                int value = NextIndexUp(rows, selectedIndex[0] - 1);
+                int value = selectedIndex[0] - 1;
+                if (value > 0)
+                {
+                    if (dataLen < value) value = dataLen - 1;
+                }
+                else value = 0;
                 SelectedIndex = value;
                 ScrollLine(value, rows);
             }
@@ -89,9 +94,9 @@ namespace AntdUI
         {
             if (rows == null) return false;
             if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
-            else if (selectedIndex[selectedIndex.Length - 1] < (rows.Length - 1 - rowSummary))
+            else if (selectedIndex[selectedIndex.Length - 1] < dataLen)
             {
-                int value = NextIndexDown(rows, selectedIndex[selectedIndex.Length - 1] + 1);
+                int value = selectedIndex[selectedIndex.Length - 1] + 1;
                 SelectedIndex = value;
                 ScrollLine(value, rows);
             }
@@ -137,14 +142,14 @@ namespace AntdUI
 
         void IKeyEnter()
         {
-            if (rows == null) return;
             try
             {
                 if (selectedIndex.Length > 0)
                 {
                     int index = selectedIndex[0];
-                    if (index > rows.Length) return;
-                    var it = rows[index];
+                    if (index > dataLen) return;
+                    var it = rows?[index];
+                    if (it == null) return;
                     OnCellClick(it.RECORD, it.Type, index, 0, FocusedColumn, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     if (editmode == TEditMode.None || focusedxy == null) return;
                     if (inEditMode)
@@ -154,47 +159,13 @@ namespace AntdUI
                         {
                             if (item.Key.Name == id_tmp) return;
                         }
-                        if (EnableFocusNavigation && (navigationConfig?.Contains(rows[0].cells[focusedxy[0]].COLUMN.Key, out _) ?? false)) return;
+                        if (EnableFocusNavigation && (navigationConfig?.Contains(rows![0].cells[focusedxy[0]].COLUMN.Key, out _) ?? false)) return;
                     }
                     _currentEdit = null;
                     EnterEditMode(index, focusedxy[0]);
                 }
             }
             catch { }
-        }
-
-        int NextIndexDown(RowTemplate[] rows, int value)
-        {
-            if (value < rows.Length - 1)
-            {
-                while (true)
-                {
-                    if (value < rows.Length - 1)
-                    {
-                        if (rows[value].ShowExpand) return value;
-                        else value++;
-                    }
-                    else return rows.Length - 1;
-                }
-            }
-            return value;
-        }
-        int NextIndexUp(RowTemplate[] rows, int value)
-        {
-            if (value > 0)
-            {
-                while (true)
-                {
-                    if (value > 0)
-                    {
-                        if (rows.Length < value) return rows.Length - 1;
-                        else if (rows[value].ShowExpand) return value;
-                        else value--;
-                    }
-                    else return 0;
-                }
-            }
-            return value;
         }
     }
 }

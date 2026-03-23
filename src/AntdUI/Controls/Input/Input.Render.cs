@@ -219,12 +219,12 @@ namespace AntdUI
         {
             string? prefixText = PrefixText, suffixText = SuffixText;
             if (prefixText != null) g.String(prefixText, Font, prefixFore ?? _fore, rect_l, PrefixFormat);
-            else if (prefixSvg != null) g.GetImgExtend(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
+            else if (prefixSvg != null) g.Svg(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
             else if (prefix != null) g.Image(prefix, rect_l);
 
-            if (is_clear) g.GetImgExtend(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(nameof(Input), ColorScheme) : Colour.TextQuaternary.Get(nameof(Input), ColorScheme));
+            if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(nameof(Input), ColorScheme) : Colour.TextQuaternary.Get(nameof(Input), ColorScheme));
             else if (suffixText != null) g.String(suffixText, Font, suffixFore ?? _fore, rect_r, SuffixFormat);
-            else if (suffixSvg != null) g.GetImgExtend(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
+            else if (suffixSvg != null) g.Svg(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
             else if (suffix != null) g.Image(suffix, rect_r);
             else PaintRIcon(g, rect_r);
         }
@@ -258,7 +258,7 @@ namespace AntdUI
             }
             g.Restore(state);
         }
-        void PaintText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
+        void PaintText(Canvas g, Color _fore, int w, int h, List<CacheFont> cache_font)
         {
             var state = g.Save();
             g.TranslateTransform(-ScrollX.Value, -ScrollY.Value);
@@ -274,9 +274,9 @@ namespace AntdUI
             PaintText(g, _fore, cache_font, tmp);
             g.Restore(state);
         }
-        List<CacheFont> PCSText(Canvas g, Color _fore, int w, int h, CacheFont[] cache_font)
+        List<CacheFont> PCSText(Canvas g, Color _fore, int w, int h, List<CacheFont> cache_font)
         {
-            var tmp = new List<CacheFont>(cache_font.Length);
+            var tmp = new List<CacheFont>(cache_font.Count);
             if (IsPassWord)
             {
                 if (ScrollY.Show)
@@ -337,7 +337,7 @@ namespace AntdUI
             }
             return tmp;
         }
-        void PaintText(Canvas g, Color _fore, CacheFont[] cache_font, List<CacheFont> tmp)
+        void PaintText(Canvas g, Color _fore, List<CacheFont> cache_font, List<CacheFont> tmp)
         {
             using (var fore = new SolidBrush(_fore))
             {
@@ -353,7 +353,7 @@ namespace AntdUI
                         {
                             if (it.emoji)
                             {
-                                if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) SvgExtend.GetImgExtend(g, svg, it.rect, fore.Color);
+                                if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) g.Svg(svg, it.rect, fore.Color);
                                 else StringEmoji(g, it.text, font, it, fore);
                             }
                             else String(g, Font, it, fore);
@@ -366,14 +366,14 @@ namespace AntdUI
                 }
             }
         }
-        void PaintTextSelected(Canvas g, CacheFont[] cache_font)
+        void PaintTextSelected(Canvas g, List<CacheFont> cache_font)
         {
-            if (selectionLength > 0 && cache_font.Length > selectionStartTemp && !BanInput)
+            if (selectionLength > 0 && cache_font.Count > selectionStartTemp && !BanInput)
             {
                 try
                 {
                     int start = selectionStartTemp, end = start + selectionLength - 1;
-                    if (end > cache_font.Length - 1) end = cache_font.Length - 1;
+                    if (end > cache_font.Count - 1) end = cache_font.Count - 1;
                     var first = cache_font[start];
                     using (var brush = new SolidBrush(selection))
                     {
