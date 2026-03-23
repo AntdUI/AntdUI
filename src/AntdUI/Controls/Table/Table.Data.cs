@@ -282,6 +282,7 @@ namespace AntdUI
                             if (obj is int i) DelData(i);
                             else if (obj is string)
                             {
+                                EditModeClose(); // 清空数据前关闭编辑模式
                                 dataTmp.rows = new IRow[0];
                                 SortData = null; // 清空排序数据
                                 if (LoadLayout()) Invalidate();
@@ -339,6 +340,7 @@ namespace AntdUI
                         break;
                     case ListChangedType.Reset:
                         if (dataTmp == null) return;
+                        EditModeClose(); // 清空数据前关闭编辑模式
                         dataTmp.rows = new IRow[0];
                         SortData = null; // 清空排序数据
                         if (LoadLayout()) Invalidate();
