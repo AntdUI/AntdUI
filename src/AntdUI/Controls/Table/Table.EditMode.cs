@@ -28,6 +28,7 @@ namespace AntdUI
                 try
                 {
                     var _row = rows[row];
+                    if (_row == null) return false;
                     var item = RealCELL(_row.cells[column], rows.List, row, column, out var crect);
                     EditModeClose();
                     if (CanEditMode(item))

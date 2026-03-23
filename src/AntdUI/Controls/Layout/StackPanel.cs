@@ -126,6 +126,16 @@ namespace AntdUI
 
         #endregion
 
+        #region 原生
+
+        protected override void OnContextMenuStripChanged(EventArgs e)
+        {
+            base.OnContextMenuStripChanged(e);
+            if (Panel != null) Panel.ContextMenuStrip = ContextMenuStrip;
+        }
+
+        #endregion
+
         #region 布局
 
         StackLayout layoutengine = new StackLayout();
@@ -245,7 +255,6 @@ namespace AntdUI
             };
             base.Controls.Add(Panel);
         }
-
 
         #region 控件
 
