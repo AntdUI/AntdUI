@@ -211,10 +211,7 @@ namespace AntdUI
                         }
                         rect_real = rects[index];
                     }
-                    Point point = rect_real.Location;
-                    point.Offset(control.Margin.Left + gap, control.Margin.Top + gap);
-                    control.Location = point;
-                    control.Size = new Size(rect_real.Width - control.Margin.Horizontal - gap2, rect_real.Height - control.Margin.Vertical - gap2);
+                    control.Bounds = new Rectangle(rect_real.X + control.Margin.Left + gap, rect_real.Y + control.Margin.Top + gap, rect_real.Width - control.Margin.Horizontal - gap2, rect_real.Height - control.Margin.Vertical - gap2);
                     index++;
                     if (index >= rects.Length)
                     {
@@ -459,6 +456,8 @@ namespace AntdUI
             public bool IsEmpty { get; set; }
 
             public Point Location => Rect.Location;
+            public int X => Rect.X;
+            public int Y => Rect.Y;
             public int Width => Rect.Width;
             public int Height => Rect.Height;
         }

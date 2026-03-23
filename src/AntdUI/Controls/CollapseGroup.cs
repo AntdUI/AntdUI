@@ -1095,8 +1095,7 @@ namespace AntdUI
                             CustomInputEdit(this, args);
                             if (args.Edit != null)
                             {
-                                args.Edit.Location = rect.Location;
-                                args.Edit.Size = new Size(Width ?? args.Edit.Width, rect.Size.Height);
+                                args.Edit.Bounds = new Rectangle(rect.X, rect.Y, Width ?? args.Edit.Width, rect.Size.Height);
                                 args.Edit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                                 Edit = args.Edit;
                             }

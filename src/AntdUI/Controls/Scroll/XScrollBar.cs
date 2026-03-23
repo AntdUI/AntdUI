@@ -212,30 +212,39 @@ namespace AntdUI
 
         string? show_oldx;
         int oldx = 0;
-        public void SetSize(int width) => SetShow(oldx, width);
-        public void SetShow(int max) => SetShow(max, Width);
-        public void SetShow(int _max, int _width)
+        public bool SetSize(int width) => SetShow(oldx, width);
+        public bool SetShow(int max) => SetShow(max, Width);
+        public bool SetShow(int _max, int _width)
         {
             oldx = _max;
             string show_x = _max + "_" + _width;
-            if (show_oldx == show_x) return;
+            if (show_oldx == show_x) return false;
             show_oldx = show_x;
             if (_width > 0 && _max > 0 && _max > _width)
             {
                 max = _max;
                 bool show = max > _width;
-                if (Visible != show) Visible = show;
                 if (show)
                 {
                     int valueI = _max - _width;
                     if (valueX > valueI) Value = valueI;
                 }
+                if (Visible != show)
+                {
+                    Visible = show;
+                    return true;
+                }
             }
             else
             {
                 max = valueX = 0;
-                if (Visible) Visible = false;
+                if (Visible)
+                {
+                    Visible = false;
+                    return true;
+                }
             }
+            return false;
         }
 
         #endregion

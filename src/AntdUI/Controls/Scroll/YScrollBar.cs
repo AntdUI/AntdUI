@@ -212,30 +212,39 @@ namespace AntdUI
 
         string? show_oldy;
         int oldy = 0;
-        public void SetSize(int height) => SetShow(oldy, height);
-        public void SetShow(int max) => SetShow(max, Height);
-        public void SetShow(int _max, int _height)
+        public bool SetSize(int height) => SetShow(oldy, height);
+        public bool SetShow(int max) => SetShow(max, Height);
+        public bool SetShow(int _max, int _height)
         {
             oldy = _max;
             string show_y = _max + "_" + _height;
-            if (show_oldy == show_y) return;
+            if (show_oldy == show_y) return false;
             show_oldy = show_y;
             if (_height > 0 && _max > 0 && _max > _height)
             {
                 max = _max;
                 bool show = max > _height;
-                if (Visible != show) Visible = show;
                 if (show)
                 {
                     int valueI = _max - _height;
                     if (valueY > valueI) Value = valueI;
                 }
+                if (Visible != show)
+                {
+                    Visible = show;
+                    return true;
+                }
             }
             else
             {
                 max = valueY = 0;
-                Visible = false;
+                if (Visible)
+                {
+                    Visible = false;
+                    return true;
+                }
             }
+            return false;
         }
 
         protected override void OnSizeChanged(EventArgs e)

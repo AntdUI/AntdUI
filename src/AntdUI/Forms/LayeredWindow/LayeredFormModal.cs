@@ -242,12 +242,10 @@ namespace AntdUI
                                 rectContent = new Rectangle(rectTitle.X + cpaddingx, rectTitle.Bottom + cpaddingy, ww, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
                             }
                             else rectContent = new Rectangle(paddingx + cpaddingx, rectTitle.Bottom + cpaddingy, wp - cpaddingx2, h - butt_h - sizeTitle.Height - gap - cpaddingy2);
-                            control.Location = new Point(rectContent.X, rectContent.Y);
                             Size = new Size(w, h + paddingy * 2);
                         }
                         if (config.CloseIcon) rect_close = new Rectangle(rectTitle.Right, rectTitle.Y, icon_size, icon_size);
-                        control.Location = new Point(rectContent.X, rectContent.Y);
-                        control.Size = new Size(rectContent.Width, rectContent.Height);
+                        control.Bounds = rectContent;
                     }
                     else if (config.Content is IList<Modal.TextLine> list)
                     {

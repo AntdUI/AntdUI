@@ -809,10 +809,26 @@ namespace AntdUI
         public bool AcceptsTab { get; set; }
 
         /// <summary>
+        /// 失去焦点时是否隐藏选定内容
+        /// </summary>
+        [Description("失去焦点时是否隐藏选定内容"), Category("行为"), DefaultValue(true)]
+        public bool HideSelection { get; set; } = true;
+
+        /// <summary>
+        /// 使用默认右键菜单
+        /// </summary>
+        [Description("使用默认右键菜单"), Category("行为"), DefaultValue(true)]
+        public bool UseContextMenu { get; set; } = true;
+
+        /// <summary>
         /// 焦点离开清空选中
         /// </summary>
-        [Description("焦点离开清空选中"), Category("行为"), DefaultValue(true)]
-        public bool LostFocusClearSelection { get; set; } = true;
+        [Obsolete("use HideSelection"), Description("焦点离开清空选中"), Category("行为"), DefaultValue(true)]
+        public bool LostFocusClearSelection
+        {
+            get => HideSelection;
+            set => HideSelection = value;
+        }
 
         bool readOnly = false;
         /// <summary>
@@ -1820,7 +1836,7 @@ namespace AntdUI
         {
             HasFocus = false;
             CaretInfo.Show = false;
-            if (LostFocusClearSelection) SelectionLength = 0;
+            if (HideSelection) SelectionLength = 0;
             ExtraMouseDown = false;
             base.OnLostFocus(e);
         }
@@ -1867,8 +1883,57 @@ namespace AntdUI
                         return;
                     }
                     break;
+                case 0x007B:
+                    if (UseContextMenu) OnOpenContentMenu();
+                    break;
             }
             base.WndProc(ref m);
+        }
+
+        protected virtual void OnOpenContentMenu()
+        {
+            var items = new List<IContextMenuStripItem>(8);
+            if (history_Log.Count > 0)
+            {
+                items.Add(new ContextMenuStripItem("撤销").SetID("Undo"));
+                items.Add(new ContextMenuStripItemDivider());
+            }
+            if (!IsPassWord || (IsPassWord && PasswordCopy))
+            {
+                items.Add(new ContextMenuStripItem("剪切").SetID("Cut").SetEnabled(selectionLength > 0));
+                items.Add(new ContextMenuStripItem("复制").SetID("Copy").SetEnabled(selectionLength > 0));
+            }
+            if (!IsPassWord || (IsPassWord && PasswordPaste)) items.Add(new ContextMenuStripItem("粘贴").SetID("Paste"));
+
+            items.Add(new ContextMenuStripItem("删除").SetID("Delete").SetEnabled(selectionLength > 0));
+            items.Add(new ContextMenuStripItemDivider());
+            items.Add(new ContextMenuStripItem("全选").SetID("SelectAll").SetEnabled(!isempty));
+
+            new ContextMenuStrip.Config(this, item =>
+            {
+                switch (item.ID)
+                {
+                    case "Undo":
+                        Undo();
+                        break;
+                    case "Cut":
+                        Cut();
+                        break;
+                    case "Copy":
+                        Copy();
+                        break;
+                    case "Paste":
+                        Paste();
+                        break;
+                    case "Delete":
+                        ProcessBackSpaceKey(false);
+                        break;
+                    case "SelectAll":
+                        SelectAll();
+                        break;
+                }
+            },
+            items.ToArray()).open();
         }
 
         #endregion

@@ -529,7 +529,7 @@ namespace AntdUI
                             if (RB && Radius > 0)
                             {
                                 float radius = Radius * Dpi;
-                                using (var path = RectX.RoundPath( radius, false, false, true, true))
+                                using (var path = RectX.RoundPath(radius, false, false, true, true))
                                 {
                                     g.Fill(brush, path);
                                 }
