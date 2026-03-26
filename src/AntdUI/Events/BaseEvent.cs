@@ -180,6 +180,51 @@ namespace AntdUI
 
     public delegate void DrawEventHandler(object sender, DrawEventArgs e);
 
+    public class DrawItemEventArgs : DrawEventArgs
+    {
+        public DrawItemEventArgs(Canvas canvas, Rectangle rect, SelectItemDraw item, bool select) : base(canvas, rect)
+        {
+            Item = item;
+            Select = select;
+        }
+        public SelectItemDraw Item { get; private set; }
+        public bool Select { get; private set; }
+        public Color? Fore { get; set; }
+        public Color? ForeSub { get; set; }
+        public Font? Font { get; set; }
+        /// <summary>
+        /// 是否已外部处理项渲染
+        /// </summary>
+        public bool Handled { get; set; }
+
+        #region 设置
+
+        public DrawItemEventArgs SetHandled(bool value = true)
+        {
+            Handled = value;
+            return this;
+        }
+        public DrawItemEventArgs SetFore(Color? value)
+        {
+            Fore = value;
+            return this;
+        }
+        public DrawItemEventArgs SetFore(Font? value)
+        {
+            Font = value;
+            return this;
+        }
+        public DrawItemEventArgs SetForeSub(Color? value)
+        {
+            ForeSub = value;
+            return this;
+        }
+
+        #endregion
+    }
+
+    public delegate void DrawItemEventHandler(object sender, DrawItemEventArgs e);
+
     #endregion
 
     #region 基础

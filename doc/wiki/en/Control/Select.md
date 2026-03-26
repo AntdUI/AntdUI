@@ -45,6 +45,7 @@ Name | Description | Return Value | Parameters |
 **ExpandDropChanged** | Occurred when the ExpandDrop property value is changed | void | bool value |
 **FilterChanged** | Control filter Text changes that occur | IList<object>`?` | string value `Search For` |
 **ClosedItem** | Occurred when closing a certain item | void | object? value |
+**DrawItem** | Triggered before child item external rendering | bool `Whether rendering was handled` | DrawItemEventArgs e `Event parameters, including canvas, rectangle, item information, etc.` |
 
 
 ***

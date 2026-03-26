@@ -54,6 +54,8 @@ Transfer 穿梭框 👚
 **GetTargetItems** | 获取目标列表项 | List<[TransferItem](#transferitem)> |  |
 **SetSourceSearchText** | 设置源列表搜索文本 | void | string text `搜索文本` |
 **SetTargetSearchText** | 设置目标列表搜索文本 | void | string text `搜索文本` |
+**SetTargetItems** | 按指定顺序设置目标项（通过TransferItem引用） | void | IEnumerable<TransferItem> targetItems `目标项集合，按顺序排列` |
+**SetTargetItemsById** | 按指定顺序设置目标项（通过ID匹配） | void | IEnumerable<string> targetIds `目标项ID集合，按顺序排列` |
 
 ### 事件
 

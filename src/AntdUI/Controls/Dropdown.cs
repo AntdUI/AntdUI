@@ -111,22 +111,6 @@ namespace AntdUI
         [Description("选中值"), Category("数据"), DefaultValue(null)]
         public object? SelectedValue { get; set; }
 
-        /// <summary>
-        /// SelectedValue 属性值更改时发生
-        /// </summary>
-        [Description("SelectedValue 属性值更改时发生"), Category("行为")]
-        public event ObjectNEventHandler? SelectedValueChanged;
-
-        protected virtual void OnSelectedValueChanged(object? e) => SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(e));
-
-        /// <summary>
-        /// 点击项时发生
-        /// </summary>
-        [Description("点击项时发生"), Category("行为")]
-        public event ObjectNEventHandler? ItemClick;
-
-        protected virtual void OnItemClick(object? e) => ItemClick?.Invoke(this, new ObjectNEventArgs(e));
-
         internal void DropDownChange(object value)
         {
             if (SelectedValue == value) OnItemClick(value);
@@ -234,6 +218,48 @@ namespace AntdUI
                 else subForm?.IClose();
             }
             else subForm?.IClose();
+        }
+
+        #endregion
+
+        #region 事件
+
+        /// <summary>
+        /// SelectedValue 属性值更改时发生
+        /// </summary>
+        [Description("SelectedValue 属性值更改时发生"), Category("行为")]
+        public event ObjectNEventHandler? SelectedValueChanged;
+
+        protected virtual void OnSelectedValueChanged(object? e) => SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(e));
+
+        /// <summary>
+        /// 点击项时发生
+        /// </summary>
+        [Description("点击项时发生"), Category("行为")]
+        public event ObjectNEventHandler? ItemClick;
+
+        protected virtual void OnItemClick(object? e) => ItemClick?.Invoke(this, new ObjectNEventArgs(e));
+
+        /// <summary>
+        /// 子项外部渲染前触发
+        /// </summary>
+        [Description("子项外部渲染前触发"), Category("外观")]
+        public event DrawItemEventHandler? DrawItem;
+
+        public virtual bool OnDrawItem(Canvas canvas, Rectangle rect, SelectItemDraw itme, bool select, out Color? fore, out Color? foreSub, out Font? font)
+        {
+            if (DrawItem == null)
+            {
+                fore = foreSub = null;
+                font = null;
+                return false;
+            }
+            var args = new DrawItemEventArgs(canvas, rect, itme, select);
+            DrawItem(this, args);
+            fore = args.Fore;
+            foreSub = args.ForeSub;
+            font = args.Font;
+            return args.Handled;
         }
 
         #endregion

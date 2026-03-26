@@ -493,15 +493,22 @@ namespace AntdUI
 
         #endregion
 
+        static bool? cacheadmin;
         /// <summary>
         /// 检查当前进程是否以管理员身份运行
         /// </summary>
         /// <returns>true表示以管理员身份运行，false表示不是</returns>
-        public static bool IsAdmin()
+        public static bool IsAdmin(bool force = false)
         {
+            if (cacheadmin.HasValue)
+            {
+                if (force) cacheadmin = null;
+                else return cacheadmin.Value;
+            }
             using (var id = System.Security.Principal.WindowsIdentity.GetCurrent())
             {
-                return new System.Security.Principal.WindowsPrincipal(id).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+                cacheadmin = new System.Security.Principal.WindowsPrincipal(id).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+                return cacheadmin.Value;
             }
         }
 

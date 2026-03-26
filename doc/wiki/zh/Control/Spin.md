@@ -17,6 +17,8 @@ Spin 加载中 👚
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **Fill** | 颜色 | Color`?` | `null` |
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+**Indicator** | 加载指示符 | Image`?` | `null` |
+**IndicatorSvg** | 加载指示符SVG | string`?` | `null` |
 
 ### 方法
 
@@ -26,6 +28,21 @@ Spin 加载中 👚
 :--|:--|:--|:--|
 **Spin** | 加载中 | void | Action action `需要等待的委托`, Action? end = null `运行结束后的回调` |
 **Spin** | 加载中 | void | [Spin.Config](#spin.config) `配置`, Action action `需要等待的委托`, Action? end = null `运行结束后的回调` |
+
+### 静态方法
+
+名称 | 描述 | 返回值 | 参数 |
+:--|:--|:--|:--|
+**open** | 加载中 | Task | Control control `控件主体`, Action<Config> action `需要等待的委托`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, string text `加载文本`, Action<Config> action `需要等待的委托`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, Action<Config> action `需要等待的委托`, CancellationTokenSource? token `取消令牌`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, string text `加载文本`, Action<Config> action `需要等待的委托`, CancellationTokenSource? token `取消令牌`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, Config config `自定义配置`, Action<Config> action `需要等待的委托`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, Func<Config, Task> action `需要等待的异步委托`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, string text `加载文本`, Func<Config, Task> action `需要等待的异步委托`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, Func<Config, Task> action `需要等待的异步委托`, CancellationTokenSource? token `取消令牌`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, string text `加载文本`, Func<Config, Task> action `需要等待的异步委托`, CancellationTokenSource? token `取消令牌`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
+**open** | 加载中 | Task | Control control `控件主体`, Config config `自定义配置`, Func<Config, Task> action `需要等待的异步委托`, Action? end = null `运行结束后的回调`, Action<Exception>? error = null `发生错误时的回调` |
 
 ### 配置
 
@@ -40,6 +57,11 @@ Spin 加载中 👚
 **Radius** | 圆角 | int`?` | `null` |
 **Font** | 字体 | Font`?` | `null` |
 **Value** | 进度 | float`?` | `null` |
+**Rate** | 进度速率 | float`?` | `null` |
+**Indicator** | 加载指示符 | Image`?` | `null` |
+**IndicatorSvg** | 加载指示符SVG | string`?` | `null` |
+**CancelText** | 取消按钮文字 | string`?` | `取消` |
+**CancelTokenSource** | 取消令牌源 | CancellationTokenSource`?` | `null` |
 
 ***
 

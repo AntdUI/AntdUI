@@ -293,7 +293,7 @@ namespace AntdUI
 
         #region 渲染帮助
 
-        void PaintChecked(Canvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
+        internal void PaintChecked(Canvas g, Rectangle rect, bool enabled, Rectangle icon_rect, bool right)
         {
             float dot_size = icon_rect.Height;
             float radius = dot_size * .2F;

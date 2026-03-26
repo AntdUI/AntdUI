@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -420,16 +421,17 @@ namespace AntdUI
             if (rect_read.Width > 0 && rect_read.Height > 0)
             {
                 float _radius = radius * Dpi;
+                var bg = back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme);
                 using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
                 {
-                    using (var brush = backExtend.BrushEx(rect_read, back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme)))
+                    using (var brush = backExtend.BrushEx(rect_read, bg))
                     {
                         g.Fill(brush, path);
                     }
                     if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
                     if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Dpi, borderStyle, path);
                 }
-                if (ArrowAlign != TAlign.None) g.FillPolygon(back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme), ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
+                if (ArrowAlign != TAlign.None) g.FillPolygon(bg, ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
             }
             base.OnDraw(e);
         }
@@ -567,6 +569,7 @@ namespace AntdUI
             base.OnHandleCreated(e);
             this.AddListener();
             if (ShadowOpacityAnimation) Application.AddMessageFilter(this);
+            InitScroll();
         }
 
         #region 主题变化
@@ -577,8 +580,250 @@ namespace AntdUI
             {
                 case EventType.THEME:
                     shadow_temp.Change();
+                    if (IPanel != null) InitScrollBg(IPanel);
+                    if (XScroll != null) InitScrollBg(XScroll);
+                    if (YScroll != null) InitScrollBg(YScroll);
                     break;
             }
+        }
+
+        #endregion
+
+        #region 滚动条
+
+        /// <summary>
+        /// 内部容器背景透明
+        /// </summary>
+        [Description("内部容器背景透明"), Category("外观"), DefaultValue(false)]
+        public bool AutoContainerBgTransparent { get; set; }
+
+        bool autoscroll = false;
+        /// <summary>
+        /// 是否显示滚动条
+        /// </summary>
+        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        public bool AutoScroll
+        {
+            get => autoscroll;
+            set
+            {
+                if (autoscroll == value) return;
+                autoscroll = value;
+                InitScroll();
+                OnPropertyChanged(nameof(AutoScroll));
+            }
+        }
+
+        private PanelCore? IPanel;
+        public XScrollBar? XScroll;
+        public YScrollBar? YScroll;
+
+        #region 滚动条
+
+        void InitScroll()
+        {
+            if (autoscroll)
+            {
+                if (IPanel == null)
+                {
+                    IPanel = new PanelCore(ScrollInfo)
+                    {
+                        Name = "__IN__",
+                        Dock = DockStyle.Fill,
+                        AutoScroll = true
+                    };
+                    InitScrollBg(IPanel);
+                    base.Controls.Add(IPanel);
+                }
+                if (XScroll == null)
+                {
+                    int h = SystemInformation.HorizontalScrollBarHeight, w = IPanel.Width;
+                    XScroll = new XScrollBar
+                    {
+                        Name = "__BARX__",
+                        Dock = DockStyle.Bottom,
+                        Visible = false,
+                        MinimumSize = new Size(0, h),
+                        Size = new Size(w, h),
+                        Radius = 0,
+                        BackColor = Color.Transparent
+                    };
+                    InitScrollBg(XScroll);
+                    XScroll.SetSize(IPanel.Width);
+                    XScroll.ValueChanged += ScrollX_ValueChanged;
+                    base.Controls.Add(XScroll);
+                }
+                else
+                {
+                    int h = SystemInformation.HorizontalScrollBarHeight, w = IPanel.Width;
+                    XScroll.MinimumSize = new Size(0, h);
+                    XScroll.Size = new Size(w, h);
+                    XScroll.SetSize(IPanel.Width);
+                }
+                if (YScroll == null)
+                {
+                    int w = SystemInformation.VerticalScrollBarWidth, h = IPanel.Height;
+                    YScroll = new YScrollBar
+                    {
+                        Name = "__BARY__",
+                        Dock = DockStyle.Right,
+                        Visible = false,
+                        MinimumSize = new Size(w, 0),
+                        Size = new Size(w, h),
+                        Radius = 0,
+                        BackColor = Color.Transparent
+                    };
+                    InitScrollBg(YScroll);
+                    YScroll.SetSize(IPanel.Height);
+                    YScroll.ValueChanged += ScrollY_ValueChanged;
+                    base.Controls.Add(YScroll);
+                }
+                else
+                {
+                    int w = SystemInformation.VerticalScrollBarWidth, h = IPanel.Height;
+                    YScroll.MinimumSize = new Size(w, 0);
+                    YScroll.Size = new Size(w, h);
+                    YScroll.SetSize(IPanel.Height);
+                }
+                IPanel.SendToBack();
+            }
+            else
+            {
+                if (IPanel != null)
+                {
+                    if (IPanel.Controls.Count > 0)
+                    {
+                        var controls = new List<Control>(IPanel.Controls.Count);
+                        foreach (Control it in IPanel.Controls) controls.Add(it);
+                        base.Controls.AddRange(controls.ToArray());
+                    }
+                    IPanel?.Dispose();
+                    IPanel = null;
+                }
+                if (YScroll != null)
+                {
+                    YScroll.ValueChanged -= ScrollY_ValueChanged;
+                    YScroll.Dispose();
+                    YScroll = null;
+                }
+                if (XScroll != null)
+                {
+                    XScroll.ValueChanged -= ScrollX_ValueChanged;
+                    XScroll.Dispose();
+                    XScroll = null;
+                }
+            }
+        }
+        void InitScrollBg(Control control)
+        {
+            if (AutoContainerBgTransparent) control.BackColor = Color.Transparent;
+            else control.BackColor = back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme);
+        }
+
+        private void ScrollX_ValueChanged(object? sender, EventArgs e)
+        {
+            if (IPanel == null || XScroll == null) return;
+            int value = XScroll.Value;
+            if (value >= 0 && value <= IPanel.HorizontalScroll.Maximum) IPanel.HorizontalScroll.Value = value;
+
+        }
+        private void ScrollY_ValueChanged(object? sender, EventArgs e)
+        {
+            if (IPanel == null || YScroll == null) return;
+            int value = YScroll.Value;
+            if (value >= 0 && value <= IPanel.VerticalScroll.Maximum) IPanel.VerticalScroll.Value = value;
+        }
+
+        private void ScrollInfo()
+        {
+            if (IPanel == null || YScroll == null || XScroll == null) return;
+
+            YScroll.Visible = IPanel.VerticalScroll.Visible;
+            YScroll.Maximum = IPanel.VerticalScroll.Maximum;
+            YScroll.Value = IPanel.VerticalScroll.Value;
+
+            XScroll.Visible = IPanel.HorizontalScroll.Visible;
+            XScroll.Maximum = IPanel.HorizontalScroll.Maximum;
+            XScroll.Value = IPanel.HorizontalScroll.Value;
+        }
+
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            if (e.Control == null) return;
+            if (IPanel == null)
+            {
+                base.OnControlAdded(e);
+                return;
+            }
+            if (e.Control.Name == "__IN__" || e.Control.Name == "__BARX__" || e.Control.Name == "__BARY__")
+            {
+                base.OnControlAdded(e);
+                return;
+            }
+            if (DesignMode)
+            {
+                base.OnControlAdded(e);
+                return;
+            }
+            IPanel.Controls.Add(e.Control);
+        }
+
+        public void Add(Control control) => Controls.Add(control);
+
+        [Browsable(false)]
+        public new ControlCollection Controls
+        {
+            get
+            {
+                if (IPanel == null) return base.Controls;
+                return IPanel.Controls;
+            }
+        }
+
+        public void ScrollControlIntoView(Control? activeControl) => IPanel?.ScrollControlIntoView(activeControl);
+
+        protected override void OnContextMenuStripChanged(EventArgs e)
+        {
+            base.OnContextMenuStripChanged(e);
+            if (IPanel != null) IPanel.ContextMenuStrip = ContextMenuStrip;
+        }
+
+        #endregion
+
+        internal class PanelCore : ScrollableControl
+        {
+            public PanelCore(Action loadScroll)
+            {
+                LoadScroll = loadScroll;
+                SetStyle(
+                    ControlStyles.AllPaintingInWmPaint |
+                    ControlStyles.OptimizedDoubleBuffer |
+                    ControlStyles.ResizeRedraw |
+                    ControlStyles.SupportsTransparentBackColor |
+                    ControlStyles.UserPaint, true);
+                UpdateStyles();
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                LoadScroll();
+                base.OnPaint(e);
+            }
+
+            protected override void OnSizeChanged(EventArgs e)
+            {
+                LoadScroll();
+                base.OnSizeChanged(e);
+            }
+
+            protected override void OnScroll(ScrollEventArgs se)
+            {
+                LoadScroll();
+                base.OnScroll(se);
+            }
+
+            public Action LoadScroll;
+
         }
 
         #endregion

@@ -410,8 +410,7 @@ namespace AntdUI
                 {
                     foreach (var it in Items)
                     {
-                        if (it.Rect.Bottom < sy || it.Rect.Top > sy + rect.Height) continue;
-                        DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
+                        if (rect.IsItemVisible(sy, it.Rect)) DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
                     }
                     g.Restore(state);
                     ScrollBar.Paint(g, ColorScheme);
@@ -426,6 +425,7 @@ namespace AntdUI
                 if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
                 else if (it.Tag.Equals(selectedValue))
                 {
+                    if (DrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
                     using (var path = it.Rect.RoundPath(Radius))
                     {
                         using (var bg = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get(keyid, ColorScheme)))
@@ -433,17 +433,11 @@ namespace AntdUI
                             g.Fill(bg, path);
                         }
                     }
-                    if (it.SubText != null)
-                    {
-                        var size = g.MeasureText(it.Text, Font);
-                        var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                        if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
-                        else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
-                    }
-                    DrawTextIconSelect(g, it);
+                    DrawTextIconSelect(g, it, fore, foreSub, font);
                 }
                 else
                 {
+                    if (DrawItem(g, it.Rect, it, false, out var fore, out var foreSub, out var font)) return;
                     if (it.Hover)
                     {
                         using (var path = it.Rect.RoundPath(Radius))
@@ -451,14 +445,7 @@ namespace AntdUI
                             g.Fill(brush_back_hover, path);
                         }
                     }
-                    if (it.SubText != null)
-                    {
-                        var size = g.MeasureText(it.Text, Font);
-                        var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                        if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
-                        else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
-                    }
-                    DrawTextIcon(g, it, brush, it.Fore);
+                    DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? Font);
                 }
                 if (it.Online.HasValue)
                 {
@@ -484,39 +471,61 @@ namespace AntdUI
             }
             else g.Fill(brush_split, it.Rect);
         }
-        void DrawTextIconSelect(Canvas g, ObjectItem it)
+        void DrawTextIconSelect(Canvas g, ObjectItem it, Color? fore, Color? foreSub, Font? font_real)
         {
-            using (var font = new Font(Font, FontStyle.Bold))
+            if (font_real == null)
             {
-                if (it.Enable)
+                using (var font = new Font(Font, FontStyle.Bold))
                 {
-                    using (var fore = new SolidBrush(Colour.TextBase.Get(keyid, ColorScheme)))
-                    {
-                        g.DrawText(it.Text, font, fore, it.RectText, sf);
-                    }
+                    DrawTextIconSelectCore(g, it, fore, foreSub, font);
                 }
-                else
+            }
+            else DrawTextIconSelectCore(g, it, fore, foreSub, font_real);
+        }
+        void DrawTextIconSelectCore(Canvas g, ObjectItem it, Color? fore, Color? foreSub, Font font)
+        {
+            if (it.SubText != null)
+            {
+                var size = g.MeasureText(it.Text, font);
+                var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                if (it.ForeSub.HasValue) g.DrawText(it.SubText, font, it.ForeSub.Value, rectSubText, sf);
+                else g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(name, ColorScheme), rectSubText, sf);
+            }
+            if (it.Enable)
+            {
+                using (var brush = new SolidBrush(fore ?? Colour.TextBase.Get(keyid, ColorScheme)))
                 {
-                    using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
-                    {
-                        g.DrawText(it.Text, font, fore, it.RectText, sf);
-                    }
+                    g.DrawText(it.Text, font, brush, it.RectText, sf);
+                }
+            }
+            else
+            {
+                using (var brush = new SolidBrush(fore ?? Colour.TextQuaternary.Get(keyid, ColorScheme)))
+                {
+                    g.DrawText(it.Text, font, brush, it.RectText, sf);
                 }
             }
             DrawIcon(g, it, Colour.TextBase.Get(keyid, ColorScheme));
         }
-        void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush, Color? color)
+        void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush, Color? color, Color? foreSub, Font font)
         {
+            if (it.SubText != null)
+            {
+                var size = g.MeasureText(it.Text, font);
+                var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                if (it.ForeSub.HasValue) g.DrawText(it.SubText, font, it.ForeSub.Value, rectSubText, sf);
+                else g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(name, ColorScheme), rectSubText, sf);
+            }
             if (it.Enable)
             {
-                if (color.HasValue) g.DrawText(it.Text, Font, color.Value, it.RectText, sf);
-                else g.DrawText(it.Text, Font, brush, it.RectText, sf);
+                if (color.HasValue) g.DrawText(it.Text, font, color.Value, it.RectText, sf);
+                else g.DrawText(it.Text, font, brush, it.RectText, sf);
             }
             else
             {
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get(keyid, ColorScheme)))
                 {
-                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                    g.DrawText(it.Text, font, fore, it.RectText, sf);
                 }
             }
             DrawIcon(g, it, color ?? brush.Color);
@@ -541,6 +550,15 @@ namespace AntdUI
                 pen.StartCap = pen.EndCap = LineCap.Round;
                 g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
             }
+        }
+
+        bool DrawItem(Canvas canvas, Rectangle rect, SelectItemDraw item, bool select_item, out Color? fore, out Color? foreSub, out Font? font)
+        {
+            if (PARENT is Select select) return select.OnDrawItem(canvas, rect, item, select_item, out fore, out foreSub, out font);
+            if (PARENT is Dropdown dropdown) return dropdown.OnDrawItem(canvas, rect, item, select_item, out fore, out foreSub, out font);
+            fore = foreSub = null;
+            font = null;
+            return false;
         }
 
         #endregion

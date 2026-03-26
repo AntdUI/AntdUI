@@ -759,19 +759,15 @@ namespace AntdUI
         protected virtual void OnDragLeave()
         { }
 
-        FileDropHandler? fileDrop;
+        internal FileDropHandler? fileDrop;
         /// <summary>
         /// 使用管理员权限拖拽上传
         /// </summary>
-        public void UseAdmin()
-        {
-            fileDrop ??= new FileDropHandler(this);
-        }
+        public void UseAdmin() => fileDrop ??= new FileDropHandler(this);
 
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);
-            if (DragChanged == null) return;
             if (AllowDrop)
             {
                 OnDragEnter();
@@ -790,14 +786,13 @@ namespace AntdUI
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
-            if (DragChanged == null) return;
             if (DragData(e.Data, out var files))
             {
-                if (ONDRAG == null) DragChanged(this, new StringsEventArgs(files));
+                if (ONDRAG == null) OnDragChanged(files);
                 else
                 {
                     var r = ONDRAG(files);
-                    if (r != null) DragChanged(this, new StringsEventArgs(r));
+                    if (r != null) OnDragChanged(r);
                 }
             }
             OnDragLeave();

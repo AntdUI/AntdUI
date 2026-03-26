@@ -61,6 +61,8 @@ Name | Description | Return Value | Parameters |
 **GetTargetItems** | Get target list items | List<[TransferItem](#transferitem)> |  |
 **SetSourceSearchText** | Set source list search text | void | string text `Search Text` |
 **SetTargetSearchText** | Set target list search text | void | string text `Search Text` |
+**SetTargetItems** | Set target items in specified order (by TransferItem reference) | void | IEnumerable<TransferItem> targetItems `Target item collection, ordered` |
+**SetTargetItemsById** | Set target items in specified order (by ID matching) | void | IEnumerable<string> targetIds `Target item ID collection, ordered` |
 
 ### Data
 

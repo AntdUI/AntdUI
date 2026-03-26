@@ -5,7 +5,6 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -65,20 +64,24 @@ namespace Demo.Controls
 
         private void btnWindow_Click(object sender, EventArgs e)
         {
+            CancellationTokenSource token = new CancellationTokenSource();
             AntdUI.Spin.open(form, AntdUI.Localization.Get("Loading2", "正在加载中..."), config =>
             {
                 Thread.Sleep(1000);
                 for (int i = 0; i < 101; i++)
                 {
+                    token.Token.ThrowIfCancellationRequested();
                     config.Value = i / 100F;
                     config.Text = AntdUI.Localization.Get("Processing", "处理中") + " " + i + "%";
                     Thread.Sleep(20);
                 }
+                token.Token.ThrowIfCancellationRequested();
                 Thread.Sleep(1000);
                 config.Value = null;
                 config.Text = AntdUI.Localization.Get("PleaseWait", "请耐心等候...");
+                token.Token.ThrowIfCancellationRequested();
                 Thread.Sleep(2000);
-            }, () =>
+            }, token, () =>
             {
                 System.Diagnostics.Debug.WriteLine("加载结束");
             });
@@ -110,7 +113,7 @@ namespace Demo.Controls
             },
             ex => //错误回调
             {
-                Debug.Print($"执行时发生了错误:{ex.Message}");
+                System.Diagnostics.Debug.Print($"执行时发生了错误:{ex.Message}");
             });
         }
     }

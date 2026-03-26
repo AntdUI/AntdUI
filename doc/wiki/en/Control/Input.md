@@ -87,7 +87,8 @@ Name | Description | Type | Default Value |
 ||||
 **AdapterSystemMnemonic** | Adapt to system mnemonics | bool | false |
 **HandShortcutKeys** | Handle shortcut keys `Obsolete` | bool | true |
-||||
+**UseContextMenu** | Use default context menu | bool | true |
+|||
 **RightToLeft** | Reverse | RightToLeft | No |
 
 ### Methods

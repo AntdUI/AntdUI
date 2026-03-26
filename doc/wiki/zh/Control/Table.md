@@ -49,6 +49,7 @@
 **ShowTip** | 省略文字提示 | bool | true |
 **HandShortcutKeys** | 处理快捷键 | bool | true |
 **ShowCheckBg** | 显示复选背景 | bool | true |
+**FilterShowCheckBg** | 筛选显示复选背景 | bool`?` | `null` |
 ||||
 **DefaultExpand** | 默认是否展开 `树` | bool | false |
 **TreeArrowStyle** | 树表格的箭头样式 | TableTreeStyle | Button |
@@ -117,6 +118,7 @@
 **SetSortIndex** | 设置排序序号 | void | int[]? data `序号数据` |
 **SortList** | 获取排序数据 | object[] ||
 **SetSortList** | 设置排序数据 | void | object[]? data `排序数据` |
+**Sort** | 按列SortMode排序 | void | Column col `列` |
 **SortColumnsIndex** | 获取表头排序序号 | int[] ||
 **SetSortColumnsIndex** | 设置表头排序序号 | void | int[]? data `序号数据` |
 **SortColumnsList** | 获取表头排序数据 | Column[] ||

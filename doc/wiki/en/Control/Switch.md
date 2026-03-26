@@ -8,7 +8,7 @@
 - DefaultProperty：Checked
 - DefaultEvent：CheckedChanged
 
-### Property
+### Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|

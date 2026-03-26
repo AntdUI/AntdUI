@@ -367,6 +367,28 @@ namespace AntdUI
         protected virtual void OnExpandDropChanged(bool e) => ExpandDropChanged?.Invoke(this, new BoolEventArgs(e));
 
         /// <summary>
+        /// 子项外部渲染前触发
+        /// </summary>
+        [Description("子项外部渲染前触发"), Category("外观")]
+        public event DrawItemEventHandler? DrawItem;
+
+        public virtual bool OnDrawItem(Canvas canvas, Rectangle rect, SelectItemDraw item, bool select, out Color? fore, out Color? foreSub, out Font? font)
+        {
+            if (DrawItem == null)
+            {
+                fore = foreSub = null;
+                font = null;
+                return false;
+            }
+            var args = new DrawItemEventArgs(canvas, rect, item, select);
+            DrawItem(this, args);
+            fore = args.Fore;
+            foreSub = args.ForeSub;
+            font = args.Font;
+            return args.Handled;
+        }
+
+        /// <summary>
         /// 关闭某项 时发生
         /// </summary>
         [Description("关闭某项 时发生"), Category("行为")]
@@ -683,7 +705,7 @@ namespace AntdUI
     public class DividerSelectItem : ISelectItem
     {
     }
-    public class SelectItem : ISelectItem, iSelectItem
+    public class SelectItem : ISelectItem, SelectItemDraw
     {
         public SelectItem(int online, Image? ico, string text, object tag) : this(text, tag)
         {
@@ -967,7 +989,7 @@ namespace AntdUI
         public override string ToString() => Text;
     }
 
-    internal interface iSelectItem
+    public interface SelectItemDraw
     {
         /// <summary>
         /// 在线状态
@@ -1100,7 +1122,7 @@ namespace AntdUI
         public new T Value { get; set; }
     }
 
-    internal class ObjectItem : iSelectItem
+    internal class ObjectItem : SelectItemDraw
     {
         public ObjectItem(object item, int i, Rectangle rect, Rectangle rect_text)
         {
@@ -1295,7 +1317,7 @@ namespace AntdUI
         }
     }
 
-    internal class ObjectItemCheck : iSelectItem
+    internal class ObjectItemCheck : SelectItemDraw
     {
         public ObjectItemCheck(object item, Rectangle rect, Rectangle rect_text, Rectangle rect_check)
         {

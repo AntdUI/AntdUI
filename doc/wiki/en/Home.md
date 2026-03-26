@@ -25,11 +25,14 @@
 
 > [![Button](Icon/Button.png)](Control/Button.md)
 
+
+
 #### [FloatButton](Control/FloatButton.md)
 
 > A button that floats at the top of the page.
 
 > [![FloatButton](Icon/FloatButton.png)](Control/FloatButton.md)
+
 
 ### Layout `5`
 
@@ -39,11 +42,15 @@
 
 > [![Divider](Icon/Divider.png)](Control/Divider.md)
 
+
+
 #### [StackPanel](Control/StackPanel.md)
 
 > Arranging sub elements horizontally or vertically.
 
 > [![StackPanel](Icon/StackPanel.png)](Control/StackPanel.md)
+
+
 
 #### [FlowPanel](Control/FlowPanel.md)
 
@@ -51,17 +58,22 @@
 
 > [![FlowPanel](Icon/FlowPanel.png)](Control/FlowPanel.md)
 
+
+
 #### [GridPanel](Control/GridPanel.md)
 
 > Grid layout container with precise division of areas.
 
 > [![GridPanel](Icon/GridPanel.png)](Control/GridPanel.md)
 
+
+
 #### [Splitter](Control/Splitter.md)
 
 > Split panels to isolate
 
 > [![Splitter](Icon/Splitter.png)](Control/Splitter.md)
+
 
 
 ### Navigation `7`
@@ -72,11 +84,15 @@
 
 > [![Breadcrumb](Icon/Breadcrumb.png)](Control/Breadcrumb.md)
 
+
+
 #### [Dropdown](Control/Dropdown.md)
 
 > A dropdown list.
 
 > [![Dropdown](Icon/Dropdown.png)](Control/Dropdown.md)
+
+
 
 #### [Menu](Control/Menu.md)
 
@@ -84,11 +100,15 @@
 
 > [![Menu](Icon/Menu.png)](Control/Menu.md)
 
+
+
 #### [PageHeader](Control/PageHeader.md)
 
 > A page header serves as a content overview and guides page level operations.
 
 > [![PageHeader](Icon/PageHeader.png)](Control/PageHeader.md)
+
+
 
 #### [TabHeader](Control/TabHeader.md)
 
@@ -96,17 +116,22 @@
 
 > [![TabHeader](Icon/TabHeader.png)](Control/TabHeader.md)
 
+
+
 #### [Pagination](Control/Pagination.md)
 
 > A long list can be divided into several pages, and only one page will be loaded at a time.
 
 > [![Pagination](Icon/Pagination.png)](Control/Pagination.md)
 
+
+
 #### [Steps](Control/Steps.md)
 
 > A navigation bar that guides users through the steps of a task.
 
 > [![Steps](Icon/Steps.png)](Control/Steps.md)
+
 
 
 ### Data Entry `15`
@@ -117,11 +142,15 @@
 
 > [![Checkbox](Icon/Checkbox.png)](Control/Checkbox.md)
 
+
+
 #### [ColorPicker](Control/ColorPicker.md)
 
 > Used for color selection.
 
 > [![ColorPicker](Icon/ColorPicker.png)](Control/ColorPicker.md)
+
+
 
 #### [DatePicker](Control/DatePicker.md)
 
@@ -129,11 +158,15 @@
 
 > [![DatePicker](Icon/DatePicker.png)](Control/DatePicker.md)
 
+
+
 #### [DatePickerRange](Control/DatePickerRange.md)
 
 > Control for entering or selecting a date range.
 
 > [![DatePickerRange](Icon/DatePickerRange.png)](Control/DatePickerRange.md)
+
+
 
 #### [Input](Control/Input.md)
 
@@ -141,11 +174,15 @@
 
 > [![Input](Icon/Input.png)](Control/Input.md)
 
+
+
 #### [InputNumber](Control/InputNumber.md)
 
 > Enter a number within certain range with the mouse or keyboard.
 
 > [![InputNumber](Icon/InputNumber.png)](Control/InputNumber.md)
+
+
 
 #### [Radio](Control/Radio.md)
 
@@ -153,11 +190,15 @@
 
 > [![Radio](Icon/Radio.png)](Control/Radio.md)
 
+
+
 #### [Rate](Control/Rate.md)
 
 > Used for rating operation on something.
 
 > [![Rate](Icon/Rate.png)](Control/Rate.md)
+
+
 
 #### [Select](Control/Select.md)
 
@@ -165,11 +206,15 @@
 
 > [![Select](Icon/Select.png)](Control/Select.md)
 
+
+
 #### [Slider](Control/Slider.md)
 
 > A Slider component for displaying current value.
 
 > [![Slider](Icon/Slider.png)](Control/Slider.md)
+
+
 
 #### [SliderRange](Control/SliderRange.md)
 
@@ -177,11 +222,15 @@
 
 > [![SliderRange](Icon/SliderRange.png)](Control/SliderRange.md)
 
+
+
 #### [Switch](Control/Switch.md)
 
 > Used to toggle between two states.
 
 > [![Switch](Icon/Switch.png)](Control/Switch.md)
+
+
 
 #### [TimePicker](Control/TimePicker.md)
 
@@ -189,11 +238,15 @@
 
 > [![TimePicker](Icon/TimePicker.png)](Control/TimePicker.md)
 
+
+
 #### [Transfer](Control/Transfer.md)
 
 > Double column transfer choice box.
 
 > [![Transfer](Icon/Transfer.png)](Control/Transfer.md)
+
+
 
 #### [UploadDragger](Control/UploadDragger.md)
 
@@ -202,7 +255,8 @@
 > [![UploadDragger](Icon/UploadDragger.png)](Control/UploadDragger.md)
 
 
-### Data Display `21`
+
+### Data Display `22`
 
 #### [Avatar](Control/Avatar.md)
 
@@ -210,11 +264,15 @@
 
 > [![Avatar](Icon/Avatar.png)](Control/Avatar.md)
 
+
+
 #### [Badge](Control/Badge.md)
 
 > Small numerical value or status descriptor for UI elements.
 
 > [![Badge](Icon/Badge.png)](Control/Badge.md)
+
+
 
 #### [Calendar](Control/Calendar.md)
 
@@ -222,16 +280,22 @@
 
 > [![Calendar](Icon/Calendar.png)](Control/Calendar.md)
 
+
+
 #### [Panel](Control/Panel.md)
 
 > A container for displaying information.
 
 > [![Panel](Icon/Panel.png)](Control/Panel.md)
 
+
+
 #### [Carousel](Control/Carousel.md)
 
 > A set of carousel areas.
 > [![Carousel](Icon/Carousel.png)](Control/Carousel.md)
+
+
 
 #### [Collapse](Control/Collapse.md)
 
@@ -239,15 +303,21 @@
 
 > [![Collapse](Icon/Collapse.png)](Control/Collapse.md)
 
+
+
 #### [Preview](Control/Preview.md)
 
 > Picture preview box.
 
 > [![Preview](Icon/Preview.png)](Control/Preview.md)
 
+
+
 #### [ImagePreview](Control/ImagePreview.md)
 
 > Picture preview control.
+
+
 
 #### [Popover](Control/Popover.md)
 
@@ -255,11 +325,15 @@
 
 > [![Popover](Icon/Popover.png)](Control/Popover.md)
 
+
+
 #### [Segmented](Control/Segmented.md)
 
 > Display multiple options and allow users to select a single option.
 
 > [![Segmented](Icon/Segmented.png)](Control/Segmented.md)
+
+
 
 #### [Table](Control/Table.md)
 
@@ -267,11 +341,15 @@
 
 > [![Table](Icon/Table.png)](Control/Table.md)
 
+
+
 #### [Tabs](Control/Tabs.md)
 
 > Tabs make it easy to explore and switch between different views.
 
 > [![Tabs](Icon/Tabs.png)](Control/Tabs.md)
+
+
 
 #### [Tag](Control/Tag.md)
 
@@ -279,11 +357,15 @@
 
 > [![Tag](Icon/Tag.png)](Control/Tag.md)
 
+
+
 #### [Timeline](Control/Timeline.md)
 
 > Vertical display timeline.
 
 > [![Timeline](Icon/Timeline.png)](Control/Timeline.md)
+
+
 
 #### [Tooltip](Control/Tooltip.md)
 
@@ -291,11 +373,15 @@
 
 > [![Tooltip](Icon/Tooltip.png)](Control/Tooltip.md)
 
+
+
 #### [Tree](Control/Tree.md)
 
 > Multiple-level structure list.
 
 > [![Tree](Icon/Tree.png)](Control/Tree.md)
+
+
 
 #### [Tour](Control/Tour.md)
 
@@ -303,9 +389,13 @@
 
 > [![Tour](Icon/Tour.png)](Control/Tour.md)
 
+
+
 #### [Label](Control/Label.md)
 
 > Display a paragraph of text.
+
+
 
 #### [LabelTime](Control/LabelTime.md)
 
@@ -313,11 +403,30 @@
 
 > [![LabelTime](Icon/LabelTime.png)](Control/LabelTime.md)
 
+
+
 #### [LabelLed](Control/LabelLed.md)
 
 > Display a segment of LED style text.
 
 > [![LabelLed](Icon/LabelLed.jpg)](Control/LabelLed.md)
+
+
+
+#### [HyperlinkLabel](Control/HyperlinkLabel.md)
+
+> Display text with hyperlinks, support custom styles and event handling.
+
+> [![HyperlinkLabel](Icon/HyperlinkLabel.png)](Control/HyperlinkLabel.md)
+
+
+
+#### [HyperlinkCheckbox](Control/HyperlinkCheckbox.md)
+
+> Display checkbox with hyperlinks, support custom styles and event handling.
+
+> [![HyperlinkCheckbox](Icon/HyperlinkCheckbox.png)](Control/HyperlinkCheckbox.md)
+
 
 
 ### Feedback `8`
@@ -328,11 +437,15 @@
 
 > [![Alert](Icon/Alert.png)](Control/Alert.md)
 
+
+
 #### [Drawer](Control/Drawer.md)
 
 > A panel that slides out from the edge of the screen.
 
 > [![Drawer](Icon/Drawer.png)](Control/Drawer.md)
+
+
 
 #### [Message](Control/Message.md)
 
@@ -340,11 +453,15 @@
 
 > [![Message](Icon/Message.png)](Control/Message.md)
 
+
+
 #### [Modal](Control/Modal.md)
 
 > Display a modal dialog box, providing a title, content area, and action buttons.
 
 > [![Modal](Icon/Modal.png)](Control/Modal.md)
+
+
 
 #### [Notification](Control/Notification.md)
 
@@ -352,11 +469,15 @@
 
 > [![Notification](Icon/Notification.png)](Control/Notification.md)
 
+
+
 #### [Progress](Control/Progress.md)
 
 > Display the current progress of the operation.
 
 > [![Progress](Icon/Progress.png)](Control/Progress.md)
+
+
 
 #### [Spin](Control/Spin.md)
 
@@ -364,11 +485,14 @@
 
 > [![Spin](Icon/Spin.png)](Control/Spin.md)
 
+
+
 #### [Watermark](Control/Watermark.md)
 
 > Add specific text or patterns to the page.
 
 > [![Watermark](Icon/Watermark.png)](Control/Watermark.md)
+
 
 ### Other `5`
 

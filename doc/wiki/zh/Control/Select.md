@@ -35,8 +35,10 @@ Select 选择器 👚
 **SelectedIndexChanged** | SelectedIndex 属性值更改时发生 | void | int index `序号` |
 **SelectedIndexsChanged** | 多层树结构更改时发生 | void | int x `第几列`, int y `第几行` |
 **SelectedValueChanged** | SelectedValue 属性值更改时发生 | void | object? value `数值` |
+**ExpandDropChanged** | 下拉展开 属性值更改时发生 | void | bool value `展开状态` |
 **FilterChanged** | 控制筛选 Text更改时发生 | IList<object>`?` | string value `搜索内容` |
 **ClosedItem** | 关闭某项 时发生 | void | object? value `数值` |
+**DrawItem** | 子项外部渲染前触发 | bool `是否处理了渲染` | DrawItemEventArgs e `事件参数，包含画布、矩形、项目信息等` |
 
 
 ***

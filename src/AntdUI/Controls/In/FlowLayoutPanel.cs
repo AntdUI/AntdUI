@@ -7,27 +7,59 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace AntdUI.In
 {
-    public class FlowLayoutPanel : System.Windows.Forms.FlowLayoutPanel, IScrollBar
+    [ToolboxItem(true)]
+    [Designer(typeof(IControlDesigner))]
+    public class FlowLayoutPanel : IControl
     {
-        public FlowLayoutPanel()
-        {
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint |
-                ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw |
-                ControlStyles.UserPaint, true);
-            UpdateStyles();
-            ScrollBar = new ScrollBar(this);
-        }
-
         #region 属性
 
-        ScrollBar ScrollBar;
+        /// <summary>
+        /// 是否显示滚动条
+        /// </summary>
+        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        public bool AutoScroll
+        {
+            get => Panel.AutoScroll;
+            set
+            {
+                if (Panel.AutoScroll == value) return;
+                Panel.AutoScroll = value;
+                if (IsHandleCreated) InitScroll();
+                OnPropertyChanged(nameof(AutoScroll));
+            }
+        }
+
+        #region 原生
+
+        /// <summary>
+        /// 指定控件布局的方向
+        /// </summary>
+        [Description("指定控件布局的方向"), Category("布局"), DefaultValue(FlowDirection.LeftToRight)]
+        public FlowDirection FlowDirection
+        {
+            get => Panel.FlowDirection;
+            set => Panel.FlowDirection = value;
+        }
+
+        /// <summary>
+        /// 指示在控件边界是将内容换行还是将内容剪裁
+        /// </summary>
+        [Description("指示在控件边界是将内容换行还是将内容剪裁"), Category("布局"), DefaultValue(true)]
+        public bool WrapContents
+        {
+            get => Panel.WrapContents;
+            set => Panel.WrapContents = value;
+        }
+
+        public bool GetFlowBreak(Control control) => Panel.GetFlowBreak(control);
+
+        public void SetFlowBreak(Control control, bool value) => Panel.SetFlowBreak(control, value);
+
+        #endregion
 
         #region 为空
 
@@ -54,127 +86,199 @@ namespace AntdUI.In
 
         #endregion
 
-        #region 只为了隐藏滚动条
+        #region 核心
 
-        #region 滚动条状态
+        private FlowLayoutPanelCore Panel = new FlowLayoutPanelCore
+        {
+            Name = "__IN__",
+            Dock = DockStyle.Fill
+        };
+        public XScrollBar? XScroll;
+        public YScrollBar? YScroll;
 
-        bool scrollYVisible = false;
-        bool ScrollYVisible
+        public FlowLayoutPanel()
         {
-            get => scrollYVisible;
-            set
-            {
-                if (scrollYVisible == value) return;
-                scrollYVisible = value;
-                if (!value) ScrollBar.SetVrSize(0);
-                OnSizeChanged(EventArgs.Empty);
-            }
+            base.Controls.Add(Panel);
         }
-        public override Rectangle DisplayRectangle
+
+        #region 控件
+
+        protected override void OnControlAdded(ControlEventArgs e)
         {
-            get
+            if (e.Control == null) return;
+            if (e.Control.Name == "__IN__" || e.Control.Name == "__BARX__" || e.Control.Name == "__BARY__")
             {
-                var rect = ClientRectangle.DeflateRect(Padding);
-                if (scrollYVisible) rect.Width -= ScrollBar.SIZE;
-                return rect;
+                base.OnControlAdded(e);
+                return;
             }
+            if (DesignMode)
+            {
+                base.OnControlAdded(e);
+                return;
+            }
+            Add(e.Control);
         }
+
+        public void Remove(Control control) => Panel.Controls.Remove(control);
+        public void RemoveAt(int index) => Panel.Controls.RemoveAt(index);
+
+        public void Add(Control control) => Panel.Controls.Add(control);
+
+        public void Clear() => Panel.Controls.Clear();
+
+        [Browsable(false)]
+        public new ControlCollection Controls => Panel.Controls;
+
+        [Browsable(false)]
+        public Control? this[string name] => Panel.Controls.ContainsKey(name) ? Panel.Controls[name] : null;
+
+        [Browsable(false)]
+        public Control? this[int index] => (index >= 0 && index < Panel.Controls.Count) ? Panel.Controls[index] : null;
+        public void ScrollControlIntoView(Control? activeControl) => Panel?.ScrollControlIntoView(activeControl);
 
         #endregion
 
-        //https://www.5axxw.com/questions/content/noi6a2
-        protected override void OnSizeChanged(EventArgs e)
+        protected override void OnHandleCreated(EventArgs e)
         {
-            LoadScroll();
-            base.OnSizeChanged(e);
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            LoadScroll();
-            var g = e.Graphics.High();
-            if (Empty && (Controls == null || Controls.Count == 0)) g.PaintEmpty(ClientRectangle, Font, Colour.Text.Get(nameof(FlowLayoutPanel)), EmptyText, EmptyImage);
-            if (ScrollYVisible) ScrollBar.Paint(g);
-            base.OnPaint(e);
-        }
-
-        void LoadScroll()
-        {
-            ScrollYVisible = VerticalScroll.Visible;
-
-            var rect = ClientRectangle;
-            if (ScrollYVisible)
+            base.OnHandleCreated(e);
+            Panel.LoadScroll = ScrollInfo;
+            Panel.DrawEmpty = g =>
             {
-                ScrollBar.SizeChange(rect);
-                if (ScrollYVisible)
+                if (Empty) g.High().PaintEmpty(ClientRectangle, Font, Colour.Text.Get(nameof(FlowLayoutPanel)), EmptyText, EmptyImage);
+            };
+            InitScroll();
+            IOnSizeChanged();
+        }
+
+        void InitScroll()
+        {
+            if (Panel.AutoScroll)
+            {
+                if (XScroll == null)
                 {
-                    ScrollBar.SetVrSize(VerticalScroll.Maximum);
-                    ScrollBar.Value = VerticalScroll.Value;
+                    int h = SystemInformation.HorizontalScrollBarHeight, w = Panel.Width;
+                    XScroll = new XScrollBar
+                    {
+                        Name = "__BARX__",
+                        Dock = DockStyle.Bottom,
+                        Visible = false,
+                        MinimumSize = new Size(0, h),
+                        Size = new Size(w, h),
+                        Radius = 0
+                    };
+                    XScroll.SetSize(Panel.Width);
+                    XScroll.ValueChanged += ScrollX_ValueChanged;
+                    base.Controls.Add(XScroll);
+                }
+                if (YScroll == null)
+                {
+                    int w = SystemInformation.VerticalScrollBarWidth, h = Panel.Height;
+                    YScroll = new YScrollBar
+                    {
+                        Name = "__BARY__",
+                        Dock = DockStyle.Right,
+                        Visible = false,
+                        MinimumSize = new Size(w, 0),
+                        Size = new Size(w, h),
+                        Radius = 0
+                    };
+                    YScroll.SetSize(Panel.Height);
+                    YScroll.ValueChanged += ScrollY_ValueChanged;
+                    base.Controls.Add(YScroll);
+                }
+                Panel.SendToBack();
+            }
+            else
+            {
+                if (YScroll != null)
+                {
+                    YScroll.ValueChanged -= ScrollY_ValueChanged;
+                    YScroll.Dispose();
+                    YScroll = null;
+                }
+                if (XScroll != null)
+                {
+                    XScroll.ValueChanged -= ScrollX_ValueChanged;
+                    XScroll.Dispose();
+                    XScroll = null;
                 }
             }
         }
 
-        protected override void WndProc(ref System.Windows.Forms.Message m)
+        private void ScrollX_ValueChanged(object? sender, EventArgs e)
         {
-            switch (m.Msg)
+            if (XScroll == null) return;
+            int value = XScroll.Value;
+            if (value >= 0 && value <= Panel.HorizontalScroll.Maximum) Panel.HorizontalScroll.Value = value;
+
+        }
+        private void ScrollY_ValueChanged(object? sender, EventArgs e)
+        {
+            if (YScroll == null) return;
+            int value = YScroll.Value;
+            if (value >= 0 && value <= Panel.VerticalScroll.Maximum) Panel.VerticalScroll.Value = value;
+        }
+
+        private void ScrollInfo()
+        {
+            if (YScroll == null || XScroll == null) return;
+            YScroll.Visible = Panel.VerticalScroll.Visible;
+            YScroll.Maximum = Panel.VerticalScroll.Maximum;
+            YScroll.Value = Panel.VerticalScroll.Value;
+
+            XScroll.Visible = Panel.HorizontalScroll.Visible;
+            XScroll.Maximum = Panel.HorizontalScroll.Maximum;
+            XScroll.Value = Panel.HorizontalScroll.Value;
+        }
+
+        #endregion
+
+        #region 原生
+
+        protected override void OnContextMenuStripChanged(EventArgs e)
+        {
+            base.OnContextMenuStripChanged(e);
+            if (Panel != null) Panel.ContextMenuStrip = ContextMenuStrip;
+        }
+
+        #endregion
+
+        #region 布局
+
+        internal class FlowLayoutPanelCore : System.Windows.Forms.FlowLayoutPanel
+        {
+            public FlowLayoutPanelCore()
             {
-                case WM_PAINT:
-                case WM_ERASEBKGND:
-                case WM_NCCALCSIZE:
-                    if (DesignMode || !AutoScroll) break;
-                    ShowScrollBar(Handle, SB_SHOW_BOTH, false);
-                    break;
-                case WM_MOUSEWHEEL:
-                    //int delta = (int)(m.WParam.ToInt64() >> 16);
-                    //int direction = Math.Sign(delta);
-                    ShowScrollBar(Handle, SB_SHOW_BOTH, false);
-                    break;
+                SetStyle(
+                    ControlStyles.AllPaintingInWmPaint |
+                    ControlStyles.OptimizedDoubleBuffer |
+                    ControlStyles.ResizeRedraw |
+                    ControlStyles.UserPaint, true);
+                UpdateStyles();
             }
-            base.WndProc(ref m);
-        }
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (ScrollBar.MouseDown(e.X, e.Y)) base.OnMouseDown(e);
-        }
+            protected override void OnSizeChanged(EventArgs e)
+            {
+                LoadScroll?.Invoke();
+                base.OnSizeChanged(e);
+            }
 
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            ScrollBar.MouseUp();
-            base.OnMouseUp(e);
-        }
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            ScrollBar.Leave();
-            base.OnMouseLeave(e);
-        }
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (ScrollBar.MouseMove(e.X, e.Y)) base.OnMouseMove(e);
-        }
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                LoadScroll?.Invoke();
+                base.OnPaint(e);
+                if (Controls == null || Controls.Count == 0) DrawEmpty?.Invoke(e.Graphics);
+            }
 
-        public void OnShowXChanged(bool value)
-        {
+            protected override void OnScroll(ScrollEventArgs se)
+            {
+                LoadScroll?.Invoke();
+                base.OnScroll(se);
+            }
+
+            public Action? LoadScroll;
+            public Action<Graphics>? DrawEmpty;
         }
-
-        public void OnShowYChanged(bool value)
-        {
-        }
-
-        public void OnValueXChanged(int value)
-        {
-        }
-
-        public void OnValueYChanged(int value) => VerticalScroll.Value = value;
-
-        private const int WM_PAINT = 0x000F;
-        private const int WM_ERASEBKGND = 0x0014;
-        private const int WM_NCCALCSIZE = 0x0083;
-        private const int WM_MOUSEWHEEL = 0x020A;
-        private const int SB_SHOW_VERT = 0x1;
-        private const int SB_SHOW_BOTH = 0x3;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool ShowScrollBar(IntPtr hWnd, int wBar, bool bShow);
 
         #endregion
     }

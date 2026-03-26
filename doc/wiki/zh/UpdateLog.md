@@ -1,5 +1,33 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.3` 2026-03-26
+
+- ➕ Panel 滚动条
+- ➕ Spin 取消令牌
+- ➕ Table Sort(Column col)方法
+- ➕ Table FilterShowCheckBg
+- ➕ HyperlinkCheckbox
+- ➕ Select/Dropdown DrawItem 事件
+- ➕ Input 内置右键 UseContextMenu
+- ➕ Transfer SetTargetItems
+- ✍️ StackPanel 滚动条
+- ✍️ FlowLayoutPanel 滚动条
+- ✍️ Table 简化加载
+- ✍️ Table 移除 Size 重复渲染
+- ✍️ Table 编辑模式 Nullable 类型
+- ✍️ Table 清空数据前关闭编辑模式避免异常
+- ✍️ Input 优化藏插入
+- ✍️ Tree 初始化 Select 状态异常
+- ✍️ DatePickerRange UI 图标 边距优化
+- ✍️ UploadDragger 无法拖拽
+- ✍️ Carousel 适配 DPI
+- ✍️ Carousel DotMargin 0 点击无效
+- ✍️ HyperlinkLabel 布局
+- ✍️ HyperlinkCheckbox 布局
+- ✍️ 部分 Emoji 修饰符/组合标记
+- ✍️ 减少部分显示区域触发
+- 🧹 Table 树
+
 ### `2.3.2` 2026-03-06
 
 - ➕ Input 触屏触发屏幕键盘
