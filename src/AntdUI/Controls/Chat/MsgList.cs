@@ -258,10 +258,7 @@ namespace AntdUI.Chat
                 {
                     if (it.show)
                     {
-                        if (it.Contains(e.Location, 0, ScrollBar.Value, out var change))
-                        {
-                            hand++;
-                        }
+                        if (it.Contains(e.Location, 0, ScrollBar.Value, out var change)) hand++;
                         if (change) count++;
                     }
                 }

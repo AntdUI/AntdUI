@@ -453,6 +453,7 @@ namespace AntdUI
         {
             base.AllowDrop = true;
             base.OnHandleCreated(e);
+            if (fileDrop == null && Helper.IsAdmin()) fileDrop = new FileDropHandler(this);
         }
 
         #endregion
@@ -570,7 +571,6 @@ namespace AntdUI
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
             if (ContainerControl == null || ContainerControl.IsDisposed) return false;
-            if (ContainerControl.AllowDrop) return ContainerControl.AllowDrop = false;
             if (m.Msg == Win32.User32.WM_DROPFILES)
             {
                 var point = Control.MousePosition;

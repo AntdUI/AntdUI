@@ -22,6 +22,7 @@ namespace AntdUI
         List<ObjectItemCheck> Items;
         IList<object> ItemOS;
         List<object> selectedValue;
+        public new SelectMultiple PARENT;
         public LayeredFormSelectMultipleCheck(SelectMultiple control, IList<object> items, string? filtertext)
         {
             PARENT = control;
@@ -196,7 +197,6 @@ namespace AntdUI
                 g.TranslateTransform(0, -sy);
                 using (var brush = new SolidBrush(Colour.Text.Get(name, ColorScheme)))
                 using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(name, ColorScheme)))
-                using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
                 using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
                 using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
                 {
@@ -206,38 +206,40 @@ namespace AntdUI
                         for (int i = 0; i < Items.Count; i++)
                         {
                             var it = Items[i];
-                            if (it.Rect.Bottom < sy || it.Rect.Top > sy + rect.Height) continue;
-                            //判断下一个是不是连续的
-                            if (selectedValue.Contains(it.Tag))
+                            if (rect.IsItemVisible(sy, it.Rect))
                             {
-                                if (it.Group)
+                                //判断下一个是不是连续的
+                                if (selectedValue.Contains(it.Tag))
                                 {
-                                    DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                                    oldsel = -1;
-                                }
-                                else
-                                {
-                                    bool isn = IFNextSelect(i + 1);
-                                    if (oldsel == -1)
+                                    if (it.Group)
                                     {
-                                        if (isn)
-                                        {
-                                            oldsel = i;
-                                            DrawItemSelect(g, brush_sub, brush_split, it, true, true, false, false);
-                                        }
-                                        else DrawItemSelect(g, brush_sub, brush_split, it, true, true, true, true);
+                                        DrawItem(g, brush, brush_back_hover, brush_fore, brush_split, it);
+                                        oldsel = -1;
                                     }
                                     else
                                     {
-                                        if (isn) DrawItemSelect(g, brush_sub, brush_split, it, false, false, false, false);
-                                        else DrawItemSelect(g, brush_sub, brush_split, it, false, false, true, true);
+                                        bool isn = IFNextSelect(i + 1);
+                                        if (oldsel == -1)
+                                        {
+                                            if (isn)
+                                            {
+                                                oldsel = i;
+                                                DrawItemSelect(g, brush_split, it, true, true, false, false);
+                                            }
+                                            else DrawItemSelect(g, brush_split, it, true, true, true, true);
+                                        }
+                                        else
+                                        {
+                                            if (isn) DrawItemSelect(g, brush_split, it, false, false, false, false);
+                                            else DrawItemSelect(g, brush_split, it, false, false, true, true);
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                DrawItem(g, brush, brush_sub, brush_back_hover, brush_fore, brush_split, it);
-                                oldsel = -1;
+                                else
+                                {
+                                    DrawItem(g, brush, brush_back_hover, brush_fore, brush_split, it);
+                                    oldsel = -1;
+                                }
                             }
                         }
                     }
@@ -245,8 +247,7 @@ namespace AntdUI
                     {
                         foreach (var it in Items)
                         {
-                            if (it.Rect.Bottom < sy || it.Rect.Top > sy + rect.Height) continue;
-                            DrawItemR(g, brush, brush_back_hover, brush_split, it);
+                            if (rect.IsItemVisible(sy, it.Rect)) DrawItemR(g, brush, brush_back_hover, brush_split, it);
                         }
                     }
                 }
@@ -269,10 +270,11 @@ namespace AntdUI
             return false;
         }
 
-        void DrawItemSelect(Canvas g, SolidBrush subbrush, SolidBrush brush_split, ObjectItemCheck it, bool TL, bool TR, bool BR, bool BL)
+        void DrawItemSelect(Canvas g, SolidBrush brush_split, ObjectItemCheck it, bool TL, bool TR, bool BR, bool BL)
         {
             if (it.SID)
             {
+                if (PARENT.OnDrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
                 using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
                 {
                     using (var brush = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
@@ -280,13 +282,7 @@ namespace AntdUI
                         g.Fill(brush, path);
                     }
                 }
-                if (it.SubText != null)
-                {
-                    var size = g.MeasureText(it.Text, Font);
-                    var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                    g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
-                }
-                DrawTextIconSelect(g, it);
+                DrawTextIconSelect(g, it, fore, foreSub, font ?? Font);
                 if (it.Online.HasValue)
                 {
                     using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
@@ -299,32 +295,29 @@ namespace AntdUI
             else g.Fill(brush_split, it.Rect);
         }
 
-        void DrawItem(Canvas g, SolidBrush brush, SolidBrush subbrush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItemCheck it)
+        void DrawItem(Canvas g, SolidBrush brush, SolidBrush brush_back_hover, SolidBrush brush_fore, SolidBrush brush_split, ObjectItemCheck it)
         {
             if (it.SID)
             {
                 if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
+                else if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount)
+                {
+                    using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                    {
+                        DrawTextIcon(g, it, subbrush, null, null, Font);
+                    }
+                }
                 else
                 {
-                    if (it.SubText != null)
+                    if (PARENT.OnDrawItem(g, it.Rect, it, false, out var fore, out var foreSub, out var font)) return;
+                    if (it.Hover)
                     {
-                        var size = g.MeasureText(it.Text, Font);
-                        var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
-                        if (it.ForeSub.HasValue) g.DrawText(it.SubText, Font, it.ForeSub.Value, rectSubText, sf);
-                        else g.DrawText(it.SubText, Font, subbrush, rectSubText, sf);
-                    }
-                    if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount) DrawTextIcon(g, it, subbrush, null);
-                    else
-                    {
-                        if (it.Hover)
+                        using (var path = it.Rect.RoundPath(Radius))
                         {
-                            using (var path = it.Rect.RoundPath(Radius))
-                            {
-                                g.Fill(brush_back_hover, path);
-                            }
+                            g.Fill(brush_back_hover, path);
                         }
-                        DrawTextIcon(g, it, brush, it.Fore);
                     }
+                    DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? Font);
                     if (it.Online.HasValue)
                     {
                         using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
@@ -343,16 +336,28 @@ namespace AntdUI
             {
                 if (selectedValue.Contains(it.Tag))
                 {
+                    if (PARENT.OnDrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
                     using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
                     {
                         g.Fill(brush_back, it.Rect);
                     }
-                    DrawTextIconSelect(g, it);
+                    DrawTextIconSelect(g, it, fore, foreSub, font ?? Font);
                 }
                 else
                 {
-                    if (it.Hover) g.Fill(brush_back_hover, it.Rect);
-                    DrawTextIcon(g, it, brush, it.Fore);
+                    if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount)
+                    {
+                        using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                        {
+                            DrawTextIcon(g, it, subbrush, null, null, Font);
+                        }
+                    }
+                    else
+                    {
+                        if (PARENT.OnDrawItem(g, it.Rect, it, false, out var fore, out var foreSub, out var font)) return;
+                        if (it.Hover) g.Fill(brush_back_hover, it.Rect);
+                        DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? Font);
+                    }
                 }
                 if (it.Online.HasValue)
                 {
@@ -366,20 +371,26 @@ namespace AntdUI
             else g.Fill(brush_split, it.Rect);
         }
 
-        void DrawTextIconSelect(Canvas g, ObjectItemCheck it)
+        void DrawTextIconSelect(Canvas g, ObjectItemCheck it, Color? fore, Color? foreSub, Font font)
         {
+            if (it.SubText != null)
+            {
+                var size = g.MeasureText(it.Text, font);
+                var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(name, ColorScheme), rectSubText, sf);
+            }
             if (it.Enable)
             {
-                using (var fore = new SolidBrush(Colour.TextBase.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(fore ?? Colour.TextBase.Get(name, ColorScheme)))
                 {
-                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                    g.DrawText(it.Text, font, brush, it.RectText, sf);
                 }
             }
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(fore ?? Colour.TextQuaternary.Get(name, ColorScheme)))
                 {
-                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                    g.DrawText(it.Text, font, brush, it.RectText, sf);
                 }
             }
             DrawIcon(g, it, Colour.TextBase.Get(name, ColorScheme));
@@ -393,18 +404,24 @@ namespace AntdUI
                 }
             }
         }
-        void DrawTextIcon(Canvas g, ObjectItemCheck it, SolidBrush brush, Color? color)
+        void DrawTextIcon(Canvas g, ObjectItemCheck it, SolidBrush brush, Color? color, Color? foreSub, Font font)
         {
+            if (it.SubText != null)
+            {
+                var size = g.MeasureText(it.Text, font);
+                var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
+                g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(name, ColorScheme), rectSubText, sf);
+            }
             if (it.Enable)
             {
-                if (color.HasValue) g.DrawText(it.Text, Font, color.Value, it.RectText, sf);
-                else g.DrawText(it.Text, Font, brush, it.RectText, sf);
+                if (color.HasValue) g.DrawText(it.Text, font, color.Value, it.RectText, sf);
+                else g.DrawText(it.Text, font, brush, it.RectText, sf);
             }
             else
             {
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
                 {
-                    g.DrawText(it.Text, Font, fore, it.RectText, sf);
+                    g.DrawText(it.Text, font, fore, it.RectText, sf);
                 }
             }
             DrawIcon(g, it, color ?? brush.Color);

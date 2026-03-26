@@ -651,6 +651,28 @@ namespace AntdUI
 
         protected virtual void OnExpandDropChanged(bool e) => ExpandDropChanged?.Invoke(this, new BoolEventArgs(e));
 
+        /// <summary>
+        /// 子项外部渲染前触发
+        /// </summary>
+        [Description("子项外部渲染前触发"), Category("外观")]
+        public event DrawItemEventHandler? DrawItem;
+
+        public virtual bool OnDrawItem(Canvas canvas, Rectangle rect, SelectItemDraw itme, bool select, out Color? fore, out Color? foreSub, out Font? font)
+        {
+            if (DrawItem == null)
+            {
+                fore = foreSub = null;
+                font = null;
+                return false;
+            }
+            var args = new DrawItemEventArgs(canvas, rect, itme, select);
+            DrawItem(this, args);
+            fore = args.Fore;
+            foreSub = args.ForeSub;
+            font = args.Font;
+            return args.Handled;
+        }
+
         #endregion
 
         #region 焦点
