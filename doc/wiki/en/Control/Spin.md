@@ -28,6 +28,21 @@ Name | Description | Return Value | Parameters |
 **Spin** | LOADING | void | Action action `Commission to wait for`, Action? end = null `Post completion callback` |
 **Spin** | LOADING | void | [Spin.Config](#spin.config) `Config`, Action action `Commission to wait for`, Action? end = null `Post completion callback` |
 
+### Static Methods
+
+Name | Description | Return Value | Parameters |
+:--|:--|:--|:--|
+**open** | LOADING | Task | Control control `Control body`, Action<Config> action `Delegate to wait for`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, string text `Loading text`, Action<Config> action `Delegate to wait for`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, Action<Config> action `Delegate to wait for`, CancellationTokenSource? token `Cancellation token`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, string text `Loading text`, Action<Config> action `Delegate to wait for`, CancellationTokenSource? token `Cancellation token`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, Config config `Custom configuration`, Action<Config> action `Delegate to wait for`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, Func<Config, Task> action `Async delegate to wait for`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, string text `Loading text`, Func<Config, Task> action `Async delegate to wait for`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, Func<Config, Task> action `Async delegate to wait for`, CancellationTokenSource? token `Cancellation token`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, string text `Loading text`, Func<Config, Task> action `Async delegate to wait for`, CancellationTokenSource? token `Cancellation token`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+**open** | LOADING | Task | Control control `Control body`, Config config `Custom configuration`, Func<Config, Task> action `Async delegate to wait for`, Action? end = null `Callback after completion`, Action<Exception>? error = null `Callback when error occurs` |
+
 ### Config
 
 #### Spin.Config
@@ -44,6 +59,8 @@ Name | Description | Type | Default Value |
 **Rate** | Progress rate | float`?` | `null` |
 **Indicator** | Loading indicator | Image`?` | `null` |
 **IndicatorSvg** | Loading indicator SVG | string`?` | `null` |
+**CancelText** | Cancel button text | string`?` | `Cancel` |
+**CancelTokenSource** | Cancellation token source | CancellationTokenSource`?` | `null` |
 
 ***
 

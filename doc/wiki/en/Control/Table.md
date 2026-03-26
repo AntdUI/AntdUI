@@ -49,6 +49,7 @@ Name | Description | Type | Default Value |
 **ShowTip** | Omit text prompts | bool | true |
 **HandShortcutKeys** | Process shortcut keys | bool | true |
 **ShowCheckBg** | Display checkbox background | bool | true |
+**FilterShowCheckBg** | Filter display checkbox background | bool`?` | `null` |
 ||||
 **DefaultExpand** | Whether to expand by default `Tree` | bool | false |
 **TreeArrowStyle** | Tree table arrow style | TableTreeStyle | Button |
@@ -105,6 +106,7 @@ Name | Description | Return Value | Parameters |
 **EnterEditMode** | Enter editing mode | void | int row, int column |
 **SortIndex** | Get sorting sequence number | int[] ||
 **SortList** | Get sorted data | object[] ||
+**Sort** | Sort by column SortMode | void | Column col `Column` |
 **SortColumnsIndex** | Obtain the sorting sequence number of the header | int[] ||
 **SortColumnsList** | Get header sort data | Column[] ||
 **SetSortIndex** | Set sort index | void | int[] data |

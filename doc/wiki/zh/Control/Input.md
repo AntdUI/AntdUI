@@ -88,7 +88,8 @@ Input 输入框 👚
 ||||
 **AdapterSystemMnemonic** | 适配系统助记词 | bool | false |
 **HandShortcutKeys** | 处理快捷键 `已过时` | bool | true |
-||||
+**UseContextMenu** | 使用默认右键菜单 | bool | true |
+|||
 **RightToLeft** | 反向 | RightToLeft | No |
 
 ### 方法

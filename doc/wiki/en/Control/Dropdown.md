@@ -32,3 +32,4 @@ Name | Description | Return Value | Parameters |
 :--|:--|:--|:--|
 **SelectedValueChanged** | Occurred when the SelectedValue property value is changed | void | object? value |
 **ItemClick** | Occurs when an item is clicked | void | object? value `Clicked item` |
+**DrawItem** | Triggered before child item external rendering | bool `Whether rendering was handled` | DrawItemEventArgs e `Event parameters, including canvas, rectangle, item information, etc.` |
