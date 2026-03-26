@@ -114,7 +114,7 @@ namespace AntdUI
                     int gap = (int)(font_size.Height * 1.02F);
                     var linkPadding = Helper.SetPadding(Dpi, _linkPadding);
                     if (string.IsNullOrWhiteSpace(Text)) return new Size(font_size.Height + gap, font_size.Height + gap);
-                    var textSize = CalculateTextSize(g, Text, linkPadding);
+                    var textSize = CalculateTextSize(g, linkPadding);
                     return new Size(textSize.Width + font_size.Height + gap, font_size.Height + gap);
                 });
             }
@@ -125,7 +125,6 @@ namespace AntdUI
         #region 私有实现
 
         LinkPart[] _linkParts = new LinkPart[0];
-        string _plainText = string.Empty;
 
         private void ParseText()
         {
@@ -168,85 +167,115 @@ namespace AntdUI
                 plainTextBuilder.Append(plainText);
             }
 
-            _plainText = plainTextBuilder.ToString(); // 保存纯文本
             _linkParts = linkParts.ToArray();
         }
 
-        private Size CalculateTextSize(Canvas g, string? text, Padding linkPadding)
+        Size CalculateTextSize(Canvas g, Rectangle rect, Padding linkPadding)
         {
-            // Fallback to TextRenderer when canvas is not available.
-            if (string.IsNullOrEmpty(text) || _linkParts.Length == 0) return Size.Empty;
-
-            int totalWidth = 0, maxHeight = 0;
+            if (_linkParts.Length == 0) return Size.Empty;
+            int usex = 0, line = 0, height = 0;
+            bool bold = HasBoldFont();
             foreach (var part in _linkParts)
             {
-                Size partSize;
-                try
+                Size size;
+                if (part.Href == null) size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
+                else
                 {
-                    if (part.Href == null || normalStyle == null) partSize = g.MeasureText(part.Text, Font);
+                    if (part.Hover)
+                    {
+                        if (hoverStyle == null) size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
+                        else
+                        {
+                            var style = hoverStyle.LinkStyle & ~FontStyle.Underline;
+                            if (bold) style |= FontStyle.Bold;
+                            using (var font = new Font(Font, style))
+                            {
+                                size = g.MeasureText(part.Text, font).DeflateSize(linkPadding);
+                            }
+                        }
+                    }
                     else
                     {
-                        using (var font = new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline))
+                        if (normalStyle == null) size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
+                        else
                         {
-                            partSize = g.MeasureText(part.Text, font).DeflateSize(linkPadding);
+                            var style = normalStyle.LinkStyle & ~FontStyle.Underline;
+                            if (bold) style |= FontStyle.Bold;
+                            using (var font = new Font(Font, style))
+                            {
+                                size = g.MeasureText(part.Text, font).DeflateSize(linkPadding);
+                            }
                         }
                     }
                 }
-                catch
+                part.Width = size.Width;
+                if (usex + size.Width > rect.Width)
                 {
-                    // In case Canvas measurement fails (designer/runtime), use TextRenderer as fallback
-                    var f = (part.Href == null || normalStyle == null) ? Font : new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline);
-                    partSize = TextRenderer.MeasureText(part.Text, f);
+                    usex = 0;
+                    line++;
                 }
-                totalWidth += partSize.Width;
-                maxHeight = Math.Max(maxHeight, partSize.Height);
-            }
-            return new Size(totalWidth, maxHeight);
-        }
-
-        void PaintText(Canvas g, Rectangle rect, Padding linkPadding, LinkPart part, int startX, ref int usex, ref int usey, Colour colour, LinkAppearance? style)
-        {
-            if (style == null)
-            {
-                var size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
-                if (usex + size.Width > rect.Right && usex > startX)
-                {
-                    usex = startX;
-                    usey += size.Height;
-                }
-                part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
-                g.DrawText(part.Text, Font, Style.Get(colour, nameof(HyperlinkCheckbox)), part.Bounds);
-
                 usex += size.Width;
+                height = Math.Max(height, size.Height);
             }
-            else
-            {
-                using (var font = new Font(Font, style.LinkStyle & ~FontStyle.Underline))
-                {
-                    var size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
-                    if (usex + size.Width > rect.Right && usex > startX)
-                    {
-                        usex = startX;
-                        usey += size.Height;
-                    }
-                    part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
-                    g.DrawText(part.Text, font, style.LinkColor ?? Style.Get(colour, nameof(HyperlinkCheckbox)), part.Bounds);
-
-                    PaintText(g, style, Style.Get(colour, nameof(HyperlinkCheckbox)), part.Bounds, linkPadding);
-
-                    usex += size.Width;
-                }
-            }
+            foreach (var it in _linkParts) it.Height = height;
+            return new Size(usex, height * (line + 1));
         }
-
-        void PaintText(Canvas g, LinkAppearance style, Color color, Rectangle rect, Padding linkPadding)
+        Size CalculateTextSize(Canvas g, Padding linkPadding)
         {
-            if (style.UnderlineThickness > 0)
+            if (_linkParts.Length == 0) return Size.Empty;
+            int usex = 0, height = 0;
+            bool bold = HasBoldFont();
+            foreach (var part in _linkParts)
             {
-                using var pen = new Pen(style.UnderlineColor ?? color, style.UnderlineThickness * Dpi);
-                int y = rect.Bottom;
-                g.DrawLine(pen, rect.Left + linkPadding.Left, y, rect.Right - linkPadding.Right, y);
+                Size size;
+                if (part.Href == null) size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
+                else
+                {
+                    if (part.Hover)
+                    {
+                        if (hoverStyle == null) size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
+                        else
+                        {
+                            var style = hoverStyle.LinkStyle & ~FontStyle.Underline;
+                            if (bold) style |= FontStyle.Bold;
+                            using (var font = new Font(Font, style))
+                            {
+                                size = g.MeasureText(part.Text, font).DeflateSize(linkPadding);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (normalStyle == null) size = g.MeasureText(part.Text, Font).DeflateSize(linkPadding);
+                        else
+                        {
+                            var style = normalStyle.LinkStyle & ~FontStyle.Underline;
+                            if (bold) style |= FontStyle.Bold;
+                            using (var font = new Font(Font, style))
+                            {
+                                size = g.MeasureText(part.Text, font).DeflateSize(linkPadding);
+                            }
+                        }
+                    }
+                }
+                part.Width = size.Width;
+                usex += size.Width;
+                height = Math.Max(height, size.Height);
             }
+            foreach (var it in _linkParts) it.Height = height;
+            return new Size(usex, height);
+        }
+        bool HasBoldFont()
+        {
+            if (hoverStyle != null)
+            {
+                if (hoverStyle.LinkStyle.HasFlag(FontStyle.Bold)) return true;
+            }
+            if (normalStyle != null)
+            {
+                if (normalStyle.LinkStyle.HasFlag(FontStyle.Bold)) return true;
+            }
+            return false;
         }
 
         #endregion
@@ -276,12 +305,12 @@ namespace AntdUI
 
         protected override void OnDraw(DrawEventArgs e)
         {
-            base.OnDraw(e);
+            //base.OnDraw(e);
 
             // Avoid complex rendering in design-time which can trigger re-entrancy or GDI issues.
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
 
-            if (string.IsNullOrEmpty(Text) || _linkParts.Length == 0) return;
+            if (_linkParts.Length == 0) return;
 
             var g = e.Canvas;
             var rect = ReadRectangle;
@@ -291,16 +320,17 @@ namespace AntdUI
             rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect);
             bool right = RightToLeft == RightToLeft.Yes;
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
+            PaintChecked(g, rect, Enabled, icon_rect, right);
 
             Color _fore = ForeColor ?? Colour.Text.Get(nameof(HyperlinkCheckbox), ColorScheme);
             var linkPadding = Helper.SetPadding(Dpi, _linkPadding);
-            PaintText(g, Text, _fore, text_rect, linkPadding);
+            PaintText(g, _fore, text_rect, linkPadding);
         }
 
-        void PaintText(Canvas g, string? text, Color color, Rectangle rect, Padding linkPadding)
+        void PaintText(Canvas g, Color color, Rectangle rect, Padding linkPadding)
         {
             // 计算文本的总尺寸以支持对齐
-            var totalSize = CalculateTextSize(g, text, linkPadding);
+            var totalSize = CalculateTextSize(g, rect, linkPadding);
 
             // 根据 TextAlign 计算起始位置
             int startX = rect.X, startY = rect.Y;
@@ -347,34 +377,54 @@ namespace AntdUI
 
             int usex = startX, usey = startY;
 
-            // clear base drawn text area to avoid double-draw — try to match the checkbox/icon area background
-            var bgColor = Parent?.BackColor ?? BackColor;
-            g.Fill(bgColor, rect);
-
             foreach (var part in _linkParts)
             {
-                if (part.Href == null)
+                if (usex + part.Width > rect.Right && usex > startX)
                 {
-                    var size = g.MeasureText(part.Text, Font);
-                    if (usex + size.Width > rect.Right && usex > startX)
-                    {
-                        usex = startX;
-                        usey += size.Height;
-                    }
-                    part.Bounds = new Rectangle(usex, usey, size.Width, size.Height);
-                    //g.DrawText(part.Text, Font, color, part.Bounds);
-                    Color? useFore = ForeColor ?? Style.Get(Colour.Text, nameof(HyperlinkCheckbox));
-                    using (var brush = useFore.Brush(color, Colour.TextQuaternary.Get(nameof(HyperlinkCheckbox), "foreDisabled", ColorScheme), Enabled))
-                    {
-                        g.DrawText(part.Text, Font, brush, part.Bounds, FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis | FormatFlags.HotkeyPrefixShow);
-                    }
-                    usex += size.Width;
+                    usex = startX;
+                    usey += part.Height;
                 }
+                part.Bounds = new Rectangle(usex, usey, part.Width, part.Height);
+                usex += part.Width;
+                if (part.Href == null) g.DrawText(part.Text, Font, color, part.Bounds);
                 else
                 {
-                    if (part.Hover) PaintText(g, rect, linkPadding, part, startX, ref usex, ref usey, Colour.PrimaryActive, hoverStyle);
-                    else PaintText(g, rect, linkPadding, part, startX, ref usex, ref usey, Colour.Primary, normalStyle);
+                    if (part.Hover)
+                    {
+                        if (hoverStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
+                        else
+                        {
+                            var colorlink = hoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel));
+                            using (var font = new Font(Font, hoverStyle.LinkStyle))
+                            {
+                                g.DrawText(part.Text, font, colorlink, part.Bounds);
+                            }
+                            PaintText(g, hoverStyle, colorlink, part.Bounds, linkPadding);
+                        }
+                    }
+                    else
+                    {
+                        if (normalStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
+                        else
+                        {
+                            var colorlink = normalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel));
+                            using (var font = new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline))
+                            {
+                                g.DrawText(part.Text, font, colorlink, part.Bounds);
+                            }
+                            PaintText(g, normalStyle, colorlink, part.Bounds, linkPadding);
+                        }
+                    }
                 }
+            }
+        }
+        void PaintText(Canvas g, LinkAppearance style, Color color, Rectangle rect, Padding linkPadding)
+        {
+            if (style.UnderlineThickness > 0)
+            {
+                using var pen = new Pen(style.UnderlineColor ?? color, style.UnderlineThickness * Dpi);
+                int y = rect.Bottom;
+                g.DrawLine(pen, rect.Left + linkPadding.Left, y, rect.Right - linkPadding.Right, y);
             }
         }
 
@@ -498,6 +548,8 @@ namespace AntdUI
             public string? Href { get; set; }
             public bool Hover { get; set; }
             public Rectangle Bounds { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
         }
 
         [TypeConverter(typeof(ExpandableObjectConverter))]

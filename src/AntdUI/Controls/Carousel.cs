@@ -434,10 +434,13 @@ namespace AntdUI
             var rect = _rect.PaddingRect(Padding);
             int len = items.Count;
             var list = new List<CarouselDotItem>(len);
+            int dotMargin = (int)(DotMargin * Dpi), dotMargin_2 = dotMargin / 2;
+            int sp = (int)(2 * Dpi), sp2 = sp * 2, sp4 = sp2 * 2;
+            int dotW = (int)(DotSize.Width * Dpi), dotH = (int)(DotSize.Height * Dpi);
             if (DotPosition == TAlignMini.Top || DotPosition == TAlignMini.Bottom)
             {
-                int dot_size = DotSize.Width * len, y = DotPosition == TAlignMini.Bottom ? rect.Y + rect.Height - (DotMargin + DotSize.Height) : rect.Y + DotMargin,
-                     y2 = DotPosition == TAlignMini.Bottom ? rect.Y + rect.Height - (DotMargin + DotSize.Height) - DotMargin / 2 : rect.Y + DotMargin / 2;
+                int dot_size = dotW * len, y = DotPosition == TAlignMini.Bottom ? rect.Y + rect.Height - (dotMargin + dotH) : rect.Y + dotMargin,
+                     y2 = DotPosition == TAlignMini.Bottom ? rect.Y + rect.Height - (dotMargin + dotH) - dotMargin_2 : rect.Y + dotMargin_2;
                 int temp_x = rect.X + (rect.Width - dot_size) / 2;
 
                 for (int i = 0; i < len; i++)
@@ -445,28 +448,28 @@ namespace AntdUI
                     list.Add(new CarouselDotItem
                     {
                         i = i,
-                        rect_fill = new Rectangle(temp_x, y2, DotSize.Width, DotMargin),
-                        rect_action = new Rectangle(temp_x + 2, y, DotSize.Width - 4, DotSize.Height),
-                        rect = new Rectangle(temp_x + 4, y, DotSize.Width - 8, DotSize.Height)
+                        rect_fill = new Rectangle(temp_x, y2, dotW, dotH),
+                        rect_action = new Rectangle(temp_x + sp, y, dotW - sp2, dotH),
+                        rect = new Rectangle(temp_x + sp2, y, dotW - sp4, dotH)
                     });
-                    temp_x += DotSize.Width;
+                    temp_x += dotW;
                 }
             }
             else
             {
-                int dot_size = DotSize.Width * len, x = DotPosition == TAlignMini.Right ? rect.X + rect.Width - (DotMargin + DotSize.Height) : rect.X + DotMargin,
-                     x2 = DotPosition == TAlignMini.Right ? rect.X + rect.Width - (DotMargin + DotSize.Height) - DotMargin / 2 : rect.X + DotMargin / 2;
+                int dot_size = dotW * len, x = DotPosition == TAlignMini.Right ? rect.X + rect.Width - (dotMargin + dotH) : rect.X + dotMargin,
+                     x2 = DotPosition == TAlignMini.Right ? rect.X + rect.Width - (dotMargin + dotH) - dotMargin_2 : rect.X + dotMargin_2;
                 int temp_y = rect.Y + (rect.Height - dot_size) / 2;
                 for (int i = 0; i < len; i++)
                 {
                     list.Add(new CarouselDotItem
                     {
                         i = i,
-                        rect_fill = new Rectangle(x2, temp_y, DotMargin, DotSize.Width),
-                        rect_action = new Rectangle(x, temp_y + 2, DotSize.Height, DotSize.Width - 4),
-                        rect = new Rectangle(x, temp_y + 4, DotSize.Height, DotSize.Width - 8)
+                        rect_fill = new Rectangle(x2, temp_y, dotH, dotW),
+                        rect_action = new Rectangle(x, temp_y + sp, dotH, dotW - sp2),
+                        rect = new Rectangle(x, temp_y + sp2, dotH, dotW - sp4)
                     });
-                    temp_y += DotSize.Width;
+                    temp_y += dotW;
                 }
             }
             dot_list = list.ToArray();
@@ -530,12 +533,12 @@ namespace AntdUI
                         {
                             if (it.i == selectIndex)
                             {
-                                using (var path = it.rect_action.RoundPath(DotSize.Height))
+                                using (var path = it.rect_action.RoundPath(0, true))
                                     g.Fill(brush, path);
                             }
                             else
                             {
-                                using (var path = it.rect.RoundPath(DotSize.Height))
+                                using (var path = it.rect.RoundPath(0, true))
                                     g.Fill(brush2, path);
                             }
                         }
