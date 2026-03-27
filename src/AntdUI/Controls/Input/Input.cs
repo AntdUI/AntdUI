@@ -679,6 +679,12 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置文本后选中到最后
+        /// </summary>
+        [Description("设置文本后选中到最后"), Category("行为"), DefaultValue(false)]
+        public bool SetTextSelectionEnd { get; set; }
+
+        /// <summary>
         /// 文本总行
         /// </summary>
         [Description("文本总行"), Category("数据"), DefaultValue(0)]
@@ -1248,6 +1254,44 @@ namespace AntdUI
                     bool set_t = SetText(it.Text, true), set_s = SetSelectionStart(it.SelectionStart), set_e = SetSelectionLength(it.SelectionLength);
                     if (set_t || set_s || set_e) Invalidate();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 是否可以撤消
+        /// </summary>
+        [Browsable(false)]
+        public bool CanUndo
+        {
+            get
+            {
+                if (IsPassWord && !PasswordCopy) return false;
+                if (history_Log.Count > 0)
+                {
+                    int index;
+                    if (history_I == -1) index = history_Log.Count - 1;
+                    else index = history_I - 1;
+                    if (index > -1) return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 是否可以重做
+        /// </summary>
+        [Browsable(false)]
+        public bool CanRedo
+        {
+            get
+            {
+                if (IsPassWord && !PasswordCopy) return false;
+                if (history_Log.Count > 0 && history_I > -1)
+                {
+                    int index = history_I + 1;
+                    if (history_Log.Count > index) return true;
+                }
+                return false;
             }
         }
 
@@ -1890,31 +1934,43 @@ namespace AntdUI
             base.WndProc(ref m);
         }
 
+        Form? _contextMenu;
         protected virtual void OnOpenContentMenu()
         {
-            var items = new List<IContextMenuStripItem>(8);
-            if (history_Log.Count > 0)
+            _contextMenu?.Close();
+            if (readOnly && isempty) return;
+            var items = new List<IContextMenuStripItem>(9);
+            if (readOnly) items.Add(new ContextMenuStripItem().SetText("全选", "{id}").SetID("SelectAll").SetSubText("Ctrl+A").SetEnabled(!isempty));
+            else
             {
-                items.Add(new ContextMenuStripItem("撤销").SetID("Undo"));
+                bool canUndo = CanUndo, canRedo = CanRedo;
+                if (canUndo || canRedo)
+                {
+                    if (canUndo) items.Add(new ContextMenuStripItem().SetText("撤销", "{id}").SetID("Undo").SetSubText("Ctrl+Z"));
+                    if (canRedo) items.Add(new ContextMenuStripItem().SetText("重做", "{id}").SetID("Redo").SetSubText("Ctrl+Y"));
+                    items.Add(new ContextMenuStripItemDivider());
+                }
+                if (!IsPassWord || (IsPassWord && PasswordCopy))
+                {
+                    items.Add(new ContextMenuStripItem().SetText("剪切", "{id}").SetID("Cut").SetSubText("Ctrl+X").SetEnabled(selectionLength > 0));
+                    items.Add(new ContextMenuStripItem().SetText("复制", "{id}").SetID("Copy").SetSubText("Ctrl+C").SetEnabled(selectionLength > 0));
+                }
+                if (!IsPassWord || (IsPassWord && PasswordPaste)) items.Add(new ContextMenuStripItem().SetText("粘贴", "{id}").SetID("Paste").SetSubText("Ctrl+V"));
+
+                items.Add(new ContextMenuStripItem().SetText("删除", "{id}").SetID("Delete").SetSubText("Del").SetEnabled(selectionLength > 0));
                 items.Add(new ContextMenuStripItemDivider());
+                items.Add(new ContextMenuStripItem().SetText("全选", "{id}").SetID("SelectAll").SetSubText("Ctrl+A").SetEnabled(!isempty));
             }
-            if (!IsPassWord || (IsPassWord && PasswordCopy))
-            {
-                items.Add(new ContextMenuStripItem("剪切").SetID("Cut").SetEnabled(selectionLength > 0));
-                items.Add(new ContextMenuStripItem("复制").SetID("Copy").SetEnabled(selectionLength > 0));
-            }
-            if (!IsPassWord || (IsPassWord && PasswordPaste)) items.Add(new ContextMenuStripItem("粘贴").SetID("Paste"));
 
-            items.Add(new ContextMenuStripItem("删除").SetID("Delete").SetEnabled(selectionLength > 0));
-            items.Add(new ContextMenuStripItemDivider());
-            items.Add(new ContextMenuStripItem("全选").SetID("SelectAll").SetEnabled(!isempty));
-
-            new ContextMenuStrip.Config(this, item =>
+            var config = new ContextMenuStrip.Config(this, item =>
             {
                 switch (item.ID)
                 {
                     case "Undo":
                         Undo();
+                        break;
+                    case "Redo":
+                        Redo();
                         break;
                     case "Cut":
                         Cut();
@@ -1933,7 +1989,9 @@ namespace AntdUI
                         break;
                 }
             },
-            items.ToArray()).open();
+            items.ToArray());
+            if (!_mouseHover) config.SetLocation(PointToScreen(CaretInfo.Rect.Location));
+            _contextMenu = config.open();
         }
 
         #endregion
