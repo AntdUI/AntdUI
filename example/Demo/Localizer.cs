@@ -26,6 +26,21 @@ namespace Demo
                 case "NoData":
                     return "No data";
 
+                case "Undo":
+                    return "Undo";
+                case "Redo":
+                    return "Redo";
+                case "Cut":
+                    return "Cut";
+                case "Copy":
+                    return "Copy";
+                case "Paste":
+                    return "Paste";
+                case "Delete":
+                    return "Delete";
+                case "SelectAll":
+                    return "SelectAll";
+
                 case "Mon":
                     return "Mon";
                 case "Tue":
