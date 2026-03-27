@@ -1091,7 +1091,8 @@ namespace AntdUI
         /// <param name="text">追加的文本</param>
         public void AppendText(string text)
         {
-            bool set_t = SetTextAppend(text, out _), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
+            int start = cache_font == null ? 0 : (cache_font[cache_font.Count - 1].i + 1);
+            bool set_t = SetTextAppend(text, start, out _), set_s = SetSelectionStart(selectionStart + GraphemeSplitter.EachCount(text));
             if (set_t || set_s) Invalidate();
         }
 
@@ -1103,7 +1104,7 @@ namespace AntdUI
         public void AppendText(string text, TextOpConfig config)
         {
             int start = cache_font == null ? 0 : (cache_font[cache_font.Count - 1].i + 1), start_tmp = selectionStart;
-            bool set_t = SetTextAppend(text, out int length), set_style = false, set_s = false;
+            bool set_t = SetTextAppend(text, start, out int length), set_style = false, set_s = false;
             if (config.Font != null || config.Fore.HasValue || config.Back.HasValue)
             {
                 var data = new TextStyle(start, length, config.Font, config.Fore, config.Back);

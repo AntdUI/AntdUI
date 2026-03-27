@@ -34,9 +34,9 @@ namespace AntdUI
                     if (CanEditMode(item))
                     {
                         ScrollLine(crect.Y, crect.Bottom, rows.List);
-                        if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY);
-                        else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY);
-                        else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY);
+                        if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY, false);
+                        else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY, false);
+                        else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY, true);
                         return true;
                     }
                 }
@@ -105,7 +105,7 @@ namespace AntdUI
             }
             return false;
         }
-        void OnEditMode(RowTemplate it, CELL cell, Rectangle rect, int i_row, int i_col, Column column, int sx, int sy)
+        void OnEditMode(RowTemplate it, CELL cell, Rectangle rect, int i_row, int i_col, Column column, int sx, int sy, bool region)
         {
             if (rows == null) return;
             if (it.AnimationHover)
@@ -141,7 +141,7 @@ namespace AntdUI
                     OnCellBeginEditInputStyle(arge);
                     if (arge.Input is Select select)
                     {
-                        ShowSelect(select, (cf, _value) =>
+                        ShowSelect(select, region, (cf, _value) =>
                         {
                             bool isok_end = OnCellEndValueEdit(_value, it.RECORD, i_row, i_col, column);
                             if (isok_end && !cf)
@@ -184,7 +184,7 @@ namespace AntdUI
                     else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                     OnCellBeginEditInputStyle(arge);
-                    ShowInput(arge.Input, (cf, _value) =>
+                    ShowInput(arge.Input, region, (cf, _value) =>
                     {
                         arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
                         bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
@@ -224,7 +224,7 @@ namespace AntdUI
                             else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                             OnCellBeginEditInputStyle(arge);
-                            ShowInput(arge.Input, (cf, _value) =>
+                            ShowInput(arge.Input, region, (cf, _value) =>
                             {
                                 arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
                                 bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
@@ -531,20 +531,20 @@ namespace AntdUI
             }
             return input;
         }
-        void ShowInput(Input input, Action<bool, string> call)
+        void ShowInput(Input input, bool region, Action<bool, string> call)
         {
             var old = input.Text;
-            if (AddEditInput(input, old, call))
+            if (AddEditInput(input, old, call, region))
             {
                 input.KeyPress += InputEdit_KeyPress;
                 input.Focus();
             }
         }
 
-        void ShowSelect(Select select, Action<bool, object?> call)
+        void ShowSelect(Select select, bool region, Action<bool, object?> call)
         {
             var old = select.SelectedValue;
-            if (AddEditInput(select, old, call))
+            if (AddEditInput(select, old, call, region))
             {
                 select.SelectedValueChanged += InputEdit_SelectedValueChanged;
                 select.ClosedItem += InputEdit_SelectedValueChanged;
@@ -584,10 +584,11 @@ namespace AntdUI
         /// <summary>
         /// 添加空间到编辑
         /// </summary>
-        bool AddEditInput(Input input, object? txt, object? action)
+        bool AddEditInput(Input input, object? txt, object? action, bool region)
         {
             if (_editControls.TryAdd(input, new object?[] { txt, action }))
             {
+                if (region) EditInputRegion(input);
                 Controls.Add(input);
                 if (OS.Win7OrLower) return true;
                 input.LostFocus += InputEdit_LostFocus;
@@ -595,6 +596,27 @@ namespace AntdUI
             }
             else input.Dispose();
             return false;
+        }
+        void EditInputRegion(Input input)
+        {
+            var rect = input.Bounds;
+            if (showFixedColumnR && rect_fixed_R.HasValue && showFixedColumnL && rect_fixed_L.HasValue) input.Region = EditInputRegion(rect, rect_fixed_R.Value, rect_fixed_L.Value);
+            else if (showFixedColumnR && rect_fixed_R.HasValue) input.Region = EditInputRegion(rect, rect_fixed_R.Value);
+            else if (showFixedColumnL && rect_fixed_L.HasValue) input.Region = EditInputRegion(rect, rect_fixed_L.Value);
+        }
+        Region? EditInputRegion(Rectangle rect, params Rectangle[] rect_fixeds)
+        {
+            Region? newRegion = null;
+            foreach (var it in rect_fixeds)
+            {
+                if (rect.IntersectsWith(it))
+                {
+                    Rectangle intersect = Rectangle.Intersect(rect, it);
+                    newRegion ??= new Region(new Rectangle(0, 0, rect.Width, rect.Height));
+                    newRegion.Exclude(new Rectangle(intersect.X - rect.X, intersect.Y - rect.Y, intersect.Width, intersect.Height));
+                }
+            }
+            return newRegion;
         }
 
         #endregion

@@ -551,7 +551,7 @@ namespace AntdUI
                     if (CanEditMode(db.cell))
                     {
                         int val = ScrollLine(crect.Y, crect.Bottom, rows);
-                        OnEditMode(it.row, db.cell, crect, i_row, i_cel, db.col, db.offset_xi, db.offset_y - val);
+                        OnEditMode(it.row, db.cell, crect, i_row, i_cel, db.col, db.offset_xi, db.offset_y - val, true);
                     }
                 }
             }

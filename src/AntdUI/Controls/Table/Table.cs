@@ -64,6 +64,7 @@ namespace AntdUI
             set
             {
                 enableDir.Clear();
+                EditModeClose();
                 CellRanges = null;
                 dataSource = value;
                 SortData = null;
