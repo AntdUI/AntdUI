@@ -11,7 +11,6 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    [ToolboxItem(true)]
     public class YScrollBar : IControl
     {
         #region 属性
@@ -193,16 +192,18 @@ namespace AntdUI
         RectangleF RectSliderY()
         {
             var Rect = ClientRectangle;
-            float read = Rect.Height, height = (read / max) * read;
-            float y = (valueY * 1.0F / (max - read)) * (read - height), gap = (Rect.Width - SIZE_BAR) / 2F;
-            return new RectangleF(Rect.X + gap, Rect.Y + y + gap, SIZE_BAR, height - gap * 2);
+            float gap = (Rect.Width - SIZE_BAR) / 2F, gap2 = gap * 2, min = ((int)((Config.ScrollMinSizeY ?? SystemInformation.VerticalScrollBarThumbHeight) * Dpi)) + gap2,
+                read = Rect.Height, height = (read / max) * read;
+            if (height < min) height = min;
+            float y = (valueY * 1F / (max - read)) * (read - height);
+            return new RectangleF(Rect.X + gap, Rect.Y + y + gap, SIZE_BAR, height - gap2);
         }
 
         RectangleF RectSliderFullY()
         {
             var Rect = ClientRectangle;
             float read = Rect.Height, height = (read / max) * read;
-            float y = (valueY * 1.0F / (max - read)) * (read - height);
+            float y = (valueY * 1F / (max - read)) * (read - height);
             return new RectangleF(Rect.X, Rect.Y + y, Rect.Width, height);
         }
 
@@ -251,6 +252,10 @@ namespace AntdUI
         {
             base.OnSizeChanged(e);
             SetShow(oldY, Height);
+            int w = SystemInformation.VerticalScrollBarWidth;
+            if (Width == w) return;
+            MinimumSize = new Size(w, 0);
+            Width = w;
         }
 
         #endregion

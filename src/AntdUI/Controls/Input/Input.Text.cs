@@ -26,7 +26,7 @@ namespace AntdUI
                 {
                     if (selectionStart > 0) SetSelectionStart(0);
                 }
-                else if (cache_font != null) SetSelectionStart(cache_font.Count);
+                else if (cache_font != null && SetTextSelectionEnd) SetSelectionStart(cache_font.Count);
             }
             if (changed)
             {
@@ -39,7 +39,7 @@ namespace AntdUI
         {
             var value = _text.Insert(start, text);
             _text = value;
-            var font_widths = FixFontWidth(text, out len);
+            var font_widths = FixFontWidth(text, start, out len);
             if (cache_font == null) cache_font = font_widths;
             else cache_font.InsertRange(start, font_widths);
             isempty = false;
@@ -51,11 +51,11 @@ namespace AntdUI
             OnPropertyChanged(nameof(Text));
             return true;
         }
-        bool SetTextAppend(string text, out int len)
+        bool SetTextAppend(string text, int start, out int len)
         {
             var value = _text + text;
             _text = value;
-            var font_widths = FixFontWidth(text, out len);
+            var font_widths = FixFontWidth(text, start, out len);
             if (cache_font == null) cache_font = font_widths;
             else cache_font.AddRange(font_widths);
             isempty = false;

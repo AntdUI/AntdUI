@@ -78,7 +78,7 @@ namespace AntdUI
                             Value = i;
                             action();
                             return true;
-                        }, 10).SetAdd(prog).SetMax(MaxValue).SetValue(Value).SetEnd(() =>
+                        }, 10).SetAdd(prog).SetMax(MaxValue).SetValue(Value).SetPriority().SetEnd(() =>
                         {
                             Value = MaxValue;
                             Animation = false;
@@ -93,7 +93,7 @@ namespace AntdUI
                             Value = i;
                             action();
                             return true;
-                        }, 10).SetAdd(-prog).SetMax(0).SetValue(Value).SetEnd(() =>
+                        }, 10).SetAdd(-prog).SetMax(0).SetValue(Value).SetPriority().SetEnd(() =>
                         {
                             Value = 0;
                             Animation = false;

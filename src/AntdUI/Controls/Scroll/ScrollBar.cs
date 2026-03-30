@@ -84,7 +84,8 @@ namespace AntdUI
         {
             SIZE = (int)(16 * Dpi);
             SIZE_BAR = (int)(6 * Dpi);
-            SIZE_MINIY = (int)(Config.ScrollMinSizeY * Dpi);
+            SIZE_MINIY = (int)((Config.ScrollMinSizeY ?? SystemInformation.VerticalScrollBarThumbHeight) * Dpi);
+            SIZE_MINIX = (int)((Config.ScrollMinSizeX ?? SystemInformation.HorizontalScrollBarThumbWidth) * Dpi);
             if (tag is IScrollBar scroll) Target = scroll;
         }
 
@@ -106,7 +107,8 @@ namespace AntdUI
         /// </summary>
         public int SIZE_BAR { get; set; } = 6;
 
-        public int SIZE_MINIY { get; set; } = 30;
+        public int SIZE_MINIY { get; set; } = 26;
+        public int SIZE_MINIX { get; set; } = 26;
 
         #endregion
 
@@ -607,26 +609,30 @@ namespace AntdUI
 
         RectangleF RectSliderX()
         {
-            float read = RectX.Width - (showY ? SIZE : 0), width = ((RectX.Width * 1F) / maxX) * read;
-            if (width < SIZE) width = SIZE;
-            float x = (valueX * 1.0F / (maxX - RectX.Width)) * (read - width), gap = (RectX.Height - SIZE_BAR) / 2F;
-            return new RectangleF(RectX.X + x + gap, RectX.Y + gap, width - gap * 2, SIZE_BAR);
+            float gap = (RectX.Height - SIZE_BAR) / 2F, gap2 = gap * 2, min = SIZE_MINIX + gap2,
+                read = RectX.Width - (showY ? SIZE : 0), width = ((RectX.Width * 1F) / maxX) * read;
+            if (width < min) width = min;
+            else if (width < SIZE) width = SIZE;
+            float x = (valueX * 1F / (maxX - RectX.Width)) * (read - width);
+            return new RectangleF(RectX.X + x + gap, RectX.Y + gap, width - gap2, SIZE_BAR);
         }
 
         RectangleF RectSliderY()
         {
-            float gap = (RectY.Width - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2, read = RectY.Height - (showX ? SIZE : 0), height = ((RectY.Height * 1F) / maxY) * read;
+            float gap = (RectY.Width - SIZE_BAR) / 2F, gap2 = gap * 2, min = SIZE_MINIY + gap2,
+                read = RectY.Height - (showX ? SIZE : 0), height = ((RectY.Height * 1F) / maxY) * read;
             if (height < min) height = min;
             else if (height < SIZE) height = SIZE;
-            float y = (valueY * 1.0F / (maxY - RectY.Height)) * (read - height);
-            return new RectangleF(RectY.X + gap, RectY.Y + y + gap, SIZE_BAR, height - gap * 2);
+            float y = (valueY * 1F / (maxY - RectY.Height)) * (read - height);
+            return new RectangleF(RectY.X + gap, RectY.Y + y + gap, SIZE_BAR, height - gap2);
         }
 
         RectangleF RectSliderFullX()
         {
             float read = RectX.Width - (showY ? SIZE : 0), width = ((RectX.Width * 1F) / maxX) * read;
-            if (width < SIZE) width = SIZE;
-            float x = (valueX * 1.0F / (maxX - RectX.Width)) * (read - width);
+            if (width < SIZE_MINIX) width = SIZE_MINIX;
+            else if (width < SIZE) width = SIZE;
+            float x = (valueX * 1F / (maxX - RectX.Width)) * (read - width);
             return new RectangleF(RectX.X + x, RectX.Y, width, RectX.Height);
         }
         RectangleF RectSliderFullY()
@@ -634,7 +640,7 @@ namespace AntdUI
             float read = RectY.Height - (showX ? SIZE : 0), height = ((RectY.Height * 1F) / maxY) * read;
             if (height < SIZE_MINIY) height = SIZE_MINIY;
             else if (height < SIZE) height = SIZE;
-            float y = (valueY * 1.0F / (maxY - RectY.Height)) * (read - height);
+            float y = (valueY * 1F / (maxY - RectY.Height)) * (read - height);
             return new RectangleF(RectY.X, RectY.Y + y, RectY.Width, height);
         }
 

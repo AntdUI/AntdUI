@@ -43,7 +43,7 @@ namespace AntdUI
                         cache_font = null;
                         cache_caret = null;
                     }
-                    else FixFontWidth(g, text, force, font_height);
+                    else FixFontWidth(g, text, 0, force, font_height);
                     CaretInfo.Height = font_height;
                     return CalculateRect() || rdcount > 0;
                 });
@@ -61,7 +61,7 @@ namespace AntdUI
                             CaretInfo.Height = font_height;
                             return false;
                         }
-                        FixFontWidth(g, text, force, font_height);
+                        FixFontWidth(g, text, 0, force, font_height);
                         CaretInfo.Height = font_height;
                         return CalculateRect();
                     });
@@ -69,24 +69,24 @@ namespace AntdUI
             }
         }
 
-        void FixFontWidth(Canvas g, string text, bool force, int fontHeight)
+        void FixFontWidth(Canvas g, string text, int start, bool force, int fontHeight)
         {
             if (force || cache_font == null) fix_cache_font.Clear();
-            cache_font = FixFontWidth(g, text, fontHeight, out _);
+            cache_font = FixFontWidth(g, text, start, fontHeight, out _);
             SetStyle();
         }
 
-        List<CacheFont> FixFontWidth(string text, out int length)
+        List<CacheFont> FixFontWidth(string text, int start, out int length)
         {
             int len = 0;
-            var font_widths = this.GDI(g => FixFontWidth(g, text, null, out len));
+            var font_widths = this.GDI(g => FixFontWidth(g, text, start, null, out len));
             length = len;
             return font_widths;
         }
 
-        List<CacheFont> FixFontWidth(Canvas g, string text, int? fontHeight, out int length)
+        List<CacheFont> FixFontWidth(Canvas g, string text, int start, int? fontHeight, out int length)
         {
-            int index = 0;
+            int len = 0, index = start;
             var font_widths = new List<CacheFont>(text.Length);
             if (IsPassWord)
             {
@@ -94,6 +94,7 @@ namespace AntdUI
                 foreach (char it in text)
                 {
                     font_widths.Add(new CacheFont(index, it.ToString(), false, w));
+                    len++;
                     index++;
                 }
             }
@@ -109,6 +110,7 @@ namespace AntdUI
                             font_widths.Add(new CacheFont(index, txt, true, fontHeight.Value));
                         }
                         else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        len++;
                         index++;
                     });
                 }
@@ -122,11 +124,12 @@ namespace AntdUI
                             font_widths.Add(new CacheFont(index, txt, true, fix_cache_font.Height(g, Font)));
                         }
                         else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        len++;
                         index++;
                     });
                 }
             }
-            length = index;
+            length = len;
             return font_widths;
         }
 

@@ -11,7 +11,6 @@ using System.Windows.Forms;
 
 namespace AntdUI
 {
-    [ToolboxItem(true)]
     public class XScrollBar : IControl
     {
         #region 属性
@@ -193,16 +192,18 @@ namespace AntdUI
         RectangleF RectSliderX()
         {
             var Rect = ClientRectangle;
-            float read = Rect.Width, width = (read / max) * read;
-            float x = (valueX * 1.0F / (max - read)) * (read - width), gap = (Rect.Height - SIZE_BAR) / 2F;
-            return new RectangleF(Rect.X + x + gap, Rect.Y + gap, width - gap * 2, SIZE_BAR);
+            float gap = (Rect.Height - SIZE_BAR) / 2F, gap2 = gap * 2, min = ((int)((Config.ScrollMinSizeX ?? SystemInformation.HorizontalScrollBarThumbWidth) * Dpi)) + gap2,
+               read = Rect.Width, width = (read / max) * read;
+            if (width < min) width = min;
+            float x = (valueX * 1F / (max - read)) * (read - width);
+            return new RectangleF(Rect.X + x + gap, Rect.Y + gap, width - gap2, SIZE_BAR);
         }
 
         RectangleF RectSliderFullX()
         {
             var Rect = ClientRectangle;
             float read = Rect.Width, width = (read / max) * read;
-            float x = (valueX * 1.0F / (max - read)) * (read - width);
+            float x = (valueX * 1F / (max - read)) * (read - width);
             return new RectangleF(Rect.X + x, Rect.Y, width, Rect.Height);
         }
 
@@ -245,6 +246,16 @@ namespace AntdUI
                 }
             }
             return false;
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            SetShow(Width, oldX);
+            int h = SystemInformation.HorizontalScrollBarHeight;
+            if (Height == h) return;
+            MinimumSize = new Size(0, h);
+            Height = h;
         }
 
         #endregion

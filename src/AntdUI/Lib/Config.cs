@@ -247,7 +247,12 @@ namespace AntdUI
         /// <summary>
         /// 滚动条最小大小Y
         /// </summary>
-        public static int ScrollMinSizeY { get; set; } = 30;
+        public static int? ScrollMinSizeY { get; set; }
+
+        /// <summary>
+        /// 滚动条最小大小X
+        /// </summary>
+        public static int? ScrollMinSizeX { get; set; }
 
         #endregion
 

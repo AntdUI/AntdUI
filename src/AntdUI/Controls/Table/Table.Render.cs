@@ -787,7 +787,11 @@ namespace AntdUI
 
         #endregion
 
+        #endregion
+
         #region 浮动列
+
+        Rectangle? rect_fixed_L, rect_fixed_R;
 
         void PaintFixedColumnL(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
@@ -796,7 +800,7 @@ namespace AntdUI
                 showFixedColumnL = true;
                 var last = shows[shows.Length - 1].row.cells[fixedColumnL[fixedColumnL.Count - 1]];
                 var rect_Fixed = new Rectangle(rect.X, rect_read.Y, last.RECT.Right, rect_read.Height);
-
+                rect_fixed_L = rect_Fixed;
                 GraphicsPath? clipath = null;
 
                 #region 绘制阴影
@@ -871,8 +875,13 @@ namespace AntdUI
                 g.ResetClip();
                 clipath?.Dispose();
             }
-            else showFixedColumnL = false;
+            else
+            {
+                rect_fixed_L = null;
+                showFixedColumnL = false;
+            }
         }
+
         void PaintFixedColumnR(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
             if (fixedColumnR != null)
@@ -889,7 +898,7 @@ namespace AntdUI
                         int w = last.RECT.Right - first.RECT.Left + scrollBar;
 
                         var rect_Fixed = new Rectangle(rect_read.Right - w, rect_read.Y, w, rect_read.Height);
-
+                        rect_fixed_R = rect_Fixed;
                         GraphicsPath? clipath = null;
 
                         #region 绘制阴影
@@ -989,7 +998,11 @@ namespace AntdUI
                 }
                 catch { }
             }
-            else showFixedColumnR = false;
+            else
+            {
+                rect_fixed_R = null;
+                showFixedColumnR = false;
+            }
         }
 
         int sFixedB = -1;
@@ -1196,8 +1209,6 @@ namespace AntdUI
                 g.Restore(save);
             }
         }
-
-        #endregion
 
         #endregion
 

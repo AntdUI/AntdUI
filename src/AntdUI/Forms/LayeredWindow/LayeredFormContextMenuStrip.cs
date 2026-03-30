@@ -237,11 +237,23 @@ namespace AntdUI
                 #endregion
 
                 int w = maxw + gap_x2, y = 0;
-                foreach (var it in list)
+                if (config.TextMultiline)
                 {
-                    if (it.Tag is ContextMenuStripItem item) CLayout(g, it, item, ref y, w, maxw, has_icon, has_checked, text_height, split, gap, gap2, icon_size, icon_gap, check_size, gap_x, gap_y, gap_x2, gap_y2, item_height, icon_xy, check_xy);
-                    else if (it.Tag is ContextMenuStripItemButtons buttons) CLayout(g, it, buttons, ref y, w, maxw, text_height, split, gap, gap2, icon_size, gap_x, gap_y, gap_x2, gap_y2);
-                    else if (it.Tag is ContextMenuStripItemDivider divider) CLayout(g, it, divider, ref y, w, split, gap);
+                    foreach (var it in list)
+                    {
+                        if (it.Tag is ContextMenuStripItem item) CLayoutMultiple(g, it, item, ref y, w, maxw, has_icon, has_checked, split, gap, gap2, icon_size, icon_gap, check_size, gap_x, gap_y, gap_x2, gap_y2, icon_xy, check_xy);
+                        else if (it.Tag is ContextMenuStripItemButtons buttons) CLayout(g, it, buttons, ref y, w, maxw, text_height, split, gap, gap2, icon_size, gap_x, gap_y, gap_x2, gap_y2);
+                        else if (it.Tag is ContextMenuStripItemDivider divider) CLayout(g, it, divider, ref y, w, split, gap);
+                    }
+                }
+                else
+                {
+                    foreach (var it in list)
+                    {
+                        if (it.Tag is ContextMenuStripItem item) CLayout(g, it, item, ref y, w, maxw, has_icon, has_checked, text_height, split, gap, gap2, icon_size, icon_gap, check_size, gap_x, gap_y, gap_x2, gap_y2, item_height, icon_xy, check_xy);
+                        else if (it.Tag is ContextMenuStripItemButtons buttons) CLayout(g, it, buttons, ref y, w, maxw, text_height, split, gap, gap2, icon_size, gap_x, gap_y, gap_x2, gap_y2);
+                        else if (it.Tag is ContextMenuStripItemDivider divider) CLayout(g, it, divider, ref y, w, split, gap);
+                    }
                 }
 
                 SetSize(maxw + gap2 + gap_x2, y);
@@ -255,6 +267,38 @@ namespace AntdUI
             int split, int gap, int gap2, int icon_size, int icon_gap, int check_size, int gap_x, int gap_y, int gap_x2, int gap_y2,
             int item_height, int icon_xy, int check_xy)
         {
+            if (true)
+            {
+                text_height = text_height * 2;
+                item_height = text_height + gap_y2;
+            }
+            it.Rect = new Rectangle(gap, y + gap, w, item_height);
+            int x = it.Rect.X + gap_x, usx = 0;
+            if (has_checked)
+            {
+                it.RectCheck = new Rectangle(x, it.Rect.Y + check_xy, check_size, check_size);
+                x += check_size + icon_gap;
+                usx += check_size + icon_gap;
+            }
+            if (has_icon)
+            {
+                it.RectIcon = new Rectangle(x, it.Rect.Y + icon_xy, icon_size, icon_size);
+                x += icon_size + icon_gap;
+                usx += icon_size + icon_gap;
+            }
+            if (item.Sub != null && item.Sub.Length > 0)
+            {
+                it.RectSub = new Rectangle(it.Rect.Right - icon_gap - icon_size, it.Rect.Y + icon_xy, icon_size, icon_size);
+                usx += icon_size + icon_gap;
+            }
+            it.RectText = new Rectangle(x, it.Rect.Y + gap_y, maxw - usx, text_height);
+            y += item_height + gap2;
+        }
+
+        void CLayoutMultiple(Canvas g, InRect it, ContextMenuStripItem item, ref int y, int w, int maxw, bool has_icon, bool has_checked,
+            int split, int gap, int gap2, int icon_size, int icon_gap, int check_size, int gap_x, int gap_y, int gap_x2, int gap_y2, int icon_xy, int check_xy)
+        {
+            int text_height = g.MeasureString(item.Text, Font).Height, item_height = text_height + gap_y2;
             it.Rect = new Rectangle(gap, y + gap, w, item_height);
             int x = it.Rect.X + gap_x, usx = 0;
             if (has_checked)
