@@ -28,7 +28,7 @@ namespace AntdUI
                 foreach (var it in data)
                 {
                     dir_index.Add(it.INDEX, it);
-                    dir_r.Add(it.RECORD, it);
+                    if (!dir_r.ContainsKey(it.RECORD)) dir_r.Add(it.RECORD, it);
                     if (dir_index_r.ContainsKey(it.INDEX_REAL)) continue;
                     dir_index_r.Add(it.INDEX_REAL, it);
                 }

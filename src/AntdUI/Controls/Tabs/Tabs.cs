@@ -1694,13 +1694,16 @@ namespace AntdUI
                     int old = it.SelectedIndex;
                     if (old == index)
                     {
-                        int _new = index - 1;
-                        if (_new > -1) it.SelectedIndex = _new;
-                        else it.ShowPage(_new);
+                        if (index == 0) it.ShowPage(index);
+                        else
+                        {
+                            int _new = index - 1;
+                            if (_new > -1) it.SelectedIndex = _new;
+                            else it.ShowPage(_new);
+                        }
                     }
                     else if (old > index) it.SelectedIndex = old - 1;
                 }
-                // 针对 #IBLKEA 修正
                 it.Controls.Remove(item);
             };
             return this;

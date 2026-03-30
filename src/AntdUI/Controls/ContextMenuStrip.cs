@@ -152,6 +152,11 @@ namespace AntdUI
             /// </summary>
             public TAMode ColorScheme { get; set; } = TAMode.Auto;
 
+            /// <summary>
+            /// 多行文本
+            /// </summary>
+            public bool TextMultiline { get; set; }
+
             #region 设置
 
             public Config SetFont(Font? value)
@@ -231,6 +236,12 @@ namespace AntdUI
                 return this;
             }
 
+            public Config SetTextMultiline(bool value = true)
+            {
+                TextMultiline = value;
+                return this;
+            }
+
             public Config SetUFocus(bool value = true)
             {
                 UFocus = value;
@@ -300,7 +311,7 @@ namespace AntdUI
         /// </summary>
         public string? Text
         {
-            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID });
+            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID }) + Environment.NewLine + Pinyin.GetPinyin(_text).ToUpper();
             set => _text = value;
         }
 
