@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.4` 2026-03-30
+
+- ➕ Input SetTextSelectionEnd
+- ➕ ContextMenuStrip TextMultiline
+- ✍️ Input 自带菜单适配国际化
+- ✍️ Input 右键菜单 交互
+- ✍️ Input AppendText 内顺序错位
+- ✍️ Table 浮动列遮挡编辑框
+- ✍️ Table 匿名对象源错误
+- ✍️ Tabs 关闭第一个导致第二个不显示
+- ✍️ 统一滚动条最小滑块
+
 ### `2.3.3` 2026-03-26
 
 - ➕ Panel 滚动条

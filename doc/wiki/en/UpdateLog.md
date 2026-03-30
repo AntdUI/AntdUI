@@ -1,32 +1,44 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.4` 2026-03-30
+
+- ➕ Input SetTextSelectionEnd
+- ➕ ContextMenuStrip TextMultiline
+- ✍️ Input comes with a built-in menu that adapts to internationalization
+- ✍️ Input right-click menu interaction
+- ✍️ Input AppendText with misplaced order
+- ✍️ Table floating column occlusion edit box
+- ✍️ Table Anonymous Object Source Error
+- ✍️ Closing the first tab causes the second one to not display
+- ✍️ Unified scrollbar minimum slider
+
 ### `2.3.3` 2026-03-26
 
--  ➕  Panel scrollbar
--  ➕  Spin Cancel Token
--  ➕  Table Sort (Column col) method
--  ➕  Table FilterShowCheckBg
--  ➕  HyperlinkCheckbox
--  ➕  Select/Dropdown DrawItem event
--  ➕  Input built-in right-click UseContextMenu
--  ➕  Transfer SetTargetItems
--  ✍️  StackPanel scrollbar
--  ✍️  FlowLayoutPanel scrollbar
--  ✍️  Table Simplified Loading
--  ✍️  Table Remove Size Duplicate Rendering
--  ✍️  Table editing mode with Nullable type
--  ✍️  Turn off editing mode before clearing data in the table to avoid exceptions
--  ✍️  Input optimization hiding insertion
--  ✍️  Tree initialization Select status exception
--  ✍️  DatePickerRange UI icon margin optimization
--  ✍️  UploadDragger cannot be dragged
--  ✍️  Carousel adapts to DPI
--  ✍️  Carousel DotMargin 0 click invalid
--  ✍️  HyperlinkLabel layout
--  ✍️  HyperlinkCheckbox layout
--  ✍️  Partial Emoji Modifiers/Combination Tags
--  ✍️  Reduce partial display area triggering
--  🧹  Table Tree
+- ➕ Panel scrollbar
+- ➕ Spin Cancel Token
+- ➕ Table Sort (Column col) method
+- ➕ Table FilterShowCheckBg
+- ➕ HyperlinkCheckbox
+- ➕ Select/Dropdown DrawItem event
+- ➕ Input built-in right-click UseContextMenu
+- ➕ Transfer SetTargetItems
+- ✍️ StackPanel scrollbar
+- ✍️ FlowLayoutPanel scrollbar
+- ✍️ Table Simplified Loading
+- ✍️ Table Remove Size Duplicate Rendering
+- ✍️ Table editing mode with Nullable type
+- ✍️ Turn off editing mode before clearing data in the table to avoid exceptions
+- ✍️ Input optimization hiding insertion
+- ✍️ Tree initialization Select status exception
+- ✍️ DatePickerRange UI icon margin optimization
+- ✍️ UploadDragger cannot be dragged
+- ✍️ Carousel adapts to DPI
+- ✍️ Carousel DotMargin 0 click invalid
+- ✍️ HyperlinkLabel layout
+- ✍️ HyperlinkCheckbox layout
+- ✍️ Partial Emoji Modifiers/Combination Tags
+- ✍️ Reduce partial display area triggering
+- 🧹 Table Tree
 
 ### `2.3.2` 2026-03-06
 
