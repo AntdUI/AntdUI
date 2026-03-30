@@ -580,19 +580,19 @@ namespace AntdUI
             switch (align)
             {
                 case TAlignMini.Right:
-                    float xr = 1F - ((x - rect_read.X) * 1.0F / rect_read.Width);
+                    float xr = 1F - ((x - rect_read.X) * 1F / rect_read.Width);
                     if (xr > 0) return (int)Math.Round(xr * max) + _minValue;
                     else return _minValue;
                 case TAlignMini.Top:
-                    float yt = (y - rect_read.Y) * 1.0F / rect_read.Height;
+                    float yt = (y - rect_read.Y) * 1F / rect_read.Height;
                     if (yt > 0) return (int)Math.Round(yt * max) + _minValue;
                     else return _minValue;
                 case TAlignMini.Bottom:
-                    float yb = 1F - ((y - rect_read.Y) * 1.0F / rect_read.Height);
+                    float yb = 1F - ((y - rect_read.Y) * 1F / rect_read.Height);
                     if (yb > 0) return (int)Math.Round(yb * max) + _minValue;
                     else return _minValue;
                 default:
-                    float xl = (x - rect_read.X) * 1.0F / rect_read.Width;
+                    float xl = (x - rect_read.X) * 1F / rect_read.Width;
                     if (xl > 0) return (int)Math.Round(xl * max) + _minValue;
                     else return _minValue;
             }

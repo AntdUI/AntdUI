@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -108,7 +109,8 @@ namespace AntdUI
         {
             if (autoscroll && (ScrollY.Show || ScrollX.Show))
             {
-                int SIZE = (int)(16 * Dpi), SIZE_BAR = (int)(6 * Dpi), SIZE_MINIY = (int)(Config.ScrollMinSizeY * Dpi);
+                int SIZE = (int)(16 * Dpi), SIZE_BAR = (int)(6 * Dpi),
+                    SIZE_MINIY = (int)((Config.ScrollMinSizeY ?? SystemInformation.VerticalScrollBarThumbHeight) * Dpi), SIZE_MINIX = (int)((Config.ScrollMinSizeX ?? SystemInformation.HorizontalScrollBarThumbWidth) * Dpi);
                 var bg = Colour.TextBase.Get(nameof(Input), ColorScheme);
                 if (ScrollX.Show)
                 {
@@ -137,14 +139,14 @@ namespace AntdUI
                             g.Fill(color, ScrollX.Rect);
                         }
                     }
-                    float val = ScrollX.Value, VrValue = ScrollX.Max + ScrollX.Rect.Width, gap = (ScrollX.Rect.Height - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2;
+                    float val = ScrollX.Value, VrValue = ScrollX.Max + ScrollX.Rect.Width, gap = (ScrollX.Rect.Height - SIZE_BAR) / 2F, gap2 = gap * 2, min = SIZE_MINIX + gap2;
                     float widthfull = ((ScrollX.Rect.Width / VrValue) * ScrollX.Rect.Width), width = widthfull - SIZE;
                     if (width < min) width = min;
                     else if (width < SIZE) width = SIZE;
                     float x = val == 0 ? 0 : (val / (VrValue - ScrollX.Rect.Width)) * (ScrollX.Rect.Width - width);
-                    ScrollX.Slider = new RectangleF(ScrollX.Rect.X + x + gap, ScrollX.Rect.Y + gap, width - gap * 2, SIZE_BAR);
+                    ScrollX.Slider = new RectangleF(ScrollX.Rect.X + x + gap, ScrollX.Rect.Y + gap, width - gap2, SIZE_BAR);
 
-                    if (widthfull < SIZE_MINIY) widthfull = SIZE_MINIY;
+                    if (widthfull < SIZE_MINIX) widthfull = SIZE_MINIX;
                     else if (widthfull < SIZE) widthfull = SIZE;
                     ScrollX.SliderFull = widthfull;
 
@@ -183,12 +185,12 @@ namespace AntdUI
                             }
                         }
                     }
-                    float val = ScrollY.Value, VrValue = ScrollY.Max + ScrollY.Rect.Height, gap = (ScrollY.Rect.Width - SIZE_BAR) / 2, min = SIZE_MINIY + gap * 2;
+                    float val = ScrollY.Value, VrValue = ScrollY.Max + ScrollY.Rect.Height, gap = (ScrollY.Rect.Width - SIZE_BAR) / 2F, gap2 = gap * 2, min = SIZE_MINIY + gap2;
                     float heightfull = ((ScrollY.Rect.Height / VrValue) * ScrollY.Rect.Height), height = heightfull - SIZE;
                     if (height < min) height = min;
                     else if (height < SIZE) height = SIZE;
                     float y = val == 0 ? 0 : (val / (VrValue - ScrollY.Rect.Height)) * (ScrollY.Rect.Height - height);
-                    ScrollY.Slider = new RectangleF(ScrollY.Rect.X + gap, ScrollY.Rect.Y + y + gap, SIZE_BAR, height - gap * 2);
+                    ScrollY.Slider = new RectangleF(ScrollY.Rect.X + gap, ScrollY.Rect.Y + y + gap, SIZE_BAR, height - gap2);
 
                     if (heightfull < SIZE_MINIY) heightfull = SIZE_MINIY;
                     else if (heightfull < SIZE) heightfull = SIZE;
