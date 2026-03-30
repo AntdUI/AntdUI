@@ -267,11 +267,6 @@ namespace AntdUI
             int split, int gap, int gap2, int icon_size, int icon_gap, int check_size, int gap_x, int gap_y, int gap_x2, int gap_y2,
             int item_height, int icon_xy, int check_xy)
         {
-            if (true)
-            {
-                text_height = text_height * 2;
-                item_height = text_height + gap_y2;
-            }
             it.Rect = new Rectangle(gap, y + gap, w, item_height);
             int x = it.Rect.X + gap_x, usx = 0;
             if (has_checked)

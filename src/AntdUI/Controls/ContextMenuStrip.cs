@@ -311,7 +311,7 @@ namespace AntdUI
         /// </summary>
         public string? Text
         {
-            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID }) + Environment.NewLine + Pinyin.GetPinyin(_text).ToUpper();
+            get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID });
             set => _text = value;
         }
 
