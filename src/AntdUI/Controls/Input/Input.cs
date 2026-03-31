@@ -1929,14 +1929,14 @@ namespace AntdUI
                     }
                     break;
                 case 0x007B:
-                    if (UseContextMenu) OnOpenContentMenu();
+                    if (UseContextMenu) OnOpenContextMenu();
                     break;
             }
             base.WndProc(ref m);
         }
 
         Form? _contextMenu;
-        protected virtual void OnOpenContentMenu()
+        protected virtual void OnOpenContextMenu()
         {
             _contextMenu?.Close();
             if (readOnly && isempty) return;
