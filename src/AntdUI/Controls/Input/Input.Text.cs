@@ -26,7 +26,7 @@ namespace AntdUI
                 {
                     if (selectionStart > 0) SetSelectionStart(0);
                 }
-                else if (cache_font != null && SetTextSelectionEnd) SetSelectionStart(cache_font.Count);
+                else if (cache_font != null && (SetTextSelectionEnd || cache_font.Count < selectionStart)) SetSelectionStart(cache_font.Count);
             }
             if (changed)
             {

@@ -205,30 +205,14 @@ namespace AntdUI.In
             }
         }
 
-        private void ScrollX_ValueChanged(object? sender, EventArgs e)
-        {
-            if (XScroll == null) return;
-            int value = XScroll.Value;
-            if (value >= 0 && value <= Panel.HorizontalScroll.Maximum) Panel.HorizontalScroll.Value = value;
-
-        }
-        private void ScrollY_ValueChanged(object? sender, EventArgs e)
-        {
-            if (YScroll == null) return;
-            int value = YScroll.Value;
-            if (value >= 0 && value <= Panel.VerticalScroll.Maximum) Panel.VerticalScroll.Value = value;
-        }
+        private void ScrollX_ValueChanged(object? sender, EventArgs e) => XScroll?.SetValue(Panel.HorizontalScroll);
+        private void ScrollY_ValueChanged(object? sender, EventArgs e) => YScroll?.SetValue(Panel.VerticalScroll);
 
         private void ScrollInfo()
         {
             if (YScroll == null || XScroll == null) return;
-            YScroll.Visible = Panel.VerticalScroll.Visible;
-            YScroll.Maximum = Panel.VerticalScroll.Maximum;
-            YScroll.Value = Panel.VerticalScroll.Value;
-
-            XScroll.Visible = Panel.HorizontalScroll.Visible;
-            XScroll.Maximum = Panel.HorizontalScroll.Maximum;
-            XScroll.Value = Panel.HorizontalScroll.Value;
+            YScroll.LoadValue(Panel.VerticalScroll);
+            XScroll.LoadValue(Panel.HorizontalScroll);
         }
 
         #endregion

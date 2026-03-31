@@ -355,9 +355,9 @@ namespace AntdUI
             try
             {
                 if (handle.SafeWaitHandle.IsClosed) return;
+                handle.Dispose();
                 if (set) handle.SetWait();
                 else handle.ResetWait();
-                handle.Dispose();
             }
             catch
             {

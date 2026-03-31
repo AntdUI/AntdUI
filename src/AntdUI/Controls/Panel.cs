@@ -723,28 +723,19 @@ namespace AntdUI
         private void ScrollX_ValueChanged(object? sender, EventArgs e)
         {
             if (IPanel == null || XScroll == null) return;
-            int value = XScroll.Value;
-            if (value >= 0 && value <= IPanel.HorizontalScroll.Maximum) IPanel.HorizontalScroll.Value = value;
-
+            XScroll.SetValue(IPanel.HorizontalScroll);
         }
         private void ScrollY_ValueChanged(object? sender, EventArgs e)
         {
             if (IPanel == null || YScroll == null) return;
-            int value = YScroll.Value;
-            if (value >= 0 && value <= IPanel.VerticalScroll.Maximum) IPanel.VerticalScroll.Value = value;
+            YScroll.SetValue(IPanel.VerticalScroll);
         }
 
         private void ScrollInfo()
         {
             if (IPanel == null || YScroll == null || XScroll == null) return;
-
-            YScroll.Visible = IPanel.VerticalScroll.Visible;
-            YScroll.Maximum = IPanel.VerticalScroll.Maximum;
-            YScroll.Value = IPanel.VerticalScroll.Value;
-
-            XScroll.Visible = IPanel.HorizontalScroll.Visible;
-            XScroll.Maximum = IPanel.HorizontalScroll.Maximum;
-            XScroll.Value = IPanel.HorizontalScroll.Value;
+            YScroll.LoadValue(IPanel.VerticalScroll);
+            XScroll.LoadValue(IPanel.HorizontalScroll);
         }
 
         protected override void OnControlAdded(ControlEventArgs e)

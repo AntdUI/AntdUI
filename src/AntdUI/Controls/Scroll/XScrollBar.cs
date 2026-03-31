@@ -47,17 +47,42 @@ namespace AntdUI
             get => valueX;
             set
             {
-                if (value < 0) value = 0;
-                if (max > 0)
-                {
-                    int valueI = max - Width;
-                    if (value > valueI) value = valueI;
-                }
                 if (valueX == value) return;
                 valueX = value;
                 ValueChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate();
             }
+        }
+
+        public int GetValue(int value) => GetValue(value, max, Width);
+        public int GetValue(ScrollProperties value) => GetValue(valueX, value.Maximum, value.LargeChange);
+        public int GetValue(int value, int max, int LChange)
+        {
+            if (value < 0) return 0;
+            int maxLarge = (max - LChange) + 1;
+            if (max > 0 && value > maxLarge) return maxLarge;
+            return value;
+        }
+
+        public void LoadValue(ScrollProperties value)
+        {
+            if (Visible == value.Visible && max == value.Maximum && valueX == value.Value) return;
+            max = value.Maximum;
+            valueX = value.Value;
+            Visible = value.Visible;
+            Invalidate();
+        }
+        public void SetValue(ScrollProperties scroll)
+        {
+            int value = GetValue(scroll), old = scroll.Value;
+            if (value == old) return;
+            while (scroll.Value == old) scroll.Value = value;
+        }
+        public void SetValue(Rectangle clientRect, Rectangle controlRect)
+        {
+            int value = Value, max = Maximum;
+            if (controlRect.Left < clientRect.Left) Value = GetValue(Math.Max(0, value + controlRect.Left - clientRect.Left));
+            else if (controlRect.Right > clientRect.Right) Value = GetValue(Math.Min(max, value + controlRect.Right - clientRect.Right));
         }
 
         int max = 100;
@@ -194,6 +219,7 @@ namespace AntdUI
             var Rect = ClientRectangle;
             float gap = (Rect.Height - SIZE_BAR) / 2F, gap2 = gap * 2, min = ((int)((Config.ScrollMinSizeX ?? SystemInformation.HorizontalScrollBarThumbWidth) * Dpi)) + gap2,
                read = Rect.Width, width = (read / max) * read;
+            if (width > read) width = read;
             if (width < min) width = min;
             float x = (valueX * 1F / (max - read)) * (read - width);
             return new RectangleF(Rect.X + x + gap, Rect.Y + gap, width - gap2, SIZE_BAR);
@@ -279,7 +305,7 @@ namespace AntdUI
             else
             {
                 float read = Width, x = (e.X - slider.Width / 2F) / read;
-                Value = (int)Math.Round(x * max);
+                Value = GetValue((int)Math.Round(x * max));
                 SliderX = RectSliderFullX().X;
             }
             SliderDownX = true;
@@ -298,7 +324,7 @@ namespace AntdUI
             {
                 var slider = RectSliderFullX();
                 float read = Width, x = SliderX + (e.X - oldX);
-                Value = (int)(x / (read - slider.Width) * (max - Width));
+                Value = GetValue((int)(x / (read - slider.Width) * (max - Width)));
             }
         }
 
@@ -326,8 +352,8 @@ namespace AntdUI
         public bool MouseWheelX(int delta)
         {
             if (delta == 0) return false;
-            int value = Value - delta;
-            Value = value;
+            int value = valueX - delta;
+            Value = GetValue(value);
             if (Value != value) return false;
             return true;
         }

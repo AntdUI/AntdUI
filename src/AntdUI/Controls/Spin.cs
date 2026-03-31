@@ -368,7 +368,9 @@ namespace AntdUI
                     model.LoadCompleted += () => Event.SetWait();
                     return ITask.Run(() =>
                     {
-                        if (Event.Wait(1000)) return;
+                        var r = Event.Wait(1000);
+                        Event.Dispose();
+                        if (r) return;
                         open_core(control, true, parent, config, action, end, error)?.Wait();
                     });
                 }
@@ -492,7 +494,9 @@ namespace AntdUI
                     model.LoadCompleted += () => Event.SetWait();
                     return ITask.Run(() =>
                     {
-                        if (Event.Wait(1000)) return;
+                        var r = Event.Wait(1000);
+                        Event.Dispose();
+                        if (r) return;
                         open_core(control, true, parent, config, action, end, error)?.Wait();
                     });
                 }
