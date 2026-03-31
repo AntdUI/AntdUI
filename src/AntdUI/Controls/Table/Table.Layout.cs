@@ -292,7 +292,7 @@ namespace AntdUI
                         else if (rowHeight.HasValue) row.Height = (int)(rowHeight.Value * dpi);
                         else row.Height = max_height + gap.y2;
                         if (visibleHeader) heightEs += row.Height;
-                        tmp_width_cell = CalculateWidth(rect, heightEs * _rows.Count, false, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
+                        tmp_width_cell = CalculateWidth(rect, VHeight(_rows.Count, dpi, row.Height), false, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
                         var del_tmp_width_cell = new List<int>(tmp_width_cell.Count);
                         foreach (var it in tmp_width_cell)
                         {
@@ -552,6 +552,18 @@ namespace AntdUI
             return new RowList(rowlist);
         }
 
+        int VHeight(int rows, float dpi, int colHeight)
+        {
+            int height = 0, len = rows - 1;
+            if (visibleHeader) height += colHeight;
+
+            if (_RowHeight.HasValue) height += _RowHeight.Value * len;
+            else if (rowHeight.HasValue) height += (int)(rowHeight.Value * dpi) * len;
+            else height += colHeight * len;
+
+            return height;
+        }
+
         public virtual void OnShowXChanged(bool value) { }
         public virtual void OnShowYChanged(bool value) { }
         public virtual void OnValueXChanged(int value)
@@ -782,7 +794,7 @@ namespace AntdUI
             }
             else
             {
-                bool showX = heightEs > rect_read.Bottom;
+                bool showX = heightEs > rect_read.Height;
                 if (AutoSizeColumnsMode == ColumnsMode.Fill)
                 {
                     int ex_width = showX ? ScrollBar.SIZE : 0;

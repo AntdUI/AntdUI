@@ -256,7 +256,7 @@ namespace AntdUI
         [Description("常规缩进"), Category("外观"), DefaultValue(false)]
         public bool Indent
         {
-            get { return indent; }
+            get => indent;
             set
             {
                 if (indent == value) return;

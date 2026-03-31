@@ -33,7 +33,7 @@ namespace AntdUI
                     EditModeClose();
                     if (CanEditMode(item))
                     {
-                        ScrollLine(crect.Y, crect.Bottom, rows.List);
+                        ScrollLine(crect, RealRegionRow(rows.List));
                         if (showFixedColumnL && fixedColumnL != null && fixedColumnL.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, 0, ScrollBar.ValueY, false);
                         else if (showFixedColumnR && fixedColumnR != null && fixedColumnR.Contains(column)) OnEditMode(_row, item, crect, row, column, item.COLUMN, sFixedR, ScrollBar.ValueY, false);
                         else OnEditMode(_row, item, crect, row, column, item.COLUMN, ScrollBar.ValueX, ScrollBar.ValueY, true);
@@ -117,7 +117,7 @@ namespace AntdUI
             // 存储当前编辑的单元格信息
             _currentEdit = new TableCellEditEnterEventArgs(it.RECORD, i_row, i_col, column);
 
-            bool multiline = cell.COLUMN.LineBreak;
+            bool multiline = column.LineBreak;
             if (column is ColumnSelect columnSelect)
             {
                 object? value = null, val = null;
@@ -135,13 +135,13 @@ namespace AntdUI
                     rows.SetHover(i_row);
                     var tmp_input = CreateInput(cell, sx, sy, multiline, val, rect);
                     tmp_input.Name = "edit_" + i_col + "_" + i_row;
-                    if (columnSelect.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
-                    else if (columnSelect.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
+                    if (column.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
+                    else if (column.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                     OnCellBeginEditInputStyle(arge);
                     if (arge.Input is Select select)
                     {
-                        ShowSelect(select, region, (cf, _value) =>
+                        ShowSelect(select, region, column.INDEX_REAL, (cf, _value) =>
                         {
                             bool isok_end = OnCellEndValueEdit(_value, it.RECORD, i_row, i_col, column);
                             if (isok_end && !cf)
@@ -180,11 +180,11 @@ namespace AntdUI
                     rows.SetHover(i_row);
                     var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                     tmp_input.Name = "edit_" + i_col + "_" + i_row;
-                    if (cellText.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
-                    else if (cellText.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
+                    if (column.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
+                    else if (column.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                     OnCellBeginEditInputStyle(arge);
-                    ShowInput(arge.Input, region, (cf, _value) =>
+                    ShowInput(arge.Input, region, column.INDEX_REAL, (cf, _value) =>
                     {
                         arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
                         bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
@@ -220,11 +220,11 @@ namespace AntdUI
                             rows.SetHover(i_row);
                             var tmp_input = CreateInput(cell, sx, sy, multiline, value, rect);
                             tmp_input.Name = "edit_" + i_col + "_" + i_row;
-                            if (template.PARENT.COLUMN.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
-                            else if (template.PARENT.COLUMN.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
+                            if (column.Align == ColumnAlign.Center) tmp_input.TextAlign = HorizontalAlignment.Center;
+                            else if (column.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                             OnCellBeginEditInputStyle(arge);
-                            ShowInput(arge.Input, region, (cf, _value) =>
+                            ShowInput(arge.Input, region, column.INDEX_REAL, (cf, _value) =>
                             {
                                 arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
                                 bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
@@ -531,20 +531,18 @@ namespace AntdUI
             }
             return input;
         }
-        void ShowInput(Input input, bool region, Action<bool, string> call)
+        void ShowInput(Input input, bool region, int column, Action<bool, string> call)
         {
-            var old = input.Text;
-            if (AddEditInput(input, old, call, region))
+            if (AddEditInput(input, input.Text, call, region, column))
             {
                 input.KeyPress += InputEdit_KeyPress;
                 input.Focus();
             }
         }
 
-        void ShowSelect(Select select, bool region, Action<bool, object?> call)
+        void ShowSelect(Select select, bool region, int column, Action<bool, object?> call)
         {
-            var old = select.SelectedValue;
-            if (AddEditInput(select, old, call, region))
+            if (AddEditInput(select, select.SelectedValue, call, region, column))
             {
                 select.SelectedValueChanged += InputEdit_SelectedValueChanged;
                 select.ClosedItem += InputEdit_SelectedValueChanged;
@@ -584,11 +582,11 @@ namespace AntdUI
         /// <summary>
         /// 添加空间到编辑
         /// </summary>
-        bool AddEditInput(Input input, object? txt, object? action, bool region)
+        bool AddEditInput(Input input, object? txt, object? action, bool region, int column)
         {
             if (_editControls.TryAdd(input, new object?[] { txt, action }))
             {
-                if (region) EditInputRegion(input);
+                if (region) EditInputRegion(input, column);
                 Controls.Add(input);
                 if (OS.Win7OrLower) return true;
                 input.LostFocus += InputEdit_LostFocus;
@@ -597,12 +595,23 @@ namespace AntdUI
             else input.Dispose();
             return false;
         }
-        void EditInputRegion(Input input)
+        void EditInputRegion(Input input, int col)
         {
-            var rect = input.Bounds;
-            if (showFixedColumnR && rect_fixed_R.HasValue && showFixedColumnL && rect_fixed_L.HasValue) input.Region = EditInputRegion(rect, rect_fixed_R.Value, rect_fixed_L.Value);
-            else if (showFixedColumnR && rect_fixed_R.HasValue) input.Region = EditInputRegion(rect, rect_fixed_R.Value);
-            else if (showFixedColumnL && rect_fixed_L.HasValue) input.Region = EditInputRegion(rect, rect_fixed_L.Value);
+            if (showFixedColumnR && rect_fixed_R.HasValue && showFixedColumnL && rect_fixed_L.HasValue)
+            {
+                if (fixedColumnL!.Contains(col) || fixedColumnR!.Contains(col)) return;
+                input.Region = EditInputRegion(input.Bounds, rect_fixed_R.Value, rect_fixed_L.Value);
+            }
+            else if (showFixedColumnR && rect_fixed_R.HasValue)
+            {
+                if (fixedColumnR!.Contains(col)) return;
+                input.Region = EditInputRegion(input.Bounds, rect_fixed_R.Value);
+            }
+            else if (showFixedColumnL && rect_fixed_L.HasValue)
+            {
+                if (fixedColumnL!.Contains(col)) return;
+                input.Region = EditInputRegion(input.Bounds, rect_fixed_L.Value);
+            }
         }
         Region? EditInputRegion(Rectangle rect, params Rectangle[] rect_fixeds)
         {

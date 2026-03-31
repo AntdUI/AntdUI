@@ -1239,51 +1239,42 @@ namespace AntdUI
 
         int ScrollLine(int i, RowList rows, bool force = false)
         {
-            if (!ScrollBar.ShowY) return 0;
-            int sy = ScrollBar.ValueY;
             if (VirtualMode && _RowHeight.HasValue)
             {
                 if (dataTmp == null) return 0;
                 int len = dataTmp.rows.Length * _RowHeight.Value;
                 var prog = (_RowHeight.Value * i) * 1F / len;
                 int y = (int)Math.Round(len * prog);
-                return ScrollLine(sy, y, y + _RowHeight.Value, rows.List, force);
+                return ScrollLine(y, y + _RowHeight.Value, RealRegionRow(rows.List), force);
             }
             var it = rows[i];
             if (it == null) return 0;
-            var select = it.RECT;
-            return ScrollLine(sy, select.Y, select.Bottom, rows.List, force);
+            return ScrollLine(it.RECT, RealRegionRow(rows.List), force);
         }
-        int ScrollLine(int y, int b, RowTemplate[] rows, bool force = false)
+        Rectangle RealRegionRow(RowTemplate[] rows)
         {
-            if (!ScrollBar.ShowY) return 0;
-            int sy = ScrollBar.ValueY;
-            return ScrollLine(sy, y, b, rows, force);
-        }
-        int ScrollLine(int sy, int y, int b, RowTemplate[] rows, bool force = false)
-        {
-            if (force)
+            int x = rect_read.X, width = rect_read.Width, y = rect_read.Y, height = rect_read.Height;
+            if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
+            if (fixedHeader && visibleHeader)
             {
-                if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                else ScrollBar.ValueY = y;
-                return sy - ScrollBar.ValueY;
+                var rect = rows[0].RECT;
+                y = rect.Bottom;
+                height -= rect.Height;
             }
-            else
+            if (sFixedB != -1 && rect_fixed_B.HasValue) height -= rect_fixed_B.Value.Height;
+            return new Rectangle(x, y, width, height);
+        }
+        int ScrollLine(Rectangle rect_cel, Rectangle rect, bool force = false) => ScrollLine(rect_cel.Y, rect_cel.Bottom, rect, force);
+        int ScrollLine(int y, int b, Rectangle rect, bool force = false)
+        {
+            if (ScrollBar.ShowY)
             {
-                if (visibleHeader && fixedHeader)
+                int sy = ScrollBar.ValueY, visibleTop = sy + rect.Y, visibleBottom = visibleTop + rect.Height;
+                if (force || y < visibleTop || b > visibleBottom)
                 {
-                    if (y - rows[0].RECT.Height < sy || b > sy + rect_read.Height)
-                    {
-                        if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                        else ScrollBar.ValueY = y;
-                        return sy - ScrollBar.ValueY;
-                    }
-                }
-                else if (y < sy || b > sy + rect_read.Height)
-                {
-                    if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
-                    else ScrollBar.ValueY = y;
-                    return sy - ScrollBar.ValueY;
+                    int newSx = y - rect.Y, oldSx = ScrollBar.ValueY;
+                    ScrollBar.ValueY = newSx;
+                    return oldSx - newSx;
                 }
             }
             return 0;
@@ -1297,23 +1288,10 @@ namespace AntdUI
         /// <returns>返回滚动量</returns>
         public int ScrollColumn(int i, bool force = false)
         {
-            if (rows == null || !ScrollBar.ShowX) return 0;
-            int sx = ScrollBar.ValueX;
-            var rect = rows.First.cells[i].RECT;
-            if (force)
-            {
-                ScrollBar.ValueX = rect.X;
-                return sx - ScrollBar.ValueX;
-            }
-            else
-            {
-                if (rect.X < sx || rect.Right > sx + rect_read.Width)
-                {
-                    ScrollBar.ValueX = rect.X;
-                    return sx - ScrollBar.ValueX;
-                }
-            }
-            return 0;
+            if (rows == null) return 0;
+            var cel = rows.First.cells[i];
+            var rect = cel.RECT;
+            return ScrollColumn(rect, RealRegionFixedColumn(cel.COLUMN.INDEX_REAL), force);
         }
 
         /// <summary>
@@ -1324,28 +1302,10 @@ namespace AntdUI
         /// <returns>返回滚动量</returns>
         public int ScrollColumn(string column, bool force = false)
         {
-            if (rows == null || !ScrollBar.ShowX) return 0;
-            int sx = ScrollBar.ValueX;
+            if (rows == null) return 0;
             foreach (var cellColumn in rows.First.cells)
             {
-                if (cellColumn.COLUMN.Key == column)
-                {
-                    var rect = cellColumn.RECT;
-                    if (force)
-                    {
-                        ScrollBar.ValueX = rect.X;
-                        return sx - ScrollBar.ValueX;
-                    }
-                    else
-                    {
-                        if (rect.X < sx || rect.Right > sx + rect_read.Width)
-                        {
-                            ScrollBar.ValueX = rect.X;
-                            return sx - ScrollBar.ValueX;
-                        }
-                    }
-                    return 0;
-                }
+                if (cellColumn.COLUMN.Key == column) return ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(cellColumn.COLUMN.INDEX_REAL), force);
             }
             return 0;
         }
@@ -1358,27 +1318,42 @@ namespace AntdUI
         /// <returns>返回滚动量</returns>
         public int ScrollColumn(Column column, bool force = false)
         {
-            if (rows == null || !ScrollBar.ShowX) return 0;
-            int sx = ScrollBar.ValueX;
+            if (rows == null) return 0;
             foreach (var cellColumn in rows.First.cells)
             {
-                if (cellColumn.COLUMN == column)
+                if (cellColumn.COLUMN == column) return ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(column.INDEX_REAL), force);
+            }
+            return 0;
+        }
+
+        Rectangle RealRegionFixedColumn(int col)
+        {
+            int x = rect_read.X, width = rect_read.Width, y = rect_read.Y, height = rect_read.Height;
+            if (showFixedColumnL && rect_fixed_L.HasValue)
+            {
+                if (!fixedColumnL!.Contains(col))
                 {
-                    var rect = cellColumn.RECT;
-                    if (force)
-                    {
-                        ScrollBar.ValueX = rect.X;
-                        return sx - ScrollBar.ValueX;
-                    }
-                    else
-                    {
-                        if (rect.X < sx || rect.Right > sx + rect_read.Width)
-                        {
-                            ScrollBar.ValueX = rect.X;
-                            return sx - ScrollBar.ValueX;
-                        }
-                    }
-                    return 0;
+                    x = rect_fixed_L.Value.Right;
+                    width -= rect_fixed_L.Value.Width;
+                }
+            }
+            if (showFixedColumnR && rect_fixed_R.HasValue)
+            {
+                if (!fixedColumnR!.Contains(col)) width -= rect_fixed_R.Value.Width;
+            }
+            return new Rectangle(x, y, width, height);
+        }
+        int ScrollColumn(Rectangle rect_cel, Rectangle rect, bool force = false) => ScrollColumn(rect_cel.X, rect_cel.Right, rect, force);
+        int ScrollColumn(int x, int r, Rectangle rect, bool force = false)
+        {
+            if (ScrollBar.ShowX)
+            {
+                int sx = ScrollBar.ValueX, visibleLeft = sx + rect.X, visibleRight = visibleLeft + rect.Width;
+                if (force || x < visibleLeft || r > visibleRight)
+                {
+                    int newSx = x - rect.X, oldSx = ScrollBar.ValueX;
+                    ScrollBar.ValueX = newSx;
+                    return oldSx - newSx;
                 }
             }
             return 0;

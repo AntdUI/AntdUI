@@ -50,19 +50,15 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Left:
-                    int x = IKeyLeft();
                     if (ScrollBar.ShowX)
                     {
-                        ScrollBar.ValueX -= x;
-                        if (HandShortcutKeys) return true;
+                        if (IKeyLeft() && HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.Right:
-                    int xr = IKeyRight();
                     if (ScrollBar.ShowX)
                     {
-                        ScrollBar.ValueX += xr;
-                        if (HandShortcutKeys) return true;
+                        if (IKeyRight() && HandShortcutKeys) return true;
                     }
                     break;
                 case Keys.Enter:
@@ -75,7 +71,7 @@ namespace AntdUI
 
         bool IKeyUp()
         {
-            if (rows == null) return false;
+            if (rows == null || _editControls.Count > 0) return false;
             if (selectedIndex.Length == 0) ScrollBar.ValueY -= 50;
             else if (selectedIndex[0] > 1)
             {
@@ -92,7 +88,7 @@ namespace AntdUI
         }
         bool IKeyDown()
         {
-            if (rows == null) return false;
+            if (rows == null || _editControls.Count > 0) return false;
             if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
             else if (selectedIndex[selectedIndex.Length - 1] < dataLen)
             {
@@ -108,36 +104,59 @@ namespace AntdUI
             }
             return true;
         }
-        int IKeyLeft()
+        bool IKeyLeft()
         {
-            if (focusedxy == null || focusedxy[0] <= 0) return 50;
-            if (rows == null) return 50;
+            if (rows == null || _editControls.Count > 0) return false;
+            if (focusedxy == null || focusedxy[0] <= 0)
+            {
+                ScrollBar.ValueX -= 50;
+                return false;
+            }
             try
             {
                 var row = rows[focusedxy[1]];
+                if (row == null)
+                {
+                    ScrollBar.ValueX -= 50;
+                    return false;
+                }
                 var cel = row.cells[focusedxy[0] - 1];
                 SetFocusedCell(cel);
-                return (fixedColumnR != null && fixedColumnR.Contains(cel.INDEX)) ? 0 : cel.RECT.Width;
+                ScrollColumn(cel.COLUMN);
+                return true;
             }
             catch { }
-            return 50;
+            ScrollBar.ValueX -= 50;
+            return false;
         }
-        int IKeyRight()
+        bool IKeyRight()
         {
-            if (focusedxy == null || rows == null) return 50;
+            if (rows == null || _editControls.Count > 0) return false;
+            if (focusedxy == null)
+            {
+                ScrollBar.ValueX += 50;
+                return false;
+            }
             int next = focusedxy[0] + 1;
             try
             {
                 var row = rows[focusedxy[1]];
+                if (row == null)
+                {
+                    ScrollBar.ValueX += 50;
+                    return false;
+                }
                 if (next < row.cells.Length)
                 {
                     var cel = row.cells[next];
                     SetFocusedCell(cel);
-                    return (fixedColumnL != null && fixedColumnL.Contains(cel.INDEX)) || cel.RECT.Right < Width ? 0 : cel.RECT.Width;
+                    ScrollColumn(cel.COLUMN);
+                    return true;
                 }
             }
             catch { }
-            return 50;
+            ScrollBar.ValueX += 50;
+            return false;
         }
 
         void IKeyEnter()
