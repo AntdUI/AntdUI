@@ -38,6 +38,8 @@ namespace AntdUI
             {
                 if (radius == value) return;
                 radius = value;
+                if (XScroll != null) XScroll.Radius = value;
+                if (YScroll != null) YScroll.Radius = value;
                 Invalidate();
                 OnPropertyChanged(nameof(Radius));
             }
@@ -238,6 +240,12 @@ namespace AntdUI
                 OnPropertyChanged(nameof(ShadowAlign));
             }
         }
+
+        /// <summary>
+        /// 阴影延迟毫秒
+        /// </summary>
+        [Description("阴影延迟毫秒"), Category("阴影"), DefaultValue(100)]
+        public int ShadowDelay { get; set; } = 100;
 
         #endregion
 
@@ -569,7 +577,7 @@ namespace AntdUI
             base.OnHandleCreated(e);
             this.AddListener();
             if (ShadowOpacityAnimation) Application.AddMessageFilter(this);
-            InitScroll();
+            if (autoscroll) InitScroll();
         }
 
         #region 主题变化
@@ -609,7 +617,7 @@ namespace AntdUI
             {
                 if (autoscroll == value) return;
                 autoscroll = value;
-                InitScroll();
+                if (IsHandleCreated) InitScroll();
                 OnPropertyChanged(nameof(AutoScroll));
             }
         }
@@ -624,15 +632,24 @@ namespace AntdUI
         {
             if (autoscroll)
             {
+                if (DesignMode) return;
                 if (IPanel == null)
                 {
                     IPanel = new PanelCore(ScrollInfo)
                     {
                         Name = "__IN__",
                         Dock = DockStyle.Fill,
-                        AutoScroll = true
+                        AutoScroll = true,
+                        Bounds = DisplayRectangle
                     };
                     InitScrollBg(IPanel);
+                    var controls = new List<Control>(IPanel.Controls.Count);
+                    foreach (Control it in base.Controls)
+                    {
+                        if (it.Name == "__IN__" || it.Name == "__BARX__" || it.Name == "__BARY__") continue;
+                        controls.Add(it);
+                    }
+                    if (controls.Count > 0) IPanel.Controls.AddRange(controls.ToArray());
                     base.Controls.Add(IPanel);
                 }
                 if (XScroll == null)
@@ -642,23 +659,13 @@ namespace AntdUI
                     {
                         Name = "__BARX__",
                         Dock = DockStyle.Bottom,
-                        Visible = false,
                         MinimumSize = new Size(0, h),
                         Size = new Size(w, h),
-                        Radius = 0,
-                        BackColor = Color.Transparent
+                        Radius = Radius
                     };
                     InitScrollBg(XScroll);
-                    XScroll.SetSize(IPanel.Width);
                     XScroll.ValueChanged += ScrollX_ValueChanged;
                     base.Controls.Add(XScroll);
-                }
-                else
-                {
-                    int h = SystemInformation.HorizontalScrollBarHeight, w = IPanel.Width;
-                    XScroll.MinimumSize = new Size(0, h);
-                    XScroll.Size = new Size(w, h);
-                    XScroll.SetSize(IPanel.Width);
                 }
                 if (YScroll == null)
                 {
@@ -667,25 +674,15 @@ namespace AntdUI
                     {
                         Name = "__BARY__",
                         Dock = DockStyle.Right,
-                        Visible = false,
                         MinimumSize = new Size(w, 0),
                         Size = new Size(w, h),
-                        Radius = 0,
-                        BackColor = Color.Transparent
+                        Radius = Radius
                     };
                     InitScrollBg(YScroll);
-                    YScroll.SetSize(IPanel.Height);
+                    YScroll.ShowChanged += ScrollY_ShowChanged;
                     YScroll.ValueChanged += ScrollY_ValueChanged;
                     base.Controls.Add(YScroll);
                 }
-                else
-                {
-                    int w = SystemInformation.VerticalScrollBarWidth, h = IPanel.Height;
-                    YScroll.MinimumSize = new Size(w, 0);
-                    YScroll.Size = new Size(w, h);
-                    YScroll.SetSize(IPanel.Height);
-                }
-                IPanel.SendToBack();
             }
             else
             {
@@ -703,6 +700,7 @@ namespace AntdUI
                 if (YScroll != null)
                 {
                     YScroll.ValueChanged -= ScrollY_ValueChanged;
+                    YScroll.ShowChanged -= ScrollY_ShowChanged;
                     YScroll.Dispose();
                     YScroll = null;
                 }
@@ -720,12 +718,17 @@ namespace AntdUI
             else control.BackColor = back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme);
         }
 
-        private void ScrollX_ValueChanged(object? sender, EventArgs e)
+        private void ScrollY_ShowChanged(object? sender, BoolEventArgs e)
+        {
+            if (XScroll == null || YScroll == null) return;
+            XScroll.RadiusRB = !e.Value;
+        }
+        private void ScrollX_ValueChanged(object? sender, IntEventArgs e)
         {
             if (IPanel == null || XScroll == null) return;
             XScroll.SetValue(IPanel.HorizontalScroll);
         }
-        private void ScrollY_ValueChanged(object? sender, EventArgs e)
+        private void ScrollY_ValueChanged(object? sender, IntEventArgs e)
         {
             if (IPanel == null || YScroll == null) return;
             YScroll.SetValue(IPanel.VerticalScroll);
@@ -741,12 +744,7 @@ namespace AntdUI
         protected override void OnControlAdded(ControlEventArgs e)
         {
             if (e.Control == null) return;
-            if (IPanel == null)
-            {
-                base.OnControlAdded(e);
-                return;
-            }
-            if (e.Control.Name == "__IN__" || e.Control.Name == "__BARX__" || e.Control.Name == "__BARY__")
+            if (IPanel == null || e.Control.Name == "__IN__" || e.Control.Name == "__BARX__" || e.Control.Name == "__BARY__")
             {
                 base.OnControlAdded(e);
                 return;
@@ -795,26 +793,24 @@ namespace AntdUI
                 UpdateStyles();
             }
 
-            protected override void OnPaint(PaintEventArgs e)
-            {
-                LoadScroll();
-                base.OnPaint(e);
-            }
-
-            protected override void OnSizeChanged(EventArgs e)
-            {
-                LoadScroll();
-                base.OnSizeChanged(e);
-            }
-
-            protected override void OnScroll(ScrollEventArgs se)
-            {
-                LoadScroll();
-                base.OnScroll(se);
-            }
-
             public Action LoadScroll;
 
+            protected override void WndProc(ref System.Windows.Forms.Message m)
+            {
+                switch ((Win32.User32.WindowMessage)m.Msg)
+                {
+                    case Win32.User32.WindowMessage.WM_PAINT:
+                    case Win32.User32.WindowMessage.WM_MOUSEWHEEL:
+                    case Win32.User32.WindowMessage.WM_SIZE:
+                        Win32.User32.HideScrollBar(Handle);
+                        LoadScroll();
+                        break;
+                    case Win32.User32.WindowMessage.WM_NCCALCSIZE:
+                        Win32.User32.HideScrollBar(Handle);
+                        break;
+                }
+                base.WndProc(ref m);
+            }
         }
 
         #endregion

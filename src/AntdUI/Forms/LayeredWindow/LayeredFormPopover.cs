@@ -62,11 +62,7 @@ namespace AntdUI
                     rectContent.Offset(shadow, shadow);
                     control.Size = new Size(control.Width, control.Height);
                     SetSize(w + paddingx2, h + paddingy2);
-                    BeginInvoke(() =>
-                    {
-                        tempContent = new Bitmap(control.Width, control.Height);
-                        control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                    });
+                    BeginInvoke(() => tempContent = control.CaptureControl());
                 }
                 else if (config.Content is IList<Popover.TextRow> list)
                 {
@@ -251,9 +247,8 @@ namespace AntdUI
                     base.OnFormClosing(e);
                     return;
                 }
-                tempContent = new Bitmap(control.Width, control.Height);
-                control.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
+                tempContent = control.CaptureControl();
+                if (form != null) form.Location = Helper.OffScreenLocation(form.Width, form.Height);
             }
             base.OnFormClosing(e);
         }

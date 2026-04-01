@@ -800,6 +800,28 @@ namespace AntdUI
             catch { }
             return false;
         }
+
+        /// <summary>
+        /// 安全截图控制，避免 Object is currently in use elsewhere 异常
+        /// </summary>
+        public static Bitmap? CaptureControl(this Control control)
+        {
+            if (control.Width <= 0 || control.Height <= 0) return null;
+            var bitmap = new Bitmap(control.Width, control.Height);
+            var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            for (int i = 0; i < 3; i++)
+            {
+                try
+                {
+                    control.DrawToBitmap(bitmap, rect);
+                    return bitmap;
+                }
+                catch { }
+                System.Threading.Thread.Sleep(10);
+            }
+            bitmap.Dispose();
+            return null;
+        }
     }
 
     internal class AnchorDock

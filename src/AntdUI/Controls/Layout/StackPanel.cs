@@ -197,7 +197,6 @@ namespace AntdUI
                             Visible = false,
                             Radius = Radius
                         };
-                        YScroll.SetSize(Panel.Height);
                         YScroll.ValueChanged += Scroll_ValueChanged;
                         base.Controls.Add(YScroll);
                     }
@@ -218,7 +217,6 @@ namespace AntdUI
                             Visible = false,
                             Radius = Radius
                         };
-                        XScroll.SetSize(Panel.Width);
                         XScroll.ValueChanged += Scroll_ValueChanged;
                         base.Controls.Add(XScroll);
                     }
@@ -241,7 +239,7 @@ namespace AntdUI
             }
         }
 
-        private void Scroll_ValueChanged(object? sender, EventArgs e) => IOnSizeChanged();
+        private void Scroll_ValueChanged(object? sender, IntEventArgs e) => IOnSizeChanged();
 
         private StackPanelCore Panel;
         public XScrollBar? XScroll;

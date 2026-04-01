@@ -1481,6 +1481,7 @@ namespace AntdUI
         /// <param name="ismax">是否限制MaxLength</param>
         public void EnterText(string text, bool ismax = true)
         {
+            CloseContextMenu();
             if (ReadOnly || BanInput) return;
             int offset = 0, rdcount = 0;
             if (cache_font == null)
@@ -1929,6 +1930,7 @@ namespace AntdUI
                     }
                     break;
                 case 0x007B:
+                    CloseContextMenu();
                     if (UseContextMenu) OnOpenContextMenu();
                     break;
             }
@@ -1936,12 +1938,20 @@ namespace AntdUI
         }
 
         Form? _contextMenu;
-        protected virtual void OnOpenContextMenu()
+        void CloseContextMenu()
         {
             _contextMenu?.Close();
-            if (readOnly && isempty) return;
+            _contextMenu = null;
+        }
+        protected virtual void OnOpenContextMenu()
+        {
             var items = new List<IContextMenuStripItem>(9);
-            if (readOnly) items.Add(new ContextMenuStripItem().SetText("全选", "{id}").SetID("SelectAll").SetSubText("Ctrl+A").SetEnabled(!isempty));
+            if (readOnly)
+            {
+                items.Add(new ContextMenuStripItem().SetText("复制", "{id}").SetID("Copy").SetSubText("Ctrl+C").SetEnabled(selectionLength > 0));
+                items.Add(new ContextMenuStripItemDivider());
+                items.Add(new ContextMenuStripItem().SetText("全选", "{id}").SetID("SelectAll").SetSubText("Ctrl+A").SetEnabled(!isempty));
+            }
             else
             {
                 bool canUndo = CanUndo, canRedo = CanRedo;

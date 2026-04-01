@@ -49,8 +49,17 @@ namespace AntdUI
             SetPoint();
             SetSize(start_W, start_H);
             SetLocation(start_X, start_Y);
-            if (vertical) tempContent = new Bitmap(end_W - padding * 2, end_H - shadow_size - padding * 2);
-            else tempContent = new Bitmap(end_W - shadow_size - padding * 2, end_H - padding * 2);
+            int p2 = padding * 2, contentW, contentH;
+            if (vertical)
+            {
+                contentW = end_W - p2;
+                contentH = end_H - shadow_size - p2;
+            }
+            else
+            {
+                contentW = end_W - shadow_size - p2;
+                contentH = end_H - p2;
+            }
             if (config.Content.Tag is Size) { }
             else
             {
@@ -58,9 +67,9 @@ namespace AntdUI
                 Win32.WindowTheme(config.Content, Config.IsDark);
                 Helper.DpiAuto(Dpi, config.Content);
             }
-            config.Content.Bounds = new Rectangle(Helper.OffScreenArea(tempContent.Width * 2, tempContent.Height * 2), new Size(tempContent.Width, tempContent.Height));
+            config.Content.Bounds = Helper.OffScreenArea(contentW, contentH);
             LoadContent();
-            config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
+            tempContent = config.Content.CaptureControl();
             config.Form.LocationChanged += Form_LocationChanged;
             config.Form.SizeChanged += Form_SizeChanged;
         }
@@ -231,7 +240,7 @@ namespace AntdUI
                 SetLocation(-end_W * 2, -end_H * 2);
                 if (task_start == null)
                 {
-                    if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
+                    if (form != null) form.Location = Helper.OffScreenLocation(form.Width, form.Height);
                     Print();
                 }
                 return;
@@ -350,13 +359,12 @@ namespace AntdUI
         void LoadContent()
         {
             var rect = Ang();
-            var hidelocation = Helper.OffScreenArea(rect.Width * 2, rect.Height * 2);
+            var hidelocation = Helper.OffScreenArea(rect.Width, rect.Height);
             if (config.Content is Form form_)
             {
                 form_.BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme);
                 form_.FormBorderStyle = FormBorderStyle.None;
-                form_.Location = hidelocation;
-                form_.ClientSize = rect.Size;
+                form_.Bounds = hidelocation;
                 form_.StartPosition = FormStartPosition.Manual;
                 form = form_;
             }
@@ -367,8 +375,7 @@ namespace AntdUI
                     BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme),
                     FormBorderStyle = FormBorderStyle.None,
                     StartPosition = FormStartPosition.Manual,
-                    Location = hidelocation,
-                    ClientSize = rect.Size
+                    Bounds = hidelocation
                 };
             }
             if (!config.Dispose && config.Content.Tag is Size size)
@@ -376,8 +383,7 @@ namespace AntdUI
                 form.FormClosing += (a, b) =>
                 {
                     config.Content.Dock = DockStyle.None;
-                    config.Content.Size = size;
-                    config.Content.Location = Helper.OffScreenArea(config.Content.Width * 2, config.Content.Height * 2);
+                    config.Content.Bounds = Helper.OffScreenArea(size.Width, size.Height);
                     config.Form.Controls.Add(config.Content);
                 };
             }
@@ -393,8 +399,7 @@ namespace AntdUI
         {
             if (form == null) return;
             var rect = Ang();
-            if (form.ClientSize != rect.Size) form.ClientSize = rect.Size;
-            form.Location = rect.Location;
+            form.Bounds = rect;
             config.OnLoad?.Invoke();
             IsLoad = false;
             LoadCompleted?.Invoke();
@@ -564,9 +569,8 @@ namespace AntdUI
                 config.Form.LocationChanged -= Form_LocationChanged;
                 config.Form.SizeChanged -= Form_SizeChanged;
                 tempContent?.Dispose();
-                tempContent = new Bitmap(config.Content.Width, config.Content.Height);
-                config.Content.DrawToBitmap(tempContent, new Rectangle(0, 0, tempContent.Width, tempContent.Height));
-                if (form != null) form.Location = Helper.OffScreenArea(form.Width * 2, form.Height * 2);
+                tempContent = config.Content.CaptureControl();
+                if (form != null) form.Location = Helper.OffScreenLocation(form.Width, form.Height);
                 e.Cancel = true;
                 if (Config.HasAnimation(nameof(Drawer)))
                 {

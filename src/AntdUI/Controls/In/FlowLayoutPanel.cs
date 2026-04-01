@@ -161,12 +161,10 @@ namespace AntdUI.In
                     {
                         Name = "__BARX__",
                         Dock = DockStyle.Bottom,
-                        Visible = false,
                         MinimumSize = new Size(0, h),
                         Size = new Size(w, h),
                         Radius = 0
                     };
-                    XScroll.SetSize(Panel.Width);
                     XScroll.ValueChanged += ScrollX_ValueChanged;
                     base.Controls.Add(XScroll);
                 }
@@ -177,12 +175,10 @@ namespace AntdUI.In
                     {
                         Name = "__BARY__",
                         Dock = DockStyle.Right,
-                        Visible = false,
                         MinimumSize = new Size(w, 0),
                         Size = new Size(w, h),
                         Radius = 0
                     };
-                    YScroll.SetSize(Panel.Height);
                     YScroll.ValueChanged += ScrollY_ValueChanged;
                     base.Controls.Add(YScroll);
                 }
@@ -205,8 +201,8 @@ namespace AntdUI.In
             }
         }
 
-        private void ScrollX_ValueChanged(object? sender, EventArgs e) => XScroll?.SetValue(Panel.HorizontalScroll);
-        private void ScrollY_ValueChanged(object? sender, EventArgs e) => YScroll?.SetValue(Panel.VerticalScroll);
+        private void ScrollX_ValueChanged(object? sender, IntEventArgs e) => XScroll?.SetValue(Panel.HorizontalScroll);
+        private void ScrollY_ValueChanged(object? sender, IntEventArgs e) => YScroll?.SetValue(Panel.VerticalScroll);
 
         private void ScrollInfo()
         {

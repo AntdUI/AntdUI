@@ -28,6 +28,12 @@ namespace AntdUI
         public int Radius { get; set; } = 6;
 
         /// <summary>
+        /// 圆角RB
+        /// </summary>
+        [Description("圆角RB"), Category("外观"), DefaultValue(false)]
+        public bool RadiusRB { get; set; } = false;
+
+        /// <summary>
         /// 常态下滚动条大小
         /// </summary>
         [Description("常态下滚动条大小"), Category("外观"), DefaultValue(6)]
@@ -49,12 +55,12 @@ namespace AntdUI
             {
                 if (valueX == value) return;
                 valueX = value;
-                ValueChanged?.Invoke(this, EventArgs.Empty);
+                ValueChanged?.Invoke(this, new IntEventArgs(value));
                 Invalidate();
             }
         }
 
-        public int GetValue(int value) => GetValue(value, max, Width);
+        public int GetValue(int value) => GetValue(value, Maximum, Width);
         public int GetValue(ScrollProperties value) => GetValue(valueX, value.Maximum, value.LargeChange);
         public int GetValue(int value, int max, int LChange)
         {
@@ -66,10 +72,15 @@ namespace AntdUI
 
         public void LoadValue(ScrollProperties value)
         {
-            if (Visible == value.Visible && max == value.Maximum && valueX == value.Value) return;
-            max = value.Maximum;
+            bool isvisible = Visible == value.Visible;
+            if (isvisible && Maximum == value.Maximum && valueX == value.Value) return;
+            Maximum = value.Maximum;
             valueX = value.Value;
-            Visible = value.Visible;
+            if (!isvisible)
+            {
+                Visible = value.Visible;
+                ShowChanged?.Invoke(this, new BoolEventArgs(value.Visible));
+            }
             Invalidate();
         }
         public void SetValue(ScrollProperties scroll)
@@ -85,21 +96,11 @@ namespace AntdUI
             else if (controlRect.Right > clientRect.Right) Value = GetValue(Math.Min(max, value + controlRect.Right - clientRect.Right));
         }
 
-        int max = 100;
         /// <summary>
         /// 最大值
         /// </summary>
-        [Description("最大值"), Category("值"), DefaultValue(100)]
-        public int Maximum
-        {
-            get => max;
-            set
-            {
-                if (max == value) return;
-                max = value;
-                Invalidate();
-            }
-        }
+        [Description("最大值"), Category("值"), DefaultValue(0)]
+        public int Maximum { get; set; } = 0;
 
         bool hoverX = false;
         /// <summary>
@@ -149,7 +150,7 @@ namespace AntdUI
                             if (Radius > 0)
                             {
                                 float radius = Radius * Dpi;
-                                using (var path = ClientRectangle.RoundPath(radius, false, false, true, true))
+                                using (var path = ClientRectangle.RoundPath(radius, false, false, RadiusRB, true))
                                 {
                                     g.Fill(brush, path);
                                 }
@@ -168,7 +169,7 @@ namespace AntdUI
                             if (Radius > 0)
                             {
                                 float radius = Radius * Dpi;
-                                using (var path = ClientRectangle.RoundPath(radius, false, false, true, true))
+                                using (var path = ClientRectangle.RoundPath(radius, false, false, RadiusRB, true))
                                 {
                                     g.Fill(brush, path);
                                 }
@@ -218,39 +219,42 @@ namespace AntdUI
         {
             var Rect = ClientRectangle;
             float gap = (Rect.Height - SIZE_BAR) / 2F, gap2 = gap * 2, min = ((int)((Config.ScrollMinSizeX ?? SystemInformation.HorizontalScrollBarThumbWidth) * Dpi)) + gap2,
-               read = Rect.Width, width = (read / max) * read;
+               read = Rect.Width, width = (read / Maximum) * read;
             if (width > read) width = read;
             if (width < min) width = min;
-            float x = (valueX * 1F / (max - read)) * (read - width);
+            float x = (valueX * 1F / (Maximum - read)) * (read - width);
             return new RectangleF(Rect.X + x + gap, Rect.Y + gap, width - gap2, SIZE_BAR);
         }
 
         RectangleF RectSliderFullX()
         {
             var Rect = ClientRectangle;
-            float read = Rect.Width, width = (read / max) * read;
-            float x = (valueX * 1F / (max - read)) * (read - width);
+            float read = Rect.Width, width = (read / Maximum) * read;
+            float x = (valueX * 1F / (Maximum - read)) * (read - width);
             return new RectangleF(Rect.X + x, Rect.Y, width, Rect.Height);
         }
 
-        public int VrValueI => max - Width;
+        public int VrValueI => Maximum - Width;
 
         public int ReadSize => Width;
 
+        #endregion
+
+        #endregion
+
+        #region 布局
+
         string? show_oldx;
-        int oldx = 0;
-        public bool SetSize(int width) => SetShow(oldx, width);
-        public bool SetShow(int max) => SetShow(max, Width);
+        public bool SetSize(int width) => SetShow(Maximum, width);
         public bool SetShow(int _max, int _width)
         {
-            oldx = _max;
             string show_x = _max + "_" + _width;
             if (show_oldx == show_x) return false;
             show_oldx = show_x;
+            Maximum = _max;
             if (_width > 0 && _max > 0 && _max > _width)
             {
-                max = _max;
-                bool show = max > _width;
+                bool show = Maximum > _width;
                 if (show)
                 {
                     int valueI = _max - _width;
@@ -259,32 +263,22 @@ namespace AntdUI
                 if (Visible != show)
                 {
                     Visible = show;
+                    ShowChanged?.Invoke(this, new BoolEventArgs(show));
                     return true;
                 }
             }
             else
             {
-                max = valueX = 0;
+                valueX = 0;
                 if (Visible)
                 {
                     Visible = false;
+                    ShowChanged?.Invoke(this, new BoolEventArgs(false));
                     return true;
                 }
             }
             return false;
         }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            SetShow(Width, oldX);
-            int h = SystemInformation.HorizontalScrollBarHeight;
-            if (Height == h) return;
-            MinimumSize = new Size(0, h);
-            Height = h;
-        }
-
-        #endregion
 
         #endregion
 
@@ -305,7 +299,7 @@ namespace AntdUI
             else
             {
                 float read = Width, x = (e.X - slider.Width / 2F) / read;
-                Value = GetValue((int)Math.Round(x * max));
+                Value = GetValue((int)Math.Round(x * Maximum));
                 SliderX = RectSliderFullX().X;
             }
             SliderDownX = true;
@@ -324,7 +318,7 @@ namespace AntdUI
             {
                 var slider = RectSliderFullX();
                 float read = Width, x = SliderX + (e.X - oldX);
-                Value = GetValue((int)(x / (read - slider.Width) * (max - Width)));
+                Value = GetValue((int)(x / (read - slider.Width) * (Maximum - Width)));
             }
         }
 
@@ -387,13 +381,14 @@ namespace AntdUI
         /// <summary>
         /// 判断是否到达横向滚动条最右边
         /// </summary>
-        public bool IsAtRight => Visible && valueX >= (max - Width);
+        public bool IsAtRight => Visible && valueX >= (Maximum - Width);
 
         #endregion
 
         #region 事件
 
-        public event EventHandler? ValueChanged;
+        public event IntEventHandler? ValueChanged;
+        public event BoolEventHandler? ShowChanged;
 
         #endregion
 
