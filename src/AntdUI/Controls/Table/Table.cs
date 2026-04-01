@@ -1254,7 +1254,6 @@ namespace AntdUI
         Rectangle RealRegionRow(RowTemplate[] rows)
         {
             int x = rect_read.X, width = rect_read.Width, y = rect_read.Y, height = rect_read.Height;
-            if (fixedHeader) ScrollBar.ValueY = y - rows[0].RECT.Height;
             if (fixedHeader && visibleHeader)
             {
                 var rect = rows[0].RECT;
@@ -1272,9 +1271,8 @@ namespace AntdUI
                 int sy = ScrollBar.ValueY, visibleTop = sy + rect.Y, visibleBottom = visibleTop + rect.Height;
                 if (force || y < visibleTop || b > visibleBottom)
                 {
-                    int newSx = y - rect.Y, oldSx = ScrollBar.ValueY;
-                    ScrollBar.ValueY = newSx;
-                    return oldSx - newSx;
+                    ScrollBar.ValueY = y - rect.Y;
+                    return sy - ScrollBar.ValueY;
                 }
             }
             return 0;
@@ -1351,9 +1349,8 @@ namespace AntdUI
                 int sx = ScrollBar.ValueX, visibleLeft = sx + rect.X, visibleRight = visibleLeft + rect.Width;
                 if (force || x < visibleLeft || r > visibleRight)
                 {
-                    int newSx = x - rect.X, oldSx = ScrollBar.ValueX;
-                    ScrollBar.ValueX = newSx;
-                    return oldSx - newSx;
+                    ScrollBar.ValueX = x - rect.X;
+                    return sx - ScrollBar.ValueX;
                 }
             }
             return 0;
