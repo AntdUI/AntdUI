@@ -105,6 +105,30 @@ namespace AntdUI
         public TFocusMode FocusMode { get; set; } = TFocusMode.None;
 
         /// <summary>
+        /// 焦点模式颜色
+        /// </summary>
+        [Description("焦点模式颜色"), Category("外观"), DefaultValue(null)]
+        public Color? FocusModeColor { get; set; }
+
+        /// <summary>
+        /// 焦点模式大小
+        /// </summary>
+        [Description("焦点模式大小"), Category("外观"), DefaultValue(2)]
+        public int FocusModeSize { get; set; } = 2;
+
+        /// <summary>
+        /// 焦点模式大小比例
+        /// </summary>
+        [Description("焦点模式大小比例"), Category("外观"), DefaultValue(null)]
+        public float? FocusModeSizeRatio { get; set; }
+
+        /// <summary>
+        /// 焦点模式方向
+        /// </summary>
+        [Description("焦点模式方向"), Category("外观"), DefaultValue(TAlignMini.None)]
+        public TAlignMini FocusModeAlign { get; set; } = TAlignMini.None;
+
+        /// <summary>
         /// 色彩模式
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1173,24 +1197,75 @@ namespace AntdUI
             }
             PaintIcon(g, it, fore);
         }
+        #region 焦点
+
         void PaintFocus(Canvas g, MenuItem it, Color fore, float radius)
         {
             switch (FocusMode)
             {
                 case TFocusMode.Line:
-                    int fh = (int)(it.rect.Height * 0.6F), fw = (int)(fh * 0.12F);
-                    g.Fill(fore, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height - fh) / 2, fw, fh));
+                    PaintFocusLine(g, it, FocusModeColor ?? fore);
                     break;
                 case TFocusMode.Border:
-                    float wave = 2 * Dpi, wave2 = wave * 2, r = radius + wave;
-                    var rect_focus = new RectangleF(it.rect.X - wave, it.rect.Y - wave, it.rect.Width + wave2, it.rect.Height + wave2);
-                    using (var path_focus = rect_focus.RoundPath(r))
-                    {
-                        g.Draw(Colour.PrimaryBorder.Get(nameof(Menu), ColorScheme), wave, path_focus);
-                    }
+                    PaintFocusBorder(g, it, FocusModeColor ?? Colour.PrimaryBorder.Get(nameof(Menu), ColorScheme), radius);
                     break;
             }
         }
+        void PaintFocusLine(Canvas g, MenuItem it, Color fill)
+        {
+            int lsize = (int)(FocusModeSize * Dpi);
+            switch (FocusModeAlign)
+            {
+                case TAlignMini.None:
+                    if (IsModeHorizontal) PaintFocusLineBottom(g, it, fill, lsize);
+                    else PaintFocusLineLeft(g, it, fill, lsize);
+                    break;
+                case TAlignMini.Top:
+                    PaintFocusLineTop(g, it, fill, lsize);
+                    break;
+                case TAlignMini.Bottom:
+                    PaintFocusLineBottom(g, it, fill, lsize);
+                    break;
+                case TAlignMini.Left:
+                    PaintFocusLineLeft(g, it, fill, lsize);
+                    break;
+                case TAlignMini.Right:
+                    PaintFocusLineRight(g, it, fill, lsize);
+                    break;
+            }
+        }
+        void PaintFocusLineLeft(Canvas g, MenuItem it, Color fill, int lsize)
+        {
+            int fh = (int)(it.rect.Height * (FocusModeSizeRatio ?? 0.6F));
+            g.Fill(fill, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height - fh) / 2, lsize, fh));
+        }
+        void PaintFocusLineRight(Canvas g, MenuItem it, Color fill, int lsize)
+        {
+            int fh = (int)(it.rect.Height * (FocusModeSizeRatio ?? 0.6F));
+            g.Fill(fill, new Rectangle(it.rect.Right - lsize, it.rect.Y + (it.rect.Height - fh) / 2, lsize, fh));
+        }
+        void PaintFocusLineTop(Canvas g, MenuItem it, Color fill, int lsize)
+        {
+            int fw = (int)(it.rect.Width * (FocusModeSizeRatio ?? 0.8F));
+            g.Fill(fill, new Rectangle(it.rect.X + (it.rect.Width - fw) / 2, it.rect.Y, fw, lsize));
+        }
+        void PaintFocusLineBottom(Canvas g, MenuItem it, Color fill, int lsize)
+        {
+            int fw = (int)(it.rect.Width * (FocusModeSizeRatio ?? 0.8F));
+            g.Fill(fill, new Rectangle(it.rect.X + (it.rect.Width - fw) / 2, it.rect.Bottom - lsize, fw, lsize));
+        }
+        void PaintFocusBorder(Canvas g, MenuItem it, Color fill, float radius)
+        {
+            float wave = FocusModeSize * Dpi, wave2 = wave * 2, r = radius + wave;
+            var rect_focus = new RectangleF(it.rect.X - wave, it.rect.Y - wave, it.rect.Width + wave2, it.rect.Height + wave2);
+            using (var path_focus = rect_focus.RoundPath(r))
+            {
+                g.Draw(fill, wave, path_focus);
+            }
+        }
+
+        #endregion
+
         void PaintTextIconExpand(Canvas g, MenuItem it, Color fore)
         {
             if (it.CanExpand)
@@ -1718,33 +1793,17 @@ namespace AntdUI
             switch (keyData)
             {
                 case Keys.Up:
-                    if (selectItem == null)
-                    {
-                        if (items != null)
-                        {
-                            Select(items[0]);
-                            return true;
-                        }
-                    }
-                    else if (FindUp(focusItem ?? selectItem)) return true;
-                    break;
+                    if (IsModeHorizontal) return FKeyLeft(r);
+                    else return FKeyUp(r);
                 case Keys.Down:
-                    if (selectItem == null)
-                    {
-                        if (items != null)
-                        {
-                            Select(items[items.Count - 1]);
-                            return true;
-                        }
-                    }
-                    else if (FindDown(focusItem ?? selectItem)) return true;
-                    break;
+                    if (IsModeHorizontal) return FKeyRight(r);
+                    else return FKeyDown(r);
                 case Keys.Left:
-                    if (selectItem != null && FindLeft(focusItem ?? selectItem)) return true;
-                    break;
+                    if (IsModeHorizontal) return FKeyUp(r);
+                    else return FKeyLeft(r);
                 case Keys.Right:
-                    if (selectItem != null && FindRight(focusItem ?? selectItem)) return true;
-                    break;
+                    if (IsModeHorizontal) return FKeyDown(r);
+                    else return FKeyRight(r);
                 case Keys.Enter:
                     if (selectItem != null)
                     {
@@ -1754,6 +1813,43 @@ namespace AntdUI
                     }
                     break;
             }
+            return r;
+        }
+
+        bool FKeyUp(bool r)
+        {
+            if (selectItem == null)
+            {
+                if (items != null)
+                {
+                    Select(items[0]);
+                    return true;
+                }
+            }
+            else if (FindUp(focusItem ?? selectItem)) return true;
+            return r;
+        }
+        bool FKeyDown(bool r)
+        {
+            if (selectItem == null)
+            {
+                if (items != null)
+                {
+                    Select(items[items.Count - 1]);
+                    return true;
+                }
+            }
+            else if (FindDown(focusItem ?? selectItem)) return true;
+            return r;
+        }
+        bool FKeyLeft(bool r)
+        {
+            if (selectItem != null && FindLeft(focusItem ?? selectItem)) return true;
+            return r;
+        }
+        bool FKeyRight(bool r)
+        {
+            if (selectItem != null && FindRight(focusItem ?? selectItem)) return true;
             return r;
         }
 
@@ -1847,12 +1943,23 @@ namespace AntdUI
 
         bool FindLeft(MenuItem item)
         {
-            if (item.CanExpand && item.Expand) item.Expand = false;
+            if (item.CanExpand)
+            {
+                if (IsModeNeedDropDown) CloseDropDown();
+                else item.Expand = false;
+            }
             return true;
         }
         bool FindRight(MenuItem item)
         {
-            if (item.CanExpand && !item.Expand) item.Expand = true;
+            if (item.CanExpand)
+            {
+                if (IsModeNeedDropDown)
+                {
+                    if (subForm == null) OpenDropDown(item);
+                }
+                else item.Expand = true;
+            }
             return true;
         }
         void SetFocusItem(MenuItem item)
