@@ -1223,9 +1223,20 @@ namespace AntdUI
         /// <returns>返回滚动量</returns>
         public int ScrollLine(object record, bool force = false)
         {
-            if (rows == null || !ScrollBar.ShowY) return 0;
-            var row = rows?.Record(record);
-            if (row == null) return 0;
+            if (rows == null) return 0;
+            var row = rows.Record(record);
+            if (row == null)
+            {
+                if (VirtualMode && _RowHeight.HasValue)
+                {
+                    if (dataTmp == null) return 0;
+                    int i = dataTmp.FindRecord(record), len = dataTmp.rows.Length * _RowHeight.Value;
+                    var prog = (_RowHeight.Value * i) * 1F / len;
+                    int y = (int)Math.Round(len * prog);
+                    return ScrollLine(y, y + _RowHeight.Value, RealRegionRow(rows.List), force);
+                }
+                return 0;
+            }
             return ScrollLine(row.INDEX, rows!, force);
         }
 

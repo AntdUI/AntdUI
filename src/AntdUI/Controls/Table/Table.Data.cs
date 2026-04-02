@@ -699,6 +699,19 @@ namespace AntdUI
                     return list;
                 }
             }
+            public int FindRecord(object record)
+            {
+                lock (_rowsCache)
+                {
+                    var tmp = rowsFilter ?? _rowsCache;
+                    var list = new object[tmp.Length];
+                    for (int i = 0; i < tmp.Length; i++)
+                    {
+                        if (tmp[i].record == record) return i;
+                    }
+                }
+                return -1;
+            }
             public object[] GetRecord(int[] sortData)
             {
                 lock (_rowsCache)

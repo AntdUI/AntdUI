@@ -33,6 +33,7 @@ Panel 面板 👚
 **ShadowOffsetX** | 阴影偏移X | int | 0 |
 **ShadowOffsetY** | 阴影偏移Y | int | 0 |
 **ShadowAlign** | 阴影方向 | [TAlignMini](Enum.md#talignmini) | None |
+**ShadowDelay** | 阴影延迟毫秒 | int | 100 |
 **InnerPadding** | 内边距 | Padding | 0, 0, 0, 0 |
 **padding** | 内边距 | Padding | 0, 0, 0, 0 | `已过时，使用 InnerPadding` |
 **AutoScroll** | 是否显示滚动条 | bool | false |

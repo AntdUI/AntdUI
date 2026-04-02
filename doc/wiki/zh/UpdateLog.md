@@ -1,5 +1,20 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.5` 2026-04-02
+
+- ➕ SelectNumber
+- ➕ Table ScrollLine/ScrollColumn 区域碰撞（优化交互）
+- ➕ Menu 丰富焦点属性
+- ➕ Panel ShadowDelay
+- ✍️ Input 修改右键菜单方法名称
+- ✍️ Input 修改文本后光标位置异常
+- ✍️ 调整 Input 只读右键菜单
+- ✍️ Select 交互
+- ✍️ Panel 滚动条/闪烁原生滚动条
+- ✍️ Table 浮动列编辑框无效
+- ✍️ Table 上下左右键盘导致编辑模式失效
+- ✍️ Popover 动画截图异常
+
 ### `2.3.4` 2026-03-30
 
 - ➕ Input SetTextSelectionEnd

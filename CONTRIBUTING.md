@@ -7,59 +7,77 @@ Familiarize yourself with the directory layout to ensure your contributions are 
 
 ```
 AntdUI/
-├─ src/                      # Core source code for all libraries
-│  └─ AntdUI/                # Main UI library code
-│     ├─ Controls/           # Custom UI controls
-│     │  ├─ Core/            # Abstract drawing classes and implementation classes (base for all controls)
-│     │  └─ Chat/            # Chat-related controls (separated due to independent logic or large code volume)
-│     ├─ Design/             # Designer support (e.g., Visual Studio designer integration)
-│     ├─ Enum/               # Enumerations used across the library (e.g., theme types, control states)
-│     ├─ Forms/              # Custom windows/forms (e.g., main application windows)
-│     ├─ LayeredWindow/      # Popup/layered windows (e.g., dropdowns, date pickers, Modals, drawers)
-│     ├─ Lib/                # Utility files (Win32 API wrappers, SVG handlers, helper classes)
-│     ├─ Localization/       # Multi-language support (resource files for different locales)
-│     └─ Style/              # Theme definitions (e.g., light/dark themes, color palettes)
-├─ samples/                  # Demo projects to showcase control usage
+├─ src/                      # All core library source code
+│  ├─ AntdUI/                # Main UI library code
+│  │  ├─ Controls/           # Custom UI controls
+│  │  │  ├─ Chat/            # Chat-related controls (separated due to independent logic or large code volume)
+│  │  │  └─ Core/            # Core drawing classes and implementation classes
+│  │  ├─ Design/             # Designer support (e.g., Visual Studio designer integration)
+│  │  ├─ Enum/               # Enumerations used across the library (e.g., theme types, control states)
+│  │  ├─ Events/             # Event definitions
+│  │  ├─ Forms/              # Custom windows/forms
+│  │  │  └─ LayeredWindow/   # Popup/layered windows (e.g., dropdowns, date pickers, modals, drawers)
+│  │  ├─ Lib/                # Utility files (Win32 API wrappers, SVG handlers, helper classes)
+│  │  ├─ Localization/       # Multi-language support (resource files for different locales)
+│  │  └─ Style/              # Theme definitions (e.g., light/dark themes, color palettes)
+│  └─ AntdUI.EmojiFluentFlat/ # Emoji Fluent Flat resource library
+├─ example/                  # Demo projects to showcase control usage
 │  └─ Demo/                  # Main demo project (includes test forms for all controls)
 └─ doc/                      # Documentation (contribution guides, API references, etc.)
 ```
 
-- **New Controls**: Add custom controls to `src/AntdUI/Controls/` (use subfolders like `Chat/` for independent/large controls).
+- **New Controls**: Add custom controls to `src/AntdUI/Controls/` (use subfolders like `Chat/` for independent or large controls).
 - **Utility Code**: Place helper functions, Win32 wrappers, or SVG tools in `src/AntdUI/Lib/`.
-- **Demo Code**: Update `samples/Demo/` to include test cases for new features (helps verify functionality and assist other contributors).
-
+- **Demo Code**: Update `example/Demo/` to include test cases for new features (helps verify functionality and assist other contributors).
 
 ## 2. Code Standards
 To maintain consistency and avoid common issues (e.g., memory leaks, UI glitches), follow these core rules:
 
-
 ### 2.1 Drawing Logic Requirements
-AntdUI relies on a custom drawing system for high-quality UI rendering. Adhere to these rules for all visual controls:
+AntdUI relies on a custom drawing system for high-quality UI rendering. All visual controls must follow:
 
 - **Must Implement `AntdUI.IControl`**:
   All drawable controls **must inherit from `AntdUI.IControl`** (the base interface for custom rendering). Override the `OnDraw` method to implement control-specific drawing:
   ```csharp
   public class MyCustomControl : IControl
   {
-      // Override OnDraw to handle rendering
-      protected override void OnDraw(DrawEventArgs e)
-      {
-          base.OnDraw(e);
-          // Use e.Canvas for drawing (see note below)
-          e.Canvas.DrawText("Hello AntdUI", _textFont, _textColor, ClientRectangle);
-      }
+	  // Override OnDraw to handle rendering logic
+	  protected override void OnDraw(DrawEventArgs e)
+	  {
+		  base.OnDraw(e);
+		  // Use e.Canvas for drawing (see explanation below)
+		  e.Canvas.DrawText("Hello AntdUI", _textFont, _textColor, ClientRectangle);
+	  }
   }
   ```
 
 - **Use `Canvas` for Rendering**:
-  The `Canvas` class (accessed via `Graphics.High()` if `IControl` is not inherited) provides built-in support for **high-quality text** (e.g., anti-aliasing) and **Emoji rendering**—features not natively supported by GDI’s `Graphics` class.
-  - If you cannot inherit `IControl` (e.g., for system control wrappers), use `Canvas` like this:
-    ```csharp
-    var canvas = e.Graphics.High(); // Get Canvas instance
-    string emoji = "👍";
-    Size size = canvas.MeasureText(emoji, Font);
-    canvas.DrawText(emoji, Font, Style.Db.Text, new Rectangle(0, 0, size.Width, size.Height));
-    ```
+  Direct use of `Graphics` is not recommended. Instead, use `Canvas` for rendering to achieve better performance and consistency.
+  - Implement complete rendering through `OnDraw` + `OnDrawBg` methods
+  - If you cannot inherit `IControl` (e.g., for system control wrappers), obtain `Canvas` instance via `Graphics.High()`
+  - For `Bitmap` drawing, use `HighLay` method
+  ```csharp
+  // Get Canvas in Winform OnPaint
+  var canvas = e.Graphics.High(); // Get Canvas instance
+  
+  // Bitmap drawing
+  using (var bitmap = new Bitmap(width, height))
+  using (var graphics = Graphics.FromImage(bitmap))
+  using (var canvas = graphics.HighLay()) // Use HighLay for bitmap drawing
+  {
+	  // Drawing logic
+  }
+  ```
+
+- **Text Rendering Specification**:
+  - Do not use `StringFormat` for layout; instead, use `AntdUI.FormatFlags`
+  - For text containing Emoji, use `MeasureText` + `DrawText` (Emoji-adapted internally) instead of `MeasureString` + `String`
+  ```csharp
+  // Recommended: Use FormatFlags and DrawText
+  var flags = FormatFlags.Left | FormatFlags.VerticalCenter;
+  var size = canvas.MeasureText("Hello 👍", Font, flags);
+  canvas.DrawText("Hello 👍", Font, Style.Db.Text, ClientRectangle, flags);
+  ```
 
 - **Resource Disposal**:
   Always release GDI resources (e.g., `Bitmap`, `Brush`, `Pen`) immediately after use to avoid memory leaks. Use `using` statements for automatic disposal:
@@ -67,41 +85,38 @@ AntdUI relies on a custom drawing system for high-quality UI rendering. Adhere t
   // Recommended: Auto-dispose Brush with 'using'
   using (var fillBrush = new SolidBrush(_backgroundColor))
   {
-      e.Canvas.Fill(fillBrush, ClientRectangle);
+	  e.Canvas.Fill(fillBrush, ClientRectangle);
   }
 
-  // Avoid: Unmanaged resource leaks (no Dispose)
+  // Avoid: Unmanaged resource leaks
   var badBrush = new SolidBrush(_backgroundColor); 
-  e.Canvas.Fill(badBrush, ClientRectangle); // ❌ Leaks memory
+  e.Canvas.Fill(badBrush, ClientRectangle); // ❌ Causes memory leak
   ```
 
-
 ### 2.2 List Control Standards
-For controls with scrollable content (e.g., list boxes, data grids), follow these rules to ensure consistency:
+For controls with scrollable content (e.g., list boxes, data grids), follow these rules:
 
 - **Use `AntdUI.ScrollBar`**:
-  Do not use system scrollbars—always integrate `AntdUI.ScrollBar` (the library’s custom scrollbar component) for uniform styling and behavior.
+  Do not use system scrollbars. You must integrate the library's built-in `AntdUI.ScrollBar` component to ensure consistent styling and behavior.
 
-- **Expose Public Properties**:
-  Make scrollbar-related properties accessible to external code (e.g., for customization by end-users).
-
+- **Public Properties**:
+  Expose scrollbar-related properties to external code (for user customization).
 
 ### 2.3 `IControl.RenderRegion` Usage
-The `GraphicsPath RenderRegion` property in `AntdUI.IControl` is critical for **correct mask rendering** (e.g., for Spin controls on rounded-corner components).
+The `GraphicsPath RenderRegion` property in `AntdUI.IControl` is crucial for **correct mask rendering** (e.g., Spin controls on rounded-corner components).
 
 - **Set `RenderRegion` for Rounded Controls**:
-  If your control has rounded corners (or non-rectangular shapes), define `RenderRegion` to ensure Spin controls (or other overlay elements) respect the control’s shape:
+  If your control has rounded corners (or non-rectangular shapes), define `RenderRegion` to ensure Spin controls (or other overlay elements) adapt to the control's shape:
   ```csharp
   protected override GraphicsPath RenderRegion
   {
-      get
-      {
-          return ClientRectangle.RoundPath(8 * Config.Dpi);
-      }
+	  get
+	  {
+		  return ClientRectangle.RoundPath(8 * Config.Dpi);
+	  }
   }
-  ```
-  - Without `RenderRegion`, overlays like Spin may display as rectangular (breaking the UI’s visual consistency).
-
+  ```  
+  - Without `RenderRegion`, overlay elements like Spin may display as rectangular, breaking UI consistency.
 
 ## 3. Contribution Workflow
 

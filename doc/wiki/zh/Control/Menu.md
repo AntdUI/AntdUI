@@ -21,6 +21,10 @@ Menu 导航菜单 👚
 **Radius** | 圆角 | int | 6 |
 **Round** | 圆角样式 | bool | false |
 **FocusMode** | 焦点模式 | [TFocusMode](Enum.md#tfocusmode) | None |
+**FocusModeColor** | 焦点模式颜色 | Color`?` | `null` |
+**FocusModeSize** | 焦点模式大小 | int | 2 |
+**FocusModeSizeRatio** | 焦点模式大小比例 | float`?` | `null` |
+**FocusModeAlign** | 焦点模式方向 | [TAlignMini](Enum.md#talignmini) | None |
 **Indent** | 常规缩进 `和Tree那样缩进` | bool | false |
 **ShowSubBack** | 显示子菜单背景 | bool | false |
 **Unique** | 只保持一个子菜单的展开 | bool | false |

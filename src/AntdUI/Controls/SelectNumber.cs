@@ -16,7 +16,7 @@ namespace AntdUI
     /// <summary>
     /// SelectNumber 数字选择器
     /// </summary>
-    /// <seealso cref="SelectNumber"/>
+    /// <seealso cref="Select"/>
     /// <remarks>数字下拉选择器。</remarks>
     [Description("SelectNumber 选择器")]
     [ToolboxItem(true)]

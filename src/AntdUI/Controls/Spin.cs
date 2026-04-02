@@ -453,7 +453,6 @@ namespace AntdUI
         /// <param name="error">发生错误时的回调</param>
         public static Task open(Control control, string text, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config(text), action, end, error);
 
-
         /// <summary>
         /// Spin 加载中
         /// </summary>
