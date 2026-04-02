@@ -161,12 +161,10 @@ namespace AntdUI.In
                     {
                         Name = "__BARX__",
                         Dock = DockStyle.Bottom,
-                        Visible = false,
                         MinimumSize = new Size(0, h),
                         Size = new Size(w, h),
                         Radius = 0
                     };
-                    XScroll.SetSize(Panel.Width);
                     XScroll.ValueChanged += ScrollX_ValueChanged;
                     base.Controls.Add(XScroll);
                 }
@@ -177,12 +175,10 @@ namespace AntdUI.In
                     {
                         Name = "__BARY__",
                         Dock = DockStyle.Right,
-                        Visible = false,
                         MinimumSize = new Size(w, 0),
                         Size = new Size(w, h),
                         Radius = 0
                     };
-                    YScroll.SetSize(Panel.Height);
                     YScroll.ValueChanged += ScrollY_ValueChanged;
                     base.Controls.Add(YScroll);
                 }
@@ -205,30 +201,14 @@ namespace AntdUI.In
             }
         }
 
-        private void ScrollX_ValueChanged(object? sender, EventArgs e)
-        {
-            if (XScroll == null) return;
-            int value = XScroll.Value;
-            if (value >= 0 && value <= Panel.HorizontalScroll.Maximum) Panel.HorizontalScroll.Value = value;
-
-        }
-        private void ScrollY_ValueChanged(object? sender, EventArgs e)
-        {
-            if (YScroll == null) return;
-            int value = YScroll.Value;
-            if (value >= 0 && value <= Panel.VerticalScroll.Maximum) Panel.VerticalScroll.Value = value;
-        }
+        private void ScrollX_ValueChanged(object? sender, IntEventArgs e) => XScroll?.SetValue(Panel.HorizontalScroll);
+        private void ScrollY_ValueChanged(object? sender, IntEventArgs e) => YScroll?.SetValue(Panel.VerticalScroll);
 
         private void ScrollInfo()
         {
             if (YScroll == null || XScroll == null) return;
-            YScroll.Visible = Panel.VerticalScroll.Visible;
-            YScroll.Maximum = Panel.VerticalScroll.Maximum;
-            YScroll.Value = Panel.VerticalScroll.Value;
-
-            XScroll.Visible = Panel.HorizontalScroll.Visible;
-            XScroll.Maximum = Panel.HorizontalScroll.Maximum;
-            XScroll.Value = Panel.HorizontalScroll.Value;
+            YScroll.LoadValue(Panel.VerticalScroll);
+            XScroll.LoadValue(Panel.HorizontalScroll);
         }
 
         #endregion

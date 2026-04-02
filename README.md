@@ -63,7 +63,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Pagination**](doc/wiki/en/Control/Pagination.md) | ✅ | ✅ |
 ➡️| [**Steps**](doc/wiki/en/Control/Steps.md) | ❎ | ❎ |
 ||||
-⬇️| Data Entry `15` | Animation | Disable |
+⬇️| Data Entry `16` | Animation | Disable |
 ➡️| [**Checkbox**](doc/wiki/en/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker**](doc/wiki/en/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker**](doc/wiki/en/Control/DatePicker.md) | ✅ | ✅ |
@@ -73,6 +73,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Radio**](doc/wiki/en/Control/Radio.md) | ✅ | ✅ |
 ➡️| [**Rate**](doc/wiki/en/Control/Rate.md) | ✅ | ❎ |
 ➡️| [**Select**](doc/wiki/en/Control/Select.md) | ✅ | ✅ |
+➡️| [**SelectNumber**](doc/wiki/en/Control/SelectNumber.md) | ✅ | ✅ |
 ➡️| [**Slider**](doc/wiki/en/Control/Slider.md) | ✅ | ❎ |
 ➡️| [**SliderRange**](doc/wiki/en/Control/SliderRange.md) | ✅ | ❎ |
 ➡️| [**Switch**](doc/wiki/en/Control/Switch.md) | ✅ | ✅ |

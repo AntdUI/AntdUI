@@ -791,7 +791,7 @@ namespace AntdUI
 
         #region 浮动列
 
-        Rectangle? rect_fixed_L, rect_fixed_R;
+        Rectangle? rect_fixed_L, rect_fixed_R, rect_fixed_B;
 
         void PaintFixedColumnL(Canvas g, Rectangle rect, Rectangle rect_read, RowTemplate[] rows, StyleRow[] shows, SolidBrush fore, SolidBrush foreEnable, SolidBrush forecolumn, Font column_font, int sx, int sy, float radius)
         {
@@ -1019,7 +1019,7 @@ namespace AntdUI
                         int sFixedB = lastrow.row.RECT.Bottom - rect_read.Bottom + scrollBar;
 
                         var rect_Fixed = new Rectangle(rect_read.X, rect_read.Bottom - h - scrollBar, rect_read.Width, h + scrollBar);
-
+                        rect_fixed_B = rect_Fixed;
                         GraphicsPath? clipath = null;
 
                         #region 绘制阴影
@@ -1078,6 +1078,7 @@ namespace AntdUI
 
                         return sFixedB;
                     }
+                    else rect_fixed_B = null;
                 }
                 catch { }
             }

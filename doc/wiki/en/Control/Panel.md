@@ -34,6 +34,7 @@ Name | Description | Type | Default Value |
 **ShadowOffsetX** | Shadow offset X | int | 0 |
 **ShadowOffsetY** | Shadow offset Y | int | 0 |
 **ShadowAlign** | Shadow direction | [TAlignMini](Enum.md#talignmini) | None |
+**ShadowDelay** | Shadow delay milliseconds | int | 100 |
 **InnerPadding** | Inner padding | Padding | 0, 0, 0, 0 |
 **padding** | padding | Padding | 0, 0, 0, 0 | `obsolete, use InnerPadding` |
 **AutoScroll** | Whether to display scrollbar | bool | false |

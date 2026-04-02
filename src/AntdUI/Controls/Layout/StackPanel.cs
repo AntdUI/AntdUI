@@ -197,7 +197,6 @@ namespace AntdUI
                             Visible = false,
                             Radius = Radius
                         };
-                        YScroll.SetSize(Panel.Height);
                         YScroll.ValueChanged += Scroll_ValueChanged;
                         base.Controls.Add(YScroll);
                     }
@@ -218,7 +217,6 @@ namespace AntdUI
                             Visible = false,
                             Radius = Radius
                         };
-                        XScroll.SetSize(Panel.Width);
                         XScroll.ValueChanged += Scroll_ValueChanged;
                         base.Controls.Add(XScroll);
                     }
@@ -241,7 +239,7 @@ namespace AntdUI
             }
         }
 
-        private void Scroll_ValueChanged(object? sender, EventArgs e) => IOnSizeChanged();
+        private void Scroll_ValueChanged(object? sender, IntEventArgs e) => IOnSizeChanged();
 
         private StackPanelCore Panel;
         public XScrollBar? XScroll;
@@ -663,24 +661,27 @@ namespace AntdUI
                 if (Panel.Vertical)
                 {
                     if (Panel.YScroll == null) return;
-                    if (Panel.YScroll.Visible)
-                    {
-                        Rectangle clientRect = ClientRectangle, controlRect = activeControl.Bounds;
-                        int value = Panel.YScroll.Value, max = Panel.YScroll.Maximum;
-                        if (controlRect.Top < clientRect.Top) Panel.YScroll.Value = Math.Max(0, value + controlRect.Top - clientRect.Top);
-                        else if (controlRect.Bottom > clientRect.Bottom) Panel.YScroll.Value = Math.Min(max, value + controlRect.Bottom - clientRect.Bottom);
-                    }
+                    if (Panel.YScroll.Visible) Panel.YScroll.SetValue(ClientRectangle, activeControl.Bounds);
                 }
                 else
                 {
                     if (Panel.XScroll == null) return;
-                    if (Panel.XScroll.Visible)
-                    {
-                        Rectangle clientRect = ClientRectangle, controlRect = activeControl.Bounds;
-                        int value = Panel.XScroll.Value, max = Panel.XScroll.Maximum;
-                        if (controlRect.Left < clientRect.Left) Panel.XScroll.Value = Math.Max(0, value + controlRect.Left - clientRect.Left);
-                        else if (controlRect.Right > clientRect.Right) Panel.XScroll.Value = Math.Min(max, value + controlRect.Right - clientRect.Right);
-                    }
+                    if (Panel.XScroll.Visible) Panel.XScroll.SetValue(ClientRectangle, activeControl.Bounds);
+                }
+            }
+
+            protected override void OnMouseWheel(MouseEventArgs e)
+            {
+                base.OnMouseWheel(e);
+                if (Panel.Vertical)
+                {
+                    if (Panel.YScroll == null) return;
+                    if (Panel.YScroll.Visible) Panel.YScroll.MouseWheelY(e.Delta);
+                }
+                else
+                {
+                    if (Panel.XScroll == null) return;
+                    if (Panel.XScroll.Visible) Panel.XScroll.MouseWheelX(e.Delta);
                 }
             }
 

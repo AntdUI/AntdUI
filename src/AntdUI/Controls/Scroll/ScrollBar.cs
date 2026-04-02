@@ -334,7 +334,7 @@ namespace AntdUI
         void SetShow(int x, int y) => SetShow(x, RectX.Width, y, RectY.Height);
         void SetShow(int x, int x2, int y, int y2)
         {
-            string show_x = x + "_" + x2, show_y = y + "_" + y2;
+            string show_x = x + "_" + x2 + "_" + showX, show_y = y + "_" + y2 + "_" + showY;
             if (show_oldx == show_x && show_oldy == show_y) return;
             show_oldx = show_x;
             show_oldy = show_y;

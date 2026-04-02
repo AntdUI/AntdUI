@@ -20,6 +20,10 @@ Name | Description | Type | Default Value |
 **Radius** | Rounded corners | int | 6 |
 **Round** | Rounded corner style | bool | false |
 **FocusMode** | Focus mode | [TFocusMode](Enum.md#tfocusmode) | None |
+**FocusModeColor** | Focus mode color | Color`?` | `null` |
+**FocusModeSize** | Focus mode size | int | 2 |
+**FocusModeSizeRatio** | Focus mode size ratio | float`?` | `null` |
+**FocusModeAlign** | Focus mode alignment | [TAlignMini](Enum.md#talignmini) | None |
 **Indent** | Tree like indentation | bool | false |
 **ShowSubBack** | Display submenu background | bool | false |
 **Unique** | Keep only one submenu expanded | bool | false |

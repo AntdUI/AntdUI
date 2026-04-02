@@ -230,20 +230,26 @@ namespace AntdUI
                 selectedItem = it;
                 selectedValue = it.Tag;
                 if (AutoPrefixSvg) PrefixSvg = it.IconSvg;
-                if (AutoText) Text = it.Text;
+                ChangeText(it.Text);
             }
             else
             {
                 selectedItem = null;
                 selectedValue = obj;
-                if (AutoText)
-                {
-                    if (obj == null) Text = "";
-                    else Text = obj.ToString() ?? "";
-                }
+                ChangeText(obj?.ToString());
             }
             OnSelectedValueChanged(selectedValue);
             OnSelectedIndexChanged(selectedIndex);
+        }
+        bool disableText = false;
+        void ChangeText(string? text)
+        {
+            if (AutoText)
+            {
+                disableText = true;
+                Text = text ?? "";
+                disableText = false;
+            }
         }
         void SetChangeValue(BaseCollection items, object val)
         {
@@ -315,7 +321,7 @@ namespace AntdUI
             selectedIndex = y;
             selectedItem = item;
             selectedValue = value;
-            if (AutoText) Text = text;
+            ChangeText(text);
             if (AutoPrefixSvg && item != null) PrefixSvg = item.IconSvg;
             OnSelectedValueChanged(selectedValue);
             OnSelectedIndexChanged(selectedIndex);
@@ -406,6 +412,7 @@ namespace AntdUI
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
+            if (disableText) return;
             if (HasFocus)
             {
                 if (noex || filtertext == Text) return;
@@ -694,7 +701,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.LANG:
-                    if (AutoText) Text = selectedItem.Text;
+                    ChangeText(selectedItem.Text);
                     break;
             }
         }

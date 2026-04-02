@@ -13,9 +13,9 @@ namespace AntdUI
 {
     public class AsyncShadow : IDisposable
     {
-        IControl control;
+        Panel control;
         Func<Rectangle, GraphicsPath> call;
-        public AsyncShadow(IControl c, Func<Rectangle, GraphicsPath> action)
+        public AsyncShadow(Panel c, Func<Rectangle, GraphicsPath> action)
         {
             control = c;
             call = action;
@@ -57,34 +57,50 @@ namespace AntdUI
         string? code;
         void Core()
         {
-            code = DateTime.Now.Ticks.ToString();
-            if (run) return;
-            run = true;
-            ITask.Run(() =>
+            if (control.ShadowDelay > 0)
             {
-                int count = 0;
-                while (true)
+                code = DateTime.Now.Ticks.ToString();
+                if (run) return;
+                run = true;
+                ITask.Run(() =>
                 {
-                    var cid = code;
-                    if (has) System.Threading.Thread.Sleep(200);
-                    if (cid == code)
+                    int count = 0;
+                    while (true)
                     {
-                        Rectangle rect_client = (Rectangle)tag![0], rect_read = (Rectangle)tag[1];
-                        using (var path = call(rect_read))
+                        var cid = code;
+                        if (has) System.Threading.Thread.Sleep(control.ShadowDelay);
+                        if (cid == code)
                         {
-                            var tmp = path.PaintShadowO(rect_client.Width, rect_client.Height, (Color)tag[3], (int)tag[2]);
-                            wh = tmp.Width + "_" + tmp.Height;
-                            temp?.Dispose();
-                            temp = tmp;
-                            has = true;
-                            control.Invalidate();
+                            Rectangle rect_client = (Rectangle)tag![0], rect_read = (Rectangle)tag[1];
+                            using (var path = call(rect_read))
+                            {
+                                var tmp = path.PaintShadowO(rect_client.Width, rect_client.Height, (Color)tag[3], (int)tag[2]);
+                                wh = tmp.Width + "_" + tmp.Height;
+                                temp?.Dispose();
+                                temp = tmp;
+                                has = true;
+                                control.Invalidate();
+                            }
+                            run = false;
+                            return;
                         }
-                        run = false;
-                        return;
+                        count++;
                     }
-                    count++;
+                });
+            }
+            else
+            {
+                Rectangle rect_client = (Rectangle)tag![0], rect_read = (Rectangle)tag[1];
+                using (var path = call(rect_read))
+                {
+                    var tmp = path.PaintShadowO(rect_client.Width, rect_client.Height, (Color)tag[3], (int)tag[2]);
+                    wh = tmp.Width + "_" + tmp.Height;
+                    temp?.Dispose();
+                    temp = tmp;
+                    has = true;
+                    control.Invalidate();
                 }
-            });
+            }
         }
 
         public void Change() => wh = null;

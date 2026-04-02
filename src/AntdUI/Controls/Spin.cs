@@ -368,7 +368,9 @@ namespace AntdUI
                     model.LoadCompleted += () => Event.SetWait();
                     return ITask.Run(() =>
                     {
-                        if (Event.Wait(1000)) return;
+                        var r = Event.Wait(1000);
+                        Event.Dispose();
+                        if (r) return;
                         open_core(control, true, parent, config, action, end, error)?.Wait();
                     });
                 }
@@ -451,7 +453,6 @@ namespace AntdUI
         /// <param name="error">发生错误时的回调</param>
         public static Task open(Control control, string text, Func<Config, Task> action, Action? end = null, Action<Exception>? error = null) => open(control, new Config(text), action, end, error);
 
-
         /// <summary>
         /// Spin 加载中
         /// </summary>
@@ -492,7 +493,9 @@ namespace AntdUI
                     model.LoadCompleted += () => Event.SetWait();
                     return ITask.Run(() =>
                     {
-                        if (Event.Wait(1000)) return;
+                        var r = Event.Wait(1000);
+                        Event.Dispose();
+                        if (r) return;
                         open_core(control, true, parent, config, action, end, error)?.Wait();
                     });
                 }

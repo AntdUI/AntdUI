@@ -1202,12 +1202,12 @@ namespace AntdUI
         #endregion
 
         /// <summary>
-        /// 所有屏幕之外的位置
+        /// 所有屏幕之外的区域
         /// </summary>
-        public static Point OffScreenArea(int w, int h)
+        public static Rectangle OffScreenArea(int w, int h)
         {
             var allScreens = Screen.AllScreens;
-            if (allScreens.Length == 0) return new Point(-w, -h);
+            if (allScreens.Length == 0) return new Rectangle(-w * 2, -h * 2, w, h);
             int x = 0, y = 0;
             foreach (var screen in allScreens)
             {
@@ -1215,7 +1215,23 @@ namespace AntdUI
                 x = Math.Min(x, bounds.X);
                 y = Math.Min(y, bounds.Y);
             }
-            return new Point(x - w, y - h);
+            return new Rectangle((x - w) * 2, (y - h) * 2, w, h);
+        }
+        /// <summary>
+        /// 所有屏幕之外的坐标
+        /// </summary>
+        public static Point OffScreenLocation(int w, int h)
+        {
+            var allScreens = Screen.AllScreens;
+            if (allScreens.Length == 0) return new Point(-w * 2, -h * 2);
+            int x = 0, y = 0;
+            foreach (var screen in allScreens)
+            {
+                var bounds = screen.Bounds;
+                x = Math.Min(x, bounds.X);
+                y = Math.Min(y, bounds.Y);
+            }
+            return new Point((x - w) * 2, (y - h) * 2);
         }
 
         /// <summary>

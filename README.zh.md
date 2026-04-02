@@ -64,7 +64,7 @@
 ➡️| [**Pagination** 分页](doc/wiki/zh/Control/Pagination.md) | ✅ | ✅ |
 ➡️| [**Steps** 步骤条](doc/wiki/zh/Control/Steps.md) | ❎ | ❎ |
 ||||
-⬇️| 数据录入 `15` | 动画 | 禁用 |
+⬇️| 数据录入 `16` | 动画 | 禁用 |
 ➡️| [**Checkbox** 多选框](doc/wiki/zh/Control/Checkbox.md) | ✅ | ✅ |
 ➡️| [**ColorPicker** 颜色选择器](doc/wiki/zh/Control/ColorPicker.md) | ✅ | ✅ |
 ➡️| [**DatePicker** 日期选择框](doc/wiki/zh/Control/DatePicker.md) | ✅ | ✅ |
@@ -74,6 +74,7 @@
 ➡️| [**Radio** 单选框](doc/wiki/zh/Control/Radio.md) | ✅ | ✅ |
 ➡️| [**Rate** 评分](doc/wiki/zh/Control/Rate.md) | ✅ | ❎ |
 ➡️| [**Select** 选择器](doc/wiki/zh/Control/Select.md) | ✅ | ✅ |
+➡️| [**SelectNumber** 数字选择器](doc/wiki/zh/Control/SelectNumber.md) | ✅ | ✅ |
 ➡️| [**Slider** 滑动输入条](doc/wiki/zh/Control/Slider.md) | ✅ | ❎ |
 ➡️| [**SliderRange** 滑动范围输入条](doc/wiki/zh/Control/SliderRange.md) | ✅ | ❎ |
 ➡️| [**Switch** 开关](doc/wiki/zh/Control/Switch.md) | ✅ | ✅ |
