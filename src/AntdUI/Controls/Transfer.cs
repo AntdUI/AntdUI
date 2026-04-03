@@ -155,6 +155,12 @@ namespace AntdUI
         public int? ItemHeight { get; set; }
 
         /// <summary>
+        /// 拖拽排序
+        /// </summary>
+        [Description("拖拽排序"), Category("行为"), DefaultValue(false)]
+        public bool DragSort { get; set; }
+
+        /// <summary>
         /// 列表框圆角
         /// </summary>
         [Description("列表框圆角"), Category("外观"), DefaultValue(6)]
@@ -517,7 +523,6 @@ namespace AntdUI
                     if (it.Visible && it.IsTarget == isTarget)
                     {
                         count++;
-                        // 绘制项背景
                         if (it.selected)
                         {
                             selectedCount++;
@@ -533,15 +538,33 @@ namespace AntdUI
                                 g.Fill(brush, it.rect);
                             }
                         }
-
-                        PaintItemCheck(g, it);
-
+                        PaintItemCheck(g, it, name);
                         // 绘制项文本
                         if (it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
                         else g.String(it.Text, Font, Colour.TextQuaternary.Get(name, ColorScheme), it.rect_text, sf);
                     }
                 }
                 g.Restore(state);
+
+                if (dragBody != null && dragBody.hand)
+                {
+                    foreach (var it in items)
+                    {
+                        if (dragBody.i == it)
+                        {
+                            g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
+                        }
+                        else if (dragBody.im == it)
+                        {
+                            using (var brush_split = new SolidBrush(Colour.BorderColor.Get(name, ColorScheme)))
+                            {
+                                int sp = (int)(2 * Dpi);
+                                if (dragBody.last) g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Bottom - sp, it.rect.Width, sp * 2));
+                                else g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Y - sp, it.rect.Width, sp * 2));
+                            }
+                        }
+                    }
+                }
 
                 // 绘制标题/数量
                 string countText = $"{selectedCount}/{count}";
@@ -575,9 +598,8 @@ namespace AntdUI
             }
         }
 
-        private void PaintItemCheck(Canvas g, TransferItem it)
+        private void PaintItemCheck(Canvas g, TransferItem it, string name)
         {
-            var name = nameof(Transfer);
             using (var path = it.rect_check.RoundPath(it.rect_check.Height * .2F))
             {
                 if (it.Enabled)
@@ -664,10 +686,52 @@ namespace AntdUI
             if (ScrollBarSource.MouseMoveY(e.X, e.Y) && ScrollBarTarget.MouseMoveY(e.X, e.Y))
             {
                 base.OnMouseMove(e);
-
+                if (DragSort && mdown is TransferItem item)
+                {
+                    if (dragBody != null)
+                    {
+                        if (dragBody.hand)
+                        {
+                            DropItem(e.X, e.Y, dragBody);
+                            SetCursor(CursorType.SizeAll);
+                            Invalidate();
+                            return;
+                        }
+                        else
+                        {
+                            int cx = e.X - dragBody._ox, cy = e.Y - dragBody._oy;
+                            int threshold = (int)(Config.TouchThreshold * Dpi);
+                            if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold)
+                            {
+                                SetCursor(CursorType.SizeAll);
+                                dragBody.hand = true;
+                                DropItem(e.X, e.Y, dragBody);
+                                return;
+                            }
+                        }
+                    }
+                }
                 hover_to_left.Switch = rect_toLeft.Contains(e.X, e.Y);
                 hover_to_right.Switch = rect_toRight.Contains(e.X, e.Y);
-
+                if (hover_to_left.Switch || hover_to_right.Switch)
+                {
+                    SetCursor(true);
+                    return;
+                }
+                if (ShowSelectAll)
+                {
+                    if (rect_sourceCheckbox.Contains(e.X, e.Y) || rect_sourceCheckboxText.Contains(e.X, e.Y))
+                    {
+                        SetCursor(true);
+                        return;
+                    }
+                    if (rect_targetCheckbox.Contains(e.X, e.Y) || rect_targetCheckboxText.Contains(e.X, e.Y))
+                    {
+                        SetCursor(true);
+                        return;
+                    }
+                }
+                int count = 0;
                 int sy1 = ScrollBarSource.ValueY, sy2 = ScrollBarTarget.ValueY;
                 if (items == null) return;
                 foreach (var it in items)
@@ -676,77 +740,75 @@ namespace AntdUI
                     {
                         if (it.IsTarget) it.Hover = it.rect.Contains(e.X, e.Y + sy2);
                         else it.Hover = it.rect.Contains(e.X, e.Y + sy1);
+                        if (it.Hover) count++;
                     }
                     else it.Hover = false;
+                }
+                SetCursor(count > 0);
+            }
+        }
+
+        void DropItem(int x, int y, DragHeader dragBody)
+        {
+            foreach (var it in items!)
+            {
+                if (it.Visible && it.Enabled && it.IsTarget == dragBody.i.IsTarget)
+                {
+                    if (it == dragBody.i) continue;
+                    dragBody.last = y > dragBody._oy;
+                    bool hover = false;
+                    if (it.IsTarget) hover = it.rect.Contains(x, y + ScrollBarTarget.ValueY);
+                    else hover = it.rect.Contains(x, y + ScrollBarSource.ValueY);
+                    if (hover)
+                    {
+                        dragBody.im = it;
+                        Invalidate();
+                        return;
+                    }
                 }
             }
         }
 
+        object? mdown;
+        DragHeader? dragBody;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (showSearch) Focus();
+            mdown = null;
+            dragBody = null;
             if (ScrollBarSource.MouseDownY(e.X, e.Y) && ScrollBarTarget.MouseDownY(e.X, e.Y))
             {
                 base.OnMouseDown(e);
                 if (e.Button == MouseButtons.Left)
                 {
                     if (items == null) return;
-
                     if (ShowSelectAll)
                     {
                         if (rect_sourceCheckbox.Contains(e.X, e.Y) || rect_sourceCheckboxText.Contains(e.X, e.Y))
                         {
-                            // 切换全选状态
-                            bool newState = sourceSelectAll == CheckState.Unchecked ? true : false;
-                            int count = 0, check_count = 0;
-                            // 更新所有项的选中状态
-                            foreach (var it in items)
-                            {
-                                if (it.Visible && it.Enabled)
-                                {
-                                    if (it.IsTarget) continue;
-                                    count++;
-                                    it.selected = newState;
-                                    if (it.selected) check_count++;
-                                }
-                            }
-                            if (count > 0)
-                            {
-                                sourceSelectAll = newState ? CheckState.Checked : CheckState.Unchecked;
-                                hover_to_right.Enable = check_count > 0;
-                                LoadLayout();
-                            }
+                            mdown = "sourceCheckbox";
                             return;
                         }
                         if (rect_targetCheckbox.Contains(e.X, e.Y) || rect_targetCheckboxText.Contains(e.X, e.Y))
                         {
-                            // 切换全选状态
-                            bool newState = targetSelectAll == CheckState.Unchecked ? true : false;
-                            int count = 0, check_count = 0;
-                            // 更新所有项的选中状态
-                            foreach (var it in items)
-                            {
-                                if (it.Visible && it.Enabled && it.IsTarget)
-                                {
-                                    count++;
-                                    it.selected = newState;
-                                    if (it.selected) check_count++;
-                                }
-                            }
-                            if (count > 0)
-                            {
-                                targetSelectAll = newState ? CheckState.Checked : CheckState.Unchecked;
-                                hover_to_left.Enable = !OneWay && check_count > 0;
-                                LoadLayout();
-                            }
+                            mdown = "targetCheckbox";
                             return;
                         }
+                    }
+                    if (rect_toRight.Contains(e.X, e.Y))
+                    {
+                        mdown = "toRight";
+                        return;
+                    }
+                    if (rect_toLeft.Contains(e.X, e.Y) && !OneWay)
+                    {
+                        mdown = "toLeft";
+                        return;
                     }
                     // 处理源列表项点击
                     if (rect_source.Contains(e.X, e.Y))
                     {
                         int sy = ScrollBarSource.ValueY;
-                        int change = 0, count = 0, check_count = 0;
                         foreach (var it in items)
                         {
                             if (it.Visible && it.Enabled)
@@ -754,20 +816,11 @@ namespace AntdUI
                                 if (it.IsTarget) continue;
                                 if (it.rect.Contains(e.X, e.Y + sy))
                                 {
-                                    it.selected = !it.selected;
-                                    change++;
+                                    mdown = it;
+                                    if (DragSort) dragBody = new DragHeader(e.X, e.Y, it);
+                                    return;
                                 }
-                                count++;
-                                if (it.selected) check_count++;
                             }
-                        }
-                        if (change > 0)
-                        {
-                            // 更新全选状态
-                            if (check_count > 0) sourceSelectAll = check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
-                            else sourceSelectAll = CheckState.Unchecked;
-                            hover_to_right.Enable = check_count > 0;
-                            Invalidate();
                         }
                     }
 
@@ -775,44 +828,210 @@ namespace AntdUI
                     if (rect_target.Contains(e.X, e.Y))
                     {
                         int sy = ScrollBarTarget.ValueY;
-                        int change = 0, count = 0, check_count = 0;
                         foreach (var it in items)
                         {
                             if (it.Visible && it.Enabled && it.IsTarget)
                             {
                                 if (it.rect.Contains(e.X, e.Y + sy))
                                 {
-                                    it.selected = !it.selected;
-                                    change++;
+                                    mdown = it;
+                                    if (DragSort) dragBody = new DragHeader(e.X, e.Y, it);
+                                    return;
                                 }
-                                count++;
-                                if (it.selected) check_count++;
                             }
                         }
-                        if (change > 0)
-                        {
-                            if (check_count > 0) targetSelectAll = check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
-                            else targetSelectAll = CheckState.Unchecked;
-                            hover_to_left.Enable = !OneWay && check_count > 0;
-                            Invalidate();
-                        }
                     }
+
                 }
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (dragBody != null)
+            {
+                if (dragBody.hand)
+                {
+                    var dir = new Dictionary<int, TransferItem>(items!.Count);
+                    int i = 0, dim = -1, di = -1;
+                    foreach (var it in items)
+                    {
+                        if (it.IsTarget == dragBody.i.IsTarget)
+                        {
+                            dir.Add(i, it);
+                            if (it == dragBody.i) di = i;
+                            if (it == dragBody.im) dim = i;
+                        }
+                        i++;
+                    }
+                    if (dim > -1 && di > -1 && dim != di)
+                    {
+                        try
+                        {
+                            int newIndex = dim > di ? (dragBody.last ? dim : dim - 1) : (dragBody.last ? dim + 1 : dim);
+                            items.InsertAntRemove(newIndex, dragBody.i);
+                        }
+                        catch { }
+                    }
+                    dragBody = null;
+                    Invalidate();
+                    return;
+                }
+            }
+            dragBody = null;
             if (ScrollBarSource.MouseUp() && ScrollBarTarget.MouseUp())
             {
                 base.OnMouseUp(e);
-                if (e.Button == MouseButtons.Left)
+                if (mdown == null) return;
+                if (mdown is TransferItem it)
                 {
-                    // 执行向右移动操作
-                    if (rect_toRight.Contains(e.X, e.Y)) MoveSelectedItemsToRight();
-                    if (rect_toLeft.Contains(e.X, e.Y) && !OneWay) MoveSelectedItemsToLeft();
+                    if (it.IsTarget)
+                    {
+                        if (it.rect.Contains(e.X, e.Y + ScrollBarTarget.ValueY)) ClickTarget(it);
+                    }
+                    else
+                    {
+                        if (it.rect.Contains(e.X, e.Y + ScrollBarSource.ValueY)) ClickSource(it);
+                    }
+                }
+                else if (mdown is string code)
+                {
+                    switch (code)
+                    {
+                        case "sourceCheckbox":
+                            if (rect_sourceCheckbox.Contains(e.X, e.Y) || rect_sourceCheckboxText.Contains(e.X, e.Y)) CheckAllSource();
+                            break;
+                        case "targetCheckbox":
+                            if (rect_targetCheckbox.Contains(e.X, e.Y) || rect_targetCheckboxText.Contains(e.X, e.Y)) CheckAllTarget();
+                            break;
+                        case "toRight":
+                            if (rect_toRight.Contains(e.X, e.Y)) MoveSelectedItemsToRight();
+                            break;
+                        case "toLeft":
+                            if (rect_toLeft.Contains(e.X, e.Y) && !OneWay) MoveSelectedItemsToLeft();
+                            break;
+                    }
                 }
             }
+        }
+
+        void CheckAllSource()
+        {
+            if (items == null) return;
+            bool newState = sourceSelectAll == CheckState.Unchecked ? true : false;
+            int count = 0, check_count = 0;
+            // 更新所有项的选中状态
+            foreach (var it in items)
+            {
+                if (it.Visible && it.Enabled)
+                {
+                    if (it.IsTarget) continue;
+                    count++;
+                    it.selected = newState;
+                    if (it.selected) check_count++;
+                }
+            }
+            if (count > 0)
+            {
+                sourceSelectAll = newState ? CheckState.Checked : CheckState.Unchecked;
+                hover_to_right.Enable = check_count > 0;
+                LoadLayout();
+            }
+        }
+        void CheckAllTarget()
+        {
+            if (items == null) return;
+            bool newState = targetSelectAll == CheckState.Unchecked ? true : false;
+            int count = 0, check_count = 0;
+            // 更新所有项的选中状态
+            foreach (var it in items)
+            {
+                if (it.Visible && it.Enabled && it.IsTarget)
+                {
+                    count++;
+                    it.selected = newState;
+                    if (it.selected) check_count++;
+                }
+            }
+            if (count > 0)
+            {
+                targetSelectAll = newState ? CheckState.Checked : CheckState.Unchecked;
+                hover_to_left.Enable = !OneWay && check_count > 0;
+                LoadLayout();
+            }
+        }
+        void ClickSource(TransferItem item)
+        {
+            int change = 0, count = 0, check_count = 0;
+            foreach (var it in items!)
+            {
+                if (it.Visible && it.Enabled)
+                {
+                    if (it.IsTarget) continue;
+                    if (it == item)
+                    {
+                        it.selected = !it.selected;
+                        change++;
+                    }
+                    count++;
+                    if (it.selected) check_count++;
+                }
+            }
+            if (change > 0)
+            {
+                // 更新全选状态
+                if (check_count > 0) sourceSelectAll = check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
+                else sourceSelectAll = CheckState.Unchecked;
+                hover_to_right.Enable = check_count > 0;
+                Invalidate();
+            }
+        }
+        void ClickTarget(TransferItem item)
+        {
+            int change = 0, count = 0, check_count = 0;
+            foreach (var it in items!)
+            {
+                if (it.Visible && it.Enabled && it.IsTarget)
+                {
+                    if (it == item)
+                    {
+                        it.selected = !it.selected;
+                        change++;
+                    }
+                    count++;
+                    if (it.selected) check_count++;
+                }
+            }
+            if (change > 0)
+            {
+                if (check_count > 0) targetSelectAll = check_count >= count ? CheckState.Checked : CheckState.Indeterminate;
+                else targetSelectAll = CheckState.Unchecked;
+                hover_to_left.Enable = !OneWay && check_count > 0;
+                Invalidate();
+            }
+        }
+
+        internal class DragHeader
+        {
+            public DragHeader(int ox, int oy, TransferItem _i)
+            {
+                _ox = ox;
+                _oy = oy;
+                i = _i;
+            }
+            public int _ox { get; set; }
+            public int _oy { get; set; }
+            public void SetEnable(int x, int y)
+            {
+                if (x == _ox && y == _oy) return;
+                enable = true;
+            }
+
+            public bool enable { get; set; }
+            public TransferItem i { get; set; }
+            public TransferItem? im { get; set; }
+            public bool last { get; set; }
+            public bool hand { get; set; }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
