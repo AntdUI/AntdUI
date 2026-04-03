@@ -34,7 +34,7 @@ namespace AntdUI
             realTime = table.FilterRealTime;
             dv.VirtualMode = table.VirtualMode;
             dv.ShowCheckBg = table.FilterShowCheckBg ?? table.ShowCheckBg;
-            dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetLocalizationTitle("Filter.SelectAll") };
+            dv.Columns = new ColumnCollection { new ColumnCheck("check"), new Column("text", "(全选)").SetSortOrder(table.FilterSortOrder ?? currentColumn.SortOrder).SetLocalizationTitle("Filter.SelectAll") };
             Option.Table = table;
             Option.Column = currentColumn;
             inputSearch.PlaceholderText = Localization.Get("Filter.Search", "搜索") + " " + currentColumn.Title;
@@ -179,7 +179,7 @@ namespace AntdUI
                     if (item_null == null)
                     {
                         item_null = new AntItem[] { new AntItem("tag"), new AntItem("check", check), new AntItem("text", new CellText().SetText("(空白)", "Filter.Blank").SetFore(Style.Db.TextTertiary)) };
-                        items.Add(item_null);
+                        items.Insert(0, item_null);
                     }
                 }
                 else
@@ -246,7 +246,7 @@ namespace AntdUI
             if (_table.rows == null) return;
             if (popover is LayeredFormPopover layered)
             {
-                foreach (var it in _table.rows[0].cells)
+                foreach (var it in _table.rows.First.cells)
                 {
                     if (it.COLUMN.Key == _column.Key && it is Table.TCellColumn col)
                     {

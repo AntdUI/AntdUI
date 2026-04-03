@@ -95,7 +95,7 @@ namespace AntdUI
         private void MoveToNextEditableCell(NavigationConfig navigationConfig, int rowIndex, string columnKey)
         {
             if (rows == null) return;
-            foreach (var it in rows[0].cells)
+            foreach (var it in rows.First.cells)
             {
                 if (it.COLUMN.Key == columnKey)
                 {

@@ -1079,6 +1079,11 @@ namespace AntdUI
 
     public class GroupSelectItem : ISelectItem
     {
+        public GroupSelectItem()
+        {
+            _title = "";
+        }
+
         public GroupSelectItem(string title)
         {
             _title = title;
@@ -1105,6 +1110,29 @@ namespace AntdUI
         public IList<object>? Sub { get; set; }
 
         public object? Tag { get; set; }
+
+        #region 设置
+
+        public GroupSelectItem SetTitle(string value, string? localization = null)
+        {
+            _title = value;
+            LocalizationTitle = localization;
+            return this;
+        }
+
+        public GroupSelectItem SetSub(params object[] value)
+        {
+            Sub = value;
+            return this;
+        }
+
+        public GroupSelectItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
 
         public override string ToString() => Title;
     }

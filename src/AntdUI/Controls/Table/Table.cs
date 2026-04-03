@@ -892,6 +892,12 @@ namespace AntdUI
         public bool? FilterShowCheckBg { get; set; }
 
         /// <summary>
+        /// 筛选启用排序
+        /// </summary>
+        [Description("筛选启用排序"), Category("行为"), DefaultValue(null)]
+        public bool? FilterSortOrder { get; set; }
+
+        /// <summary>
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
@@ -2380,7 +2386,7 @@ namespace AntdUI
             get
             {
                 if (PARENT?.rows == null || PARENT.rows.Length == 0) return -1;
-                foreach (var col in PARENT.rows[0].cells)
+                foreach (var col in PARENT.rows.First.cells)
                 {
                     if (col.COLUMN == this) return col.INDEX;
                 }
@@ -2511,7 +2517,7 @@ namespace AntdUI
                     Invalidate();
                     return;
                 }
-                foreach (var item in PARENT.rows[0].cells)
+                foreach (var item in PARENT.rows.First.cells)
                 {
                     if (item.COLUMN.SortOrder) item.COLUMN.sortMode = SortMode.NONE;
                 }
