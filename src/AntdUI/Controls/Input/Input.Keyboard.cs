@@ -533,25 +533,12 @@ namespace AntdUI
             {
                 int start = selectionStartTemp, end = selectionLength;
                 AddHistoryRecord();
-                int end_temp = start + end;
-                var texts = new List<string>(end);
-                foreach (var it in cache_font)
-                {
-                    if (it.i < start || it.i >= end_temp) texts.Add(it.text);
-                }
-                var dsadsa = string.Join("", texts);
                 bool set_t = SetTextRemove(ref cache_font, start, end), set_e = SetSelectionLength(0), set_s = SetSelectionStart(start);
                 if (set_t || set_s || set_e) Invalidate();
             }
             else if (selectionStart < cache_font.Count)
             {
                 int start = selectionStart;
-                var texts = new List<string>(cache_font.Count);
-                foreach (var it in cache_font)
-                {
-                    if (start != it.i) texts.Add(it.text);
-                }
-                var tmp = string.Join("", texts);
                 bool set_t = SetTextRemove(ref cache_font, start, 1), set_s = SetSelectionStart(start);
                 if (set_t || set_s) Invalidate();
             }

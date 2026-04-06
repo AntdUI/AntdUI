@@ -37,15 +37,21 @@ namespace AntdUI
         }
         bool SetTextIn(string text, int start, out int len, bool changed = true)
         {
-            var value = _text.Insert(start, text);
-            _text = value;
             var font_widths = FixFontWidth(text, start, out len);
-            if (cache_font == null) cache_font = font_widths;
-            else cache_font.InsertRange(start, font_widths);
+            if (cache_font == null)
+            {
+                cache_font = font_widths;
+                _text = text;
+            }
+            else
+            {
+                cache_font.InsertRange(start, font_widths);
+                _text = GetText(cache_font);
+            }
             isempty = false;
             OnAllowClear();
             CalculateRect();
-            OnSetText(value, isempty);
+            OnSetText(_text, isempty);
             SetSelectionStart(cache_font.Count);
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
@@ -79,9 +85,7 @@ namespace AntdUI
             }
             if (cache_font.Count > 0)
             {
-                var texts = new List<string>(cache_font.Count);
-                foreach (var it in cache_font) texts.Add(it.text);
-                var value = string.Join("", texts);
+                var value = GetText(cache_font);
                 if (_text == value) return false;
                 isempty = false;
                 _text = value;
@@ -106,6 +110,13 @@ namespace AntdUI
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
             return true;
+        }
+
+        string GetText(List<CacheFont> cache_font)
+        {
+            var texts = new List<string>(cache_font.Count);
+            foreach (var it in cache_font) texts.Add(it.text);
+            return string.Join("", texts);
         }
 
         protected virtual void OnSetText(string text, bool isempty)
