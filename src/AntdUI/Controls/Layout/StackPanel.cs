@@ -41,7 +41,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, BorderWidth);
 
         /// <summary>
         /// 是否垂直方向
@@ -124,6 +124,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 内部容器背景透明
+        /// </summary>
+        [Description("内部容器背景透明"), Category("外观"), DefaultValue(false)]
+        public bool AutoContainerBgTransparent { get; set; }
+
         #endregion
 
         #region 原生
@@ -174,6 +180,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             InitScroll();
+            if (AutoContainerBgTransparent) Panel.BackColor = Color.Transparent;
             IOnSizeChanged();
         }
 

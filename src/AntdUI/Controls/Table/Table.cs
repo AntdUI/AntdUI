@@ -981,6 +981,8 @@ namespace AntdUI
             }
         }
 
+        bool IsPauseLayout => pauseLayout || pauseLayoutByCheckAll;
+
         #endregion
 
         #region 初始化

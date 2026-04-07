@@ -85,7 +85,13 @@ namespace AntdUI
             }
             if (cache_font.Count > 0)
             {
-                var value = GetText(cache_font);
+                var texts = new List<string>(cache_font.Count);
+                for (int i = 0; i < cache_font.Count; i++)
+                {
+                    cache_font[i].i = i;
+                    texts.Add(cache_font[i].text);
+                }
+                var value = string.Join("", texts);
                 if (_text == value) return false;
                 isempty = false;
                 _text = value;

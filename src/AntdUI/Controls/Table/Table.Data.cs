@@ -381,7 +381,7 @@ namespace AntdUI
         }
         void BindingItemChanged(object? sender, int i, bool eq)
         {
-            if (dataTmp == null) return;
+            if (dataTmp == null || pauseLayoutByCheckAll) return;
             if (sender is IList list)
             {
                 var row = list[i];
