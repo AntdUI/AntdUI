@@ -201,11 +201,6 @@ namespace AntdUI
                         w = control.Width + paddingx * 2 + cpaddingx2;
                         wp = control.Width + cpaddingx2;
                         Controls.Add(control);
-                        if (config.Resizable)
-                        {
-                            control.Dock = DockStyle.Fill;
-                            control.BringToFront();
-                        }
                         control.Disposed += (a, b) => Close();
                         if (_config.Icon == TType.None && _config.IconCustom == null)
                         {
@@ -246,6 +241,12 @@ namespace AntdUI
                         }
                         if (config.CloseIcon) rect_close = new Rectangle(rectTitle.Right, rectTitle.Y, icon_size, icon_size);
                         control.Bounds = rectContent;
+                        if (config.Resizable)
+                        {
+                            Padding = new Padding(rectContent.Left, rectContent.Top, Width - rectContent.Right, Height - butt_h - rectContent.Bottom);
+                            control.Dock = DockStyle.Fill;
+                            control.BringToFront();
+                        }
                     }
                     else if (config.Content is IList<Modal.TextLine> list)
                     {

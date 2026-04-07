@@ -41,7 +41,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, BorderWidth);
 
         /// <summary>
         /// 是否垂直方向
@@ -124,6 +124,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 内部容器背景透明
+        /// </summary>
+        [Description("内部容器背景透明"), Category("外观"), DefaultValue(false)]
+        public bool AutoContainerBgTransparent { get; set; }
+
         #endregion
 
         #region 原生
@@ -174,6 +180,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             InitScroll();
+            if (AutoContainerBgTransparent) Panel.BackColor = Color.Transparent;
             IOnSizeChanged();
         }
 
@@ -275,7 +282,29 @@ namespace AntdUI
         public void Remove(Control control) => Panel.Controls.Remove(control);
         public void RemoveAt(int index) => Panel.Controls.RemoveAt(index);
 
-        public void Add(Control control) => Panel.Controls.Add(control);
+        public void Add(Control control, bool focus = false)
+        {
+            Panel.Controls.Add(control);
+            if (focus) control.Focus();
+        }
+        public void AddToBack(Control control, bool focus = false)
+        {
+            var old = pauseLayout;
+            PauseLayout = true;
+            Panel.Controls.Add(control);
+            pauseLayout = old;
+            control.BringToFront();
+            if (focus) control.Focus();
+        }
+        public void AddToFront(Control control, bool focus = false)
+        {
+            var old = pauseLayout;
+            PauseLayout = true;
+            Panel.Controls.Add(control);
+            pauseLayout = old;
+            control.SendToBack();
+            if (focus) control.Focus();
+        }
 
         public void Clear() => Panel.Controls.Clear();
 
@@ -640,6 +669,8 @@ namespace AntdUI
                 base.OnControlAdded(e);
                 e.Control!.GotFocus += Control_GotFocus;
             }
+
+            protected override void OnLayout(LayoutEventArgs levent) => Panel.IOnLayout(levent);
 
             protected override void OnControlRemoved(ControlEventArgs e)
             {

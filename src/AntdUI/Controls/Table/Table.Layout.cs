@@ -39,7 +39,7 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                if (pauseLayout) return false;
+                if (IsPauseLayout) return false;
                 var rect = ClientRectangle;
                 if (rect.Width > 1 && rect.Height > 1) LoadLayout(rect);
                 return true;
@@ -1273,11 +1273,8 @@ namespace AntdUI
                 {
                     var b = GetCheckValue(checkColumn, value, out _);
                     row.Select = check.Checked = b;
-                    if (checkColumn.NoTitle)
-                    {
-                        if (pauseLayout) return;
-                        IsCheckAll(cel_i, checkColumn);
-                    }
+                    if (IsPauseLayout) return;
+                    if (checkColumn.NoTitle) IsCheckAll(cel_i, checkColumn);
                 }
                 else row.Select = check.Checked = GetCheckValue(value, out _);
                 Invalidate();
@@ -1299,12 +1296,12 @@ namespace AntdUI
             }
         }
 
+        bool pauseLayoutByCheckAll = false;
         internal void CheckAll(int i_cel, ColumnCheck columnCheck, bool value)
         {
             if (rows == null) return;
             int t_count = 0;
-            bool old = pauseLayout;
-            pauseLayout = true;
+            pauseLayoutByCheckAll = true;
             if (columnCheck._out == null)
             {
                 if (VirtualMode)
@@ -1399,7 +1396,7 @@ namespace AntdUI
                     }
                 }
             }
-            pauseLayout = old;
+            pauseLayoutByCheckAll = false;
             if (t_count > 0)
             {
                 if (value) columnCheck.CheckState = System.Windows.Forms.CheckState.Checked;

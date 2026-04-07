@@ -22,7 +22,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Items")]
     [DefaultEvent("SelectChanged")]
-    public class Tree : IControl, IEventListener
+    public class Tree : IControl, IEventListener, IScrollBar
     {
         #region 属性
 
@@ -220,7 +220,7 @@ namespace AntdUI
             {
                 if (pauseLayout == value) return;
                 pauseLayout = value;
-                if (!value) ChangeList(true);
+                if (!value) ChangeList(true, true);
                 OnPropertyChanged(nameof(PauseLayout));
             }
         }
@@ -262,6 +262,23 @@ namespace AntdUI
 
         [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
+
+        bool virtualMode = false;
+        /// <summary>
+        /// 虚拟模式（大数据量时仅渲染可见行）
+        /// </summary>
+        [Description("虚拟模式"), Category("行为"), DefaultValue(false)]
+        public bool VirtualMode
+        {
+            get => virtualMode;
+            set
+            {
+                if (virtualMode == value) return;
+                virtualMode = value;
+                _flatList = null;
+                ChangeList(true);
+            }
+        }
 
         #endregion
 
@@ -323,12 +340,12 @@ namespace AntdUI
 
         #region 重写
 
-        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
-        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
-        internal void OnNodeMouseDown(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDown(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
-        internal void OnNodeMouseUp(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseUp(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
-        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDoubleClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), type, args);
-        internal void OnNodeMouseMove(TreeItem item, bool hover) => OnNodeMouseMove(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY), hover);
+        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
+        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
+        internal void OnNodeMouseDown(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDown(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
+        internal void OnNodeMouseUp(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseUp(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
+        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDoubleClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
+        internal void OnNodeMouseMove(TreeItem item, bool hover) => OnNodeMouseMove(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), hover);
 
         protected virtual void OnSelectChanged(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => SelectChanged?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
         protected virtual void OnNodeMouseClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
@@ -391,17 +408,18 @@ namespace AntdUI
             }
             return false;
         }
-        internal void ChangeList(bool print = false)
+        internal void ChangeList(bool print = false, bool rdata = false)
         {
             if (CanLayout())
             {
+                virtualMode_Y = 0;
                 var rect = ClientRectangle;
                 int x = 0, y = 0;
                 bool has = HasSub(items!);
                 this.GDI(g =>
                 {
                     var size = g.MeasureString(Config.NullText, Font);
-                    int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Dpi) : icon_size, gap = (int)(_gap * Dpi), gapI = gap / 2, height = icon_size + gap * 2;
+                    int icon_size = (int)(size.Height * iconratio), depth_gap = GapIndent.HasValue ? (int)(GapIndent.Value * Dpi) : icon_size, gap = (int)(_gap * Dpi), gapI = gap / 2;
                     check_radius = icon_size * .2F;
                     if (CheckStrictly && has && items![0].PARENT == null && items[0].ParentItem == null)
                     {
@@ -427,7 +445,36 @@ namespace AntdUI
                             }
                         }
                     }
-                    ChangeList(g, rect, null, items, has, ref x, ref y, height, depth_gap, icon_size, gap, gapI, 0, true);
+                    if (virtualMode)
+                    {
+                        _virtualRowHeight = size.Height + gap + gapI;
+                        if (rdata) _flatListT = BuildFlatList(null, items, 0);
+                        else
+                        {
+                            if (_flatListT == null) _flatListT = BuildFlatList(null, items, 0);
+                        }
+                        int totalRows = _flatListT!.Count;
+                        y = totalRows * _virtualRowHeight;
+
+                        int sy = ScrollBar.ValueY,
+                        visibleRowCount = (int)Math.Ceiling((double)rect.Height / _virtualRowHeight) + 2,
+                        start = (int)Math.Floor((double)sy / _virtualRowHeight),
+                         end = Math.Min(start + visibleRowCount, _flatListT.Count);
+                        _flatList = new List<TreeItem>(visibleRowCount);
+                        virtualMode_Y = start * _virtualRowHeight;
+                        int index = 0;
+                        for (int i = start; i < end; i++)
+                        {
+                            var it = _flatListT[i];
+                            it.SetRect(g, Font, it.Depth, checkable, blockNode, has, 0, index * _virtualRowHeight, rect.Width, depth_gap, icon_size, size.Height, gap);
+                            if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
+                            else if (it.txt_rect.Right > x) x = it.txt_rect.Right;
+                            _flatList.Add(it);
+                            if (it.Loading && it.ThreadLoading == null) it.StartLoading(this);
+                            index++;
+                        }
+                    }
+                    else ChangeList(g, rect, null, items, has, ref x, ref y, depth_gap, icon_size, gap, gapI, 0, true);
                 });
                 ScrollBar.SetVrSize(x, y);
                 ScrollBar.SizeChange(rect);
@@ -456,7 +503,7 @@ namespace AntdUI
             }
         }
 
-        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection? items, bool has_sub, ref int x, ref int y, int height, int depth_gap, int icon_size, int gap, int gapI, int depth, bool expand)
+        void ChangeList(Canvas g, Rectangle rect, TreeItem? Parent, TreeItemCollection? items, bool has_sub, ref int x, ref int y, int depth_gap, int icon_size, int gap, int gapI, int depth, bool expand)
         {
             if (items == null) return;
             int i = 0;
@@ -468,7 +515,7 @@ namespace AntdUI
                 it.ParentItem = Parent;
                 if (it.Visible)
                 {
-                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, new Rectangle(0, y, rect.Width, height), depth_gap, icon_size, gap);
+                    it.SetRect(g, Font, depth, checkable, blockNode, has_sub, 0, y, rect.Width, depth_gap, icon_size, gap);
                     if (expand)
                     {
                         if (it.subtxt_rect.Right > x) x = it.subtxt_rect.Right;
@@ -487,7 +534,7 @@ namespace AntdUI
                             else
                             {
                                 int y_item = y;
-                                ChangeList(g, rect, it, it.items, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
+                                ChangeList(g, rect, it, it.items, has_sub, ref x, ref y, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
                                 it.SubY = y_item - gapI / 2;
                                 it.SubHeight = y - y_item;
                                 it.ExpandHeightTMP = it.ExpandHeight = y - y_item;
@@ -498,7 +545,7 @@ namespace AntdUI
                         else if (it.Expand)
                         {
                             int y_item = y;
-                            ChangeList(g, rect, it, it.items, has_sub, ref x, ref y, height, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
+                            ChangeList(g, rect, it, it.items, has_sub, ref x, ref y, depth_gap, icon_size, gap, gapI, depth + 1, expand && it.Expand);
                             it.SubY = y_item - gapI / 2;
                             it.SubHeight = y - y_item;
                             it.ExpandHeight = y - y_item;
@@ -510,6 +557,48 @@ namespace AntdUI
                 }
             }
         }
+
+        #region 虚拟行
+
+        List<TreeItem>? _flatListT;
+        List<TreeItem>? _flatList;
+        int _virtualRowHeight;
+        internal int virtualMode_Y = 0;
+        List<TreeItem>? BuildFlatList(TreeItem? parent, TreeItemCollection? items, int depth)
+        {
+            if (items == null) return null;
+            int i = 0;
+            var list = new List<TreeItem>(items.Count);
+            foreach (var it in items)
+            {
+                it.PARENT = this;
+                it.ParentItem = parent;
+                it.Index = i++;
+                if (it.Visible)
+                {
+                    it.show = true;
+                    it.Depth = depth;
+                    list.Add(it);
+                    if (it.CanExpand && (it.Expand || it.ExpandThread))
+                    {
+                        var list_tmp = BuildFlatList(it, it.items, depth + 1);
+                        if (list_tmp == null) continue;
+                        list.AddRange(list_tmp);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public virtual void OnShowXChanged(bool value) { }
+        public virtual void OnShowYChanged(bool value) { }
+        public virtual void OnValueXChanged(int value) { }
+        public virtual void OnValueYChanged(int value)
+        {
+            if (virtualMode) ChangeList(true);
+        }
+
+        #endregion
 
         #endregion
 
@@ -530,7 +619,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY - virtualMode_Y;
             g.TranslateTransform(-sx, -sy);
             float _radius = radius * Dpi;
             using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get(nameof(Tree), ColorScheme)))
@@ -539,7 +628,13 @@ namespace AntdUI
             using (var brush_active = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(nameof(Tree), ColorScheme)))
             using (var brush_TextTertiary = new SolidBrush(Colour.TextTertiary.Get(nameof(Tree), "subFore", ColorScheme)))
             {
-                PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                if (virtualMode)
+                {
+                    if (_flatList == null) return;
+                    int tx = -sx, ty = -sy;
+                    foreach (var it in _flatList) PaintItem(g, it, tx, ty, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius, sx, sy);
+                }
+                else PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
             }
             g.ResetTransform();
             ScrollBar.Paint(g, ColorScheme);
@@ -773,9 +868,21 @@ namespace AntdUI
             {
                 if (items == null || items.Count == 0) return;
                 OnTouchDown(e.X, e.Y);
-                foreach (var it in items)
+                if (virtualMode && _flatList != null)
                 {
-                    if (IMouseDown(e, it)) return;
+                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY - virtualMode_Y;
+                    foreach (var it in _flatList)
+                    {
+                        if (IMouseDown(e, it, sx, sy, false)) return;
+                    }
+                }
+                else
+                {
+                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY;
+                    foreach (var it in items)
+                    {
+                        if (IMouseDown(e, it, sx, sy, true)) return;
+                    }
                 }
             }
         }
@@ -786,28 +893,41 @@ namespace AntdUI
             if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX() && OnTouchUp())
             {
                 if (items == null || items.Count == 0 || MDown == null) return;
-                foreach (var it in items)
+                if (virtualMode && _flatList != null)
                 {
-                    if (IMouseUp(e, it, MDown)) return;
+                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY - virtualMode_Y;
+                    foreach (var it in _flatList)
+                    {
+                        if (IMouseUp(e, it, MDown, sx, sy, false)) return;
+                    }
+                }
+                else
+                {
+                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY;
+                    foreach (var it in items)
+                    {
+                        if (IMouseUp(e, it, MDown, sx, sy, true)) return;
+                    }
                 }
             }
         }
-        bool IMouseDown(MouseEventArgs e, TreeItem item)
+
+        bool IMouseDown(MouseEventArgs e, TreeItem item, int x, int y, bool forsub)
         {
             try
             {
-                var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+                var down = item.Contains(x, y, checkable, blockNode);
                 if (down > 0)
                 {
                     MDown = item;
                     OnNodeMouseDown(item, down, e);
                     return true;
                 }
-                if (item.CanExpand && item.Expand)
+                if (forsub && item.CanExpand && item.Expand)
                 {
                     foreach (var sub in item.items!)
                     {
-                        if (IMouseDown(e, sub)) return true;
+                        if (IMouseDown(e, sub, x, y, forsub)) return true;
                     }
                 }
             }
@@ -817,14 +937,14 @@ namespace AntdUI
 
         bool _multiple = false;
         TreeItem? shift_index;
-        bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown)
+        bool IMouseUp(MouseEventArgs e, TreeItem item, TreeItem MDown, int x, int y, bool forsub)
         {
             try
             {
                 bool can = item.CanExpand;
                 if (MDown == item)
                 {
-                    var down = item.Contains(e.X, e.Y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+                    var down = item.Contains(x, y, checkable, blockNode);
                     if (down > 0)
                     {
                         if (e.Button == MouseButtons.Left)
@@ -884,11 +1004,11 @@ namespace AntdUI
                     }
                     return true;
                 }
-                if (can && item.Expand)
+                if (forsub && can && item.Expand)
                 {
                     foreach (var sub in item.items!)
                     {
-                        if (IMouseUp(e, sub, MDown)) return true;
+                        if (IMouseUp(e, sub, MDown, x, y, forsub)) return true;
                     }
                 }
             }
@@ -1062,7 +1182,16 @@ namespace AntdUI
                     try
                     {
                         int hand = 0;
-                        foreach (var it in items) IMouseMove(it, true, e.X, e.Y, ref hand);
+                        if (virtualMode && _flatList != null)
+                        {
+                            int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY - virtualMode_Y;
+                            foreach (var it in _flatList) IMouseMove(it, true, sx, sy, ref hand, false);
+                        }
+                        else
+                        {
+                            int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY;
+                            foreach (var it in items) IMouseMove(it, true, sx, sy, ref hand, true);
+                        }
                         SetCursor(hand > 0);
                     }
                     catch { }
@@ -1071,16 +1200,19 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(TreeItem item, bool expend, int x, int y, ref int hand)
+        void IMouseMove(TreeItem item, bool expend, int x, int y, ref int hand, bool forsub)
         {
             if (item.show)
             {
-                if (expend && item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode) > 0) hand++;
+                if (expend && item.Contains(x, y, checkable, blockNode) > 0) hand++;
                 try
                 {
-                    if (item.items != null)
+                    if (forsub && item.items != null)
                     {
-                        foreach (var sub in item.items.Safe) IMouseMove(sub, item.Expand, x, y, ref hand);
+                        foreach (var sub in item.items.Safe)
+                        {
+                            IMouseMove(sub, item.Expand, x, y, ref hand, forsub);
+                        }
                     }
                 }
                 catch { }
@@ -1336,17 +1468,21 @@ namespace AntdUI
         }
         void Select(TreeItem it, List<TreeItem>? list, bool focus)
         {
-            int count = 0;
+            int count = 0, excount = 0;
             if (list != null)
             {
                 foreach (var sub in list)
                 {
-                    if (sub.ISetExpand(true)) count++;
+                    if (sub.ISetExpand(true))
+                    {
+                        count++;
+                        excount++;
+                    }
                 }
             }
             selectItem = it;
             it.SetSelectNR(true);
-            if (count > 0) ChangeList(true);
+            if (count > 0) ChangeList(true, excount > 0);
             else Invalidate();
             OnSelectChanged(it, TreeCType.None, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
             if (focus) Focus(it);
@@ -1493,12 +1629,12 @@ namespace AntdUI
         /// <param name="value">true 展开、false 收起</param>
         public void ExpandAll(bool value = true)
         {
-            if (ExpandAllCore(items, value)) ChangeList(true);
+            if (ExpandAllCore(items, value)) ChangeList(true, true);
         }
 
         public void ExpandAll(TreeItemCollection? items, bool value = true)
         {
-            if (ExpandAllCore(items, value)) ChangeList(true);
+            if (ExpandAllCore(items, value)) ChangeList(true, true);
         }
 
         internal bool ExpandAllCore(TreeItemCollection? items, bool value = true)
@@ -1612,7 +1748,15 @@ namespace AntdUI
 
         public void Focus(TreeItem item, int gap = 0, bool force = false)
         {
-            if (ScrollBar.ShowY && (force || !item.show)) ScrollBar.ValueY = item.rect.Y - gap - (int)(_gap * Dpi);
+            if (ScrollBar.ShowY && (force || !item.show))
+            {
+                if (virtualMode && _flatList != null && _virtualRowHeight > 0)
+                {
+                    int idx = _flatList.FindIndex(fi => fi == item);
+                    if (idx >= 0) ScrollBar.ValueY = Math.Max(0, idx * _virtualRowHeight - gap - (int)(_gap * Dpi));
+                }
+                else ScrollBar.ValueY = item.rect.Y - gap - (int)(_gap * Dpi);
+            }
         }
 
         #endregion
@@ -1730,7 +1874,7 @@ namespace AntdUI
         }
         bool IHitTest(int x, int y, TreeItem item, out TreeItem? mdown, out TreeCType down)
         {
-            down = item.Contains(x, y, ScrollBar.ValueX, ScrollBar.ValueY, checkable, blockNode);
+            down = item.Contains(x + ScrollBar.ValueX, y + ScrollBar.ValueY - virtualMode_Y, checkable, blockNode);
             if (down > 0)
             {
                 mdown = item;
@@ -2009,47 +2153,50 @@ namespace AntdUI
             set
             {
                 if (expand == value) return;
-                if (PARENT?.OnIBeforeExpand(this, value) ?? true)
+                if (PARENT == null)
                 {
                     expand = value;
-                    PARENT?.OnIAfterExpand(this, value);
                     ExpandHeightTMP = null;
-                    if (items != null && items.Count > 0)
+                }
+                else
+                {
+                    if (PARENT.OnIBeforeExpand(this, value))
                     {
-                        if (PARENT != null && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
+                        expand = value;
+                        PARENT.OnIAfterExpand(this, value);
+                        ExpandHeightTMP = null;
+                        if (!PARENT.VirtualMode && items != null && items.Count > 0 && PARENT.IsHandleCreated && Config.HasAnimation(nameof(Tree)))
                         {
-                            ThreadExpand?.Dispose();
-                            ExpandTemp?.Dispose();
-                            ExpandTemp = null;
-                            var oldval = ThreadExpand?.Tag;
-                            ExpandThread = true;
-                            int t = Animation.TotalFrames(10, 200);
-                            ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
-                            {
-                                ExpandProg = val;
-                                Invalidates();
-                            }, 10, t, oldval, value).SetEnd(() =>
-                            {
-                                ExpandProg = 1F;
-                                ExpandThread = false;
-                                ExpandTemp?.Dispose();
-                                ExpandTemp = null;
-                                Invalidates();
-                            }));
+                            ExpandAnimation(value);
+                            return;
                         }
-                        else
-                        {
-                            ExpandProg = 1F;
-                            Invalidates();
-                        }
-                    }
-                    else
-                    {
-                        ExpandProg = 1F;
-                        Invalidates();
                     }
                 }
+                ExpandProg = 1F;
+                PARENT?.ChangeList(true, true);
             }
+        }
+
+        void ExpandAnimation(bool value)
+        {
+            ThreadExpand?.Dispose();
+            ExpandTemp?.Dispose();
+            ExpandTemp = null;
+            var oldval = ThreadExpand?.Tag;
+            ExpandThread = true;
+            int t = Animation.TotalFrames(10, 200);
+            ThreadExpand = new AnimationTask(new AnimationFixed2Config((i, val) =>
+            {
+                ExpandProg = val;
+                Invalidates();
+            }, 10, t, oldval, value).SetEnd(() =>
+            {
+                ExpandProg = 1F;
+                ExpandThread = false;
+                ExpandTemp?.Dispose();
+                ExpandTemp = null;
+                Invalidates();
+            }));
         }
 
         internal bool ISetExpand(bool value)
@@ -2306,7 +2453,7 @@ namespace AntdUI
 
         #endregion
 
-        public int Depth { get; private set; }
+        public int Depth { get; internal set; }
 
         public TreeItem? ParentItem { get; internal set; }
 
@@ -2316,11 +2463,11 @@ namespace AntdUI
 
         #region 布局
 
-        internal void SetRect(Canvas g, Font font, int depth, bool _checkable, bool blockNode, bool has_sub, Rectangle _rect, int depth_gap, int icon_size, int gap)
+        internal void SetRect(Canvas g, Font font, int depth, bool _checkable, bool blockNode, bool has_sub, int _x, int _y, int _w, int depth_gap, int icon_size, int gap)
         {
             Depth = depth;
             var size = g.MeasureText(Text, font);
-            int x = _rect.X + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _rect.Y + (size.Height + gap - icon_size) / 2, ui = icon_size + gap;
+            int x = _x + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _y + (size.Height + gap - icon_size) / 2, ui = icon_size + gap;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -2342,13 +2489,13 @@ namespace AntdUI
                 x += ui;
             }
 
-            int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _rect.Y;
+            int txt_w = size.Width + gap, txt_h = size.Height + gap, txt_y = _y;
             if (subTitle == null)
             {
                 usew += txt_w;
                 if (blockNode)
                 {
-                    int rw = _rect.Width - x - gap;
+                    int rw = _w - x - gap;
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     if (rw < txt_w) rw = txt_w;
                     rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
@@ -2365,7 +2512,72 @@ namespace AntdUI
                 usew += txt_w + sizesub.Width + gap;
                 if (blockNode)
                 {
-                    int rw = _rect.Width - x - gap;
+                    int rw = _w - x - gap;
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
+                    txt_w += sizesub.Width;
+                    if (rw < txt_w) rw = txt_w;
+                    rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
+                }
+                else
+                {
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
+                    rect = new Rectangle(x, txt_y, txt_w + sizesub.Width, txt_h);
+                }
+            }
+            rect_all = new Rectangle(tmpx, rect.Y, usew, rect.Height);
+        }
+        internal void SetRect(Canvas g, Font font, int depth, bool _checkable, bool blockNode, bool has_sub, int _x, int _y, int _w, int depth_gap, int icon_size, int text_height, int gap)
+        {
+            Depth = depth;
+            var txt_width = g.MeasureText(Text, font).Width;
+            int x = _x + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _y + (text_height + gap - icon_size) / 2, ui = icon_size + gap;
+            if (has_sub)
+            {
+                arrow_rect = new Rectangle(x, y, icon_size, icon_size);
+                usew += ui;
+                x += ui;
+            }
+
+            if (_checkable && checkable)
+            {
+                check_rect = new Rectangle(x, y, icon_size, icon_size);
+                usew += ui;
+                x += ui;
+            }
+
+            if (HasIcon)
+            {
+                ico_rect = new Rectangle(x, y, icon_size, icon_size);
+                usew += ui;
+                x += ui;
+            }
+
+            int txt_w = txt_width + gap, txt_h = text_height + gap, txt_y = _y;
+            if (subTitle == null)
+            {
+                usew += txt_w;
+                if (blockNode)
+                {
+                    int rw = _w - x - gap;
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    if (rw < txt_w) rw = txt_w;
+                    rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
+                }
+                else
+                {
+                    txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
+                    rect = txt_rect;
+                }
+            }
+            else
+            {
+                var sizesub = g.MeasureText(SubTitle, font);
+                usew += txt_w + sizesub.Width + gap;
+                if (blockNode)
+                {
+                    int rw = _w - x - gap;
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
                     subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
                     txt_w += sizesub.Width;
@@ -2385,21 +2597,21 @@ namespace AntdUI
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
 
-        internal TreeCType Contains(int x, int y, int sx, int sy, bool _checkable, bool blockNode)
+        internal TreeCType Contains(int x, int y, bool _checkable, bool blockNode)
         {
             if (visible && enabled)
             {
-                if (arrow_rect.Contains(x + sx, y + sy) && CanExpand)
+                if (arrow_rect.Contains(x, y) && CanExpand)
                 {
                     Hover = true;
                     return TreeCType.Arrow;
                 }
-                else if (_checkable && checkable && check_rect.Contains(x + sx, y + sy))
+                else if (_checkable && checkable && check_rect.Contains(x, y))
                 {
                     Hover = true;
                     return TreeCType.Check;
                 }
-                else if (rect_all.Contains(x + sx, y + sy) || rect.Contains(x + sx, y + sy))
+                else if (rect_all.Contains(x, y) || rect.Contains(x, y))
                 {
                     Hover = true;
                     return TreeCType.Item;
@@ -2421,7 +2633,7 @@ namespace AntdUI
         public Rectangle Rect(string type = "", bool actual = true)
         {
             if (actual || PARENT == null) return Rect(type, 0, 0);
-            else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBar.ValueY);
+            else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBar.ValueY - PARENT.virtualMode_Y);
         }
         public Rectangle Rect(int x, int y) => Rect("", x, y);
         public Rectangle Rect(string type, int x = 0, int y = 0)

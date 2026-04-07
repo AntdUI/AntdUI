@@ -450,6 +450,15 @@ namespace AntdUI
             }
             OnSizeChanged(EventArgs.Empty);
         }
+        internal void IOnLayout(LayoutEventArgs levent)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(() => IOnLayout(levent));
+                return;
+            }
+            OnLayout(levent);
+        }
 
         static bool disableDataBinding = false;
 #if NET40

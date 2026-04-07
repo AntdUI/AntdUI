@@ -1,5 +1,32 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.6` 2026-04-07
+
+- ➕ Tree VirtualMode Virtual Mode
+- ➕ Table FilterSortOrder
+- ➕ Transfer DragSort
+- ➕ StackPanel AutoContainerBgTransparent
+- ✍️ StackPanel dynamic insertion is invalid
+- ✍️ Coordinate abnormality after modal setting Resizable
+- ✍️ Input text length processing exception
+- ✍️ Table Binding Select All
+- ✍️ DatePickerRange layout error after deleting start date
+
+### `2.3.5` 2026-04-02
+
+- ➕ SelectNumber
+- ➕ Table ScrollLine/ScrollColumn Region Collision (Optimized Interaction)
+- ➕ Menu Rich Focus Attributes
+- ➕ Panel ShadowDelay
+- ✍️ Input: Modify the right-click menu method name
+- ✍️ Input: cursor position abnormal after modifying text
+- ✍️ Adjust Input Read Only Right Click Menu
+- ✍️ Select interaction
+- ✍️ Panel scrollbar/flashing native scrollbar
+- ✍️ Table floating column edit box is invalid
+- ✍️ The up, down, left, and right keyboards on the table cause the editing mode to fail
+- ✍️ Poppover animation screenshot exception
+
 ### `2.3.4` 2026-03-30
 
 - ➕ Input SetTextSelectionEnd
