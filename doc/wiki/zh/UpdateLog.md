@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.6` 2026-04-07
+
+- ➕ Tree VirtualMode 虚拟模式
+- ➕ Table FilterSortOrder
+- ➕ Transfer DragSort
+- ➕ StackPanel AutoContainerBgTransparent
+- ✍️ StackPanel 动态插入无效
+- ✍️ Modal 设置 Resizable 后坐标异常
+- ✍️ Input 文本长度处理异常
+- ✍️ Table Binding 全选
+- ✍️ DatePickerRange 删除开始日期后布局错误
+
 ### `2.3.5` 2026-04-02
 
 - ➕ SelectNumber
