@@ -435,12 +435,12 @@ namespace AntdUI
                 return rect;
             }
         }
-        void FunSub(SubLayeredForm subForm, ref Rectangle rect)
+        void FunSub(SubLayeredForm form, ref Rectangle rect)
         {
-            var subform = subForm.SubForm();
+            var subform = form.SubForm();
             if (subform == null) return;
             rect = Rectangle.Union(rect, subform.TargetRect);
-            FunSub((SubLayeredForm)subform, ref rect);
+            if (subform is SubLayeredForm sub) FunSub(sub, ref rect);
         }
 
         #endregion

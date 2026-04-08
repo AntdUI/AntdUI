@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
@@ -14,14 +15,24 @@ namespace AntdUI
 {
     partial class Helper
     {
+        const int PropertyTagFrameDelay = 0x5100;
         public static int GIFInfo(Image image, out FrameDimension fd)
         {
             fd = new FrameDimension(image.FrameDimensionsList[0]);
             return image.GetFrameCount(fd);
         }
+        public static bool IsGIF(Image? image)
+        {
+            if (image == null) return false;
+            try
+            {
+                var fd = new FrameDimension(image.FrameDimensionsList[0]);
+                return image.GetFrameCount(fd) > 1;
+            }
+            catch { return false; }
+        }
         public static int[] GIFDelays(Image image, int count)
         {
-            int PropertyTagFrameDelay = 0x5100;
             var propItem = image.GetPropertyItem(PropertyTagFrameDelay);
             if (propItem != null)
             {
@@ -37,14 +48,21 @@ namespace AntdUI
             for (int i = 0; i < delaysd.Length; i++) delaysd[i] = 100;
             return delaysd;
         }
-        public static Task? GIFPlay(Image image, Func<Image, bool> isRun, Action r)
+
+        static ConcurrentDictionary<Image, Task> tasks = new ConcurrentDictionary<Image, Task>();
+        public static bool GIFCanPlay(Image image)
         {
+            if (tasks.TryGetValue(image, out _)) return false;
+            else return true;
+        }
+        public static bool GIFPlay(Image image, Func<Image, bool> isRun, Action r)
+        {
+            if (tasks.TryGetValue(image, out var tmp)) return true;
             int count = GIFInfo(image, out var fd);
             if (count > 1)
             {
-                return ITask.Run(() =>
+                var task = ITask.Run(() =>
                 {
-                    var _lock = new object();
                     var delays = GIFDelays(image, count);
                     while (isRun(image))
                     {
@@ -52,27 +70,32 @@ namespace AntdUI
                         {
                             if (isRun(image))
                             {
-                                lock (_lock)
+                                try
                                 {
-                                    try
-                                    {
-                                        image.SelectActiveFrame(fd, i);
-                                    }
-                                    catch { }
+                                    image.SelectActiveFrame(fd, i);
                                 }
+                                catch (ArgumentException)
+                                {
+                                    tasks.TryRemove(image, out _);
+                                    return;
+                                }
+                                catch { }
                                 r();
                                 Thread.Sleep(Math.Max(delays[i], 10));
                             }
                             else
                             {
+                                tasks.TryRemove(image, out _);
                                 image.SelectActiveFrame(fd, 0);
                                 return;
                             }
                         }
                     }
                 }, r);
+                tasks.TryAdd(image, task);
+                return true;
             }
-            else return null;
+            else return false;
         }
     }
 }

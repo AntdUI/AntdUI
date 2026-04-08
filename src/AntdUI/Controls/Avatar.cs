@@ -206,7 +206,7 @@ namespace AntdUI
             if (image == null) return;
             if (playGIF)
             {
-                if (Helper.GIFPlay(image, value => PlayGIF && image == value, Invalidate) == null) Invalidate();
+                if (!Helper.GIFPlay(image, value => PlayGIF && image == value, Invalidate)) Invalidate();
             }
         }
 
