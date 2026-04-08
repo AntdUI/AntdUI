@@ -415,11 +415,12 @@ namespace AntdUI
             if (disableText) return;
             if (HasFocus)
             {
-                if (noex || filtertext == Text) return;
-                filtertext = Text;
+                var searchText = Text.Trim();
+                if (noex || filtertext == searchText) return;
+                filtertext = searchText;
                 if (FilterChanged == null)
                 {
-                    if (expandDrop) subForm?.TextChange(Text);
+                    if (expandDrop) subForm?.TextChange(filtertext);
                     else ExpandDrop = true;
                 }
                 else

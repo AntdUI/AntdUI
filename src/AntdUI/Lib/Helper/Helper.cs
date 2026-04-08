@@ -522,29 +522,86 @@ namespace AntdUI
         /// <returns>匹配权重，值越大匹配度越高</returns>
         public static int SearchContains(string search, string text, string[] py, out bool select)
         {
+            // 分割多关键字（支持空格、制表符、逗号分隔）
+            var keywords = search.Split(new[] { ' ', '\t', ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (keywords.Length < 2) return SearchContainsSingle(keywords[0], text, py, out select);
+
             select = false;
-            int gear = py.Length, score = 0;
+            // 多关键字搜索
+            int totalScore = 0;
+
+            foreach (var keyword in keywords)
+            {
+                var trimmedKeyword = keyword.Trim();
+                if (string.IsNullOrEmpty(trimmedKeyword)) continue;
+                int score = SearchContainsSingle(trimmedKeyword, text, py, out bool keywordSelect);
+                if (score > 0)
+                {
+                    totalScore += score;
+                    if (keywordSelect) select = true;
+                }
+                else
+                {
+                    select = false;
+                    return 0;
+                }
+            }
+            return totalScore;
+        }
+
+        /// <summary>
+        /// 判断文本是否包含搜索词，支持拼音搜索，并返回匹配权重（单个关键字）
+        /// </summary>
+        /// <param name="search">搜索文字</param>
+        /// <param name="text">全文本</param>
+        /// <param name="py">拼音数组</param>
+        /// <param name="select">是否需要选中</param>
+        /// <returns>匹配权重，值越大匹配度越高</returns>
+        public static int SearchContainsSingle(string search, string text, string[] py, out bool select)
+        {
+            select = false;
+
+            int searchLen = search.Length;
+            string searchLower = search.ToLower();
+
+            // 1. 完全匹配（区分大小写）- 最高分
             if (text == search)
             {
                 select = true;
-                score += gear * 10;
+                return 1000 + searchLen * 100;
             }
-            search = search.ToLower();
-            if (text == search)
+
+            // 2. 完全匹配（不区分大小写）
+            if (text.ToLower() == searchLower)
             {
                 select = true;
-                score += gear * 8;
+                return 900 + searchLen * 100;
             }
+
+            int score = 0;
             foreach (var pinyin in py)
             {
-                if (pinyin == search)
+                float pinyinLength = pinyin.Length;
+                // 拼音完全匹配
+                if (pinyin == searchLower)
                 {
                     select = true;
-                    score += gear * 3;
+                    var matchRatio = searchLen / pinyinLength;
+                    score += 500 + (int)(matchRatio * 100);
                 }
-                else if (pinyin.StartsWith(search)) score += gear * 2;
-                else if (pinyin.Contains(search)) score += gear;
-                gear--;
+                // 拼音前缀匹配
+                else if (pinyin.StartsWith(searchLower))
+                {
+                    var matchRatio = searchLen / pinyinLength;
+                    score += (int)(10 * matchRatio) + searchLen * 10;
+                }
+                else if (pinyin.Contains(searchLower))
+                {
+                    // 拼音包含匹配
+                    var matchRatio = searchLen / pinyinLength;
+                    score += (int)(5 * matchRatio) + searchLen * 5;
+                }
             }
             return score;
         }
@@ -603,6 +660,21 @@ namespace AntdUI
                 return result;
             }
             return null;
+        }
+
+        /// <summary>
+        /// 根据权重对泛型搜索结果进行排序
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="list">泛型搜索结果列表</param>
+        /// <returns>排序后的指定类型列表</returns>
+        public static void SearchWeightSortByVirtualItem(this List<ItemSearchWeigth<VirtualItem>> list)
+        {
+            if (list.Count > 0)
+            {
+                list.Sort((x, y) => -x.Weight.CompareTo(y.Weight));
+                for (int i = 0; i < list.Count; i++) list[i].Value.SortIndex = i;
+            }
         }
 
         /// <summary>

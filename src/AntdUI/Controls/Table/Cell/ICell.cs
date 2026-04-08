@@ -123,7 +123,7 @@ namespace AntdUI
 
         #region 属性
 
-        public bool ImpactHeight { get; set; } = true;
+        public bool? ImpactHeight { get; set; }
 
         public ICell SetImpactHeight(bool value = false)
         {
