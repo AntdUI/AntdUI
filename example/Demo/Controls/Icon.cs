@@ -19,7 +19,6 @@ namespace Demo.Controls
             InitializeComponent();
             segmented1.Items.Add(new AntdUI.SegmentedItem
             {
-                Badge = "NEW",
                 IconSvg = emoji_svg_all,
                 Text = "Emoji"
             });
@@ -72,37 +71,50 @@ namespace Demo.Controls
                 {
                     if (it.Key == "QuestionOutlined")
                     {
-                        dir.Add("Icon.Directional", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Directional";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "EditOutlined")
                     {
-                        dir.Add("Icon.Suggested", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Suggested";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AreaChartOutlined")
                     {
-                        dir.Add("Icon.Editor", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Editor";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AndroidOutlined")
                     {
-                        dir.Add("Icon.Data", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Data";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AccountBookOutlined")
                     {
-                        dir.Add("Icon.Logos", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Logos";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "StepBackwardFilled")
                     {
-                        dir.Add("Icon.Application", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Application";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                         return dir;
                     }
                     tmp.Add(new AntdUI.VIItem(it.Key, it.Value));
                 }
+                foreach (var item in tmp) item.Group = "Icon.Application";
                 dir.Add("Icon.Application", new List<AntdUI.VIItem>(tmp));
                 tmp.Clear();
             }
@@ -114,31 +126,42 @@ namespace Demo.Controls
                     if (it.Key == "StepBackwardFilled") isadd = true;
                     else if (it.Key == "QuestionCircleFilled")
                     {
-                        dir.Add("Icon.Directional", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Directional";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "EditFilled")
                     {
-                        dir.Add("Icon.Suggested", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Suggested";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "PieChartFilled")
                     {
-                        dir.Add("Icon.Editor", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Editor";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AndroidFilled")
                     {
-                        dir.Add("Icon.Data", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Data";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     else if (it.Key == "AccountBookFilled")
                     {
-                        dir.Add("Icon.Logos", new List<AntdUI.VIItem>(tmp));
+                        var id = "Icon.Logos";
+                        foreach (var item in tmp) item.Group = id;
+                        dir.Add(id, new List<AntdUI.VIItem>(tmp));
                         tmp.Clear();
                     }
                     if (isadd) tmp.Add(new AntdUI.VIItem(it.Key, it.Value));
                 }
+                foreach (var item in tmp) item.Group = "Icon.Application";
                 dir.Add("Icon.Application", new List<AntdUI.VIItem>(tmp));
                 tmp.Clear();
             }
@@ -156,7 +179,7 @@ namespace Demo.Controls
                 {
                     var fid = emoji_skins[it.Key];
                     hs.AddRange(skins);
-                    var item = new AntdUI.EItem(it.Key, it.Value, emoji_keywords[it.Key]);
+                    var item = new AntdUI.EItem(it.Key, it.Value, emoji_keywords[it.Key], group);
                     item.Skins = skins.ToArray();
                     if (dir.TryGetValue(group, out var tmp)) tmp.Add(item);
                     else dir.Add(group, new List<AntdUI.EItem>(count) { item });
@@ -164,7 +187,7 @@ namespace Demo.Controls
                 else if (hs.Contains(it.Key)) continue;
                 else
                 {
-                    var item = new AntdUI.EItem(it.Key, it.Value, emoji_keywords[it.Key]);
+                    var item = new AntdUI.EItem(it.Key, it.Value, emoji_keywords[it.Key], group);
                     if (dir.TryGetValue(group, out var tmp)) tmp.Add(item);
                     else dir.Add(group, new List<AntdUI.EItem>(count) { item });
                 }
@@ -254,7 +277,7 @@ namespace Demo.Controls
 
         void LoadSearchList()
         {
-            string search = txt_search.Text;
+            string search = txt_search.Text.Trim();
             BeginInvoke(new Action(() =>
             {
                 vpanel.PauseLayout = true;
@@ -270,24 +293,36 @@ namespace Demo.Controls
                 else
                 {
                     vpanel.Empty = true;
-                    string searchLower = search.ToLower();
                     var titles = new List<AntdUI.TItem>(vpanel.Items.Count);
+                    var listSearch = new List<AntdUI.ItemSearchWeigth<AntdUI.VirtualItem>>(vpanel.Items.Count);
                     foreach (var it in vpanel.Items)
                     {
                         if (it is AntdUI.EItem emoji_item)
                         {
                             int score = AntdUI.Helper.SearchContains(search, emoji_item.Key, emoji_item.Keywords, out _);
                             it.Visible = score > 0;
+                            if (it.Visible) listSearch.Add(new AntdUI.ItemSearchWeigth<AntdUI.VirtualItem>(score, it).SetGroup(emoji_item.Group));
                         }
-                        else if (it is AntdUI.VIItem item) it.Visible = item.Key.ToLower().Contains(searchLower);
+                        else if (it is AntdUI.VIItem item)
+                        {
+                            int score = AntdUI.Helper.SearchContains(search, item.Key, out _);
+                            it.Visible = score > 0;
+                            if (it.Visible) listSearch.Add(new AntdUI.ItemSearchWeigth<AntdUI.VirtualItem>(score, it).SetGroup(item.Group));
+                        }
                         else if (it is AntdUI.TItem itemTitle) titles.Add(itemTitle);
                     }
+                    AntdUI.Helper.SearchWeightSortByVirtualItem(listSearch);
                     foreach (var it in titles)
                     {
+                        it.SortIndex = -1;
                         int count = 0;
                         foreach (var item in it.data)
                         {
-                            if (item.Visible) count++;
+                            if (item.Visible)
+                            {
+                                count++;
+                                if (it.SortIndex == -1 || it.SortIndex > item.SortIndex) it.SortIndex = item.SortIndex;
+                            }
                         }
                         it.SetCount(count);
                     }

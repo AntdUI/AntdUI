@@ -10,8 +10,12 @@ namespace AntdUI
 {
     internal class VIItem : VirtualItem
     {
-        public string Key, Value;
-        public VIItem(string key, string value) { Tag = Key = key; Value = value; }
+        public string Key, Value, Group;
+        public VIItem(string key, string value)
+        {
+            Tag = Key = key;
+            Value = value;
+        }
 
         internal Bitmap bmp = null, bmp_ac = null;
         public override void Paint(Canvas g, VirtualPanelArgs e)

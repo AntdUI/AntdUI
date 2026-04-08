@@ -417,34 +417,50 @@ namespace Demo
 
         void LoadSearchList()
         {
-            string search = txt_search.Text;
+            string search = txt_search.Text.Trim();
             windowBar.Loading = true;
             BeginInvoke(new Action(() =>
             {
                 virtualPanel.PauseLayout = true;
                 if (string.IsNullOrEmpty(search))
                 {
-                    foreach (var it in virtualPanel.Items) it.Visible = true;
+                    foreach (var it in virtualPanel.Items)
+                    {
+                        it.ResetVisible();
+                        if (it is AntdUI.TItem itemTitle) itemTitle.Restore();
+                    }
                     virtualPanel.Empty = false;
                 }
                 else
                 {
                     virtualPanel.Empty = true;
-                    string searchLower = search.ToLower();
                     var titles = new List<AntdUI.TItem>(virtualPanel.Items.Count);
+                    var listSearch = new List<AntdUI.ItemSearchWeigth<AntdUI.VirtualItem>>(virtualPanel.Items.Count);
                     foreach (var it in virtualPanel.Items)
                     {
-                        if (it is VItem item) it.Visible = item.data.id.Contains(search) || item.data.key.Contains(search) || item.data.keyword.Contains(searchLower) || item.data.keywordmini.Contains(searchLower);
+                        if (it is VItem item)
+                        {
+                            int score = AntdUI.Helper.SearchContains(search, item.data.id, item.data.keyword, out _);
+                            it.Visible = score > 0;
+                            if (it.Visible) listSearch.Add(new AntdUI.ItemSearchWeigth<AntdUI.VirtualItem>(score, it).SetGroup(item.group));
+                        }
                         else if (it is AntdUI.TItem itemTitle) titles.Add(itemTitle);
+
                     }
+                    AntdUI.Helper.SearchWeightSortByVirtualItem(listSearch);
                     foreach (var it in titles)
                     {
+                        it.SortIndex = -1;
                         int count = 0;
                         foreach (var item in it.data)
                         {
-                            if (item.Visible) count++;
+                            if (item.Visible)
+                            {
+                                count++;
+                                if (it.SortIndex == -1 || it.SortIndex > item.SortIndex) it.SortIndex = item.SortIndex;
+                            }
                         }
-                        it.Visible = count > 0;
+                        it.SetCount(count);
                     }
                 }
                 virtualPanel.PauseLayout = false;
@@ -567,7 +583,7 @@ namespace Demo
             foreach (var it in dir)
             {
                 var list_sub = new List<AntdUI.VirtualItem>(it.Value.Length);
-                foreach (var item in it.Value) list_sub.Add(new VItem(item));
+                foreach (var item in it.Value) list_sub.Add(new VItem(item, it.Key));
                 list.Add(new AntdUI.TItem(GetChinaGroup(it.Key), it.Key, list_sub.ToArray()));
                 list.AddRange(list_sub);
             }
@@ -609,13 +625,15 @@ namespace Demo
             {
                 id = _id;
                 key = _key;
-                keyword = _id.ToLower() + AntdUI.Pinyin.GetPinyin(_key).ToLower();
-                keywordmini = AntdUI.Pinyin.GetInitials(_key).ToLower();
+                keyword = new string[] {
+                    _id.ToLower(),
+                    AntdUI.Pinyin.GetPinyin(_key).ToLower(),
+                    AntdUI.Pinyin.GetInitials(_key).ToLower()
+                };
                 imgs = new Image[] { AntdUI.SvgExtend.SvgToBmp(_img_light), AntdUI.SvgExtend.SvgToBmp(_img_dark) };
             }
             public string id { get; set; }
-            public string keyword { get; set; }
-            public string keywordmini { get; set; }
+            public string[] keyword { get; set; }
             public string key { get; set; }
             public Image[] imgs { get; set; }
         }
@@ -625,12 +643,14 @@ namespace Demo
         class VItem : AntdUI.VirtualShadowItem
         {
             public IList data;
+            public string group;
             string LocalizationName;
-            public VItem(IList d)
+            public VItem(IList d, string g)
             {
                 data = d;
                 Tag = d.id;
                 LocalizationName = d.id + " " + d.key;
+                group = g;
             }
 
             AntdUI.FormatFlags s_f = AntdUI.FormatFlags.Left | AntdUI.FormatFlags.VerticalCenter;

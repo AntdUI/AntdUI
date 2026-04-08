@@ -10,14 +10,15 @@ namespace AntdUI
 {
     internal class EItem : VirtualItem
     {
-        public string Key, Value;
+        public string Key, Value, Group;
         public string[] Keywords;
         public string[] Skins = null;
-        public EItem(string key, string value, string[] keywords)
+        public EItem(string key, string value, string[] keywords, string group)
         {
             Tag = Key = key;
             Keywords = keywords;
             Value = value;
+            Group = group;
         }
 
         public void SetSkin(int i)
