@@ -124,6 +124,11 @@ namespace AntdUI
             public TFit? Fit { get; set; }
 
             /// <summary>
+            /// 是否支持键盘 esc 关闭
+            /// </summary>
+            public bool Keyboard { get; set; } = true;
+
+            /// <summary>
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
@@ -202,6 +207,11 @@ namespace AntdUI
             public Config SetFit(TFit? value)
             {
                 Fit = value;
+                return this;
+            }
+            public Config SetKeyboard(bool value = false)
+            {
+                Keyboard = value;
                 return this;
             }
 

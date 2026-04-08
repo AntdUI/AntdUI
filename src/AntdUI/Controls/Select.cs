@@ -1147,7 +1147,14 @@ namespace AntdUI
             Value = value;
         }
         public int Weight { get; set; }
+        public string? Group { get; set; }
         public virtual object Value { get; set; }
+
+        public virtual iItemSearchWeigth SetGroup(string? value)
+        {
+            Group = value;
+            return this;
+        }
     }
     public class ItemSearchWeigth<T> : iItemSearchWeigth
     {
@@ -1156,6 +1163,12 @@ namespace AntdUI
             Value = value;
         }
         public new T Value { get; set; }
+
+        public new ItemSearchWeigth<T> SetGroup(string? value)
+        {
+            Group = value;
+            return this;
+        }
     }
 
     internal class ObjectItem : SelectItemDraw

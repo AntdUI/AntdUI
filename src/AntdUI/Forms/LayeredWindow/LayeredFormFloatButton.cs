@@ -88,7 +88,7 @@ namespace AntdUI
                         }
                         Print();
                         return Loading;
-                    }, 10, 360, 6).SetEnd(() => Print()));
+                    }, 10, 360, 6).SetEnd(PrintNo));
                 }
                 else
                 {
