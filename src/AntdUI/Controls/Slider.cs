@@ -29,7 +29,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -45,14 +45,14 @@ namespace AntdUI
         /// <summary>
         /// 悬停颜色
         /// </summary>
-        [Description("悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
         /// <summary>
         /// 激活颜色
         /// </summary>
-        [Description("激活颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillActive { get; set; }
 
@@ -60,7 +60,7 @@ namespace AntdUI
         /// <summary>
         /// 滑轨颜色
         /// </summary>
-        [Description("滑轨颜色"), Category("外观"), DefaultValue(null)]
+        [Description("滑轨颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? TrackColor
         {
@@ -77,7 +77,7 @@ namespace AntdUI
         /// <summary>
         /// 最小值
         /// </summary>
-        [Description("最小值"), Category("数据"), DefaultValue(0)]
+        [Description("最小值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int MinValue
         {
             get => _minValue;
@@ -94,7 +94,7 @@ namespace AntdUI
         /// <summary>
         /// 最大值
         /// </summary>
-        [Description("最大值"), Category("数据"), DefaultValue(100)]
+        [Description("最大值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(100)]
         public int MaxValue
         {
             get => _maxValue;
@@ -111,7 +111,7 @@ namespace AntdUI
         /// <summary>
         /// 当前值
         /// </summary>
-        [Description("当前值"), Category("数据"), DefaultValue(0)]
+        [Description("当前值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int Value
         {
             get => _value;
@@ -130,7 +130,7 @@ namespace AntdUI
         /// <summary>
         /// Value格式化时发生
         /// </summary>
-        [Description("Value格式化时发生"), Category("行为")]
+        [Description("Value格式化时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ValueFormatEventHandler? ValueFormatChanged;
 
         TooltipForm? toolTip;
@@ -163,7 +163,7 @@ namespace AntdUI
         /// <summary>
         /// 方向
         /// </summary>
-        [Description("方向"), Category("外观"), DefaultValue(TAlignMini.Left)]
+        [Description("方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignMini.Left)]
         public TAlignMini Align
         {
             get => align;
@@ -179,7 +179,7 @@ namespace AntdUI
         /// <summary>
         /// Value 属性值更改时发生
         /// </summary>
-        [Description("Value 属性值更改时发生"), Category("行为")]
+        [Description("Value 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? ValueChanged;
 
         protected virtual void OnValueChanged(int e) => ValueChanged?.Invoke(this, new IntEventArgs(e));
@@ -187,14 +187,14 @@ namespace AntdUI
         /// <summary>
         /// 是否显示数值
         /// </summary>
-        [Description("是否显示数值"), Category("行为"), DefaultValue(false)]
+        [Description("是否显示数值"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowValue { get; set; }
 
         int lineSize = 4;
         /// <summary>
         /// 线条粗细
         /// </summary>
-        [Description("线条粗细"), Category("外观"), DefaultValue(4)]
+        [Description("线条粗细"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int LineSize
         {
             get => lineSize;
@@ -210,7 +210,7 @@ namespace AntdUI
         /// <summary>
         /// 点大小
         /// </summary>
-        [Description("点大小"), Category("外观"), DefaultValue(10)]
+        [Description("点大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(10)]
         public int DotSize
         {
             get => dotSize;
@@ -226,7 +226,7 @@ namespace AntdUI
         /// <summary>
         /// 点激活大小
         /// </summary>
-        [Description("点激活大小"), Category("外观"), DefaultValue(12)]
+        [Description("点激活大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(12)]
         public int DotSizeActive
         {
             get => dotSizeActive;
@@ -241,7 +241,7 @@ namespace AntdUI
         /// <summary>
         /// 是否只能拖拽到刻度上
         /// </summary>
-        [Description("是否只能拖拽到刻度上"), Category("数据"), DefaultValue(false)]
+        [Description("是否只能拖拽到刻度上"), Category(nameof(CategoryAttribute.Data)), DefaultValue(false)]
         public bool Dots { get; set; }
 
         SliderMarkItemCollection? marks;
@@ -249,7 +249,7 @@ namespace AntdUI
         /// 刻度标记
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("刻度标记"), Category("数据"), DefaultValue(null)]
+        [Description("刻度标记"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public SliderMarkItemCollection Marks
         {
             get
@@ -263,7 +263,7 @@ namespace AntdUI
         /// <summary>
         /// 刻度文本间距
         /// </summary>
-        [Description("刻度文本间距"), Category("外观"), DefaultValue(4)]
+        [Description("刻度文本间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int MarkTextGap { get; set; } = 4;
 
         #endregion
@@ -757,7 +757,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("值"), Category("外观"), DefaultValue(0)]
+        [Description("值"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Value
         {
             get => _value;
@@ -774,7 +774,7 @@ namespace AntdUI
         /// <summary>
         /// 文本颜色
         /// </summary>
-        [Description("文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Fore
         {
             get => fore;
@@ -790,7 +790,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Text
         {
             get => text;
@@ -805,7 +805,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         internal Slider? PARENT { get; set; }

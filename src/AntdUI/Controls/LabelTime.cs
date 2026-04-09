@@ -39,13 +39,13 @@ namespace AntdUI
         /// <summary>
         /// 自动宽度
         /// </summary>
-        [Description("自动宽度"), Category("外观"), DefaultValue(false)]
+        [Description("自动宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoWidth { get; set; }
 
         /// <summary>
         /// 是否可以拖动位置
         /// </summary>
-        [Description("是否可以拖动位置"), Category("行为"), DefaultValue(true)]
+        [Description("是否可以拖动位置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool DragMove { get; set; } = true;
 
         #endregion

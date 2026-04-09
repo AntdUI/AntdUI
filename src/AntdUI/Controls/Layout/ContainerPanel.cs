@@ -20,7 +20,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -39,7 +39,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -57,7 +57,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -74,7 +74,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -91,7 +91,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;

@@ -30,7 +30,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示滚动条
         /// </summary>
-        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示滚动条"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoScroll
         {
             get => autoscroll;
@@ -64,7 +64,7 @@ namespace AntdUI
         /// <summary>
         /// 布局方向
         /// </summary>
-        [Description("布局方向"), Category("外观"), DefaultValue(TAlignFlow.LeftCenter)]
+        [Description("布局方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignFlow.LeftCenter)]
         public TAlignFlow Align
         {
             get => layoutengine.Align;
@@ -80,7 +80,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(0)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Gap
         {
             get => layoutengine.Gap;
@@ -94,7 +94,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;

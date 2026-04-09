@@ -29,14 +29,14 @@ namespace AntdUI
         /// <summary>
         /// 格式化
         /// </summary>
-        [Description("格式化"), Category("行为"), DefaultValue("HH:mm:ss")]
+        [Description("格式化"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue("HH:mm:ss")]
         public string Format { get; set; } = "HH:mm:ss";
 
         TimeSpan _value = new TimeSpan(0, 0, 0);
         /// <summary>
         /// 控件当前日期
         /// </summary>
-        [Description("控件当前日期"), Category("数据"), DefaultValue(typeof(TimeSpan), "00:00:00")]
+        [Description("控件当前日期"), Category(nameof(CategoryAttribute.Data)), DefaultValue(typeof(TimeSpan), "00:00:00")]
         public TimeSpan Value
         {
             get => _value;
@@ -52,31 +52,31 @@ namespace AntdUI
         /// <summary>
         /// 菜单弹出位置
         /// </summary>
-        [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
+        [Description("菜单弹出位置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TAlignFrom.BL)]
         public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
         /// <summary>
         /// 时间值水平对齐
         /// </summary>
-        [Description("时间值水平对齐"), Category("外观"), DefaultValue(false)]
+        [Description("时间值水平对齐"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ValueTimeHorizontal { get; set; }
 
         /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
-        [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
+        [Description("下拉箭头是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool DropDownArrow { get; set; }
 
         /// <summary>
         /// 显示此刻
         /// </summary>
-        [Description("显示此刻"), Category("外观"), DefaultValue(true)]
+        [Description("显示此刻"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowButtonNow { get; set; } = true;
 
         /// <summary>
         /// 文本改变时是否更新Value值
         /// </summary>
-        [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
+        [Description("文本改变时是否更新Value值"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool EnabledValueTextChange { get; set; }
 
         #region 隐藏
@@ -84,31 +84,31 @@ namespace AntdUI
         /// <summary>
         /// 是否显示滚动条
         /// </summary>
-        [Browsable(false), Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        [Browsable(false), Description("是否显示滚动条"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoScroll => false;
 
         /// <summary>
         /// 多行文本
         /// </summary>
-        [Browsable(false), Description("多行文本"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("多行文本"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public override bool Multiline => false;
 
         /// <summary>
         /// 自动换行
         /// </summary>
-        [Browsable(false), Description("自动换行"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("自动换行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public override bool WordWrap => false;
 
         /// <summary>
         /// 使用密码框
         /// </summary>
-        [Browsable(false), Description("使用密码框"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("使用密码框"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public override bool UseSystemPasswordChar => false;
 
         /// <summary>
         /// 自定义密码字符
         /// </summary>
-        [Browsable(false), Description("自定义密码字符"), Category("行为"), DefaultValue((char)0)]
+        [Browsable(false), Description("自定义密码字符"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue((char)0)]
         public override char PasswordChar => base.PasswordChar;
 
         #endregion
@@ -125,7 +125,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示图标
         /// </summary>
-        [Description("是否显示图标"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowIcon
         {
             get => showicon;
@@ -158,7 +158,7 @@ namespace AntdUI
         /// <summary>
         /// 下拉展开 属性值更改时发生
         /// </summary>
-        [Description("下拉展开 属性值更改时发生"), Category("行为")]
+        [Description("下拉展开 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? ExpandDropChanged;
 
         protected virtual void OnExpandDropChanged(bool e) => ExpandDropChanged?.Invoke(this, new BoolEventArgs(e));
@@ -172,7 +172,7 @@ namespace AntdUI
         /// 展开下拉菜单
         /// </summary>
         [Browsable(false)]
-        [Description("展开下拉菜单"), Category("行为"), DefaultValue(false)]
+        [Description("展开下拉菜单"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ExpandDrop
         {
             get => expandDrop;

@@ -29,13 +29,13 @@ namespace AntdUI
         /// <summary>
         /// 左侧列表标题
         /// </summary>
-        [Description("左侧列表标题"), Category("数据"), DefaultValue(null), Localizable(true)]
+        [Description("左侧列表标题"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null), Localizable(true)]
         public string? SourceTitle { get; set; }
 
         /// <summary>
         /// 右侧列表标题
         /// </summary>
-        [Description("右侧列表标题"), Category("数据"), DefaultValue(null), Localizable(true)]
+        [Description("右侧列表标题"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null), Localizable(true)]
         public string? TargetTitle { get; set; }
 
         #region 搜索框
@@ -44,7 +44,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示搜索框
         /// </summary>
-        [Description("是否显示搜索框"), Category("行为"), DefaultValue(false)]
+        [Description("是否显示搜索框"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowSearch
         {
             get => showSearch;
@@ -60,7 +60,7 @@ namespace AntdUI
         /// <summary>
         /// 搜索的水印文本
         /// </summary>
-        [Description("搜索的水印文本 源"), Category("行为"), DefaultValue(null)]
+        [Description("搜索的水印文本 源"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         [Localizable(true)]
         public string? SearchPlaceholderSource
         {
@@ -78,7 +78,7 @@ namespace AntdUI
         /// <summary>
         /// 搜索的水印文本
         /// </summary>
-        [Description("搜索的水印文本 目标"), Category("行为"), DefaultValue(null)]
+        [Description("搜索的水印文本 目标"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         [Localizable(true)]
         public string? SearchPlaceholderTarget
         {
@@ -133,113 +133,113 @@ namespace AntdUI
         /// <summary>
         /// 是否显示全选勾选框
         /// </summary>
-        [Description("是否显示全选勾选框"), Category("行为"), DefaultValue(true)]
+        [Description("是否显示全选勾选框"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ShowSelectAll { get; set; } = true;
 
         /// <summary>
         /// 是否单向模式（只能从左到右）
         /// </summary>
-        [Description("是否单向模式（只能从左到右）"), Category("行为"), DefaultValue(false)]
+        [Description("是否单向模式（只能从左到右）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool OneWay { get; set; }
 
         /// <summary>
         /// 改变后到最下面
         /// </summary>
-        [Description("改变后到最下面"), Category("行为"), DefaultValue(false)]
+        [Description("改变后到最下面"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ChangeToBottom { get; set; }
 
         /// <summary>
         /// 列表项高度
         /// </summary>
-        [Description("列表项高度"), Category("外观"), DefaultValue(null)]
+        [Description("列表项高度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? ItemHeight { get; set; }
 
         /// <summary>
         /// 拖拽排序
         /// </summary>
-        [Description("拖拽排序"), Category("行为"), DefaultValue(false)]
+        [Description("拖拽排序"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool DragSort { get; set; }
 
         /// <summary>
         /// 列表框圆角
         /// </summary>
-        [Description("列表框圆角"), Category("外观"), DefaultValue(6)]
+        [Description("列表框圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int PanelRadius { get; set; } = 6;
 
         /// <summary>
         /// 列表框背景颜色
         /// </summary>
-        [Description("列表框背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("列表框背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? PanelBack { get; set; }
 
         /// <summary>
         /// 列表框边框颜色
         /// </summary>
-        [Description("列表框边框颜色"), Category("外观"), DefaultValue(null)]
+        [Description("列表框边框颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor { get; set; }
 
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
-        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor { get; set; }
 
         /// <summary>
         /// 激活文字颜色
         /// </summary>
-        [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
         /// <summary>
         /// 按钮文字颜色
         /// </summary>
-        [Description("按钮文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("按钮文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ButtonForeColor { get; set; }
 
         /// <summary>
         /// 按钮背景颜色
         /// </summary>
-        [Description("按钮背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("按钮背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ButtonBackColor { get; set; }
 
         /// <summary>
         /// 按钮悬停背景颜色
         /// </summary>
-        [Description("按钮悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("按钮悬停背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ButtonBackHover { get; set; }
 
         /// <summary>
         /// 按钮激活背景颜色
         /// </summary>
-        [Description("按钮激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("按钮激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ButtonBackActive { get; set; }
 
         /// <summary>
         /// 按钮禁用背景颜色
         /// </summary>
-        [Description("按钮禁用背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("按钮禁用背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ButtonBackDisable { get; set; }
 
@@ -248,7 +248,7 @@ namespace AntdUI
         /// 数据源
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("数据源"), Category("数据"), DefaultValue(null)]
+        [Description("数据源"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public TransferItemCollection Items
         {
             get
@@ -1084,7 +1084,7 @@ namespace AntdUI
         /// <summary>
         /// 穿梭框选项变化事件
         /// </summary>
-        [Description("穿梭框选项变化事件"), Category("行为")]
+        [Description("穿梭框选项变化事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<TransferEventArgs>? TransferChanged;
 
         /// <summary>
@@ -1124,7 +1124,7 @@ namespace AntdUI
         /// <summary>
         /// 搜索事件
         /// </summary>
-        [Description("搜索事件"), Category("行为")]
+        [Description("搜索事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<SearchEventArgs>? Search;
 
         /// <summary>
@@ -1159,7 +1159,7 @@ namespace AntdUI
         /// <summary>
         /// 输入样式事件
         /// </summary>
-        [Description("输入样式事件"), Category("行为")]
+        [Description("输入样式事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<InputStyleEventArgs>? InputStyle;
 
         /// <summary>
@@ -1591,20 +1591,20 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("数据"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? Name { get; set; }
 
         string? text;
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null), Localizable(true)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null), Localizable(true)]
         public string? Text
         {
             get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
@@ -1662,7 +1662,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -1680,7 +1680,7 @@ namespace AntdUI
         /// <summary>
         /// 禁用状态
         /// </summary>
-        [Description("禁用状态"), Category("行为"), DefaultValue(true)]
+        [Description("禁用状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Enabled
         {
             get => enabled;

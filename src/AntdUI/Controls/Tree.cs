@@ -29,14 +29,14 @@ namespace AntdUI
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
-        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
@@ -44,7 +44,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -60,7 +60,7 @@ namespace AntdUI
         /// <summary>
         /// 激活字体颜色
         /// </summary>
-        [Description("激活字体颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活字体颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
@@ -68,7 +68,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(1F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1F)]
         public float IconRatio
         {
             get => iconratio;
@@ -84,7 +84,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -100,7 +100,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(8)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int Gap
         {
             get => _gap;
@@ -115,14 +115,14 @@ namespace AntdUI
         /// <summary>
         /// 间距缩进
         /// </summary>
-        [Description("间距缩进"), Category("外观"), DefaultValue(null)]
+        [Description("间距缩进"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? GapIndent { get; set; }
 
         bool round = false;
         /// <summary>
         /// 圆角样式
         /// </summary>
-        [Description("圆角样式"), Category("外观"), DefaultValue(false)]
+        [Description("圆角样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Round
         {
             get => round;
@@ -138,7 +138,7 @@ namespace AntdUI
         /// <summary>
         /// 节点前添加 Checkbox 复选框
         /// </summary>
-        [Description("节点前添加 Checkbox 复选框"), Category("外观"), DefaultValue(false)]
+        [Description("节点前添加 Checkbox 复选框"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Checkable
         {
             get => checkable;
@@ -153,14 +153,14 @@ namespace AntdUI
         /// <summary>
         /// Checkable 状态下节点选择完全受控（父子节点选中状态不再关联）
         /// </summary>
-        [Description("Checkable 状态下节点选择完全受控（父子节点选中状态不再关联）"), Category("行为"), DefaultValue(true)]
+        [Description("Checkable 状态下节点选择完全受控（父子节点选中状态不再关联）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool CheckStrictly { get; set; } = true;
 
         bool blockNode = false;
         /// <summary>
         /// 节点占据一行
         /// </summary>
-        [Description("节点占据一行"), Category("外观"), DefaultValue(false)]
+        [Description("节点占据一行"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool BlockNode
         {
             get => blockNode;
@@ -175,7 +175,7 @@ namespace AntdUI
         /// <summary>
         /// 支持点选多个节点
         /// </summary>
-        [Description("支持点选多个节点"), Category("行为"), DefaultValue(false)]
+        [Description("支持点选多个节点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Multiple { get; set; }
 
         TreeItemCollection? items;
@@ -183,7 +183,7 @@ namespace AntdUI
         /// 集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public TreeItemCollection Items
         {
             get
@@ -198,7 +198,7 @@ namespace AntdUI
         /// <summary>
         /// 选择项
         /// </summary>
-        [Browsable(false), Description("选择项"), Category("数据"), DefaultValue(null)]
+        [Browsable(false), Description("选择项"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public TreeItem? SelectItem
         {
             get => selectItem;
@@ -212,7 +212,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -232,7 +232,7 @@ namespace AntdUI
         public ScrollBar ScrollBar;
 
         bool empty = true;
-        [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示空样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Empty
         {
             get => empty;
@@ -246,7 +246,7 @@ namespace AntdUI
         }
 
         string? emptyText;
-        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示文字"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? EmptyText
         {
@@ -260,14 +260,14 @@ namespace AntdUI
             }
         }
 
-        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
 
         bool virtualMode = false;
         /// <summary>
         /// 虚拟模式（大数据量时仅渲染可见行）
         /// </summary>
-        [Description("虚拟模式"), Category("行为"), DefaultValue(false)]
+        [Description("虚拟模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool VirtualMode
         {
             get => virtualMode;
@@ -287,55 +287,55 @@ namespace AntdUI
         /// <summary>
         /// Select 属性值更改时发生
         /// </summary>
-        [Description("Select 属性值更改时发生"), Category("行为")]
+        [Description("Select 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeSelectEventHandler? SelectChanged;
 
         /// <summary>
         /// Expand 更改前发生
         /// </summary>
-        [Description("Expand 更改前发生"), Category("行为")]
+        [Description("Expand 更改前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeExpandEventHandler? BeforeExpand;
 
         /// <summary>
         /// Expand 更改后发生
         /// </summary>
-        [Description("Expand 更改后发生"), Category("行为")]
+        [Description("Expand 更改后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeCheckedEventHandler? AfterExpand;
 
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
-        [Description("Checked 属性值更改时发生"), Category("行为")]
+        [Description("Checked 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeCheckedEventHandler? CheckedChanged;
 
         /// <summary>
         /// 点击项事件
         /// </summary>
-        [Description("点击项事件"), Category("行为")]
+        [Description("点击项事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeSelectEventHandler? NodeMouseClick;
 
         /// <summary>
         /// 鼠标按下事件
         /// </summary>
-        [Description("鼠标按下事件"), Category("行为")]
+        [Description("鼠标按下事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeSelectEventHandler? NodeMouseDown;
 
         /// <summary>
         /// 鼠标松开事件
         /// </summary>
-        [Description("鼠标松开事件"), Category("行为")]
+        [Description("鼠标松开事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeSelectEventHandler? NodeMouseUp;
 
         /// <summary>
         /// 双击项事件
         /// </summary>
-        [Description("双击项事件"), Category("行为")]
+        [Description("双击项事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeSelectEventHandler? NodeMouseDoubleClick;
 
         /// <summary>
         /// 移动项事件
         /// </summary>
-        [Description("移动项事件"), Category("行为")]
+        [Description("移动项事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeHoverEventHandler? NodeMouseMove;
 
         #region 重写
@@ -1958,20 +1958,20 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("数据"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? Name { get; set; }
 
         Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -1987,7 +1987,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -2008,7 +2008,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Text
         {
             get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
@@ -2027,7 +2027,7 @@ namespace AntdUI
         /// <summary>
         /// 子标题
         /// </summary>
-        [Description("子标题"), Category("外观"), DefaultValue(null)]
+        [Description("子标题"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? SubTitle
         {
             get => Localization.GetLangI(LocalizationSubTitle, subTitle, new string?[] { "{id}", ID });
@@ -2047,7 +2047,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -2068,7 +2068,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading
         {
             get => loading;
@@ -2100,7 +2100,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         internal TreeItemCollection? items;
@@ -2108,7 +2108,7 @@ namespace AntdUI
         /// 获取列表中所有列表项的集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("子集合"), Category("外观")]
+        [Description("子集合"), Category(nameof(CategoryAttribute.Appearance))]
         public TreeItemCollection Sub
         {
             get
@@ -2125,7 +2125,7 @@ namespace AntdUI
         /// <summary>
         /// 禁掉响应
         /// </summary>
-        [Description("禁掉响应"), Category("行为"), DefaultValue(true)]
+        [Description("禁掉响应"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Enabled
         {
             get => enabled;
@@ -2146,7 +2146,7 @@ namespace AntdUI
         /// <summary>
         /// 展开
         /// </summary>
-        [Description("展开"), Category("行为"), DefaultValue(false)]
+        [Description("展开"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Expand
         {
             get => expand;
@@ -2216,7 +2216,7 @@ namespace AntdUI
             return false;
         }
 
-        [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
+        [Description("是否可以展开"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool CanExpand => ICanExpand ?? visible && items != null && items.Count > 0;
 
         internal bool? ICanExpand { get; set; }
@@ -2229,7 +2229,7 @@ namespace AntdUI
         /// <summary>
         /// 节点前添加 Checkbox 复选框
         /// </summary>
-        [Description("节点前添加 Checkbox 复选框"), Category("外观"), DefaultValue(true)]
+        [Description("节点前添加 Checkbox 复选框"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Checkable
         {
             get => checkable;
@@ -2247,7 +2247,7 @@ namespace AntdUI
         AnimationTask? ThreadCheck;
 
         bool _checked = false;
-        [Description("选中状态"), Category("行为"), DefaultValue(false)]
+        [Description("选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Checked
         {
             get => _checked;
@@ -2263,7 +2263,7 @@ namespace AntdUI
 
         internal CheckState checkStateOld = CheckState.Unchecked;
         CheckState checkState = CheckState.Unchecked;
-        [Description("选中状态"), Category("行为"), DefaultValue(CheckState.Unchecked)]
+        [Description("选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(CheckState.Unchecked)]
         public CheckState CheckState
         {
             get => checkState;
@@ -2327,7 +2327,7 @@ namespace AntdUI
         /// <summary>
         /// 文本颜色
         /// </summary>
-        [Description("文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Fore
         {
             get => fore;
@@ -2343,7 +2343,7 @@ namespace AntdUI
         /// <summary>
         /// 子文本颜色
         /// </summary>
-        [Description("子文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("子文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeSub
         {
             get => foreSub;
@@ -2359,7 +2359,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Back
         {
             get => back;
@@ -2416,7 +2416,7 @@ namespace AntdUI
         #region 激活态
 
         bool select = false;
-        [Description("激活状态"), Category("行为"), DefaultValue(false)]
+        [Description("激活状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Select
         {
             get => select;

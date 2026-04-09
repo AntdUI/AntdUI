@@ -20,7 +20,7 @@ namespace AntdUI.In
         /// <summary>
         /// 是否显示滚动条
         /// </summary>
-        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示滚动条"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoScroll
         {
             get => Panel.AutoScroll;
@@ -38,7 +38,7 @@ namespace AntdUI.In
         /// <summary>
         /// 指定控件布局的方向
         /// </summary>
-        [Description("指定控件布局的方向"), Category("布局"), DefaultValue(FlowDirection.LeftToRight)]
+        [Description("指定控件布局的方向"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(FlowDirection.LeftToRight)]
         public FlowDirection FlowDirection
         {
             get => Panel.FlowDirection;
@@ -48,7 +48,7 @@ namespace AntdUI.In
         /// <summary>
         /// 指示在控件边界是将内容换行还是将内容剪裁
         /// </summary>
-        [Description("指示在控件边界是将内容换行还是将内容剪裁"), Category("布局"), DefaultValue(true)]
+        [Description("指示在控件边界是将内容换行还是将内容剪裁"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(true)]
         public bool WrapContents
         {
             get => Panel.WrapContents;
@@ -66,20 +66,20 @@ namespace AntdUI.In
         /// <summary>
         /// 是否显示空样式
         /// </summary>
-        [Description("是否显示空样式"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示空样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Empty { get; set; }
 
         /// <summary>
         /// 数据为空显示文字
         /// </summary>
-        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示文字"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? EmptyText { get; set; }
 
         /// <summary>
         /// 数据为空显示图片
         /// </summary>
-        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
 
         #endregion

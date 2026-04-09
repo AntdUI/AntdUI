@@ -20,7 +20,7 @@ namespace AntdUI
         #region 属性
 
         Color? back;
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -35,7 +35,7 @@ namespace AntdUI
         }
 
         Color? color;
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Color
         {
@@ -53,7 +53,7 @@ namespace AntdUI
         /// <summary>
         /// 状态
         /// </summary>
-        [Description("状态"), Category("外观"), DefaultValue(TType.Success)]
+        [Description("状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TType.Success)]
         public TType State
         {
             get => state;

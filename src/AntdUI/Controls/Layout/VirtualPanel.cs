@@ -47,7 +47,7 @@ namespace AntdUI
         /// 数据
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public VirtualCollection Items
         {
             get
@@ -64,7 +64,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -78,7 +78,7 @@ namespace AntdUI
         }
 
         TAlignRound radiusAlign = TAlignRound.ALL;
-        [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
+        [Description("圆角方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignRound.ALL)]
         public TAlignRound RadiusAlign
         {
             get => radiusAlign;
@@ -97,7 +97,7 @@ namespace AntdUI
         /// <summary>
         /// 阴影大小
         /// </summary>
-        [Description("阴影"), Category("外观"), DefaultValue(0)]
+        [Description("阴影"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Shadow
         {
             get => shadow;
@@ -245,7 +245,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(0)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Gap
         {
             get => gap;
@@ -263,11 +263,11 @@ namespace AntdUI
 
         bool isEmpty = false;
 
-        [Description("是否显示空样式"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示空样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Empty { get; set; }
 
         string? emptyText;
-        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示文字"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? EmptyText
         {
@@ -281,7 +281,7 @@ namespace AntdUI
             }
         }
 
-        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
 
         #endregion
@@ -292,7 +292,7 @@ namespace AntdUI
         /// <summary>
         /// 换行
         /// </summary>
-        [Description("换行"), Category("布局"), DefaultValue(true)]
+        [Description("换行"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(true)]
         public bool Wrap
         {
             get => wrap;
@@ -309,7 +309,7 @@ namespace AntdUI
         /// <summary>
         /// 瀑布流
         /// </summary>
-        [Description("瀑布流"), Category("布局"), DefaultValue(false)]
+        [Description("瀑布流"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(false)]
         public bool Waterfall
         {
             get => waterfall;
@@ -326,7 +326,7 @@ namespace AntdUI
         /// <summary>
         /// 侧轴(纵轴)对齐方式
         /// </summary>
-        [Description("侧轴(纵轴)对齐方式"), Category("布局"), DefaultValue(TAlignItems.Start)]
+        [Description("侧轴(纵轴)对齐方式"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(TAlignItems.Start)]
         public TAlignItems AlignItems
         {
             get => alignitems;
@@ -343,7 +343,7 @@ namespace AntdUI
         /// <summary>
         /// 主轴(横轴)对齐方式
         /// </summary>
-        [Description("主轴(横轴)对齐方式"), Category("布局"), DefaultValue(TJustifyContent.Start)]
+        [Description("主轴(横轴)对齐方式"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(TJustifyContent.Start)]
         public TJustifyContent JustifyContent
         {
             get => justifycontent;
@@ -360,7 +360,7 @@ namespace AntdUI
         /// <summary>
         /// 没有占用交叉轴上所有可用的空间时对齐容器内的各项(垂直)
         /// </summary>
-        [Description("没有占用交叉轴上所有可用的空间时对齐容器内的各项(垂直)"), Category("布局"), DefaultValue(TAlignContent.Start)]
+        [Description("没有占用交叉轴上所有可用的空间时对齐容器内的各项(垂直)"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(TAlignContent.Start)]
         public TAlignContent AlignContent
         {
             get => aligncontent;
@@ -376,7 +376,7 @@ namespace AntdUI
         #endregion
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -1115,7 +1115,7 @@ namespace AntdUI
         /// <summary>
         /// 点击项时发生
         /// </summary>
-        [Description("点击项时发生"), Category("行为")]
+        [Description("点击项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event VirtualItemEventHandler? ItemClick;
 
         protected virtual void OnItemClick(VirtualItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new VirtualItemEventArgs(item, e));

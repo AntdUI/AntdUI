@@ -31,7 +31,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("Appearance"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -52,7 +52,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        [Description("文本"), Category("Appearance"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -80,7 +80,7 @@ namespace AntdUI
         /// <summary>
         /// 文本位置
         /// </summary>
-        [Description("文本位置"), Category("Appearance"), DefaultValue(ContentAlignment.MiddleLeft)]
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleLeft)]
         public ContentAlignment TextAlign
         {
             get => textAlign;
@@ -181,7 +181,7 @@ namespace AntdUI
         /// 常规状态下链接的样式
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Description("常规状态下链接的样式"), Category("Appearance"), DefaultValue(null)]
+        [Description("常规状态下链接的样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public LinkAppearance? NormalStyle
         {
             get
@@ -207,7 +207,7 @@ namespace AntdUI
         /// 鼠标悬停时链接的样式
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Description("鼠标悬停时链接的样式"), Category("Appearance"), DefaultValue(null)]
+        [Description("鼠标悬停时链接的样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public LinkAppearance? HoverStyle
         {
             get
@@ -232,7 +232,7 @@ namespace AntdUI
         /// <summary>
         /// 链接与周围字符之间的距离
         /// </summary>
-        [Description("链接与周围字符之间的距离"), Category("Appearance"), DefaultValue(typeof(Padding), "2, 0, 2, 0")]
+        [Description("链接与周围字符之间的距离"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Padding), "2, 0, 2, 0")]
         public Padding LinkPadding
         {
             get => _linkPadding;
@@ -246,7 +246,7 @@ namespace AntdUI
         /// <summary>
         /// 自动调用默认浏览器打开超链接
         /// </summary>
-        [Description("自动调用默认浏览器打开超链接"), Category("Behavior"), DefaultValue(typeof(bool), "False")]
+        [Description("自动调用默认浏览器打开超链接"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(typeof(bool), "False")]
         public bool LinkAutoNavigation { get; set; }
 
         #endregion
@@ -505,7 +505,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("Appearance"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -526,7 +526,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("Appearance"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;

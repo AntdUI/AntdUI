@@ -73,14 +73,14 @@ namespace AntdUI
         /// <summary>
         /// 滑块大小
         /// </summary>
-        [Description("滑块大小"), Category("行为"), DefaultValue(20)]
+        [Description("滑块大小"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(20)]
         public int SplitterSize { get; set; } = 20;
 
         int? splitterWidth;
         /// <summary>
         /// 确定拆分器的粗细
         /// </summary>
-        [Description("确定拆分器的粗细"), Category("布局"), DefaultValue(4)]
+        [Description("确定拆分器的粗细"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(4)]
         public new int SplitterWidth
         {
             get => splitterWidth ?? base.SplitterWidth;
@@ -96,7 +96,7 @@ namespace AntdUI
         /// <summary>
         /// 滑块背景
         /// </summary>
-        [Description("滑块背景"), DefaultValue(null), Category("外观")]
+        [Description("滑块背景"), DefaultValue(null), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? SplitterBack
         {
@@ -112,7 +112,7 @@ namespace AntdUI
         /// <summary>
         /// 滑块移动背景
         /// </summary>
-        [Description("滑块移动背景"), DefaultValue(null), Category("外观")]
+        [Description("滑块移动背景"), DefaultValue(null), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? SplitterBackMove { get; set; }
 
@@ -120,7 +120,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头颜色
         /// </summary>
-        [Description("箭头颜色"), DefaultValue(null), Category("外观")]
+        [Description("箭头颜色"), DefaultValue(null), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ArrowColor
         {
@@ -136,12 +136,12 @@ namespace AntdUI
         /// <summary>
         /// 鼠标悬浮箭头颜色
         /// </summary>
-        [Description("鼠标悬浮箭头颜色"), DefaultValue(null), Category("外观")]
+        [Description("鼠标悬浮箭头颜色"), DefaultValue(null), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ArrawColorHover { get; set; }
 
         Color? _arrowBackColor;
-        [Description("箭头背景色"), DefaultValue(null), Category("外观")]
+        [Description("箭头背景色"), DefaultValue(null), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ArrawBackColor
         {
@@ -157,7 +157,7 @@ namespace AntdUI
         /// <summary>
         /// 鼠标悬浮箭头背景色
         /// </summary>
-        [Description("鼠标悬浮箭头背景色"), DefaultValue(null), Category("外观")]
+        [Description("鼠标悬浮箭头背景色"), DefaultValue(null), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ArrawBackHover { get; set; }
 
@@ -165,7 +165,7 @@ namespace AntdUI
         /// <summary>
         /// 点击后收起的Panel
         /// </summary>
-        [Description("点击后收起的Panel"), Category("行为"), DefaultValue(ADCollapsePanel.None)]
+        [Description("点击后收起的Panel"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(ADCollapsePanel.None)]
         public ADCollapsePanel CollapsePanel
         {
             get => _collapsePanel;
@@ -188,7 +188,7 @@ namespace AntdUI
         /// <summary>
         /// 拆分器是水平的还是垂直的
         /// </summary>
-        [Description("拆分器是水平的还是垂直的"), Category("行为"), DefaultValue(Orientation.Vertical)]
+        [Description("拆分器是水平的还是垂直的"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(Orientation.Vertical)]
         public new Orientation Orientation
         {
             get => base.Orientation;
@@ -204,7 +204,7 @@ namespace AntdUI
         /// 当前折叠状态
         /// </summary>
         bool _splitPanelState = true;
-        [Description("是否进行展开"), Category("行为"), DefaultValue(true)]
+        [Description("是否进行展开"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool SplitPanelState
         {
             get => _splitPanelState;
@@ -224,7 +224,7 @@ namespace AntdUI
         /// <summary>
         /// 延时渲染
         /// </summary>
-        [Description("延时渲染"), Category("行为"), DefaultValue(true)]
+        [Description("延时渲染"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Lazy { get; set; } = true;
 
         #endregion
@@ -272,7 +272,7 @@ namespace AntdUI
         /// <summary>
         /// SplitPanelState 属性值更改时发生
         /// </summary>
-        [Description("SplitPanelState 属性值更改时发生"), Category("行为")]
+        [Description("SplitPanelState 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? SplitPanelStateChanged;
 
         #endregion

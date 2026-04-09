@@ -31,7 +31,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -49,7 +49,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -66,7 +66,7 @@ namespace AntdUI
         /// <summary>
         /// 悬停颜色
         /// </summary>
-        [Description("悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
@@ -77,7 +77,7 @@ namespace AntdUI
         /// <summary>
         /// 选中状态
         /// </summary>
-        [Description("选中状态"), Category("数据"), DefaultValue(false)]
+        [Description("选中状态"), Category(nameof(CategoryAttribute.Data)), DefaultValue(false)]
         public bool Checked
         {
             get => _checked;
@@ -106,21 +106,21 @@ namespace AntdUI
         /// <summary>
         /// 点击时自动改变选中状态
         /// </summary>
-        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(true)]
+        [Description("点击时自动改变选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool AutoCheck { get; set; } = true;
 
         /// <summary>
         /// 波浪大小
         /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
-        [Description("间距"), Category("外观"), DefaultValue(2)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(2)]
         public int Gap { get; set; } = 2;
 
         string? _checkedText, _unCheckedText;
 
-        [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Description("选中时显示的文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? CheckedText
         {
@@ -137,7 +137,7 @@ namespace AntdUI
         [Description("选中时显示的文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationCheckedText { get; set; }
 
-        [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Description("未选中时显示的文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? UnCheckedText
         {
@@ -160,7 +160,7 @@ namespace AntdUI
         /// <summary>
         /// 加载中
         /// </summary>
-        [Description("加载中"), Category("外观"), DefaultValue(false)]
+        [Description("加载中"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading
         {
             get => loading;
@@ -210,7 +210,7 @@ namespace AntdUI
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
-        [Description("Checked 属性值更改时发生"), Category("行为")]
+        [Description("Checked 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? CheckedChanged;
 
         protected virtual void OnCheckedChanged(bool e) => CheckedChanged?.Invoke(this, new BoolEventArgs(e));
@@ -462,7 +462,7 @@ namespace AntdUI
         /// 是否存在焦点
         /// </summary>
         [Browsable(false)]
-        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        [Description("是否存在焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool HasFocus
         {
             get => hasFocus;

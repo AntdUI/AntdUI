@@ -28,7 +28,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示滚动条
         /// </summary>
-        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示滚动条"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoScroll
         {
             get => autoscroll;
@@ -46,7 +46,7 @@ namespace AntdUI
         /// <summary>
         /// 是否垂直方向
         /// </summary>
-        [Description("是否垂直方向"), Category("外观"), DefaultValue(false)]
+        [Description("是否垂直方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Vertical
         {
             get => layoutengine.Vertical;
@@ -60,7 +60,7 @@ namespace AntdUI
             }
         }
 
-        [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
+        [Description("反向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(RightToLeft.No)]
         public override RightToLeft RightToLeft
         {
             get => layoutengine.Reverse ? RightToLeft.Yes : RightToLeft.No;
@@ -77,7 +77,7 @@ namespace AntdUI
         /// <summary>
         /// 内容大小
         /// </summary>
-        [Description("内容大小"), Category("外观"), DefaultValue(null)]
+        [Description("内容大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? ItemSize
         {
             get => layoutengine.ItemSize;
@@ -93,7 +93,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(0)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Gap
         {
             get => layoutengine.Gap;
@@ -107,7 +107,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -127,7 +127,7 @@ namespace AntdUI
         /// <summary>
         /// 内部容器背景透明
         /// </summary>
-        [Description("内部容器背景透明"), Category("外观"), DefaultValue(false)]
+        [Description("内部容器背景透明"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoContainerBgTransparent { get; set; }
 
         #endregion

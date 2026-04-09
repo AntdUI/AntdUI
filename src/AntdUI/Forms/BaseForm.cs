@@ -38,7 +38,7 @@ namespace AntdUI
         /// <summary>
         /// 深色模式
         /// </summary>
-        [Description("深色模式"), Category("外观"), DefaultValue(false)]
+        [Description("深色模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Dark
         {
             get => dark;
@@ -58,7 +58,7 @@ namespace AntdUI
         /// <summary>
         /// 色彩模式
         /// </summary>
-        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        [Description("色彩模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAMode.Auto)]
         public TAMode Mode
         {
             get => mode;
@@ -74,7 +74,7 @@ namespace AntdUI
         /// <summary>
         /// 是否禁用主题
         /// </summary>
-        [Description("是否禁用主题"), Category("外观"), DefaultValue(false)]
+        [Description("是否禁用主题"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool DisableTheme { get; set; }
 
         internal ThemeConfig? themeConfig;
@@ -134,7 +134,7 @@ namespace AntdUI
         #region 程序
 
         FormBorderStyle formBorderStyle = FormBorderStyle.Sizable;
-        [Description("指示窗体的边框和标题栏的外观和行为"), Category("行为"), DefaultValue(FormBorderStyle.Sizable)]
+        [Description("指示窗体的边框和标题栏的外观和行为"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(FormBorderStyle.Sizable)]
         public new FormBorderStyle FormBorderStyle
         {
             get => formBorderStyle;
@@ -381,7 +381,7 @@ namespace AntdUI
         /// <summary>
         /// 鼠标拖拽大小使能
         /// </summary>
-        [Description("鼠标拖拽大小使能"), Category("交互"), DefaultValue(true)]
+        [Description("鼠标拖拽大小使能"), Category(nameof(CategoryAttribute.Action)), DefaultValue(true)]
         public bool EnableHitTest { get; set; } = true;
         internal Win32.User32.HitTestValues HitTest(Point point)
         {

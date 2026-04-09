@@ -30,7 +30,7 @@ namespace AntdUI.Chat
         /// 数据集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("数据集合"), Category("数据")]
+        [Description("数据集合"), Category(nameof(CategoryAttribute.Data))]
         public ChatItemCollection Items
         {
             get
@@ -44,13 +44,13 @@ namespace AntdUI.Chat
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        [Description("Emoji字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? EmojiFont { get; set; }
 
         /// <summary>
         /// 表情图标比例
         /// </summary>
-        [Description("表情图标比例"), Category("外观"), DefaultValue(1F)]
+        [Description("表情图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1F)]
         public float EmojiRatio { get; set; } = 1F;
 
         /// <summary>
@@ -64,49 +64,49 @@ namespace AntdUI.Chat
         /// <summary>
         /// 选中颜色
         /// </summary>
-        [Description("选中颜色"), Category("外观"), DefaultValue(null)]
+        [Description("选中颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? SelectionColor { get; set; }
 
         /// <summary>
         /// 选中颜色(我)
         /// </summary>
-        [Description("选中颜色(我)"), Category("外观"), DefaultValue(null)]
+        [Description("选中颜色(我)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? SelectionColorMe { get; set; }
 
         /// <summary>
         /// 气泡文本颜色(对方)
         /// </summary>
-        [Description("气泡文本颜色(对方)"), Category("外观"), DefaultValue(null)]
+        [Description("气泡文本颜色(对方)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeBubble { get; set; }
 
         /// <summary>
         /// 气泡背景色(对方)
         /// </summary>
-        [Description("气泡背景色(对方)"), Category("外观"), DefaultValue(null)]
+        [Description("气泡背景色(对方)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackBubble { get; set; }
 
         /// <summary>
         /// 气泡激活背景色(对方)
         /// </summary>
-        [Description("气泡激活背景色(对方)"), Category("外观"), DefaultValue(null)]
+        [Description("气泡激活背景色(对方)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackActiveBubble { get; set; }
 
         /// <summary>
         /// 气泡文本颜色(我)
         /// </summary>
-        [Description("气泡文本颜色(我)"), Category("外观"), DefaultValue(null)]
+        [Description("气泡文本颜色(我)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeBubbleMe { get; set; }
 
         /// <summary>
         /// 气泡背景色(我)
         /// </summary>
-        [Description("气泡背景色(我)"), Category("外观"), DefaultValue(null)]
+        [Description("气泡背景色(我)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackBubbleMe { get; set; }
 
         /// <summary>
         /// 气泡激活背景色(我)
         /// </summary>
-        [Description("气泡激活背景色(我)"), Category("外观"), DefaultValue(null)]
+        [Description("气泡激活背景色(我)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackActiveBubbleMe { get; set; }
 
         #endregion
@@ -114,31 +114,31 @@ namespace AntdUI.Chat
         /// <summary>
         /// 隐藏图标
         /// </summary>
-        [Description("隐藏图标"), Category("外观"), DefaultValue(false)]
+        [Description("隐藏图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool IconLess { get; set; }
 
         /// <summary>
         /// 每项之间的间隙
         /// </summary>
-        [Description("每项之间的间隙"), Category("外观"), DefaultValue(0)]
+        [Description("每项之间的间隙"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int ItemGap { get; set; }
 
         /// <summary>
         /// 气泡间隙
         /// </summary>
-        [Description("气泡间隙"), Category("外观"), DefaultValue(.75F)]
+        [Description("气泡间隙"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.75F)]
         public float BubbleGap { get; set; } = .75F;
 
         /// <summary>
         /// 点击图片使能
         /// </summary>
-        [Description("点击图片使能"), Category("行为"), DefaultValue(false)]
+        [Description("点击图片使能"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool EnabledClickImage { get; set; }
 
         /// <summary>
         /// 仅焦点项才显示时间
         /// </summary>
-        [Description("仅焦点项才显示时间"), Category("行为"), DefaultValue(false)]
+        [Description("仅焦点项才显示时间"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowTimeFocused { get; set; }
 
         /// <summary>
@@ -675,19 +675,19 @@ namespace AntdUI.Chat
         /// <summary>
         /// 单击时发生
         /// </summary>
-        [Description("单击时发生"), Category("行为")]
+        [Description("单击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickEventHandler? ItemClick;
 
         /// <summary>
         /// 消息头像单击时发生
         /// </summary>
-        [Description("消息头像单击时发生"), Category("行为")]
+        [Description("消息头像单击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickEventHandler? ItemIconClick;
 
         /// <summary>
         /// 消息图片单击时发生
         /// </summary>
-        [Description("消息图片单击时发生"), Category("行为")]
+        [Description("消息图片单击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickImageEventHandler? ItemImageClick;
 
         protected virtual void OnItemClick(IChatItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new ChatItemEventArgs(item, e));
@@ -1127,26 +1127,26 @@ namespace AntdUI.Chat
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         /// <summary>
         /// 本人
         /// </summary>
-        [Description("本人"), Category("行为"), DefaultValue(false)]
+        [Description("本人"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Me { get; set; }
 
         /// <summary>
         /// 时间
         /// </summary>
-        [Description("时间"), Category("数据"), DefaultValue(null)]
+        [Description("时间"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? Time { get; set; }
 
         Image? _icon;
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => _icon;
@@ -1162,7 +1162,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("外观"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Name
         {
             get => _name;
@@ -1178,7 +1178,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观")]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance))]
         public string Text
         {
             get => _text;
@@ -1464,20 +1464,20 @@ namespace AntdUI.Chat
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         /// <summary>
         /// 本人
         /// </summary>
-        [Description("本人"), Category("行为"), DefaultValue(false)]
+        [Description("本人"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Me { get; set; }
 
         Image? _icon;
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => _icon;
@@ -1493,7 +1493,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("外观"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Name
         {
             get => _name;
@@ -1511,7 +1511,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 图片
         /// </summary>
-        [Description("图片"), Category("外观"), DefaultValue(null)]
+        [Description("图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Image
         {
             get => _image;
@@ -1722,7 +1722,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         public void Invalidate() => PARENT?.Invalidate();

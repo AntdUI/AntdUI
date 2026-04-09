@@ -29,7 +29,7 @@ namespace AntdUI
         /// <summary>
         /// 当前值2
         /// </summary>
-        [Description("当前值2"), Category("数据"), DefaultValue(10)]
+        [Description("当前值2"), Category(nameof(CategoryAttribute.Data)), DefaultValue(10)]
         public int Value2
         {
             get => _value2;
@@ -48,7 +48,7 @@ namespace AntdUI
         /// <summary>
         /// Value 属性值更改时发生
         /// </summary>
-        [Description("Value 属性值更改时发生"), Category("行为")]
+        [Description("Value 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? Value2Changed;
 
         protected virtual void OnValue2Changed(int e) => Value2Changed?.Invoke(this, new IntEventArgs(e));

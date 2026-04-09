@@ -49,7 +49,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -66,7 +66,7 @@ namespace AntdUI
         /// <summary>
         /// 是否撑满
         /// </summary>
-        [Description("是否撑满"), Category("外观"), DefaultValue(false)]
+        [Description("是否撑满"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Full
         {
             get => full;
@@ -84,7 +84,7 @@ namespace AntdUI
         /// <summary>
         /// 显示农历
         /// </summary>
-        [Description("显示农历"), Category("外观"), DefaultValue(false)]
+        [Description("显示农历"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowChinese
         {
             get => chinese;
@@ -102,7 +102,7 @@ namespace AntdUI
         /// <summary>
         /// 显示今天
         /// </summary>
-        [Description("显示今天"), Category("外观"), DefaultValue(true)]
+        [Description("显示今天"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowButtonToDay
         {
             get => showButtonToDay;
@@ -130,7 +130,7 @@ namespace AntdUI
         /// <summary>
         /// 控件当前日期
         /// </summary>
-        [Description("控件当前日期"), Category("数据")]
+        [Description("控件当前日期"), Category(nameof(CategoryAttribute.Data))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime Value
         {
@@ -150,7 +150,7 @@ namespace AntdUI
         /// <summary>
         /// 最小日期
         /// </summary>
-        [Description("最小日期"), Category("数据"), DefaultValue(null)]
+        [Description("最小日期"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public DateTime? MinDate
         {
             get => minDate;
@@ -169,7 +169,7 @@ namespace AntdUI
         /// <summary>
         /// 最大日期
         /// </summary>
-        [Description("最大日期"), Category("数据"), DefaultValue(null)]
+        [Description("最大日期"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public DateTime? MaxDate
         {
             get => maxDate;
@@ -402,7 +402,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -420,7 +420,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -437,7 +437,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fore
         {
@@ -1473,7 +1473,7 @@ namespace AntdUI
 
         #region 事件
 
-        [Description("日期 改变时发生"), Category("行为")]
+        [Description("日期 改变时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event DateTimeEventHandler? DateChanged;
 
         protected virtual void OnDateChanged(DateTime e) => DateChanged?.Invoke(this, new DateTimeEventArgs(e));
@@ -1481,7 +1481,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制项时发生
         /// </summary>
-        [Description("绘制项时发生"), Category("行为")]
+        [Description("绘制项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CalendarPaintEventHandler? ItemPaint;
 
         protected virtual void OnItemPaint(Canvas canvas, TDatePicker type, Rectangle rect, Rectangle rectreal, DateTime date, string text, bool enable, int radius) => ItemPaint?.Invoke(this, new CalendarPaintEventArgs(canvas, type, rect, rectreal, date, text, enable, radius));
@@ -1489,14 +1489,14 @@ namespace AntdUI
         /// <summary>
         /// 绘制项之前发生
         /// </summary>
-        [Description("绘制项之前发生"), Category("行为")]
+        [Description("绘制项之前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CalendarPaintBeginEventHandler? ItemPaintBegin;
 
-        [Description("鼠标点击事件"), Category("行为")]
+        [Description("鼠标点击事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event CalendarMouseEventHandler? ItemMouseClick;
-        [Description("鼠标按下事件"), Category("行为")]
+        [Description("鼠标按下事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event CalendarMouseEventHandler? ItemMouseDown;
-        [Description("鼠标松开事件"), Category("行为")]
+        [Description("鼠标松开事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event CalendarMouseEventHandler? ItemMouseUp;
 
         protected virtual void OnItemMouseClick(DateTime e, TDatePicker type, Rectangle rect, Rectangle rectreal, string text, bool enable, MouseEventArgs args) => ItemMouseClick?.Invoke(this, new CalendarMouseEventArgs(e, type, rect, rectreal, text, enable, args));

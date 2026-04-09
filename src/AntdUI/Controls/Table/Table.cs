@@ -30,7 +30,7 @@ namespace AntdUI
         /// <summary>
         /// 表格列的配置
         /// </summary>
-        [Browsable(false), Description("表格列的配置"), Category("数据"), DefaultValue(null)]
+        [Browsable(false), Description("表格列的配置"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ColumnCollection Columns
         {
@@ -57,7 +57,7 @@ namespace AntdUI
         /// <summary>
         /// 数据数组
         /// </summary>
-        [Browsable(false), Description("数据数组"), Category("数据"), DefaultValue(null)]
+        [Browsable(false), Description("数据数组"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? DataSource
         {
             get => dataSource;
@@ -84,7 +84,7 @@ namespace AntdUI
         /// <summary>
         /// 总结栏
         /// </summary>
-        [Browsable(false), Description("总结栏"), Category("数据"), DefaultValue(null)]
+        [Browsable(false), Description("总结栏"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Summary
         {
             get => summary;
@@ -101,7 +101,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -119,7 +119,7 @@ namespace AntdUI
         /// <summary>
         /// 固定表头
         /// </summary>
-        [Description("固定表头"), Category("外观"), DefaultValue(true)]
+        [Description("固定表头"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool FixedHeader
         {
             get => fixedHeader;
@@ -137,7 +137,7 @@ namespace AntdUI
         /// <summary>
         /// 显示表头
         /// </summary>
-        [Description("显示表头"), Category("外观"), DefaultValue(true)]
+        [Description("显示表头"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool VisibleHeader
         {
             get => visibleHeader;
@@ -156,7 +156,7 @@ namespace AntdUI
         /// <summary>
         /// 手动调整列头宽度
         /// </summary>
-        [Description("手动调整列头宽度"), Category("行为"), DefaultValue(false)]
+        [Description("手动调整列头宽度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool EnableHeaderResizing
         {
             get => enableHeaderResizing;
@@ -172,26 +172,26 @@ namespace AntdUI
         /// <summary>
         /// 列拖拽排序
         /// </summary>
-        [Description("列拖拽排序"), Category("行为"), DefaultValue(false)]
+        [Description("列拖拽排序"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ColumnDragSort { get; set; }
 
         /// <summary>
         /// 焦点离开清空选中
         /// </summary>
-        [Description("焦点离开清空选中"), Category("行为"), DefaultValue(false)]
+        [Description("焦点离开清空选中"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool LostFocusClearSelection { get; set; }
 
         /// <summary>
         /// 鼠标点击穿透
         /// </summary>
-        [Description("鼠标点击穿透"), Category("行为"), DefaultValue(true)]
+        [Description("鼠标点击穿透"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool MouseClickPenetration { get; set; } = true;
 
         bool bordered = false;
         /// <summary>
         /// 显示列边框
         /// </summary>
-        [Description("显示列边框"), Category("外观"), DefaultValue(false)]
+        [Description("显示列边框"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Bordered
         {
             get => bordered;
@@ -208,7 +208,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -225,7 +225,7 @@ namespace AntdUI
         /// <summary>
         /// 滚动条从表头下方开始绘制（避免遮挡表头）
         /// </summary>
-        [Description("滚动条从表头下方开始绘制"), Category("外观"), DefaultValue(false)]
+        [Description("滚动条从表头下方开始绘制"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ScrollBarAvoidHeader
         {
             get => scrollBarAvoidHeader;
@@ -248,25 +248,25 @@ namespace AntdUI
         /// <summary>
         /// 行复制
         /// </summary>
-        [Description("行/列复制"), Category("行为"), DefaultValue(true)]
+        [Description("行/列复制"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ClipboardCopy { get; set; } = true;
 
         /// <summary>
         /// 是否启用单元格复制
         /// </summary>
-        [Description("是否启用单元格复制"), Category("行为"), DefaultValue(false)]
+        [Description("是否启用单元格复制"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ClipboardCopyFocusedCell { get; set; }
 
         /// <summary>
         /// 列宽自动调整模式
         /// </summary>
-        [Description("列宽自动调整模式"), Category("行为"), DefaultValue(ColumnsMode.Auto)]
+        [Description("列宽自动调整模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(ColumnsMode.Auto)]
         public ColumnsMode AutoSizeColumnsMode { get; set; } = ColumnsMode.Auto;
 
         /// <summary>
         /// 虚拟模式
         /// </summary>
-        [Description("虚拟模式"), Category("外观"), DefaultValue(false)]
+        [Description("虚拟模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool VirtualMode { get; set; }
 
         #region 间距
@@ -274,7 +274,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(null)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? Gap
         {
             get
@@ -293,7 +293,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(typeof(Size), "12, 12")]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "12, 12")]
         public Size Gaps
         {
             get => _gap;
@@ -309,7 +309,7 @@ namespace AntdUI
         /// <summary>
         /// 单元格内间距
         /// </summary>
-        [Description("单元格内间距"), Category("外观"), DefaultValue(6)]
+        [Description("单元格内间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int? GapCell { get; set; } = 6;
 
         [Description("单元格调整高度"), Category("边框"), DefaultValue(null)]
@@ -319,7 +319,7 @@ namespace AntdUI
         /// <summary>
         /// 树间距
         /// </summary>
-        [Description("树间距"), Category("外观"), DefaultValue(12)]
+        [Description("树间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(12)]
         public int GapTree
         {
             get => _gapTree;
@@ -336,7 +336,7 @@ namespace AntdUI
         /// <summary>
         /// 行高
         /// </summary>
-        [Description("行高"), Category("外观"), DefaultValue(null)]
+        [Description("行高"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? RowHeight
         {
             get => rowHeight;
@@ -353,7 +353,7 @@ namespace AntdUI
         /// <summary>
         /// 表头行高
         /// </summary>
-        [Description("表头行高"), Category("外观"), DefaultValue(null)]
+        [Description("表头行高"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? RowHeightHeader
         {
             get => rowHeightHeader;
@@ -374,7 +374,7 @@ namespace AntdUI
         /// <summary>
         /// 复选框大小
         /// </summary>
-        [Description("复选框大小"), Category("外观"), DefaultValue(16)]
+        [Description("复选框大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(16)]
         public int CheckSize
         {
             get => _checksize;
@@ -391,7 +391,7 @@ namespace AntdUI
         /// <summary>
         /// 开关大小
         /// </summary>
-        [Description("开关大小"), Category("外观"), DefaultValue(16)]
+        [Description("开关大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(16)]
         public int SwitchSize
         {
             get => _switchsize;
@@ -407,25 +407,25 @@ namespace AntdUI
         /// <summary>
         /// 树开关按钮大小
         /// </summary>
-        [Description("树开关按钮大小"), Category("外观"), DefaultValue(16)]
+        [Description("树开关按钮大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(16)]
         public int TreeButtonSize { get; set; } = 16;
 
         /// <summary>
         /// 拖拽手柄大小
         /// </summary>
-        [Description("拖拽手柄大小"), Category("外观"), DefaultValue(24)]
+        [Description("拖拽手柄大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(24)]
         public int DragHandleSize { get; set; } = 24;
 
         /// <summary>
         /// 拖拽手柄图标大小
         /// </summary>
-        [Description("拖拽手柄图标大小"), Category("外观"), DefaultValue(14)]
+        [Description("拖拽手柄图标大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(14)]
         public int DragHandleIconSize { get; set; } = 14;
 
         /// <summary>
         /// 排序大小
         /// </summary>
-        [Description("排序大小"), Category("外观"), DefaultValue(null)]
+        [Description("排序大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? SortOrderSize { get; set; }
 
         #endregion
@@ -435,19 +435,19 @@ namespace AntdUI
         /// <summary>
         /// 焦点列样式
         /// </summary>
-        [Description("焦点列样式"), Category("外观"), DefaultValue(null)]
+        [Description("焦点列样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public TableCellFocusedStyle? CellFocusedStyle { get; set; }
 
         /// <summary>
         /// 焦点列背景色
         /// </summary>
-        [Description("焦点列背景色"), Category("外观"), DefaultValue(null)]
+        [Description("焦点列背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? CellFocusedBg { get; set; }
 
         /// <summary>
         /// 焦点列边框色
         /// </summary>
-        [Description("焦点列边框色"), Category("外观"), DefaultValue(null)]
+        [Description("焦点列边框色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? CellFocusedBorder { get; set; }
 
         /// <summary>
@@ -500,7 +500,7 @@ namespace AntdUI
         #region 为空
 
         bool empty = true;
-        [Description("是否显示空样式"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示空样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Empty
         {
             get => empty;
@@ -514,7 +514,7 @@ namespace AntdUI
         }
 
         string? emptyText;
-        [Description("数据为空显示文字"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示文字"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? EmptyText
         {
@@ -528,14 +528,14 @@ namespace AntdUI
             }
         }
 
-        [Description("数据为空显示图片"), Category("外观"), DefaultValue(null)]
+        [Description("数据为空显示图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? EmptyImage { get; set; }
 
         bool emptyHeader = false;
         /// <summary>
         /// 空是否显示表头
         /// </summary>
-        [Description("空是否显示表头"), Category("外观"), DefaultValue(false)]
+        [Description("空是否显示表头"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool EmptyHeader
         {
             get => emptyHeader;
@@ -556,7 +556,7 @@ namespace AntdUI
         /// <summary>
         /// 表格行悬浮背景色
         /// </summary>
-        [Description("表格行悬浮背景色"), Category("外观"), DefaultValue(null)]
+        [Description("表格行悬浮背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? RowHoverBg
         {
@@ -573,7 +573,7 @@ namespace AntdUI
         /// <summary>
         /// 表格行选中背景色
         /// </summary>
-        [Description("表格行选中背景色"), Category("外观"), DefaultValue(null)]
+        [Description("表格行选中背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? RowSelectedBg
         {
@@ -591,7 +591,7 @@ namespace AntdUI
         /// <summary>
         /// 表格行选中字色
         /// </summary>
-        [Description("表格行选中字色"), Category("外观"), DefaultValue(null)]
+        [Description("表格行选中字色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? RowSelectedFore
         {
@@ -625,7 +625,7 @@ namespace AntdUI
         /// <summary>
         /// 表格边框颜色
         /// </summary>
-        [Description("表格边框颜色"), Category("外观"), DefaultValue(null)]
+        [Description("表格边框颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor
         {
@@ -673,7 +673,7 @@ namespace AntdUI
         /// <summary>
         /// 表头字体
         /// </summary>
-        [Description("表头字体"), Category("外观"), DefaultValue(null)]
+        [Description("表头字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? ColumnFont
         {
             get => columnfont;
@@ -690,7 +690,7 @@ namespace AntdUI
         /// <summary>
         /// 表头背景色
         /// </summary>
-        [Description("表头背景色"), Category("外观"), DefaultValue(null)]
+        [Description("表头背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ColumnBack
         {
@@ -708,7 +708,7 @@ namespace AntdUI
         /// <summary>
         /// 表头文本色
         /// </summary>
-        [Description("表头文本色"), Category("外观"), DefaultValue(null)]
+        [Description("表头文本色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ColumnFore
         {
@@ -732,7 +732,7 @@ namespace AntdUI
         /// <summary>
         /// 选中行（1开始）
         /// </summary>
-        [Browsable(false), Description("选中行（1开始）"), Category("数据"), DefaultValue(-1)]
+        [Browsable(false), Description("选中行（1开始）"), Category(nameof(CategoryAttribute.Data)), DefaultValue(-1)]
         public int SelectedIndex
         {
             get
@@ -757,7 +757,7 @@ namespace AntdUI
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor", typeof(UITypeEditor))]
-        [Browsable(false), Description("选中多行"), Category("数据")]
+        [Browsable(false), Description("选中多行"), Category(nameof(CategoryAttribute.Data))]
         public int[] SelectedIndexs
         {
             get => selectedIndex;
@@ -810,7 +810,7 @@ namespace AntdUI
         /// <summary>
         /// 多选行
         /// </summary>
-        [Description("多选行"), Category("行为"), DefaultValue(false)]
+        [Description("多选行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool MultipleRows { get; set; }
 
         /// <summary>
@@ -831,7 +831,7 @@ namespace AntdUI
         }
 
         bool summaryCustomize = false;
-        [Description("是否启用内置汇总定制功能（可右键菜单自定义切换)"), Category("外观"), DefaultValue(false)]
+        [Description("是否启用内置汇总定制功能（可右键菜单自定义切换)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool SummaryCustomize
         {
             get => summaryCustomize;
@@ -858,50 +858,50 @@ namespace AntdUI
         /// <summary>
         /// 默认是否展开
         /// </summary>
-        [Description("默认是否展开"), Category("外观"), DefaultValue(false)]
+        [Description("默认是否展开"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool DefaultExpand { get; set; }
 
         /// <summary>
         /// 处理快捷键
         /// </summary>
-        [Description("处理快捷键"), Category("行为"), DefaultValue(true)]
+        [Description("处理快捷键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
 
         /// <summary>
         /// 显示复选背景
         /// </summary>
-        [Description("显示复选背景"), Category("行为"), DefaultValue(true)]
+        [Description("显示复选背景"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ShowCheckBg { get; set; } = true;
 
         /// <summary>
         /// 省略文字提示
         /// </summary>
-        [Description("省略文字提示"), Category("行为"), DefaultValue(true)]
+        [Description("省略文字提示"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ShowTip { get; set; } = true;
 
         /// <summary>
         /// 筛选实时生效
         /// </summary>
-        [Description("筛选实时生效"), Category("行为"), DefaultValue(false)]
+        [Description("筛选实时生效"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool FilterRealTime { get; set; }
 
         /// <summary>
         /// 筛选显示复选背景
         /// </summary>
-        [Description("筛选显示复选背景"), Category("行为"), DefaultValue(null)]
+        [Description("筛选显示复选背景"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public bool? FilterShowCheckBg { get; set; }
 
         /// <summary>
         /// 筛选启用排序
         /// </summary>
-        [Description("筛选启用排序"), Category("行为"), DefaultValue(null)]
+        [Description("筛选启用排序"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public bool? FilterSortOrder { get; set; }
 
         /// <summary>
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
-        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        [Description("超出文字提示配置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
         /// <summary>
@@ -916,7 +916,7 @@ namespace AntdUI
         /// <summary>
         /// 编辑模式
         /// </summary>
-        [Description("编辑模式"), Category("行为"), DefaultValue(TEditMode.None)]
+        [Description("编辑模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TEditMode.None)]
         public TEditMode EditMode
         {
             get => editmode;
@@ -932,25 +932,25 @@ namespace AntdUI
         /// <summary>
         /// 编辑模式下的默认文本选择动作
         /// </summary>
-        [Description("编辑模式下的默认文本选择动作"), Category("行为"), DefaultValue(TEditSelection.None)]
+        [Description("编辑模式下的默认文本选择动作"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TEditSelection.None)]
         public TEditSelection EditSelection { get; set; } = TEditSelection.None;
 
         /// <summary>
         /// 编辑模式输入框样式
         /// </summary>
-        [Description("编辑模式输入框样式"), Category("行为"), DefaultValue(TEditInputStyle.Default)]
+        [Description("编辑模式输入框样式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TEditInputStyle.Default)]
         public TEditInputStyle EditInputStyle { get; set; } = TEditInputStyle.Default;
 
         /// <summary>
         /// 编辑模式自动高度
         /// </summary>
-        [Description("编辑模式自动高度"), Category("行为"), DefaultValue(false)]
+        [Description("编辑模式自动高度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool EditAutoHeight { get; set; }
 
         /// <summary>
         /// 失去焦点退出编辑模式
         /// </summary>
-        [Description("失去焦点退出编辑模式"), Category("行为"), DefaultValue(true)]
+        [Description("失去焦点退出编辑模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EditLostFocus { get; set; } = true;
 
         #endregion
@@ -958,17 +958,17 @@ namespace AntdUI
         /// <summary>
         /// 树表格的箭头样式
         /// </summary>
-        [Description("树表格的箭头样式"), Category("行为"), DefaultValue(TableTreeStyle.Button)]
+        [Description("树表格的箭头样式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TableTreeStyle.Button)]
         public TableTreeStyle TreeArrowStyle { get; set; } = TableTreeStyle.Button;
 
         /// <summary>
         /// 动画时长（ms）
         /// </summary>
-        [Description("动画时长（ms）"), Category("行为"), DefaultValue(100)]
+        [Description("动画时长（ms）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(100)]
         public int AnimationTime { get; set; } = 100;
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;

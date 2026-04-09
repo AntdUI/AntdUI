@@ -18,19 +18,19 @@ namespace AntdUI
         /// <summary>
         /// 是否显示背景
         /// </summary>
-        [Description("是否显示背景"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示背景"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Back { get; set; } = true;
 
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius { get; set; } = 6;
 
         /// <summary>
         /// 常态下滚动条大小
         /// </summary>
-        [Description("常态下滚动条大小"), Category("外观"), DefaultValue(6)]
+        [Description("常态下滚动条大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int SIZE_BAR { get; set; } = 6;
 
         #endregion

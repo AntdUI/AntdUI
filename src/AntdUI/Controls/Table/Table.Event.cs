@@ -36,7 +36,7 @@ namespace AntdUI
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
-        [Description("Checked 属性值更改时发生"), Category("行为")]
+        [Description("Checked 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CheckEventHandler? CheckedChanged;
 
         protected virtual void OnCheckedChanged(bool value, object record, int rowIndex, int columnIndex, Column column) => CheckedChanged?.Invoke(this, new TableCheckEventArgs(value, record, rowIndex, columnIndex, column));
@@ -68,7 +68,7 @@ namespace AntdUI
         /// <summary>
         /// 全局 CheckState 属性值更改时发生
         /// </summary>
-        [Description("全局 CheckState 属性值更改时发生"), Category("行为")]
+        [Description("全局 CheckState 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CheckStateEventHandler? CheckedOverallChanged;
 
         internal void OnICheckedOverallChanged(ColumnCheck column, CheckState checkState) => OnCheckedOverallChanged(column, checkState);
@@ -77,7 +77,7 @@ namespace AntdUI
         /// <summary>
         /// 单击时发生
         /// </summary>
-        [Description("单击时发生"), Category("行为")]
+        [Description("单击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickEventHandler? CellClick;
 
         protected virtual void OnCellClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
@@ -85,7 +85,7 @@ namespace AntdUI
         /// <summary>
         /// 滑动时发生
         /// </summary>
-        [Description("滑动时发生"), Category("行为")]
+        [Description("滑动时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event HoverEventHandler? CellHover;
 
         protected virtual void OnCellHover(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellHover?.Invoke(this, new TableHoverEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
@@ -95,7 +95,7 @@ namespace AntdUI
         /// <summary>
         /// 单击按钮时发生
         /// </summary>
-        [Description("单击按钮时发生"), Category("行为")]
+        [Description("单击按钮时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickButtonEventHandler? CellButtonClick;
 
         protected virtual void OnCellButtonClick(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonClick?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
@@ -103,7 +103,7 @@ namespace AntdUI
         /// <summary>
         /// 按下按钮时发生
         /// </summary>
-        [Description("按下按钮时发生"), Category("行为")]
+        [Description("按下按钮时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickButtonEventHandler? CellButtonDown;
 
         protected virtual void OnCellButtonDown(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonDown?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
@@ -111,7 +111,7 @@ namespace AntdUI
         /// <summary>
         /// 放下按钮时发生
         /// </summary>
-        [Description("放下按钮时发生"), Category("行为")]
+        [Description("放下按钮时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickButtonEventHandler? CellButtonUp;
 
         protected virtual void OnCellButtonUp(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
@@ -119,7 +119,7 @@ namespace AntdUI
         /// <summary>
         /// 双击时发生
         /// </summary>
-        [Description("双击时发生"), Category("行为")]
+        [Description("双击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClickEventHandler? CellDoubleClick;
 
         protected virtual void OnCellDoubleClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellDoubleClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
@@ -132,7 +132,7 @@ namespace AntdUI
         /// <summary>
         /// 单元格焦点变更后发生
         /// </summary>
-        [Description("单元格焦点变更后发生"), Category("行为")]
+        [Description("单元格焦点变更后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellFocusedEventHandler? CellFocused;
 
         protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect) => CellFocused?.Invoke(this, new TableCellFocusedEventArgs(record, rowType, rowIndex, columnIndex, column, rect));
@@ -167,7 +167,7 @@ namespace AntdUI
         /// <summary>
         /// 编辑前发生
         /// </summary>
-        [Description("编辑前发生"), Category("行为")]
+        [Description("编辑前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BeginEditEventHandler? CellBeginEdit;
 
         protected virtual bool OnCellBeginEdit(object? value, object record, int rowIndex, int columnIndex, Column column) => CellBeginEdit?.Invoke(this, new TableEventArgs(value, record, rowIndex, columnIndex, column)) ?? true;
@@ -175,7 +175,7 @@ namespace AntdUI
         /// <summary>
         /// 编辑前文本框样式发生
         /// </summary>
-        [Description("编辑前文本框样式发生"), Category("行为")]
+        [Description("编辑前文本框样式发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BeginEditInputStyleEventHandler? CellBeginEditInputStyle;
 
         protected virtual void OnCellBeginEditInputStyle(TableBeginEditInputStyleEventArgs e) => CellBeginEditInputStyle?.Invoke(this, e);
@@ -183,7 +183,7 @@ namespace AntdUI
         /// <summary>
         /// 编辑后发生
         /// </summary>
-        [Description("编辑后发生"), Category("行为")]
+        [Description("编辑后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event EndEditEventHandler? CellEndEdit;
 
         protected virtual bool OnCellEndEdit(string value, object record, int rowIndex, int columnIndex, Column column) => CellEndEdit?.Invoke(this, new TableEndEditEventArgs(value, record, rowIndex, columnIndex, column)) ?? true;
@@ -191,7 +191,7 @@ namespace AntdUI
         /// <summary>
         /// 编辑后发生
         /// </summary>
-        [Description("编辑后发生"), Category("行为")]
+        [Description("编辑后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event EndValueEditEventHandler? CellEndValueEdit;
 
         protected virtual bool OnCellEndValueEdit(object? value, object record, int rowIndex, int columnIndex, Column column) => CellEndValueEdit?.Invoke(this, new TableEndValueEditEventArgs(value, record, rowIndex, columnIndex, column)) ?? true;
@@ -199,7 +199,7 @@ namespace AntdUI
         /// <summary>
         /// 编辑完成后发生
         /// </summary>
-        [Description("编辑完成后发生"), Category("行为")]
+        [Description("编辑完成后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event EndEditCompleteEventHandler? CellEditComplete;
 
         protected virtual void OnCellEditComplete(object record, int rowIndex, int columnIndex, Column column) => CellEditComplete?.Invoke(this, new ITableEventArgs(record, rowIndex, columnIndex, column));
@@ -212,7 +212,7 @@ namespace AntdUI
         /// <summary>
         /// 单元格按下回车键时发生
         /// </summary>
-        [Description("单元格输入模式下按下回车键时发生"), Category("行为")]
+        [Description("单元格输入模式下按下回车键时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellEditEnterEventHandler? CellEditEnter;
 
         protected virtual void OnCellEditEnter(object sender, TableCellEditEnterEventArgs e)
@@ -239,7 +239,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制行时发生
         /// </summary>
-        [Description("绘制行时发生"), Category("行为")]
+        [Description("绘制行时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellPaintRowEventHandler? RowPaint;
 
         protected virtual void OnRowPaint(Canvas canvas, Rectangle rect, object record, RowType rowType, int rowIndex) => RowPaint?.Invoke(this, new TablePaintRowEventArgs(canvas, rect, record, rowType, rowIndex));
@@ -247,7 +247,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制行前发生
         /// </summary>
-        [Description("绘制行前发生"), Category("行为")]
+        [Description("绘制行前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellPaintRowEventHandler? RowPaintBegin;
 
         protected virtual void OnRowPaintBegin(Canvas canvas, Rectangle rect, object record, RowType rowType, int rowIndex) => RowPaintBegin?.Invoke(this, new TablePaintRowEventArgs(canvas, rect, record, rowType, rowIndex));
@@ -255,7 +255,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制单元格时发生
         /// </summary>
-        [Description("绘制单元格时发生"), Category("行为")]
+        [Description("绘制单元格时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellPaintEventHandler? CellPaint;
 
         protected virtual void OnCellPaint(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, RowType rowType, int rowIndex, int index, Column column) => CellPaint?.Invoke(this, new TablePaintEventArgs(canvas, rect, rectreal, record, rowType, rowIndex, index, column));
@@ -263,7 +263,7 @@ namespace AntdUI
         /// <summary>
         /// 绘制单元格之前发生
         /// </summary>
-        [Description("绘制单元格之前发生"), Category("行为")]
+        [Description("绘制单元格之前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellPaintBeginEventHandler? CellPaintBegin;
 
         protected virtual bool OnCellPaintBegin(Canvas canvas, Rectangle rect, Rectangle rectreal, object record, RowType rowType, int rowIndex, int index, Column column, out SolidBrush? CellFore, out Brush? CellBack, out Font? CellFont)
@@ -307,7 +307,7 @@ namespace AntdUI
         /// <summary>
         /// 选中变化后发生
         /// </summary>
-        [Description("选中变化后发生"), Category("行为")]
+        [Description("选中变化后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler? SelectIndexChanged;
 
         protected virtual void OnSelectIndexChanged() => SelectIndexChanged?.Invoke(this, EventArgs.Empty);
@@ -317,7 +317,7 @@ namespace AntdUI
         /// <summary>
         /// 行排序时发生
         /// </summary>
-        [Description("行排序时发生"), Category("行为")]
+        [Description("行排序时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? SortRows;
 
         protected virtual void OnSortRows(int e) => SortRows?.Invoke(this, new IntEventArgs(e));
@@ -325,7 +325,7 @@ namespace AntdUI
         /// <summary>
         /// 树行排序时发生
         /// </summary>
-        [Description("树行排序时发生"), Category("行为")]
+        [Description("树行排序时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event SortTreeEventHandler? SortRowsTree;
 
         protected virtual bool OnSortRowsTree(object record, int from, int to)
@@ -343,7 +343,7 @@ namespace AntdUI
         /// <summary>
         /// 点击排序后发生
         /// </summary>
-        [Description("点击排序后发生"), Category("行为")]
+        [Description("点击排序后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event SortModeEventHandler? SortModeChanged;
 
         protected virtual bool OnSortModeChanged(SortMode sortMode, Column column) => SortModeChanged?.Invoke(this, new TableSortModeEventArgs(sortMode, column)) ?? false;
@@ -361,18 +361,18 @@ namespace AntdUI
         /// <summary>
         /// 列拖放到新位置时发生 (Cancel=true时取消)
         /// </summary>
-        [Description("列拖放到新位置时发生 (Cancel=true时取消)"), Category("行为")]
+        [Description("列拖放到新位置时发生 (Cancel=true时取消)"), Category(nameof(CategoryAttribute.Behavior))]
         public event ColumnIndexChangingEventHandler? ColumnIndexChanging;
         /// <summary>
         /// 列拖放到新位置后发生
         /// </summary>
-        [Description("列拖放到新位置后发生"), Category("行为")]
+        [Description("列拖放到新位置后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ColumnIndexChangedEventHandler? ColumnIndexChanged;
 
         /// <summary>
         /// 自定义排序
         /// </summary>
-        [Description("自定义排序"), Category("行为")]
+        [Description("自定义排序"), Category(nameof(CategoryAttribute.Behavior))]
         public event Comparison<string>? CustomSort;
 
         #endregion
@@ -385,7 +385,7 @@ namespace AntdUI
         /// <summary>
         /// 展开改变时发生
         /// </summary>
-        [Description("展开改变时发生"), Category("行为")]
+        [Description("展开改变时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ExpandEventHandler? ExpandChanged;
 
         protected virtual bool OnExpandChanged(object record, bool value)
@@ -422,7 +422,7 @@ namespace AntdUI
         /// <summary>
         /// 筛选窗口弹出前发生
         /// </summary>
-        [Description("筛选窗口弹出前发生"), Category("行为")]
+        [Description("筛选窗口弹出前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TableFilterPopupBeginEventHandler? FilterPopupBegin;
 
         protected virtual bool OnFilterPopupBegin(Column column, out System.Collections.Generic.IList<object>? customSource, out Font? font, out int? height)
@@ -449,7 +449,7 @@ namespace AntdUI
         /// <summary>
         /// 筛选窗口关闭前发生
         /// </summary>
-        [Description("筛选窗口关闭前发生"), Category("行为")]
+        [Description("筛选窗口关闭前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TableFilterPopupEndEventHandler? FilterPopupEnd;
 
         protected virtual bool OnFilterPopupEnd(FilterOption option)
@@ -469,7 +469,7 @@ namespace AntdUI
         /// <summary>
         /// 筛选数据变更后发生
         /// </summary>
-        [Description("筛选数据变更后发生"), Category("行为")]
+        [Description("筛选数据变更后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TableFilterDataChangedEventHandler? FilterDataChanged;
 
         protected virtual void OnFilterDataChanged(object[] records) => FilterDataChanged?.Invoke(this, new TableFilterDataChangedEventArgs(records));
@@ -477,7 +477,7 @@ namespace AntdUI
         /// <summary>
         /// 每行或行自定义汇总计算结束时发生
         /// </summary>
-        [Description("每行或行自定义汇总计算结束时发生"), Category("数据")]
+        [Description("每行或行自定义汇总计算结束时发生"), Category(nameof(CategoryAttribute.Data))]
         public event CustomSummaryEventHandler? CustomSummaryCalculate;
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace AntdUI
         /// <summary>
         /// 内置/外部汇总栏切换后发生
         /// </summary>
-        [Description("内置/外部汇总栏切换后发生"), Category("行为")]
+        [Description("内置/外部汇总栏切换后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event SummaryCustomizeChangedEventHandler? SummaryCustomizeChanged;
 
         #endregion

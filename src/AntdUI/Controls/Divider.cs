@@ -26,7 +26,7 @@ namespace AntdUI
         /// <summary>
         /// 是否竖向
         /// </summary>
-        [Description("是否竖向"), Category("外观"), DefaultValue(false)]
+        [Description("是否竖向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Vertical
         {
             get => vertical;
@@ -44,7 +44,7 @@ namespace AntdUI
         /// <summary>
         /// 方向
         /// </summary>
-        [Description("方向"), Category("外观"), DefaultValue(TOrientation.None)]
+        [Description("方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TOrientation.None)]
         public TOrientation Orientation
         {
             get => orientation;
@@ -60,7 +60,7 @@ namespace AntdUI
         /// <summary>
         /// 文本与边缘距离，取值 0 ～ 1
         /// </summary>
-        [Description("文本与边缘距离，取值 0 ～ 1"), Category("外观"), DefaultValue(0.02F)]
+        [Description("文本与边缘距离，取值 0 ～ 1"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0.02F)]
         public float OrientationMargin
         {
             get => orientationMargin;
@@ -76,7 +76,7 @@ namespace AntdUI
         /// <summary>
         /// 文本与线距离，同等字体大小
         /// </summary>
-        [Description("文本与线距离，同等字体大小"), Category("外观"), DefaultValue(0.4F)]
+        [Description("文本与线距离，同等字体大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0.4F)]
         public float TextPadding
         {
             get => textPadding;
@@ -92,7 +92,7 @@ namespace AntdUI
         /// <summary>
         /// 厚度
         /// </summary>
-        [Description("厚度"), Category("外观"), DefaultValue(0.6F)]
+        [Description("厚度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0.6F)]
         public float Thickness
         {
             get => thickness;
@@ -109,7 +109,7 @@ namespace AntdUI
         /// <summary>
         /// 线颜色
         /// </summary>
-        [Description("线颜色"), Category("外观"), DefaultValue(null)]
+        [Description("线颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ColorSplit
         {
@@ -127,7 +127,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766

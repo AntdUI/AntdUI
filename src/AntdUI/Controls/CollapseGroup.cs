@@ -27,20 +27,20 @@ namespace AntdUI
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
-        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackActive { get; set; }
 
         Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Color? ForeColor
         {
             get => fore;
@@ -56,20 +56,20 @@ namespace AntdUI
         /// <summary>
         /// 激活字体颜色
         /// </summary>
-        [Description("激活字体颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活字体颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeActive { get; set; }
 
         /// <summary>
         /// 只保持一个子菜单的展开
         /// </summary>
-        [Description("只保持一个子菜单的展开"), Category("外观"), DefaultValue(false)]
+        [Description("只保持一个子菜单的展开"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Unique { get; set; }
 
         int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -86,7 +86,7 @@ namespace AntdUI
         /// <summary>
         /// 列数量
         /// </summary>
-        [Description("列数量"), Category("外观"), DefaultValue(6)]
+        [Description("列数量"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int ColumnCount
         {
             get => columnCount;
@@ -105,7 +105,7 @@ namespace AntdUI
         /// 集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public CollapseGroupItemCollection Items
         {
             get
@@ -117,7 +117,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -497,7 +497,7 @@ namespace AntdUI
         /// <summary>
         /// 点击项事件
         /// </summary>
-        [Description("点击项事件"), Category("行为")]
+        [Description("点击项事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event ItemClickEventHandler? ItemClick;
 
         protected virtual void OnItemClick(CollapseGroupSub item, Rectangle rect, MouseEventArgs e) => ItemClick?.Invoke(this, new ItemClickEventArgs(item, rect, e));
@@ -579,7 +579,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Text
         {
             get => text;
@@ -594,7 +594,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         internal CollapseGroupSubCollection? items;
@@ -602,7 +602,7 @@ namespace AntdUI
         /// 获取列表中所有列表项的集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("子集合"), Category("外观")]
+        [Description("子集合"), Category(nameof(CategoryAttribute.Appearance))]
         public CollapseGroupSubCollection Sub
         {
             get
@@ -620,7 +620,7 @@ namespace AntdUI
         /// <summary>
         /// 展开
         /// </summary>
-        [Description("展开"), Category("行为"), DefaultValue(false)]
+        [Description("展开"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Expand
         {
             get => expand;
@@ -660,7 +660,7 @@ namespace AntdUI
             }
         }
 
-        [Description("是否可以展开"), Category("行为"), DefaultValue(false)]
+        [Description("是否可以展开"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool CanExpand => items != null && items.Count > 0;
 
         #endregion
@@ -671,7 +671,7 @@ namespace AntdUI
         /// <summary>
         /// 文本颜色
         /// </summary>
-        [Description("文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Fore
         {
             get => fore;
@@ -814,11 +814,11 @@ namespace AntdUI
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
-        [Description("Checked 属性值更改时发生"), Category("行为")]
+        [Description("Checked 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseSwitchCheckedChangedEventHandler? CheckedChanged;
-        [Description("文本改变时发生"), Category("行为")]
+        [Description("文本改变时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseEditChangedEventHandler? TextChanged;
-        [Description("自定义编辑器"), Category("行为")]
+        [Description("自定义编辑器"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseCustomInputEditEventHandler? CustomInputEdit;
         public CollapseGroupButton() : base() { }
         public CollapseGroupButton(string text) : base(text) { }
@@ -846,7 +846,7 @@ namespace AntdUI
         /// <summary>
         /// 自定义宽度
         /// </summary>
-        [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
+        [Description("自定义宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? Width
         {
             get => width; set
@@ -859,7 +859,7 @@ namespace AntdUI
         }
 
         protected EButtonEditTypes m_editType = EButtonEditTypes.Default;
-        [Description("编辑类型"), Category("外观"), DefaultValue(typeof(EButtonEditTypes), "Default")]
+        [Description("编辑类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(EButtonEditTypes), "Default")]
         public EButtonEditTypes EditType
         {
             get => m_editType;
@@ -877,7 +877,7 @@ namespace AntdUI
         /// <summary>
         /// 是否可见
         /// </summary>
-        [Description("是否可见"), Category("行为"), DefaultValue(true)]
+        [Description("是否可见"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -891,7 +891,7 @@ namespace AntdUI
 
         bool switchMode = false;
         [Browsable(false)]
-        [Description("Switch切换模式"), Category("行为"), DefaultValue(false)]
+        [Description("Switch切换模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool SwitchMode
         {
             get
@@ -914,11 +914,11 @@ namespace AntdUI
         [Browsable(false)]
         public IControl? Edit { get; protected set; }
 
-        [Description("工具提示内容"), Category("外观"), DefaultValue(null)]
+        [Description("工具提示内容"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Tooltip { get; set; }
         string? _checkedText, _unCheckedText;
 
-        [Description("选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Description("选中时显示的文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? CheckedText
         {
@@ -931,7 +931,7 @@ namespace AntdUI
             }
         }
 
-        [Description("未选中时显示的文本"), Category("外观"), DefaultValue(null)]
+        [Description("未选中时显示的文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? UnCheckedText
         {
@@ -947,10 +947,10 @@ namespace AntdUI
         /// <summary>
         /// 波浪大小
         /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(0)]
+        [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int WaveSize { get; set; } = 0;
         bool _checked = false;
-        [Description("勾选状态"), Category("行为"), DefaultValue(false)]
+        [Description("勾选状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Checked
         {
             get => _checked;
@@ -1141,7 +1141,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -1157,7 +1157,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -1177,14 +1177,14 @@ namespace AntdUI
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("数据"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? Name { get; set; }
 
         string? text;
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Text
         {
             get => text;
@@ -1199,7 +1199,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 禁用
@@ -1208,7 +1208,7 @@ namespace AntdUI
         /// <summary>
         /// 禁掉响应
         /// </summary>
-        [Description("禁掉响应"), Category("行为"), DefaultValue(true)]
+        [Description("禁掉响应"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Enabled
         {
             get => enabled;
@@ -1228,7 +1228,7 @@ namespace AntdUI
         /// <summary>
         /// 文本颜色
         /// </summary>
-        [Description("文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Fore
         {
             get => fore;
@@ -1244,7 +1244,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Back
         {
             get => back;
@@ -1292,7 +1292,7 @@ namespace AntdUI
         }
 
         protected bool select = false;
-        [Description("激活状态"), Category("行为"), DefaultValue(false)]
+        [Description("激活状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public virtual bool Select
         {
             get => select;

@@ -29,7 +29,7 @@ namespace AntdUI
         /// <summary>
         /// 原装背景颜色
         /// </summary>
-        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Description("原装背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "Transparent")]
         public Color OriginalBackColor
         {
             get => base.BackColor;
@@ -40,7 +40,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
@@ -58,7 +58,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -76,7 +76,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(4)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int Radius
         {
             get => radius;
@@ -93,7 +93,7 @@ namespace AntdUI
         /// <summary>
         /// 点大小
         /// </summary>
-        [Description("点大小"), Category("外观"), DefaultValue(8)]
+        [Description("点大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int DotSize
         {
             get => dotsize;
@@ -112,7 +112,7 @@ namespace AntdUI
         /// <summary>
         /// 进度条
         /// </summary>
-        [Description("进度条"), Category("数据"), DefaultValue(0)]
+        [Description("进度条"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int Value
         {
             get => _value;
@@ -127,7 +127,7 @@ namespace AntdUI
             }
         }
 
-        [Description("显示"), Category("外观"), DefaultValue(true)]
+        [Description("显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowText { get; set; } = true;
 
         #endregion
@@ -136,7 +136,7 @@ namespace AntdUI
         /// <summary>
         /// 满电颜色
         /// </summary>
-        [Description("满电颜色"), Category("外观"), DefaultValue(typeof(Color), "0, 210, 121")]
+        [Description("满电颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "0, 210, 121")]
         public Color FillFully
         {
             get => fillfully;
@@ -152,25 +152,25 @@ namespace AntdUI
         /// <summary>
         /// 警告电量颜色
         /// </summary>
-        [Description("警告电量颜色"), Category("外观"), DefaultValue(typeof(Color), "250, 173, 20")]
+        [Description("警告电量颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "250, 173, 20")]
         public Color FillWarn { get; set; } = Color.FromArgb(250, 173, 20);
 
         /// <summary>
         /// 危险电量颜色
         /// </summary>
-        [Description("危险电量颜色"), Category("外观"), DefaultValue(typeof(Color), "255, 77, 79")]
+        [Description("危险电量颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "255, 77, 79")]
         public Color FillDanger { get; set; } = Color.FromArgb(255, 77, 79);
 
         /// <summary>
         /// 警告电量阈值
         /// </summary>
-        [Description("警告电量阈值"), Category("外观"), DefaultValue(30)]
+        [Description("警告电量阈值"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(30)]
         public int ValueWarn { get; set; } = 30;
 
         /// <summary>
         /// 危险电量阈值
         /// </summary>
-        [Description("危险电量阈值"), Category("外观"), DefaultValue(20)]
+        [Description("危险电量阈值"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(20)]
         public int ValueDanger { get; set; } = 20;
 
         #endregion

@@ -31,7 +31,7 @@ namespace AntdUI
         /// <summary>
         /// 选择序号
         /// </summary>
-        [Description("选择序号"), Category("数据"), DefaultValue(0)]
+        [Description("选择序号"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int SelectIndex
         {
             get => selectIndex;
@@ -62,7 +62,7 @@ namespace AntdUI
         /// 图片集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("图片集合"), Category("数据")]
+        [Description("图片集合"), Category(nameof(CategoryAttribute.Data))]
         public ImagePreviewItemCollection Image
         {
             get
@@ -76,7 +76,7 @@ namespace AntdUI
         /// <summary>
         /// SelectIndex 属性值更改时发生
         /// </summary>
-        [Description("SelectIndex 属性值更改时发生"), Category("行为")]
+        [Description("SelectIndex 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? SelectIndexChanged;
 
         protected virtual void OnSelectIndexChanged(int e) => SelectIndexChanged?.Invoke(this, new IntEventArgs(e));
@@ -98,7 +98,7 @@ namespace AntdUI
         /// <summary>
         /// 图片布局
         /// </summary>
-        [Description("图片布局"), Category("外观"), DefaultValue(null)]
+        [Description("图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public TFit? Fit { get; set; }
 
         #region 按钮
@@ -109,7 +109,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示按钮
         /// </summary>
-        [Description("是否显示按钮"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowBtn
         {
             get => showBtn;
@@ -129,7 +129,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示默认按钮
         /// </summary>
-        [Description("是否显示默认按钮"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示默认按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowDefaultBtn
         {
             get => showDefaultBtn;
@@ -150,7 +150,7 @@ namespace AntdUI
         /// 自定义按钮
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("自定义按钮"), Category("数据")]
+        [Description("自定义按钮"), Category(nameof(CategoryAttribute.Data))]
         public ImagePreviewButtonCollection CustomButton
         {
             get
@@ -164,7 +164,7 @@ namespace AntdUI
         /// <summary>
         /// 按钮点击时发生
         /// </summary>
-        [Description("按钮点击时发生"), Category("行为")]
+        [Description("按钮点击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ImagePreviewButtonEventHandler? ButtonClick;
 
         protected virtual void OnButtonClick(ImagePreviewItem item, string id, object? tag) => ButtonClick?.Invoke(this, new ImagePreviewButtonEventArgs(item, id, tag));
@@ -173,7 +173,7 @@ namespace AntdUI
         /// <summary>
         /// 按钮大小
         /// </summary>
-        [Description("按钮大小"), Category("外观"), DefaultValue(typeof(Size), "42, 46")]
+        [Description("按钮大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "42, 46")]
         public Size BtnSize
         {
             get => btnSize;
@@ -192,7 +192,7 @@ namespace AntdUI
         /// <summary>
         /// 按钮图标大小
         /// </summary>
-        [Description("按钮图标大小"), Category("外观"), DefaultValue(18)]
+        [Description("按钮图标大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(18)]
         public int BtnIconSize
         {
             get => btnIconSize;
@@ -212,7 +212,7 @@ namespace AntdUI
         /// <summary>
         /// 左右按钮大小
         /// </summary>
-        [Description("左右按钮大小"), Category("外观"), DefaultValue(40)]
+        [Description("左右按钮大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(40)]
         public int BtnLRSize
         {
             get => btnLRSize;
@@ -232,7 +232,7 @@ namespace AntdUI
         /// <summary>
         /// 容器边距
         /// </summary>
-        [Description("容器边距"), Category("外观"), DefaultValue(24)]
+        [Description("容器边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(24)]
         public int ContainerPadding
         {
             get => containerPadding;
@@ -252,7 +252,7 @@ namespace AntdUI
         /// <summary>
         /// 按钮边距
         /// </summary>
-        [Description("按钮边距"), Category("外观"), DefaultValue(typeof(Size), "12, 32")]
+        [Description("按钮边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "12, 32")]
         public Size BtnPadding
         {
             get => btnPadding;
@@ -1024,13 +1024,13 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         /// <summary>
         /// 图片
         /// </summary>
-        [Description("图片"), Category("外观"), DefaultValue(null)]
+        [Description("图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Img { get; set; }
 
         public Func<int, ImagePreviewItem, Image?>? Call { get; set; }
@@ -1039,7 +1039,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 设置
@@ -1116,7 +1116,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 设置

@@ -422,19 +422,19 @@ namespace AntdUI
 
         #region 事件
 
-        [Description("清空 点击时发生"), Category("行为")]
+        [Description("清空 点击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event MouseEventHandler? ClearClick;
 
-        [Description("前缀 点击时发生"), Category("行为")]
+        [Description("前缀 点击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event MouseEventHandler? PrefixClick;
 
-        [Description("后缀 点击时发生"), Category("行为")]
+        [Description("后缀 点击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event MouseEventHandler? SuffixClick;
 
-        [Description("验证字符时发生"), Category("行为")]
+        [Description("验证字符时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event InputVerifyCharEventHandler? VerifyChar;
 
-        [Description("验证键盘时发生"), Category("行为")]
+        [Description("验证键盘时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event InputVerifyKeyboardEventHandler? VerifyKeyboard;
 
         protected virtual void OnClearClick(MouseEventArgs e) => ClearClick?.Invoke(this, e);

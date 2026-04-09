@@ -22,7 +22,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "Transparent")]
         public Color Back
         {
             get => back;
@@ -38,7 +38,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -54,7 +54,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角样式
         /// </summary>
-        [Description("圆角样式"), Category("外观"), DefaultValue(false)]
+        [Description("圆角样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Round
         {
             get => round;
@@ -70,7 +70,7 @@ namespace AntdUI
         /// <summary>
         /// 图片
         /// </summary>
-        [Description("图片"), Category("外观"), DefaultValue(null)]
+        [Description("图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Image
         {
             get => image;
@@ -85,7 +85,7 @@ namespace AntdUI
         /// <summary>
         /// 图片布局
         /// </summary>
-        [Description("图片布局"), Category("外观"), DefaultValue(TFit.Cover)]
+        [Description("图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Cover)]
         public TFit ImageFit
         {
             get => imageFit;
@@ -201,37 +201,37 @@ namespace AntdUI
         /// <summary>
         /// 启用悬浮交互
         /// </summary>
-        [Description("启用悬浮交互"), Category("外观"), DefaultValue(false)]
+        [Description("启用悬浮交互"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool EnableHover { get; set; }
 
         /// <summary>
         /// 悬浮前景
         /// </summary>
-        [Description("悬浮前景"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮前景"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? HoverFore { get; set; }
 
         /// <summary>
         /// 悬浮背景
         /// </summary>
-        [Description("悬浮背景"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮背景"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? HoverBack { get; set; }
 
         /// <summary>
         /// 悬浮图标
         /// </summary>
-        [Description("悬浮图标"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? HoverImage { get; set; }
 
         /// <summary>
         /// 悬浮图标SVG
         /// </summary>
-        [Description("悬浮图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? HoverImageSvg { get; set; }
 
         /// <summary>
         /// 悬浮图标比例
         /// </summary>
-        [Description("悬浮图标比例"), Category("外观"), DefaultValue(.4F)]
+        [Description("悬浮图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.4F)]
         public float HoverImageRatio { get; set; } = .4F;
 
         #endregion

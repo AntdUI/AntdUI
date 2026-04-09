@@ -55,7 +55,7 @@ namespace AntdUI
         /// <summary>
         /// 数据集集合
         /// </summary>
-        [Description("数据集集合"), Category("数据")]
+        [Description("数据集集合"), Category(nameof(CategoryAttribute.Data))]
         [Editor(typeof(Design.CollectionEditor), typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public List<ChartDataset> Datasets { get; set; } = new List<ChartDataset>();
@@ -63,21 +63,21 @@ namespace AntdUI
         /// <summary>
         /// 标题
         /// </summary>
-        [Description("标题"), Category("外观")]
+        [Description("标题"), Category(nameof(CategoryAttribute.Appearance))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string? Title { get; set; }
 
         /// <summary>
         /// 标题字体
         /// </summary>
-        [Description("标题字体"), Category("外观")]
+        [Description("标题字体"), Category(nameof(CategoryAttribute.Appearance))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Font? TitleFont { get; set; }
 
         /// <summary>
         /// 标题颜色
         /// </summary>
-        [Description("标题颜色"), Category("外观")]
+        [Description("标题颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color? TitleColor { get; set; }
@@ -85,25 +85,25 @@ namespace AntdUI
         /// <summary>
         /// 显示图例
         /// </summary>
-        [Description("显示图例"), Category("外观"), DefaultValue(true)]
+        [Description("显示图例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowLegend { get; set; } = true;
 
         /// <summary>
         /// 图例位置
         /// </summary>
-        [Description("图例位置"), Category("外观"), DefaultValue(ContentAlignment.TopRight)]
+        [Description("图例位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.TopRight)]
         public ContentAlignment LegendPosition { get; set; } = ContentAlignment.TopRight;
 
         /// <summary>
         /// 显示网格线
         /// </summary>
-        [Description("显示网格线"), Category("外观"), DefaultValue(true)]
+        [Description("显示网格线"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowGrid { get; set; } = true;
 
         /// <summary>
         /// 网格线颜色
         /// </summary>
-        [Description("网格线颜色"), Category("外观")]
+        [Description("网格线颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color? GridColor { get; set; }
@@ -111,13 +111,13 @@ namespace AntdUI
         /// <summary>
         /// 显示坐标轴
         /// </summary>
-        [Description("显示坐标轴"), Category("外观"), DefaultValue(true)]
+        [Description("显示坐标轴"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowAxes { get; set; } = true;
 
         /// <summary>
         /// 坐标轴颜色
         /// </summary>
-        [Description("坐标轴颜色"), Category("外观")]
+        [Description("坐标轴颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color? AxisColor { get; set; }
@@ -125,37 +125,37 @@ namespace AntdUI
         /// <summary>
         /// 显示工具提示
         /// </summary>
-        [Description("显示工具提示"), Category("行为"), DefaultValue(true)]
+        [Description("显示工具提示"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ShowTooltip { get; set; } = true;
 
         /// <summary>
         /// 启用动画
         /// </summary>
-        [Description("启用动画"), Category("行为"), DefaultValue(true)]
+        [Description("启用动画"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EnableAnimation { get; set; } = true;
 
         /// <summary>
         /// 动画持续时间（毫秒）
         /// </summary>
-        [Description("动画持续时间（毫秒）"), Category("行为"), DefaultValue(200)]
+        [Description("动画持续时间（毫秒）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(200)]
         public int AnimationDuration { get; set; } = 200;
 
         /// <summary>
         /// 内边距
         /// </summary>
-        [Description("内边距"), Category("布局"), DefaultValue(20)]
+        [Description("内边距"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(20)]
         public new int Padding { get; set; } = 20;
 
         /// <summary>
         /// 图例内边距
         /// </summary>
-        [Description("图例内边距"), Category("布局"), DefaultValue(10)]
+        [Description("图例内边距"), Category(nameof(CategoryAttribute.Layout)), DefaultValue(10)]
         public int LegendPadding { get; set; } = 10;
 
         /// <summary>
         /// 图例背景颜色
         /// </summary>
-        [Description("图例背景颜色"), Category("外观")]
+        [Description("图例背景颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color? LegendBackColor { get; set; }
@@ -163,7 +163,7 @@ namespace AntdUI
         /// <summary>
         /// 图例边框颜色
         /// </summary>
-        [Description("图例边框颜色"), Category("外观")]
+        [Description("图例边框颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color? LegendBorderColor { get; set; }
@@ -171,7 +171,7 @@ namespace AntdUI
         /// <summary>
         /// 饼图颜色方案
         /// </summary>
-        [Description("饼图颜色方案"), Category("外观")]
+        [Description("饼图颜色方案"), Category(nameof(CategoryAttribute.Appearance))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color[]? PieColors { get; set; }
 
@@ -298,19 +298,19 @@ namespace AntdUI
         /// <summary>
         /// 数据点点击事件
         /// </summary>
-        [Description("数据点点击事件"), Category("行为")]
+        [Description("数据点点击事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<ChartPointClickEventArgs>? PointClick;
 
         /// <summary>
         /// 图表区域点击事件
         /// </summary>
-        [Description("图表区域点击事件"), Category("行为")]
+        [Description("图表区域点击事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<ChartAreaClickEventArgs>? AreaClick;
 
         /// <summary>
         /// 数据点悬停事件
         /// </summary>
-        [Description("数据点悬停事件"), Category("行为")]
+        [Description("数据点悬停事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<ChartPointHoverEventArgs>? PointHover;
 
         #endregion

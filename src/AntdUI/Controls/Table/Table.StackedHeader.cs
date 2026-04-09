@@ -14,7 +14,7 @@ namespace AntdUI
         /// <summary>
         /// 堆叠表头行
         /// </summary>
-        [Browsable(false), Description("堆叠表头行"), Category("数据"), DefaultValue(null)]
+        [Browsable(false), Description("堆叠表头行"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public StackedHeaderRow[]? StackedHeaderRows { get; set; }
     }

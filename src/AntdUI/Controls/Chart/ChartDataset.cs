@@ -20,47 +20,47 @@ namespace AntdUI
         /// <summary>
         /// 数据集标签
         /// </summary>
-        [Description("数据集标签"), Category("数据")]
+        [Description("数据集标签"), Category(nameof(CategoryAttribute.Data))]
         public string? Label { get; set; }
 
         /// <summary>
         /// 数据点集合
         /// </summary>
-        [Description("数据点集合"), Category("数据")]
+        [Description("数据点集合"), Category(nameof(CategoryAttribute.Data))]
         [Editor(typeof(Design.CollectionEditor), typeof(UITypeEditor))]
         public List<ChartDataPoint> DataPoints { get; set; } = new List<ChartDataPoint>();
 
         /// <summary>
         /// 填充颜色
         /// </summary>
-        [Description("填充颜色"), Category("外观")]
+        [Description("填充颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillColor { get; set; }
 
         /// <summary>
         /// 边框颜色
         /// </summary>
-        [Description("边框颜色"), Category("外观")]
+        [Description("边框颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BorderColor { get; set; }
 
         /// <summary>
         /// 边框宽度
         /// </summary>
-        [Description("边框宽度"), Category("外观"), DefaultValue(1)]
+        [Description("边框宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1)]
         public float BorderWidth { get; set; } = 1;
 
         /// <summary>
         /// 图例框填充颜色
         /// </summary>
-        [Description("图例框填充颜色"), Category("外观")]
+        [Description("图例框填充颜色"), Category(nameof(CategoryAttribute.Appearance))]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? LegendBoxFillColor { get; set; }
 
         /// <summary>
         /// 是否可见
         /// </summary>
-        [Description("是否可见"), Category("行为"), DefaultValue(true)]
+        [Description("是否可见"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Visible { get; set; } = true;
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace AntdUI
         /// <summary>
         /// 透明度
         /// </summary>
-        [Description("透明度"), Category("外观"), DefaultValue(1.0f)]
+        [Description("透明度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1.0f)]
         public float Opacity { get; set; } = 1.0f;
 
         /// <summary>

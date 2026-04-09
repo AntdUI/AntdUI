@@ -37,7 +37,7 @@ namespace AntdUI
         /// <summary>
         /// 原装背景颜色
         /// </summary>
-        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Description("原装背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "Transparent")]
         public Color OriginalBackColor
         {
             get => base.BackColor;
@@ -48,7 +48,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -68,7 +68,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
@@ -86,7 +86,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -103,7 +103,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -120,7 +120,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;
@@ -139,7 +139,7 @@ namespace AntdUI
         /// <summary>
         /// 选中颜色
         /// </summary>
-        [Description("选中颜色"), Category("外观"), DefaultValue(typeof(Color), "102, 0, 127, 255")]
+        [Description("选中颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "102, 0, 127, 255")]
         public Color SelectionColor
         {
             get => selection;
@@ -157,14 +157,14 @@ namespace AntdUI
         /// <summary>
         /// 光标颜色
         /// </summary>
-        [Description("光标颜色"), Category("外观"), DefaultValue(null)]
+        [Description("光标颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? CaretColor { get; set; }
 
         /// <summary>
         /// 光标速度
         /// </summary>
-        [Description("光标速度"), Category("外观"), DefaultValue(1000)]
+        [Description("光标速度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1000)]
         public int CaretSpeed { get; set; } = 1000;
 
         #endregion
@@ -226,14 +226,14 @@ namespace AntdUI
         /// <summary>
         /// 波浪大小
         /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
         internal int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -250,7 +250,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角样式
         /// </summary>
-        [Description("圆角样式"), Category("外观"), DefaultValue(false)]
+        [Description("圆角样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Round
         {
             get => round;
@@ -268,7 +268,7 @@ namespace AntdUI
         /// <summary>
         /// 设置校验状态
         /// </summary>
-        [Description("设置校验状态"), Category("外观"), DefaultValue(TType.None)]
+        [Description("设置校验状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TType.None)]
         public TType Status
         {
             get => status;
@@ -287,7 +287,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.7F)]
         public float IconRatio
         {
             get => iconratio;
@@ -305,7 +305,7 @@ namespace AntdUI
         /// <summary>
         /// 右图标比例
         /// </summary>
-        [Description("右图标比例"), Category("外观"), DefaultValue(null)]
+        [Description("右图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? IconRatioRight
         {
             get => iconratioRight;
@@ -326,7 +326,7 @@ namespace AntdUI
         /// <summary>
         /// 图标与文字间距比例
         /// </summary>
-        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
+        [Description("图标与文字间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.25F)]
         public float IconGap
         {
             get => icongap;
@@ -344,7 +344,7 @@ namespace AntdUI
         /// <summary>
         /// 边框间距比例
         /// </summary>
-        [Description("边框间距比例"), Category("外观"), DefaultValue(.4F)]
+        [Description("边框间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.4F)]
         public float PaddGap
         {
             get => paddgap;
@@ -364,7 +364,7 @@ namespace AntdUI
         /// <summary>
         /// 前缀
         /// </summary>
-        [Description("前缀"), Category("外观"), DefaultValue(null)]
+        [Description("前缀"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Prefix
         {
             get => prefix;
@@ -382,7 +382,7 @@ namespace AntdUI
         /// <summary>
         /// 前缀SVG
         /// </summary>
-        [Description("前缀SVG"), Category("外观"), DefaultValue(null)]
+        [Description("前缀SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? PrefixSvg
         {
             get => prefixSvg;
@@ -400,7 +400,7 @@ namespace AntdUI
         /// <summary>
         /// 前缀文本
         /// </summary>
-        [Description("前缀文本"), Category("外观"), DefaultValue(null)]
+        [Description("前缀文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? PrefixText
         {
@@ -422,7 +422,7 @@ namespace AntdUI
         /// <summary>
         /// 前缀前景色
         /// </summary>
-        [Description("前缀前景色"), Category("外观"), DefaultValue(null)]
+        [Description("前缀前景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? PrefixFore
         {
@@ -439,13 +439,13 @@ namespace AntdUI
         /// <summary>
         /// 前缀宽度
         /// </summary>
-        [Description("前缀宽度"), Category("外观"), DefaultValue(null)]
+        [Description("前缀宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? PrefixWidth { get; set; }
 
         /// <summary>
         /// 前缀对齐方式
         /// </summary>
-        [Description("前缀对齐方式"), Category("外观"), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
+        [Description("前缀对齐方式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
         public FormatFlags PrefixFormat { get; set; } = FormatFlags.Center | FormatFlags.NoWrap;
 
         /// <summary>
@@ -461,7 +461,7 @@ namespace AntdUI
         /// <summary>
         /// 后缀
         /// </summary>
-        [Description("后缀"), Category("外观"), DefaultValue(null)]
+        [Description("后缀"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Suffix
         {
             get => suffix;
@@ -479,7 +479,7 @@ namespace AntdUI
         /// <summary>
         /// 后缀SVG
         /// </summary>
-        [Description("后缀SVG"), Category("外观"), DefaultValue(null)]
+        [Description("后缀SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? SuffixSvg
         {
             get => suffixSvg;
@@ -497,7 +497,7 @@ namespace AntdUI
         /// <summary>
         /// 后缀文本
         /// </summary>
-        [Description("后缀文本"), Category("外观"), DefaultValue(null)]
+        [Description("后缀文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? SuffixText
         {
@@ -519,7 +519,7 @@ namespace AntdUI
         /// <summary>
         /// 后缀前景色
         /// </summary>
-        [Description("后缀前景色"), Category("外观"), DefaultValue(null)]
+        [Description("后缀前景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? SuffixFore
         {
@@ -536,13 +536,13 @@ namespace AntdUI
         /// <summary>
         /// 后缀宽度
         /// </summary>
-        [Description("后缀宽度"), Category("外观"), DefaultValue(null)]
+        [Description("后缀宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? SuffixWidth { get; set; }
 
         /// <summary>
         /// 后缀对齐方式
         /// </summary>
-        [Description("后缀对齐方式"), Category("外观"), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
+        [Description("后缀对齐方式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(FormatFlags.Center | FormatFlags.NoWrap)]
         public FormatFlags SuffixFormat { get; set; } = FormatFlags.Center | FormatFlags.NoWrap;
 
         /// <summary>
@@ -560,7 +560,7 @@ namespace AntdUI
         /// <summary>
         /// 组合模式
         /// </summary>
-        [Description("组合模式"), Category("外观"), DefaultValue(TJoinMode.None)]
+        [Description("组合模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TJoinMode.None)]
         public TJoinMode JoinMode
         {
             get => joinMode;
@@ -577,13 +577,13 @@ namespace AntdUI
         /// <summary>
         /// 连接左边
         /// </summary>
-        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool JoinLeft { get; set; }
 
         /// <summary>
         /// 连接右边
         /// </summary>
-        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool JoinRight { get; set; }
 
         #endregion
@@ -593,7 +593,7 @@ namespace AntdUI
         /// <summary>
         /// 支持清除
         /// </summary>
-        [Description("支持清除"), Category("行为"), DefaultValue(false)]
+        [Description("支持清除"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public virtual bool AllowClear
         {
             get => allowclear;
@@ -622,7 +622,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示滚动条
         /// </summary>
-        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示滚动条"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public virtual bool AutoScroll
         {
             get => autoscroll;
@@ -639,13 +639,13 @@ namespace AntdUI
         /// 处理快捷键
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete, Description("处理快捷键"), Category("行为"), DefaultValue(true)]
+        [Obsolete, Description("处理快捷键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool HandShortcutKeys { get; set; } = true;
 
         /// <summary>
         /// 适配系统助记词
         /// </summary>
-        [Description("适配系统助记词"), Category("行为"), DefaultValue(false)]
+        [Description("适配系统助记词"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AdapterSystemMnemonic { get; set; }
 
         #endregion
@@ -665,7 +665,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue("")]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("")]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public override string Text
         {
@@ -681,19 +681,19 @@ namespace AntdUI
         /// <summary>
         /// 设置文本后选中到最后
         /// </summary>
-        [Description("设置文本后选中到最后"), Category("行为"), DefaultValue(false)]
+        [Description("设置文本后选中到最后"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool SetTextSelectionEnd { get; set; }
 
         /// <summary>
         /// 文本总行
         /// </summary>
-        [Description("文本总行"), Category("数据"), DefaultValue(0)]
+        [Description("文本总行"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int TextTotalLine { get; private set; } = 0;
 
         /// <summary>
         /// 多行文本集合
         /// </summary>
-        [Description("多行文本集合"), Category("外观"), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("多行文本集合"), Category(nameof(CategoryAttribute.Appearance)), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Editor("System.Windows.Forms.Design.StringArrayEditor", typeof(UITypeEditor))]
         public string[] Lines
         {
@@ -715,7 +715,7 @@ namespace AntdUI
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        [Description("Emoji字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? EmojiFont { get; set; }
 
         #region 原生文本框
@@ -724,7 +724,7 @@ namespace AntdUI
         /// <summary>
         /// IME(输入法编辑器)状态
         /// </summary>
-        [Description("IME(输入法编辑器)状态"), Category("行为"), DefaultValue(ImeMode.NoControl)]
+        [Description("IME(输入法编辑器)状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(ImeMode.NoControl)]
         public new ImeMode ImeMode
         {
             get => imeMode;
@@ -811,25 +811,25 @@ namespace AntdUI
         /// <summary>
         /// 多行编辑是否允许输入制表符
         /// </summary>
-        [Description("多行编辑是否允许输入制表符"), Category("行为"), DefaultValue(false)]
+        [Description("多行编辑是否允许输入制表符"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AcceptsTab { get; set; }
 
         /// <summary>
         /// 失去焦点时是否隐藏选定内容
         /// </summary>
-        [Description("失去焦点时是否隐藏选定内容"), Category("行为"), DefaultValue(true)]
+        [Description("失去焦点时是否隐藏选定内容"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool HideSelection { get; set; } = true;
 
         /// <summary>
         /// 使用默认右键菜单
         /// </summary>
-        [Description("使用默认右键菜单"), Category("行为"), DefaultValue(true)]
+        [Description("使用默认右键菜单"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool UseContextMenu { get; set; } = true;
 
         /// <summary>
         /// 焦点离开清空选中
         /// </summary>
-        [Obsolete("use HideSelection"), Description("焦点离开清空选中"), Category("行为"), DefaultValue(true)]
+        [Obsolete("use HideSelection"), Description("焦点离开清空选中"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool LostFocusClearSelection
         {
             get => HideSelection;
@@ -840,7 +840,7 @@ namespace AntdUI
         /// <summary>
         /// 只读
         /// </summary>
-        [Description("只读"), Category("行为"), DefaultValue(false)]
+        [Description("只读"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public virtual bool ReadOnly
         {
             get => readOnly;
@@ -857,7 +857,7 @@ namespace AntdUI
         /// <summary>
         /// 多行文本
         /// </summary>
-        [Description("多行文本"), Category("行为"), DefaultValue(false)]
+        [Description("多行文本"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public virtual bool Multiline
         {
             get => multiline;
@@ -885,7 +885,7 @@ namespace AntdUI
         /// <summary>
         /// 自动换行
         /// </summary>
-        [Description("自动换行"), Category("行为"), DefaultValue(true)]
+        [Description("自动换行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public virtual bool WordWrap
         {
             get => wordwrap;
@@ -903,7 +903,7 @@ namespace AntdUI
         }
 
         int lineheight = 0;
-        [Description("多行行高"), Category("行为"), DefaultValue(0)]
+        [Description("多行行高"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(0)]
         public int LineHeight
         {
             get => lineheight;
@@ -921,7 +921,7 @@ namespace AntdUI
         /// <summary>
         /// 文本对齐方向
         /// </summary>
-        [Description("文本对齐方向"), Category("外观"), DefaultValue(HorizontalAlignment.Left)]
+        [Description("文本对齐方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(HorizontalAlignment.Left)]
         public HorizontalAlignment TextAlign
         {
             get => textalign;
@@ -942,7 +942,7 @@ namespace AntdUI
         /// <summary>
         /// 水印文本
         /// </summary>
-        [Description("水印文本"), Category("行为"), DefaultValue(null)]
+        [Description("水印文本"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         [Localizable(true)]
         public virtual string? PlaceholderText
         {
@@ -963,7 +963,7 @@ namespace AntdUI
         /// <summary>
         /// 水印颜色
         /// </summary>
-        [Description("水印颜色"), Category("外观"), DefaultValue(null)]
+        [Description("水印颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? PlaceholderColor
         {
@@ -981,7 +981,7 @@ namespace AntdUI
         /// <summary>
         /// 水印渐变色
         /// </summary>
-        [Description("水印渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("水印渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? PlaceholderColorExtend
         {
             get => placeholderColorExtend;
@@ -999,13 +999,13 @@ namespace AntdUI
         /// <summary>
         /// 文本最大长度
         /// </summary>
-        [Description("文本最大长度"), Category("行为"), DefaultValue(32767)]
+        [Description("文本最大长度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(32767)]
         public int MaxLength { get; set; } = 32767;
 
         /// <summary>
         /// 形态
         /// </summary>
-        [Description("形态"), Category("外观"), DefaultValue(TVariant.Outlined)]
+        [Description("形态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TVariant.Outlined)]
         public TVariant Variant { get; set; } = TVariant.Outlined;
 
         #region 密码框
@@ -1017,7 +1017,7 @@ namespace AntdUI
         /// <summary>
         /// 使用密码框
         /// </summary>
-        [Description("使用密码框"), Category("行为"), DefaultValue(false)]
+        [Description("使用密码框"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public virtual bool UseSystemPasswordChar
         {
             get => useSystemPasswordChar;
@@ -1034,7 +1034,7 @@ namespace AntdUI
         /// <summary>
         /// 自定义密码字符
         /// </summary>
-        [Description("自定义密码字符"), Category("行为"), DefaultValue((char)0)]
+        [Description("自定义密码字符"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue((char)0)]
         public virtual char PasswordChar
         {
             get => passwordChar;
@@ -1050,13 +1050,13 @@ namespace AntdUI
         /// <summary>
         /// 密码可以复制
         /// </summary>
-        [Description("密码可以复制"), Category("行为"), DefaultValue(false)]
+        [Description("密码可以复制"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PasswordCopy { get; set; }
 
         /// <summary>
         /// 密码可以粘贴
         /// </summary>
-        [Description("密码可以粘贴"), Category("行为"), DefaultValue(true)]
+        [Description("密码可以粘贴"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool PasswordPaste { get; set; } = true;
 
         void SetPassWord()
@@ -1543,7 +1543,7 @@ namespace AntdUI
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Description("获取设置当前选中文本"), Category("数据"), DefaultValue(null)]
+        [Description("获取设置当前选中文本"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public virtual string? SelectedText
         {
             get => GetSelectionText();
@@ -1867,7 +1867,7 @@ namespace AntdUI
         /// 是否存在焦点
         /// </summary>
         [Browsable(false)]
-        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        [Description("是否存在焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool HasFocus { get; private set; }
         protected override void OnGotFocus(EventArgs e)
         {

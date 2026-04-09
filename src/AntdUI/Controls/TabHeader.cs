@@ -30,7 +30,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -46,14 +46,14 @@ namespace AntdUI
         /// <summary>
         /// 内容圆角
         /// </summary>
-        [Description("内容圆角"), Category("外观"), DefaultValue(4)]
+        [Description("内容圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int RadiusContent { get; set; } = 4;
 
         int offsetY = 0;
         /// <summary>
         /// Y偏移量
         /// </summary>
-        [Description("Y偏移量"), Category("外观"), DefaultValue(0)]
+        [Description("Y偏移量"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int OffsetY
         {
             get => offsetY;
@@ -70,7 +70,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示添加
         /// </summary>
-        [Description("是否显示添加"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示添加"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowAdd
         {
             get => showAdd;
@@ -87,7 +87,7 @@ namespace AntdUI
         /// <summary>
         /// 新增按钮Svg图标（默认 PlusOutlined）
         /// </summary>
-        [Description("新增按钮Svg图标（默认 PlusOutlined）"), Category("外观"), DefaultValue(null)]
+        [Description("新增按钮Svg图标（默认 PlusOutlined）"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? AddIconSvg
         {
             get => addIconSvg;
@@ -103,14 +103,14 @@ namespace AntdUI
         /// <summary>
         /// 拖拽排序
         /// </summary>
-        [Description("拖拽排序"), Category("行为"), DefaultValue(false)]
+        [Description("拖拽排序"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool DragSort { get; set; }
 
         Color? fore;
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -127,25 +127,25 @@ namespace AntdUI
         /// <summary>
         /// 悬浮文本颜色
         /// </summary>
-        [Description("悬浮文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeHover { get; set; }
 
         /// <summary>
         /// 悬浮背景颜色
         /// </summary>
-        [Description("悬浮背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬浮背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活文本颜色
         /// </summary>
-        [Description("激活文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeActive { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackActive { get; set; }
 
         #region 边框
@@ -180,7 +180,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(1.34F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1.34F)]
         public float TabIconRatio
         {
             get => tabIconRatio;
@@ -197,7 +197,7 @@ namespace AntdUI
         /// <summary>
         /// 关闭按钮比例
         /// </summary>
-        [Description("关闭按钮比例"), Category("外观"), DefaultValue(1.408F)]
+        [Description("关闭按钮比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1.408F)]
         public float TabCloseRatio
         {
             get => tabCloseRatio;
@@ -213,14 +213,14 @@ namespace AntdUI
         /// <summary>
         /// 关闭图标比例
         /// </summary>
-        [Description("关闭图标比例"), Category("外观"), DefaultValue(.74F)]
+        [Description("关闭图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.74F)]
         public float TabCloseIconRatio { get; set; } = .74F;
 
         float tabGapRatio = .6F;
         /// <summary>
         /// 边距比例
         /// </summary>
-        [Description("边距比例"), Category("外观"), DefaultValue(.6F)]
+        [Description("边距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.6F)]
         public float TabGapRatio
         {
             get => tabGapRatio;
@@ -237,7 +237,7 @@ namespace AntdUI
         /// <summary>
         /// 图标与文字间距比例
         /// </summary>
-        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.74F)]
+        [Description("图标与文字间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.74F)]
         public float TabIconGapRatio
         {
             get => tabIconGapRatio;
@@ -254,7 +254,7 @@ namespace AntdUI
         /// <summary>
         /// 新增按钮图标比例
         /// </summary>
-        [Description("新增按钮图标比例"), Category("外观"), DefaultValue(1.18F)]
+        [Description("新增按钮图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1.18F)]
         public float TabAddIconRatio
         {
             get => tabAddIconRatio;
@@ -271,7 +271,7 @@ namespace AntdUI
         /// <summary>
         /// 新增按钮边距比例
         /// </summary>
-        [Description("新增按钮边距比例"), Category("外观"), DefaultValue(.148F)]
+        [Description("新增按钮边距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.148F)]
         public float TabAddGapRatio
         {
             get => tabAddGapRatio;
@@ -288,7 +288,7 @@ namespace AntdUI
         /// <summary>
         /// 左侧边距
         /// </summary>
-        [Description("左侧边距"), Category("外观"), DefaultValue(0)]
+        [Description("左侧边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int LeftGap
         {
             get => leftGap;
@@ -305,7 +305,7 @@ namespace AntdUI
         /// <summary>
         /// 右侧边距
         /// </summary>
-        [Description("右侧边距"), Category("外观"), DefaultValue(0)]
+        [Description("右侧边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int RightGap
         {
             get => rightGap;
@@ -327,7 +327,7 @@ namespace AntdUI
         /// 数据
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public TagTabCollection Items
         {
             get
@@ -339,7 +339,7 @@ namespace AntdUI
         }
 
         int _select = 0;
-        [Description("选中序号"), Category("数据"), DefaultValue(0)]
+        [Description("选中序号"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int SelectedIndex
         {
             get => _select;
@@ -357,7 +357,7 @@ namespace AntdUI
 
         TagTabItem? _selectItem;
         [Browsable(false)]
-        [Description("选中选项"), Category("数据"), DefaultValue(null)]
+        [Description("选中选项"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public TagTabItem? SelectedItem
         {
             get => _selectItem;
@@ -1189,14 +1189,14 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         string _text;
         /// <summary>
         /// 文本
         /// </summary>
-        [Category("外观"), Description("文本"), Localizable(true)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("文本"), Localizable(true)]
         public string Text
         {
             get => Localization.GetLangI(LocalizationText, _text, new string?[] { "{id}", ID }) ?? _text;
@@ -1215,7 +1215,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Category("外观"), Description("图标"), DefaultValue(null)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("图标"), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -1231,7 +1231,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Category("外观"), Description("图标SVG"), DefaultValue(null)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("图标SVG"), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -1258,7 +1258,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示关闭"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示关闭"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowClose
         {
             get => showClose;
@@ -1274,7 +1274,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -1292,7 +1292,7 @@ namespace AntdUI
         /// <summary>
         /// 禁用状态
         /// </summary>
-        [Description("禁用状态"), Category("行为"), DefaultValue(true)]
+        [Description("禁用状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Enabled
         {
             get => enabled;
@@ -1311,7 +1311,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading { get; set; }
 
         #endregion

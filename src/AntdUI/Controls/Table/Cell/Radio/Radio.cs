@@ -206,7 +206,7 @@ namespace AntdUI
         /// <summary>
         /// 点击时自动改变选中状态
         /// </summary>
-        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(true)]
+        [Description("点击时自动改变选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool AutoCheck { get; set; } = true;
 
         #endregion
@@ -268,7 +268,7 @@ namespace AntdUI
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
-        [Description("Checked 属性值更改时发生"), Category("行为")]
+        [Description("Checked 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? CheckedChanged;
 
         #endregion

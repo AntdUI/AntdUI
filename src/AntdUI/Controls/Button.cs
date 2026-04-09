@@ -33,7 +33,7 @@ namespace AntdUI
         /// <summary>
         /// 原装背景颜色
         /// </summary>
-        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Description("原装背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "Transparent")]
         public Color OriginalBackColor
         {
             get => base.BackColor;
@@ -46,7 +46,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -63,14 +63,14 @@ namespace AntdUI
         /// <summary>
         /// 悬停文字颜色
         /// </summary>
-        [Description("悬停文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeHover { get; set; }
 
         /// <summary>
         /// 激活文字颜色
         /// </summary>
-        [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
@@ -82,7 +82,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
@@ -100,7 +100,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -116,14 +116,14 @@ namespace AntdUI
         /// <summary>
         /// 悬停背景颜色
         /// </summary>
-        [Description("悬停背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
@@ -131,7 +131,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -148,7 +148,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;
@@ -169,7 +169,7 @@ namespace AntdUI
         /// <summary>
         /// Default模式背景颜色
         /// </summary>
-        [Description("Default模式背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("Default模式背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBack
         {
@@ -187,7 +187,7 @@ namespace AntdUI
         /// <summary>
         /// Default模式边框颜色
         /// </summary>
-        [Description("Default模式边框颜色"), Category("外观"), DefaultValue(null)]
+        [Description("Default模式边框颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DefaultBorderColor
         {
@@ -227,14 +227,14 @@ namespace AntdUI
         /// <summary>
         /// 波浪大小
         /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
         int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -251,7 +251,7 @@ namespace AntdUI
         /// <summary>
         /// 形状
         /// </summary>
-        [Description("形状"), Category("外观"), DefaultValue(TShape.Default)]
+        [Description("形状"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TShape.Default)]
         public TShape Shape
         {
             get => shape;
@@ -268,7 +268,7 @@ namespace AntdUI
         /// <summary>
         /// 指定显示图像还是文本
         /// </summary>
-        [Description("指定显示图像还是文本"), Category("外观"), DefaultValue(TButtonDisplayStyle.Default)]
+        [Description("指定显示图像还是文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TButtonDisplayStyle.Default)]
         public TButtonDisplayStyle DisplayStyle
         {
             get => displayStyle;
@@ -285,7 +285,7 @@ namespace AntdUI
         /// <summary>
         /// 类型
         /// </summary>
-        [Description("类型"), Category("外观"), DefaultValue(TTypeMini.Default)]
+        [Description("类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TTypeMini.Default)]
         public TTypeMini Type
         {
             get => type;
@@ -302,7 +302,7 @@ namespace AntdUI
         /// <summary>
         /// 幽灵属性，使按钮背景透明
         /// </summary>
-        [Description("幽灵属性，使按钮背景透明"), Category("外观"), DefaultValue(false)]
+        [Description("幽灵属性，使按钮背景透明"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Ghost
         {
             get => ghost;
@@ -318,14 +318,14 @@ namespace AntdUI
         /// <summary>
         /// 响应真实区域
         /// </summary>
-        [Description("响应真实区域"), Category("行为"), DefaultValue(false)]
+        [Description("响应真实区域"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool RespondRealAreas { get; set; }
 
         bool showArrow = false;
         /// <summary>
         /// 显示箭头
         /// </summary>
-        [Description("显示箭头"), Category("行为"), DefaultValue(false)]
+        [Description("显示箭头"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowArrow
         {
             get => showArrow;
@@ -342,7 +342,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头链接样式
         /// </summary>
-        [Description("箭头链接样式"), Category("行为"), DefaultValue(false)]
+        [Description("箭头链接样式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool IsLink
         {
             get => isLink;
@@ -358,7 +358,7 @@ namespace AntdUI
         /// <summary>
         /// 箭头角度
         /// </summary>
-        [Browsable(false), Description("箭头角度"), Category("外观"), DefaultValue(-1F)]
+        [Browsable(false), Description("箭头角度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(-1F)]
         public float ArrowProg { get; set; } = -1F;
 
         #region 助记键
@@ -367,7 +367,7 @@ namespace AntdUI
         /// <summary>
         /// 助记键
         /// </summary>
-        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
+        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool UseMnemonic
         {
             get => useMnemonic;
@@ -402,7 +402,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -427,7 +427,7 @@ namespace AntdUI
         /// <summary>
         /// 文本位置
         /// </summary>
-        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleCenter)]
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleCenter)]
         public ContentAlignment TextAlign
         {
             get => textAlign;
@@ -442,7 +442,7 @@ namespace AntdUI
         }
 
         int? virtualWidth;
-        [Description("虚拟宽度"), Category("外观"), DefaultValue(null)]
+        [Description("虚拟宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? VirtualWidth
         {
             get => virtualWidth;
@@ -458,7 +458,7 @@ namespace AntdUI
         /// <summary>
         /// 文本居中显示(包含图标后)
         /// </summary>
-        [Description("文本居中显示(包含图标后)"), Category("外观"), DefaultValue(false)]
+        [Description("文本居中显示(包含图标后)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool TextCenterHasIcon
         {
             get => textCenterHasIcon;
@@ -475,7 +475,7 @@ namespace AntdUI
         /// <summary>
         /// 文本超出自动处理
         /// </summary>
-        [Description("文本超出自动处理"), Category("行为"), DefaultValue(false)]
+        [Description("文本超出自动处理"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AutoEllipsis
         {
             get => autoEllipsis;
@@ -493,7 +493,7 @@ namespace AntdUI
         /// <summary>
         /// 是否多行
         /// </summary>
-        [Description("是否多行"), Category("行为"), DefaultValue(false)]
+        [Description("是否多行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool TextMultiLine
         {
             get => textMultiLine;
@@ -516,7 +516,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.7F)]
         public float IconRatio
         {
             get => iconratio;
@@ -533,7 +533,7 @@ namespace AntdUI
         /// <summary>
         /// 图标与文字间距比例
         /// </summary>
-        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
+        [Description("图标与文字间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.25F)]
         public float IconGap
         {
             get => icongap;
@@ -550,7 +550,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -567,7 +567,7 @@ namespace AntdUI
         /// <summary>
         /// 图标SVG
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -603,32 +603,32 @@ namespace AntdUI
         /// <summary>
         /// 图标大小
         /// </summary>
-        [Description("图标大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
+        [Description("图标大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "0, 0")]
         public Size IconSize { get; set; }
 
         /// <summary>
         /// 悬停图标
         /// </summary>
-        [Description("悬停图标"), Category("外观"), DefaultValue(null)]
+        [Description("悬停图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? IconHover { get; set; }
 
         /// <summary>
         /// 悬停图标SVG
         /// </summary>
-        [Description("悬停图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("悬停图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconHoverSvg { get; set; }
 
         /// <summary>
         /// 悬停图标动画时长
         /// </summary>
-        [Description("悬停图标动画时长"), Category("外观"), DefaultValue(200)]
+        [Description("悬停图标动画时长"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(200)]
         public int IconHoverAnimation { get; set; } = 200;
 
         TAlignMini iconPosition = TAlignMini.Left;
         /// <summary>
         /// 按钮图标组件的位置
         /// </summary>
-        [Description("按钮图标组件的位置"), Category("外观"), DefaultValue(TAlignMini.Left)]
+        [Description("按钮图标组件的位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignMini.Left)]
         public TAlignMini IconPosition
         {
             get => iconPosition;
@@ -655,7 +655,7 @@ namespace AntdUI
         /// <summary>
         /// 点击时自动改变选中状态
         /// </summary>
-        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(false)]
+        [Description("点击时自动改变选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AutoToggle { get; set; }
 
         bool toggle = false;
@@ -863,7 +863,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading
         {
             get => loading;
@@ -894,7 +894,7 @@ namespace AntdUI
         /// <summary>
         /// 加载响应点击
         /// </summary>
-        [Description("加载响应点击"), Category("行为"), DefaultValue(false)]
+        [Description("加载响应点击"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool LoadingRespondClick { get; set; }
 
         /// <summary>
@@ -946,7 +946,7 @@ namespace AntdUI
         /// <summary>
         /// 组合模式
         /// </summary>
-        [Description("组合模式"), Category("外观"), DefaultValue(TJoinMode.None)]
+        [Description("组合模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TJoinMode.None)]
         public TJoinMode JoinMode
         {
             get => joinMode;
@@ -963,7 +963,7 @@ namespace AntdUI
         /// <summary>
         /// 连接左边
         /// </summary>
-        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool JoinLeft
         {
             get => joinLeft;
@@ -980,7 +980,7 @@ namespace AntdUI
         /// <summary>
         /// 连接右边
         /// </summary>
-        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool JoinRight
         {
             get => joinRight;
@@ -1033,7 +1033,7 @@ namespace AntdUI
         #region 悬停动画
 
         bool _mouseDown = false;
-        [Description("激活状态"), Category("行为"), DefaultValue(false)]
+        [Description("激活状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ExtraMouseDown
         {
             get => _mouseDown;
@@ -1050,7 +1050,7 @@ namespace AntdUI
         bool AnimationIconHover = false;
         float AnimationIconHoverValue = 0F;
         bool _mouseHover = false;
-        [Description("悬停状态"), Category("行为"), DefaultValue(false)]
+        [Description("悬停状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ExtraMouseHover
         {
             get => _mouseHover;
@@ -2161,7 +2161,7 @@ namespace AntdUI
 
         #region 事件
 
-        [Description("Toggle 改变时发生"), Category("行为")]
+        [Description("Toggle 改变时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? ToggleChanged;
 
         protected virtual void OnToggleChanged(bool e) => ToggleChanged?.Invoke(this, new BoolEventArgs(e));
@@ -2174,7 +2174,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -2195,7 +2195,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;
@@ -2377,7 +2377,7 @@ namespace AntdUI
         /// 是否存在焦点
         /// </summary>
         [Browsable(false)]
-        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        [Description("是否存在焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool HasFocus
         {
             get => hasFocus;

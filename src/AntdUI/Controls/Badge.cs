@@ -26,7 +26,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -44,7 +44,7 @@ namespace AntdUI
         /// <summary>
         /// 状态
         /// </summary>
-        [Description("状态"), Category("外观"), DefaultValue(TState.Default)]
+        [Description("状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TState.Default)]
         public TState State
         {
             get => state;
@@ -62,7 +62,7 @@ namespace AntdUI
         /// <summary>
         /// 点比例
         /// </summary>
-        [Description("点比例"), Category("外观"), DefaultValue(.4F)]
+        [Description("点比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.4F)]
         public float DotRatio
         {
             get => dotratio;
@@ -79,7 +79,7 @@ namespace AntdUI
         /// <summary>
         /// 间隔
         /// </summary>
-        [Description("间隔"), Category("外观"), DefaultValue(0)]
+        [Description("间隔"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Gap
         {
             get => gap;
@@ -97,7 +97,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -122,7 +122,7 @@ namespace AntdUI
         /// <summary>
         /// 文本位置
         /// </summary>
-        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleLeft)]
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleLeft)]
         public ContentAlignment TextAlign
         {
             get => textAlign;
@@ -140,7 +140,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -257,7 +257,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -278,7 +278,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;
