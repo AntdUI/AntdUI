@@ -91,7 +91,11 @@ namespace AntdUI
                             }
                         }
                     }
-                }, r);
+                }, () =>
+                {
+                    tasks.TryRemove(image, out _);
+                    r();
+                });
                 tasks.TryAdd(image, task);
                 return true;
             }

@@ -1,5 +1,14 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.7` 2026-04-09
+
+- ➕ Select 多条件搜索打分排序
+- ➕ ChatList ImageChatItem
+- ➕ Preview Keyboard
+- ➕ 多条件搜索排序新增分组
+- ✍️ ContextMenuStrip 子菜单无法触发
+- ✍️ Select GroupSelectItem UI
+
 ### `2.3.6` 2026-04-07
 
 - ➕ Tree VirtualMode 虚拟模式

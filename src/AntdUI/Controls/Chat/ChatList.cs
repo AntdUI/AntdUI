@@ -1682,13 +1682,27 @@ namespace AntdUI.Chat
             return this;
         }
 
-        public ImageChatItem SetImage(Image? img)
+        public ImageChatItem SetImage(Image? value)
         {
-            _image = img;
-            IsGIF = Helper.IsGIF(img);
+            _image = value;
+            IsGIF = Helper.IsGIF(value);
             if (_image == null) return this;
             Width = _image.Width;
             Height = _image.Height;
+            return this;
+        }
+
+        public ImageChatItem SetSize(int w, int h)
+        {
+            Width = w;
+            Height = h;
+            return this;
+        }
+
+        public ImageChatItem SetSizeRatio(float value)
+        {
+            Width = (int)(Width * value);
+            Height = (int)(Height * value);
             return this;
         }
 
