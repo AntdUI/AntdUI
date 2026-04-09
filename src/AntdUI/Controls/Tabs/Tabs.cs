@@ -1724,7 +1724,6 @@ namespace AntdUI
                ControlStyles.ContainerControl |
                ControlStyles.UserPaint, true);
             UpdateStyles();
-            Dock = DockStyle.Fill;
         }
 
         #region 属性
@@ -1906,6 +1905,20 @@ namespace AntdUI
         #region 隐藏显示
 
         DockStyle olddock = DockStyle.Fill;
+        /// <summary>
+        /// 定义要绑定到容器的控件边框
+        /// </summary>
+        [Category(nameof(CategoryAttribute.Layout)), Description("定义要绑定到容器的控件边框"), DefaultValue(DockStyle.Fill)]
+        public new DockStyle Dock
+        {
+            get => olddock;
+            set
+            {
+                if (olddock == value) return;
+                olddock = value;
+                if (Showed) base.Dock = value;
+            }
+        }
 
         bool? showed;
         [Browsable(false)]
@@ -1918,14 +1931,12 @@ namespace AntdUI
             {
                 if (showed == value) return;
                 showed = value;
-                if (value) Dock = olddock;
+                if (value) base.Dock = olddock;
                 else
                 {
-                    olddock = Dock;
                     int w = Width, h = Height;
-                    Dock = DockStyle.None;
-                    Location = new Point(-w * 2, -h * 2);
-                    Size = new Size(w, h);
+                    base.Dock = DockStyle.None;
+                    Bounds = new Rectangle(-w * 2, -h * 2, w, h);
                 }
                 ShowedChanged?.Invoke(this, EventArgs.Empty);
             }

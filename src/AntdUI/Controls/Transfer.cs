@@ -1245,8 +1245,7 @@ namespace AntdUI
                                     Pinyin.GetInitials(pinyin).ToLower()
                                 };
                             }
-                            int score = Helper.SearchContains(targetSearchText, pinyin, it.PY, out _);
-                            it.Visible = et || score > 0;
+                            it.Visible = et || Helper.SearchContains(targetSearchText, pinyin, it.PY, out _) > 0;
                         }
                         if (it.Visible && it.Enabled && it.selected) check_target++;
                     }
@@ -1263,8 +1262,7 @@ namespace AntdUI
                                     Pinyin.GetInitials(pinyin).ToLower()
                                 };
                             }
-                            int score = Helper.SearchContains(sourceSearchText, pinyin, it.PY, out _);
-                            it.Visible = es || score > 0;
+                            it.Visible = es || Helper.SearchContains(sourceSearchText, pinyin, it.PY, out _) > 0;
                         }
                         if (it.Visible && it.Enabled && it.selected) check_source++;
                     }
@@ -1417,11 +1415,8 @@ namespace AntdUI
         /// <param name="text">搜索文本</param>
         public void SetSourceSearchText(string text)
         {
-            if (sourceSearchText == text) return;
-            sourceSearchText = text;
-            if (input_source != null) input_source.Text = text;
-            OnSearch(text, true);
-            ApplyFilter();
+            if (input_source == null) SetSourceSearchTextCore(text.Trim());
+            else input_source.Text = text;
         }
 
         /// <summary>
@@ -1430,9 +1425,21 @@ namespace AntdUI
         /// <param name="text">搜索文本</param>
         public void SetTargetSearchText(string text)
         {
+            if (input_target == null) SetTargetSearchTextCore(text.Trim());
+            else input_target.Text = text;
+        }
+
+        void SetSourceSearchTextCore(string text)
+        {
+            if (sourceSearchText == text) return;
+            sourceSearchText = text;
+            OnSearch(text, true);
+            ApplyFilter();
+        }
+        void SetTargetSearchTextCore(string text)
+        {
             if (targetSearchText == text) return;
             targetSearchText = text;
-            if (input_target != null) input_target.Text = text;
             OnSearch(text, false);
             ApplyFilter();
         }
@@ -1519,12 +1526,12 @@ namespace AntdUI
 
         private void input_source_TextChanged(object? sender, EventArgs e)
         {
-            if (sender is Input input) SetSourceSearchText(input.Text.Trim());
+            if (sender is Input input) SetSourceSearchTextCore(input.Text.Trim());
         }
 
         private void input_target_TextChanged(object? sender, EventArgs e)
         {
-            if (sender is Input input) SetTargetSearchText(input.Text.Trim());
+            if (sender is Input input) SetTargetSearchTextCore(input.Text.Trim());
         }
 
         #endregion
