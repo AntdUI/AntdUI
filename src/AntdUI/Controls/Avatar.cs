@@ -9,8 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Threading;
 
 namespace AntdUI
 {
@@ -208,56 +206,8 @@ namespace AntdUI
             if (image == null) return;
             if (playGIF)
             {
-                var fd = new FrameDimension(image.FrameDimensionsList[0]);
-                int count = image.GetFrameCount(fd);
-                if (count > 1) PlayGif(image, fd, count);
-                else Invalidate();
+                if (!Helper.GIFPlay(image, value => PlayGIF && image == value, Invalidate)) Invalidate();
             }
-        }
-
-        void PlayGif(Image value, FrameDimension fd, int count)
-        {
-            ITask.Run(() =>
-            {
-                int[] delays = GifDelays(value, count);
-                while (PlayGIF && image == value)
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        if (PlayGIF && image == value)
-                        {
-                            lock (_lock) { value.SelectActiveFrame(fd, i); }
-                            Invalidate();
-                            Thread.Sleep(Math.Max(delays[i], 10));
-                        }
-                        else
-                        {
-                            value.SelectActiveFrame(fd, 0);
-                            return;
-                        }
-                    }
-                }
-            }, Invalidate);
-        }
-
-        object _lock = new object();
-        int[] GifDelays(Image value, int count)
-        {
-            int PropertyTagFrameDelay = 0x5100;
-            var propItem = value.GetPropertyItem(PropertyTagFrameDelay);
-            if (propItem != null)
-            {
-                var bytes = propItem.Value;
-                if (bytes != null)
-                {
-                    int[] delays = new int[count];
-                    for (int i = 0; i < delays.Length; i++) delays[i] = BitConverter.ToInt32(bytes, i * 4) * 10;
-                    return delays;
-                }
-            }
-            int[] delaysd = new int[count];
-            for (int i = 0; i < delaysd.Length; i++) delaysd[i] = 100;
-            return delaysd;
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -515,10 +465,7 @@ namespace AntdUI
             int count = 0;
             if (image != null)
             {
-                lock (_lock)
-                {
-                    g.Image(rect, image, imageFit, _radius, round);
-                }
+                g.Image(rect, image, imageFit, _radius, round);
                 count++;
             }
             if (imageSvg != null)

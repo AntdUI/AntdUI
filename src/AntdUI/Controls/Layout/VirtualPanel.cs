@@ -421,7 +421,7 @@ namespace AntdUI
                 }
                 if (pauseLayout) return;
                 var controls = new List<VirtualItem>(items.Count);
-                foreach (var it in items)
+                foreach (var it in items.Cast<VirtualItem>().OrderBy(x => x.SortIndex).ToList())
                 {
                     it.SHOW = false;
                     if (it.Visible) controls.Add(it);
@@ -1314,6 +1314,7 @@ namespace AntdUI
         public bool Visible { get; set; } = true;
         public bool CanClick { get; set; } = true;
         public bool Hover { get; set; }
+        public int SortIndex { get; set; } = -1;
         public object? Tag { get; set; }
         public abstract Size Size(Canvas g, VirtualPanelArgs e);
         public abstract void Paint(Canvas g, VirtualPanelArgs e);
@@ -1325,6 +1326,12 @@ namespace AntdUI
 
         public void Invalidate() => invalidate?.Invoke(this, null);
         public void Invalidate(Rectangle rect) => invalidate?.Invoke(this, rect);
+
+        public void ResetVisible()
+        {
+            SortIndex = -1;
+            Visible = true;
+        }
 
         /// <summary>
         /// 是否显示

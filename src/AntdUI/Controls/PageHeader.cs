@@ -1267,7 +1267,7 @@ namespace AntdUI
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            if (CancelButton && (keyData & (Keys.Alt | Keys.Control)) == Keys.None)
+            if (cancelButton && (keyData & (Keys.Alt | Keys.Control)) == Keys.None)
             {
                 Keys keyCode = keyData & Keys.KeyCode;
                 switch (keyCode)

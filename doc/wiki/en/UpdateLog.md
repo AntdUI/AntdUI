@@ -1,5 +1,14 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.7` 2026-04-09
+
+- ➕ Select Multi criteria Search Score Sorting
+- ➕ ChatList ImageChatItem
+- ➕ Preview Keyboard
+- ➕ Multi criteria search sorting with added grouping
+- ✍️ ContextMenuStrip submenu cannot be triggered
+- ✍️ Select GroupSelectItem UI
+
 ### `2.3.6` 2026-04-07
 
 - ➕ Tree VirtualMode Virtual Mode

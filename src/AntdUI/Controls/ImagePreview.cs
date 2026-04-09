@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -379,61 +378,7 @@ namespace AntdUI
         void LoadGif()
         {
             if (imgtmp == null) return;
-            var fd = new FrameDimension(imgtmp.FrameDimensionsList[0]);
-            int count = imgtmp.GetFrameCount(fd);
-            if (count > 1) PlayGif(imgtmp, fd, count);
-        }
-
-        void PlayGif(Image value, FrameDimension fd, int count)
-        {
-            ITask.Run(() =>
-            {
-                int[] delays = GifDelays(value, count);
-                while (PlayGIF && imgtmp == value)
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        if (PlayGIF && imgtmp == value)
-                        {
-                            lock (_lock)
-                            {
-                                try
-                                {
-                                    value.SelectActiveFrame(fd, i);
-                                }
-                                catch { }
-                            }
-                            Invalidate();
-                            Thread.Sleep(Math.Max(delays[i], 10));
-                        }
-                        else
-                        {
-                            value.SelectActiveFrame(fd, 0);
-                            return;
-                        }
-                    }
-                }
-            }, () => Invalidate());
-        }
-
-        object _lock = new object();
-        int[] GifDelays(Image value, int count)
-        {
-            int PropertyTagFrameDelay = 0x5100;
-            var propItem = value.GetPropertyItem(PropertyTagFrameDelay);
-            if (propItem != null)
-            {
-                var bytes = propItem.Value;
-                if (bytes != null)
-                {
-                    int[] delays = new int[count];
-                    for (int i = 0; i < delays.Length; i++) delays[i] = BitConverter.ToInt32(bytes, i * 4) * 10;
-                    return delays;
-                }
-            }
-            int[] delaysd = new int[count];
-            for (int i = 0; i < delaysd.Length; i++) delaysd[i] = 100;
-            return delaysd;
+            Helper.GIFPlay(imgtmp, value => PlayGIF && imgtmp == value, Invalidate);
         }
 
         #endregion

@@ -584,7 +584,7 @@ namespace AntdUI
                 int maxw, maxwr;
                 if (autoWidth)
                 {
-                    maxw = ItemMaxWidth(g, items, text_height, icon_size, icon_gap);
+                    maxw = ItemMaxWidth(g, items, text_height, icon_size, icon_gap, gap_x);
                     maxwr = maxw + gap_x2;
                 }
                 else
@@ -608,10 +608,10 @@ namespace AntdUI
                         for (int i = 0; i < group.Sub.Count; i++)
                         {
                             var sub = group.Sub[i];
-                            lists.Add(ItemC(sub, i, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
+                            lists.Add(ItemC(sub, i, ref item_count, ref divider_count, ref y, gap_x, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy, false));
                         }
                     }
-                    else lists.Add(ItemC(value, index, ref item_count, ref divider_count, ref y, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
+                    else lists.Add(ItemC(value, index, ref item_count, ref divider_count, ref y, 0, padd, padd2, sp, gap_x, gap_x2, icon_size, icon_gap, icon_xy, item_height, text_height, maxwr, ref sy));
                 }
 
                 #endregion
@@ -668,17 +668,17 @@ namespace AntdUI
                 return new List<ObjectItem>(0);
             }
         }
-        int ItemMaxWidth(Canvas g, IList<object> items, int text_height, int icon_size, int icon_gap)
+        int ItemMaxWidth(Canvas g, IList<object> items, int text_height, int icon_size, int icon_gap, int gap_x)
         {
             int tmp = 0;
             foreach (var item in items)
             {
-                int tmp2 = ItemMaxWidth(g, item, text_height, icon_size, icon_gap);
+                int tmp2 = ItemMaxWidth(g, item, text_height, icon_size, icon_gap, gap_x);
                 if (tmp2 > tmp) tmp = tmp2;
             }
             return tmp;
         }
-        int ItemMaxWidth(Canvas g, object obj, int text_height, int icon_size, int icon_gap)
+        int ItemMaxWidth(Canvas g, object obj, int text_height, int icon_size, int icon_gap, int gap_x)
         {
             if (obj is SelectItem it)
             {
@@ -690,7 +690,7 @@ namespace AntdUI
                 else if (CloseIcon) tmp += text_height + icon_gap;
                 return tmp;
             }
-            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0) return ItemMaxWidth(g, group.Sub, text_height, icon_size, icon_gap);
+            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0) return Math.Max(g.MeasureText(group.Title, Font).Width, ItemMaxWidth(g, group.Sub, text_height, icon_size, icon_gap, gap_x) + gap_x);
             else if (obj is DividerSelectItem) return 0;
             else
             {
@@ -701,7 +701,7 @@ namespace AntdUI
                 return tmp;
             }
         }
-        ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
+        ObjectItem ItemC(object value, int i, ref int item_count, ref int divider_count, ref int y, int offset_x, int padd, int padd2, int sp, int gap_x, int gap_x2, int icon_size, int icon_gap, int icon_xy, int item_height, int text_height, int maxwr, ref int sy, bool no_id = true)
         {
             ObjectItem item;
             if (value is DividerSelectItem)
@@ -721,7 +721,7 @@ namespace AntdUI
                         icon_size = (int)(text_height * it.IconRatio.Value);
                         icon_xy = (item_height - icon_size) / 2;
                     }
-                    int ux = gap_x, uw = gap_x2;
+                    int ux = gap_x + offset_x, uw = gap_x2 + offset_x;
                     item = new ObjectItem(it, i, rect) { NoIndex = no_id };
                     if (it.Online > -1)
                     {
@@ -756,9 +756,9 @@ namespace AntdUI
                     {
                         int dot_xy = (item_height - text_height) / 2;
                         var rect_close = new Rectangle(rect.Right - gap_x - text_height + dot_xy, rect.Y + dot_xy, text_height, text_height);
-                        item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2 - text_height, rect.Height)) { NoIndex = no_id, RectClose = rect_close };
+                        item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x + offset_x, rect.Y, rect.Width - gap_x2 - text_height - offset_x, rect.Height)) { NoIndex = no_id, RectClose = rect_close };
                     }
-                    else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
+                    else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x + offset_x, rect.Y, rect.Width - gap_x2 - offset_x, rect.Height)) { NoIndex = no_id };
                 }
                 if (item.Tag.Equals(selectedValue)) sy = y;
                 y += item_height;

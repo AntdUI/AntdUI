@@ -236,9 +236,10 @@ namespace AntdUI
             base.OnTextChanged(e);
             if (HasFocus)
             {
-                if (filtertext == Text) return;
-                filtertext = Text;
-                if (expandDrop) subForm?.TextChange(Text);
+                var searchText = Text.Trim();
+                if (filtertext == searchText) return;
+                filtertext = searchText;
+                if (expandDrop) subForm?.TextChange(searchText);
                 else ExpandDrop = true;
             }
         }

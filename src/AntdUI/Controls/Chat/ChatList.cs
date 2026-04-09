@@ -226,15 +226,16 @@ namespace AntdUI.Chat
             var g = e.Canvas;
             int sy = ScrollBar.Value, radius = (int)(Dpi * 8F);
             g.TranslateTransform(0, -sy);
-            using (var foreBubble = new SolidBrush(ForeBubble ?? Colour.Text.Get(nameof(ChatList), ColorScheme)))
-            using (var bgBubble = new SolidBrush(BackBubble ?? Colour.BgBase.Get(nameof(ChatList), ColorScheme)))
-            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get(nameof(ChatList), ColorScheme)))
+            var name = nameof(ChatList);
+            using (var foreBubble = new SolidBrush(ForeBubble ?? Colour.Text.Get(name, ColorScheme)))
+            using (var bgBubble = new SolidBrush(BackBubble ?? Colour.BgBase.Get(name, ColorScheme)))
+            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get(name, ColorScheme)))
 
-            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Colour.PrimaryColor.Get(nameof(ChatList), ColorScheme)))
-            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Colour.Primary.Get(nameof(ChatList), ColorScheme)))
-            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Colour.PrimaryActive.Get(nameof(ChatList), ColorScheme)))
+            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Colour.PrimaryColor.Get(name, ColorScheme)))
+            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Colour.Primary.Get(name, ColorScheme)))
+            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Colour.PrimaryActive.Get(name, ColorScheme)))
             {
-                foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius, foreBubble, bgBubble, bgActiveBubble, foreBubbleme, bgBubbleme, bgActiveBubbleme);
+                foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius, foreBubble, bgBubble, bgActiveBubble, foreBubbleme, bgBubbleme, bgActiveBubbleme, name);
             }
             g.ResetTransform();
             ScrollBar.Paint(g, ColorScheme);
@@ -243,7 +244,7 @@ namespace AntdUI.Chat
 
         readonly FormatFlags SFL = FormatFlags.Top | FormatFlags.HorizontalCenter;
 
-        void PaintItem(Canvas g, IChatItem it, Rectangle rect, int sy, float radius, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme)
+        void PaintItem(Canvas g, IChatItem it, Rectangle rect, int sy, float radius, SolidBrush forebubble, SolidBrush bgbubble, SolidBrush bgActiveBubble, SolidBrush forebubbleme, SolidBrush bgbubbleme, SolidBrush bgActiveBubbleme, string name)
         {
             it.show = rect.IsItemVisible(sy, it.rect);
             if (it.show)
@@ -252,7 +253,7 @@ namespace AntdUI.Chat
                 {
                     using (var path = text.rect_read.RoundPath(radius))
                     {
-                        using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(ChatList), ColorScheme)))
+                        using (var brush = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
                             if (ShowTimeFocused && FocusedChatItem == it && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
@@ -272,6 +273,36 @@ namespace AntdUI.Chat
                     }
                     if (IconLess) return;
                     if (text.Icon != null) g.Image(text.rect_icon, text.Icon, TFit.Cover, 0, true);
+                }
+                else if (it is ImageChatItem image)
+                {
+                    using (var brush = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
+                    {
+                        g.String(image.Name, Font, brush, image.rect_name, SFL);
+                    }
+                    if (image.Image != null)
+                    {
+                        g.Image(image.rect_content, image.Image, TFit.Contain, 0, false);
+                        if (image.IsGIF && Helper.GIFCanPlay(image.Image)) Helper.GIFPlay(image.Image, value => image.show, Invalidate);
+                    }
+                    else if (image.Loading)
+                    {
+                        int prog_size = g.MeasureText(Config.NullText, Font).Height;
+                        int rprog_size = (int)(prog_size * 1.6F), size = (int)(prog_size * .2F), size2 = rprog_size / 2;
+                        var rect_prog = new Rectangle(image.rect_content.X + (image.rect_content.Width - rprog_size) / 2, image.rect_content.Y + (image.rect_content.Height - rprog_size) / 2, rprog_size, rprog_size);
+                        g.DrawEllipse(Colour.Fill.Get(name), size, rect_prog);
+                        using (var brush = new Pen(Colour.Primary.Get(name), size))
+                        {
+                            brush.StartCap = brush.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                            //if (config.Value.HasValue)
+                            //{
+                            //    g.DrawArc(brush, rect_prog, LineAngle, config.Value.Value * 360F);
+                            //}
+                            g.DrawArc(brush, rect_prog, image.LineAngle, image.LineWidth * 3.6F);
+                        }
+                    }
+                    if (IconLess) return;
+                    if (image.Icon != null) g.Image(image.rect_icon, image.Icon, TFit.Cover, 0, true);
                 }
             }
         }
@@ -844,7 +875,23 @@ namespace AntdUI.Chat
                     foreach (var it in items!)
                     {
                         it.PARENT = this;
-                        if (it is TextChatItem text) y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                        if (it is TextChatItem text)
+                        {
+                            y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                            text.InitLoading();
+                        }
+                        if (it is ImageChatItem image)
+                        {
+                            int imgWidth = image.Width, imgHeight = image.Height;
+                            if (imgWidth > max_width)
+                            {
+                                float scaleRatio = (float)max_width / imgWidth;
+                                imgWidth = max_width;
+                                imgHeight = (int)(imgHeight * scaleRatio);
+                            }
+                            y += image.SetRect(rect, y, g, Font, new Size(imgWidth + spilt, imgHeight + spilt), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                            image.InitLoading();
+                        }
                     }
                     return y;
                 });
@@ -906,25 +953,12 @@ namespace AntdUI.Chat
                 switch (type)
                 {
                     case GraphemeSplitter.STRE_TYPE.BASE64IMG:
-                        var id_base64 = start.ToString() + len;
-                        if (item.image_cache.TryGetValue(id_base64, out var bmp_base64))
+                        try
                         {
-                            int imgWidth = bmp_base64.Width, imgHeight = bmp_base64.Height;
-                            if (imgWidth > max_width)
+                            var id_base64 = start.ToString() + len;
+                            if (item.image_cache.TryGetValue(id_base64, out var bmp_base64))
                             {
-                                float scaleRatio = (float)max_width / imgWidth;
-                                imgWidth = max_width;
-                                imgHeight = (int)(imgHeight * scaleRatio);
-                            }
-                            font_widths.Add(new CacheFont(index, txt, false, imgWidth, type).SetImageHeight(imgHeight));
-                            index++;
-                        }
-                        else
-                        {
-                            using (var ms = new MemoryStream(Convert.FromBase64String(txt.Substring(txt.IndexOf(";base64,") + 8))))
-                            {
-                                var image = Image.FromStream(ms);
-                                int imgWidth = image.Width, imgHeight = image.Height;
+                                int imgWidth = bmp_base64.Width, imgHeight = bmp_base64.Height;
                                 if (imgWidth > max_width)
                                 {
                                     float scaleRatio = (float)max_width / imgWidth;
@@ -932,30 +966,51 @@ namespace AntdUI.Chat
                                     imgHeight = (int)(imgHeight * scaleRatio);
                                 }
                                 font_widths.Add(new CacheFont(index, txt, false, imgWidth, type).SetImageHeight(imgHeight));
-                                if (!item.image_cache.TryAdd(id_base64, image)) image.Dispose();
                                 index++;
                             }
+                            else
+                            {
+                                using (var ms = new MemoryStream(Convert.FromBase64String(txt.Substring(txt.IndexOf(";base64,") + 8))))
+                                {
+                                    var image = Image.FromStream(ms);
+                                    int imgWidth = image.Width, imgHeight = image.Height;
+                                    if (imgWidth > max_width)
+                                    {
+                                        float scaleRatio = (float)max_width / imgWidth;
+                                        imgWidth = max_width;
+                                        imgHeight = (int)(imgHeight * scaleRatio);
+                                    }
+                                    font_widths.Add(new CacheFont(index, txt, false, imgWidth, type).SetImageHeight(imgHeight));
+                                    if (!item.image_cache.TryAdd(id_base64, image)) image.Dispose();
+                                    index++;
+                                }
+                            }
                         }
+                        catch { }
                         break;
                     case GraphemeSplitter.STRE_TYPE.SVG:
-                        var id_svg = start.ToString() + len;
-                        if (item.image_cache.TryGetValue(id_svg, out var bmp_svg))
+                        try
                         {
-                            int svgWidth = bmp_svg.Width, svgHeight = bmp_svg.Height;
-                            font_widths.Add(new CacheFont(index, txt, false, svgWidth, type).SetImageHeight(svgHeight));
-                            index++;
-                        }
-                        else
-                        {
-                            var svgImage = SvgExtend.SvgToBmp(txt, font_height, font_height, null);
-                            if (svgImage != null)
+                            var id_svg = start.ToString() + len;
+                            if (item.image_cache.TryGetValue(id_svg, out var bmp_svg))
                             {
-                                int svgWidth = svgImage.Width, svgHeight = svgImage.Height;
+                                int svgWidth = bmp_svg.Width, svgHeight = bmp_svg.Height;
                                 font_widths.Add(new CacheFont(index, txt, false, svgWidth, type).SetImageHeight(svgHeight));
-                                if (!item.image_cache.TryAdd(id_svg, svgImage)) svgImage.Dispose();
                                 index++;
                             }
+                            else
+                            {
+                                var svgImage = SvgExtend.SvgToBmp(txt, font_height, font_height, null);
+                                if (svgImage != null)
+                                {
+                                    int svgWidth = svgImage.Width, svgHeight = svgImage.Height;
+                                    font_widths.Add(new CacheFont(index, txt, false, svgWidth, type).SetImageHeight(svgHeight));
+                                    if (!item.image_cache.TryAdd(id_svg, svgImage)) svgImage.Dispose();
+                                    index++;
+                                }
+                            }
                         }
+                        catch { }
                         break;
                     default:
                         if (GraphemeSplitter.IsEmoji(ntype, txt))
@@ -1150,7 +1205,8 @@ namespace AntdUI.Chat
                 task?.Dispose();
                 task = null;
                 showlinedot = false;
-                if (value && PARENT != null)
+                if (PARENT == null) return;
+                if (value)
                 {
                     task = new AnimationTask(new AnimationLoopConfig(PARENT, () =>
                     {
@@ -1159,7 +1215,21 @@ namespace AntdUI.Chat
                         return loading;
                     }, 200).SetPriority());
                 }
-                else Invalidate();
+                else PARENT.Invalidate();
+            }
+        }
+
+        internal void InitLoading()
+        {
+            if (loading && task == null)
+            {
+                if (PARENT == null) return;
+                task = new AnimationTask(new AnimationLoopConfig(PARENT, () =>
+                {
+                    showlinedot = !showlinedot;
+                    Invalidate();
+                    return loading;
+                }, 200).SetPriority());
             }
         }
 
@@ -1365,6 +1435,284 @@ namespace AntdUI.Chat
             DisposeCache();
             base.Dispose();
         }
+    }
+    public class ImageChatItem : IChatItem
+    {
+        public ImageChatItem(int w, int h)
+        {
+            Width = w;
+            Height = h;
+        }
+        public ImageChatItem(Image image)
+        {
+            _image = image;
+            Width = image.Width;
+            Height = image.Height;
+            IsGIF = Helper.IsGIF(image);
+        }
+        public ImageChatItem(int w, int h, Image icon, string name) : this(w, h)
+        {
+            _name = name;
+            _icon = icon;
+        }
+        public ImageChatItem(Image image, Image icon, string name) : this(image)
+        {
+            _name = name;
+            _icon = icon;
+        }
+
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category("数据"), DefaultValue(null)]
+        public string? ID { get; set; }
+
+        /// <summary>
+        /// 本人
+        /// </summary>
+        [Description("本人"), Category("行为"), DefaultValue(false)]
+        public bool Me { get; set; }
+
+        Image? _icon;
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [Description("图标"), Category("外观"), DefaultValue(null)]
+        public Image? Icon
+        {
+            get => _icon;
+            set
+            {
+                if (_icon == value) return;
+                _icon = value;
+                Invalidates();
+            }
+        }
+
+        string? _name;
+        /// <summary>
+        /// 名称
+        /// </summary>
+        [Description("名称"), Category("外观"), DefaultValue(null)]
+        public string? Name
+        {
+            get => _name;
+            set
+            {
+                if (_name == value) return;
+                _name = value;
+                Invalidate();
+            }
+        }
+
+        #region 内容
+
+        Image? _image;
+        /// <summary>
+        /// 图片
+        /// </summary>
+        [Description("图片"), Category("外观"), DefaultValue(null)]
+        public Image? Image
+        {
+            get => _image;
+            set
+            {
+                if (_image == value) return;
+                _image = value;
+                IsGIF = Helper.IsGIF(value);
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 图片宽度
+        /// </summary>
+        public int Width { get; set; }
+
+        /// <summary>
+        /// 图片高度
+        /// </summary>
+        public int Height { get; set; }
+
+        /// <summary>
+        /// 是否是GIF
+        /// </summary>
+        public bool IsGIF { get; private set; }
+
+        #endregion
+
+        AnimationTask? task;
+        bool loading;
+        internal float LineWidth = 6, LineAngle = 0;
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                task?.Dispose();
+                task = null;
+                if (PARENT == null) return;
+                if (value)
+                {
+                    bool ProgState = false;
+                    task = new AnimationTask(PARENT, () =>
+                    {
+                        Animation(ref ProgState);
+                        Invalidate();
+                        return true;
+                    }, 10);
+                }
+                else PARENT.Invalidate();
+            }
+        }
+
+        internal void InitLoading()
+        {
+            if (loading && task == null)
+            {
+                if (PARENT == null) return;
+                bool ProgState = false;
+                task = new AnimationTask(PARENT, () =>
+                {
+                    Animation(ref ProgState);
+                    Invalidate();
+                    return true;
+                }, 10);
+            }
+        }
+
+        void Animation(ref bool ProgState)
+        {
+            if (ProgState)
+            {
+                LineAngle = LineAngle.Calculate(9F);
+                LineWidth = LineWidth.Calculate(0.6F);
+                if (LineWidth > 75) ProgState = false;
+            }
+            else
+            {
+                LineAngle = LineAngle.Calculate(9.6F);
+                LineWidth = LineWidth.Calculate(-0.6F);
+                if (LineWidth < 6) ProgState = true;
+            }
+            if (LineAngle >= 360) LineAngle = 0;
+        }
+
+        #region 布局
+
+        internal int SetRect(Rectangle _rect, int y, Canvas g, Font font, Size msglen, int gap, int spilt, int spilt2, int image_size, bool iconLess = false)
+        {
+            if (string.IsNullOrEmpty(_name))
+            {
+                rect = new Rectangle(_rect.X, _rect.Y + y, _rect.Width, msglen.Height);
+                if (Me)
+                {
+                    if (iconLess) rect_icon = new Rectangle(rect.Right, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.Right - gap - image_size, rect.Y, image_size, image_size);
+                    rect_read = new Rectangle(rect_icon.X - spilt - msglen.Width, rect_icon.Y, msglen.Width, msglen.Height);
+                }
+                else
+                {
+                    if (iconLess) rect_icon = new Rectangle(0, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.X + gap, rect.Y, image_size, image_size);
+                    rect_read = new Rectangle(rect_icon.Right + spilt, rect_icon.Y, msglen.Width, msglen.Height);
+                }
+            }
+            else
+            {
+                rect = new Rectangle(_rect.X, _rect.Y + y, _rect.Width, msglen.Height + gap);
+                var size_name = g.MeasureString(_name, font).Width;
+                if (Me)
+                {
+                    if (iconLess) rect_icon = new Rectangle(rect.Right, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.Right - gap - image_size, rect.Y, image_size, image_size);
+                    rect_name = new Rectangle(rect_icon.X - spilt - msglen.Width + msglen.Width - size_name, rect_icon.Y, size_name, gap);
+                    rect_read = new Rectangle(rect_icon.X - spilt - msglen.Width, rect_name.Bottom, msglen.Width, msglen.Height);
+                }
+                else
+                {
+                    if (iconLess) rect_icon = new Rectangle(0, rect.Y, 0, 0);
+                    else rect_icon = new Rectangle(rect.X + gap, rect.Y, image_size, image_size);
+                    rect_name = new Rectangle(rect_icon.Right + spilt, rect_icon.Y, size_name, gap);
+                    rect_read = new Rectangle(rect_name.X, rect_name.Bottom, msglen.Width, msglen.Height);
+                }
+            }
+            rect_content = new Rectangle(rect_read.X + spilt, rect_read.Y + spilt, msglen.Width - spilt2, msglen.Height - spilt2);
+            return rect.Height;
+        }
+
+        internal Rectangle rect_read { get; set; }
+        internal Rectangle rect_name { get; set; }
+        internal Rectangle rect_content { get; set; }
+        internal Rectangle rect_icon { get; set; }
+
+        #endregion
+
+        #region 设置
+
+        public ImageChatItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public ImageChatItem SetName(string? value)
+        {
+            _name = value;
+            return this;
+        }
+
+        public ImageChatItem SetIcon(Image? img)
+        {
+            _icon = img;
+            return this;
+        }
+
+        public ImageChatItem SetLoading(bool value = true)
+        {
+            loading = value;
+            return this;
+        }
+
+        public ImageChatItem SetMe(bool value = true)
+        {
+            Me = value;
+            return this;
+        }
+
+        public ImageChatItem SetImage(Image? value)
+        {
+            _image = value;
+            IsGIF = Helper.IsGIF(value);
+            if (_image == null) return this;
+            Width = _image.Width;
+            Height = _image.Height;
+            return this;
+        }
+
+        public ImageChatItem SetSize(int w, int h)
+        {
+            Width = w;
+            Height = h;
+            return this;
+        }
+
+        public ImageChatItem SetSizeRatio(float value)
+        {
+            Width = (int)(Width * value);
+            Height = (int)(Height * value);
+            return this;
+        }
+
+        public ImageChatItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
     }
 
     public abstract class IChatItem : IDisposable

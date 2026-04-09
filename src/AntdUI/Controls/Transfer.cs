@@ -1519,12 +1519,12 @@ namespace AntdUI
 
         private void input_source_TextChanged(object? sender, EventArgs e)
         {
-            if (sender is Input input) SetSourceSearchText(input.Text);
+            if (sender is Input input) SetSourceSearchText(input.Text.Trim());
         }
 
         private void input_target_TextChanged(object? sender, EventArgs e)
         {
-            if (sender is Input input) SetTargetSearchText(input.Text);
+            if (sender is Input input) SetTargetSearchText(input.Text.Trim());
         }
 
         #endregion

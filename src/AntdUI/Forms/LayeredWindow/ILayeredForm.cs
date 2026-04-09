@@ -46,7 +46,7 @@ namespace AntdUI
         {
             if (messageHandler == null && FunRun)
             {
-                if (CloseMode == CloseMode.None) return;
+                if (CloseMode == CloseMode.None && KeyCall == null) return;
                 try
                 {
                     if (InvokeRequired)
@@ -169,6 +169,7 @@ namespace AntdUI
             return PrintBit();
         }
 
+        public void PrintNo() => Print();
         public Win32.RenderResult Print(bool fore = false)
         {
             if (CanRender(out var handle))
@@ -384,6 +385,7 @@ namespace AntdUI
 
         public void IMOUSECLICK()
         {
+            if (CloseMode == CloseMode.None) return;
             var mousePosition = MousePosition;
             if (ALLRECT().Contains(mousePosition)) return;
             if (ICanClose()) IClose();
@@ -411,27 +413,34 @@ namespace AntdUI
 
         Rectangle ALLRECT()
         {
-            if (PARENT == null) return target_rect;
-            var rect = new Rectangle(target_rect.X, target_rect.Y, target_rect.Width, target_rect.Height);
-            try
+            if (PARENT == null)
             {
-                if (!CloseMode.HasFlag(CloseMode.NoControl) && PARENT.IsHandleCreated) rect = Rectangle.Union(rect, new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size));
-            }
-            catch { }
-            FunSub(PARENT, ref rect);
-            return rect;
-        }
-        void FunSub(Control control, ref Rectangle rect)
-        {
-            if (control is SubLayeredForm subForm)
-            {
-                var subform = subForm.SubForm();
-                if (subform != null)
+                if (this is SubLayeredForm subForm)
                 {
-                    rect = Rectangle.Union(rect, subform.TargetRect);
-                    FunSub(subform, ref rect);
+                    var rect = new Rectangle(target_rect.X, target_rect.Y, target_rect.Width, target_rect.Height);
+                    FunSub(subForm, ref rect);
+                    return rect;
                 }
+                return target_rect;
             }
+            else
+            {
+                var rect = new Rectangle(target_rect.X, target_rect.Y, target_rect.Width, target_rect.Height);
+                try
+                {
+                    if (!CloseMode.HasFlag(CloseMode.NoControl) && PARENT.IsHandleCreated) rect = Rectangle.Union(rect, new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size));
+                }
+                catch { }
+                if (PARENT is SubLayeredForm subForm) FunSub(subForm, ref rect);
+                return rect;
+            }
+        }
+        void FunSub(SubLayeredForm form, ref Rectangle rect)
+        {
+            var subform = form.SubForm();
+            if (subform == null) return;
+            rect = Rectangle.Union(rect, subform.TargetRect);
+            if (subform is SubLayeredForm sub) FunSub(sub, ref rect);
         }
 
         #endregion
