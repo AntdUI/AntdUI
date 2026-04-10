@@ -1,5 +1,14 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.8` 2026-04-10
+
+- ✍️ Tabs Page does not display
+- ✍️ Transfer search exception
+- ✍️ DatePicker defaults to popping out of bounds
+- ✍️ Optimize the horizontal determination of the scrollbar
+- ✍️ Tree unfolding animation X misalignment
+- ✍️ Unified Category
+
 ### `2.3.7` 2026-04-09
 
 - ➕ Select Multi criteria Search Score Sorting
