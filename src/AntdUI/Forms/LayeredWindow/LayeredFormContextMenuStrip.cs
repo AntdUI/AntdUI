@@ -180,8 +180,7 @@ namespace AntdUI
             {
                 int vr = TargetRect.Height - shadow2, height = screen.Height - shadow2;
                 SetSizeH(height);
-                ScrollBar.SizeChange(new Rectangle(0, 0, TargetRect.Width - ScrollBar.SIZE, height));
-                ScrollBar.SetVrSize(0, vr);
+                ScrollBar.SetVrSize(0, vr, new Rectangle(0, 0, TargetRect.Width - ScrollBar.SIZE, height));
                 SetLocation(point.X - shadow, screen.Y);
             }
             else

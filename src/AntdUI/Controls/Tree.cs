@@ -476,8 +476,7 @@ namespace AntdUI
                     }
                     else ChangeList(g, rect, null, items, has, ref x, ref y, depth_gap, icon_size, gap, gapI, 0, true);
                 });
-                ScrollBar.SetVrSize(x, y);
-                ScrollBar.SizeChange(rect);
+                ScrollBar.SetVrSize(x, y, rect);
             }
             if (print) Invalidate();
         }
@@ -661,7 +660,7 @@ namespace AntdUI
                                     PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
                                 }
                             }
-                            g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
+                            g.Image(it.ExpandTemp, new Rectangle(rect.X + sx, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
                         }
                         else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
                     }
@@ -680,7 +679,7 @@ namespace AntdUI
             }
         }
 
-        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.EllipsisCharacter, s_l = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+        readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.EllipsisCharacter;
         void PaintItem(Canvas g, TreeItem item, int tx, int ty, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
         {
             if (item.Select)
@@ -784,8 +783,8 @@ namespace AntdUI
             else g.DrawText(item.Text, Font, fore, item.txt_rect, s_c);
             if (item.SubTitle != null)
             {
-                if (item.ForeSub.HasValue) g.DrawText(item.SubTitle, Font, item.ForeSub.Value, item.subtxt_rect, s_l);
-                else g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_l);
+                if (item.ForeSub.HasValue) g.DrawText(item.SubTitle, Font, item.ForeSub.Value, item.subtxt_rect, s_c);
+                else g.DrawText(item.SubTitle, Font, brushTextTertiary, item.subtxt_rect, s_c);
             }
             if (item.Loading)
             {
@@ -2509,21 +2508,22 @@ namespace AntdUI
             else
             {
                 var sizesub = g.MeasureText(SubTitle, font);
-                usew += txt_w + sizesub.Width + gap;
+                int txt_sub_w = sizesub.Width + gap;
+                usew += txt_w + txt_sub_w + gap;
                 if (blockNode)
                 {
                     int rw = _w - x - gap;
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
-                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
-                    txt_w += sizesub.Width;
+                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, txt_sub_w, txt_rect.Height);
+                    txt_w += txt_sub_w;
                     if (rw < txt_w) rw = txt_w;
                     rect = new Rectangle(x, txt_rect.Y, rw, txt_rect.Height);
                 }
                 else
                 {
                     txt_rect = new Rectangle(x, txt_y, txt_w, txt_h);
-                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, sizesub.Width, txt_rect.Height);
-                    rect = new Rectangle(x, txt_y, txt_w + sizesub.Width, txt_h);
+                    subtxt_rect = new Rectangle(txt_rect.Right, txt_rect.Y, txt_sub_w, txt_rect.Height);
+                    rect = new Rectangle(x, txt_y, txt_w + txt_sub_w, txt_h);
                 }
             }
             rect_all = new Rectangle(tmpx, rect.Y, usew, rect.Height);

@@ -723,8 +723,7 @@ namespace AntdUI
                 {
                     rect_read_left = new Rectangle(0, 0, t_x, r_h);
 
-                    ScrollButtons!.SizeChange(rect_read_left);
-                    ScrollButtons.SetVrSize(t_time_height * left_buttons.Count);
+                    ScrollButtons!.SetVrSize(t_time_height * left_buttons.Count, rect_read_left);
 
                     int bsp = (int)(t_x * .02F), bsp2 = bsp * 2, bsp22 = bsp2 * 2;
                     foreach (var it in left_buttons)

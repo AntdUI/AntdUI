@@ -374,8 +374,7 @@ namespace AntdUI.Chat
                     }
                 }
             });
-            ScrollBar.SetVrSize(y);
-            ScrollBar.SizeChange(rect);
+            ScrollBar.SetVrSize(y, rect);
         }
 
         #endregion

@@ -439,8 +439,7 @@ namespace AntdUI
             if (h > screen.Height - shadow2)
             {
                 h = screen.Height - shadow2;
-                ScrollBar.SizeChange(new Rectangle(0, 0, w, h));
-                ScrollBar.SetVrSize(0, maxh);
+                ScrollBar.SetVrSize(0, maxh, new Rectangle(0, 0, w, h));
                 if (sy > 0) ScrollBar.ValueY = sy;
             }
 

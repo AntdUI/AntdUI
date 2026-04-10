@@ -718,8 +718,7 @@ namespace AntdUI
 
                 return last_len + gap * 2;
             });
-            ScrollBar.SetVrSize(val);
-            ScrollBar.SizeChange(_rect);
+            ScrollBar.SetVrSize(val, _rect);
         }
 
         #region 瀑布流

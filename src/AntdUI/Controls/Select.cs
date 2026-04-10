@@ -432,7 +432,7 @@ namespace AntdUI
                         if (filtertext == temp)
                         {
                             Items.Clear();
-                            if (list == null || list.Count == 0) subForm?.IClose();
+                            if (list == null || list.Count == 0) CloseSubForm(true);
                             else
                             {
                                 Items.AddRange(list);
@@ -540,38 +540,40 @@ namespace AntdUI
             {
                 if (expandDrop == value) return;
                 expandDrop = value;
-                if (value)
+                if (IsHandleCreated)
                 {
-                    if (ReadOnly || items == null || items.Count == 0)
-                    {
-                        if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
-                        else
-                        {
-                            subForm?.IClose();
-                            subForm = null;
-                            expandDrop = false;
-                        }
-                    }
-                    else
-                    {
-                        if (subForm == null)
-                        {
-                            var objs = new List<object>(items.Count);
-                            foreach (var it in items) objs.Add(it);
-                            ShowLayeredForm(objs);
-                        }
-                    }
+                    if (value) OpenSubForm();
+                    else CloseSubForm(true);
                 }
-                else
-                {
-                    subForm?.IClose();
-                    subForm = null;
-                    filtertext = "";
-                }
+                else if (!value) filtertext = "";
                 OnExpandDropChanged(value);
             }
         }
 
+        void CloseSubForm(bool close)
+        {
+            if (close) subForm?.IClose();
+            subForm = null;
+            ExpandDrop = false;
+            filtertext = "";
+        }
+        void OpenSubForm()
+        {
+            if (ReadOnly || items == null || items.Count == 0)
+            {
+                if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
+                else CloseSubForm(true);
+            }
+            else
+            {
+                if (subForm == null)
+                {
+                    var objs = new List<object>(items.Count);
+                    foreach (var it in items) objs.Add(it);
+                    ShowLayeredForm(objs);
+                }
+            }
+        }
         void ShowLayeredForm(IList<object> list)
         {
             try
@@ -587,14 +589,13 @@ namespace AntdUI
                 subForm.Disposed += (a, b) =>
                 {
                     select_x = 0;
-                    subForm = null;
                     Expand = false;
-                    ExpandDrop = false;
+                    CloseSubForm(false);
                 };
             }
             catch
             {
-                subForm = null;
+                CloseSubForm(true);
             }
         }
 
@@ -695,6 +696,7 @@ namespace AntdUI
         {
             this.AddListener();
             base.OnHandleCreated(e);
+            if (expandDrop) OpenSubForm();
         }
         public void HandleEvent(EventType id, object? tag)
         {

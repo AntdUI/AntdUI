@@ -188,8 +188,7 @@ namespace AntdUI
                         }
                     }
                 });
-                ScrollBar.SetVrSize(0, y);
-                ScrollBar.SizeChange(_rect);
+                ScrollBar.SetVrSize(0, y, _rect);
                 if (r) Invalidate();
             }
         }

@@ -172,8 +172,7 @@ namespace AntdUI
                     splits = _splits.ToArray();
                     y = y - gap_y + gap_x;
                 });
-                ScrollBar.SetVrSize(y);
-                ScrollBar.SizeChange(rect);
+                ScrollBar.SetVrSize(y, rect);
             }
             if (print) Invalidate();
         }

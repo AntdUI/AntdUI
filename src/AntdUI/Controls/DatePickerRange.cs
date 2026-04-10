@@ -292,6 +292,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             SetText(_value);
+            if (expandDrop) OpenSubForm();
         }
 
         #region 自带图标
@@ -364,44 +365,52 @@ namespace AntdUI
             {
                 if (expandDrop == value) return;
                 expandDrop = value;
-                if (!ReadOnly && value)
+                if (IsHandleCreated)
                 {
-                    if (subForm == null)
+                    if (value) OpenSubForm();
+                    else CloseSubForm(true);
+                }
+                OnExpandDropChanged(value);
+            }
+        }
+
+        void CloseSubForm(bool close)
+        {
+            if (close) subForm?.IClose();
+            subForm = null;
+            ExpandDrop = false;
+        }
+        void OpenSubForm()
+        {
+            if (ReadOnly)
+            {
+                CloseSubForm(true);
+                return;
+            }
+            if (subForm == null)
+            {
+                int bar = 0;
+                if (EndFocused) bar = rect_d_r.X;
+                else bar = rect_d_l.X;
+                try
+                {
+                    if (ShowTime)
                     {
-                        int bar = 0;
-                        if (EndFocused) bar = rect_d_r.X;
-                        else bar = rect_d_l.X;
-                        try
-                        {
-                            if (ShowTime)
-                            {
-                                subForm = new LayeredFormDatePickerRangeTime(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
-                                subForm.Disposed += (a, b) =>
-                                {
-                                    subForm = null;
-                                    ExpandDrop = false;
-                                };
-                                subForm.Show(this);
-                            }
-                            else
-                            {
-                                subForm = new LayeredFormDatePickerRange(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
-                                subForm.Disposed += (a, b) =>
-                                {
-                                    subForm = null;
-                                    ExpandDrop = false;
-                                };
-                                subForm.Show(this);
-                            }
-                        }
-                        catch
-                        {
-                            subForm = null;
-                        }
+                        subForm = new LayeredFormDatePickerRangeTime(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                        subForm.Disposed += (a, b) => CloseSubForm(false);
+                        subForm.Show(this);
+                    }
+                    else
+                    {
+                        subForm = new LayeredFormDatePickerRange(this, EndFocused, bar, date => Value = date, btn => PresetsClickChanged?.Invoke(this, new ObjectNEventArgs(btn)), BadgeAction);
+                        subForm.Disposed += (a, b) => CloseSubForm(false);
+                        subForm.Show(this);
                     }
                 }
-                else subForm?.IClose();
-                OnExpandDropChanged(value);
+                catch
+                {
+                    CloseSubForm(true);
+                }
             }
         }
 
@@ -466,8 +475,8 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
-            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
+            if (keyData == Keys.Escape) ExpandDrop = false;
+            else if (keyData == Keys.Down) ExpandDrop = true;
             else if (keyData == Keys.Enter)
             {
                 if (StartFocused || EndFocused)

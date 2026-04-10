@@ -117,6 +117,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
+            if (expandDrop) OpenSubForm();
         }
 
         #region 自带图标
@@ -180,28 +181,40 @@ namespace AntdUI
             {
                 if (expandDrop == value) return;
                 expandDrop = value;
-                if (!ReadOnly && value)
+                if (IsHandleCreated)
                 {
-                    if (subForm == null)
-                    {
-                        try
-                        {
-                            subForm = new LayeredFormTimePicker(this, _value, date => Value = date);
-                            subForm.Disposed += (a, b) =>
-                            {
-                                subForm = null;
-                                ExpandDrop = false;
-                            };
-                            subForm.Show(this);
-                        }
-                        catch
-                        {
-                            subForm = null;
-                        }
-                    }
+                    if (value) OpenSubForm();
+                    else CloseSubForm(true);
                 }
-                else subForm?.IClose();
                 OnExpandDropChanged(value);
+            }
+        }
+
+        void CloseSubForm(bool close)
+        {
+            if (close) subForm?.IClose();
+            subForm = null;
+            ExpandDrop = false;
+        }
+        void OpenSubForm()
+        {
+            if (ReadOnly)
+            {
+                CloseSubForm(true);
+                return;
+            }
+            if (subForm == null)
+            {
+                try
+                {
+                    subForm = new LayeredFormTimePicker(this, _value, date => Value = date);
+                    subForm.Disposed += (a, b) => CloseSubForm(false);
+                    subForm.Show(this);
+                }
+                catch
+                {
+                    CloseSubForm(true);
+                }
             }
         }
 
@@ -254,8 +267,8 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape && subForm != null) subForm.IClose();
-            else if (keyData == Keys.Down && subForm == null) ExpandDrop = true;
+            if (keyData == Keys.Escape) ExpandDrop = false;
+            else if (keyData == Keys.Down) ExpandDrop = true;
             else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d)) PValue(_d);
             return base.ProcessCmdKey(ref msg, keyData);
         }

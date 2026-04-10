@@ -429,11 +429,8 @@ namespace AntdUI
                     int y1 = CalculateLayout(g, sourceItems, rect_source_com, lh, gap, gap2, gapx, gapx2, check_size);
                     int y2 = CalculateLayout(g, targetItems, rect_target_com, lh, gap, gap2, gapx, gapx2, check_size);
 
-                    ScrollBarSource.SizeChange(rect_source_com);
-                    ScrollBarTarget.SizeChange(rect_target_com);
-
-                    ScrollBarSource.SetVrSize(y1);
-                    ScrollBarTarget.SetVrSize(y2);
+                    ScrollBarSource.SetVrSize(y1, rect_source_com);
+                    ScrollBarTarget.SetVrSize(y2, rect_target_com);
                 });
 
                 if (print) Invalidate();

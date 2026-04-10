@@ -896,8 +896,7 @@ namespace AntdUI.Chat
                     return y;
                 });
                 oldy = y;
-                ScrollBar.SetVrSize(y);
-                ScrollBar.SizeChange(rect);
+                ScrollBar.SetVrSize(y, rect);
             }
             if (print) Invalidate();
         }

@@ -623,8 +623,7 @@ namespace AntdUI
                 {
                     if (autoWidth) w += ScrollBar.SIZE - padd;
                     h = item_height * MaxCount + padd2;
-                    ScrollBar.SizeChange(new Rectangle(0, 0, w, h));
-                    ScrollBar.SetVrSize(0, maxh);
+                    ScrollBar.SetVrSize(0, maxh, new Rectangle(0, 0, w, h));
                     if (sy > 0) ScrollBar.ValueY = sy;
                 }
                 else
@@ -635,8 +634,7 @@ namespace AntdUI
                         if (h > screen.Height - shadow2)
                         {
                             h = screen.Height - shadow2;
-                            ScrollBar.SizeChange(new Rectangle(0, 0, w, h));
-                            ScrollBar.SetVrSize(0, maxh);
+                            ScrollBar.SetVrSize(0, maxh, new Rectangle(0, 0, w, h));
                             if (sy > 0) ScrollBar.ValueY = sy;
                         }
                         else ScrollBar.SetVrSize(0, 0);
