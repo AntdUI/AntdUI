@@ -30,7 +30,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -49,7 +49,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角方向
         /// </summary>
-        [Description("圆角方向"), Category("外观"), DefaultValue(TAlignRound.ALL)]
+        [Description("圆角方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignRound.ALL)]
         public TAlignRound RadiusAlign
         {
             get => radiusAlign;
@@ -65,7 +65,7 @@ namespace AntdUI
         #region 阴影
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("use InnerPadding"), Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
+        [Obsolete("use InnerPadding"), Description("内边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
         public Padding padding
         {
             get => InnerPadding;
@@ -76,7 +76,7 @@ namespace AntdUI
         /// <summary>
         /// 内边距
         /// </summary>
-        [Description("内边距"), Category("外观"), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
+        [Description("内边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Padding), "0, 0, 0, 0")]
         public Padding InnerPadding
         {
             get => _padding;
@@ -95,7 +95,7 @@ namespace AntdUI
         /// <summary>
         /// 阴影大小
         /// </summary>
-        [Description("阴影"), Category("外观"), DefaultValue(0)]
+        [Description("阴影"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Shadow
         {
             get => shadow;
@@ -255,7 +255,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -273,7 +273,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -290,7 +290,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -307,7 +307,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;
@@ -602,14 +602,14 @@ namespace AntdUI
         /// <summary>
         /// 内部容器背景透明
         /// </summary>
-        [Description("内部容器背景透明"), Category("外观"), DefaultValue(false)]
+        [Description("内部容器背景透明"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoContainerBgTransparent { get; set; }
 
         bool autoscroll = false;
         /// <summary>
         /// 是否显示滚动条
         /// </summary>
-        [Description("是否显示滚动条"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示滚动条"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoScroll
         {
             get => autoscroll;

@@ -14,7 +14,7 @@ namespace AntdUI
         internal Action? TakePaint;
         public override void Invalidate() => TakePaint?.Invoke();
 
-        [Description("连接左边"), Category("外观"), DefaultValue(0)]
+        [Description("连接左边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int MOffset { get; set; }
         protected override void SetCaretPostion(ref int x, ref int y)
         {
@@ -29,7 +29,7 @@ namespace AntdUI
         internal Action? TakePaint;
         public override void Invalidate() => TakePaint?.Invoke();
 
-        [Description("连接左边"), Category("外观"), DefaultValue(0)]
+        [Description("连接左边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int MOffset { get; set; }
         protected override void SetCaretPostion(ref int x, ref int y)
         {

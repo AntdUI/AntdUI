@@ -18,43 +18,43 @@ namespace AntdUI
         /// <summary>
         /// 标签
         /// </summary>
-        [Description("标签"), Category("数据")]
+        [Description("标签"), Category(nameof(CategoryAttribute.Data))]
         public string? Label { get; set; }
 
         /// <summary>
         /// X轴值
         /// </summary>
-        [Description("X轴值"), Category("数据")]
+        [Description("X轴值"), Category(nameof(CategoryAttribute.Data))]
         public double X { get; set; }
 
         /// <summary>
         /// Y轴值
         /// </summary>
-        [Description("Y轴值"), Category("数据")]
+        [Description("Y轴值"), Category(nameof(CategoryAttribute.Data))]
         public double Y { get; set; }
 
         /// <summary>
         /// 半径值（用于气泡图等）
         /// </summary>
-        [Description("半径值"), Category("数据")]
+        [Description("半径值"), Category(nameof(CategoryAttribute.Data))]
         public double Radius { get; set; }
 
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观")]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance))]
         public Color? Color { get; set; }
 
         /// <summary>
         /// 是否可见
         /// </summary>
-        [Description("是否可见"), Category("行为"), DefaultValue(true)]
+        [Description("是否可见"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Visible { get; set; } = true;
 
         /// <summary>
         /// 工具提示文本
         /// </summary>
-        [Description("工具提示文本"), Category("行为")]
+        [Description("工具提示文本"), Category(nameof(CategoryAttribute.Behavior))]
         public string? Tooltip { get; set; }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace AntdUI
         #region 属性
 
         int gap = 12;
-        [Description("间距"), Category("外观"), DefaultValue(12)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(12)]
         public int Gap
         {
             get => gap;
@@ -43,7 +43,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -60,7 +60,7 @@ namespace AntdUI
         /// <summary>
         /// 激活文字颜色
         /// </summary>
-        [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
@@ -68,7 +68,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(4)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int Radius
         {
             get => radius;
@@ -86,7 +86,7 @@ namespace AntdUI
         /// 获取列表中所有列表项的集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据"), DefaultValue(null)]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public BreadcrumbItemCollection Items
         {
             get
@@ -100,7 +100,7 @@ namespace AntdUI
         /// <summary>
         /// 点击项时发生
         /// </summary>
-        [Description("点击项时发生"), Category("行为")]
+        [Description("点击项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BreadcrumbItemEventHandler? ItemClick;
 
         protected virtual void OnItemClick(BreadcrumbItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new BreadcrumbItemEventArgs(item, e));
@@ -217,7 +217,7 @@ namespace AntdUI
         #region 布局
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -388,14 +388,14 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         Image? icon;
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -411,7 +411,7 @@ namespace AntdUI
         /// <summary>
         /// 图标SVG
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -432,7 +432,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Text
         {
             get => Localization.GetLangI(LocalizationText, text, new string?[] { "{id}", ID });
@@ -450,7 +450,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 内部

@@ -1,5 +1,14 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.8` 2026-04-10
+
+- ✍️ Tabs Page 不显示
+- ✍️ Transfer 搜索异常
+- ✍️ DatePicker 默认弹出超出
+- ✍️ 优化滚动条横向判定
+- ✍️ Tree 展开动画X错位
+- ✍️ 统一 Category
+
 ### `2.3.7` 2026-04-09
 
 - ➕ Select 多条件搜索打分排序

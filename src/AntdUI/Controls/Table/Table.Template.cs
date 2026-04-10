@@ -345,7 +345,7 @@ namespace AntdUI
             AnimationTask? ThreadCheck;
 
             bool _checked = false;
-            [Description("选中状态"), Category("行为"), DefaultValue(false)]
+            [Description("选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
             public override bool Checked
             {
                 get => _checked;
@@ -493,7 +493,7 @@ namespace AntdUI
             AnimationTask? ThreadCheck;
 
             bool _checked = false;
-            [Description("选中状态"), Category("行为"), DefaultValue(false)]
+            [Description("选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
             public override bool Checked
             {
                 get => _checked;
@@ -631,7 +631,7 @@ namespace AntdUI
             AnimationTask? ThreadCheck;
 
             bool _checked = false;
-            [Description("选中状态"), Category("行为"), DefaultValue(false)]
+            [Description("选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
             public override bool Checked
             {
                 get => _checked;

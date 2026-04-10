@@ -28,7 +28,7 @@ namespace AntdUI
         /// <summary>
         /// 阴影大小
         /// </summary>
-        [Description("阴影"), Category("外观"), DefaultValue(4)]
+        [Description("阴影"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int Shadow
         {
             get => shadow;

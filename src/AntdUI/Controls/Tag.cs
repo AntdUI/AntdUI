@@ -27,7 +27,7 @@ namespace AntdUI
         /// <summary>
         /// 原装背景颜色
         /// </summary>
-        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Description("原装背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "Transparent")]
         public Color OriginalBackColor
         {
             get => base.BackColor;
@@ -38,7 +38,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -58,7 +58,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
@@ -76,7 +76,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -93,7 +93,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;
@@ -133,7 +133,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -150,7 +150,7 @@ namespace AntdUI
         /// <summary>
         /// 类型
         /// </summary>
-        [Description("类型"), Category("外观"), DefaultValue(TTypeMini.Default)]
+        [Description("类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TTypeMini.Default)]
         public TTypeMini Type
         {
             get => type;
@@ -167,7 +167,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示关闭图标
         /// </summary>
-        [Description("是否显示关闭图标"), Category("行为"), DefaultValue(false)]
+        [Description("是否显示关闭图标"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool CloseIcon
         {
             get => closeIcon;
@@ -187,7 +187,7 @@ namespace AntdUI
         /// 文本
         /// </summary>
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -212,7 +212,7 @@ namespace AntdUI
         /// <summary>
         /// 文本位置
         /// </summary>
-        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleCenter)]
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleCenter)]
         public ContentAlignment TextAlign
         {
             get => textAlign;
@@ -230,7 +230,7 @@ namespace AntdUI
         /// <summary>
         /// 文本超出自动处理
         /// </summary>
-        [Description("文本超出自动处理"), Category("行为"), DefaultValue(false)]
+        [Description("文本超出自动处理"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AutoEllipsis
         {
             get => autoEllipsis;
@@ -248,7 +248,7 @@ namespace AntdUI
         /// <summary>
         /// 是否多行
         /// </summary>
-        [Description("是否多行"), Category("行为"), DefaultValue(false)]
+        [Description("是否多行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool TextMultiLine
         {
             get => textMultiLine;
@@ -271,7 +271,7 @@ namespace AntdUI
         /// <summary>
         /// 图像
         /// </summary>
-        [Description("图像"), Category("外观"), DefaultValue(null)]
+        [Description("图像"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Image
         {
             get => image;
@@ -285,7 +285,7 @@ namespace AntdUI
         }
 
         string? imageSvg;
-        [Description("图像SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图像SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? ImageSvg
         {
             get => imageSvg;
@@ -306,7 +306,7 @@ namespace AntdUI
         /// <summary>
         /// 图像大小
         /// </summary>
-        [Description("图像大小"), Category("外观"), DefaultValue(typeof(Size), "0, 0")]
+        [Description("图像大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "0, 0")]
         public Size ImageSize { get; set; }
 
         #endregion
@@ -318,7 +318,7 @@ namespace AntdUI
         /// <summary>
         /// Close时发生
         /// </summary>
-        [Description("Close时发生"), Category("行为")]
+        [Description("Close时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event RBoolEventHandler? CloseChanged;
 
         protected virtual bool OnCloseChanged() => CloseChanged?.Invoke(this, EventArgs.Empty) ?? true;
@@ -547,7 +547,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -568,7 +568,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;

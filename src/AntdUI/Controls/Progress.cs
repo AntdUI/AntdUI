@@ -31,7 +31,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -51,7 +51,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -69,7 +69,7 @@ namespace AntdUI
         /// <summary>
         /// 进度条颜色
         /// </summary>
-        [Description("进度条颜色"), Category("外观"), DefaultValue(null)]
+        [Description("进度条颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -89,7 +89,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -106,7 +106,7 @@ namespace AntdUI
         /// <summary>
         /// 形状
         /// </summary>
-        [Description("形状"), Category("外观"), DefaultValue(TShapeProgress.Round)]
+        [Description("形状"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TShapeProgress.Round)]
         public TShapeProgress Shape
         {
             get => shape;
@@ -125,7 +125,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -148,7 +148,7 @@ namespace AntdUI
         /// <summary>
         /// 单位文本
         /// </summary>
-        [Description("单位文本"), Category("外观"), DefaultValue("%")]
+        [Description("单位文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("%")]
         [Localizable(true)]
         public string? TextUnit
         {
@@ -169,7 +169,7 @@ namespace AntdUI
         /// <summary>
         /// 使用系统文本
         /// </summary>
-        [Description("使用系统文本"), Category("外观"), DefaultValue(false)]
+        [Description("使用系统文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UseSystemText
         {
             get => useSystemText;
@@ -185,13 +185,13 @@ namespace AntdUI
         /// <summary>
         /// 使文本居中显示
         /// </summary>
-        [Description("使文本居中显示"), Category("外观"), DefaultValue(false)]
+        [Description("使文本居中显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UseTextCenter { get; set; }
 
         /// <summary>
         /// 显示进度文本小数点位数
         /// </summary>
-        [Description("显示进度文本小数点位数"), Category("外观"), DefaultValue(0)]
+        [Description("显示进度文本小数点位数"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int ShowTextDot { get; set; }
 
         #endregion
@@ -200,7 +200,7 @@ namespace AntdUI
         /// <summary>
         /// 状态
         /// </summary>
-        [Description("状态"), Category("外观"), DefaultValue(TType.None)]
+        [Description("状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TType.None)]
         public TType State
         {
             get => state;
@@ -218,7 +218,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.7F)]
         public float IconRatio
         {
             get => iconratio;
@@ -237,7 +237,7 @@ namespace AntdUI
         /// <summary>
         /// 圆形进度下的图标
         /// </summary>
-        [Description("圆形进度下的图标"), Category("外观"), DefaultValue(null)]
+        [Description("圆形进度下的图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? IconCircle
         {
             get => icon;
@@ -253,7 +253,7 @@ namespace AntdUI
         /// <summary>
         /// 圆形进度下的图标SVG
         /// </summary>
-        [Description("圆形进度下的图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("圆形进度下的图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvgCircle
         {
             get => iconSvg;
@@ -268,19 +268,19 @@ namespace AntdUI
         /// <summary>
         /// 圆形图标是否旋转
         /// </summary>
-        [Description("圆形图标是否旋转"), Category("外观"), DefaultValue(false)]
+        [Description("圆形图标是否旋转"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool IconCircleAngle { get; set; }
 
         /// <summary>
         /// 圆形图标边距
         /// </summary>
-        [Description("圆形图标边距"), Category("外观"), DefaultValue(8)]
+        [Description("圆形图标边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int IconCirclePadding { get; set; } = 8;
 
         /// <summary>
         /// 圆形图标颜色
         /// </summary>
-        [Description("圆形图标颜色"), Category("外观"), DefaultValue(null)]
+        [Description("圆形图标颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? IconCircleColor { get; set; }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace AntdUI
         /// <summary>
         /// 进度条比例
         /// </summary>
-        [Description("进度条比例"), Category("外观"), DefaultValue(.4F)]
+        [Description("进度条比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.4F)]
         public float ValueRatio
         {
             get => valueratio;
@@ -314,7 +314,7 @@ namespace AntdUI
         /// <summary>
         /// 进度条
         /// </summary>
-        [Description("进度条 0F-1F"), Category("数据"), DefaultValue(0F)]
+        [Description("进度条 0F-1F"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0F)]
         public float Value
         {
             get => _value;
@@ -371,7 +371,7 @@ namespace AntdUI
         /// <summary>
         /// Value格式化时发生
         /// </summary>
-        [Description("Value格式化时发生"), Category("行为")]
+        [Description("Value格式化时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ProgressFormatEventHandler? ValueFormatChanged;
 
         #endregion
@@ -381,7 +381,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading
         {
             get => loading;
@@ -414,13 +414,13 @@ namespace AntdUI
         /// <summary>
         /// 动画铺满
         /// </summary>
-        [Description("动画铺满"), Category("外观"), DefaultValue(false)]
+        [Description("动画铺满"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool LoadingFull { get; set; }
 
         /// <summary>
         /// 动画时长
         /// </summary>
-        [Description("动画时长"), Category("外观"), DefaultValue(200)]
+        [Description("动画时长"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(200)]
         public int Animation { get; set; } = 200;
 
         #region 步骤
@@ -429,7 +429,7 @@ namespace AntdUI
         /// <summary>
         /// 进度条总共步数
         /// </summary>
-        [Description("进度条总共步数"), Category("外观"), DefaultValue(3)]
+        [Description("进度条总共步数"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(3)]
         public int Steps
         {
             get => steps;
@@ -446,7 +446,7 @@ namespace AntdUI
         /// <summary>
         /// 步数大小
         /// </summary>
-        [Description("步数大小"), Category("外观"), DefaultValue(14)]
+        [Description("步数大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(14)]
         public int StepSize
         {
             get => stepSize;
@@ -463,7 +463,7 @@ namespace AntdUI
         /// <summary>
         /// 步数间隔
         /// </summary>
-        [Description("步数间隔"), Category("外观"), DefaultValue(2)]
+        [Description("步数间隔"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(2)]
         public int StepGap
         {
             get => stepGap;
@@ -537,7 +537,7 @@ namespace AntdUI
         /// <summary>
         /// 任务栏中显示进度
         /// </summary>
-        [Description("任务栏中显示进度"), Category("外观"), DefaultValue(false)]
+        [Description("任务栏中显示进度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowInTaskbar
         {
             get => showInTaskbar;

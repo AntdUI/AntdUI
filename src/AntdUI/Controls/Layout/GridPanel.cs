@@ -30,7 +30,7 @@ namespace AntdUI
         /// <summary>
         /// 跨度
         /// </summary>
-        [Description("跨度"), Category("外观"), DefaultValue("50% 50%;50% 50%")]
+        [Description("跨度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("50% 50%;50% 50%")]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string Span
         {
@@ -47,7 +47,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(0)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Gap
         {
             get => layoutengine.Gap;
@@ -61,7 +61,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;

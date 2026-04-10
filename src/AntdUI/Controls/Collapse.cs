@@ -31,7 +31,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -47,7 +47,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -64,7 +64,7 @@ namespace AntdUI
         /// <summary>
         /// 文字激活颜色
         /// </summary>
-        [Description("文字激活颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字激活颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive
         {
@@ -80,7 +80,7 @@ namespace AntdUI
         /// <summary>
         /// 折叠面板头部背景
         /// </summary>
-        [Description("折叠面板头部背景"), Category("外观"), DefaultValue(null)]
+        [Description("折叠面板头部背景"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? HeaderBg
         {
@@ -97,7 +97,7 @@ namespace AntdUI
         /// <summary>
         /// 折叠面板头部内边距
         /// </summary>
-        [Description("折叠面板头部内边距"), Category("外观"), DefaultValue(typeof(Size), "16, 12")]
+        [Description("折叠面板头部内边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "16, 12")]
         public Size HeaderPadding
         {
             get => headerPadding;
@@ -113,7 +113,7 @@ namespace AntdUI
         /// <summary>
         /// 折叠面板内容内边距
         /// </summary>
-        [Description("折叠面板内容内边距"), Category("外观"), DefaultValue(typeof(Size), "16, 16")]
+        [Description("折叠面板内容内边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "16, 16")]
         public Size ContentPadding
         {
             get => contentPadding;
@@ -166,7 +166,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -182,7 +182,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(0)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Gap
         {
             get => _gap;
@@ -197,19 +197,19 @@ namespace AntdUI
         /// <summary>
         /// 只保持一个展开
         /// </summary>
-        [Description("只保持一个展开"), Category("外观"), DefaultValue(false)]
+        [Description("只保持一个展开"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Unique { get; set; }
 
         /// <summary>
         /// 一个展开铺满
         /// </summary>
-        [Description("一个展开铺满"), Category("外观"), DefaultValue(false)]
+        [Description("一个展开铺满"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UniqueFull { get; set; }
 
         /// <summary>
         /// 展开/折叠的动画速度
         /// </summary>
-        [Description("展开/折叠的动画速度"), Category("行为"), DefaultValue(100)]
+        [Description("展开/折叠的动画速度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(100)]
         public int AnimationSpeed { get; set; } = 100;
 
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Margin, Padding);
@@ -221,7 +221,7 @@ namespace AntdUI
         /// 获取列表中所有列表项的集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据"), DefaultValue(null)]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public CollapseItemCollection Items
         {
             get
@@ -242,7 +242,7 @@ namespace AntdUI
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
-        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        [Description("超出文字提示配置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
         Font? fontExpand;
@@ -251,7 +251,7 @@ namespace AntdUI
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Description("展开后的标题字体"), Category("外观"), DefaultValue(null)]
+        [Description("展开后的标题字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? FontExpand
         {
             get => fontExpand;
@@ -450,26 +450,26 @@ namespace AntdUI
         /// <summary>
         /// Expand 属性值更改时发生
         /// </summary>
-        [Description("Expand 属性值更改时发生"), Category("行为")]
+        [Description("Expand 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseExpandEventHandler? ExpandChanged;
 
         /// <summary>
         /// Expanding 属性值更改时发生
         /// </summary>
-        [Description("Expanding 属性值更改时发生"), Category("行为")]
+        [Description("Expanding 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseExpandingEventHandler? ExpandingChanged;
 
         [Obsolete("请使用ButtonClick")]
         /// <summary>
         /// CollapseItem上的按件单击时发生
         /// </summary>
-        [Description("CollapseItem上的按件单击时发生"), Category("行为")]
+        [Description("CollapseItem上的按件单击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseButtonClickEventHandler? ButtonClickChanged;
 
         /// <summary>
         /// CollapseItem上的按件单击时发生
         /// </summary>
-        [Description("CollapseItem上的按件单击时发生"), Category("行为")]
+        [Description("CollapseItem上的按件单击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CollapseButtonClickEventHandler? ButtonClick;
 
         internal void OnExpandChanged2(CollapseItem value, bool expand) => OnExpandChanged(value, expand);
@@ -1140,18 +1140,18 @@ namespace AntdUI
         AnimationTask? ThreadExpand;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Category("外观"), Description("展开进度"), DefaultValue(0F)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("展开进度"), DefaultValue(0F)]
         internal float ExpandProg { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Category("外观"), Description("展开状态"), DefaultValue(false)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("展开状态"), DefaultValue(false)]
         internal bool ExpandThread { get; set; }
 
         bool expand = false;
         /// <summary>
         /// 是否展开
         /// </summary>
-        [Category("外观"), Description("是否展开"), DefaultValue(false)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("是否展开"), DefaultValue(false)]
         public bool Expand
         {
             get => expand;
@@ -1193,7 +1193,7 @@ namespace AntdUI
         /// <summary>
         /// 是否铺满剩下空间
         /// </summary>
-        [Category("外观"), Description("是否铺满剩下空间"), DefaultValue(false)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("是否铺满剩下空间"), DefaultValue(false)]
         public bool Full
         {
             get => full;
@@ -1212,7 +1212,7 @@ namespace AntdUI
         /// 获取折叠项中所有按钮项的集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("按钮集合"), Category("外观")]
+        [Description("按钮集合"), Category(nameof(CategoryAttribute.Appearance))]
         public CollapseGroupButtonCollection Buttons
         {
             get
@@ -1233,7 +1233,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue("")]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("")]
         public override string Text
         {
             get => this.GetLangIN(LocalizationText, text);
@@ -1258,7 +1258,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -1274,7 +1274,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;

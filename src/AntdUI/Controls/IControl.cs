@@ -58,7 +58,7 @@ namespace AntdUI
         /// <summary>
         /// 确定该控件是可见的还是隐藏的
         /// </summary>
-        [Description("确定该控件是可见的还是隐藏的"), Category("行为"), DefaultValue(true)]
+        [Description("确定该控件是可见的还是隐藏的"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public new bool Visible
         {
             get => base.Visible;
@@ -72,7 +72,7 @@ namespace AntdUI
         /// <summary>
         /// 指示是否已启用该控件
         /// </summary>
-        [Description("指示是否已启用该控件"), Category("行为"), DefaultValue(true)]
+        [Description("指示是否已启用该控件"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public new bool Enabled
         {
             get => base.Enabled;
@@ -89,7 +89,7 @@ namespace AntdUI
         /// <summary>
         /// 色彩模式
         /// </summary>
-        [Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        [Description("色彩模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAMode.Auto)]
         public TAMode ColorScheme
         {
             get => colorScheme;
@@ -760,7 +760,7 @@ namespace AntdUI
         /// <summary>
         /// 拖拽文件夹处理
         /// </summary>
-        [Description("拖拽文件夹处理"), Category("行为"), DefaultValue(true)]
+        [Description("拖拽文件夹处理"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool HandDragFolder { get; set; } = true;
 
         protected virtual void OnDragEnter()
@@ -872,7 +872,7 @@ namespace AntdUI
         /// <summary>
         /// 文件拖拽后时发生
         /// </summary>
-        [Description("文件拖拽后时发生"), Category("行为")]
+        [Description("文件拖拽后时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event DragEventHandler? DragChanged;
 
         protected virtual void OnDragChanged(string[] files) => DragChanged?.Invoke(this, new StringsEventArgs(files));
@@ -893,13 +893,13 @@ namespace AntdUI
         /// <summary>
         /// 渲染 时发生
         /// </summary>
-        [Description("渲染 时发生"), Category("行为")]
+        [Description("渲染 时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event DrawEventHandler? Draw;
 
         /// <summary>
         /// 渲染背景 时发生
         /// </summary>
-        [Description("渲染背景 时发生"), Category("行为")]
+        [Description("渲染背景 时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event DrawEventHandler? DrawBg;
 
         protected virtual void OnDrawBg(DrawEventArgs e) => DrawBg?.Invoke(this, e);

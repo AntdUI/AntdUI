@@ -31,7 +31,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -49,7 +49,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -67,7 +67,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -91,7 +91,7 @@ namespace AntdUI
         /// <summary>
         /// 文本位置
         /// </summary>
-        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleLeft)]
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleLeft)]
         public ContentAlignment TextAlign
         {
             get => textAlign;
@@ -111,7 +111,7 @@ namespace AntdUI
         /// <summary>
         /// 选中状态
         /// </summary>
-        [Description("选中状态"), Category("数据"), DefaultValue(false)]
+        [Description("选中状态"), Category(nameof(CategoryAttribute.Data)), DefaultValue(false)]
         public bool Checked
         {
             get => _checked;
@@ -163,11 +163,11 @@ namespace AntdUI
         /// <summary>
         /// 点击时自动改变选中状态
         /// </summary>
-        [Description("点击时自动改变选中状态"), Category("行为"), DefaultValue(true)]
+        [Description("点击时自动改变选中状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool AutoCheck { get; set; } = true;
 
         RightToLeft rightToLeft = RightToLeft.No;
-        [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
+        [Description("反向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(RightToLeft.No)]
         public override RightToLeft RightToLeft
         {
             get => rightToLeft;
@@ -196,7 +196,7 @@ namespace AntdUI
         /// <summary>
         /// 助记键
         /// </summary>
-        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category("行为"), DefaultValue(true)]
+        [Description("如果为 true，则前面有(&)号 的第一个字符将用作按钮的助记键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool UseMnemonic
         {
             get => useMnemonic;
@@ -232,7 +232,7 @@ namespace AntdUI
         /// <summary>
         /// Checked 属性值更改时发生
         /// </summary>
-        [Description("Checked 属性值更改时发生"), Category("行为")]
+        [Description("Checked 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? CheckedChanged;
 
         protected virtual void OnCheckedChanged(bool e) => CheckedChanged?.Invoke(this, new BoolEventArgs(e));
@@ -423,7 +423,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -444,7 +444,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;
@@ -524,7 +524,7 @@ namespace AntdUI
         /// 是否存在焦点
         /// </summary>
         [Browsable(false)]
-        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        [Description("是否存在焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool HasFocus
         {
             get => hasFocus;

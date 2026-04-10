@@ -32,7 +32,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -50,7 +50,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -67,14 +67,14 @@ namespace AntdUI
         /// <summary>
         /// 悬停颜色
         /// </summary>
-        [Description("悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillHover { get; set; }
 
         /// <summary>
         /// 激活颜色
         /// </summary>
-        [Description("激活颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? FillActive { get; set; }
 
@@ -82,7 +82,7 @@ namespace AntdUI
         /// <summary>
         /// 位置
         /// </summary>
-        [Description("位置"), Category("外观"), DefaultValue(TabAlignment.Top)]
+        [Description("位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TabAlignment.Top)]
         public TabAlignment Alignment
         {
             get => alignment;
@@ -100,7 +100,7 @@ namespace AntdUI
         /// <summary>
         /// 标签居中展示
         /// </summary>
-        [Description("标签居中展示"), Category("外观"), DefaultValue(false)]
+        [Description("标签居中展示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Centered
         {
             get => centered;
@@ -117,7 +117,7 @@ namespace AntdUI
         /// <summary>
         /// 文本是否居中对齐（仅在Left/Right方向生效）
         /// </summary>
-        [Description("文本是否居中对齐（仅在Left/Right方向生效）"), Category("外观"), DefaultValue(false)]
+        [Description("文本是否居中对齐（仅在Left/Right方向生效）"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool TextCenter
         {
             get => textCenter;
@@ -134,7 +134,7 @@ namespace AntdUI
         /// <summary>
         /// 超出UI类型
         /// </summary>
-        [Description("超出UI类型"), Category("外观"), DefaultValue(TabTypExceed.Button)]
+        [Description("超出UI类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TabTypExceed.Button)]
         public TabTypExceed TypExceed
         {
             get => typExceed;
@@ -153,20 +153,20 @@ namespace AntdUI
         /// <summary>
         /// 切换使能
         /// </summary>
-        [Description("切换使能"), Category("行为"), DefaultValue(true)]
+        [Description("切换使能"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EnableSwitch { get; set; } = true;
 
         /// <summary>
         /// 鼠标滚轮切换焦点页使能
         /// </summary>
-        [Description("鼠标滚轮切换焦点页使能"), Category("行为"), DefaultValue(true)]
+        [Description("鼠标滚轮切换焦点页使能"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EnablePageScrolling { get; set; } = true;
 
         Color? scrollback;
         /// <summary>
         /// 滚动条颜色
         /// </summary>
-        [Description("滚动条颜色"), Category("外观"), DefaultValue(null)]
+        [Description("滚动条颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ScrollBack
         {
@@ -187,7 +187,7 @@ namespace AntdUI
         /// <summary>
         /// 滚动条文本颜色
         /// </summary>
-        [Description("滚动条文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("滚动条文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ScrollFore
         {
@@ -204,14 +204,14 @@ namespace AntdUI
         /// <summary>
         /// 滚动条悬停文本颜色
         /// </summary>
-        [Description("滚动条悬停文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("滚动条悬停文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ScrollForeHover { get; set; }
 
         /// <summary>
         /// 滚动条悬停颜色
         /// </summary>
-        [Description("滚动条悬停颜色"), Category("外观"), DefaultValue(null)]
+        [Description("滚动条悬停颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ScrollBackHover { get; set; }
 
@@ -221,7 +221,7 @@ namespace AntdUI
         /// <summary>
         /// 样式
         /// </summary>
-        [Description("样式"), Category("外观")]
+        [Description("样式"), Category(nameof(CategoryAttribute.Appearance))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public IStyle Style
         {
@@ -233,7 +233,7 @@ namespace AntdUI
         /// <summary>
         /// 样式类型
         /// </summary>
-        [Description("样式类型"), Category("外观"), DefaultValue(TabType.Line)]
+        [Description("样式类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TabType.Line)]
         public TabType Type
         {
             get => type;
@@ -270,7 +270,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(8)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int Gap
         {
             get => _gap;
@@ -287,7 +287,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(.7F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.7F)]
         public float IconRatio
         {
             get => iconratio;
@@ -304,7 +304,7 @@ namespace AntdUI
         /// <summary>
         /// 图标与文字间距比例
         /// </summary>
-        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(.25F)]
+        [Description("图标与文字间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.25F)]
         public float IconGap
         {
             get => icongap;
@@ -318,7 +318,7 @@ namespace AntdUI
         }
 
         bool _tabMenuVisible = true;
-        [Description("是否显示头"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示头"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool TabMenuVisible
         {
             get => _tabMenuVisible;
@@ -334,7 +334,7 @@ namespace AntdUI
         /// <summary>
         /// 自定义项宽度
         /// </summary>
-        [Description("自定义项大小"), Category("外观"), DefaultValue(null)]
+        [Description("自定义项大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? ItemSize
         {
             get => _itemSize;
@@ -350,7 +350,7 @@ namespace AntdUI
         /// <summary>
         /// 拖动顺序
         /// </summary>
-        [Description("拖动顺序"), Category("行为"), DefaultValue(false)]
+        [Description("拖动顺序"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool DragOrder { get; set; }
 
         internal Dictionary<TabPage, Size> HandItemSize(Dictionary<TabPage, Size> rect_dir, ref int sizewh)
@@ -370,7 +370,7 @@ namespace AntdUI
         /// <summary>
         /// 旋转（用于 Left/Right 时竖排显示）
         /// </summary>
-        [Description("旋转（用于 Left/Right 时竖排显示）"), Category("外观"), DefaultValue(TRotate.None)]
+        [Description("旋转（用于 Left/Right 时竖排显示）"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TRotate.None)]
         public TRotate Rotate
         {
             get => rotate;
@@ -396,7 +396,7 @@ namespace AntdUI
         /// 数据
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public TabCollection Pages
         {
             get
@@ -449,7 +449,7 @@ namespace AntdUI
         #region 动画
 
         int _select = 0;
-        [Description("选中序号"), Category("数据"), DefaultValue(0)]
+        [Description("选中序号"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int SelectedIndex
         {
             get => _select;
@@ -1589,13 +1589,13 @@ namespace AntdUI
         /// <summary>
         /// SelectedIndex 属性值更改时发生
         /// </summary>
-        [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
+        [Description("SelectedIndex 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? SelectedIndexChanged;
 
         /// <summary>
         /// SelectedIndex 属性值更改前发生
         /// </summary>
-        [Description("SelectedIndex 属性值更改前发生"), Category("行为")]
+        [Description("SelectedIndex 属性值更改前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TabsIndexChangingEventHandler? SelectedIndexChanging;
 
         protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
@@ -1622,7 +1622,7 @@ namespace AntdUI
         /// <summary>
         /// 关闭页面前发生
         /// </summary>
-        [Description("关闭页面前发生"), Category("行为")]
+        [Description("关闭页面前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ClosingPageEventHandler? ClosingPage;
 
         protected virtual bool OnClosingPage(TabPage item)
@@ -1637,7 +1637,7 @@ namespace AntdUI
         /// <summary>
         /// 点击标签时发生
         /// </summary>
-        [Description("点击标签时发生"), Category("行为")]
+        [Description("点击标签时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TabsItemEventHandler? TabClick;
 
         protected virtual bool OnTabClick(TabPage item, int index, IStyle style, MouseEventArgs e)
@@ -1724,7 +1724,6 @@ namespace AntdUI
                ControlStyles.ContainerControl |
                ControlStyles.UserPaint, true);
             UpdateStyles();
-            Dock = DockStyle.Fill;
         }
 
         #region 属性
@@ -1733,7 +1732,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Category("外观"), Description("图标"), DefaultValue(null)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("图标"), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -1749,7 +1748,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Category("外观"), Description("图标SVG"), DefaultValue(null)]
+        [Category(nameof(CategoryAttribute.Appearance)), Description("图标SVG"), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -1770,7 +1769,7 @@ namespace AntdUI
         /// <summary>
         /// 只读
         /// </summary>
-        [Description("只读"), Category("行为"), DefaultValue(false)]
+        [Description("只读"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ReadOnly
         {
             get => readOnly;
@@ -1848,7 +1847,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue("")]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("")]
         public override string Text
         {
             get => this.GetLangIN(LocalizationText, text);
@@ -1906,11 +1905,25 @@ namespace AntdUI
         #region 隐藏显示
 
         DockStyle olddock = DockStyle.Fill;
+        /// <summary>
+        /// 定义要绑定到容器的控件边框
+        /// </summary>
+        [Category(nameof(CategoryAttribute.Layout)), Description("定义要绑定到容器的控件边框"), DefaultValue(DockStyle.Fill)]
+        public new DockStyle Dock
+        {
+            get => olddock;
+            set
+            {
+                if (olddock == value) return;
+                olddock = value;
+                if (Showed) base.Dock = value;
+            }
+        }
 
         bool? showed;
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Description("显示的"), Category("外观"), DefaultValue(false)]
+        [Description("显示的"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Showed
         {
             get => showed ?? false;
@@ -1918,14 +1931,12 @@ namespace AntdUI
             {
                 if (showed == value) return;
                 showed = value;
-                if (value) Dock = olddock;
+                if (value) base.Dock = olddock;
                 else
                 {
-                    olddock = Dock;
                     int w = Width, h = Height;
-                    Dock = DockStyle.None;
-                    Location = new Point(-w * 2, -h * 2);
-                    Size = new Size(w, h);
+                    base.Dock = DockStyle.None;
+                    Bounds = new Rectangle(-w * 2, -h * 2, w, h);
                 }
                 ShowedChanged?.Invoke(this, EventArgs.Empty);
             }

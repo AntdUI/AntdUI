@@ -29,7 +29,7 @@ namespace AntdUI
         /// <summary>
         /// 当前页数
         /// </summary>
-        [Description("当前页数"), Category("数据"), DefaultValue(1)]
+        [Description("当前页数"), Category(nameof(CategoryAttribute.Data)), DefaultValue(1)]
         public int Current
         {
             get => current;
@@ -49,7 +49,7 @@ namespace AntdUI
         /// <summary>
         /// 数据总数
         /// </summary>
-        [Description("数据总数"), Category("数据"), DefaultValue(0)]
+        [Description("数据总数"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int Total
         {
             get => total;
@@ -69,7 +69,7 @@ namespace AntdUI
         /// <summary>
         /// 每页记录数文本，标签提醒文本
         /// </summary>
-        [Description("每页记录数文本，标签提醒文本"), Category("外观"), DefaultValue(null)]
+        [Description("每页记录数文本，标签提醒文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? RecordsPerPageText
         {
             get => _recordsPerPageText;
@@ -87,7 +87,7 @@ namespace AntdUI
         /// <summary>
         /// 每页条数
         /// </summary>
-        [Description("每页条数"), Category("数据"), DefaultValue(10)]
+        [Description("每页条数"), Category(nameof(CategoryAttribute.Data)), DefaultValue(10)]
         public int PageSize
         {
             get => pageSize;
@@ -111,13 +111,13 @@ namespace AntdUI
         /// <summary>
         /// 最大显示总页数
         /// </summary>
-        [Description("最大显示总页数"), Category("行为"), DefaultValue(0)]
+        [Description("最大显示总页数"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(0)]
         public int MaxPageTotal { get; set; }
 
         /// <summary>
         /// 总页数
         /// </summary>
-        [Description("总页数"), Category("数据")]
+        [Description("总页数"), Category(nameof(CategoryAttribute.Data))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PageTotal { get; private set; } = 1;
 
@@ -125,7 +125,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(8)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int Gap
         {
             get => _gap;
@@ -141,7 +141,7 @@ namespace AntdUI
         /// <summary>
         /// Value 属性值更改时发生
         /// </summary>
-        [Description("Value 属性值更改时发生"), Category("行为")]
+        [Description("Value 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event PageValueEventHandler? ValueChanged;
 
         protected virtual void OnValueChanged(int current, int total, int pageSize, int pageTotal) => ValueChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, pageTotal));
@@ -149,7 +149,7 @@ namespace AntdUI
         /// <summary>
         /// 显示数据总量
         /// </summary>
-        [Description("用于显示数据总量"), Category("行为")]
+        [Description("用于显示数据总量"), Category(nameof(CategoryAttribute.Behavior))]
         public event PageValueRtEventHandler? ShowTotalChanged;
 
         protected virtual string? OnShowTotalChanged(int current, int total, int pageSize, int pageTotal) => ShowTotalChanged?.Invoke(this, new PagePageEventArgs(current, total, pageSize, pageTotal));
@@ -158,7 +158,7 @@ namespace AntdUI
         /// <summary>
         /// 是否展示 PageSize 切换器
         /// </summary>
-        [Description("是否展示 PageSize 切换器"), Category("行为"), DefaultValue(false)]
+        [Description("是否展示 PageSize 切换器"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowSizeChanger
         {
             get => showSizeChanger;
@@ -176,7 +176,7 @@ namespace AntdUI
         /// <summary>
         /// 指定每页可以显示多少条
         /// </summary>
-        [Description("指定每页可以显示多少条"), Category("行为"), DefaultValue(null)]
+        [Description("指定每页可以显示多少条"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public int[]? PageSizeOptions
         {
             get => pageSizeOptions;
@@ -191,7 +191,7 @@ namespace AntdUI
         }
 
         int sizeChangerWidth = 0;
-        [Description("SizeChanger 宽度"), Category("行为"), DefaultValue(0)]
+        [Description("SizeChanger 宽度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(0)]
         public int SizeChangerWidth
         {
             get => sizeChangerWidth;
@@ -212,7 +212,7 @@ namespace AntdUI
         /// <summary>
         /// 下拉圆角
         /// </summary>
-        [Description("下拉圆角"), Category("外观"), DefaultValue(null)]
+        [Description("下拉圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? DropDownRadius
         {
             get => dropDownRadius;
@@ -228,7 +228,7 @@ namespace AntdUI
         /// <summary>
         /// 是否允许 PageSize 切换器通过 Tab 键获取焦点
         /// </summary>
-        [Description("是否允许 PageSize 切换器通过 Tab 键获取焦点"), Category("行为"), DefaultValue(true)]
+        [Description("是否允许 PageSize 切换器通过 Tab 键获取焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool SizeChangerTabStop
         {
             get => sizeChangerTabStop;
@@ -248,7 +248,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色
         /// </summary>
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -266,7 +266,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -298,7 +298,7 @@ namespace AntdUI
         }
 
         RightToLeft rightToLeft = RightToLeft.No;
-        [Description("反向"), Category("外观"), DefaultValue(RightToLeft.No)]
+        [Description("反向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(RightToLeft.No)]
         public override RightToLeft RightToLeft
         {
             get => rightToLeft;
@@ -312,7 +312,7 @@ namespace AntdUI
         }
 
         string? textdesc;
-        [Description("主动显示内容"), Category("外观"), DefaultValue(null)]
+        [Description("主动显示内容"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? TextDesc
         {

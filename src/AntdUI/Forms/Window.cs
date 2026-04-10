@@ -17,7 +17,7 @@ namespace AntdUI
         #region 属性
 
         bool resizable = true;
-        [Description("调整窗口大小"), Category("行为"), DefaultValue(true)]
+        [Description("调整窗口大小"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Resizable
         {
             get => resizable;
@@ -32,7 +32,7 @@ namespace AntdUI
         /// <summary>
         /// 窗口边框颜色
         /// </summary>
-        [Description("窗口边框颜色"), Category("外观"), DefaultValue(null)]
+        [Description("窗口边框颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BorderColor { get; set; }
 
         WState winState = WState.Restore;
@@ -77,7 +77,7 @@ namespace AntdUI
         /// <summary>
         /// 确定窗体是否出现在 Windows 任务栏中
         /// </summary>
-        [Description("确定窗体是否出现在 Windows 任务栏中"), Category("行为"), DefaultValue(true)]
+        [Description("确定窗体是否出现在 Windows 任务栏中"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public new bool ShowInTaskbar
         {
             get => base.ShowInTaskbar;

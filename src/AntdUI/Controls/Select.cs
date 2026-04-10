@@ -32,7 +32,7 @@ namespace AntdUI
         /// <summary>
         /// 是否列表样式
         /// </summary>
-        [Description("是否列表样式"), Category("外观"), DefaultValue(false)]
+        [Description("是否列表样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool List
         {
             get => _list;
@@ -48,97 +48,97 @@ namespace AntdUI
         /// <summary>
         /// 菜单弹出位置
         /// </summary>
-        [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
+        [Description("菜单弹出位置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TAlignFrom.BL)]
         public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
         /// <summary>
         /// 是否列表自动宽度
         /// </summary>
-        [Description("是否列表自动宽度"), Category("行为"), DefaultValue(false)]
+        [Description("是否列表自动宽度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ListAutoWidth { get; set; }
 
         /// <summary>
         /// 列表最多显示条数
         /// </summary>
-        [Description("列表最多显示条数"), Category("行为"), DefaultValue(4)]
+        [Description("列表最多显示条数"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(4)]
         public int MaxCount { get; set; } = 4;
 
         /// <summary>
         /// 下拉圆角
         /// </summary>
-        [Description("下拉圆角"), Category("外观"), DefaultValue(null)]
+        [Description("下拉圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? DropDownRadius { get; set; }
 
         /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
-        [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(false)]
+        [Description("下拉箭头是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool DropDownArrow { get; set; }
 
         /// <summary>
         /// 下拉边距
         /// </summary>
-        [Description("下拉边距"), Category("外观"), DefaultValue(typeof(Size), "12, 5")]
+        [Description("下拉边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Size), "12, 5")]
         public Size DropDownPadding { get; set; } = new Size(12, 5);
 
         /// <summary>
         /// 下拉文本方向
         /// </summary>
-        [Description("下拉文本方向"), Category("外观"), DefaultValue(TAlign.Left)]
+        [Description("下拉文本方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlign.Left)]
         public TAlign DropDownTextAlign { get; set; } = TAlign.Left;
 
         /// <summary>
         /// 是否允许回车键触发下拉框
         /// </summary>
-        [Description("是否允许回车键触发下拉框"), Category("行为"), DefaultValue(true)]
+        [Description("是否允许回车键触发下拉框"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EnterDropDown { get; set; } = true;
 
         /// <summary>
         /// 下拉为空关闭
         /// </summary>
-        [Description("下拉为空关闭"), Category("行为"), DefaultValue(false)]
+        [Description("下拉为空关闭"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool DropDownEmptyClose { get; set; }
 
         /// <summary>
         /// 点击到最里层（无节点才能点击）
         /// </summary>
-        [Description("点击到最里层（无节点才能点击）"), Category("行为"), DefaultValue(false)]
+        [Description("点击到最里层（无节点才能点击）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ClickEnd { get; set; }
 
         /// <summary>
         /// 点击切换下拉
         /// </summary>
-        [Description("点击切换下拉"), Category("行为"), DefaultValue(true)]
+        [Description("点击切换下拉"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ClickSwitchDropdown { get; set; } = true;
 
         /// <summary>
         /// 是否显示关闭图标
         /// </summary>
-        [Description("是否显示关闭图标"), Category("行为"), DefaultValue(false)]
+        [Description("是否显示关闭图标"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool CloseIcon { get; set; }
 
         /// <summary>
         /// 为空依旧下拉
         /// </summary>
-        [Description("为空依旧下拉"), Category("外观"), DefaultValue(false)]
+        [Description("为空依旧下拉"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Empty { get; set; }
 
         /// <summary>
         /// 自动设置下拉前缀
         /// </summary>
-        [Description("自动设置下拉前缀"), Category("外观"), DefaultValue(false)]
+        [Description("自动设置下拉前缀"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool AutoPrefixSvg { get; set; }
 
         /// <summary>
         /// 自动设置文本
         /// </summary>
-        [Description("自动设置文本"), Category("外观"), DefaultValue(true)]
+        [Description("自动设置文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool AutoText { get; set; } = true;
 
         /// <summary>
         /// 鼠标滚轮修改值
         /// </summary>
-        [Description("鼠标滚轮修改值"), Category("交互"), DefaultValue(true)]
+        [Description("鼠标滚轮修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(true)]
         public bool WheelModifyEnabled { get; set; } = true;
 
         #region 数据
@@ -149,7 +149,7 @@ namespace AntdUI
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor", typeof(UITypeEditor))]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public BaseCollection Items
         {
             get
@@ -165,7 +165,7 @@ namespace AntdUI
         /// <summary>
         /// 选中序号
         /// </summary>
-        [Description("选中序号"), Category("数据"), DefaultValue(-1)]
+        [Description("选中序号"), Category(nameof(CategoryAttribute.Data)), DefaultValue(-1)]
         public int SelectedIndex
         {
             get => selectedIndex;
@@ -189,7 +189,7 @@ namespace AntdUI
         /// 选中值
         /// </summary>
         [Browsable(false)]
-        [Description("选中值"), Category("数据"), DefaultValue(null)]
+        [Description("选中值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? SelectedValue
         {
             get => selectedValue;
@@ -345,7 +345,7 @@ namespace AntdUI
         /// <summary>
         /// SelectedIndex 属性值更改时发生
         /// </summary>
-        [Description("SelectedIndex 属性值更改时发生"), Category("行为")]
+        [Description("SelectedIndex 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? SelectedIndexChanged;
 
         protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
@@ -353,13 +353,13 @@ namespace AntdUI
         /// <summary>
         /// 多层树结构更改时发生
         /// </summary>
-        [Description("多层树结构更改时发生"), Category("行为"), Obsolete("use SelectedValueChanged")]
+        [Description("多层树结构更改时发生"), Category(nameof(CategoryAttribute.Behavior)), Obsolete("use SelectedValueChanged")]
         public event IntXYEventHandler? SelectedIndexsChanged;
 
         /// <summary>
         /// SelectedValue 属性值更改时发生
         /// </summary>
-        [Description("SelectedValue 属性值更改时发生"), Category("行为")]
+        [Description("SelectedValue 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ObjectNEventHandler? SelectedValueChanged;
 
         protected virtual void OnSelectedValueChanged(object? e) => SelectedValueChanged?.Invoke(this, new ObjectNEventArgs(e));
@@ -367,7 +367,7 @@ namespace AntdUI
         /// <summary>
         /// 下拉展开 属性值更改时发生
         /// </summary>
-        [Description("下拉展开 属性值更改时发生"), Category("行为")]
+        [Description("下拉展开 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BoolEventHandler? ExpandDropChanged;
 
         protected virtual void OnExpandDropChanged(bool e) => ExpandDropChanged?.Invoke(this, new BoolEventArgs(e));
@@ -375,7 +375,7 @@ namespace AntdUI
         /// <summary>
         /// 子项外部渲染前触发
         /// </summary>
-        [Description("子项外部渲染前触发"), Category("外观")]
+        [Description("子项外部渲染前触发"), Category(nameof(CategoryAttribute.Appearance))]
         public event DrawItemEventHandler? DrawItem;
 
         public virtual bool OnDrawItem(Canvas canvas, Rectangle rect, SelectItemDraw item, bool select, out Color? fore, out Color? foreSub, out Font? font)
@@ -397,7 +397,7 @@ namespace AntdUI
         /// <summary>
         /// 关闭某项 时发生
         /// </summary>
-        [Description("关闭某项 时发生"), Category("行为")]
+        [Description("关闭某项 时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ObjectNEventHandler? ClosedItem;
 
         public delegate IList<object>? FilterEventHandler(object sender, string value);
@@ -405,7 +405,7 @@ namespace AntdUI
         /// <summary>
         /// 控制筛选 Text更改时发生
         /// </summary>
-        [Description("控制筛选 Text更改时发生"), Category("行为")]
+        [Description("控制筛选 Text更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event FilterEventHandler? FilterChanged;
 
         string? filtertext;
@@ -432,7 +432,7 @@ namespace AntdUI
                         if (filtertext == temp)
                         {
                             Items.Clear();
-                            if (list == null || list.Count == 0) subForm?.IClose();
+                            if (list == null || list.Count == 0) CloseSubForm(true);
                             else
                             {
                                 Items.AddRange(list);
@@ -457,7 +457,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示图标
         /// </summary>
-        [Description("是否显示图标"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool ShowIcon
         {
             get => showicon;
@@ -500,7 +500,7 @@ namespace AntdUI
         /// 箭头是否展开(UI)
         /// </summary>
         [Browsable(false)]
-        [Description("箭头是否展开(UI)"), Category("外观"), DefaultValue(false)]
+        [Description("箭头是否展开(UI)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Expand
         {
             get => expand;
@@ -532,7 +532,7 @@ namespace AntdUI
         /// 展开下拉菜单
         /// </summary>
         [Browsable(false)]
-        [Description("展开下拉菜单"), Category("行为"), DefaultValue(false)]
+        [Description("展开下拉菜单"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ExpandDrop
         {
             get => expandDrop;
@@ -540,38 +540,40 @@ namespace AntdUI
             {
                 if (expandDrop == value) return;
                 expandDrop = value;
-                if (value)
+                if (IsHandleCreated)
                 {
-                    if (ReadOnly || items == null || items.Count == 0)
-                    {
-                        if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
-                        else
-                        {
-                            subForm?.IClose();
-                            subForm = null;
-                            expandDrop = false;
-                        }
-                    }
-                    else
-                    {
-                        if (subForm == null)
-                        {
-                            var objs = new List<object>(items.Count);
-                            foreach (var it in items) objs.Add(it);
-                            ShowLayeredForm(objs);
-                        }
-                    }
+                    if (value) OpenSubForm();
+                    else CloseSubForm(true);
                 }
-                else
-                {
-                    subForm?.IClose();
-                    subForm = null;
-                    filtertext = "";
-                }
+                else if (!value) filtertext = "";
                 OnExpandDropChanged(value);
             }
         }
 
+        void CloseSubForm(bool close)
+        {
+            if (close) subForm?.IClose();
+            subForm = null;
+            ExpandDrop = false;
+            filtertext = "";
+        }
+        void OpenSubForm()
+        {
+            if (ReadOnly || items == null || items.Count == 0)
+            {
+                if (Empty && subForm == null) ShowLayeredForm(new List<object>(0));
+                else CloseSubForm(true);
+            }
+            else
+            {
+                if (subForm == null)
+                {
+                    var objs = new List<object>(items.Count);
+                    foreach (var it in items) objs.Add(it);
+                    ShowLayeredForm(objs);
+                }
+            }
+        }
         void ShowLayeredForm(IList<object> list)
         {
             try
@@ -587,14 +589,13 @@ namespace AntdUI
                 subForm.Disposed += (a, b) =>
                 {
                     select_x = 0;
-                    subForm = null;
                     Expand = false;
-                    ExpandDrop = false;
+                    CloseSubForm(false);
                 };
             }
             catch
             {
-                subForm = null;
+                CloseSubForm(true);
             }
         }
 
@@ -695,6 +696,7 @@ namespace AntdUI
         {
             this.AddListener();
             base.OnHandleCreated(e);
+            if (expandDrop) OpenSubForm();
         }
         public void HandleEvent(EventType id, object? tag)
         {

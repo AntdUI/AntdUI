@@ -328,6 +328,19 @@ namespace AntdUI
             SetShow(oldx, oldy);
         }
 
+        /// <summary>
+        /// 设置容器虚拟宽度+区域
+        /// </summary>
+        public void SetVrSize(int x, int y, Rectangle rect)
+        {
+            Rect = rect;
+            RectX = new Rectangle(rect.X, rect.Bottom - SIZE, rect.Width, SIZE);
+            RectY = new Rectangle(rect.Right - SIZE, rect.Top, SIZE, rect.Height);
+            oldx = x;
+            oldy = y;
+            SetShow(oldx, oldy);
+        }
+
         #region 设置是否显示
 
         string show_oldx = "", show_oldy = "";
@@ -338,36 +351,19 @@ namespace AntdUI
             if (show_oldx == show_x && show_oldy == show_y) return;
             show_oldx = show_x;
             show_oldy = show_y;
-            if (x2 > 0 && x > 0 && x > x2)
+            if (y2 > 0 && y > 0 && y > y2) SetY(y, y2);
+            else SetY();
+
+            if (x2 > 0 && x > 0)
             {
-                maxX = x;
-                ShowX = maxX > x2;
-                if (ShowX)
+                if (x > x2) SetX(x, x2);
+                else
                 {
-                    int valueI = x - x2;
-                    if (valueX > valueI) ValueX = valueI;
+                    if (showY && x + SIZE > x2) SetX(x + SIZE, x2);
+                    else SetX();
                 }
             }
-            else
-            {
-                maxX = valueX = 0;
-                ShowX = false;
-            }
-            if (y2 > 0 && y > 0 && y > y2)
-            {
-                maxY = y;
-                ShowY = maxY > y2;
-                if (ShowY)
-                {
-                    int valueI = y - y2;
-                    if (valueY > valueI) ValueY = valueI;
-                }
-            }
-            else
-            {
-                maxY = valueY = 0;
-                ShowY = false;
-            }
+            else SetX();
 
             if (showX && showY)
             {
@@ -375,6 +371,36 @@ namespace AntdUI
                 maxY += SIZE;
             }
             else if (showY) maxX += SIZE;
+        }
+        void SetY(int y, int y2)
+        {
+            maxY = y;
+            ShowY = maxY > y2;
+            if (ShowY)
+            {
+                int valueI = y - y2;
+                if (valueY > valueI) ValueY = valueI;
+            }
+        }
+        void SetY()
+        {
+            maxY = valueY = 0;
+            ShowY = false;
+        }
+        void SetX(int x, int x2)
+        {
+            maxX = x;
+            ShowX = maxX > x2;
+            if (ShowX)
+            {
+                int valueI = x - x2;
+                if (valueX > valueI) ValueX = valueI;
+            }
+        }
+        void SetX()
+        {
+            maxX = valueX = 0;
+            ShowX = false;
         }
 
         #endregion
@@ -935,6 +961,15 @@ namespace AntdUI
         {
             if (EnabledY) SetVrSize(oldx, len);
             else SetVrSize(len, oldy);
+        }
+
+        /// <summary>
+        /// 设置容器虚拟宽度+区域
+        /// </summary>
+        public void SetVrSize(int len, Rectangle rect)
+        {
+            if (EnabledY) SetVrSize(oldx, len, rect);
+            else SetVrSize(len, oldy, rect);
         }
 
         public bool MouseDown(Point e) => MouseDown(e.X, e.Y);

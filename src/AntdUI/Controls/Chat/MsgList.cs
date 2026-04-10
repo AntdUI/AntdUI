@@ -26,7 +26,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -43,40 +43,40 @@ namespace AntdUI.Chat
         /// <summary>
         /// 悬停背景色
         /// </summary>
-        [Description("悬停背景色"), Category("外观"), DefaultValue(null)]
+        [Description("悬停背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackHover { get; set; }
 
         /// <summary>
         /// 激活背景颜色
         /// </summary>
-        [Description("激活背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? BackActive { get; set; }
 
         /// <summary>
         /// 激活文字颜色
         /// </summary>
-        [Description("激活文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("激活文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? ForeActive { get; set; }
 
         /// <summary>
         /// 头像圆角
         /// </summary>
-        [Description("头像圆角"), Category("外观"), DefaultValue(6)]
+        [Description("头像圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int IconRadius { get; set; } = 6;
 
         /// <summary>
         /// 圆形头像
         /// </summary>
-        [Description("圆形头像"), Category("外观"), DefaultValue(true)]
+        [Description("圆形头像"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool IconRound { get; set; } = true;
 
         /// <summary>
         /// 圆形布局
         /// </summary>
-        [Description("圆形布局"), Category("外观"), DefaultValue(TFit.Cover)]
+        [Description("圆形布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Cover)]
         public TFit IconFit { get; set; } = TFit.Cover;
 
         MsgItemCollection? items;
@@ -84,7 +84,7 @@ namespace AntdUI.Chat
         /// 数据集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("数据集合"), Category("数据")]
+        [Description("数据集合"), Category(nameof(CategoryAttribute.Data))]
         public MsgItemCollection Items
         {
             get
@@ -308,19 +308,19 @@ namespace AntdUI.Chat
         /// <summary>
         /// 项目选中事件
         /// </summary>
-        [Description("项目选中事件"), Category("行为")]
+        [Description("项目选中事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event ItemSelectedEventHandler? ItemSelected;
 
         /// <summary>
         /// 项目点击事件（包含鼠标信息）
         /// </summary>
-        [Description("项目点击事件"), Category("行为")]
+        [Description("项目点击事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event ItemClickEventHandler? ItemClick;
 
         /// <summary>
         /// 项目双击事件
         /// </summary>
-        [Description("项目双击事件"), Category("行为")]
+        [Description("项目双击事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event ItemClickEventHandler? ItemDoubleClick;
 
         protected virtual void OnItemSelected(MsgItem item) => ItemSelected?.Invoke(this, new MsgItemEventArgs(item));
@@ -374,8 +374,7 @@ namespace AntdUI.Chat
                     }
                 }
             });
-            ScrollBar.SetVrSize(y);
-            ScrollBar.SizeChange(rect);
+            ScrollBar.SetVrSize(y, rect);
         }
 
         #endregion
@@ -415,14 +414,14 @@ namespace AntdUI.Chat
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         Image? _icon;
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => _icon;
@@ -438,7 +437,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("外观"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Name
         {
             get => _name;
@@ -456,7 +455,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Text
         {
             get => _text;
@@ -472,7 +471,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 文本对齐方式
         /// </summary>
-        [Description("文本对齐方式"), Category("外观"), DefaultValue(null)]
+        [Description("文本对齐方式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public FormatFlags? TextFormat
         {
             get => _textFormat;
@@ -488,7 +487,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 文本字体
         /// </summary>
-        [Description("文本字体"), Category("外观"), DefaultValue(null)]
+        [Description("文本字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? TextFont
         {
             get => _textFont;
@@ -504,7 +503,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 消息文本颜色
         /// </summary>
-        [Description("消息文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("消息文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? TextColor
         {
             get => _textColor;
@@ -524,7 +523,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 消息数量
         /// </summary>
-        [Description("消息数量"), Category("外观"), DefaultValue(0)]
+        [Description("消息数量"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Count
         {
             get => count;
@@ -545,7 +544,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 徽标
         /// </summary>
-        [Description("徽标"), Category("外观"), DefaultValue(null)]
+        [Description("徽标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Badge
         {
             get => badge;
@@ -561,7 +560,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 徽标背景色
         /// </summary>
-        [Description("徽标背景色"), Category("外观"), DefaultValue(null)]
+        [Description("徽标背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BadgeBack
         {
             get => badgeBack;
@@ -577,7 +576,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 徽标文本色
         /// </summary>
-        [Description("徽标文本色"), Category("外观"), DefaultValue(null)]
+        [Description("徽标文本色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BadgeFore
         {
             get => badgeFore;
@@ -597,7 +596,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 时间
         /// </summary>
-        [Description("时间"), Category("外观"), DefaultValue(null)]
+        [Description("时间"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Time
         {
             get => time;
@@ -613,7 +612,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 时间文本颜色
         /// </summary>
-        [Description("时间文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("时间文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? TimeColor
         {
             get => _timeColor;
@@ -629,7 +628,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 时间字体
         /// </summary>
-        [Description("时间字体"), Category("外观"), DefaultValue(null)]
+        [Description("时间字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? TimeFont
         {
             get => _timeFont;
@@ -647,7 +646,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -662,7 +661,7 @@ namespace AntdUI.Chat
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         void Invalidate() => PARENT?.Invalidate();
@@ -682,7 +681,7 @@ namespace AntdUI.Chat
         internal bool Hover = false;
 
         internal bool select = false;
-        [Description("是否选中"), Category("外观"), DefaultValue(false)]
+        [Description("是否选中"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Select
         {
             get => select;

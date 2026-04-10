@@ -26,7 +26,7 @@ namespace AntdUI
         #region 属性
 
         Color fill = Color.FromArgb(250, 219, 20);
-        [Description("颜色"), Category("外观"), DefaultValue(typeof(Color), "250, 219, 20")]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "250, 219, 20")]
         public Color Fill
         {
             get => fill;
@@ -43,20 +43,20 @@ namespace AntdUI
         /// <summary>
         /// 支持清除
         /// </summary>
-        [Description("支持清除"), Category("行为"), DefaultValue(false)]
+        [Description("支持清除"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AllowClear { get; set; }
 
         /// <summary>
         /// 是否允许半选
         /// </summary>
-        [Description("是否允许半选"), Category("行为"), DefaultValue(false)]
+        [Description("是否允许半选"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AllowHalf { get; set; }
 
         int count = 5;
         /// <summary>
         /// Star 总数
         /// </summary>
-        [Description("Star 总数"), Category("外观"), DefaultValue(5)]
+        [Description("Star 总数"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(5)]
         public int Count
         {
             get => count;
@@ -73,7 +73,7 @@ namespace AntdUI
         /// <summary>
         /// 当前值
         /// </summary>
-        [Description("当前值"), Category("数据"), DefaultValue(0F)]
+        [Description("当前值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0F)]
         public float Value
         {
             get => _value;
@@ -99,7 +99,7 @@ namespace AntdUI
         /// <summary>
         /// Value 属性值更改时发生
         /// </summary>
-        [Description("Value 属性值更改时发生"), Category("行为")]
+        [Description("Value 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event FloatEventHandler? ValueChanged;
 
         protected virtual void OnValueChanged(float e) => ValueChanged?.Invoke(this, new FloatEventArgs(e));
@@ -107,14 +107,14 @@ namespace AntdUI
         /// <summary>
         /// 自定义每项的提示信息
         /// </summary>
-        [Description("自定义每项的提示信息"), Category("数据"), DefaultValue(null)]
+        [Description("自定义每项的提示信息"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string[]? Tooltips { get; set; }
 
         string? character;
         /// <summary>
         /// 自定义字符
         /// </summary>
-        [Description("自定义字符"), Category("外观"), DefaultValue(null)]
+        [Description("自定义字符"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? Character
         {
@@ -137,7 +137,7 @@ namespace AntdUI
         /// 超出文字提示配置
         /// </summary>
         [Browsable(false)]
-        [Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        [Description("超出文字提示配置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public TooltipConfig? TooltipConfig { get; set; }
 
         #endregion
@@ -430,7 +430,7 @@ namespace AntdUI
 
         bool autoSize = false;
         [Browsable(true)]
-        [Description("自动宽度"), Category("外观"), DefaultValue(false)]
+        [Description("自动宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => autoSize;

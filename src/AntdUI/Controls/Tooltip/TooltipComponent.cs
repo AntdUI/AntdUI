@@ -31,43 +31,43 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius { get; set; } = 6;
 
         /// <summary>
         /// 箭头大小
         /// </summary>
-        [Description("箭头大小"), Category("外观"), DefaultValue(null)]
+        [Description("箭头大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? ArrowSize { get; set; }
 
         /// <summary>
         /// 箭头方向
         /// </summary>
-        [Description("箭头方向"), Category("外观"), DefaultValue(TAlign.Top)]
+        [Description("箭头方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlign.Top)]
         public TAlign ArrowAlign { get; set; } = TAlign.Top;
 
         /// <summary>
         /// 自定义宽度
         /// </summary>
-        [Description("自定义宽度"), Category("外观"), DefaultValue(null)]
+        [Description("自定义宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? CustomWidth { get; set; }
 
         /// <summary>
         /// 背景色
         /// </summary>
-        [Description("背景色"), Category("外观"), DefaultValue(null)]
+        [Description("背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Back { get; set; }
 
         /// <summary>
         /// 前景色
         /// </summary>
-        [Description("前景色"), Category("外观"), DefaultValue(null)]
+        [Description("前景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? Fore { get; set; }
 
         /// <summary>
         /// 延迟时间（毫秒）
         /// </summary>
-        [Description("延迟时间（毫秒）"), Category("行为"), DefaultValue(500)]
+        [Description("延迟时间（毫秒）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(500)]
         public int Delay { get; set; } = 500;
 
         #endregion

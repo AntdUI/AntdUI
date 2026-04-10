@@ -47,16 +47,12 @@ namespace AntdUI
             return false;
         }
 
-        void LoadLayout(Rectangle rect_t)
-        {
-            var rect = LayoutDesign(rect_t.PaddingRect(Padding, borderWidth));
-            ScrollBar.SizeChange(rect);
-        }
+        void LoadLayout(Rectangle rect_t) => LayoutDesign(rect_t.PaddingRect(Padding, borderWidth));
 
         bool has_check = false;
         Rectangle rect_read, rect_divider;
         public Rectangle RectRead => rect_read;
-        Rectangle LayoutDesign(Rectangle rect)
+        void LayoutDesign(Rectangle rect)
         {
             rowSummary = 0;
             has_check = false;
@@ -68,8 +64,8 @@ namespace AntdUI
                 {
                     var _rows = LayoutDesign(rect, new TempTable(new TempiColumn[0], new IRow[0], null), out bool Processing, out var Columns, out var ColWidth);
                     rows = LayoutDesign(rect, _rows, Columns, ColWidth, out int x, out int y, out bool is_exceed);
-                    ScrollBar.SetVrSize(is_exceed ? x : 0, y);
-                    return rect;
+                    ScrollBar.SetVrSize(is_exceed ? x : 0, y, rect);
+                    return;
                 }
             }
             else
@@ -80,9 +76,9 @@ namespace AntdUI
                     if (visibleHeader && EmptyHeader && _rows.Count == 0)
                     {
                         rows = LayoutDesign(rect, _rows, Columns, ColWidth, out int x, out int y, out bool is_exceed);
-                        ScrollBar.SetVrSize(is_exceed ? x : 0, y);
+                        ScrollBar.SetVrSize(is_exceed ? x : 0, y, rect);
                         ThreadState?.Dispose(); ThreadState = null;
-                        return rect;
+                        return;
                     }
                     else if (_rows.Count > 0)
                     {
@@ -96,7 +92,7 @@ namespace AntdUI
                                 rect = new Rectangle(rect.X, rect.Y + headerHeight, rect.Width, rect.Height - headerHeight);
                             }
                         }
-                        ScrollBar.SetVrSize(is_exceed ? x : 0, y);
+                        ScrollBar.SetVrSize(is_exceed ? x : 0, y, rect);
                         if (Processing && Config.HasAnimation(nameof(Table)))
                         {
                             if (ThreadState == null)
@@ -114,16 +110,15 @@ namespace AntdUI
                             ThreadState?.Dispose();
                             ThreadState = null;
                         }
-                        return rect;
+                        return;
                     }
                 }
             }
             ThreadState?.Dispose();
             ThreadState = null;
-            ScrollBar.SetVrSize(0, 0);
+            ScrollBar.SetVrSize(0, 0, Rectangle.Empty);
             dividers = new int[0][];
             rows = null;
-            return Rectangle.Empty;
         }
 
         List<RowTemplate?> LayoutDesign(Rectangle rect, TempTable dataTmp, out bool Processing, out List<Column> Columns, out Dictionary<int, object> ColWidth)

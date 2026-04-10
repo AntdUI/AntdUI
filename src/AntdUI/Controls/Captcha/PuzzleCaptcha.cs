@@ -38,7 +38,7 @@ namespace AntdUI.Captcha
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -57,7 +57,7 @@ namespace AntdUI.Captcha
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Image
         {
             get => image;
@@ -75,7 +75,7 @@ namespace AntdUI.Captcha
         /// <summary>
         /// 拼图块大小
         /// </summary>
-        [Description("拼图块大小"), Category("外观"), DefaultValue(50)]
+        [Description("拼图块大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(50)]
         public int PuzzleSize
         {
             get => puzzleSize;
@@ -94,7 +94,7 @@ namespace AntdUI.Captcha
         /// <summary>
         /// 验证状态
         /// </summary>
-        [Description("验证状态"), Category("行为"), DefaultValue(PuzzleCaptchaState.Default)]
+        [Description("验证状态"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(PuzzleCaptchaState.Default)]
         public PuzzleCaptchaState State
         {
             get => state;
@@ -127,13 +127,13 @@ namespace AntdUI.Captcha
         /// <summary>
         /// 状态改变事件
         /// </summary>
-        [Description("状态改变事件"), Category("行为")]
+        [Description("状态改变事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler? StateChanged;
 
         /// <summary>
         /// 验证完成事件
         /// </summary>
-        [Description("验证完成事件"), Category("行为")]
+        [Description("验证完成事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event EventHandler<PuzzleCaptchaEventArgs>? VerificationCompleted;
 
         protected virtual void OnStateChanged(EventArgs e)

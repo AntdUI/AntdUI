@@ -29,7 +29,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public override string? Text
         {
@@ -54,7 +54,7 @@ namespace AntdUI
         /// <summary>
         /// 字体大小
         /// </summary>
-        [Description("字体大小"), Category("外观"), DefaultValue(null)]
+        [Description("字体大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? FontSize
         {
             get => fontSize;
@@ -71,14 +71,14 @@ namespace AntdUI
         /// <summary>
         /// Emoji字体
         /// </summary>
-        [Description("Emoji字体"), Category("外观"), DefaultValue(null)]
+        [Description("Emoji字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? EmojiFont { get; set; }
 
         int dotSize = 4;
         /// <summary>
         /// 点阵大小
         /// </summary>
-        [Description("点阵大小"), Category("外观"), DefaultValue(4)]
+        [Description("点阵大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int DotSize
         {
             get => dotSize;
@@ -95,7 +95,7 @@ namespace AntdUI
         /// <summary>
         /// 点阵距离
         /// </summary>
-        [Description("点阵距离"), Category("外观"), DefaultValue(2)]
+        [Description("点阵距离"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(2)]
         public int DotGap
         {
             get => dotGap;
@@ -112,7 +112,7 @@ namespace AntdUI
         /// <summary>
         /// 文本大小比例
         /// </summary>
-        [Description("文本大小比例"), Category("外观"), DefaultValue(1F)]
+        [Description("文本大小比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1F)]
         public float TextScale
         {
             get => textScale;
@@ -130,7 +130,7 @@ namespace AntdUI
         /// <summary>
         /// 点阵形状
         /// </summary>
-        [Description("点阵形状"), Category("外观"), DefaultValue(LedDotShape.Square)]
+        [Description("点阵形状"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(LedDotShape.Square)]
         public LedDotShape DotShape
         {
             get => dotShape;
@@ -147,7 +147,7 @@ namespace AntdUI
         /// <summary>
         /// 点阵颜色
         /// </summary>
-        [Description("点阵颜色"), Category("外观"), DefaultValue(null)]
+        [Description("点阵颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? DotColor
         {
@@ -165,7 +165,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示未发光LED
         /// </summary>
-        [Description("是否显示未发光LED"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示未发光LED"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowOffLed
         {
             get => showOffLed;
@@ -182,7 +182,7 @@ namespace AntdUI
         /// <summary>
         /// 未发光LED颜色
         /// </summary>
-        [Description("未发光LED颜色"), Category("外观"), DefaultValue(null)]
+        [Description("未发光LED颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? OffDotColor
         {
@@ -202,7 +202,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -220,7 +220,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;

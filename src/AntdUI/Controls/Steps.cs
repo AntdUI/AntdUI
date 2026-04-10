@@ -31,7 +31,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -49,7 +49,7 @@ namespace AntdUI
         /// <summary>
         /// 指定当前步骤，从 0 开始记数。在子 Step 元素中，可以通过 status 属性覆盖状态
         /// </summary>
-        [Description("指定当前步骤"), Category("外观"), DefaultValue(0)]
+        [Description("指定当前步骤"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Current
         {
             get => current;
@@ -67,7 +67,7 @@ namespace AntdUI
         /// <summary>
         /// 指定当前步骤的状态
         /// </summary>
-        [Description("指定当前步骤的状态"), Category("外观"), DefaultValue(TStepState.Process)]
+        [Description("指定当前步骤的状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TStepState.Process)]
         public TStepState Status
         {
             get => status;
@@ -84,7 +84,7 @@ namespace AntdUI
         /// <summary>
         /// 垂直方向
         /// </summary>
-        [Description("垂直方向"), Category("外观"), DefaultValue(false)]
+        [Description("垂直方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Vertical
         {
             get => vertical;
@@ -100,7 +100,7 @@ namespace AntdUI
         /// <summary>
         /// 全新里程碑模式
         /// </summary>
-        [Description("全新里程碑模式"), Category("外观"), DefaultValue(false)]
+        [Description("全新里程碑模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool MilestoneMode
         {
             get => milestoneMode;
@@ -117,7 +117,7 @@ namespace AntdUI
         /// <summary>
         /// 里程碑模式下是否动画展示
         /// </summary>
-        [Description("里程碑模式下是否动画展示"), Category("外观"), DefaultValue(true)]
+        [Description("里程碑模式下是否动画展示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool MilestoneAnimation
         {
             get => animation;
@@ -134,7 +134,7 @@ namespace AntdUI
         /// <summary>
         /// 里程碑时间点的显示类型
         /// </summary>
-        [Description("里程碑时间点的显示类型"), Category("外观"), DefaultValue(TMilestoneType.Day)]
+        [Description("里程碑时间点的显示类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TMilestoneType.Day)]
         public TMilestoneType MilestoneType
         {
             get => milestoneType;
@@ -151,7 +151,7 @@ namespace AntdUI
         /// <summary>
         /// 当前里程碑已完成
         /// </summary>
-        [Description("当前里程碑已完成"), Category("外观"), DefaultValue(false)]
+        [Description("当前里程碑已完成"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool MilestoneCurrentCompleted
         {
             get => milestoneCurrentCompleted;
@@ -167,7 +167,7 @@ namespace AntdUI
         /// <summary>
         /// 里程碑时间点显示格式
         /// </summary>
-        [Description("里程碑时间点显示格式"), Category("外观"), DefaultValue(null)]
+        [Description("里程碑时间点显示格式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? MilestoneTimeFormat
         {
             get => milestoneTimeFormat; set
@@ -182,7 +182,7 @@ namespace AntdUI
         /// <summary>
         /// 里程碑时间轴的显示厚度
         /// </summary>
-        [Description("里程碑时间轴的显示厚度"), Category("外观"), DefaultValue(16)]
+        [Description("里程碑时间轴的显示厚度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(16)]
         public int MilestoneTimelineThickness
         {
             get => milestoneTimelineThickness; set
@@ -198,7 +198,7 @@ namespace AntdUI
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(8)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int Gap { get; set; } = 8;
 
         StepsItemCollection? items;
@@ -206,7 +206,7 @@ namespace AntdUI
         /// 集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public StepsItemCollection Items
         {
             get
@@ -247,7 +247,7 @@ namespace AntdUI
         }
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -653,7 +653,7 @@ namespace AntdUI
         /// <summary>
         /// 点击项时发生
         /// </summary>
-        [Description("点击项时发生"), Category("行为")]
+        [Description("点击项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event StepsItemEventHandler? ItemClick;
 
         protected override void OnMouseClick(MouseEventArgs e)
@@ -727,14 +727,14 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         Image? icon;
         /// <summary>
         /// 图标，可选
         /// </summary>
-        [Description("图标，可选"), Category("外观"), DefaultValue(null)]
+        [Description("图标，可选"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -750,7 +750,7 @@ namespace AntdUI
         /// <summary>
         /// 图标SVG，可选
         /// </summary>
-        [Description("图标SVG，可选"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG，可选"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -766,7 +766,7 @@ namespace AntdUI
         /// <summary>
         /// 图标的大小，可选
         /// </summary>
-        [Description("图标的大小，可选"), Category("外观"), DefaultValue(null)]
+        [Description("图标的大小，可选"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? IconSize
         {
             get => iconsize;
@@ -783,14 +783,14 @@ namespace AntdUI
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("数据"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? Name { get; set; }
 
         string title = string.Empty;
         /// <summary>
         /// 标题
         /// </summary>
-        [Description("标题"), Category("外观"), DefaultValue("")]
+        [Description("标题"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("")]
         public string Title
         {
             get
@@ -844,7 +844,7 @@ namespace AntdUI
         /// <summary>
         /// 子标题
         /// </summary>
-        [Description("子标题"), Category("外观"), DefaultValue(null)]
+        [Description("子标题"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? SubTitle
         {
             get => Localization.GetLangI(LocalizationSubTitle, subTitle, new string?[] { "{id}", ID });
@@ -867,7 +867,7 @@ namespace AntdUI
         /// <summary>
         /// 详情描述，可选
         /// </summary>
-        [Description("详情描述，可选"), Category("外观"), DefaultValue(null)]
+        [Description("详情描述，可选"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Description
         {
             get => Localization.GetLangI(LocalizationDescription, description, new string?[] { "{id}", ID });
@@ -890,7 +890,7 @@ namespace AntdUI
         /// <summary>
         /// 里程碑的时间点
         /// </summary>
-        [Description("里程碑时间点"), Category("数据"), DefaultValue(null)]
+        [Description("里程碑时间点"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public DateTime? MilestoneTimePoint
         {
             get => milestoneTime;
@@ -907,7 +907,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -923,7 +923,7 @@ namespace AntdUI
         /// <summary>
         /// 时间轴背景色
         /// </summary>
-        [Description("时间轴背景色"), Category("外观"), DefaultValue(null)]
+        [Description("时间轴背景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BackColor
         {
             get => back;
@@ -939,7 +939,7 @@ namespace AntdUI
         /// <summary>
         /// 时间轴前景色
         /// </summary>
-        [Description("时间轴前景色"), Category("外观"), DefaultValue(null)]
+        [Description("时间轴前景色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? ForeColor
         {
             get => fore;
@@ -954,7 +954,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 内部

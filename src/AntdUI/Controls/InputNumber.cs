@@ -28,7 +28,7 @@ namespace AntdUI
         /// <summary>
         /// 支持清除
         /// </summary>
-        [Browsable(false), Description("支持清除"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("支持清除"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public new bool AllowClear
         {
             get => false;
@@ -39,7 +39,7 @@ namespace AntdUI
         /// <summary>
         /// 最小值
         /// </summary>
-        [Description("最小值"), Category("数据"), DefaultValue(null)]
+        [Description("最小值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public decimal? Minimum
         {
             get => minimum;
@@ -54,7 +54,7 @@ namespace AntdUI
         /// <summary>
         /// 最大值
         /// </summary>
-        [Description("最大值"), Category("数据"), DefaultValue(null)]
+        [Description("最大值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public decimal? Maximum
         {
             get => maximum;
@@ -77,7 +77,7 @@ namespace AntdUI
         /// <summary>
         /// 当前值
         /// </summary>
-        [Description("当前值"), Category("数据"), DefaultValue(typeof(decimal), "0")]
+        [Description("当前值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(typeof(decimal), "0")]
         public decimal Value
         {
             get => currentValue;
@@ -95,7 +95,7 @@ namespace AntdUI
         /// <summary>
         /// 显示控制器
         /// </summary>
-        [Description("显示控制器"), Category("交互"), DefaultValue(true)]
+        [Description("显示控制器"), Category(nameof(CategoryAttribute.Action)), DefaultValue(true)]
         public bool ShowControl
         {
             get => showcontrol;
@@ -111,7 +111,7 @@ namespace AntdUI
         /// <summary>
         /// 鼠标滚轮修改值
         /// </summary>
-        [Description("鼠标滚轮修改值"), Category("交互"), DefaultValue(true)]
+        [Description("鼠标滚轮修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(true)]
         public bool WheelModifyEnabled
         {
             get => wheelModifyEnabled;
@@ -127,7 +127,7 @@ namespace AntdUI
         /// <summary>
         /// 显示的小数点位数
         /// </summary>
-        [Description("显示的小数点位数"), Category("数据"), DefaultValue(0)]
+        [Description("显示的小数点位数"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int DecimalPlaces
         {
             get => decimalPlaces;
@@ -143,7 +143,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示千分隔符
         /// </summary>
-        [Description("是否显示千分隔符"), Category("数据"), DefaultValue(false)]
+        [Description("是否显示千分隔符"), Category(nameof(CategoryAttribute.Data)), DefaultValue(false)]
         public bool ThousandsSeparator
         {
             get => thousandsSeparator;
@@ -159,7 +159,7 @@ namespace AntdUI
         /// <summary>
         /// 值是否应以十六进制显示
         /// </summary>
-        [Description("值是否应以十六进制显示"), Category("数据"), DefaultValue(false)]
+        [Description("值是否应以十六进制显示"), Category(nameof(CategoryAttribute.Data)), DefaultValue(false)]
         public bool Hexadecimal
         {
             get => hexadecimal;
@@ -174,13 +174,13 @@ namespace AntdUI
         /// <summary>
         /// 当按下箭头键时，是否持续增加/减少
         /// </summary>
-        [Description("当按下箭头键时，是否持续增加/减少"), Category("行为"), DefaultValue(true)]
+        [Description("当按下箭头键时，是否持续增加/减少"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool InterceptArrowKeys { get; set; } = true;
 
         /// <summary>
         /// 文本改变时是否更新Value值
         /// </summary>
-        [Description("文本改变时是否更新Value值"), Category("行为"), DefaultValue(false)]
+        [Description("文本改变时是否更新Value值"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool EnabledValueTextChange { get; set; }
 
         string GetNumberText(decimal num)
@@ -200,7 +200,7 @@ namespace AntdUI
         /// <summary>
         /// 每次单击箭头键时增加/减少的数量
         /// </summary>
-        [Description("每次单击箭头键时增加/减少的数量"), Category("数据"), DefaultValue(typeof(decimal), "1")]
+        [Description("每次单击箭头键时增加/减少的数量"), Category(nameof(CategoryAttribute.Data)), DefaultValue(typeof(decimal), "1")]
         public decimal Increment { get; set; } = 1;
 
         protected override void OnHandleCreated(EventArgs e)
@@ -216,7 +216,7 @@ namespace AntdUI
         /// <summary>
         /// Value 属性值更改时发生
         /// </summary>
-        [Description("Value 属性值更改时发生"), Category("行为")]
+        [Description("Value 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event DecimalEventHandler? ValueChanged;
 
         protected virtual void OnValueChanged(decimal e) => ValueChanged?.Invoke(this, new DecimalEventArgs(e));
@@ -225,7 +225,7 @@ namespace AntdUI
         /// 格式化数值以供显示
         /// Gets or sets a custom function to format the numeric value for display
         /// </summary>
-        [Description("格式化数值以供显示"), Category("行为")]
+        [Description("格式化数值以供显示"), Category(nameof(CategoryAttribute.Behavior))]
         public event InputNumberRtEventHandler? ValueFormatter;
 
         #endregion

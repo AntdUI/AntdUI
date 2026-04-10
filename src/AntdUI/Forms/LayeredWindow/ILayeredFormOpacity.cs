@@ -30,13 +30,13 @@ namespace AntdUI
         /// <summary>
         /// 是否正在加载
         /// </summary>
-        [Description("是否正在加载"), Category("参数"), DefaultValue(true)]
+        [Description("是否正在加载"), Category(nameof(CategoryAttribute.Data)), DefaultValue(true)]
         public bool IsLoad { get; set; } = true;
 
         /// <summary>
         /// 加载完成回调
         /// </summary>
-        [Description("加载完成回调"), Category("参数"), DefaultValue(null)]
+        [Description("加载完成回调"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public Action? LoadCompleted { get; set; }
 
         public virtual void LoadOK()

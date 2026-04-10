@@ -328,13 +328,13 @@ namespace AntdUI
         /// <summary>
         /// 加载后绑定消息
         /// </summary>
-        [Description("加载后绑定消息"), Category("行为"), DefaultValue(true)]
+        [Description("加载后绑定消息"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public virtual bool CanLoadMessage { get; set; } = true;
 
         /// <summary>
         /// 关闭行为
         /// </summary>
-        [Description("关闭行为"), Category("行为"), DefaultValue(CloseMode.None)]
+        [Description("关闭行为"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(CloseMode.None)]
         public CloseMode CloseMode { get; set; } = CloseMode.None;
 
         #endregion

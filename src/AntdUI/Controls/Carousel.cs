@@ -29,20 +29,20 @@ namespace AntdUI
         /// <summary>
         /// 手势滑动
         /// </summary>
-        [Description("手势滑动"), Category("行为"), DefaultValue(true)]
+        [Description("手势滑动"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Touch { get; set; } = true;
 
         /// <summary>
         /// 滑动到外面
         /// </summary>
-        [Description("滑动到外面"), Category("行为"), DefaultValue(false)]
+        [Description("滑动到外面"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool TouchOut { get; set; }
 
         bool autoplay = false;
         /// <summary>
         /// 自动切换
         /// </summary>
-        [Description("自动切换"), Category("行为"), DefaultValue(false)]
+        [Description("自动切换"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Autoplay
         {
             get => autoplay;
@@ -57,7 +57,7 @@ namespace AntdUI
         /// <summary>
         /// 自动切换延迟(s)
         /// </summary>
-        [Description("自动切换延迟(s)"), Category("行为"), DefaultValue(4)]
+        [Description("自动切换延迟(s)"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(4)]
         public int Autodelay { get; set; } = 4;
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -111,7 +111,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角样式
         /// </summary>
-        [Description("圆角样式"), Category("外观"), DefaultValue(false)]
+        [Description("圆角样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Round
         {
             get => round;
@@ -126,7 +126,7 @@ namespace AntdUI
         /// <summary>
         /// 焦点面板指示点
         /// </summary>
-        [Description("焦点面板指示点颜色"), Category("外观"), DefaultValue(null)]
+        [Description("焦点面板指示点颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? DotFocusedColor { get; set; }
 
         CarouselItemCollection? items;
@@ -134,7 +134,7 @@ namespace AntdUI
         /// 图片集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("图片集合"), Category("数据")]
+        [Description("图片集合"), Category(nameof(CategoryAttribute.Data))]
         public CarouselItemCollection Image
         {
             get
@@ -149,7 +149,7 @@ namespace AntdUI
         /// <summary>
         /// 图片布局
         /// </summary>
-        [Description("图片布局"), Category("外观"), DefaultValue(TFit.Cover)]
+        [Description("图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Cover)]
         public TFit ImageFit
         {
             get => imageFit;
@@ -165,7 +165,7 @@ namespace AntdUI
         /// <summary>
         /// 选择序号
         /// </summary>
-        [Description("选择序号"), Category("数据"), DefaultValue(0)]
+        [Description("选择序号"), Category(nameof(CategoryAttribute.Data)), DefaultValue(0)]
         public int SelectIndex
         {
             get => selectIndex;
@@ -189,7 +189,7 @@ namespace AntdUI
         /// <summary>
         /// SelectIndex 属性值更改时发生
         /// </summary>
-        [Description("SelectIndex 属性值更改时发生"), Category("行为")]
+        [Description("SelectIndex 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntEventHandler? SelectIndexChanged;
 
         protected virtual void OnSelectIndexChanged(int e) => SelectIndexChanged?.Invoke(this, new IntEventArgs(e));
@@ -927,14 +927,14 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         Image? img;
         /// <summary>
         /// 图片
         /// </summary>
-        [Description("图片"), Category("外观"), DefaultValue(null)]
+        [Description("图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Img
         {
             get => img;
@@ -951,7 +951,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 设置

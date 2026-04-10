@@ -28,7 +28,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -47,7 +47,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -65,7 +65,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;
@@ -82,7 +82,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -99,7 +99,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;
@@ -175,25 +175,25 @@ namespace AntdUI
         /// <summary>
         /// 文本高度比例
         /// </summary>
-        [Description("文本高度比例"), Category("外观"), DefaultValue(null)]
+        [Description("文本高度比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? TextRatio { get; set; }
 
         /// <summary>
         /// 值高度比例
         /// </summary>
-        [Description("值高度比例"), Category("外观"), DefaultValue(null)]
+        [Description("值高度比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? ValueRatio { get; set; }
 
         /// <summary>
         /// 图表高度比例
         /// </summary>
-        [Description("图表高度比例"), Category("外观"), DefaultValue(null)]
+        [Description("图表高度比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? ChartLineRatio { get; set; }
 
         #endregion
 
         string? _value;
-        [Description("数值内容"), Category("外观"), DefaultValue(null)]
+        [Description("数值内容"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? Value
         {
             get => this.GetLangI(LocalizationValue, _value);
@@ -211,10 +211,10 @@ namespace AntdUI
         [Description("数值内容"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationValue { get; set; }
 
-        [Description("图表饼图数据"), Category("数据"), DefaultValue(null)]
+        [Description("图表饼图数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public float? ChartPieData { get; set; }
 
-        [Description("图表折线图数据"), Category("数据"), DefaultValue(null)]
+        [Description("图表折线图数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public double[]? ChartLineData { get; set; }
 
         /// <summary>

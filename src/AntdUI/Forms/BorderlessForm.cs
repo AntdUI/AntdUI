@@ -37,7 +37,7 @@ namespace AntdUI
         /// <summary>
         /// 阴影大小
         /// </summary>
-        [Description("阴影大小"), Category("外观"), DefaultValue(10)]
+        [Description("阴影大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(10)]
         public int Shadow
         {
             get => shadow;
@@ -64,17 +64,17 @@ namespace AntdUI
         /// <summary>
         /// 使用DWM阴影
         /// </summary>
-        [Description("使用DWM阴影"), Category("行为"), DefaultValue(true)]
+        [Description("使用DWM阴影"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool UseDwm { get; set; } = true;
 
-        [Description("鼠标穿透"), Category("行为"), DefaultValue(false)]
+        [Description("鼠标穿透"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShadowPierce { get; set; }
 
         Color shadowColor = Color.FromArgb(100, 0, 0, 0);
         /// <summary>
         /// 阴影颜色
         /// </summary>
-        [Description("阴影颜色"), Category("外观"), DefaultValue(typeof(Color), "100, 0, 0, 0")]
+        [Description("阴影颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "100, 0, 0, 0")]
         public Color ShadowColor
         {
             get => shadowColor;
@@ -88,7 +88,7 @@ namespace AntdUI
         }
 
         int borderWidth = 1;
-        [Description("边框宽度"), Category("外观"), DefaultValue(1)]
+        [Description("边框宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1)]
         public int BorderWidth
         {
             get => borderWidth;
@@ -104,7 +104,7 @@ namespace AntdUI
         /// <summary>
         /// 边框颜色
         /// </summary>
-        [Description("边框颜色"), Category("外观"), DefaultValue(null)]
+        [Description("边框颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? BorderColor
         {
             get => borderColor;
@@ -120,7 +120,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(0)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Radius
         {
             get => radius;
@@ -137,7 +137,7 @@ namespace AntdUI
         /// <summary>
         /// 确定窗体是否出现在 Windows 任务栏中
         /// </summary>
-        [Description("确定窗体是否出现在 Windows 任务栏中"), Category("行为"), DefaultValue(true)]
+        [Description("确定窗体是否出现在 Windows 任务栏中"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public new bool ShowInTaskbar
         {
             get => base.ShowInTaskbar;
@@ -312,7 +312,7 @@ namespace AntdUI
         #region 属性
 
         bool resizable = true;
-        [Description("调整窗口大小"), Category("行为"), DefaultValue(true)]
+        [Description("调整窗口大小"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Resizable
         {
             get => resizable;

@@ -29,7 +29,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -42,13 +42,13 @@ namespace AntdUI
             }
         }
 
-        [Description("描述字体"), Category("外观"), DefaultValue(null)]
+        [Description("描述字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? FontDescription { get; set; }
 
         /// <summary>
         /// 间距
         /// </summary>
-        [Description("间距"), Category("外观"), DefaultValue(null)]
+        [Description("间距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? Gap { get; set; }
 
         TimelineItemCollection? items;
@@ -56,7 +56,7 @@ namespace AntdUI
         /// 集合
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("集合"), Category("数据")]
+        [Description("集合"), Category(nameof(CategoryAttribute.Data))]
         public TimelineItemCollection Items
         {
             get
@@ -92,7 +92,7 @@ namespace AntdUI
 
 
         bool pauseLayout = false;
-        [Browsable(false), Description("暂停布局"), Category("行为"), DefaultValue(false)]
+        [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool PauseLayout
         {
             get => pauseLayout;
@@ -172,8 +172,7 @@ namespace AntdUI
                     splits = _splits.ToArray();
                     y = y - gap_y + gap_x;
                 });
-                ScrollBar.SetVrSize(y);
-                ScrollBar.SizeChange(rect);
+                ScrollBar.SetVrSize(y, rect);
             }
             if (print) Invalidate();
         }
@@ -328,7 +327,7 @@ namespace AntdUI
         /// <summary>
         /// 点击项时发生
         /// </summary>
-        [Description("点击项时发生"), Category("行为")]
+        [Description("点击项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event TimelineEventHandler? ItemClick;
 
         protected override void OnMouseClick(MouseEventArgs e)
@@ -403,32 +402,32 @@ namespace AntdUI
         /// <summary>
         /// ID
         /// </summary>
-        [Description("ID"), Category("数据"), DefaultValue(null)]
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? ID { get; set; }
 
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon { get; set; }
 
         /// <summary>
         /// 图标SVG
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
-        [Description("名称"), Category("数据"), DefaultValue(null)]
+        [Description("名称"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public string? Name { get; set; }
 
         string? text;
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string? Text
         {
@@ -448,7 +447,7 @@ namespace AntdUI
         /// <summary>
         /// 描述，可选
         /// </summary>
-        [Description("描述，可选"), Category("外观"), DefaultValue(null)]
+        [Description("描述，可选"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
         public string? Description
         {
@@ -464,10 +463,10 @@ namespace AntdUI
         [Description("详情描述"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationDescription { get; set; }
 
-        [Description("颜色类型"), Category("外观"), DefaultValue(TTypeMini.Primary)]
+        [Description("颜色类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TTypeMini.Primary)]
         public TTypeMini Type { get; set; } = TTypeMini.Primary;
 
-        [Description("填充颜色"), Category("外观"), DefaultValue(null)]
+        [Description("填充颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill { get; set; }
 
@@ -475,7 +474,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示
         /// </summary>
-        [Description("是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool Visible
         {
             get => visible;
@@ -490,7 +489,7 @@ namespace AntdUI
         /// <summary>
         /// 用户定义数据
         /// </summary>
-        [Description("用户定义数据"), Category("数据"), DefaultValue(null)]
+        [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
 
         #region 内部

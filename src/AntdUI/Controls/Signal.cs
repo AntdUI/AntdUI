@@ -25,7 +25,7 @@ namespace AntdUI
         /// <summary>
         /// 填充颜色
         /// </summary>
-        [Description("填充颜色"), Category("外观"), DefaultValue(null)]
+        [Description("填充颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -41,26 +41,26 @@ namespace AntdUI
         /// <summary>
         /// 满格颜色
         /// </summary>
-        [Description("满格颜色"), Category("外观"), DefaultValue(null)]
+        [Description("满格颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? FillFully { get; set; }
 
         /// <summary>
         /// 警告颜色
         /// </summary>
-        [Description("警告颜色"), Category("外观"), DefaultValue(null)]
+        [Description("警告颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? FillWarn { get; set; }
 
         /// <summary>
         /// 危险颜色
         /// </summary>
-        [Description("危险颜色"), Category("外观"), DefaultValue(null)]
+        [Description("危险颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Color? FillDanger { get; set; }
 
         int vol = 0;
         /// <summary>
         /// 信号强度
         /// </summary>
-        [Description("信号强度"), Category("外观"), DefaultValue(0)]
+        [Description("信号强度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
         public int Value
         {
             get => vol;
@@ -79,7 +79,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading
         {
             get => loading;
@@ -129,7 +129,7 @@ namespace AntdUI
         /// <summary>
         /// 启用线样式
         /// </summary>
-        [Description("启用线样式"), Category("外观"), DefaultValue(false)]
+        [Description("启用线样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool StyleLine
         {
             get => styleLine;

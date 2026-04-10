@@ -28,7 +28,7 @@ namespace AntdUI
         /// 色彩模式
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Obsolete("use ColorScheme"), Description("色彩模式"), Category("外观"), DefaultValue(TAMode.Auto)]
+        [Obsolete("use ColorScheme"), Description("色彩模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAMode.Auto)]
         public TAMode Mode
         {
             get => ColorScheme;
@@ -39,7 +39,7 @@ namespace AntdUI
         /// <summary>
         /// 文字
         /// </summary>
-        [Description("文字"), Category("外观"), DefaultValue(null)]
+        [Description("文字"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -64,32 +64,32 @@ namespace AntdUI
         /// <summary>
         /// 使用标题大小
         /// </summary>
-        [Description("使用标题大小"), Category("外观"), DefaultValue(false)]
+        [Description("使用标题大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UseTitleFont { get; set; }
 
         /// <summary>
         /// 标题使用粗体
         /// </summary>
-        [Description("标题使用粗体"), Category("外观"), DefaultValue(true)]
+        [Description("标题使用粗体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool UseTextBold { get; set; } = true;
 
         /// <summary>
         /// 副标题居中
         /// </summary>
-        [Description("副标题居中"), Category("外观"), DefaultValue(false)]
+        [Description("副标题居中"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UseSubCenter { get; set; }
 
         /// <summary>
         /// 是否作用与自己的父窗口
         /// </summary>
-        [Description("是否作用与自己的父窗口"), Category("外观"), DefaultValue(false)]
+        [Description("是否作用与自己的父窗口"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool MDI { get; set; }
 
         bool useLeftMargin = true;
         /// <summary>
         /// 使用左边边距
         /// </summary>
-        [Description("使用左边边距"), Category("外观"), DefaultValue(true)]
+        [Description("使用左边边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool UseLeftMargin
         {
             get => useLeftMargin;
@@ -106,7 +106,7 @@ namespace AntdUI
         /// <summary>
         /// 副标题
         /// </summary>
-        [Description("副标题"), Category("外观"), DefaultValue(null)]
+        [Description("副标题"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? SubText
         {
@@ -124,7 +124,7 @@ namespace AntdUI
         /// <summary>
         /// 副标题字体
         /// </summary>
-        [Description("副标题字体"), Category("外观"), DefaultValue(null)]
+        [Description("副标题字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? SubFont
         {
             get => descFont;
@@ -147,7 +147,7 @@ namespace AntdUI
         /// <summary>
         /// 描述文本
         /// </summary>
-        [Description("描述文本"), Category("外观"), DefaultValue(null)]
+        [Description("描述文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? Description
         {
@@ -172,7 +172,7 @@ namespace AntdUI
         /// <summary>
         /// 间隔
         /// </summary>
-        [Description("间隔"), Category("外观"), DefaultValue(null)]
+        [Description("间隔"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public int? Gap
         {
             get => gap;
@@ -189,7 +189,7 @@ namespace AntdUI
         /// <summary>
         /// 副标题与标题间隔
         /// </summary>
-        [Description("副标题与标题间隔"), Category("外观"), DefaultValue(6)]
+        [Description("副标题与标题间隔"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int SubGap
         {
             get => subGap;
@@ -206,7 +206,7 @@ namespace AntdUI
         /// <summary>
         /// 使用系统颜色
         /// </summary>
-        [Description("使用系统颜色"), Category("外观"), DefaultValue(false)]
+        [Description("使用系统颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UseSystemStyleColor
         {
             get => useSystemStyleColor;
@@ -224,7 +224,7 @@ namespace AntdUI
         /// <summary>
         /// 使用前景色绘制按钮图标
         /// </summary>
-        [Description("使用前景色绘制按钮图标"), Category("外观"), DefaultValue(false)]
+        [Description("使用前景色绘制按钮图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool UseForeColorDrawIcons
         {
             get => useForeColorDrawIcons;
@@ -242,7 +242,7 @@ namespace AntdUI
         /// <summary>
         /// 点击退出关闭
         /// </summary>
-        [Description("点击退出关闭"), Category("行为"), DefaultValue(false)]
+        [Description("点击退出关闭"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool CancelButton
         {
             get => cancelButton;
@@ -276,7 +276,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示图标
         /// </summary>
-        [Description("是否显示图标"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowIcon
         {
             get => showicon;
@@ -293,7 +293,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -312,7 +312,7 @@ namespace AntdUI
         /// <summary>
         /// 图标SVG
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -331,7 +331,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(null)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? IconRatio
         {
             get => iconratio;
@@ -353,7 +353,7 @@ namespace AntdUI
         /// <summary>
         /// 加载状态
         /// </summary>
-        [Description("加载状态"), Category("外观"), DefaultValue(false)]
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading
         {
             get => loading;
@@ -401,7 +401,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示返回按钮
         /// </summary>
-        [Description("是否显示返回按钮"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示返回按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowBack
         {
             get => showback;
@@ -434,14 +434,14 @@ namespace AntdUI
         /// <summary>
         /// 返回图表
         /// </summary>
-        [Description("返回图表"), Category("外观"), DefaultValue(null)]
+        [Description("返回图表"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackIcon { get; set; }
 
         bool showButton = false;
         /// <summary>
         /// 是否显示标题栏按钮
         /// </summary>
-        [Description("是否显示标题栏按钮"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示标题栏按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool ShowButton
         {
             get => showButton;
@@ -460,7 +460,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示全屏按钮
         /// </summary>
-        [Description("是否显示全屏按钮"), Category("外观"), DefaultValue(false)]
+        [Description("是否显示全屏按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool FullBox
         {
             get => fullBox;
@@ -482,7 +482,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示最大化按钮
         /// </summary>
-        [Description("是否显示最大化按钮"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示最大化按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool MaximizeBox
         {
             get => maximizeBox;
@@ -504,7 +504,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示最小化按钮
         /// </summary>
-        [Description("是否显示最小化按钮"), Category("外观"), DefaultValue(true)]
+        [Description("是否显示最小化按钮"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool MinimizeBox
         {
             get => minimizeBox;
@@ -526,7 +526,7 @@ namespace AntdUI
         /// <summary>
         /// 是否最大化
         /// </summary>
-        [Description("是否最大化"), Category("外观"), DefaultValue(false)]
+        [Description("是否最大化"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsMax
         {
@@ -543,7 +543,7 @@ namespace AntdUI
         /// <summary>
         /// 是否全屏
         /// </summary>
-        [Description("是否全屏"), Category("外观"), DefaultValue(false)]
+        [Description("是否全屏"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsFull
         {
@@ -561,13 +561,13 @@ namespace AntdUI
         /// <summary>
         /// 是否可以拖动位置
         /// </summary>
-        [Description("是否可以拖动位置"), Category("行为"), DefaultValue(true)]
+        [Description("是否可以拖动位置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool DragMove { get; set; } = true;
 
         /// <summary>
         /// 关闭按钮大小
         /// </summary>
-        [Description("关闭按钮大小"), Category("行为"), DefaultValue(48)]
+        [Description("关闭按钮大小"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(48)]
         public int CloseSize { get; set; } = 48;
 
         #region 线条
@@ -649,7 +649,7 @@ namespace AntdUI
         /// <summary>
         /// 背景渐变色
         /// </summary>
-        [Description("背景渐变色"), Category("外观"), DefaultValue(null)]
+        [Description("背景渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? BackExtend
         {
             get => backExtend;

@@ -27,7 +27,7 @@ namespace AntdUI
 
         #region 属性
 
-        [Description("颜色"), Category("外观"), DefaultValue(null)]
+        [Description("颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fill
         {
@@ -38,7 +38,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -56,7 +56,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -76,14 +76,14 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
-        [Description("加载指示符"), Category("外观"), DefaultValue(null)]
+        [Description("加载指示符"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Indicator
         {
             get => config.Indicator;
             set => config.Indicator = value;
         }
 
-        [Description("加载指示符SVG"), Category("外观"), DefaultValue(null)]
+        [Description("加载指示符SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IndicatorSvg
         {
             get => config.IndicatorSvg;

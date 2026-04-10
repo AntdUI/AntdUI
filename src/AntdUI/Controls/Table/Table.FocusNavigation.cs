@@ -15,19 +15,19 @@ namespace AntdUI
         /// <summary>
         /// 是否启用焦点自动跳转
         /// </summary>
-        [Description("是否启用焦点自动跳转"), Category("行为"), DefaultValue(false)]
+        [Description("是否启用焦点自动跳转"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool EnableFocusNavigation { get; set; } = false;
 
         /// <summary>
         /// 焦点跳转时自动选中行（行背景色跟随）
         /// </summary>
-        [Description("焦点跳转时自动选中行"), Category("行为"), DefaultValue(true)]
+        [Description("焦点跳转时自动选中行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool FocusNavigationAutoSelectRow { get; set; } = true;
 
         /// <summary>
         /// 焦点跳转时自动滚动到新行
         /// </summary>
-        [Description("焦点跳转时自动滚动到新行"), Category("行为"), DefaultValue(true)]
+        [Description("焦点跳转时自动滚动到新行"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool FocusNavigationAutoScroll { get; set; } = true;
 
         NavigationConfig? navigationConfig;

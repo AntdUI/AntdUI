@@ -34,7 +34,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(8)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(8)]
         public int Radius
         {
             get => radius;
@@ -51,7 +51,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -74,7 +74,7 @@ namespace AntdUI
         /// <summary>
         /// 文本描述
         /// </summary>
-        [Description("文本描述"), Category("外观"), DefaultValue(null)]
+        [Description("文本描述"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? TextDesc
         {
@@ -92,7 +92,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -109,20 +109,20 @@ namespace AntdUI
         /// <summary>
         /// 点击上传
         /// </summary>
-        [Description("点击上传"), Category("行为"), DefaultValue(true)]
+        [Description("点击上传"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool ClickHand { get; set; } = true;
 
         /// <summary>
         /// 多个文件
         /// </summary>
-        [Description("多个文件"), Category("行为"), DefaultValue(true)]
+        [Description("多个文件"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool Multiselect { get; set; } = true;
 
         string? filter;
         /// <summary>
         /// 文件名筛选器字符串
         /// </summary>
-        [Description("文件名筛选器字符串"), Category("行为"), DefaultValue(null)]
+        [Description("文件名筛选器字符串"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
         public string? Filter
         {
             get => filter;
@@ -172,7 +172,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(1.92F)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1.92F)]
         public float IconRatio
         {
             get => iconratio;
@@ -189,7 +189,7 @@ namespace AntdUI
         /// <summary>
         /// 图标
         /// </summary>
-        [Description("图标"), Category("外观"), DefaultValue(null)]
+        [Description("图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Icon
         {
             get => icon;
@@ -206,7 +206,7 @@ namespace AntdUI
         /// <summary>
         /// 图标SVG
         /// </summary>
-        [Description("图标SVG"), Category("外观"), DefaultValue("InboxOutlined")]
+        [Description("图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("InboxOutlined")]
         public string? IconSvg
         {
             get => iconSvg;
@@ -227,7 +227,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Back
         {
@@ -245,7 +245,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片
         /// </summary>
-        [Description("背景图片"), Category("外观"), DefaultValue(null)]
+        [Description("背景图片"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public new Image? BackgroundImage
         {
             get => backImage;
@@ -262,7 +262,7 @@ namespace AntdUI
         /// <summary>
         /// 背景图片布局
         /// </summary>
-        [Description("背景图片布局"), Category("外观"), DefaultValue(TFit.Fill)]
+        [Description("背景图片布局"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TFit.Fill)]
         public new TFit BackgroundImageLayout
         {
             get => backFit;

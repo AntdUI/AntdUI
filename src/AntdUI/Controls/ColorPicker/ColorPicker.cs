@@ -34,7 +34,7 @@ namespace AntdUI
         /// <summary>
         /// 原装背景颜色
         /// </summary>
-        [Description("原装背景颜色"), Category("外观"), DefaultValue(typeof(Color), "Transparent")]
+        [Description("原装背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(typeof(Color), "Transparent")]
         public Color OriginalBackColor
         {
             get => base.BackColor;
@@ -45,7 +45,7 @@ namespace AntdUI
         /// <summary>
         /// 文字颜色
         /// </summary>
-        [Description("文字颜色"), Category("外观"), DefaultValue(null)]
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? ForeColor
         {
@@ -64,7 +64,7 @@ namespace AntdUI
         /// <summary>
         /// 背景颜色
         /// </summary>
-        [Description("背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public new Color? BackColor
         {
@@ -133,14 +133,14 @@ namespace AntdUI
         /// <summary>
         /// 波浪大小
         /// </summary>
-        [Description("波浪大小"), Category("外观"), DefaultValue(4)]
+        [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
 
         int radius = 6;
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -156,7 +156,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角样式
         /// </summary>
-        [Description("圆角样式"), Category("外观"), DefaultValue(false)]
+        [Description("圆角样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Round
         {
             get => round;
@@ -226,7 +226,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue("")]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("")]
         public override string Text
         {
             get => base.Text;
@@ -243,14 +243,14 @@ namespace AntdUI
         /// <summary>
         /// 禁用透明度
         /// </summary>
-        [Description("禁用透明度"), Category("行为"), DefaultValue(false)]
+        [Description("禁用透明度"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool DisabledAlpha { get; set; }
 
         bool allowclear = false;
         /// <summary>
         /// 支持清除
         /// </summary>
-        [Description("支持清除"), Category("行为"), DefaultValue(false)]
+        [Description("支持清除"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AllowClear
         {
             get => allowclear;
@@ -265,20 +265,20 @@ namespace AntdUI
         /// <summary>
         /// 显示关闭按钮
         /// </summary>
-        [Description("显示关闭按钮"), Category("行为"), DefaultValue(false)]
+        [Description("显示关闭按钮"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowClose { get; set; }
 
         /// <summary>
         /// 显示还原按钮
         /// </summary>
-        [Description("显示还原按钮"), Category("行为"), DefaultValue(false)]
+        [Description("显示还原按钮"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool ShowReset { get; set; }
 
         /// <summary>
         /// 预设的颜色
         /// </summary>
         [Browsable(false)]
-        [Description("预设的颜色"), Category("数据"), DefaultValue(null)]
+        [Description("预设的颜色"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public Color[]? Presets { get; set; }
 
         bool hasvalue = false;
@@ -334,7 +334,7 @@ namespace AntdUI
         /// <summary>
         /// 颜色模式
         /// </summary>
-        [Description("颜色模式"), Category("行为"), DefaultValue(TColorMode.Hex)]
+        [Description("颜色模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TColorMode.Hex)]
         public TColorMode Mode
         {
             get => mode;
@@ -349,25 +349,25 @@ namespace AntdUI
         /// <summary>
         /// 触发下拉的行为
         /// </summary>
-        [Description("触发下拉的行为"), Category("行为"), DefaultValue(Trigger.Click)]
+        [Description("触发下拉的行为"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(Trigger.Click)]
         public Trigger Trigger { get; set; } = Trigger.Click;
 
         /// <summary>
         /// 菜单弹出位置
         /// </summary>
-        [Description("菜单弹出位置"), Category("行为"), DefaultValue(TAlignFrom.BL)]
+        [Description("菜单弹出位置"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(TAlignFrom.BL)]
         public TAlignFrom Placement { get; set; } = TAlignFrom.BL;
 
         /// <summary>
         /// 下拉箭头是否显示
         /// </summary>
-        [Description("下拉箭头是否显示"), Category("外观"), DefaultValue(true)]
+        [Description("下拉箭头是否显示"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool DropDownArrow { get; set; } = true;
 
         /// <summary>
         /// 下拉字体比例
         /// </summary>
-        [Description("下拉字体比例"), Category("外观"), DefaultValue(0.9F)]
+        [Description("下拉字体比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0.9F)]
         public float DropDownFontRatio { get; set; } = 0.9F;
 
         #region 组合
@@ -376,7 +376,7 @@ namespace AntdUI
         /// <summary>
         /// 组合模式
         /// </summary>
-        [Description("组合模式"), Category("外观"), DefaultValue(TJoinMode.None)]
+        [Description("组合模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TJoinMode.None)]
         public TJoinMode JoinMode
         {
             get => joinMode;
@@ -393,7 +393,7 @@ namespace AntdUI
         /// <summary>
         /// 连接左边
         /// </summary>
-        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool JoinLeft
         {
             get => joinLeft;
@@ -410,7 +410,7 @@ namespace AntdUI
         /// <summary>
         /// 连接右边
         /// </summary>
-        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category("外观"), DefaultValue(false)]
+        [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool JoinRight
         {
             get => joinRight;
@@ -432,7 +432,7 @@ namespace AntdUI
         /// <summary>
         /// Value 属性值更改时发生
         /// </summary>
-        [Description("Value 属性值更改时发生"), Category("行为")]
+        [Description("Value 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ColorEventHandler? ValueChanged;
 
         protected virtual void OnValueChanged(Color e) => ValueChanged?.Invoke(this, new ColorEventArgs(e));
@@ -440,7 +440,7 @@ namespace AntdUI
         /// <summary>
         /// Value格式化时发生
         /// </summary>
-        [Description("Value格式化时发生"), Category("行为")]
+        [Description("Value格式化时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event ColorFormatEventHandler? ValueFormatChanged;
 
         #endregion
@@ -653,7 +653,7 @@ namespace AntdUI
         /// 是否存在焦点
         /// </summary>
         [Browsable(false)]
-        [Description("是否存在焦点"), Category("行为"), DefaultValue(false)]
+        [Description("是否存在焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool HasFocus
         {
             get => hasFocus;
@@ -826,7 +826,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -847,7 +847,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;

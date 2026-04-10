@@ -35,7 +35,7 @@ namespace AntdUI
         /// <summary>
         /// 右侧部分的文本颜色
         /// </summary>
-        [Description("右侧部分的文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("右侧部分的文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Fore
         {
@@ -53,7 +53,7 @@ namespace AntdUI
         /// <summary>
         /// 右侧部分的背景颜色
         /// </summary>
-        [Description("右侧部分的背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("右侧部分的背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? Color
         {
@@ -71,7 +71,7 @@ namespace AntdUI
         /// <summary>
         /// 左侧部分的文本颜色
         /// </summary>
-        [Description("左侧部分的文本颜色"), Category("外观"), DefaultValue(null)]
+        [Description("左侧部分的文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? LabelFore
         {
@@ -89,7 +89,7 @@ namespace AntdUI
         /// <summary>
         /// 左侧部分的背景颜色
         /// </summary>
-        [Description("左侧部分的背景颜色"), Category("外观"), DefaultValue(null)]
+        [Description("左侧部分的背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? LabelColor
         {
@@ -107,7 +107,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -126,7 +126,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue("AntdUI")]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue("AntdUI")]
         public override string Text
         {
             get => this.GetLangIN(LocalizationText, text);
@@ -148,7 +148,7 @@ namespace AntdUI
         /// <summary>
         /// 左侧文本
         /// </summary>
-        [Description("左侧文本"), Category("外观"), DefaultValue(null), Localizable(true)]
+        [Description("左侧文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null), Localizable(true)]
         public string? Label
         {
             get => this.GetLangI(LocalizationLabel, label);
@@ -170,7 +170,7 @@ namespace AntdUI
         /// <summary>
         /// 左侧文本粗体
         /// </summary>
-        [Description("左侧文本粗体"), Category("外观"), DefaultValue(false)]
+        [Description("左侧文本粗体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Bold { get; set; }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace AntdUI
         #endregion
 
         Image? logo;
-        [Description("Logo"), Category("外观"), DefaultValue(null)]
+        [Description("Logo"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Image? Logo
         {
             get => logo;
@@ -202,7 +202,7 @@ namespace AntdUI
         }
 
         string? logoSvg;
-        [Description("LogoSvg"), Category("外观"), DefaultValue(null)]
+        [Description("LogoSvg"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? LogoSvg
         {
             get => logoSvg;
@@ -338,7 +338,7 @@ namespace AntdUI
         /// 自动大小
         /// </summary>
         [Browsable(true)]
-        [Description("自动大小"), Category("外观"), DefaultValue(false)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public override bool AutoSize
         {
             get => base.AutoSize;
@@ -359,7 +359,7 @@ namespace AntdUI
         /// <summary>
         /// 自动大小模式
         /// </summary>
-        [Description("自动大小模式"), Category("外观"), DefaultValue(TAutoSize.None)]
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
         public TAutoSize AutoSizeMode
         {
             get => autoSize;

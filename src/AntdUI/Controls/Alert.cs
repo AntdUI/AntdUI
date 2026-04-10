@@ -33,7 +33,7 @@ namespace AntdUI
         /// <summary>
         /// 圆角
         /// </summary>
-        [Description("圆角"), Category("外观"), DefaultValue(6)]
+        [Description("圆角"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(6)]
         public int Radius
         {
             get => radius;
@@ -67,7 +67,7 @@ namespace AntdUI
         /// <summary>
         /// 文本
         /// </summary>
-        [Description("文本"), Category("外观"), DefaultValue(null)]
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public override string? Text
         {
 #pragma warning disable CS8764, CS8766
@@ -96,7 +96,7 @@ namespace AntdUI
         /// <summary>
         /// 文本位置
         /// </summary>
-        [Description("文本位置"), Category("外观"), DefaultValue(ContentAlignment.MiddleLeft)]
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleLeft)]
         public ContentAlignment TextAlign
         {
             get => textAlign;
@@ -115,7 +115,7 @@ namespace AntdUI
         /// <summary>
         /// 标题
         /// </summary>
-        [Description("标题"), Category("外观"), DefaultValue(null)]
+        [Description("标题"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Localizable(true)]
         public string? TextTitle
         {
@@ -136,7 +136,7 @@ namespace AntdUI
         /// <summary>
         /// 样式
         /// </summary>
-        [Description("样式"), Category("外观"), DefaultValue(TType.None)]
+        [Description("样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TType.None)]
         public TType Icon
         {
             get => icon;
@@ -155,7 +155,7 @@ namespace AntdUI
         /// <summary>
         /// 自定义图标SVG
         /// </summary>
-        [Description("自定义图标SVG"), Category("外观"), DefaultValue(null)]
+        [Description("自定义图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? IconSvg
         {
             get => iconSvg;
@@ -172,7 +172,7 @@ namespace AntdUI
         /// <summary>
         /// 是否显示关闭图标
         /// </summary>
-        [Description("是否显示关闭图标"), Category("行为"), DefaultValue(false)]
+        [Description("是否显示关闭图标"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool CloseIcon
         {
             get => closeIcon;
@@ -189,7 +189,7 @@ namespace AntdUI
         /// <summary>
         /// 图标比例
         /// </summary>
-        [Description("图标比例"), Category("外观"), DefaultValue(null)]
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? IconRatio
         {
             get => iconratio;
@@ -206,7 +206,7 @@ namespace AntdUI
         /// <summary>
         /// 图标与文字间距比例
         /// </summary>
-        [Description("图标与文字间距比例"), Category("外观"), DefaultValue(null)]
+        [Description("图标与文字间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public float? IconGap
         {
             get => icongap;
@@ -230,7 +230,7 @@ namespace AntdUI
         /// <summary>
         /// 文本轮播
         /// </summary>
-        [Description("文本轮播"), Category("外观"), DefaultValue(false)]
+        [Description("文本轮播"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loop
         {
             get => loop;
@@ -246,19 +246,19 @@ namespace AntdUI
         /// <summary>
         /// 溢出轮播
         /// </summary>
-        [Description("溢出轮播"), Category("外观"), DefaultValue(false)]
+        [Description("溢出轮播"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool LoopOverflow { get; set; }
 
         /// <summary>
         /// 轮播文本无尽
         /// </summary>
-        [Description("轮播文本无尽"), Category("外观"), DefaultValue(true)]
+        [Description("轮播文本无尽"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool LoopInfinite { get; set; } = true;
 
         /// <summary>
         /// 鼠标移入时暂停轮播
         /// </summary>
-        [Description("鼠标移入时暂停轮播"), Category("外观"), DefaultValue(true)]
+        [Description("鼠标移入时暂停轮播"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
         public bool LoopPauseOnMouseEnter { get; set; } = true;
 
         protected override void OnHandleCreated(EventArgs e)
@@ -291,7 +291,7 @@ namespace AntdUI
         /// <summary>
         /// 文本轮播速率
         /// </summary>
-        [Description("文本轮播速率"), Category("外观"), DefaultValue(10)]
+        [Description("文本轮播速率"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(10)]
         public int LoopSpeed
         {
             get => loopSpeed;
@@ -366,7 +366,7 @@ namespace AntdUI
         /// <summary>
         /// Close时发生
         /// </summary>
-        [Description("Close时发生"), Category("行为")]
+        [Description("Close时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event RBoolEventHandler? CloseChanged;
 
         protected virtual bool OnCloseChanged() => CloseChanged == null || CloseChanged(this, EventArgs.Empty);
