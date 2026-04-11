@@ -165,6 +165,8 @@ namespace AntdUI
                         case Colour.HoverColor: return rgba(0, 0, 0, 0.88F);
 
                         case Colour.SliderHandleColorDisabled: return "#BFBFBF".ToColor();
+                        case Colour.TextSpotlight: return Color.White;
+                        case Colour.BgSpotlight: return rgba(0, 0, 0, 0.85F);
                     }
                     break;
                 case TMode.Dark:
@@ -242,6 +244,8 @@ namespace AntdUI
                         case Colour.HoverColor: return rgba(255, 255, 255, 0.88F);
 
                         case Colour.SliderHandleColorDisabled: return "#4F4F4F".ToColor();
+                        case Colour.TextSpotlight: return Color.White;
+                        case Colour.BgSpotlight: return "#424242".ToColor();
                     }
                     break;
             }
@@ -1060,7 +1064,17 @@ namespace AntdUI
         /// </summary>
         HoverColor,
 
-        SliderHandleColorDisabled
+        SliderHandleColorDisabled,
+
+        /// <summary>
+        /// Tooltip 的前景色
+        /// </summary>
+        TextSpotlight,
+
+        /// <summary>
+        /// Tooltip 的背景色
+        /// </summary>
+        BgSpotlight
     }
 
     public class HSL

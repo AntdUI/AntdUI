@@ -97,5 +97,9 @@ namespace AntdUI.Theme
         public Color HoverColor => Style.Get(Colour.HoverColor);
 
         public Color SliderHandleColorDisabled => Style.Get(Colour.SliderHandleColorDisabled);
+
+        public Color TextSpotlight => Style.Get(Colour.TextSpotlight);
+
+        public Color BgSpotlight => Style.Get(Colour.BgSpotlight);
     }
 }

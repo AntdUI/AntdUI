@@ -863,7 +863,11 @@ namespace AntdUI
                     if (rects[i].Rect_Close.Contains(x, y))
                     {
                         bool flag = owner.IOnClosingPage(page);
-                        if (flag) owner.Pages.Remove(page);
+                        if (flag)
+                        {
+                            owner.Pages.Remove(page);
+                            if (owner.CloseDisposePage) page.Dispose();
+                        }
                         return true;
                     }
                 }

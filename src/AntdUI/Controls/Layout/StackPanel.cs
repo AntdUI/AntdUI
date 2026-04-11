@@ -166,14 +166,6 @@ namespace AntdUI
 
         #endregion
 
-        protected override void Dispose(bool disposing)
-        {
-            Panel.Dispose();
-            XScroll?.Dispose();
-            YScroll?.Dispose();
-            base.Dispose(disposing);
-        }
-
         #region 核心
 
         protected override void OnHandleCreated(EventArgs e)

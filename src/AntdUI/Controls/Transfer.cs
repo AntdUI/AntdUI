@@ -515,51 +515,95 @@ namespace AntdUI
             using (var fore = new SolidBrush(ForeColor ?? Colour.Text.Get(name, ColorScheme)))
             using (var foreActive = new SolidBrush(ForeActive ?? Colour.Text.Get(name, ColorScheme)))
             {
-                foreach (var it in items)
-                {
-                    if (it.Visible && it.IsTarget == isTarget)
-                    {
-                        count++;
-                        if (it.selected)
-                        {
-                            selectedCount++;
-                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
-                            {
-                                g.Fill(brush, it.rect);
-                            }
-                        }
-                        if (it.Hover)
-                        {
-                            using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
-                            {
-                                g.Fill(brush, it.rect);
-                            }
-                        }
-                        PaintItemCheck(g, it, name);
-                        // 绘制项文本
-                        if (it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
-                        else g.String(it.Text, Font, Colour.TextQuaternary.Get(name, ColorScheme), it.rect_text, sf);
-                    }
-                }
-                g.Restore(state);
-
-                if (dragBody != null && dragBody.hand)
+                if (dragBody == null)
                 {
                     foreach (var it in items)
                     {
-                        if (dragBody.i == it)
+                        if (it.Visible && it.IsTarget == isTarget)
                         {
-                            g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
-                        }
-                        else if (dragBody.im == it)
-                        {
-                            using (var brush_split = new SolidBrush(Colour.BorderColor.Get(name, ColorScheme)))
+                            count++;
+                            if (it.selected)
                             {
-                                int sp = (int)(2 * Dpi);
-                                if (dragBody.last) g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Bottom - sp, it.rect.Width, sp * 2));
-                                else g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Y - sp, it.rect.Width, sp * 2));
+                                selectedCount++;
+                                using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                {
+                                    g.Fill(brush, it.rect);
+                                }
+                            }
+                            if (it.Hover)
+                            {
+                                using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
+                                {
+                                    g.Fill(brush, it.rect);
+                                }
+                            }
+                            PaintItem(g, it, name, fore, foreActive);
+                        }
+                    }
+                    g.Restore(state);
+                }
+                else
+                {
+                    if (dragBody.hand)
+                    {
+                        foreach (var it in items)
+                        {
+                            if (it.Visible && it.IsTarget == isTarget)
+                            {
+                                count++;
+                                if (it.selected)
+                                {
+                                    selectedCount++;
+                                    using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                    {
+                                        g.Fill(brush, it.rect);
+                                    }
+                                }
+                                PaintItem(g, it, name, fore, foreActive);
                             }
                         }
+                        g.Restore(state);
+                        foreach (var it in items)
+                        {
+                            if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
+                            else if (dragBody.im == it)
+                            {
+                                using (var brush_split = new SolidBrush(Colour.BorderColor.Get(name, ColorScheme)))
+                                {
+                                    int sp = (int)(2 * Dpi);
+                                    if (dragBody.last) g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Bottom - sp, it.rect.Width, sp * 2));
+                                    else g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Y - sp, it.rect.Width, sp * 2));
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var it in items)
+                        {
+                            if (it.Visible && it.IsTarget == isTarget)
+                            {
+                                count++;
+                                if (it.selected)
+                                {
+                                    selectedCount++;
+                                    using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                    {
+                                        g.Fill(brush, it.rect);
+                                    }
+                                }
+                                if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
+                                if (it.Hover)
+                                {
+                                    using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
+                                    {
+                                        g.Fill(brush, it.rect);
+                                    }
+                                }
+                                PaintItem(g, it, name, fore, foreActive);
+                            }
+                        }
+                        g.Restore(state);
                     }
                 }
 
@@ -572,6 +616,14 @@ namespace AntdUI
 
             // 绘制滚动条
             if (scroll.Show) scroll.Paint(g, ColorScheme);
+        }
+
+        private void PaintItem(Canvas g, TransferItem it, string name, SolidBrush fore, SolidBrush foreActive)
+        {
+            PaintItemCheck(g, it, name);
+            // 绘制项文本
+            if (it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
+            else g.String(it.Text, Font, Colour.TextQuaternary.Get(name, ColorScheme), it.rect_text, sf);
         }
 
         private void PaintCheck(Canvas g, Rectangle rect_checkbox, CheckState state)

@@ -162,6 +162,12 @@ namespace AntdUI
         [Description("鼠标滚轮切换焦点页使能"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EnablePageScrolling { get; set; } = true;
 
+        /// <summary>
+        /// 关闭页面后释放
+        /// </summary>
+        [Description("关闭页面后释放"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
+        public bool CloseDisposePage { get; set; }
+
         Color? scrollback;
         /// <summary>
         /// 滚动条颜色

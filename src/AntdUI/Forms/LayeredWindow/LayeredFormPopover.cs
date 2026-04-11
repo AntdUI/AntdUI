@@ -132,7 +132,7 @@ namespace AntdUI
 
                     if (_config.Title == null)
                     {
-                        var sizeContent = g.MeasureString(content, Font);
+                        var sizeContent = g.MeasureText(content, Font);
                         int w = sizeContent.Width, h = sizeContent.Height;
                         rectContent = new Rectangle(paddingx, paddingy, w, h);
                         SetSize(w + paddingx2, h + paddingy2);
@@ -141,7 +141,7 @@ namespace AntdUI
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            Size sizeTitle = g.MeasureString(config.Title, fontTitle), sizeContent = g.MeasureString(content, Font);
+                            Size sizeTitle = g.MeasureText(config.Title, fontTitle), sizeContent = g.MeasureText(content, Font);
                             int w = sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width, h = sizeTitle.Height + sp + sizeContent.Height;
 
                             rectTitle = new Rectangle(paddingx, paddingy, w, sizeTitle.Height + sp);
@@ -312,10 +312,11 @@ namespace AntdUI
                 {
                     using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                     {
-                        g.String(config.Title, fontTitle, brush, rectTitle, stringLeft);
+                        g.DrawText(config.Title, fontTitle, brush, rectTitle, stringLeft);
                     }
                     if (rtext)
                     {
+                        if (config.Content == null) return;
                         if (config.Content is IList<Popover.TextRow> list && rectsContent != null)
                         {
                             for (int i = 0; i < list.Count; i++)
@@ -331,7 +332,7 @@ namespace AntdUI
                                 else g.String(txt.Text, txt.Font ?? Font, brush, rectsContent[i].Rect, stringCenter);
                             }
                         }
-                        else g.String(config.Content.ToString(), Font, brush, rectContent, stringLeft);
+                        else g.DrawText(config.Content.ToString(), Font, brush, rectContent, stringLeft);
                     }
                 }
             }
