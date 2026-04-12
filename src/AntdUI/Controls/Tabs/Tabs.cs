@@ -452,6 +452,17 @@ namespace AntdUI
 
         public void SelectTab(int index) => SelectedIndex = index;
 
+        /// <summary>
+        /// 添加页面并设置激活
+        /// </summary>
+        public void AddTabSelect(TabPage page)
+        {
+            if (items == null) items = new TabCollection(this);
+            int index = _select = items.Count;
+            items.Add(page);
+            if (IsHandleCreated) ShowPage(index);
+        }
+
         #region 动画
 
         int _select = 0;
@@ -1689,8 +1700,24 @@ namespace AntdUI
             action_add = item =>
             {
                 item.PARENT = it;
-                if (it.InvokeRequired) it.Invoke(() => it.Controls.Add(item));
-                else it.Controls.Add(item);
+                if (it.SelectedIndex == 0 && Count == 1)
+                {
+                    if (it.InvokeRequired) it.Invoke(() =>
+                    {
+                        it.Controls.Add(item);
+                        item.Showed = true;
+                    });
+                    else
+                    {
+                        it.Controls.Add(item);
+                        item.Showed = true;
+                    }
+                }
+                else
+                {
+                    if (it.InvokeRequired) it.Invoke(() => it.Controls.Add(item));
+                    else it.Controls.Add(item);
+                }
             };
             action_del = (item, index) =>
             {
