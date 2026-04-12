@@ -8,19 +8,20 @@ using System.Windows.Forms;
 
 namespace Demo.Controls
 {
-    public partial class Panel : UserControl
+    public partial class Button3 : UserControl
     {
-        Overview form;
-        public Panel(Overview _form)
+        AntdUI.BaseForm form;
+        public Button3(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
-            button4.Click += button_Click;
+            b4.LoadingWaveCount = b5.LoadingWaveCount = 2;
+            b4.LoadingWaveColor = b5.LoadingWaveColor = AntdUI.Style.Db.Success;
         }
 
-        private void button_Click(object sender, System.EventArgs e)
+        private void btn_Click(object sender, System.EventArgs e)
         {
-            form.OpenPage("VirtualPanel", "虚拟容器");
+            if (sender is AntdUI.Button btn) btn.TestClickButton();
         }
     }
 }

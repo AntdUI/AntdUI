@@ -32,6 +32,7 @@ namespace Demo
             btn_global = new AntdUI.Dropdown();
             btn_setting = new AntdUI.Button();
             virtualPanel = new AntdUI.VirtualPanel();
+            panel_main = new AntdUI.In.Panel();
             windowBar = new AntdUI.PageHeader();
             txt_search = new AntdUI.Input();
             colorTheme = new AntdUI.ColorPicker();
@@ -108,6 +109,13 @@ namespace Demo
             virtualPanel.Waterfall = true;
             virtualPanel.ItemClick += ItemClick;
             // 
+            // panel_main
+            // 
+            panel_main.Location = new Point(-100, -100);
+            panel_main.Name = "panel_main";
+            panel_main.Size = new Size(0, 0);
+            panel_main.TabIndex = 3;
+            // 
             // windowBar
             // 
             windowBar.BackgroundImageLayout = ImageLayout.Stretch;
@@ -159,6 +167,7 @@ namespace Demo
             // 
             BackColor = Color.White;
             ClientSize = new Size(1300, 720);
+            Controls.Add(panel_main);
             Controls.Add(virtualPanel);
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F);
@@ -179,6 +188,7 @@ namespace Demo
         private AntdUI.Dropdown btn_global;
         private AntdUI.Button btn_setting;
         private AntdUI.VirtualPanel virtualPanel;
+        private AntdUI.In.Panel panel_main;
         private AntdUI.PageHeader windowBar;
         private AntdUI.ColorPicker colorTheme;
         private AntdUI.Input txt_search;

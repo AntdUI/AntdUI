@@ -190,18 +190,39 @@ namespace Demo
                     return "To trigger an operation.";
                 case "Button.Search":
                     return "Search";
-                case "Button.divider1":
+                case "Button.dType":
                     return "Color & Type";
-                case "Button.divider2":
+                case "Button.dIcon":
                     return "Icon";
-                case "Button.divider3":
-                    return "Link";
-                case "Button.divider4":
-                    return "IconPosition";
-                case "Button.divider5":
-                    return "Multiple Buttons";
-                case "Button.divider6":
+                case "Button.dShape":
                     return "Shape";
+                case "Button.dLink":
+                    return "Link";
+                case "Button.dIconPosition":
+                    return "IconPosition";
+                case "Button.dCombo":
+                    return "Combo Button";
+                case "Button.dGradient":
+                    return "Gradient Button";
+                case "Button.dToggle":
+                    return "Toggle Button";
+                case "Button.dAnimate":
+                    return "Animate Button";
+
+                case "ButtonTipAgain":
+                    return "Click again for a surprise. 😁";
+                case "ButtonTipLoading":
+                    return "Here's the loading effect for you. 🌸";
+                case "ButtonTipEnabled":
+                    return "I've just disabled it now.";
+                case "ButtonTipWave":
+                    return "Progress loading effect with water waves 🌊";
+                case "ButtonTipWaveZero":
+                    return "Remove loading circle 💀";
+                case "ButtonTipNB":
+                    return "Let's try some unconventional moves. 👽";
+                case "ButtonThank":
+                    return "☺️ Thank you for your patronage! ";
 
                 //FloatButton ----------------------------
                 case "FloatButton":

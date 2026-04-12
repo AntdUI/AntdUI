@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Demo
@@ -43,220 +44,163 @@ namespace Demo
             base.OnMouseDown(e);
         }
 
-        private void ItemClick(object sender, AntdUI.VirtualItemEventArgs e) => OpenPage(e.Item.Tag.ToString());
-
-        //AntdUI.Tabs tabs = null;
-        public void OpenPage(string id)
+        private void ItemClick(object sender, AntdUI.VirtualItemEventArgs e)
         {
-            Control control_add = null;
+            if (e.Item is VItem item) OpenPage(item.data.id, item.data.key);
+        }
+
+        public void OpenPage(string id, string key)
+        {
+            var control_add = GetPage(id, key);
+            if (control_add == null) return;
+            int w = virtualPanel.Width, h = virtualPanel.Height;
+            virtualPanel.Visible = false;
+            panel_main.Bounds = new Rectangle(-w * 2, -h * 2, w, h);
+            windowBar.SubText = id;
+            if (windowBar.Tag is Control control)
+            {
+                control.Dispose();
+                Controls.Remove(control);
+            }
+            windowBar.Tag = control_add;
+            windowBar.ShowBack = true;
+            OpenPage(control_add);
+        }
+        async void OpenPage(Control control_add)
+        {
+            control_add.Dock = DockStyle.Fill;
+            AntdUI.Win32.WindowTheme(control_add);
+            AutoDpi(control_add);
+            panel_main.Controls.Add(control_add);
+            await Task.Delay(100);
+            panel_main.Dock = DockStyle.Fill;
+            control_add.Focus();
+        }
+
+        Control GetPage(string id, string key)
+        {
             switch (id)
             {
                 case "Button":
-                    control_add = new Controls.Button(this);
-                    break;
+                    return Helper.AddPage(id, key, "按钮用于开始一个即时操作。", Button.Page(this));
                 case "Icon":
-                    control_add = new Controls.Icon(this);
-                    break;
+                    return new Controls.Icon(this);
                 case "Avatar":
-                    control_add = new Controls.Avatar(this);
-                    break;
+                    return new Controls.Avatar(this);
                 case "Carousel":
-                    control_add = new Controls.Carousel(this);
-                    break;
+                    return new Controls.Carousel(this);
                 case "Badge":
-                    control_add = new Controls.Badge(this);
-                    break;
+                    return new Controls.Badge(this);
                 case "Checkbox":
-                    control_add = new Controls.Checkbox(this);
-                    break;
+                    return new Controls.Checkbox(this);
                 case "Radio":
-                    control_add = new Controls.Radio(this);
-                    break;
+                    return new Controls.Radio(this);
                 case "Input":
-                    control_add = new Controls.Input(this);
-                    break;
+                    return new Controls.Input(this);
                 case "Select":
-                    control_add = new Controls.Select(this);
-                    break;
+                    return new Controls.Select(this);
                 case "Panel":
-                    control_add = new Controls.Panel(this);
-                    break;
+                    return new Controls.Panel(this);
                 case "Progress":
-                    control_add = new Controls.Progress(this);
-                    break;
+                    return new Controls.Progress(this);
                 case "Result":
-                    control_add = new Controls.Result(this);
-                    break;
+                    return new Controls.Result(this);
                 case "Tooltip":
-                    control_add = new Controls.Tooltip(this);
-                    break;
+                    return new Controls.Tooltip(this);
                 case "Tour":
-                    control_add = new Controls.Tour(this);
-                    break;
+                    return new Controls.Tour(this);
                 case "Divider":
-                    control_add = new Controls.Divider(this);
-                    break;
+                    return new Controls.Divider(this);
                 case "Slider":
-                    control_add = new Controls.Slider(this);
-                    break;
+                    return new Controls.Slider(this);
                 case "Tabs":
-                    control_add = new Controls.Tabs(this);
-                    break;
+                    return new Controls.Tabs(this);
                 case "Switch":
-                    control_add = new Controls.Switch(this);
-                    break;
+                    return new Controls.Switch(this);
                 case "Pagination":
-                    control_add = new Controls.Pagination(this);
-                    break;
+                    return new Controls.Pagination(this);
                 case "Alert":
-                    control_add = new Controls.Alert(this);
-                    break;
+                    return new Controls.Alert(this);
                 case "Message":
-                    control_add = new Controls.Message(this);
-                    break;
+                    return new Controls.Message(this);
                 case "Notification":
-                    control_add = new Controls.Notification(this);
-                    break;
+                    return new Controls.Notification(this);
                 case "Menu":
-                    control_add = new Controls.Menu(this);
-                    break;
+                    return new Controls.Menu(this);
                 case "Segmented":
-                    control_add = new Controls.Segmented(this);
-                    break;
+                    return new Controls.Segmented(this);
                 case "Modal":
-                    control_add = new Controls.Modal(this);
-                    break;
+                    return new Controls.Modal(this);
                 case "DatePicker":
-                    control_add = new Controls.DatePicker(this);
-                    break;
+                    return new Controls.DatePicker(this);
                 case "TimePicker":
-                    control_add = new Controls.TimePicker(this);
-                    break;
+                    return new Controls.TimePicker(this);
                 case "Dropdown":
-                    control_add = new Controls.Dropdown(this);
-                    break;
+                    return new Controls.Dropdown(this);
                 case "Tree":
-                    control_add = new Controls.Tree(this);
-                    break;
+                    return new Controls.Tree(this);
                 case "Popover":
-                    control_add = new Controls.Popover(this);
-                    break;
+                    return new Controls.Popover(this);
                 case "Timeline":
-                    control_add = new Controls.Timeline(this);
-                    break;
+                    return new Controls.Timeline(this);
                 case "Steps":
-                    control_add = new Controls.Steps(this);
-                    break;
+                    return new Controls.Steps(this);
                 case "ColorPicker":
-                    control_add = new Controls.ColorPicker(this);
-                    break;
+                    return new Controls.ColorPicker(this);
                 case "InputNumber":
-                    control_add = new Controls.InputNumber(this);
-                    break;
+                    return new Controls.InputNumber(this);
                 case "Tag":
-                    control_add = new Controls.Tag(this);
-                    break;
+                    return new Controls.Tag(this);
                 case "Drawer":
-                    control_add = new Controls.Drawer(this);
-                    break;
+                    return new Controls.Drawer(this);
                 case "FloatButton":
                     OpenFloatButton();
                     break;
                 case "Rate":
-                    control_add = new Controls.Rate(this);
-                    break;
+                    return new Controls.Rate(this);
                 case "Table":
 #if DEBUG
-                    control_add = new Controls.Table(this);
+                    return new Controls.Table(this);
 #else
-                    control_add = new Controls.TableAOT(this);
+                    return new Controls.TableAOT(this);
 #endif
-                    break;
                 case "Image":
-                    control_add = new Controls.Preview(this);
-                    break;
+                    return new Controls.Preview(this);
                 case "VirtualPanel":
-                    control_add = new Controls.VirtualPanel(this);
-                    break;
+                    return new Controls.VirtualPanel(this);
                 case "PageHeader":
-                    control_add = new Controls.PageHeader(this);
-                    break;
+                    return new Controls.PageHeader(this);
                 case "Breadcrumb":
-                    control_add = new Controls.Breadcrumb(this);
-                    break;
+                    return new Controls.Breadcrumb(this);
                 case "Collapse":
-                    control_add = new Controls.Collapse(this);
-                    break;
+                    return new Controls.Collapse(this);
 
                 case "GridPanel":
-                    control_add = new Controls.GridPanel(this);
-                    break;
+                    return new Controls.GridPanel(this);
                 case "Splitter":
-                    control_add = new Controls.Splitter(this);
-                    break;
+                    return new Controls.Splitter(this);
                 case "Calendar":
-                    control_add = new Controls.Calendar(this);
-                    break;
+                    return new Controls.Calendar(this);
                 case "Battery":
-                    control_add = new Controls.Battery(this);
-                    break;
+                    return new Controls.Battery(this);
                 case "Signal":
-                    control_add = new Controls.Signal(this);
-                    break;
+                    return new Controls.Signal(this);
                 case "Spin":
-                    control_add = new Controls.Spin(this);
-                    break;
+                    return new Controls.Spin(this);
                 case "ContextMenuStrip":
-                    control_add = new Controls.ContextMenuStrip(this);
-                    break;
+                    return new Controls.ContextMenuStrip(this);
                 case "Shield":
-                    control_add = new Controls.Shield(this);
-                    break;
+                    return new Controls.Shield(this);
                 case "Transfer":
-                    control_add = new Controls.Transfer(this);
-                    break;
+                    return new Controls.Transfer(this);
                 case "Chart":
-                    control_add = new Controls.Chart(this);
-                    break;
+                    return new Controls.Chart(this);
                 case "Watermark":
-                    control_add = new Controls.Watermark(this);
-                    break;
+                    return new Controls.Watermark(this);
                 case "HyperlinkLabel":
-                    control_add = new Controls.HyperlinkLabel(this);
-                    break;
+                    return new Controls.HyperlinkLabel(this);
             }
-            if (control_add != null)
-            {
-                //if (tabs == null)
-                //{
-                //    tabs = new AntdUI.Tabs { Dock = DockStyle.Bottom, Size = new Size(0, 400),Type= AntdUI.TabType.Card };
-                //    Controls.Add(tabs);
-                //}
-                //var page = new AntdUI.TabPage { Text=id };
-                //page.Controls.Add(control_add);
-                //AutoDpi(control_add);
-                //tabs.Pages.Add(page);
-                //tabs.SelectedTab = page;
-                //return;
-                windowBar.SubText = id;
-                if (windowBar.Tag is Control control)
-                {
-                    control.Dispose();
-                    Controls.Remove(control);
-                }
-                windowBar.Tag = control_add;
-                BeginInvoke(new Action(() =>
-                {
-                    virtualPanel.Visible = false;
-                    control_add.Dock = DockStyle.Fill;
-                    AntdUI.Win32.WindowTheme(control_add);
-                    AutoDpi(control_add);
-                    Controls.Add(control_add);
-                    control_add.BringToFront();
-                    control_add.Focus();
-                    windowBar.ShowBack = true;
-                }));
-            }
+            return null;
         }
 
         #region 悬浮按钮
@@ -325,6 +269,8 @@ namespace Demo
                     Controls.Remove(control);
                 }
                 windowBar.ShowBack = false;
+                panel_main.Dock = DockStyle.None;
+                panel_main.Bounds = new Rectangle(-100, -100, 0, 0);
                 virtualPanel.Visible = true;
                 windowBar.SubText = "Overview";
             }));
@@ -648,7 +594,6 @@ namespace Demo
             public VItem(IList d, string g)
             {
                 data = d;
-                Tag = d.id;
                 LocalizationName = d.id + " " + d.key;
                 group = g;
             }
@@ -709,5 +654,18 @@ namespace Demo
         #endregion
 
         #endregion
+    }
+
+    public class ViewPage
+    {
+        public ViewPage(string name, string text, UserControl control)
+        {
+            Name = name;
+            Text = text;
+            Control = control;
+        }
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public UserControl Control { get; set; }
     }
 }

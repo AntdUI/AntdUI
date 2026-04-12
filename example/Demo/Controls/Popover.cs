@@ -26,7 +26,9 @@ namespace Demo.Controls
 
         private void button2_Click(object sender, EventArgs e)
         {
-            AntdUI.Popover.open(new AntdUI.Popover.Config(button2, new Button(form) { Size = new Size(800, 300) }) { });
+            var page = Helper.AddPage("Button", "按钮", "按钮用于开始一个即时操作。", Button.Page(form));
+            page.Size = new Size(800, 300);
+            AntdUI.Popover.open(new AntdUI.Popover.Config(button2, page));
         }
 
         private void buttonTL_Click(object sender, EventArgs e)

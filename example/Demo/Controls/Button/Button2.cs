@@ -8,19 +8,19 @@ using System.Windows.Forms;
 
 namespace Demo.Controls
 {
-    public partial class Panel : UserControl
+    public partial class Button2 : UserControl
     {
-        Overview form;
-        public Panel(Overview _form)
+        AntdUI.BaseForm form;
+        public Button2(AntdUI.BaseForm _form)
         {
             form = _form;
             InitializeComponent();
-            button4.Click += button_Click;
+            b8.Text = b8.ProductName + " " + b8.ProductVersion;
         }
 
-        private void button_Click(object sender, System.EventArgs e)
+        private void btn_Click(object sender, System.EventArgs e)
         {
-            form.OpenPage("VirtualPanel", "虚拟容器");
+            if (sender is AntdUI.Button btn) btn.TestClickButton();
         }
     }
 }
