@@ -859,7 +859,11 @@ namespace AntdUI
         {
             if (down)
             {
-                if (items == null) { down = false; return; }
+                if (items == null)
+                {
+                    down = false;
+                    return;
+                }
                 int len = items.Count;
                 var rect = ClientRectangle;
                 AnimationChange = false;

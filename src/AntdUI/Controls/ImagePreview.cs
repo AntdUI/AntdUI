@@ -677,7 +677,6 @@ namespace AntdUI
 
             public bool hover { get; set; }
             public bool enabled { get; set; } = true;
-            public bool mdown { get; set; }
         }
 
         #endregion
@@ -835,9 +834,11 @@ namespace AntdUI
             if (count > 0) Invalidate();
         }
 
+        PreBtns? mDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            mDown = null;
             if (e.Button == MouseButtons.Left)
             {
                 if (btns != null)
@@ -846,7 +847,7 @@ namespace AntdUI
                     {
                         if (it.enabled && it.Rect.Contains(e.X, e.Y))
                         {
-                            it.mdown = true;
+                            mDown = it;
                             return;
                         }
                     }
@@ -881,44 +882,38 @@ namespace AntdUI
                     return;
                 }
             }
-            if (btns != null)
+            if (mDown != null)
             {
-                foreach (var it in btns)
+                if (mDown.Rect.Contains(e.X, e.Y))
                 {
-                    if (it.mdown)
+                    switch (mDown.id)
                     {
-                        if (it.Rect.Contains(e.X, e.Y))
-                        {
-                            switch (it.id)
-                            {
-                                case "@t_flipY":
-                                    FlipY();
-                                    break;
-                                case "@t_flipX":
-                                    FlipX();
-                                    break;
-                                case "@t_rotateL":
-                                    RotateL();
-                                    break;
-                                case "@t_rotateR":
-                                    RotateR();
-                                    break;
-                                case "@t_zoomOut":
-                                    ZoomOut();
-                                    break;
-                                case "@t_zoomIn":
-                                    ZoomIn();
-                                    break;
-                                default:
-                                    if (items == null) return;
-                                    OnButtonClick(items[selectIndex], it.id, it.tag);
-                                    break;
-                            }
-                        }
-                        it.mdown = false;
-                        return;
+                        case "@t_flipY":
+                            FlipY();
+                            break;
+                        case "@t_flipX":
+                            FlipX();
+                            break;
+                        case "@t_rotateL":
+                            RotateL();
+                            break;
+                        case "@t_rotateR":
+                            RotateR();
+                            break;
+                        case "@t_zoomOut":
+                            ZoomOut();
+                            break;
+                        case "@t_zoomIn":
+                            ZoomIn();
+                            break;
+                        default:
+                            if (items == null) return;
+                            OnButtonClick(items[selectIndex], mDown.id, mDown.tag);
+                            break;
                     }
                 }
+                mDown = null;
+                return;
             }
             if (PageSize > 1)
             {

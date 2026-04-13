@@ -777,24 +777,27 @@ namespace AntdUI
                     }
                     Invalidate();
                 }
-                int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
-                foreach (var it in items)
+                if (_pageDown != null)
                 {
-                    if (it == _pageDown)
+                    int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
+                    foreach (var it in items)
                     {
-                        if (it.Contains(x, y))
+                        if (it == _pageDown)
                         {
-                            if (style.MouseClick(it, i, x, y)) return;
-                            if (OnTabClick(it, i, style, e))
+                            if (_pageDown.Contains(x, y))
                             {
-                                SelectedIndex = i;
-                                return;
+                                if (style.MouseClick(_pageDown, i, x, y)) return;
+                                if (OnTabClick(_pageDown, i, style, e))
+                                {
+                                    SelectedIndex = i;
+                                    return;
+                                }
                             }
+                            else Invalidate();
+                            return;
                         }
-                        else Invalidate();
-                        return;
+                        i++;
                     }
-                    i++;
                 }
             }
         }

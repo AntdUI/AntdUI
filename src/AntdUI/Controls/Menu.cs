@@ -1357,7 +1357,7 @@ namespace AntdUI
 
         #region 鼠标
 
-        MenuItem? MDown;
+        MenuItem? mDown;
         int mClicks = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -1388,11 +1388,11 @@ namespace AntdUI
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
             if (ScrollBar.MouseUp() && OnTouchUp())
             {
-                if (items == null || items.Count == 0 || MDown == null) return;
+                if (items == null || items.Count == 0 || mDown == null) return;
                 foreach (var it in items)
                 {
                     var list = new List<MenuItem> { it };
-                    if (IMouseUp(items, it, list, e.X, e.Y, MDown, e)) return;
+                    if (IMouseUp(items, it, list, e.X, e.Y, mDown, e)) return;
                 }
             }
         }
@@ -1405,7 +1405,7 @@ namespace AntdUI
                 bool can = item.CanExpand;
                 if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
                 {
-                    MDown = item;
+                    mDown = item;
                     return true;
                 }
                 if (can && item.Expand && !collapsed)

@@ -547,7 +547,7 @@ namespace AntdUI
         #region 鼠标
 
         int select_index = -1;
-        InRect? MDown;
+        InRect? mDown;
         protected override void OnMouseDown(MouseButtons button, int clicks, int x, int y, int delta)
         {
             if (ScrollBar.MouseDown(x, y))
@@ -563,7 +563,7 @@ namespace AntdUI
                         if (it.Tag is ContextMenuStripItem item && item.Enabled && it.Rect.Contains(x, y + ry))
                         {
                             select_index = i;
-                            MDown = it;
+                            mDown = it;
                             return;
                         }
                         else if (it.Tag is ContextMenuStripItemButtons item_buttons)
@@ -573,7 +573,7 @@ namespace AntdUI
                                 if (((ContextMenuStripItemButton)btn.Tag).Enabled && btn.Rect.Contains(x, y + ry))
                                 {
                                     //select_index = i;
-                                    MDown = btn;
+                                    mDown = btn;
                                     return;
                                 }
                             }
@@ -588,9 +588,9 @@ namespace AntdUI
             if (ScrollBar.MouseUp() && OnTouchUp())
             {
                 int ry = ScrollBar.Show ? ScrollBar.Value : 0;
-                if (MDown == null) return;
-                var it = MDown;
-                MDown = null;
+                if (mDown == null) return;
+                var it = mDown;
+                mDown = null;
                 if (it.Rect.Contains(x, y + ry)) ClickItem(it);
             }
         }

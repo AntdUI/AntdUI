@@ -580,9 +580,21 @@ namespace AntdUI.Design
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (down_colors) { down_colors = false; return; }
-            if (down_hue) { down_hue = false; return; }
-            if (down_alpha) { down_alpha = false; return; }
+            if (down_colors)
+            {
+                down_colors = false;
+                return;
+            }
+            if (down_hue)
+            {
+                down_hue = false;
+                return;
+            }
+            if (down_alpha)
+            {
+                down_alpha = false;
+                return;
+            }
             if (e.Button == MouseButtons.Left)
             {
                 for (int i = 0; i < rects_colors.Length; i++)

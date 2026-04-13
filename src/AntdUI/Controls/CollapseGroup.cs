@@ -349,11 +349,11 @@ namespace AntdUI
 
         #region 鼠标
 
-        object? MDown;
+        object? mDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            MDown = null;
+            mDown = null;
             if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
@@ -363,7 +363,7 @@ namespace AntdUI
                 {
                     if (it.rect.Contains(e.X, e.Y + y))
                     {
-                        MDown = it;
+                        mDown = it;
                         return;
                     }
                     else if (it.Expand && it.items != null && it.items.Count > 0)
@@ -372,7 +372,7 @@ namespace AntdUI
                         {
                             if (sub.Show && sub.Enabled && sub.rect.Contains(e.X, e.Y + y))
                             {
-                                MDown = sub;
+                                mDown = sub;
                                 return;
                             }
                         }
@@ -414,43 +414,32 @@ namespace AntdUI
             base.OnMouseUp(e);
             if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX() && OnTouchUp())
             {
-                if (items == null || items.Count == 0 || MDown == null) return;
+                if (items == null || items.Count == 0 || mDown == null) return;
                 int y = ScrollBar.ValueY;
-                foreach (var it in items)
+                if (mDown is CollapseGroupItem item)
                 {
-                    if (it == MDown)
+                    if (item.rect.Contains(e.X, e.Y + y))
                     {
-                        if (it.rect.Contains(e.X, e.Y + y))
+                        item.Expand = !item.Expand;
+                        if (item.Expand && Unique)
                         {
-                            it.Expand = !it.Expand;
-                            if (it.Expand && Unique)
+                            foreach (var it2 in items)
                             {
-                                foreach (var it2 in items)
-                                {
-                                    if (it2 != it) it2.Expand = false;
-                                }
-                            }
-                        }
-                        MDown = null;
-                        return;
-                    }
-                    if (it.items != null && it.items.Count > 0)
-                    {
-                        foreach (var sub in it.items)
-                        {
-                            if (MDown == sub)
-                            {
-                                if (sub.rect.Contains(e.X, e.Y + y))
-                                {
-                                    sub.Select = true;
-                                    OnItemClick(sub, new Rectangle(sub.rect.X, sub.rect.Y - y, sub.rect.Width, sub.rect.Height), e);
-                                }
-                                MDown = null;
-                                return;
+                                if (it2 == item) continue;
+                                it2.Expand = false;
                             }
                         }
                     }
                 }
+                else if (mDown is CollapseGroupSub sub)
+                {
+                    if (sub.rect.Contains(e.X, e.Y + y))
+                    {
+                        sub.Select = true;
+                        OnItemClick(sub, new Rectangle(sub.rect.X, sub.rect.Y - y, sub.rect.Width, sub.rect.Height), e);
+                    }
+                }
+                mDown = null;
             }
         }
 

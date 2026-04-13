@@ -572,7 +572,6 @@ namespace AntdUI
 
             public bool hover { get; set; }
             public bool enabled { get; set; } = true;
-            public bool mdown { get; set; }
         }
 
         #endregion
@@ -748,9 +747,11 @@ namespace AntdUI
             if (count > 0) Print();
         }
 
+        PreBtns? mDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            mDown = null;
             if (e.Button == MouseButtons.Left)
             {
                 if (btns != null)
@@ -759,7 +760,7 @@ namespace AntdUI
                     {
                         if (it.enabled && it.Rect.Contains(e.X, e.Y))
                         {
-                            it.mdown = true;
+                            mDown = it;
                             return;
                         }
                     }
@@ -794,89 +795,83 @@ namespace AntdUI
                     return;
                 }
             }
-            if (btns != null)
+            if (mDown != null)
             {
-                foreach (var it in btns)
+                if (mDown.Rect.Contains(e.X, e.Y))
                 {
-                    if (it.mdown)
+                    switch (mDown.id)
                     {
-                        if (it.Rect.Contains(e.X, e.Y))
-                        {
-                            switch (it.id)
+                        case "@t_flipY":
+                            if (Img != null)
                             {
-                                case "@t_flipY":
-                                    if (Img != null)
-                                    {
-                                        Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                                        Print();
-                                    }
-                                    break;
-                                case "@t_flipX":
-                                    if (Img != null)
-                                    {
-                                        Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                        Print();
-                                    }
-                                    break;
-                                case "@t_rotateL":
-                                    if (Img != null)
-                                    {
-                                        float old = _dpi;
-                                        bool oldautoDpi = autoDpi;
-                                        Img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                        ImgSize = Img.Size;
-                                        autoDpi = true;
-                                        FillScaleImg();
-                                        Dpi = old;
-                                        autoDpi = oldautoDpi;
-                                        Print();
-                                    }
-                                    break;
-                                case "@t_rotateR":
-                                    if (Img != null)
-                                    {
-                                        float old = _dpi;
-                                        bool oldautoDpi = autoDpi;
-                                        Img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                                        ImgSize = Img.Size;
-                                        autoDpi = true;
-                                        FillScaleImg();
-                                        Dpi = old;
-                                        autoDpi = oldautoDpi;
-                                        Print();
-                                    }
-                                    break;
-                                case "@t_zoomOut":
-                                    Dpi -= 0.1F;
-                                    SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
-                                    Print();
-                                    break;
-                                case "@t_zoomIn":
-                                    Dpi += 0.1F;
-                                    SetBtnEnabled("@t_zoomOut", true);
-                                    Print();
-                                    break;
-                                case "@t_copyText":
-                                    if (Tag is Preview.ImageTextContent content && content.Text != null && content.Text.Length > 0)
-                                    {
-                                        if (Helper.ClipboardSetText(this, content.Text))
-                                        {
-                                            Message.open(new Message.Config(this, "复制成功", TType.Success, Font)
-                                            {
-                                                ShowInWindow = true
-                                            });
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    config.OnBtns?.Invoke(it.id, new Preview.BtnEvent(SelectIndex, SelectValue, it.tag));
-                                    break;
+                                Img.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                                Print();
                             }
-                        }
-                        it.mdown = false;
-                        return;
+                            break;
+                        case "@t_flipX":
+                            if (Img != null)
+                            {
+                                Img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                                Print();
+                            }
+                            break;
+                        case "@t_rotateL":
+                            if (Img != null)
+                            {
+                                float old = _dpi;
+                                bool oldautoDpi = autoDpi;
+                                Img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                                ImgSize = Img.Size;
+                                autoDpi = true;
+                                FillScaleImg();
+                                Dpi = old;
+                                autoDpi = oldautoDpi;
+                                Print();
+                            }
+                            break;
+                        case "@t_rotateR":
+                            if (Img != null)
+                            {
+                                float old = _dpi;
+                                bool oldautoDpi = autoDpi;
+                                Img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                                ImgSize = Img.Size;
+                                autoDpi = true;
+                                FillScaleImg();
+                                Dpi = old;
+                                autoDpi = oldautoDpi;
+                                Print();
+                            }
+                            break;
+                        case "@t_zoomOut":
+                            Dpi -= 0.1F;
+                            SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
+                            Print();
+                            break;
+                        case "@t_zoomIn":
+                            Dpi += 0.1F;
+                            SetBtnEnabled("@t_zoomOut", true);
+                            Print();
+                            break;
+                        case "@t_copyText":
+                            if (Tag is Preview.ImageTextContent content && content.Text != null && content.Text.Length > 0)
+                            {
+                                if (Helper.ClipboardSetText(this, content.Text))
+                                {
+                                    Message.open(new Message.Config(this, "复制成功", TType.Success, Font)
+                                    {
+                                        ShowInWindow = true
+                                    });
+                                }
+                            }
+                            break;
+                        default:
+                            config.OnBtns?.Invoke(mDown.id, new Preview.BtnEvent(SelectIndex, SelectValue, mDown.tag));
+                            break;
                     }
                 }
+                mDown = null;
+                return;
             }
             if (rect_close.Contains(e.X, e.Y))
             {
