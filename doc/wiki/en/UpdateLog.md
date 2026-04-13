@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.9` 2026-04-13
+
+- ➕ In.Panel
+- ➕ Tabs AddTabSelect method
+- ➕ Tabs CloseDisposePage
+- ➕ Tooltip color card
+- ✍️ Tabs add first page not displayed
+- ✍️ StackPanel releases exception
+- ✍️ Transfer drag and drop sorting to remove floating status
+- ✍️ Popoover adaptation for emojis
+- 🧹 FlowPanel adapts to new scrollbar mode
+
 ### `2.3.8` 2026-04-10
 
 - ✍️ Tabs Page does not display

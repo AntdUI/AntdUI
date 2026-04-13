@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.9` 2026-04-13
+
+- ➕ In.Panel
+- ➕ Tabs AddTabSelect 方法
+- ➕ Tabs CloseDisposePage
+- ➕ Tooltip 色卡
+- ✍️ Tabs 新增第一页不显示
+- ✍️ StackPanel 释放异常
+- ✍️ Transfer 拖拽排序移除悬浮态
+- ✍️ Popover 适配 Emoji
+- 🧹 FlowPanel 适配新滚动条方式
+
 ### `2.3.8` 2026-04-10
 
 - ✍️ Tabs Page 不显示
