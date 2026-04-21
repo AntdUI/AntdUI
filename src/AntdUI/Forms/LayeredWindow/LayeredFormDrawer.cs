@@ -225,8 +225,7 @@ namespace AntdUI
                 {
                     isok = false;
                     var rect = Ang();
-                    form.Location = rect.Location;
-                    form.Size = rect.Size;
+                    form.Bounds = rect;
                     isok = true;
                 }
                 Print();
@@ -485,8 +484,7 @@ namespace AntdUI
                 SetLocation(end_X, end_Y);
                 SetSize(end_W, end_H);
                 var rect = Ang();
-                form.Location = rect.Location;
-                form.Size = rect.Size;
+                form.Bounds = rect;
                 Print();
                 ITask.Run(() =>
                 {

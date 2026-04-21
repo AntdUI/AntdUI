@@ -279,8 +279,7 @@ namespace AntdUI
                 IconRatioRight = 0F,
                 PrefixFore = Style.Db.TextTertiary,
                 PrefixText = "#",
-                Location = new Point(shadow + rect.X, shadow + rect.Y),
-                Size = rect.Size,
+                Bounds = new Rectangle(shadow + rect.X, shadow + rect.Y, rect.Width, rect.Height),
                 TextAlign = HorizontalAlignment.Center,
                 Text = Value.ToHex(),
                 TakePaint = call
@@ -304,7 +303,7 @@ namespace AntdUI
                 PrefixText = PrefixText,
                 TabStop = false,
                 ShowControl = false,
-                Location = new Point(shadow + rect.X, shadow + rect.Y),
+                Bounds = new Rectangle(shadow + rect.X, shadow + rect.Y, rect.Width, rect.Height),
                 Size = rect.Size,
                 Value = value,
                 Maximum = 255,
@@ -328,7 +327,7 @@ namespace AntdUI
                 SuffixText = "%",
                 TabStop = false,
                 ShowControl = false,
-                Location = new Point(shadow + rect.X, shadow + rect.Y),
+                Bounds = new Rectangle(shadow + rect.X, shadow + rect.Y, rect.Width, rect.Height),
                 Size = rect.Size,
                 Value = value,
                 Maximum = 100,
@@ -417,8 +416,7 @@ namespace AntdUI
         {
             BeginInvoke(() =>
             {
-                Location = TargetRect.Location;
-                Size = TargetRect.Size;
+                Bounds = TargetRect;
                 Input input = new Input
                 {
                     Dock = DockStyle.Bottom,

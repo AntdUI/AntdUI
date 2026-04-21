@@ -206,10 +206,9 @@ namespace AntdUI
             {
                 StartPosition = FormStartPosition.Manual,
                 FormBorderStyle = FormBorderStyle.None,
-                Location = flocation,
+                Bounds = new Rectangle(flocation, fsize),
                 MaximumSize = fsize,
-                MinimumSize = fsize,
-                Size = fsize
+                MinimumSize = fsize
             };
             control.Disposed += Control_Disposed;
             form.Show(this);

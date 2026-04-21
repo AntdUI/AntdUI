@@ -28,16 +28,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(owner.Size);
                 SetLocation(owner.Location);
-                Size = owner.Size;
-                Location = owner.Location;
             }
+            Bounds = TargetRect;
         }
         public LayeredFormMask(Form _owner, Control _control) : base(240)
         {
@@ -48,8 +45,7 @@ namespace AntdUI
             var point = _control.PointToScreen(Point.Empty);
             SetSize(_control.Size);
             SetLocation(point);
-            Size = _control.Size;
-            Location = point;
+            Bounds = TargetRect;
             if (_control is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
         }
 
@@ -71,16 +67,13 @@ namespace AntdUI
                 {
                     SetSize(window.Size);
                     SetLocation(window.Location);
-                    Size = window.Size;
-                    Location = window.Location;
                 }
                 else
                 {
                     SetSize(owner.Size);
                     SetLocation(owner.Location);
-                    Size = owner.Size;
-                    Location = owner.Location;
                 }
+                Bounds = TargetRect;
                 owner.VisibleChanged += Parent_VisibleChanged;
             }
             else
@@ -88,8 +81,7 @@ namespace AntdUI
                 var point = control.PointToScreen(Point.Empty);
                 SetLocation(point);
                 SetSize(control.Size);
-                Size = control.Size;
-                Location = point;
+                Bounds = TargetRect;
                 var tmps = control.FindPARENTs();
                 list = tmps.ToArray();
                 foreach (var control in list)
@@ -139,15 +131,11 @@ namespace AntdUI
                 {
                     SetSize(window.Size);
                     SetLocation(window.Location);
-                    Size = window.Size;
-                    Location = window.Location;
                 }
                 else
                 {
                     SetSize(owner.Size);
                     SetLocation(owner.Location);
-                    Size = owner.Size;
-                    Location = owner.Location;
                 }
             }
             else
@@ -155,9 +143,8 @@ namespace AntdUI
                 var point = control.PointToScreen(Point.Empty);
                 SetLocation(point);
                 SetSize(control.Size);
-                Size = control.Size;
-                Location = point;
             }
+            Bounds = TargetRect;
             temp?.Dispose();
             temp = null;
             Print();

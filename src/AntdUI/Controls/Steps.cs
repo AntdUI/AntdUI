@@ -1020,6 +1020,7 @@ namespace AntdUI
         {
             description = value;
             LocalizationDescription = localization;
+            showDescription = description != null;
             return this;
         }
 

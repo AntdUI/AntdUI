@@ -108,11 +108,9 @@ namespace AntdUI
 
         void SetInput(Input input)
         {
-            var point = Input.Location;
-            var size = Input.Size;
+            var rect = Input.Bounds;
             Input.Dispose();
-            input.Location = point;
-            input.Size = size;
+            input.Bounds = rect;
             if (Column != null)
             {
                 input.ReadOnly = Column.ReadOnly;

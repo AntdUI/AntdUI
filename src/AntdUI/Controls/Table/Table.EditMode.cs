@@ -475,15 +475,11 @@ namespace AntdUI
             Input input;
             if (column is ColumnSelect columnSelect)
             {
-                Select edit = new Select
-                {
-                    Multiline = multiline,
-                    Location = rect.Location,
-                    Size = rect.Size,
-                    List = true,
-                    IconRatio = 1f,
-                    ReadOnly = column.ReadOnly,
-                };
+                var edit = CreateInputBySelect(columnSelect);
+                edit.Multiline = multiline;
+                edit.IconRatio = 1f;
+                edit.ReadOnly = column.ReadOnly;
+                edit.Bounds = rect;
                 if (value is SelectItem select)
                 {
                     edit.Text = select.Text;
@@ -491,7 +487,6 @@ namespace AntdUI
                     edit.ShowIcon = select.Icon != null || select.IconSvg != null;
                 }
                 input = edit;
-                edit.Items.AddRange(columnSelect.Items.ToArray());
                 edit.SelectedValue = value;
             }
             else if (value is CellText text)
@@ -499,8 +494,7 @@ namespace AntdUI
                 input = new Input
                 {
                     Multiline = multiline,
-                    Location = rect.Location,
-                    Size = rect.Size,
+                    Bounds = rect,
                     Text = text.Text ?? "",
                     ReadOnly = column.ReadOnly
                 };
@@ -510,8 +504,7 @@ namespace AntdUI
                 input = new Input
                 {
                     Multiline = multiline,
-                    Location = rect.Location,
-                    Size = rect.Size,
+                    Bounds = rect,
                     Text = column.GetDisplayText(value) ?? string.Empty,
                     ReadOnly = column.ReadOnly
                 };
@@ -530,6 +523,16 @@ namespace AntdUI
                     break;
             }
             return input;
+        }
+        internal Select CreateInputBySelect(ColumnSelect column)
+        {
+            Select edit = new Select
+            {
+                List = true
+            };
+            if (column.MaxCount.HasValue) edit.MaxCount = column.MaxCount.Value;
+            edit.Items.AddRange(column.Items.ToArray());
+            return edit;
         }
         void ShowInput(Input input, bool region, int column, Action<bool, string> call)
         {

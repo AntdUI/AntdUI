@@ -163,6 +163,18 @@ namespace AntdUI
         public bool EnablePageScrolling { get; set; } = true;
 
         /// <summary>
+        /// 鼠标中键关闭使能
+        /// </summary>
+        [Description("鼠标中键关闭使能"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool EnablePageCloseByMouseMiddle { get; set; } = true;
+
+        /// <summary>
+        /// 鼠标双击关闭使能
+        /// </summary>
+        [Description("鼠标双击关闭使能"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool EnablePageCloseByMouseDoubleClick { get; set; } = true;
+
+        /// <summary>
         /// 关闭页面后释放
         /// </summary>
         [Description("关闭页面后释放"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
@@ -655,11 +667,13 @@ namespace AntdUI
 
         #region 鼠标
 
+        int clicks = 1;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             pageDown = pageMove = null;
             offsetx = offsety = 0;
             base.OnMouseDown(e);
+            clicks = e.Clicks;
             if (items == null || MouseDownPre(e.X, e.Y)) return;
             if (_tabMenuVisible && EnableSwitch)
             {
@@ -758,6 +772,7 @@ namespace AntdUI
             pageDown = pageMove = null;
             base.OnMouseUp(e);
             if (items == null) return;
+            if (clicks > 1) e = new MouseEventArgs(e.Button, clicks, e.X, e.Y, e.Delta);
             if (_tabMenuVisible)
             {
                 if (_pageMove != null)
@@ -787,11 +802,7 @@ namespace AntdUI
                             if (_pageDown.Contains(x, y))
                             {
                                 if (style.MouseClick(_pageDown, i, x, y)) return;
-                                if (OnTabClick(_pageDown, i, style, e))
-                                {
-                                    SelectedIndex = i;
-                                    return;
-                                }
+                                if (OnTabClick(_pageDown, i, style, e)) return;
                             }
                             else Invalidate();
                             return;
@@ -1632,11 +1643,7 @@ namespace AntdUI
         {
             if (items == null) return;
             int index = items.IndexOf(page);
-            if (OnTabClick(items[index], index, style, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)))
-            {
-                SelectedIndex = index;
-                return;
-            }
+            if (OnTabClick(items[index], index, style, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0))) return;
         }
 
         /// <summary>
@@ -1662,11 +1669,44 @@ namespace AntdUI
 
         protected virtual bool OnTabClick(TabPage item, int index, IStyle style, MouseEventArgs e)
         {
-            if (TabClick == null) return true;
+            if (TabClick == null)
+            {
+                RunTabClick(item, index, style, e);
+                return true;
+            }
             var args = new TabsItemEventArgs(item, index, style, e);
             TabClick(this, args);
             if (args.Cancel) return false;
+            RunTabClick(item, index, style, e);
             return true;
+        }
+        void RunTabClick(TabPage item, int index, IStyle style, MouseEventArgs e)
+        {
+            if (((EnablePageCloseByMouseMiddle && e.Button == MouseButtons.Middle) || (EnablePageCloseByMouseDoubleClick && e.Button == MouseButtons.Left && e.Clicks > 1)) && CanClose(item, style))
+            {
+                items!.Remove(item);
+                if (CloseDisposePage) item.Dispose();
+                return;
+            }
+            SelectedIndex = index;
+        }
+        bool CanClose(TabPage item, IStyle style)
+        {
+            if (item.ReadOnly) return false;
+            bool flag = false;
+            if (style is StyleLine line)
+            {
+                if (line.Closable) flag = true;
+            }
+            else if (style is StyleCard card)
+            {
+                if (card.Closable) flag = true;
+            }
+            else if (style is StyleCard2 card2)
+            {
+                if (card2.Closable != StyleCard2.CloseType.none) flag = true;
+            }
+            return flag && OnClosingPage(item);
         }
 
         #endregion

@@ -32,16 +32,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(form.Size);
                 SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
             }
+            Bounds = TargetRect;
             PageSize = config.ContentCount;
             SelectIndex = config.SelectIndex;
             if (config.ShowBtn)
@@ -98,16 +95,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(form.Size);
                 SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
             }
+            Bounds = TargetRect;
             form.LocationChanged += Form_LSChanged;
             form.SizeChanged += Form_LSChanged;
             LoadImg();
@@ -121,16 +115,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(form.Size);
                 SetLocation(form.Location);
-                Size = form.Size;
-                Location = form.Location;
             }
+            Bounds = TargetRect;
             Print();
         }
 

@@ -64,15 +64,11 @@ namespace AntdUI
         {
             if (_column is ColumnSelect columnSelect)
             {
-                var edit = new Select
-                {
-                    Margin = new Padding(0),
-                    PlaceholderText = Localization.Get("Filter", "筛选"),
-                    Dock = DockStyle.Fill,
-                    List = true,
-                    AutoPrefixSvg = true
-                };
-                edit.Items.AddRange(columnSelect.Items.ToArray());
+                var edit = _table.CreateInputBySelect(columnSelect);
+                edit.Margin = new Padding(0);
+                edit.PlaceholderText = Localization.Get("Filter", "筛选");
+                edit.Dock = DockStyle.Fill;
+                edit.AutoPrefixSvg = true;
                 tablePanel.Controls.Add(edit, 1, 0);
                 foreach (SelectItem item in selectCondition.Items)
                 {

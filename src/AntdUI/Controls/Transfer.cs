@@ -364,19 +364,14 @@ namespace AntdUI
                                 PrefixSvg = "SearchOutlined",
                                 LocalizationPlaceholderText = placeholderSourceLocalization,
                                 PlaceholderText = placeholderSource,
-                                Location = rect_source_input.Location,
-                                Size = rect_source_input.Size,
+                                Bounds = rect_source_input,
                                 Text = sourceSearchText
                             };
                             OnInputStyle(input_source, true);
                             Controls.Add(input_source);
                             input_source.TextChanged += input_source_TextChanged;
                         }
-                        else
-                        {
-                            input_source.Location = rect_source_input.Location;
-                            input_source.Size = rect_source_input.Size;
-                        }
+                        else input_source.Bounds = rect_source_input;
                         if (input_target == null)
                         {
                             input_target = new Input
@@ -384,19 +379,14 @@ namespace AntdUI
                                 PrefixSvg = "SearchOutlined",
                                 LocalizationPlaceholderText = placeholderTargetLocalization,
                                 PlaceholderText = placeholderTarget,
-                                Location = rect_target_input.Location,
-                                Size = rect_target_input.Size,
+                                Bounds = rect_target_input,
                                 Text = targetSearchText
                             };
                             OnInputStyle(input_target, false);
                             Controls.Add(input_target);
                             input_target.TextChanged += input_target_TextChanged;
                         }
-                        else
-                        {
-                            input_target.Location = rect_target_input.Location;
-                            input_target.Size = rect_target_input.Size;
-                        }
+                        else input_target.Bounds = rect_target_input;
                         useY += h + gap2;
                     }
                     else

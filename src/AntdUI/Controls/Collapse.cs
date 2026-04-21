@@ -1110,7 +1110,7 @@ namespace AntdUI
             };
             action_del = obj =>
             {
-                if (obj is int obj_int&&obj_int== -1) it.Controls.Clear();
+                if (obj is int obj_int && obj_int == -1) it.Controls.Clear();
                 else if (obj is object[] objs && objs[0] is CollapseItem item)
                 {
                     it.Controls.Remove(item);
@@ -1352,8 +1352,7 @@ namespace AntdUI
                 return;
             }
             canset = false;
-            Size = RectControl.Size;
-            Location = RectControl.Location;
+            Bounds = RectControl;
             canset = true;
         }
 

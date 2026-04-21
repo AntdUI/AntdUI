@@ -2297,6 +2297,8 @@ namespace AntdUI
             }
         }
 
+        public int? MaxCount { get; set; }
+
         #region 设置
 
         public ColumnSelect SetItems(params SelectItem[] list)
@@ -2307,6 +2309,11 @@ namespace AntdUI
         public ColumnSelect SetItems(IList<SelectItem> list)
         {
             Items = new List<SelectItem>(list);
+            return this;
+        }
+        public ColumnSelect SetMaxCount(int? value)
+        {
+            MaxCount = value;
             return this;
         }
 

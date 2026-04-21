@@ -253,16 +253,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(config.Form.Size);
                 SetLocation(config.Form.Location);
-                Size = config.Form.Size;
-                Location = config.Form.Location;
             }
+            Bounds = TargetRect;
         }
 
         public override string name => nameof(Tour);
@@ -276,16 +273,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(config.Form.Size);
                 SetLocation(config.Form.Location);
-                Size = config.Form.Size;
-                Location = config.Form.Location;
             }
+            Bounds = TargetRect;
             config.Form.LocationChanged += Form_LSChanged;
             config.Form.SizeChanged += Form_LSChanged;
             base.OnLoad(e);
@@ -297,16 +291,13 @@ namespace AntdUI
             {
                 SetSize(window.Size);
                 SetLocation(window.Location);
-                Size = window.Size;
-                Location = window.Location;
             }
             else
             {
                 SetSize(config.Form.Size);
                 SetLocation(config.Form.Location);
-                Size = config.Form.Size;
-                Location = config.Form.Location;
             }
+            Bounds = TargetRect;
             temp?.Dispose(); temp = null;
             Print();
         }

@@ -441,8 +441,7 @@ namespace AntdUI
                 {
                     var control = controls[i];
                     var rect = rects[i];
-                    control.Location = rect.Location;
-                    control.Size = rect.Size;
+                    control.Bounds = rect;
                     if (i >= rects.Length) return;
                 }
             }

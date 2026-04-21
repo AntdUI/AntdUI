@@ -1063,9 +1063,8 @@ namespace AntdUI
                     case EButtonEditTypes.Input:
                         Input input = new Input()
                         {
-                            Location = rect.Location,
+                            Bounds = rect,
                             TabIndex = parent.Controls.Count,
-                            Size = rect.Size,
                             PrefixSvg = IconSvg,
                             PrefixFore = Fore,
                             PlaceholderText = Text,
