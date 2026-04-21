@@ -1722,25 +1722,46 @@ namespace AntdUI
                     else it.Controls.Add(item);
                 }
             };
-            action_del = (item, index) =>
+            action_del = obj =>
             {
-                if (index == -1) it.SelectedIndex = 0;
-                else
+                if (obj is int obj_int && obj_int == -1)
                 {
-                    int old = it.SelectedIndex;
-                    if (old == index)
+                    it.SelectedIndex = 0;
+                    if (it.CloseDisposePage)
                     {
-                        if (index == 0) it.ShowPage(index);
-                        else
-                        {
-                            int _new = index - 1;
-                            if (_new > -1) it.SelectedIndex = _new;
-                            else it.ShowPage(_new);
-                        }
+                        foreach (Control control in it.Controls) control.Dispose();
                     }
-                    else if (old > index) it.SelectedIndex = old - 1;
+                    it.Controls.Clear();
                 }
-                it.Controls.Remove(item);
+                else if (obj is object[] objs && objs[0] is TabPage item && objs[1] is int index)
+                {
+                    if (index == -1) it.SelectedIndex = 0;
+                    else
+                    {
+                        int old = it.SelectedIndex;
+                        if (old == index)
+                        {
+                            if (index == 0) it.ShowPage(index);
+                            else
+                            {
+                                int _new = index - 1;
+                                if (_new > -1) it.SelectedIndex = _new;
+                                else it.ShowPage(_new);
+                            }
+                        }
+                        else if (old > index) it.SelectedIndex = old - 1;
+                    }
+                    if (it.CloseDisposePage) item.Dispose();
+                    it.Controls.Remove(item);
+                }
+                else if (obj is IList<TabPage> list)
+                {
+                    if (it.CloseDisposePage)
+                    {
+                        foreach (var control in list) control.Dispose();
+                    }
+                    foreach (var control in list) it.Controls.Remove(control);
+                }
             };
             return this;
         }
@@ -1967,7 +1988,11 @@ namespace AntdUI
             {
                 if (showed == value) return;
                 showed = value;
-                if (value) base.Dock = olddock;
+                if (value)
+                {
+                    base.Dock = olddock;
+                    BringToFront();
+                }
                 else
                 {
                     int w = Width, h = Height;

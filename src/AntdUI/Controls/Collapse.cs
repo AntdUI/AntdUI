@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -1107,9 +1108,17 @@ namespace AntdUI
                 item.Location = new Point(-item.Width, -item.Height);
                 it.Controls.Add(item);
             };
-            action_del = (item, index) =>
+            action_del = obj =>
             {
-                it.Controls.Remove(item);
+                if (obj is int obj_int&&obj_int== -1) it.Controls.Clear();
+                else if (obj is object[] objs && objs[0] is CollapseItem item)
+                {
+                    it.Controls.Remove(item);
+                }
+                else if (obj is IList<CollapseItem> list)
+                {
+                    foreach (var it1 in list) it.Controls.Remove(it1);
+                }
             };
             return this;
         }
