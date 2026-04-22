@@ -567,8 +567,8 @@ namespace AntdUI
         /// <summary>
         /// 关闭按钮大小
         /// </summary>
-        [Description("关闭按钮大小"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(48)]
-        public int CloseSize { get; set; } = 48;
+        [Description("关闭按钮大小"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(null)]
+        public int? CloseSize { get; set; }
 
         #region 线条
 
@@ -1007,10 +1007,10 @@ namespace AntdUI
                 return;
             }
             var rect = ClientRectangle.PaddingRect(Padding);
-            int rr = 0;
-            if (CloseSize > 0 && showButton)
+            int rr = 0, closeSize = GetCloseSize();
+            if (closeSize > 0 && showButton)
             {
-                int btn_size = (fullBox || maximizeBox || minimizeBox) ? (int)Math.Round(CloseSize * Dpi) : (int)Math.Round((CloseSize - 8) * Dpi);
+                int btn_size = (int)Math.Round(closeSize * Dpi);
                 rect_close = new Rectangle(rect.Right - btn_size, rect.Y, btn_size, rect.Height);
                 rr = btn_size;
                 int left = rect_close.Left;
@@ -1034,6 +1034,11 @@ namespace AntdUI
             }
             hasr = rr;
             if (DragMove) RMax(Parent.FindPARENT(MDI));
+        }
+        int GetCloseSize()
+        {
+            if (CloseSize.HasValue) return CloseSize.Value;
+            else return (fullBox || maximizeBox || minimizeBox) ? 48 : 40;
         }
 
         void RMax(Form? form)

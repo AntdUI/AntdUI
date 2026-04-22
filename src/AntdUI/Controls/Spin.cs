@@ -90,6 +90,20 @@ namespace AntdUI
             set => config.IndicatorSvg = value;
         }
 
+        [Description("加载圈大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public int? CirSize
+        {
+            get => config.CirSize;
+            set => config.CirSize = value;
+        }
+
+        [Description("加载圈粗细"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public int? CirWidth
+        {
+            get => config.CirWidth;
+            set => config.CirWidth = value;
+        }
+
         #endregion
 
         #region 动画
@@ -202,6 +216,16 @@ namespace AntdUI
             /// </summary>
             public float? Rate { get; set; }
 
+            /// <summary>
+            /// 大小
+            /// </summary>
+            public int? CirSize { get; set; }
+
+            /// <summary>
+            /// 粗细
+            /// </summary>
+            public int? CirWidth { get; set; }
+
             #region 取消按钮
 
             /// <summary>
@@ -283,6 +307,16 @@ namespace AntdUI
             public Config SetRate(float? value)
             {
                 Rate = value;
+                return this;
+            }
+            public Config SetCirSize(int? value)
+            {
+                CirSize = value;
+                return this;
+            }
+            public Config SetCirWidth(int? value)
+            {
+                CirWidth = value;
                 return this;
             }
             public Config SetCancel(string? value)
@@ -643,14 +677,15 @@ namespace AntdUI
         {
             var font = config.Font ?? control.Font;
             if (prog_size == 0) prog_size = g.MeasureText(config.Text ?? Config.NullText, font).Height;
-            int rprog_size = (int)(prog_size * 1.6F), size = (int)(prog_size * .2F), size2 = rprog_size / 2;
-            var rect_prog = new Rectangle(rect.X + (rect.Width - rprog_size) / 2, rect.Y + (rect.Height - rprog_size) / 2, rprog_size, rprog_size);
+            int cirSize = config.CirSize.HasValue ? (int)(config.CirSize.Value * g.Dpi) : (int)(prog_size * 1.6F),
+                cirWidth = config.CirWidth.HasValue ? (int)(config.CirWidth.Value * g.Dpi) : (int)(prog_size * .2F);
+            var cirContainer = new Rectangle(rect.X + (rect.Width - cirSize) / 2, rect.Y + (rect.Height - cirSize) / 2, cirSize, cirSize);
             if (config.CancelToken != null && config.CancelText != null)
             {
                 var canceltext = config.CancelText;
                 var size_btn = g.MeasureText(canceltext, font).Size(12, 6);
-                var y = rect_prog.Bottom;
-                rect_prog.Offset(0, -rprog_size);
+                var y = cirContainer.Bottom;
+                cirContainer.Offset(0, -cirSize);
                 rect_button = new Rectangle(rect.X + (rect.Width - size_btn.Width) / 2, y, size_btn.Width, size_btn.Height);
                 using (var path = rect_button.Value.RoundPath(6 * g.Dpi))
                 {
@@ -662,8 +697,8 @@ namespace AntdUI
             }
             if (config.Text != null)
             {
-                var y = rect_prog.Bottom;
-                rect_prog.Offset(0, -size2);
+                var y = cirContainer.Bottom;
+                cirContainer.Offset(0, -cirSize / 2);
                 g.DrawText(config.Text, font, config.Fore ?? Colour.Primary.Get(nameof(Spin)), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
             var color = config.Color ?? Colour.Primary.Get(nameof(Spin));
@@ -671,29 +706,30 @@ namespace AntdUI
             {
                 rate = config.Rate;
                 mode = 2;
-                var size22 = rprog_size / 2F;
-                g.TranslateTransform(rect_prog.X + size22, rect_prog.Y + size22);
+                var cirSize2 = cirSize / 2F;
+                int cirSizeNum = (int)cirSize2;
+                g.TranslateTransform(cirContainer.X + cirSize2, cirContainer.Y + cirSize2);
                 g.RotateTransform(LineAngle);
-                var rect_center = new Rectangle(-size2, -size2, rprog_size, rprog_size);
+                var rect_center = new Rectangle(-cirSizeNum, -cirSizeNum, cirSize, cirSize);
                 if (config.Indicator != null) g.Image(config.Indicator, rect_center);
                 if (config.IndicatorSvg != null) g.Svg(config.IndicatorSvg, rect_center, color);
                 g.ResetTransform();
             }
             else
             {
-                g.DrawEllipse(Colour.Fill.Get(nameof(Spin)), size, rect_prog);
-                using (var brush = new Pen(color, size))
+                g.DrawEllipse(Colour.Fill.Get(nameof(Spin)), cirWidth, cirContainer);
+                using (var brush = new Pen(color, cirWidth))
                 {
                     brush.StartCap = brush.EndCap = LineCap.Round;
                     if (config.Value.HasValue)
                     {
                         mode = 1;
-                        g.DrawArc(brush, rect_prog, LineAngle, config.Value.Value * 360F);
+                        g.DrawArc(brush, cirContainer, LineAngle, config.Value.Value * 360F);
                     }
                     else
                     {
                         mode = 0;
-                        g.DrawArc(brush, rect_prog, LineAngle, LineWidth * 3.6F);
+                        g.DrawArc(brush, cirContainer, LineAngle, LineWidth * 3.6F);
                     }
                 }
             }
