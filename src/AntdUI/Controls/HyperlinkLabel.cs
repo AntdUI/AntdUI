@@ -62,8 +62,8 @@ namespace AntdUI
             {
                 if (text == value) return;
                 text = value;
-                if (BeforeAutoSize()) Invalidate();
                 ParseText();
+                if (BeforeAutoSize()) Invalidate();
                 OnTextChanged(EventArgs.Empty);
                 OnPropertyChanged(nameof(Text));
             }
@@ -602,7 +602,6 @@ namespace AntdUI
         #region 私有方法
 
         LinkPart[] _linkParts = new LinkPart[0];
-        string _plainText = string.Empty;
         private void ParseText()
         {
             if (text == null)
@@ -642,8 +641,6 @@ namespace AntdUI
                 linkParts.Add(new LinkPart(plainText, null));
                 plainTextBuilder.Append(plainText);
             }
-
-            _plainText = plainTextBuilder.ToString(); // 保存纯文本
             _linkParts = linkParts.ToArray();
         }
 

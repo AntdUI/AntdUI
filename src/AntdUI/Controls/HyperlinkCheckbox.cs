@@ -125,7 +125,6 @@ namespace AntdUI
         #region 私有实现
 
         LinkPart[] _linkParts = new LinkPart[0];
-
         private void ParseText()
         {
             var text = base.Text;
@@ -292,7 +291,7 @@ namespace AntdUI
                 if (base.Text == value) return;
                 base.Text = value;
                 ParseText();
-                Invalidate();
+                if (BeforeAutoSize()) Invalidate();
                 OnPropertyChanged(nameof(Text));
             }
         }

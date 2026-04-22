@@ -536,7 +536,7 @@ namespace AntdUI
             base.OnResize(e);
         }
 
-        bool BeforeAutoSize()
+        internal bool BeforeAutoSize()
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired) return ITask.Invoke(this, BeforeAutoSize);
