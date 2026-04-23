@@ -522,7 +522,7 @@ namespace AntdUI
             {
                 base.OnMouseWheel(e);
                 if (Panel.YScroll == null) return;
-                if (Panel.YScroll.Visible) Panel.YScroll.MouseWheelY(e.Delta);
+                if (Panel.YScroll.Visible) Panel.YScroll.MouseWheelY(e);
             }
 
             #endregion

@@ -62,10 +62,7 @@ namespace AntdUI
             }
         }
 
-
-
         string? _recordsPerPageText;
-
         /// <summary>
         /// 每页记录数文本，标签提醒文本
         /// </summary>

@@ -346,6 +346,13 @@ namespace AntdUI
             base.OnMouseWheel(e);
         }
 
+        public bool MouseWheelY(MouseEventArgs e)
+        {
+            var value = MouseWheelY(e.Delta);
+            if (value && e is HandledMouseEventArgs handled) handled.Handled = true;
+            return value;
+        }
+
         public bool MouseWheelY(int delta)
         {
             if (delta == 0) return false;

@@ -694,12 +694,12 @@ namespace AntdUI
                 if (Panel.Vertical)
                 {
                     if (Panel.YScroll == null) return;
-                    if (Panel.YScroll.Visible) Panel.YScroll.MouseWheelY(e.Delta);
+                    if (Panel.YScroll.Visible) Panel.YScroll.MouseWheelY(e);
                 }
                 else
                 {
                     if (Panel.XScroll == null) return;
-                    if (Panel.XScroll.Visible) Panel.XScroll.MouseWheelX(e.Delta);
+                    if (Panel.XScroll.Visible) Panel.XScroll.MouseWheelX(e);
                 }
             }
 
