@@ -38,6 +38,14 @@ namespace AntdUI
             IcoTableFilter = "FilterFilled",
             IcoTableColumnSort = "HolderOutlined",
 
-            IcoPageHeaderBack = "ArrowLeftOutlined";
+            IcoPageHeaderBack = "ArrowLeftOutlined",
+
+            IcoPinFilled = "PushpinFilled",
+            IcoPinOutlined = "PushpinOutlined",
+            IcoLeft = "LeftOutlined",
+            IcoRight = "RightOutlined",
+            IcoUp = "UpOutlined",
+            IcoDown = "DownOutlined",
+            IcoBorder = "BorderOutlined";
     }
 }

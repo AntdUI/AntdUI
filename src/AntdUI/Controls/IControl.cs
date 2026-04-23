@@ -628,8 +628,8 @@ namespace AntdUI
             {
                 if (mdownd == 1)
                 {
-                    int moveY = oldMY, moveYa = Math.Abs(moveY);
-                    if (moveYa > 10)
+                    int moveY = oldMY, moveYa = Math.Abs(moveY),threshold = (int)(Config.TouchThreshold * Dpi);
+                    if (moveYa > threshold)
                     {
                         // 缓冲动画
                         int duration = (int)Math.Ceiling(moveYa * .1F), incremental = moveYa / 2, sleep = 20;

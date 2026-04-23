@@ -72,7 +72,7 @@ namespace AntdUI
         bool IKeyUp()
         {
             if (rows == null || _editControls.Count > 0) return false;
-            if (selectedIndex.Length == 0) ScrollBar.ValueY -= 50;
+            if (selectedIndex.Length == 0) ScrollBar.ValueY -= (int)(60 * Dpi);
             else if (selectedIndex[0] > 1)
             {
                 int value = selectedIndex[0] - 1;
@@ -89,7 +89,7 @@ namespace AntdUI
         bool IKeyDown()
         {
             if (rows == null || _editControls.Count > 0) return false;
-            if (selectedIndex.Length == 0) ScrollBar.ValueY += 50;
+            if (selectedIndex.Length == 0) ScrollBar.ValueY += (int)(60 * Dpi);
             else if (selectedIndex[selectedIndex.Length - 1] < dataLen)
             {
                 int value = selectedIndex[selectedIndex.Length - 1] + 1;
@@ -109,7 +109,7 @@ namespace AntdUI
             if (rows == null || _editControls.Count > 0) return false;
             if (focusedxy == null || focusedxy[0] <= 0)
             {
-                ScrollBar.ValueX -= 50;
+                ScrollBar.ValueX -= (int)(60 * Dpi);
                 return false;
             }
             try
@@ -117,7 +117,7 @@ namespace AntdUI
                 var row = rows[focusedxy[1]];
                 if (row == null)
                 {
-                    ScrollBar.ValueX -= 50;
+                    ScrollBar.ValueX -= (int)(60 * Dpi);
                     return false;
                 }
                 var cel = row.cells[focusedxy[0] - 1];
@@ -126,7 +126,7 @@ namespace AntdUI
                 return true;
             }
             catch { }
-            ScrollBar.ValueX -= 50;
+            ScrollBar.ValueX -= (int)(60 * Dpi);
             return false;
         }
         bool IKeyRight()
@@ -134,7 +134,7 @@ namespace AntdUI
             if (rows == null || _editControls.Count > 0) return false;
             if (focusedxy == null)
             {
-                ScrollBar.ValueX += 50;
+                ScrollBar.ValueX += (int)(60 * Dpi);
                 return false;
             }
             int next = focusedxy[0] + 1;
@@ -143,7 +143,7 @@ namespace AntdUI
                 var row = rows[focusedxy[1]];
                 if (row == null)
                 {
-                    ScrollBar.ValueX += 50;
+                    ScrollBar.ValueX += (int)(60 * Dpi);
                     return false;
                 }
                 if (next < row.cells.Length)
@@ -155,7 +155,7 @@ namespace AntdUI
                 }
             }
             catch { }
-            ScrollBar.ValueX += 50;
+            ScrollBar.ValueX += (int)(60 * Dpi);
             return false;
         }
 

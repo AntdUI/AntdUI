@@ -500,7 +500,8 @@ namespace AntdUI
                 }
             }
             else g.SetClip(rect_com);
-            g.TranslateTransform(0, -scroll.ValueY);
+            int sy = scroll.ValueY;
+            g.TranslateTransform(0, -sy);
             var name = nameof(Transfer);
             using (var fore = new SolidBrush(ForeColor ?? Colour.Text.Get(name, ColorScheme)))
             using (var foreActive = new SolidBrush(ForeActive ?? Colour.Text.Get(name, ColorScheme)))
@@ -509,28 +510,36 @@ namespace AntdUI
                 {
                     foreach (var it in items)
                     {
-                        if (it.Visible && it.IsTarget == isTarget)
+                        if (it.IsTarget == isTarget)
                         {
-                            count++;
-                            if (it.selected)
+                            if (it.Visible)
                             {
-                                selectedCount++;
-                                using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                count++;
+                                it.show = rect_com.IsItemVisible(sy + rect_com.Y, it.rect);
+                                if (it.show)
                                 {
-                                    g.Fill(brush, it.rect);
+                                    if (it.selected)
+                                    {
+                                        selectedCount++;
+                                        using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                        {
+                                            g.Fill(brush, it.rect);
+                                        }
+                                    }
+                                    if (it.Hover)
+                                    {
+                                        using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
+                                        {
+                                            g.Fill(brush, it.rect);
+                                        }
+                                    }
+                                    PaintItem(g, it, name, fore, foreActive);
                                 }
+                                else if (it.selected) selectedCount++;
                             }
-                            if (it.Hover)
-                            {
-                                using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
-                                {
-                                    g.Fill(brush, it.rect);
-                                }
-                            }
-                            PaintItem(g, it, name, fore, foreActive);
+                            else it.show = false;
                         }
                     }
-                    g.Restore(state);
                 }
                 else
                 {
@@ -538,21 +547,29 @@ namespace AntdUI
                     {
                         foreach (var it in items)
                         {
-                            if (it.Visible && it.IsTarget == isTarget)
+                            if (it.IsTarget == isTarget)
                             {
-                                count++;
-                                if (it.selected)
+                                if (it.Visible)
                                 {
-                                    selectedCount++;
-                                    using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                    count++;
+                                    it.show = rect_com.IsItemVisible(sy + rect_com.Y, it.rect);
+                                    if (it.show)
                                     {
-                                        g.Fill(brush, it.rect);
+                                        if (it.selected)
+                                        {
+                                            selectedCount++;
+                                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                            {
+                                                g.Fill(brush, it.rect);
+                                            }
+                                        }
+                                        PaintItem(g, it, name, fore, foreActive);
                                     }
+                                    else if (it.selected) selectedCount++;
                                 }
-                                PaintItem(g, it, name, fore, foreActive);
+                                else it.show = false;
                             }
                         }
-                        g.Restore(state);
                         foreach (var it in items)
                         {
                             if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
@@ -571,31 +588,40 @@ namespace AntdUI
                     {
                         foreach (var it in items)
                         {
-                            if (it.Visible && it.IsTarget == isTarget)
+                            if (it.IsTarget == isTarget)
                             {
-                                count++;
-                                if (it.selected)
+                                if (it.Visible)
                                 {
-                                    selectedCount++;
-                                    using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                    it.show = rect_com.IsItemVisible(sy + rect_com.Y, it.rect);
+                                    if (it.show)
                                     {
-                                        g.Fill(brush, it.rect);
+                                        count++;
+                                        if (it.selected)
+                                        {
+                                            selectedCount++;
+                                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                            {
+                                                g.Fill(brush, it.rect);
+                                            }
+                                        }
+                                        if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
+                                        if (it.Hover)
+                                        {
+                                            using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
+                                            {
+                                                g.Fill(brush, it.rect);
+                                            }
+                                        }
+                                        PaintItem(g, it, name, fore, foreActive);
                                     }
+                                    else if (it.selected) selectedCount++;
                                 }
-                                if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
-                                if (it.Hover)
-                                {
-                                    using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
-                                    {
-                                        g.Fill(brush, it.rect);
-                                    }
-                                }
-                                PaintItem(g, it, name, fore, foreActive);
+                                else it.show = false;
                             }
                         }
-                        g.Restore(state);
                     }
                 }
+                g.Restore(state);
 
                 // 绘制标题/数量
                 string countText = $"{selectedCount}/{count}";
@@ -795,12 +821,30 @@ namespace AntdUI
                 {
                     if (it == dragBody.i) continue;
                     dragBody.last = y > dragBody._oy;
-                    bool hover = false;
-                    if (it.IsTarget) hover = it.rect.Contains(x, y + ScrollBarTarget.ValueY);
-                    else hover = it.rect.Contains(x, y + ScrollBarSource.ValueY);
+                    var scrollBar = it.IsTarget ? ScrollBarTarget : ScrollBarSource;
+                    bool hover = it.rect.Contains(x, y + scrollBar.ValueY);
                     if (hover)
                     {
                         dragBody.im = it;
+                        if (scrollBar.ShowY)
+                        {
+                            scrollItem = it;
+                            if (!it.show && taskItem == null)
+                            {
+                                if (y > rect_source_com.Y) scrollValue = (int)(60 * Dpi);
+                                else scrollValue = -(int)(60 * Dpi);
+                                taskItem = new AnimationTask(this, () =>
+                                {
+                                    if (scrollItem == null) return false;
+                                    if (scrollItem.show || !scrollItem.Visible) return false;
+                                    var old = scrollBar.ValueY;
+                                    scrollBar.ValueY += scrollValue;
+                                    if (scrollBar.ValueY == old) return false;
+                                    return true;
+                                }, 10, () => taskItem = null);
+                            }
+                            return;
+                        }
                         Invalidate();
                         return;
                     }
@@ -810,11 +854,16 @@ namespace AntdUI
 
         object? mdown;
         DragHeader? dragBody;
+        AnimationTask? taskItem;
+        TransferItem? scrollItem;
+        int scrollValue;
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (showSearch) Focus();
             mdown = null;
             dragBody = null;
+            scrollItem = null;
             if (ScrollBarSource.MouseDownY(e.X, e.Y) && ScrollBarTarget.MouseDownY(e.X, e.Y))
             {
                 base.OnMouseDown(e);
@@ -887,8 +936,11 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            scrollItem = null;
             if (dragBody != null)
             {
+                taskItem?.Dispose();
+                taskItem = null;
                 if (dragBody.hand)
                 {
                     var dir = new Dictionary<int, TransferItem>(items!.Count);
@@ -1742,6 +1794,7 @@ namespace AntdUI
 
         #region 内部
 
+        internal bool show { get; set; }
         internal Transfer? PARENT { get; set; }
         internal Rectangle rect { get; set; }
         internal Rectangle rect_text { get; set; }
