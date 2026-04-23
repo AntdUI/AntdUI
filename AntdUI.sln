@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphemeSplitterTest", "tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BallTest", "example\BallTest\BallTest.csproj", "{6EF92ED2-D4CF-A5F8-09EF-FDE92C580659}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendedTest", "example\ExtendedTest\ExtendedTest.csproj", "{91DB97BF-7C60-1B2A-1B5F-E159D2E71CCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{6EF92ED2-D4CF-A5F8-09EF-FDE92C580659}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EF92ED2-D4CF-A5F8-09EF-FDE92C580659}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EF92ED2-D4CF-A5F8-09EF-FDE92C580659}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91DB97BF-7C60-1B2A-1B5F-E159D2E71CCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91DB97BF-7C60-1B2A-1B5F-E159D2E71CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91DB97BF-7C60-1B2A-1B5F-E159D2E71CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91DB97BF-7C60-1B2A-1B5F-E159D2E71CCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{3A032088-E22D-BFA0-83BC-B0CD61CAD7BF} = {5243A57B-3E12-49E1-BA51-CBB5D786193F}
 		{01ACFED0-8673-06F4-52A8-D45E69339517} = {3762ED79-94BC-42B3-A024-E0F1F375BCEB}
 		{6EF92ED2-D4CF-A5F8-09EF-FDE92C580659} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
+		{91DB97BF-7C60-1B2A-1B5F-E159D2E71CCD} = {B9AB491E-DDF2-4E3D-97FA-622E36504B91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B151716-3D07-4DA4-8C4D-2D2BBE164EAA}
