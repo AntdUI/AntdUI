@@ -267,6 +267,16 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 根据内边距缩小矩形左右区域
+        /// </summary>
+        public static Rectangle DeflateRectLR(int x, int y, int w, int h, int padding, float dpi)
+        {
+            if (padding == 0) return new Rectangle(x, y, w, h);
+            int padd = (int)(padding * dpi), padd2 = padd * 2;
+            return new Rectangle(x + padd, y, w - padd2, h);
+        }
+
         #endregion
 
         public static Rectangle PaddingRect(this Rectangle rect, Panel config, TAlignMini align, float borderWidth = 0F)

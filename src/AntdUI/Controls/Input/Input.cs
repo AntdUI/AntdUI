@@ -166,6 +166,12 @@ namespace AntdUI
         [Description("光标速度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(1000)]
         public int CaretSpeed { get; set; } = 1000;
 
+        /// <summary>
+        /// 确定光标是可见的还是隐藏的
+        /// </summary>
+        [Description("确定光标是可见的还是隐藏的"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
+        public bool CaretVisible { get; set; } = true;
+
         #endregion
 
         #region 边框
@@ -221,6 +227,12 @@ namespace AntdUI
         public Color? BorderActive { get; set; }
 
         #endregion
+
+        /// <summary>
+        /// 左右边距
+        /// </summary>
+        [Description("左右边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(0)]
+        public int PaddingLR { get; set; } = 0;
 
         /// <summary>
         /// 波浪大小
@@ -1868,11 +1880,12 @@ namespace AntdUI
         [Browsable(false)]
         [Description("是否存在焦点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool HasFocus { get; private set; }
+
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
             HasFocus = true;
-            CaretInfo.Show = true;
+            CaretInfo.Show = CaretVisible;
             ExtraMouseDown = true;
             if (Helper.IsTouch()) Helper.OpenOsk();
         }
@@ -2089,44 +2102,49 @@ namespace AntdUI
                 if (x < first.x) return first;
                 else if (x > last.x) return last;
             }
-            var findy = FindNearestFontY(y, cache_caret);
-            int index = 0;
-            long minDiff = Math.Abs((long)cache_caret[0].x - x);
-            for (int i = 1; i < cache_caret.Length; i++)
-            {
-                if (cache_caret[i].y == findy)
-                {
-                    long currentDiff = Math.Abs((long)(cache_caret[i].x) - x);
-
-                    // 如果当前差值更小，更新记录
-                    if (currentDiff < minDiff)
-                    {
-                        minDiff = currentDiff;
-                        index = i;
-                        if (minDiff == 0) break;
-                    }
-                }
-            }
-            return cache_caret[index];
+            return FindNearestFontX(x, FindNearestFontY(y, cache_caret));
         }
-        int FindNearestFontY(int y, CacheCaret[] cache_caret)
+        CacheCaret[] FindNearestFontY(int y, CacheCaret[] cache_caret)
         {
-            int index = 0;
-            int offset = CaretInfo.Height / 2;
+            CacheCaret find = cache_caret[0];
+            int offset = CaretInfo.Height / 2, len = 1;
             long minDiff = Math.Abs((long)cache_caret[0].y - y);
             for (int i = 1; i < cache_caret.Length; i++)
             {
-                long currentDiff = Math.Abs((long)(cache_caret[i].y + offset) - y);
-
+                var ry = cache_caret[i].y;
+                if (ry == cache_caret[0].y) len++;
+                long currentDiff = Math.Abs((long)(ry + offset) - y);
                 // 如果当前差值更小，更新记录
                 if (currentDiff < minDiff)
                 {
                     minDiff = currentDiff;
-                    index = i;
+                    find = cache_caret[i];
                     if (minDiff == 0) break;
                 }
             }
-            return cache_caret[index].y;
+            var r = new List<CacheCaret>(len);
+            foreach (var it in cache_caret)
+            {
+                if (it.y == find.y) r.Add(it);
+                else if (it.y > find.y) return r.ToArray();
+            }
+            return r.ToArray();
+        }
+        CacheCaret FindNearestFontX(int x, CacheCaret[] cache_caret)
+        {
+            CacheCaret find = cache_caret[0];
+            long minDiff = Math.Abs((long)(find.x) - x);
+            for (int i = 1; i < cache_caret.Length; i++)
+            {
+                long currentDiff = Math.Abs((long)(cache_caret[i].x) - x);
+                if (currentDiff < minDiff)
+                {
+                    minDiff = currentDiff;
+                    find = cache_caret[i];
+                    if (minDiff == 0) break;
+                }
+            }
+            return find;
         }
 
         #endregion
@@ -2280,6 +2298,7 @@ namespace AntdUI
                     if (show == value) return;
                     show = value;
                     CaretPrint?.Dispose();
+                    CaretPrint = null;
                     if (control.IsHandleCreated)
                     {
                         if (show)

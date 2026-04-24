@@ -46,7 +46,13 @@ namespace AntdUI
             else
             {
                 cache_font.InsertRange(start, font_widths);
-                _text = GetText(cache_font);
+                var texts = new List<string>(cache_font.Count);
+                for (int i = 0; i < cache_font.Count; i++)
+                {
+                    cache_font[i].i = i;
+                    texts.Add(cache_font[i].text);
+                }
+                _text = string.Join("", texts);
             }
             isempty = false;
             OnAllowClear();
@@ -116,13 +122,6 @@ namespace AntdUI
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
             return true;
-        }
-
-        string GetText(List<CacheFont> cache_font)
-        {
-            var texts = new List<string>(cache_font.Count);
-            foreach (var it in cache_font) texts.Add(it.text);
-            return string.Join("", texts);
         }
 
         protected virtual void OnSetText(string text, bool isempty)

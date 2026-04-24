@@ -232,43 +232,17 @@ namespace AntdUI
                 if (multiline)
                 {
                     var rectText = rect_text;
-                    if (ScrollY.Show) rectText.Width -= (int)(16 * Dpi);
+                    bool ag = false;
+                    if (ScrollY.Show) rectText.Width -= ((int)(16 * Dpi) - sps);
+                    else ag = true;
                     int lineHeight = CaretInfo.Height + (lineheight > 0 ? (int)(lineheight * Dpi) : 0);
-                    int usex = 0, usey = 0, line = 0;
-                    foreach (var it in cache_font)
+                    var r = CalculateRectMultiline(cache_font, rectText, sps, lineHeight);
+                    if (ag && (r[1] + lineHeight) > rect_text.Height)
                     {
-                        if (it.text == "\n" || it.text == "\r\n")
-                        {
-                            it.hide = it.ret = true;
-                            it.line = line;
-                            line++;
-                            if (usex > maxx) maxx = usex;
-                            usey += lineHeight;
-                            usex = 0;
-                            it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
-                            continue;
-                        }
-                        else if (it.text == " " || it.text == "\t") it.hide = true;
-                        else
-                        {
-                            if (it.text == "\r")
-                            {
-                                it.hide = true;
-                                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
-                                continue;
-                            }
-                            else if (wordwrap && usex + it.width > rectText.Width)
-                            {
-                                line++;
-                                usey += lineHeight;
-                                usex = 0;
-                            }
-                        }
-                        it.line = line;
-                        it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
-                        usex += it.width;
+                        rectText.Width -= ((int)(16 * Dpi) - sps);
+                        r = CalculateRectMultiline(cache_font, rectText, sps, lineHeight);
                     }
-                    TextTotalLine = line;
+                    maxx = r[0];
                     HandTextAlignCore(cache_font);
                 }
                 else
@@ -394,6 +368,45 @@ namespace AntdUI
             }
             if (SetCaretPostion()) rdcount++;
             return rdcount > 0;
+        }
+        int[] CalculateRectMultiline(List<CacheFont> cache_font, Rectangle rectText, int sps, int lineHeight)
+        {
+            int maxx = 0, usex = 0, usey = 0, line = 0;
+            foreach (var it in cache_font)
+            {
+                if (it.text == "\n" || it.text == "\r\n")
+                {
+                    it.hide = it.ret = true;
+                    it.line = line;
+                    line++;
+                    if (usex > maxx) maxx = usex;
+                    usey += lineHeight;
+                    usex = 0;
+                    it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                    continue;
+                }
+                else if (it.text == " " || it.text == "\t") it.hide = true;
+                else
+                {
+                    if (it.text == "\r")
+                    {
+                        it.hide = true;
+                        it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
+                        continue;
+                    }
+                    else if (wordwrap && usex + it.width > rectText.Width)
+                    {
+                        line++;
+                        usey += lineHeight;
+                        usex = 0;
+                    }
+                }
+                it.line = line;
+                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
+                usex += it.width;
+            }
+            TextTotalLine = line;
+            return new int[] { maxx, usey };
         }
         int HandTextModeRange()
         {
@@ -695,8 +708,8 @@ namespace AntdUI
                         }
                     }
                     rect_l.Width = rect_r.Width = 0;
-                    if (multiline) rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - sps2, rect.Height - sps2);
-                    else rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2, read_height);
+                    if (multiline) rect_text = Helper.DeflateRectLR(rect.X + sps, rect.Y + sps, rect.Width - sps2, rect.Height - sps2, PaddingLR, Dpi);
+                    else rect_text = Helper.DeflateRectLR(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - sps2, read_height, PaddingLR, Dpi);
                     if (ul > -1) UseLeftAutoHeight(read_height, ul);
                 }
             }
@@ -722,10 +735,10 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, rect.Y + sps + uy, rect.Width - hasr - ux, rect.Height - sps2 - uy);
+                    rect_text = Helper.DeflateRectLR(rect.X + hasx + ux, rect.Y + sps + uy, rect.Width - hasr - ux, rect.Height - sps2 - uy, PaddingLR, Dpi);
                     ul = uy;
                 }
-                else rect_text = new Rectangle(rect.X + hasx, rect.Y + sps, rect.Width - w_L - w_R - ((sps + sp) * 2), rect.Height - sps2);
+                else rect_text = Helper.DeflateRectLR(rect.X + hasx, rect.Y + sps, rect.Width - w_L - w_R - ((sps + sp) * 2), rect.Height - sps2, PaddingLR, Dpi);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + sps + (read_height - h_R) / 2, w_R, h_R);
             }
             else
@@ -734,10 +747,10 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, text_y + uy / 2, rect.Width - hasr - ux, read_height - uy);
+                    rect_text = Helper.DeflateRectLR(rect.X + hasx + ux, text_y + uy / 2, rect.Width - hasr - ux, read_height - uy, PaddingLR, Dpi);
                     ul = uy;
                 }
-                else rect_text = new Rectangle(rect.X + hasx, text_y, rect.Width - hasr, read_height);
+                else rect_text = Helper.DeflateRectLR(rect.X + hasx, text_y, rect.Width - hasr, read_height, PaddingLR, Dpi);
 
                 if (round[0]) rect_l = new Rectangle(rect.X + icon_l_y, rect.Y + icon_l_y, w_L, h_L);
                 else rect_l = new Rectangle(rect.X + sps, rect.Y + icon_l_y, w_L, h_L);
@@ -796,10 +809,10 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, y + uy, rect.Width - hasx2 - ux, h - uy);
+                    rect_text = Helper.DeflateRectLR(rect.X + hasx + ux, y + uy, rect.Width - hasx2 - ux, h - uy, PaddingLR, Dpi);
                     ul = uy;
                 }
-                else rect_text = new Rectangle(rect.X + hasx, y, rect.Width - hasx2, h);
+                else rect_text = Helper.DeflateRectLR(rect.X + hasx, y, rect.Width - hasx2, h, PaddingLR, Dpi);
             }
             else
             {
@@ -807,10 +820,10 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, ry + uy / 2, rect.Width - hasx2 - ux, read_height - uy);
+                    rect_text = Helper.DeflateRectLR(rect.X + hasx + ux, ry + uy / 2, rect.Width - hasx2 - ux, read_height - uy, PaddingLR, Dpi);
                     ul = uy;
                 }
-                else rect_text = new Rectangle(rect.X + hasx, ry, rect.Width - hasx2, read_height);
+                else rect_text = Helper.DeflateRectLR(rect.X + hasx, ry, rect.Width - hasx2, read_height, PaddingLR, Dpi);
                 if (round) rect_l = new Rectangle(rect.X + y, ry, w, read_height);
                 else rect_l = new Rectangle(rect.X + sps, ry, w, read_height);
             }
@@ -829,10 +842,10 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, rect.Y + sps + uy, rect.Width - hasx2 - ux, rect.Height - sps2 - uy);
+                    rect_text = Helper.DeflateRectLR(rect.X + hasx + ux, rect.Y + sps + uy, rect.Width - hasx2 - ux, rect.Height - sps2 - uy, PaddingLR, Dpi);
                     ul = uy;
                 }
-                else rect_text = new Rectangle(rect.X + hasx, rect.Y + sps, rect.Width - hasx2, rect.Height - sps2);
+                else rect_text = Helper.DeflateRectLR(rect.X + hasx, rect.Y + sps, rect.Width - hasx2, rect.Height - sps2, PaddingLR, Dpi);
             }
             else
             {
@@ -840,10 +853,10 @@ namespace AntdUI
                 if (useLeft[0] > 0 || useLeft[1] > 0)
                 {
                     int ux = useLeft[0], uy = useLeft[1];
-                    rect_text = new Rectangle(rect.X + hasx + ux, text_y + uy / 2, rect.Width - hasx2 - ux, read_height - uy);
+                    rect_text = Helper.DeflateRectLR(rect.X + hasx + ux, text_y + uy / 2, rect.Width - hasx2 - ux, read_height - uy, PaddingLR, Dpi);
                     ul = uy;
                 }
-                else rect_text = new Rectangle(rect.X + hasx, text_y, rect.Width - hasx2, read_height);
+                else rect_text = Helper.DeflateRectLR(rect.X + hasx, text_y, rect.Width - hasx2, read_height, PaddingLR, Dpi);
                 if (round) rect_l = new Rectangle(rect.X + icon_l_y, rect.Y + icon_l_y, w, h);
                 else rect_l = new Rectangle(rect.X + sps, rect.Y + icon_l_y, w, h);
             }
@@ -893,13 +906,13 @@ namespace AntdUI
             }
             if (multiline)
             {
-                rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - hasr2, rect.Height - sps2);
+                rect_text = Helper.DeflateRectLR(rect.X + sps, rect.Y + sps, rect.Width - hasr2, rect.Height - sps2, PaddingLR, Dpi);
                 rect_r = new Rectangle(rect_text.Right + sp, rect_text.Y, w, read_height);
             }
             else
             {
                 int icon_r_y = (rect.Height - read_height) / 2;
-                rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr2, read_height);
+                rect_text = Helper.DeflateRectLR(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr2, read_height, PaddingLR, Dpi);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + icon_r_y, w, read_height);
             }
             rect_l.Width = 0;
@@ -925,13 +938,13 @@ namespace AntdUI
             }
             if (multiline)
             {
-                rect_text = new Rectangle(rect.X + sps, rect.Y + sps, rect.Width - hasr2, rect.Height - sps2);
+                rect_text = Helper.DeflateRectLR(rect.X + sps, rect.Y + sps, rect.Width - hasr2, rect.Height - sps2, PaddingLR, Dpi);
                 rect_r = new Rectangle(rect_text.Right + sp, rect.Y + sps + (read_height - h) / 2, w, h);
             }
             else
             {
                 int icon_r_y = (rect.Height - h) / 2;
-                rect_text = new Rectangle(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr2, read_height);
+                rect_text = Helper.DeflateRectLR(rect.X + sps, rect.Y + (rect.Height - read_height) / 2, rect.Width - hasr2, read_height, PaddingLR, Dpi);
                 if (round) rect_r = new Rectangle(rect.Right - w - icon_r_y, rect.Y + icon_r_y, w, h);
                 else rect_r = new Rectangle(rect_text.Right + sp, rect.Y + icon_r_y, w, h);
             }

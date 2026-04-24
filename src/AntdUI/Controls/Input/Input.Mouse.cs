@@ -116,6 +116,7 @@ namespace AntdUI
                 if (cache_font != null) mDown = true;
                 else if (ModeRange && SetCaretPostion()) set_caret = true;
 
+                CaretInfo.flag = true;
                 if (set_s || set_e || set_caret) Invalidate();
             }
         }

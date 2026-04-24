@@ -628,7 +628,7 @@ namespace AntdUI
             {
                 if (mdownd == 1)
                 {
-                    int moveY = oldMY, moveYa = Math.Abs(moveY),threshold = (int)(Config.TouchThreshold * Dpi);
+                    int moveY = oldMY, moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Dpi);
                     if (moveYa > threshold)
                     {
                         // 缓冲动画
