@@ -552,6 +552,7 @@ namespace AntdUI
                 if (selectionStartTemp == selectionStart || selectionStartTemp < selectionStart) selectionStartTemp--;
                 if (selectionStartTemp < 0) selectionStartTemp = 0;
                 if (old == selectionStartTemp) return;
+                selectionStart = selectionStartTemp;
                 bool set_e = SetSelectionLength(selectionLength + 1), set_caret = SetCaretPostion(CurrentPosIndex - 1);
                 if (set_e || set_caret) Invalidate();
                 return;

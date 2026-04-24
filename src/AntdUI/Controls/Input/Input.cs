@@ -770,7 +770,6 @@ namespace AntdUI
 
         bool SetSelectionStart(int value, bool caret = true)
         {
-            bool r = false;
             if (value < 0) value = 0;
             else if (value > 0)
             {
@@ -779,18 +778,15 @@ namespace AntdUI
             }
             if (selectionStart == value)
             {
-                if (caret) r = SetCaretPostion(value + 1, false);
+                if (caret) return SetCaretPostion(value + 1, false);
                 return false;
             }
             selectionStart = selectionStartTemp = value;
+            bool r = false;
             if (caret)
             {
                 if (cache_font == null || cache_font.Count <= value) r = SetCaretPostion(value + 1, false);
-                else
-                {
-                    var it = cache_font[value];
-                    r = SetCaretPostion(value + (it.ret ? 0 : 1), false);
-                }
+                else r = SetCaretPostion(value + 1, false);
             }
             OnPropertyChanged(nameof(SelectionStart));
             return r;
@@ -1538,8 +1534,8 @@ namespace AntdUI
                         else return;
                     }
                     AddHistoryRecord();
-                    if (SetTextIn(text, start + 1, out _, false)) rdcount++;
                     offset = start + 1;
+                    if (SetTextIn(text, offset, out _, false)) rdcount++;
                 }
             }
             int len = GraphemeSplitter.EachCount(text);
@@ -2261,7 +2257,7 @@ namespace AntdUI
             }
             public bool SetXY(int x, int y)
             {
-                if (Rect.X == x && Rect.Y == y && flag) return false;
+                if (Rect.X == x && Rect.Y == y) return false;
                 Rect.X = x;
                 Rect.Y = y;
                 flag = true;

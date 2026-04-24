@@ -58,9 +58,11 @@ namespace AntdUI
             OnAllowClear();
             CalculateRect();
             OnSetText(_text, isempty);
-            SetSelectionStart(cache_font.Count);
-            OnTextChanged(EventArgs.Empty);
-            OnPropertyChanged(nameof(Text));
+            if (changed)
+            {
+                OnTextChanged(EventArgs.Empty);
+                OnPropertyChanged(nameof(Text));
+            }
             return true;
         }
         bool SetTextAppend(string text, int start, out int len)
