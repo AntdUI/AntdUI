@@ -21,17 +21,19 @@ namespace AntdUI
         DatePickerRange control;
         DateTime? minDate, maxDate;
         TAMode ColorScheme;
+        string? placeholderS, placeholderE;
         public LayeredFormDatePickerRange(DatePickerRange _control, bool endFocused, int bar, Action<DateTime[]> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action)
         {
             PARENT = control = _control;
             ColorScheme = _control.ColorScheme;
             SetTopMost(control.Parent, Handle);
             SetDpi(_control);
+            placeholderS = _control.PlaceholderStart;
+            placeholderE = _control.PlaceholderEnd;
             Font = _control.Font;
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
-            if (_control.InteractiveReset) EndFocused = false;
-            else EndFocused = endFocused;
+            EndFocused = endFocused;
             AnimationBarValue = bar;
 
             showType = PickerType = _control.Picker;
@@ -61,21 +63,15 @@ namespace AntdUI
                 ArrowSize = (int)(8 * Dpi);
                 Radius = (int)(_control.radius * Dpi);
             }
-            SelDate = _control.Value;
-            Date = SelDate == null ? DateTime.Now : SelDate[0];
-            if (SelDate != null && SelDate.Length > 1)
+            var tmpDate = _control.Value;
+            if (tmpDate != null && tmpDate.Length > 1)
             {
-                if (endFocused)
-                {
-                    oldTime = SelDate[1];
-                    oldTimeHover = SelDate[0];
-                }
-                else
-                {
-                    oldTime = SelDate[0];
-                    oldTimeHover = SelDate[1];
-                }
+                SetStepMax = _control.InteractiveReset ? 1 : 0;
+                Date = endFocused ? tmpDate[1] : tmpDate[0];
+                tmpStart = tmpDate[0];
+                tmpEnd = tmpDate[1];
             }
+            else Date = DateTime.Now;
 
             LoadLayout();
 
@@ -96,35 +92,24 @@ namespace AntdUI
             else Print();
         }
 
-        public bool EndFocused = false;
-
-        public void SetDateS(DateTime date, bool r = true)
+        public void SetDateS(DateTime date)
         {
             EndFocused = true;
-            if (control.Value != null && control.Value.Length > 1)
-            {
-                oldTime = date;
-                if (r) action(new DateTime[] { control.Value[0], date });
-            }
-            else oldTimeHover = oldTime = date;
-            if (r)
-            {
-                Date = date;
-                Print();
-            }
+            tmpStart = tmpEnd = Date = date;
+            SetStepCurrent++;
+            Print();
         }
 
         public void SetDateE(DateTime sdate, DateTime edate, bool r = true)
         {
-            EndFocused = false;
             DateTime[] dates;
             if (sdate == edate) dates = new DateTime[] { edate, edate };
             else if (sdate < edate) dates = new DateTime[] { sdate, edate };
             else dates = new DateTime[] { edate, sdate };
             if (r)
             {
-                oldTime = sdate;
-                oldTimeHover = edate;
+                tmpStart = sdate;
+                tmpEnd = edate;
                 Date = edate;
                 Print();
             }
@@ -132,20 +117,48 @@ namespace AntdUI
         }
         bool SetDate(ItemCalendari item)
         {
-            if (EndFocused && oldTime.HasValue)
+            SetDateHover(item.date);
+            SetStepCurrent++;
+            if (SetStepCurrent > SetStepMax)
             {
-                SetDateE(oldTime.Value, item.date, false);
+                SetDateE(tmpStart!.Value, tmpEnd!.Value, false);
                 return false;
             }
-            SetDateS(item.date, false);
-            Print();
+            else
+            {
+                if (EndFocused) control.MoveEndFocused(true, false);
+                else control.MoveEndFocused(false, true);
+                EndFocused = !EndFocused;
+            }
             return true;
         }
 
         #endregion
 
-        public DateTime[]? SelDate;
-        DateTime? oldTime, oldTimeHover;
+        DateTime? tmpStart, tmpEnd;
+        bool EndFocused = false;
+        int SetStepCurrent = 0, SetStepMax = 1;
+        void SetDateHover(DateTime? value)
+        {
+            if (value.HasValue)
+            {
+                if (EndFocused)
+                {
+                    control.PlaceholderEnd = value.Value.ToString(control.Format);
+                    tmpEnd = value;
+                }
+                else
+                {
+                    control.PlaceholderStart = value.Value.ToString(control.Format);
+                    tmpStart = value;
+                }
+            }
+            else
+            {
+                if (EndFocused) control.PlaceholderEnd = placeholderE;
+                else control.PlaceholderStart = placeholderS;
+            }
+        }
 
         DateTime _Date, _Date_R;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -621,7 +634,7 @@ namespace AntdUI
                     var rect = rect_div[p + it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        switch (IfDSType(it.date, it.date_str, "yyyy-MM-dd"))
+                        switch (Helper.IfDSType(it.date, tmpStart, tmpEnd, it.date_str, "yyyy-MM-dd"))
                         {
                             case 0:
                                 if (it.enable)
@@ -688,7 +701,7 @@ namespace AntdUI
                     var rect = rect_div[p + it.id];
                     using (var path = rect.RectRead.RoundPath(Radius))
                     {
-                        switch (IfDSType(it.date, it.date_str, f))
+                        switch (Helper.IfDSType(it.date, tmpStart, tmpEnd, it.date_str, f))
                         {
                             case 0:
                                 if (it.enable)
@@ -741,35 +754,6 @@ namespace AntdUI
         }
 
         #endregion
-
-        int IfDSType(DateTime date, string date_str, string f)
-        {
-            if (oldTimeHover.HasValue && oldTime.HasValue)
-            {
-                bool c = oldTime.Value < oldTimeHover.Value;
-                if (date_str == oldTime.Value.ToString(f))
-                {
-                    if (oldTime.Value == oldTimeHover.Value) return 1;
-                    if (c) return 3;// ←
-                    else return 4;// →
-                }
-                else if (date_str == oldTimeHover.Value.ToString(f))
-                {
-                    if (oldTime.Value == oldTimeHover.Value) return 1;
-                    if (c) return 4;// →
-                    else return 3;// ←
-                }
-                if (c)
-                {
-                    if (date < oldTimeHover.Value && date > oldTime.Value) return 2;
-                }
-                else
-                {
-                    if (date > oldTimeHover.Value && date < oldTime.Value) return 2;
-                }
-            }
-            return 0;
-        }
 
         #endregion
 
@@ -1283,6 +1267,7 @@ namespace AntdUI
         }
         void MouseMoveOne(int x, int y, ref int count, ref int hand, List<ItemCalendari>? calendar, List<ItemCalendari>? calendar2)
         {
+            bool r = false;
             if (calendar != null)
             {
                 foreach (var it in calendar)
@@ -1290,8 +1275,8 @@ namespace AntdUI
                     var rect = rect_div[it.id];
                     if (rect.Contains(x, y, ref count))
                     {
-                        if (EndFocused) oldTimeHover = it.date;
-                        hand++;
+                        SetDateHover(it.date);
+                        r = true;
                     }
                 }
             }
@@ -1302,11 +1287,13 @@ namespace AntdUI
                     var rect = rect_div["R_" + it.id];
                     if (rect.Contains(x, y, ref count))
                     {
-                        if (EndFocused) oldTimeHover = it.date;
-                        hand++;
+                        SetDateHover(it.date);
+                        r = true;
                     }
                 }
             }
+            if (r) hand++;
+            else SetDateHover(null);
         }
         bool MouseClickOne(int x, int y, List<ItemCalendari>? calendar, List<ItemCalendari>? calendar2)
         {
@@ -1407,5 +1394,12 @@ namespace AntdUI
         }
 
         #endregion
+
+        public override void IClosing()
+        {
+            control.PlaceholderStart = placeholderS;
+            control.PlaceholderEnd = placeholderE;
+            base.IClosing();
+        }
     }
 }

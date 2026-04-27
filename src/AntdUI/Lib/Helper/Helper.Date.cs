@@ -188,5 +188,38 @@ namespace AntdUI
                 s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
             }
         }
+
+        public static int IfDSType(DateTime date, DateTime? start, DateTime? end, string date_str, string f)
+        {
+            if (start.HasValue || end.HasValue)
+            {
+                if (start.HasValue && end.HasValue)
+                {
+                    bool c = end.Value < start.Value;
+                    if (date_str == end.Value.ToString(f))
+                    {
+                        if (end.Value == start.Value) return 1;
+                        if (c) return 3;// ←
+                        else return 4;// →
+                    }
+                    else if (date_str == start.Value.ToString(f))
+                    {
+                        if (end.Value == start.Value) return 1;
+                        if (c) return 4;// →
+                        else return 3;// ←
+                    }
+                    if (c)
+                    {
+                        if (date < start.Value && date > end.Value) return 2;
+                    }
+                    else
+                    {
+                        if (date > start.Value && date < end.Value) return 2;
+                    }
+                }
+                else if ((end.HasValue && date_str == end.Value.ToString(f)) || (start.HasValue && date_str == start.Value.ToString(f))) return 1;
+            }
+            return 0;
+        }
     }
 }

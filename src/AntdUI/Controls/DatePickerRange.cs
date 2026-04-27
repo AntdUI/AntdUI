@@ -314,10 +314,7 @@ namespace AntdUI
             }
         }
 
-        public override bool HasSuffix
-        {
-            get => showicon;
-        }
+        public override bool HasSuffix => showicon;
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
@@ -727,6 +724,14 @@ namespace AntdUI
 
             if (s) AnimationBarValue = rect_d_l;
             else AnimationBarValue = rect_d_r;
+        }
+
+        internal void MoveEndFocused(bool s, bool e)
+        {
+            StartFocused = s;
+            EndFocused = e;
+            StartEndFocused();
+            ModeRangeCaretPostion(false);
         }
 
         bool StartFocused = false, EndFocused = false;
