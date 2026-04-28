@@ -11,10 +11,4 @@
     <ProjectReference Include="..\..\src\AntdUI\AntdUI.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="BallLayeredForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-  </ItemGroup>
-
 </Project>
