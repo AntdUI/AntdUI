@@ -522,6 +522,12 @@ namespace AntdUI
                                     else if (btn_info.Icon != null) g.Image(btn_info.Icon, btn.RectIcon);
                                     g.DrawText(btn_info.Text, font_mini, brush, btn.RectText);
                                 }
+                                else
+                                {
+                                    if (btn_info.IconSvg != null) g.Svg(btn_info.IconSvg, btn.RectIcon, brushEnabled.Color);
+                                    else if (btn_info.Icon != null) g.Image(btn_info.Icon, btn.RectIcon);
+                                    g.DrawText(btn_info.Text, font_mini, brushEnabled, btn.RectText);
+                                }
                             }
                         }
                     }
@@ -572,7 +578,6 @@ namespace AntdUI
                             {
                                 if (((ContextMenuStripItemButton)btn.Tag).Enabled && btn.Rect.Contains(x, y + ry))
                                 {
-                                    //select_index = i;
                                     mDown = btn;
                                     return;
                                 }

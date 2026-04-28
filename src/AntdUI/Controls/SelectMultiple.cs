@@ -496,7 +496,7 @@ namespace AntdUI
                 case TType.Info:
                     return Style.Get(bg ? Colour.InfoBg : Colour.Info, nameof(SelectMultiple), ColorScheme);
                 default:
-                    return (bg ? Colour.TagDefaultBg : Colour.TagDefaultColor).Get(nameof(SelectMultiple), ColorScheme);
+                    return (bg ? Colour.FillSecondary : Colour.Text).Get(nameof(SelectMultiple), ColorScheme);
             }
         }
 
