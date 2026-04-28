@@ -17,6 +17,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             FixFontWidth(true);
+            this.AddListener();
         }
 
         #region 确定字体宽度
@@ -212,6 +213,7 @@ namespace AntdUI
         internal int UR = 0;
         internal bool CalculateRect()
         {
+            BeforeAutoSize();
             var rect = RECTDIV.HasValue ? RECTDIV.Value.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight) : ReadRectangle;
             int sps = (int)(CaretInfo.Height * paddgap), sps2 = sps * 2;
             rect.Width -= UR;

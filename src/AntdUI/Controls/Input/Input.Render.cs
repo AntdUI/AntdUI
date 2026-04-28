@@ -238,7 +238,7 @@ namespace AntdUI
             else if (RECTDIV.HasValue) g.SetClip(RECTDIV.Value);
             else g.SetClip(new Rectangle(rect_text.X, 0, rect_text.Width, Height));
             if (cache_font != null) PaintText(g, _fore, w, h, cache_font);
-            else if (PlaceholderText != null && ShowPlaceholder)
+            else if (ShowPlaceholder && PlaceholderText != null)
             {
                 using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get(nameof(Input), ColorScheme)))
                 {

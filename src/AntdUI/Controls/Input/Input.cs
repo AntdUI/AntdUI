@@ -21,7 +21,7 @@ namespace AntdUI
     [ToolboxItem(true)]
     [DefaultProperty("Text")]
     [DefaultEvent("TextChanged")]
-    public partial class Input : IControl
+    public partial class Input : IControl, IEventListener
     {
         public Input() : base(ControlType.Select)
         {
@@ -2420,6 +2420,196 @@ namespace AntdUI
         {
             AnimationBlinkState = false;
             ThreadAnimateBlink?.Dispose();
+        }
+
+        #endregion
+
+        #region 自动大小
+
+        /// <summary>
+        /// 自动大小
+        /// </summary>
+        [Browsable(true)]
+        [Description("自动大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
+        public override bool AutoSize
+        {
+            get => base.AutoSize;
+            set
+            {
+                if (base.AutoSize == value) return;
+                base.AutoSize = value;
+                if (value)
+                {
+                    if (autoSize == TAutoSize.None) autoSize = TAutoSize.Auto;
+                }
+                else autoSize = TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        TAutoSize autoSize = TAutoSize.None;
+        /// <summary>
+        /// 自动大小模式
+        /// </summary>
+        [Description("自动大小模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAutoSize.None)]
+        public TAutoSize AutoSizeMode
+        {
+            get => autoSize;
+            set
+            {
+                if (autoSize == value) return;
+                autoSize = value;
+                base.AutoSize = autoSize != TAutoSize.None;
+                BeforeAutoSize();
+            }
+        }
+
+        public override Size GetPreferredSize(Size proposedSize)
+        {
+            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
+            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
+            return PSize;
+        }
+
+        public virtual Size PSize => this.GDI(g => GetPSize(g));
+        Size GetPSize(Canvas g)
+        {
+            int lineHeight = CaretInfo.Height, sps = (int)(lineHeight * paddgap),
+                bor = (int)Math.Ceiling(sps * 2 + (WaveSize + borderWidth / 2F) * Dpi * 2), ux = 0;
+
+            string? prefixText = PrefixText, suffixText = SuffixText;
+            bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
+            if (is_clear)
+            {
+                int icon_size = (int)(lineHeight * iconratio), icon_right_size = icon_size;
+                if (iconratioRight.HasValue) icon_right_size = (int)(icon_size * iconratioRight.Value);
+
+                int sp = (int)(lineHeight * icongap);
+                if (has_prefixText) ux += (MeasurePrefix(g) + icon_right_size) + sp * 2;
+                else if (has_prefix) ux += (icon_size + icon_right_size) + sp * 2;
+                else ux += icon_right_size + sp;
+            }
+            else if (has_prefixText || has_suffixText || has_prefix || has_suffix)
+            {
+                int sp = (int)(lineHeight * icongap);
+                if (has_prefixText || has_suffixText)
+                {
+                    if (has_prefixText && has_suffixText) ux += (MeasurePrefix(g) + MeasureSuffix(g)) + sp * 2;
+                    else
+                    {
+                        if (has_prefix || has_suffix)
+                        {
+                            if (has_prefixText)
+                            {
+                                if (has_suffix)
+                                {
+                                    int icon_size = (int)(lineHeight * (iconratioRight ?? iconratio));
+                                    ux += (MeasurePrefix(g) + icon_size) + sp * 2;
+                                }
+                                else ux += MeasurePrefix(g) + sp;
+                            }
+                            else
+                            {
+                                if (has_prefix)
+                                {
+                                    int icon_size = (int)(lineHeight * iconratio);
+                                    ux += (icon_size + MeasureSuffix(g)) + sp * 2;
+                                }
+                                else ux += MeasureSuffix(g) + sp;
+                            }
+                        }
+                        else
+                        {
+                            if (has_prefixText) ux += MeasurePrefix(g) + sp;
+                            else ux += MeasureSuffix(g) + sp;
+                        }
+                    }
+                }
+                else
+                {
+                    if (has_prefix || has_suffix)
+                    {
+                        int icon_size = (int)(lineHeight * iconratio), icon_right_size = icon_size;
+                        if (iconratioRight.HasValue) icon_right_size = (int)(lineHeight * iconratioRight.Value);
+                        if (has_prefix && has_suffix) ux += (icon_size + icon_right_size) + sp * 2;
+                        else if (has_prefix) ux += icon_size + sp;
+                        else ux += icon_right_size + sp;
+                    }
+                }
+            }
+            if (cache_font == null)
+            {
+                if (ShowPlaceholder && PlaceholderText != null) ux += g.MeasureText(PlaceholderText, Font).Width;
+                return new Size(bor + ux, lineHeight + bor);
+            }
+            else
+            {
+                if (multiline)
+                {
+                    int maxx = 0, usex = 0, usey = 0;
+                    if (ShowPlaceholder && PlaceholderText != null) maxx = g.MeasureText(PlaceholderText, Font).Width;
+                    foreach (var it in cache_font)
+                    {
+                        if (it.text == "\n" || it.text == "\r\n")
+                        {
+                            if (usex > maxx) maxx = usex;
+                            usey += lineHeight;
+                            usex = 0;
+                            continue;
+                        }
+                        else if (it.text == "\r") continue;
+                        usex += it.width;
+                    }
+                    if (usex > maxx) maxx = usex;
+                    return new Size(bor + ux + maxx, lineHeight + usey + bor);
+                }
+                else
+                {
+                    int width = 0;
+                    foreach (var it in cache_font) width += it.width;
+                    if (ShowPlaceholder && PlaceholderText != null)
+                    {
+                        int maxx = g.MeasureText(PlaceholderText, Font).Width;
+                        if (maxx > width) width = maxx;
+                    }
+                    return new Size(bor + ux + width, lineHeight + bor);
+                }
+            }
+        }
+
+        bool BeforeAutoSize()
+        {
+            if (autoSize == TAutoSize.None) return true;
+            if (InvokeRequired) return ITask.Invoke(this, BeforeAutoSize);
+            var PS = PSize;
+            switch (autoSize)
+            {
+                case TAutoSize.Width:
+                    if (Width == PS.Width) return true;
+                    Width = PS.Width;
+                    break;
+                case TAutoSize.Height:
+                    if (Height == PS.Height) return true;
+                    Height = PS.Height;
+                    break;
+                case TAutoSize.Auto:
+                default:
+                    if (Width == PS.Width && Height == PS.Height) return true;
+                    Size = PS;
+                    break;
+            }
+            return false;
+        }
+
+        public void HandleEvent(EventType id, object? tag)
+        {
+            switch (id)
+            {
+                case EventType.LANG:
+                    BeforeAutoSize();
+                    break;
+            }
         }
 
         #endregion
