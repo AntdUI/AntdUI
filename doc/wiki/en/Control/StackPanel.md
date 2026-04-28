@@ -15,3 +15,4 @@ Name | Description | Type | Default Value |
 **ItemSize** | Content size | string`?` | `null` |
 **Gap** | Gap | int | 0 |
 **PauseLayout** | Pause Layout | bool | false |
+**AutoContainerBgTransparent** | Inner container background transparent | bool | false |

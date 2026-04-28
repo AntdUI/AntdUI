@@ -14,3 +14,4 @@ FlowPanel 流动布局 👚
 **Align** | 布局方向 | [TAlignFlow](Enum.md#talignflow) | LeftCenter |
 **Gap** | 间距 | int | 0 |
 **PauseLayout** | 暂停布局 | bool | false |
+**AutoContainerBgTransparent** | 内部容器背景透明 | bool | false |

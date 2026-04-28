@@ -33,6 +33,7 @@ Name | Description | Type | Default Value |
 **Empty** | Is it displayed | bool | true |
 **EmptyText** | Display text when data is empty | string`?` | `null` |
 **EmptyImage** | Display image with empty data | Image`?` | `null` |
+**VirtualMode** | Virtual mode (only visible rows are rendered for large data) | bool | false |
 ||||
 **PauseLayout** | Pause Layout | bool | false |
 

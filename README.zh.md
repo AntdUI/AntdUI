@@ -121,12 +121,15 @@
 ➡️| **MsgList** 好友消息列表 | ✅ | ❎ |
 ➡️| **ChatList** 气泡聊天列表 | ✅ | ❎ |
 ||||
-⬇️| 其他 `5` | 动画 | 禁用 |
+⬇️| 其他 `8` | 动画 | 禁用 |
 ➡️| [**Battery** 电量](doc/wiki/zh/Control/Battery.md) | ✅ | ❎ |
 ➡️| [**Signal** 信号强度](doc/wiki/zh/Control/Signal.md) | ✅ | ❎ |
 ➡️| [**Shield** 徽章](doc/wiki/zh/Control/Shield.md) | ❎ | ❎ |
 ➡️| [**ContextMenuStrip** 右键菜单](doc/wiki/zh/Control/ContextMenuStrip.md) | ✅ | ❎ |
 ➡️| [**Image3D** 图片3D](doc/wiki/zh/Control/Image3D.md) | ✅ | ❎ |
+➡️| **Docking** 停靠面板 | ✅ | ❎ |
+➡️| **Ribbon** 工具栏 | ✅ | ❎ |
+➡️| **OutlookBar** 导航栏 | ✅ | ❎ |
 
 ### 🐿️ 捐赠
 ![Payment](doc/pre/Payment.png)

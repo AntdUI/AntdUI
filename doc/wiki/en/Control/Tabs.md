@@ -25,6 +25,9 @@ Name | Description | Type | Default Value |
 **TypExceed** | Exceeding UI type | [TabTypExceed](Enum.md#tabtypexceed) | Button |
 **EnableSwitch** | Switch enable | bool | true |
 **EnablePageScrolling** | Mouse wheel switch focus page enable | bool | true |
+**EnablePageCloseByMouseMiddle** | Mouse middle button close enable | bool | true |
+**EnablePageCloseByMouseDoubleClick** | Mouse double click close enable | bool | true |
+**CloseDisposePage** | Release after closing page | bool | false |
 **ScrollBack** | Scroll bar color | Color`?` | `null` |
 **ScrollBackHover** | Scroll bar hover color | Color`?` | `null` |
 **ScrollFore** | Scroll bar text color | Color`?` | `null` |

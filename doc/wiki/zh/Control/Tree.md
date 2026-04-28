@@ -34,6 +34,7 @@ Tree 树形控件 👚
 **Empty** | 是否显示空样式 | bool | true |
 **EmptyText** | 数据为空显示文字 | string`?` | `null` |
 **EmptyImage** | 数据为空显示图片 | Image`?` | `null` |
+**VirtualMode** | 虚拟模式（大数据量时仅渲染可见行） | bool | false |
 ||||
 **PauseLayout** | 暂停布局 | bool | false |
 

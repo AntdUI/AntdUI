@@ -26,6 +26,9 @@ Tabs 标签页 👚
 **TypExceed** | 超出UI类型 | [TabTypExceed](Enum.md#tabtypexceed) | Button |
 **EnableSwitch** | 切换使能 | bool | true |
 **EnablePageScrolling** | 鼠标滚轮切换焦点页使能 | bool | true |
+**EnablePageCloseByMouseMiddle** | 鼠标中键关闭使能 | bool | true |
+**EnablePageCloseByMouseDoubleClick** | 鼠标双击关闭使能 | bool | true |
+**CloseDisposePage** | 关闭页面后释放 | bool | false |
 **ScrollBack** | 滚动条颜色 | Color`?` | `null` |
 **ScrollBackHover** | 滚动条悬停颜色 | Color`?` | `null` |
 **ScrollFore** | 滚动条文本颜色 | Color`?` | `null` |

@@ -15,6 +15,7 @@ Panel 面板 👚
 :--|:--|:--|:--|
 **Back** | 背景颜色 | Color`?` | `null` |
 **Radius** | 圆角 | int | 6 |
+**RadiusAlign** | 圆角方向 | [TAlignRound](Enum.md#talignround) | ALL |
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | 箭头大小 | int | 8 |
 ||||

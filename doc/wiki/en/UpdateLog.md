@@ -1,5 +1,23 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.11` 2026-04-28
+
+- ➕ Input PaddingLR
+- ➕ Input CaretVisible
+- ➕ Input AutoSize
+- ➕ PageHeader EnableDoubleClickMaximize
+- ✍️ Input insert text, copy misplaced
+- ✍️ Input click on the first column of the cursor
+- ✍️ Input most mouse key interactions
+- ✍️ Table Focus Box Keyboard Direction Interaction
+- ✍️ Spin container hidden but still visible
+- ✍️ TabHeader supports setting empty selection
+- ✍️ Table adaptation CellBeginEditInputStyle Select
+- ✍️ Tree ReverseCheck method
+- ✍️ SelectMultiple: Select block color to deepen
+- ✍️ Complete ContextMenuStripItem to disable styles
+- 🧹 Optimize DatePickerRange interaction
+
 ### `2.3.10` 2026-04-23
 
 - ➕ Ribbon / Docking / OutlookBar

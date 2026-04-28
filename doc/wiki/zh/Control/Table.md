@@ -35,9 +35,9 @@
 **ColumnDragSort** | 列拖拽排序 | bool | false |
 **LostFocusClearSelection** | 焦点离开清空选中 | bool | false |
 **MouseClickPenetration** | 鼠标点击穿透 | bool | true |
-**ScrollBarAvoidHeader** | 滚动条从表头下方开始绘制 | bool | false |
+**ScrollBarAvoidHeader** | 滚动条从表头下方开始绘制（避免遮挡表头） | bool | false |
 **AutoSizeColumnsMode** | 列宽自动调整模式 | [ColumnsMode](Enum.md#columnsmode) | Auto |
-**VirtualMode** | 虚拟模式 | bool | false |
+**VirtualMode** | 虚拟模式（大数据量时仅渲染可见行） | bool | false |
 ||||
 **ClipboardCopy** | 行复制 | bool | true |
 **ClipboardCopyFocusedCell** | 是否启用单元格复制 | bool | false |
@@ -50,6 +50,7 @@
 **HandShortcutKeys** | 处理快捷键 | bool | true |
 **ShowCheckBg** | 显示复选背景 | bool | true |
 **FilterShowCheckBg** | 筛选显示复选背景 | bool`?` | `null` |
+**FilterSortOrder** | 筛选启用排序 | bool`?` | `null` |
 ||||
 **DefaultExpand** | 默认是否展开 `树` | bool | false |
 **TreeArrowStyle** | 树表格的箭头样式 | TableTreeStyle | Button |

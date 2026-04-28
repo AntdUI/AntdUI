@@ -1,5 +1,23 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.11` 2026-04-28
+
+- ➕ Input PaddingLR
+- ➕ Input CaretVisible
+- ➕ Input AutoSize
+- ➕ PageHeader EnableDoubleClickMaximize
+- ✍️ Input 插入文本复制错位
+- ✍️ Input 点击光标首列
+- ✍️ Input 大部分鼠键交互
+- ✍️ Table 焦点框键盘方向交互
+- ✍️ Spin 容器隐藏依旧显示
+- ✍️ TabHeader 支持设置 空选中
+- ✍️ Table 适配 CellBeginEditInputStyle Select
+- ✍️ Tree ReverseCheck 方法
+- ✍️ SelectMultiple 选择块颜色加深
+- ✍️ 补全 ContextMenuStripItem 禁用样式
+- 🧹 优化 DatePickerRange 交互
+
 ### `2.3.10` 2026-04-23
 
 - ➕ Ribbon / Docking / OutlookBar

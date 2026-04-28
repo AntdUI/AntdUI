@@ -15,3 +15,4 @@ Name | Description | Type | Default Value |
 **Align** | Layout align | [TAlignFlow](Enum.md#talignflow) | LeftCenter |
 **Gap** | Gap | int | 0 |
 **PauseLayout** | Pause Layout | bool | false |
+**AutoContainerBgTransparent** | Inner container background transparent | bool | false |

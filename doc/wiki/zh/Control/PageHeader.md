@@ -47,7 +47,9 @@ PageHeader 页头 👚
 **MDI** | 是否仅对父窗口生效 | bool | false |
 ||||
 **UseSystemStyleColor** | 使用系统颜色 | bool | false |
+**UseForeColorDrawIcons** | 使用前景色绘制按钮图标 | bool | false |
 **CancelButton** | 点击退出关闭 | bool | false |
+**EnableDoubleClickMaximize** | 是否允许双击最大化 | bool | true |
 ||||
 **DividerShow** | 显示线 | bool | false |
 **DividerColor** | 线颜色 | Color`?` | `null` |

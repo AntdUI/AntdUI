@@ -16,9 +16,10 @@ Name | Description | Type | Default Value |
 **TargetTitle** | Right List Title | string? | `null` |
 ||||
 **ShowSelectAll** | Display all check box | bool | true |
-**OneWay** | Is it unidirectional mode `only from left to right` | bool | false |
+**OneWay** | Is it unidirectional mode (only from left to right) | bool | false |
 **ShowSearch** | Whether to show search box | bool | false |
-**ChangeToBottom** | Whether to display buttons at the bottom | bool | false |
+**ChangeToBottom** | Change to bottom | bool | false |
+**DragSort** | Drag sort | bool | false |
 ||||
 **SearchPlaceholderSource** | Source list search placeholder text | string? | `null` |
 **SearchPlaceholderTarget** | Target list search placeholder text | string? | `null` |

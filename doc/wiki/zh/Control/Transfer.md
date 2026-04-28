@@ -17,9 +17,10 @@ Transfer 穿梭框 👚
 **TargetTitle** | 右侧列表标题 | string? | `null` |
 ||||
 **ShowSelectAll** | 是否显示全选勾选框 | bool | true |
-**OneWay** | 是否单向模式 `只能从左到右` | bool | false |
+**OneWay** | 是否单向模式（只能从左到右） | bool | false |
 **ShowSearch** | 是否显示搜索框 | bool | false |
-**ChangeToBottom** | 是否将按钮显示在底部 | bool | false |
+**ChangeToBottom** | 改变后到最下面 | bool | false |
+**DragSort** | 拖拽排序 | bool | false |
 ||||
 **SearchPlaceholderSource** | 源列表搜索水印文本 | string? | `null` |
 **SearchPlaceholderTarget** | 目标列表搜索水印文本 | string? | `null` |

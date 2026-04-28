@@ -35,9 +35,9 @@ Name | Description | Type | Default Value |
 **ColumnDragSort** | Column drag and drop sorting | bool | false |
 **LostFocusClearSelection** | Loss of focus, clear selection | bool | false |
 **MouseClickPenetration** | Mouse click penetration | bool | true |
-**ScrollBarAvoidHeader** | Scrollbar starts drawing from below the header | bool | false |
+**ScrollBarAvoidHeader** | Scrollbar starts drawing from below the header (avoid blocking the header) | bool | false |
 **AutoSizeColumnsMode** | Column width automatic adjustment mode | [ColumnsMode](Enum.md#columnsmode) | Auto |
-**VirtualMode** | Virtual mode | bool | false |
+**VirtualMode** | Virtual mode (only visible rows are rendered for large data) | bool | false |
 ||||
 **ClipboardCopy** | Copy rows | bool | true |
 **ClipboardCopyFocusedCell** | Whether to enable cell copying | bool | false |
@@ -50,6 +50,7 @@ Name | Description | Type | Default Value |
 **HandShortcutKeys** | Process shortcut keys | bool | true |
 **ShowCheckBg** | Display checkbox background | bool | true |
 **FilterShowCheckBg** | Filter display checkbox background | bool`?` | `null` |
+**FilterSortOrder** | Filter enable sorting | bool`?` | `null` |
 ||||
 **DefaultExpand** | Whether to expand by default `Tree` | bool | false |
 **TreeArrowStyle** | Tree table arrow style | TableTreeStyle | Button |
