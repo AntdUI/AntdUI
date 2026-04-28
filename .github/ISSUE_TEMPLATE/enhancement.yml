@@ -1,0 +1,27 @@
+name: Enhancement
+description: Propose a functional suggestion for this project
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for providing the feature suggestion, I will carefully consider it!
+  - type: textarea
+    id: background
+    attributes:
+      label: Background and motivation
+      description: Please describe the purpose and value of the new API here.
+      placeholder: Purpose
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Requirement
+      description: What you hope to happen.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        🙏 I promise to communicate with mutual respect, understanding, and friendliness to jointly maintain a good community atmosphere.

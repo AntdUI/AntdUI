@@ -1,0 +1,41 @@
+name: Question
+description: When you don't understand how to use a certain feature, you can submit the issue
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        :warning: Have checked existing issues to see whether someone else has already reported your issue?
+        :book: Please also read [Document](https://github.com/AntdUI/AntdUI/blob/main/doc/wiki/en/Home.md).
+
+  - type: input
+    attributes:
+      label: Version
+      description: Please enter the version number you are using.
+      placeholder: E.g. 1.0.5, or daily Commit ID
+    validations:
+      required: true
+  - type: textarea
+    id: net_sdk
+    attributes:
+      label: .NET version
+      description: What is the version of .NET, use `dotnet --info`.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: OS
+      description: E.g. Windows 11, Operating system type and version
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Requirement
+      description: What you hope to happen.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        🙏 I promise to communicate with mutual respect, understanding, and friendliness to jointly maintain a good community atmosphere.
