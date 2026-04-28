@@ -350,6 +350,11 @@ namespace AntdUI
                 _select = value;
                 Invalidate();
                 if (items == null) return;
+                if (value < 0)
+                {
+                    _selectItem = null;
+                    return;
+                }
                 SelectedItem = items[value];
                 OnTabChanged(_selectItem!, value);
             }
@@ -363,11 +368,10 @@ namespace AntdUI
             get => _selectItem;
             set
             {
-                if (_selectItem == value || value is null) return;
+                if (_selectItem == value) return;
                 _selectItem = value;
                 Invalidate();
-                if (items == null) return;
-                //获取Index
+                if (items == null|| value == null) return;
                 var index = items.IndexOf(value);
                 OnTabSelectedItemChanged(value, index);
             }

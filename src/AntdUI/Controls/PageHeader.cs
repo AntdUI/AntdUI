@@ -270,6 +270,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 是否允许双击最大化
+        /// </summary>
+        [Description("是否允许双击最大化"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool EnableDoubleClickMaximize { get; set; } = true;
+
         #region 图标
 
         bool showicon = false;
@@ -1125,7 +1131,7 @@ namespace AntdUI
                     if (form != null)
                     {
                         if (form is LayeredFormDrawer || form is LayeredFormPopover) return;
-                        if (e.Clicks > 1)
+                        if (EnableDoubleClickMaximize && e.Clicks > 1)
                         {
                             if (maximizeBox)
                             {

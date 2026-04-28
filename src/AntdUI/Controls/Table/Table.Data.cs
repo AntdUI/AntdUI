@@ -36,7 +36,7 @@ namespace AntdUI
             if (dataSource == null)
             {
                 // 空数据
-                ScrollBar.ValueX = ScrollBar.ValueY = 0;
+                ScrollBar.Clear();
                 return;
             }
             if (dataSource is BindingSource bindingSource)

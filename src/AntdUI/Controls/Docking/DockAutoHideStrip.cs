@@ -54,7 +54,7 @@ namespace AntdUI
 #if NET40
         readonly ReadOnlyCollection<IDockContent> itemsReadOnly;
         [Browsable(false)]
-        public ReadOnlyCollection<IDockContent> Contents  => itemsReadOnly;
+        public ReadOnlyCollection<IDockContent> Contents => itemsReadOnly;
 #else
         readonly IReadOnlyList<IDockContent> itemsReadOnly;
         [Browsable(false)]

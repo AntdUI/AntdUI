@@ -789,18 +789,30 @@ namespace AntdUI
         int Radius = 0, Bor = 0;
         bool HasBor = false;
 
+        Control[]? controls;
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             control.VisibleChanged += Parent_VisibleChanged;
             control.LocationChanged += Parent_LocationChanged;
             control.SizeChanged += Parent_SizeChanged;
+            var list = control.FindPARENTs();
             if (control is TabPage page) page.ShowedChanged += Parent_VisibleChanged;
             if (parent != null)
             {
+                list.Remove(parent);
                 parent.VisibleChanged += Parent_VisibleChanged;
                 parent.LocationChanged += Parent_LocationChanged;
                 parent.SizeChanged += Parent_SizeChanged;
+            }
+            if (list.Count > 0)
+            {
+                foreach (var it in list)
+                {
+                    if (it is TabPage page2) page2.ShowedChanged += Parent_VisibleChanged;
+                    else it.VisibleChanged += Parent_VisibleChanged;
+                }
+                controls = list.ToArray();
             }
             LoadVisible();
         }
@@ -819,6 +831,16 @@ namespace AntdUI
             }
         }
         bool GetVisible()
+        {
+            if (!GetVisible(control)) return false;
+            if (controls == null) return true;
+            foreach (var it in controls)
+            {
+                if (!GetVisible(it)) return false;
+            }
+            return true;
+        }
+        bool GetVisible(Control control)
         {
             if (control is TabPage page) return page.Showed && page.Visible;
             return control.Visible;
@@ -919,6 +941,14 @@ namespace AntdUI
                 parent.VisibleChanged -= Parent_VisibleChanged;
                 parent.LocationChanged -= Parent_LocationChanged;
                 parent.SizeChanged -= Parent_SizeChanged;
+            }
+            if (controls != null)
+            {
+                foreach (var it in controls)
+                {
+                    if (it is TabPage page2) page2.ShowedChanged -= Parent_VisibleChanged;
+                    else it.VisibleChanged -= Parent_VisibleChanged;
+                }
             }
             base.Dispose(disposing);
             if (control == null) return;

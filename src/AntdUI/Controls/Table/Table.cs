@@ -69,7 +69,6 @@ namespace AntdUI
                 dataSource = value;
                 SortData = null;
                 focusedxy = null;
-                ScrollBar.Clear();
                 hovers = -1;
                 selectedIndex = new int[0];
                 ExtractHeaderFixed();
@@ -788,7 +787,7 @@ namespace AntdUI
             {
                 if (string.Join("", selectedIndex) == value.ToString()) return false;
                 selectedIndex = new int[1] { value };
-                if (focusedxy != null && dataLen > value) focusedxy[1] = value;
+                if (focusedxy != null && dataLen >= value) focusedxy[1] = value;
                 return true;
             }
         }

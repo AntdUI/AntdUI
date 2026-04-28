@@ -50,16 +50,10 @@ namespace AntdUI
                     }
                     break;
                 case Keys.Left:
-                    if (ScrollBar.ShowX)
-                    {
-                        if (IKeyLeft() && HandShortcutKeys) return true;
-                    }
+                    if (IKeyLeft() && HandShortcutKeys) return true;
                     break;
                 case Keys.Right:
-                    if (ScrollBar.ShowX)
-                    {
-                        if (IKeyRight() && HandShortcutKeys) return true;
-                    }
+                    if (IKeyRight() && HandShortcutKeys) return true;
                     break;
                 case Keys.Enter:
                 case Keys.Space:
@@ -109,7 +103,7 @@ namespace AntdUI
             if (rows == null || _editControls.Count > 0) return false;
             if (focusedxy == null || focusedxy[0] <= 0)
             {
-                ScrollBar.ValueX -= (int)(60 * Dpi);
+                if (ScrollBar.ShowX) ScrollBar.ValueX -= (int)(60 * Dpi);
                 return false;
             }
             try
@@ -117,7 +111,7 @@ namespace AntdUI
                 var row = rows[focusedxy[1]];
                 if (row == null)
                 {
-                    ScrollBar.ValueX -= (int)(60 * Dpi);
+                    if (ScrollBar.ShowX) ScrollBar.ValueX -= (int)(60 * Dpi);
                     return false;
                 }
                 var cel = row.cells[focusedxy[0] - 1];
@@ -126,7 +120,7 @@ namespace AntdUI
                 return true;
             }
             catch { }
-            ScrollBar.ValueX -= (int)(60 * Dpi);
+            if (ScrollBar.ShowX) ScrollBar.ValueX -= (int)(60 * Dpi);
             return false;
         }
         bool IKeyRight()
@@ -134,7 +128,7 @@ namespace AntdUI
             if (rows == null || _editControls.Count > 0) return false;
             if (focusedxy == null)
             {
-                ScrollBar.ValueX += (int)(60 * Dpi);
+                if (ScrollBar.ShowX) ScrollBar.ValueX += (int)(60 * Dpi);
                 return false;
             }
             int next = focusedxy[0] + 1;
@@ -143,7 +137,7 @@ namespace AntdUI
                 var row = rows[focusedxy[1]];
                 if (row == null)
                 {
-                    ScrollBar.ValueX += (int)(60 * Dpi);
+                    if (ScrollBar.ShowX) ScrollBar.ValueX += (int)(60 * Dpi);
                     return false;
                 }
                 if (next < row.cells.Length)
@@ -155,7 +149,7 @@ namespace AntdUI
                 }
             }
             catch { }
-            ScrollBar.ValueX += (int)(60 * Dpi);
+            if (ScrollBar.ShowX) ScrollBar.ValueX += (int)(60 * Dpi);
             return false;
         }
 
@@ -178,7 +172,7 @@ namespace AntdUI
                         {
                             if (item.Key.Name == id_tmp) return;
                         }
-                        if (EnableFocusNavigation && (navigationConfig?.Contains(rows![0].cells[focusedxy[0]].COLUMN.Key, out _) ?? false)) return;
+                        if (EnableFocusNavigation && (navigationConfig?.Contains(rows!.First.cells[focusedxy[0]].COLUMN.Key, out _) ?? false)) return;
                     }
                     _currentEdit = null;
                     EnterEditMode(index, focusedxy[0]);

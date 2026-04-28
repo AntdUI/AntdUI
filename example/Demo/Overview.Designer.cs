@@ -141,14 +141,15 @@ namespace Demo
             // 
             // txt_search
             // 
+            txt_search.AutoSizeMode = AntdUI.TAutoSize.Width;
             txt_search.Dock = DockStyle.Right;
             txt_search.LocalizationPlaceholderText = "Overview.{id}";
-            txt_search.Location = new Point(762, 0);
+            txt_search.Location = new Point(764, 0);
             txt_search.Name = "txt_search";
             txt_search.Padding = new Padding(0, 2, 0, 2);
             txt_search.PlaceholderText = "输入关键字搜索...";
             txt_search.PrefixSvg = "SearchOutlined";
-            txt_search.Size = new Size(170, 40);
+            txt_search.Size = new Size(168, 40);
             txt_search.TabIndex = 9;
             txt_search.PrefixClick += txt_search_PrefixClick;
             txt_search.TextChanged += txt_search_TextChanged;
@@ -167,8 +168,8 @@ namespace Demo
             // 
             BackColor = Color.White;
             ClientSize = new Size(1300, 720);
-            Controls.Add(panel_main);
             Controls.Add(virtualPanel);
+            Controls.Add(panel_main);
             Controls.Add(windowBar);
             Font = new Font("Microsoft YaHei UI", 12F);
             ForeColor = Color.Black;
@@ -178,6 +179,7 @@ namespace Demo
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AntdUI Overview";
             windowBar.ResumeLayout(false);
+            windowBar.PerformLayout();
             ResumeLayout(false);
         }
 
