@@ -63,22 +63,14 @@ namespace AntdUI
                         {
                             select.SelectedValueChanged -= InputEdit_SelectedValueChanged;
                             select.ClosedItem -= InputEdit_SelectedValueChanged;
-                            if (obj[1] is Action<bool, object?> call)
-                            {
-                                obj[1] = null;
-                                call(obj[0] == select.SelectedValue, select.SelectedValue);
-                            }
+                            obj.call?.Invoke(obj.value == select.SelectedValue, select.SelectedValue);
                         }
-                        else id.KeyPress -= InputEdit_KeyPress;
-
-                        if (obj[1] != null)
+                        else
                         {
-                            if (obj[1] is Action<bool, string> call)
-                            {
-                                obj[1] = null;
-                                call(((string)obj[0]!) == id.Text, id.Text);
-                            }
+                            id.KeyPress -= InputEdit_KeyPress;
+                            obj.call?.Invoke(((string)obj.value!) == id.Text, id.Text);
                         }
+                        obj.call = null;
                         Focus();
                         id.Dispose();
                         Controls.Remove(id);
@@ -141,20 +133,19 @@ namespace AntdUI
                     OnCellBeginEditInputStyle(arge);
                     if (arge.Input is Select select)
                     {
-                        ShowSelect(select, region, column.INDEX_REAL, (cf, _value) =>
+                        ShowSelect(select, region, column.INDEX_REAL, (echo, r_value) =>
                         {
-                            bool isok_end = OnCellEndValueEdit(_value, it.RECORD, i_row, i_col, column);
-                            if (isok_end && !cf)
+                            if (!echo && OnCellEndValueEdit(r_value, it.RECORD, i_row, i_col, column))
                             {
                                 if (cell is TCellSelect cellSelect)
                                 {
-                                    cellSelect!.value = cellSelect.COLUMN[_value];
-                                    SetValue(cell, _value);
+                                    cellSelect!.value = cellSelect.COLUMN[r_value];
+                                    SetValue(cell, r_value);
                                     if (multiline) LoadLayout();
                                 }
                                 else
                                 {
-                                    SetValue(cell, _value);
+                                    SetValue(cell, r_value);
                                     LoadLayout();
                                 }
                                 OnCellEditComplete(it.RECORD, i_row, i_col, column);
@@ -184,19 +175,30 @@ namespace AntdUI
                     else if (column.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                     var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                     OnCellBeginEditInputStyle(arge);
-                    ShowInput(arge.Input, region, column.INDEX_REAL, (cf, _value) =>
+                    ShowInput(arge.Input, region, column.INDEX_REAL, (echo, r_value) =>
                     {
-                        arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
-                        bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
-                        if (isok_end && !cf)
+                        if (r_value is string val_str)
                         {
-                            if (GetValue(value, _value, cell.PROPERTY, out var o))
+                            arge.Call?.Invoke(new TableEndEditEventArgs(val_str, it.RECORD, i_row, i_col, column));
+                            if (!echo && OnCellEndEdit(val_str, it.RECORD, i_row, i_col, column))
                             {
-                                cellText.SetValue(o);
-                                SetValue(cell, o);
-                                if (multiline) LoadLayout();
+                                if (GetValue(value, val_str, cell.PROPERTY, out var o))
+                                {
+                                    cellText.SetValue(o);
+                                    SetValue(cell, o);
+                                    if (multiline) LoadLayout();
+                                }
+                                OnCellEditComplete(it.RECORD, i_row, i_col, column);
                             }
-                            OnCellEditComplete(it.RECORD, i_row, i_col, column);
+                        }
+                        else
+                        {
+                            if (!echo && OnCellEndValueEdit(r_value, it.RECORD, i_row, i_col, column))
+                            {
+                                SetValue(cell, r_value);
+                                LoadLayout();
+                                OnCellEditComplete(it.RECORD, i_row, i_col, column);
+                            }
                         }
                     });
                 });
@@ -224,23 +226,34 @@ namespace AntdUI
                             else if (column.Align == ColumnAlign.Right) tmp_input.TextAlign = HorizontalAlignment.Right;
                             var arge = new TableBeginEditInputStyleEventArgs(value, it.RECORD, i_row, i_col, column, tmp_input);
                             OnCellBeginEditInputStyle(arge);
-                            ShowInput(arge.Input, region, column.INDEX_REAL, (cf, _value) =>
+                            ShowInput(arge.Input, region, column.INDEX_REAL, (echo, r_value) =>
                             {
-                                arge.Call?.Invoke(new TableEndEditEventArgs(_value, it.RECORD, i_row, i_col, column));
-                                bool isok_end = OnCellEndEdit(_value, it.RECORD, i_row, i_col, column);
-                                if (isok_end && !cf)
+                                if (r_value is string val_str)
                                 {
-                                    if (value is CellText text2)
+                                    arge.Call?.Invoke(new TableEndEditEventArgs(val_str, it.RECORD, i_row, i_col, column));
+                                    if (!echo && OnCellEndEdit(val_str, it.RECORD, i_row, i_col, column))
                                     {
-                                        text2.Text = _value;
-                                        SetValue(cell, text2);
+                                        if (value is CellText text2)
+                                        {
+                                            text2.Text = val_str;
+                                            SetValue(cell, text2);
+                                        }
+                                        else
+                                        {
+                                            text.Text = val_str;
+                                            if (GetValue(value, val_str, cell.PROPERTY, out var o)) SetValue(cell, o);
+                                        }
+                                        OnCellEditComplete(it.RECORD, i_row, i_col, column);
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    if (!echo && OnCellEndValueEdit(r_value, it.RECORD, i_row, i_col, column))
                                     {
-                                        text.Text = _value;
-                                        if (GetValue(value, _value, cell.PROPERTY, out var o)) SetValue(cell, o);
+                                        SetValue(cell, r_value);
+                                        LoadLayout();
+                                        OnCellEditComplete(it.RECORD, i_row, i_col, column);
                                     }
-                                    OnCellEditComplete(it.RECORD, i_row, i_col, column);
                                 }
                             });
                         });
@@ -526,7 +539,7 @@ namespace AntdUI
         }
         internal Select CreateInputBySelect(ColumnSelect column)
         {
-            Select edit = new Select
+            var edit = new Select
             {
                 List = true
             };
@@ -534,8 +547,13 @@ namespace AntdUI
             edit.Items.AddRange(column.Items.ToArray());
             return edit;
         }
-        void ShowInput(Input input, bool region, int column, Action<bool, string> call)
+        void ShowInput(Input input, bool region, int column, Action<bool, object?> call)
         {
+            if (input is Select select)
+            {
+                ShowSelect(select, region, column, call);
+                return;
+            }
             if (AddEditInput(input, input.Text, call, region, column))
             {
                 input.KeyPress += InputEdit_KeyPress;
@@ -577,7 +595,17 @@ namespace AntdUI
 
         #region 集合处理
 
-        ConcurrentDictionary<Input, object?[]> _editControls = new ConcurrentDictionary<Input, object?[]>();
+        ConcurrentDictionary<Input, EditControlTag> _editControls = new ConcurrentDictionary<Input, EditControlTag>();
+        class EditControlTag
+        {
+            public EditControlTag(object? v, Action<bool, object?> c)
+            {
+                value = v;
+                call = c;
+            }
+            public object? value { get; set; }
+            public Action<bool, object?>? call { get; set; }
+        }
 
         // 存储当前编辑的单元格信息
         private TableCellEditEnterEventArgs? _currentEdit;
@@ -585,9 +613,9 @@ namespace AntdUI
         /// <summary>
         /// 添加空间到编辑
         /// </summary>
-        bool AddEditInput(Input input, object? txt, object? action, bool region, int column)
+        bool AddEditInput(Input input, object? txt, Action<bool, object?> action, bool region, int column)
         {
-            if (_editControls.TryAdd(input, new object?[] { txt, action }))
+            if (_editControls.TryAdd(input, new EditControlTag(txt, action)))
             {
                 if (region) EditInputRegion(input, column);
                 Controls.Add(input);

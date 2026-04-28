@@ -1072,38 +1072,31 @@ namespace AntdUI
                 item.Checked = !item.Checked;
                 return item.CheckState;
             }
-            bool checkChanged = false;
-            CheckState? lastState = null;
 
             // 处理子节点
             foreach (var sub in item.items)
             {
-                // 检查状态是否发生变化
-                if (lastState.HasValue)
-                {
-                    if (sub.CheckState != lastState.Value) checkChanged = true;
-                }
-                else lastState = sub.CheckState;
-
                 // 递归处理子节点
-                if (sub.items != null && sub.items.Count > 0)
-                {
-                    var oldState = sub.CheckState;
-                    sub.CheckState = ReverseCheck(sub);
-                    // 检查递归调用后状态是否改变
-                    if (sub.CheckState != oldState) checkChanged = true;
-                }
+                if (sub.items != null && sub.items.Count > 0) sub.CheckState = ReverseCheck(sub);
                 // 对于叶子节点，切换选中状态
-                else if (sub.Enabled)
+                else if (sub.Enabled) sub.Checked = !sub.Checked;
+            }
+
+            // 检查所有子节点最终状态是否一致
+            CheckState? firstState = null;
+            bool allSame = true;
+            foreach (var sub in item.items)
+            {
+                if (!firstState.HasValue) firstState = sub.CheckState;
+                else if (sub.CheckState != firstState.Value)
                 {
-                    bool oldChecked = sub.Checked;
-                    sub.Checked = !sub.Checked;
-                    // 检查选中状态是否改变
-                    if (sub.Checked != oldChecked) checkChanged = true;
+                    allSame = false;
+                    break;
                 }
             }
-            // 返回适当的检查状态
-            return checkChanged ? CheckState.Indeterminate : lastState ?? CheckState.Unchecked;
+
+            if (allSame) return firstState ?? CheckState.Unchecked;
+            return CheckState.Indeterminate;
         }
 
         public CheckState SetCheck(TreeItem item, bool value)
@@ -1653,7 +1646,7 @@ namespace AntdUI
         /// </summary>
         public void ReverseCheckItem(TreeItem item)
         {
-            if (Checkable) ReverseCheck(item);
+            if (Checkable) item.CheckState = ReverseCheck(item);
         }
 
         #region 获取项
