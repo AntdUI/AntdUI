@@ -217,6 +217,7 @@ namespace AntdUI
             if (height > read) height = read;
             if (height < min) height = min;
             float y = (valueY * 1F / (Maximum - read)) * (read - height);
+            if (y + height > Rect.Bottom) y = Rect.Bottom - height;
             return new RectangleF(Rect.X + gap, Rect.Y + y + gap, SIZE_BAR, height - gap2);
         }
 
@@ -298,7 +299,7 @@ namespace AntdUI
             base.OnMouseDown(e);
             oldY = e.Y;
             var slider = RectSliderFullY();
-            if (slider.Contains(e.X, e.Y)) SliderY = slider.X;
+            if (slider.Contains(e.X, e.Y)) SliderY = slider.Y;
             else
             {
                 float read = Height, y = (e.Y - slider.Height / 2F) / read;

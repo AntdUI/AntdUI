@@ -1026,6 +1026,13 @@ namespace AntdUI
             bitmap.Dispose();
             return null;
         }
+
+        internal static Color HandColor(this Color? color, Colour? db, Color def)
+        {
+            if (color.HasValue) return color.Value;
+            if (db.HasValue) return Style.Get(db.Value);
+            return def;
+        }
     }
 
     internal class AnchorDock

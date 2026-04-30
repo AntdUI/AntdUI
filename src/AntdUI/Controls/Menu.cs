@@ -685,7 +685,6 @@ namespace AntdUI
                         }
                         else
                         {
-                            scrollBarBlock = true;
                             int arrow_size = arrowRatio.HasValue ? (int)(size.Height * arrowRatio.Value) : icon_size, scx;
                             if (ScrollBar.Show && scrollBarBlock)
                             {

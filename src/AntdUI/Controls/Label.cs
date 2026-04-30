@@ -226,6 +226,12 @@ namespace AntdUI
         public Color? PrefixColor { get; set; }
 
         /// <summary>
+        /// 前缀颜色枚举
+        /// </summary>
+        [Description("前缀颜色枚举"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Colour? PrefixColour { get; set; }
+
+        /// <summary>
         /// 是否包含前缀
         /// </summary>
         public bool HasPrefix => prefixSvg != null || Prefix != null;
@@ -276,6 +282,12 @@ namespace AntdUI
         [Description("后缀颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
         public Color? SuffixColor { get; set; }
+
+        /// <summary>
+        /// 后缀颜色枚举
+        /// </summary>
+        [Description("后缀颜色枚举"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Colour? SuffixColour { get; set; }
 
         /// <summary>
         /// 缀标完全展示
@@ -536,14 +548,14 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     var rect_l = RecFixAuto(xOffset, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
                     xOffset += icon_size + gap;
                 }
                 else if (has_prefixText)
                 {
                     var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
                     var rect_l = RecFixAuto(xOffset, font_size_prefix.Width, rect_read, font_size);
-                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    g.DrawText(Prefix, Font, PrefixColor.HandColor(PrefixColour, color), rect_l, stringCNoWrap);
                     xOffset += font_size_prefix.Width + gap;
                 }
 
@@ -567,13 +579,13 @@ namespace AntdUI
                     {
                         int icon_size = (int)(font_size.Height * iconratio);
                         var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                        g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
+                        g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
                     }
                     else if (has_suffixText)
                     {
                         var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
                         var rect_r = RecFixAuto(suffixX, font_size_suffix.Width, rect_read, font_size);
-                        g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                        g.DrawText(Suffix, Font, SuffixColor.HandColor(SuffixColour, color), rect_r, stringCNoWrap);
                     }
                 }
 
@@ -591,13 +603,13 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(xOffset - icon_size - gap, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
                 }
                 else if (has_prefixText)
                 {
                     var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
                     Rectangle rect_l = RecFixAuto(xOffset - font_size_prefix.Width - gap, font_size_prefix.Width, rect_read, font_size);
-                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    g.DrawText(Prefix, Font, PrefixColor.HandColor(PrefixColour, color), rect_l, stringCNoWrap);
                 }
 
                 // 渲染后缀（位置在文本右侧）
@@ -605,13 +617,13 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(xOffset + text_width + gap, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
                 }
                 else if (has_suffixText)
                 {
                     var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
                     Rectangle rect_r = RecFixAuto(xOffset + text_width + gap, font_size_suffix.Width, rect_read, font_size);
-                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    g.DrawText(Suffix, Font, SuffixColor.HandColor(SuffixColour, color), rect_r, stringCNoWrap);
                 }
 
                 return textRect;
@@ -631,7 +643,7 @@ namespace AntdUI
                     int icon_size = (int)(font_size.Height * iconratio);
                     int suffixX = rightEdge - icon_size;
                     var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
                     rightEdge -= icon_size + gap;
                 }
                 else if (has_suffixText)
@@ -640,7 +652,7 @@ namespace AntdUI
                     var font_size_suffix = g.MeasureText(suffix, Font, 0, stringCNoWrap);
                     int suffixX = rightEdge - font_size_suffix.Width;
                     var rect_r = RecFixAuto(suffixX, font_size_suffix.Width, rect_read, font_size);
-                    g.DrawText(suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    g.DrawText(suffix, Font, SuffixColor.HandColor(SuffixColour, color), rect_r, stringCNoWrap);
                     rightEdge -= font_size_suffix.Width + gap;
                 }
 
@@ -666,14 +678,14 @@ namespace AntdUI
                         int icon_size = (int)(font_size.Height * iconratio);
                         prefixX -= icon_size;
                         var rect_l = RecFixAuto(prefixX, icon_size, rect_read, font_size);
-                        g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
+                        g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
                     }
                     else if (has_prefixText)
                     {
                         var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
                         prefixX -= font_size_prefix.Width;
                         var rect_l = RecFixAuto(prefixX, font_size_prefix.Width, rect_read, font_size);
-                        g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                        g.DrawText(Prefix, Font, PrefixColor.HandColor(PrefixColour, color), rect_l, stringCNoWrap);
                     }
                 }
 
@@ -692,13 +704,13 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(textX - icon_size - gap, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
                 }
                 else if (has_prefixText)
                 {
                     var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
                     Rectangle rect_l = RecFixAuto(textX - font_size_prefix.Width - gap, font_size_prefix.Width, rect_read, font_size);
-                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    g.DrawText(Prefix, Font, PrefixColor.HandColor(PrefixColour, color), rect_l, stringCNoWrap);
                 }
 
                 // 渲染后缀（位置在文本右侧）
@@ -706,13 +718,13 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(textX + text_width + gap, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
                 }
                 else if (has_suffixText)
                 {
                     var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
                     Rectangle rect_r = RecFixAuto(textX + text_width + gap, font_size_suffix.Width, rect_read, font_size);
-                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    g.DrawText(Suffix, Font, SuffixColor.HandColor(SuffixColour, color), rect_r, stringCNoWrap);
                 }
 
                 return textRect;
@@ -745,14 +757,14 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(cex, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
                     cex += icon_size + gap;
                 }
                 else if (has_prefixText)
                 {
                     var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
                     Rectangle rect_l = RecFixAuto(cex, font_size_prefix.Width, rect_read, font_size);
-                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    g.DrawText(Prefix, Font, PrefixColor.HandColor(PrefixColour, color), rect_l, stringCNoWrap);
                     cex += font_size_prefix.Width + gap;
                 }
 
@@ -768,14 +780,14 @@ namespace AntdUI
                     int icon_size = (int)(font_size.Height * iconratio);
                     int suffixX = cex + text_width + gap;
                     Rectangle rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
                 }
                 else if (has_suffixText)
                 {
                     var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
                     int suffixX = cex + text_width + gap;
                     Rectangle rect_r = RecFixAuto(suffixX, font_size_suffix.Width, rect_read, font_size);
-                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    g.DrawText(Suffix, Font, SuffixColor.HandColor(SuffixColour, color), rect_r, stringCNoWrap);
                 }
 
                 return textRect;
@@ -792,13 +804,13 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(cex - icon_size - gap, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor ?? color);
+                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
                 }
                 else if (has_prefixText)
                 {
                     var font_size_prefix = g.MeasureText(Prefix, Font, 0, stringCNoWrap);
                     Rectangle rect_l = RecFixAuto(cex - font_size_prefix.Width - gap, font_size_prefix.Width, rect_read, font_size);
-                    g.DrawText(Prefix, Font, PrefixColor ?? color, rect_l, stringCNoWrap);
+                    g.DrawText(Prefix, Font, PrefixColor.HandColor(PrefixColour, color), rect_l, stringCNoWrap);
                 }
 
                 // 渲染后缀（位置相对于文本）
@@ -806,13 +818,13 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(cex + text_width + gap, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor ?? color);
+                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
                 }
                 else if (has_suffixText)
                 {
                     var font_size_suffix = g.MeasureText(Suffix, Font, 0, stringCNoWrap);
                     Rectangle rect_r = RecFixAuto(cex + text_width + gap, font_size_suffix.Width, rect_read, font_size);
-                    g.DrawText(Suffix, Font, SuffixColor ?? color, rect_r, stringCNoWrap);
+                    g.DrawText(Suffix, Font, SuffixColor.HandColor(SuffixColour, color), rect_r, stringCNoWrap);
                 }
 
                 return new Rectangle(cex, rect_read.Y, text_width, rect_read.Height);

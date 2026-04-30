@@ -223,6 +223,7 @@ namespace AntdUI
             if (width > read) width = read;
             if (width < min) width = min;
             float x = (valueX * 1F / (Maximum - read)) * (read - width);
+            if (x + width > Rect.Right) x = Rect.Right - width;
             return new RectangleF(Rect.X + x + gap, Rect.Y + gap, width - gap2, SIZE_BAR);
         }
 
