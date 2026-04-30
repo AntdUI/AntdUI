@@ -175,8 +175,8 @@ namespace AntdUI
             }
             else
             {
-                YearFormat = "yyyy年";
-                MonthFormat = "MM月";
+                YearFormat = Localization.Get("YearFormat", "yyyy年");
+                MonthFormat = Localization.Get("MonthFormat", "MM月");
                 Mon = Localization.Get("Mon", "一");
                 Tue = Localization.Get("Tue", "二");
                 Wed = Localization.Get("Wed", "三");
