@@ -2081,11 +2081,23 @@ namespace AntdUI
             if (cache_caret == null) return null;
             else return FindNearestFont(x, y, cache_caret);
         }
-
-        /// <summary>
-        /// 寻找最近的矩形和距离的辅助方法
-        /// </summary>
-        CacheCaret FindNearestFont(int x, int y, CacheCaret[] cache_caret)
+        CacheCaret? GetCaretPostionDown()
+        {
+            if (cache_caret == null) return null;
+            int x = tmpkeyx ?? CaretInfo.X, y = CaretInfo.Y + CaretInfo.Height;
+            tmpkeyx = x;
+            SetCaretPostion(ref x, ref y);
+            return GetCaretPostionDirection(x, y, cache_caret);
+        }
+        CacheCaret? GetCaretPostionUp()
+        {
+            if (cache_caret == null) return null;
+            int x = tmpkeyx ?? CaretInfo.X, y = CaretInfo.Y - CaretInfo.Height;
+            tmpkeyx = x;
+            SetCaretPostion(ref x, ref y);
+            return GetCaretPostionDirection(x, y, cache_caret);
+        }
+        CacheCaret? GetCaretPostionDirection(int x, int y, CacheCaret[] cache_caret)
         {
             CacheCaret first = cache_caret[0], last = cache_caret[cache_caret.Length - 1];
             if (multiline)
@@ -2100,16 +2112,37 @@ namespace AntdUI
             }
             return FindNearestFontX(x, FindNearestFontY(y, cache_caret));
         }
-        CacheCaret[] FindNearestFontY(int y, CacheCaret[] cache_caret)
+        int? tmpkeyx;
+
+        /// <summary>
+        /// 寻找最近的矩形和距离的辅助方法
+        /// </summary>
+        CacheCaret FindNearestFont(int x, int y, CacheCaret[] cache_caret)
+        {
+            tmpkeyx = null;
+            CacheCaret first = cache_caret[0], last = cache_caret[cache_caret.Length - 1];
+            if (multiline)
+            {
+                if (x < first.x && y < first.y) return first;
+                else if (x > last.x && y > last.y) return last;
+            }
+            else
+            {
+                if (x < first.x) return first;
+                else if (x > last.x) return last;
+            }
+            return FindNearestFontX(x, FindNearestFontY(y, cache_caret, CaretInfo.Height / 2));
+        }
+        CacheCaret[] FindNearestFontY(int y, CacheCaret[] cache_caret, int offset = 0)
         {
             CacheCaret find = cache_caret[0];
-            int offset = CaretInfo.Height / 2, len = 1;
-            long minDiff = Math.Abs((long)cache_caret[0].y - y);
+            int len = 1;
+            int minDiff = Math.Abs(cache_caret[0].y - y);
             for (int i = 1; i < cache_caret.Length; i++)
             {
                 var ry = cache_caret[i].y;
                 if (ry == cache_caret[0].y) len++;
-                long currentDiff = Math.Abs((long)(ry + offset) - y);
+                int currentDiff = Math.Abs((ry + offset) - y);
                 // 如果当前差值更小，更新记录
                 if (currentDiff < minDiff)
                 {
@@ -2129,10 +2162,10 @@ namespace AntdUI
         CacheCaret FindNearestFontX(int x, CacheCaret[] cache_caret)
         {
             CacheCaret find = cache_caret[0];
-            long minDiff = Math.Abs((long)(find.x) - x);
+            int minDiff = Math.Abs(find.x - x);
             for (int i = 1; i < cache_caret.Length; i++)
             {
-                long currentDiff = Math.Abs((long)(cache_caret[i].x) - x);
+                int currentDiff = Math.Abs(cache_caret[i].x - x);
                 if (currentDiff < minDiff)
                 {
                     minDiff = currentDiff;
@@ -2195,7 +2228,7 @@ namespace AntdUI
                 Win32.Imm32.ImmSetCompositionWindow(hIMC, ref CompositionForm);
                 var logFont = new Win32.Imm32.LOGFONT()
                 {
-                    lfHeight = CaretInfo.Rect.Height,
+                    lfHeight = CaretInfo.Height,
                     lfFaceName = Font.Name + "\0"
                 };
                 Win32.Imm32.ImmSetCompositionFont(hIMC, ref logFont);

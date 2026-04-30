@@ -371,7 +371,7 @@ namespace AntdUI
                 if (_selectItem == value) return;
                 _selectItem = value;
                 Invalidate();
-                if (items == null|| value == null) return;
+                if (items == null || value == null) return;
                 var index = items.IndexOf(value);
                 OnTabSelectedItemChanged(value, index);
             }
