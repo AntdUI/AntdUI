@@ -1,5 +1,11 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.12` 2026-04-30
+
+- ➕ Label PrefixColour/SuffixColour
+- ✍️ 滚动条按下后进度重置
+- ✍️ Input 多行键盘上下DPI下错位
+
 ### `2.3.11` 2026-04-28
 
 - ➕ Input PaddingLR

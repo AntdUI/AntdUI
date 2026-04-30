@@ -1,5 +1,11 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.12` 2026-04-30
+
+- ➕ Label PrefixColour/SuffixColour
+- ✍️ Reset progress after pressing the scrollbar
+- ✍️ Input: Multi line keyboard with up and down DPI offset
+
 ### `2.3.11` 2026-04-28
 
 - ➕ Input PaddingLR
