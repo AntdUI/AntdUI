@@ -2112,15 +2112,21 @@ namespace AntdUI
             if (RespondRealAreas) return;
             ExtraMouseHover = true;
         }
-
+        protected override void OnMouseHover(EventArgs e)
+        {
+            base.OnMouseHover(e);
+            OpenTip();
+        }
         protected override void OnMouseLeave(EventArgs e)
         {
+            CloseTip();
             base.OnMouseLeave(e);
             ExtraMouseHover = false;
         }
 
         protected override void OnLeave(EventArgs e)
         {
+            CloseTip();
             base.OnLeave(e);
             ExtraMouseHover = false;
         }
@@ -2424,6 +2430,39 @@ namespace AntdUI
 
         #endregion
 
+        #region ToolTip
+        [Browsable(false), Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
+        public TooltipConfig? TooltipConfig { get; set; }
+        [Browsable(true), Description("按钮工具提示"), Category("外观"), DefaultValue(null)]
+        public string? ToolTip { get; set; }
+
+        TooltipForm? toolTipForm;
+        public void CloseTip()
+        {
+            toolTipForm?.IClose();
+            toolTipForm = null;
+        }
+
+        public void OpenTip(TooltipConfig? config = null)
+        {
+            if (ToolTip == null) return;
+            if (toolTipForm == null)
+            {
+                toolTipForm = new TooltipForm(this, ToolTip, config ?? TooltipConfig ?? new TooltipConfig
+                {
+                    Font = this.Font,
+                    ArrowAlign = TAlign.Bottom,
+                });
+                toolTipForm.Show(this);
+            }
+            else if (toolTipForm.SetText(null, ToolTip))
+            {
+                CloseTip();
+                OpenTip();
+            }
+        }
+      
+        #endregion
         protected override void OnClick(EventArgs e)
         {
             if (AutoToggle) Toggle = !toggle;

@@ -1186,12 +1186,36 @@ namespace AntdUI
         }
 
         readonly FormatFlags SL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
-        void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius)
+        void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius, bool expandMode = false)
         {
             using (var brush = new SolidBrush(fore))
             {
-                if (mode != TMenuMode.InlineNoText) g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
-                if (focusItem == null) PaintFocus(g, it, fore, radius);
+                if (mode != TMenuMode.InlineNoText)
+                {
+                    bool showSubText = it.SubText != null;
+                    Font fontSub = it.FontSub ?? Font;
+                    if (showSubText)
+                    {
+                        // 有SubText时，主文本往上移，SubText往下移
+                        int subHeight = fontSub.Height;
+                        Rectangle textRect = it.txt_rect;
+                        textRect.Height -= subHeight;
+                        g.DrawText(it.Text, it.Font ?? Font, fore, textRect, SL);
+
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(nameof(Menu), ColorScheme)))
+                        {
+                            // SubText下移
+                            Rectangle subRect = it.txt_rect;
+                            subRect.Height += subHeight;
+                            g.DrawText(it.SubText, fontSub, brush_sub, subRect, SL);
+                        }
+                    }
+                    else
+                    {
+                        g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
+                    }
+                }
+                if (expandMode == false && focusItem == null) PaintFocus(g, it, fore, radius);
             }
             PaintIcon(g, it, fore);
         }
@@ -1293,12 +1317,7 @@ namespace AntdUI
                     }
                 }
             }
-            if (mode == TMenuMode.InlineNoText) PaintIcon(g, it, fore);
-            else
-            {
-                g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
-                PaintIcon(g, it, fore);
-            }
+            PaintTextIcon(g, it, fore, radius, true);
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
         {
@@ -2367,12 +2386,34 @@ namespace AntdUI
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
+        [Description("子文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSubText { get; set; }
 
+        string? textSub;
+        /// <summary>
+        /// 子文本
+        /// </summary>
+        [Description("子文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null), Localizable(true)]
+        public string? SubText
+        {
+            get => Localization.GetLangI(LocalizationSubText, textSub, new string?[] { "{id}", ID });
+            set
+            {
+                if (text == value) return;
+                textSub = value;
+                Invalidates();
+            }
+        }
         /// <summary>
         /// 自定义字体
         /// </summary>
         [Description("自定义字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? Font { get; set; }
+        /// <summary>
+        /// 自定义子文本字体
+        /// </summary>
+        [Description("自定义子文本字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Font? FontSub { get; set; }
 
         bool visible = true;
         /// <summary>

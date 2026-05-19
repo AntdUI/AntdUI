@@ -222,8 +222,41 @@ namespace AntdUI
         /// <summary>
         /// 是否包含自定义图标
         /// </summary>
-        public bool HasIcon => iconSvg != null;
+        public bool HasIcon => iconSvg != null || iconCustom != null;
 
+        Image? iconCustom;
+        /// <summary>
+        /// 自定义图标
+        /// </summary>
+        [Description("自定义图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? IconCustom
+        {
+            get => iconCustom;
+            set
+            {
+                if (iconCustom == value) return;
+                iconCustom = value;
+                Invalidate();
+                OnPropertyChanged(nameof(IconCustom));
+            }
+        }
+        Color? textColor;
+
+        /// <summary>
+        /// Text的自定义颜色
+        /// </summary>
+        [Description("Text的自定义颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Color? TextColor
+        {
+            get { return textColor; }
+            set
+            {
+                if (textColor == value) return;
+                textColor = value;
+                Invalidate();
+                OnPropertyChanged(nameof(TextColor));
+            }
+        }
         #endregion
 
         bool loop = false, loopState = false;
@@ -430,7 +463,7 @@ namespace AntdUI
                             font_size = size;
                             int icon_size = (int)(size.Height * .86F), gap = (int)(icon_size * .4F);
                             var rect_txt = new Rectangle(rect.X + gap, rect.Y, rect.Width - gap * 2, rect.Height);
-                            g.DrawText(Text, Font, ForeColor, rect_txt, sf);
+                            g.DrawText(Text, Font, textColor ?? ForeColor, rect_txt, sf);
                         }
                     }
                     else
@@ -446,6 +479,7 @@ namespace AntdUI
 
                                 int desc_y = rect_txt.Bottom + (int)(icon_size * .33F);
                                 var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
+                                if (textColor != null) brush.Color = textColor.Value;
                                 g.DrawText(Text, Font, brush, rect_txt_desc, sEllipsis);
                             }
                         }
@@ -455,7 +489,7 @@ namespace AntdUI
             else
             {
                 float _radius = radius * Dpi;
-                Color back, bor_color, color = Colour.Text.Get(nameof(Alert), ColorScheme);
+                Color back, bor_color, color =textColor ?? Colour.Text.Get(nameof(Alert), ColorScheme);
                 switch (icon)
                 {
                     case TType.Success:
@@ -492,7 +526,7 @@ namespace AntdUI
                             var rect_icon = new Rectangle(gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
                             PaintText(g, rect, rect_icon, font_size.Value, color, back, _radius);
                             g.ResetClip();
-                            g.PaintIcons(icon, iconSvg, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
+                            OnPaintIconCore(g, icon, iconCustom, iconSvg, rect_icon);
                         }
                     }
                     else
@@ -506,7 +540,7 @@ namespace AntdUI
                         {
                             int icon_size = (int)(sizeT.Height * (iconratio ?? .86F)), gap = (int)(icon_size * (icongap ?? .4F));
                             var rect_icon = new Rectangle(rect.X + gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                            g.PaintIcons(icon, iconSvg, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
+                            OnPaintIconCore(g, icon, iconCustom, iconSvg, rect_icon);
                             var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + gap, rect.Y, rect.Width - (rect_icon.Width + gap * 3), rect.Height);
                             g.DrawText(Text, Font, color, rect_txt, sf);
                             PaintCloseIcon(g, rect_txt, .4F);
@@ -518,15 +552,15 @@ namespace AntdUI
                                 int icon_size = (int)(sizeT.Height * (iconratio ?? 1.2F)), gap = (int)(icon_size * (icongap ?? .5F));
 
                                 var rect_icon = new Rectangle(rect.X + gap, rect.Y + gap, icon_size, icon_size);
-                                g.PaintIcons(icon, iconSvg, rect_icon, Colour.BgBase, nameof(Alert), ColorScheme);
-
-                                using (var brush = new SolidBrush(color))
+                                OnPaintIconCore(g,icon, iconCustom, iconSvg, rect_icon);
+                                using (var brush = new SolidBrush(ForeColor))
                                 {
                                     var rect_txt = new Rectangle(rect_icon.X + rect_icon.Width + icon_size / 2, rect_icon.Y, rect.Width - (rect_icon.Width + gap * 3), rect_icon.Height);
                                     g.DrawText(TextTitle, font_title, brush, rect_txt, sf);
 
                                     var desc_y = rect_txt.Bottom + (int)(icon_size * .2F);
                                     var rect_txt_desc = new Rectangle(rect_txt.X, desc_y, rect_txt.Width, rect.Height - (desc_y + gap));
+                                    brush.Color = color;
                                     g.DrawText(Text, Font, brush, rect_txt_desc, sEllipsis);
                                     PaintCloseIcon(g, rect_txt, .7F);
                                 }
@@ -537,6 +571,15 @@ namespace AntdUI
                 }
             }
             base.OnDraw(e);
+        }
+        void OnPaintIconCore(Canvas g, TType iconType, Image? icon, string? iconSvg, Rectangle rect, float opacity = 1F)
+        {
+            if (icon != null)
+            {
+                g.Image(icon, rect, opacity);
+                return;
+            }
+            g.PaintIcons(iconType, iconSvg, rect, Colour.BgBase, nameof(Alert), ColorScheme);
         }
 
         #region 渲染帮助

@@ -860,7 +860,7 @@ namespace AntdUI
         {
             foreach (var it in items)
             {
-                if (it is DividerSelectItem) continue;
+                if (it==null || it is DividerSelectItem) continue;
                 else if (it is SelectItem selectItem)
                 {
                     string pinyin = selectItem.Text + selectItem.SubText;

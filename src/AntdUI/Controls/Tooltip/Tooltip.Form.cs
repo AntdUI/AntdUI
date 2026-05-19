@@ -87,7 +87,7 @@ namespace AntdUI
 
         public override string name => nameof(Tooltip);
 
-        public bool SetText(Rectangle rect, string text)
+        public bool SetText(Rectangle? rect, string text)
         {
             // 关键修复：文本相同但 rect 变化时，也要更新位置
             bool sameText = Text == text, sameRect = _lastRect.HasValue && _lastRect.Value == rect;

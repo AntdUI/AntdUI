@@ -264,6 +264,26 @@ namespace AntdUI
             }
         }
 
+        #region 运行时高度调整
+
+        bool isResizing = false;
+        CollapseItem? resizingItem = null;
+        CollapseItem? hoverResizeItem = null;
+        int resizeStartY = 0;
+        int resizeStartHeight = 0;
+        const int ResizeHandleHeight = 6;
+        /// <summary>
+        /// 高度调整线的颜色 (默认按Primary)
+        /// </summary>
+        [Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null), Description("高度调整线的颜色 (默认按Primary)")]
+        public Color? ResizingLineColor { get; set; }
+        /// <summary>
+        /// 高度调整线的粗细 (设为0时，表示禁用)
+        /// </summary>
+        [Category(nameof(CategoryAttribute.Appearance)), DefaultValue(2), Description("高度调整线的粗细 (设为0时，表示禁用)")]
+        public float ResizingLineThickness { get; set; } = 2F;
+        #endregion
+
         #endregion
 
         #region 布局
@@ -673,6 +693,24 @@ namespace AntdUI
                         }
                     }
                 }
+                // 绘制拖拽调整大小指示线
+                if (hoverResizeItem != null && hoverResizeItem.Expand && ResizingLineThickness > 0)
+                {
+                    using (var pen = new Pen(ResizingLineColor ?? Colour.Primary.Get(nameof(Collapse), ColorScheme), ResizingLineThickness * Dpi))
+                    {
+                        int lineY = hoverResizeItem.Rect.Bottom;
+                        g.DrawLine(pen, hoverResizeItem.Rect.X, lineY, hoverResizeItem.Rect.Right, lineY);
+                    }
+                }
+                // 绘制拖拽调整大小指示线
+                if (hoverResizeItem != null && hoverResizeItem.Expand && ResizingLineThickness > 0)
+                {
+                    using (var pen = new Pen(ResizingLineColor ?? Colour.Primary.Get(nameof(Collapse), ColorScheme), ResizingLineThickness * Dpi))
+                    {
+                        int lineY = hoverResizeItem.Rect.Bottom;
+                        g.DrawLine(pen, hoverResizeItem.Rect.X, lineY, hoverResizeItem.Rect.Right, lineY);
+                    }
+                }
             }
         }
         private int GetIconSize(int titleHeight) { return titleHeight - (int)(8 * Dpi); }
@@ -876,6 +914,32 @@ namespace AntdUI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (items == null || items.Count == 0) return;
+
+            // 首先检查是否在调整大小区域
+            foreach (var item in items)
+            {
+                if (item.Expand && IsInResizeHandle(item, e.X, e.Y))
+                {
+                    isResizing = true;
+                    resizingItem = item;
+                    resizeStartY = e.Y;
+                    resizeStartHeight = item.Height;
+                    return;
+                }
+            }
+
+            foreach (var item in items)
+            {
+                if (item.Expand && IsInResizeHandle(item, e.X, e.Y))
+                {
+                    isResizing = true;
+                    resizingItem = item;
+                    resizeStartY = e.Y;
+                    resizeStartHeight = item.Height;
+                    return;
+                }
+            }
+
             foreach (var item in items)
             {
                 if (item.Contains(e.X, e.Y))
@@ -899,8 +963,22 @@ namespace AntdUI
             base.OnMouseDown(e);
         }
 
+        bool IsInResizeHandle(CollapseItem item, int x, int y)
+        {
+            if(ResizingLineThickness == 0) return false;
+            var resizeHandle = new Rectangle(item.Rect.X, item.Rect.Bottom - ResizeHandleHeight, item.Rect.Width, ResizeHandleHeight);
+            return resizeHandle.Contains(x, y);
+        }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (isResizing)
+            {
+                isResizing = false;
+                resizingItem = null;
+                return;
+            }
+
             if (items == null || items.Count == 0) return;
             foreach (var item in items)
             {
@@ -944,12 +1022,53 @@ namespace AntdUI
             base.OnMouseLeave(e);
             tmp = null;
             CloseTip();
-
+            if (hoverResizeItem != null)
+            {
+                hoverResizeItem = null;
+                Invalidate();
+            }
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
             if (items == null || items.Count == 0) return;
+
+            // 处理调整大小
+            if (isResizing && resizingItem != null)
+            {
+                int deltaY = e.Y - resizeStartY;
+                int newHeight = resizeStartHeight + deltaY;
+                // 设置最小高度
+                newHeight = Math.Max(resizingItem.MinimumSize.Height, newHeight);
+                this.SuspendLayout();
+                resizingItem.Height = newHeight;
+                this.ResumeLayout();
+                return;
+            }
+
+            // 检查是否在调整大小区域
+            bool foundHover = false;
+            foreach (var item in items)
+            {
+                if (item.Expand && item.Full==false && IsInResizeHandle(item, e.X, e.Y))
+                {
+                    Cursor = Cursors.SizeNS;
+                    if (hoverResizeItem != item)
+                    {
+                        hoverResizeItem = item;
+                        Invalidate();
+                    }
+                    foundHover = true;
+                    return;
+                }
+            }
+
+            if (!foundHover && hoverResizeItem != null)
+            {
+                hoverResizeItem = null;
+                Invalidate();
+            }
+
             foreach (var item in items)
             {
                 if (item.Contains(e.X, e.Y))
