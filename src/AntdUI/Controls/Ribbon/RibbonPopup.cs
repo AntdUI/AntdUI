@@ -47,7 +47,7 @@ namespace AntdUI
             UseDwm = false;
             Shadow = 1;
             StartPosition = FormStartPosition.Manual;
-            BackColor = Colour.BgContainer.Get(nameof(Ribbon), owner.ColorScheme);
+            BackColor = Colour.BgContainer.Get(owner.ColorScheme, nameof(Ribbon), owner.Name);
 
             SetStyle(
                 ControlStyles.UserPaint |
@@ -130,8 +130,8 @@ namespace AntdUI
             var canvas = e.Graphics.High(dpi);
             var scheme = owner.ColorScheme;
 
-            canvas.Fill(Colour.BgContainer.Get(nameof(Ribbon), scheme), rect);
-            canvas.Draw(Colour.BorderColor.Get(nameof(Ribbon), scheme), 1f, rect);
+            canvas.Fill(Colour.BgContainer.Get(scheme, nameof(Ribbon), owner.Name), rect);
+            canvas.Draw(Colour.BorderColor.Get(scheme, nameof(Ribbon), owner.Name), 1f, rect);
 
             var contentRect = new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2);
             owner.DrawTabContent(canvas, page, contentRect, dpi);

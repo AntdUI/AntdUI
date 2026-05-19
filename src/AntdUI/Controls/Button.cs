@@ -1232,8 +1232,8 @@ namespace AntdUI
                     {
                         if (!ghost)
                         {
-                            if (WaveSize > 0) PaintShadow(g, rect, rect_read, path, Colour.FillQuaternary.Get(nameof(Button), ColorScheme), _radius);
-                            g.Fill(defaultback ?? Colour.DefaultBg.Get(nameof(Button), ColorScheme), path);
+                            if (WaveSize > 0) PaintShadow(g, rect, rect_read, path, Colour.FillQuaternary.Get(ColorScheme, nameof(Button), Name), _radius);
+                            g.Fill(defaultback ?? Colour.DefaultBg.Get(ColorScheme, nameof(Button), Name), path);
                         }
                         if (borderWidth > 0)
                         {
@@ -1247,7 +1247,7 @@ namespace AntdUI
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw(Colour.DefaultBorder.Get(nameof(Button), ColorScheme).BlendColors(colorHover), border, path);
+                                g.Draw(Colour.DefaultBorder.Get(ColorScheme, nameof(Button), Name).BlendColors(colorHover), border, path);
                                 PaintTextLoading(g, Text, _fore.BlendColors(colorHover), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
@@ -1258,7 +1258,7 @@ namespace AntdUI
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
-                                else g.Draw(defaultbordercolor ?? Colour.DefaultBorder.Get(nameof(Button), ColorScheme), border, path);
+                                else g.Draw(defaultbordercolor ?? Colour.DefaultBorder.Get(ColorScheme, nameof(Button), Name), border, path);
                                 PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
                             }
                         }
@@ -1274,8 +1274,8 @@ namespace AntdUI
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
-                        if (!ghost) g.Fill(Colour.FillTertiary.Get(nameof(Button), "bgDisabled", ColorScheme), path);
-                        PaintTextLoading(g, Text, Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                        if (!ghost) g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Button), Name), path);
+                        PaintTextLoading(g, Text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                     }
                 }
             }
@@ -1321,7 +1321,7 @@ namespace AntdUI
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
-                                g.Draw((enabled ? _back : Colour.FillTertiary.Get(nameof(Button), ColorScheme)).BlendColors(colorHover), border, path);
+                                g.Draw((enabled ? _back : Colour.FillTertiary.Get(ColorScheme, nameof(Button), Name)).BlendColors(colorHover), border, path);
                                 PaintTextLoading(g, Text, _back.BlendColors(colorHover), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
@@ -1351,12 +1351,12 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    g.Draw(Colour.FillTertiary.Get(nameof(Button), ColorScheme), border, path);
-                                    PaintTextLoading(g, Text, Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                                    g.Draw(Colour.FillTertiary.Get(ColorScheme, nameof(Button), Name), border, path);
+                                    PaintTextLoading(g, Text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                                 }
                             }
                         }
-                        else PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                        else PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
 
                         #endregion
                     }
@@ -1411,9 +1411,9 @@ namespace AntdUI
                         }
                         else
                         {
-                            g.Fill(Colour.FillTertiary.Get(nameof(Button), "bgDisabled", ColorScheme), path);
+                            g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Button), Name), path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, Text, Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme), rect_read, enabled, _radius);
+                            PaintTextLoading(g, Text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                         }
                     }
                 }
@@ -1440,7 +1440,7 @@ namespace AntdUI
         {
             if (loading && LoadingWaveValue > 0)
             {
-                using (var brush = new SolidBrush(LoadingWaveColor ?? Colour.Fill.Get(nameof(Button), ColorScheme)))
+                using (var brush = new SolidBrush(LoadingWaveColor ?? Colour.Fill.Get(ColorScheme, nameof(Button), Name)))
                 {
                     if (LoadingWaveValue >= 1) g.Fill(brush, path);
                     else if (LoadingWaveCount > 0)
@@ -1563,7 +1563,7 @@ namespace AntdUI
                 var rect_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2);
                 using (var path_focus = Helper.PathJoin(rect_focus, r, shape, joinMode, joinLeft, joinRight))
                 {
-                    g.Draw(Colour.PrimaryBorder.Get(nameof(Button), ColorScheme), wave, path_focus);
+                    g.Draw(Colour.PrimaryBorder.Get(ColorScheme, nameof(Button), Name), wave, path_focus);
                 }
             }
             bool has_loading = loading && LoadingValue > -1;
@@ -1956,24 +1956,24 @@ namespace AntdUI
             switch (type)
             {
                 case TTypeMini.Default:
-                    if (borderWidth > 0) color = Colour.PrimaryHover.Get(nameof(Button), ColorScheme);
-                    else color = Colour.FillSecondary.Get(nameof(Button), ColorScheme);
+                    if (borderWidth > 0) color = Colour.PrimaryHover.Get(ColorScheme, nameof(Button), Name);
+                    else color = Colour.FillSecondary.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Success:
-                    color = Colour.SuccessHover.Get(nameof(Button), ColorScheme);
+                    color = Colour.SuccessHover.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Error:
-                    color = Colour.ErrorHover.Get(nameof(Button), ColorScheme);
+                    color = Colour.ErrorHover.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Info:
-                    color = Colour.InfoHover.Get(nameof(Button), ColorScheme);
+                    color = Colour.InfoHover.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Warn:
-                    color = Colour.WarningHover.Get(nameof(Button), ColorScheme);
+                    color = Colour.WarningHover.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Primary:
                 default:
-                    color = Colour.PrimaryHover.Get(nameof(Button), ColorScheme);
+                    color = Colour.PrimaryHover.Get(ColorScheme, nameof(Button), Name);
                     break;
             }
             if (BackHover.HasValue) color = BackHover.Value;
@@ -1982,17 +1982,17 @@ namespace AntdUI
 
         void GetDefaultColorConfig(out Color Fore, out Color Color, out Color backHover, out Color backActive)
         {
-            Fore = Colour.DefaultColor.Get(nameof(Button), ColorScheme);
-            Color = Colour.Primary.Get(nameof(Button), ColorScheme);
+            Fore = Colour.DefaultColor.Get(ColorScheme, nameof(Button), Name);
+            Color = Colour.Primary.Get(ColorScheme, nameof(Button), Name);
             if (borderWidth > 0)
             {
-                backHover = Colour.PrimaryHover.Get(nameof(Button), ColorScheme);
-                backActive = Colour.PrimaryActive.Get(nameof(Button), ColorScheme);
+                backHover = Colour.PrimaryHover.Get(ColorScheme, nameof(Button), Name);
+                backActive = Colour.PrimaryActive.Get(ColorScheme, nameof(Button), Name);
             }
             else
             {
-                backHover = Colour.FillSecondary.Get(nameof(Button), ColorScheme);
-                backActive = Colour.Fill.Get(nameof(Button), ColorScheme);
+                backHover = Colour.FillSecondary.Get(ColorScheme, nameof(Button), Name);
+                backActive = Colour.Fill.Get(ColorScheme, nameof(Button), Name);
             }
             if (toggle)
             {
@@ -2050,35 +2050,35 @@ namespace AntdUI
             switch (type)
             {
                 case TTypeMini.Error:
-                    Back = Colour.Error.Get(nameof(Button), ColorScheme);
-                    Fore = Colour.ErrorColor.Get(nameof(Button), ColorScheme);
-                    backHover = Colour.ErrorHover.Get(nameof(Button), ColorScheme);
-                    backActive = Colour.ErrorActive.Get(nameof(Button), ColorScheme);
+                    Back = Colour.Error.Get(ColorScheme, nameof(Button), Name);
+                    Fore = Colour.ErrorColor.Get(ColorScheme, nameof(Button), Name);
+                    backHover = Colour.ErrorHover.Get(ColorScheme, nameof(Button), Name);
+                    backActive = Colour.ErrorActive.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Success:
-                    Back = Colour.Success.Get(nameof(Button), ColorScheme);
-                    Fore = Colour.SuccessColor.Get(nameof(Button), ColorScheme);
-                    backHover = Colour.SuccessHover.Get(nameof(Button), ColorScheme);
-                    backActive = Colour.SuccessActive.Get(nameof(Button), ColorScheme);
+                    Back = Colour.Success.Get(ColorScheme, nameof(Button), Name);
+                    Fore = Colour.SuccessColor.Get(ColorScheme, nameof(Button), Name);
+                    backHover = Colour.SuccessHover.Get(ColorScheme, nameof(Button), Name);
+                    backActive = Colour.SuccessActive.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Info:
-                    Back = Colour.Info.Get(nameof(Button), ColorScheme);
-                    Fore = Colour.InfoColor.Get(nameof(Button), ColorScheme);
-                    backHover = Colour.InfoHover.Get(nameof(Button), ColorScheme);
-                    backActive = Colour.InfoActive.Get(nameof(Button), ColorScheme);
+                    Back = Colour.Info.Get(ColorScheme, nameof(Button), Name);
+                    Fore = Colour.InfoColor.Get(ColorScheme, nameof(Button), Name);
+                    backHover = Colour.InfoHover.Get(ColorScheme, nameof(Button), Name);
+                    backActive = Colour.InfoActive.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Warn:
-                    Back = Colour.Warning.Get(nameof(Button), ColorScheme);
-                    Fore = Colour.WarningColor.Get(nameof(Button), ColorScheme);
-                    backHover = Colour.WarningHover.Get(nameof(Button), ColorScheme);
-                    backActive = Colour.WarningActive.Get(nameof(Button), ColorScheme);
+                    Back = Colour.Warning.Get(ColorScheme, nameof(Button), Name);
+                    Fore = Colour.WarningColor.Get(ColorScheme, nameof(Button), Name);
+                    backHover = Colour.WarningHover.Get(ColorScheme, nameof(Button), Name);
+                    backActive = Colour.WarningActive.Get(ColorScheme, nameof(Button), Name);
                     break;
                 case TTypeMini.Primary:
                 default:
-                    Back = Colour.Primary.Get(nameof(Button), ColorScheme);
-                    Fore = Colour.PrimaryColor.Get(nameof(Button), ColorScheme);
-                    backHover = Colour.PrimaryHover.Get(nameof(Button), ColorScheme);
-                    backActive = Colour.PrimaryActive.Get(nameof(Button), ColorScheme);
+                    Back = Colour.Primary.Get(ColorScheme, nameof(Button), Name);
+                    Fore = Colour.PrimaryColor.Get(ColorScheme, nameof(Button), Name);
+                    backHover = Colour.PrimaryHover.Get(ColorScheme, nameof(Button), Name);
+                    backActive = Colour.PrimaryActive.Get(ColorScheme, nameof(Button), Name);
                     break;
             }
         }
@@ -2112,21 +2112,15 @@ namespace AntdUI
             if (RespondRealAreas) return;
             ExtraMouseHover = true;
         }
-        protected override void OnMouseHover(EventArgs e)
-        {
-            base.OnMouseHover(e);
-            OpenTip();
-        }
+
         protected override void OnMouseLeave(EventArgs e)
         {
-            CloseTip();
             base.OnMouseLeave(e);
             ExtraMouseHover = false;
         }
 
         protected override void OnLeave(EventArgs e)
         {
-            CloseTip();
             base.OnLeave(e);
             ExtraMouseHover = false;
         }
@@ -2430,39 +2424,6 @@ namespace AntdUI
 
         #endregion
 
-        #region ToolTip
-        [Browsable(false), Description("超出文字提示配置"), Category("行为"), DefaultValue(null)]
-        public TooltipConfig? TooltipConfig { get; set; }
-        [Browsable(true), Description("按钮工具提示"), Category("外观"), DefaultValue(null)]
-        public string? ToolTip { get; set; }
-
-        TooltipForm? toolTipForm;
-        public void CloseTip()
-        {
-            toolTipForm?.IClose();
-            toolTipForm = null;
-        }
-
-        public void OpenTip(TooltipConfig? config = null)
-        {
-            if (ToolTip == null) return;
-            if (toolTipForm == null)
-            {
-                toolTipForm = new TooltipForm(this, ToolTip, config ?? TooltipConfig ?? new TooltipConfig
-                {
-                    Font = this.Font,
-                    ArrowAlign = TAlign.Bottom,
-                });
-                toolTipForm.Show(this);
-            }
-            else if (toolTipForm.SetText(null, ToolTip))
-            {
-                CloseTip();
-                OpenTip();
-            }
-        }
-      
-        #endregion
         protected override void OnClick(EventArgs e)
         {
             if (AutoToggle) Toggle = !toggle;

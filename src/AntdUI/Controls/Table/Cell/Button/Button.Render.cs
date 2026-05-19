@@ -11,7 +11,7 @@ namespace AntdUI
 {
     partial class CellButton
     {
-        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gaps, Rect, this, enable, PARENT.PARENT.ColorScheme);
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintButton(g, font, PARENT.PARENT.Gaps, Rect, this, enable, PARENT.PARENT.ColorScheme, PARENT.PARENT.Name);
 
         #region GetSize
 
@@ -75,24 +75,24 @@ namespace AntdUI
                     switch (Type)
                     {
                         case TTypeMini.Default:
-                            if (BorderWidth > 0) _back_hover = Colour.PrimaryHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
-                            else _back_hover = Colour.FillSecondary.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            if (BorderWidth > 0) _back_hover = Colour.PrimaryHover.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
+                            else _back_hover = Colour.FillSecondary.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
                             break;
                         case TTypeMini.Success:
-                            _back_hover = Colour.SuccessHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.SuccessHover.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
                             break;
                         case TTypeMini.Error:
-                            _back_hover = Colour.ErrorHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.ErrorHover.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
                             break;
                         case TTypeMini.Info:
-                            _back_hover = Colour.InfoHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.InfoHover.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
                             break;
                         case TTypeMini.Warn:
-                            _back_hover = Colour.WarningHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.WarningHover.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
                             break;
                         case TTypeMini.Primary:
                         default:
-                            _back_hover = Colour.PrimaryHover.Get(nameof(Button), PARENT.PARENT.ColorScheme);
+                            _back_hover = Colour.PrimaryHover.Get(PARENT.PARENT.ColorScheme, nameof(Button), PARENT.PARENT.Name);
                             break;
                     }
 

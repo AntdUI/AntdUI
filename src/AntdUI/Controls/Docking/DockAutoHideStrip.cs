@@ -122,12 +122,12 @@ namespace AntdUI
             string name = nameof(DockPanel);
             float dpi = Dpi;
 
-            var colBg = Colour.BgElevated.Get(name, scheme);
-            var colTabHot = Colour.PrimaryBg.Get(name, scheme);
-            var colTabIdle = Colour.FillSecondary.Get(name, scheme);
-            var colTextHot = Colour.Primary.Get(name, scheme);
-            var colTextIdle = Colour.Text.Get(name, scheme);
-            var colTabBorder = Colour.BorderColor.Get(name, scheme);
+            var colBg = Colour.BgElevated.Get(scheme, name, owner.Name);
+            var colTabHot = Colour.PrimaryBg.Get(scheme, name, owner.Name);
+            var colTabIdle = Colour.FillSecondary.Get(scheme, name, owner.Name);
+            var colTextHot = Colour.Primary.Get(scheme, name, owner.Name);
+            var colTextIdle = Colour.Text.Get(scheme, name, owner.Name);
+            var colTabBorder = Colour.BorderColor.Get(scheme, name, owner.Name);
             float tabRadius = 2 * dpi;
 
             g.Fill(colBg, r);

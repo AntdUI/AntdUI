@@ -782,9 +782,9 @@ namespace AntdUI
             float _radius = radius * Dpi;
             using (var path = Rect.RoundPath(_radius, Round))
             {
-                g.Fill(back ?? Colour.BgLayout.Get(nameof(Segmented), ColorScheme), path);
+                g.Fill(back ?? Colour.BgLayout.Get(ColorScheme, nameof(Segmented), Name), path);
 
-                if (_borderWidth > 0) g.Draw(_borderColor ?? Colour.BgLayout.Get(nameof(Segmented), ColorScheme), (int)(_borderWidth * Dpi), path);
+                if (_borderWidth > 0) g.Draw(_borderColor ?? Colour.BgLayout.Get(ColorScheme, nameof(Segmented), Name), (int)(_borderWidth * Dpi), path);
             }
             var item_text = new List<SegmentedItem>(items.Count);
             int _hover = -1;
@@ -797,7 +797,7 @@ namespace AntdUI
                     _hover = i;
                     using (var path = it.Rect.RoundPath(_radius, Round))
                     {
-                        g.Fill(BackHover ?? Colour.HoverBg.Get(nameof(Segmented), ColorScheme), path);
+                        g.Fill(BackHover ?? Colour.HoverBg.Get(ColorScheme, nameof(Segmented), Name), path);
                     }
                 }
                 item_text.Add(it);
@@ -808,14 +808,14 @@ namespace AntdUI
                 {
                     using (var path = AnimationBarValue.RoundPath(_radius, Round))
                     {
-                        g.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
+                        g.Fill(backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), path);
                     }
                 }
                 else
                 {
                     float barSize = BarSize * Dpi, barPadding = BarPadding * Dpi, barPadding2 = barPadding * 2;
                     var rect = GetBarRect(AnimationBarValue, barSize, barPadding, barPadding2);
-                    var color_active = barColor ?? backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme);
+                    var color_active = barColor ?? backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name);
                     if (BarRadius > 0)
                     {
                         using (var path = rect.RoundPath(BarRadius * Dpi))
@@ -827,8 +827,8 @@ namespace AntdUI
                 }
             }
             var enabled = Enabled;
-            using (var brush = new SolidBrush((fore ?? Colour.TextSecondary.Get(nameof(Segmented), ColorScheme))))
-            using (var brushDisable = new SolidBrush(Colour.TextQuaternary.Get(nameof(Segmented), "foreDisabled", ColorScheme)))
+            using (var brush = new SolidBrush((fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Segmented), Name))))
+            using (var brushDisable = new SolidBrush(Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Segmented), Name)))
             {
                 for (int i = 0; i < item_text.Count; i++)
                 {
@@ -837,7 +837,7 @@ namespace AntdUI
                     {
                         if (enabled && it.Enabled)
                         {
-                            var color_active = foreactive ?? Colour.Text.Get(nameof(Segmented), ColorScheme);
+                            var color_active = foreactive ?? Colour.Text.Get(ColorScheme, nameof(Segmented), Name);
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
                             g.DrawText(it.Text, Font, color_active, it.RectText, s_f);
                         }
@@ -853,7 +853,7 @@ namespace AntdUI
                         {
                             if (i == _hover)
                             {
-                                var color_hover = ForeHover ?? Colour.HoverColor.Get(nameof(Segmented), ColorScheme);
+                                var color_hover = ForeHover ?? Colour.HoverColor.Get(ColorScheme, nameof(Segmented), Name);
                                 if (PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon)) PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
                                 g.DrawText(it.Text, Font, color_hover, it.RectText, s_f);
                             }
@@ -869,7 +869,7 @@ namespace AntdUI
                             g.DrawText(it.Text, Font, brushDisable, it.RectText, s_f);
                         }
                     }
-                    it.PaintBadge(Font, it.Rect, g, ColorScheme);
+                    it.PaintBadge(Font, it.Rect, g, ColorScheme, Name);
                 }
             }
             base.OnDraw(e);
@@ -885,8 +885,8 @@ namespace AntdUI
                     using (var path = TabSelectRect.RoundPath(_radius, Round))
                     {
                         DrawShadow(g, it.Rect, path);
-                        g.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
-                        if (_itemBorderWidth > 0) g.Draw(_itemBorderColor ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), (int)(_itemBorderWidth * Dpi), path);
+                        g.Fill(backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), path);
+                        if (_itemBorderWidth > 0) g.Draw(_itemBorderColor ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), (int)(_itemBorderWidth * Dpi), path);
                     }
                 }
                 else
@@ -897,7 +897,7 @@ namespace AntdUI
                         {
                             using (var path = TabSelectRect.RoundPath(_radius, Round))
                             {
-                                g.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
+                                g.Fill(backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), path);
                             }
                             return false;
                         }
@@ -907,10 +907,10 @@ namespace AntdUI
                     {
                         using (var path = TabSelectRect.RoundPath(_radius, Round))
                         {
-                            g.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
+                            g.Fill(backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), path);
                         }
                     }
-                    var color_active = barColor ?? backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme);
+                    var color_active = barColor ?? backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name);
                     float barSize = BarSize * Dpi, barPadding = BarPadding * Dpi, barPadding2 = barPadding * 2;
                     var rect = GetBarRect(TabSelectRect, barSize, barPadding, barPadding2);
                     if (BarRadius > 0)
@@ -969,7 +969,7 @@ namespace AntdUI
                         using (var g2 = Graphics.FromImage(shadow_temp).HighLay())
                         {
                             g2.TranslateTransform(-rect_real.X + shadow, -rect_real.Y + shadow);
-                            g2.Fill(backactive ?? Colour.BgElevated.Get(nameof(Segmented), ColorScheme), path);
+                            g2.Fill(backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), path);
                         }
                         Helper.Blur(shadow_temp, shadow);
                     }

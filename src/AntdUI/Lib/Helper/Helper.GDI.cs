@@ -1035,45 +1035,63 @@ namespace AntdUI
             }
             g.Svg(icon.Svg, rect, icon.Fill);
         }
+        internal static void PaintIcons(this Canvas g, TType icon, Rectangle rect, string keyid, TAMode colorScheme, string name)
+        {
+            switch (icon)
+            {
+                case TType.Success:
+                    g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(colorScheme, keyid, name));
+                    break;
+                case TType.Info:
+                    g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(colorScheme, keyid, name));
+                    break;
+                case TType.Warn:
+                    g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(colorScheme, keyid, name));
+                    break;
+                case TType.Error:
+                    g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(colorScheme, keyid, name));
+                    break;
+            }
+        }
         internal static void PaintIcons(this Canvas g, TType icon, Rectangle rect, string keyid, TAMode colorScheme)
         {
             switch (icon)
             {
                 case TType.Success:
-                    g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme));
+                    g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get2(colorScheme, keyid));
                     break;
                 case TType.Info:
-                    g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme));
+                    g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get2(colorScheme, keyid));
                     break;
                 case TType.Warn:
-                    g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme));
+                    g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get2(colorScheme, keyid));
                     break;
                 case TType.Error:
-                    g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme));
+                    g.Svg(SvgDb.IcoError, rect, Colour.Error.Get2(colorScheme, keyid));
                     break;
             }
         }
-        internal static void PaintIcons(this Canvas g, TType icon, string? svg, Rectangle rect, Colour colour, string keyid, TAMode colorScheme)
+        internal static void PaintIcons(this Canvas g, TType icon, string? svg, Rectangle rect, Colour colour, string keyid, TAMode colorScheme, string name)
         {
             if (svg == null)
             {
-                using (var brush = new SolidBrush(Colour.BgBase.Get(keyid, colorScheme)))
+                using (var brush = new SolidBrush(Colour.BgBase.Get(colorScheme, keyid, name)))
                 {
                     g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
                 }
                 switch (icon)
                 {
                     case TType.Success:
-                        g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(keyid, colorScheme));
+                        g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(colorScheme, keyid, name));
                         break;
                     case TType.Info:
-                        g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(keyid, colorScheme));
+                        g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(colorScheme, keyid, name));
                         break;
                     case TType.Warn:
-                        g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(keyid, colorScheme));
+                        g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(colorScheme, keyid, name));
                         break;
                     case TType.Error:
-                        g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(keyid, colorScheme));
+                        g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(colorScheme, keyid, name));
                         break;
                 }
             }
@@ -1082,16 +1100,62 @@ namespace AntdUI
                 switch (icon)
                 {
                     case TType.Success:
-                        g.Svg(svg, rect, Colour.Success.Get(keyid, colorScheme));
+                        g.Svg(svg, rect, Colour.Success.Get(colorScheme, keyid, name));
                         break;
                     case TType.Info:
-                        g.Svg(svg, rect, Colour.Info.Get(keyid, colorScheme));
+                        g.Svg(svg, rect, Colour.Info.Get(colorScheme, keyid, name));
                         break;
                     case TType.Warn:
-                        g.Svg(svg, rect, Colour.Warning.Get(keyid, colorScheme));
+                        g.Svg(svg, rect, Colour.Warning.Get(colorScheme, keyid, name));
                         break;
                     case TType.Error:
-                        g.Svg(svg, rect, Colour.Error.Get(keyid, colorScheme));
+                        g.Svg(svg, rect, Colour.Error.Get(colorScheme, keyid, name));
+                        break;
+                    default:
+                        g.Svg(svg, rect);
+                        break;
+                }
+            }
+        }
+        internal static void PaintIcons(this Canvas g, TType icon, string? svg, Rectangle rect, Colour colour, string keyid, TAMode colorScheme)
+        {
+            if (svg == null)
+            {
+                using (var brush = new SolidBrush(Colour.BgBase.Get2(colorScheme, keyid)))
+                {
+                    g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
+                }
+                switch (icon)
+                {
+                    case TType.Success:
+                        g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get2(colorScheme, keyid));
+                        break;
+                    case TType.Info:
+                        g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get2(colorScheme, keyid));
+                        break;
+                    case TType.Warn:
+                        g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get2(colorScheme, keyid));
+                        break;
+                    case TType.Error:
+                        g.Svg(SvgDb.IcoError, rect, Colour.Error.Get2(colorScheme, keyid));
+                        break;
+                }
+            }
+            else
+            {
+                switch (icon)
+                {
+                    case TType.Success:
+                        g.Svg(svg, rect, Colour.Success.Get2(colorScheme, keyid));
+                        break;
+                    case TType.Info:
+                        g.Svg(svg, rect, Colour.Info.Get2(colorScheme, keyid));
+                        break;
+                    case TType.Warn:
+                        g.Svg(svg, rect, Colour.Warning.Get2(colorScheme, keyid));
+                        break;
+                    case TType.Error:
+                        g.Svg(svg, rect, Colour.Error.Get2(colorScheme, keyid));
                         break;
                     default:
                         g.Svg(svg, rect);
@@ -1138,8 +1202,8 @@ namespace AntdUI
 
         #region 徽标
 
-        public static void PaintBadge(this IControl control, Canvas g) => PaintBadge(control, control.Font, control.ClientRectangle, g, control.ColorScheme);
-        public static void PaintBadge(this BadgeConfig badegConfig, Font Font, Rectangle Rect, Canvas g, TAMode colorScheme)
+        public static void PaintBadge(this IControl control, Canvas g) => PaintBadge(control, control.Font, control.ClientRectangle, g, control.ColorScheme, control.Name);
+        public static void PaintBadge(this BadgeConfig badegConfig, Font Font, Rectangle Rect, Canvas g, TAMode colorScheme, string cname)
         {
             if (badegConfig.BadgeSvg != null)
             {
@@ -1148,13 +1212,13 @@ namespace AntdUI
                 {
                     var size_badge = g.MeasureString(Config.NullText, font).Height;
                     var rect_badge = PaintBadge(Rect, badegConfig.BadgeAlign, hasx, hasy, size_badge, size_badge);
-                    g.Svg(badegConfig.BadgeSvg, rect_badge, badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme));
+                    g.Svg(badegConfig.BadgeSvg, rect_badge, badegConfig.BadgeBack ?? Colour.Error.Get(colorScheme, nameof(Badge), cname));
                 }
             }
             else if (badegConfig.Badge != null)
             {
-                Color color = badegConfig.BadgeBack ?? Colour.Error.Get(nameof(Badge), colorScheme),
-                    borcolor = badegConfig.BadgeBorderColor ?? Colour.ErrorColor.Get(nameof(Badge), colorScheme);
+                Color color = badegConfig.BadgeBack ?? Colour.Error.Get(colorScheme, nameof(Badge), cname),
+                    borcolor = badegConfig.BadgeBorderColor ?? Colour.ErrorColor.Get(colorScheme, nameof(Badge), cname);
                 var rect = Rect;
                 float borsize = g.Dpi;
                 if (badegConfig.BadgeBorderWidth.HasValue) borsize = badegConfig.BadgeBorderWidth.Value * g.Dpi;
@@ -1186,7 +1250,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        Color fore = badegConfig.BadgeFore ?? Colour.ErrorColor.Get(nameof(Badge), colorScheme);
+                        Color fore = badegConfig.BadgeFore ?? Colour.ErrorColor.Get(colorScheme, nameof(Badge), cname);
                         var size = g.MeasureString(badegConfig.Badge, font).Size(g, 4, 2);
                         int size_badge = (int)(size.Height * 1.2F);
                         if (size.Height > size.Width)
@@ -1214,7 +1278,7 @@ namespace AntdUI
 
         public static void PaintBadge(this IControl control, DateBadge badge, Rectangle rect, Canvas g)
         {
-            var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get(nameof(Badge), control.ColorScheme);
+            var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get(control.ColorScheme, nameof(Badge), control.Name);
             float Dpi = control.Dpi, borsize = Dpi;
             using (var font = new Font(control.Font.FontFamily, control.Font.Size * badge.Size))
             {
@@ -1224,7 +1288,7 @@ namespace AntdUI
                     var size_badge = g.MeasureString(Config.NullText, font).Height / 2;
                     var rect_badge = PaintBadge(rect, badge.Align, hasx, hasy, size_badge, size_badge);
                     g.FillEllipse(color, rect_badge);
-                    g.DrawEllipse(Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), borsize, rect_badge);
+                    g.DrawEllipse(Colour.ErrorColor.Get(control.ColorScheme, nameof(Badge), control.Name), borsize, rect_badge);
                 }
                 else
                 {
@@ -1234,8 +1298,8 @@ namespace AntdUI
                     {
                         var rect_badge = PaintBadge(rect, badge.Align, hasx, hasy, size_badge, size_badge);
                         g.FillEllipse(color, rect_badge);
-                        g.DrawEllipse(Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), borsize, rect_badge);
-                        g.String(badge.Content, font, Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
+                        g.DrawEllipse(Colour.ErrorColor.Get(control.ColorScheme, nameof(Badge), control.Name), borsize, rect_badge);
+                        g.String(badge.Content, font, Colour.ErrorColor.Get(control.ColorScheme, nameof(Badge), control.Name), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                     }
                     else
                     {
@@ -1244,9 +1308,9 @@ namespace AntdUI
                         using (var path = rect_badge.RoundPath(rect_badge.Height))
                         {
                             g.Fill(color, path);
-                            g.Draw(Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), borsize, path);
+                            g.Draw(Colour.ErrorColor.Get(control.ColorScheme, nameof(Badge), control.Name), borsize, path);
                         }
-                        g.String(badge.Content, font, Colour.ErrorColor.Get(nameof(Badge), control.ColorScheme), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
+                        g.String(badge.Content, font, Colour.ErrorColor.Get(control.ColorScheme, nameof(Badge), control.Name), rect_badge, FormatFlags.Center | FormatFlags.NoWrap);
                     }
                 }
             }

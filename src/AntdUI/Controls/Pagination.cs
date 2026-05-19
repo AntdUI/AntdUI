@@ -342,8 +342,8 @@ namespace AntdUI
             var s_f = FormatFlags.Center | FormatFlags.NoWrap;
             if (Enabled)
             {
-                Color fore = Colour.Text.Get(nameof(Pagination), ColorScheme), color = fill ?? Colour.Primary.Get(nameof(Pagination), ColorScheme);
-                using (var brush_hover = new SolidBrush(Colour.FillSecondary.Get(nameof(Pagination), ColorScheme)))
+                Color fore = Colour.Text.Get(ColorScheme, nameof(Pagination), Name), color = fill ?? Colour.Primary.Get(ColorScheme, nameof(Pagination), Name);
+                using (var brush_hover = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Pagination), Name)))
                 {
                     #region 渲染上下
 
@@ -355,7 +355,7 @@ namespace AntdUI
                             g.Fill(brush_hover, path_previous);
                         }
                     }
-                    using (var pen_arrow = new Pen(btn_previous.enabled ? fore : Colour.TextQuaternary.Get(nameof(Pagination), ColorScheme), border))
+                    using (var pen_arrow = new Pen(btn_previous.enabled ? fore : Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), border))
                     {
                         g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(btn_previous.rect));
                     }
@@ -369,7 +369,7 @@ namespace AntdUI
                             g.Fill(brush_hover, path_next);
                         }
                     }
-                    using (var pen_arrow = new Pen(btn_next.enabled ? fore : Colour.TextQuaternary.Get(nameof(Pagination), ColorScheme), border))
+                    using (var pen_arrow = new Pen(btn_next.enabled ? fore : Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), border))
                     {
                         g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(btn_next.rect));
                     }
@@ -391,7 +391,7 @@ namespace AntdUI
                             }
                             if (btn.prog > 0)
                             {
-                                using (var brush_prog = new SolidBrush(Colour.TextQuaternary.Get(nameof(Pagination), ColorScheme)))
+                                using (var brush_prog = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name)))
                                 {
                                     g.String("•••", Font, brush_prog, btn.rect, s_f);
                                 }
@@ -413,7 +413,7 @@ namespace AntdUI
             }
             else
             {
-                var fore = Colour.TextQuaternary.Get(nameof(Pagination), "foreDisabled", ColorScheme);
+                var fore = Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Pagination), Name);
 
                 #region 渲染上下
 
@@ -447,7 +447,7 @@ namespace AntdUI
                             {
                                 using (var path = btn.rect.RoundPath(_radius))
                                 {
-                                    g.Fill(Colour.Fill.Get(nameof(Pagination), "bgDisabled", ColorScheme), path);
+                                    g.Fill(Colour.Fill.GetSymbol(ColorScheme, "bgDisabled", nameof(Pagination), Name), path);
                                 }
                             }
                             g.String(btn.key, Font, brush, btn.rect, s_f);

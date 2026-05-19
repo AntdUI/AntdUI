@@ -688,10 +688,10 @@ namespace AntdUI
 
             #region 显示颜色
 
-            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get(nameof(PageHeader), ColorScheme),
-                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get(nameof(PageHeader), ColorScheme),
-                foreSecondary = Colour.TextSecondary.Get(nameof(PageHeader), "subFore", ColorScheme),
-                fillsecondary = Colour.FillSecondary.Get(nameof(PageHeader), ColorScheme);
+            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get(ColorScheme, nameof(PageHeader), Name),
+                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get(ColorScheme, nameof(PageHeader), Name),
+                foreSecondary = Colour.TextSecondary.GetSymbol(ColorScheme, "subFore", nameof(PageHeader), Name),
+                fillsecondary = Colour.FillSecondary.Get(ColorScheme, nameof(PageHeader), Name);
 
             #endregion
 
@@ -706,7 +706,7 @@ namespace AntdUI
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Dpi), margin = (int)(dividerMargin * Dpi);
-                using (var brush = dividerColor.Brush(Colour.Split.Get(nameof(PageHeader), ColorScheme)))
+                using (var brush = dividerColor.Brush(Colour.Split.Get(ColorScheme, nameof(PageHeader), Name)))
                 {
                     g.Fill(brush, new Rectangle(e.Rect.X + margin, e.Rect.Bottom - thickness, e.Rect.Width - margin * 2, thickness));
                 }
@@ -846,7 +846,7 @@ namespace AntdUI
             {
                 icon_size = sHeight;
                 var rect_icon = new Rectangle(rect.X + u_x + _gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                using (var pen = new Pen(Colour.Fill.Get(nameof(PageHeader), ColorScheme), sHeight * .14F))
+                using (var pen = new Pen(Colour.Fill.Get(ColorScheme, nameof(PageHeader), Name), sHeight * .14F))
                 using (var brush = new Pen(Color.FromArgb(170, fore), pen.Width))
                 {
                     g.DrawEllipse(pen, rect_icon);
@@ -894,18 +894,18 @@ namespace AntdUI
             var rect_close_icon = new Rectangle(rect_close.X + btn_x, rect_close.Y + btn_y, btn_size, btn_size);
             if (hove_close.Down)
             {
-                g.Fill(Colour.ErrorActive.Get(nameof(PageHeader), ColorScheme), rect_close);
+                g.Fill(Colour.ErrorActive.Get(ColorScheme, nameof(PageHeader), Name), rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else if (hove_close.Animation)
             {
-                g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get(nameof(PageHeader), ColorScheme)), rect_close);
+                g.Fill(Helper.ToColor(hove_close.Value, Colour.Error.Get(ColorScheme, nameof(PageHeader), Name)), rect_close);
                 PrintClose(g, fore, rect_close_icon);
-                g.Svg(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme)));
+                g.Svg(SvgDb.IcoAppClose, rect_close_icon, Helper.ToColor(hove_close.Value, Colour.ErrorColor.Get(ColorScheme, nameof(PageHeader), Name)));
             }
             else if (hove_close.Switch)
             {
-                g.Fill(Colour.Error.Get(nameof(PageHeader), ColorScheme), rect_close);
+                g.Fill(Colour.Error.Get(ColorScheme, nameof(PageHeader), Name), rect_close);
                 PrintCloseHover(g, rect_close_icon);
             }
             else PrintClose(g, fore, rect_close_icon);
@@ -946,12 +946,12 @@ namespace AntdUI
         void PrintBackHover(Canvas g, Color color, Rectangle rect_icon)
         {
             PrintBack(g, color, rect_icon);
-            PrintBack(g, Helper.ToColor(hove_back.Value, Colour.Primary.Get(nameof(PageHeader), ColorScheme)), rect_icon);
+            PrintBack(g, Helper.ToColor(hove_back.Value, Colour.Primary.Get(ColorScheme, nameof(PageHeader), Name)), rect_icon);
         }
-        void PrintBackHover(Canvas g, Rectangle rect_icon) => PrintBack(g, Colour.Primary.Get(nameof(PageHeader), ColorScheme), rect_icon);
-        void PrintBackDown(Canvas g, Rectangle rect_icon) => PrintBack(g, Colour.PrimaryActive.Get(nameof(PageHeader), ColorScheme), rect_icon);
+        void PrintBackHover(Canvas g, Rectangle rect_icon) => PrintBack(g, Colour.Primary.Get(ColorScheme, nameof(PageHeader), Name), rect_icon);
+        void PrintBackDown(Canvas g, Rectangle rect_icon) => PrintBack(g, Colour.PrimaryActive.Get(ColorScheme, nameof(PageHeader), Name), rect_icon);
         void PrintClose(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppClose, rect_icon, color);
-        void PrintCloseHover(Canvas g, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get(nameof(PageHeader), ColorScheme));
+        void PrintCloseHover(Canvas g, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppClose, rect_icon, Colour.ErrorColor.Get(ColorScheme, nameof(PageHeader), Name));
         void PrintFull(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppFull, rect_icon, color);
         void PrintFullRestore(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppFullRestore, rect_icon, color);
         void PrintMax(Canvas g, Color color, Rectangle rect_icon) => g.Svg(SvgDb.IcoAppMax, rect_icon, color);
@@ -1089,7 +1089,7 @@ namespace AntdUI
                 bool _close = rect_close.Contains(e.X, e.Y), _full = fullBox && rect_full.Contains(e.X, e.Y), _max = maximizeBox && rect_max.Contains(e.X, e.Y), _min = minimizeBox && rect_min.Contains(e.X, e.Y);
                 if (_close != hove_close.SwitchDown || _full != hove_full.SwitchDown || _max != hove_max.SwitchDown || _min != hove_min.SwitchDown)
                 {
-                    var fillsecondary = Colour.FillSecondary.Get(nameof(PageHeader), ColorScheme);
+                    var fillsecondary = Colour.FillSecondary.Get(ColorScheme, nameof(PageHeader), Name);
                     hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;
                     hove_close.Switch = _close;
                     hove_full.Switch = _full;

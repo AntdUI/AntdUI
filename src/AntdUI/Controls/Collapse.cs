@@ -511,12 +511,12 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             var g = e.Canvas;
             float r = radius * Dpi;
-            using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Collapse), ColorScheme)))
-            using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get(nameof(Collapse), ColorScheme)))
+            using (var forebrush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Collapse), Name)))
+            using (var brush = new SolidBrush(headerBg ?? Colour.FillQuaternary.Get(ColorScheme, nameof(Collapse), Name)))
             {
                 if (borderWidth > 0)
                 {
-                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(nameof(Collapse), ColorScheme), borderWidth * Dpi))
+                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Collapse), Name), borderWidth * Dpi))
                     using (var pen_arr = new Pen(forebrush.Color, 1.2F * Dpi))
                     {
                         pen.StartCap = pen.EndCap = LineCap.Round;
@@ -696,7 +696,7 @@ namespace AntdUI
                 // 绘制拖拽调整大小指示线
                 if (hoverResizeItem != null && hoverResizeItem.Expand && ResizingLineThickness > 0)
                 {
-                    using (var pen = new Pen(ResizingLineColor ?? Colour.Primary.Get(nameof(Collapse), ColorScheme), ResizingLineThickness * Dpi))
+                    using (var pen = new Pen(ResizingLineColor ?? Colour.Primary.Get(ColorScheme, nameof(Collapse), Name), ResizingLineThickness * Dpi))
                     {
                         int lineY = hoverResizeItem.Rect.Bottom;
                         g.DrawLine(pen, hoverResizeItem.Rect.X, lineY, hoverResizeItem.Rect.Right, lineY);
@@ -705,7 +705,7 @@ namespace AntdUI
                 // 绘制拖拽调整大小指示线
                 if (hoverResizeItem != null && hoverResizeItem.Expand && ResizingLineThickness > 0)
                 {
-                    using (var pen = new Pen(ResizingLineColor ?? Colour.Primary.Get(nameof(Collapse), ColorScheme), ResizingLineThickness * Dpi))
+                    using (var pen = new Pen(ResizingLineColor ?? Colour.Primary.Get(ColorScheme, nameof(Collapse), Name), ResizingLineThickness * Dpi))
                     {
                         int lineY = hoverResizeItem.Rect.Bottom;
                         g.DrawLine(pen, hoverResizeItem.Rect.X, lineY, hoverResizeItem.Rect.Right, lineY);
@@ -777,10 +777,10 @@ namespace AntdUI
         void PaintButtons(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.buttons == null) return;
-            using (var fore_active = new SolidBrush(Colour.Primary.Get(nameof(Button), ColorScheme)))
-            using (var hover = new SolidBrush(Colour.FillSecondary.Get(nameof(Button), ColorScheme)))
-            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.Get(nameof(Button), "foreDisabled", ColorScheme)))
-            using (var active = new SolidBrush(Colour.PrimaryBg.Get(nameof(Button), ColorScheme)))
+            using (var fore_active = new SolidBrush(Colour.Primary.Get(ColorScheme, nameof(Button), Name)))
+            using (var hover = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Button), Name)))
+            using (var brush_TextQuaternary = new SolidBrush(Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name)))
+            using (var active = new SolidBrush(Colour.PrimaryBg.Get(ColorScheme, nameof(Button), Name)))
             {
                 foreach (var btn in item.buttons)
                 {
@@ -828,17 +828,17 @@ namespace AntdUI
                             bool enabled = btn.Enabled;
                             using (var path = rect_read.RoundPath(rect_read.Height))
                             {
-                                Color _color = btn.Back ?? Colour.Primary.Get(nameof(Switch), ColorScheme);
+                                Color _color = btn.Back ?? Colour.Primary.Get(ColorScheme, nameof(Switch), Name);
                                 PaintClick(g, path, rect_read, rect_read, _color, btn);
                                 if (enabled && (btn.hasFocus && Config.FocusBorderEnabled) && btn.WaveSize > 0)
                                 {
                                     float wave = (btn.WaveSize * Dpi / 2), wave2 = wave * 2;
                                     using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
                                     {
-                                        g.Draw(Colour.PrimaryBorder.Get(nameof(Switch), ColorScheme), wave, path_focus);
+                                        g.Draw(Colour.PrimaryBorder.Get(ColorScheme, nameof(Switch), Name), wave, path_focus);
                                     }
                                 }
-                                using (var brush = new SolidBrush(Colour.TextQuaternary.Get(nameof(Switch), ColorScheme)))
+                                using (var brush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Switch), Name)))
                                 {
                                     g.Fill(brush, path);
                                     if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, brush.Color), path);
@@ -850,29 +850,29 @@ namespace AntdUI
                                     var alpha = 255 * btn.AnimationCheckValue;
                                     g.Fill(Helper.ToColor(alpha, _color), path);
                                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * btn.AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                                    g.FillEllipse(enabled ? Colour.BgBase.Get(nameof(Switch), ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), ColorScheme)), dot_rect);
+                                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.Get(ColorScheme, nameof(Switch), Name)), dot_rect);
 
                                 }
                                 else if (btn.Checked)
                                 {
-                                    var colorhover = Colour.PrimaryHover.Get(nameof(Switch), ColorScheme);
+                                    var colorhover = Colour.PrimaryHover.Get(ColorScheme, nameof(Switch), Name);
                                     g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
                                     if (btn.AnimationHover) g.Fill(Helper.ToColorN(btn.AnimationHoverValue, colorhover), path);
                                     else if (btn.ExtraMouseHover) g.Fill(colorhover, path);
                                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                                    g.FillEllipse(enabled ? Colour.BgBase.Get(nameof(Switch), ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), ColorScheme)), dot_rect);
+                                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.Get(ColorScheme, nameof(Switch), Name)), dot_rect);
                                 }
                                 else
                                 {
                                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                                    g.FillEllipse(enabled ? Colour.BgBase.Get(nameof(Switch), ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), ColorScheme)), dot_rect);
+                                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.Get(ColorScheme, nameof(Switch), Name)), dot_rect);
                                 }
 
                                 // 绘制文本
                                 string? textToRender = btn.Checked ? btn.CheckedText : btn.UnCheckedText;
                                 if (textToRender != null)
                                 {
-                                    Color _fore = btn.Fore ?? Colour.PrimaryColor.Get(nameof(Switch), ColorScheme);
+                                    Color _fore = btn.Fore ?? Colour.PrimaryColor.Get(ColorScheme, nameof(Switch), Name);
                                     using (var brush = new SolidBrush(_fore))
                                     {
                                         var textSize = g.MeasureString(textToRender, Font);
@@ -965,7 +965,7 @@ namespace AntdUI
 
         bool IsInResizeHandle(CollapseItem item, int x, int y)
         {
-            if(ResizingLineThickness == 0) return false;
+            if (ResizingLineThickness == 0) return false;
             var resizeHandle = new Rectangle(item.Rect.X, item.Rect.Bottom - ResizeHandleHeight, item.Rect.Width, ResizeHandleHeight);
             return resizeHandle.Contains(x, y);
         }
@@ -1040,9 +1040,9 @@ namespace AntdUI
                 int newHeight = resizeStartHeight + deltaY;
                 // 设置最小高度
                 newHeight = Math.Max(resizingItem.MinimumSize.Height, newHeight);
-                this.SuspendLayout();
+                SuspendLayout();
                 resizingItem.Height = newHeight;
-                this.ResumeLayout();
+                ResumeLayout();
                 return;
             }
 
@@ -1050,7 +1050,7 @@ namespace AntdUI
             bool foundHover = false;
             foreach (var item in items)
             {
-                if (item.Expand && item.Full==false && IsInResizeHandle(item, e.X, e.Y))
+                if (item.Expand && item.Full == false && IsInResizeHandle(item, e.X, e.Y))
                 {
                     Cursor = Cursors.SizeNS;
                     if (hoverResizeItem != item)

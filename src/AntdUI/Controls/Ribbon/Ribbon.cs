@@ -575,18 +575,18 @@ namespace AntdUI
             var scheme = ColorScheme;
             var name = nameof(Ribbon);
             return new Palette(
-                back ?? Colour.BgContainer.Get(name, scheme),
-                Colour.BgElevated.Get(name, scheme),
-                Colour.BorderColor.Get(name, scheme),
-                Colour.BorderSecondary.Get(name, scheme),
-                Colour.Primary.Get(name, scheme),
-                Colour.PrimaryBg.Get(name, scheme),
-                Colour.HoverBg.Get(name, scheme),
-                Colour.FillSecondary.Get(name, scheme),
-                Colour.Split.Get(name, scheme),
-                fore ?? Colour.Text.Get(name, scheme),
-                Colour.TextTertiary.Get(name, scheme),
-                Colour.TextQuaternary.Get(name, scheme));
+                back ?? Colour.BgContainer.Get(scheme, name, Name),
+                Colour.BgElevated.Get(scheme, name, Name),
+                Colour.BorderColor.Get(scheme, name, Name),
+                Colour.BorderSecondary.Get(scheme, name, Name),
+                Colour.Primary.Get(scheme, name, Name),
+                Colour.PrimaryBg.Get(scheme, name, Name),
+                Colour.HoverBg.Get(scheme, name, Name),
+                Colour.FillSecondary.Get(scheme, name, Name),
+                Colour.Split.Get(scheme, name, Name),
+                fore ?? Colour.Text.Get(scheme, name, Name),
+                Colour.TextTertiary.Get(scheme, name, Name),
+                Colour.TextQuaternary.Get(scheme, name, Name));
         }
 
         void DrawContent(Canvas g, Rectangle rect, int groupTitleH, float dpi, in Palette p)

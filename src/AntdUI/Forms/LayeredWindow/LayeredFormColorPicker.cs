@@ -28,6 +28,7 @@ namespace AntdUI
         public LayeredFormColorPicker(ColorPicker control, Rectangle rect_read, Action<Color> _action)
         {
             ColorScheme = control.ColorScheme;
+            cname = control.Name;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
             AllowClear = control.AllowClear;
@@ -60,6 +61,7 @@ namespace AntdUI
         public LayeredFormColorPicker(ColorPicker.Config config)
         {
             ColorScheme = config.ColorScheme;
+            cname = config.Target.GetControl?.Name ?? "NULL";
             SetTopMost(config.Target, Handle);
             SetDpi(config.Target);
             AllowClear = config.AllowClear;
@@ -185,7 +187,7 @@ namespace AntdUI
             bmp_dot_12 = new Bitmap(gap2, gap2);
             using (var g2 = Graphics.FromImage(bmp_dot_12).High(Dpi))
             {
-                using (var brush = new SolidBrush(Colour.BgBase.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(Colour.BgBase.Get(ColorScheme, name, cname)))
                 {
                     float yy = (bmp_dot_12.Height - gap) / 2F;
                     var rect = new RectangleF(gap_2, gap_2, bmp_dot_12.Height - gap, bmp_dot_12.Height - gap);
@@ -389,6 +391,7 @@ namespace AntdUI
         int ArrowSize = 0;
 
         public override string name => nameof(ColorPicker);
+        string cname;
 
         void ChangeColor(Color color, bool a = false)
         {
@@ -656,7 +659,7 @@ namespace AntdUI
 
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var brush_bg = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush_bg = new SolidBrush(Colour.BgElevated.Get(ColorScheme, name, cname)))
             {
                 #region 渲染
 
@@ -670,7 +673,7 @@ namespace AntdUI
                             g.DrawLine(pen, new Point(rect_btn.X, rect_btn.Bottom), new Point(rect_btn.Right, rect_btn.Y));
                         }
                         g.ResetClip();
-                        g.Draw(hover_btn ? Colour.BorderColor.Get(name, ColorScheme) : Colour.Split.Get(name, ColorScheme), Dpi, path);
+                        g.Draw(hover_btn ? Colour.BorderColor.Get(ColorScheme, name, cname) : Colour.Split.Get(ColorScheme, name, cname), Dpi, path);
                     }
                 }
 
@@ -678,16 +681,16 @@ namespace AntdUI
                 {
                     using (var path = rect_close.RoundPath(Radius2))
                     {
-                        g.Draw(hover_close ? Colour.BorderColor.Get(name, ColorScheme) : Colour.Split.Get(name, ColorScheme), Dpi, path);
+                        g.Draw(hover_close ? Colour.BorderColor.Get(ColorScheme, name, cname) : Colour.Split.Get(ColorScheme, name, cname), Dpi, path);
                     }
-                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(name, ColorScheme), .8F);
+                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(ColorScheme, name, cname), .8F);
                 }
 
                 if (ShowReset)
                 {
                     using (var path = rect_reset.RoundPath(Radius2))
                     {
-                        g.Draw(hover_reset ? Colour.BorderColor.Get(name, ColorScheme) : Colour.Split.Get(name, ColorScheme), Dpi, path);
+                        g.Draw(hover_reset ? Colour.BorderColor.Get(ColorScheme, name, cname) : Colour.Split.Get(ColorScheme, name, cname), Dpi, path);
                     }
                     g.PaintIconCore(rect_reset, SvgDb.IcoStar, ValueDefault, .8F);
                 }
@@ -768,7 +771,7 @@ namespace AntdUI
 
                 using (var brush_val = new SolidBrush(Value))
                 using (var brush_hue = new SolidBrush(ValueHue))
-                using (var pen = new Pen(Colour.BgBase.Get(name, ColorScheme), dot_bor_size))
+                using (var pen = new Pen(Colour.BgBase.Get(ColorScheme, name, cname), dot_bor_size))
                 {
                     #region 调色板
 
@@ -817,7 +820,7 @@ namespace AntdUI
 
                 if (preset_color != null)
                 {
-                    using (var pen = new Pen(Colour.TextQuaternary.Get(name, ColorScheme), Dpi))
+                    using (var pen = new Pen(Colour.TextQuaternary.Get(ColorScheme, name, cname), Dpi))
                     {
                         foreach (var it in preset_color)
                         {
@@ -848,7 +851,7 @@ namespace AntdUI
 
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(ColorScheme, name, cname)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -856,7 +859,7 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, name, cname), bor, path2);
                     }
                     return;
                 }
@@ -1027,7 +1030,7 @@ namespace AntdUI
         {
             if (add)
             {
-                using (var brush = new SolidBrush(Colour.FillSecondary.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, name, cname)))
                 {
                     int he = rect.Height / 2;
                     int u_x = 0;

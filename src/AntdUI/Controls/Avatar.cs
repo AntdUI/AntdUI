@@ -432,23 +432,23 @@ namespace AntdUI
             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);
             FillRect(g, rect, back, _radius, round);
 
-            if (PaintImage(g, rect, _radius)) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Avatar), "foreDisabled", ColorScheme), rect, stringCenter);
+            if (PaintImage(g, rect, _radius)) g.DrawText(Text, Font, Enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Avatar), Name), rect, stringCenter);
             if (borderWidth > 0) DrawRect(g, rect, borColor, borderWidth * Dpi, _radius, round);
             if (Hover)
             {
                 int size = (int)((rect.Width > rect.Height ? rect.Height : rect.Width) * HoverImageRatio);
-                FillRect(g, rect, HoverBack ?? Colour.TextTertiary.Get(nameof(Avatar), ColorScheme), _radius, round);
+                FillRect(g, rect, HoverBack ?? Colour.TextTertiary.Get(ColorScheme, nameof(Avatar), Name), _radius, round);
                 var rect_hover = new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y + (rect.Height - size) / 2, size, size);
                 if (HoverImage != null) g.Image(HoverImage, rect_hover);
-                if (HoverImageSvg != null) g.Svg(HoverImageSvg, rect_hover, HoverFore ?? Colour.BgBase.Get(nameof(Avatar), ColorScheme));
+                if (HoverImageSvg != null) g.Svg(HoverImageSvg, rect_hover, HoverFore ?? Colour.BgBase.Get(ColorScheme, nameof(Avatar), Name));
             }
             if (loading)
             {
                 var bor6 = 6F * Dpi;
                 int loading_size = (int)(40 * Dpi);
                 var rect_loading = new Rectangle(rect.X + (rect.Width - loading_size) / 2, rect.Y + (rect.Height - loading_size) / 2, loading_size, loading_size);
-                g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get(nameof(Avatar), ColorScheme)), bor6, rect_loading);
-                using (var penpro = new Pen(Colour.Primary.Get(nameof(Avatar), ColorScheme), bor6))
+                g.DrawEllipse(Color.FromArgb(220, Colour.PrimaryColor.Get(ColorScheme, nameof(Avatar), Name)), bor6, rect_loading);
+                using (var penpro = new Pen(Colour.Primary.Get(ColorScheme, nameof(Avatar), Name), bor6))
                 {
                     g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }

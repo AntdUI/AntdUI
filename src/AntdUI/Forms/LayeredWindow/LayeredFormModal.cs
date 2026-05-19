@@ -41,10 +41,10 @@ namespace AntdUI
             SuspendLayout();
 
             int butt_h = (int)Math.Round(config.BtnHeight * Dpi);
-            BackColor = Colour.BgElevated.Get(nameof(AntdUI.Modal), config.ColorScheme);
+            BackColor = Colour.BgElevated.Get2(config.ColorScheme, nameof(AntdUI.Modal));
             Size = new Size(416, 122 + butt_h);
             config.Target.SetFontConfig(config.Font, this);
-            ForeColor = Colour.TextBase.Get(nameof(AntdUI.Modal), config.ColorScheme);
+            ForeColor = Colour.TextBase.Get2(config.ColorScheme, nameof(AntdUI.Modal));
 
             if (butt_h > 0)
             {
@@ -498,21 +498,21 @@ namespace AntdUI
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                     {
-                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme)), path);
+                        g.Fill(Helper.ToColor(close_button.Value, Colour.FillSecondary.Get2(config.ColorScheme, nameof(AntdUI.Modal))), path);
                     }
-                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
+                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get2(config.ColorScheme, nameof(AntdUI.Modal)), .6F);
                 }
                 else if (close_button.Switch)
                 {
                     using (var path = rect_close.RoundPath((int)(4 * Dpi)))
                     {
-                        g.Fill(Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme), path);
+                        g.Fill(Colour.FillSecondary.Get2(config.ColorScheme, nameof(AntdUI.Modal)), path);
                     }
-                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
+                    g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.Text.Get2(config.ColorScheme, nameof(AntdUI.Modal)), .6F);
                 }
-                else g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get(nameof(AntdUI.Modal), config.ColorScheme), .6F);
+                else g.PaintIconCore(rect_close, SvgDb.IcoErrorGhost, Colour.TextTertiary.Get2(config.ColorScheme, nameof(AntdUI.Modal)), .6F);
             }
-            using (var brush = new SolidBrush(Colour.Text.Get(nameof(AntdUI.Modal), config.ColorScheme)))
+            using (var brush = new SolidBrush(Colour.Text.Get2(config.ColorScheme, nameof(AntdUI.Modal))))
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
                 {
@@ -548,7 +548,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get(nameof(AntdUI.Modal), config.ColorScheme).A;
+                close_button.MaxValue = Colour.FillSecondary.Get2(config.ColorScheme, nameof(AntdUI.Modal)).A;
                 close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
             }
@@ -682,8 +682,8 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.THEME:
-                    BackColor = Colour.BgElevated.Get(nameof(AntdUI.Modal), config.ColorScheme);
-                    ForeColor = Colour.TextBase.Get(nameof(AntdUI.Modal), config.ColorScheme);
+                    BackColor = Colour.BgElevated.Get2(config.ColorScheme, nameof(AntdUI.Modal));
+                    ForeColor = Colour.TextBase.Get2(config.ColorScheme, nameof(AntdUI.Modal));
                     break;
             }
         }

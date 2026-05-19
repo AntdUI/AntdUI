@@ -22,35 +22,35 @@ namespace AntdUI
                 switch (Type)
                 {
                     case TTypeMini.Default:
-                        _back = Colour.TagDefaultBg.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _fore = Colour.TagDefaultColor.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _bor = Colour.DefaultBorder.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
+                        _back = Colour.TagDefaultBg.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _fore = Colour.TagDefaultColor.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _bor = Colour.DefaultBorder.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
                         break;
                     case TTypeMini.Error:
-                        _back = Colour.ErrorBg.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _fore = Colour.Error.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _bor = Colour.ErrorBorder.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
+                        _back = Colour.ErrorBg.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _fore = Colour.Error.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _bor = Colour.ErrorBorder.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
                         break;
                     case TTypeMini.Success:
-                        _back = Colour.SuccessBg.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _fore = Colour.Success.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _bor = Colour.SuccessBorder.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
+                        _back = Colour.SuccessBg.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _fore = Colour.Success.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _bor = Colour.SuccessBorder.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
                         break;
                     case TTypeMini.Info:
-                        _back = Colour.InfoBg.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _fore = Colour.Info.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _bor = Colour.InfoBorder.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
+                        _back = Colour.InfoBg.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _fore = Colour.Info.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _bor = Colour.InfoBorder.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
                         break;
                     case TTypeMini.Warn:
-                        _back = Colour.WarningBg.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _fore = Colour.Warning.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _bor = Colour.WarningBorder.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
+                        _back = Colour.WarningBg.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _fore = Colour.Warning.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _bor = Colour.WarningBorder.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
                         break;
                     case TTypeMini.Primary:
                     default:
-                        _back = Colour.PrimaryBg.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _fore = Colour.Primary.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
-                        _bor = Colour.Primary.Get(nameof(Tag), PARENT.PARENT.ColorScheme);
+                        _back = Colour.PrimaryBg.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _fore = Colour.Primary.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
+                        _bor = Colour.Primary.Get(PARENT.PARENT.ColorScheme, nameof(Tag), PARENT.PARENT.Name);
                         break;
                 }
 

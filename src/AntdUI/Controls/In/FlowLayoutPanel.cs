@@ -144,7 +144,7 @@ namespace AntdUI.In
             Panel.LoadScroll = ScrollInfo;
             Panel.DrawEmpty = g =>
             {
-                if (Empty) g.High().PaintEmpty(ClientRectangle, Font, Colour.Text.Get(nameof(FlowLayoutPanel)), EmptyText, EmptyImage);
+                if (Empty) g.High().PaintEmpty(ClientRectangle, Font, Colour.Text.Get(nameof(FlowLayoutPanel), Name), EmptyText, EmptyImage);
             };
             InitScroll();
             IOnSizeChanged();

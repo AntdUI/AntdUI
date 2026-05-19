@@ -163,7 +163,7 @@ namespace AntdUI
             if (icon == null || icon.Width != size)
             {
                 icon?.Dispose();
-                icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Colour.FillSecondary.Get(nameof(Rate), ColorScheme));
+                icon = SvgExtend.SvgToBmp(character ?? SvgDb.IcoStar, size, size, Colour.FillSecondary.Get(ColorScheme, nameof(Rate), Name));
 
             }
             if (icon_active == null || icon_active.Width != size)
@@ -186,7 +186,7 @@ namespace AntdUI
                         Rectangle rect_diy = new Rectangle(0, 0, bmp_size, bmp_size), rect_icon = new Rectangle(0, 0, size, size);
                         using (var g2 = Graphics.FromImage(bmp_diy).HighLay(Dpi, true))
                         {
-                            using (var brush = new SolidBrush(Colour.FillSecondary.Get(nameof(Rate), ColorScheme)))
+                            using (var brush = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Rate), Name)))
                             {
                                 g2.String(character, font, brush, rect_diy);
                             }

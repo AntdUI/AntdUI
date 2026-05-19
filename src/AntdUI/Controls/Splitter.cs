@@ -286,16 +286,16 @@ namespace AntdUI
             var rect = SplitterRectangle;
             if (_collapsePanel == ADCollapsePanel.None)
             {
-                if (moving) g.Fill(SplitterBackMove ?? Colour.PrimaryBg.Get(nameof(Splitter)), rect);
-                else g.Fill(splitterBack ?? Colour.FillTertiary.Get(nameof(Splitter)), rect);
+                if (moving) g.Fill(SplitterBackMove ?? Colour.PrimaryBg.Get(nameof(Splitter), Name), rect);
+                else g.Fill(splitterBack ?? Colour.FillTertiary.Get(nameof(Splitter), Name), rect);
                 int size = (int)(SplitterSize * Config.Dpi);
-                if (Orientation == Orientation.Horizontal) g.Fill(Colour.Fill.Get(nameof(Splitter)), new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y, size, rect.Height));
-                else g.Fill(Colour.Fill.Get(nameof(Splitter)), new Rectangle(rect.X, rect.Y + (rect.Height - size) / 2, rect.Width, size));
+                if (Orientation == Orientation.Horizontal) g.Fill(Colour.Fill.Get(nameof(Splitter), Name), new Rectangle(rect.X + (rect.Width - size) / 2, rect.Y, size, rect.Height));
+                else g.Fill(Colour.Fill.Get(nameof(Splitter), Name), new Rectangle(rect.X, rect.Y + (rect.Height - size) / 2, rect.Width, size));
             }
             else
             {
-                if (moving) g.Fill(SplitterBackMove ?? Colour.PrimaryBg.Get(nameof(Splitter)), rect);
-                else g.Fill(splitterBack ?? Colour.FillTertiary.Get(nameof(Splitter)), rect);
+                if (moving) g.Fill(SplitterBackMove ?? Colour.PrimaryBg.Get(nameof(Splitter), Name), rect);
+                else g.Fill(splitterBack ?? Colour.FillTertiary.Get(nameof(Splitter), Name), rect);
 
                 //计算显示图标
                 int index = 0;
@@ -309,13 +309,13 @@ namespace AntdUI
                 //绘制箭头
                 if (m_bIsArrowRegion)
                 {
-                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get(nameof(Splitter)), points);
-                    g.Svg(arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get(nameof(Splitter)));
+                    g.FillPolygon(ArrawBackHover ?? Colour.Primary.Get(nameof(Splitter), Name), points);
+                    g.Svg(arrowSvg[index], rect_arrow, ArrawColorHover ?? Colour.PrimaryColor.Get(nameof(Splitter), Name));
                 }
                 else
                 {
-                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get(nameof(Splitter)), points);
-                    g.Svg(arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get(nameof(Splitter)));
+                    g.FillPolygon(_arrowBackColor ?? Colour.PrimaryBg.Get(nameof(Splitter), Name), points);
+                    g.Svg(arrowSvg[index], rect_arrow, _arrowColor ?? Colour.PrimaryBorder.Get(nameof(Splitter), Name));
                 }
             }
         }

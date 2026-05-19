@@ -14,7 +14,7 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            g.Fill(Colour.Split.Get(nameof(Divider), PARENT.PARENT.ColorScheme), Rect);
+            g.Fill(Colour.Split.Get(PARENT.PARENT.ColorScheme, nameof(Divider), PARENT.PARENT.Name), Rect);
         }
 
         public override Size GetSize(Canvas g, Font font, TableGaps gap)

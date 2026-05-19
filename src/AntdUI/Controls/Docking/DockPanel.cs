@@ -997,10 +997,10 @@ namespace AntdUI
             if (rect.Width <= 0 || rect.Height <= 0) return;
             var scheme = ColorScheme;
             string name = nameof(DockPanel);
-            g.Fill(back ?? Colour.BgLayout.Get(name, scheme), rect);
+            g.Fill(back ?? Colour.BgLayout.Get(scheme, name, Name), rect);
 
-            var colSplit = Colour.FillSecondary.Get(name, scheme);
-            var colSplitHover = Colour.PrimaryBg.Get(name, scheme);
+            var colSplit = Colour.FillSecondary.Get(scheme, name, Name);
+            var colSplitHover = Colour.PrimaryBg.Get(scheme, name, Name);
             PaintSplitter(g, splitLeftRect, SplitEdge.Left, colSplit, colSplitHover);
             PaintSplitter(g, splitRightRect, SplitEdge.Right, colSplit, colSplitHover);
             PaintSplitter(g, splitTopRect, SplitEdge.Top, colSplit, colSplitHover);

@@ -492,7 +492,7 @@ namespace AntdUI
 
             using (var path = rect.RoundPath(_radius))
             {
-                g.Fill(back ?? Colour.BgContainer.Get(nameof(OutlookBar), ColorScheme), path);
+                g.Fill(back ?? Colour.BgContainer.Get(ColorScheme, nameof(OutlookBar), Name), path);
             }
 
             var toggleBand = new Rectangle(rect.X, rect.Y, rect.Width, _toggleH);
@@ -541,17 +541,17 @@ namespace AntdUI
             int bodyH = rect.Height - topHeadersH - bottomHeadersH - actualFooterH;
             if (bodyH < 0) bodyH = 0;
 
-            var colText = fore ?? Colour.Text.Get(nameof(OutlookBar), ColorScheme);
-            var colTextDisabled = Colour.TextQuaternary.Get(nameof(OutlookBar), ColorScheme);
-            var colPrimary = Colour.Primary.Get(nameof(OutlookBar), ColorScheme);
-            var colPrimaryBg = Colour.PrimaryBg.Get(nameof(OutlookBar), ColorScheme);
-            var colHoverBg = Colour.HoverBg.Get(nameof(OutlookBar), ColorScheme);
-            var colBgElevated = Colour.BgElevated.Get(nameof(OutlookBar), ColorScheme);
-            var colBorder = Colour.BorderColor.Get(nameof(OutlookBar), ColorScheme);
-            var colDivider = Colour.BorderSecondary.Get(nameof(OutlookBar), ColorScheme);
-            var colSplit = Colour.Split.Get(nameof(OutlookBar), ColorScheme);
-            var colTextSecondary = Colour.TextSecondary.Get(nameof(OutlookBar), ColorScheme);
-            var colBadgeBg = Colour.Error.Get(nameof(OutlookBar), ColorScheme);
+            var colText = fore ?? Colour.Text.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colTextDisabled = Colour.TextQuaternary.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colPrimary = Colour.Primary.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colPrimaryBg = Colour.PrimaryBg.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colHoverBg = Colour.HoverBg.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colBgElevated = Colour.BgElevated.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colBorder = Colour.BorderColor.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colDivider = Colour.BorderSecondary.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colSplit = Colour.Split.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colTextSecondary = Colour.TextSecondary.Get(ColorScheme, nameof(OutlookBar), Name);
+            var colBadgeBg = Colour.Error.Get(ColorScheme, nameof(OutlookBar), Name);
             var colBadgeText = Color.White; // badges ride on the Error token — white is the AntD convention regardless of theme
 
             EnsureFonts();
@@ -1186,7 +1186,7 @@ namespace AntdUI
                 ShowInTaskbar = false;
                 StartPosition = FormStartPosition.Manual;
                 KeyPreview = true;
-                BackColor = Colour.BgContainer.Get(nameof(OutlookBar), owner.ColorScheme);
+                BackColor = Colour.BgContainer.Get(owner.ColorScheme, nameof(OutlookBar), owner.Name);
             }
 
             protected override void OnDeactivate(EventArgs e)

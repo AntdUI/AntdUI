@@ -134,8 +134,8 @@ namespace AntdUI.Chat
             {
                 if (it.Select)
                 {
-                    g.Fill(BackActive ?? Colour.Primary.Get(nameof(MsgList), ColorScheme), it.rect);
-                    using (var brush = new SolidBrush(ForeActive ?? Colour.PrimaryColor.Get(nameof(MsgList), ColorScheme)))
+                    g.Fill(BackActive ?? Colour.Primary.Get(ColorScheme, nameof(MsgList), Name), it.rect);
+                    using (var brush = new SolidBrush(ForeActive ?? Colour.PrimaryColor.Get(ColorScheme, nameof(MsgList), Name)))
                     {
                         try
                         {
@@ -148,8 +148,8 @@ namespace AntdUI.Chat
                 }
                 else
                 {
-                    if (it.Hover) g.Fill(BackHover ?? Colour.FillTertiary.Get(nameof(MsgList), ColorScheme), it.rect);
-                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(MsgList), ColorScheme)))
+                    if (it.Hover) g.Fill(BackHover ?? Colour.FillTertiary.Get(ColorScheme, nameof(MsgList), Name), it.rect);
+                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(MsgList), Name)))
                     {
                         try
                         {
@@ -167,7 +167,7 @@ namespace AntdUI.Chat
                     g.Image(it.rect_icon, it.Icon, IconFit, radius, IconRound);
                     if (it.Badge != null)
                     {
-                        var color = it.BadgeBack ?? Colour.Error.Get(nameof(MsgList), ColorScheme);
+                        var color = it.BadgeBack ?? Colour.Error.Get(ColorScheme, nameof(MsgList), Name);
                         if (string.IsNullOrEmpty(it.Badge))
                         {
                             int badge_size = it.rect_time.Height / 2, xy = badge_size / 3;
@@ -192,7 +192,7 @@ namespace AntdUI.Chat
                                 rect_badge = new Rectangle(it.rect_icon.Right - badge_size + xy, it.rect_icon.Y - xy, badge_size, badge_size);
                                 g.FillEllipse(color, rect_badge);
                             }
-                            g.String(it.Badge, font_time, it.BadgeFore ?? Colour.ErrorColor.Get(nameof(MsgList), ColorScheme), rect_badge);
+                            g.String(it.Badge, font_time, it.BadgeFore ?? Colour.ErrorColor.Get(ColorScheme, nameof(MsgList), Name), rect_badge);
                         }
                     }
                 }

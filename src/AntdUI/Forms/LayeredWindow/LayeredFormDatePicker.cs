@@ -26,6 +26,7 @@ namespace AntdUI
         public LayeredFormDatePicker(DatePicker _control, Action<DateTime> _action, Action<object> _action_btns, Func<DateTime[], List<DateBadge>?>? _badge_action)
         {
             PARENT = control = _control;
+            cname = _control.Name;
             ColorScheme = _control.ColorScheme;
             SetTopMost(control.Parent, Handle);
             SetDpi(_control);
@@ -153,6 +154,7 @@ namespace AntdUI
         string year_str = "";
 
         public override string name => nameof(DatePicker);
+        string cname;
 
         CultureInfo Culture;
         string CultureID = Localization.Get("ID", "zh-CN"),
@@ -168,7 +170,7 @@ namespace AntdUI
 
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(ColorScheme, name, cname)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -176,7 +178,7 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, name, cname), bor, path2);
                     }
                     return;
                 }
@@ -188,9 +190,9 @@ namespace AntdUI
         FormatFlags s_f_L, s_f_R;
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(name, ColorScheme), 1.6F * Dpi))
-            using (var pen_arrow_hover = new Pen(Colour.Text.Get(name, ColorScheme), pen_arrow.Width))
-            using (var pen_arrow_enable = new Pen(Colour.FillSecondary.Get(name, ColorScheme), pen_arrow.Width))
+            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(ColorScheme, name, cname), 1.6F * Dpi))
+            using (var pen_arrow_hover = new Pen(Colour.Text.Get(ColorScheme, name, cname), pen_arrow.Width))
+            using (var pen_arrow_enable = new Pen(Colour.FillSecondary.Get(ColorScheme, name, cname), pen_arrow.Width))
             {
                 if (rect_lefts.Hover)
                 {
@@ -251,19 +253,19 @@ namespace AntdUI
 
         void PrintYear(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
-            var color_fore = Colour.TextBase.Get(name, ColorScheme);
+            var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 g.String(year_str, font, color_fore, rect_year2.Rect);
             }
 
-            using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, name, cname)))
             {
                 foreach (var it in rects_split) g.Fill(brush_split, it);
             }
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
-            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(name, ColorScheme)))
+            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
+            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, name, cname)))
             {
                 var now = DateTime.Now;
                 foreach (var it in datas)
@@ -273,8 +275,8 @@ namespace AntdUI
                     {
                         if (SelDate.HasValue && SelDate.Value.ToString("yyyy") == it.date_str)
                         {
-                            g.Fill(Colour.Primary.Get(name, ColorScheme), path);
-                            g.String(it.v, Font, Colour.PrimaryColor.Get(name, ColorScheme), rect_div[it.id].Rect);
+                            g.Fill(Colour.Primary.Get(ColorScheme, name, cname), path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get(ColorScheme, name, cname), rect_div[it.id].Rect);
                         }
                         else if (it.enable)
                         {
@@ -286,7 +288,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
                         }
-                        if (now.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get(name, ColorScheme), bor, path);
+                        if (now.ToString("yyyy") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)
@@ -300,21 +302,21 @@ namespace AntdUI
         }
         void PrintMonth(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
-            var color_fore = Colour.TextBase.Get(name, ColorScheme);
+            var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture);
-                if (rect_year2.Hover) g.String(yearStr, font, Colour.Primary.Get(name, ColorScheme), rect_year2.Rect);
+                if (rect_year2.Hover) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_year2.Rect);
                 else g.String(yearStr, font, color_fore, rect_year2.Rect);
             }
 
-            using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, name, cname)))
             {
                 foreach (var it in rects_split) g.Fill(brush_split, it);
             }
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
-            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(name, ColorScheme)))
+            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
+            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, name, cname)))
             {
                 var now = DateTime.Now;
                 foreach (var it in datas)
@@ -324,8 +326,8 @@ namespace AntdUI
                     {
                         if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM") == it.date_str)
                         {
-                            g.Fill(Colour.Primary.Get(name, ColorScheme), path);
-                            g.String(it.v, Font, Colour.PrimaryColor.Get(name, ColorScheme), rect_div[it.id].Rect);
+                            g.Fill(Colour.Primary.Get(ColorScheme, name, cname), path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get(ColorScheme, name, cname), rect_div[it.id].Rect);
                         }
                         else if (it.enable)
                         {
@@ -337,7 +339,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
                         }
-                        if (now.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get(name, ColorScheme), bor, path);
+                        if (now.ToString("yyyy-MM") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)
@@ -351,22 +353,22 @@ namespace AntdUI
         }
         void PrintDay(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
-            var color_fore = Colour.TextBase.Get(name, ColorScheme);
+            var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
-                if (rect_year.Hover) g.String(yearStr, font, Colour.Primary.Get(name, ColorScheme), rect_year.Rect, s_f_L);
+                if (rect_year.Hover) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_year.Rect, s_f_L);
                 else g.String(yearStr, font, color_fore, rect_year.Rect, s_f_L);
 
-                if (rect_month.Hover) g.String(monthStr, font, Colour.Primary.Get(name, ColorScheme), rect_month.Rect, s_f_R);
+                if (rect_month.Hover) g.String(monthStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_month.Rect, s_f_R);
                 else g.String(monthStr, font, color_fore, rect_month.Rect, s_f_R);
             }
 
-            using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, name, cname)))
             {
                 foreach (var it in rects_split) g.Fill(brush_split, it);
             }
-            using (var brush = new SolidBrush(Colour.Text.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(Colour.Text.Get(ColorScheme, name, cname)))
             {
                 g.String(MondayButton, Font, brush, rect_mon);
                 g.String(TuesdayButton, Font, brush, rect_tue);
@@ -377,9 +379,9 @@ namespace AntdUI
                 g.String(SundayButton, Font, brush, rect_sun);
             }
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
-            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(name, ColorScheme)))
-            using (var brush_active = new SolidBrush(Colour.Primary.Get(name, ColorScheme)))
+            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
+            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, name, cname)))
+            using (var brush_active = new SolidBrush(Colour.Primary.Get(ColorScheme, name, cname)))
             {
                 if (left_buttons != null)
                 {
@@ -398,7 +400,7 @@ namespace AntdUI
                 if (calendar_time != null)
                 {
                     var state2 = g.Save();
-                    using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
+                    using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get(ColorScheme, name, cname)))
                     {
                         int type = -1;
                         for (int i = 0; i < calendar_time.Count; i++)
@@ -451,7 +453,7 @@ namespace AntdUI
                     ScrollH.Paint(g, ColorScheme);
                     ScrollM.Paint(g, ColorScheme);
                     ScrollS.Paint(g, ColorScheme);
-                    if (rect_buttonok.Hover) g.String(OKButton, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_buttonok.Rect);
+                    if (rect_buttonok.Hover) g.String(OKButton, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_buttonok.Rect);
                     else g.String(OKButton, Font, brush_active, rect_buttonok.Rect);
                 }
 
@@ -464,7 +466,7 @@ namespace AntdUI
                         if (SelDate.HasValue && SelDate.Value.ToString("yyyy-MM-dd") == it.date_str)
                         {
                             g.Fill(brush_active, path);
-                            g.String(it.v, Font, Colour.PrimaryColor.Get(name, ColorScheme), rect_div[it.id].Rect);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get(ColorScheme, name, cname), rect_div[it.id].Rect);
                         }
                         else if (it.enable)
                         {
@@ -476,7 +478,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
                         }
-                        if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(name, ColorScheme), bor, path); ;
+                        if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path); ;
                     }
                 }
                 if (badge_list.Count > 0)
@@ -489,7 +491,7 @@ namespace AntdUI
 
                 if (ShowButtonToDay)
                 {
-                    if (rect_button.Hover) g.String(button_text, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_button.Rect);
+                    if (rect_button.Hover) g.String(button_text, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_button.Rect);
                     else g.String(button_text, Font, brush_active, rect_button.Rect);
                 }
             }

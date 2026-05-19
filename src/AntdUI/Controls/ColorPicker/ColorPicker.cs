@@ -309,7 +309,7 @@ namespace AntdUI
         /// <summary>
         /// 清空值
         /// </summary>
-        public void ClearValue() => ClearValue(Colour.Primary.Get(nameof(ColorPicker), ColorScheme));
+        public void ClearValue() => ClearValue(Colour.Primary.Get(ColorScheme, nameof(ColorPicker), Name));
 
         /// <summary>
         /// 清空值
@@ -457,10 +457,10 @@ namespace AntdUI
             float _radius = round ? rect_read.Height : radius * Dpi;
             using (var path = Helper.PathJoin(rect_read, _radius, joinMode, joinLeft, joinRight))
             {
-                Color _fore = fore ?? Colour.Text.Get(nameof(ColorPicker), ColorScheme), _back = back ?? Colour.BgContainer.Get(nameof(ColorPicker), ColorScheme),
-                    _border = borderColor ?? Colour.BorderColor.Get(nameof(ColorPicker), ColorScheme),
-                    _borderHover = BorderHover ?? Colour.PrimaryHover.Get(nameof(ColorPicker), ColorScheme),
-                _borderActive = BorderActive ?? Colour.Primary.Get(nameof(ColorPicker), ColorScheme);
+                Color _fore = fore ?? Colour.Text.Get(ColorScheme, nameof(ColorPicker), Name), _back = back ?? Colour.BgContainer.Get(ColorScheme, nameof(ColorPicker), Name),
+                    _border = borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(ColorPicker), Name),
+                    _borderHover = BorderHover ?? Colour.PrimaryHover.Get(ColorScheme, nameof(ColorPicker), Name),
+                _borderActive = BorderActive ?? Colour.Primary.Get(ColorScheme, nameof(ColorPicker), Name);
                 PaintClick(g, path, rect, _borderActive, _radius);
                 int size_color = (int)(rect_read.Height * .75F);
                 if (Enabled)
@@ -470,7 +470,7 @@ namespace AntdUI
                         float wave = (WaveSize * Dpi / 2), wave2 = wave * 2;
                         using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(_radius + wave))
                         {
-                            g.Draw(Colour.PrimaryBorder.Get(nameof(ColorPicker), ColorScheme), wave, path_focus);
+                            g.Draw(Colour.PrimaryBorder.Get(ColorScheme, nameof(ColorPicker), Name), wave, path_focus);
                         }
                     }
                     g.Fill(_back, path);
@@ -485,8 +485,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    _fore = Colour.TextQuaternary.Get(nameof(ColorPicker), "foreDisabled", ColorScheme);
-                    g.Fill(Colour.FillTertiary.Get(nameof(ColorPicker), "bgDisabled", ColorScheme), path);
+                    _fore = Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(ColorPicker), Name);
+                    g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(ColorPicker), Name), path);
                     if (borderWidth > 0) g.Draw(_border, borderWidth * Dpi, path);
                 }
                 var r = _radius * .75F;
@@ -553,7 +553,7 @@ namespace AntdUI
                         g.DrawLine(pen, new PointF(rect_color.X, rect_color.Bottom), new PointF(rect_color.Right, rect_color.Y));
                     }
                     g.ResetClip();
-                    g.Draw(Colour.Split.Get(nameof(ColorPicker), ColorScheme), Dpi, path);
+                    g.Draw(Colour.Split.Get(ColorScheme, nameof(ColorPicker), Name), Dpi, path);
                 }
                 else
                 {
@@ -589,7 +589,7 @@ namespace AntdUI
         {
             float u_y = 0, size = rect.Height / 4;
             bool ad = false;
-            using (var brush = new SolidBrush(Colour.FillSecondary.Get(nameof(ColorPicker), ColorScheme)))
+            using (var brush = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(ColorPicker), Name)))
             {
                 while (u_y < rect.Height)
                 {

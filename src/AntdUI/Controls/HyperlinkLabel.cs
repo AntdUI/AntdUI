@@ -262,7 +262,7 @@ namespace AntdUI
             var g = e.Canvas;
             var rect = ReadRectangle;
 
-            Color _fore = fore ?? Style.Get(Colour.Text, nameof(HyperlinkLabel));
+            Color _fore = fore ?? Style.Get(Colour.Text, nameof(HyperlinkLabel), Name);
             var linkPadding = Helper.SetPadding(Dpi, _linkPadding);
 
             // 计算文本的总尺寸以支持对齐
@@ -347,7 +347,7 @@ namespace AntdUI
                         if (hoverStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
                         else
                         {
-                            var colorlink = hoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel));
+                            var colorlink = hoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel), Name);
                             using (var font = new Font(Font, hoverStyle.LinkStyle))
                             {
                                 g.DrawText(part.Text, font, colorlink, part.Bounds);
@@ -360,7 +360,7 @@ namespace AntdUI
                         if (normalStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
                         else
                         {
-                            var colorlink = normalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel));
+                            var colorlink = normalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel), Name);
                             using (var font = new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline))
                             {
                                 g.DrawText(part.Text, font, colorlink, part.Bounds);

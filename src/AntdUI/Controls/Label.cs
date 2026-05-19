@@ -439,7 +439,7 @@ namespace AntdUI
                 }
             }
 
-            Color _fore = Colour.DefaultColor.Get(nameof(Label), ColorScheme);
+            Color _fore = Colour.DefaultColor.Get(ColorScheme, nameof(Label), Name);
             if (fore.HasValue) _fore = fore.Value;
             if (shadow > 0)
             {

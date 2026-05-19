@@ -179,13 +179,13 @@ namespace AntdUI
                     {
                         if (hasBack)
                         {
-                            using (var brush = backExtend.BrushEx(rect, back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme)))
+                            using (var brush = backExtend.BrushEx(rect, back ?? Colour.BgContainer.Get(ColorScheme, nameof(Panel), Name)))
                             {
                                 g.Fill(brush, path);
                             }
                         }
                         if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
-                        if (hasBor) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Dpi, borderStyle, path);
+                        if (hasBor) g.Draw(borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Panel), Name), borderWidth * Dpi, borderStyle, path);
                     }
                 }
                 else if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
@@ -195,7 +195,7 @@ namespace AntdUI
                     if (hasBor) return true;
                     using (var path = rect.RoundPath(radius))
                     {
-                        g.Draw(borderColor ?? Colour.Text.Get(nameof(Panel), ColorScheme), Dpi, DashStyle.Dash, path);
+                        g.Draw(borderColor ?? Colour.Text.Get(ColorScheme, nameof(Panel), Name), Dpi, DashStyle.Dash, path);
                     }
                     return true;
                 }

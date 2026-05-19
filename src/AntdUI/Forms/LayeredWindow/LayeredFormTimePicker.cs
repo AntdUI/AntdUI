@@ -18,6 +18,7 @@ namespace AntdUI
         public LayeredFormTimePicker(TimePicker control, TimeSpan date, Action<TimeSpan> _action)
         {
             PARENT = control;
+            cname = control.Name;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             SetTopMost(control.Parent, Handle);
@@ -72,6 +73,7 @@ namespace AntdUI
         }
 
         public override string name => nameof(TimePicker);
+        string cname;
 
         void ScrollTime()
         {
@@ -117,7 +119,7 @@ namespace AntdUI
         string OKButton = Localization.Get("OK", "确定");
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(ColorScheme, name, cname)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -125,7 +127,7 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, name, cname), bor, path2);
                     }
                     return;
                 }
@@ -134,8 +136,8 @@ namespace AntdUI
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var brush_fore = new SolidBrush(Colour.TextBase.Get(name, ColorScheme)))
-            using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
+            using (var brush_fore = new SolidBrush(Colour.TextBase.Get(ColorScheme, name, cname)))
+            using (var brush_bg = new SolidBrush(Colour.PrimaryBg.Get(ColorScheme, name, cname)))
             {
                 var state2 = g.Save();
                 int type = -1;
@@ -177,7 +179,7 @@ namespace AntdUI
                                 if (it.t == SelDate.Seconds) g.Fill(brush_bg, path);
                                 break;
                         }
-                        if (it.hover) g.Fill(Colour.FillTertiary.Get(name, ColorScheme), path);
+                        if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, name, cname), path);
                         g.String(it.v, Font, brush_fore, it.rect_read);
                     }
                 }
@@ -186,17 +188,17 @@ namespace AntdUI
                 ScrollM.Paint(g, ColorScheme);
                 ScrollS.Paint(g, ColorScheme);
 
-                var color_active = Colour.Primary.Get(name, ColorScheme);
+                var color_active = Colour.Primary.Get(ColorScheme, name, cname);
 
                 if (ShowButtonNow)
                 {
-                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_button);
-                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_button);
+                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(ColorScheme, name, cname)), rect_button);
+                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_button);
                     else g.String(button_text, Font, color_active, rect_button);
                 }
 
-                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(name, ColorScheme)), rect_buttonok);
-                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(name, ColorScheme), rect_buttonok);
+                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(ColorScheme, name, cname)), rect_buttonok);
+                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_buttonok);
                 else g.String(OKButton, Font, color_active, rect_buttonok);
             }
         }

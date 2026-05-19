@@ -34,28 +34,28 @@ namespace AntdUI
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
             using (var path = Helper.PathJoin(rect_read, _radius, joinMode, JoinLeft, JoinRight))
             {
-                Color _back = back ?? Colour.BgContainer.Get(nameof(Input), ColorScheme),
-                    _fore = fore ?? Colour.Text.Get(nameof(Input), ColorScheme),
-                   _border = borderColor ?? Colour.BorderColor.Get(nameof(Input), ColorScheme),
-                   _borderHover = BorderHover ?? Colour.PrimaryHover.Get(nameof(Input), ColorScheme),
-               _borderActive = BorderActive ?? Colour.Primary.Get(nameof(Input), ColorScheme);
+                Color _back = back ?? Colour.BgContainer.Get(ColorScheme, nameof(Input), Name),
+                    _fore = fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name),
+                   _border = borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Input), Name),
+                   _borderHover = BorderHover ?? Colour.PrimaryHover.Get(ColorScheme, nameof(Input), Name),
+               _borderActive = BorderActive ?? Colour.Primary.Get(ColorScheme, nameof(Input), Name);
 
                 switch (status)
                 {
                     case TType.Success:
-                        _border = Colour.SuccessBorder.Get(nameof(Input), ColorScheme);
-                        _borderHover = Colour.SuccessHover.Get(nameof(Input), ColorScheme);
-                        _borderActive = Colour.Success.Get(nameof(Input), ColorScheme);
+                        _border = Colour.SuccessBorder.Get(ColorScheme, nameof(Input), Name);
+                        _borderHover = Colour.SuccessHover.Get(ColorScheme, nameof(Input), Name);
+                        _borderActive = Colour.Success.Get(ColorScheme, nameof(Input), Name);
                         break;
                     case TType.Error:
-                        _border = Colour.ErrorBorder.Get(nameof(Input), ColorScheme);
-                        _borderHover = Colour.ErrorHover.Get(nameof(Input), ColorScheme);
-                        _borderActive = Colour.Error.Get(nameof(Input), ColorScheme);
+                        _border = Colour.ErrorBorder.Get(ColorScheme, nameof(Input), Name);
+                        _borderHover = Colour.ErrorHover.Get(ColorScheme, nameof(Input), Name);
+                        _borderActive = Colour.Error.Get(ColorScheme, nameof(Input), Name);
                         break;
                     case TType.Warn:
-                        _border = Colour.WarningBorder.Get(nameof(Input), ColorScheme);
-                        _borderHover = Colour.WarningHover.Get(nameof(Input), ColorScheme);
-                        _borderActive = Colour.Warning.Get(nameof(Input), ColorScheme);
+                        _border = Colour.WarningBorder.Get(ColorScheme, nameof(Input), Name);
+                        _borderHover = Colour.WarningHover.Get(ColorScheme, nameof(Input), Name);
+                        _borderActive = Colour.Warning.Get(ColorScheme, nameof(Input), Name);
                         break;
                 }
 
@@ -94,8 +94,8 @@ namespace AntdUI
                 }
                 else
                 {
-                    g.Fill(Colour.FillTertiary.Get(nameof(Input), "bgDisabled", ColorScheme), path);
-                    var fore = Colour.TextQuaternary.Get(nameof(Input), "foreDisabled", ColorScheme);
+                    g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Input), Name), path);
+                    var fore = Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Input), Name);
                     PaintIcon(g, fore);
                     PaintText(g, fore, rect_read.Right, rect_read.Bottom);
                     PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
@@ -111,7 +111,7 @@ namespace AntdUI
             {
                 int SIZE = (int)(16 * Dpi), SIZE_BAR = (int)(6 * Dpi),
                     SIZE_MINIY = (int)((Config.ScrollMinSizeY ?? SystemInformation.VerticalScrollBarThumbHeight) * Dpi), SIZE_MINIX = (int)((Config.ScrollMinSizeX ?? SystemInformation.HorizontalScrollBarThumbWidth) * Dpi);
-                var bg = Colour.TextBase.Get(nameof(Input), ColorScheme);
+                var bg = Colour.TextBase.Get(ColorScheme, nameof(Input), Name);
                 if (ScrollX.Show)
                 {
                     if (ScrollY.Show)
@@ -221,12 +221,12 @@ namespace AntdUI
         {
             string? prefixText = PrefixText, suffixText = SuffixText;
             if (prefixText != null) g.String(prefixText, Font, prefixFore ?? _fore, rect_l, PrefixFormat);
-            else if (prefixSvg != null) g.Svg(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
+            else if (prefixSvg != null) g.Svg(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name));
             else if (prefix != null) g.Image(prefix, rect_l);
 
-            if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(nameof(Input), ColorScheme) : Colour.TextQuaternary.Get(nameof(Input), ColorScheme));
+            if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(ColorScheme, nameof(Input), Name) : Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name));
             else if (suffixText != null) g.String(suffixText, Font, suffixFore ?? _fore, rect_r, SuffixFormat);
-            else if (suffixSvg != null) g.Svg(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(nameof(Input), ColorScheme));
+            else if (suffixSvg != null) g.Svg(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name));
             else if (suffix != null) g.Image(suffix, rect_r);
             else PaintRIcon(g, rect_r);
         }
@@ -240,7 +240,7 @@ namespace AntdUI
             if (cache_font != null) PaintText(g, _fore, w, h, cache_font);
             else if (ShowPlaceholder && PlaceholderText != null)
             {
-                using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get(nameof(Input), ColorScheme)))
+                using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name)))
                 {
                     g.DrawText(PlaceholderText, Font, fore, rect_text, sf_placeholder);
                 }

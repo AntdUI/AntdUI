@@ -268,7 +268,7 @@ namespace AntdUI
                     int h_chart = (int)(rect.Height * v_height_chart);
                     var rect_tmp = PaintBase(g, rect, font, text, gap, v_height_text, v_height_value, size_text.Height, size_value.Height, bor);
                     var rect_chart = new Rectangle(rect_tmp.X, rect_tmp.Bottom - gap, rect_tmp.Width, h_chart);
-                    using (var brush = new LinearGradientBrush(rect_chart, ChartLineColor ?? Colour.Primary.Get(nameof(Statistic), ColorScheme), Color.Transparent, 90F))
+                    using (var brush = new LinearGradientBrush(rect_chart, ChartLineColor ?? Colour.Primary.Get(ColorScheme, nameof(Statistic), Name), Color.Transparent, 90F))
                     {
                         double max = 0;
                         foreach (var it in ChartLineData)
@@ -299,7 +299,7 @@ namespace AntdUI
             float _radius = radius * Dpi;
             using (var path = rect.RoundPath(radius))
             {
-                using (var brush = backExtend.BrushEx(rect, back ?? Colour.BgContainer.Get(nameof(Statistic), ColorScheme)))
+                using (var brush = backExtend.BrushEx(rect, back ?? Colour.BgContainer.Get(ColorScheme, nameof(Statistic), Name)))
                 {
                     g.Fill(brush, path);
                 }
@@ -312,12 +312,12 @@ namespace AntdUI
                     int padd_2 = padd / 2, pie_w = (int)(text_h * 0.6F), pie_w2 = pie_w / 2, pie_size = text_h + value_h + gap + padd;
                     var rect_pie = new Rectangle(rect.X + padd + pie_w2, rect.Y + padd_2 + pie_w2, pie_size - pie_w, pie_size - pie_w);
 
-                    g.DrawEllipse(ChartPieBg ?? Colour.FillSecondary.Get(nameof(Statistic), ColorScheme), pie_w, rect_pie);
+                    g.DrawEllipse(ChartPieBg ?? Colour.FillSecondary.Get(ColorScheme, nameof(Statistic), Name), pie_w, rect_pie);
 
                     if (ChartPieData.Value > 0)
                     {
                         var max = (int)Math.Round(360 * ChartPieData.Value);
-                        using (var brush = new Pen(ChartPieColor ?? Colour.Primary.Get(nameof(Statistic), ColorScheme), pie_w))
+                        using (var brush = new Pen(ChartPieColor ?? Colour.Primary.Get(ColorScheme, nameof(Statistic), Name), pie_w))
                         {
                             //brush.StartCap = brush.EndCap = LineCap.Round;
                             g.DrawArc(brush, rect_pie, -90, max);
@@ -328,11 +328,11 @@ namespace AntdUI
                 var rect_real = new Rectangle(rect.X + padd + use_x, rect.Y, rect.Width - padd * 2 - use_x, rect.Height);
                 var rect_text = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, h_text);
                 var rect_value = new Rectangle(rect_real.X, rect_real.Y + rect_text.Height + gap, rect_real.Width, h_value);
-                g.String(text, Font, Colour.TextTertiary.Get(nameof(Statistic), ColorScheme), rect_text, sf);
-                g.String(Value, font, Colour.TextBase.Get(nameof(Statistic), ColorScheme), rect_value, sf);
+                g.String(text, Font, Colour.TextTertiary.Get(ColorScheme, nameof(Statistic), Name), rect_text, sf);
+                g.String(Value, font, Colour.TextBase.Get(ColorScheme, nameof(Statistic), Name), rect_value, sf);
                 if (bor > 0)
                 {
-                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(nameof(Statistic), ColorScheme), bor))
+                    using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Statistic), Name), bor))
                     {
                         pen.DashStyle = borderStyle;
                         if (ChartPieData == null) g.DrawLine(pen, rect.X, rect_text.Bottom, rect.Right, rect_text.Bottom);

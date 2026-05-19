@@ -172,11 +172,11 @@ namespace AntdUI
                 {
                     LayoutZones();
                     var scheme = dockpanel.ColorScheme;
-                    var baseBg = Colour.BgElevated.Get(nameof(DockPanel), scheme);
-                    var hoverBg = Colour.PrimaryBg.Get(nameof(DockPanel), scheme);
-                    var border = Colour.BorderSecondary.Get(nameof(DockPanel), scheme);
-                    var active = Colour.Primary.Get(nameof(DockPanel), scheme);
-                    var icon = Colour.TextSecondary.Get(nameof(DockPanel), scheme);
+                    var baseBg = Colour.BgElevated.Get(scheme, nameof(DockPanel), Name);
+                    var hoverBg = Colour.PrimaryBg.Get(scheme, nameof(DockPanel), Name);
+                    var border = Colour.BorderSecondary.Get(scheme, nameof(DockPanel), Name);
+                    var active = Colour.Primary.Get(scheme, nameof(DockPanel), Name);
+                    var icon = Colour.TextSecondary.Get(scheme, nameof(DockPanel), Name);
 
                     // Paint the drop-preview rectangle first so the compass buttons sit on top.
                     var preview = ComputePreviewRect();

@@ -36,20 +36,20 @@ namespace AntdUI
                 var bor2 = 2F * Dpi;
                 if (enabled)
                 {
-                    var color = fill ?? Colour.Primary.Get(nameof(Checkbox), ColorScheme);
+                    var color = fill ?? Colour.Primary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name);
                     if (AnimationCheck)
                     {
                         var alpha = 255 * AnimationCheckValue;
                         if (checkState == System.Windows.Forms.CheckState.Indeterminate || (checkStateOld == System.Windows.Forms.CheckState.Indeterminate && !_checked))
                         {
-                            g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
-                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(nameof(Checkbox), ColorScheme)), Checkbox.PaintBlock(icon_rect));
+                            g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), bor2, path);
+                            g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name)), Checkbox.PaintBlock(icon_rect));
                         }
                         else
                         {
                             var dot = dot_size * 0.3F;
                             g.Fill(Helper.ToColor(alpha, color), path);
-                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Checkbox), ColorScheme)), 2.6F * Dpi))
+                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name)), 2.6F * Dpi))
                             {
                                 g.DrawLines(pen, icon_rect.CheckArrow());
                             }
@@ -66,26 +66,26 @@ namespace AntdUI
                     }
                     else if (checkState == System.Windows.Forms.CheckState.Indeterminate)
                     {
-                        g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
-                        g.Fill(Colour.Primary.Get(nameof(Checkbox), ColorScheme), Checkbox.PaintBlock(icon_rect));
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), bor2, path);
+                        g.Fill(Colour.Primary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), Checkbox.PaintBlock(icon_rect));
                     }
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Colour.BgBase.Get(nameof(Checkbox), ColorScheme), 2.6F * Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), 2.6F * Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
-                        if (AnimationHover) g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme).BlendColors(AnimationHoverValue, color), bor2, path);
+                        if (AnimationHover) g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name).BlendColors(AnimationHoverValue, color), bor2, path);
                         else if (ExtraMouseHover) g.Draw(color, bor2, path);
-                        else g.Draw(Colour.BorderColor.Get(nameof(Checkbox), ColorScheme), bor2, path);
+                        else g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), bor2, path);
                     }
                 }
                 else
                 {
-                    g.Fill(Colour.FillQuaternary.Get(nameof(Checkbox), ColorScheme), path);
-                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(nameof(Checkbox), ColorScheme), 2.6F * Dpi, icon_rect.CheckArrow());
-                    g.Draw(Colour.BorderColorDisable.Get(nameof(Checkbox), ColorScheme), bor2, path);
+                    g.Fill(Colour.FillQuaternary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), path);
+                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), 2.6F * Dpi, icon_rect.CheckArrow());
+                    g.Draw(Colour.BorderColorDisable.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), bor2, path);
                 }
             }
         }

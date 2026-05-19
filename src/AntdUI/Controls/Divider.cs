@@ -154,7 +154,7 @@ namespace AntdUI
             var rect = e.Rect.PaddingRect(Margin);
             if (rect.Width == 0 || rect.Height == 0) return;
             var g = e.Canvas;
-            using (var brush = color.Brush(Colour.Split.Get(nameof(Divider), ColorScheme)))
+            using (var brush = color.Brush(Colour.Split.Get(ColorScheme, nameof(Divider), Name)))
             {
                 if (Text == null)
                 {
@@ -177,13 +177,13 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y + f_margin + font_margin, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, rect.Y, thickness, f_margin));
                                     g.Fill(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, rect.Height - size.Height - f_margin - font_margin * 2F));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Y, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, rect.Height - size.Height - font_margin));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 break;
                             case TOrientation.Right:
@@ -192,20 +192,20 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Bottom - size.Height - f_margin - font_margin, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, rect.Y, thickness, rect.Height - size.Height - f_margin - font_margin * 2F));
                                     g.Fill(brush, new RectangleF(x, font_irect.Bottom + font_margin, thickness, f_margin));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X + (rect.Width - size.Width) / 2, rect.Bottom - size.Height, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(x, rect.Y, thickness, rect.Height - size.Height - font_margin));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 break;
                             default:
                                 float f_h = (rect.Height - size.Height) / 2 - f_margin - font_margin;
                                 g.Fill(brush, new RectangleF(x, rect.Y, thickness, f_h));
                                 g.Fill(brush, new RectangleF(x, rect.Y + f_h + size.Height + (f_margin + font_margin) * 2F, thickness, f_h));
-                                g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), e.Rect, s_f);
+                                g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), e.Rect, s_f);
                                 break;
                         }
                     }
@@ -221,13 +221,13 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.X + f_margin + font_margin, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(rect.X, y, f_margin, thickness));
                                     g.Fill(brush, new RectangleF(font_irect.Right + font_margin, y, rect.Width - size.Width - f_margin - font_margin * 2F, thickness));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.X, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(font_irect.Right + font_margin, y, rect.Width - size.Width - font_margin, thickness));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 break;
                             case TOrientation.Right:
@@ -236,20 +236,20 @@ namespace AntdUI
                                     var font_irect = new Rectangle(rect.Right - size.Width - f_margin - font_margin, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(rect.X, y, rect.Width - size.Width - f_margin - font_margin * 2F, thickness));
                                     g.Fill(brush, new RectangleF(font_irect.Right + font_margin, y, f_margin, thickness));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 else
                                 {
                                     var font_irect = new Rectangle(rect.Right - size.Width, rect.Y + (rect.Height - size.Height) / 2, size.Width, size.Height);
                                     g.Fill(brush, new RectangleF(rect.X, y, rect.Width - size.Width - font_margin, thickness));
-                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), font_irect, s_f);
+                                    g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), font_irect, s_f);
                                 }
                                 break;
                             default:
                                 float f_w = (rect.Width - size.Width) / 2 - f_margin - font_margin;
                                 g.Fill(brush, new RectangleF(rect.X, y, f_w, thickness));
                                 g.Fill(brush, new RectangleF(rect.X + f_w + size.Width + (f_margin + font_margin) * 2F, y, f_w, thickness));
-                                g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.Get(nameof(Divider), "foreDisabled", ColorScheme), e.Rect, s_f);
+                                g.DrawText(Text, Font, enabled ? ForeColor : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Divider), Name), e.Rect, s_f);
                                 break;
                         }
                     }

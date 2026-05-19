@@ -12,7 +12,7 @@ namespace AntdUI
     {
         public override void PaintBack(Canvas g) { }
 
-        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintLink(g, font, Rect, this, enable, PARENT.PARENT.ColorScheme);
+        public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore) => Table.PaintLink(g, font, Rect, this, enable, PARENT.PARENT.ColorScheme, PARENT.PARENT.Name);
 
         public override Size GetSize(Canvas g, Font font, TableGaps gap)
         {

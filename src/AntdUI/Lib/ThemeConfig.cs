@@ -54,10 +54,10 @@ namespace AntdUI
                     switch (code)
                     {
                         case "border":
-                            window.BorderColor = Style.Get(Colour.BorderColor, dark ? TAMode.Dark : TAMode.Light);
+                            window.BorderColor = Style.Get(Colour.BorderColor, dark ? TAMode.Dark : TAMode.Light, nameof(Window), window.Name);
                             break;
                         case "primary":
-                            window.BorderColor = Style.Get(Colour.Primary, dark ? TAMode.Dark : TAMode.Light);
+                            window.BorderColor = Style.Get(Colour.Primary, dark ? TAMode.Dark : TAMode.Light, nameof(Window), window.Name);
                             break;
                     }
                 }
@@ -72,10 +72,10 @@ namespace AntdUI
                         switch (code)
                         {
                             case "border":
-                                borderlessForm.BorderColor = Style.Get(Colour.BorderColor, dark ? TAMode.Dark : TAMode.Light);
+                                borderlessForm.BorderColor = Style.Get(Colour.BorderColor, dark ? TAMode.Dark : TAMode.Light, nameof(BorderlessForm), borderlessForm.Name);
                                 break;
                             case "primary":
-                                borderlessForm.BorderColor = Style.Get(Colour.Primary, dark ? TAMode.Dark : TAMode.Light);
+                                borderlessForm.BorderColor = Style.Get(Colour.Primary, dark ? TAMode.Dark : TAMode.Light, nameof(BorderlessForm), borderlessForm.Name);
                                 break;
                         }
                     }

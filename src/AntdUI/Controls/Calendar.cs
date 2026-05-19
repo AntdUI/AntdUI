@@ -464,7 +464,7 @@ namespace AntdUI
             int _radius = (int)(radius * Dpi);
             using (var path = rect_read.RoundPath(_radius))
             {
-                using (var brush = backExtend.BrushEx(rect_read, back, Colour.BgElevated.Get(nameof(Calendar), ColorScheme)))
+                using (var brush = backExtend.BrushEx(rect_read, back, Colour.BgElevated.Get(ColorScheme, nameof(Calendar), Name)))
                 {
                     g.Fill(brush, path);
                 }
@@ -472,9 +472,9 @@ namespace AntdUI
 
             #region 方向
 
-            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(nameof(Calendar), ColorScheme), 1.6F * Dpi))
-            using (var pen_arrow_hover = new Pen(Colour.Text.Get(nameof(Calendar), ColorScheme), pen_arrow.Width))
-            using (var pen_arrow_enable = new Pen(Colour.FillSecondary.Get(nameof(Calendar), ColorScheme), pen_arrow.Width))
+            using (var pen_arrow = new Pen(Colour.TextTertiary.Get(ColorScheme, nameof(Calendar), Name), 1.6F * Dpi))
+            using (var pen_arrow_hover = new Pen(Colour.Text.Get(ColorScheme, nameof(Calendar), Name), pen_arrow.Width))
+            using (var pen_arrow_enable = new Pen(Colour.FillSecondary.Get(ColorScheme, nameof(Calendar), Name), pen_arrow.Width))
             {
                 if (hover_lefts.Animation)
                 {
@@ -571,15 +571,15 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintYear(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
-            var color_fore = fore ?? Colour.TextBase.Get(nameof(Calendar), ColorScheme);
+            var color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Calendar), Name);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
-                if (hover_year.Animation) g.String(year_str, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(nameof(Calendar), ColorScheme)), rect_year_l);
-                else if (hover_year.Switch) g.String(year_str, font, Colour.Primary.Get(nameof(Calendar), ColorScheme), rect_year_l);
+                if (hover_year.Animation) g.String(year_str, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)), rect_year_l);
+                else if (hover_year.Switch) g.String(year_str, font, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), rect_year_l);
                 else g.String(year_str, font, color_fore, rect_year_l);
             }
-            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(Calendar), ColorScheme)))
-            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme)))
+            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Calendar), Name)))
+            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name)))
             using (var brush_fore = new SolidBrush(color_fore))
             {
                 var now = DateTime.Now;
@@ -589,19 +589,19 @@ namespace AntdUI
                     {
                         if (_value.ToString("yyyy") == it.date_str)
                         {
-                            g.Fill(Colour.Primary.Get(nameof(Calendar), ColorScheme), path);
-                            g.String(it.v, Font, Colour.PrimaryColor.Get(nameof(Calendar), ColorScheme), it.rect);
+                            g.Fill(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get(ColorScheme, nameof(Calendar), Name), it.rect);
                         }
                         else if (it.enable)
                         {
-                            if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
-                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name), path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), Dpi, path);
                             g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect);
                         }
                     }
@@ -622,17 +622,17 @@ namespace AntdUI
         /// <param name="datas">数据</param>
         void PrintMonth(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
-            var color_fore = fore ?? Colour.TextBase.Get(nameof(Calendar), ColorScheme);
+            var color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Calendar), Name);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture);
-                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(nameof(Calendar), ColorScheme)), rect_month_l);
-                else if (hover_year.Switch) g.String(yearStr, font, Colour.Primary.Get(nameof(Calendar), ColorScheme), rect_month_l);
+                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)), rect_month_l);
+                else if (hover_year.Switch) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), rect_month_l);
                 else g.String(yearStr, font, color_fore, rect_month_l);
             }
 
-            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(Calendar), ColorScheme)))
-            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme)))
+            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Calendar), Name)))
+            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name)))
             using (var brush_fore = new SolidBrush(color_fore))
             {
                 var now = DateTime.Now;
@@ -642,19 +642,19 @@ namespace AntdUI
                     {
                         if (_value.ToString("yyyy-MM") == it.date_str)
                         {
-                            g.Fill(Colour.Primary.Get(nameof(Calendar), ColorScheme), path);
-                            g.String(it.v, Font, Colour.PrimaryColor.Get(nameof(Calendar), ColorScheme), it.rect);
+                            g.Fill(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), path);
+                            g.String(it.v, Font, Colour.PrimaryColor.Get(ColorScheme, nameof(Calendar), Name), it.rect);
                         }
                         else if (it.enable)
                         {
-                            if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
-                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name), path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), Dpi, path);
                             g.String(it.v, Font, brush_fore, it.rect);
                         }
                         else
                         {
                             g.Fill(brush_bg_disable, new Rectangle(it.rect.X, it.rect_read.Y, it.rect.Width, it.rect_read.Height));
-                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                            if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), Dpi, path);
                             g.String(it.v, Font, brush_fore_disable, it.rect);
                         }
                     }
@@ -678,27 +678,27 @@ namespace AntdUI
         void PrintDay(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             if (rect_day_s == null) return;
-            var color_fore = fore ?? Colour.TextBase.Get(nameof(Calendar), ColorScheme);
+            var color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Calendar), Name);
             using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
 
-                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(nameof(Calendar), ColorScheme)), rect_year, s_f_L);
-                else if (hover_year.Switch) g.String(yearStr, font, Colour.Primary.Get(nameof(Calendar), ColorScheme), rect_year, s_f_L);
+                if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)), rect_year, s_f_L);
+                else if (hover_year.Switch) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), rect_year, s_f_L);
                 else g.String(yearStr, font, color_fore, rect_year, s_f_L);
 
-                if (hover_month.Animation) g.String(monthStr, font, color_fore.BlendColors(hover_month.Value, Colour.Primary.Get(nameof(Calendar), ColorScheme)), rect_month, s_f_R);
-                else if (hover_month.Switch) g.String(monthStr, font, Colour.Primary.Get(nameof(Calendar), ColorScheme), rect_month, s_f_R);
+                if (hover_month.Animation) g.String(monthStr, font, color_fore.BlendColors(hover_month.Value, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)), rect_month, s_f_R);
+                else if (hover_month.Switch) g.String(monthStr, font, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), rect_month, s_f_R);
                 else g.String(monthStr, font, color_fore, rect_month, s_f_R);
             }
 
-            using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(Calendar), ColorScheme)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, nameof(Calendar), Name)))
             {
                 g.Fill(brush_split, rect_day_split1);
                 if (showButtonToDay) g.Fill(brush_split, rect_day_split2);
             }
 
-            using (var brush = new SolidBrush(Colour.Text.Get(nameof(Calendar), ColorScheme)))
+            using (var brush = new SolidBrush(Colour.Text.Get(ColorScheme, nameof(Calendar), Name)))
             {
                 g.String(MondayButton, Font, brush, rect_day_s[0]);
                 g.String(TuesdayButton, Font, brush, rect_day_s[1]);
@@ -709,11 +709,11 @@ namespace AntdUI
                 g.String(SundayButton, Font, brush, rect_day_s[6]);
             }
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(nameof(Calendar), ColorScheme)))
-            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme)))
-            using (var brush_active = new SolidBrush(Colour.Primary.Get(nameof(Calendar), ColorScheme)))
-            using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get(nameof(Calendar), ColorScheme)))
-            using (var brush_error = new SolidBrush(Colour.Error.Get(nameof(Calendar), ColorScheme)))
+            using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Calendar), Name)))
+            using (var brush_bg_disable = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name)))
+            using (var brush_active = new SolidBrush(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)))
+            using (var brush_active_fore = new SolidBrush(Colour.PrimaryColor.Get(ColorScheme, nameof(Calendar), Name)))
+            using (var brush_error = new SolidBrush(Colour.Error.Get(ColorScheme, nameof(Calendar), Name)))
             {
                 PaintToDayFrame(g, datas, DateTime.Now.ToString("yyyy-MM-dd"), radius);
                 if (ItemPaintBegin == null)
@@ -722,7 +722,7 @@ namespace AntdUI
                     {
                         using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
                         {
-                            using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get(nameof(Calendar), ColorScheme)))
+                            using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get(ColorScheme, nameof(Calendar), Name)))
                             {
                                 foreach (var it in datas)
                                 {
@@ -748,7 +748,7 @@ namespace AntdUI
                     {
                         using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
                         {
-                            using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get(nameof(Calendar), ColorScheme)))
+                            using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get(ColorScheme, nameof(Calendar), Name)))
                             {
                                 foreach (var it in datas)
                                 {
@@ -792,8 +792,8 @@ namespace AntdUI
                 }
                 if (showButtonToDay)
                 {
-                    if (hover_button.Animation) g.String(button_text, Font, brush_active.Color.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(nameof(Calendar), ColorScheme)), rect_button);
-                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(nameof(Calendar), ColorScheme), rect_button);
+                    if (hover_button.Animation) g.String(button_text, Font, brush_active.Color.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(ColorScheme, nameof(Calendar), Name)), rect_button);
+                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(ColorScheme, nameof(Calendar), Name), rect_button);
                     else g.String(button_text, Font, brush_active, rect_button);
                 }
                 if (badge_list.Count > 0)
@@ -820,7 +820,7 @@ namespace AntdUI
                 }
                 else if (it.enable)
                 {
-                    if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
+                    if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name), path);
                     g.TranslateTransform(offsetx, offsety);
                     g.String(cdate, font4, brush_fore_c, it.rect_l);
                     g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect_f);
@@ -847,7 +847,7 @@ namespace AntdUI
                 }
                 else if (it.enable)
                 {
-                    if (it.hover) g.Fill(Colour.FillTertiary.Get(nameof(Calendar), ColorScheme), path);
+                    if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, nameof(Calendar), Name), path);
                     g.TranslateTransform(offsetx, offsety);
                     g.String(it.v, Font, it.t == 1 ? brush_fore : brush_fore_disable, it.rect);
                 }
@@ -871,7 +871,7 @@ namespace AntdUI
                 {
                     using (var path = it.rect_read.RoundPath(radius))
                     {
-                        g.Draw(Colour.Primary.Get(nameof(Calendar), ColorScheme), Dpi, path);
+                        g.Draw(Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), Dpi, path);
                     }
                     return;
                 }

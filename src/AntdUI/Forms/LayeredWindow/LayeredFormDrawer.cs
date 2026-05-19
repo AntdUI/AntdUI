@@ -44,8 +44,8 @@ namespace AntdUI
             padding = (int)Math.Round(config.Padding * Dpi);
             Padding = new Padding(padding);
             HasBor = Helper.FormFrame(config.Form, out FrmRadius, out FrmBor);
-            config.Content.BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme);
-            config.Content.ForeColor = Colour.Text.Get(nameof(Drawer), config.ColorScheme);
+            config.Content.BackColor = Colour.BgElevated.Get2(config.ColorScheme, nameof(Drawer));
+            config.Content.ForeColor = Colour.Text.Get2(config.ColorScheme, nameof(Drawer));
             SetPoint();
             SetSize(start_W, start_H);
             SetLocation(start_X, start_Y);
@@ -361,7 +361,7 @@ namespace AntdUI
             var hidelocation = Helper.OffScreenArea(rect.Width, rect.Height);
             if (config.Content is Form form_)
             {
-                form_.BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme);
+                form_.BackColor = Colour.BgElevated.Get2(config.ColorScheme, nameof(Drawer));
                 form_.FormBorderStyle = FormBorderStyle.None;
                 form_.Bounds = hidelocation;
                 form_.StartPosition = FormStartPosition.Manual;
@@ -371,7 +371,7 @@ namespace AntdUI
             {
                 form = new DoubleBufferForm(this, config.Content)
                 {
-                    BackColor = Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme),
+                    BackColor = Colour.BgElevated.Get2(config.ColorScheme, nameof(Drawer)),
                     FormBorderStyle = FormBorderStyle.None,
                     StartPosition = FormStartPosition.Manual,
                     Bounds = hidelocation
@@ -652,7 +652,7 @@ namespace AntdUI
                 var rect_read = DrawShadow(g, rect);
                 using (var path = rect_read.RoundPath(FrmRadius))
                 {
-                    g.Fill(Colour.BgElevated.Get(nameof(Drawer), config.ColorScheme), path);
+                    g.Fill(Colour.BgElevated.Get2(config.ColorScheme, nameof(Drawer)), path);
                     if (tempContent != null) g.Image(tempContent, new Rectangle(rect_read.X + padding, rect_read.Y + padding, tempContent.Width, tempContent.Height));
                 }
             }

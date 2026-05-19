@@ -229,17 +229,17 @@ namespace AntdUI
             bool enabled = Enabled;
             using (var path = rect_read.RoundPath(rect_read.Height))
             {
-                Color _color = fill ?? Colour.Primary.Get(nameof(Switch), ColorScheme);
+                Color _color = fill ?? Colour.Primary.Get(ColorScheme, nameof(Switch), Name);
                 PaintClick(g, path, rect, rect_read, _color);
                 if (enabled && (hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
                 {
                     float wave = (WaveSize * Dpi / 2), wave2 = wave * 2;
                     using (var path_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2).RoundPath(0, TShape.Round))
                     {
-                        g.Draw(Colour.PrimaryBorder.Get(nameof(Switch), ColorScheme), wave, path_focus);
+                        g.Draw(Colour.PrimaryBorder.Get(ColorScheme, nameof(Switch), Name), wave, path_focus);
                     }
                 }
-                using (var brush = new SolidBrush(Colour.TextQuaternary.Get(nameof(Switch), ColorScheme)))
+                using (var brush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Switch), Name)))
                 {
                     g.Fill(brush, path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
@@ -251,7 +251,7 @@ namespace AntdUI
                     var alpha = 255 * AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(enabled ? Colour.BgBase.Get(nameof(Switch), ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), "bgDisabled", ColorScheme)), dot_rect);
+                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.GetSymbol(ColorScheme, "bgDisabled", nameof(Switch), Name)), dot_rect);
                     if (loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -265,12 +265,12 @@ namespace AntdUI
                 }
                 else if (_checked)
                 {
-                    var colorhover = FillHover ?? Colour.PrimaryHover.Get(nameof(Switch), ColorScheme);
+                    var colorhover = FillHover ?? Colour.PrimaryHover.Get(ColorScheme, nameof(Switch), Name);
                     g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
                     if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
                     else if (ExtraMouseHover) g.Fill(colorhover, path);
                     var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(enabled ? Colour.BgBase.Get(nameof(Switch), ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), "bgDisabled", ColorScheme)), dot_rect);
+                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.GetSymbol(ColorScheme, "bgDisabled", nameof(Switch), Name)), dot_rect);
                     if (loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -285,7 +285,7 @@ namespace AntdUI
                 else
                 {
                     var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(enabled ? Colour.BgBase.Get(nameof(Switch), ColorScheme) : Color.FromArgb(200, Colour.BgBase.Get(nameof(Switch), "bgDisabled", ColorScheme)), dot_rect);
+                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.GetSymbol(ColorScheme, "bgDisabled", nameof(Switch), Name)), dot_rect);
                     if (loading)
                     {
                         var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
@@ -302,7 +302,7 @@ namespace AntdUI
                 string? textToRender = Checked ? CheckedText : UnCheckedText;
                 if (textToRender != null)
                 {
-                    Color _fore = fore ?? Colour.PrimaryColor.Get(nameof(Switch), ColorScheme);
+                    Color _fore = fore ?? Colour.PrimaryColor.Get(ColorScheme, nameof(Switch), Name);
                     using (var brush = new SolidBrush(_fore))
                     {
                         var textSize = g.MeasureString(textToRender, Font);

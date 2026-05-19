@@ -536,17 +536,17 @@ namespace AntdUI
                 {
                     if (BackSize > 0)
                     {
-                        using (var brush = new SolidBrush(Back ?? Colour.BorderSecondary.Get(nameof(Tabs), owner.ColorScheme)))
+                        using (var brush = new SolidBrush(Back ?? Colour.BorderSecondary.Get(owner.ColorScheme, nameof(Tabs), owner.Name)))
                         {
                             g.Fill(brush, rect_line_top);
                         }
                     }
                     if (owner.scroll_show) g.SetClip(owner.PaintExceedPre(rect_ful, rects[rects.Length - 1].Rect));
                     else g.SetClip(rect_ful);
-                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? Colour.Text.Get(nameof(Tabs), owner.ColorScheme)))
-                    using (var brush_fill = new SolidBrush(owner.Fill ?? Colour.Primary.Get(nameof(Tabs), owner.ColorScheme)))
-                    using (var brush_active = new SolidBrush(owner.FillActive ?? Colour.PrimaryActive.Get(nameof(Tabs), owner.ColorScheme)))
-                    using (var brush_hover = new SolidBrush(owner.FillHover ?? Colour.PrimaryHover.Get(nameof(Tabs), owner.ColorScheme)))
+                    using (var brush_fore = new SolidBrush(owner.ForeColor ?? Colour.Text.Get(owner.ColorScheme, nameof(Tabs), owner.Name)))
+                    using (var brush_fill = new SolidBrush(owner.Fill ?? Colour.Primary.Get(owner.ColorScheme, nameof(Tabs), owner.Name)))
+                    using (var brush_active = new SolidBrush(owner.FillActive ?? Colour.PrimaryActive.Get(owner.ColorScheme, nameof(Tabs), owner.Name)))
+                    using (var brush_hover = new SolidBrush(owner.FillHover ?? Colour.PrimaryHover.Get(owner.ColorScheme, nameof(Tabs), owner.Name)))
                     {
                         if (owner.scroll_show) g.TranslateTransform(-owner.scroll_x, -owner.scroll_y);
                         if (AnimationBar)
@@ -629,10 +629,10 @@ namespace AntdUI
                     }
                     if (closable)
                     {
-                        if (rects.hover_close == null) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
-                        else if (rects.hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A, Colour.Text.Get(nameof(Tabs), owner.ColorScheme)));
-                        else if (rects.hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
-                        else g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        if (rects.hover_close == null) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
+                        else if (rects.hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name).A, Colour.Text.Get(owner.ColorScheme, nameof(Tabs), owner.Name)));
+                        else if (rects.hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.Text.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
+                        else g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
                     }
                     PaintTextCore(g, rects, owner, page, brush);
                 }
@@ -641,16 +641,16 @@ namespace AntdUI
                     if (page.HasIcon)
                     {
                         if (page.Icon != null) g.Image(page.Icon, rects.Rect_Ico);
-                        if (page.IconSvg != null) g.Svg(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        if (page.IconSvg != null) g.Svg(page.IconSvg, rects.Rect_Ico, Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
                     }
                     if (closable)
                     {
-                        if (rects.hover_close == null) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
-                        else if (rects.hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A, Colour.Text.Get(nameof(Tabs), owner.ColorScheme)));
-                        else if (rects.hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.Text.Get(nameof(Tabs), owner.ColorScheme));
-                        else g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme));
+                        if (rects.hover_close == null) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
+                        else if (rects.hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Helper.ToColor(rects.hover_close.Value + Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name).A, Colour.Text.Get(owner.ColorScheme, nameof(Tabs), owner.Name)));
+                        else if (rects.hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.Text.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
+                        else g.Svg(SvgDb.IcoErrorGhost, rects.Rect_Close, Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name));
                     }
-                    using (var brush_e = new SolidBrush(Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme)))
+                    using (var brush_e = new SolidBrush(Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name)))
                     {
                         PaintTextCore(g, rects, owner, page, brush_e);
                     }
@@ -871,7 +871,7 @@ namespace AntdUI
                         item.hover_close ??= new ITaskOpacity(nameof(Tabs), owner);
                         if (i == owner.hover_i)
                         {
-                            item.hover_close.MaxValue = Colour.Text.Get(nameof(Tabs), owner.ColorScheme).A - Colour.TextQuaternary.Get(nameof(Tabs), owner.ColorScheme).A;
+                            item.hover_close.MaxValue = Colour.Text.Get(owner.ColorScheme, nameof(Tabs), owner.Name).A - Colour.TextQuaternary.Get(owner.ColorScheme, nameof(Tabs), owner.Name).A;
                             item.hover_close.Switch = item.Rect_Close.Contains(x, y);
                         }
                         else item.hover_close.Switch = false;

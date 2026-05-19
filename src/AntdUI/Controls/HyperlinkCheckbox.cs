@@ -321,7 +321,7 @@ namespace AntdUI
             if (right) text_rect.X = rect.Width - text_rect.X - text_rect.Width;
             PaintChecked(g, rect, Enabled, icon_rect, right);
 
-            Color _fore = ForeColor ?? Colour.Text.Get(nameof(HyperlinkCheckbox), ColorScheme);
+            Color _fore = ForeColor ?? Colour.Text.Get(ColorScheme, nameof(HyperlinkCheckbox), Name);
             var linkPadding = Helper.SetPadding(Dpi, _linkPadding);
             PaintText(g, _fore, text_rect, linkPadding);
         }
@@ -393,7 +393,7 @@ namespace AntdUI
                         if (hoverStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
                         else
                         {
-                            var colorlink = hoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel));
+                            var colorlink = hoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel), Name);
                             using (var font = new Font(Font, hoverStyle.LinkStyle))
                             {
                                 g.DrawText(part.Text, font, colorlink, part.Bounds);
@@ -406,7 +406,7 @@ namespace AntdUI
                         if (normalStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
                         else
                         {
-                            var colorlink = normalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel));
+                            var colorlink = normalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel), Name);
                             using (var font = new Font(Font, normalStyle.LinkStyle & ~FontStyle.Underline))
                             {
                                 g.DrawText(part.Text, font, colorlink, part.Bounds);

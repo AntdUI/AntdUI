@@ -143,7 +143,7 @@ namespace AntdUI
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
-            if (showicon) g.Svg(SvgDb.IcoTime, rect_r, Colour.TextQuaternary.Get(nameof(TimePicker), ColorScheme));
+            if (showicon) g.Svg(SvgDb.IcoTime, rect_r, Colour.TextQuaternary.Get(ColorScheme, nameof(TimePicker), Name));
         }
 
         #endregion

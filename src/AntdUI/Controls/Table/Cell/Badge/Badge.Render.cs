@@ -21,16 +21,16 @@ namespace AntdUI
                 switch (State)
                 {
                     case TState.Success:
-                        color = Colour.Success.Get(nameof(Badge), PARENT.PARENT.ColorScheme); break;
+                        color = Colour.Success.Get(PARENT.PARENT.ColorScheme, nameof(Badge), PARENT.PARENT.Name); break;
                     case TState.Error:
-                        color = Colour.Error.Get(nameof(Badge), PARENT.PARENT.ColorScheme); break;
+                        color = Colour.Error.Get(PARENT.PARENT.ColorScheme, nameof(Badge), PARENT.PARENT.Name); break;
                     case TState.Primary:
                     case TState.Processing:
-                        color = Colour.Primary.Get(nameof(Badge), PARENT.PARENT.ColorScheme); break;
+                        color = Colour.Primary.Get(PARENT.PARENT.ColorScheme, nameof(Badge), PARENT.PARENT.Name); break;
                     case TState.Warn:
-                        color = Colour.Warning.Get(nameof(Badge), PARENT.PARENT.ColorScheme); break;
+                        color = Colour.Warning.Get(PARENT.PARENT.ColorScheme, nameof(Badge), PARENT.PARENT.Name); break;
                     default:
-                        color = Colour.TextQuaternary.Get(nameof(Badge), PARENT.PARENT.ColorScheme); break;
+                        color = Colour.TextQuaternary.Get(PARENT.PARENT.ColorScheme, nameof(Badge), PARENT.PARENT.Name); break;
                 }
             }
             using (var brush = new SolidBrush(color))

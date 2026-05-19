@@ -27,6 +27,7 @@ namespace AntdUI
         {
             CloseMode = CloseMode.Leave;
             ColorScheme = control.ColorScheme;
+            cname = control.Name;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -88,6 +89,7 @@ namespace AntdUI
         {
             Guid = guid;
             ColorScheme = control.ColorScheme;
+            cname = control.Name;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -113,6 +115,7 @@ namespace AntdUI
         }
 
         public override string name => nameof(AntdUI.Menu);
+        string cname;
 
         public ILayeredForm? SubForm() => subForm;
         LayeredFormMenuDown? subForm;
@@ -226,7 +229,7 @@ namespace AntdUI
         readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(backColor ?? Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(backColor ?? Colour.BgElevated.Get(ColorScheme, name, cname)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -234,7 +237,7 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, name, cname), bor, path2);
                     }
                 }
             }
@@ -242,7 +245,7 @@ namespace AntdUI
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
             if (ScrollBar.ShowY) g.TranslateTransform(0, -ScrollBar.ValueY);
-            using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, name, cname)))
             {
                 if (foreColor.HasValue)
                 {
@@ -257,7 +260,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    using (var brush = new SolidBrush(Colour.Text.Get(name, ColorScheme)))
+                    using (var brush = new SolidBrush(Colour.Text.Get(ColorScheme, name, cname)))
                     {
                         foreach (var it in Items)
                         {
@@ -281,9 +284,9 @@ namespace AntdUI
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.Primary.Get(name, ColorScheme), path);
+                            g.Fill(BackActive ?? Colour.Primary.Get(ColorScheme, name, cname), path);
                         }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get(name, ColorScheme)))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get(ColorScheme, name, cname)))
                         {
                             g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
                         }
@@ -295,7 +298,7 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme), path);
+                                g.Fill(BackHover ?? Colour.FillTertiary.Get(ColorScheme, name, cname), path);
                             }
                         }
                         g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
@@ -308,9 +311,9 @@ namespace AntdUI
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme), path);
+                            g.Fill(BackActive ?? Colour.PrimaryBg.Get(ColorScheme, name, cname), path);
                         }
-                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get(name, ColorScheme)))
+                        using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get(ColorScheme, name, cname)))
                         {
                             g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
                         }
@@ -321,7 +324,7 @@ namespace AntdUI
                         {
                             using (var path = it.Rect.RoundPath(Radius))
                             {
-                                g.Fill(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme), path);
+                                g.Fill(BackHover ?? Colour.FillTertiary.Get(ColorScheme, name, cname), path);
                             }
                         }
                         g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
@@ -337,18 +340,18 @@ namespace AntdUI
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.Primary.Get(name, ColorScheme), path);
+                            g.Fill(BackActive ?? Colour.Primary.Get(ColorScheme, name, cname), path);
                         }
                     }
                     else
                     {
                         using (var path = it.Rect.RoundPath(Radius))
                         {
-                            g.Fill(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme), path);
+                            g.Fill(BackActive ?? Colour.PrimaryBg.Get(ColorScheme, name, cname), path);
                         }
                     }
                 }
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                 {
                     g.DrawText(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, sf);
                 }

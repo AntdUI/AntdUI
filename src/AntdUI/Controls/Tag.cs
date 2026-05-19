@@ -337,35 +337,35 @@ namespace AntdUI
             switch (type)
             {
                 case TTypeMini.Default:
-                    _back = Colour.TagDefaultBg.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _fore = Colour.TagDefaultColor.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _bor = Colour.DefaultBorder.Get(nameof(AntdUI.Tag), ColorScheme);
+                    _back = Colour.TagDefaultBg.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _fore = Colour.TagDefaultColor.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _bor = Colour.DefaultBorder.Get(ColorScheme, nameof(AntdUI.Tag), Name);
                     break;
                 case TTypeMini.Error:
-                    _back = Colour.ErrorBg.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _fore = Colour.Error.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _bor = Colour.ErrorBorder.Get(nameof(AntdUI.Tag), ColorScheme);
+                    _back = Colour.ErrorBg.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _fore = Colour.Error.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _bor = Colour.ErrorBorder.Get(ColorScheme, nameof(AntdUI.Tag), Name);
                     break;
                 case TTypeMini.Success:
-                    _back = Colour.SuccessBg.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _fore = Colour.Success.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _bor = Colour.SuccessBorder.Get(nameof(AntdUI.Tag), ColorScheme);
+                    _back = Colour.SuccessBg.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _fore = Colour.Success.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _bor = Colour.SuccessBorder.Get(ColorScheme, nameof(AntdUI.Tag), Name);
                     break;
                 case TTypeMini.Info:
-                    _back = Colour.InfoBg.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _fore = Colour.Info.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _bor = Colour.InfoBorder.Get(nameof(AntdUI.Tag), ColorScheme);
+                    _back = Colour.InfoBg.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _fore = Colour.Info.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _bor = Colour.InfoBorder.Get(ColorScheme, nameof(AntdUI.Tag), Name);
                     break;
                 case TTypeMini.Warn:
-                    _back = Colour.WarningBg.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _fore = Colour.Warning.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _bor = Colour.WarningBorder.Get(nameof(AntdUI.Tag), ColorScheme);
+                    _back = Colour.WarningBg.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _fore = Colour.Warning.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _bor = Colour.WarningBorder.Get(ColorScheme, nameof(AntdUI.Tag), Name);
                     break;
                 case TTypeMini.Primary:
                 default:
-                    _back = Colour.PrimaryBg.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _fore = Colour.Primary.Get(nameof(AntdUI.Tag), ColorScheme);
-                    _bor = Colour.Primary.Get(nameof(AntdUI.Tag), ColorScheme);
+                    _back = Colour.PrimaryBg.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _fore = Colour.Primary.Get(ColorScheme, nameof(AntdUI.Tag), Name);
+                    _bor = Colour.Primary.Get(ColorScheme, nameof(AntdUI.Tag), Name);
                     break;
             }
             if (fore.HasValue) _fore = fore.Value;
@@ -400,9 +400,9 @@ namespace AntdUI
                         int size = (int)(rect_read.Height * .4F);
                         var rect_arrow = new Rectangle(rect_read.X + (rect_read.Width - size) / 2, rect_read.Y + (rect_read.Height - size) / 2, size, size);
                         rect_close = rect_arrow;
-                        if (hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme)));
-                        else if (hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme));
-                        else g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme));
+                        if (hover_close.Animation) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name).A, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name)));
+                        else if (hover_close.Switch) g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name));
+                        else g.Svg(SvgDb.IcoErrorGhost, rect_arrow, Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name));
                     }
                 }
             }
@@ -413,9 +413,9 @@ namespace AntdUI
                 rect_close = rect.r;
                 if (closeIcon)
                 {
-                    if (hover_close.Animation) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme)), .8F);
-                    else if (hover_close.Switch) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme), .8F);
-                    else g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme), .8F);
+                    if (hover_close.Animation) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name).A, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name)), .8F);
+                    else if (hover_close.Switch) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name), .8F);
+                    else g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name), .8F);
                 }
                 PaintImage(g, color, rect.l);
                 using (var brush = new SolidBrush(color))
@@ -532,7 +532,7 @@ namespace AntdUI
         {
             if (closeIcon)
             {
-                hover_close.MaxValue = Colour.Text.Get(nameof(AntdUI.Tag), ColorScheme).A - Colour.TextQuaternary.Get(nameof(AntdUI.Tag), ColorScheme).A;
+                hover_close.MaxValue = Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name).A - Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name).A;
                 hover_close.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(hover_close.Switch);
             }

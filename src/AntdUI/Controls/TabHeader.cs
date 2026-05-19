@@ -627,7 +627,7 @@ namespace AntdUI
             g.SetClip(rect_real);
             g.TranslateTransform(left, 0);
             int _radius = (int)(radius * Dpi), radiusContent = (int)(RadiusContent * Dpi), border = (int)(borderWidth * Dpi);
-            var color = Colour.Text.Get(nameof(TabHeader), ColorScheme);
+            var color = Colour.Text.Get(ColorScheme, nameof(TabHeader), Name);
             if (items != null && items.Count > 0)
             {
                 TagTabItem? tabselect = null;
@@ -649,7 +649,7 @@ namespace AntdUI
                     g.Restore(state);
                     state = g.Save();
                     var it = items[dragHeader.im];
-                    using (var brush_split = new SolidBrush(Colour.BorderColor.Get(nameof(TabHeader), ColorScheme)))
+                    using (var brush_split = new SolidBrush(Colour.BorderColor.Get(ColorScheme, nameof(TabHeader), Name)))
                     {
                         int sp = (int)(2 * Dpi);
                         if (dragHeader.last) g.Fill(brush_split, new Rectangle(left + it.Rect.Right - sp, it.Rect.Y, sp * 2, it.Rect.Height));
@@ -662,10 +662,10 @@ namespace AntdUI
                 {
                     using (var path = tabselect.Rect.RoundPath(radius, true, true, false, false))
                     {
-                        g.Fill(BackActive ?? Colour.BgBase.Get(nameof(TabHeader), ColorScheme), path);
+                        g.Fill(BackActive ?? Colour.BgBase.Get(ColorScheme, nameof(TabHeader), Name), path);
                         if (border > 0)
                         {
-                            using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(nameof(TabHeader), ColorScheme), border))
+                            using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(TabHeader), Name), border))
                             {
                                 g.Draw(pen, path);
                             }
@@ -681,7 +681,7 @@ namespace AntdUI
                 {
                     using (var path = RectAdd.RoundPath(radiusContent))
                     {
-                        g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
+                        g.Fill(Colour.FillSecondary.Get(nameof(TabHeader), Name), path);
                     }
                 }
                 g.Svg(addIconSvg ?? "PlusOutlined", RectAddIco, color);
@@ -699,7 +699,7 @@ namespace AntdUI
             {
                 using (var path = tab.Rect.RoundPath(radius, true, true, false, false))
                 {
-                    g.Fill(BackHover ?? Colour.FillTertiary.Get(nameof(TabHeader), ColorScheme), path);
+                    g.Fill(BackHover ?? Colour.FillTertiary.Get(ColorScheme, nameof(TabHeader), Name), path);
                 }
                 DrawText(g, tab, ForeHover ?? fore ?? color);
             }
@@ -731,7 +731,7 @@ namespace AntdUI
             {
                 if (tab.Loading)
                 {
-                    using (var pen = new Pen(Colour.Fill.Get(nameof(PageHeader), ColorScheme), tab.RectIcon.Height * .14F))
+                    using (var pen = new Pen(Colour.Fill.Get(ColorScheme, nameof(PageHeader), Name), tab.RectIcon.Height * .14F))
                     using (var brush = new Pen(Color.FromArgb(170, color), pen.Width))
                     {
                         g.DrawEllipse(pen, tab.RectIcon);
@@ -746,7 +746,7 @@ namespace AntdUI
                     if (tab.IconSvg != null) g.Svg(tab.IconSvg, tab.RectIcon, color);
                 }
             }
-            tab.PaintBadge(Font, tab.Rect, g, ColorScheme);
+            tab.PaintBadge(Font, tab.Rect, g, ColorScheme, Name);
         }
 
         /// <summary>
@@ -762,7 +762,7 @@ namespace AntdUI
             {
                 using (var path = tab.RectClose.RoundPath(radius))
                 {
-                    g.Fill(Colour.FillSecondary.Get(nameof(TabHeader)), path);
+                    g.Fill(Colour.FillSecondary.Get(nameof(TabHeader), Name), path);
                 }
             }
             g.Svg(SvgDb.IcoErrorGhost, tab.RectCloseIco, color);

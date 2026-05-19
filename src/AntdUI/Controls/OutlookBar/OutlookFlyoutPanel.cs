@@ -121,14 +121,14 @@ namespace AntdUI
             EnsureFonts();
             var scheme = owner.ColorScheme;
             string name = nameof(OutlookBar);
-            var colBg = Colour.BgContainer.Get(name, scheme);
-            var colHeaderBg = Colour.BgElevated.Get(name, scheme);
-            var colText = Colour.Text.Get(name, scheme);
-            var colTextSecondary = Colour.TextSecondary.Get(name, scheme);
-            var colPrimary = Colour.Primary.Get(name, scheme);
-            var colHover = Colour.HoverBg.Get(name, scheme);
-            var colBorder = Colour.BorderColor.Get(name, scheme);
-            var colDivider = Colour.BorderSecondary.Get(name, scheme);
+            var colBg = Colour.BgContainer.Get(scheme, name, owner.Name);
+            var colHeaderBg = Colour.BgElevated.Get(scheme, name, owner.Name);
+            var colText = Colour.Text.Get(scheme, name, owner.Name);
+            var colTextSecondary = Colour.TextSecondary.Get(scheme, name, owner.Name);
+            var colPrimary = Colour.Primary.Get(scheme, name, owner.Name);
+            var colHover = Colour.HoverBg.Get(scheme, name, owner.Name);
+            var colBorder = Colour.BorderColor.Get(scheme, name, owner.Name);
+            var colDivider = Colour.BorderSecondary.Get(scheme, name, owner.Name);
             float dpi = Dpi;
 
             g.Fill(colBg, rect);

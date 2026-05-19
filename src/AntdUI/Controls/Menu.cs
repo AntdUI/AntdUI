@@ -959,23 +959,23 @@ namespace AntdUI
             if (scroll_show) g.SetClip(new Rectangle(e.Rect.X, e.Rect.Y, rect_r.Right - rect_r.Height, e.Rect.Height));
             int sy = ScrollBar.Value;
             g.TranslateTransform(0, -sy);
-            Color color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.Get(nameof(Menu), "foreDisabled", ColorScheme), back_hover, back_active;
+            Color color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Menu), Name), back_hover, back_active;
             if (Config.IsDark || ColorScheme == TAMode.Dark)
             {
-                color_fore = fore ?? Colour.Text.Get(nameof(Menu), ColorScheme);
-                back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get(nameof(Menu), ColorScheme);
-                back_active = BackActive ?? Colour.Primary.Get(nameof(Menu), ColorScheme);
+                color_fore = fore ?? Colour.Text.Get(ColorScheme, nameof(Menu), Name);
+                back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get(ColorScheme, nameof(Menu), Name);
+                back_active = BackActive ?? Colour.Primary.Get(ColorScheme, nameof(Menu), Name);
             }
             else
             {
-                color_fore = fore ?? Colour.TextBase.Get(nameof(Menu), ColorScheme);
-                color_fore_active = ForeActive ?? Colour.Primary.Get(nameof(Menu), ColorScheme);
-                back_hover = BackHover ?? Colour.FillSecondary.Get(nameof(Menu), ColorScheme);
-                back_active = BackActive ?? Colour.PrimaryBg.Get(nameof(Menu), ColorScheme);
+                color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Menu), Name);
+                color_fore_active = ForeActive ?? Colour.Primary.Get(ColorScheme, nameof(Menu), Name);
+                back_hover = BackHover ?? Colour.FillSecondary.Get(ColorScheme, nameof(Menu), Name);
+                back_active = BackActive ?? Colour.PrimaryBg.Get(ColorScheme, nameof(Menu), Name);
             }
             float _radius = radius * Dpi;
-            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get(nameof(Menu), ColorScheme)))
-            using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(Menu), ColorScheme)))
+            using (var sub_bg = new SolidBrush(Colour.FillQuaternary.Get(ColorScheme, nameof(Menu), Name)))
+            using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, nameof(Menu), Name)))
             {
                 PaintItems(g, e.Rect, sy, items, color_fore, color_fore_active, fore_enabled, back_hover, back_active, _radius, sub_bg, brush_split);
             }
@@ -1056,7 +1056,7 @@ namespace AntdUI
         {
             if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
             else PaintItem(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius);
-            it.PaintBadge(Font, it.rect, g, ColorScheme);
+            it.PaintBadge(Font, it.rect, g, ColorScheme, Name);
         }
 
         void PaintItemMini(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius)
@@ -1202,7 +1202,7 @@ namespace AntdUI
                         textRect.Height -= subHeight;
                         g.DrawText(it.Text, it.Font ?? Font, fore, textRect, SL);
 
-                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(nameof(Menu), ColorScheme)))
+                        using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Menu), Name)))
                         {
                             // SubText下移
                             Rectangle subRect = it.txt_rect;
@@ -1229,7 +1229,7 @@ namespace AntdUI
                     PaintFocusLine(g, it, FocusModeColor ?? fore);
                     break;
                 case TFocusMode.Border:
-                    PaintFocusBorder(g, it, FocusModeColor ?? Colour.PrimaryBorder.Get(nameof(Menu), ColorScheme), radius);
+                    PaintFocusBorder(g, it, FocusModeColor ?? Colour.PrimaryBorder.Get(ColorScheme, nameof(Menu), Name), radius);
                     break;
             }
         }
@@ -1351,7 +1351,7 @@ namespace AntdUI
                 }
                 else if (item.Hover) PaintCustomButtonIcon(g, item, fore_active);
                 else PaintCustomButtonIcon(g, item, fore);
-                item.PaintBadge(Font, item.rect, g, ColorScheme);
+                item.PaintBadge(Font, item.rect, g, ColorScheme, Name);
             }
         }
         void PaintCustomButtonIcon(Canvas g, MenuButton it, Color fore)

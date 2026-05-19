@@ -26,6 +26,7 @@ namespace AntdUI
         public LayeredFormSelectMultiple(SelectMultiple control, IList<object> items, string? filtertext)
         {
             PARENT = control;
+            cname = control.Name;
             Font = control.Font;
             ColorScheme = control.ColorScheme;
             SetTopMost(control.Parent, Handle);
@@ -114,6 +115,7 @@ namespace AntdUI
         #region 参数
 
         public override string name => nameof(AntdUI.Select);
+        string cname;
 
         int ArrowSize = 8;
         ScrollBar ScrollBar;
@@ -126,7 +128,7 @@ namespace AntdUI
         FormatFlags sf;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get(name, ColorScheme)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(ColorScheme, name, cname)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -134,7 +136,7 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get(name, ColorScheme), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, name, cname), bor, path2);
                     }
                     return;
                 }
@@ -144,15 +146,15 @@ namespace AntdUI
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.Get(name, "emptyFore", ColorScheme)));
+            if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.GetSymbol(ColorScheme, "emptyFore", name)));
             else
             {
                 int sy = ScrollBar.Value;
                 g.TranslateTransform(0, -sy);
-                using (var brush = new SolidBrush(Colour.Text.Get(name, ColorScheme)))
-                using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(name, ColorScheme)))
-                using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
-                using (var brush_split = new SolidBrush(Colour.Split.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(Colour.Text.Get(ColorScheme, name, cname)))
+                using (var brush_back_hover = new SolidBrush(Colour.FillTertiary.Get(ColorScheme, name, cname)))
+                using (var brush_fore = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, name, cname)))
+                using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, name, cname)))
                 {
                     if (Radius > 0)
                     {
@@ -224,16 +226,16 @@ namespace AntdUI
                 if (PARENT.OnDrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
                 using (var path = it.Rect.RoundPath(Radius, TL, TR, BR, BL))
                 {
-                    using (var brush = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                    using (var brush = it.BackActiveExtend.BrushEx(it.Rect, it.BackActive ?? Colour.PrimaryBg.Get(ColorScheme, name, cname)))
                     {
                         g.Fill(brush, path);
                     }
                 }
                 DrawTextIconSelect(g, it, fore, foreSub, font ?? Font);
-                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get(name, ColorScheme), .46F);
+                g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get(ColorScheme, name, cname), .46F);
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(ColorScheme, name, cname) : Colour.Error.Get(ColorScheme, name, cname))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -251,7 +253,7 @@ namespace AntdUI
                 {
                     if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount)
                     {
-                        using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                        using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                         {
                             DrawTextIcon(g, it, subbrush, null, null, Font);
                         }
@@ -270,7 +272,7 @@ namespace AntdUI
                     }
                     if (it.Online.HasValue)
                     {
-                        using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
+                        using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(ColorScheme, name, cname) : Colour.Error.Get(ColorScheme, name, cname))))
                         {
                             g.FillEllipse(brush_online, it.RectOnline);
                         }
@@ -286,18 +288,18 @@ namespace AntdUI
                 if (selectedValue.Contains(it.Tag))
                 {
                     if (PARENT.OnDrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
-                    using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(name, ColorScheme)))
+                    using (var brush_back = new SolidBrush(Colour.PrimaryBg.Get(ColorScheme, name, cname)))
                     {
                         g.Fill(brush_back, it.Rect);
                     }
                     DrawTextIconSelect(g, it, fore, foreSub, font ?? Font);
-                    g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get(name, ColorScheme), .46F);
+                    g.PaintIconCore(new Rectangle(it.Rect.Right - it.Rect.Height, it.Rect.Y, it.Rect.Height, it.Rect.Height), SvgDb.IcoSuccessGhost, Colour.Primary.Get(ColorScheme, name, cname), .46F);
                 }
                 else
                 {
                     if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount)
                     {
-                        using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                        using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                         {
                             DrawTextIcon(g, it, subbrush, null, null, Font);
                         }
@@ -311,7 +313,7 @@ namespace AntdUI
                 }
                 if (it.Online.HasValue)
                 {
-                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(name, ColorScheme) : Colour.Error.Get(name, ColorScheme))))
+                    using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(ColorScheme, name, cname) : Colour.Error.Get(ColorScheme, name, cname))))
                     {
                         g.FillEllipse(brush_online, it.RectOnline);
                     }
@@ -322,26 +324,26 @@ namespace AntdUI
 
         void DrawTextIconSelect(Canvas g, ObjectItem it, Color? fore, Color? foreSub, Font font)
         {
-            if (it.SubText != null) g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(name, ColorScheme), it.RectSubText, sf);
+            if (it.SubText != null) g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(ColorScheme, name, cname), it.RectSubText, sf);
             if (it.Enable)
             {
-                using (var brush = new SolidBrush(fore ?? Colour.TextBase.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(fore ?? Colour.TextBase.Get(ColorScheme, name, cname)))
                 {
                     g.DrawText(it.Text, font, brush, it.RectText, sf);
                 }
             }
             else
             {
-                using (var brush = new SolidBrush(fore ?? Colour.TextQuaternary.Get(name, ColorScheme)))
+                using (var brush = new SolidBrush(fore ?? Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                 {
                     g.DrawText(it.Text, font, brush, it.RectText, sf);
                 }
             }
-            DrawIcon(g, it, Colour.TextBase.Get(name, ColorScheme));
+            DrawIcon(g, it, Colour.TextBase.Get(ColorScheme, name, cname));
         }
         void DrawTextIcon(Canvas g, ObjectItem it, SolidBrush brush, Color? color, Color? foreSub, Font font)
         {
-            if (it.SubText != null) g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(name, ColorScheme), it.RectSubText, sf);
+            if (it.SubText != null) g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(ColorScheme, name, cname), it.RectSubText, sf);
             if (it.Enable)
             {
                 if (color.HasValue) g.DrawText(it.Text, font, color.Value, it.RectText, sf);
@@ -349,7 +351,7 @@ namespace AntdUI
             }
             else
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(name, ColorScheme)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                 {
                     g.DrawText(it.Text, font, fore, it.RectText, sf);
                 }
@@ -681,14 +683,23 @@ namespace AntdUI
 
         #region 主动搜索
 
+        string? tmpTextChange;
         /// <summary>
         /// 搜索指定文本
         /// </summary>
         /// <param name="search"></param>
         public override void TextChange(string search)
         {
-            Items = LoadLayout(AutoWidth, tmpW, ItemOS.List, search);
-            PrintAndClear();
+            var tmp = tmpTextChange = System.DateTime.Now.Ticks.ToString();
+            ITask.Run(() =>
+            {
+                var objectItems = LoadLayout(AutoWidth, tmpW, ItemOS.List, search);
+                if (tmp == tmpTextChange)
+                {
+                    Items = objectItems;
+                    PrintAndClear();
+                }
+            });
         }
 
         /// <summary>

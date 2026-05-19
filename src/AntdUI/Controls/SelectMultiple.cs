@@ -239,10 +239,7 @@ namespace AntdUI
                 var searchText = Text.Trim();
                 if (filtertext == searchText) return;
                 filtertext = searchText;
-                if (expandDrop)
-                {
-                    ITask.Run(() => { subForm?.TextChange(Text); });
-                }
+                if (expandDrop) subForm?.TextChange(searchText);
                 else ExpandDrop = true;
             }
         }
@@ -309,7 +306,7 @@ namespace AntdUI
         {
             if (showicon)
             {
-                using (var pen = new Pen(Colour.TextQuaternary.Get(nameof(Select), ColorScheme), 2F))
+                using (var pen = new Pen(Colour.TextQuaternary.Get(ColorScheme, nameof(Select), Name), 2F))
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
                     g.DrawLines(pen, rect_r.TriangleLinesVertical(ArrowProg));
@@ -491,15 +488,15 @@ namespace AntdUI
             switch (Status)
             {
                 case TType.Success:
-                    return Style.Get(bg ? Colour.SuccessBg : Colour.Success, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get2(bg ? Colour.SuccessBg : Colour.Success, ColorScheme, nameof(SelectMultiple));
                 case TType.Warn:
-                    return Style.Get(bg ? Colour.WarningBg : Colour.Warning, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get2(bg ? Colour.WarningBg : Colour.Warning, ColorScheme, nameof(SelectMultiple));
                 case TType.Error:
-                    return Style.Get(bg ? Colour.ErrorBg : Colour.Error, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get2(bg ? Colour.ErrorBg : Colour.Error, ColorScheme, nameof(SelectMultiple));
                 case TType.Info:
-                    return Style.Get(bg ? Colour.InfoBg : Colour.Info, nameof(SelectMultiple), ColorScheme);
+                    return Style.Get2(bg ? Colour.InfoBg : Colour.Info, ColorScheme, nameof(SelectMultiple));
                 default:
-                    return (bg ? Colour.FillSecondary : Colour.Text).Get(nameof(SelectMultiple), ColorScheme);
+                    return (bg ? Colour.FillSecondary : Colour.Text).Get(ColorScheme, nameof(SelectMultiple), Name);
             }
         }
 
@@ -522,7 +519,7 @@ namespace AntdUI
                                     g.Fill(GetStatusColor(true), path);
                                     if (tagBordered) g.Draw(brush, 1f * Dpi, path);
                                     var rect_del = rect_left_dels[i];
-                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
+                                    if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, Colour.TagDefaultColor.Get(ColorScheme, nameof(Select), Name));
                                     g.String(it.ToString(), Font, brush, rect_left_txts[i], sf_center);
                                 }
                                 else
@@ -544,7 +541,7 @@ namespace AntdUI
                                     else
                                     {
                                         var rect_del = rect_left_dels[i];
-                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, Colour.TagDefaultColor.Get(nameof(Select), ColorScheme));
+                                        if (rect_del.Width > 0 && rect_del.Height > 0) g.Svg(SvgDb.IcoErrorGhost, rect_del, Colour.TagDefaultColor.Get(ColorScheme, nameof(Select), Name));
                                         g.String(style.Text, Font, brush, rect_left_txts[i], sf_center);
                                     }
                                 }

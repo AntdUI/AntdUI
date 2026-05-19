@@ -318,7 +318,7 @@ namespace AntdUI
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
-            if (showicon) g.Svg(SvgDb.IcoDate, rect_r, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
+            if (showicon) g.Svg(SvgDb.IcoDate, rect_r, Colour.TextQuaternary.Get(ColorScheme, nameof(DatePicker), Name));
         }
 
         #endregion
@@ -608,7 +608,7 @@ namespace AntdUI
             string? placeholderS = PlaceholderStart, placeholderE = PlaceholderEnd;
             if ((showS && placeholderS != null) || (showE && placeholderE != null))
             {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme)))
+                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(DatePicker), Name)))
                 {
                     if (showS && placeholderS != null) g.String(placeholderS, Font, fore, rect_d_l, sf_placeholder);
                     if (showE && placeholderE != null) g.String(placeholderE, Font, fore, rect_d_r, sf_placeholder);
@@ -617,20 +617,20 @@ namespace AntdUI
             if (AnimationBar)
             {
                 float h = rect_text.Height * 0.14F;
-                var BarColor = BorderActive ?? Colour.Primary.Get(nameof(DatePicker), ColorScheme);
+                var BarColor = BorderActive ?? Colour.Primary.Get(ColorScheme, nameof(DatePicker), Name);
                 g.Fill(BarColor, new RectangleF(AnimationBarValue.X, rect_read.Bottom - h, AnimationBarValue.Width, h));
             }
             else if (StartFocused || EndFocused)
             {
                 float h = rect_text.Height * 0.14F;
-                var BarColor = BorderActive ?? Colour.Primary.Get(nameof(DatePicker), ColorScheme);
+                var BarColor = BorderActive ?? Colour.Primary.Get(ColorScheme, nameof(DatePicker), Name);
                 using (var brush = new SolidBrush(BarColor))
                 {
                     if (StartFocused) g.Fill(brush, new RectangleF(rect_d_l.X, rect_read.Bottom - h, rect_d_l.Width, h));
                     else g.Fill(brush, new RectangleF(rect_d_r.X, rect_read.Bottom - h, rect_d_r.Width, h));
                 }
             }
-            g.Svg(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
+            g.Svg(swapSvg ?? SvgDb.IcoSwap, rect_d_ico, Colour.TextQuaternary.Get(ColorScheme, nameof(DatePicker), Name));
         }
 
         #endregion

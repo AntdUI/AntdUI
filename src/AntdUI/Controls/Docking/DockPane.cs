@@ -390,14 +390,14 @@ namespace AntdUI
 
             // Resolve colour tokens once per paint.
             string name = nameof(DockPanel);
-            var colBg = Colour.BgContainer.Get(name, scheme);
-            var colTitleBgFocus = Colour.PrimaryBg.Get(name, scheme);
-            var colTitleBgIdle = Colour.BgElevated.Get(name, scheme);
-            var colPrimary = Colour.Primary.Get(name, scheme);
-            var colText = Colour.Text.Get(name, scheme);
-            var colTextSecondary = Colour.TextSecondary.Get(name, scheme);
-            var colTextTertiary = Colour.TextTertiary.Get(name, scheme);
-            var colBorder = Colour.BorderColor.Get(name, scheme);
+            var colBg = Colour.BgContainer.Get(scheme, name, Name);
+            var colTitleBgFocus = Colour.PrimaryBg.Get(scheme, name, Name);
+            var colTitleBgIdle = Colour.BgElevated.Get(scheme, name, Name);
+            var colPrimary = Colour.Primary.Get(scheme, name, Name);
+            var colText = Colour.Text.Get(scheme, name, Name);
+            var colTextSecondary = Colour.TextSecondary.Get(scheme, name, Name);
+            var colTextTertiary = Colour.TextTertiary.Get(scheme, name, Name);
+            var colBorder = Colour.BorderColor.Get(scheme, name, Name);
 
             g.Fill(colBg, r);
 
@@ -408,7 +408,7 @@ namespace AntdUI
             Color titleBg = hasFocus ? colTitleBgFocus : colTitleBgIdle;
             if (flashAmplitude > 0 && !hasFocus)
             {
-                var warnBg = Colour.WarningBg.Get(name, scheme);
+                var warnBg = Colour.WarningBg.Get(scheme, name, Name);
                 titleBg = BlendColors(titleBg, warnBg, flashAmplitude);
             }
             g.Fill(titleBg, titleRect);

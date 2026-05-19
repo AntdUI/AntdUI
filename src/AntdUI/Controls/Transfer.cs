@@ -469,14 +469,14 @@ namespace AntdUI
             using (var path = rect.RoundPath(panelRadius))
             {
                 ScrollBarSource.Radius = ScrollBarTarget.Radius = panelRadius;
-                using (var brush = new SolidBrush(PanelBack ?? Colour.BgContainer.Get(nameof(Transfer), ColorScheme)))
+                using (var brush = new SolidBrush(PanelBack ?? Colour.BgContainer.Get(ColorScheme, nameof(Transfer), Name)))
                 {
                     g.Fill(brush, path);
                 }
 
                 PaintListItems(g, rect_com, rect_title, title, scroll, isTarget, panelRadius);
 
-                using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(nameof(Transfer), ColorScheme), Dpi))
+                using (var pen = new Pen(BorderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Transfer), Name), Dpi))
                 {
                     g.Draw(pen, path);
                     g.DrawLines(pen, rect_line!);
@@ -503,8 +503,8 @@ namespace AntdUI
             int sy = scroll.ValueY;
             g.TranslateTransform(0, -sy);
             var name = nameof(Transfer);
-            using (var fore = new SolidBrush(ForeColor ?? Colour.Text.Get(name, ColorScheme)))
-            using (var foreActive = new SolidBrush(ForeActive ?? Colour.Text.Get(name, ColorScheme)))
+            using (var fore = new SolidBrush(ForeColor ?? Colour.Text.Get(ColorScheme, name, Name)))
+            using (var foreActive = new SolidBrush(ForeActive ?? Colour.Text.Get(ColorScheme, name, Name)))
             {
                 if (dragBody == null)
                 {
@@ -521,14 +521,14 @@ namespace AntdUI
                                     if (it.selected)
                                     {
                                         selectedCount++;
-                                        using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                        using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(ColorScheme, name, Name)))
                                         {
                                             g.Fill(brush, it.rect);
                                         }
                                     }
                                     if (it.Hover)
                                     {
-                                        using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
+                                        using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(ColorScheme, name, Name)))
                                         {
                                             g.Fill(brush, it.rect);
                                         }
@@ -558,7 +558,7 @@ namespace AntdUI
                                         if (it.selected)
                                         {
                                             selectedCount++;
-                                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(ColorScheme, name, Name)))
                                             {
                                                 g.Fill(brush, it.rect);
                                             }
@@ -572,10 +572,10 @@ namespace AntdUI
                         }
                         foreach (var it in items)
                         {
-                            if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
+                            if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(ColorScheme, name, Name), it.rect);
                             else if (dragBody.im == it)
                             {
-                                using (var brush_split = new SolidBrush(Colour.BorderColor.Get(name, ColorScheme)))
+                                using (var brush_split = new SolidBrush(Colour.BorderColor.Get(ColorScheme, name, Name)))
                                 {
                                     int sp = (int)(2 * Dpi);
                                     if (dragBody.last) g.Fill(brush_split, new Rectangle(it.rect.X, it.rect.Bottom - sp, it.rect.Width, sp * 2));
@@ -599,15 +599,15 @@ namespace AntdUI
                                         if (it.selected)
                                         {
                                             selectedCount++;
-                                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(name, ColorScheme)))
+                                            using (var brush = new SolidBrush(BackActive ?? Colour.PrimaryBg.Get(ColorScheme, name, Name)))
                                             {
                                                 g.Fill(brush, it.rect);
                                             }
                                         }
-                                        if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(name, ColorScheme), it.rect);
+                                        if (dragBody.i == it) g.Fill(Colour.FillSecondary.Get(ColorScheme, name, Name), it.rect);
                                         if (it.Hover)
                                         {
-                                            using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(name, ColorScheme)))
+                                            using (var brush = new SolidBrush(BackHover ?? Colour.FillTertiary.Get(ColorScheme, name, Name)))
                                             {
                                                 g.Fill(brush, it.rect);
                                             }
@@ -639,7 +639,7 @@ namespace AntdUI
             PaintItemCheck(g, it, name);
             // 绘制项文本
             if (it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
-            else g.String(it.Text, Font, Colour.TextQuaternary.Get(name, ColorScheme), it.rect_text, sf);
+            else g.String(it.Text, Font, Colour.TextQuaternary.Get(ColorScheme, name, Name), it.rect_text, sf);
         }
 
         private void PaintCheck(Canvas g, Rectangle rect_checkbox, CheckState state)
@@ -649,15 +649,15 @@ namespace AntdUI
                 switch (state)
                 {
                     case CheckState.Checked:
-                        g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), path);
-                        g.DrawLines(Colour.BgBase.Get(nameof(Transfer), ColorScheme), 2.6F * Dpi, rect_checkbox.CheckArrow());
+                        g.Fill(Colour.Primary.Get(ColorScheme, nameof(Transfer), Name), path);
+                        g.DrawLines(Colour.BgBase.Get(ColorScheme, nameof(Transfer), Name), 2.6F * Dpi, rect_checkbox.CheckArrow());
                         break;
                     case CheckState.Indeterminate:
-                        g.Draw(Colour.BorderColor.Get(nameof(Transfer), ColorScheme), 2F * Dpi, path);
-                        g.Fill(Colour.Primary.Get(nameof(Transfer), ColorScheme), Checkbox.PaintBlock(rect_checkbox));
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Transfer), Name), 2F * Dpi, path);
+                        g.Fill(Colour.Primary.Get(ColorScheme, nameof(Transfer), Name), Checkbox.PaintBlock(rect_checkbox));
                         break;
                     case CheckState.Unchecked:
-                        g.Draw(Colour.BorderColor.Get("FillTertiary", ColorScheme), 2F * Dpi, path);
+                        g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Transfer), Name), 2F * Dpi, path);
                         break;
                 }
             }
@@ -671,16 +671,16 @@ namespace AntdUI
                 {
                     if (it.selected)
                     {
-                        g.Fill(Colour.Primary.Get(name, ColorScheme), path);
-                        g.DrawLines(Colour.BgBase.Get(name, ColorScheme), 2.6F * Dpi, it.rect_check.CheckArrow());
+                        g.Fill(Colour.Primary.Get(ColorScheme, name, Name), path);
+                        g.DrawLines(Colour.BgBase.Get(ColorScheme, name, Name), 2.6F * Dpi, it.rect_check.CheckArrow());
                     }
-                    else g.Draw(Colour.BorderColor.Get(name, ColorScheme), 2F * Dpi, path);
+                    else g.Draw(Colour.BorderColor.Get(ColorScheme, name, Name), 2F * Dpi, path);
                 }
                 else
                 {
-                    g.Fill(Colour.FillQuaternary.Get(name, ColorScheme), path);
-                    if (it.selected) g.DrawLines(Colour.TextQuaternary.Get(name, ColorScheme), 2.6F * Dpi, it.rect_check.CheckArrow());
-                    g.Draw(Colour.BorderColorDisable.Get(name, ColorScheme), 2F * Dpi, path);
+                    g.Fill(Colour.FillQuaternary.Get(ColorScheme, name, Name), path);
+                    if (it.selected) g.DrawLines(Colour.TextQuaternary.Get(ColorScheme, name, Name), 2.6F * Dpi, it.rect_check.CheckArrow());
+                    g.Draw(Colour.BorderColorDisable.Get(ColorScheme, name, Name), 2F * Dpi, path);
                 }
             }
         }
@@ -688,11 +688,11 @@ namespace AntdUI
         private void PaintOperationButtons(Canvas g)
         {
             // 获取颜色
-            var buttonForeColor = ButtonForeColor ?? Colour.Text.Get(nameof(Transfer), ColorScheme);
-            var buttonBackColor = ButtonBackColor ?? Colour.FillTertiary.Get(nameof(Transfer), ColorScheme);
-            var buttonBackHover = ButtonBackHover ?? Colour.Primary.Get(nameof(Transfer), ColorScheme);
-            var buttonBackActive = ButtonBackActive ?? Colour.PrimaryActive.Get(nameof(Transfer), ColorScheme);
-            var buttonBackDisable = ButtonBackDisable ?? Colour.FillTertiary.Get(nameof(Transfer), ColorScheme);
+            var buttonForeColor = ButtonForeColor ?? Colour.Text.Get(ColorScheme, nameof(Transfer), Name);
+            var buttonBackColor = ButtonBackColor ?? Colour.FillTertiary.Get(ColorScheme, nameof(Transfer), Name);
+            var buttonBackHover = ButtonBackHover ?? Colour.Primary.Get(ColorScheme, nameof(Transfer), Name);
+            var buttonBackActive = ButtonBackActive ?? Colour.PrimaryActive.Get(ColorScheme, nameof(Transfer), Name);
+            var buttonBackDisable = ButtonBackDisable ?? Colour.FillTertiary.Get(ColorScheme, nameof(Transfer), Name);
 
             // 绘制向右按钮
             PaintOperationButton(g, rect_toRight, "RightOutlined", hover_to_right, buttonForeColor, buttonBackColor, buttonBackHover, buttonBackActive, buttonBackDisable);
@@ -709,17 +709,17 @@ namespace AntdUI
             {
                 g.FillEllipse(backColor, rect);
                 g.FillEllipse(backColor.BlendColors(hove.Value, backHover), rect);
-                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(nameof(Transfer), ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(ColorScheme, nameof(Transfer), Name));
             }
             else if (hove.Down)
             {
                 g.FillEllipse(backActive, rect);
-                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(nameof(Transfer), ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(ColorScheme, nameof(Transfer), Name));
             }
             else if (hove.Switch)
             {
                 g.FillEllipse(backHover, rect);
-                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(nameof(Transfer), ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.PrimaryColor.Get(ColorScheme, nameof(Transfer), Name));
             }
             else if (hove.Enable)
             {
@@ -729,7 +729,7 @@ namespace AntdUI
             else
             {
                 g.FillEllipse(backDisable, rect);
-                DrawSvg(g, icon, iconRect, Colour.TextQuaternary.Get(nameof(Transfer), ColorScheme));
+                DrawSvg(g, icon, iconRect, Colour.TextQuaternary.Get(ColorScheme, nameof(Transfer), Name));
             }
         }
 

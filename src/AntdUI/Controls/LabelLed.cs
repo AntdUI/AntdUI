@@ -326,7 +326,7 @@ namespace AntdUI
             if (rect.Width <= 0 || rect.Height <= 0) return;
             if (back.HasValue || backExtend != null)
             {
-                using (var brushback = backExtend.BrushEx(rect, back ?? Colour.BgContainer.Get(nameof(LabelLed), ColorScheme)))
+                using (var brushback = backExtend.BrushEx(rect, back ?? Colour.BgContainer.Get(ColorScheme, nameof(LabelLed), Name)))
                 {
                     g.Fill(brushback, rect);
                 }
@@ -334,7 +334,7 @@ namespace AntdUI
             var txt = Text;
             if (txt == null || string.IsNullOrEmpty(txt)) return;
 
-            var fore = DotColor ?? Colour.Primary.Get(nameof(LabelLed), ColorScheme);
+            var fore = DotColor ?? Colour.Primary.Get(ColorScheme, nameof(LabelLed), Name);
             if (fontSize.HasValue)
             {
                 var patterns = GetPatterns(txt, fontSize.Value);

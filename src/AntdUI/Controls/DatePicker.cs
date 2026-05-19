@@ -199,7 +199,7 @@ namespace AntdUI
 
         protected override void PaintRIcon(Canvas g, Rectangle rect_r)
         {
-            if (showicon) g.Svg(SvgDb.IcoDate, rect_r, Colour.TextQuaternary.Get(nameof(DatePicker), ColorScheme));
+            if (showicon) g.Svg(SvgDb.IcoDate, rect_r, Colour.TextQuaternary.Get(ColorScheme, nameof(DatePicker), Name));
         }
 
         #endregion

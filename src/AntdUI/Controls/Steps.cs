@@ -439,17 +439,17 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            Color color_fore = fore ?? Colour.Text.Get(nameof(Steps), ColorScheme);
+            Color color_fore = fore ?? Colour.Text.Get(ColorScheme, nameof(Steps), Name);
             using (var brush_fore = new SolidBrush(color_fore))
-            using (var brush_primarybg = new SolidBrush(Colour.PrimaryBg.Get(nameof(Steps), ColorScheme)))
-            using (var brush_primary = new SolidBrush(Colour.Primary.Get(nameof(Steps), ColorScheme)))
-            using (var brush_primary_fore = new SolidBrush(Colour.PrimaryColor.Get(nameof(Steps), ColorScheme)))
-            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get(nameof(Steps), ColorScheme)))
-            using (var brush_fore3 = new SolidBrush(Colour.TextSecondary.Get(nameof(Steps), ColorScheme)))
-            using (var brush_bg2 = new SolidBrush(Colour.FillSecondary.Get(nameof(Steps), ColorScheme)))
+            using (var brush_primarybg = new SolidBrush(Colour.PrimaryBg.Get(ColorScheme, nameof(Steps), Name)))
+            using (var brush_primary = new SolidBrush(Colour.Primary.Get(ColorScheme, nameof(Steps), Name)))
+            using (var brush_primary_fore = new SolidBrush(Colour.PrimaryColor.Get(ColorScheme, nameof(Steps), Name)))
+            using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, nameof(Steps), Name)))
+            using (var brush_fore3 = new SolidBrush(Colour.TextSecondary.Get(ColorScheme, nameof(Steps), Name)))
+            using (var brush_bg2 = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Steps), Name)))
             using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
             {
-                using (var brush_split = new SolidBrush(Colour.Split.Get(nameof(Steps), ColorScheme)))
+                using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, nameof(Steps), Name)))
                 {
                     for (int sp = 0; sp < splits.Length; sp++)
                     {
@@ -463,7 +463,7 @@ namespace AntdUI
                             {
                                 path.AddRectangle(rect);
                                 var alpha = 100 * (1F - AnimationLoadingValue);
-                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get(nameof(Progress), ColorScheme))))
+                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get(ColorScheme, nameof(Progress), Name))))
                                 {
                                     var state = g.Save();
                                     if (vertical)
@@ -501,7 +501,7 @@ namespace AntdUI
                                     ccolor = brush_fore2.Color;
                                     break;
                                 case TStepState.Error:
-                                    using (var brush_error = new SolidBrush(Colour.Error.Get(nameof(Steps), ColorScheme)))
+                                    using (var brush_error = new SolidBrush(Colour.Error.Get(ColorScheme, nameof(Steps), Name)))
                                     {
                                         g.DrawText(it.GetTitle, Font, brush_error, it.title_rect, stringLeft);
                                         g.DrawText(it.SubTitle, Font, brush_fore2, it.subtitle_rect, stringLeft);
@@ -542,7 +542,7 @@ namespace AntdUI
                             int space = i == current ? milestoneTimelineThickness : (int)(milestoneTimelineThickness / 1.35f);
                             rect.Inflate(space, space);
 
-                            using (var brush_dotback = new SolidBrush(BackColor != Color.Transparent ? BackColor : Colour.BgBase.Get(nameof(Steps), ColorScheme)))
+                            using (var brush_dotback = new SolidBrush(BackColor != Color.Transparent ? BackColor : Colour.BgBase.Get(ColorScheme, nameof(Steps), Name)))
                             {
                                 g.FillEllipse(brush_dotback, rect);
                             }
@@ -578,7 +578,7 @@ namespace AntdUI
                                             g.DrawText((i + 1).ToString(), font_Id, brush_fore3, it.ico_rect, stringCenter);
                                             break;
                                         case TStepState.Error:
-                                            g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get(nameof(Steps), ColorScheme), Colour.Error.Get(nameof(Steps), ColorScheme));
+                                            g.PaintIconCore(it.ico_rect, SvgDb.IcoError, Colour.ErrorColor.Get(ColorScheme, nameof(Steps), Name), Colour.Error.Get(ColorScheme, nameof(Steps), Name));
                                             break;
                                         case TStepState.Process:
                                         default:

@@ -429,7 +429,7 @@ namespace AntdUI
             if (rect_read.Width > 0 && rect_read.Height > 0)
             {
                 float _radius = radius * Dpi;
-                var bg = back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme);
+                var bg = back ?? Colour.BgContainer.Get(ColorScheme, nameof(Panel), Name);
                 using (var path = DrawShadow(g, _radius, e.Rect, rect_read))
                 {
                     using (var brush = backExtend.BrushEx(rect_read, bg))
@@ -437,7 +437,7 @@ namespace AntdUI
                         g.Fill(brush, path);
                     }
                     if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(Panel), ColorScheme), borderWidth * Dpi, borderStyle, path);
+                    if (borderWidth > 0) g.Draw(borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Panel), Name), borderWidth * Dpi, borderStyle, path);
                 }
                 if (ArrowAlign != TAlign.None) g.FillPolygon(bg, ArrowAlign.AlignLines(ArrowSize, e.Rect, rect_read));
             }
@@ -465,7 +465,7 @@ namespace AntdUI
                 if (AnimationHover) opacity = AnimationHoverValue;
                 else if (ExtraMouseHover) opacity = shadowOpacityHover;
                 else opacity = shadowOpacity;
-                shadow_temp.Draw(g, rect_client, rect_read, Dpi, shadow, ShadowOffsetX, ShadowOffsetY, shadowColor ?? Colour.TextBase.Get(nameof(Panel), ColorScheme), opacity);
+                shadow_temp.Draw(g, rect_client, rect_read, Dpi, shadow, ShadowOffsetX, ShadowOffsetY, shadowColor ?? Colour.TextBase.Get(ColorScheme, nameof(Panel), Name), opacity);
             }
             return path;
         }
@@ -715,7 +715,7 @@ namespace AntdUI
         void InitScrollBg(Control control)
         {
             if (AutoContainerBgTransparent) control.BackColor = Color.Transparent;
-            else control.BackColor = back ?? Colour.BgContainer.Get(nameof(Panel), ColorScheme);
+            else control.BackColor = back ?? Colour.BgContainer.Get(ColorScheme, nameof(Panel), Name);
         }
 
         private void ScrollY_ShowChanged(object? sender, BoolEventArgs e)

@@ -227,13 +227,13 @@ namespace AntdUI.Chat
             int sy = ScrollBar.Value, radius = (int)(Dpi * 8F);
             g.TranslateTransform(0, -sy);
             var name = nameof(ChatList);
-            using (var foreBubble = new SolidBrush(ForeBubble ?? Colour.Text.Get(name, ColorScheme)))
-            using (var bgBubble = new SolidBrush(BackBubble ?? Colour.BgBase.Get(name, ColorScheme)))
-            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get(name, ColorScheme)))
+            using (var foreBubble = new SolidBrush(ForeBubble ?? Colour.Text.Get(ColorScheme, name, Name)))
+            using (var bgBubble = new SolidBrush(BackBubble ?? Colour.BgBase.Get(ColorScheme, name, Name)))
+            using (var bgActiveBubble = new SolidBrush(BackActiveBubble ?? Colour.FillQuaternary.Get(ColorScheme, name, Name)))
 
-            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Colour.PrimaryColor.Get(name, ColorScheme)))
-            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Colour.Primary.Get(name, ColorScheme)))
-            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Colour.PrimaryActive.Get(name, ColorScheme)))
+            using (var foreBubbleme = new SolidBrush(ForeBubbleMe ?? Colour.PrimaryColor.Get(ColorScheme, name, Name)))
+            using (var bgBubbleme = new SolidBrush(BackBubbleMe ?? Colour.Primary.Get(ColorScheme, name, Name)))
+            using (var bgActiveBubbleme = new SolidBrush(BackActiveBubbleMe ?? Colour.PrimaryActive.Get(ColorScheme, name, Name)))
             {
                 foreach (var it in items) PaintItem(g, it, e.Rect, sy, radius, foreBubble, bgBubble, bgActiveBubble, foreBubbleme, bgBubbleme, bgActiveBubbleme, name);
             }
@@ -253,7 +253,7 @@ namespace AntdUI.Chat
                 {
                     using (var path = text.rect_read.RoundPath(radius))
                     {
-                        using (var brush = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
+                        using (var brush = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, name, Name)))
                         {
                             g.String(text.Name, Font, brush, text.rect_name, SFL);
                             if (ShowTimeFocused && FocusedChatItem == it && text.Time != null) g.String(text.Time, Font, brush, text.rect_time, SFL);
@@ -276,7 +276,7 @@ namespace AntdUI.Chat
                 }
                 else if (it is ImageChatItem image)
                 {
-                    using (var brush = new SolidBrush(Colour.TextTertiary.Get(name, ColorScheme)))
+                    using (var brush = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, name, Name)))
                     {
                         g.String(image.Name, Font, brush, image.rect_name, SFL);
                     }
@@ -290,8 +290,8 @@ namespace AntdUI.Chat
                         int prog_size = g.MeasureText(Config.NullText, Font).Height;
                         int rprog_size = (int)(prog_size * 1.6F), size = (int)(prog_size * .2F), size2 = rprog_size / 2;
                         var rect_prog = new Rectangle(image.rect_content.X + (image.rect_content.Width - rprog_size) / 2, image.rect_content.Y + (image.rect_content.Height - rprog_size) / 2, rprog_size, rprog_size);
-                        g.DrawEllipse(Colour.Fill.Get(name), size, rect_prog);
-                        using (var brush = new Pen(Colour.Primary.Get(name), size))
+                        g.DrawEllipse(Colour.Fill.Get(name, Name), size, rect_prog);
+                        using (var brush = new Pen(Colour.Primary.Get(name, Name), size))
                         {
                             brush.StartCap = brush.EndCap = System.Drawing.Drawing2D.LineCap.Round;
                             //if (config.Value.HasValue)
@@ -316,7 +316,7 @@ namespace AntdUI.Chat
                     int start = text.selectionStartTemp, end = start + text.selectionLength - 1;
                     if (end > text.cache_font.Length - 1) end = text.cache_font.Length - 1;
                     var first = text.cache_font[start];
-                    using (var brush = new SolidBrush(text.Me ? (SelectionColorMe ?? Colour.Fill.Get(nameof(ChatList), ColorScheme)) : (SelectionColor ?? Color.FromArgb(102, 0, 127, 255))))
+                    using (var brush = new SolidBrush(text.Me ? (SelectionColorMe ?? Colour.Fill.Get(ColorScheme, nameof(ChatList), Name)) : (SelectionColor ?? Color.FromArgb(102, 0, 127, 255))))
                     {
                         var list = new Dictionary<int, CacheFont>(6);
                         for (int i = start; i <= end; i++)
@@ -386,7 +386,7 @@ namespace AntdUI.Chat
             if (text.showlinedot)
             {
                 int size = (int)(2 * Dpi), w = size * 3;
-                using (var brush = new SolidBrush(Colour.Primary.Get(nameof(ChatList), ColorScheme)))
+                using (var brush = new SolidBrush(Colour.Primary.Get(ColorScheme, nameof(ChatList), Name)))
                 {
                     if (text.cache_font.Length > 0)
                     {

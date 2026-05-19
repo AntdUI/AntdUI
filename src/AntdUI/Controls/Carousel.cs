@@ -524,7 +524,7 @@ namespace AntdUI
             }
             if (dot_list.Length > 0)
             {
-                using (var brush = new SolidBrush(DotFocusedColor ?? Colour.BgBase.Get(nameof(Carousel), ColorScheme)))
+                using (var brush = new SolidBrush(DotFocusedColor ?? Colour.BgBase.Get(ColorScheme, nameof(Carousel), Name)))
                 using (var brush2 = new SolidBrush(Color.FromArgb(77, brush.Color)))
                 {
                     if (round || radius > 0)

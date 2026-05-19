@@ -348,7 +348,7 @@ namespace AntdUI
             float _radius = radius * Dpi;
             using (var path = rect.RoundPath(_radius))
             {
-                g.Fill(back ?? Colour.FillQuaternary.Get(nameof(UploadDragger), ColorScheme), path);
+                g.Fill(back ?? Colour.FillQuaternary.Get(ColorScheme, nameof(UploadDragger), Name), path);
                 if (backImage != null) g.Image(rect, backImage, backFit, _radius, false);
 
                 #region 渲染主体
@@ -362,7 +362,7 @@ namespace AntdUI
                     {
                         int y = rect.Y + (rect.Height - size.Height) / 2;
                         var rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height);
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(UploadDragger), ColorScheme)))
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(UploadDragger), Name)))
                         {
                             g.DrawText(Text, Font, brush, rect_text, s_f);
                         }
@@ -375,11 +375,11 @@ namespace AntdUI
                             int th = sp + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
                             Rectangle rect_text = new Rectangle(rect.X + gap, y, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
-                            using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(UploadDragger), ColorScheme)))
+                            using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(UploadDragger), Name)))
                             {
                                 g.DrawText(Text, Font, brush, rect_text, s_f);
                             }
-                            using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(UploadDragger), ColorScheme)))
+                            using (var brush = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, nameof(UploadDragger), Name)))
                             {
                                 g.DrawText(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
@@ -394,8 +394,8 @@ namespace AntdUI
                         Rectangle rect_icon = new Rectangle(rect.X + (rect.Width - icon_size) / 2, y, icon_size, icon_size),
                             rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height);
                         if (icon != null) g.Image(icon, rect_icon);
-                        if (iconSvg != null) g.Svg(iconSvg, rect_icon, Colour.Primary.Get(nameof(UploadDragger), ColorScheme));
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(UploadDragger), ColorScheme)))
+                        if (iconSvg != null) g.Svg(iconSvg, rect_icon, Colour.Primary.Get(ColorScheme, nameof(UploadDragger), Name));
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(UploadDragger), Name)))
                         {
                             g.DrawText(Text, Font, brush, rect_text, s_f);
                         }
@@ -410,12 +410,12 @@ namespace AntdUI
                                 rect_text = new Rectangle(rect.X + gap, y + icon_size + gap, rect.Width - gap2, size.Height),
                                 rect_desc = new Rectangle(rect_text.X, rect_text.Bottom + sp, rect_text.Width, size_desc.Height);
                             if (icon != null) g.Image(icon, rect_icon);
-                            if (iconSvg != null) g.Svg(iconSvg, rect_icon, Colour.Primary.Get(nameof(UploadDragger), ColorScheme));
-                            using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(UploadDragger), ColorScheme)))
+                            if (iconSvg != null) g.Svg(iconSvg, rect_icon, Colour.Primary.Get(ColorScheme, nameof(UploadDragger), Name));
+                            using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(UploadDragger), Name)))
                             {
                                 g.DrawText(Text, Font, brush, rect_text, s_f);
                             }
-                            using (var brush = new SolidBrush(Colour.TextTertiary.Get(nameof(UploadDragger), ColorScheme)))
+                            using (var brush = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, nameof(UploadDragger), Name)))
                             {
                                 g.DrawText(TextDesc, font_desc, brush, rect_desc, s_f);
                             }
@@ -428,9 +428,9 @@ namespace AntdUI
                 if (borderWidth > 0)
                 {
                     var borw = borderWidth * Dpi;
-                    if (AnimationHover) g.Draw((borderColor ?? Colour.BorderColor.Get(nameof(UploadDragger), ColorScheme)).BlendColors(AnimationHoverValue, Colour.PrimaryHover.Get(nameof(UploadDragger), ColorScheme)), borw, path);
-                    else if (ExtraMouseHover) g.Draw(Colour.PrimaryHover.Get(nameof(UploadDragger), ColorScheme), borw, borderStyle, path);
-                    else g.Draw(borderColor ?? Colour.BorderColor.Get(nameof(UploadDragger), ColorScheme), borw, borderStyle, path);
+                    if (AnimationHover) g.Draw((borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(UploadDragger), Name)).BlendColors(AnimationHoverValue, Colour.PrimaryHover.Get(ColorScheme, nameof(UploadDragger), Name)), borw, path);
+                    else if (ExtraMouseHover) g.Draw(Colour.PrimaryHover.Get(ColorScheme, nameof(UploadDragger), Name), borw, borderStyle, path);
+                    else g.Draw(borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(UploadDragger), Name), borw, borderStyle, path);
                 }
             }
             base.OnDraw(e);

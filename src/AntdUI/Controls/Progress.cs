@@ -634,20 +634,20 @@ namespace AntdUI
             switch (state)
             {
                 case TType.Success:
-                    color = fill ?? Colour.Success.Get(nameof(Progress), ColorScheme);
+                    color = fill ?? Colour.Success.Get(ColorScheme, nameof(Progress), Name);
                     break;
                 case TType.Info:
-                    color = fill ?? Colour.Info.Get(nameof(Progress), ColorScheme);
+                    color = fill ?? Colour.Info.Get(ColorScheme, nameof(Progress), Name);
                     break;
                 case TType.Warn:
-                    color = fill ?? Colour.Warning.Get(nameof(Progress), ColorScheme);
+                    color = fill ?? Colour.Warning.Get(ColorScheme, nameof(Progress), Name);
                     break;
                 case TType.Error:
-                    color = fill ?? Colour.Error.Get(nameof(Progress), ColorScheme);
+                    color = fill ?? Colour.Error.Get(ColorScheme, nameof(Progress), Name);
                     break;
                 case TType.None:
                 default:
-                    color = fill ?? Colour.Primary.Get(nameof(Progress), ColorScheme);
+                    color = fill ?? Colour.Primary.Get(ColorScheme, nameof(Progress), Name);
                     break;
             }
             switch (shape)
@@ -678,7 +678,7 @@ namespace AntdUI
             var font_size = g.MeasureString("100" + TextUnit, Font);
             rect.IconRectL(font_size.Height, out var icon_rect, out var text_rect, iconratio);
             if (icon_rect.Width == 0 || icon_rect.Height == 0) return;
-            using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
+            using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Progress), Name)))
             {
                 string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                 g.String(textShow, Font, brush, new Rectangle(text_rect.X + 8, text_rect.Y, text_rect.Width - 8, text_rect.Height), FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
@@ -704,7 +704,7 @@ namespace AntdUI
                 if (_value_show > 0)
                 {
                     float alpha = 60 * (1F - AnimationLoadingValue);
-                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme)), w))
+                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
@@ -714,7 +714,7 @@ namespace AntdUI
                 {
                     max = 360;
                     float alpha = 80 * (1F - AnimationLoadingValue);
-                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme)), w))
+                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, icon_rect, -90, (int)(max * AnimationLoadingValue));
@@ -726,7 +726,7 @@ namespace AntdUI
         }
         void PaintShapeSteps(Canvas g, Rectangle rect_t, Rectangle rect, Color color)
         {
-            var _back = back ?? Colour.FillSecondary.Get(nameof(Progress), ColorScheme);
+            var _back = back ?? Colour.FillSecondary.Get(ColorScheme, nameof(Progress), Name);
             var font_size = g.MeasureString("100" + TextUnit, Font);
             int pro_gap = (int)(stepGap * Dpi), pro_h = (int)(font_size.Height * valueratio);
             float pro_w = (int)(stepSize * Dpi), has_x = 0;
@@ -777,7 +777,7 @@ namespace AntdUI
                             {
                                 foreach (var it in rects) path.AddRectangle(it);
                                 var alpha = 60 * (1F - AnimationLoadingValue);
-                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get(nameof(Progress), ColorScheme))))
+                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get(ColorScheme, nameof(Progress), Name))))
                                 {
                                     var state = g.Save();
                                     g.SetClip(new RectangleF(rect.X, rect.Y, tmpw * _value_show * AnimationLoadingValue, rect.Height));
@@ -795,7 +795,7 @@ namespace AntdUI
                             {
                                 foreach (var it in rects) path.AddRectangle(it);
                                 var alpha = 80 * (1F - AnimationLoadingValue);
-                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get(nameof(Progress), ColorScheme))))
+                                using (var brush_prog = new SolidBrush(Helper.ToColor(alpha, Colour.TextBase.Get(ColorScheme, nameof(Progress), Name))))
                                 {
                                     var state = g.Save();
                                     g.SetClip(new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height));
@@ -815,7 +815,7 @@ namespace AntdUI
             if (state == TType.None)
             {
                 int has_x2 = (int)Math.Ceiling(has_x + pro_h / 2);
-                using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
+                using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Progress), Name)))
                 {
                     string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                     g.String(textShow, Font, brush, new Rectangle(rect.X + has_x2, rect.Y, rect.Width - has_x2, rect.Height), FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
@@ -830,7 +830,7 @@ namespace AntdUI
         }
         void PaintShapeRound(Canvas g, Rectangle rect_t, Rectangle rect, Color color, bool round)
         {
-            var _back = back ?? Colour.FillSecondary.Get(nameof(Progress), ColorScheme);
+            var _back = back ?? Colour.FillSecondary.Get(ColorScheme, nameof(Progress), Name);
             float _radius = radius * Dpi;
             if (round) _radius = rect.Height;
 
@@ -852,7 +852,7 @@ namespace AntdUI
                     rect.Height = pro_h;
                     PaintProgress(g, _radius, rect, _back, color);
 
-                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
+                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Progress), Name)))
                     {
                         g.String(textShow, Font, brush, rect_t, s_c);
                     }
@@ -898,7 +898,7 @@ namespace AntdUI
                         rect.Width -= size_font_w;
                         if (rect.Width > 0) PaintProgress(g, _radius, rect, _back, color);
 
-                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
+                        using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Progress), Name)))
                         {
                             g.String(textShow, Font, brush, rect_rext, FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrap);
                         }
@@ -921,7 +921,7 @@ namespace AntdUI
         }
         void PaintShapeCircle(Canvas g, Rectangle rect, Color color)
         {
-            var _back = back ?? Colour.FillSecondary.Get(nameof(Progress), ColorScheme);
+            var _back = back ?? Colour.FillSecondary.Get(ColorScheme, nameof(Progress), Name);
 
             int prog_size;
             if (rect.Width == rect.Height) prog_size = rect.Width;
@@ -976,7 +976,7 @@ namespace AntdUI
                 if (_value_show > 0)
                 {
                     float alpha = 60 * (1F - AnimationLoadingValue);
-                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme)), w))
+                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
@@ -986,7 +986,7 @@ namespace AntdUI
                 {
                     max = 360;
                     float alpha = 80 * (1F - AnimationLoadingValue);
-                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme)), w))
+                    using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), w))
                     {
                         brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, rect_prog, -90, (int)(max * AnimationLoadingValue));
@@ -1000,7 +1000,7 @@ namespace AntdUI
             {
                 if (state == TType.None)
                 {
-                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
+                    using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Progress), Name)))
                     {
                         string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                         g.String(textShow, Font, brush, rect, s_c);
@@ -1014,7 +1014,7 @@ namespace AntdUI
             }
             else
             {
-                using (var brush = new SolidBrush(fore ?? Colour.Text.Get(nameof(Progress), ColorScheme)))
+                using (var brush = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Progress), Name)))
                 {
                     string textShow = ValueFormatChanged?.Invoke(this, new FloatEventArgs(_value_show)) ?? (useSystemText ? Text ?? "" : (_value_show * 100F).ToString("F" + ShowTextDot) + TextUnit);
                     g.String(textShow, Font, brush, rect, s_c);
@@ -1043,7 +1043,7 @@ namespace AntdUI
                             var alpha = 60 * (1F - AnimationLoadingValue);
                             using (var path_prog = new RectangleF(rect.X, rect.Y, _w * AnimationLoadingValue, rect.Height).RoundPath(radius))
                             {
-                                g.Fill(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme)), path_prog);
+                                g.Fill(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), path_prog);
                             }
                         }
                     }
@@ -1063,7 +1063,7 @@ namespace AntdUI
                                     var alpha = 60 * (1F - AnimationLoadingValue);
                                     using (var path_prog = new RectangleF(-_w, 0, _w * 2 * AnimationLoadingValue, rect.Height).RoundPath(radius))
                                     {
-                                        g2.Fill(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme)), path_prog);
+                                        g2.Fill(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), path_prog);
                                     }
                                 }
                             }
@@ -1079,7 +1079,7 @@ namespace AntdUI
                 if (loading && AnimationLoadingValue > 0 && handloading && LoadingFull)
                 {
                     var alpha = 80 * (1F - AnimationLoadingValue);
-                    using (var brush = new SolidBrush(Helper.ToColor(alpha, Colour.BgBase.Get(nameof(Progress), ColorScheme))))
+                    using (var brush = new SolidBrush(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name))))
                     {
                         using (var path_prog = new RectangleF(rect.X, rect.Y, rect.Width * AnimationLoadingValue, rect.Height).RoundPath(radius))
                         {
