@@ -873,7 +873,7 @@ namespace AntdUI
         {
             if (config.CloseIcon)
             {
-                close_button.MaxValue = Colour.FillSecondary.Get2(TAMode.Auto, name).A;
+                close_button.MaxValue = Colour.FillSecondary.Get(TAMode.Auto, name).A;
                 close_button.Switch = rect_close.Contains(e.X, e.Y);
                 SetCursor(close_button.Switch);
                 if (close_button.Switch)

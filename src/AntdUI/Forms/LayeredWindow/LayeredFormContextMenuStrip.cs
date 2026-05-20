@@ -416,7 +416,7 @@ namespace AntdUI
         readonly FormatFlags sfl = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter, sfr = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(Colour.BgElevated.Get2(config.ColorScheme, name)))
+            using (var brush = new SolidBrush(Colour.BgElevated.Get(config.ColorScheme, name)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -424,14 +424,14 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get2(config.ColorScheme, name), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(config.ColorScheme, name), bor, path2);
                     }
                 }
             }
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            using (var brush = new SolidBrush(Colour.Text.Get2(config.ColorScheme, name)))
+            using (var brush = new SolidBrush(Colour.Text.Get(config.ColorScheme, name)))
             using (var brushSplit = new SolidBrush(Colour.Split.GetSymbol(config.ColorScheme, "divider", name)))
             using (var brushSecondary = new SolidBrush(Colour.TextSecondary.GetSymbol(config.ColorScheme, "subFore", name)))
             using (var brushEnabled = new SolidBrush(Colour.TextQuaternary.GetSymbol(config.ColorScheme, "foreDisabled", name)))
@@ -445,7 +445,7 @@ namespace AntdUI
                         {
                             using (var path = Helper.RoundPath(it.Rect, Radius))
                             {
-                                g.Fill(Colour.PrimaryBg.Get2(config.ColorScheme, name), path);
+                                g.Fill(Colour.PrimaryBg.Get(config.ColorScheme, name), path);
                             }
                         }
                         if (item.Enabled)
@@ -462,7 +462,7 @@ namespace AntdUI
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
-                                using (var pen = new Pen(Colour.TextSecondary.Get2(config.ColorScheme, name), 2F * Dpi))
+                                using (var pen = new Pen(Colour.TextSecondary.Get(config.ColorScheme, name), 2F * Dpi))
                                 {
                                     pen.StartCap = pen.EndCap = LineCap.Round;
                                     g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -470,7 +470,7 @@ namespace AntdUI
                             }
                             if (item.Checked)
                             {
-                                using (var pen = new Pen(Colour.Primary.Get2(config.ColorScheme, name), 3F * Dpi))
+                                using (var pen = new Pen(Colour.Primary.Get(config.ColorScheme, name), 3F * Dpi))
                                 {
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }
@@ -485,7 +485,7 @@ namespace AntdUI
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
-                                using (var pen = new Pen(Colour.TextQuaternary.Get2(config.ColorScheme, name), 2F * Dpi))
+                                using (var pen = new Pen(Colour.TextQuaternary.Get(config.ColorScheme, name), 2F * Dpi))
                                 {
                                     pen.StartCap = pen.EndCap = LineCap.Round;
                                     g.DrawLines(pen, TAlignMini.Right.TriangleLines(it.RectSub));
@@ -493,7 +493,7 @@ namespace AntdUI
                             }
                             if (item.Checked)
                             {
-                                using (var pen = new Pen(Colour.Primary.Get2(config.ColorScheme, name), 3F * Dpi))
+                                using (var pen = new Pen(Colour.Primary.Get(config.ColorScheme, name), 3F * Dpi))
                                 {
                                     g.DrawLines(pen, PaintArrow(it.RectCheck));
                                 }
@@ -513,7 +513,7 @@ namespace AntdUI
                                 {
                                     using (var path = Helper.RoundPath(btn.Rect, Radius))
                                     {
-                                        g.Fill(Colour.PrimaryBg.Get2(config.ColorScheme, name), path);
+                                        g.Fill(Colour.PrimaryBg.Get(config.ColorScheme, name), path);
                                     }
                                 }
                                 if (btn_info.Enabled)

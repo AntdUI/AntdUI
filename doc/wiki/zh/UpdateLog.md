@@ -1,5 +1,13 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.3.14` 2026-05-15
+
+- ➕ Select 下拉 SubText 边距
+- ➕ HyperlinkLabel 事件区域
+- ✍️ Table 树排序
+- ✍️ Table 堆叠表头边框线
+- ✍️ Input 前后缀多语言
+
 ### `2.3.13` 2026-05-12
 
 - ➕ Input VirtualMode

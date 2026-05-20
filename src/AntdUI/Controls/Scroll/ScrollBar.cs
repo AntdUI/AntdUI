@@ -410,7 +410,7 @@ namespace AntdUI
         #region 渲染
 
         public virtual void Paint(Canvas g) => Paint(g, Colour.TextBase.Get(nameof(ScrollBar)));
-        public virtual void Paint(Canvas g, TAMode colorScheme) => Paint(g, Colour.TextBase.Get2(colorScheme, nameof(ScrollBar)));
+        public virtual void Paint(Canvas g, TAMode colorScheme) => Paint(g, Colour.TextBase.Get(colorScheme, nameof(ScrollBar)));
         public virtual void Paint(Canvas g, Color baseColor)
         {
             if (SIZE == 0) return;

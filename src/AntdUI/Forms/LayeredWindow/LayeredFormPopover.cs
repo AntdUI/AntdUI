@@ -38,8 +38,8 @@ namespace AntdUI
                 if (config.Content is Control control)
                 {
                     control.Parent = this;
-                    control.BackColor = config.Back ?? Colour.BgElevated.Get2(config.ColorScheme, name);
-                    control.ForeColor = config.Fore ?? Colour.Text.Get2(config.ColorScheme, name);
+                    control.BackColor = config.Back ?? Colour.BgElevated.Get(config.ColorScheme, name);
+                    control.ForeColor = config.Fore ?? Colour.Text.Get(config.ColorScheme, name);
                     Win32.WindowTheme(control, config.ColorScheme);
                     Helper.DpiAuto(config.Dpi ?? Dpi, control);
                     int w = control.Width;
@@ -307,7 +307,7 @@ namespace AntdUI
         {
             if (config.Title != null || rtext)
             {
-                using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get2(config.ColorScheme, name)))
+                using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get(config.ColorScheme, name)))
                 {
                     using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                     {
@@ -339,7 +339,7 @@ namespace AntdUI
 
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
-            using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get2(config.ColorScheme, name)))
+            using (var brush = new SolidBrush(config.Back ?? Colour.BgElevated.Get(config.ColorScheme, name)))
             {
                 g.Fill(brush, path);
                 if (shadow == 0)
@@ -347,7 +347,7 @@ namespace AntdUI
                     int bor = (int)(Dpi), bor2 = bor * 2;
                     using (var path2 = new Rectangle(rect.X + bor, rect.Y + bor, rect.Width - bor2, rect.Height - bor2).RoundPath(Radius))
                     {
-                        g.Draw(Colour.BorderColor.Get2(config.ColorScheme, name), bor, path2);
+                        g.Draw(Colour.BorderColor.Get(config.ColorScheme, name), bor, path2);
                     }
                     if (tempContent != null) g.Image(tempContent, rectContent);
                     return;

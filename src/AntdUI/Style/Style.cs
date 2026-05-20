@@ -57,7 +57,7 @@ namespace AntdUI
         /// <param name="id">色卡</param>
         /// <param name="mode">色彩模式</param>
         /// <param name="name">控件名称</param>
-        public static Color Get2(this Colour id, TAMode mode, string name)
+        public static Color Get(this Colour id, TAMode mode, string name)
         {
             var _id = id.ToString();
             if (colors.TryGetValue(_id + name, out var color_name)) return color_name;

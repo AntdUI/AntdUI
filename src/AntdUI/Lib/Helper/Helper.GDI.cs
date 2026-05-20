@@ -1058,16 +1058,16 @@ namespace AntdUI
             switch (icon)
             {
                 case TType.Success:
-                    g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get2(colorScheme, keyid));
+                    g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(colorScheme, keyid));
                     break;
                 case TType.Info:
-                    g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get2(colorScheme, keyid));
+                    g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(colorScheme, keyid));
                     break;
                 case TType.Warn:
-                    g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get2(colorScheme, keyid));
+                    g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(colorScheme, keyid));
                     break;
                 case TType.Error:
-                    g.Svg(SvgDb.IcoError, rect, Colour.Error.Get2(colorScheme, keyid));
+                    g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(colorScheme, keyid));
                     break;
             }
         }
@@ -1121,23 +1121,23 @@ namespace AntdUI
         {
             if (svg == null)
             {
-                using (var brush = new SolidBrush(Colour.BgBase.Get2(colorScheme, keyid)))
+                using (var brush = new SolidBrush(Colour.BgBase.Get(colorScheme, keyid)))
                 {
                     g.FillEllipse(brush, new Rectangle(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2));
                 }
                 switch (icon)
                 {
                     case TType.Success:
-                        g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get2(colorScheme, keyid));
+                        g.Svg(SvgDb.IcoSuccess, rect, Colour.Success.Get(colorScheme, keyid));
                         break;
                     case TType.Info:
-                        g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get2(colorScheme, keyid));
+                        g.Svg(SvgDb.IcoInfo, rect, Colour.Info.Get(colorScheme, keyid));
                         break;
                     case TType.Warn:
-                        g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get2(colorScheme, keyid));
+                        g.Svg(SvgDb.IcoWarn, rect, Colour.Warning.Get(colorScheme, keyid));
                         break;
                     case TType.Error:
-                        g.Svg(SvgDb.IcoError, rect, Colour.Error.Get2(colorScheme, keyid));
+                        g.Svg(SvgDb.IcoError, rect, Colour.Error.Get(colorScheme, keyid));
                         break;
                 }
             }
@@ -1146,16 +1146,16 @@ namespace AntdUI
                 switch (icon)
                 {
                     case TType.Success:
-                        g.Svg(svg, rect, Colour.Success.Get2(colorScheme, keyid));
+                        g.Svg(svg, rect, Colour.Success.Get(colorScheme, keyid));
                         break;
                     case TType.Info:
-                        g.Svg(svg, rect, Colour.Info.Get2(colorScheme, keyid));
+                        g.Svg(svg, rect, Colour.Info.Get(colorScheme, keyid));
                         break;
                     case TType.Warn:
-                        g.Svg(svg, rect, Colour.Warning.Get2(colorScheme, keyid));
+                        g.Svg(svg, rect, Colour.Warning.Get(colorScheme, keyid));
                         break;
                     case TType.Error:
-                        g.Svg(svg, rect, Colour.Error.Get2(colorScheme, keyid));
+                        g.Svg(svg, rect, Colour.Error.Get(colorScheme, keyid));
                         break;
                     default:
                         g.Svg(svg, rect);

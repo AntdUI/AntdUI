@@ -1,5 +1,13 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.3.14` 2026-05-15
+
+- ➕ Select dropdown SubText margin
+- ➕ HyperlinkLabel event area
+- ✍️ Table tree sorting
+- ✍️ Stacking table header border lines
+- ✍️ Input with multiple language prefixes and suffixes
+
 ### `2.3.13` 2026-05-12
 
 - ➕ Input VirtualMode
