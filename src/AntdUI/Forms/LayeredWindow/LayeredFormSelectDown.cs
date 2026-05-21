@@ -587,8 +587,11 @@ namespace AntdUI
                 int maxw, maxwr;
                 if (autoWidth)
                 {
-                    maxw = ItemMaxWidth(g, items, text_height, icon_size, icon_gap, gap_x);
-                    maxwr = maxw + gap_x2;
+                    using (var font = new Font(Font, FontStyle.Bold))
+                    {
+                        maxw = ItemMaxWidth(g, font, items, text_height, icon_size, icon_gap, gap_x);
+                        maxwr = maxw + gap_x2;
+                    }
                 }
                 else
                 {
@@ -670,25 +673,25 @@ namespace AntdUI
                 return new List<ObjectItem>(0);
             }
         }
-        int ItemMaxWidth(Canvas g, IList<object> items, int text_height, int icon_size, int icon_gap, int gap_x)
+        int ItemMaxWidth(Canvas g, Font font, IList<object> items, int text_height, int icon_size, int icon_gap, int gap_x)
         {
             int tmp = 0;
             foreach (var item in items)
             {
-                int tmp2 = ItemMaxWidth(g, item, text_height, icon_size, icon_gap, gap_x);
+                int tmp2 = ItemMaxWidth(g, font, item, text_height, icon_size, icon_gap, gap_x);
                 if (tmp2 > tmp) tmp = tmp2;
             }
             return tmp;
         }
-        int ItemMaxWidth(Canvas g, object obj, int text_height, int icon_size, int icon_gap, int gap_x)
+        int ItemMaxWidth(Canvas g, Font font, object obj, int text_height, int icon_size, int icon_gap, int gap_x)
         {
             if (obj is SelectItem it)
             {
                 if (it.IconRatio.HasValue) icon_size = (int)(text_height * it.IconRatio.Value);
-                int tmp = it.TextWidth = g.MeasureText(it.Text, Font).Width;
+                int tmp = it.TextWidth = g.MeasureText(it.Text, font).Width;
                 if (it.SubText != null)
                 {
-                    it.SubTextWidth = g.MeasureText(it.SubText, Font).Width;
+                    it.SubTextWidth = g.MeasureText(it.SubText, font).Width;
                     tmp += it.SubTextWidth + icon_gap;
                 }
                 if (it.Online > -1) tmp += icon_size;
@@ -697,26 +700,29 @@ namespace AntdUI
                 else if (CloseIcon) tmp += text_height + icon_gap;
                 return tmp;
             }
-            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0) return Math.Max(g.MeasureText(group.Title, Font).Width, ItemMaxWidth(g, group.Sub, text_height, icon_size, icon_gap, gap_x) + gap_x);
+            else if (obj is GroupSelectItem group && group.Sub != null && group.Sub.Count > 0) return Math.Max(g.MeasureText(group.Title, font).Width, ItemMaxWidth(g, font, group.Sub, text_height, icon_size, icon_gap, gap_x) + gap_x);
             else if (obj is DividerSelectItem) return 0;
             else
             {
                 var text = obj.ToString();
                 if (text == null) return 0;
-                var tmp = g.MeasureText(text, Font).Width;
+                var tmp = g.MeasureText(text, font).Width;
                 if (CloseIcon) tmp += text_height + icon_gap;
                 return tmp;
             }
         }
         void ItemMaxWidth2(Canvas g, IList<object> items)
         {
-            foreach (var item in items)
+            using (var font = new Font(Font, FontStyle.Bold))
             {
-                if (item is SelectItem it)
+                foreach (var item in items)
                 {
-                    if (it.SubText == null) continue;
-                    it.TextWidth = g.MeasureText(it.Text, Font).Width;
-                    it.SubTextWidth = g.MeasureText(it.SubText, Font).Width;
+                    if (item is SelectItem it)
+                    {
+                        if (it.SubText == null) continue;
+                        it.TextWidth = g.MeasureText(it.Text, font).Width;
+                        it.SubTextWidth = g.MeasureText(it.SubText, font).Width;
+                    }
                 }
             }
         }

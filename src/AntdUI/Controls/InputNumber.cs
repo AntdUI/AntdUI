@@ -107,6 +107,12 @@ namespace AntdUI
             }
         }
 
+        /// <summary>
+        /// 始终显示控制器
+        /// </summary>
+        [Description("始终显示控制器"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
+        public bool AlwaysShowControl { get; set; } = true;
+
         bool wheelModifyEnabled = true;
         /// <summary>
         /// 鼠标滚轮修改值
@@ -207,6 +213,7 @@ namespace AntdUI
         {
             base.OnHandleCreated(e);
             Text = GetNumberText(currentValue);
+            if (AlwaysShowControl) ChangeMouseHover(false, false);
         }
 
         #endregion
@@ -383,7 +390,7 @@ namespace AntdUI
             if (showcontrol && !ReadOnly)
             {
                 bool old = hover_button.Switch;
-                hover_button.Switch = (Hover || Focus);
+                hover_button.Switch = AlwaysShowControl || Hover || Focus;
                 if (old == hover_button.Switch) return;
                 if (hover_button.Switch)
                 {
