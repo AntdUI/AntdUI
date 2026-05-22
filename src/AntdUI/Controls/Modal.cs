@@ -765,6 +765,11 @@ namespace AntdUI
 
             #region 按钮
 
+            public Config SetCancelHide()
+            {
+                CancelText = null;
+                return this;
+            }
             public Config SetCancel(Font? font)
             {
                 CancelFont = font;

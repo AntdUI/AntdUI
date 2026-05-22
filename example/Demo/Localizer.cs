@@ -41,6 +41,10 @@ namespace Demo
                 case "SelectAll":
                     return "SelectAll";
 
+                case "YearFormat":
+                    return "yyyy";
+                case "MonthFormat":
+                    return "MMM";
                 case "Mon":
                     return "Mon";
                 case "Tue":
@@ -490,6 +494,8 @@ namespace Demo
                     return "Custom Control Content";
 
                 //Preview ----------------------------
+                case "Image":
+                    return "Image";
                 case "Preview":
                     return "Preview";
                 case "Preview.Description":
