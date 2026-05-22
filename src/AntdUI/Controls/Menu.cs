@@ -1186,22 +1186,21 @@ namespace AntdUI
         }
 
         readonly FormatFlags SL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
-        void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius, bool expandMode = false)
+        void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius, bool focusMode = true)
         {
             using (var brush = new SolidBrush(fore))
             {
                 if (mode != TMenuMode.InlineNoText)
                 {
                     bool showSubText = it.SubText != null;
-                    Font fontSub = it.FontSub ?? Font;
                     if (showSubText)
                     {
+                        Font fontSub = it.FontSub ?? Font;
                         // 有SubText时，主文本往上移，SubText往下移
                         int subHeight = fontSub.Height;
                         Rectangle textRect = it.txt_rect;
                         textRect.Height -= subHeight;
-                        g.DrawText(it.Text, it.Font ?? Font, fore, textRect, SL);
-
+                        g.DrawText(it.Text, it.Font ?? Font, brush, textRect, SL);
                         using (var brush_sub = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Menu), Name)))
                         {
                             // SubText下移
@@ -1210,15 +1209,13 @@ namespace AntdUI
                             g.DrawText(it.SubText, fontSub, brush_sub, subRect, SL);
                         }
                     }
-                    else
-                    {
-                        g.DrawText(it.Text, it.Font ?? Font, fore, it.txt_rect, SL);
-                    }
+                    else g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
                 }
-                if (expandMode == false && focusItem == null) PaintFocus(g, it, fore, radius);
+                if (focusMode && focusItem == null) PaintFocus(g, it, fore, radius);
             }
             PaintIcon(g, it, fore);
         }
+
         #region 焦点
 
         void PaintFocus(Canvas g, MenuItem it, Color fore, float radius)
@@ -1317,7 +1314,7 @@ namespace AntdUI
                     }
                 }
             }
-            PaintTextIcon(g, it, fore, radius, true);
+            PaintTextIcon(g, it, fore, radius, false);
         }
         void PaintIcon(Canvas g, MenuItem it, Color fore)
         {
@@ -1334,8 +1331,6 @@ namespace AntdUI
                 }
                 if (count > 0) return;
             }
-
-
             if (it.Icon != null) g.Image(it.Icon, it.ico_rect);
             if (it.IconSvg != null) g.Svg(it.IconSvg, it.ico_rect, fore);
         }
@@ -2386,8 +2381,6 @@ namespace AntdUI
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
-        [Description("子文本"), Category("国际化"), DefaultValue(null)]
-        public string? LocalizationSubText { get; set; }
 
         string? textSub;
         /// <summary>
@@ -2404,11 +2397,16 @@ namespace AntdUI
                 Invalidates();
             }
         }
+
+        [Description("子文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationSubText { get; set; }
+
         /// <summary>
         /// 自定义字体
         /// </summary>
         [Description("自定义字体"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public Font? Font { get; set; }
+
         /// <summary>
         /// 自定义子文本字体
         /// </summary>
@@ -3039,6 +3037,12 @@ namespace AntdUI
             return this;
         }
 
+        public MenuItem SetFontSub(Font? value)
+        {
+            FontSub = value;
+            return this;
+        }
+
         #region 图标
 
         public MenuItem SetIcon(Image? img)
@@ -3085,6 +3089,13 @@ namespace AntdUI
         {
             text = value;
             LocalizationText = localization;
+            return this;
+        }
+
+        public MenuItem SetSubText(string? value, string? localization = null)
+        {
+            textSub = value;
+            LocalizationSubText = localization;
             return this;
         }
 
