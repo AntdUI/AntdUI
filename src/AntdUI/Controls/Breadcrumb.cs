@@ -102,7 +102,22 @@ namespace AntdUI
         /// </summary>
         [Description("点击项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event BreadcrumbItemEventHandler? ItemClick;
-
+        string separatorChar = "/";
+        /// <summary>
+        /// 获取或设置分割符
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("获取或设置分割符"), Category(nameof(CategoryAttribute.Data)), DefaultValue("/")]
+        public string SeparatorChar
+        {
+            get => separatorChar; set
+            {
+                if (separatorChar == value) return;
+                separatorChar = value;
+                Invalidate();
+                OnPropertyChanged(nameof(SeparatorChar));
+            }
+        }
         protected virtual void OnItemClick(BreadcrumbItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new BreadcrumbItemEventArgs(item, e));
 
         #region Change
@@ -164,14 +179,22 @@ namespace AntdUI
             }
             var g = e.Canvas;
             float _radius = radius * Dpi;
-            using (var brush = new SolidBrush(fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Breadcrumb), Name)))
-            using (var brush_active = new SolidBrush(ForeActive ?? Colour.Text.Get(ColorScheme, nameof(Breadcrumb), Name)))
+            Color foreDefault = fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Breadcrumb), Name);
+            Color foreActiveDefault = ForeActive ?? Colour.Text.Get(ColorScheme, nameof(Breadcrumb), Name);
+            using (var brush = new SolidBrush(foreDefault))
+            using (var brush_active = new SolidBrush(foreActiveDefault))
             {
-                foreach (var it in hs) g.DrawText("/", Font, brush, it, s_f);
+                for (int i = 0; i < hs.Length; i++)
+                {
+                    var it = items[i];
+                    g.DrawText(it?.SeparatorCharCustom ?? SeparatorChar, Font, brush, hs[i], s_f);
+                }
                 for (int i = 0; i < items.Count; i++)
                 {
                     var it = items[i];
                     if (it == null) continue;
+                    if (it.Fore != null) brush.Color = it.Fore.Value;
+                    if (it.ForeActive != null) brush_active.Color = it.ForeActive.Value;
                     if (i == items.Count - 1)
                     {
                         //最后一个
@@ -195,6 +218,8 @@ namespace AntdUI
                             g.DrawText(it.Text, Font, brush, it.RectText, s_f);
                         }
                     }
+                    brush.Color = foreDefault;
+                    brush_active.Color = foreActiveDefault;
                 }
             }
             base.OnDraw(e);
@@ -443,6 +468,33 @@ namespace AntdUI
                 Invalidates();
             }
         }
+        string? separatorChar;
+        /// <summary>
+        /// 获取或设置尾部的自定义分割符
+        /// </summary>
+        [Description("获取或设置尾部的自定义分割符"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
+        public string? SeparatorCharCustom
+        {
+            get => separatorChar; set
+            {
+                if (separatorChar == value) return;
+                separatorChar = value;
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? Fore { get; set; }
+        /// <summary>
+        /// 激活文字颜色
+        /// </summary>
+        [Description("激活文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? ForeActive { get; set; }
 
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
