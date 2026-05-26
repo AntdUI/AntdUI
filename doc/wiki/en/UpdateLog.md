@@ -1,5 +1,21 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.0` 2026-05-26
+
+- ➕ Collapse EnableResizing/ResizingLineThickness
+- ➕ Resize Line Color for Collapse Drag and Drop Lines
+- ➕ Menu MenuItem Subtext (FontSub)
+- ➕ Breadcrumb custom separator
+- ➕ Breadcrumb Text Color (Fore), Focus Color (ForeActive)
+- ➕ Alert IconCustom/TextColor/TextTitleColor
+- ➕ Input AlwaysShowControl
+- ➕ Select filtering thread
+- ➕ Color card control name support
+- ✍️ Remove Escape Intercept from Input
+- ✍️ Select dropdown text occlusion
+- ✍️ Rich SetLowStyle Table
+- ✍️ Collapse GroupButton supports tooltips
+
 ### `2.3.14` 2026-05-15
 
 - ➕ Select dropdown SubText margin

@@ -1,5 +1,21 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.0` 2026-05-26
+
+- ➕ Collapse EnableResizing/ResizingLineThickness
+- ➕ Collapse 拖拽线的颜色（ResizingLineColor）
+- ➕ Menu MenuItem 子文本 (SubText, FontSub)
+- ➕ Breadcrumb 自定义分割符（Separator）
+- ➕ Breadcrumb 文本色 (Fore), 焦点色 (ForeActive)
+- ➕ Alert IconCustom/TextColor/TextTitleColor
+- ➕ Input AlwaysShowControl
+- ➕ Select 筛选线程
+- ➕ 色卡控件名支持
+- ✍️ Input 移除 Escape 拦截
+- ✍️ Select 下拉文本遮挡
+- ✍️ Table 丰富 SetRowStyle
+- ✍️ Collapse GroupButton 支持工具提示
+
 ### `2.3.14` 2026-05-15
 
 - ➕ Select 下拉 SubText 边距
