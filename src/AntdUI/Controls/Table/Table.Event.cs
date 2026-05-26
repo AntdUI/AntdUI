@@ -287,7 +287,7 @@ namespace AntdUI
         /// </summary>
         public event SetRowStyleEventHandler? SetRowStyle;
 
-        protected virtual CellStyleInfo? OnSetRowStyle(object record, int rowIndex, int index) => SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(record, rowIndex, index));
+        protected virtual CellStyleInfo? OnSetRowStyle(object record, RowType rowType, int rowIndex, int index) => SetRowStyle?.Invoke(this, new TableSetRowStyleEventArgs(record, rowType, rowIndex, index));
 
         public class CellStyleInfo
         {

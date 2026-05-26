@@ -220,14 +220,14 @@ namespace AntdUI
                 if (it.Type == RowType.Summary)
                 {
                     it.SHOW = true;
-                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
+                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.Type, it.INDEX, showIndex));
                     shows.Add(item);
                     summarys.Add(item);
                 }
                 else
                 {
                     it.SHOW = it.Type == RowType.None && rect_read.IsItemVisible(sy, it.RECT);
-                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
+                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.Type, it.INDEX, showIndex)));
                 }
                 showIndex++;
             }
@@ -243,14 +243,14 @@ namespace AntdUI
                 if (it.Type == RowType.Summary)
                 {
                     it.SHOW = true;
-                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
+                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.Type, it.INDEX, showIndex));
                     shows.Add(item);
                     summarys.Add(item);
                 }
                 else
                 {
                     it.SHOW = (it.Type == RowType.None || it.Type == RowType.Column) && rect_read.IsItemVisible(sy, it.RECT);
-                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
+                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.Type, it.INDEX, showIndex)));
                 }
                 showIndex++;
             }
@@ -268,14 +268,14 @@ namespace AntdUI
                 if (it.Type == RowType.Summary)
                 {
                     it.SHOW = true;
-                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex));
+                    var item = new StyleRow(it, OnSetRowStyle(it.RECORD, it.Type, it.INDEX, showIndex));
                     shows.Add(item);
                     summarys.Add(item);
                 }
                 else
                 {
                     it.SHOW = rect_read.IsItemVisible(sy, it.RECT);
-                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.INDEX, showIndex)));
+                    if (it.SHOW) shows.Add(new StyleRow(it, OnSetRowStyle(it.RECORD, it.Type, it.INDEX, showIndex)));
                 }
                 showIndex++;
             }

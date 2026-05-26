@@ -1103,7 +1103,8 @@ namespace AntdUI
         #region 鼠标悬浮
 
         protected override bool CanMouseMove { get; set; } = true;
-        protected override void OnMouseHover(int x, int y)
+        protected override void OnMouseHover(int x, int y) => OnButtonMouseHover(x, y);
+        internal void OnButtonMouseHover(int x, int y)
         {
             var it = GetItemMouseHover(x, y);
             if (tmp == it) return;

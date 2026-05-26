@@ -1071,7 +1071,6 @@ namespace AntdUI
                             Anchor = AnchorStyles.Top | AnchorStyles.Right,
                             IconRatio = ico_rect.Height == 0 || rect.Height == 0 ? 1f : ico_rect.Height / rect.Height,
                         };
-
                         Edit = input;
                         break;
 
@@ -1095,6 +1094,7 @@ namespace AntdUI
                 if (Edit != null)
                 {
                     Edit.TextChanged += edit_TextChanged;
+                    if (!string.IsNullOrEmpty(Tooltip)) Edit.MouseHover += (s, e) => parent?.OnButtonMouseHover(rect.X, rect.Y);
                     if (Select) Edit.Focus();
                     parent.Controls.Add(Edit);
                 }

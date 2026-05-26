@@ -213,9 +213,10 @@ namespace AntdUI
 
     public class TableSetRowStyleEventArgs : EventArgs
     {
-        public TableSetRowStyleEventArgs(object record, int rowIndex, int index)
+        public TableSetRowStyleEventArgs(object record, RowType rowType, int rowIndex, int index)
         {
             Record = record;
+            RowType = rowType;
             RowIndex = rowIndex;
             Index = index;
         }
@@ -224,6 +225,11 @@ namespace AntdUI
         /// 原始行
         /// </summary>
         public object Record { get; private set; }
+
+        /// <summary>
+        /// 行类型
+        /// </summary>
+        public RowType RowType { get; private set; }
 
         /// <summary>
         /// 序号
