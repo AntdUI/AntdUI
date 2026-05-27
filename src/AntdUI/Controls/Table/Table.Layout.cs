@@ -208,6 +208,7 @@ namespace AntdUI
                     foreach (var column in _columns) AddRows(ref cells, ref processing, ref check_count, column, row, column.Key, true);
                     if (cells.Count > 0)
                     {
+                        lastRowIndex++;
                         rowSummary++;
                         var tmp = AddRows(ref _rows, cells.ToArray(), row, 0);
                         tmp.Type = RowType.Summary;

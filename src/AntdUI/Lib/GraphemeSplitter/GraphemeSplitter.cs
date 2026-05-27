@@ -228,5 +228,22 @@ namespace AntdUI
         }
 
         public static bool IsEmoji(int type, string txt) => type == 18 || (type == 4 && SvgDb.Emoji.ContainsKey(txt));
+
+        public static bool IsArabic(int type, string txt) => type == 0 && IsArabic(GetCodePoint(txt, 0));
+
+        public static bool IsRTL(int type, string txt) => type == 0 && IsRTL(GetCodePoint(txt, 0));
+
+        public static bool IsArabic(int codePoint) =>
+            (codePoint >= 0x0600 && codePoint <= 0x06FF) ||   // Basic Arabic
+            (codePoint >= 0x0750 && codePoint <= 0x077F) ||   // Arabic Supplement
+            (codePoint >= 0x08A0 && codePoint <= 0x08FF) ||   // Arabic Extended-A
+            (codePoint >= 0xFB50 && codePoint <= 0xFDFF) ||   // Arabic Presentation Forms-A
+            (codePoint >= 0xFE70 && codePoint <= 0xFEFF);     // Arabic Presentation Forms-B
+
+        public static bool IsRTL(int codePoint) =>
+            IsArabic(codePoint) ||
+            (codePoint >= 0x0590 && codePoint <= 0x05FF) ||   // Hebrew
+            (codePoint >= 0x0710 && codePoint <= 0x073F) ||   // Syriac
+            (codePoint >= 0x0780 && codePoint <= 0x07BF);
     }
 }

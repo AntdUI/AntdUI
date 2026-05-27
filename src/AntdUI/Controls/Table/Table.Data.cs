@@ -16,7 +16,7 @@ namespace AntdUI
 {
     partial class Table
     {
-        internal TempTable? dataTmp = null;
+        internal TempTable? dataTmp;
         bool dataOne = true;
         int hovers = -1;
         int dataLen = 0;
@@ -51,14 +51,6 @@ namespace AntdUI
         bool ExtractDataSummary()
         {
             if (dataTmp == null || dataTmp.rowsFilter == null) return true;
-            if (columns != null)
-            {
-                // 重置复选状态
-                foreach (var item in columns)
-                {
-                    if (item is ColumnCheck check) check.CheckState = CheckState.Unchecked;
-                }
-            }
             if (summary == null)
             {
                 dataTmp.summary = null;
