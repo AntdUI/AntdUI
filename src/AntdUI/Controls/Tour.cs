@@ -36,7 +36,8 @@ namespace AntdUI
                     tmp = control;
                     control.SizeChanged += tmp_SizeChanged;
                     control.LocationChanged += tmp_SizeChanged;
-                    return GetControlPath(control, config.Form.Location, config.Scale);
+                    var location = config.Form.WindowState == FormWindowState.Maximized ? new Point(0, 0) : config.Form.Location;
+                    return GetControlPath(control, location, config.Scale);
                 }
                 else if (data.Data is Rectangle rect) return rect;
                 return null;
