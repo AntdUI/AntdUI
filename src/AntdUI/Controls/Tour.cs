@@ -36,6 +36,7 @@ namespace AntdUI
                     tmp = control;
                     control.SizeChanged += tmp_SizeChanged;
                     control.LocationChanged += tmp_SizeChanged;
+                    if (config.Form is Window window) return GetControlPath(control, window.Location, config.Scale);
                     return GetControlPath(control, config.Form.Location, config.Scale);
                 }
                 else if (data.Data is Rectangle rect) return rect;

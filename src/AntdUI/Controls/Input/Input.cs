@@ -1922,7 +1922,7 @@ namespace AntdUI
             HasFocus = true;
             CaretInfo.Show = CaretVisible;
             ExtraMouseDown = true;
-            if (Helper.IsTouch()) Helper.OpenOsk();
+            if (Config.TouchKeyboard && Helper.IsTouch()) Helper.OpenOsk();
         }
 
         protected override void OnLostFocus(EventArgs e)
