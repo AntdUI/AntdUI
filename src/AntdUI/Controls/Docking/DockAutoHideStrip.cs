@@ -51,9 +51,9 @@ namespace AntdUI
         public bool HasContent { get { return items.Count > 0; } }
 
 #if NET40
-        readonly ReadOnlyCollection<IDockContent> itemsReadOnly;
+        readonly System.Collections.ObjectModel.ReadOnlyCollection<IDockContent> itemsReadOnly;
         [Browsable(false)]
-        public ReadOnlyCollection<IDockContent> Contents => itemsReadOnly;
+        public System.Collections.ObjectModel.ReadOnlyCollection<IDockContent> Contents => itemsReadOnly;
 #else
         readonly IReadOnlyList<IDockContent> itemsReadOnly;
         [Browsable(false)]

@@ -42,7 +42,7 @@ namespace AntdUI
                     workingArea = new Rectangle(form.Location, form.Size);
                     offset = workingArea;
                 }
-                else workingArea = Screen.FromControl(form).WorkingArea;
+                else workingArea = ScreenFromControl(form).WorkingArea;
             }
             else if (target.Value is Control control)
             {
@@ -52,7 +52,7 @@ namespace AntdUI
                     workingArea = new Rectangle(point, control.Size);
                     offset = workingArea;
                 }
-                else workingArea = Screen.FromPoint(point).WorkingArea;
+                else workingArea = ScreenFromPoint(point).WorkingArea;
             }
             else throw new ArgumentException("Target must be Form or Control");
             key = Align.ToString() + "|" + workingArea.X + "|" + workingArea.Y + "|" + workingArea.Right + "|" + workingArea.Bottom;

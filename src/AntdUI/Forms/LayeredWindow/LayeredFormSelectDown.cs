@@ -637,7 +637,7 @@ namespace AntdUI
                 {
                     if (PARENT is Control control)
                     {
-                        var screen = Screen.FromPoint(control.PointToScreen(Point.Empty)).WorkingArea;
+                        var screen = ScreenFromPoint(control.PointToScreen(Point.Empty)).WorkingArea;
                         if (h > screen.Height - shadow2)
                         {
                             h = screen.Height - shadow2;
