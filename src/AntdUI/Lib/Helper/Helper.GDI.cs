@@ -487,7 +487,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="code">渐变代码H5</param>
 #if NET40 || NET46 || NET48
-        public static bool BrushEx(this string? code,  out Color[]? colors, out float[]? positions)
+        public static bool BrushEx(this string? code, out Color[]? colors, out float[]? positions)
 #else
         public static bool BrushEx(this string? code, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out Color[]? colors, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out float[]? positions)
 #endif

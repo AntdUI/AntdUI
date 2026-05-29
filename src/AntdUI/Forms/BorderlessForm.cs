@@ -563,7 +563,7 @@ namespace AntdUI
             }
             else
             {
-                Screen screen = ScreenFromPoint(Location);
+                Screen screen = Screen.FromPoint(Location);
                 if (screen.Primary) MaximizedBounds = screen.WorkingArea;
                 else MaximizedBounds = new Rectangle(0, 0, 0, 0);
                 WindowState = FormWindowState.Maximized;
@@ -580,7 +580,7 @@ namespace AntdUI
         {
             if (ismax) return;
             IsFull = false;
-            Screen screen = ScreenFromPoint(Location);
+            Screen screen = Screen.FromPoint(Location);
             if (screen.Primary) MaximizedBounds = screen.WorkingArea;
             else MaximizedBounds = new Rectangle(0, 0, 0, 0);
             WindowState = FormWindowState.Maximized;

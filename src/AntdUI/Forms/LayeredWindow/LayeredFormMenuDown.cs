@@ -438,7 +438,7 @@ namespace AntdUI
             if (divider_count > 0) maxh += divider_count * (padd2 + sp);
             int h = maxh, w = maxw + padd2 + gap_x2;
 
-            var screen = ScreenFromPoint(point).WorkingArea;
+            var screen = Screen.FromPoint(point).WorkingArea;
             if (h > screen.Height - shadow2)
             {
                 h = screen.Height - shadow2;

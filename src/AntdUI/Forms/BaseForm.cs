@@ -476,16 +476,6 @@ namespace AntdUI
         public T Invoke<T>(Func<T> method) => (T)Invoke(method, null);
 
 #endif
-        public Screen ScreenFromPoint(Point point)
-        {
-            if (InvokeRequired) return Invoke(() => Screen.FromPoint(point));
-            return Screen.FromPoint(point);
-        }
-        public Screen ScreenFromControl(Control control)
-        {
-            if (InvokeRequired) return Invoke(() => Screen.FromControl(control));
-            return Screen.FromControl(control);
-        }
 
         #endregion
     }
