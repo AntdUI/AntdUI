@@ -506,6 +506,7 @@ namespace AntdUI
             {
                 input = new Input
                 {
+                    AcceptsEscape = true,
                     Multiline = multiline,
                     Bounds = rect,
                     Text = text.Text ?? "",
@@ -516,6 +517,7 @@ namespace AntdUI
             {
                 input = new Input
                 {
+                    AcceptsEscape = true,
                     Multiline = multiline,
                     Bounds = rect,
                     Text = column.GetDisplayText(value) ?? string.Empty,
@@ -541,6 +543,7 @@ namespace AntdUI
         {
             var edit = new Select
             {
+                AcceptsEscape = true,
                 List = true
             };
             if (column.MaxCount.HasValue) edit.MaxCount = column.MaxCount.Value;

@@ -822,6 +822,12 @@ namespace AntdUI
         public bool AcceptsTab { get; set; }
 
         /// <summary>
+        /// 多行编辑是否允许输入退出键
+        /// </summary>
+        [Description("多行编辑是否允许输入退出键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
+        public bool AcceptsEscape { get; set; }
+
+        /// <summary>
         /// 失去焦点时是否隐藏选定内容
         /// </summary>
         [Description("失去焦点时是否隐藏选定内容"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]

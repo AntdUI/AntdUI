@@ -297,12 +297,21 @@ namespace AntdUI
         /// <param name="code">渐变代码H5</param>
         /// <param name="rect">区域</param>
         /// <param name="def">默认颜色</param>
-        public static Brush BrushEx(this string? code, Rectangle rect, Color def)
+        public static Brush BrushEx(this string? code, Rectangle rect, Color def, float defdeg = 0F)
         {
             if (code != null)
             {
                 var arr = BrushEx(code);
-                if (arr.Length > 1) return BrushEx(code, arr, rect);
+                if (arr.Length > 1) return BrushEx(code, arr, rect, defdeg);
+            }
+            return new SolidBrush(def);
+        }
+        public static Brush BrushEx(this string? code, RectangleF rect, Color def, float defdeg = 0F)
+        {
+            if (code != null)
+            {
+                var arr = BrushEx(code);
+                if (arr.Length > 1) return BrushEx(code, arr, new Rectangle((int)Math.Floor(rect.X), (int)Math.Floor(rect.Y), (int)Math.Ceiling(rect.Width), (int)Math.Ceiling(rect.Height)), defdeg);
             }
             return new SolidBrush(def);
         }
@@ -383,11 +392,11 @@ namespace AntdUI
         /// <param name="cs">颜色数组</param>
         /// <param name="rect">绘制区域</param>
         /// <returns>线性渐变画刷</returns>
-        static LinearGradientBrush BrushEx(string code, string[] cs, Rectangle rect)
+        static LinearGradientBrush BrushEx(string code, string[] cs, Rectangle rect, float defdeg = 0F)
         {
             if (cs.Length > 2 && float.TryParse(cs[0], out float deg)) return BrushEx(rect, deg, cs, code.Contains("%"), 1);
             else if (cs.Length > 2 && cs[0].EndsWith("deg") && float.TryParse(cs[0].Substring(0, cs[0].Length - 3), out float deg2)) return BrushEx(rect, deg2, cs, code.Contains("%"), 1);
-            else return BrushEx(rect, 0, cs, code.Contains("%"));
+            else return BrushEx(rect, defdeg, cs, code.Contains("%"));
         }
 
         /// <summary>
@@ -401,67 +410,100 @@ namespace AntdUI
         /// <returns>线性渐变画刷</returns>
         static LinearGradientBrush BrushEx(Rectangle rect, float deg, string[] cs, bool _in, int start = 0)
         {
+            BrushEx(cs, _in, out var colors, out var positions, start);
+            return new LinearGradientBrush(rect, Color.Transparent, Color.Transparent, 270 + deg)
+            {
+                InterpolationColors = new ColorBlend(colors.Length)
+                {
+                    Colors = colors,
+                    Positions = positions
+                }
+            };
+        }
+
+        static void BrushEx(string[] cs, bool _in, out Color[] colors, out float[] positions, int start = 0)
+        {
             if (cs.Length > (2 + start))
             {
                 int len = cs.Length - start;
-                var colors = new List<Color>(len);
-                var positions = new List<float>(len);
+                var Colors = new List<Color>(len);
+                var Positions = new List<float>(len);
                 for (int i = start; i < cs.Length; i++)
                 {
                     var arr2 = cs[i].Split(' ');
-                    colors.Add(arr2[0].ToColor());
-                    if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) positions.Add(result / 100F);
-                    else if (i == start) positions.Add(0F);
-                    else if (i == cs.Length - 1) positions.Add(1F);
+                    Colors.Add(arr2[0].ToColor());
+                    if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) Positions.Add(result / 100F);
+                    else if (i == start) Positions.Add(0F);
+                    else if (i == cs.Length - 1) Positions.Add(1F);
                 }
-                if (positions.Count != colors.Count)
+                if (Positions.Count != Colors.Count)
                 {
-                    positions.Clear();
-                    var tmp = 100F / colors.Count / 100F;
-                    positions.Add(0F);
+                    Positions.Clear();
+                    var tmp = 100F / Colors.Count / 100F;
+                    Positions.Add(0F);
                     var use = tmp;
-                    for (int i = 1; i < colors.Count - 1; i++)
+                    for (int i = 1; i < Colors.Count - 1; i++)
                     {
-                        positions.Add(use);
+                        Positions.Add(use);
                         use += tmp;
                     }
-                    positions.Add(1F);
+                    Positions.Add(1F);
                 }
-                return new LinearGradientBrush(rect, Color.Transparent, Color.Transparent, 270 + deg)
-                {
-                    InterpolationColors = new ColorBlend(colors.Count)
-                    {
-                        Colors = colors.ToArray(),
-                        Positions = positions.ToArray()
-                    }
-                };
+                colors = Colors.ToArray();
+                positions = Positions.ToArray();
             }
             else if (_in)
             {
                 int len = cs.Length - start;
-                var colors = new List<Color>(len);
+                var Colors = new List<Color>(len);
                 float position = -1;
                 for (int i = start; i < cs.Length; i++)
                 {
                     var arr2 = cs[i].Split(' ');
-                    colors.Add(arr2[0].ToColor());
+                    Colors.Add(arr2[0].ToColor());
                     if (arr2.Length > 1 && float.TryParse(arr2[1].TrimEnd('%'), out var result)) position = result / 100F;
                 }
                 if (position > -1)
                 {
-                    colors.Add(colors[colors.Count - 1]);
-                    return new LinearGradientBrush(rect, colors[0], colors[colors.Count - 1], 270 + deg)
-                    {
-                        InterpolationColors = new ColorBlend(colors.Count)
-                        {
-                            Colors = colors.ToArray(),
-                            Positions = new float[] { 0, position, 1 }
-                        }
-                    };
+                    Colors.Add(Colors[Colors.Count - 1]);
+                    colors = Colors.ToArray();
+                    positions = new float[] { 0, position, 1 };
                 }
-                return new LinearGradientBrush(rect, colors[0], colors[colors.Count - 1], 270 + deg);
+                else
+                {
+                    colors = new Color[] { Colors[0], Colors[Colors.Count - 1] };
+                    positions = new float[] { 0, 1 };
+                }
             }
-            else return new LinearGradientBrush(rect, cs[start].Trim().ToColor(), cs[start + 1].Trim().ToColor(), 270 + deg);
+            else
+            {
+                colors = new Color[] { cs[start].Trim().ToColor(), cs[start + 1].Trim().ToColor() };
+                positions = new float[] { 0, 1 };
+            }
+        }
+
+        /// <summary>
+        /// 画刷（渐变色）
+        /// </summary>
+        /// <param name="code">渐变代码H5</param>
+#if NET40 || NET46 || NET48
+        public static bool BrushEx(this string? code,  out Color[]? colors, out float[]? positions)
+#else
+        public static bool BrushEx(this string? code, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out Color[]? colors, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out float[]? positions)
+#endif
+        {
+            if (code != null)
+            {
+                var arr = BrushEx(code);
+                if (arr.Length > 1)
+                {
+                    BrushEx(arr, code.Contains("%"), out colors, out positions);
+                    return true;
+                }
+            }
+            colors = null;
+            positions = null;
+            return false;
         }
 
         public static Canvas High(this Graphics g, float dpi)
@@ -1638,6 +1680,91 @@ namespace AntdUI
             }
 
             return dotMatrix;
+        }
+
+        /// <summary>
+        /// GDI+原生实现：真正的沿路径走向渐变（多色）
+        /// </summary>
+        public static void DrawNativePathGradient(this Canvas g, GraphicsPath path, float lineWidth, Color[] colors, float[] positions)
+        {
+            // 步骤1：将路径扁平化，分解为连续的小线段（精度0.05f，几乎无锯齿）
+            using (var flatPath = (GraphicsPath)path.Clone())
+            {
+                flatPath.Flatten(new Matrix(), 0.05f);
+                var flatPoints = flatPath.PathPoints;
+                int segmentCount = flatPoints.Length - 1;
+
+                if (segmentCount < 1) return;
+
+                // 步骤3：预计算所有线段的累积长度和总长度
+                var cumulativeLengths = new float[segmentCount + 1];
+                float totalLength = 0;
+                cumulativeLengths[0] = 0;
+
+                for (int i = 0; i < segmentCount; i++)
+                {
+                    float dx = flatPoints[i + 1].X - flatPoints[i].X, dy = flatPoints[i + 1].Y - flatPoints[i].Y, length = (float)Math.Sqrt(dx * dx + dy * dy);
+                    totalLength += length;
+                    cumulativeLengths[i + 1] = totalLength;
+                }
+
+                // 步骤4：逐段绘制，每段使用与切线方向一致的渐变画笔
+                for (int i = 0; i < segmentCount; i++)
+                {
+                    PointF p1 = flatPoints[i], p2 = flatPoints[i + 1];
+                    if (p1 == p2) continue;
+
+                    // 计算当前段的起点和终点颜色（基于路径总长度的百分比）
+                    float t1 = cumulativeLengths[i] / totalLength, t2 = cumulativeLengths[i + 1] / totalLength;
+                    Color c1 = InterpolateColor(colors, positions, t1), c2 = InterpolateColor(colors, positions, t2);
+
+                    // 创建与当前线段方向完全一致的线性渐变画刷
+                    using (var brush = new LinearGradientBrush(p1, p2, c1, c2))
+                    using (var pen = new Pen(brush, lineWidth))
+                    {
+                        pen.LineJoin = LineJoin.Round;
+                        pen.StartCap = LineCap.Round;
+                        pen.EndCap = LineCap.Round;
+                        // 关键：禁用Gamma校正，避免颜色变暗
+                        brush.GammaCorrection = false;
+                        // 绘制当前线段
+                        g.DrawLine(pen, p1, p2);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 精确颜色插值：根据位置百分比从渐变中获取颜色
+        /// </summary>
+        static Color InterpolateColor(Color[] colors, float[] positions, float t)
+        {
+            if (t <= 0.0f) return colors[0];
+            if (t >= 1.0f) return colors[colors.Length - 1];
+
+            // 找到t所在的颜色区间
+            int index = 0;
+            for (int i = 0; i < positions.Length - 1; i++)
+            {
+                if (t >= positions[i] && t <= positions[i + 1])
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            // 计算区间内的相对位置
+            float range = positions[index + 1] - positions[index], localT = range == 0 ? 0 : (t - positions[index]) / range;
+
+            // ARGB四通道分别插值
+            Color c1 = colors[index], c2 = colors[index + 1];
+
+            return Color.FromArgb(
+                (int)Math.Round(c1.A + (c2.A - c1.A) * localT),
+                (int)Math.Round(c1.R + (c2.R - c1.R) * localT),
+                (int)Math.Round(c1.G + (c2.G - c1.G) * localT),
+                (int)Math.Round(c1.B + (c2.B - c1.B) * localT)
+            );
         }
     }
 }

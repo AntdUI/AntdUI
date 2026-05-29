@@ -83,6 +83,23 @@ namespace AntdUI
             }
         }
 
+        string? fillExtend;
+        /// <summary>
+        /// 进度条渐变色
+        /// </summary>
+        [Description("进度条渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? FillExtend
+        {
+            get => fillExtend;
+            set
+            {
+                if (fillExtend == value) return;
+                fillExtend = value;
+                Invalidate();
+                OnPropertyChanged(nameof(FillExtend));
+            }
+        }
+
         #endregion
 
         int radius = 0;
@@ -696,7 +713,15 @@ namespace AntdUI
                 using (var brush = new Pen(color, w))
                 {
                     brush.StartCap = brush.EndCap = LineCap.Round;
-                    g.DrawArc(brush, icon_rect, -90, max);
+                    if (Helper.BrushEx(fillExtend, out var colors, out var positions))
+                    {
+                        using (var path = new GraphicsPath())
+                        {
+                            path.AddArc(icon_rect, -90, max);
+                            g.DrawNativePathGradient(path, w, colors, positions);
+                        }
+                    }
+                    else g.DrawArc(brush, icon_rect, -90, max);
                 }
             }
             if (loading && AnimationLoadingValue > 0)
@@ -734,7 +759,6 @@ namespace AntdUI
 
             var prog = steps * _value_show;
             using (var brush = new SolidBrush(_back))
-            using (var brush_fill = new SolidBrush(color))
             {
                 if (pro_w <= 0)
                 {
@@ -759,17 +783,13 @@ namespace AntdUI
                         rects.Add(new RectangleF(rect.X + has_x, pro_y, pro_w, pro_h));
                         has_x += pro_w + pro_gap;
                     }
+                    var rect_prog = new Rectangle(rect.X, rect.Y, (int)Math.Ceiling(has_x), rect.Height);
                     if (prog > 0)
                     {
                         float tmpw = LoadingFull ? rect.Width : 0;
-                        for (int i = 0; i < steps; i++)
+                        using (var brush_fill = fillExtend.BrushEx(rect_prog, color, 90F))
                         {
-                            if (prog > i) g.Fill(brush_fill, rects[i]);
-                            else
-                            {
-                                g.Fill(brush, rects[i]);
-                                tmpw = rects[i].Right;
-                            }
+                            PaintShapeSteps(g, brush, brush_fill, steps, prog, rects, ref tmpw);
                         }
                         if (loading && AnimationLoadingValue > 0 && tmpw > 0)
                         {
@@ -826,6 +846,18 @@ namespace AntdUI
                 int has_x2 = (int)Math.Ceiling(has_x);
                 int ico_size = (int)(font_size.Height * (iconratio + 0.1F)), size_font_w = pro_h + ico_size;
                 g.PaintIcons(state, new Rectangle((rect.X + has_x2 + size_font_w) - ico_size, rect_t.Y + (rect_t.Height - ico_size) / 2, ico_size, ico_size), "Progress", ColorScheme);
+            }
+        }
+        void PaintShapeSteps(Canvas g, Brush brush, Brush brush_fill, int steps, float prog, List<RectangleF> rects, ref float tmpw)
+        {
+            for (int i = 0; i < steps; i++)
+            {
+                if (prog > i) g.Fill(brush_fill, rects[i]);
+                else
+                {
+                    g.Fill(brush, rects[i]);
+                    tmpw = rects[i].Right;
+                }
             }
         }
         void PaintShapeRound(Canvas g, Rectangle rect_t, Rectangle rect, Color color, bool round)
@@ -968,7 +1000,15 @@ namespace AntdUI
                 using (var brush = new Pen(color, w))
                 {
                     brush.StartCap = brush.EndCap = LineCap.Round;
-                    g.DrawArc(brush, rect_prog, -90, max);
+                    if (Helper.BrushEx(fillExtend, out var colors, out var positions))
+                    {
+                        using (var path = new GraphicsPath())
+                        {
+                            path.AddArc(rect_prog, -90, max);
+                            g.DrawNativePathGradient(path, w, colors, positions);
+                        }
+                    }
+                    else g.DrawArc(brush, rect_prog, -90, max);
                 }
             }
             if (loading && AnimationLoadingValue > 0)
@@ -1033,9 +1073,13 @@ namespace AntdUI
                     var _w = rect.Width * _value_show;
                     if (_w > radius)
                     {
-                        using (var path_prog = new RectangleF(rect.X, rect.Y, _w, rect.Height).RoundPath(radius))
+                        var rect_prog = new RectangleF(rect.X, rect.Y, _w, rect.Height);
+                        using (var path_prog = rect_prog.RoundPath(radius))
                         {
-                            g.Fill(color, path_prog);
+                            using (var brush_fill = fillExtend.BrushEx(rect_prog, color, 90F))
+                            {
+                                g.Fill(brush_fill, path_prog);
+                            }
                         }
                         if (loading && AnimationLoadingValue > 0)
                         {
