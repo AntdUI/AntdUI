@@ -189,9 +189,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    string text;
-                    if (_column.Render == null) text = _column.GetDisplayText(value) ?? "";
-                    else text = _column.Render(value, val.record, val.i)?.ToString() ?? "";
+                    string text = _column.GetDisplayText(LoadValue(val, value)) ?? "";
                     if (dir.TryGetValue(text, out var tmp)) tmp.Add(value);
                     else
                     {
@@ -203,6 +201,12 @@ namespace AntdUI
                 }
             }
             dv.Tag = dv.DataSource = items;
+        }
+
+        object? LoadValue(Table.IRow val, object value)
+        {
+            if (_column.Render == null) return value;
+            else return _column.Render(value, val.record, val.i);
         }
         private void LoadListCustom(IList<Table.IRow> values, IList<object> list)
         {

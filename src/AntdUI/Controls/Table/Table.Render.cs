@@ -385,7 +385,11 @@ namespace AntdUI
                         if (dividerHs[i].h)
                         {
                             dividerHs[i].h = false;
-                            if (bordered) dividerHs[i].b = rY;
+                            if (bordered)
+                            {
+                                dividerHs[i].b = rY;
+                                dividerHs[i].c = rHeight;
+                            }
                             else
                             {
                                 dividerHs[i].b = rY + gap;

@@ -113,6 +113,13 @@ namespace AntdUI
 
         #endregion
 
+        #region 布局
+
+        FlowLayout layoutengine = new FlowLayout();
+        public override LayoutEngine LayoutEngine => layoutengine;
+
+        #endregion
+
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
@@ -274,8 +281,6 @@ namespace AntdUI
 
         #region 布局
 
-        FlowLayout layoutengine = new FlowLayout();
-        public override LayoutEngine LayoutEngine => layoutengine;
         internal class FlowLayout : LayoutEngine
         {
             /// <summary>
@@ -283,6 +288,7 @@ namespace AntdUI
             /// </summary>
             public int Gap { get; set; }
             public TAlignFlow Align { get; set; } = TAlignFlow.LeftCenter;
+
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 if (container is FlowPanel parent && parent.IsHandleCreated && parent.ControlsBase.Count > 0)
