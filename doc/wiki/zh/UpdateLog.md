@@ -1,5 +1,19 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.1` 2026-06-02
+
+- ➕ Config TouchKeyboard
+- ➕ Input AcceptsEscape (优化 Table 编辑模式交互)
+- ➕ Progress FillExtend
+- ➕ Table 手动赋值触发Check事件
+- ✍️ Table 没有滚动条不显示总结栏
+- ✍️ Tour Window 最大化错位
+- ✍️ Select 筛选异步后访问一些UI线程异常
+- ✍️ Chart 分布，加了游标，饼图动画
+- ✍️ Table 堆叠头空数据边框错位
+- ✍️ Table 筛选可视化
+- ✍️ InputNumber 启用千分隔符光标位置
+
 ### `2.4.0` 2026-05-26
 
 - ➕ Collapse EnableResizing/ResizingLineThickness

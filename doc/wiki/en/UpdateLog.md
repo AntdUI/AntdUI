@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.1` 2026-06-02
+
+- ➕ Config TouchKeyboard
+- ➕ Input AcceptsEscape (Optimize Table Editing Mode Interaction)
+- ➕ Progress FillExtend
+- ➕ Table manual assignment triggers Check event
+- ✍️ Table does not display summary bar without scrollbar
+- ✍️ Maximum misalignment of Tour Window
+- ✍️ Select filtering asynchronous access to some UI threads exception
+- ✍️ Chart distribution, added cursor, pie chart animation
+- ✍️ Table stacking header empty data border misalignment
+- ✍️ Table filtering visualization
+- ✍️ InputNumber Enable Thousand delimiter cursor position
+
 ### `2.4.0` 2026-05-26
 
 - ➕ Collapse EnableResizing/ResizingLineThickness
