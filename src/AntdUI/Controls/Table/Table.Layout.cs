@@ -1269,7 +1269,7 @@ namespace AntdUI
                 if (cel.COLUMN is ColumnCheck checkColumn)
                 {
                     var b = GetCheckValue(checkColumn, value, out _);
-                    OnCheckedChanged(b, row.RECORD, row.INDEX, cel_i, checkColumn);
+                    if (check.Checked != b) OnCheckedChanged(b, row.RECORD, row.INDEX, cel_i, checkColumn);
                     row.Select = check.Checked = b;
                     if (IsPauseLayout) return;
                     if (checkColumn.NoTitle) IsCheckAll(cel_i, checkColumn);

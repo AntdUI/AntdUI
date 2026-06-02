@@ -781,12 +781,12 @@ namespace AntdUI
                 if (caret) return SetCaretPostion(value + 1, false);
                 return false;
             }
-            selectionStart = selectionStartTemp = value;
+            selectionStart = selectionStartTemp = OnSetSelectionStart(value);
             bool r = false;
             if (caret)
             {
-                if (cache_font == null || cache_font.Count <= value) r = SetCaretPostion(value + 1, false);
-                else r = SetCaretPostion(value + 1, false);
+                if (cache_font == null || cache_font.Count <= selectionStart) r = SetCaretPostion(selectionStart + 1, false);
+                else r = SetCaretPostion(selectionStart + 1, false);
             }
             OnPropertyChanged(nameof(SelectionStart));
             return r;

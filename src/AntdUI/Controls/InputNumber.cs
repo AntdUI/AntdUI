@@ -200,7 +200,7 @@ namespace AntdUI
                 catch { }
             }
             if (Hexadecimal) return ((long)num).ToString("X", CultureInfo.InvariantCulture);
-            return num.ToString((ThousandsSeparator ? "N" : "F") + DecimalPlaces.ToString(CultureInfo.CurrentCulture), CultureInfo.CurrentCulture);
+            return num.ToString((thousandsSeparator ? "N" : "F") + DecimalPlaces.ToString(CultureInfo.CurrentCulture), CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -503,12 +503,35 @@ namespace AntdUI
             }
         }
 
+        int? setTextIndex;
         protected override void OnSetText(string text, bool isempty)
         {
+            setTextIndex = null;
             if (EnabledValueTextChange && !isempty)
             {
-                if (decimal.TryParse(text, out var _d)) Value = _d;
+                if (decimal.TryParse(text, out var _d))
+                {
+                    Value = _d;
+                    if (thousandsSeparator)
+                    {
+                        var text_tmp = Text;
+                        if (text_tmp == text) return;
+                        int vlen = text_tmp.Length - text.Length;
+                        if (vlen == 0) return;
+                        setTextIndex = vlen;
+                    }
+                }
             }
+        }
+        protected override int OnSetSelectionStart(int value)
+        {
+            if (setTextIndex.HasValue)
+            {
+                int newValue = value + setTextIndex.Value;
+                setTextIndex = null;
+                return newValue;
+            }
+            return base.OnSetSelectionStart(value);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

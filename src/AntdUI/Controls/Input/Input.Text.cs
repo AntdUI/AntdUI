@@ -126,6 +126,8 @@ namespace AntdUI
             return true;
         }
 
+        protected virtual int OnSetSelectionStart(int value) => value;
+
         protected virtual void OnSetText(string text, bool isempty)
         {
         }
