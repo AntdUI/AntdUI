@@ -388,8 +388,8 @@ namespace AntdUI
                     }
                     splits = _splits.ToArray();
                 });
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         int MaxHeight(Canvas g, Font font_description, int gap, out int height)

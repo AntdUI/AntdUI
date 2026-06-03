@@ -173,8 +173,8 @@ namespace AntdUI
                     y = y - gap_y + gap_x;
                 });
                 ScrollBar.SetVrSize(y, rect);
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         RectangleF[] splits = new RectangleF[0];

@@ -593,8 +593,8 @@ namespace AntdUI
             {
                 if (_tabMenuVisible) style.LoadLayout(this, ClientRectangle.DeflateRect(Margin), items!);
                 else SetPadding(0, 0, 0, 0);
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         #endregion

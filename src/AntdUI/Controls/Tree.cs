@@ -477,8 +477,8 @@ namespace AntdUI
                     else ChangeList(g, rect, null, items, has, ref x, ref y, depth_gap, icon_size, gap, gapI, 0, true);
                 });
                 ScrollBar.SetVrSize(x, y, rect);
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         bool HasSub(TreeItemCollection items)
@@ -630,52 +630,71 @@ namespace AntdUI
                 if (virtualMode)
                 {
                     if (_flatList == null) return;
+                    SetShowItem(e.Rect, sx, sy, _flatList, true);
                     int tx = -sx, ty = -sy;
                     foreach (var it in _flatList) PaintItem(g, it, tx, ty, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius, sx, sy);
                 }
-                else PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                else
+                {
+                    SetShowItem(e.Rect, sx, sy, items, true);
+                    PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                }
             }
             g.ResetTransform();
             ScrollBar.Paint(g, ColorScheme);
             base.OnDraw(e);
         }
-        void PaintItem(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
+        bool SetShowItem(Rectangle rect, int sx, int sy, IList<TreeItem> items, bool def)
         {
+            int count = 0;
             foreach (var it in items)
             {
-                it.show = it.Visible && rect.IsItemVisibleExpand(sx, sy, it.rect, it.Expand, it.SubHeight);
-                if (it.show)
-                {
-                    PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
-                    if ((it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
-                    {
-                        if (it.ExpandThread)
-                        {
-                            if (it.ExpandTemp == null)
-                            {
-                                it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
-                                using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
-                                {
-                                    g2.TranslateTransform(tx, -it.rect.Bottom);
-                                    PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
-                                }
-                            }
-                            g.Image(it.ExpandTemp, new Rectangle(rect.X + sx, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
-                        }
-                        else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
-                    }
-                }
-                else ShowFalse(it.items);
+                if (it.items != null && it.items.Count > 0) it.showExpand = SetShowItem(rect, sx, sy, it.items, it.Expand || it.ExpandThread);
+                it.show = def && it.Visible && rect.IsItemVisibleExpand(sx, sy, it.rect_all, it.Expand, it.SubHeight);
+                if (it.show) count++;
             }
+            return count > 0;
         }
 
-        void ShowFalse(TreeItemCollection? items)
+        bool PaintItem(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
         {
-            if (items == null) return;
+            int count = 0;
             foreach (var it in items)
             {
-                it.show = false;
-                ShowFalse(it.items);
+                if (it.show)
+                {
+                    count++;
+                    PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
+                    PaintItemExpand(g, rect, tx, ty, sx, sy, it, fore, fore_active, hover, active, brushTextTertiary, radius);
+                }
+                else if (it.showExpand) PaintItemExpand(g, rect, tx, ty, sx, sy, it, fore, fore_active, hover, active, brushTextTertiary, radius);
+            }
+            return count == 0;
+        }
+        void PaintItemExpand(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItem it, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
+        {
+            if ((it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
+            {
+                if (it.ExpandThread)
+                {
+                    if (it.ExpandTemp == null)
+                    {
+                        if (it.ExpandHeight == 0) return;
+                        it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
+                        using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
+                        {
+                            g2.TranslateTransform(tx, -it.rect.Bottom);
+                            if (PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius))
+                            {
+                                it.ExpandTemp.Dispose();
+                                it.ExpandTemp = null;
+                            }
+                        }
+                    }
+                    if (it.ExpandTemp == null) return;
+                    g.Image(it.ExpandTemp, new Rectangle(rect.X + sx, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
+                }
+                else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
             }
         }
 
@@ -771,6 +790,7 @@ namespace AntdUI
                     }
                 }
             }
+            item.PaintBadge(Font, item.rect, g, ColorScheme, Name);
         }
         void PaintItemText(Canvas g, TreeItem item, SolidBrush fore, SolidBrush brushTextTertiary)
         {
@@ -1929,7 +1949,7 @@ namespace AntdUI
         }
     }
 
-    public class TreeItem
+    public class TreeItem : BadgeConfig
     {
         public TreeItem() { }
         public TreeItem(string text)
@@ -2111,6 +2131,21 @@ namespace AntdUI
             set => items = value.BindData(this);
         }
 
+        public TreeItem SetSubData(IList<TreeItem> list, Action<TreeItem>? callok = null)
+        {
+            ThreadLoading?.Dispose();
+            loading = false;
+            if (list.Count == 0) ICanExpand = false;
+            else
+            {
+                callok?.Invoke(this);
+                items ??= new TreeItemCollection(this);
+                items.AddRange(list);
+                Expand = true;
+            }
+            return this;
+        }
+
         #region 禁用
 
         bool enabled = true;
@@ -2212,6 +2247,185 @@ namespace AntdUI
         public bool CanExpand => ICanExpand ?? visible && items != null && items.Count > 0;
 
         internal bool? ICanExpand { get; set; }
+
+        #endregion
+
+        #region 徽标
+
+        string? badge;
+        /// <summary>
+        /// 徽标内容
+        /// </summary>
+        [Description("徽标内容"), Category("徽标"), DefaultValue(null), Localizable(true)]
+        public string? Badge
+        {
+            get => badge;
+            set
+            {
+                if (badge == value) return;
+                badge = value;
+                Invalidate();
+            }
+        }
+
+        string? badgeSvg;
+        /// <summary>
+        /// 徽标SVG
+        /// </summary>
+        [Description("徽标SVG"), Category("徽标"), DefaultValue(null)]
+        public string? BadgeSvg
+        {
+            get => badgeSvg;
+            set
+            {
+                if (badgeSvg == value) return;
+                badgeSvg = value;
+                Invalidate();
+            }
+        }
+
+        TAlign badgeAlign = TAlign.Right;
+        /// <summary>
+        /// 徽标方向
+        /// </summary>
+        [Description("徽标方向"), Category("徽标"), DefaultValue(TAlign.Right)]
+        public TAlign BadgeAlign
+        {
+            get => badgeAlign;
+            set
+            {
+                if (badgeAlign == value) return;
+                badgeAlign = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        float badgeSize = .6F;
+        /// <summary>
+        /// 徽标比例
+        /// </summary>
+        [Description("徽标比例"), Category("徽标"), DefaultValue(.6F)]
+        public float BadgeSize
+        {
+            get => badgeSize;
+            set
+            {
+                if (badgeSize == value) return;
+                badgeSize = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        bool badgeMode = false;
+        /// <summary>
+        /// 徽标模式（镂空）
+        /// </summary>
+        [Description("徽标模式（镂空）"), Category("徽标"), DefaultValue(false)]
+        public bool BadgeMode
+        {
+            get => badgeMode;
+            set
+            {
+                if (badgeMode == value) return;
+                badgeMode = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        Color? badgefore;
+        /// <summary>
+        /// 徽标前景颜色
+        /// </summary>
+        [Description("徽标前景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeFore
+        {
+            get => badgefore;
+            set
+            {
+                if (badgefore == value) return;
+                badgefore = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        Color? badgeback;
+        /// <summary>
+        /// 徽标背景颜色
+        /// </summary>
+        [Description("徽标背景颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBack
+        {
+            get => badgeback;
+            set
+            {
+                if (badgeback == value) return;
+                badgeback = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        Color? badgeBorderColor;
+        /// <summary>
+        /// 徽标边框颜色
+        /// </summary>
+        [Description("徽标边框颜色"), Category("徽标"), DefaultValue(null)]
+        public Color? BadgeBorderColor
+        {
+            get => badgeBorderColor;
+            set
+            {
+                if (badgeBorderColor == value) return;
+                badgeBorderColor = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        float? badgeBorderWidth;
+        /// <summary>
+        /// 徽标边框宽度
+        /// </summary>
+        [Description("徽标边框宽度"), Category("徽标"), DefaultValue(null)]
+        public float? BadgeBorderWidth
+        {
+            get => badgeBorderWidth;
+            set
+            {
+                if (badgeBorderWidth == value) return;
+                badgeBorderWidth = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        int badgeOffsetX = 1, badgeOffsetY = 1;
+        /// <summary>
+        /// 徽标偏移X
+        /// </summary>
+        [Description("徽标偏移X"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetX
+        {
+            get => badgeOffsetX;
+            set
+            {
+                if (badgeOffsetX == value) return;
+                badgeOffsetX = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 徽标偏移Y
+        /// </summary>
+        [Description("徽标偏移Y"), Category("徽标"), DefaultValue(1)]
+        public int BadgeOffsetY
+        {
+            get => badgeOffsetY;
+            set
+            {
+                if (badgeOffsetY == value) return;
+                badgeOffsetY = value;
+                if (badge != null || badgeSvg != null) Invalidate();
+            }
+        }
 
         #endregion
 
@@ -2677,6 +2891,7 @@ namespace AntdUI
         internal bool ExpandThread { get; set; }
         internal Bitmap? ExpandTemp { get; set; }
         internal bool show { get; set; }
+        internal bool showExpand { get; set; }
 
         void Invalidate() => PARENT?.Invalidate();
         void Invalidates() => PARENT?.ChangeList(true);
@@ -2809,6 +3024,60 @@ namespace AntdUI
             Tag = value;
             return this;
         }
+
+        #region 徽标
+
+        public TreeItem SetBadge(string? value = " ", TAlign align = TAlign.TR)
+        {
+            badge = value;
+            badgeAlign = align;
+            return this;
+        }
+        public TreeItem SetBadgeSvg(string? value, TAlign align = TAlign.TR)
+        {
+            badgeSvg = value;
+            badgeAlign = align;
+            return this;
+        }
+        public TreeItem SetBadgeOffset(int x, int y)
+        {
+            BadgeOffsetX = x;
+            BadgeOffsetY = y;
+            return this;
+        }
+        public TreeItem SetBadgeSize(float value)
+        {
+            BadgeSize = value;
+            return this;
+        }
+        public TreeItem SetBadgeFore(Color? value)
+        {
+            BadgeFore = value;
+            return this;
+        }
+        public TreeItem SetBadgeBack(Color? value)
+        {
+            BadgeBack = value;
+            return this;
+        }
+        public TreeItem SetBadgeBorderColor(Color? value)
+        {
+            BadgeBorderColor = value;
+            return this;
+        }
+        public TreeItem SetBadgeBorderWidth(float? value)
+        {
+            BadgeBorderWidth = value;
+            return this;
+        }
+        public TreeItem SetBadgeBorder(float value, Color color)
+        {
+            BadgeBorderWidth = value;
+            BadgeBorderColor = color;
+            return this;
+        }
+
+        #endregion
 
         internal string[]? PY { get; set; }
         public TreeItem SetPinyin(string? value)

@@ -608,8 +608,8 @@ namespace AntdUI
                     }
                     return use_x;
                 });
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         Rectangle RectAdd, RectAddIco;

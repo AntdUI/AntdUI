@@ -708,8 +708,8 @@ namespace AntdUI
                     }
                 });
                 ScrollBar.SetVrSize(y + Padding.Vertical, _rect);
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         int ChangeListY(Rectangle rect, MenuItemCollection items, ref int icon_count, int height, int sp)

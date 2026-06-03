@@ -1378,8 +1378,8 @@ namespace AntdUI
                     var _new = items[_select];
                     AnimationBarValue = TabSelectRect = _new.Rect;
                 }
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         Rectangle Rect;

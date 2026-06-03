@@ -328,8 +328,8 @@ namespace AntdUI
                     }
                     return hs.ToArray();
                 });
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         #endregion

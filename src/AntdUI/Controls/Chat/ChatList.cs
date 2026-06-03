@@ -897,8 +897,8 @@ namespace AntdUI.Chat
                 });
                 oldy = y;
                 ScrollBar.SetVrSize(y, rect);
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
         internal void LoadLayout(TextChatItem chatItem, bool print = false)
         {
@@ -932,8 +932,8 @@ namespace AntdUI.Chat
                     LoadLayout(print);
                     return;
                 }
+                if (print) Invalidate();
             }
-            if (print) Invalidate();
         }
 
         #region 字体
