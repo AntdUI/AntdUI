@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -593,7 +594,119 @@ namespace AntdUI
 
         float LineWidth = 6, LineAngle = 0;
         int prog_size = 0;
-        public void Clear() => prog_size = 0;
+
+        #region GIF
+
+        const int PropertyTagFrameDelay = 0x5100;
+
+        Image? gifImage;
+        FrameDimension? gifFrameDimension;
+        int gifFrameCount = 0;
+        int[]? gifFrameDelays;
+        int gifFrameIndex = 0;
+        int gifLastTick = 0;
+
+        void ResetGif()
+        {
+            gifImage = null;
+            gifFrameDimension = null;
+            gifFrameCount = 0;
+            gifFrameDelays = null;
+            gifFrameIndex = 0;
+            gifLastTick = 0;
+        }
+
+        bool UpdateGifFrame(Image image)
+        {
+            if (!ReferenceEquals(gifImage, image))
+            {
+                if (!InitGif(image)) return false;
+                return true;
+            }
+
+            if (gifFrameDimension == null || gifFrameDelays == null || gifFrameCount <= 1) return false;
+
+            var now = Environment.TickCount;
+            var elapsed = unchecked(now - gifLastTick);
+            var delay = gifFrameDelays[gifFrameIndex];
+
+            if (elapsed >= delay)
+            {
+                gifFrameIndex++;
+                if (gifFrameIndex >= gifFrameCount) gifFrameIndex = 0;
+
+                gifLastTick = now;
+                image.SelectActiveFrame(gifFrameDimension, gifFrameIndex);
+            }
+
+            return true;
+        }
+
+        bool InitGif(Image image)
+        {
+            ResetGif();
+
+            try
+            {
+                foreach (var item in image.FrameDimensionsList)
+                {
+                    var dimension = new FrameDimension(item);
+                    var count = image.GetFrameCount(dimension);
+
+                    if (count <= 1) continue;
+
+                    gifImage = image;
+                    gifFrameDimension = dimension;
+                    gifFrameCount = count;
+                    gifFrameDelays = GetGifDelays(image, count);
+                    gifFrameIndex = 0;
+                    gifLastTick = Environment.TickCount;
+
+                    image.SelectActiveFrame(gifFrameDimension, gifFrameIndex);
+                    return true;
+                }
+            }
+            catch
+            {
+                ResetGif();
+            }
+
+            return false;
+        }
+
+        int[] GetGifDelays(Image image, int count)
+        {
+            var delays = new int[count];
+            for (int i = 0; i < delays.Length; i++) delays[i] = 100;
+
+            try
+            {
+                if (Array.IndexOf(image.PropertyIdList, PropertyTagFrameDelay) < 0) return delays;
+
+                var item = image.GetPropertyItem(PropertyTagFrameDelay);
+                if (item?.Value == null) return delays;
+
+                for (int i = 0; i < count; i++)
+                {
+                    var offset = i * 4;
+                    if (offset + 4 > item.Value.Length) break;
+
+                    var delay = BitConverter.ToInt32(item.Value, offset) * 10;
+                    delays[i] = delay > 0 ? Math.Max(delay, 10) : 100;
+                }
+            }
+            catch { }
+
+            return delays;
+        }
+
+        #endregion
+
+        public void Clear()
+        {
+            prog_size = 0;
+            ResetGif();
+        }
 
         public void Start(IControl control)
         {
@@ -653,6 +766,8 @@ namespace AntdUI
                 case 1:
                     LineAngle = LineAngle.Calculate(2F);
                     break;
+                case 3:
+                    break;
                 case 2:
                 default:
                     LineAngle = LineAngle.Calculate(rate ?? 8F);
@@ -663,6 +778,7 @@ namespace AntdUI
 
         public void Stop()
         {
+            ResetGif();
             thread?.Dispose();
             thread = null;
         }
@@ -702,6 +818,12 @@ namespace AntdUI
                 g.DrawText(config.Text, font, config.Fore ?? Colour.Primary.Get(nameof(Spin)), new Rectangle(rect.X, y, rect.Width, prog_size), s_f);
             }
             var color = config.Color ?? Colour.Primary.Get(nameof(Spin));
+            if (config.Indicator != null && UpdateGifFrame(config.Indicator))
+            {
+                mode = 3;
+                g.Image(config.Indicator, cirContainer);
+                return;
+            }
             if (config.Indicator != null || config.IndicatorSvg != null)
             {
                 rate = config.Rate;
