@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -114,6 +115,33 @@ namespace Demo.Controls
             ex => //错误回调
             {
                 System.Diagnostics.Debug.Print($"执行时发生了错误:{ex.Message}");
+            });
+        }
+
+        private void BtnGif_Click(object sender, EventArgs e)
+        {
+            CancellationTokenSource token = new CancellationTokenSource();
+            AntdUI.Spin.open(form, "Loading Gif...", config =>
+            {
+                Image gif = Properties.Resources.Loading_indicator_wavy_transparent;
+                config.SetIndicator(gif);
+                Thread.Sleep(1000);
+                for (int i = 0; i < 101; i++)
+                {
+                    token.Token.ThrowIfCancellationRequested();
+                    config.Value = i / 100F;
+                    config.Text = "Loading Gif" + " " + i + "%";
+                    Thread.Sleep(20);
+                }
+                token.Token.ThrowIfCancellationRequested();
+                Thread.Sleep(1000);
+                config.Value = null;
+                config.Text = AntdUI.Localization.Get("PleaseWait", "请耐心等候...");
+                token.Token.ThrowIfCancellationRequested();
+                Thread.Sleep(2000);
+            }, token, () =>
+            {
+                System.Diagnostics.Debug.WriteLine("加载结束");
             });
         }
     }

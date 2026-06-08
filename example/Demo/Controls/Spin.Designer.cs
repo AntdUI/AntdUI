@@ -33,11 +33,13 @@ namespace Demo.Controls
             spin2 = new AntdUI.Spin();
             spin1 = new AntdUI.Spin();
             stackPanel2 = new AntdUI.StackPanel();
+            spin5 = new AntdUI.Spin();
             spin3 = new AntdUI.Spin();
             spin4 = new AntdUI.Spin();
             divider2 = new AntdUI.Divider();
             divider3 = new AntdUI.Divider();
             stackPanel3 = new AntdUI.StackPanel();
+            btnGif = new AntdUI.Button();
             buttonError = new AntdUI.Button();
             btnWindow = new AntdUI.Button();
             btnControl = new AntdUI.Button();
@@ -112,6 +114,7 @@ namespace Demo.Controls
             // 
             // stackPanel2
             // 
+            stackPanel2.Controls.Add(spin5);
             stackPanel2.Controls.Add(spin3);
             stackPanel2.Controls.Add(spin4);
             stackPanel2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -119,6 +122,17 @@ namespace Demo.Controls
             stackPanel2.Name = "stackPanel2";
             stackPanel2.Size = new Size(596, 100);
             stackPanel2.TabIndex = 2;
+            // 
+            // spin5
+            // 
+            spin5.Fill = Color.FromArgb(255, 87, 34);
+            spin5.Indicator = Properties.Resources.Loading_indicator_wavy_transparent;
+            spin5.LocalizationText = "Loading";
+            spin5.Location = new Point(255, 3);
+            spin5.Name = "spin5";
+            spin5.Size = new Size(120, 94);
+            spin5.TabIndex = 2;
+            spin5.Text = "Gif";
             // 
             // spin3
             // 
@@ -165,6 +179,7 @@ namespace Demo.Controls
             // 
             // stackPanel3
             // 
+            stackPanel3.Controls.Add(btnGif);
             stackPanel3.Controls.Add(buttonError);
             stackPanel3.Controls.Add(btnWindow);
             stackPanel3.Controls.Add(btnControl);
@@ -174,6 +189,16 @@ namespace Demo.Controls
             stackPanel3.Name = "stackPanel3";
             stackPanel3.Size = new Size(596, 48);
             stackPanel3.TabIndex = 3;
+            // 
+            // btnGif
+            // 
+            btnGif.Location = new Point(415, 3);
+            btnGif.Name = "btnGif";
+            btnGif.Size = new Size(111, 42);
+            btnGif.TabIndex = 5;
+            btnGif.Text = "Gif";
+            btnGif.Type = AntdUI.TTypeMini.Primary;
+            btnGif.Click += BtnGif_Click;
             // 
             // buttonError
             // 
@@ -247,5 +272,7 @@ namespace Demo.Controls
         private AntdUI.Button btnWindow;
         private AntdUI.Button btnControl;
         private AntdUI.Button buttonError;
+        private AntdUI.Button btnGif;
+        private AntdUI.Spin spin5;
     }
 }
