@@ -90,36 +90,23 @@ namespace Demo.Controls
                     e.Item.IconSvg = Properties.Resources.icon_folderopened;
                     return;
                 }
+                e.Item.Tag = true;
                 e.CanExpand = false;
-                tree3.PauseLayout = true;
+                e.Item.Loading = true;
                 AntdUI.ITask.Run(() =>
                 {
-                    e.Item.Tag = true;
-                    int count = 0;
+                    var list = new List<AntdUI.TreeItem>();
                     try
                     {
                         var basepath = new DirectoryInfo(e.Item.Name);
-                        foreach (var item in basepath.GetDirectories())
-                        {
-                            var it = new AntdUI.TreeItem(item.Name).SetName(item.FullName).SetIcon(Properties.Resources.icon_folder).SetCanExpand();
-                            e.Item.Sub.Add(it);
-                            count++;
-                        }
-                        foreach (var item in basepath.GetFiles())
-                        {
-                            var it = new AntdUI.TreeItem(item.Name).SetName(item.FullName);
-                            e.Item.Sub.Add(it);
-                            count++;
-                        }
+                        foreach (var item in basepath.GetDirectories()) list.Add(new AntdUI.TreeItem(item.Name).SetName(item.FullName).SetIcon(Properties.Resources.icon_folder).SetCanExpand(true));
+                        foreach (var item in basepath.GetFiles()) list.Add(new AntdUI.TreeItem(item.Name).SetName(item.FullName));
                     }
-                    catch { }
-                    if (count == 0) e.Item.SetCanExpand(false);
-                    else
+                    catch
                     {
-                        e.Item.IconSvg = Properties.Resources.icon_folderopened;
-                        e.Item.Expand = true;
                     }
-                }).ContinueWith(action => tree3.PauseLayout = false);
+                    e.Item.SetSubData(list, it => it.SetIcon(Properties.Resources.icon_folderopened));
+                });
             }
             else e.Item.IconSvg = Properties.Resources.icon_folder;
         }
