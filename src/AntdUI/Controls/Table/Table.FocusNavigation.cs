@@ -101,13 +101,13 @@ namespace AntdUI
                 {
                     if (it.COLUMN.Editable)
                     {
-                        if (MoveToNextEditableCell(rowIndex, it.COLUMN, it.INDEX) && navigationConfig.SelectAll) BeginInvoke(MoveToNextEditableCellSelectAll);
+                        if (MoveToNextEditableCell(rowIndex, it) && navigationConfig.SelectAll) BeginInvoke(MoveToNextEditableCellSelectAll);
                     }
                     return;
                 }
             }
         }
-        private bool MoveToNextEditableCell(int rowIndex, Column column, int columnIndex)
+        private bool MoveToNextEditableCell(int rowIndex, CELL cell)
         {
             try
             {
@@ -118,10 +118,11 @@ namespace AntdUI
                 if (FocusNavigationAutoScroll) ScrollLine(rowIndex);
 
                 // 获取列索引
-                if (columnIndex >= 0)
+                if (cell.INDEX >= 0)
                 {
-                    SetFocusedCell(null);
-                    EnterEditMode(rowIndex, columnIndex);
+                    ScrollColumn(cell.COLUMN);
+                    SetFocusedCell(cell);
+                    EnterEditMode(rowIndex, cell.INDEX);
                     // 如果启用文本全选，延迟设置文本全选
                     return true;
                 }

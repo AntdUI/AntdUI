@@ -349,6 +349,7 @@ namespace AntdUI
                 {
                     foreach (var it in items)
                     {
+                        if (it.Visible == false) continue;
                         if (it.Expand) full_count++;
                         else
                         {
@@ -362,6 +363,7 @@ namespace AntdUI
                         full_h = rect.Height - useh;
                         foreach (var it in items)
                         {
+                            if (it.Visible == false) continue;
                             int y = rect.Y + use_y;
                             use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Expand, y);
                         }
@@ -370,6 +372,7 @@ namespace AntdUI
                     {
                         foreach (var it in items)
                         {
+                            if (it.Visible == false) continue;
                             int y = rect.Y + use_y;
                             use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
                         }
@@ -379,12 +382,14 @@ namespace AntdUI
                 {
                     foreach (var it in items)
                     {
+                        if (it.Visible == false) continue;
                         if (it.Full) full_count++;
                     }
                     if (full_count > 0)
                     {
                         foreach (var it in items)
                         {
+                            if (it.Visible == false) continue;
                             if (!it.Full)
                             {
                                 useh += title_height + gap;
@@ -396,6 +401,7 @@ namespace AntdUI
                     }
                     foreach (var it in items)
                     {
+                        if (it.Visible == false) continue;
                         int y = rect.Y + use_y;
                         use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
                     }
@@ -531,6 +537,7 @@ namespace AntdUI
                         {
                             foreach (var item in items)
                             {
+                                if(item.Visible == false) continue;
                                 if (item.Expand)
                                 {
                                     using (var path = item.Rect.RoundPath(r))
@@ -559,6 +566,7 @@ namespace AntdUI
                             for (int i = 0; i < items.Count; i++)
                             {
                                 var item = items[i];
+                                if(item.Visible == false) continue;
                                 if (i == 0)
                                 {
                                     if (item.Expand)
@@ -633,6 +641,7 @@ namespace AntdUI
                     {
                         foreach (var item in items)
                         {
+                            if (item.Visible == false) continue;
                             if (item.Expand)
                             {
                                 using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
@@ -655,6 +664,7 @@ namespace AntdUI
                         for (int i = 0; i < items.Count; i++)
                         {
                             var item = items[i];
+                            if (item.Visible == false) continue;
                             if (i == 0)
                             {
                                 if (item.Expand)
@@ -925,7 +935,7 @@ namespace AntdUI
                 // 首先检查是否在调整大小区域
                 foreach (var item in items)
                 {
-                    if (item.Expand && IsInResizeHandle(item, e.X, e.Y))
+                    if (item.Visible && item.Expand && IsInResizeHandle(item, e.X, e.Y))
                     {
                         isResizing = true;
                         resizingItem = item;
@@ -938,7 +948,7 @@ namespace AntdUI
 
             foreach (var item in items)
             {
-                if (item.Contains(e.X, e.Y))
+                if (item.Visible && item.Contains(e.X, e.Y))
                 {
                     item.MDown = true;
                     return;
@@ -979,7 +989,7 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             foreach (var item in items)
             {
-                if (item.MDown)
+                if (item.Visible && item.MDown)
                 {
                     if (item.Contains(e.X, e.Y)) item.Expand = !item.Expand;
                     else
@@ -1045,7 +1055,7 @@ namespace AntdUI
                 bool foundHover = false;
                 foreach (var item in items)
                 {
-                    if (item.Expand && item.Full == false && IsInResizeHandle(item, e.X, e.Y))
+                    if (item.Visible && item.Expand && item.Full == false && IsInResizeHandle(item, e.X, e.Y))
                     {
                         Cursor = Cursors.SizeNS;
                         if (hoverResizeItem != item)
@@ -1066,7 +1076,7 @@ namespace AntdUI
             }
             foreach (var item in items)
             {
-                if (item.Contains(e.X, e.Y))
+                if (item.Visible && item.Contains(e.X, e.Y))
                 {
                     SetCursor(true);
                     return;
@@ -1120,6 +1130,7 @@ namespace AntdUI
             if (items == null || items.Count == 0) return null;
             foreach (var item in items)
             {
+                if (item.Visible == false) continue;
                 if (item.buttons == null || item.buttons.Count == 0) continue;
                 foreach (var btn in item.buttons)
                 {
