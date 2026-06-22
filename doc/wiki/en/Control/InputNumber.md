@@ -17,6 +17,7 @@ Name | Description | Type | Default Value |
 **Value** | Current value | decimal | 0 |
 ||||
 **ShowControl** | Show controller | bool | true |
+**AlwaysShowControl** | Whether to always show the controller, even when not focused | bool | false |
 **WheelModifyEnabled** | Mouse wheel modify value | bool | true |
 **DecimalPlaces** | Number of decimal places displayed | int | 0 |
 **ThousandsSeparator** | Whether to show thousands separator | bool | false |
