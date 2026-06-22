@@ -115,12 +115,14 @@ namespace AntdUI
                 if (FocusNavigationAutoSelectRow && (selectedIndex.Length == 0 || selectedIndex[0] != rowIndex)) SelectedIndex = rowIndex;
 
                 // 滚动到新行，确保行在可见范围内
-                if (FocusNavigationAutoScroll) ScrollLine(rowIndex);
-
+                if (FocusNavigationAutoScroll)
+                {
+                    ScrollLine(cell.ROW.RECORD);
+                    ScrollColumn(cell.COLUMN);
+                }
                 // 获取列索引
                 if (cell.INDEX >= 0)
                 {
-                    ScrollColumn(cell.COLUMN);
                     SetFocusedCell(cell);
                     EnterEditMode(rowIndex, cell.INDEX);
                     // 如果启用文本全选，延迟设置文本全选

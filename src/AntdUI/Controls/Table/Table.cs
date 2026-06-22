@@ -488,7 +488,7 @@ namespace AntdUI
             else
             {
                 if (focusedxy != null && (focusedxy[0] == value.INDEX && focusedxy[1] == value.ROW.INDEX)) return;
-                focusedxy = new int[] { value.INDEX, value.ROW.INDEX }; 
+                focusedxy = new int[] { value.INDEX, value.ROW.INDEX };
                 OnCellFocused(value.ROW.RECORD, value.ROW.Type, value.ROW.INDEX, value.INDEX, value.COLUMN, value.RECT);
                 Invalidate();
             }
@@ -1317,11 +1317,20 @@ namespace AntdUI
         /// <param name="force">是否强制滚动</param>
         /// <param name="selectCell">是否选中为焦点单元格</param>
         /// <returns>返回滚动量</returns>
-        public int ScrollColumn(string column, bool force = false, bool select = true)
+        public int ScrollColumn(string column, bool force = false, bool select = false)
         {
-            Column? col = GetColumnByFieldKey(column);
-            if (col == null) return 0;
-            return ScrollColumn(col, force, select);
+            if (select)
+            {
+                var col = GetColumnByFieldKey(column);
+                if (col == null) return 0;
+                return ScrollColumn(col, force, select);
+            }
+            if (rows == null) return 0;
+            foreach (var cellColumn in rows.First.cells)
+            {
+                if (cellColumn.COLUMN.Key == column) return ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(cellColumn.COLUMN.INDEX_REAL), force);
+            }
+            return 0;
         }
 
         /// <summary>
@@ -1331,19 +1340,29 @@ namespace AntdUI
         /// <param name="force">是否强制滚动</param>
         /// <param name="select">是否选中为焦点单元格</param>
         /// <returns>返回滚动量</returns>
-        public int ScrollColumn(Column column, bool force = false, bool select = true)
+        public int ScrollColumn(Column column, bool force = false, bool select = false)
         {
-            if (rows == null || rows.Length == 0) return 0;
-            int focusedY = focusedxy == null || focusedxy.Length < 2 ? 0 : focusedxy[1];
-            var row = rows[focusedY];
-            foreach (var cellColumn in row.cells)
+            if (select)
             {
-                if (cellColumn.COLUMN == column)
+                if (rows == null || rows.Length == 0) return 0;
+                int focusedY = focusedxy == null || focusedxy.Length < 2 ? 0 : focusedxy[1];
+                var row = rows[focusedY];
+                if (row == null) return 0;
+                foreach (var cellColumn in row.cells)
                 {
-                    int x = ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(column.INDEX_REAL), force);
-                    if (select) SetFocusedCell(cellColumn);
-                    return x;
+                    if (cellColumn.COLUMN == column)
+                    {
+                        int x = ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(column.INDEX_REAL), force);
+                        if (select) SetFocusedCell(cellColumn);
+                        return x;
+                    }
                 }
+                return 0;
+            }
+            if (rows == null) return 0;
+            foreach (var cellColumn in rows.First.cells)
+            {
+                if (cellColumn.COLUMN == column) return ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(column.INDEX_REAL), force);
             }
             return 0;
         }

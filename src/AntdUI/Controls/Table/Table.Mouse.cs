@@ -766,7 +766,11 @@ namespace AntdUI
                         if (countmove > 0) SetCursor(CursorType.SizeAll);
                         else
                         {
-                            if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y)) { SetCursor(true); return; }
+                            if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
+                            {
+                                SetCursor(true);
+                                return;
+                            }
                             SetCursor(MouseMoveRow(db, e));
                         }
                     }
@@ -1315,7 +1319,7 @@ namespace AntdUI
                     for (int i_r = 0; i_r < dataTmp.rows.Length; i_r++)
                     {
                         var row = dataTmp.rows[i_r];
-                        var obj = column.Render(row.cells[column.Key], dataTmp.rows[i_r].record, i_r);
+                        var obj = column.Render(row[column.Key], dataTmp.rows[i_r].record, i_r);
                         var item = new SortModel(i_r, obj?.ToString());
                         if (row.fid == null) list.Add(item);
                         else
