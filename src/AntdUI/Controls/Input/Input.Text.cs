@@ -76,7 +76,6 @@ namespace AntdUI
             OnAllowClear();
             CalculateRect();
             OnSetText(value, isempty);
-            SetSelectionStart(cache_font.Count);
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
             return true;
@@ -107,7 +106,6 @@ namespace AntdUI
                 OnAllowClear();
                 CalculateRect();
                 OnSetText(value, isempty);
-                SetSelectionStart(cache_font.Count);
             }
             else
             {
@@ -119,7 +117,6 @@ namespace AntdUI
                 OnAllowClear();
                 CleanCacheFont();
                 OnSetText(value, isempty);
-                if (selectionStart > 0) SetSelectionStart(0);
             }
             OnTextChanged(EventArgs.Empty);
             OnPropertyChanged(nameof(Text));
