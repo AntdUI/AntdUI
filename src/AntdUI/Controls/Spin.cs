@@ -964,7 +964,7 @@ namespace AntdUI
         }
         bool GetVisible(Control control)
         {
-            if (control is TabPage page) return page.Showed && page.Visible;
+            if (control is TabPage page) return page.Showed;
             return control.Visible;
         }
 
@@ -973,22 +973,28 @@ namespace AntdUI
         {
             spin_core.Count++;
             LoadVisible();
-            if (control is Form form) SetLocation(form.Location);
-            else SetLocation(control.PointToScreen(Point.Empty));
-            PrintCache();
+            if (visible)
+            {
+                if (control is Form form) SetLocation(form.Location);
+                else SetLocation(control.PointToScreen(Point.Empty));
+                PrintCache();
+            }
         }
         private void Parent_SizeChanged(object? sender, EventArgs e)
         {
             LoadVisible();
-            if (control is Form form)
+            if (visible)
             {
-                SetSize(form.Size);
-                SetLocation(form.Location);
-            }
-            else
-            {
-                SetLocation(control.PointToScreen(Point.Empty));
-                SetSize(control.Size);
+                if (control is Form form)
+                {
+                    SetSize(form.Size);
+                    SetLocation(form.Location);
+                }
+                else
+                {
+                    SetLocation(control.PointToScreen(Point.Empty));
+                    SetSize(control.Size);
+                }
             }
         }
 
