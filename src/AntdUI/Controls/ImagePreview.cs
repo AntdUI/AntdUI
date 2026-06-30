@@ -402,7 +402,12 @@ namespace AntdUI
         void LoadCore()
         {
             autoDpi = true;
-            if (items == null) return;
+            if (items == null || items.Count == 0)
+            {
+                imgtmp?.Dispose();
+                imgtmp = null;
+                return;
+            }
             try
             {
                 int index = selectIndex;
@@ -628,17 +633,12 @@ namespace AntdUI
                 {
                     g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }
-                if (LoadingProgressStr != null)
-                {
-                    rect_loading.Offset(0, loading_size);
-                    g.String(LoadingProgressStr, Font, color, rect_loading);
-                }
+                if (LoadingProgressStr != null) g.String(LoadingProgressStr, Font, color, new Rectangle(rect.X, rect_loading.Y + loading_size, rect.Width, rect_loading.Height));
             }
             else if (LoadingProgressStr != null)
             {
                 g.DrawEllipse(Colour.Error.Get(nameof(Preview), Name), bor6, rect_loading);
-                rect_loading.Offset(0, loading_size);
-                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(nameof(Preview), Name), rect_loading);
+                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(nameof(Preview), Name), new Rectangle(rect.X, rect_loading.Y + loading_size, rect.Width, rect_loading.Height));
             }
         }
 
