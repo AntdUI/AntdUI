@@ -104,6 +104,8 @@ namespace AntdUI
             else return true;
         }
 
+        public override bool AreaJudge { get; set; } = true;
+
         #region 参数
 
         /// <summary>
