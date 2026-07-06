@@ -1,5 +1,21 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.2` 2026-07-06
+
+- ➕ Tree TreeItem supports displaying corner markers
+- ➕ Spin GIF loading image
+- ➕ Table ScrollColumn supports selecting cells
+- ✍️ Tree fixes horizontal child nodes not displaying
+- ✍️ Optimize the table editing jump function, scroll to the position when the edited cell is not visible
+- ✍️ InputNumber consistently displays the default value of the AlwaysShowControl property, which contradicts
+- ✍️ Fix the issue where CollapseItem. Visible=false does not take effect
+- ✍️ Table implements the sorting problem after rendering slots
+- ✍️ Abnormal scrolling of input after deletion
+- ✍️ Spin/Watermark container does not display UI properly after being hidden
+- ✍️ Preview zoom issue
+- ✍️ Release cache after clearing ImagePreview
+- ✍️ Tooltip leaves interaction
+
 ### `2.4.1` 2026-06-02
 
 - ➕ Config TouchKeyboard
