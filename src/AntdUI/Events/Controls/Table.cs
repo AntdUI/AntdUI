@@ -34,6 +34,24 @@ namespace AntdUI
         /// </summary>
         public Rectangle Rect { get; private set; }
     }
+    public class TableClickBeginEventArgs : TableClickEventArgs
+    {
+        public TableClickBeginEventArgs(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) : base(record, rowType, rowIndex, columnIndex, column, rect, e)
+        {
+        }
+
+        /// <summary>
+        /// 是否处理
+        /// </summary>
+        public bool Handled { get; set; }
+
+
+        public TableClickBeginEventArgs SetHandled(bool value = true)
+        {
+            Handled = value;
+            return this;
+        }
+    }
     public class TableHoverEventArgs : ITableMouseNullEventArgs
     {
         public TableHoverEventArgs(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle? rect, MouseEventArgs e) : base(record, rowType, rowIndex, columnIndex, column, e)

@@ -351,19 +351,22 @@ namespace AntdUI
             if (show_oldx == show_x && show_oldy == show_y) return;
             show_oldx = show_x;
             show_oldy = show_y;
-            if (y2 > 0 && y > 0 && y > y2) SetY(y, y2);
-            else SetY();
+
+            bool showYmp = y2 > 0 && y > 0 && y > y2;
 
             if (x2 > 0 && x > 0)
             {
                 if (x > x2) SetX(x, x2);
                 else
                 {
-                    if (showY && x + SIZE > x2) SetX(x + SIZE, x2);
+                    if (showYmp && x + SIZE > x2) SetX(x + SIZE, x2);
                     else SetX();
                 }
             }
             else SetX();
+
+            if (showYmp) SetY(y, y2);
+            else SetY();
 
             if (showX && showY)
             {
@@ -376,7 +379,7 @@ namespace AntdUI
         {
             maxY = y;
             ShowY = maxY > y2;
-            if (ShowY)
+            if (showY)
             {
                 int valueI = y - y2;
                 if (valueY > valueI) ValueY = valueI;

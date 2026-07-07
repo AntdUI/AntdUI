@@ -1891,7 +1891,9 @@ namespace AntdUI
             if (ThreadState == null)
             {
                 if (rows == null) return;
-                var rect = rows[row].RECT;
+                var it = rows[row];
+                if (it == null) return;
+                var rect = it.RECT;
                 int sy = ScrollBar.ValueY;
                 Invalidate(new Rectangle(rect.X, rect.Y - sy, rect.Width, rect.Height));
             }
@@ -1901,7 +1903,9 @@ namespace AntdUI
             if (ThreadState == null)
             {
                 if (rows == null) return;
-                var rect = rows[row].cells[column].RECT;
+                var it = rows[row];
+                if (it == null) return;
+                var rect = it.cells[column].RECT;
                 int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
                 Invalidate(new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height));
             }
