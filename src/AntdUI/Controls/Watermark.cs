@@ -489,6 +489,8 @@ namespace AntdUI
                     {
                         if (it is TabPage page2) page2.ShowedChanged += Parent_VisibleChanged;
                         else it.VisibleChanged += Parent_VisibleChanged;
+                        it.LocationChanged += Parent_LSChanged;
+                        it.SizeChanged += Parent_LSChanged;
                     }
                     controls = list.ToArray();
                 }
@@ -569,18 +571,27 @@ namespace AntdUI
 
         #endregion
 
-        Form? tmp;
         protected override void Dispose(bool disposing)
         {
             // 移除事件监听
             if (config.IsScreen) Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
             else
             {
+                config.Target.VisibleChanged -= Parent_VisibleChanged;
+                config.Target.LocationChanged -= Parent_LSChanged;
+                config.Target.SizeChanged -= Parent_LSChanged;
+                if (config.Target is TabPage page) page.ShowedChanged -= Parent_VisibleChanged;
+                if (controls != null)
+                {
+                    foreach (var it in controls)
+                    {
+                        if (it is TabPage page2) page2.ShowedChanged -= Parent_VisibleChanged;
+                        else it.VisibleChanged -= Parent_VisibleChanged;
+                        it.LocationChanged -= Parent_LSChanged;
+                        it.SizeChanged -= Parent_LSChanged;
+                    }
+                }
                 config.Target.VisibleChanged -= Target_VisibleChanged;
-                // 移除父容器的事件监听
-                if (tmp == null) return;
-                tmp.LocationChanged -= Parent_LSChanged;
-                tmp.SizeChanged -= Parent_LSChanged;
             }
             base.Dispose(disposing);
         }

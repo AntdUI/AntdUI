@@ -1085,9 +1085,7 @@ namespace AntdUI
                 bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
                 if (emptyIcon) return 0;
 
-                int size = (int)((height - gap) * (value.IconRatio ?? 0.75f));
-                if (COLUMN.IconMaxSize != null && size > COLUMN.IconMaxSize) size = COLUMN.IconMaxSize.Value;
-                return size;
+                return COLUMN.IconMaxSize ?? (int)((height - gap) * (value.IconRatio ?? 0.75f));
             }
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
@@ -1102,7 +1100,7 @@ namespace AntdUI
                 {
                     bool emptyText = COLUMN.CellType == SelectCellType.Icon || string.IsNullOrEmpty(value.Text);
                     int gapIcon = gap.x / 2;
-                    int wh = GetIconSize(_rect.Height > _rect.Width ? _rect.Width : _rect.Height, gap.x);
+                    int wh = GetIconSize(_rect.Height, gap.x);
                     rect_icon = new Rectangle(_rect.X + (emptyText ? (_rect.Width - wh) / 2 : gap.x), _rect.Y + (_rect.Height - wh) / 2, wh, wh);
                     if (COLUMN.CellType != SelectCellType.Text) rect_text = new Rectangle(rect_icon.X + gapIcon + wh, rect_icon.Y, RECT_REAL.Width - rect_icon.Width + gapIcon, rect_icon.Height);
                 }

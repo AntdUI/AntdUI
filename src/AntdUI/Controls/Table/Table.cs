@@ -2324,11 +2324,13 @@ namespace AntdUI
                 return null;
             }
         }
+
+        public int? MaxCount { get; set; }
+
         /// <summary>
         /// 图标大小 (默认按CELL大小决定)
         /// </summary>
         public int? IconMaxSize { get; set; }
-        public int? MaxCount { get; set; }
 
         #region 设置
 
@@ -2345,6 +2347,11 @@ namespace AntdUI
         public ColumnSelect SetMaxCount(int? value)
         {
             MaxCount = value;
+            return this;
+        }
+        public ColumnSelect SetIconMaxSize(int? value)
+        {
+            IconMaxSize = value;
             return this;
         }
 
