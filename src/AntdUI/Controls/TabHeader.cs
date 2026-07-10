@@ -837,7 +837,7 @@ namespace AntdUI
                     {
                         bool hoveClose = it.ShowClose && it.RectClose.Contains(x, y);
                         if (hoveClose) hand++;
-                        if (it.Hover == true && it.HoverClose == hoveClose) continue;
+                        if (it.Hover && it.HoverClose == hoveClose) continue;
                         it.Hover = true;
                         it.HoverClose = hoveClose;
                         count++;

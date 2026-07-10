@@ -432,24 +432,26 @@ namespace AntdUI
                 {
                     btn.PARENT = this;
                     btn.ParentItem = it;
-                    if (btn.Show == false || btn.Visible == false) continue;
-                    int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
-                    int space = (rectButtons.Height - height) / 2;
-                    bx -= space;
-                    int? width = btn.Width;
-                    if (width == null)
+                    if (btn.Show && btn.Visible)
                     {
-                        bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
-                        string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+                        int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
+                        int space = (rectButtons.Height - height) / 2;
+                        bx -= space;
+                        int? width = btn.Width;
+                        if (width == null)
+                        {
+                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                            string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
 
-                        var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                        width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                            var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                            width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                        }
+
+                        if (width < height) width = btn.SwitchMode ? height * 4 : height;
+                        Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
+                        btn.SetRect(g, rectItem, Font.Height, 0, GetIconSize(rectItem.Height));
+                        bx -= (width.Value + space);
                     }
-
-                    if (width < height) width = btn.SwitchMode ? height * 4 : height;
-                    Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
-                    btn.SetRect(g, rectItem, Font.Height, 0, GetIconSize(rectItem.Height));
-                    bx -= (width.Value + space);
                 }
             }
             Rectangle Rect;
@@ -1065,7 +1067,7 @@ namespace AntdUI
                 bool foundHover = false;
                 foreach (var item in items)
                 {
-                    if (item.Visible && item.Expand && item.Full == false && IsInResizeHandle(item, e.X, e.Y))
+                    if (item.Visible && item.Expand && !item.Full && IsInResizeHandle(item, e.X, e.Y))
                     {
                         Cursor = Cursors.SizeNS;
                         if (hoverResizeItem != item)

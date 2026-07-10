@@ -64,7 +64,7 @@ namespace AntdUI
                 if (nextColumnKey == null)
                 {
                     // 当前字段是最后一个字段
-                    if (navigationConfig.LineBreak == true)
+                    if (navigationConfig.LineBreak)
                     {
                         // 允许换行：尝试跳转到下一行的第一个字段
                         // 检查是否有下一行
