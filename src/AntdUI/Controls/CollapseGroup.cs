@@ -998,7 +998,7 @@ namespace AntdUI
                 }
             }
         }
-
+        public Rectangle Rect => rect;
         internal override void SetRect(Canvas g, Rectangle rect_read, int font_height, int xc, int icon_size)
         {
             bool emptyIcon = string.IsNullOrEmpty(IconSvg) && Icon == null;

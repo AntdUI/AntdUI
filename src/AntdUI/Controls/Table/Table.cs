@@ -2324,7 +2324,10 @@ namespace AntdUI
                 return null;
             }
         }
-
+        /// <summary>
+        /// 图标大小 (默认按CELL大小决定)
+        /// </summary>
+        public int? IconMaxSize { get; set; }
         public int? MaxCount { get; set; }
 
         #region 设置

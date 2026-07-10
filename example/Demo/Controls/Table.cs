@@ -56,11 +56,9 @@ namespace Demo.Controls
             table1.CustomSummaryCalculate += table1_CustomSummaryCalculate;
 
             #endregion
-
+            table1.SummaryCustomize = true;
             selectEditMode.Items.AddRange(EnumList(typeof(AntdUI.TEditMode)));
-
             selectEditStyle.Items.AddRange(EnumList(typeof(AntdUI.TEditInputStyle)));
-
             selectFocusedStyle.Items.AddRange(EnumList(typeof(AntdUI.TableCellFocusedStyle)));
         }
 
