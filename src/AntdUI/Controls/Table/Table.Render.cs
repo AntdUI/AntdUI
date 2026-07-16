@@ -867,7 +867,7 @@ namespace AntdUI
                     }
                 }
 
-                if (fixedHeader)
+                if (visibleHeader && fixedHeader)
                 {
                     if (dividers.Length > 0) PaintBorder(g, dividers, 1);
                     g.ResetTransform();
@@ -983,7 +983,7 @@ namespace AntdUI
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
 
-                        if (fixedHeader)
+                        if (visibleHeader && fixedHeader)
                         {
                             if (dividers.Length > 0) PaintBorder(g, dividers, 1);
                             g.ResetTransform();
