@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.3` 2026-07-16
+
+- ➕ Progress Segments
+- ➕ Progress dashboard GapDegree GapPlacement
+- ➕ Before clicking on the table, CellClickBegin and CellStyleInfo occur to enrich the styles
+- ➕ Table ColumnSelect Add IconMaxSize
+- ✍️ Table hidden header line misalignment
+- ✍️ Table Stacking Header Center Misalignment (Filtering/Sorting)
+- ✍️ Table optimization ColumnSelect.IconSvg layout
+- ✍️ Table data source exceeds the scrollbar
+- ✍️ Watermark does not follow movement
+- ✍️ Tree optimization performance
+- ✍️ Collapse Collapse GroupButton public Rect
+
 ### `2.4.2` 2026-07-06
 
 - ➕ Tree TreeItem supports displaying corner markers
