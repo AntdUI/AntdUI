@@ -42,6 +42,7 @@ namespace Demo.Controls
             AntdUI.Modal.open(new AntdUI.Modal.Config(form, "This is a warn message", "Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...Some contents...", AntdUI.TType.Warn)
             {
                 Btns = new AntdUI.Modal.Btn[] { new AntdUI.Modal.Btn("按钮Name", "自定义按钮", AntdUI.TTypeMini.Warn) },
+                ButtonArrowNavigation = true,
                 OnBtns = btn =>
                 {
                     MessageBox.Show("触发的Name：" + btn.Name);

@@ -16,6 +16,8 @@ namespace AntdUI
     {
         internal Modal.Config config;
         Panel? panel_main;
+        private readonly List<Button> navigationButtons = new List<Button>();
+
         public LayeredFormModal(Modal.Config _config, bool istop)
         {
             config = _config;
@@ -55,10 +57,12 @@ namespace AntdUI
                     Location = new Point(304, 0),
                     Name = "btn_ok",
                     Size = new Size(64, butt_h),
+                    WaveSize = 4,
                     TabIndex = 0,
                     Type = config.OkType,
                     Text = config.OkText
                 };
+                navigationButtons.Add(btn_ok);
                 config.OnButtonStyle?.Invoke("OK", btn_ok);
                 btn_ok.Click += btn_ok_Click;
                 if (config.OkFont != null) btn_ok.Font = config.OkFont;
@@ -73,12 +77,14 @@ namespace AntdUI
                         Location = new Point(240, 0),
                         Name = "btn_no",
                         Size = new Size(64, butt_h),
+                        WaveSize = 4,
                         TabIndex = 1,
                         Text = config.CancelText
                     };
                     config.OnButtonStyle?.Invoke("Cancel", btn_no);
                     btn_no.Click += btn_no_Click;
                     if (config.CancelFont != null) btn_no.Font = config.CancelFont;
+                    navigationButtons.Add(btn_no);
                 }
 
                 panel_main = new Panel
@@ -100,6 +106,7 @@ namespace AntdUI
                             AutoSizeMode = TAutoSize.Width,
                             Dock = DockStyle.Right,
                             Size = new Size(64, butt_h),
+                            WaveSize = 4,
                             Name = btn.Name,
                             Text = btn.Text,
                             Type = btn.Type,
@@ -111,6 +118,7 @@ namespace AntdUI
                         panel_main.Controls.Add(_btn);
                         btns.Insert(0, _btn);
                     }
+                    navigationButtons.AddRange(btns);
                     foreach (var btn in btns)
                     {
                         btn.BringToFront();
@@ -423,6 +431,11 @@ namespace AntdUI
                 SystemSoundHelper.PlaySound(soundType);
             }
             if (isTop) Activate();
+            BeginInvoke(() =>
+            {
+                navigationButtons.Sort((a, b) => a.Left.CompareTo(b.Left));
+                if (!config.DefaultFocus && btn_ok?.CanFocus == true && config.ButtonArrowNavigation) btn_ok.Focus();
+            });
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -430,6 +443,7 @@ namespace AntdUI
 
         protected override void DestroyHandle()
         {
+            navigationButtons.Clear();
             base.DestroyHandle();
             config.Layered = null;
             btn_ok?.Dispose();
@@ -658,6 +672,7 @@ namespace AntdUI
                     if (config.CancelFont != null) btn_no.Font = config.CancelFont;
                     panel_main.Controls.Add(btn_no);
                     CancelButton = btn_no;
+                    navigationButtons.Add(btn_no);
                 }
                 return;
             }
@@ -686,6 +701,40 @@ namespace AntdUI
                     ForeColor = Colour.TextBase.Get(config.ColorScheme, nameof(AntdUI.Modal));
                     break;
             }
+        }
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            if (!config.ButtonArrowNavigation) return base.ProcessCmdKey(ref msg, keyData);
+
+            var keyCode = keyData & Keys.KeyCode;
+            if (keyCode != Keys.Left && keyCode != Keys.Right) return base.ProcessCmdKey(ref msg, keyData);
+
+            int currentIndex = -1;
+
+            for (int i = 0; i < navigationButtons.Count; i++)
+            {
+                if (navigationButtons[i].Focused || navigationButtons[i].ContainsFocus)
+                {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            if (currentIndex < 0) return base.ProcessCmdKey(ref msg, keyData);
+
+            int direction = keyCode == Keys.Left ? -1 : 1;
+
+            for (int i = currentIndex + direction; i >= 0 && i < navigationButtons.Count; i += direction)
+            {
+                var button = navigationButtons[i];
+                if (!button.Visible || !button.Enabled || !button.CanFocus) continue;
+
+                button.Focus();
+                return true;
+            }
+
+            return true;
         }
 
         #endregion
