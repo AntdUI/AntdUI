@@ -291,7 +291,7 @@ namespace AntdUI
         RectangleF rect_img_dpi;
         float offsetX = 0, offsetY = 0;
         float _dpi = 1F;
-        float Dpi
+        float DpiImg
         {
             get => _dpi;
             set
@@ -353,28 +353,28 @@ namespace AntdUI
                     switch (config.Fit.Value)
                     {
                         case TFit.Contain:
-                            Dpi = Math.Min(DpiX, DpiY);
+                            DpiImg = Math.Min(DpiX, DpiY);
                             break;
                         case TFit.Cover:
-                            Dpi = Math.Max(DpiX, DpiY);
+                            DpiImg = Math.Max(DpiX, DpiY);
                             break;
                         default:
-                            Dpi = 1F;
+                            DpiImg = 1F;
                             break;
                     }
                 }
                 else
                 {
-                    if (DpiX > 1 && DpiY > 0) Dpi = 1F;
+                    if (DpiX > 1 && DpiY > 0) DpiImg = 1F;
                     else if (ImgSize.Width > ImgSize.Height)
                     {
-                        if (rect.Width > rect.Height) Dpi = DpiX;
-                        else Dpi = DpiY;
+                        if (rect.Width > rect.Height) DpiImg = DpiX;
+                        else DpiImg = DpiY;
                     }
                     else
                     {
-                        if (rect.Width > rect.Height) Dpi = DpiY;
-                        else Dpi = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
+                        if (rect.Width > rect.Height) DpiImg = DpiY;
+                        else DpiImg = (float)((rect.Width * 1.0) / (ImgSize.Height * 1.0));
                     }
                 }
             }
@@ -514,17 +514,12 @@ namespace AntdUI
                 {
                     g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }
-                if (LoadingProgressStr != null)
-                {
-                    rect_loading.Offset(0, loading_size);
-                    g.String(LoadingProgressStr, Font, color, rect_loading);
-                }
+                if (LoadingProgressStr != null) g.String(LoadingProgressStr, Font, color, new Rectangle(rect_read.X, rect_loading.Y + loading_size, rect_read.Width, rect_loading.Height));
             }
             else if (LoadingProgressStr != null)
             {
                 g.DrawEllipse(Colour.Error.Get(name), bor6, rect_loading);
-                rect_loading.Offset(0, loading_size);
-                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(name), rect_loading);
+                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(name), new Rectangle(rect_read.X, rect_loading.Y + loading_size, rect_read.Width, rect_loading.Height));
             }
         }
 
@@ -619,13 +614,13 @@ namespace AntdUI
                 autoDpi = false;
                 if (e.Delta > 0)
                 {
-                    Dpi += 0.1F;
+                    DpiImg += 0.1F;
                     SetBtnEnabled("@t_zoomOut", true);
                 }
                 else
                 {
-                    Dpi -= 0.1F;
-                    SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
+                    DpiImg -= 0.1F;
+                    SetBtnEnabled("@t_zoomOut", DpiImg >= 0.06);
                 }
                 Print();
             }
@@ -651,7 +646,7 @@ namespace AntdUI
                     moveImging = true;
                     offsetX = offsetXOld + e.X - movePos.X;
                     offsetY = offsetYOld + e.Y - movePos.Y;
-                    Dpi = _dpi;
+                    DpiImg = _dpi;
                     Print();
                     return;
                 }
@@ -815,7 +810,7 @@ namespace AntdUI
                                 ImgSize = Img.Size;
                                 autoDpi = true;
                                 FillScaleImg();
-                                Dpi = old;
+                                DpiImg = old;
                                 autoDpi = oldautoDpi;
                                 Print();
                             }
@@ -829,18 +824,18 @@ namespace AntdUI
                                 ImgSize = Img.Size;
                                 autoDpi = true;
                                 FillScaleImg();
-                                Dpi = old;
+                                DpiImg = old;
                                 autoDpi = oldautoDpi;
                                 Print();
                             }
                             break;
                         case "@t_zoomOut":
-                            Dpi -= 0.1F;
-                            SetBtnEnabled("@t_zoomOut", Dpi >= 0.06);
+                            DpiImg -= 0.1F;
+                            SetBtnEnabled("@t_zoomOut", DpiImg >= 0.06);
                             Print();
                             break;
                         case "@t_zoomIn":
-                            Dpi += 0.1F;
+                            DpiImg += 0.1F;
                             SetBtnEnabled("@t_zoomOut", true);
                             Print();
                             break;

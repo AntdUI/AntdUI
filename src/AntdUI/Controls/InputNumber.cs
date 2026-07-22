@@ -111,7 +111,7 @@ namespace AntdUI
         /// 始终显示控制器
         /// </summary>
         [Description("始终显示控制器"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
-        public bool AlwaysShowControl { get; set; } = true;
+        public bool AlwaysShowControl { get; set; }
 
         bool wheelModifyEnabled = true;
         /// <summary>

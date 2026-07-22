@@ -319,7 +319,7 @@ namespace AntdUI
         {
             var rect = TargetRectXY;
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
-            if (config.Enabled)
+            if (visible && config.Enabled)
             {
                 using (var g = Graphics.FromImage(rbmp).HighLay(Dpi))
                 using (var brush = new SolidBrush(config.ForeColor ?? Colour.FillSecondary.Get(nameof(Watermark))))
@@ -467,46 +467,92 @@ namespace AntdUI
 
         #region 坐标
 
+        Control[]? controls;
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if (config.IsScreen) Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            if (config.IsScreen)
+            {
+                visible = true;
+                Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            }
             else
             {
-                config.Target.VisibleChanged += Target_VisibleChanged;
-                var parent = config.Target.FindPARENT();
-                if (parent == null) return;
-                tmp = parent;
-                parent.LocationChanged += Parent_LSChanged;
-                parent.SizeChanged += Parent_LSChanged;
+                config.Target.VisibleChanged += Parent_VisibleChanged;
+                config.Target.LocationChanged += Parent_LSChanged;
+                config.Target.SizeChanged += Parent_LSChanged;
+                var list = config.Target.FindPARENTs();
+                if (config.Target is TabPage page) page.ShowedChanged += Parent_VisibleChanged;
+                if (list.Count > 0)
+                {
+                    foreach (var it in list)
+                    {
+                        if (it is TabPage page2) page2.ShowedChanged += Parent_VisibleChanged;
+                        else it.VisibleChanged += Parent_VisibleChanged;
+                        it.LocationChanged += Parent_LSChanged;
+                        it.SizeChanged += Parent_LSChanged;
+                    }
+                    controls = list.ToArray();
+                }
+                LoadVisible();
             }
         }
 
+        bool visible = false;
+        void LoadVisible()
+        {
+            var tmp = GetVisible();
+            if (visible == tmp) return;
+            visible = tmp;
+            Print();
+        }
+        bool GetVisible()
+        {
+            if (!GetVisible(config.Target)) return false;
+            if (controls == null) return true;
+            foreach (var it in controls)
+            {
+                if (!GetVisible(it)) return false;
+            }
+            return true;
+        }
+        bool GetVisible(Control control)
+        {
+            if (control is TabPage page) return page.Showed;
+            return control.Visible;
+        }
+
+        private void Parent_VisibleChanged(object? sender, EventArgs e) => LoadVisible();
+
         private void Parent_LSChanged(object? sender, EventArgs e)
         {
-            var rect = TargetRect;
-            bool isPoint = true, isSize = true;
-            if (config.Target is Form form)
+            LoadVisible();
+            if (visible)
             {
-                var point = form.Location;
-                var size = form.Size;
-                SetLocation(point);
-                SetSize(size);
-                isPoint = rect.X == point.X && rect.Y == point.Y;
-                isSize = rect.Width == size.Width && rect.Height == size.Height;
+                var rect = TargetRect;
+                bool isPoint = true, isSize = true;
+                if (config.Target is Form form)
+                {
+                    var point = form.Location;
+                    var size = form.Size;
+                    SetLocation(point);
+                    SetSize(size);
+                    isPoint = rect.X == point.X && rect.Y == point.Y;
+                    isSize = rect.Width == size.Width && rect.Height == size.Height;
+                }
+                else
+                {
+                    var point = config.Target.PointToScreen(Point.Empty);
+                    var size = config.Target.Size;
+                    SetLocation(point);
+                    SetSize(size);
+                    isPoint = rect.X == point.X && rect.Y == point.Y;
+                    isSize = rect.Width == size.Width && rect.Height == size.Height;
+                }
+                if (isPoint && isSize) return;
+                else if (isSize) PrintCache();
+                else Print();
             }
-            else
-            {
-                var point = config.Target.PointToScreen(Point.Empty);
-                var size = config.Target.Size;
-                SetLocation(point);
-                SetSize(size);
-                isPoint = rect.X == point.X && rect.Y == point.Y;
-                isSize = rect.Width == size.Width && rect.Height == size.Height;
-            }
-            if (isPoint && isSize) return;
-            else if (isSize) PrintCache();
-            else Print();
         }
 
         private void Target_VisibleChanged(object? sender, EventArgs e)
@@ -525,18 +571,27 @@ namespace AntdUI
 
         #endregion
 
-        Form? tmp;
         protected override void Dispose(bool disposing)
         {
             // 移除事件监听
             if (config.IsScreen) Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
             else
             {
+                config.Target.VisibleChanged -= Parent_VisibleChanged;
+                config.Target.LocationChanged -= Parent_LSChanged;
+                config.Target.SizeChanged -= Parent_LSChanged;
+                if (config.Target is TabPage page) page.ShowedChanged -= Parent_VisibleChanged;
+                if (controls != null)
+                {
+                    foreach (var it in controls)
+                    {
+                        if (it is TabPage page2) page2.ShowedChanged -= Parent_VisibleChanged;
+                        else it.VisibleChanged -= Parent_VisibleChanged;
+                        it.LocationChanged -= Parent_LSChanged;
+                        it.SizeChanged -= Parent_LSChanged;
+                    }
+                }
                 config.Target.VisibleChanged -= Target_VisibleChanged;
-                // 移除父容器的事件监听
-                if (tmp == null) return;
-                tmp.LocationChanged -= Parent_LSChanged;
-                tmp.SizeChanged -= Parent_LSChanged;
             }
             base.Dispose(disposing);
         }

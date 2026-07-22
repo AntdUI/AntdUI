@@ -64,7 +64,7 @@ namespace AntdUI
                 if (nextColumnKey == null)
                 {
                     // 当前字段是最后一个字段
-                    if (navigationConfig.LineBreak == true)
+                    if (navigationConfig.LineBreak)
                     {
                         // 允许换行：尝试跳转到下一行的第一个字段
                         // 检查是否有下一行
@@ -101,13 +101,13 @@ namespace AntdUI
                 {
                     if (it.COLUMN.Editable)
                     {
-                        if (MoveToNextEditableCell(rowIndex, it.COLUMN, it.INDEX) && navigationConfig.SelectAll) BeginInvoke(MoveToNextEditableCellSelectAll);
+                        if (MoveToNextEditableCell(rowIndex, it) && navigationConfig.SelectAll) BeginInvoke(MoveToNextEditableCellSelectAll);
                     }
                     return;
                 }
             }
         }
-        private bool MoveToNextEditableCell(int rowIndex, Column column, int columnIndex)
+        private bool MoveToNextEditableCell(int rowIndex, CELL cell)
         {
             try
             {
@@ -115,13 +115,16 @@ namespace AntdUI
                 if (FocusNavigationAutoSelectRow && (selectedIndex.Length == 0 || selectedIndex[0] != rowIndex)) SelectedIndex = rowIndex;
 
                 // 滚动到新行，确保行在可见范围内
-                if (FocusNavigationAutoScroll) ScrollLine(rowIndex);
-
-                // 获取列索引
-                if (columnIndex >= 0)
+                if (FocusNavigationAutoScroll)
                 {
-                    SetFocusedCell(null);
-                    EnterEditMode(rowIndex, columnIndex);
+                    ScrollLine(cell.ROW.RECORD);
+                    ScrollColumn(cell.COLUMN);
+                }
+                // 获取列索引
+                if (cell.INDEX >= 0)
+                {
+                    SetFocusedCell(cell);
+                    EnterEditMode(rowIndex, cell.INDEX);
                     // 如果启用文本全选，延迟设置文本全选
                     return true;
                 }

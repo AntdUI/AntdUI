@@ -424,8 +424,9 @@ namespace AntdUI
                     if (CheckStrictly && has && items![0].PARENT == null && items[0].ParentItem == null)
                     {
                         //新数据
-                        var dir = new List<TreeItem>();
+                        var dir = new List<TreeItem>(items.Count);
                         TestSub(ref dir, items);
+                        dir.Reverse();
                         foreach (var item in dir)
                         {
                             if (item.items == null) item.CheckState = CheckState.Unchecked;
@@ -449,10 +450,7 @@ namespace AntdUI
                     {
                         _virtualRowHeight = size.Height + gap + gapI;
                         if (rdata) _flatListT = BuildFlatList(null, items, 0);
-                        else
-                        {
-                            if (_flatListT == null) _flatListT = BuildFlatList(null, items, 0);
-                        }
+                        else if (_flatListT == null) _flatListT = BuildFlatList(null, items, 0);
                         int totalRows = _flatListT!.Count;
                         y = totalRows * _virtualRowHeight;
 
@@ -481,8 +479,9 @@ namespace AntdUI
             }
         }
 
-        bool HasSub(TreeItemCollection items)
+        bool HasSub(TreeItemCollection? items)
         {
+            if (items == null) return false;
             foreach (var it in items)
             {
                 if (it.CanExpand) return true;
@@ -496,7 +495,7 @@ namespace AntdUI
             {
                 if (it.CanExpand)
                 {
-                    dir.Insert(0, it);
+                    dir.Add(it);
                     TestSub(ref dir, it.items);
                 }
             }

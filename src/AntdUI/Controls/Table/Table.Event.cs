@@ -24,6 +24,11 @@ namespace AntdUI
         public delegate void ClickEventHandler(object sender, TableClickEventArgs e);
 
         /// <summary>
+        /// 点击之前事件
+        /// </summary>
+        public delegate void ClickBeginEventHandler(object sender, TableClickBeginEventArgs e);
+
+        /// <summary>
         /// 移动事件
         /// </summary>
         public delegate void HoverEventHandler(object sender, TableHoverEventArgs e);
@@ -81,6 +86,21 @@ namespace AntdUI
         public event ClickEventHandler? CellClick;
 
         protected virtual void OnCellClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
+
+        /// <summary>
+        /// 单击之前发生
+        /// </summary>
+        [Description("单击之前发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event ClickBeginEventHandler? CellClickBegin;
+
+        protected virtual bool OnCellClickBegin(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e)
+        {
+            if (CellClickBegin == null) return true;
+            var arge = new TableClickBeginEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e);
+            CellClickBegin(this, arge);
+            if (arge.Handled) return false;
+            return true;
+        }
 
         /// <summary>
         /// 滑动时发生
@@ -300,6 +320,41 @@ namespace AntdUI
             /// 文字颜色
             /// </summary>
             public Color? ForeColor { get; set; }
+
+            /// <summary>
+            /// 字体
+            /// </summary>
+            public Font? Font { get; set; }
+
+            /// <summary>
+            /// 字体粗体
+            /// </summary>
+            public bool? FontBold { get; set; }
+
+            #region 设置
+
+            public CellStyleInfo SetBackColor(Color? value)
+            {
+                BackColor = value;
+                return this;
+            }
+            public CellStyleInfo SetForeColor(Color? value)
+            {
+                ForeColor = value;
+                return this;
+            }
+            public CellStyleInfo SetFont(Font? value)
+            {
+                Font = value;
+                return this;
+            }
+            public CellStyleInfo SetFontBold(bool? value = true)
+            {
+                FontBold = value;
+                return this;
+            }
+
+            #endregion
         }
 
         #endregion

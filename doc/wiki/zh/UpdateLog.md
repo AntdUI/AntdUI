@@ -1,5 +1,35 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.3` 2026-07-16
+
+- ➕ Progress Segments 分段
+- ➕ Progress 仪表盘 GapDegree GapPlacement
+- ➕ Table 单击之前发生 CellClickBegin、CellStyleInfo 丰富样式
+- ➕ Table ColumnSelect 添加 IconMaxSize
+- ✍️ Table 隐藏表头线错位
+- ✍️ Table 堆叠表头居中错位(筛选/排序)
+- ✍️ Table 优化 ColumnSelect.IconSvg 布局
+- ✍️ Table 数据源超出滚动条
+- ✍️ Watermark 不跟随移动
+- ✍️ Tree 优化性能
+- ✍️ Collapse CollapseGroupButton 公开Rect
+
+### `2.4.2` 2026-07-06
+
+- ➕ Tree TreeItem 支持显示角标
+- ➕ Spin GIF 加载图
+- ➕ Table ScrollColumn 支持选中单元格
+- ✍️ Tree 修复横向子节点不显示
+- ✍️ 优化 Table 编辑跳转功能，当编辑单元格不可见时滚动到该位置
+- ✍️ InputNumber 始终显示控制器(AlwaysShowControl)属性的默认值矛盾
+- ✍️ 修正 CollapseItem.Visible=false 不生效的问题
+- ✍️ Table 实现 Render 插槽后排序问题
+- ✍️ Input 删除后 滚动行异常
+- ✍️ Spin / Watermark 容器隐藏后未正常呈现UI
+- ✍️ Preview 预览缩放问题
+- ✍️ ImagePreview 清空后释放缓存
+- ✍️ Tooltip 离开交互
+
 ### `2.4.1` 2026-06-02
 
 - ➕ Config TouchKeyboard

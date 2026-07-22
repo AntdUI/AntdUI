@@ -40,68 +40,71 @@ namespace AntdUI
                 }
                 else
                 {
-                    var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
-                    if (style == TableCellFocusedStyle.None) SetFocusedCell(null);
-                    else SetFocusedCell(db.cell);
-                    if (dataSource is BindingSource bindingSource) bindingSource.Position = db.i_row - 1;
-                    var it = db.cell.ROW;
-                    if (db.mode > 0)
+                    if (OnCellClickBegin(db.cell.ROW.RECORD, db.cell.ROW.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e))
                     {
-                        if (moveheaders.Length > 0)
+                        var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
+                        if (style == TableCellFocusedStyle.None) SetFocusedCell(null);
+                        else SetFocusedCell(db.cell);
+                        if (dataSource is BindingSource bindingSource) bindingSource.Position = db.i_row - 1;
+                        var it = db.cell.ROW;
+                        if (db.mode > 0)
                         {
-                            foreach (var item in moveheaders)
+                            if (moveheaders.Length > 0)
                             {
-                                if (item.rect.Contains(db.x, db.y))
+                                foreach (var item in moveheaders)
                                 {
-                                    item.x = e.X;
-                                    Window.CanHandMessage = false;
-                                    item.MouseDown = true;
+                                    if (item.rect.Contains(db.x, db.y))
+                                    {
+                                        item.x = e.X;
+                                        Window.CanHandMessage = false;
+                                        item.MouseDown = true;
+                                        return;
+                                    }
+                                }
+                            }
+                            cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db, e.Clicks > 1);
+                            if (!cellMouseDown.doubleClick && db.col is ColumnCheck columnCheck && columnCheck.NoTitle)
+                            {
+                                if (e.Button == MouseButtons.Left && db.cell.CONTAIN_REAL(db.x, db.y))
+                                {
+                                    CheckAll(db.i_cel, columnCheck, !columnCheck.Checked);
                                     return;
                                 }
                             }
-                        }
-                        cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db, e.Clicks > 1);
-                        if (!cellMouseDown.doubleClick && db.col is ColumnCheck columnCheck && columnCheck.NoTitle)
-                        {
-                            if (e.Button == MouseButtons.Left && db.cell.CONTAIN_REAL(db.x, db.y))
+
+                            if (db.cell is TCellColumn cellColumn && (cellColumn.rect_up.Contains(db.x - db.offset_x, db.y - db.offset_xi) ||
+                                cellColumn.rect_down.Contains(db.x - db.offset_x, db.y - db.offset_xi) ||
+                                (db.col.Filter != null && cellColumn.rect_filter.Contains(db.x - db.offset_x, db.y - db.offset_xi)))) return;
+                            if (ColumnDragSort && db.col.DragSort)
                             {
-                                CheckAll(db.i_cel, columnCheck, !columnCheck.Checked);
+                                dragHeader = new DragHeader(e.X, e.Y, db.col.INDEX_REAL, e.X);
                                 return;
                             }
                         }
-
-                        if (db.cell is TCellColumn cellColumn && (cellColumn.rect_up.Contains(db.x - db.offset_x, db.y - db.offset_xi) ||
-                            cellColumn.rect_down.Contains(db.x - db.offset_x, db.y - db.offset_xi) ||
-                            (db.col.Filter != null && cellColumn.rect_filter.Contains(db.x - db.offset_x, db.y - db.offset_xi)))) return;
-                        if (ColumnDragSort && db.col.DragSort)
+                        else
                         {
-                            dragHeader = new DragHeader(e.X, e.Y, db.col.INDEX_REAL, e.X);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        if (db.col is ColumnSort sort && db.cell.CONTAIN_REAL(db.x, db.y))
-                        {
-                            dragBody = new DragHeader(e.X, e.Y, db.cell.ROW.INDEX, e.Y);
-                            return;
-                        }
-                        if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
-                        {
-                            bool value = !db.cell.ROW.Expand;
-                            if (OnExpandChanged(db.cell.ROW.RECORD, value))
+                            if (db.col is ColumnSort sort && db.cell.CONTAIN_REAL(db.x, db.y))
                             {
-                                if (db.cell.ROW.RD == null) db.cell.ROW.Expand = value;
-                                else
-                                {
-                                    db.cell.ROW.Expand = db.cell.ROW.RD.expand = value;
-                                    if (db.cell.ROW.RD.SetValue("__EXPAND__", value) && isMVVM) return;
-                                }
-                                if (LoadLayout()) Invalidate();
+                                dragBody = new DragHeader(e.X, e.Y, db.cell.ROW.INDEX, e.Y);
+                                return;
                             }
-                            return;
+                            if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
+                            {
+                                bool value = !db.cell.ROW.Expand;
+                                if (OnExpandChanged(db.cell.ROW.RECORD, value))
+                                {
+                                    if (db.cell.ROW.RD == null) db.cell.ROW.Expand = value;
+                                    else
+                                    {
+                                        db.cell.ROW.Expand = db.cell.ROW.RD.expand = value;
+                                        if (db.cell.ROW.RD.SetValue("__EXPAND__", value) && isMVVM) return;
+                                    }
+                                    if (LoadLayout()) Invalidate();
+                                }
+                                return;
+                            }
+                            MouseDownRow(e, it, db);
                         }
-                        MouseDownRow(e, it, db);
                     }
                 }
             }
@@ -766,7 +769,11 @@ namespace AntdUI
                         if (countmove > 0) SetCursor(CursorType.SizeAll);
                         else
                         {
-                            if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y)) { SetCursor(true); return; }
+                            if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
+                            {
+                                SetCursor(true);
+                                return;
+                            }
                             SetCursor(MouseMoveRow(db, e));
                         }
                     }
@@ -1315,7 +1322,7 @@ namespace AntdUI
                     for (int i_r = 0; i_r < dataTmp.rows.Length; i_r++)
                     {
                         var row = dataTmp.rows[i_r];
-                        var obj = column.Render(row.cells[column.Key], dataTmp.rows[i_r].record, i_r);
+                        var obj = column.Render(row[column.Key], dataTmp.rows[i_r].record, i_r);
                         var item = new SortModel(i_r, obj?.ToString());
                         if (row.fid == null) list.Add(item);
                         else

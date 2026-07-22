@@ -1085,7 +1085,7 @@ namespace AntdUI
                 bool emptyIcon = COLUMN.CellType == SelectCellType.Text || (value.Icon == null && value.IconSvg == null);
                 if (emptyIcon) return 0;
 
-                return (int)((height - gap) * (value.IconRatio ?? 0.75f));
+                return COLUMN.IconMaxSize ?? (int)((height - gap) * (value.IconRatio ?? 0.75f));
             }
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
@@ -1255,17 +1255,38 @@ namespace AntdUI
                     g.Svg(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
                 }
                 if (COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, colorScheme, columnCheck);
-                else
+                else PrintText(g, font, fore, COLUMN.ColStyle);
+            }
+
+            void PrintText(Canvas g, Font defaultFont, Brush defaultFore, CellStyleInfo? style)
+            {
+                if (style == null)
                 {
-                    if (COLUMN.ColStyle != null && COLUMN.ColStyle.ForeColor.HasValue)
-                    {
-                        using (var brush = new SolidBrush(COLUMN.ColStyle.ForeColor.Value))
-                        {
-                            g.DrawText(value, font, brush, RECT_REAL, StringFormat(COLUMN, true));
-                        }
-                    }
-                    else g.DrawText(value, font, fore, RECT_REAL, StringFormat(COLUMN, true));
+                    g.DrawText(value, defaultFont, defaultFore, RECT_REAL, StringFormat(COLUMN, true));
+                    return;
                 }
+                Font baseFont = style.Font ?? defaultFont;
+                Font? createdFont = null;
+
+                if (style.FontBold.HasValue)
+                {
+                    FontStyle targetStyle = baseFont.Style;
+                    // 支持开启/关闭粗体：true追加粗体，false移除粗体
+                    if (style.FontBold.Value) targetStyle |= FontStyle.Bold;
+                    else targetStyle &= ~FontStyle.Bold;
+
+                    // 仅当样式确实变化时才创建新字体，减少无意义的对象开销
+                    if (targetStyle != baseFont.Style) createdFont = new Font(baseFont.FontFamily, baseFont.Size, targetStyle);
+                }
+
+                using var _ = createdFont; // 自动释放创建的字体，null不影响
+                Font finalFont = createdFont ?? baseFont;
+
+                Brush baseBrush = defaultFore;
+                using Brush? createdBrush = style.ForeColor.HasValue ? new SolidBrush(style.ForeColor.Value) : null;
+                Brush finalBrush = createdBrush ?? baseBrush;
+
+                g.DrawText(value, finalFont, finalBrush, RECT_REAL, StringFormat(COLUMN, true));
             }
 
             void PaintCheck(Canvas g, TAMode colorScheme, ColumnCheck columnCheck)

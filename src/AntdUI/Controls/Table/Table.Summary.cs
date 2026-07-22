@@ -121,13 +121,15 @@ namespace AntdUI
         /// </summary>
         public void OnUpdateSummaries()
         {
-            if (SummaryCustomize == false) return;
-            if (dataTmp == null || dataTmp.rows.Length == 0)
+            if (summaryCustomize)
             {
-                Summary = null;
-                return;
+                if (dataTmp == null || dataTmp.rows.Length == 0)
+                {
+                    Summary = null;
+                    return;
+                }
+                ITask.Run(UpdateSummaries);
             }
-            ITask.Run(UpdateSummaries);
         }
 
         /// <summary>
@@ -251,7 +253,7 @@ namespace AntdUI
                             item.value = GetSummaryItemText(rows.Length, col.SummaryItem?.DisplayFormat);
                             break;
                         default://Custom
-                                // 自定义汇总
+                            // 自定义汇总
                             double total = 0;
                             if (CustomSummaryCalculate != null)
                             {

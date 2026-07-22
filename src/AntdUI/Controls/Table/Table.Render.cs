@@ -506,6 +506,7 @@ namespace AntdUI
         {
             var state = g.Save();
             var rect = new Rectangle(column.RECT_REAL.X, rY, column.RECT_REAL.Width, rHeight);
+            if (column is TCellColumn cellColumn) rect.Width += cellColumn.SFWidth;
             if (bordered) PaintBorder(g, new DividerList(rect.Bottom, column.RECT.X, column.RECT.Width));
             if (item.ForeColor.HasValue) g.DrawText(item.HeaderText, column_font, item.ForeColor.Value, rect, StringFormat(column.COLUMN, true));
             else g.DrawText(item.HeaderText, column_font, fore, rect, StringFormat(column.COLUMN, true));
@@ -866,7 +867,7 @@ namespace AntdUI
                     }
                 }
 
-                if (fixedHeader)
+                if (visibleHeader && fixedHeader)
                 {
                     if (dividers.Length > 0) PaintBorder(g, dividers, 1);
                     g.ResetTransform();
@@ -982,7 +983,7 @@ namespace AntdUI
                         g.ResetTransform();
                         g.TranslateTransform(0, -sy);
 
-                        if (fixedHeader)
+                        if (visibleHeader && fixedHeader)
                         {
                             if (dividers.Length > 0) PaintBorder(g, dividers, 1);
                             g.ResetTransform();

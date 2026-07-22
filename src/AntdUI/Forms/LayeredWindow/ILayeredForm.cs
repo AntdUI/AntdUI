@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -343,6 +344,12 @@ namespace AntdUI
         [Description("关闭行为"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(CloseMode.None)]
         public CloseMode CloseMode { get; set; } = CloseMode.None;
 
+        /// <summary>
+        /// 区域判断模式
+        /// </summary>
+        [Description("区域判断模式"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
+        public virtual bool AreaJudge { get; set; }
+
         #endregion
 
         #region DPI
@@ -393,7 +400,7 @@ namespace AntdUI
         {
             if (CloseMode == CloseMode.None) return;
             var mousePosition = MousePosition;
-            if (ALLRECT().Contains(mousePosition)) return;
+            if (IMOUSECM(mousePosition)) return;
             if (ICanClose()) IClose();
         }
 
@@ -402,14 +409,27 @@ namespace AntdUI
             if (CloseMode.HasFlag(CloseMode.Leave))
             {
                 var mousePosition = MousePosition;
-                var rect = ALLRECT();
-                if (IMOUSEMOVEAfter(mousePosition.X, mousePosition.Y, rect)) return;
-                if (rect.Contains(mousePosition)) return;
+                if (IMOUSEMOVEAfter(mousePosition.X, mousePosition.Y)) return;
+                if (IMOUSECM(mousePosition)) return;
                 if (ICanClose()) IClose();
             }
         }
+
+        bool IMOUSECM(Point mousePosition)
+        {
+            if (AreaJudge)
+            {
+                foreach (var rect in ALLRECTs())
+                {
+                    if (rect.Contains(mousePosition)) return true;
+                }
+            }
+            else if (ALLRECT().Contains(mousePosition)) return true;
+            return false;
+        }
+
         public virtual bool ICanClose() => true;
-        public virtual bool IMOUSEMOVEAfter(int x, int y, Rectangle rect) => false;
+        public virtual bool IMOUSEMOVEAfter(int x, int y) => false;
 
         public bool IKEYS(Keys keys)
         {
@@ -417,7 +437,7 @@ namespace AntdUI
             return KeyCall(keys);
         }
 
-        Rectangle ALLRECT()
+        internal Rectangle ALLRECT()
         {
             if (PARENT == null)
             {
@@ -447,6 +467,38 @@ namespace AntdUI
             if (subform == null) return;
             rect = Rectangle.Union(rect, subform.TargetRect);
             if (subform is SubLayeredForm sub) FunSub(sub, ref rect);
+        }
+
+        internal List<Rectangle> ALLRECTs()
+        {
+            if (PARENT == null)
+            {
+                if (this is SubLayeredForm subForm)
+                {
+                    var rects = new List<Rectangle>(2) { new Rectangle(target_rect.X, target_rect.Y, target_rect.Width, target_rect.Height) };
+                    FunSub(subForm, ref rects);
+                    return rects;
+                }
+                return new List<Rectangle> { target_rect };
+            }
+            else
+            {
+                var rects = new List<Rectangle>(3) { new Rectangle(target_rect.X, target_rect.Y, target_rect.Width, target_rect.Height) };
+                try
+                {
+                    if (!CloseMode.HasFlag(CloseMode.NoControl) && PARENT.IsHandleCreated) rects.Add(new Rectangle(PARENT.PointToScreen(Point.Empty), PARENT.Size));
+                }
+                catch { }
+                if (PARENT is SubLayeredForm subForm) FunSub(subForm, ref rects);
+                return rects;
+            }
+        }
+        void FunSub(SubLayeredForm form, ref List<Rectangle> rects)
+        {
+            var subform = form.SubForm();
+            if (subform == null) return;
+            rects.Add(subform.TargetRect);
+            if (subform is SubLayeredForm sub) FunSub(sub, ref rects);
         }
 
         #endregion

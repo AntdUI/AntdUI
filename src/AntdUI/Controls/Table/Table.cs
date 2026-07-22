@@ -1315,9 +1315,16 @@ namespace AntdUI
         /// </summary>
         /// <param name="column">表头 key</param>
         /// <param name="force">是否强制滚动</param>
+        /// <param name="selectCell">是否选中为焦点单元格</param>
         /// <returns>返回滚动量</returns>
-        public int ScrollColumn(string column, bool force = false)
+        public int ScrollColumn(string column, bool force = false, bool select = false)
         {
+            if (select)
+            {
+                var col = GetColumnByFieldKey(column);
+                if (col == null) return 0;
+                return ScrollColumn(col, force, select);
+            }
             if (rows == null) return 0;
             foreach (var cellColumn in rows.First.cells)
             {
@@ -1331,9 +1338,27 @@ namespace AntdUI
         /// </summary>
         /// <param name="column">表头</param>
         /// <param name="force">是否强制滚动</param>
+        /// <param name="select">是否选中为焦点单元格</param>
         /// <returns>返回滚动量</returns>
-        public int ScrollColumn(Column column, bool force = false)
+        public int ScrollColumn(Column column, bool force = false, bool select = false)
         {
+            if (select)
+            {
+                if (rows == null || rows.Length == 0) return 0;
+                int focusedY = focusedxy == null || focusedxy.Length < 2 ? 0 : focusedxy[1];
+                var row = rows[focusedY];
+                if (row == null) return 0;
+                foreach (var cellColumn in row.cells)
+                {
+                    if (cellColumn.COLUMN == column)
+                    {
+                        int x = ScrollColumn(cellColumn.RECT, RealRegionFixedColumn(column.INDEX_REAL), force);
+                        if (select) SetFocusedCell(cellColumn);
+                        return x;
+                    }
+                }
+                return 0;
+            }
             if (rows == null) return 0;
             foreach (var cellColumn in rows.First.cells)
             {
@@ -1866,7 +1891,9 @@ namespace AntdUI
             if (ThreadState == null)
             {
                 if (rows == null) return;
-                var rect = rows[row].RECT;
+                var it = rows[row];
+                if (it == null) return;
+                var rect = it.RECT;
                 int sy = ScrollBar.ValueY;
                 Invalidate(new Rectangle(rect.X, rect.Y - sy, rect.Width, rect.Height));
             }
@@ -1876,7 +1903,9 @@ namespace AntdUI
             if (ThreadState == null)
             {
                 if (rows == null) return;
-                var rect = rows[row].cells[column].RECT;
+                var it = rows[row];
+                if (it == null) return;
+                var rect = it.cells[column].RECT;
                 int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
                 Invalidate(new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height));
             }
@@ -2298,6 +2327,11 @@ namespace AntdUI
 
         public int? MaxCount { get; set; }
 
+        /// <summary>
+        /// 图标大小 (默认按CELL大小决定)
+        /// </summary>
+        public int? IconMaxSize { get; set; }
+
         #region 设置
 
         public ColumnSelect SetItems(params SelectItem[] list)
@@ -2313,6 +2347,11 @@ namespace AntdUI
         public ColumnSelect SetMaxCount(int? value)
         {
             MaxCount = value;
+            return this;
+        }
+        public ColumnSelect SetIconMaxSize(int? value)
+        {
+            IconMaxSize = value;
             return this;
         }
 

@@ -798,18 +798,26 @@ namespace AntdUI
 
         Point[]? SafetyTriangleZone;
         DateTime SafetyTriangleFlag;
-        public override bool IMOUSEMOVEAfter(int x, int y, Rectangle rect)
+        public override bool IMOUSEMOVEAfter(int x, int y)
         {
-            bool ret = false;
-            if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) ret = true;
+            if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone))
+            {
+                var now2 = DateTime.Now;
+                if ((now2 - SafetyTriangleFlag).TotalMilliseconds > 500)
+                {
+                    SafetyTriangleFlag = now2;
+                    SafetyTriangleZone = Helper.SafetyTriangleZone(x, y, ALLRECT());
+                }
+                return true;
+            }
             var now = DateTime.Now;
             if ((now - SafetyTriangleFlag).TotalMilliseconds > 500)
             {
                 SafetyTriangleFlag = now;
-                SafetyTriangleZone = Helper.SafetyTriangleZone(x, y, rect);
-                if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) ret = true;
+                SafetyTriangleZone = Helper.SafetyTriangleZone(x, y, ALLRECT());
+                if (SafetyTriangleZone != null && Helper.IsPointInTriangle(x, y, SafetyTriangleZone)) return true;
             }
-            return ret;
+            return false;
         }
 
         #endregion

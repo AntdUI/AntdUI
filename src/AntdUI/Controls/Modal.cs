@@ -634,6 +634,11 @@ namespace AntdUI
             /// </summary>
             public Action<string, Button>? OnButtonStyle { get; set; }
 
+            /// <summary>
+            /// Enables navigation between modal buttons using the left and right arrow keys.
+            /// </summary>
+            public bool ButtonArrowNavigation { get; set; } = false;
+
             public void Close()
             {
                 if (Layered == null) return;
@@ -908,6 +913,15 @@ namespace AntdUI
             public Config SetButtonStyle(Action<string, Button>? value)
             {
                 OnButtonStyle = value;
+                return this;
+            }
+
+            /// <summary>
+            /// Enables navigation between modal buttons using the left and right arrow keys.
+            /// </summary>
+            public Config SetButtonArrowNavigation(bool value = true)
+            {
+                ButtonArrowNavigation = value;
                 return this;
             }
 

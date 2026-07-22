@@ -1,5 +1,35 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.3` 2026-07-16
+
+- ➕ Progress Segments
+- ➕ Progress dashboard GapDegree GapPlacement
+- ➕ Before clicking on the table, CellClickBegin and CellStyleInfo occur to enrich the styles
+- ➕ Table ColumnSelect Add IconMaxSize
+- ✍️ Table hidden header line misalignment
+- ✍️ Table Stacking Header Center Misalignment (Filtering/Sorting)
+- ✍️ Table optimization ColumnSelect.IconSvg layout
+- ✍️ Table data source exceeds the scrollbar
+- ✍️ Watermark does not follow movement
+- ✍️ Tree optimization performance
+- ✍️ Collapse Collapse GroupButton public Rect
+
+### `2.4.2` 2026-07-06
+
+- ➕ Tree TreeItem supports displaying corner markers
+- ➕ Spin GIF loading image
+- ➕ Table ScrollColumn supports selecting cells
+- ✍️ Tree fixes horizontal child nodes not displaying
+- ✍️ Optimize the table editing jump function, scroll to the position when the edited cell is not visible
+- ✍️ InputNumber consistently displays the default value of the AlwaysShowControl property, which contradicts
+- ✍️ Fix the issue where CollapseItem. Visible=false does not take effect
+- ✍️ Table implements the sorting problem after rendering slots
+- ✍️ Abnormal scrolling of input after deletion
+- ✍️ Spin/Watermark container does not display UI properly after being hidden
+- ✍️ Preview zoom issue
+- ✍️ Release cache after clearing ImagePreview
+- ✍️ Tooltip leaves interaction
+
 ### `2.4.1` 2026-06-02
 
 - ➕ Config TouchKeyboard

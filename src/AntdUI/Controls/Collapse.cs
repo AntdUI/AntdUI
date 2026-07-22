@@ -345,22 +345,27 @@ namespace AntdUI
                     content_x = (int)(ContentPadding.Width * Dpi), content_y = (int)(ContentPadding.Height * Dpi), use_y = 0;
                 int title_height = size.Height + gap_y * 2;
                 int full_count = 0, useh = 0, full_h = 0;
+                var list = new List<CollapseItem>(items.Count);
                 if (Unique && UniqueFull)
                 {
                     foreach (var it in items)
                     {
-                        if (it.Expand) full_count++;
-                        else
+                        if (it.Visible)
                         {
-                            useh += title_height + gap;
-                            if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
-                            else if (it.Expand) useh += content_y * 2 + it.Height;
+                            list.Add(it);
+                            if (it.Expand) full_count++;
+                            else
+                            {
+                                useh += title_height + gap;
+                                if (it.ExpandThread) useh += (int)((content_y * 2 + it.Height) * it.ExpandProg);
+                                else if (it.Expand) useh += content_y * 2 + it.Height;
+                            }
                         }
                     }
                     if (full_count > 0)
                     {
                         full_h = rect.Height - useh;
-                        foreach (var it in items)
+                        foreach (var it in list)
                         {
                             int y = rect.Y + use_y;
                             use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Expand, y);
@@ -368,7 +373,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        foreach (var it in items)
+                        foreach (var it in list)
                         {
                             int y = rect.Y + use_y;
                             use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
@@ -379,11 +384,15 @@ namespace AntdUI
                 {
                     foreach (var it in items)
                     {
-                        if (it.Full) full_count++;
+                        if (it.Visible)
+                        {
+                            list.Add(it);
+                            if (it.Full) full_count++;
+                        }
                     }
                     if (full_count > 0)
                     {
-                        foreach (var it in items)
+                        foreach (var it in list)
                         {
                             if (!it.Full)
                             {
@@ -394,7 +403,7 @@ namespace AntdUI
                         }
                         full_h = (rect.Height - useh) / full_count;
                     }
-                    foreach (var it in items)
+                    foreach (var it in list)
                     {
                         int y = rect.Y + use_y;
                         use_y += LoadLayout(g, it, rect, size, title_height, gap, gap_x, gap_y, content_x, content_y, full_h, it.Full, y);
@@ -423,24 +432,26 @@ namespace AntdUI
                 {
                     btn.PARENT = this;
                     btn.ParentItem = it;
-                    if (btn.Show == false || btn.Visible == false) continue;
-                    int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
-                    int space = (rectButtons.Height - height) / 2;
-                    bx -= space;
-                    int? width = btn.Width;
-                    if (width == null)
+                    if (btn.Show && btn.Visible)
                     {
-                        bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
-                        string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
+                        int height = rectButtons.Height - (btn.SwitchMode ? 12 : gapW);
+                        int space = (rectButtons.Height - height) / 2;
+                        bx -= space;
+                        int? width = btn.Width;
+                        if (width == null)
+                        {
+                            bool emptyIcon = string.IsNullOrEmpty(btn.IconSvg) && btn.Icon == null;
+                            string? text = btn.SwitchMode ? (btn.Checked ? btn.CheckedText : btn.UnCheckedText) : btn.Text;
 
-                        var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
-                        width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                            var size_btn = string.IsNullOrEmpty(text) ? new Size(0, 0) : g.MeasureString(text, Font);
+                            width = btn.SwitchMode ? size_btn.Width * ((int)(3 * Dpi)) : (emptyIcon ? gapW : height) + (size_btn.Width > 0 ? size_btn.Width + gapW : 0);
+                        }
+
+                        if (width < height) width = btn.SwitchMode ? height * 4 : height;
+                        Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
+                        btn.SetRect(g, rectItem, Font.Height, 0, GetIconSize(rectItem.Height));
+                        bx -= (width.Value + space);
                     }
-
-                    if (width < height) width = btn.SwitchMode ? height * 4 : height;
-                    Rectangle rectItem = new Rectangle(bx - width.Value, rectButtons.Top + ((rectButtons.Height - height) / 2), width.Value, height);
-                    btn.SetRect(g, rectItem, Font.Height, 0, GetIconSize(rectItem.Height));
-                    bx -= (width.Value + space);
                 }
             }
             Rectangle Rect;
@@ -531,27 +542,30 @@ namespace AntdUI
                         {
                             foreach (var item in items)
                             {
-                                if (item.Expand)
+                                if (item.Visible)
                                 {
-                                    using (var path = item.Rect.RoundPath(r))
+                                    if (item.Expand)
                                     {
-                                        g.Draw(pen, path);
+                                        using (var path = item.Rect.RoundPath(r))
+                                        {
+                                            g.Draw(pen, path);
+                                        }
+                                        using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                            g.Draw(pen, path);
+                                        }
                                     }
-                                    using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                    else
                                     {
-                                        g.Fill(brush, path);
-                                        g.Draw(pen, path);
+                                        using (var path = item.RectTitle.RoundPath(r))
+                                        {
+                                            g.Fill(brush, path);
+                                            g.Draw(pen, path);
+                                        }
                                     }
+                                    PaintItem(g, item, forebrush, pen_arr);
                                 }
-                                else
-                                {
-                                    using (var path = item.RectTitle.RoundPath(r))
-                                    {
-                                        g.Fill(brush, path);
-                                        g.Draw(pen, path);
-                                    }
-                                }
-                                PaintItem(g, item, forebrush, pen_arr);
                             }
                         }
                         else
@@ -559,70 +573,72 @@ namespace AntdUI
                             for (int i = 0; i < items.Count; i++)
                             {
                                 var item = items[i];
-                                if (i == 0)
+                                if (item.Visible)
                                 {
-                                    if (item.Expand)
+                                    if (i == 0)
                                     {
-                                        using (var path = item.Rect.RoundPath(r, true, true, false, false))
+                                        if (item.Expand)
                                         {
-                                            g.Draw(pen, path);
+                                            using (var path = item.Rect.RoundPath(r, true, true, false, false))
+                                            {
+                                                g.Draw(pen, path);
+                                            }
+                                            using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                            {
+                                                g.Fill(brush, path);
+                                                g.Draw(pen, path);
+                                            }
                                         }
-                                        using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                        else
                                         {
-                                            g.Fill(brush, path);
-                                            g.Draw(pen, path);
+                                            using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                            {
+                                                g.Fill(brush, path);
+                                                g.Draw(pen, path);
+                                            }
                                         }
+                                        PaintItem(g, item, forebrush, pen_arr);
                                     }
-                                    else
+                                    else if (i == items.Count - 1)
                                     {
-                                        using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                        if (item.Expand)
                                         {
-                                            g.Fill(brush, path);
-                                            g.Draw(pen, path);
-                                        }
-                                    }
-                                    PaintItem(g, item, forebrush, pen_arr);
-                                }
-                                else if (i == items.Count - 1)
-                                {
-                                    if (item.Expand)
-                                    {
-                                        using (var path = item.Rect.RoundPath(r, false, false, true, true))
-                                        {
-                                            g.Draw(pen, path);
-                                        }
-                                        g.Fill(brush, item.RectTitle);
-                                        g.Draw(pen, item.RectTitle);
-                                    }
-                                    else
-                                    {
-                                        using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
-                                        {
-                                            g.Fill(brush, path);
-                                            g.Draw(pen, path);
-                                        }
-                                    }
-                                    PaintItem(g, item, forebrush, pen_arr);
-                                }
-                                else
-                                {
-                                    if (item.Expand)
-                                    {
-                                        g.Draw(pen, item.Rect);
-                                        g.Fill(brush, item.RectTitle);
-                                        g.Draw(pen, item.RectTitle);
-                                    }
-                                    else
-                                    {
-                                        using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
-                                        {
+                                            using (var path = item.Rect.RoundPath(r, false, false, true, true))
+                                            {
+                                                g.Draw(pen, path);
+                                            }
                                             g.Fill(brush, item.RectTitle);
                                             g.Draw(pen, item.RectTitle);
                                         }
+                                        else
+                                        {
+                                            using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
+                                            {
+                                                g.Fill(brush, path);
+                                                g.Draw(pen, path);
+                                            }
+                                        }
+                                        PaintItem(g, item, forebrush, pen_arr);
                                     }
-                                    PaintItem(g, item, forebrush, pen_arr);
+                                    else
+                                    {
+                                        if (item.Expand)
+                                        {
+                                            g.Draw(pen, item.Rect);
+                                            g.Fill(brush, item.RectTitle);
+                                            g.Draw(pen, item.RectTitle);
+                                        }
+                                        else
+                                        {
+                                            using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
+                                            {
+                                                g.Fill(brush, item.RectTitle);
+                                                g.Draw(pen, item.RectTitle);
+                                            }
+                                        }
+                                        PaintItem(g, item, forebrush, pen_arr);
+                                    }
                                 }
-
                             }
                         }
                     }
@@ -633,29 +649,7 @@ namespace AntdUI
                     {
                         foreach (var item in items)
                         {
-                            if (item.Expand)
-                            {
-                                using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
-                                {
-                                    g.Fill(brush, path);
-                                }
-                            }
-                            else
-                            {
-                                using (var path = item.RectTitle.RoundPath(r))
-                                {
-                                    g.Fill(brush, path);
-                                }
-                            }
-                            PaintItem(g, item, forebrush);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < items.Count; i++)
-                        {
-                            var item = items[i];
-                            if (i == 0)
+                            if (item.Visible)
                             {
                                 if (item.Expand)
                                 {
@@ -666,36 +660,64 @@ namespace AntdUI
                                 }
                                 else
                                 {
-                                    using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                    using (var path = item.RectTitle.RoundPath(r))
                                     {
                                         g.Fill(brush, path);
                                     }
                                 }
                                 PaintItem(g, item, forebrush);
                             }
-                            else if (i == items.Count - 1)
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < items.Count; i++)
+                        {
+                            var item = items[i];
+                            if (item.Visible)
                             {
-                                if (item.Expand) g.Fill(brush, item.RectTitle);
+                                if (i == 0)
+                                {
+                                    if (item.Expand)
+                                    {
+                                        using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        using (var path = item.RectTitle.RoundPath(r, true, true, false, false))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
+                                    }
+                                    PaintItem(g, item, forebrush);
+                                }
+                                else if (i == items.Count - 1)
+                                {
+                                    if (item.Expand) g.Fill(brush, item.RectTitle);
+                                    else
+                                    {
+                                        using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
+                                        {
+                                            g.Fill(brush, path);
+                                        }
+                                    }
+                                    PaintItem(g, item, forebrush);
+                                }
                                 else
                                 {
-                                    using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
+                                    if (item.Expand) g.Fill(brush, item.RectTitle);
+                                    else
                                     {
-                                        g.Fill(brush, path);
+                                        using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
+                                        {
+                                            g.Fill(brush, item.RectTitle);
+                                        }
                                     }
+                                    PaintItem(g, item, forebrush);
                                 }
-                                PaintItem(g, item, forebrush);
-                            }
-                            else
-                            {
-                                if (item.Expand) g.Fill(brush, item.RectTitle);
-                                else
-                                {
-                                    using (var path = item.RectTitle.RoundPath(r, false, false, true, true))
-                                    {
-                                        g.Fill(brush, item.RectTitle);
-                                    }
-                                }
-                                PaintItem(g, item, forebrush);
                             }
                         }
                     }
@@ -925,7 +947,7 @@ namespace AntdUI
                 // 首先检查是否在调整大小区域
                 foreach (var item in items)
                 {
-                    if (item.Expand && IsInResizeHandle(item, e.X, e.Y))
+                    if (item.Visible && item.Expand && IsInResizeHandle(item, e.X, e.Y))
                     {
                         isResizing = true;
                         resizingItem = item;
@@ -938,7 +960,7 @@ namespace AntdUI
 
             foreach (var item in items)
             {
-                if (item.Contains(e.X, e.Y))
+                if (item.Visible && item.Contains(e.X, e.Y))
                 {
                     item.MDown = true;
                     return;
@@ -979,7 +1001,7 @@ namespace AntdUI
             if (items == null || items.Count == 0) return;
             foreach (var item in items)
             {
-                if (item.MDown)
+                if (item.Visible && item.MDown)
                 {
                     if (item.Contains(e.X, e.Y)) item.Expand = !item.Expand;
                     else
@@ -1045,7 +1067,7 @@ namespace AntdUI
                 bool foundHover = false;
                 foreach (var item in items)
                 {
-                    if (item.Expand && item.Full == false && IsInResizeHandle(item, e.X, e.Y))
+                    if (item.Visible && item.Expand && !item.Full && IsInResizeHandle(item, e.X, e.Y))
                     {
                         Cursor = Cursors.SizeNS;
                         if (hoverResizeItem != item)
@@ -1066,7 +1088,7 @@ namespace AntdUI
             }
             foreach (var item in items)
             {
-                if (item.Contains(e.X, e.Y))
+                if (item.Visible && item.Contains(e.X, e.Y))
                 {
                     SetCursor(true);
                     return;
@@ -1120,10 +1142,13 @@ namespace AntdUI
             if (items == null || items.Count == 0) return null;
             foreach (var item in items)
             {
-                if (item.buttons == null || item.buttons.Count == 0) continue;
-                foreach (var btn in item.buttons)
+                if (item.Visible)
                 {
-                    if (btn.Show && btn.Visible && btn.Enabled && btn.rect.Contains(x, y)) return btn;
+                    if (item.buttons == null || item.buttons.Count == 0) continue;
+                    foreach (var btn in item.buttons)
+                    {
+                        if (btn.Show && btn.Visible && btn.Enabled && btn.rect.Contains(x, y)) return btn;
+                    }
                 }
             }
             return null;
@@ -1429,8 +1454,10 @@ namespace AntdUI
             if (buttons == null || buttons.Count == 0) return RectTitle.Contains(x, y);
             foreach (var btn in buttons)
             {
-                if (btn.Visible == false) continue;
-                if (btn.Contains(x, y)) return false;
+                if (btn.Visible)
+                {
+                    if (btn.Contains(x, y)) return false;
+                }
             }
             return RectTitle.Contains(x, y);
         }

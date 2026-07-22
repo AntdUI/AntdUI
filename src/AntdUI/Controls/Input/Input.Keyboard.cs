@@ -292,7 +292,7 @@ namespace AntdUI
         /// </summary>
         /// <param name="keyData">键盘数据</param>
         /// <returns>返回true拦截消息</returns>
-        public void ProcessShortcutKeys(ShortcutKeys keyData)
+        public virtual void ProcessShortcutKeys(ShortcutKeys keyData)
         {
             switch (keyData)
             {
