@@ -471,6 +471,19 @@ namespace AntdUI
                 #endregion
 
                 var last_row = _rows[lastRowIndex];
+                if (last_row == null)
+                {
+                    for (int i = lastRowIndex - 1; i >= 0; i--)
+                    {
+                        if (_rows[i] != null)
+                        {
+                            last_row = _rows[i];
+                            lastRowIndex = i;
+                            break;
+                        }
+                    }
+                }
+                if (last_row == null) return;
                 var last = last_row!.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;

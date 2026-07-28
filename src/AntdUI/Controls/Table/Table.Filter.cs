@@ -84,11 +84,11 @@ namespace AntdUI
         public IRow[]? IFilterList()
         {
             if (dataTmp == null) return null;
-            return IFilterList(dataTmp);
+            return IFilterList(dataTmp, out var flag);
         }
-        internal IRow[]? IFilterList(TempTable dataTmp)
+        internal IRow[]? IFilterList(TempTable dataTmp, out bool filteredSub)
         {
-            if (columns == null) return null;
+            if (columns == null) { filteredSub = false; return null; }
             var dir = new Dictionary<string, List<object?>>(columns.Count);
             foreach (var col in columns)
             {
@@ -97,13 +97,16 @@ namespace AntdUI
             if (dir.Count > 0)
             {
                 // 筛选符合条件的行
+                bool isSub = false;
                 var filteredRows = new List<IRow>(dataTmp.RowsCache.Length);
                 foreach (var row in dataTmp.RowsCache)
                 {
-                    if (MatchFilter(row, dir)) filteredRows.Add(row);
+                    if (MatchFilter(row, dir, out var sub)) { filteredRows.Add(row); if (sub) isSub = true; }
                 }
+                filteredSub = isSub;
                 return filteredRows.ToArray();
             }
+            filteredSub = false;
             return null;
         }
         internal IRow[] IFilterList(string columns_skip)
@@ -124,7 +127,7 @@ namespace AntdUI
                 var filteredRows = new List<IRow>(dataTmp.RowsCache.Length);
                 foreach (var row in dataTmp.RowsCache)
                 {
-                    if (MatchFilter(row, dir)) filteredRows.Add(row);
+                    if (MatchFilter(row, dir, out var sub)) filteredRows.Add(row);
                 }
                 return filteredRows.ToArray();
             }
@@ -142,11 +145,15 @@ namespace AntdUI
                 dataTmp.ClearFilter();
                 return;
             }
-            var tmp = IFilterList(dataTmp);
+            var tmp = IFilterList(dataTmp, out var sub);
             dataTmp.rowsFilter = tmp;
             OnFilterDataChanged(FilterList(tmp));
             OnUpdateSummaries();
-            if (LoadLayout()) Invalidate();
+            if (LoadLayout())
+            {
+                if (sub) ExpandAll(true);
+                Invalidate();
+            }
         }
 
         /// <summary>
@@ -155,13 +162,15 @@ namespace AntdUI
         /// <param name="row">要检查的行</param>
         /// <param name="dir">筛选集合</param>
         /// <returns>是否符合条件</returns>
-        bool MatchFilter(IRow row, Dictionary<string, List<object?>> dir)
+        bool MatchFilter(IRow row, Dictionary<string, List<object?>> dir, out bool filteredSub)
         {
+            bool sub = false;
             // 检查行是否符合所有筛选条件
             foreach (var col in dir)
             {
-                if (!MatchFilter(row, col.Key, col.Value)) return false;
+                if (!MatchFilter(row, col.Key, col.Value, out sub)) { filteredSub = false; return false; }
             }
+            filteredSub = sub;
             return true;
         }
         /// <summary>
@@ -170,17 +179,74 @@ namespace AntdUI
         /// <param name="row">要检查的行</param>
         /// <param name="column">筛选列</param>
         /// <returns>是否符合条件</returns>
-        bool MatchFilter(IRow row, string key, List<object?> filterValues)
+        bool MatchFilter(IRow row, string key, List<object?> filterValues, out bool filteredSub)
         {
-            // 获取行中对应列的值
             var cellValue = row[key];
-            // 检查单元格值是否存在于筛选值列表中
             foreach (var filterValue in filterValues)
             {
-                if (filterValue == null && cellValue == null) return true;
-                if (filterValue?.Equals(cellValue) ?? false) return true;
+                if (filterValue == null && cellValue == null) { filteredSub = false; return true; }
+                if (filterValue?.Equals(cellValue) ?? false) { filteredSub = false; return true; }
+            }
+            Column? col = GetColumnByFieldKey(key, true);
+            if (col == null || col.KeyTree == null) col = Columns.Find(c => c.KeyTree != null);//可能KeyTree不在同一列
+            if (col != null && col.KeyTree != null)
+            {
+                string subKey = col.KeyTree;
+                var treeValue = row[subKey];
+                if (treeValue != null)
+                {
+                    bool found = MatchFilterTree(treeValue, key, filterValues);
+                    filteredSub = true;
+                    return found;
+                }
+            }
+            filteredSub = false;
+            return false;
+        }
+        bool MatchFilterTree(object treeValue, string key, List<object?> filterValues)
+        {
+            var list = GetRowTree(treeValue);
+            if (list == null || list.Length == 0) return false;
+            foreach (var item in list)
+            {
+                var cellValue = GetRowValue(item, key);
+                foreach (var filterValue in filterValues)
+                {
+                    if (filterValue == null && cellValue == null) return true;
+                    if (filterValue?.Equals(cellValue) ?? false) return true;
+                }
+                var subTreeValue = GetRowValue(item, TreeKey);
+                if (subTreeValue != null)
+                {
+                    if (MatchFilterTree(subTreeValue, key, filterValues)) return true;
+                }
             }
             return false;
+        }
+        object? GetRowValue(object row, string key)
+        {
+            if (row is IList<AntItem> arows)
+            {
+                foreach (var it in arows)
+                {
+                    if (it.key == key) return it.value;
+                }
+            }
+            else if (row is System.Dynamic.ExpandoObject expando)
+            {
+                var dict = (IDictionary<string, object?>)expando;
+                if (dict.TryGetValue(key, out var value)) return value;
+            }
+            else if (row is IDictionary<string, object?> dict)
+            {
+                if (dict.TryGetValue(key, out var value)) return value;
+            }
+            else
+            {
+                var prop = System.ComponentModel.TypeDescriptor.GetProperties(row)[key];
+                if (prop != null) return prop.GetValue(row);
+            }
+            return null;
         }
     }
 

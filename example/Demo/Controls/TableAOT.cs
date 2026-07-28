@@ -5,8 +5,10 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -376,7 +378,16 @@ namespace Demo.Controls
             for (int i = 2; i < pageSize; i++)
             {
                 int index = start + i;
-                list.Add(GetItemOne(index, i, AntdUI.Localization.Get("Table.Data.Name3", "胡彦祖"), 20 + index));
+                List<AntdUI.AntItem> item = new List<AntdUI.AntItem>();
+                item.AddRange(GetItemOne(index, i, AntdUI.Localization.Get("Table.Data.Name3", "胡彦祖"), 20 + index));
+                var listSub = new List<AntdUI.AntItem[]>();
+                for (int j = 1; j < 5; j++)
+                {
+                    int indexSub = start + j;
+                    listSub.Add(GetItemOne(index, j, "胡彦祖儿子"+j.ToString(), 20 + index));
+                }
+                item.Add(new AntdUI.AntItem("Sub", listSub));
+                list.Add(item.ToArray());
             }
             return list;
         }
@@ -466,6 +477,7 @@ namespace Demo.Controls
             else btns = new AntdUI.CellLink[] { new AntdUI.CellLink("delete", "Delete") };
 
             int hobby = random.Next(0, 3);
+          
             return new AntdUI.AntItem[]{
                 new AntdUI.AntItem("no", id),
                 new AntdUI.AntItem("check", false),
@@ -485,5 +497,26 @@ namespace Demo.Controls
         }
 
         #endregion
+
+        private void checkTree_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if (e.Value)
+            {
+                foreach (var it in table1.Columns)
+                {
+                    switch (it.Key)
+                    {
+                        case "name":
+                            it.SetTree("Sub");
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var it in table1.Columns) it.KeyTree = null;
+            }
+            table1.Refresh();
+        }
     }
 }

@@ -46,6 +46,7 @@ namespace Demo.Controls
             checkRowsDragSort = new AntdUI.Checkbox();
             checkColumnDragSort = new AntdUI.Checkbox();
             checkFixedHeader = new AntdUI.Checkbox();
+            checkTree = new AntdUI.Checkbox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -103,6 +104,7 @@ namespace Demo.Controls
             panel1.Controls.Add(selectEditStyle);
             panel1.Controls.Add(selectEditMode);
             panel1.Controls.Add(checkScrollBarAvoidHeader);
+            panel1.Controls.Add(checkTree);
             panel1.Controls.Add(checkFilter);
             panel1.Controls.Add(checkAddressLineBreak);
             panel1.Controls.Add(checkVisibleHeader);
@@ -124,6 +126,7 @@ namespace Demo.Controls
             // 
             checkboxFocusNavigation.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkboxFocusNavigation.Checked = true;
+            checkboxFocusNavigation.CheckState = CheckState.Checked;
             checkboxFocusNavigation.Dock = DockStyle.Left;
             checkboxFocusNavigation.LocalizationText = "Table.{id}";
             checkboxFocusNavigation.Location = new Point(1417, 0);
@@ -216,6 +219,7 @@ namespace Demo.Controls
             // 
             checkVisibleHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkVisibleHeader.Checked = true;
+            checkVisibleHeader.CheckState = CheckState.Checked;
             checkVisibleHeader.Dock = DockStyle.Left;
             checkVisibleHeader.LocalizationText = "Table.{id}";
             checkVisibleHeader.Location = new Point(694, 0);
@@ -301,6 +305,7 @@ namespace Demo.Controls
             // 
             checkFixedHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkFixedHeader.Checked = true;
+            checkFixedHeader.CheckState = CheckState.Checked;
             checkFixedHeader.Dock = DockStyle.Left;
             checkFixedHeader.LocalizationText = "Table.{id}";
             checkFixedHeader.Location = new Point(0, 0);
@@ -309,6 +314,18 @@ namespace Demo.Controls
             checkFixedHeader.TabIndex = 0;
             checkFixedHeader.Text = "固定表头";
             checkFixedHeader.CheckedChanged += checkFixedHeader_CheckedChanged;
+            // 
+            // checkTree
+            // 
+            checkTree.AutoSizeMode = AntdUI.TAutoSize.Width;
+            checkTree.Dock = DockStyle.Left;
+            checkTree.LocalizationText = "Table.{id}";
+            checkTree.Location = new Point(1531, 0);
+            checkTree.Name = "checkTree";
+            checkTree.Size = new Size(74, 41);
+            checkTree.TabIndex = 13;
+            checkTree.Text = "树表格";
+            checkTree.CheckedChanged += checkTree_CheckedChanged;
             // 
             // TableAOT
             // 
@@ -345,5 +362,6 @@ namespace Demo.Controls
         private AntdUI.Select selectEditStyle;
         private AntdUI.Select selectFocusedStyle;
         private AntdUI.Checkbox checkboxFocusNavigation;
+        private AntdUI.Checkbox checkTree;
     }
 }
