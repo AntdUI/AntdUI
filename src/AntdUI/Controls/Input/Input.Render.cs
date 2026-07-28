@@ -67,6 +67,7 @@ namespace AntdUI
                     {
                         g.Fill(brush, path);
                     }
+                    PaintLoadingWave(g, path, rect_read);
                     PaintIcon(g, _fore);
                     PaintText(g, _fore, rect_read.Right, rect_read.Bottom);
                     PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
@@ -95,12 +96,109 @@ namespace AntdUI
                 else
                 {
                     g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Input), Name), path);
+                    PaintLoadingWave(g, path, rect_read);
                     var fore = Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Input), Name);
                     PaintIcon(g, fore);
                     PaintText(g, fore, rect_read.Right, rect_read.Bottom);
                     PaintOtherBor(g, rect_read, _radius, _back, _border, _borderActive);
                     PaintScroll(g, rect_read, _radius);
                     if (borderWidth > 0) g.Draw(_border, borderWidth * Dpi, path);
+                }
+            }
+        }
+
+        void PaintLoadingWave(Canvas g, GraphicsPath path, Rectangle rect)
+        {
+            if (loading && LoadingWaveValue > 0)
+            {
+                using (var brush = new SolidBrush(LoadingWaveColor ?? Colour.Fill.Get(ColorScheme, nameof(Button), Name)))
+                {
+                    if (LoadingWaveValue >= 1) g.Fill(brush, path);
+                    else if (LoadingWaveCount > 0)
+                    {
+                        var state = g.Save();
+                        g.SetClip(path);
+                        g.ResetTransform();
+                        int len = (int)(LoadingWaveSize * Dpi), count = LoadingWaveCount * 2 + 2;
+                        if (count < 6) count = 6;
+                        if (LoadingWaveVertical)
+                        {
+                            int pvalue = (int)(rect.Height * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                pvalue = rect.Height - pvalue + rect.Y;
+                                int wd = rect.Width / LoadingWaveCount, wd2 = wd * 2, pvalue2 = pvalue - len, rr = rect.X + wd * count;
+                                using (var path_line = new GraphicsPath())
+                                {
+                                    g.TranslateTransform(-(wd + wd2 * (AnimationLoadingWaveValue / 100F)), 0);
+                                    path_line.AddLine(rr, pvalue, rr, rect.Bottom);
+                                    path_line.AddLine(rr, rect.Bottom, rect.X, rect.Bottom);
+                                    path_line.AddLine(rect.X, rect.Bottom, rect.X, pvalue);
+                                    bool to = true;
+                                    var line = new List<PointF>(count);
+                                    for (int i = 0; i < count + 1; i++)
+                                    {
+                                        line.Add(new PointF(rect.X + wd * i, to ? pvalue : pvalue2));
+                                        to = !to;
+                                    }
+                                    path_line.AddCurve(line.ToArray());
+                                    g.Fill(brush, path_line);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int pvalue = (int)(rect.Width * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                pvalue += rect.X;
+                                int wd = rect.Height / LoadingWaveCount, wd2 = wd * 2, pvalue2 = pvalue + len, rb = rect.Y + wd * count;
+
+                                using (var path_line = new GraphicsPath())
+                                {
+                                    g.TranslateTransform(0, -(wd + wd2 * (AnimationLoadingWaveValue / 100F)));
+                                    path_line.AddLine(pvalue, rb, rect.X, rb);
+                                    path_line.AddLine(rect.X, rb, rect.X, rect.Y);
+                                    path_line.AddLine(rect.X, rect.Y, pvalue, rect.Y);
+                                    bool to = true;
+                                    var line = new List<PointF>(count);
+                                    for (int i = 0; i < count + 1; i++)
+                                    {
+                                        line.Add(new PointF(to ? pvalue : pvalue2, rect.Y + wd * i));
+                                        to = !to;
+                                    }
+                                    path_line.AddCurve(line.ToArray());
+                                    g.Fill(brush, path_line);
+                                }
+                            }
+                        }
+                        g.Restore(state);
+                    }
+                    else
+                    {
+                        if (LoadingWaveVertical)
+                        {
+                            int pvalue = (int)(rect.Height * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                var state = g.Save();
+                                g.SetClip(new Rectangle(rect.X, rect.Y + rect.Height - pvalue, rect.Width, pvalue));
+                                g.Fill(brush, path);
+                                g.Restore(state);
+                            }
+                        }
+                        else
+                        {
+                            int pvalue = (int)(rect.Width * LoadingWaveValue);
+                            if (pvalue > 0)
+                            {
+                                var state = g.Save();
+                                g.SetClip(new Rectangle(rect.X, rect.Y, pvalue, rect.Height));
+                                g.Fill(brush, path);
+                                g.Restore(state);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -224,7 +322,16 @@ namespace AntdUI
             else if (prefixSvg != null) g.Svg(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name));
             else if (prefix != null) g.Image(prefix, rect_l);
 
-            if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(ColorScheme, nameof(Input), Name) : Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name));
+            if (loading)
+            {
+                float loading_size = CaretInfo.Height * 0.06F;
+                using (var brush = new Pen(Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name), loading_size))
+                {
+                    brush.StartCap = brush.EndCap = LineCap.Round;
+                    g.DrawArc(brush, rect_r, AnimationLoadingValue, LoadingValue * 360F);
+                }
+            }
+            else if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(ColorScheme, nameof(Input), Name) : Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name));
             else if (suffixText != null) g.String(suffixText, Font, suffixFore ?? _fore, rect_r, SuffixFormat);
             else if (suffixSvg != null) g.Svg(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name));
             else if (suffix != null) g.Image(suffix, rect_r);

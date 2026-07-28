@@ -659,6 +659,84 @@ namespace AntdUI
         [Description("适配系统助记词"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AdapterSystemMnemonic { get; set; }
 
+        #region 加载动画
+
+        bool loading = false;
+        int AnimationLoadingValue = 0;
+        int AnimationLoadingWaveValue = 0;
+        /// <summary>
+        /// 加载状态
+        /// </summary>
+        [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
+        public bool Loading
+        {
+            get => loading;
+            set
+            {
+                if (loading == value) return;
+                loading = value;
+                BeforeAutoSize();
+                CalculateRect();
+                ThreadLoading?.Dispose();
+                if (loading)
+                {
+                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(this, i =>
+                    {
+                        AnimationLoadingWaveValue += 1;
+                        if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
+                        AnimationLoadingValue = i;
+                        Invalidate();
+                        return loading;
+                    }, 10, 360, 6).SetEnd(Invalidate));
+                }
+                else Invalidate();
+                OnPropertyChanged(nameof(Loading));
+            }
+        }
+
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]
+        public float LoadingValue { get; set; } = 0.3F;
+
+        #region 水波进度
+
+        /// <summary>
+        /// 水波进度
+        /// </summary>
+        [Description("水波进度"), Category("加载"), DefaultValue(0F)]
+        public float LoadingWaveValue { get; set; }
+
+        /// <summary>
+        /// 水波颜色
+        /// </summary>
+        [Description("水波颜色"), Category("加载"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? LoadingWaveColor { get; set; }
+
+        /// <summary>
+        /// 水波是否垂直
+        /// </summary>
+        [Description("水波是否垂直"), Category("加载"), DefaultValue(false)]
+        public bool LoadingWaveVertical { get; set; }
+
+        /// <summary>
+        /// 水波大小
+        /// </summary>
+        [Description("水波大小"), Category("加载"), DefaultValue(2)]
+        public int LoadingWaveSize { get; set; } = 2;
+
+        /// <summary>
+        /// 水波数量
+        /// </summary>
+        [Description("水波数量"), Category("加载"), DefaultValue(1)]
+        public int LoadingWaveCount { get; set; } = 1;
+
+        #endregion
+
+        #endregion
+
         #endregion
 
         #region 原生属性
@@ -2558,7 +2636,7 @@ namespace AntdUI
 
             string? prefixText = PrefixText, suffixText = SuffixText;
             bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
-            if (is_clear)
+            if (loading || is_clear)
             {
                 int icon_size = (int)(lineHeight * iconratio), icon_right_size = icon_size;
                 if (iconratioRight.HasValue) icon_right_size = (int)(icon_size * iconratioRight.Value);
@@ -2697,6 +2775,7 @@ namespace AntdUI
         {
             ThreadFocus?.Dispose();
             ThreadHover?.Dispose();
+            ThreadLoading?.Dispose();
             CaretInfo.Dispose();
             ThreadAnimateBlink?.Dispose();
             fix_cache_font.Dispose();
@@ -2704,5 +2783,6 @@ namespace AntdUI
         }
         AnimationTask? ThreadHover;
         AnimationTask? ThreadFocus;
+        AnimationTask? ThreadLoading;
     }
 }
