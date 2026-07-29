@@ -255,12 +255,13 @@ namespace AntdUI
             Value = new TimeSpan(0, 0, 0);
         }
 
-        protected override void OnClickContent()
+        protected override void OnClickContent(MouseEventArgs e)
         {
             if (HasFocus)
             {
                 if (expandDrop) return;
-                ExpandDrop = !expandDrop;
+                if (e.Button == MouseButtons.Left) ExpandDrop = !expandDrop;
+                else ExpandDrop = false;
             }
             else Focus();
         }

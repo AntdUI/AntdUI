@@ -633,15 +633,20 @@ namespace AntdUI
             }
         }
 
-        protected override void OnClickContent()
+        protected override void OnClickContent(MouseEventArgs e)
         {
-            if (_list || ClickSwitchDropdown) ExpandDrop = !expandDrop;
+            if (_list || ClickSwitchDropdown)
+            {
+                if (e.Button == MouseButtons.Left) ExpandDrop = !expandDrop;
+                else ExpandDrop = false;
+            }
             else
             {
                 if (HasFocus)
                 {
                     if (expandDrop) return;
-                    ExpandDrop = !expandDrop;
+                    if (e.Button == MouseButtons.Left) ExpandDrop = !expandDrop;
+                    else ExpandDrop = false;
                 }
                 else Focus();
             }

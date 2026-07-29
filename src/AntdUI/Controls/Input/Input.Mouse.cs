@@ -272,7 +272,7 @@ namespace AntdUI
                     if (set_s || set_e || set_caret || set_scroll) Invalidate();
                 }
             }
-            else OnClickContent();
+            else OnClickContent(e);
         }
 
         List<string> sptext = new List<string>{

@@ -460,12 +460,13 @@ namespace AntdUI
 
         protected override void OnClearValue() => Value = null;
 
-        protected override void OnClickContent()
+        protected override void OnClickContent(MouseEventArgs e)
         {
             if (HasFocus)
             {
                 if (expandDrop) return;
-                ExpandDrop = !expandDrop;
+                if (e.Button == MouseButtons.Left) ExpandDrop = !expandDrop;
+                else ExpandDrop = false;
             }
             else Focus();
         }

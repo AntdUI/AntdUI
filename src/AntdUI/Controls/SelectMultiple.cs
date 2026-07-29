@@ -792,7 +792,11 @@ namespace AntdUI
             base.OnClearValue();
         }
 
-        protected override void OnClickContent() => ExpandDrop = !expandDrop;
+        protected override void OnClickContent(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) ExpandDrop = !expandDrop;
+            else ExpandDrop = false;
+        }
 
         #endregion
     }

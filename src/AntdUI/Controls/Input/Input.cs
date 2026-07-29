@@ -2131,7 +2131,7 @@ namespace AntdUI
                         break;
                 }
             },
-            items.ToArray());
+            items.ToArray()).SetTopMost();
             if (!_mouseHover) config.SetLocation(PointToScreen(CaretInfo.Rect.Location));
             _contextMenu = config.open();
         }
@@ -2170,7 +2170,7 @@ namespace AntdUI
         /// <summary>
         /// 点击内容
         /// </summary>
-        protected virtual void OnClickContent() { }
+        protected virtual void OnClickContent(MouseEventArgs e) { }
 
         /// <summary>
         /// 改变鼠标状态
