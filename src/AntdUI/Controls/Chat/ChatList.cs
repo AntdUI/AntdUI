@@ -304,6 +304,20 @@ namespace AntdUI.Chat
                     if (IconLess) return;
                     if (image.Icon != null) g.Image(image.rect_icon, image.Icon, TFit.Cover, 0, true);
                 }
+                else if (it is TipChatItem tip)
+                {
+                    if (tip.Hover)
+                    {
+                        using (var path = tip.rect_text.RoundPath(radius))
+                        {
+                            g.Fill(Colour.FillQuaternary.Get(ColorScheme, name, Name), path);
+                        }
+                    }
+                    using (var brush = new SolidBrush(tip.Fore ?? Colour.TextTertiary.Get(ColorScheme, name, Name)))
+                    {
+                        g.DrawText(tip.TextTmp, Font, brush, tip.rect_text);
+                    }
+                }
             }
         }
 
@@ -471,6 +485,7 @@ namespace AntdUI.Chat
         IChatItem? mouseDown;
         int mouseDT = 0;
         Point oldMouseDown;
+        bool tipShowFull = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -495,6 +510,14 @@ namespace AntdUI.Chat
                                 mouseDT = 1;
                                 oldMouseDown = e.Location;
                                 text.SelectionStart = GetCaretPostion(text, e.X, e.Y + scrolly);
+                            }
+                        }
+                        else if (it is TipChatItem tip)
+                        {
+                            if (tip.ContainsRead(e.X, e.Y, 0, scrolly))
+                            {
+                                tipShowFull = !tipShowFull;
+                                LoadLayout(true);
                             }
                         }
                         OnItemClick(it, e);
@@ -533,9 +556,10 @@ namespace AntdUI.Chat
                 int count = 0, hand = 0, ibeam = 0;
                 foreach (IChatItem it in Items)
                 {
-                    if (it.show && it.Contains(e.Location, 0, scrolly))
+                    if (it.show)
                     {
-                        count++;
+                        bool hover = it.Contains(e.Location, 0, scrolly);
+                        if (hover) count++;
                         if (it is TextChatItem text)
                         {
                             FocusedChatItem = text;
@@ -549,6 +573,17 @@ namespace AntdUI.Chat
                                     else hand++;
                                 }
                                 else ibeam++;
+                            }
+                        }
+                        else if (it is TipChatItem tip)
+                        {
+                            if (hover)
+                            {
+                                if (tip.SetHover(tip.ContainsRead(e.X, e.Y, 0, scrolly))) count++;
+                            }
+                            else
+                            {
+                                if (tip.SetHover(false)) count++;
                             }
                         }
                     }
@@ -876,17 +911,17 @@ namespace AntdUI.Chat
                     int item_height = (int)Math.Ceiling(size * 1.714),
                         gap = (int)Math.Round(item_height * BubbleGap),
                         itemGap = (int)(ItemGap * Dpi),
-                        spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
+                        spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height, gapYH = gap + itemGap;
                     y = spilt;
                     foreach (var it in items!)
                     {
                         it.PARENT = this;
                         if (it is TextChatItem text)
                         {
-                            y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                            y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gapYH;
                             text.InitLoading();
                         }
-                        if (it is ImageChatItem image)
+                        else if (it is ImageChatItem image)
                         {
                             int imgWidth = image.Width, imgHeight = image.Height;
                             if (imgWidth > max_width)
@@ -895,9 +930,10 @@ namespace AntdUI.Chat
                                 imgWidth = max_width;
                                 imgHeight = (int)(imgHeight * scaleRatio);
                             }
-                            y += image.SetRect(rect, y, g, Font, new Size(imgWidth + spilt, imgHeight + spilt), size, spilt, spilt2, item_height, IconLess) + gap + itemGap;
+                            y += image.SetRect(rect, y, g, Font, new Size(imgWidth + spilt, imgHeight + spilt), size, spilt, spilt2, item_height, IconLess) + gapYH;
                             image.InitLoading();
                         }
+                        else if (it is TipChatItem tip) y += tip.SetRect(rect, y, g, Font, item_height, spilt, tipShowFull) + gapYH;
                     }
                     return y;
                 });
@@ -1713,6 +1749,137 @@ namespace AntdUI.Chat
         }
 
         public ImageChatItem SetTag(object? value)
+        {
+            Tag = value;
+            return this;
+        }
+
+        #endregion
+    }
+    public class TipChatItem : IChatItem
+    {
+        public TipChatItem(DateTime time)
+        {
+            _text = time.ToString("HH:mm");
+            TextFull = time.ToString("yyyy年M月d日 dddd HH:mm");
+            TextTmp = _text;
+        }
+        public TipChatItem(DateTime time, string f)
+        {
+            _text = time.ToString(f);
+            TextTmp = _text;
+        }
+        public TipChatItem(DateTime time, string f, string f_full)
+        {
+            _text = time.ToString(f);
+            TextFull = time.ToString(f_full);
+            TextTmp = _text;
+        }
+        public TipChatItem(string text)
+        {
+            _text = text;
+            TextTmp = _text;
+        }
+        public TipChatItem(string text, string textFull)
+        {
+            _text = text;
+            TextFull = textFull;
+            TextTmp = _text;
+        }
+
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Description("ID"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
+        public string? ID { get; set; }
+
+        string _text;
+        /// <summary>
+        /// 文本
+        /// </summary>
+        [Description("文本"), Category(nameof(CategoryAttribute.Appearance))]
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                if (_text == value) return;
+                _text = value;
+                Invalidates();
+            }
+        }
+
+        /// <summary>
+        /// 完整文本
+        /// </summary>
+        [Description("完整文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? TextFull { get; set; }
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
+        [Description("文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Color? Fore { get; set; }
+
+        /// <summary>
+        /// 悬浮态
+        /// </summary>
+        internal bool Hover { get; set; }
+
+        internal bool SetHover(bool value)
+        {
+            if (Hover == value) return false;
+            Hover = value;
+            return true;
+        }
+
+        internal string TextTmp { get; set; }
+
+        #region 布局
+
+        internal int SetRect(Rectangle _rect, int y, Canvas g, Font font, int h, int spilt, bool showFull)
+        {
+            TextTmp = showFull ? (TextFull ?? Text) : Text;
+            var size = g.MeasureText(TextTmp, font);
+            int sw = size.Width + spilt, sh = size.Height + spilt;
+            rect = new Rectangle(_rect.X, _rect.Y + y, _rect.Width, h);
+            rect_text = new Rectangle(rect.X + (rect.Width - sw) / 2, rect.Y + (rect.Height - sh) / 2, sw, sh);
+            return rect.Height;
+        }
+
+        internal Rectangle rect_text { get; set; }
+
+        internal bool ContainsRead(int x, int y, int sx, int sy) => TextFull != null && rect_text.Contains(new Point(x + sx, y + sy));
+
+        #endregion
+
+        #region 设置
+
+        public TipChatItem SetID(string? value)
+        {
+            ID = value;
+            return this;
+        }
+
+        public TipChatItem SetText(string value)
+        {
+            _text = value;
+            return this;
+        }
+
+        public TipChatItem SetFore(Color? value)
+        {
+            Fore = value;
+            return this;
+        }
+
+        public TipChatItem SetTextFull(string value)
+        {
+            TextFull = value;
+            return this;
+        }
+
+        public TipChatItem SetTag(object? value)
         {
             Tag = value;
             return this;

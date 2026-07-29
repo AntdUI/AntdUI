@@ -61,6 +61,7 @@ namespace ChatUI
                 chatList.AddToBottom(new TextChatItem("搭配 Nuget Tom.HttpLib 可以轻松实现GPT流式传输\n\nhttps://gitee.com/EVA-SS/HttpLib", Properties.Resources.av1, "Tom").SetMe());
                 Thread.Sleep(700);
 
+                chatList.AddToBottom(new TipChatItem(DateTime.Now.AddMinutes(-2)));
                 chatList.AddToBottom(new TextChatItem("99+个需求已通过许愿表单进入许愿池⛲啦~", Properties.Resources.av1, "Tom").SetMe());
                 Thread.Sleep(700);
 
@@ -72,13 +73,16 @@ namespace ChatUI
 
                 chatList.AddToBottom(new TextChatItem("百来块吧", Properties.Resources.av1, "Tom").SetMe());
                 Thread.Sleep(2000);
+                chatList.AddToBottom(new TipChatItem("你撤回了一条消息"));
 
                 chatList.AddToBottom(new TextChatItem("我看一般都前端做的，winform还没见过", Properties.Resources.av3, "阿枫"));
                 Thread.Sleep(700);
 
+                chatList.AddToBottom(new TipChatItem("🤖 管理员开启了全员禁言").SetFore(Style.Db.Warning));
                 chatList.AddToBottom(new TextChatItem("别聊这些\r\n------------------------------", Properties.Resources.av2, "2.0T 银"));
                 Thread.Sleep(800);
 
+                chatList.AddToBottom(new TipChatItem(DateTime.Now));
                 var strs = new List<string>() {
                     "It seems like your question",
                     " contains phrases that are taken from religious or biblical texts, ",
