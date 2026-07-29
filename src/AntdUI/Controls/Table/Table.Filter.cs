@@ -84,11 +84,15 @@ namespace AntdUI
         public IRow[]? IFilterList()
         {
             if (dataTmp == null) return null;
-            return IFilterList(dataTmp, out var flag);
+            return IFilterList(dataTmp, out _);
         }
         internal IRow[]? IFilterList(TempTable dataTmp, out bool filteredSub)
         {
-            if (columns == null) { filteredSub = false; return null; }
+            if (columns == null)
+            {
+                filteredSub = false;
+                return null;
+            }
             var dir = new Dictionary<string, List<object?>>(columns.Count);
             foreach (var col in columns)
             {
@@ -101,7 +105,11 @@ namespace AntdUI
                 var filteredRows = new List<IRow>(dataTmp.RowsCache.Length);
                 foreach (var row in dataTmp.RowsCache)
                 {
-                    if (MatchFilter(row, dir, out var sub)) { filteredRows.Add(row); if (sub) isSub = true; }
+                    if (MatchFilter(row, dir, out var sub))
+                    {
+                        filteredRows.Add(row);
+                        if (sub) isSub = true;
+                    }
                 }
                 filteredSub = isSub;
                 return filteredRows.ToArray();
@@ -168,7 +176,11 @@ namespace AntdUI
             // 检查行是否符合所有筛选条件
             foreach (var col in dir)
             {
-                if (!MatchFilter(row, col.Key, col.Value, out sub)) { filteredSub = false; return false; }
+                if (!MatchFilter(row, col.Key, col.Value, out sub))
+                {
+                    filteredSub = false;
+                    return false;
+                }
             }
             filteredSub = sub;
             return true;

@@ -851,7 +851,13 @@ namespace AntdUI.Chat
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0)
+                {
+                    if (haslist) Invalidate();
+                    haslist = false;
+                    return false;
+                }
+                haslist = true;
                 return true;
             }
             return false;
@@ -900,6 +906,7 @@ namespace AntdUI.Chat
                 if (print) Invalidate();
             }
         }
+        bool haslist = false;
         internal void LoadLayout(TextChatItem chatItem, bool print = false)
         {
             if (CanLayout())
@@ -1169,7 +1176,7 @@ namespace AntdUI.Chat
             {
                 if (_name == value) return;
                 _name = value;
-                Invalidate();
+                Invalidates();
             }
         }
 

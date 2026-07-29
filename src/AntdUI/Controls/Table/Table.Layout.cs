@@ -208,10 +208,10 @@ namespace AntdUI
                     foreach (var column in _columns) AddRows(ref cells, ref processing, ref check_count, column, row, column.Key, true);
                     if (cells.Count > 0)
                     {
-                        lastRowIndex++;
                         rowSummary++;
                         var tmp = AddRows(ref _rows, cells.ToArray(), row, 0);
                         tmp.Type = RowType.Summary;
+                        lastRowIndex = _rows.Count;
                     }
                 }
             }
@@ -470,21 +470,8 @@ namespace AntdUI
 
                 #endregion
 
-                var last_row = _rows[lastRowIndex];
-                if (last_row == null)
-                {
-                    for (int i = lastRowIndex - 1; i >= 0; i--)
-                    {
-                        if (_rows[i] != null)
-                        {
-                            last_row = _rows[i];
-                            lastRowIndex = i;
-                            break;
-                        }
-                    }
-                }
-                if (last_row == null) return;
-                var last = last_row!.cells[last_row.cells.Length - 1];
+                var last_row = LastRow(_rows, lastRowIndex);
+                var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
                 if (!isempty && (rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + (int)Math.Ceiling(borderWidth * dpi);
@@ -564,6 +551,18 @@ namespace AntdUI
             rect_read = rect_real;
             _is_exceed = is_exceed;
             return new RowList(rowlist);
+        }
+
+        RowTemplate LastRow(List<RowTemplate?> _rows, int index)
+        {
+            var last_row = _rows[index];
+            while (last_row == null)
+            {
+                index--;
+                if (index < 0) throw new Exception("Data is empty");
+                last_row = _rows[index];
+            }
+            return last_row;
         }
 
         int VHeight(int rows, float dpi, int colHeight)
