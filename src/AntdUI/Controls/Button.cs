@@ -694,6 +694,27 @@ namespace AntdUI
             }
         }
 
+        string? toggleText;
+        /// <summary>
+        /// 切换文本
+        /// </summary>
+        [Editor(typeof(System.ComponentModel.Design.MultilineStringEditor), typeof(UITypeEditor))]
+        [Description("切换文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? ToggleText
+        {
+            get => this.GetLangI(LocalizationToggleText, toggleText);
+            set
+            {
+                if (toggleText == value) return;
+                toggleText = value;
+                if (toggle && BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(ToggleText));
+            }
+        }
+
+        [Description("切换文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationToggleText { get; set; }
+
         Image? iconToggle;
         /// <summary>
         /// 切换图标
@@ -1202,7 +1223,13 @@ namespace AntdUI
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
             bool is_default = type == TTypeMini.Default, enabled = Enabled;
-            if (toggle && typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
+            string? text;
+            if (toggle)
+            {
+                text = ToggleText ?? Text;
+                if (typeToggle.HasValue) is_default = typeToggle.Value == TTypeMini.Default;
+            }
+            else text = Text;
             if (is_default)
             {
                 GetDefaultColorConfig(out var _fore, out var _color, out var _back_hover, out var _back_active);
@@ -1242,24 +1269,24 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, Text, _back_active, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _back_active, rect_read, enabled, _radius);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 g.Draw(Colour.DefaultBorder.Get(ColorScheme, nameof(Button), Name).BlendColors(colorHover), border, path);
-                                PaintTextLoading(g, Text, _fore.BlendColors(colorHover), rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _fore.BlendColors(colorHover), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, Text, _back_hover, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _back_hover, rect_read, enabled, _radius);
                             }
                             else
                             {
                                 if (AnimationBlinkState && colorBlink.HasValue) g.Draw(colorBlink.Value, border, path);
                                 else g.Draw(defaultbordercolor ?? Colour.DefaultBorder.Get(ColorScheme, nameof(Button), Name), border, path);
-                                PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
                             }
                         }
                         else
@@ -1268,14 +1295,14 @@ namespace AntdUI
                             else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
                             else if (ExtraMouseHover) g.Fill(_back_hover, path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
+                            PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
                         }
                     }
                     else
                     {
                         PaintLoadingWave(g, path, rect_read);
                         if (!ghost) g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Button), Name), path);
-                        PaintTextLoading(g, Text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
+                        PaintTextLoading(g, text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                     }
                 }
             }
@@ -1316,18 +1343,18 @@ namespace AntdUI
                             if (ExtraMouseDown)
                             {
                                 g.Draw(_back_active, border, path);
-                                PaintTextLoading(g, Text, _back_active, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _back_active, rect_read, enabled, _radius);
                             }
                             else if (AnimationHover)
                             {
                                 var colorHover = Helper.ToColor(AnimationHoverValue, _back_hover);
                                 g.Draw((enabled ? _back : Colour.FillTertiary.Get(ColorScheme, nameof(Button), Name)).BlendColors(colorHover), border, path);
-                                PaintTextLoading(g, Text, _back.BlendColors(colorHover), rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _back.BlendColors(colorHover), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Draw(_back_hover, border, path);
-                                PaintTextLoading(g, Text, _back_hover, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _back_hover, rect_read, enabled, _radius);
                             }
                             else
                             {
@@ -1347,16 +1374,16 @@ namespace AntdUI
                                             g.Draw(brushback, border, path);
                                         }
                                     }
-                                    PaintTextLoading(g, Text, _back, rect_read, enabled, _radius);
+                                    PaintTextLoading(g, text, _back, rect_read, enabled, _radius);
                                 }
                                 else
                                 {
                                     g.Draw(Colour.FillTertiary.Get(ColorScheme, nameof(Button), Name), border, path);
-                                    PaintTextLoading(g, Text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
+                                    PaintTextLoading(g, text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                                 }
                             }
                         }
-                        else PaintTextLoading(g, Text, enabled ? _back : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
+                        else PaintTextLoading(g, text, enabled ? _back : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
 
                         #endregion
                     }
@@ -1386,34 +1413,34 @@ namespace AntdUI
                                 g.Fill(_back_active, path);
 
                                 PaintLoadingWave(g, path, rect_read);
-                                PaintTextLoading(g, Text, _fore_active, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _fore_active, rect_read, enabled, _radius);
                             }
                             else if (AnimationHover)
                             {
                                 g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
 
                                 PaintLoadingWave(g, path, rect_read);
-                                if (_fore == _fore_hover) PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
-                                else PaintTextLoading(g, Text, _fore.BlendColors(Helper.ToColor(AnimationHoverValue, _fore_hover)), rect_read, enabled, _radius);
+                                if (_fore == _fore_hover) PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
+                                else PaintTextLoading(g, text, _fore.BlendColors(Helper.ToColor(AnimationHoverValue, _fore_hover)), rect_read, enabled, _radius);
                             }
                             else if (ExtraMouseHover)
                             {
                                 g.Fill(_back_hover, path);
 
                                 PaintLoadingWave(g, path, rect_read);
-                                PaintTextLoading(g, Text, _fore_hover, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _fore_hover, rect_read, enabled, _radius);
                             }
                             else
                             {
                                 PaintLoadingWave(g, path, rect_read);
-                                PaintTextLoading(g, Text, _fore, rect_read, enabled, _radius);
+                                PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
                             }
                         }
                         else
                         {
                             g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Button), Name), path);
                             PaintLoadingWave(g, path, rect_read);
-                            PaintTextLoading(g, Text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
+                            PaintTextLoading(g, text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                         }
                     }
                 }
@@ -2228,10 +2255,11 @@ namespace AntdUI
             {
                 return this.GDI(g =>
                 {
-                    var font_size = MeasureText(g, Text, out int txt_height);
+                    var text = toggle ? (ToggleText ?? Text) : Text;
+                    var font_size = MeasureText(g, text, out int txt_height);
                     int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(WaveSize * Dpi), wave2 = wave;
                     int height = Math.Max(font_size.Height, icon_size);
-                    if (Shape == TShape.Circle || string.IsNullOrEmpty(Text) || displayStyle == TButtonDisplayStyle.Image)
+                    if (Shape == TShape.Circle || string.IsNullOrEmpty(text) || displayStyle == TButtonDisplayStyle.Image)
                     {
                         int s = height + wave + gap;
                         return new Size(s, s);
