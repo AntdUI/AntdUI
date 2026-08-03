@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.4` 2026-08-13
+
+- ➕ Input Loading/Water Wave Progress
+- ➕ Chat TipChatItem prompt message
+- ➕ Button ToggleText
+- ➕ Table supports filtering of child levels
+- ➕ Timeline DescriptionFore
+- ➕ Modal adds optional arrow key navigation between buttons
+- ✍️ Empty reference exception in table virtual mode
+- ✍️ Pull down and misplace under the Padding control
+- ✍️ Clearing ChatList does not trigger UI refresh
+- ✍️ Optimize Select dropdown and right-click interaction conflicts
+- ✍️ Collapse button hover color residue
+
 ### `2.4.3` 2026-07-16
 
 - ➕ Progress Segments

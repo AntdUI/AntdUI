@@ -1,5 +1,19 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.4` 2026-08-13
+
+- ➕ Input Loading / 水波进度
+- ➕ Chat TipChatItem 提示消息
+- ➕ Button ToggleText
+- ➕ Table 支持对子级的筛选
+- ➕ Timeline DescriptionFore
+- ➕ Modal 在按钮之间添加可选的箭头键导航
+- ✍️ Table 虚拟模式下空引用异常
+- ✍️ 下拉在Padding控件下错位
+- ✍️ ChatList 清空不触发刷新UI
+- ✍️ 优化 Select 下拉与右键交互冲突
+- ✍️ Collapse 按钮悬停色残留
+
 ### `2.4.3` 2026-07-16
 
 - ➕ Progress Segments 分段
