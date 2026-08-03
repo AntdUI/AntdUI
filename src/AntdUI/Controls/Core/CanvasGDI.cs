@@ -173,6 +173,12 @@ namespace AntdUI.Core
             }
             else g.DrawString(text, font, brush, rect, Helper.TF(format));
         }
+        public void String(string? text, Font font, Color? color, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center)
+        {
+            if (color.HasValue) String(text, font, color.Value, rect, format);
+            else String(text, font, brush, rect, format);
+        }
+
         public void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Center)
         {
             using (var brush = new SolidBrush(color))
@@ -193,6 +199,12 @@ namespace AntdUI.Core
                 }
             }
             else g.DrawString(text, font, brush, rect, Helper.TF(format));
+        }
+
+        public void String(string? text, Font font, Color? color, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center)
+        {
+            if (color.HasValue) String(text, font, color.Value, rect, format);
+            else String(text, font, brush, rect, format);
         }
 
         public void String(string? text, Font font, Color color, int x, int y)
@@ -701,6 +713,12 @@ namespace AntdUI.Core
             });
             if (emojiCount > 0) DrawText(text, font, brush, rect, characters, format);
             else String(text, font, brush, rect, format);
+        }
+
+        public void DrawText(string? text, Font font, Color? color, Brush brush, Rectangle rect, FormatFlags format)
+        {
+            if (color.HasValue) DrawText(text, font, color.Value, rect, format);
+            else DrawText(text, font, brush, rect, format);
         }
 
         void DrawText(string? text, Font font, Brush brush, Rectangle rect, List<TMPChar> characters, FormatFlags format)

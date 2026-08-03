@@ -42,8 +42,7 @@ namespace AntdUI
                 }
                 g.FillEllipse(brush, RectDot);
             }
-            if (Fore.HasValue) g.DrawText(Text, font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
-            else g.DrawText(Text, font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
+            g.DrawText(Text, font, Fore, fore, Rect, Table.StringFormat(PARENT.COLUMN));
         }
 
         public override Size GetSize(Canvas g, Font font, TableGaps gap)

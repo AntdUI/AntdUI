@@ -36,8 +36,10 @@ namespace AntdUI
 
         void String(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center);
         void String(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center);
+        void String(string? text, Font font, Color? color, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center);
         void String(string? text, Font font, Color color, RectangleF rect, FormatFlags format = FormatFlags.Center);
         void String(string? text, Font font, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center);
+        void String(string? text, Font font, Color? color, Brush brush, RectangleF rect, FormatFlags format = FormatFlags.Center);
 
         void String(string? text, Font font, Color color, int x, int y);
         void String(string? text, Font font, Brush brush, int x, int y);
@@ -71,6 +73,7 @@ namespace AntdUI
 
         void DrawText(string? text, Font font, Color color, Rectangle rect, FormatFlags format = FormatFlags.Center);
         void DrawText(string? text, Font font, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center);
+        void DrawText(string? text, Font font, Color? color, Brush brush, Rectangle rect, FormatFlags format = FormatFlags.Center);
 
         #endregion
 

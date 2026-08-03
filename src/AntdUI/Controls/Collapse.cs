@@ -789,19 +789,6 @@ namespace AntdUI
             }
         }
 
-        internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color, CollapseGroupButton btn)
-        {
-            if (btn.AnimationClick || true)
-            {
-                float alpha = 100 * (1F - btn.AnimationClickValue),
-                    maxw = rect_read.Width + ((rect.Width - rect_read.Width) * btn.AnimationClickValue), maxh = rect_read.Height + ((rect.Height - rect_read.Height) * btn.AnimationClickValue);
-                using (var path_click = new RectangleF(rect.X + (rect.Width - maxw) / 2F, rect.Y + (rect.Height - maxh) / 2F, maxw, maxh).RoundPath(maxh))
-                {
-                    path_click.AddPath(path, false);
-                    g.Fill(Helper.ToColor(alpha, color), path_click);
-                }
-            }
-        }
         void PaintButtons(Canvas g, CollapseItem item, SolidBrush fore)
         {
             if (item.buttons == null) return;
@@ -820,7 +807,7 @@ namespace AntdUI
 
                             if (btn.Enabled)
                             {
-                                if (btn.Select || btn.AnimationClick) CollapseGroup.PaintBack(g, btn, active, radius);
+                                if (btn.Select) CollapseGroup.PaintBack(g, btn, active, radius);
                                 if (btn.AnimationHover)
                                 {
                                     using (var brush = new SolidBrush(Helper.ToColorN(btn.AnimationHoverValue, hover.Color)))
@@ -829,19 +816,10 @@ namespace AntdUI
                                     }
                                 }
                                 else if (btn.Hover) CollapseGroup.PaintBack(g, btn, hover, radius);
-                                else if (btn.AnimationClick)
-                                {
-                                    var rect_read = btn.rect;
-                                    using (var path = rect_read.RoundPath(rect_read.Height))
-                                    {
-                                        Color _color = btn.Back ?? active.Color;
-                                        PaintClick(g, path, rect_read, rect_read, _color, btn);
-                                    }
-                                }
                                 if (btn.Icon != null) g.Image(btn.Icon, btn.ico_rect);
 
-                                if (btn.IconSvg != null) g.Svg(btn.IconSvg, btn.ico_rect, btn.Select || btn.AnimationClick ? fore_active.Color : btn.Fore ?? fore.Color);
-                                g.String(btn.Text, Font, btn.Select || btn.AnimationClick ? fore_active : fore, btn.txt_rect, s_c);
+                                if (btn.IconSvg != null) g.Svg(btn.IconSvg, btn.ico_rect, btn.Select ? fore_active.Color : btn.Fore ?? fore.Color);
+                                g.String(btn.Text, Font, btn.Select ? fore_active : fore, btn.txt_rect, s_c);
                             }
                             else
                             {
@@ -857,7 +835,6 @@ namespace AntdUI
                             using (var path = rect_read.RoundPath(rect_read.Height))
                             {
                                 Color _color = btn.Back ?? Colour.Primary.Get(ColorScheme, nameof(Switch), Name);
-                                PaintClick(g, path, rect_read, rect_read, _color, btn);
                                 if (enabled && (btn.hasFocus && Config.FocusBorderEnabled) && btn.WaveSize > 0)
                                 {
                                     float wave = (btn.WaveSize * Dpi / 2), wave2 = wave * 2;
@@ -939,8 +916,10 @@ namespace AntdUI
 
         #region 鼠标
 
+        CollapseItem? MDown;
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            MDown = null;
             if (items == null || items.Count == 0) return;
             if (EnableResizing)
             {
@@ -962,17 +941,15 @@ namespace AntdUI
             {
                 if (item.Visible && item.Contains(e.X, e.Y))
                 {
-                    item.MDown = true;
+                    MDown = item;
                     return;
                 }
                 if (item.buttons == null) continue;
                 foreach (var btn in item.buttons)
                 {
-                    if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
-                    if (btn.Contains(e.X, e.Y))
+                    if (btn.Show && btn.Visible && btn.Enabled && btn.Contains(e.X, e.Y))
                     {
-                        item.MDown = true;
-                        btn.AnimationClick = true;
+                        MDown = item;
                         Invalidate(btn.rect);
                         return;
                     }
@@ -998,43 +975,34 @@ namespace AntdUI
                 resizingItem = null;
                 return;
             }
-            if (items == null || items.Count == 0) return;
-            foreach (var item in items)
+            base.OnMouseUp(e);
+            var item = MDown;
+            MDown = null;
+            if (item == null) return;
+            if (item.Visible)
             {
-                if (item.Visible && item.MDown)
+                if (item.Contains(e.X, e.Y)) item.Expand = !item.Expand;
+                else
                 {
-                    if (item.Contains(e.X, e.Y)) item.Expand = !item.Expand;
-                    else
+                    if (item.buttons == null) return;
+                    foreach (var btn in item.buttons)
                     {
-                        if (item.buttons == null) continue;
-                        foreach (var btn in item.buttons)
+                        if (btn.Show && btn.Visible && btn.Enabled && btn.Contains(e.X, e.Y))
                         {
-                            if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
-                            if (btn.Contains(e.X, e.Y))
+                            if (btn.SwitchMode)
                             {
-                                if (btn.SwitchMode)
-                                {
-                                    btn.Checked = !btn.Checked;
-                                    OnButtonClick(item, btn);
-                                    Invalidate(btn.rect);
-                                    item.MDown = false;
-                                    return;
-                                }
-                                btn.AnimationClick = false;
-                                if (btn.EditType != EButtonEditTypes.Button) btn.Select = true;
-
+                                btn.Checked = !btn.Checked;
                                 OnButtonClick(item, btn);
-
-                                item.MDown = false;
+                                Invalidate(btn.rect);
                                 return;
                             }
+                            if (btn.EditType != EButtonEditTypes.Button) btn.Select = true;
+                            OnButtonClick(item, btn);
+                            return;
                         }
                     }
-                    item.MDown = false;
-                    break;
                 }
             }
-            base.OnMouseUp(e);
         }
         protected override void OnMouseLeave(EventArgs e)
         {
@@ -1099,6 +1067,16 @@ namespace AntdUI
                     if (!btn.Show || !btn.Visible || !btn.Enabled) continue;
                     if (btn.Contains(e.X, e.Y))
                     {
+                        foreach (var btn2 in item.buttons)
+                        {
+                            if (btn2 == btn) continue;
+                            btn2.Hover = false;
+                            if (btn2.AnimationHover)
+                            {
+                                btn2.AnimationHover = false;
+                                if (btn2.SwitchMode) btn2.ExtraMouseHover = false;
+                            }
+                        }
                         btn.hasFocus = btn.AnimationHover = true;
                         if (btn.SwitchMode) btn.ExtraMouseHover = true;
                         else
@@ -1115,7 +1093,6 @@ namespace AntdUI
                             btn.AnimationHover = false;
                             if (btn.SwitchMode) btn.ExtraMouseHover = false;
                         }
-                        btn.AnimationClick = false;
                     }
                 }
             }
@@ -1446,7 +1423,6 @@ namespace AntdUI
 
         #region 坐标
 
-        internal bool MDown = false;
         public Rectangle Rect = new Rectangle(-10, -10, 0, 0);
         public Rectangle RectArrow, RectControl, RectTitle, RectText;
         internal bool Contains(int x, int y)

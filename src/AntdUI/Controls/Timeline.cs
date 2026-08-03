@@ -216,7 +216,7 @@ namespace AntdUI
                     if (it.Visible)
                     {
                         g.DrawText(it.Text, Font, brush_fore, it.txt_rect, stringFormatLeft);
-                        g.DrawText(it.Description, font_Description, brush_fore2, it.description_rect, stringFormatLeft);
+                        g.DrawText(it.Description, font_Description, it.DescriptionFore, brush_fore2, it.description_rect, stringFormatLeft);
                         if (PaintIcon(g, it, color_fore))
                         {
                             Color fill;
@@ -462,6 +462,13 @@ namespace AntdUI
 
         [Description("详情描述"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationDescription { get; set; }
+
+        /// <summary>
+        /// 描述文本颜色
+        /// </summary>
+        [Description("描述文本颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? DescriptionFore { get; set; }
 
         [Description("颜色类型"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TTypeMini.Primary)]
         public TTypeMini Type { get; set; } = TTypeMini.Primary;

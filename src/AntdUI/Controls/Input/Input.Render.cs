@@ -504,17 +504,8 @@ namespace AntdUI
             }
         }
 
-        void String(Canvas g, Font font, CacheFont cache, Brush brush)
-        {
-            if (cache.fore.HasValue) g.String(cache.text, cache.font ?? font, cache.fore.Value, cache.rect, sf_center);
-            else g.String(cache.text, cache.font ?? font, brush, cache.rect, sf_center);
-        }
-
-        void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush)
-        {
-            if (cache.fore.HasValue) g.String(text, cache.font ?? font, cache.fore.Value, cache.rect, sf_center);
-            else g.String(text, cache.font ?? font, brush, cache.rect, sf_center);
-        }
+        void String(Canvas g, Font font, CacheFont cache, Brush brush) => g.String(cache.text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);
+        void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush) => g.String(text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }
 

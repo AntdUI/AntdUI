@@ -21,8 +21,7 @@ namespace AntdUI
             else
             {
                 PaintChecked(g, Rect, enabled, RectIcon);
-                if (Fore.HasValue) g.DrawText(Text, Font ?? font, Fore.Value, RectText, Table.StringFormat(PARENT.COLUMN));
-                else g.DrawText(Text, Font ?? font, fore, RectText, Table.StringFormat(PARENT.COLUMN));
+                g.DrawText(Text, Font ?? font, Fore, fore, RectText, Table.StringFormat(PARENT.COLUMN));
             }
         }
 

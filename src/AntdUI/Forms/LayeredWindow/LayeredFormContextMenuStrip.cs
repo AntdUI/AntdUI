@@ -451,14 +451,7 @@ namespace AntdUI
                         if (item.Enabled)
                         {
                             if (FontSub != null) g.DrawText(item.SubText, FontSub, brushSecondary, it.RectText, sfr);
-                            if (item.Fore.HasValue)
-                            {
-                                using (var brush_fore = new SolidBrush(item.Fore.Value))
-                                {
-                                    g.DrawText(item.Text, Font, brush_fore, it.RectText, sfl);
-                                }
-                            }
-                            else g.DrawText(item.Text, Font, brush, it.RectText, sfl);
+                            g.DrawText(item.Text, Font, item.Fore, brush, it.RectText, sfl);
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {

@@ -410,18 +410,7 @@ namespace AntdUI
                     foreach (var it in marks)
                     {
                         float uks = ProgValue(it.Value);
-                        if (!string.IsNullOrWhiteSpace(it.Text))
-                        {
-                            var s_f = FormatFlags.Center | FormatFlags.NoWrap;
-                            if (it.Fore.HasValue)
-                            {
-                                using (var fore2 = new SolidBrush(it.Fore.Value))
-                                {
-                                    g.String(it.Text, Font, fore2, RectDotText(rect, rect_read, (int)uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
-                                }
-                            }
-                            else g.String(it.Text, Font, fore, RectDotText(rect, rect_read, (int)uks, markTextGap, g.MeasureString(it.Text, Font)), s_f);
-                        }
+                        if (!string.IsNullOrWhiteSpace(it.Text)) g.String(it.Text, Font, it.Fore, fore, RectDotText(rect, rect_read, (int)uks, markTextGap, g.MeasureString(it.Text, Font)), FormatFlags.Center | FormatFlags.NoWrap);
                         using (var brush_dot = new SolidBrush(color))
                         {
                             g.FillEllipse(brush_dot, RectDot(rect, rect_read, uks, size));

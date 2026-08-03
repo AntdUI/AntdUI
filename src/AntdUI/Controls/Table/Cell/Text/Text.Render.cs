@@ -17,8 +17,7 @@ namespace AntdUI
 
         public override void Paint(Canvas g, Font font, bool enable, SolidBrush fore)
         {
-            if (Fore.HasValue) g.DrawText(Text, Font ?? font, Fore.Value, Rect, Table.StringFormat(PARENT.COLUMN));
-            else g.DrawText(Text, Font ?? font, fore, Rect, Table.StringFormat(PARENT.COLUMN));
+            g.DrawText(Text, Font ?? font, Fore, fore, Rect, Table.StringFormat(PARENT.COLUMN));
             if (PrefixSvg != null) g.Svg(PrefixSvg, RectL, Fore ?? fore.Color);
             else if (Prefix != null) g.Image(Prefix, RectL);
 

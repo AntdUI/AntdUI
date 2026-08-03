@@ -539,14 +539,7 @@ namespace AntdUI
                         for (int i = 0; i < list.Count; i++)
                         {
                             var txt = list[i];
-                            if (txt.Fore.HasValue)
-                            {
-                                using (var fore = new SolidBrush(txt.Fore.Value))
-                                {
-                                    g.DrawText(txt.Text, txt.Font ?? Font, fore, rectsContent[i], stringLeft);
-                                }
-                            }
-                            else g.DrawText(txt.Text, txt.Font ?? Font, brush, rectsContent[i], stringLeft);
+                            g.DrawText(txt.Text, txt.Font ?? Font, txt.Fore, brush, rectsContent[i], stringLeft);
                         }
                     }
                     else g.DrawText(config.Content.ToString(), Font, brush, rectContent, stringTL);

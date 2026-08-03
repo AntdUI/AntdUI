@@ -415,18 +415,8 @@ namespace AntdUI
                 var rectSubText = new Rectangle(it.RectText.X + size.Width, it.RectText.Y, it.RectText.Width - size.Width, it.RectText.Height);
                 g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(ColorScheme, name, cname), rectSubText, sf);
             }
-            if (it.Enable)
-            {
-                if (color.HasValue) g.DrawText(it.Text, font, color.Value, it.RectText, sf);
-                else g.DrawText(it.Text, font, brush, it.RectText, sf);
-            }
-            else
-            {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
-                {
-                    g.DrawText(it.Text, font, fore, it.RectText, sf);
-                }
-            }
+            if (it.Enable) g.DrawText(it.Text, font, color, brush, it.RectText, sf);
+            else g.DrawText(it.Text, font, Colour.TextQuaternary.Get(ColorScheme, name, cname), it.RectText, sf);
             DrawIcon(g, it, color ?? brush.Color);
 
             using (var path = it.RectCheck.RoundPath(Radius / 2))

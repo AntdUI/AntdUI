@@ -519,18 +519,8 @@ namespace AntdUI
                 if (it.ForeSub.HasValue) g.DrawText(it.SubText, font, it.ForeSub.Value, it.RectSubText, sf);
                 else g.DrawText(it.SubText, font, foreSub ?? it.ForeSub ?? Colour.TextQuaternary.Get(ColorScheme, name, cname), it.RectSubText, sf);
             }
-            if (it.Enable)
-            {
-                if (color.HasValue) g.DrawText(it.Text, font, color.Value, it.RectText, sf);
-                else g.DrawText(it.Text, font, brush, it.RectText, sf);
-            }
-            else
-            {
-                using (var fore = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, keyid, cname)))
-                {
-                    g.DrawText(it.Text, font, fore, it.RectText, sf);
-                }
-            }
+            if (it.Enable) g.DrawText(it.Text, font, color, brush, it.RectText, sf);
+            else g.DrawText(it.Text, font, Colour.TextQuaternary.Get(ColorScheme, keyid, cname), it.RectText, sf);
             DrawIcon(g, it, color ?? brush.Color);
         }
         void DrawIcon(Canvas g, ObjectItem it, Color color)

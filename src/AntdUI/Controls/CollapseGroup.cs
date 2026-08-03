@@ -813,7 +813,7 @@ namespace AntdUI
 
         internal AnimationTask? ThreadHover, ThreadCheck;
         public CollapseGroupButton(string text, Image? icon) : base(text, icon) { }
-        internal bool AnimationClick = false;
+
         internal float AnimationClickValue = 0;
         internal bool AnimationCheck = false;
         internal float AnimationCheckValue = 0;
