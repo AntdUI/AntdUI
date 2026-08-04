@@ -116,6 +116,20 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 将日期钳制在指定范围内（包含边界），支持单侧约束
+        /// </summary>
+        /// <param name="date">待处理的日期值</param>
+        /// <param name="min">最小日期边界，为null时不限制下限</param>
+        /// <param name="max">最大日期边界，为null时不限制上限</param>
+        /// <returns>修正后的日期值；若原日期在有效范围内，则返回原值</returns>
+        public static DateTime ClampDate(DateTime date, DateTime? min, DateTime? max)
+        {
+            if (min.HasValue && date < min.Value) return min.Value;
+            else if (max.HasValue && date > max.Value) return max.Value;
+            return date;
+        }
+
+        /// <summary>
         /// 比较两个日期数组是否相等
         /// </summary>
         /// <param name="array1">第一个日期数组</param>

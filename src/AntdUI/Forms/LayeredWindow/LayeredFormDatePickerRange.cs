@@ -72,7 +72,7 @@ namespace AntdUI
                 tmpStart = tmpDate[0];
                 tmpEnd = tmpDate[1];
             }
-            else Date = DateTime.Now;
+            else Date = Helper.ClampDate(DateTime.Now, minDate, maxDate);
 
             LoadLayout();
 

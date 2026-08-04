@@ -73,7 +73,8 @@ namespace AntdUI
                 Radius = (int)(_control.radius * Dpi);
             }
             SelDate = _control.Value;
-            Date = SelDate ?? DateTime.Now;
+            if (SelDate.HasValue) Date = Helper.ClampDate(SelDate.Value, minDate, maxDate);
+            else Date = Helper.ClampDate(DateTime.Now, minDate, maxDate);
 
             LoadLayout();
 

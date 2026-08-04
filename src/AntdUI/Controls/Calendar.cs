@@ -189,9 +189,7 @@ namespace AntdUI
             if (minDate == min && maxDate == max) return;
             minDate = min;
             maxDate = max;
-            if (_Date > min) _Date = min;
-            else if (_Date < max) _Date = max;
-            Date = _Date;
+            Date = Helper.ClampDate(_Date, min, max);
             Invalidate();
         }
 
