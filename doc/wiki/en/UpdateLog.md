@@ -1,6 +1,6 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
-### `2.4.4` 2026-08-13
+### `2.4.4` 2026-08-03
 
 - ➕ Input Loading/Water Wave Progress
 - ➕ Chat TipChatItem prompt message

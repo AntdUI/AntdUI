@@ -1,6 +1,6 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
-### `2.4.4` 2026-08-13
+### `2.4.4` 2026-08-03
 
 - ➕ Input Loading / 水波进度
 - ➕ Chat TipChatItem 提示消息
