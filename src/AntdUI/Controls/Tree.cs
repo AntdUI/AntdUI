@@ -649,8 +649,12 @@ namespace AntdUI
             foreach (var it in items)
             {
                 if (it.items != null && it.items.Count > 0) it.showExpand = SetShowItem(rect, sx, sy, it.items, it.Expand || it.ExpandThread);
-                it.show = def && it.Visible && rect.IsItemVisibleExpand(sx, sy, it.rect_all, it.Expand, it.SubHeight);
-                if (it.show) count++;
+                if (it.Visible)
+                {
+                    it.show = def && rect.IsItemVisibleExpand(sx, sy, it.rect_all, it.Expand, it.SubHeight);
+                    if (it.show) count++;
+                }
+                else it.show = it.showExpand = false;
             }
             return count > 0;
         }
@@ -1479,6 +1483,11 @@ namespace AntdUI
         }
         void Select(TreeItem it, List<TreeItem>? list, bool focus)
         {
+            if (selectItem == it)
+            {
+                if (focus) Focus(it);
+                return;
+            }
             int count = 0, excount = 0;
             if (list != null)
             {
@@ -3079,6 +3088,7 @@ namespace AntdUI
         #endregion
 
         internal string[]? PY { get; set; }
+        public string[]? GetPinyin() => PY;
         public TreeItem SetPinyin(string? value)
         {
             if (value == null) PY = new string[0];

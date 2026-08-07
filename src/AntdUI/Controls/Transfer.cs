@@ -1854,6 +1854,7 @@ namespace AntdUI
         }
 
         internal string[]? PY { get; set; }
+        public string[]? GetPinyin() => PY;
         public TransferItem SetPinyin(string? value)
         {
             if (value == null) PY = new string[0];
