@@ -163,6 +163,9 @@ namespace AntdUI
         {
             switch ((Win32.User32.WindowMessage)m.Msg)
             {
+                case Win32.User32.WindowMessage.WM_DESTROY:
+                    oldmargin = -1;
+                    break;
                 case Win32.User32.WindowMessage.WM_ACTIVATE:
                     DwmArea();
                     break;
