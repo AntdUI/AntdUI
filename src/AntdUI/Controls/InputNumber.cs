@@ -73,6 +73,29 @@ namespace AntdUI
             return value;
         }
 
+        bool TryParse(string text)
+        {
+            if (Hexadecimal)
+            {
+                // 十六进制模式下，Text 是 hex 字符串（不含 "0x" 前缀）
+                if (long.TryParse(text.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var hexVal))
+                {
+                    Value = hexVal;
+                    return true;
+                }
+            }
+            else
+            {
+                // 十进制模式正常解析
+                if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out var decVal))
+                {
+                    Value = decVal;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         decimal currentValue = 0;
         /// <summary>
         /// 当前值
@@ -432,7 +455,7 @@ namespace AntdUI
         {
             if (showcontrol && !ReadOnly && rect_button.Contains(e.X, e.Y))
             {
-                if (decimal.TryParse(Text, out var _d)) Value = _d;
+                TryParse(Text);
                 if (rect_button_up.Contains(e.X, e.Y))
                 {
                     Value = currentValue + Increment;
@@ -476,10 +499,7 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            if (keyData == Keys.Enter)
-            {
-                if (decimal.TryParse(Text, out var _d)) Value = _d;
-            }
+            if (keyData == Keys.Enter) TryParse(Text);
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -498,7 +518,7 @@ namespace AntdUI
                     Value = minimum ?? 0;
                     return;
                 }
-                if (decimal.TryParse(Text, out var _d)) Value = _d;
+                TryParse(Text);
                 Text = GetNumberText(currentValue);
             }
         }
@@ -509,9 +529,8 @@ namespace AntdUI
             setTextIndex = null;
             if (EnabledValueTextChange && !isempty)
             {
-                if (decimal.TryParse(text, out var _d))
+                if (TryParse(text))
                 {
-                    Value = _d;
                     if (thousandsSeparator)
                     {
                         var text_tmp = Text;

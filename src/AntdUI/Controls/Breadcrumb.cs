@@ -186,8 +186,7 @@ namespace AntdUI
             {
                 for (int i = 0; i < hs.Length; i++)
                 {
-                    var it = items[i];
-                    g.DrawText(it.Separator ?? separator, Font, brush, hs[i], s_f);
+                    g.DrawText(items[i].Separator ?? separator, Font, brush, hs[i], s_f);
                 }
                 for (int i = 0; i < items.Count; i++)
                 {
@@ -322,7 +321,7 @@ namespace AntdUI
                         }
                         x += it.Rect.Width + _gap;
 
-                        if (tmpx > 0) hs.Add(new Rectangle(tmpx - _gap + sp, y, _gap, h));
+                        if (tmpx > 0) hs.Add(new Rectangle(rect.X + tmpx - _gap, y, _gap, h));
 
                         tmpx = x;
                     }

@@ -502,6 +502,7 @@ namespace AntdUI
             else g.SetClip(rect_com);
             int sy = scroll.ValueY;
             g.TranslateTransform(0, -sy);
+            bool enable = Enabled;
             var name = nameof(Transfer);
             using (var fore = new SolidBrush(ForeColor ?? Colour.Text.Get(ColorScheme, name, Name)))
             using (var foreActive = new SolidBrush(ForeActive ?? Colour.Text.Get(ColorScheme, name, Name)))
@@ -533,7 +534,7 @@ namespace AntdUI
                                             g.Fill(brush, it.rect);
                                         }
                                     }
-                                    PaintItem(g, it, name, fore, foreActive);
+                                    PaintItem(g, it, name, fore, foreActive, enable);
                                 }
                                 else if (it.selected) selectedCount++;
                             }
@@ -563,7 +564,7 @@ namespace AntdUI
                                                 g.Fill(brush, it.rect);
                                             }
                                         }
-                                        PaintItem(g, it, name, fore, foreActive);
+                                        PaintItem(g, it, name, fore, foreActive, enable);
                                     }
                                     else if (it.selected) selectedCount++;
                                 }
@@ -612,7 +613,7 @@ namespace AntdUI
                                                 g.Fill(brush, it.rect);
                                             }
                                         }
-                                        PaintItem(g, it, name, fore, foreActive);
+                                        PaintItem(g, it, name, fore, foreActive, enable);
                                     }
                                     else if (it.selected) selectedCount++;
                                 }
@@ -634,11 +635,11 @@ namespace AntdUI
             if (scroll.Show) scroll.Paint(g, ColorScheme);
         }
 
-        private void PaintItem(Canvas g, TransferItem it, string name, SolidBrush fore, SolidBrush foreActive)
+        private void PaintItem(Canvas g, TransferItem it, string name, SolidBrush fore, SolidBrush foreActive, bool enable)
         {
-            PaintItemCheck(g, it, name);
+            PaintItemCheck(g, it, name, enable);
             // 绘制项文本
-            if (it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
+            if (enable && it.Enabled) g.String(it.Text, Font, it.selected ? foreActive : fore, it.rect_text, sf);
             else g.String(it.Text, Font, Colour.TextQuaternary.Get(ColorScheme, name, Name), it.rect_text, sf);
         }
 
@@ -663,11 +664,11 @@ namespace AntdUI
             }
         }
 
-        private void PaintItemCheck(Canvas g, TransferItem it, string name)
+        private void PaintItemCheck(Canvas g, TransferItem it, string name, bool enable)
         {
             using (var path = it.rect_check.RoundPath(it.rect_check.Height * .2F))
             {
-                if (it.Enabled)
+                if (enable && it.Enabled)
                 {
                     if (it.selected)
                     {

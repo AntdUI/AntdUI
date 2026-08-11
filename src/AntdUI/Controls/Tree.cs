@@ -619,6 +619,7 @@ namespace AntdUI
             var g = e.Canvas;
             int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY - virtualMode_Y;
             g.TranslateTransform(-sx, -sy);
+            bool enable = Enabled;
             float _radius = radius * Dpi;
             using (var brush_fore = new SolidBrush(fore ?? Colour.TextBase.Get(ColorScheme, nameof(Tree), Name)))
             using (var brush_fore_active = new SolidBrush(ForeActive ?? Colour.Primary.Get(ColorScheme, nameof(Tree), Name)))
@@ -631,12 +632,12 @@ namespace AntdUI
                     if (_flatList == null) return;
                     SetShowItem(e.Rect, sx, sy, _flatList, true);
                     int tx = -sx, ty = -sy;
-                    foreach (var it in _flatList) PaintItem(g, it, tx, ty, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius, sx, sy);
+                    foreach (var it in _flatList) PaintItem(g, it, tx, ty, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius, sx, sy, enable);
                 }
                 else
                 {
                     SetShowItem(e.Rect, sx, sy, items, true);
-                    PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius);
+                    PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius, enable);
                 }
             }
             g.ResetTransform();
@@ -659,7 +660,7 @@ namespace AntdUI
             return count > 0;
         }
 
-        bool PaintItem(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
+        bool PaintItem(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItemCollection items, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, bool enable)
         {
             int count = 0;
             foreach (var it in items)
@@ -667,14 +668,14 @@ namespace AntdUI
                 if (it.show)
                 {
                     count++;
-                    PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy);
-                    PaintItemExpand(g, rect, tx, ty, sx, sy, it, fore, fore_active, hover, active, brushTextTertiary, radius);
+                    PaintItem(g, it, tx, ty, fore, fore_active, hover, active, brushTextTertiary, radius, sx, sy, enable);
+                    PaintItemExpand(g, rect, tx, ty, sx, sy, it, fore, fore_active, hover, active, brushTextTertiary, radius, enable);
                 }
-                else if (it.showExpand) PaintItemExpand(g, rect, tx, ty, sx, sy, it, fore, fore_active, hover, active, brushTextTertiary, radius);
+                else if (it.showExpand) PaintItemExpand(g, rect, tx, ty, sx, sy, it, fore, fore_active, hover, active, brushTextTertiary, radius, enable);
             }
             return count == 0;
         }
-        void PaintItemExpand(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItem it, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius)
+        void PaintItemExpand(Canvas g, Rectangle rect, int tx, int ty, int sx, int sy, TreeItem it, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, bool enable)
         {
             if ((it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
             {
@@ -687,7 +688,7 @@ namespace AntdUI
                         using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
                         {
                             g2.TranslateTransform(tx, -it.rect.Bottom);
-                            if (PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius))
+                            if (PaintItem(g2, rect, tx, -it.rect.Bottom, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius, enable))
                             {
                                 it.ExpandTemp.Dispose();
                                 it.ExpandTemp = null;
@@ -697,12 +698,12 @@ namespace AntdUI
                     if (it.ExpandTemp == null) return;
                     g.Image(it.ExpandTemp, new Rectangle(rect.X + sx, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
                 }
-                else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius);
+                else PaintItem(g, rect, tx, ty, sx, sy, it.items, fore, fore_active, hover, active, brushTextTertiary, radius, enable);
             }
         }
 
         readonly FormatFlags s_c = FormatFlags.Center | FormatFlags.EllipsisCharacter;
-        void PaintItem(Canvas g, TreeItem item, int tx, int ty, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy)
+        void PaintItem(Canvas g, TreeItem item, int tx, int ty, SolidBrush fore, SolidBrush fore_active, SolidBrush hover, SolidBrush active, SolidBrush brushTextTertiary, float radius, int sx, int sy, bool enable)
         {
             if (item.Select)
             {
@@ -729,7 +730,7 @@ namespace AntdUI
                 }
                 else if (item.Hover) PaintBack(g, hover, item.rect, radius);
                 if (item.CanExpand) PaintArrow(g, item, tx, ty, fore, sx, sy);
-                if (item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
+                if (enable && item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
                 {
                     using (var brush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Tree), Name)))
@@ -743,7 +744,7 @@ namespace AntdUI
                 using (var path_check = Helper.RoundPath(item.check_rect, check_radius))
                 {
                     var bor2 = 2F * Dpi;
-                    if (item.Enabled)
+                    if (enable && item.Enabled)
                     {
                         if (item.AnimationCheck)
                         {

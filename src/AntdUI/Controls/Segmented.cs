@@ -826,7 +826,7 @@ namespace AntdUI
                     else g.Fill(color_active, rect);
                 }
             }
-            var enabled = Enabled;
+            var enable = Enabled;
             using (var brush = new SolidBrush((fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Segmented), Name))))
             using (var brushDisable = new SolidBrush(Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Segmented), Name)))
             {
@@ -835,7 +835,7 @@ namespace AntdUI
                     var it = item_text[i];
                     if (i == _select)
                     {
-                        if (enabled && it.Enabled)
+                        if (enable && it.Enabled)
                         {
                             var color_active = foreactive ?? Colour.Text.Get(ColorScheme, nameof(Segmented), Name);
                             if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
@@ -849,7 +849,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (enabled && it.Enabled)
+                        if (enable && it.Enabled)
                         {
                             if (i == _hover)
                             {
