@@ -168,7 +168,7 @@ namespace AntdUI
 
         float tmpItemHeight = 0F;
         object? Guid;
-        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object guid, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Select control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object? guid, IList<object> items, int sel = -1)
         {
             Guid = guid;
             select_x = sx;
@@ -199,7 +199,7 @@ namespace AntdUI
             CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
         }
-        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object guid, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Dropdown control, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object? guid, IList<object> items, int sel = -1)
         {
             Guid = guid;
             select_x = sx;
@@ -229,7 +229,7 @@ namespace AntdUI
             CLocation(parent, rect, control.DropDownArrow, ArrowSize);
             Init();
         }
-        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object guid, IList<object> items, int sel = -1)
+        public LayeredFormSelectDown(Table control, ICell cell, int sx, LayeredFormSelectDown parent, int radius, int arrowSize, int maxcount, float itemHeight, Rectangle rect, object? guid, IList<object> items, int sel = -1)
         {
             Guid = guid;
             select_x = sx;
@@ -430,7 +430,7 @@ namespace AntdUI
             if (it.SID)
             {
                 if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
-                else if (it.Tag.Equals(selectedValue))
+                else if (Equals(it.Tag, selectedValue))
                 {
                     if (DrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
                     using (var path = it.Rect.RoundPath(Radius))
@@ -523,7 +523,7 @@ namespace AntdUI
             else g.DrawText(it.Text, font, Colour.TextQuaternary.Get(ColorScheme, keyid, cname), it.RectText, sf);
             DrawIcon(g, it, color ?? brush.Color);
         }
-        void DrawIcon(Canvas g, ObjectItem it, Color color)
+        static void DrawIcon(Canvas g, ObjectItem it, Color color)
         {
             if (it.Icon != null)
             {
@@ -568,7 +568,7 @@ namespace AntdUI
                 nodata = false;
                 int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
                 icon_size = (int)(text_height * .7F), icon_gap = (int)(text_height * .25F), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
-                gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
+                gap_x2 = gap_x * 2;
 
                 tmp_padd = padd;
 
@@ -773,7 +773,7 @@ namespace AntdUI
                     }
                     else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x + offset_x, rect.Y, rect.Width - gap_x2 - offset_x, rect.Height)) { NoIndex = no_id };
                 }
-                if (item.Tag.Equals(selectedValue)) sy = y;
+                if (Equals(item.Tag, selectedValue)) sy = y;
                 y += item_height;
             }
             return item;
@@ -1045,7 +1045,7 @@ namespace AntdUI
 
         #endregion
 
-        IList<object> SearchList(IList<object> items, string? search)
+        static IList<object> SearchList(IList<object> items, string? search)
         {
             if (search == null || string.IsNullOrEmpty(search)) return items;
             else
@@ -1056,7 +1056,7 @@ namespace AntdUI
                 return listSearch.SearchWeightSort() ?? new List<object>(0);
             }
         }
-        void SearchList(IList<object> items, string search, ref List<ItemSearchWeigth<object>> listSearch, ref object? select)
+        static void SearchList(IList<object> items, string search, ref List<ItemSearchWeigth<object>> listSearch, ref object? select)
         {
             foreach (var it in items)
             {

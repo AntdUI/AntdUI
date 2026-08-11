@@ -227,7 +227,7 @@ namespace AntdUI
                     if (filterValue == null && cellValue == null) return true;
                     if (filterValue?.Equals(cellValue) ?? false) return true;
                 }
-                var subTreeValue = GetRowValue(item, TreeKey);
+                var subTreeValue = GetRowValue(item, TreeKey!);
                 if (subTreeValue != null)
                 {
                     if (MatchFilterTree(subTreeValue, key, filterValues)) return true;

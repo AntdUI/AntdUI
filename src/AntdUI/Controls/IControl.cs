@@ -561,7 +561,7 @@ namespace AntdUI
             if (form == null) return true;
             return CanProcessMnemonicActiveControl(form.ActiveControl);
         }
-        internal bool CanProcessMnemonicActiveControl(Control? control)
+        internal static bool CanProcessMnemonicActiveControl(Control? control)
         {
             if (control is Input input) return input.hasAlt;
             else if (control is UserControl userControl) return CanProcessMnemonicActiveControl(userControl.ActiveControl);
@@ -851,7 +851,7 @@ namespace AntdUI
             return false;
         }
 
-        System.Collections.Generic.List<string> DragDataDirTree(string dir)
+        static System.Collections.Generic.List<string> DragDataDirTree(string dir)
         {
             var dirinfo = new System.IO.DirectoryInfo(dir);
             var files = dirinfo.GetFiles();

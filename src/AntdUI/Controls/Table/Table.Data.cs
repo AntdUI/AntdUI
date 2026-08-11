@@ -359,13 +359,30 @@ namespace AntdUI
                 if (dataTmp.columns.Length == 0) ExtractData();
                 else
                 {
-                    var cells = GetRow(row, dataTmp.columns.Length);
-                    if (cells.Count == 0) return;
-                    int len = dataTmp.rows.Length + 1;
-                    if (len < i) return;
-                    var rows = new List<IRow>(len);
-                    rows.AddRange(dataTmp.rows);
-                    rows.Insert(i, new IRow(i, row, cells, 0, null));
+                    List<IRow> rows;
+                    if (TreeKey == null)
+                    {
+                        var cells = GetRow(row, dataTmp.columns.Length);
+                        if (cells.Count == 0) return;
+                        int len = dataTmp.rows.Length + 1;
+                        if (len < i) return;
+                        rows = new List<IRow>(len);
+                        rows.AddRange(dataTmp.rows);
+                        rows.Insert(i, new IRow(i, row, cells, 0, null));
+                        dataTmp.rows = ChangeList(rows);
+                    }
+                    else
+                    {
+                        var tmps = new List<IRow>(1);
+                        GetRowAuto(ref tmps, row, i, dataTmp.columns, 0);
+                        if (tmps.Count == 0) return;
+                        int len = dataTmp.rows.Length + tmps.Count;
+                        i = dataTmp.FindTreeIndexFid(i, list);
+                        if (len < i) return;
+                        rows = new List<IRow>(len);
+                        rows.AddRange(dataTmp.rows);
+                        rows.InsertRange(i, tmps);
+                    }
                     dataTmp.rows = ChangeList(rows);
                 }
                 if (LoadLayout()) Invalidate();
@@ -720,6 +737,25 @@ namespace AntdUI
                     }
                     return list.ToArray();
                 }
+            }
+
+            public int FindTreeIndexFid(int index, IList list)
+            {
+                if (list.Count > 0 && index > 0)
+                {
+                    var tmp = list[index - 1];
+                    var row = FindRecord(tmp!);
+                    if (row == -1) return index;
+                    var records = new List<object?>(rows.Length) { rows[row].record };
+                    for (int i = row + 1; i < rows.Length; i++)
+                    {
+                        var it = rows[i];
+                        if (records.Contains(it.fid)) records.Add(it.record);
+                        else return i;
+                    }
+                    return rows.Length;
+                }
+                return index;
             }
         }
 

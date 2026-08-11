@@ -111,7 +111,7 @@ namespace AntdUI
         [Description("选中值"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? SelectedValue { get; set; }
 
-        internal void DropDownChange(object value)
+        internal void DropDownChange(object? value)
         {
             if (SelectedValue == value) OnItemClick(value);
             else

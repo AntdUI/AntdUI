@@ -155,7 +155,7 @@ namespace AntdUI
         [Description("单元格焦点变更后发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event CellFocusedEventHandler? CellFocused;
 
-        protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect) => CellFocused?.Invoke(this, new TableCellFocusedEventArgs(record, rowType, rowIndex, columnIndex, column, rect));
+        protected virtual void OnCellFocused(object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect) => CellFocused?.Invoke(this, new TableCellFocusedEventArgs(record, rowType, rowIndex, columnIndex, column, rect));
 
         #region 编辑
 

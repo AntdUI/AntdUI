@@ -2758,7 +2758,7 @@ namespace AntdUI
             return false;
         }
 
-        public void HandleEvent(EventType id, object? tag)
+        public virtual void HandleEvent(EventType id, object? tag)
         {
             switch (id)
             {

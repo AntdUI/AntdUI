@@ -22,7 +22,7 @@ namespace AntdUI
     [Description("Select 选择器")]
     [ToolboxItem(true)]
     [DefaultEvent("SelectedIndexChanged")]
-    public class Select : Input, SubLayeredForm, IEventListener
+    public class Select : Input, SubLayeredForm
     {
         #region 属性
 
@@ -261,7 +261,7 @@ namespace AntdUI
                     ChangeValue(i, item);
                     return;
                 }
-                else if (item is SelectItem it && it.Tag.Equals(val))
+                else if (item is SelectItem it && Equals(it.Tag, val))
                 {
                     ChangeValue(i, item);
                     return;
@@ -315,7 +315,7 @@ namespace AntdUI
             return false;
         }
 
-        internal void DropDownChange(int x, int y, object value, SelectItem? item, string text)
+        internal void DropDownChange(int x, int y, object? value, SelectItem? item, string text)
         {
             selectedIndexX = x;
             selectedIndex = y;
@@ -325,7 +325,6 @@ namespace AntdUI
             if (AutoPrefixSvg && item != null) PrefixSvg = item.IconSvg;
             OnSelectedValueChanged(selectedValue);
             OnSelectedIndexChanged(selectedIndex);
-            SelectedIndexsChanged?.Invoke(this, new IntXYEventArgs(selectedIndexX, selectedIndex));
             OnPropertyChanged(nameof(SelectedIndex));
             OnPropertyChanged(nameof(SelectedValue));
             ExpandDrop = false;
@@ -333,7 +332,7 @@ namespace AntdUI
             subForm = null;
         }
 
-        internal bool DropDownClose(object value)
+        internal bool DropDownClose(object? value)
         {
             if (ClosedItem == null) return false;
             ClosedItem(this, new ObjectNEventArgs(value));
@@ -349,12 +348,6 @@ namespace AntdUI
         public event IntEventHandler? SelectedIndexChanged;
 
         protected virtual void OnSelectedIndexChanged(int e) => SelectedIndexChanged?.Invoke(this, new IntEventArgs(e));
-
-        /// <summary>
-        /// 多层树结构更改时发生
-        /// </summary>
-        [Description("多层树结构更改时发生"), Category(nameof(CategoryAttribute.Behavior)), Obsolete("use SelectedValueChanged")]
-        public event IntXYEventHandler? SelectedIndexsChanged;
 
         /// <summary>
         /// SelectedValue 属性值更改时发生
@@ -687,7 +680,7 @@ namespace AntdUI
             }
             return newIndex;
         }
-        bool WheelItem(object? it)
+        static bool WheelItem(object? it)
         {
             if (it is DividerSelectItem) return true;
             return false;
@@ -703,8 +696,9 @@ namespace AntdUI
             base.OnHandleCreated(e);
             if (expandDrop) OpenSubForm();
         }
-        public void HandleEvent(EventType id, object? tag)
+        public override void HandleEvent(EventType id, object? tag)
         {
+            base.HandleEvent(id, tag);
             if (selectedItem == null) return;
             switch (id)
             {
@@ -787,7 +781,7 @@ namespace AntdUI
         /// </summary>
         public string Text
         {
-            get => Localization.GetLangIN(LocalizationText, _text, new string?[] { "{id}", Tag.ToString() });
+            get => Localization.GetLangIN(LocalizationText, _text);
             set => _text = value;
         }
 
@@ -807,7 +801,7 @@ namespace AntdUI
         /// </summary>
         public string? SubText
         {
-            get => Localization.GetLangI(LocalizationSubText, subText, new string?[] { "{id}", Tag.ToString() });
+            get => Localization.GetLangI(LocalizationSubText, subText);
             set => subText = value;
         }
 
