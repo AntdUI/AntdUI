@@ -1241,14 +1241,57 @@ namespace AntdUI
         {
             get
             {
+#if NET8_0_OR_GREATER
+                if (_taskbarList == null)
+                {
+                    if (_taskbarList == null)
+                    {
+                        // AOT 使用 CoCreateInstance + ComWrappers 代替 new CTaskbarList()
+                        IntPtr comPtr = CreateTaskbarListComObject();
+                        if (comPtr == IntPtr.Zero) throw new InvalidOperationException("Failed to create TaskbarList COM object.");
+
+                        // 将原始 COM 指针转换为 AOT 安全的托管对象
+                        //_taskbarList = (ITaskbarList3)ComWrappersSupport.GetOrCreateInstanceForComObject(comPtr);
+                        _taskbarList = (ITaskbarList3)TaskbarListComWrappers.Instance.GetOrCreateObjectForComInstance(comPtr, CreateObjectFlags.None);
+
+                        // 释放我们持有的引用，ComWrappers 会管理生命周期
+                        Marshal.Release(comPtr);
+
+                        _taskbarList.HrInit();
+                    }
+                }
+#else
                 if (_taskbarList == null)
                 {
                     _taskbarList = (ITaskbarList3)new CTaskbarList();
                     _taskbarList.HrInit();
                 }
+#endif
                 return _taskbarList;
             }
         }
+
+#if NET8_0_OR_GREATER
+
+        /// <summary>
+        /// 通过 P/Invoke CoCreateInstance 创建 COM 对象（AOT 安全）
+        /// </summary>
+        private static unsafe IntPtr CreateTaskbarListComObject()
+        {
+            Guid clsid = TaskbarListCLSID.CLSID_TaskbarList,iid = TaskbarListCLSID.IID_ITaskbarList3;
+            IntPtr ppv = IntPtr.Zero;
+
+            // CLSCTX_INPROC_SERVER = 0x1
+            int hr = CoCreateInstance(&clsid, IntPtr.Zero, 0x1, &iid, &ppv);
+            if (hr != 0 || ppv == IntPtr.Zero) return IntPtr.Zero;
+
+            return ppv;
+        }
+
+        [DllImport("ole32.dll", ExactSpelling = true)]
+        private static extern unsafe int CoCreateInstance(Guid* rclsid, IntPtr pUnkOuter, uint dwClsContext, Guid* riid, IntPtr* ppv);
+
+#endif
 
         /// <summary>
         /// Sets the progress state of the specified window's
@@ -1330,6 +1373,133 @@ namespace AntdUI
         void SetProgressValue(IntPtr hwnd, ulong ullCompleted, ulong ullTotal);
         void SetProgressState(IntPtr hwnd, ThumbnailProgressState tbpFlags);
     }
+
+#if NET8_0_OR_GREATER
+
+    // CLSID 常量
+    internal static class TaskbarListCLSID
+    {
+        public static readonly Guid CLSID_TaskbarList = new("56FDF344-FD6D-11d0-958A-006097C9A090");
+        public static readonly Guid IID_ITaskbarList3 = new("EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF");
+    }
+
+    internal sealed class TaskbarListComWrappers : ComWrappers
+    {
+        public static readonly TaskbarListComWrappers Instance = new();
+
+        protected override unsafe ComInterfaceEntry* ComputeVtables(object obj, CreateComInterfaceFlags flags, out int count)
+        {
+            // 此场景下我们只消费 COM 对象，不提供托管对象给 COM
+            // 所以这个方法通常不会被调用，但必须实现
+            count = 0;
+            return null;
+        }
+
+        protected override object CreateObject(IntPtr externalComObject, CreateObjectFlags flags)
+        {
+            // 当 ComWrappers 需要将 COM 指针转为托管对象时调用
+            // 返回一个实现了 ITaskbarList3VTable 的 RCW 代理
+            return new TaskbarListRcw(externalComObject);
+        }
+
+        protected override void ReleaseObjects(System.Collections.IEnumerable objects)
+        {
+            foreach (var obj in objects)
+            {
+                if (obj is TaskbarListRcw rcw) rcw.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// AOT 安全的 RCW (Runtime Callable Wrapper)
+    /// 直接通过函数指针调用 COM vtable，无需运行时反射
+    /// </summary>
+    internal sealed unsafe class TaskbarListRcw : ITaskbarList3, IDisposable
+    {
+        private IntPtr _comObject;
+        private void** _vtable;
+
+        public TaskbarListRcw(IntPtr comObject)
+        {
+            _comObject = comObject;
+            Marshal.AddRef(_comObject);
+            _vtable = *(void***)_comObject;
+        }
+
+        // VTable 索引 (IUnknown: 0-2, ITaskbarList: 3-7, ITaskbarList2: 8, ITaskbarList3: 9-10)
+        private delegate* unmanaged[Stdcall]<IntPtr, int> HrInitPtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, int>)_vtable[3];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int> AddTabPtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int>)_vtable[4];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int> DeleteTabPtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int>)_vtable[5];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int> ActivateTabPtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int>)_vtable[6];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int> SetActiveAltPtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, int>)_vtable[7];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, bool, int> MarkFullscreenWindowPtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, bool, int>)_vtable[8];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, ulong, ulong, int> SetProgressValuePtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, ulong, ulong, int>)_vtable[9];
+
+        private delegate* unmanaged[Stdcall]<IntPtr, IntPtr, ThumbnailProgressState, int> SetProgressStatePtr
+            => (delegate* unmanaged[Stdcall]<IntPtr, IntPtr, ThumbnailProgressState, int>)_vtable[10];
+
+        // IUnknown
+        public int QueryInterface(Guid* riid, void** ppvObject)
+        {
+            var ptr = (delegate* unmanaged[Stdcall]<IntPtr, Guid*, void**, int>)_vtable[0];
+            return ptr(_comObject, riid, ppvObject);
+        }
+        public uint AddRef()
+        {
+            var ptr = (delegate* unmanaged[Stdcall]<IntPtr, uint>)_vtable[1];
+            return ptr(_comObject);
+        }
+        public uint Release()
+        {
+            var ptr = (delegate* unmanaged[Stdcall]<IntPtr, uint>)_vtable[2];
+            return ptr(_comObject);
+        }
+
+        // ITaskbarList
+        void ITaskbarList3.HrInit() => HrInitPtr(_comObject);
+
+        void ITaskbarList3.AddTab(nint hwnd) => AddTabPtr(_comObject, hwnd);
+
+        void ITaskbarList3.DeleteTab(nint hwnd) => DeleteTabPtr(_comObject, hwnd);
+
+        void ITaskbarList3.ActivateTab(nint hwnd) => ActivateTabPtr(_comObject, hwnd);
+
+        void ITaskbarList3.SetActiveAlt(nint hwnd) => SetActiveAltPtr(_comObject, hwnd);
+
+        void ITaskbarList3.MarkFullscreenWindow(nint hwnd, bool fFullscreen)
+            => MarkFullscreenWindowPtr(_comObject, hwnd, fFullscreen);
+
+        void ITaskbarList3.SetProgressValue(nint hwnd, ulong ullCompleted, ulong ullTotal)
+            => SetProgressValuePtr(_comObject, hwnd, ullCompleted, ullTotal);
+
+        void ITaskbarList3.SetProgressState(nint hwnd, ThumbnailProgressState tbpFlags)
+            => SetProgressStatePtr(_comObject, hwnd, tbpFlags);
+
+        public void Dispose()
+        {
+            if (_comObject != IntPtr.Zero)
+            {
+                Marshal.Release(_comObject);
+                _comObject = IntPtr.Zero;
+            }
+        }
+    }
+
+#endif
 
     #endregion
 }
