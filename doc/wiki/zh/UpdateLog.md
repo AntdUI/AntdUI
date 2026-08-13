@@ -1,5 +1,22 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.5` 2026-08-13
+
+- ➕ Popover 允许 容器大小变化
+- ✍️ DatePicker/Calendar 最大值最小值
+- ✍️ Tree Visible 依旧渲染
+- ✍️ Select 阻止重复触发
+- ✍️ Window 二次 ShowDialog 阴影消失
+- ✍️ Select 适配 Tag null
+- ✍️ Select 移除 SelectedIndexsChanged
+- ✍️ Table 树绑定添加
+- ✍️ Breadcrumb 分割错位
+- ✍️ Menu/Tree/Transfer 适配总禁用
+- ✍️ InputNumber Hexadecimal
+- ✍️ Progress ShowInTaskbar 适配 AOT
+- ✍️ 公开拼音获取
+- ✍️ 搜索过滤空格字符
+
 ### `2.4.4` 2026-08-03
 
 - ➕ Input Loading / 水波进度

@@ -1,5 +1,22 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.5` 2026-08-13
+
+- ➕ Popover allows container size changes
+- ✍️ DatePicker/Calendar maximum and minimum values
+- ✍️ Tree Visible still rendering
+- ✍️ Select to prevent repeated triggering
+- ✍️ Window secondary ShowDialog shadow disappears
+- ✍️ Select adaptation tag null
+- ✍️ Select to remove SelectedIndexsChanged
+- ✍️ Table tree binding addition
+- ✍️ Breadrumb segmentation misalignment
+- ✍️ Menu/Tree/Transfer adaptation is always disabled
+- ✍️ InputNumber Hexadecimal
+- ✍️ Progress ShowInTaskbar compatible with AOT
+- ✍️ Public Pinyin Acquisition
+- ✍️ Search and filter for space characters
+
 ### `2.4.4` 2026-08-03
 
 - ➕ Input Loading/Water Wave Progress

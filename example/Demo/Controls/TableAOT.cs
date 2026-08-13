@@ -5,10 +5,8 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Printing;
 using System.Windows.Forms;
 
 namespace Demo.Controls
@@ -384,7 +382,7 @@ namespace Demo.Controls
                 for (int j = 1; j < 5; j++)
                 {
                     int indexSub = start + j;
-                    listSub.Add(GetItemOne(index, j, "胡彦祖儿子"+j.ToString(), 20 + index));
+                    listSub.Add(GetItemOne(index, j, "胡彦祖儿子" + j.ToString(), 20 + index));
                 }
                 item.Add(new AntdUI.AntItem("Sub", listSub));
                 list.Add(item.ToArray());
@@ -477,7 +475,7 @@ namespace Demo.Controls
             else btns = new AntdUI.CellLink[] { new AntdUI.CellLink("delete", "Delete") };
 
             int hobby = random.Next(0, 3);
-          
+
             return new AntdUI.AntItem[]{
                 new AntdUI.AntItem("no", id),
                 new AntdUI.AntItem("check", false),
