@@ -1832,7 +1832,7 @@ namespace AntdUI
         {
             var old = pauseLayout;
             PauseLayout = true;
-            if (search == null || string.IsNullOrEmpty(search)) FunSearch(items);
+            if (search == null || string.IsNullOrWhiteSpace(search)) FunSearch(items);
             else FunSearch(items, search);
             PauseLayout = old;
         }

@@ -316,7 +316,7 @@ namespace AntdUI
             {
                 if (cc == null)
                 {
-                    if (string.IsNullOrEmpty(search)) dv.DataSource = list;
+                    if (string.IsNullOrWhiteSpace(search)) dv.DataSource = list;
                     else
                     {
                         var nl = new List<AntItem[]>(list.Count);
@@ -331,7 +331,7 @@ namespace AntdUI
                 {
                     var condition = (FilterConditions)cc[0];
                     var val = cc[1];
-                    if (string.IsNullOrEmpty(search))
+                    if (string.IsNullOrWhiteSpace(search))
                     {
                         var nl = new List<AntItem[]>(list.Count);
                         foreach (var it in list)

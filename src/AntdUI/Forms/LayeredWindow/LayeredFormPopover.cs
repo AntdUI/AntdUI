@@ -42,26 +42,25 @@ namespace AntdUI
                     control.ForeColor = config.Fore ?? Colour.Text.Get(config.ColorScheme, name);
                     Win32.WindowTheme(control, config.ColorScheme);
                     Helper.DpiAuto(config.Dpi ?? Dpi, control);
-                    int w = control.Width;
+                    int cw = control.Width, ch = control.Height;
                     int h;
                     if (_config.Title == null)
                     {
-                        h = control.Height;
-                        rectContent = new Rectangle(paddingx, paddingy, w, control.Height);
+                        h = ch;
+                        rectContent = new Rectangle(paddingx, paddingy, cw, ch);
                     }
                     else
                     {
                         using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                         {
-                            var sizeTitle = g.MeasureString(config.Title, fontTitle, w);
-                            h = sizeTitle.Height + sp + control.Height;
-                            rectTitle = new Rectangle(paddingx, paddingy, w, sizeTitle.Height + sp);
-                            rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, w, h - sizeTitle.Height - sp);
+                            var sizeTitle = g.MeasureString(config.Title, fontTitle, cw);
+                            h = sizeTitle.Height + sp + ch;
+                            rectTitle = new Rectangle(paddingx, paddingy, cw, sizeTitle.Height + sp);
+                            rectContent = new Rectangle(rectTitle.X, rectTitle.Bottom, cw, ch);
                         }
                     }
                     rectContent.Offset(shadow, shadow);
-                    control.Size = new Size(control.Width, control.Height);
-                    SetSize(w + paddingx2, h + paddingy2);
+                    SetSize(cw + paddingx2, h + paddingy2);
                     BeginInvoke(() => tempContent = control.CaptureControl());
                 }
                 else if (config.Content is IList<Popover.TextRow> list)
@@ -219,12 +218,58 @@ namespace AntdUI
             if (config.Content is ControlEvent controlEvent) controlEvent.LoadCompleted();
             base.LoadOK();
             if (parent != null) parent.VisibleChanged += Parent_VisibleChanged;
+            control.SizeChanged += Control_SizeChanged;
         }
 
         private void Parent_VisibleChanged(object? sender, EventArgs e)
         {
             if (form == null) return;
             form.Visible = parent!.Visible;
+        }
+
+        private void Control_SizeChanged(object? sender, EventArgs e)
+        {
+            if (IsDisposed || Disposing || form == null) return;
+            if (sender is Control control)
+            {
+                int cw = control.Width, ch = control.Height;
+                // 内容大小未变化则跳过，避免与 Dock=Fill 布局产生循环触发
+                if (cw == rectContent.Width && ch == rectContent.Height) return;
+
+                // 同步内容区域大小，标题宽度跟随内容宽度
+                rectContent.Width = cw;
+                rectContent.Height = ch;
+                if (config.Title != null) rectTitle.Width = cw;
+
+                // 重新计算气泡窗体大小（内容 + 标题区 + 内边距）
+                int paddingx = Padding.Left, paddingy = Padding.Top;
+                int titleHeight = rectContent.Y - paddingy - shadow;
+                SetSize(cw + paddingx * 2, ch + titleHeight + paddingy * 2);
+
+                // 重新计算坐标与箭头
+                if (config.CustomPoint.HasValue)
+                {
+                    new CalculateCoordinate(this, config.CustomPoint.Value, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+                    SetLocation(x, y);
+                }
+                else
+                {
+                    new CalculateCoordinate(this, config.Control, TargetRect, Radius, ArrowSize, shadow, shadow2, config.Offset).Auto(config.ArrowAlign, true, out int x, out int y, out ArrowLine);
+                    SetLocation(x, y);
+                }
+
+                // 同步内部容器（DoubleBufferForm）位置与大小
+                var flocation = new Point(TargetRect.Location.X + rectContent.X, TargetRect.Location.Y + rectContent.Y);
+                var fsize = new Size(rectContent.Width, rectContent.Height);
+                form.MaximumSize = form.MinimumSize = Size.Empty;
+                form.Bounds = new Rectangle(flocation, fsize);
+                form.MaximumSize = form.MinimumSize = fsize;
+
+                // 重新捕获内容快照并重绘气泡
+                tempContent?.Dispose();
+                tempContent = control.CaptureControl();
+                Print();
+            }
         }
 
         #region 关闭
@@ -260,6 +305,7 @@ namespace AntdUI
             if (config.Content is Control control)
             {
                 control.Disposed -= Control_Disposed;
+                control.SizeChanged -= Control_SizeChanged;
                 control.Dispose();
             }
 #pragma warning disable CS8625

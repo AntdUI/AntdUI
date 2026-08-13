@@ -1047,7 +1047,7 @@ namespace AntdUI
 
         static IList<object> SearchList(IList<object> items, string? search)
         {
-            if (search == null || string.IsNullOrEmpty(search)) return items;
+            if (search == null || string.IsNullOrWhiteSpace(search)) return items;
             else
             {
                 object? select = null;
