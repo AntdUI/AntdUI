@@ -820,7 +820,23 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 颜色混合
+        /// </summary>
+        /// <param name="baseColor">基础色</param>
+        /// <param name="alpha">叠加色透明度</param>
+        /// <param name="overlay">叠加色</param>
+        /// <returns>混合后颜色</returns>
         public static Color BlendColors(this Color baseColor, int alpha, Color overlay) => BlendColors(baseColor, Helper.ToColor(alpha, overlay));
+
+        /// <summary>
+        /// 颜色混合
+        /// </summary>
+        /// <param name="baseColor">基础色</param>
+        /// <param name="alpha">叠加色透明度</param>
+        /// <param name="overlay">叠加色</param>
+        /// <returns>混合后颜色</returns>
+        public static Color BlendColors(this Color baseColor, float alpha, Color overlay) => BlendColors(baseColor, Helper.ToColorN(alpha, overlay));
 
         /// <summary>
         /// 颜色混合

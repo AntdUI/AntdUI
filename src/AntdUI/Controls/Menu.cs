@@ -963,7 +963,7 @@ namespace AntdUI
             Color color_fore, color_fore_active, fore_enabled = Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Menu), Name), back_hover, back_active;
             if (Config.IsDark || ColorScheme == TAMode.Dark)
             {
-                color_fore = fore ?? Colour.Text.Get(ColorScheme, nameof(Menu), Name);
+                color_fore = fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Menu), Name);
                 back_hover = color_fore_active = ForeActive ?? Colour.TextBase.Get(ColorScheme, nameof(Menu), Name);
                 back_active = BackActive ?? Colour.Primary.Get(ColorScheme, nameof(Menu), Name);
             }
@@ -1073,11 +1073,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (it.AnimationHover)
-                        {
-                            PaintIcon(g, it, fore);
-                            PaintIcon(g, it, Helper.ToColorN(it.AnimationHoverValue, back_hover));
-                        }
+                        if (it.AnimationHover) PaintIcon(g, it, Style.BlendColors(fore, it.AnimationHoverValue, back_hover));
                         else if (it.Hover) PaintIcon(g, it, back_hover);
                         else PaintIcon(g, it, fore);
                     }
@@ -1125,11 +1121,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        if (it.AnimationHover)
-                        {
-                            PaintTextIconExpand(g, it, fore);
-                            PaintTextIconExpand(g, it, Helper.ToColorN(it.AnimationHoverValue, back_hover));
-                        }
+                        if (it.AnimationHover) PaintTextIconExpand(g, it, Style.BlendColors(fore, it.AnimationHoverValue, back_hover));
                         else if (it.Hover) PaintTextIconExpand(g, it, back_hover);
                         else PaintTextIconExpand(g, it, fore);
                     }
@@ -1340,11 +1332,7 @@ namespace AntdUI
             if (it.Button == null) return;
             foreach (var item in it.Button)
             {
-                if (item.AnimationHover)
-                {
-                    PaintCustomButtonIcon(g, item, fore);
-                    PaintCustomButtonIcon(g, item, Helper.ToColorN(it.AnimationHoverValue, fore_active));
-                }
+                if (item.AnimationHover) PaintCustomButtonIcon(g, item, Style.BlendColors(fore, item.AnimationHoverValue, fore_active));
                 else if (item.Hover) PaintCustomButtonIcon(g, item, fore_active);
                 else PaintCustomButtonIcon(g, item, fore);
                 item.PaintBadge(Font, item.rect, g, ColorScheme, Name);
