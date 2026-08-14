@@ -846,13 +846,18 @@ namespace AntdUI
         /// <returns>混合后颜色</returns>
         public static Color BlendColors(this Color baseColor, Color overlay)
         {
-            byte baseAlpha = baseColor.A, overlayAlpha = overlay.A, alpha = (byte)(overlayAlpha + (baseAlpha * (255 - overlayAlpha) / 255));
+            int baseAlpha = baseColor.A, overlayAlpha = overlay.A, alpha = rgbbyte(overlayAlpha + (baseAlpha * (255 - overlayAlpha) / 255));
             if (alpha == 0) return Color.Transparent;
             else
             {
-                byte r = (byte)((overlay.R * overlayAlpha + baseColor.R * baseAlpha * (255 - overlayAlpha) / 255) / alpha),
-                    g = (byte)((overlay.G * overlayAlpha + baseColor.G * baseAlpha * (255 - overlayAlpha) / 255) / alpha),
-                    b = (byte)((overlay.B * overlayAlpha + baseColor.B * baseAlpha * (255 - overlayAlpha) / 255) / alpha);
+                if (baseColor.R == overlay.R && baseColor.G == overlay.G && baseColor.B == overlay.B)
+                {
+                    int tmp = rgbbyte((overlay.R * overlayAlpha + baseColor.R * baseAlpha * (255 - overlayAlpha) / 255) / alpha);
+                    return Color.FromArgb(alpha, tmp, tmp, tmp);
+                }
+                int r = rgbbyte((overlay.R * overlayAlpha + baseColor.R * baseAlpha * (255 - overlayAlpha) / 255) / alpha),
+                    g = rgbbyte((overlay.G * overlayAlpha + baseColor.G * baseAlpha * (255 - overlayAlpha) / 255) / alpha),
+                    b = rgbbyte((overlay.B * overlayAlpha + baseColor.B * baseAlpha * (255 - overlayAlpha) / 255) / alpha);
                 return Color.FromArgb(alpha, r, g, b);
             }
         }
