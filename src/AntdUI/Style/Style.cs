@@ -230,6 +230,8 @@ namespace AntdUI
                     case Colour.SliderHandleColorDisabled: return "#4F4F4F".ToColor();
                     case Colour.TextSpotlight: return Color.White;
                     case Colour.BgSpotlight: return "#424242".ToColor();
+
+                    case Colour.SwitchHandleBg: return Color.White;
                 }
             }
             else
@@ -309,6 +311,8 @@ namespace AntdUI
                     case Colour.SliderHandleColorDisabled: return "#BFBFBF".ToColor();
                     case Colour.TextSpotlight: return Color.White;
                     case Colour.BgSpotlight: return rgba(0, 0, 0, 0.85F);
+
+                    case Colour.SwitchHandleBg: return Color.White;
                 }
             }
             return Color.Transparent;
@@ -1157,7 +1161,12 @@ namespace AntdUI
         /// <summary>
         /// Tooltip 的背景色
         /// </summary>
-        BgSpotlight
+        BgSpotlight,
+
+        /// <summary>
+        /// 开关手柄背景
+        /// </summary>
+        SwitchHandleBg
     }
 
     public class HSL

@@ -101,5 +101,7 @@ namespace AntdUI.Theme
         public Color TextSpotlight => Style.Get(Colour.TextSpotlight);
 
         public Color BgSpotlight => Style.Get(Colour.BgSpotlight);
+
+        public Color SwitchHandleBg => Style.Get(Colour.SwitchHandleBg);
     }
 }

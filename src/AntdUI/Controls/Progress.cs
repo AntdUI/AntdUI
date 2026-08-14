@@ -1278,7 +1278,7 @@ namespace AntdUI
         /// </summary>
         private static unsafe IntPtr CreateTaskbarListComObject()
         {
-            Guid clsid = TaskbarListCLSID.CLSID_TaskbarList,iid = TaskbarListCLSID.IID_ITaskbarList3;
+            Guid clsid = TaskbarListCLSID.CLSID_TaskbarList, iid = TaskbarListCLSID.IID_ITaskbarList3;
             IntPtr ppv = IntPtr.Zero;
 
             // CLSCTX_INPROC_SERVER = 0x1

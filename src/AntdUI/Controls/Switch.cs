@@ -251,70 +251,91 @@ namespace AntdUI
                     var alpha = 255 * AnimationCheckValue;
                     g.Fill(Helper.ToColor(alpha, _color), path);
                     var dot_rect = new RectangleF(rect_read.X + gap + (rect_read.Width - rect_read.Height) * AnimationCheckValue, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.GetSymbol(ColorScheme, "bgDisabled", nameof(Switch), Name)), dot_rect);
-                    if (loading)
-                    {
-                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = rect_read.Height * .1F;
-                        using (var brush = new Pen(_color, size))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
-                        }
-                    }
+                    g.FillEllipse(enabled ? Colour.SwitchHandleBg.Get(ColorScheme, nameof(Switch), Name) : Helper.ToColorN(0.65f, Colour.SwitchHandleBg.Get(ColorScheme, nameof(Switch), Name)), dot_rect);
+                    if (loading) PaintLoading(g, rect_read, dot_rect, gap, gap2, _color);
+                    PaintText(g, null, rect_read, dot_rect);
                 }
                 else if (_checked)
                 {
-                    var colorhover = FillHover ?? Colour.PrimaryHover.Get(ColorScheme, nameof(Switch), Name);
-                    g.Fill(enabled ? _color : Color.FromArgb(200, _color), path);
-                    if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
-                    else if (ExtraMouseHover) g.Fill(colorhover, path);
-                    var dot_rect = new RectangleF(rect_read.X + gap + rect_read.Width - rect_read.Height, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.GetSymbol(ColorScheme, "bgDisabled", nameof(Switch), Name)), dot_rect);
-                    if (loading)
-                    {
-                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = rect_read.Height * .1F;
-                        using (var brush = new Pen(_color, size))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
-                        }
-                    }
+                    if (enabled) PaintChecked(g, rect_read, path, gap, gap2, Colour.SwitchHandleBg.Get(ColorScheme, nameof(Switch), Name), _color);
+                    else PaintChecked(g, rect_read, path, gap, gap2, Helper.ToColorN(0.8f, Colour.SwitchHandleBg.Get(ColorScheme, nameof(Switch), Name)), Helper.ToColorN(0.65f, _color));
                 }
                 else
                 {
-                    var dot_rect = new RectangleF(rect_read.X + gap, rect_read.Y + gap, rect_read.Height - gap2, rect_read.Height - gap2);
-                    g.FillEllipse(enabled ? Colour.BgBase.Get(ColorScheme, nameof(Switch), Name) : Color.FromArgb(200, Colour.BgBase.GetSymbol(ColorScheme, "bgDisabled", nameof(Switch), Name)), dot_rect);
-                    if (loading)
-                    {
-                        var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                        float size = rect_read.Height * .1F;
-                        using (var brush = new Pen(_color, size))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
-                        }
-                    }
-                }
-
-                // 绘制文本
-                string? textToRender = Checked ? CheckedText : UnCheckedText;
-                if (textToRender != null)
-                {
-                    Color _fore = fore ?? Colour.PrimaryColor.Get(ColorScheme, nameof(Switch), Name);
-                    using (var brush = new SolidBrush(_fore))
-                    {
-                        var textSize = g.MeasureString(textToRender, Font);
-                        var textRect = Checked
-                            ? new Rectangle(rect_read.X + (rect_read.Width - rect_read.Height + gap2) / 2 - textSize.Width / 2, rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height)
-                            : new Rectangle(rect_read.X + (rect_read.Height - gap + (rect_read.Width - rect_read.Height + gap) / 2 - textSize.Width / 2), rect_read.Y + rect_read.Height / 2 - textSize.Height / 2, textSize.Width, textSize.Height);
-                        g.String(textToRender, Font, brush, textRect);
-                    }
+                    if (enabled) PaintUnChecked(g, rect_read, gap, gap2, Colour.SwitchHandleBg.Get(ColorScheme, nameof(Switch), Name), _color);
+                    else PaintUnChecked(g, rect_read, gap, gap2, Helper.ToColorN(0.8f, Colour.SwitchHandleBg.Get(ColorScheme, nameof(Switch), Name)), Helper.ToColorN(0.65f, _color));
                 }
             }
             base.OnDraw(e);
         }
+
+        void PaintChecked(Canvas g, Rectangle rect, GraphicsPath path, int gap, int gap2, Color handBg, Color color)
+        {
+            var colorhover = FillHover ?? Colour.PrimaryHover.Get(ColorScheme, nameof(Switch), Name);
+            g.Fill(color, path);
+            if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
+            else if (ExtraMouseHover) g.Fill(colorhover, path);
+            var dot_rect = new RectangleF(rect.X + gap + rect.Width - rect.Height, rect.Y + gap, rect.Height - gap2, rect.Height - gap2);
+            g.FillEllipse(handBg, dot_rect);
+            if (loading) PaintLoading(g, rect, dot_rect, gap, gap2, color);
+            PaintText(g, true, rect, dot_rect);
+        }
+        void PaintUnChecked(Canvas g, Rectangle rect, int gap, int gap2, Color handBg, Color color)
+        {
+            var dot_rect = new RectangleF(rect.X + gap, rect.Y + gap, rect.Height - gap2, rect.Height - gap2);
+            g.FillEllipse(handBg, dot_rect);
+            if (loading) PaintLoading(g, rect, dot_rect, gap, gap2, color);
+            PaintText(g, false, rect, dot_rect);
+        }
+        void PaintLoading(Canvas g, Rectangle rect, RectangleF dot_rect, int gap, int gap2, Color color)
+        {
+            var loading_rect = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+            float size = rect.Height * .1F;
+            using (var brush = new Pen(color, size))
+            {
+                brush.StartCap = brush.EndCap = LineCap.Round;
+                g.DrawArc(brush, loading_rect, LineAngle, LineWidth * 3.6F);
+            }
+        }
+
+        /// <summary>
+        /// 绘制文本
+        /// </summary>
+        void PaintText(Canvas g, bool? check, Rectangle rect, RectangleF dot_rect)
+        {
+            if (check.HasValue)
+            {
+                if (check.Value)
+                {
+                    var text = CheckedText;
+                    if (text == null) return;
+                    int padd = (int)(dot_rect.Height * 1.1F);
+                    g.DrawText(text, Font, fore ?? Colour.PrimaryColor.Get(ColorScheme, nameof(Switch), Name), new Rectangle(rect.X, rect.Y, rect.Width - padd, rect.Height));
+                }
+                else
+                {
+                    var text = UnCheckedText;
+                    if (text == null) return;
+                    int padd = (int)(dot_rect.Height * 1.1F);
+                    g.DrawText(text, Font, fore ?? Colour.PrimaryColor.Get(ColorScheme, nameof(Switch), Name), new Rectangle(rect.X + padd, rect.Y, rect.Width - padd, rect.Height));
+                }
+            }
+            else
+            {
+                g.SetClip(rect);
+                string? text = CheckedText, untext = UnCheckedText;
+                if (text == null && untext == null) return;
+                int padd = (int)(dot_rect.Height * 1.1F), prog = (int)(rect.Width * AnimationCheckValue);
+                using (var brush = new SolidBrush(fore ?? Colour.PrimaryColor.Get(ColorScheme, nameof(Switch), Name)))
+                {
+                    int tmp = rect.Width - padd;
+                    g.DrawText(untext, Font, brush, new Rectangle((rect.X + padd) + prog, rect.Y, tmp, rect.Height));
+                    g.DrawText(text, Font, brush, new Rectangle(rect.X + prog - rect.Width, rect.Y, tmp, rect.Height));
+                }
+                g.ResetClip();
+            }
+        }
+
         internal void PaintClick(Canvas g, GraphicsPath path, Rectangle rect, RectangleF rect_read, Color color)
         {
             if (AnimationClick || true)

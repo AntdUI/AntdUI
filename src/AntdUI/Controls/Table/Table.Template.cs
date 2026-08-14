@@ -775,57 +775,62 @@ namespace AntdUI
 
             public void Print(Canvas g, TAMode colorScheme, Font font, SolidBrush fore, bool enable)
             {
-                var color = Colour.Primary.Get(colorScheme, nameof(Switch), PARENT.Name);
+                var name = PARENT.Name;
+                var color = Colour.Primary.Get(colorScheme, nameof(Switch), name);
                 using (var path = RECT_REAL.RoundPath(RECT_REAL.Height))
                 {
-                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get(colorScheme, nameof(Switch), PARENT.Name)))
+                    using (var brush = new SolidBrush(Colour.TextQuaternary.Get(colorScheme, nameof(Switch), name)))
                     {
                         g.Fill(brush, path);
                         if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, brush.Color), path);
                         else if (ExtraMouseHover) g.Fill(brush, path);
                     }
-                    float gap = (int)(2 * g.Dpi), gap2 = gap * 2F;
+                    int gap = (int)(2 * g.Dpi), gap2 = gap * 2;
                     if (AnimationCheck)
                     {
                         var alpha = 255 * AnimationCheckValue;
                         g.Fill(Helper.ToColor(alpha, color), path);
                         var dot_rect = new RectangleF(RECT_REAL.X + gap + (RECT_REAL.Width - RECT_REAL.Height) * AnimationCheckValue, RECT_REAL.Y + gap, RECT_REAL.Height - gap2, RECT_REAL.Height - gap2);
-                        g.FillEllipse(enable ? Colour.BgBase.Get(colorScheme, nameof(Switch), PARENT.Name) : Color.FromArgb(200, Colour.BgBase.Get(colorScheme, nameof(Switch), PARENT.Name)), dot_rect);
+                        g.FillEllipse(enable ? Colour.SwitchHandleBg.Get(colorScheme, nameof(Switch), name) : Helper.ToColorN(0.65f, Colour.SwitchHandleBg.Get(colorScheme, nameof(Switch), name)), dot_rect);
+                        if (loading) PaintLoading(g, RECT_REAL, dot_rect, gap, gap2, color);
                     }
                     else if (Checked)
                     {
-                        var colorhover = Colour.PrimaryHover.Get(colorScheme, nameof(Switch), PARENT.Name);
-                        g.Fill(color, path);
-                        if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
-                        else if (ExtraMouseHover) g.Fill(colorhover, path);
-                        var dot_rect = new RectangleF(RECT_REAL.X + gap + RECT_REAL.Width - RECT_REAL.Height, RECT_REAL.Y + gap, RECT_REAL.Height - gap2, RECT_REAL.Height - gap2);
-                        g.FillEllipse(enable ? Colour.BgBase.Get(colorScheme, nameof(Switch), PARENT.Name) : Color.FromArgb(200, Colour.BgBase.Get(colorScheme, nameof(Switch), PARENT.Name)), dot_rect);
-                        if (Loading)
-                        {
-                            var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                            float size = RECT_REAL.Height * .1F;
-                            using (var brush = new Pen(color, size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
-                            }
-                        }
+                        if (enable) PaintChecked(g, colorScheme, name, RECT_REAL, path, gap, gap2, Colour.SwitchHandleBg.Get(colorScheme, nameof(Switch), name), color);
+                        else PaintChecked(g, colorScheme, name, RECT_REAL, path, gap, gap2, Helper.ToColorN(0.8f, Colour.SwitchHandleBg.Get(colorScheme, nameof(Switch), name)), Helper.ToColorN(0.65f, color));
                     }
                     else
                     {
-                        var dot_rect = new RectangleF(RECT_REAL.X + gap, RECT_REAL.Y + gap, RECT_REAL.Height - gap2, RECT_REAL.Height - gap2);
-                        g.FillEllipse(enable ? Colour.BgBase.Get(colorScheme, nameof(Switch), PARENT.Name) : Color.FromArgb(200, Colour.BgBase.Get(colorScheme, nameof(Switch), PARENT.Name)), dot_rect);
-                        if (Loading)
-                        {
-                            var dot_rect2 = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
-                            float size = RECT_REAL.Height * .1F;
-                            using (var brush = new Pen(color, size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, dot_rect2, LineAngle, LineWidth * 3.6F);
-                            }
-                        }
+                        if (enable) PaintUnChecked(g, colorScheme, name, RECT_REAL, gap, gap2, Colour.SwitchHandleBg.Get(colorScheme, nameof(Switch), name), color);
+                        else PaintUnChecked(g, colorScheme, name, RECT_REAL, gap, gap2, Helper.ToColorN(0.8f, Colour.SwitchHandleBg.Get(colorScheme, nameof(Switch), name)), Helper.ToColorN(0.65f, color));
                     }
+                }
+            }
+
+            void PaintChecked(Canvas g, TAMode colorScheme, string name, Rectangle rect, GraphicsPath path, int gap, int gap2, Color handBg, Color color)
+            {
+                var colorhover = Colour.PrimaryHover.Get(colorScheme, nameof(Switch), name);
+                g.Fill(color, path);
+                if (AnimationHover) g.Fill(Helper.ToColorN(AnimationHoverValue, colorhover), path);
+                else if (ExtraMouseHover) g.Fill(colorhover, path);
+                var dot_rect = new RectangleF(rect.X + gap + rect.Width - rect.Height, rect.Y + gap, rect.Height - gap2, rect.Height - gap2);
+                g.FillEllipse(handBg, dot_rect);
+                if (loading) PaintLoading(g, rect, dot_rect, gap, gap2, color);
+            }
+            void PaintUnChecked(Canvas g, TAMode colorScheme, string name, Rectangle rect, int gap, int gap2, Color handBg, Color color)
+            {
+                var dot_rect = new RectangleF(rect.X + gap, rect.Y + gap, rect.Height - gap2, rect.Height - gap2);
+                g.FillEllipse(handBg, dot_rect);
+                if (loading) PaintLoading(g, rect, dot_rect, gap, gap2, color);
+            }
+            void PaintLoading(Canvas g, Rectangle rect, RectangleF dot_rect, int gap, int gap2, Color color)
+            {
+                var loading_rect = new RectangleF(dot_rect.X + gap, dot_rect.Y + gap, dot_rect.Height - gap2, dot_rect.Height - gap2);
+                float size = rect.Height * .1F;
+                using (var brush = new Pen(color, size))
+                {
+                    brush.StartCap = brush.EndCap = LineCap.Round;
+                    g.DrawArc(brush, loading_rect, LineAngle, LineWidth * 3.6F);
                 }
             }
 
