@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -111,6 +112,23 @@ namespace AntdUI
                 round = value;
                 Invalidate();
                 OnPropertyChanged(nameof(Round));
+            }
+        }
+
+        bool square = false;
+        /// <summary>
+        /// 正方形约束
+        /// </summary>
+        [Description("正方形约束"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
+        public bool Square
+        {
+            get => square;
+            set
+            {
+                if (square == value) return;
+                square = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Square));
             }
         }
 
@@ -514,8 +532,21 @@ namespace AntdUI
         {
             get
             {
-                if (borderWidth > 0) return ClientRectangle.PaddingRect(Padding, borderWidth * Dpi / 2F);
-                else return ClientRectangle.PaddingRect(Padding);
+                Rectangle rect;
+                if (borderWidth > 0) rect = ClientRectangle.PaddingRect(Padding, borderWidth * Dpi / 2F);
+                else rect = ClientRectangle.PaddingRect(Padding);
+                if (square)
+                {
+                    if (rect.Width == rect.Height) return rect;
+                    else
+                    {
+                        int tmp;
+                        if (rect.Width > rect.Height) tmp = rect.Height;
+                        else tmp = rect.Width;
+                        return new Rectangle(rect.X + (rect.Width - tmp) / 2, rect.Y + (rect.Height - tmp) / 2, tmp, tmp);
+                    }
+                }
+                return rect;
             }
         }
 
@@ -575,11 +606,15 @@ namespace AntdUI
                 Invalidate();
             }
         }
-        protected override void OnMouseEnter(EventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
-            base.OnMouseEnter(e);
-            if (EnableHover) Hover = true;
-            else if (Hover) Hover = false;
+            base.OnMouseMove(e);
+            if (EnableHover)
+            {
+                if (square) Hover = ReadRectangle.Contains(e.X, e.Y);
+                else Hover = true;
+            }
+            else Hover = false;
         }
         protected override void OnMouseLeave(EventArgs e)
         {
