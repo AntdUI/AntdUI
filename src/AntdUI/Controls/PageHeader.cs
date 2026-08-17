@@ -8,7 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -382,6 +381,18 @@ namespace AntdUI
                 OnPropertyChanged(nameof(Loading));
             }
         }
+
+        /// <summary>
+        /// 加载图标
+        /// </summary>
+        [Description("加载图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? LoadingIcon { get; set; }
+
+        /// <summary>
+        /// 加载图标SVG
+        /// </summary>
+        [Description("加载图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? LoadingSvg { get; set; }
 
         protected override void Dispose(bool disposing)
         {
@@ -846,13 +857,7 @@ namespace AntdUI
             {
                 icon_size = sHeight;
                 var rect_icon = new Rectangle(rect.X + u_x + _gap, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
-                using (var pen = new Pen(Colour.Fill.Get(ColorScheme, nameof(PageHeader), Name), sHeight * .14F))
-                using (var brush = new Pen(Color.FromArgb(170, fore), pen.Width))
-                {
-                    g.DrawEllipse(pen, rect_icon);
-                    brush.StartCap = brush.EndCap = LineCap.Round;
-                    g.DrawArc(brush, rect_icon, AnimationLoadingValue, 100);
-                }
+                g.PaintLoading(LoadingIcon, LoadingSvg, rect_icon, AnimationLoadingValue, 0.3F, Color.FromArgb(170, fore), sHeight, .14F, Colour.Fill.Get(ColorScheme, nameof(PageHeader), Name));
                 u_x += (icon_size + _gap);
             }
             else if (showicon)

@@ -284,15 +284,7 @@ namespace AntdUI
                 var font_size = g.MeasureString(Config.NullText, font);
                 //没有文字
                 var rect = PaintButtonImageRectCenter(btn, font_size, rect_read);
-                if (has_loading)
-                {
-                    float loading_size = rect_read.Height * 0.06F;
-                    using (var brush = new Pen(color, loading_size))
-                    {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, rect, btn.AnimationLoadingValue, btn.LoadingValue * 360F);
-                    }
-                }
+                if (has_loading) g.PaintLoading(btn.LoadingIcon, btn.LoadingSvg, rect, btn.AnimationLoadingValue, btn.LoadingValue, color, rect_read.Height, 0.06F);
                 else
                 {
                     if (PaintButtonImageNoText(g, btn, color, rect) && btn.ShowArrow)
@@ -313,30 +305,14 @@ namespace AntdUI
                     if (has_left && has_right)
                     {
                         rect_text = Button.RectAlignLR(g, txt_height, textLine, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l, out var rect_r);
-                        if (has_loading)
-                        {
-                            float loading_size = rect_l.Height * .14F;
-                            using (var brush = new Pen(color, loading_size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, btn.AnimationLoadingValue, btn.LoadingValue * 360F);
-                            }
-                        }
+                        if (has_loading) g.PaintLoading(btn.LoadingIcon, btn.LoadingSvg, rect_l, btn.AnimationLoadingValue, btn.LoadingValue, color, rect_l.Height, .14F);
                         else PaintButtonPaintImage(g, btn, color, rect_l);
                         PaintButtonTextArrow(g, btn, rect_r, color);
                     }
                     else if (has_left)
                     {
                         rect_text = Button.RectAlignL(g, txt_height, textLine, false, font, btn.IconPosition, btn.IconRatio, btn.IconGap, font_size, rect_read, out var rect_l);
-                        if (has_loading)
-                        {
-                            float loading_size = rect_l.Height * .14F;
-                            using (var brush = new Pen(color, loading_size))
-                            {
-                                brush.StartCap = brush.EndCap = LineCap.Round;
-                                g.DrawArc(brush, rect_l, btn.AnimationLoadingValue, btn.LoadingValue * 360F);
-                            }
-                        }
+                        if (has_loading) g.PaintLoading(btn.LoadingIcon, btn.LoadingSvg, rect_l, btn.AnimationLoadingValue, btn.LoadingValue, color, rect_l.Height, .14F);
                         else PaintButtonPaintImage(g, btn, color, rect_l);
                     }
                     else

@@ -342,6 +342,16 @@ namespace AntdUI
             }
 
             /// <summary>
+            /// 加载图标
+            /// </summary>
+            public Image? LoadingIcon { get; set; }
+
+            /// <summary>
+            /// 加载图标SVG
+            /// </summary>
+            public string? LoadingSvg { get; set; }
+
+            /// <summary>
             /// 加载进度
             /// </summary>
             public float LoadingValue { get; set; } = .3F;

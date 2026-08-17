@@ -913,6 +913,18 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 加载图标
+        /// </summary>
+        [Description("加载图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? LoadingIcon { get; set; }
+
+        /// <summary>
+        /// 加载图标SVG
+        /// </summary>
+        [Description("加载图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? LoadingSvg { get; set; }
+
+        /// <summary>
         /// 加载响应点击
         /// </summary>
         [Description("加载响应点击"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
@@ -1600,15 +1612,7 @@ namespace AntdUI
             {
                 //没有文字
                 var rect = GetIconRectCenter(font_size, rect_read);
-                if (has_loading)
-                {
-                    float loading_size = rect_read.Height * 0.06F;
-                    using (var brush = new Pen(color, loading_size))
-                    {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, rect, AnimationLoadingValue, LoadingValue * 360F);
-                    }
-                }
+                if (has_loading) PaintLoading(g, rect, color, rect_read.Height, 0.06F);
                 else
                 {
                     if (PaintIcon(g, color, rect, false, enabled) && showArrow)
@@ -1632,15 +1636,7 @@ namespace AntdUI
                         {
                             rect_text = RectAlignLR(g, txt_height, textLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
 
-                            if (has_loading)
-                            {
-                                float loading_size = rect_l.Height * .14F;
-                                using (var brush = new Pen(color, loading_size))
-                                {
-                                    brush.StartCap = brush.EndCap = LineCap.Round;
-                                    g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
-                                }
-                            }
+                            if (has_loading) PaintLoading(g, rect_l, color, rect_l.Height, .14F);
                             else PaintIcon(g, color, rect_l, true, enabled);
 
                             PaintTextArrow(g, rect_r, color);
@@ -1648,15 +1644,7 @@ namespace AntdUI
                         else if (has_left)
                         {
                             rect_text = RectAlignL(g, txt_height, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
-                            if (has_loading)
-                            {
-                                float loading_size = rect_l.Height * .14F;
-                                using (var brush = new Pen(color, loading_size))
-                                {
-                                    brush.StartCap = brush.EndCap = LineCap.Round;
-                                    g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
-                                }
-                            }
+                            if (has_loading) PaintLoading(g, rect_l, color, rect_l.Height, .14F);
                             else PaintIcon(g, color, rect_l, true, enabled);
                         }
                         else
@@ -1678,12 +1666,7 @@ namespace AntdUI
                     if (has_loading)
                     {
                         rect_text = RectAlignL(g, txt_height, textLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
-                        float loading_size = rect_l.Height * .14F;
-                        using (var brush = new Pen(color, loading_size))
-                        {
-                            brush.StartCap = brush.EndCap = LineCap.Round;
-                            g.DrawArc(brush, rect_l, AnimationLoadingValue, LoadingValue * 360F);
-                        }
+                        PaintLoading(g, rect_l, color, rect_l.Height, .14F);
                     }
                     else
                     {
@@ -1695,6 +1678,7 @@ namespace AntdUI
                 g.DrawText(text, Font, color, rect_text, sf);
             }
         }
+        void PaintLoading(Canvas g, Rectangle rect, Color color, int size, float ratio) => g.PaintLoading(LoadingIcon, LoadingSvg, rect, AnimationLoadingValue, LoadingValue, color, size, ratio);
 
         void PaintTextArrow(Canvas g, Rectangle rect, Color color)
         {

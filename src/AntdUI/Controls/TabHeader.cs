@@ -729,16 +729,7 @@ namespace AntdUI
             }
             if (tab.ShowIcon)
             {
-                if (tab.Loading)
-                {
-                    using (var pen = new Pen(Colour.Fill.Get(ColorScheme, nameof(PageHeader), Name), tab.RectIcon.Height * .14F))
-                    using (var brush = new Pen(Color.FromArgb(170, color), pen.Width))
-                    {
-                        g.DrawEllipse(pen, tab.RectIcon);
-                        brush.StartCap = brush.EndCap = LineCap.Round;
-                        g.DrawArc(brush, tab.RectIcon, AnimationLoadingValue, 100);
-                    }
-                }
+                if (tab.Loading) g.PaintLoading(LoadingIcon, LoadingSvg, tab.RectIcon, AnimationLoadingValue, 0.3F, Color.FromArgb(170, color), tab.RectIcon.Height, .14F, Colour.Fill.Get(ColorScheme, nameof(PageHeader), Name));
                 else
                 {
                     // 绘制图标
@@ -1317,6 +1308,18 @@ namespace AntdUI
         /// </summary>
         [Description("加载状态"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
         public bool Loading { get; set; }
+
+        /// <summary>
+        /// 加载图标
+        /// </summary>
+        [Description("加载图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? LoadingIcon { get; set; }
+
+        /// <summary>
+        /// 加载图标SVG
+        /// </summary>
+        [Description("加载图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? LoadingSvg { get; set; }
 
         #endregion
 

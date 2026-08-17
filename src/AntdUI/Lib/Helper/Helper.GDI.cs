@@ -1461,6 +1461,37 @@ namespace AntdUI
             }
         }
 
+
+        public static void PaintLoading(this Canvas g, Image? icon, string? svg, Rectangle rect, float angle, float value, Color color, int size, float ratio, Color? bg = null)
+        {
+            if (icon == null && svg == null)
+            {
+                using (var pen = new Pen(color, size * ratio))
+                {
+                    if (bg.HasValue)
+                    {
+                        using (var brush_bg = new Pen(bg.Value, pen.Width))
+                        {
+                            g.DrawEllipse(brush_bg, rect);
+                        }
+                    }
+                    pen.StartCap = pen.EndCap = LineCap.Round;
+                    g.DrawArc(pen, rect, angle, value * 360F);
+                }
+            }
+            else
+            {
+                var cirSize2 = rect.Height / 2F;
+                int cirSizeNum = (int)cirSize2;
+                g.TranslateTransform(rect.X + cirSize2, rect.Y + cirSize2);
+                g.RotateTransform(angle);
+                var rect_center = new Rectangle(-cirSizeNum, -cirSizeNum, rect.Width, rect.Height);
+                if (icon != null) g.Image(icon, rect_center);
+                if (svg != null) g.Svg(svg, rect_center, color);
+                g.ResetTransform();
+            }
+        }
+
         #region 图像处理
 
         #region 模糊

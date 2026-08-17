@@ -695,6 +695,18 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 加载图标
+        /// </summary>
+        [Description("加载图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? LoadingIcon { get; set; }
+
+        /// <summary>
+        /// 加载图标SVG
+        /// </summary>
+        [Description("加载图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? LoadingSvg { get; set; }
+
+        /// <summary>
         /// 加载进度
         /// </summary>
         [Description("加载进度"), Category("加载"), DefaultValue(0.3F)]

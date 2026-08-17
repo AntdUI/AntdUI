@@ -355,7 +355,6 @@ namespace AntdUI
 
         bool loading = false;
         internal int AnimationLoadingValue = 0;
-        int AnimationLoadingWaveValue = 0;
         /// <summary>
         /// 加载状态
         /// </summary>
@@ -373,8 +372,6 @@ namespace AntdUI
                     AnimationClickValue = 0;
                     ThreadLoading = new AnimationTask(new AnimationLinearConfig(PARENT.PARENT, i =>
                     {
-                        AnimationLoadingWaveValue += 1;
-                        if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
                         AnimationLoadingValue = i;
                         OnPropertyChanged();
                         return loading;
@@ -382,6 +379,16 @@ namespace AntdUI
                 }
             }
         }
+
+        /// <summary>
+        /// 加载图标
+        /// </summary>
+        public Image? LoadingIcon { get; set; }
+
+        /// <summary>
+        /// 加载图标SVG
+        /// </summary>
+        public string? LoadingSvg { get; set; }
 
         /// <summary>
         /// 加载响应点击

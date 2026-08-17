@@ -199,6 +199,24 @@ namespace AntdUI
         [Description("前缀"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationPrefix { get; set; }
 
+        Image? prefixIcon;
+        /// <summary>
+        /// 前缀图标
+        /// </summary>
+        [Description("前缀图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? PrefixIcon
+        {
+            get => prefixIcon;
+            set
+            {
+                if (prefixIcon == value) return;
+                prefixIcon = value;
+                IOnSizeChanged();
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(PrefixIcon));
+            }
+        }
+
         string? prefixSvg;
         /// <summary>
         /// 前缀SVG
@@ -233,7 +251,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含前缀
         /// </summary>
-        public bool HasPrefix => prefixSvg != null || Prefix != null;
+        public bool HasPrefix => prefixSvg != null || Prefix != null || prefixIcon != null;
 
         string? suffix;
         /// <summary>
@@ -256,6 +274,24 @@ namespace AntdUI
 
         [Description("后缀"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationSuffix { get; set; }
+
+        Image? suffixIcon;
+        /// <summary>
+        /// 后缀图标
+        /// </summary>
+        [Description("后缀图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? SuffixIcon
+        {
+            get => suffixIcon;
+            set
+            {
+                if (suffixIcon == value) return;
+                suffixIcon = value;
+                IOnSizeChanged();
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(SuffixIcon));
+            }
+        }
 
         string? suffixSvg;
         /// <summary>
@@ -297,7 +333,7 @@ namespace AntdUI
         /// <summary>
         /// 是否包含后缀
         /// </summary>
-        public bool HasSuffix => suffixSvg != null || Suffix != null;
+        public bool HasSuffix => suffixSvg != null || Suffix != null || suffixIcon != null;
 
         /// <summary>
         /// 超出文字显示 Tooltip
@@ -456,6 +492,18 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
+        void PaintPrefix(Canvas g, Rectangle rect, Color color)
+        {
+            if (prefixIcon != null) g.Image(prefixIcon, rect);
+            if (prefixSvg != null) g.Svg(prefixSvg, rect, PrefixColor.HandColor(PrefixColour, color));
+        }
+
+        void PaintSuffix(Canvas g, Rectangle rect, Color color)
+        {
+            if (suffixIcon != null) g.Image(suffixIcon, rect);
+            if (suffixSvg != null) g.Svg(suffixSvg, rect, SuffixColor.HandColor(SuffixColour, color));
+        }
+
         #region 渲染帮助
 
         bool ellipsis = false;
@@ -465,7 +513,7 @@ namespace AntdUI
             {
                 Rectangle rec;
                 var font_size = g.MeasureText(text, Font);
-                bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
+                bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null || prefixIcon != null, has_suffix = suffixSvg != null || suffixIcon != null;
                 if (has_prefixText || has_suffixText || has_prefix || has_suffix)
                 {
                     switch (textAlign)
@@ -547,7 +595,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     var rect_l = RecFixAuto(xOffset, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
+                    PaintPrefix(g, rect_l, color);
                     xOffset += icon_size + gap;
                 }
                 else if (has_prefixText)
@@ -578,7 +626,7 @@ namespace AntdUI
                     {
                         int icon_size = (int)(font_size.Height * iconratio);
                         var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                        g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
+                        PaintSuffix(g, rect_r, color);
                     }
                     else if (has_suffixText)
                     {
@@ -602,7 +650,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(xOffset - icon_size - gap, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
+                    PaintPrefix(g, rect_l, color);
                 }
                 else if (has_prefixText)
                 {
@@ -616,7 +664,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(xOffset + text_width + gap, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
+                    PaintSuffix(g, rect_r, color);
                 }
                 else if (has_suffixText)
                 {
@@ -642,7 +690,7 @@ namespace AntdUI
                     int icon_size = (int)(font_size.Height * iconratio);
                     int suffixX = rightEdge - icon_size;
                     var rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
+                    PaintSuffix(g, rect_r, color);
                     rightEdge -= icon_size + gap;
                 }
                 else if (has_suffixText)
@@ -677,7 +725,7 @@ namespace AntdUI
                         int icon_size = (int)(font_size.Height * iconratio);
                         prefixX -= icon_size;
                         var rect_l = RecFixAuto(prefixX, icon_size, rect_read, font_size);
-                        g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
+                        PaintPrefix(g, rect_l, color);
                     }
                     else if (has_prefixText)
                     {
@@ -703,7 +751,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(textX - icon_size - gap, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
+                    PaintPrefix(g, rect_l, color);
                 }
                 else if (has_prefixText)
                 {
@@ -717,7 +765,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(textX + text_width + gap, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
+                    PaintSuffix(g, rect_r, color);
                 }
                 else if (has_suffixText)
                 {
@@ -756,7 +804,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(cex, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
+                    PaintPrefix(g, rect_l, color);
                     cex += icon_size + gap;
                 }
                 else if (has_prefixText)
@@ -779,7 +827,7 @@ namespace AntdUI
                     int icon_size = (int)(font_size.Height * iconratio);
                     int suffixX = cex + text_width + gap;
                     Rectangle rect_r = RecFixAuto(suffixX, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
+                    PaintSuffix(g, rect_r, color);
                 }
                 else if (has_suffixText)
                 {
@@ -803,7 +851,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_l = RecFixAuto(cex - icon_size - gap, icon_size, rect_read, font_size);
-                    g.Svg(prefixSvg!, rect_l, PrefixColor.HandColor(PrefixColour, color));
+                    PaintPrefix(g, rect_l, color);
                 }
                 else if (has_prefixText)
                 {
@@ -817,7 +865,7 @@ namespace AntdUI
                 {
                     int icon_size = (int)(font_size.Height * iconratio);
                     Rectangle rect_r = RecFixAuto(cex + text_width + gap, icon_size, rect_read, font_size);
-                    g.Svg(suffixSvg!, rect_r, SuffixColor.HandColor(SuffixColour, color));
+                    PaintSuffix(g, rect_r, color);
                 }
                 else if (has_suffixText)
                 {
@@ -939,7 +987,7 @@ namespace AntdUI
         {
             get
             {
-                bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null, has_suffix = suffixSvg != null;
+                bool has_prefixText = Prefix != null, has_suffixText = Suffix != null, has_prefix = prefixSvg != null || prefixIcon != null, has_suffix = suffixSvg != null || suffixIcon != null;
                 return this.GDI(g =>
                 {
                     var font_size = g.MeasureText(Text ?? Config.NullText, Font, textMultiLine && autoSize == TAutoSize.Height ? Width : 0);
