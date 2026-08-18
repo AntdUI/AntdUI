@@ -982,12 +982,17 @@ namespace AntdUI
 
         #region 布局
 
-        bool CanLayout()
+        bool CanLayout(out bool canPrint)
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (pauseLayout || rect.Width == 0 || rect.Height == 0) return false;
+                if (pauseLayout || rect.Width == 0 || rect.Height == 0)
+                {
+                    canPrint = false;
+                    return false;
+                }
+                canPrint = true;
                 if (items == null || items.Count == 0)
                 {
                     _select = -1;
@@ -995,11 +1000,12 @@ namespace AntdUI
                 }
                 return true;
             }
+            canPrint = false;
             return false;
         }
         internal void ChangeItems(bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 if (_select >= items!.Count) _select = items.Count - 1;
                 Rectangle _rect = ClientRectangle.PaddingRect(Padding), rect = _rect.PaddingRect(Margin);
@@ -1378,8 +1384,8 @@ namespace AntdUI
                     var _new = items[_select];
                     AnimationBarValue = TabSelectRect = _new.Rect;
                 }
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
 
         Rectangle Rect;

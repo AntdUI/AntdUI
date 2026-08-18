@@ -881,27 +881,28 @@ namespace AntdUI.Chat
             LoadLayout();
         }
 
-        bool CanLayout()
+        bool CanLayout(out bool canPrint)
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0)
+                if (rect.Width == 0 || rect.Height == 0)
                 {
-                    if (haslist) Invalidate();
-                    haslist = false;
+                    canPrint = false;
                     return false;
                 }
-                haslist = true;
+                canPrint = true;
+                if (items == null || items.Count == 0) return false;
                 return true;
             }
+            canPrint = false;
             return false;
         }
 
         int oldy = 0;
         internal void LoadLayout(bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 var rect = ClientRectangle;
                 int y = this.GDI(g =>
@@ -939,13 +940,12 @@ namespace AntdUI.Chat
                 });
                 oldy = y;
                 ScrollBar.SetVrSize(y, rect);
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
-        bool haslist = false;
         internal void LoadLayout(TextChatItem chatItem, bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 int index = items!.IndexOf(chatItem);
                 if (index == items.Count - 1)
@@ -975,8 +975,8 @@ namespace AntdUI.Chat
                     LoadLayout(print);
                     return;
                 }
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
 
         #region 字体

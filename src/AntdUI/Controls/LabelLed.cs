@@ -50,6 +50,23 @@ namespace AntdUI
         [Description("文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationText { get; set; }
 
+        ContentAlignment textAlign = ContentAlignment.MiddleCenter;
+        /// <summary>
+        /// 文本位置
+        /// </summary>
+        [Description("文本位置"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(ContentAlignment.MiddleCenter)]
+        public ContentAlignment TextAlign
+        {
+            get => textAlign;
+            set
+            {
+                if (textAlign == value) return;
+                textAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(TextAlign));
+            }
+        }
+
         int? fontSize;
         /// <summary>
         /// 字体大小
@@ -382,9 +399,8 @@ namespace AntdUI
 
             int totalWidth = patterns.Length == 0 ? 0 : patterns.Length * charWidth + Math.Max(0, patterns.Length - 1) * charGap;
 
-            int startX = rect.X, startY = rect.Y;
-            if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
-            if (rect.Height > charHeight) startY += (rect.Height - charHeight) / 2;
+            var tmp = StartXY(rect, totalWidth, charHeight);
+            int startX = tmp[0], startY = tmp[1];
 
             using (var brushOn = new SolidBrush(color))
             {
@@ -440,9 +456,8 @@ namespace AntdUI
 
             int totalWidth = patterns.Length == 0 ? 0 : patterns.Length * charWidth + Math.Max(0, patterns.Length - 1) * charGap;
 
-            int startX = rect.X, startY = rect.Y;
-            if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
-            if (rect.Height > charHeight) startY += (rect.Height - charHeight) / 2;
+            var tmp = StartXY(rect, totalWidth, charHeight);
+            int startX = tmp[0], startY = tmp[1];
 
             using (var brushOn = new SolidBrush(color))
             {
@@ -489,6 +504,48 @@ namespace AntdUI
                     }
                 }
             }
+        }
+        int[] StartXY(Rectangle rect, int totalWidth, int totalHeight)
+        {
+            int startX = rect.X, startY = rect.X;
+            switch (textAlign)
+            {
+                case ContentAlignment.MiddleCenter:
+                    if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
+                    if (rect.Height > totalHeight) startY += (rect.Height - totalHeight) / 2;
+                    break;
+                case ContentAlignment.MiddleLeft:
+                    if (rect.Height > totalHeight) startY += (rect.Height - totalHeight) / 2;
+                    break;
+                case ContentAlignment.MiddleRight:
+                    startX += rect.Width - totalWidth;
+                    if (rect.Height > totalHeight) startY += (rect.Height - totalHeight) / 2;
+                    break;
+                case ContentAlignment.TopLeft:
+                    break;
+                case ContentAlignment.TopRight:
+                    startX += rect.Width - totalWidth;
+                    break;
+                case ContentAlignment.TopCenter:
+                    if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
+                    break;
+                case ContentAlignment.BottomCenter:
+                    if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
+                    startY += rect.Height - totalHeight;
+                    break;
+                case ContentAlignment.BottomLeft:
+                    startY += rect.Height - totalHeight;
+                    break;
+                case ContentAlignment.BottomRight:
+                    startX += rect.Width - totalWidth;
+                    startY += rect.Height - totalHeight;
+                    break;
+                default:
+                    if (rect.Width > totalWidth) startX += (rect.Width - totalWidth) / 2;
+                    if (rect.Height > totalHeight) startY += (rect.Height - totalHeight) / 2;
+                    break;
+            }
+            return new int[] { startX, startY };
         }
 
         void DrawDot(Canvas g, Brush brush, int x, int y, int size)
@@ -672,8 +729,8 @@ namespace AntdUI
             [':'] = new[] { 0, 0b01100, 0b01100, 0, 0b01100, 0b01100, 0 },
             ['!'] = new[] { 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0, 0b00100 },
             ['?'] = new[] { 0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0, 0b00100 },
-            ['/'] = new[] { 0b00001, 0b00010, 0b00100, 0b01000, 0b10000, 0, 0 },
-            ['\\'] = new[] { 0b10000, 0b01000, 0b00100, 0b00010, 0b00001, 0, 0 },
+            ['/'] = new[] { 0, 0b00001, 0b00010, 0b00100, 0b01000, 0b10000, 0 },
+            ['\\'] = new[] { 0, 0b10000, 0b01000, 0b00100, 0b00010, 0b00001, 0 },
             ['@'] = new[] { 0b01110, 0b10001, 0b10101, 0b10101, 0b10111, 0b10000, 0b01111 },
             ['#'] = new[] { 0b01010, 0b01010, 0b11111, 0b01010, 0b11111, 0b01010, 0b01010 },
             ['$'] = new[] { 0b00100, 0b01110, 0b10100, 0b01110, 0b00101, 0b01110, 0b00100 },
@@ -695,7 +752,7 @@ namespace AntdUI
             [','] = new[] { 0, 0, 0, 0, 0, 0b01100, 0b00100 },
             [';'] = new[] { 0, 0b01100, 0b01100, 0, 0b01100, 0b00100, 0 },
             ['"'] = new[] { 0b01010, 0b01010, 0b01010, 0, 0, 0, 0 },
-            ['\''] = new[] { 0b00100, 0b00100, 0b00100, 0, 0, 0, 0 },
+            ['\''] = new[] { 0, 0, 0b00100, 0b00100, 0b00100, 0, 0 },
             ['_'] = new[] { 0, 0, 0, 0, 0, 0, 0b11111 },
             ['×'] = new[] { 0, 0b10001, 0b01010, 0b00100, 0b01010, 0b10001, 0 },
             ['≤'] = new[] { 0, 0b00010, 0b00100, 0b01000, 0b00100, 0b00010, 0b11111 },

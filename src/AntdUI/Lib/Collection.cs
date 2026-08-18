@@ -123,7 +123,9 @@ namespace AntdUI
 
         public void AddRange(IEnumerable<T> collection)
         {
+            int len = list.Count;
             list.AddRange(collection);
+            if (list.Count == len) return;
             foreach (var item in collection)
             {
                 PropertyChanged(item);
@@ -156,7 +158,9 @@ namespace AntdUI
         }
         public void InsertRange(int index, IEnumerable<T> collection)
         {
+            int len = list.Count;
             list.InsertRange(index, collection);
+            if (list.Count == len) return;
             foreach (var item in collection)
             {
                 PropertyChanged(item);
@@ -349,23 +353,29 @@ namespace AntdUI
 
         public void AddRange(object[] items)
         {
-            var m_arrItem = EnsureSpace(items.Length);
-            foreach (var item in items)
+            if (items.Length > 0)
             {
-                m_arrItem[count++] = item;
-                PropertyChanged(item);
+                var m_arrItem = EnsureSpace(items.Length);
+                foreach (var item in items)
+                {
+                    m_arrItem[count++] = item;
+                    PropertyChanged(item);
+                }
+                action?.Invoke(true);
             }
-            action?.Invoke(true);
         }
         public void AddRange(IList<object> items)
         {
-            var m_arrItem = EnsureSpace(items.Count);
-            foreach (var item in items)
+            if (items.Count > 0)
             {
-                m_arrItem[count++] = item;
-                PropertyChanged(item);
+                var m_arrItem = EnsureSpace(items.Count);
+                foreach (var item in items)
+                {
+                    m_arrItem[count++] = item;
+                    PropertyChanged(item);
+                }
+                action?.Invoke(true);
             }
-            action?.Invoke(true);
         }
 
         public void Clear()
@@ -536,28 +546,34 @@ namespace AntdUI
 
         public void AddRange(T[] items)
         {
-            var m_arrItem = EnsureSpace(items.Length);
-            var list = new List<int>(items.Length);
-            foreach (var item in items)
+            if (items.Length > 0)
             {
-                int index = count++;
-                list.Add(index);
-                m_arrItem[index] = item;
+                var m_arrItem = EnsureSpace(items.Length);
+                var list = new List<int>(items.Length);
+                foreach (var item in items)
+                {
+                    int index = count++;
+                    list.Add(index);
+                    m_arrItem[index] = item;
+                }
+                action?.Invoke("add", list.ToArray());
             }
-            action?.Invoke("add", list.ToArray());
         }
 
         public void AddRange(IList<T> items)
         {
-            var m_arrItem = EnsureSpace(items.Count);
-            var list = new List<int>(items.Count);
-            foreach (var item in items)
+            if (items.Count > 0)
             {
-                int index = count++;
-                list.Add(index);
-                m_arrItem[index] = item;
+                var m_arrItem = EnsureSpace(items.Count);
+                var list = new List<int>(items.Count);
+                foreach (var item in items)
+                {
+                    int index = count++;
+                    list.Add(index);
+                    m_arrItem[index] = item;
+                }
+                action?.Invoke("add", list.ToArray());
             }
-            action?.Invoke("add", list.ToArray());
         }
 
         #endregion

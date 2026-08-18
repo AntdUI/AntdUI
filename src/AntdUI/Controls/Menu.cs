@@ -627,20 +627,27 @@ namespace AntdUI
 
         bool scroll_show = false, hover_r = false;
         Rectangle rect_r, rect_r_ico;
-        bool CanLayout()
+        bool CanLayout(out bool canPrint)
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (pauseLayout || rect.Width == 0 || rect.Height == 0)
+                {
+                    canPrint = false;
+                    return false;
+                }
+                canPrint = true;
+                if (items == null || items.Count == 0) return false;
                 return true;
             }
+            canPrint = false;
             return false;
         }
 
         internal void ChangeList(bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 var _rect = ClientRectangle;
                 var rect = _rect.PaddingRect(Padding);
@@ -708,8 +715,8 @@ namespace AntdUI
                     }
                 });
                 ScrollBar.SetVrSize(y + Padding.Vertical, _rect);
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
 
         int ChangeListY(Rectangle rect, MenuItemCollection items, ref int icon_count, int height, int sp)

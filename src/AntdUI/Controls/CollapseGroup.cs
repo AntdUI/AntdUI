@@ -161,7 +161,11 @@ namespace AntdUI
             if (IsHandleCreated)
             {
                 var _rect = ClientRectangle;
-                if (pauseLayout || items == null || items.Count == 0 || (_rect.Width == 0 || _rect.Height == 0)) return;
+                if (pauseLayout || _rect.Width == 0 || _rect.Height == 0) return;
+                if (items == null || items.Count == 0)
+                {
+                    if (r) Invalidate(); return;
+                }
                 var rect = ClientRectangle.DeflateRect(Padding);
                 int y = rect.Y;
                 this.GDI(g =>

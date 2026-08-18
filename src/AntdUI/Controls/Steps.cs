@@ -260,19 +260,26 @@ namespace AntdUI
             }
         }
 
-        bool CanLayout()
+        bool CanLayout(out bool canPrint)
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (pauseLayout || rect.Width == 0 || rect.Height == 0)
+                {
+                    canPrint = false;
+                    return false;
+                }
+                canPrint = true;
+                if (items == null || items.Count == 0) return false;
                 return true;
             }
+            canPrint = false;
             return false;
         }
         internal void ChangeList(bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 var rect = ClientRectangle.DeflateRect(Padding);
                 this.GDI(g =>
@@ -388,8 +395,8 @@ namespace AntdUI
                     }
                     splits = _splits.ToArray();
                 });
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
 
         int MaxHeight(Canvas g, Font font_description, int gap, out int height)

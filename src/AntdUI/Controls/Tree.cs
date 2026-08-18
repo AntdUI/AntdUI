@@ -398,19 +398,26 @@ namespace AntdUI
             }
         }
 
-        bool CanLayout()
+        bool CanLayout(out bool canPrint)
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (pauseLayout || items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (pauseLayout || rect.Width == 0 || rect.Height == 0)
+                {
+                    canPrint = false;
+                    return false;
+                }
+                canPrint = true;
+                if (items == null || items.Count == 0) return false;
                 return true;
             }
+            canPrint = false;
             return false;
         }
         internal void ChangeList(bool print = false, bool rdata = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 virtualMode_Y = 0;
                 var rect = ClientRectangle;
@@ -475,8 +482,8 @@ namespace AntdUI
                     else ChangeList(g, rect, null, items, has, ref x, ref y, depth_gap, icon_size, gap, gapI, 0, true);
                 });
                 ScrollBar.SetVrSize(x, y, rect);
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
 
         bool HasSub(TreeItemCollection? items)

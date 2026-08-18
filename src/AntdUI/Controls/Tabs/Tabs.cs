@@ -577,24 +577,31 @@ namespace AntdUI
             return false;
         }
 
-        bool CanLayout()
+        bool CanLayout(out bool canPrint)
         {
             if (IsHandleCreated)
             {
                 var rect = ClientRectangle;
-                if (items == null || items.Count == 0 || rect.Width == 0 || rect.Height == 0) return false;
+                if (rect.Width == 0 || rect.Height == 0)
+                {
+                    canPrint = false;
+                    return false;
+                }
+                canPrint = true;
+                if (items == null || items.Count == 0) return false;
                 return true;
             }
+            canPrint = false;
             return false;
         }
         internal void LoadLayout(bool print = false)
         {
-            if (CanLayout())
+            if (CanLayout(out var canPrint))
             {
                 if (_tabMenuVisible) style.LoadLayout(this, ClientRectangle.DeflateRect(Margin), items!);
                 else SetPadding(0, 0, 0, 0);
-                if (print) Invalidate();
             }
+            if (print && canPrint) Invalidate();
         }
 
         #endregion
