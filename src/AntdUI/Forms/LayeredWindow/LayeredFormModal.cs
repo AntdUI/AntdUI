@@ -592,15 +592,7 @@ namespace AntdUI
             else
             {
                 if (btn_ok == null) return;
-                isclose = false;
-                btn_ok.Loading = true;
-                bool DisableCancel = false;
-                if (config.LoadingDisableCancel && btn_no != null)
-                {
-                    btn_no.Enabled = false;
-                    DisableCancel = true;
-                }
-                ITask.Run(() =>
+                if (config.LoadingDisable)
                 {
                     bool result = false;
                     try
@@ -608,28 +600,49 @@ namespace AntdUI
                         result = config.OnOk(config);
                     }
                     catch { }
-                    isclose = true;
-                    btn_ok.Loading = false;
-                    // 等待窗口关闭
-                    if (IsHandleCreated && !IsDisposed)
+                    if (result && IsHandleCreated && !IsDisposed) DialogResult = DialogResult.OK;
+                }
+                else
+                {
+                    isclose = false;
+                    btn_ok.Loading = true;
+                    bool DisableCancel = false;
+                    if (config.LoadingDisableCancel && btn_no != null)
                     {
-                        if (result)
-                        {
-                            System.Threading.Thread.Sleep(10);
-                            BeginInvoke(() =>
-                            {
-                                if (IsHandleCreated && !IsDisposed) DialogResult = DialogResult.OK;
-                            });
-                        }
-                        else if (DisableCancel && btn_no != null)
-                        {
-                            BeginInvoke(() =>
-                            {
-                                if (btn_no.IsHandleCreated && !btn_no.IsDisposed) btn_no.Enabled = true;
-                            });
-                        }
+                        btn_no.Enabled = false;
+                        DisableCancel = true;
                     }
-                });
+                    ITask.Run(() =>
+                    {
+                        bool result = false;
+                        try
+                        {
+                            result = config.OnOk(config);
+                        }
+                        catch { }
+                        isclose = true;
+                        btn_ok.Loading = false;
+                        // 等待窗口关闭
+                        if (IsHandleCreated && !IsDisposed)
+                        {
+                            if (result)
+                            {
+                                System.Threading.Thread.Sleep(10);
+                                BeginInvoke(() =>
+                                {
+                                    if (IsHandleCreated && !IsDisposed) DialogResult = DialogResult.OK;
+                                });
+                            }
+                            else if (DisableCancel && btn_no != null)
+                            {
+                                BeginInvoke(() =>
+                                {
+                                    if (btn_no.IsHandleCreated && !btn_no.IsDisposed) btn_no.Enabled = true;
+                                });
+                            }
+                        }
+                    });
+                }
             }
         }
 

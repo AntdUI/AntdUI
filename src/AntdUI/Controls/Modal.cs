@@ -596,6 +596,11 @@ namespace AntdUI
             public Func<Config, bool>? OnOk { get; set; }
 
             /// <summary>
+            /// 禁用按钮加载
+            /// </summary>
+            public bool LoadingDisable { get; set; }
+
+            /// <summary>
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
@@ -830,6 +835,11 @@ namespace AntdUI
             public Config SetTag(object? value)
             {
                 Tag = value;
+                return this;
+            }
+            public Config SetLoadingDisable(bool value = true)
+            {
+                LoadingDisable = value;
                 return this;
             }
             public Config SetLoadingDisableCancel(bool value = true)
