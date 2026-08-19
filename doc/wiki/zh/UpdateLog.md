@@ -1,5 +1,20 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.6` 2026-08-19
+
+- ➕ Avatar Square
+- ➕ Button/Input/FloatButton/PageHeader LoadingIcon
+- ➕ Switch 文本跟随动画
+- ➕ LabelLed TextAlign 文本位置
+- ➕ Modal LoadingDisable 禁用按钮加载
+- ➕ Label 补全 前后缀图标属性
+- ✍️ Menu 深色模式文本色差
+- ✍️ Menu 图标悬浮重叠卡色
+- ✍️ Switch 全面适配新色卡
+- ✍️ 所有列表控件清空后不刷新
+- ✍️ LabelLed 优化/, \等符号位置
+- ✍️ 色卡混色算法溢出
+
 ### `2.4.5` 2026-08-13
 
 - ➕ Popover 允许 容器大小变化

@@ -1,5 +1,20 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.6` 2026-08-19
+
+- ➕ Avatar Square
+- ➕ Button/Input/FloatButton/PageHeader LoadingIcon
+- ➕ Switch Text Follow Animation
+- ➕ LabelLed TextAlign text position
+- ➕ Modal LoadingDisable disable button for loading
+- ➕ Label completion with prefix and suffix icon properties
+- ✍️ Menu dark mode text color difference
+- ✍️ Menu icon floating overlapping card color
+- ✍️ Switch fully compatible with new color cards
+- ✍️ Do not refresh after clearing all list controls
+- ✍️ LabelLed optimization, symbol placement, etc
+- ✍️ Color card mixing algorithm overflow
+
 ### `2.4.5` 2026-08-13
 
 - ➕ Popover allows container size changes
