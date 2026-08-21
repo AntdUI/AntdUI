@@ -298,7 +298,7 @@ namespace AntdUI
 
         #region 关闭
 
-        bool isClosing = false;
+        internal bool isClosing = false;
         public virtual void IClosing() { }
         public void IClose(bool isdispose = false)
         {
@@ -321,6 +321,7 @@ namespace AntdUI
             try
             {
                 if (IsDisposed) return;
+                isClosing = true;
                 IClosing();
                 if (InvokeRequired) Invoke(Dispose);
                 else Dispose();

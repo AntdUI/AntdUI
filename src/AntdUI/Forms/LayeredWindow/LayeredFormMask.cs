@@ -58,6 +58,17 @@ namespace AntdUI
         public override string name => "Mask";
         Func<GraphicsPath>? RenderRegion;
 
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            // 关闭动画期间，让鼠标点击穿透到下方窗口
+            if (isClosing && m.Msg == 0x84) // WM_NCHITTEST
+            {
+                m.Result = new IntPtr(-1); // HTTRANSPARENT
+                return;
+            }
+            base.WndProc(ref m);
+        }
+
         Control[]? list;
         protected override void OnLoad(EventArgs e)
         {

@@ -2799,6 +2799,24 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置列宽度
+        /// </summary>
+        public Column SetWidth(int value)
+        {
+            Width = value.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// 设置列宽度
+        /// </summary>
+        public Column SetWidth(float value)
+        {
+            Width = value.ToString();
+            return this;
+        }
+
+        /// <summary>
         /// 设置列最大宽度
         /// </summary>
         public Column SetMaxWidth(string? value = null)
@@ -2808,11 +2826,47 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置列最大宽度
+        /// </summary>
+        public Column SetMaxWidth(int value)
+        {
+            MaxWidth = value.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// 设置列最大宽度
+        /// </summary>
+        public Column SetMaxWidth(float value)
+        {
+            MaxWidth = value.ToString();
+            return this;
+        }
+
+        /// <summary>
         /// 设置列最小宽度
         /// </summary>
         public Column SetMinWidth(string? value = null)
         {
             MinWidth = value;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置列最小宽度
+        /// </summary>
+        public Column SetMinWidth(int value)
+        {
+            MinWidth = value.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// 设置列最小宽度
+        /// </summary>
+        public Column SetMinWidth(float value)
+        {
+            MinWidth = value.ToString();
             return this;
         }
 
