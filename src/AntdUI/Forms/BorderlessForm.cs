@@ -237,7 +237,11 @@ namespace AntdUI
                     if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseDown();
                     break;
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         int oldmargin = 0;

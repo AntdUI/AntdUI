@@ -809,7 +809,11 @@ namespace AntdUI
                         Win32.User32.HideScrollBar(Handle);
                         break;
                 }
-                base.WndProc(ref m);
+                try
+                {
+                    base.WndProc(ref m);
+                }
+                catch { }
             }
         }
 

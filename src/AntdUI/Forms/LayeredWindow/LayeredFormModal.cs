@@ -490,7 +490,11 @@ namespace AntdUI
                 count++;
                 if (count > 2) DialogResult = DialogResult.No;
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         void Window_MouseDown(object? sender, MouseEventArgs e) => DraggableMouseDown();

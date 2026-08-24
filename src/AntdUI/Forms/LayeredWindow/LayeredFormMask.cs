@@ -66,7 +66,11 @@ namespace AntdUI
                 m.Result = new IntPtr(-1); // HTTRANSPARENT
                 return;
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         Control[]? list;
@@ -107,7 +111,6 @@ namespace AntdUI
             LoadVisible();
             base.OnLoad(e);
         }
-
 
         private void Parent_Disposed(object? sender, EventArgs e) => IClose();
         private void Parent_VisibleChanged(object? sender, EventArgs e) => LoadVisible();
@@ -190,6 +193,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            owner.Activate();
             if (list == null) owner.VisibleChanged -= Parent_VisibleChanged;
             else
             {

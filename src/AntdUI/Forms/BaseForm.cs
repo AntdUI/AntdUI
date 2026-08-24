@@ -271,7 +271,11 @@ namespace AntdUI
                 dpi = _dpi;
                 if (AutoHandDpi) BeginInvoke(() => Helper.DpiChangeAuto(_dpi, old, this));
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         bool isload = false;

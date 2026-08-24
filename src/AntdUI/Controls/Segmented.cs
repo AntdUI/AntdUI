@@ -966,7 +966,7 @@ namespace AntdUI
                     shadow_temp?.Dispose();
                     shadow_temp = new Bitmap(rect.Width, rect.Height);
                     {
-                        using (var g2 = Graphics.FromImage(shadow_temp).HighLay())
+                        using (var g2 = Graphics.FromImage(shadow_temp).HighLay(Dpi))
                         {
                             g2.TranslateTransform(-rect_real.X + shadow, -rect_real.Y + shadow);
                             g2.Fill(backactive ?? Colour.BgElevated.Get(ColorScheme, nameof(Segmented), Name), path);

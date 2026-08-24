@@ -78,7 +78,11 @@ namespace AntdUI
                         break;
                 }
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         #endregion

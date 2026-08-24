@@ -42,7 +42,11 @@ namespace AntdUI
                 m.Result = new IntPtr(3);
                 return;
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         #endregion

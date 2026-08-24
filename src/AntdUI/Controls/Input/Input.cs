@@ -2077,7 +2077,11 @@ namespace AntdUI
                     if (UseContextMenu) OnOpenContextMenu();
                     break;
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         Form? _contextMenu;

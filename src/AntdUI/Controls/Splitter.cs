@@ -282,7 +282,7 @@ namespace AntdUI
         protected override void OnPaint(PaintEventArgs e)
         {
             if (Panel1Collapsed || Panel2Collapsed) return;
-            var g = e.Graphics.High();
+            var g = e.Graphics.High(Dpi);
             var rect = SplitterRectangle;
             if (_collapsePanel == ADCollapsePanel.None)
             {
@@ -589,6 +589,47 @@ namespace AntdUI
             SplitterMoved -= Splitter_SplitterMoved;
             base.Dispose(disposing);
         }
+
+        #endregion
+
+        #region DPI
+
+        float? dpi;
+        public float Dpi
+        {
+            get
+            {
+                if (Config._dpi_custom.HasValue) return Config._dpi_custom.Value;
+                if (dpi.HasValue) return dpi.Value;
+                var form = this.FindPARENT();
+                if (form is BaseForm baseForm)
+                {
+                    var _dpi = baseForm.Dpi;
+                    dpi = _dpi;
+                    return _dpi;
+                }
+                else if (form is ILayeredForm layeredForm)
+                {
+                    var _dpi = layeredForm.Dpi;
+                    dpi = _dpi;
+                    return _dpi;
+                }
+                else
+                {
+                    var _dpi = Helper.GetScreenDpi(this);
+                    dpi = _dpi;
+                    return _dpi;
+                }
+            }
+        }
+
+#if !NET40 && !NET46
+        protected override void OnDpiChangedBeforeParent(EventArgs e)
+        {
+            base.OnDpiChangedBeforeParent(e);
+            dpi = null;
+        }
+#endif
 
         #endregion
 

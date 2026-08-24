@@ -684,27 +684,31 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (OS.Win7OrLower && m.Msg == WM_LBUTTONDOWN)
+            try
             {
-                Select();
-                base.WndProc(ref m);
-            }
-            else if (Config.TouchClickEnabled)
-            {
-                switch (m.Msg)
+                if (OS.Win7OrLower && m.Msg == WM_LBUTTONDOWN)
                 {
-                    case WM_POINTERDOWN:
-                        Win32.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
-                        break;
-                    case WM_POINTERUP:
-                        Win32.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
-                        break;
-                    default:
-                        base.WndProc(ref m);
-                        return;
+                    Select();
+                    base.WndProc(ref m);
                 }
+                else if (Config.TouchClickEnabled)
+                {
+                    switch (m.Msg)
+                    {
+                        case WM_POINTERDOWN:
+                            Win32.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
+                            break;
+                        case WM_POINTERUP:
+                            Win32.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
+                            break;
+                        default:
+                            base.WndProc(ref m);
+                            return;
+                    }
+                }
+                else base.WndProc(ref m);
             }
-            else base.WndProc(ref m);
+            catch { }
         }
 
         #endregion

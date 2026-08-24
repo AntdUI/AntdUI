@@ -188,7 +188,11 @@ namespace AntdUI
                     if (WmGhostingHandler(m)) return;
                     break;
             }
-            base.WndProc(ref m);
+            try
+            {
+                base.WndProc(ref m);
+            }
+            catch { }
         }
 
         static IntPtr TRUE = new IntPtr(1), FALSE = new IntPtr(0);
