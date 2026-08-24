@@ -48,6 +48,8 @@ namespace AntdUI
 
             if (flags.HasFlag(FormatFlags.DirectionVertical)) sf.FormatFlags |= StringFormatFlags.DirectionVertical;
 
+            if (flags.HasFlag(FormatFlags.DirectionRightToLeft)) sf.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
+
             // 处理换行设置
             if (flags.HasFlag(FormatFlags.NoWrap))
             {

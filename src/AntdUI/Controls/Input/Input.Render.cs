@@ -16,6 +16,7 @@ namespace AntdUI
         #region 渲染
 
         readonly internal FormatFlags sf_center = FormatFlags.Center | FormatFlags.NoWrap;
+        readonly internal FormatFlags sf_center_rtl = FormatFlags.Center | FormatFlags.NoWrap | FormatFlags.DirectionRightToLeft;
         internal FormatFlags sf_placeholder = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
 
         public new virtual void Invalidate() => base.Invalidate();
@@ -341,7 +342,7 @@ namespace AntdUI
             {
                 using (var fore = placeholderColorExtend.BrushEx(rect_text, placeholderColor ?? Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name)))
                 {
-                    g.DrawText(PlaceholderText, Font, fore, rect_text, sf_placeholder);
+                    g.DrawText(PlaceholderText, Font, fore, rect_text, IsRTL ? sf_placeholder | FormatFlags.DirectionRightToLeft : sf_placeholder);
                 }
             }
             if (CaretInfo.Show && CaretInfo.Flag)
@@ -446,6 +447,10 @@ namespace AntdUI
                 {
                     foreach (var it in tmp) g.String(PassWordChar, it.font ?? Font, fore, it.rect, sf_center);
                 }
+                else if (IsRTL)
+                {
+                    PaintTextRTL(g, tmp, fore, _fore);
+                }
                 else if (HasEmoji)
                 {
                     using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))
@@ -465,6 +470,67 @@ namespace AntdUI
                 {
                     foreach (var it in tmp) String(g, Font, it, fore);
                 }
+            }
+        }
+        /// <summary>
+        /// RTL 渲染：将连续同样式、非 Emoji 的 RTL（及两侧被 RTL 夹住的中性）字符簇聚合为整段文本一次性绘制，由 GDI+ 完成双向排版与连写整形
+        /// </summary>
+        void PaintTextRTL(Canvas g, List<CacheFont> tmp, Brush fore, Color fore_color)
+        {
+            Font? emojiFont = null;
+            try
+            {
+                int i = 0;
+                while (i < tmp.Count)
+                {
+                    var it = tmp[i];
+                    if (it.emoji)
+                    {
+                        if (emojiFont == null) emojiFont = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
+                        if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) g.Svg(svg, it.rect, fore_color);
+                        else StringEmoji(g, it.text, emojiFont, it, fore);
+                        i++;
+                        continue;
+                    }
+                    if (it.ret || it.dir != TextDirection.RTL)
+                    {
+                        String(g, Font, it, fore);
+                        i++;
+                        continue;
+                    }
+                    // 扩展 run：连续同样式的 RTL/中性簇（Emoji、换行、LTR、跨行、样式变化终止）
+                    int end = i;
+                    for (int j = i + 1; j < tmp.Count; j++)
+                    {
+                        var it2 = tmp[j];
+                        if (it2.emoji || it2.ret || it2.dir == TextDirection.LTR || it2.rect.Y != it.rect.Y) break;
+                        if (it2.font != it.font || it2.fore != it.fore || it2.back != it.back) break;
+                        end = j;
+                    }
+                    // 去掉尾部未被 RTL 夹住的中性簇
+                    while (end > i && tmp[end].dir == TextDirection.Neutral) end--;
+                    if (end == i)
+                    {
+                        String(g, Font, it, fore);
+                        i++;
+                        continue;
+                    }
+                    var sb = new System.Text.StringBuilder();
+                    int minX = int.MaxValue, maxX = int.MinValue;
+                    for (int k = i; k <= end; k++)
+                    {
+                        var c = tmp[k];
+                        sb.Append(c.text);
+                        if (c.rect.X < minX) minX = c.rect.X;
+                        if (c.rect.Right > maxX) maxX = c.rect.Right;
+                    }
+                    g.String(sb.ToString(), it.font ?? Font, it.fore, fore, Rectangle.FromLTRB(minX, it.rect.Y, maxX, it.rect.Bottom), sf_center_rtl);
+                    i = end + 1;
+                }
+            }
+            finally
+            {
+                if (emojiFont != null) emojiFont.Dispose();
             }
         }
         void PaintTextSelected(Canvas g, List<CacheFont> cache_font)

@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -28,9 +29,11 @@ namespace AntdUI
         bool FixFontWidth(bool force = false)
         {
             HasEmoji = false;
+            HasRTLText = false;
             var text = Text;
             if (force)
             {
+                rtl_run_dirty = true;
                 fix_cache_font.Clear();
                 return this.GDI(g =>
                 {
@@ -62,6 +65,7 @@ namespace AntdUI
                             CaretInfo.Height = font_height;
                             return false;
                         }
+                        rtl_run_dirty = true;
                         FixFontWidth(g, text, 0, force, font_height);
                         CaretInfo.Height = font_height;
                         return CalculateRect();
@@ -110,7 +114,12 @@ namespace AntdUI
                             HasEmoji = true;
                             font_widths.Add(new CacheFont(index, txt, true, fontHeight.Value));
                         }
-                        else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        else
+                        {
+                            var dir = GraphemeSplitter.GetDirection(txt);
+                            if (dir == TextDirection.RTL) HasRTLText = true;
+                            font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)) { dir = dir });
+                        }
                         len++;
                         index++;
                     });
@@ -124,7 +133,12 @@ namespace AntdUI
                             HasEmoji = true;
                             font_widths.Add(new CacheFont(index, txt, true, fix_cache_font.Height(g, Font)));
                         }
-                        else font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)));
+                        else
+                        {
+                            var dir = GraphemeSplitter.GetDirection(txt);
+                            if (dir == TextDirection.RTL) HasRTLText = true;
+                            font_widths.Add(new CacheFont(index, txt, false, fix_cache_font.Width(g, Font, txt)) { dir = dir });
+                        }
                         len++;
                         index++;
                     });
@@ -137,6 +151,7 @@ namespace AntdUI
         bool CleanCacheFont()
         {
             TextTotalLine = 0;
+            HasRTLText = false;
             bool set_x = ScrollX.SetValue(0), set_y = ScrollY.SetValue(0);
             cache_font = null;
             cache_caret = null;
@@ -165,6 +180,11 @@ namespace AntdUI
             public bool hide { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
+
+            /// <summary>
+            /// 字符簇方向
+            /// </summary>
+            public TextDirection dir { get; set; }
 
             #region 样式
 
@@ -230,6 +250,11 @@ namespace AntdUI
             }
             else
             {
+                if (rtl_run_dirty)
+                {
+                    rtl_run_dirty = false;
+                    if (IsRTL) this.GDI(g => FixRTLRunWidth(g, cache_font));
+                }
                 int maxx = 0;
                 if (multiline)
                 {
@@ -264,10 +289,11 @@ namespace AntdUI
                 }
 
                 var last = cache_font[cache_font.Count - 1];
+                bool rtl = IsRTL;
 
                 var carets = new List<CacheCaret>(cache_font.Count + 2)
                 {
-                    new CacheCaret { x = cache_font[0].rect.X, y = rect_text.Y, i = 0,index=0 }
+                    new CacheCaret { x = rtl ? cache_font[0].rect.Right : cache_font[0].rect.X, y = rect_text.Y, i = 0,index=0 }
                 };
                 int tmp = 1;
                 for (int i = 0; i < cache_font.Count; i++)
@@ -282,7 +308,7 @@ namespace AntdUI
                             {
                                 index = tmp,
                                 i = i,
-                                x = it_up.rect.Right,
+                                x = rtl ? it_up.rect.X : it_up.rect.Right,
                                 y = it_up.rect.Y
                             });
                         }
@@ -303,7 +329,7 @@ namespace AntdUI
                         {
                             index = tmp,
                             i = i,
-                            x = it.rect.X,
+                            x = rtl ? it.rect.Right : it.rect.X,
                             y = it.rect.Y
                         });
                     }
@@ -313,29 +339,44 @@ namespace AntdUI
                 {
                     index = tmp,
                     i = cache_font.Count,
-                    x = last.rect.Right,
+                    x = rtl ? last.rect.X : last.rect.Right,
                     y = last.rect.Y
                 });
                 cache_caret = carets.ToArray();
 
-                ScrollX.Max = last.rect.Right - rect_text.Right;
-                switch (textalign)
+                if (rtl)
                 {
-                    case HorizontalAlignment.Center:
-                        if (ScrollX.Max > 0) ScrollX.Min = -ScrollX.Max;
-                        else
-                        {
-                            ScrollX.Min = ScrollX.Max;
-                            ScrollX.Max = -ScrollX.Max;
-                        }
-                        break;
-                    case HorizontalAlignment.Right:
-                        ScrollX.Min = cache_font[0].rect.Right - rect.Right + sps;
-                        ScrollX.Max = 0;
-                        break;
-                    default:
-                        ScrollX.Min = 0;
-                        break;
+                    // RTL：按实际内容几何计算滚动范围（左溢出为负、右溢出为正）
+                    int minX = int.MaxValue, maxX = int.MinValue;
+                    foreach (var it in cache_font)
+                    {
+                        if (it.rect.X < minX) minX = it.rect.X;
+                        if (it.rect.Right > maxX) maxX = it.rect.Right;
+                    }
+                    ScrollX.Min = -Math.Max(0, rect_text.X - minX);
+                    ScrollX.Max = Math.Max(0, maxX - rect_text.Right);
+                }
+                else
+                {
+                    ScrollX.Max = last.rect.Right - rect_text.Right;
+                    switch (textalign)
+                    {
+                        case HorizontalAlignment.Center:
+                            if (ScrollX.Max > 0) ScrollX.Min = -ScrollX.Max;
+                            else
+                            {
+                                ScrollX.Min = ScrollX.Max;
+                                ScrollX.Max = -ScrollX.Max;
+                            }
+                            break;
+                        case HorizontalAlignment.Right:
+                            ScrollX.Min = cache_font[0].rect.Right - rect.Right + sps;
+                            ScrollX.Max = 0;
+                            break;
+                        default:
+                            ScrollX.Min = 0;
+                            break;
+                    }
                 }
                 ScrollY.Max = last.rect.Bottom - rect.Height + sps;
                 if (multiline)
@@ -344,8 +385,12 @@ namespace AntdUI
                     if (wordwrap) ScrollX.Show = false;
                     else
                     {
-                        ScrollX.Max = maxx - rect_text.Right;
-                        ScrollX.Show = maxx > rect.Right;
+                        if (rtl) ScrollX.Show = ScrollX.Max > 0 || ScrollX.Min < 0;
+                        else
+                        {
+                            ScrollX.Max = maxx - rect_text.Right;
+                            ScrollX.Show = maxx > rect.Right;
+                        }
                     }
                     ScrollY.Show = last.rect.Bottom > rect.Bottom;
                     if (ScrollY.Show)
@@ -359,13 +404,26 @@ namespace AntdUI
                     oldtmpY = oldtmpX = null;
                     ScrollY.Show = false;
                     ScrollY.Value = 0;
-                    if (textalign == HorizontalAlignment.Right) ScrollX.Show = last.rect.Right < rect.Right;
-                    else ScrollX.Show = last.rect.Right > rect_text.Right;
-                    if (ScrollX.Show)
+                    if (rtl)
                     {
-                        if (ScrollX.Value > ScrollX.Max && ScrollX.SetValue(ScrollX.Max)) rdcount++;
+                        ScrollX.Show = ScrollX.Max > 0 || ScrollX.Min < 0;
+                        if (ScrollX.Show)
+                        {
+                            if (ScrollX.Value > ScrollX.Max && ScrollX.SetValue(ScrollX.Max)) rdcount++;
+                            else if (ScrollX.Value < ScrollX.Min && ScrollX.SetValue(ScrollX.Min)) rdcount++;
+                        }
+                        else if (ScrollX.SetValue(0)) rdcount++;
                     }
-                    else if (ScrollX.SetValue(0)) rdcount++;
+                    else
+                    {
+                        if (textalign == HorizontalAlignment.Right) ScrollX.Show = last.rect.Right < rect.Right;
+                        else ScrollX.Show = last.rect.Right > rect_text.Right;
+                        if (ScrollX.Show)
+                        {
+                            if (ScrollX.Value > ScrollX.Max && ScrollX.SetValue(ScrollX.Max)) rdcount++;
+                        }
+                        else if (ScrollX.SetValue(0)) rdcount++;
+                    }
                 }
             }
             if (SetCaretPostion()) rdcount++;
@@ -374,6 +432,7 @@ namespace AntdUI
         int[] CalculateRectMultiline(List<CacheFont> cache_font, Rectangle rectText, int sps, int lineHeight)
         {
             int maxx = 0, usex = 0, usey = 0, line = 0;
+            bool rtl = IsRTL;
             foreach (var it in cache_font)
             {
                 if (it.text == "\n" || it.text == "\r\n")
@@ -384,7 +443,7 @@ namespace AntdUI
                     if (usex > maxx) maxx = usex;
                     usey += lineHeight;
                     usex = 0;
-                    it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
+                    it.rect = new Rectangle(rtl ? rectText.Right - usex : rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                     continue;
                 }
                 else if (it.text == " " || it.text == "\t") it.hide = true;
@@ -393,7 +452,7 @@ namespace AntdUI
                     if (it.text == "\r")
                     {
                         it.hide = true;
-                        it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
+                        it.rect = new Rectangle(rtl ? rectText.Right - usex - it.width : rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                         continue;
                     }
                     else if (wordwrap && usex + it.width > rectText.Width)
@@ -404,7 +463,7 @@ namespace AntdUI
                     }
                 }
                 it.line = line;
-                it.rect = new Rectangle(rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
+                it.rect = new Rectangle(rtl ? rectText.Right - usex - it.width : rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
                 usex += it.width;
             }
             TextTotalLine = line;
@@ -537,16 +596,44 @@ namespace AntdUI
             }
             else
             {
-                foreach (var it in cache_font)
+                if (IsRTL)
                 {
-                    it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
-                    usex += it.width;
+                    foreach (var it in cache_font)
+                    {
+                        it.rect = new Rectangle(rect_text.Right - usex - it.width, rect_text.Y, it.width, CaretInfo.Height);
+                        usex += it.width;
+                    }
+                }
+                else
+                {
+                    foreach (var it in cache_font)
+                    {
+                        it.rect = new Rectangle(rect_text.X + usex, rect_text.Y, it.width, CaretInfo.Height);
+                        usex += it.width;
+                    }
                 }
                 HandTextAlignCore(cache_font);
             }
         }
         void HandTextAlignCore(List<CacheFont> cache_font)
         {
+            if (IsRTL)
+            {
+                // RTL：默认右对齐（阅读起点在右）；Right 映射为视觉左对齐；Center 对称居中
+                int y = -1;
+                var list = new List<CacheFont>(cache_font.Count);
+                foreach (var it in cache_font)
+                {
+                    if (it.rect.Y != y)
+                    {
+                        y = it.rect.Y;
+                        HandTextAlignRTL(ref list);
+                    }
+                    list.Add(it);
+                }
+                HandTextAlignRTL(ref list);
+                return;
+            }
             if (textalign == HorizontalAlignment.Right)
             {
                 int y = -1;
@@ -614,6 +701,83 @@ namespace AntdUI
                 list.Clear();
             }
         }
+        void HandTextAlignRTL(ref List<CacheFont> list)
+        {
+            if (list.Count > 0)
+            {
+                int minX = int.MaxValue, maxX = int.MinValue;
+                foreach (var it in list)
+                {
+                    if (it.rect.X < minX) minX = it.rect.X;
+                    if (it.rect.Right > maxX) maxX = it.rect.Right;
+                }
+                int offset = 0;
+                if (textalign == HorizontalAlignment.Right) offset = rect_text.X - minX;
+                else if (textalign == HorizontalAlignment.Center) offset = (rect_text.X + rect_text.Right - minX - maxX) / 2;
+                if (offset != 0)
+                {
+                    foreach (var it in list)
+                    {
+                        var rect_tmp = it.rect;
+                        rect_tmp.Offset(offset, 0);
+                        it.rect = rect_tmp;
+                    }
+                }
+                list.Clear();
+            }
+        }
+
+        #region RTL 宽度校正
+
+        /// <summary>
+        /// 校正 RTL 连续字符簇宽度：整 run 测量（含上下文整形/连写）后按比例分配回各簇，保证簇宽之和等于整形后的 run 宽度
+        /// </summary>
+        internal void FixRTLRunWidth(Canvas g, List<CacheFont> cache_font)
+        {
+            int count = cache_font.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (cache_font[i].dir != TextDirection.RTL) continue;
+                // 向后扩展：RTL/中性簇（换行符终止）
+                int end = i;
+                for (int j = i + 1; j < count; j++)
+                {
+                    var it = cache_font[j];
+                    if (it.ret || (it.dir != TextDirection.RTL && it.dir != TextDirection.Neutral)) break;
+                    end = j;
+                }
+                // 去掉两侧未夹住 RTL 的中性簇
+                while (end > i && cache_font[end].dir == TextDirection.Neutral) end--;
+                if (end > i)
+                {
+                    var sb = new StringBuilder();
+                    int oldWidth = 0;
+                    for (int k = i; k <= end; k++)
+                    {
+                        sb.Append(cache_font[k].text);
+                        oldWidth += cache_font[k].width;
+                    }
+                    if (oldWidth > 0)
+                    {
+                        int newWidth = g.MeasureString(sb.ToString(), Font).Width;
+                        if (newWidth != oldWidth && newWidth > 0)
+                        {
+                            int sum = 0;
+                            for (int k = i; k < end; k++)
+                            {
+                                int w = (int)((long)cache_font[k].width * newWidth / oldWidth);
+                                cache_font[k].width = w;
+                                sum += w;
+                            }
+                            cache_font[end].width = newWidth - sum;
+                        }
+                    }
+                }
+                i = end;
+            }
+        }
+
+        #endregion
         int GetTabIndex(List<CacheFont> cache_font)
         {
             foreach (var it in cache_font)

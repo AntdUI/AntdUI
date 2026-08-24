@@ -721,7 +721,7 @@ namespace AntdUI
                 var style = CellFocusedStyle ?? Config.DefaultCellFocusedStyle;
                 if (style == TableCellFocusedStyle.None) return;
                 var state = g.Save();
-                g.SetClip(it.RECT);
+                g.SetClip(it.RECT, CombineMode.Intersect);
                 switch (style)
                 {
                     case TableCellFocusedStyle.Solid:

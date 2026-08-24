@@ -307,10 +307,13 @@ namespace AntdUI
                     break;
                 //========================================================
                 case ShortcutKeys.Left:
-                    ProcessLeftKey(false);
+                    // RTL：物理左=视觉左=逻辑前进
+                    if (IsRTL) ProcessRightKey(false);
+                    else ProcessLeftKey(false);
                     break;
                 case ShortcutKeys.LeftShift:
-                    ProcessLeftKey(true);
+                    if (IsRTL) ProcessRightKey(true);
+                    else ProcessLeftKey(true);
                     break;
                 case ShortcutKeys.Up:
                     if (multiline) ProcessUpKey(false);
@@ -321,10 +324,13 @@ namespace AntdUI
                     else ProcessLeftKey(false);
                     break;
                 case ShortcutKeys.Right:
-                    ProcessRightKey(false);
+                    // RTL：物理右=视觉右=逻辑后退
+                    if (IsRTL) ProcessLeftKey(false);
+                    else ProcessRightKey(false);
                     break;
                 case ShortcutKeys.RightShift:
-                    ProcessRightKey(true);
+                    if (IsRTL) ProcessLeftKey(true);
+                    else ProcessRightKey(true);
                     break;
                 case ShortcutKeys.Down:
                     if (multiline) ProcessDownKey(false);

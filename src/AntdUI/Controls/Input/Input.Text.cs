@@ -56,6 +56,7 @@ namespace AntdUI
             }
             isempty = false;
             OnAllowClear();
+            rtl_run_dirty = true;
             CalculateRect();
             OnSetText(_text, isempty);
             if (changed)
@@ -74,6 +75,7 @@ namespace AntdUI
             else cache_font.AddRange(font_widths);
             isempty = false;
             OnAllowClear();
+            rtl_run_dirty = true;
             CalculateRect();
             OnSetText(value, isempty);
             OnTextChanged(EventArgs.Empty);
@@ -92,11 +94,13 @@ namespace AntdUI
             }
             if (cache_font.Count > 0)
             {
+                HasRTLText = false;
                 var texts = new List<string>(cache_font.Count);
                 for (int i = 0; i < cache_font.Count; i++)
                 {
                     cache_font[i].i = i;
                     texts.Add(cache_font[i].text);
+                    if (cache_font[i].dir == TextDirection.RTL) HasRTLText = true;
                 }
                 var value = string.Join("", texts);
                 if (_text == value) return false;
@@ -104,6 +108,7 @@ namespace AntdUI
                 _text = value;
                 if (r) return true;
                 OnAllowClear();
+                rtl_run_dirty = true;
                 CalculateRect();
                 OnSetText(value, isempty);
             }

@@ -54,6 +54,11 @@ namespace AntdUI
         DirectionVertical = 512,
 
         /// <summary>
+        /// 从右到左（RTL）方向
+        /// </summary>
+        DirectionRightToLeft = 1024,
+
+        /// <summary>
         /// 垂直水平居中（组合值）
         /// </summary>
         Center = VerticalCenter | HorizontalCenter,

@@ -6,9 +6,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace AntdUI
 {
+    /// <summary>
+    /// 文本方向
+    /// </summary>
+    public enum TextDirection
+    {
+        /// <summary>
+        /// 从左到右
+        /// </summary>
+        LTR,
+        /// <summary>
+        /// 从右到左
+        /// </summary>
+        RTL,
+        /// <summary>
+        /// 中性（空格、标点、符号等）
+        /// </summary>
+        Neutral
+    }
+
     public partial class GraphemeSplitter
     {
         public static int Each(string strText, Action<string, int, int, int> cb) => Each(strText, 0, cb);
@@ -244,6 +264,40 @@ namespace AntdUI
             IsArabic(codePoint) ||
             (codePoint >= 0x0590 && codePoint <= 0x05FF) ||   // Hebrew
             (codePoint >= 0x0710 && codePoint <= 0x073F) ||   // Syriac
-            (codePoint >= 0x0780 && codePoint <= 0x07BF);
+            (codePoint >= 0x0780 && codePoint <= 0x07FF) ||   // Thaana / NKo
+            (codePoint >= 0x0800 && codePoint <= 0x083F) ||   // Samaritan
+            (codePoint >= 0x0840 && codePoint <= 0x085F);     // Mandaic
+
+        /// <summary>
+        /// 获取字符簇方向
+        /// </summary>
+        public static TextDirection GetDirection(string txt)
+        {
+            if (string.IsNullOrEmpty(txt)) return TextDirection.Neutral;
+            return GetDirection(GetCodePoint(txt, 0));
+        }
+
+        /// <summary>
+        /// 获取码点方向（阿拉伯/希伯来等 RTL；字母数字 LTR；其余中性）
+        /// </summary>
+        public static TextDirection GetDirection(int codePoint)
+        {
+            if (codePoint < 0) return TextDirection.Neutral;
+            if (IsRTL(codePoint)) return TextDirection.RTL;
+            if (codePoint >= 0x10000) return TextDirection.Neutral;
+            switch (CharUnicodeInfo.GetUnicodeCategory((char)codePoint))
+            {
+                case UnicodeCategory.UppercaseLetter:
+                case UnicodeCategory.LowercaseLetter:
+                case UnicodeCategory.TitlecaseLetter:
+                case UnicodeCategory.ModifierLetter:
+                case UnicodeCategory.OtherLetter:
+                case UnicodeCategory.LetterNumber:
+                case UnicodeCategory.DecimalDigitNumber:
+                    return TextDirection.LTR;
+                default:
+                    return TextDirection.Neutral;
+            }
+        }
     }
 }
