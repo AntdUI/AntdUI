@@ -2067,7 +2067,6 @@ namespace AntdUI
             HasFocus = true;
             CaretInfo.Show = CaretVisible;
             ExtraMouseDown = true;
-            if (Config.TouchKeyboard && Helper.IsTouch()) Helper.OpenOsk();
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -2737,8 +2736,8 @@ namespace AntdUI
                 bor = (int)Math.Ceiling(sps * 2 + (WaveSize + borderWidth / 2F) * Dpi * 2), ux = 0;
 
             string? prefixText = PrefixText, suffixText = SuffixText;
-            bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
-            if (loading || is_clear)
+            bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix, has_loading = loading && LoadingValue > -1;
+            if (has_loading || is_clear)
             {
                 int icon_size = (int)(lineHeight * iconratio), icon_right_size = icon_size;
                 if (iconratioRight.HasValue) icon_right_size = (int)(icon_size * iconratioRight.Value);

@@ -795,8 +795,8 @@ namespace AntdUI
         {
             int read_height = CaretInfo.Height;
             string? prefixText = PrefixText, suffixText = SuffixText;
-            bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix;
-            if (loading || is_clear)
+            bool has_prefixText = prefixText != null, has_suffixText = suffixText != null, has_prefix = HasPrefix, has_suffix = HasSuffix, has_loading = loading && LoadingValue > -1;
+            if (has_loading || is_clear)
             {
                 int icon_size = (int)(read_height * iconratio), icon_right_size = icon_size;
                 if (iconratioRight.HasValue) icon_right_size = (int)(read_height * iconratioRight.Value);

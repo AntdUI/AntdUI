@@ -30,16 +30,19 @@ namespace AntdUI
                 if (cache_font != null && e.Clicks > 1 && !BanInput)
                 {
                     mDownMove = mDown = false;
+                    if (IsPassWord) SelectAll();
+                    else
+                    {
+                        var caret2 = GetCaretPostion(e.X + ScrollX.Value, e.Y + ScrollY.Value);
+                        if (caret2 == null) return;
+                        int start = 0, end;
 
-                    var caret2 = GetCaretPostion(e.X + ScrollX.Value, e.Y + ScrollY.Value);
-                    if (caret2 == null) return;
-                    int start = 0, end;
-
-                    if (caret2.i > 0) start = FindStart(cache_font, caret2.i - 2);
-                    if (caret2.i >= cache_font.Count) end = cache_font.Count;
-                    else end = FindEnd(cache_font, caret2.i);
-                    bool set_s2 = SetSelectionStart(start), set_e2 = SetSelectionLength(end - start);
-                    if (set_s2 || set_e2) Invalidate();
+                        if (caret2.i > 0) start = FindStart(cache_font, caret2.i - 2);
+                        if (caret2.i >= cache_font.Count) end = cache_font.Count;
+                        else end = FindEnd(cache_font, caret2.i);
+                        bool set_s2 = SetSelectionStart(start), set_e2 = SetSelectionLength(end - start);
+                        if (set_s2 || set_e2) Invalidate();
+                    }
                     return;
                 }
                 if (is_clear && rect_r.Contains(e.X, e.Y))

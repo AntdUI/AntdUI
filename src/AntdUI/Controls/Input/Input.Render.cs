@@ -323,7 +323,7 @@ namespace AntdUI
             else if (prefixSvg != null) g.Svg(prefixSvg, rect_l, prefixFore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name));
             else if (prefix != null) g.Image(prefix, rect_l);
 
-            if (loading) g.PaintLoading(LoadingIcon, LoadingSvg, rect_r, AnimationLoadingValue, LoadingValue, Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name), CaretInfo.Height, 0.06F);
+            if (loading && LoadingValue > -1) g.PaintLoading(LoadingIcon, LoadingSvg, rect_r, AnimationLoadingValue, LoadingValue, Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name), CaretInfo.Height, 0.06F);
             else if (is_clear) g.Svg(SvgDb.IcoError, rect_r, hover_clear ? Colour.TextTertiary.Get(ColorScheme, nameof(Input), Name) : Colour.TextQuaternary.Get(ColorScheme, nameof(Input), Name));
             else if (suffixText != null) g.String(suffixText, Font, suffixFore ?? _fore, rect_r, SuffixFormat);
             else if (suffixSvg != null) g.Svg(suffixSvg, rect_r, suffixFore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name));
