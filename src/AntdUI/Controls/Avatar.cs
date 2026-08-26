@@ -533,7 +533,7 @@ namespace AntdUI
             get
             {
                 Rectangle rect;
-                if (borderWidth > 0) rect = ClientRectangle.PaddingRect(Padding, borderWidth * Dpi / 2F);
+                if (borderWidth > 0) rect = ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F);
                 else rect = ClientRectangle.PaddingRect(Padding);
                 if (square)
                 {

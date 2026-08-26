@@ -14,9 +14,16 @@ namespace AntdUI
     {
         #region 色卡
 
+        /// <summary>
+        /// 色卡实例
+        /// </summary>
         public static Theme.IColor Db;
         static Style() { Db = new Theme.IColor(); }
 
+        /// <summary>
+        /// 取色
+        /// </summary>
+        /// <param name="id">色卡</param>
         public static Color Get(this Colour id)
         {
             if (colors.TryGetValue(id.ToString(), out var color)) return color;
@@ -318,6 +325,9 @@ namespace AntdUI
             return Color.Transparent;
         }
 
+        /// <summary>
+        /// 自定义色卡字典
+        /// </summary>
         static Dictionary<string, Color> colors = new Dictionary<string, Color>();
 
         /// <summary>
@@ -358,31 +368,70 @@ namespace AntdUI
             else colors.Add(key, value);
         }
 
+        /// <summary>
+        /// 品牌色缓存
+        /// </summary>
         internal static Color? tmp_primary;
+        /// <summary>
+        /// 设置品牌色
+        /// </summary>
+        /// <param name="primary">品牌色</param>
         public static void SetPrimary(Color primary)
         {
             tmp_primary = primary;
             SetPrimaryCore(primary);
         }
+
+        /// <summary>
+        /// 成功色缓存
+        /// </summary>
         internal static Color? tmp_success;
+        /// <summary>
+        /// 设置成功色
+        /// </summary>
+        /// <param name="success">成功色</param>
         public static void SetSuccess(Color success)
         {
             tmp_success = success;
             SetSuccessCore(success);
         }
+
+        /// <summary>
+        /// 警戒色缓存
+        /// </summary>
         internal static Color? tmp_warning;
+        /// <summary>
+        /// 设置警戒色
+        /// </summary>
+        /// <param name="warning">警戒色</param>
         public static void SetWarning(Color warning)
         {
             tmp_warning = warning;
             SetWarningCore(warning);
         }
+
+        /// <summary>
+        /// 错误色缓存
+        /// </summary>
         internal static Color? tmp_error;
+        /// <summary>
+        /// 设置错误色
+        /// </summary>
+        /// <param name="error">错误色</param>
         public static void SetError(Color error)
         {
             tmp_error = error;
             SetErrorCore(error);
         }
+
+        /// <summary>
+        /// 信息色缓存
+        /// </summary>
         internal static Color? tmp_info;
+        /// <summary>
+        /// 设置信息色
+        /// </summary>
+        /// <param name="info">信息色</param>
         public static void SetInfo(Color info)
         {
             tmp_info = info;
@@ -391,6 +440,10 @@ namespace AntdUI
 
         #region 设置主题
 
+        /// <summary>
+        /// 设置品牌色（核心）
+        /// </summary>
+        /// <param name="primary">品牌色</param>
         internal static void SetPrimaryCore(Color primary)
         {
             var colors = primary.GenerateColors();
@@ -413,6 +466,11 @@ namespace AntdUI
             Colour.PrimaryColor.Set(mode ? Color.Black : Color.White);
             EventHub.Dispatch(EventType.THEME_PRIMARY);
         }
+
+        /// <summary>
+        /// 设置成功色（核心）
+        /// </summary>
+        /// <param name="success">成功色</param>
         internal static void SetSuccessCore(Color success)
         {
             var colors = success.GenerateColors();
@@ -426,6 +484,11 @@ namespace AntdUI
             var mode = colors[5].ColorMode();
             Colour.SuccessColor.Set(mode ? Color.Black : Color.White);
         }
+
+        /// <summary>
+        /// 设置警戒色（核心）
+        /// </summary>
+        /// <param name="warning">警戒色</param>
         internal static void SetWarningCore(Color warning)
         {
             var colors = warning.GenerateColors();
@@ -439,6 +502,11 @@ namespace AntdUI
             var mode = colors[5].ColorMode();
             Colour.WarningColor.Set(mode ? Color.Black : Color.White);
         }
+
+        /// <summary>
+        /// 设置错误色（核心）
+        /// </summary>
+        /// <param name="error">错误色</param>
         internal static void SetErrorCore(Color error)
         {
             var colors = error.GenerateColors();
@@ -458,6 +526,11 @@ namespace AntdUI
             var mode = colors[5].ColorMode();
             Colour.ErrorColor.Set(mode ? Color.Black : Color.White);
         }
+
+        /// <summary>
+        /// 设置信息色（核心）
+        /// </summary>
+        /// <param name="info">信息色</param>
         internal static void SetInfoCore(Color info)
         {
             var colors = info.GenerateColors();
@@ -529,6 +602,10 @@ namespace AntdUI
 
         #region 生成色卡
 
+        /// <summary>
+        /// 生成色卡
+        /// </summary>
+        /// <param name="color">基础色</param>
         public static List<Color> Generate(this Color color)
         {
             var hsv = color.ToHSV();
@@ -538,8 +615,22 @@ namespace AntdUI
             for (int i = 1; i <= darkColorCount; i++) patterns.Add(GenerateColor(hsv, i, false));
             return patterns;
         }
+        /// <summary>
+        /// 生成暗色色卡
+        /// </summary>
+        /// <param name="color">基础色</param>
         public static List<Color> GenerateDark(this Color color) => GenerateDark(color, Color.FromArgb(20, 20, 20));
+        /// <summary>
+        /// 生成暗色色卡
+        /// </summary>
+        /// <param name="color">基础色</param>
+        /// <param name="backgroundColor">背景色</param>
         public static List<Color> GenerateDark(this Color color, string backgroundColor) => GenerateDark(color, backgroundColor.ToColor());
+        /// <summary>
+        /// 生成暗色色卡
+        /// </summary>
+        /// <param name="color">基础色</param>
+        /// <param name="bgColor">背景色</param>
         public static List<Color> GenerateDark(this Color color, Color bgColor)
         {
             var tmp = Generate(color);
@@ -548,6 +639,10 @@ namespace AntdUI
             return patterns;
         }
 
+        /// <summary>
+        /// 根据当前色彩模式生成色卡
+        /// </summary>
+        /// <param name="primaryColor">基础色</param>
         public static List<Color> GenerateColors(this Color primaryColor)
         {
             if (Config.Mode == TMode.Light) return Generate(primaryColor);
@@ -579,6 +674,13 @@ namespace AntdUI
             new int[]{ 2, 97 },
             new int[]{ 1, 98 }
         };
+
+        /// <summary>
+        /// 计算色相
+        /// </summary>
+        /// <param name="hsv">色调/饱和度/亮度</param>
+        /// <param name="i">序号</param>
+        /// <param name="isLight">是否浅色</param>
         public static float getHue(HSV hsv, int i, bool isLight)
         {
             float hue, h = (float)Math.Round(hsv.h);
@@ -588,6 +690,13 @@ namespace AntdUI
             else if (hue >= 360) hue -= 360F;
             return hue;
         }
+
+        /// <summary>
+        /// 计算饱和度
+        /// </summary>
+        /// <param name="hsv">色调/饱和度/亮度</param>
+        /// <param name="i">序号</param>
+        /// <param name="isLight">是否浅色</param>
         public static float getSaturation(HSV hsv, int i, bool isLight)
         {
             // grey color don't change saturation
@@ -601,6 +710,13 @@ namespace AntdUI
             if (saturation < 0.06) saturation = 0.06F;
             return (float)Math.Round(saturation, 2);
         }
+
+        /// <summary>
+        /// 计算明度
+        /// </summary>
+        /// <param name="hsv">色调/饱和度/亮度</param>
+        /// <param name="i">序号</param>
+        /// <param name="isLight">是否浅色</param>
         public static float getValue(HSV hsv, int i, bool isLight)
         {
             float value;
@@ -609,6 +725,13 @@ namespace AntdUI
             value = Math.Max(0F, Math.Min(1F, value));
             return (float)Math.Round(value, 2);
         }
+
+        /// <summary>
+        /// 颜色混合
+        /// </summary>
+        /// <param name="rgb1">基础色</param>
+        /// <param name="rgb2">叠加色</param>
+        /// <param name="amount">叠加比例（0-100）</param>
         static Color Mix(Color rgb1, Color rgb2, int amount)
         {
             float p = amount / 100F;
@@ -759,15 +882,46 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 通过整型 RGB 与透明度生成颜色
+        /// </summary>
+        /// <param name="r">红色通道（0-255）</param>
+        /// <param name="g">绿色通道（0-255）</param>
+        /// <param name="b">蓝色通道（0-255）</param>
+        /// <param name="a">透明度（0-1）</param>
         public static Color rgba(int r, int g, int b, float a = 1) => Color.FromArgb((int)Math.Round(255F * rgbfloat(a)), rgbbyte(r), rgbbyte(g), rgbbyte(b));
+
+        /// <summary>
+        /// 调整颜色透明度
+        /// </summary>
+        /// <param name="color">基础色</param>
+        /// <param name="a">透明度（0-1）</param>
         public static Color rgba(this Color color, float a = 1) => rgba(color.R, color.G, color.B, rgbfloat(a));
+
+        /// <summary>
+        /// 通过浮点 RGB 与透明度生成颜色
+        /// </summary>
+        /// <param name="r">红色通道（0-1）</param>
+        /// <param name="g">绿色通道（0-1）</param>
+        /// <param name="b">蓝色通道（0-1）</param>
+        /// <param name="a">透明度（0-1）</param>
         public static Color rgba(float r, float g, float b, float a = 1) => Color.FromArgb((int)Math.Round(255F * rgbfloat(a)), (int)Math.Round(255F * rgbfloat(r)), (int)Math.Round(255F * rgbfloat(g)), (int)Math.Round(255F * rgbfloat(b)));
+
+        /// <summary>
+        /// 将浮点数限制在 0-1 范围内
+        /// </summary>
+        /// <param name="r">浮点值</param>
         public static float rgbfloat(float r)
         {
             if (r < 0) return 0F;
             else if (r > 1) return 1F;
             else return r;
         }
+
+        /// <summary>
+        /// 将整数限制在 0-255 范围内
+        /// </summary>
+        /// <param name="r">字节值</param>
         public static int rgbbyte(int r)
         {
             if (r < 0) return 0;
@@ -775,6 +929,11 @@ namespace AntdUI
             else return r;
         }
 
+
+        /// <summary>
+        /// 字符串转颜色（支持 rgba/rgb/16进制 格式）
+        /// </summary>
+        /// <param name="str">颜色字符串</param>
         public static Color ToColor(this string? str)
         {
             if (str == null) return Color.Black;
@@ -820,6 +979,10 @@ namespace AntdUI
             return string.Format("{0:X2}{1:X2}{2:X2}{3:X2}", color.R, color.G, color.B, color.A);
         }
 
+        /// <summary>
+        /// 16进制字符串转整型
+        /// </summary>
+        /// <param name="str">16进制字符串</param>
         static int HexToInt(this string str) => int.Parse(str, System.Globalization.NumberStyles.AllowHexSpecifier);
 
         #endregion
@@ -1049,11 +1212,26 @@ namespace AntdUI
 
         #endregion
 
+        /// <summary>
+        /// 默认背景色（按钮底部）
+        /// </summary>
         DefaultBg,
+        /// <summary>
+        /// 默认文本色
+        /// </summary>
         DefaultColor,
+        /// <summary>
+        /// 默认描边色
+        /// </summary>
         DefaultBorder,
 
+        /// <summary>
+        /// 标签默认背景色
+        /// </summary>
         TagDefaultBg,
+        /// <summary>
+        /// 标签默认文本色
+        /// </summary>
         TagDefaultColor,
 
         #region 中性色
@@ -1127,6 +1305,9 @@ namespace AntdUI
         /// 边框颜色
         /// </summary>
         BorderColor,
+        /// <summary>
+        /// 二级边框色
+        /// </summary>
         BorderSecondary,
 
         /// <summary>
@@ -1151,6 +1332,9 @@ namespace AntdUI
         /// </summary>
         HoverColor,
 
+        /// <summary>
+        /// 滑块手柄禁用色
+        /// </summary>
         SliderHandleColorDisabled,
 
         /// <summary>
@@ -1171,12 +1355,21 @@ namespace AntdUI
 
     public class HSL
     {
+        /// <summary>
+        /// HSL 构造函数
+        /// </summary>
+        /// <param name="hue">色相</param>
+        /// <param name="saturation">饱和度</param>
+        /// <param name="lightness">亮度</param>
         public HSL(float hue, float saturation, float lightness)
         {
             h = hue;
             s = saturation;
             l = lightness;
         }
+        /// <summary>
+        /// HSL 默认构造函数
+        /// </summary>
         public HSL() { }
         /// <summary>
         /// 色相 取值范围为[0,360]
@@ -1193,12 +1386,21 @@ namespace AntdUI
     }
     public class HSV
     {
+        /// <summary>
+        /// HSV 构造函数
+        /// </summary>
+        /// <param name="hue">色相</param>
+        /// <param name="saturation">饱和度</param>
+        /// <param name="value">明度</param>
         public HSV(float hue, float saturation, float value)
         {
             h = hue;
             s = saturation;
             v = value;
         }
+        /// <summary>
+        /// HSV 默认构造函数
+        /// </summary>
         public HSV() { }
         /// <summary>
         /// 色相

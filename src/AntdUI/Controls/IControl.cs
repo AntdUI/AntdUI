@@ -691,22 +691,22 @@ namespace AntdUI
                     Select();
                     base.WndProc(ref m);
                 }
-                else if (Config.TouchClickEnabled)
+                else
                 {
-                    switch (m.Msg)
+                    base.WndProc(ref m);
+                    if (Config.TouchClickEnabled)
                     {
-                        case WM_POINTERDOWN:
-                            Win32.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
-                            break;
-                        case WM_POINTERUP:
-                            Win32.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
-                            break;
-                        default:
-                            base.WndProc(ref m);
-                            return;
+                        switch (m.Msg)
+                        {
+                            case WM_POINTERDOWN:
+                                Win32.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
+                                break;
+                            case WM_POINTERUP:
+                                Win32.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
+                                break;
+                        }
                     }
                 }
-                else base.WndProc(ref m);
             }
             catch { }
         }

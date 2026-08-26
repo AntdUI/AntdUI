@@ -1174,9 +1174,9 @@ namespace AntdUI
                     try
                     {
                         var lastrow = rows![0];
-                        var rect_read = ClientRectangle.PaddingRect(Padding, borderWidth);
+                        var rect_read = ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F);
                         int sx = ScrollBar.ValueX, rectR = rect_read.Right - (ScrollBar.ShowY ? ScrollBar.SIZE : 0);
-                        CELL last = lastrow.cells[fixedColumnR[0]];
+                        CELL last = lastrow!.cells[fixedColumnR[0]];
                         if (sx + rectR < last.RECT.Right)
                         {
                             showFixedColumnR = true;

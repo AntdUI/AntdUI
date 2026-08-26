@@ -47,7 +47,7 @@ namespace AntdUI
             return false;
         }
 
-        void LoadLayout(Rectangle rect_t) => LayoutDesign(rect_t.PaddingRect(Padding, borderWidth));
+        void LoadLayout(Rectangle rect_t) => LayoutDesign(rect_t.PaddingRect(Padding, Dpi, borderWidth / 2F));
 
         bool has_check = false;
         Rectangle rect_read, rect_divider;
@@ -474,7 +474,7 @@ namespace AntdUI
                 var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
-                if (!isempty && (rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + (int)Math.Ceiling(borderWidth * dpi);
+                if (!isempty && (rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + (int)Math.Ceiling(borderWidth / 2F * dpi);
                 rect_divider = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height);
 
                 var MoveHeaders = new List<MoveHeader>();

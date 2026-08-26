@@ -27,10 +27,10 @@ namespace AntdUI
             {
                 using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
                 {
-                    PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, borderWidth), column_font);
+                    PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, Dpi, borderWidth / 2F), column_font);
                 }
             }
-            else PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, borderWidth), columnfont);
+            else PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, Dpi, borderWidth / 2F), columnfont);
             if (emptyHeader && Empty && rows.Length == 1) PaintEmpty(g, e.Rect, rows.First.RECT.Height);
             ScrollBar.Paint(g, ColorScheme);
             base.OnDraw(e);
@@ -1515,7 +1515,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, borderWidth);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F);
 
         public override GraphicsPath RenderRegion
         {

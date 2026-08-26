@@ -690,7 +690,7 @@ namespace AntdUI
         public override Bitmap? PrintBit()
         {
             var rect = TargetRectXY;
-            var rect_read = rect.PaddingRect(Padding, shadow_size);
+            var rect_read = rect.PaddingRectNoDpi(Padding, shadow_size);
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {

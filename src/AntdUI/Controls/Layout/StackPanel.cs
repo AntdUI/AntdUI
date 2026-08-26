@@ -41,7 +41,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, BorderWidth);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, Dpi, BorderWidth / 2F);
 
         /// <summary>
         /// 是否垂直方向

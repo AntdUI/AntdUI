@@ -333,7 +333,7 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, (borderWidth / 2F * Dpi));
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F);
 
         #endregion
 

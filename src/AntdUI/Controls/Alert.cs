@@ -408,7 +408,7 @@ namespace AntdUI
         /// <summary>
         /// 显示区域（容器）
         /// </summary>
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, borWidth / 2F * Dpi);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, Dpi, borWidth / 2F);
 
         #endregion
 

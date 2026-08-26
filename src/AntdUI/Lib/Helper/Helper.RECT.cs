@@ -388,8 +388,31 @@ namespace AntdUI
         /// </summary>
         /// <param name="rect">区域</param>
         /// <param name="padding">边距</param>
+        public static Rectangle PaddingRect(this Rectangle rect, Padding padding) => new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
+
+        /// <summary>
+        /// 获取边距
+        /// </summary>
+        /// <param name="rect">区域</param>
+        /// <param name="padding">边距</param>
         /// <param name="size">边框</param>
-        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, float size = 0F)
+        public static Rectangle PaddingRect(this Rectangle rect, Padding padding, float dpi, float size)
+        {
+            if (size > 0)
+            {
+                int pr = (int)Math.Ceiling(size * dpi), pr2 = pr * 2;
+                return new Rectangle(rect.X + padding.Left + pr, rect.Y + padding.Top + pr, rect.Width - padding.Horizontal - pr2, rect.Height - padding.Vertical - pr2);
+            }
+            return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
+        }
+
+        /// <summary>
+        /// 获取边距（无DPI）
+        /// </summary>
+        /// <param name="rect">区域</param>
+        /// <param name="padding">边距</param>
+        /// <param name="size">边框</param>
+        public static Rectangle PaddingRectNoDpi(this Rectangle rect, Padding padding, float size)
         {
             if (size > 0)
             {
@@ -398,6 +421,17 @@ namespace AntdUI
             }
             return new Rectangle(rect.X + padding.Left, rect.Y + padding.Top, rect.Width - padding.Horizontal, rect.Height - padding.Vertical);
         }
+
+        /// <summary>
+        /// 获取边距
+        /// </summary>
+        /// <param name="rect">区域</param>
+        /// <param name="padding">边距</param>
+        /// <param name="x">left</param>
+        /// <param name="y">top</param>
+        /// <param name="r">right</param>
+        /// <param name="b">bottom</param>
+        /// <param name="size">边框</param>
         public static Rectangle PaddingRect(this Rectangle rect, Padding padding, int x, int y, int r, int b, float size = 0F)
         {
             if (size > 0)

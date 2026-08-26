@@ -239,7 +239,7 @@ namespace AntdUI
         }
 
         int pyr = 0;
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth / 2F * Dpi);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth * Dpi / 2F);
 
         Color? fill;
         /// <summary>
@@ -551,7 +551,7 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                var rect = ClientRectangle.PaddingRect(Padding, borderWidth / 2F * Dpi);
+                var rect = ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F);
                 if (rect.Width == 0 || rect.Height == 0) return;
                 if (showSizeChanger)
                 {

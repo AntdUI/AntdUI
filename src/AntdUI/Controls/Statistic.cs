@@ -247,7 +247,7 @@ namespace AntdUI
             base.OnDraw(e);
             var g = e.Canvas;
             var bor = borderWidth * Dpi;
-            var rect = ClientRectangle.PaddingRect(Padding, bor / 2F);
+            var rect = ClientRectangle.PaddingRectNoDpi(Padding, bor / 2F);
             var size = g.MeasureString(Config.NullText, Font);
             int gap = (int)(size.Height * 0.18F), gap2 = gap * 2, gapbig = gap * gap;
             using (var font = new Font(Font.FontFamily.Name, Font.Size * 2.2F))

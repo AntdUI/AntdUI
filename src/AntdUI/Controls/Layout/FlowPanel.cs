@@ -43,7 +43,7 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, BorderWidth);
+        public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, Dpi, BorderWidth / 2F);
 
         /// <summary>
         /// 布局方向
