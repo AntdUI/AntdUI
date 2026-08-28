@@ -171,6 +171,11 @@ namespace AntdUI
             public Action<object, CancelEventArgs>? OnClosing { get; set; }
 
             /// <summary>
+            /// 控件关闭后回调
+            /// </summary>
+            public Action? OnClosed { get; set; }
+
+            /// <summary>
             /// 自动关闭时间（秒）0等于不关闭
             /// </summary>
             public int AutoClose { get; set; }

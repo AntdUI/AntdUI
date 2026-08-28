@@ -592,7 +592,7 @@ namespace AntdUI
         bool isclose = true;
         void btn_ok_Click(object? sender, EventArgs e)
         {
-            if (config.OnOk == null) DialogResult = DialogResult.OK;
+            if (config.OnOk == null && config.OnOkAsync == null) DialogResult = DialogResult.OK;
             else
             {
                 if (btn_ok == null) return;
@@ -601,7 +601,7 @@ namespace AntdUI
                     bool result = false;
                     try
                     {
-                        result = config.OnOk(config);
+                        result = config.OnOkAsync == null ? (config.OnOk?.Invoke(config) ?? false) : config.OnOkAsync(config).Result;
                     }
                     catch { }
                     if (result && IsHandleCreated && !IsDisposed) DialogResult = DialogResult.OK;
@@ -621,7 +621,7 @@ namespace AntdUI
                         bool result = false;
                         try
                         {
-                            result = config.OnOk(config);
+                            result = config.OnOkAsync == null ? (config.OnOk?.Invoke(config) ?? false) : config.OnOkAsync(config).Result;
                         }
                         catch { }
                         isclose = true;

@@ -6,6 +6,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -596,6 +597,11 @@ namespace AntdUI
             public Func<Config, bool>? OnOk { get; set; }
 
             /// <summary>
+            /// 确定回调（异步）
+            /// </summary>
+            public Func<Config, Task<bool>>? OnOkAsync { get; set; }
+
+            /// <summary>
             /// 禁用按钮加载
             /// </summary>
             public bool LoadingDisable { get; set; }
@@ -827,6 +833,11 @@ namespace AntdUI
             public Config SetOk(Func<Config, bool>? value)
             {
                 OnOk = value;
+                return this;
+            }
+            public Config SetOk(Func<Config, Task<bool>>? value)
+            {
+                OnOkAsync = value;
                 return this;
             }
 

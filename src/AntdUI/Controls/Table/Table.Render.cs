@@ -531,14 +531,7 @@ namespace AntdUI
         void PaintBgRowFront(Canvas g, StyleRow row)
         {
             if (row.style != null && row.style.BackColor.HasValue) g.Fill(row.style.BackColor.Value, row.row.RECT);
-            if (row.row.Type == RowType.None)
-            {
-                if (selectedIndex.Contains(row.row.INDEX) || (row.row.Select && ShowCheckBg))
-                {
-                    g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get(ColorScheme, nameof(Table), Name), row.row.RECT);
-                    if (selectedIndex.Contains(row.row.INDEX) && row.row.Select) g.Fill(Color.FromArgb(40, Colour.PrimaryActive.Get(ColorScheme, nameof(Table), Name)), row.row.RECT);
-                }
-            }
+            PaintBgSelect(g, row.row, row.row.RECT);
         }
 
         /// <summary>
@@ -547,11 +540,7 @@ namespace AntdUI
         void PaintBg(Canvas g, RowTemplate row)
         {
             OnRowPaintBegin(g, row.RECT, row.RECORD, row.Type, row.INDEX);
-            if (dragBody == null)
-            {
-                if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name)), row.RECT);
-                else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name), row.RECT);
-            }
+            if (dragBody == null) PaintBgHover(g, row, row.RECT);
             else
             {
                 if (dragBody.i == row.INDEX) g.Fill(Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name), row.RECT);
@@ -566,6 +555,24 @@ namespace AntdUI
                 }
             }
             OnRowPaint(g, row.RECT, row.RECORD, row.Type, row.INDEX);
+        }
+
+        void PaintBgSelect(Canvas g, RowTemplate row, Rectangle rect)
+        {
+            if (row.Type == RowType.None)
+            {
+                if (selectedIndex.Contains(row.INDEX) || (row.Select && ShowCheckBg))
+                {
+                    if (selectedIndex.Contains(row.INDEX) && row.Select) g.Fill(Colour.PrimaryBgHover.Get(ColorScheme, nameof(Table), Name), rect);
+                    else g.Fill(rowSelectedBg ?? Colour.PrimaryBg.Get(ColorScheme, nameof(Table), Name), rect);
+                }
+            }
+        }
+
+        void PaintBgHover(Canvas g, RowTemplate row, Rectangle rect)
+        {
+            if (row.AnimationHover) g.Fill(Helper.ToColorN(row.AnimationHoverValue, Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name)), rect);
+            else if (row.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name), rect);
         }
 
         #region 单元格
@@ -1282,8 +1289,8 @@ namespace AntdUI
             var state = g.Save();
             var rect = RectMergeCells(first, last, out bool fz);
             g.Fill(bg, rect);
-            if (first.ROW.AnimationHover) g.Fill(Helper.ToColorN(first.ROW.AnimationHoverValue, Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name)), rect);
-            else if (first.ROW.Hover) g.Fill(rowHoverBg ?? Colour.FillSecondary.Get(ColorScheme, nameof(Table), Name), rect);
+            PaintBgSelect(g, first.ROW, rect);
+            PaintBgHover(g, first.ROW, rect);
 
             PaintBorder(g, rect);
 

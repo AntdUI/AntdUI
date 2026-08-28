@@ -312,6 +312,7 @@ namespace AntdUI
             config.Content = null;
 #pragma warning restore CS8625
             form?.Dispose();
+            config.OnClosed?.Invoke();
             base.Dispose(disposing);
         }
 
