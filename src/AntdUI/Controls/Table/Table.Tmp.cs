@@ -22,6 +22,8 @@ namespace AntdUI
             /// 最小值
             /// </summary>
             public int minvalue { get; set; }
+
+            public int maxvalue { get; set; } = int.MaxValue;
         }
 
         internal class MoveHeader

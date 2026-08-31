@@ -2799,6 +2799,24 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置列自动宽度
+        /// </summary>
+        public Column SetWidthAuto()
+        {
+            Width = "auto";
+            return this;
+        }
+
+        /// <summary>
+        /// 设置列填充剩余宽度
+        /// </summary>
+        public Column SetWidthFill()
+        {
+            Width = "fill";
+            return this;
+        }
+
+        /// <summary>
         /// 设置列宽度
         /// </summary>
         public Column SetWidth(int value)
