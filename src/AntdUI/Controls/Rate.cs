@@ -535,17 +535,22 @@ namespace AntdUI
         #region 鼠标悬浮
 
         protected override bool CanMouseMove { get; set; } = true;
-        protected override void OnMouseHover(int x, int y)
+        protected override bool OnMouseHover(int x, int y)
         {
             var i = GetItemMouseHover(x, y);
-            if (tmp == i) return;
+            if (tmp == i) return false;
             tmp = i;
             CloseTip();
             if (i.HasValue)
             {
-                if (Tooltips != null && Tooltips.Length > i) OpenTip(rect_stars[i.Value].rect, Tooltips[i.Value]);
+                if (Tooltips != null && Tooltips.Length > i)
+                {
+                    OpenTip(rect_stars[i.Value].rect, Tooltips[i.Value]);
+                    return true;
+                }
             }
             else _Leave();
+            return false;
         }
 
         int? tmp;

@@ -7,7 +7,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -670,7 +669,6 @@ namespace AntdUI
             if (shadow_size > 0)
             {
                 int size = shadow_size * 2, size2 = size * 2;
-                var matrix = new ColorMatrix { Matrix33 = Config.ShadowOpacity };
                 switch (config.Align)
                 {
                     case TAlignMini.Top:
@@ -682,11 +680,7 @@ namespace AntdUI
                                 shadow_temp = path.PaintShadow(end_W, size2, shadow_size);
                             }
                         }
-                        using (var attributes = new ImageAttributes())
-                        {
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.Y, rect.Bottom - size2, rect.Width, size2), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        g.Image(shadow_temp.Bitmap, new Rectangle(rect.Y, rect.Bottom - size2, rect.Width, size2), Config.ShadowOpacity);
                         return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height - shadow_size);
                     case TAlignMini.Bottom:
                         if (shadow_temp == null || shadow_temp.Width != end_W)
@@ -697,11 +691,7 @@ namespace AntdUI
                                 shadow_temp = path.PaintShadow(end_W, size2, shadow_size);
                             }
                         }
-                        using (var attributes = new ImageAttributes())
-                        {
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.Y, rect.Y, rect.Width, size2), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        g.Image(shadow_temp.Bitmap, new Rectangle(rect.Y, rect.Y, rect.Width, size2), Config.ShadowOpacity);
                         return new Rectangle(rect.X, rect.Y + shadow_size, rect.Width, rect.Height - shadow_size);
                     case TAlignMini.Left:
                         if (shadow_temp == null || shadow_temp.Height != end_H)
@@ -712,11 +702,7 @@ namespace AntdUI
                                 shadow_temp = path.PaintShadow(size2, end_H, shadow_size);
                             }
                         }
-                        using (var attributes = new ImageAttributes())
-                        {
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.Right - size2, rect.Y, size2, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        g.Image(shadow_temp.Bitmap, new Rectangle(rect.Right - size2, rect.Y, size2, rect.Height), Config.ShadowOpacity);
                         return new Rectangle(rect.X, rect.Y, rect.Width - shadow_size, rect.Height);
                     case TAlignMini.Right:
                     default:
@@ -728,11 +714,7 @@ namespace AntdUI
                                 shadow_temp = path.PaintShadow(size2, end_H, shadow_size);
                             }
                         }
-                        using (var attributes = new ImageAttributes())
-                        {
-                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                            g.Image(shadow_temp.Bitmap, new Rectangle(rect.X, rect.Y, size2, rect.Height), 0, 0, shadow_temp.Width, shadow_temp.Height, GraphicsUnit.Pixel, attributes);
-                        }
+                        g.Image(shadow_temp.Bitmap, new Rectangle(rect.X, rect.Y, size2, rect.Height), Config.ShadowOpacity);
                         return new Rectangle(rect.X + shadow_size, rect.Y, rect.Width - shadow_size, rect.Height);
                 }
             }

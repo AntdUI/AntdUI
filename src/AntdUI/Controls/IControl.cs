@@ -719,6 +719,7 @@ namespace AntdUI
         TimeSpan timeHover;
         Stopwatch hoverStopwatch = new Stopwatch();
         int oldx = -1, oldy = -1;
+        bool tmpHover = false;
         protected virtual bool CanMouseMove { get; set; }
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -728,15 +729,15 @@ namespace AntdUI
                 if (oldx == e.X && oldy == e.Y) return;
                 oldx = e.X;
                 oldy = e.Y;
-                hoverStopwatch.Reset();
-                hoverStopwatch.Start();
+                if (tmpHover) tmpHover = OnMouseHover(oldx, oldy);
+                hoverStopwatch.Restart();
                 timeHover = hoverStopwatch.Elapsed + TimeSpan.FromMilliseconds(Config.MouseHoverDelay);
                 if (taskHover == null)
                 {
                     taskHover = new AnimationTask(new AnimationLoopConfig(this, () =>
                     {
                         if (hoverStopwatch.Elapsed < timeHover) return true;
-                        BeginInvoke(() => OnMouseHover(oldx, oldy));
+                        tmpHover = Invoke(() => OnMouseHover(oldx, oldy));
                         return false;
                     }, Config.MouseHoverDelay).SetEnd(() => taskHover = null).SetSleep(Config.MouseHoverDelay).SetPriority());
                 }
@@ -753,9 +754,7 @@ namespace AntdUI
             oldy = -1;
         }
 
-        protected virtual void OnMouseHover(int x, int y)
-        {
-        }
+        protected virtual bool OnMouseHover(int x, int y) => false;
 
         #endregion
 

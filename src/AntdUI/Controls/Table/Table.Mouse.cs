@@ -785,9 +785,9 @@ namespace AntdUI
         #region 鼠标悬浮
 
         protected override bool CanMouseMove { get; set; } = true;
-        protected override void OnMouseHover(int x, int y)
+        protected override bool OnMouseHover(int x, int y)
         {
-            if (rows == null || inEditMode) return;
+            if (rows == null || inEditMode) return false;
             var db = CellContains(rows.List, false, x, y);
             if (db == null || db.mode == CELLDBMode.Summary)
             {
@@ -801,25 +801,38 @@ namespace AntdUI
                 if (db.mode == 0)
                 {
                     var it = MouseHoverRow(db);
-                    if (tmp == it) return;
+                    if (tmp == it) return false;
                     tmp = it;
                     CloseTip();
-                    if (it == null) return;
+                    if (it == null) return false;
                     if (it is CellLink btn_template)
                     {
-                        if (btn_template.Tooltip != null) OpenTip(RealRect(btn_template.Rect, db.offset_xi, db.offset_y), btn_template.Tooltip);
+                        if (btn_template.Tooltip != null)
+                        {
+                            OpenTip(RealRect(btn_template.Rect, db.offset_xi, db.offset_y), btn_template.Tooltip);
+                            return true;
+                        }
                     }
                     else if (it is CellImage img_template)
                     {
-                        if (img_template.Tooltip != null) OpenTip(RealRect(img_template.Rect, db.offset_xi, db.offset_y), img_template.Tooltip);
+                        if (img_template.Tooltip != null)
+                        {
+                            OpenTip(RealRect(img_template.Rect, db.offset_xi, db.offset_y), img_template.Tooltip);
+                            return true;
+                        }
                     }
                     else if (it is CELL cell)
                     {
                         var text = cell.ToString();
-                        if (!string.IsNullOrEmpty(text) && !db.col.LineBreak && cell.MinWidth > cell.RECT_REAL.Width + 1) OpenTip(RealRect(cell.RECT_REAL, db.offset_xi, db.offset_y), text);
+                        if (!string.IsNullOrEmpty(text) && !db.col.LineBreak && cell.MinWidth > cell.RECT_REAL.Width + 1)
+                        {
+                            OpenTip(RealRect(cell.RECT_REAL, db.offset_xi, db.offset_y), text);
+                            return true;
+                        }
                     }
                 }
             }
+            return false;
         }
         object? tmp;
 

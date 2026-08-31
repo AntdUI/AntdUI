@@ -1462,14 +1462,15 @@ namespace AntdUI
         #region 鼠标悬浮
 
         protected override bool CanMouseMove { get; set; } = true;
-        protected override void OnMouseHover(int x, int y)
+        protected override bool OnMouseHover(int x, int y)
         {
             var it = GetItemMouseHover(x, y);
-            if (tmp == it) return;
+            if (tmp == it) return false;
             tmp = it;
             CloseTip();
-            if (it == null) return;
+            if (it == null) return false;
             OpenTip(it);
+            return true;
         }
 
         SegmentedItem? tmp;

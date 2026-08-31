@@ -1558,13 +1558,13 @@ namespace AntdUI
         protected override bool CanMouseMove { get; set; } = true;
 
         MenuItem? tmpItem;
-        protected override void OnMouseHover(int x, int y)
+        protected override bool OnMouseHover(int x, int y)
         {
             if (items == null || items.Count == 0)
             {
                 CloseTip();
                 CloseDropDown();
-                return;
+                return false;
             }
             if (scroll_show && rect_r.Contains(x, y))
             {
@@ -1579,8 +1579,9 @@ namespace AntdUI
                     }
                     subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
                     subForm.Show(this);
+                    return true;
                 }
-                return;
+                return false;
             }
             int sy = ScrollBar.Value;
             var it = GetItemMouseHover(items, x, y, sy, out int drop);
@@ -1592,7 +1593,7 @@ namespace AntdUI
             }
             else
             {
-                if (tmpItem == it) return;
+                if (tmpItem == it) return false;
                 CloseTip();
                 CloseDropDown();
                 tmpItem = it;
@@ -1600,15 +1601,16 @@ namespace AntdUI
                 {
                     case 0:
                         if (OpenDropDown(it)) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
-                        break;
+                        return true;
                     case 1:
                         OpenDropDown(it);
-                        break;
+                        return true;
                     case 2:
                         OpenTip(it, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - sy, it.rect.Width, rect_r.Height));
-                        break;
+                        return true;
                 }
             }
+            return false;
         }
 
         MenuItem? GetItemMouseHover(MenuItemCollection items, int x, int y, int sy, out int drop)

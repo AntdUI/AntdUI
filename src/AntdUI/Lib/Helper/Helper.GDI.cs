@@ -9,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -1409,15 +1408,7 @@ namespace AntdUI
                     }
                     Blur(bmp_shadow, shadow);
                 }
-                using (var attributes = new ImageAttributes())
-                {
-                    var matrix = new ColorMatrix
-                    {
-                        Matrix33 = config.ShadowOpacity
-                    };
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                    g.Image(bmp_shadow, new Rectangle(_rect.X + shadowOffsetX, _rect.Y + shadowOffsetY, _rect.Width, _rect.Height), 0, 0, _rect.Width, _rect.Height, GraphicsUnit.Pixel, attributes);
-                }
+                g.Image(bmp_shadow, new Rectangle(_rect.X + shadowOffsetX, _rect.Y + shadowOffsetY, _rect.Width, _rect.Height), config.ShadowOpacity);
             }
         }
 

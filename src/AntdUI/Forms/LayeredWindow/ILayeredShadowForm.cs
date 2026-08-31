@@ -209,7 +209,7 @@ namespace AntdUI
                     using (var path = rect_read.RoundPath(Radius))
                     {
                         shadow_temp ??= path.PaintShadow(rect.Width, rect.Height, shadow);
-                        g.Image(shadow_temp.Bitmap, rect, .2F);
+                        g.Image(shadow_temp.Bitmap, rect, Config.ShadowOpacity);
                         PrintBg(g, rect_read, path);
                     }
                     g.SetClip(rect_read);

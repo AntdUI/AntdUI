@@ -37,11 +37,12 @@ namespace AntdUI
             maxWidth = screen.Width;
             int gap = 0;
             this.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
+            int shadow = arrowSize + gap;
             if (component is Tooltip.Config config && config.Offset.HasValue)
             {
                 _lastRect = config.Offset.Value;
                 var align = ArrowAlign;
-                new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, shadow, shadow * 2, config.Offset.Value).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -49,7 +50,7 @@ namespace AntdUI
             {
                 _lastRect = null;
                 var align = ArrowAlign;
-                new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
+                new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, shadow, shadow * 2).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
                 ArrowAlign = align;
                 SetLocation(x, y);
             }
@@ -75,7 +76,8 @@ namespace AntdUI
             int gap = 0;
             this.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, gap, gap * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
+            int shadow = arrowSize + gap;
+            new CalculateCoordinate(this, control, TargetRect, Radius, arrowSize, shadow, shadow * 2, rect).SetScreen(screen).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
         }
@@ -97,7 +99,8 @@ namespace AntdUI
             int gap = 0;
             this.GDI(g => SetSize(this.RenderMeasure(g, maxWidth, out multiline, out gap, out arrowSize)));
             var align = ArrowAlign;
-            new CalculateCoordinate(this, ocontrol, TargetRect, Radius, arrowSize, gap, gap * 2, rect).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
+            int shadow = arrowSize + gap;
+            new CalculateCoordinate(this, ocontrol, TargetRect, Radius, arrowSize, shadow, shadow * 2, rect).Auto(ref align, gap + (int)(Radius * Dpi), out int x, out int y, out arrowX);
             ArrowAlign = align;
             SetLocation(x, y);
             if (Print() == Win32.RenderResult.OK) return false;

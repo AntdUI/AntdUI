@@ -275,6 +275,12 @@ namespace AntdUI
         [Description("是否允许双击最大化"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
         public bool EnableDoubleClickMaximize { get; set; } = true;
 
+        /// <summary>
+        /// 按钮悬浮提示
+        /// </summary>
+        [Description("按钮悬浮提示"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
+        public bool EnableButtonTooltip { get; set; }
+
         #region 图标
 
         bool showicon = false;
@@ -396,6 +402,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            CloseTip();
             ThreadBack?.Dispose();
             hove_back.Dispose();
             hove_close.Dispose();
@@ -1087,6 +1094,62 @@ namespace AntdUI
         #region 鼠标
 
         Rectangle rect_back, rect_close, rect_full, rect_max, rect_min;
+
+        Form? toolTip;
+        protected override bool CanMouseMove => EnableButtonTooltip;
+        protected override bool OnMouseHover(int x, int y)
+        {
+            if (showButton)
+            {
+                if (EnableButtonTooltip)
+                {
+                    bool _close = rect_close.Contains(x, y), _full = fullBox && rect_full.Contains(x, y), _max = maximizeBox && rect_max.Contains(x, y), _min = minimizeBox && rect_min.Contains(x, y);
+                    if (_close)
+                    {
+                        OpenTip("Close", "关闭", rect_close);
+                        return true;
+                    }
+                    else if (_full)
+                    {
+                        if (isfull) OpenTip("Restore", "恢复", rect_full);
+                        else OpenTip("Full", "全屏", rect_full);
+                        return true;
+                    }
+                    else if (_max)
+                    {
+                        if (isMax) OpenTip("Restore", "恢复", rect_max);
+                        else OpenTip("Maximize", "最大化", rect_max);
+                        return true;
+                    }
+                    else if (_min)
+                    {
+                        OpenTip("Minimize", "最小化", rect_min);
+                        return true;
+                    }
+                    else CloseTip();
+                }
+                else CloseTip();
+            }
+            return false;
+        }
+
+        void OpenTip(string id, string text, Rectangle rect)
+        {
+            if (toolTip != null)
+            {
+                if (toolTip.Name == id) return;
+                CloseTip();
+            }
+            toolTip = Tooltip.open(new Tooltip.Config(this, Localization.Get(id, text)).SetArrow(TAlign.Bottom).SetOffset(rect));
+            if (toolTip == null) return;
+            toolTip.Name = id;
+        }
+
+        void CloseTip()
+        {
+            toolTip?.Close();
+            toolTip = null;
+        }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (showButton)
@@ -1109,6 +1172,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             hove_back.Switch = hove_close.Switch = hove_full.Switch = hove_max.Switch = hove_min.Switch = false;
+            CloseTip();
             base.OnMouseLeave(e);
         }
 

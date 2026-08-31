@@ -116,7 +116,7 @@ namespace AntdUI
             using (var path = rect.RoundPath(radius))
             {
                 path.AddPath(path2, false);
-                Color ct = Color.Transparent, ctb = Color.FromArgb(120, 0, 0, 0);
+                Color ct = Color.Transparent, ctb = Color.FromArgb(52, 0, 0, 0);
                 using (var brush = new PathGradientBrush(path))
                 {
                     brush.CenterPoint = new PointF(rect.Width / 2F, rect.Height / 2F);
