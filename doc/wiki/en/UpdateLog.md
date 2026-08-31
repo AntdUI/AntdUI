@@ -1,5 +1,24 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.7` 2026-08-31
+
+- ➕ PageHeader EnableButtonTooltip
+- ➕ Table Merge Cell Activation Background
+- ➕ Popover On Lost callback
+- ➕ Modal Asynchronous OnOkAsynchronous
+- ➕ Input achieves accessibility (on-screen keyboard) by removing TouchKeyboard
+- ✍️ Tooltip pop-up margin
+- ✍️ Table MinWidth MaxWidth
+- ✍️ Table Merge Cell Focus Style invades Floating Header
+- ✍️ The last border of the table has an extra line
+- ✍️ Input loading strip-1 hidden
+- ✍️ Double click the input password box for interaction
+- ✍️ Input Arabic (Preliminary)
+- ✍️ Adjust OnMouseHover interaction
+- ✍️ Standardize all border calculations
+- ✍️ Avoid some unpredictable anomalies
+- ✍️ Mask cannot interact after being closed
+
 ### `2.4.6` 2026-08-19
 
 - ➕ Avatar Square

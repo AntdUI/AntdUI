@@ -1,5 +1,24 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.7` 2026-08-31
+
+- ➕ PageHeader EnableButtonTooltip
+- ➕ Table 合并单元格激活态背景
+- ➕ Popover OnClosed 回调
+- ➕ Modal 异步 OnOkAsync
+- ➕ Input 实现无障碍（屏幕键盘） 移除 TouchKeyboard
+- ✍️ Tooltip 弹出边距
+- ✍️ Table MinWidth MaxWidth
+- ✍️ Table 合并单元格焦点样式侵占浮动表头
+- ✍️ Table 最后边框线多出
+- ✍️ Input 加载条-1隐藏
+- ✍️ Input 密码框双击交互
+- ✍️ Input 阿拉伯语（初步）
+- ✍️ 调整 OnMouseHover 交互
+- ✍️ 规范所有边框计算
+- ✍️ 规避一些不可预料异常
+- ✍️ Mask 关闭后无法交互
+
 ### `2.4.6` 2026-08-19
 
 - ➕ Avatar Square
