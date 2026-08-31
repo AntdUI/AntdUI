@@ -1,24 +1,31 @@
 # Build and Release Folders
-bin-debug/
-bin-release/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
 [Oo]bj/
 [Bb]in/
+[Ll]og/
+[Ll]ogs/
 
 # Other files and folders
 *.csproj.user
+*.vcxproj.filters
+*.vcxproj.user
+*.pubxml.user
+*.snk
+build.log
 
 # Executables
 *.swf
 *.air
 *.ipa
 *.apk
-*.vcxproj.filters
-*.vcxproj.user
-*.pubxml.user
 
 # Projects
 /.vs
 /.claude
+/.vscode
+/.idea
+/.workbuddy
 /packages
-*.snk
-build.log
