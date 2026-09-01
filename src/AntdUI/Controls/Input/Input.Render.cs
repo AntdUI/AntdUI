@@ -447,10 +447,7 @@ namespace AntdUI
                 {
                     foreach (var it in tmp) g.String(PassWordChar, it.font ?? Font, fore, it.rect, sf_center);
                 }
-                else if (IsRTL)
-                {
-                    PaintTextRTL(g, tmp, fore, _fore);
-                }
+                else if (IsRTL) PaintTextRTL(g, tmp, fore, _fore);
                 else if (HasEmoji)
                 {
                     using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))

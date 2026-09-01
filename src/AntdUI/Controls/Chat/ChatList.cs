@@ -1066,23 +1066,11 @@ namespace AntdUI.Chat
                 }
             });
 
-            if (item.HasEmoji)
-            {
-                int tmp = (int)(font_height * EmojiRatio);
-                foreach (var it in font_widths)
-                {
-                    if (it.emoji) it.width = tmp;
-                }
-            }
+            int usex = 0, usey = 0, line = 0, maxx = 0, maxy = 0, tmp_emoji_size = item.HasEmoji ? (int)(font_height * EmojiRatio) : font_height, max_line_height = font_height, max_emoji_height = font_height;
+
             item.cache_font = font_widths.ToArray();
 
-            int usex = 0, usey = 0, line = 0, oy = 0, maxx = 0, maxy = 0, tmp_font_height = font_height;
-            if (item.HasEmoji)
-            {
-                tmp_font_height = (int)(font_height * EmojiRatio);
-                oy = (tmp_font_height - font_height) / 2;
-            }
-            int? tmpimgsize = null;
+            var cache_fonts = new List<CacheFont>(font_widths.Count);
             foreach (var it in item.cache_font)
             {
                 if (it.text == "\r")
@@ -1096,33 +1084,58 @@ namespace AntdUI.Chat
                     it.ret = true;
                     it.line = line;
                     line++;
-                    usey += tmp_font_height;
-                    usex = 0;
+                    HandNewLine(font_height, ref usex, ref usey, ref max_emoji_height, ref max_line_height, ref cache_fonts);
                     continue;
                 }
                 else if (usex + it.width > max_width)
                 {
-                    if (tmpimgsize.HasValue)
-                    {
-                        usey += tmpimgsize.Value;
-                        tmpimgsize = null;
-                    }
-                    else usey += tmp_font_height;
-                    usex = 0;
+                    HandNewLine(font_height, ref usex, ref usey, ref max_emoji_height, ref max_line_height, ref cache_fonts);
                     line++;
                 }
                 it.line = line;
                 if (it.imageHeight.HasValue)
                 {
-                    it.rect = new Rectangle(usex, usey + oy, it.width, it.imageHeight.Value);
-                    tmpimgsize = it.imageHeight.Value;
+                    if (max_line_height < it.imageHeight.Value) max_line_height = it.imageHeight.Value;
+                    it.rect = new Rectangle(usex, usey, it.width, it.imageHeight.Value);
                 }
-                else it.rect = new Rectangle(usex, usey + oy, it.width, tmp_font_height);
+                else if (it.emoji)
+                {
+                    it.width = tmp_emoji_size;
+                    if (max_emoji_height < it.width) max_emoji_height = it.width;
+                    if (max_line_height < it.width) max_line_height = it.width;
+                    it.rect = new Rectangle(usex, usey, it.width, it.width);
+                }
+                else
+                {
+                    cache_fonts.Add(it);
+                    it.rect = new Rectangle(usex, usey, it.width, font_height);
+                }
                 if (maxx < it.rect.Right) maxx = it.rect.Right;
                 if (maxy < it.rect.Bottom) maxy = it.rect.Bottom;
                 usex += it.width;
             }
+            if (max_line_height != font_height && cache_fonts.Count > 0) HandNewLineCore(font_height, ref max_emoji_height, cache_fonts);
+            cache_fonts.Clear();
             return new Size(maxx + spilt, maxy + spilt);
+        }
+
+        void HandNewLine(int font_height, ref int usex, ref int usey, ref int max_emoji_height, ref int max_line_height, ref List<CacheFont> cache_fonts)
+        {
+            if (max_line_height == font_height) usey += font_height;
+            else
+            {
+                usey += max_line_height;
+                HandNewLineCore(font_height, ref max_emoji_height, cache_fonts);
+                max_line_height = font_height;
+            }
+            usex = 0;
+            cache_fonts.Clear();
+        }
+        void HandNewLineCore(int font_height, ref int max_emoji_height, List<CacheFont> cache_fonts)
+        {
+            int tmp_emoji_oy = (max_emoji_height - font_height) / 2;
+            foreach (var cfont in cache_fonts) cfont.SetOffset(0, tmp_emoji_oy);
+            max_emoji_height = font_height;
         }
 
         #endregion
