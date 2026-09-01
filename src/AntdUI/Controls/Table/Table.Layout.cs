@@ -339,7 +339,7 @@ namespace AntdUI
 
                 #endregion
 
-                SetColumnWidth(_columns, read_width_cell, rect, firstrow);
+                CalculateWidth(rect, _columns, read_width_cell, ref col_width, firstrow);
 
                 var width_cell = CalculateWidth(rect, heightEs, true, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
 
@@ -495,30 +495,6 @@ namespace AntdUI
             rect_read = rect_real;
             _is_exceed = is_exceed;
             return new RowList(rowlist);
-        }
-        void SetColumnWidth(List<Column> _columns, Dictionary<int, AutoWidth> read_width_cell, Rectangle rect, RowTemplate firstrow)
-        {
-            foreach (var it in read_width_cell)
-            {
-                var column = _columns[it.Key];
-                var width = it.Value;
-                int min = ParseColumnWidth(column.MinWidth, rect, 0), max = ParseColumnWidth(column.MaxWidth, rect, int.MaxValue);
-                if (max < min) max = min;
-                if (min > width.minvalue) width.minvalue = min;
-                if (max < width.maxvalue) width.maxvalue = max;
-                if (width.maxvalue < width.minvalue) width.maxvalue = width.minvalue;
-                width.value = Math.Min(Math.Max(width.value, width.minvalue), width.maxvalue);
-                if (width.minvalue > firstrow.cells[it.Key].MinWidth) firstrow.cells[it.Key].MinWidth = width.minvalue;
-            }
-        }
-
-        int ParseColumnWidth(string? value, Rectangle rect, int fallback)
-        {
-            if (value == null) return fallback;
-            if (value.EndsWith("%") && float.TryParse(value.TrimEnd('%'), out var percent))
-                return Math.Max(0, (int)Math.Ceiling(rect.Width * percent / 100F));
-            if (int.TryParse(value, out var pixels)) return Math.Max(0, (int)Math.Ceiling(pixels * Dpi));
-            return fallback;
         }
 
         RowTemplate LastRow(List<RowTemplate?> _rows, int index)
@@ -699,6 +675,32 @@ namespace AntdUI
 
         Dictionary<int, int> tmpcol_width = new Dictionary<int, int>(0);
 
+        void CalculateWidth(Rectangle rect, List<Column> _columns, Dictionary<int, AutoWidth> read_width_cell, ref Dictionary<int, object> col_width, RowTemplate firstrow)
+        {
+            foreach (var it in read_width_cell)
+            {
+                int? min = ColumnWidth(_columns[it.Key].MinWidth, rect.Width), max = ColumnWidth(_columns[it.Key].MaxWidth, rect.Width);
+                if (min.HasValue)
+                {
+                    if (min.Value > firstrow.cells[it.Key].MinWidth) firstrow.cells[it.Key].MinWidth = min.Value;
+                    if (it.Value.minvalue < min) it.Value.minvalue = min.Value;
+                    if (it.Value.value < min)
+                    {
+                        it.Value.value = min.Value;
+                        if (col_width.TryGetValue(it.Key, out _)) col_width[it.Key] = min;
+                        else col_width.Add(it.Key, min);
+                    }
+                }
+
+                if (max.HasValue && it.Value.value > max.Value)
+                {
+                    it.Value.value = max.Value;
+                    if (col_width.TryGetValue(it.Key, out _)) col_width[it.Key] = max;
+                    else col_width.Add(it.Key, max);
+                }
+            }
+        }
+
         /// <summary>
         /// 计算宽度
         /// </summary>
@@ -719,7 +721,7 @@ namespace AntdUI
             {
                 if (tmpcol_width.TryGetValue(it.Key, out var tw))
                 {
-                    max_width += LimitWidth(tw, it.Value);
+                    max_width += tw;
                     col_width_tmp.Add(it.Key, tw);
                 }
                 else if (col_width.TryGetValue(it.Key, out var value))
@@ -727,11 +729,11 @@ namespace AntdUI
                     float _value = 0;
                     if (value is int val_int)
                     {
-                        if (val_int == -1) _value = LimitWidth(it.Value.value, it.Value);
-                        else if (val_int == -2) _value = it.Value.minvalue;
-                        else _value = LimitWidth(val_int, it.Value);
+                        if (val_int == -1) _value = it.Value.value;
+                        else if (val_int == -2) _value = Math.Max(it.Value.minvalue, it.Value.value);
+                        else _value = val_int;
                     }
-                    if (value is float val_float) _value = LimitWidth((int)Math.Ceiling(rect.Width * val_float), it.Value);
+                    if (value is float val_float) _value = rect.Width * val_float;
                     max_width += _value;
                     col_width_tmp.Add(it.Key, _value);
                 }
@@ -747,14 +749,31 @@ namespace AntdUI
                     max_width += size;
                     use_width -= size;
                 }
-                else max_width += LimitWidth(it.Value.value, it.Value);
+                else max_width += it.Value.value;
             }
 
             Dictionary<int, int> width_cell;
             if (max_width > rect.Width)
             {
                 is_exceed = true;
-                width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width, false, true, gap2, check_size, sort_size, out _);
+                width_cell = new Dictionary<int, int>(read_width.Count);
+                foreach (var it in read_width)
+                {
+                    if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
+                    else if (col_width.TryGetValue(it.Key, out var value))
+                    {
+                        if (value is int val_int)
+                        {
+                            if (val_int == -1) width_cell.Add(it.Key, it.Value.value);
+                            else if (val_int == -2) width_cell.Add(it.Key, it.Value.value);
+                            else width_cell.Add(it.Key, val_int);
+                        }
+                        else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
+                    }
+                    else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
+                    else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
+                    else width_cell.Add(it.Key, it.Value.value);
+                }
             }
             else
             {
@@ -763,8 +782,8 @@ namespace AntdUI
                 {
                     int ex_width = showX ? ScrollBar.SIZE : 0;
                     max_width += ex_width;
-                    width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width, true, false, gap2, check_size, sort_size, out int sum_width);
-                    if (rect_read.Width > sum_width && col_width_tmp.Count == 0 && sum_width > 0)
+                    width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width, gap2, check_size, sort_size, out int sum_width);
+                    if (rect_read.Width > sum_width)
                     {
                         int tmpw = rect_read.Width - ex_width;
                         int fill_width = 0;
@@ -776,7 +795,7 @@ namespace AntdUI
                         foreach (var it in width_cell)
                         {
                             if (col_width_tmp.TryGetValue(it.Key, out _)) percentage.Add(it.Key, it.Value);
-                            else percentage.Add(it.Key, LimitWidth((int)Math.Round(tw * (it.Value * 1.0 / sum_width)), read_width[it.Key]));
+                            else percentage.Add(it.Key, (int)Math.Round(tw * (it.Value * 1.0 / sum_width)));
                         }
                         width_cell = percentage;
                     }
@@ -785,90 +804,56 @@ namespace AntdUI
                 else
                 {
                     int sum_width;
-                    if (showX && max_width + ScrollBar.SIZE > use_width) max_width += ScrollBar.SIZE;
-                    width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width, false, false, gap2, check_size, sort_size, out sum_width);
+                    if (showX && max_width + ScrollBar.SIZE > use_width) width_cell = CalculateWidth(rect, col_width, read_width, use_width, max_width += ScrollBar.SIZE, gap2, check_size, sort_size, out sum_width);
+                    else width_cell = CalculateWidth(rect, col_width, read_width, use_width, null, gap2, check_size, sort_size, out sum_width);
                     if (change && rect_read.Width > sum_width) rect_read.Width = sum_width;
                     return width_cell;
                 }
             }
             return width_cell;
         }
-        Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width,
-            int use_width, float max_width, bool scale_auto, bool overflow, int gap2, int check_size, int sort_size, out int sum_width)
+        Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int use_width, float? max_width, int gap2, int check_size, int sort_size, out int sum_width)
         {
             var width_cell = new Dictionary<int, int>(read_width.Count);
-            var fill_columns = new List<int>(col_width.Count);
+            var fill_count = new List<int>(col_width.Count);
             foreach (var it in read_width)
             {
-                var constraint = it.Value;
-                if (tmpcol_width.TryGetValue(it.Key, out var temporary))
+                if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
+                else if (col_width.TryGetValue(it.Key, out var value))
                 {
-                    width_cell.Add(it.Key, LimitWidth(temporary, constraint));
-                    continue;
-                }
-
-                bool is_fill = false;
-                int width = constraint.minvalue;
-                if (col_width.TryGetValue(it.Key, out var specified))
-                {
-                    if (specified is int pixels)
+                    if (value is int val_int)
                     {
-                        if (pixels == -2) is_fill = true;
-                        else if (pixels == -1) width = constraint.value;
-                        else width = pixels;
+                        if (val_int == -1) width_cell.Add(it.Key, it.Value.value);
+                        else if (val_int == -2) fill_count.Add(it.Key);
+                        else width_cell.Add(it.Key, val_int);
                     }
-                    else if (specified is float percent) width = (int)Math.Ceiling(rect.Width * percent);
-                    else width = constraint.value;
+                    else if (value is float val_float) width_cell.Add(it.Key, (int)Math.Ceiling(rect.Width * val_float));
                 }
-                else if (constraint.value == -1F) width = check_size * 2;
-                else if (constraint.value == -2F) width = sort_size + gap2;
-                else width = scale_auto && max_width > 0 ? (int)Math.Ceiling(use_width * (constraint.value / max_width)) : constraint.value;
-
-                if (is_fill) fill_columns.Add(it.Key);
-                else width_cell.Add(it.Key, LimitWidth(width, constraint));
-            }
-
-            sum_width = 0;
-            foreach (var width in width_cell.Values) sum_width += width;
-            if (fill_columns.Count == 0) return width_cell;
-
-            int remaining = Math.Max(0, rect.Width - sum_width);
-            var fill_widths = new Dictionary<int, int>(fill_columns.Count);
-            foreach (var index in fill_columns)
-            {
-                var constraint = read_width[index];
-                int width = overflow ? Math.Max(constraint.value, constraint.minvalue) : constraint.minvalue;
-                width = Math.Min(width, constraint.maxvalue);
-                fill_widths.Add(index, width);
-                remaining -= width;
-            }
-            if (remaining > 0)
-            {
-                var active = new List<int>(fill_columns);
-                while (remaining > 0 && active.Count > 0)
+                else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
+                else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
+                else
                 {
-                    int share = Math.Max(1, remaining / active.Count);
-                    for (int i = active.Count - 1; i >= 0 && remaining > 0; i--)
-                    {
-                        int index = active[i];
-                        var constraint = read_width[index];
-                        int room = constraint.maxvalue - fill_widths[index];
-                        int add = Math.Min(share, Math.Min(room, remaining));
-                        fill_widths[index] += add;
-                        remaining -= add;
-                        if (fill_widths[index] >= constraint.maxvalue) active.RemoveAt(i);
-                    }
+                    if (max_width.HasValue) width_cell.Add(it.Key, (int)Math.Ceiling(use_width * (it.Value.value / max_width.Value)));
+                    else width_cell.Add(it.Key, it.Value.value);
                 }
             }
-            foreach (var index in fill_columns) width_cell.Add(index, fill_widths[index]);
             sum_width = 0;
-            foreach (var width in width_cell.Values) sum_width += width;
+            foreach (var it in width_cell) sum_width += it.Value;
+            if (fill_count.Count > 0)
+            {
+                int width = (rect.Width - sum_width) / fill_count.Count;
+                foreach (var it in fill_count) width_cell.Add(it, width);
+                sum_width = rect.Width;
+            }
             return width_cell;
         }
 
-        int LimitWidth(int width, AutoWidth constraint)
+        int? ColumnWidth(string? max, int width)
         {
-            return Math.Min(Math.Max(width, constraint.minvalue), constraint.maxvalue);
+            if (max == null) return null;
+            if (max.EndsWith("%") && float.TryParse(max.TrimEnd('%'), out var f)) return (int)(width * f / 100F);
+            else if (int.TryParse(max, out var i)) return (int)(i * Dpi);
+            return null;
         }
 
         /// <summary>

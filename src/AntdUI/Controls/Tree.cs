@@ -225,11 +225,22 @@ namespace AntdUI
             }
         }
 
+        #region 滚动条
+
         /// <summary>
         /// 滚动条
         /// </summary>
         [Browsable(false)]
         public ScrollBar ScrollBar;
+
+        /// <summary>
+        /// 滚动条真实宽度（仅虚拟模式）
+        /// </summary>
+        public int ScrollBarRealY => ScrollBar.ValueY - virtualMode_Y;
+
+        internal int virtualMode_Y = 0;
+
+        #endregion
 
         bool empty = true;
         [Description("是否显示空样式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
@@ -340,12 +351,12 @@ namespace AntdUI
 
         #region 重写
 
-        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
-        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
-        internal void OnNodeMouseDown(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDown(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
-        internal void OnNodeMouseUp(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseUp(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
-        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDoubleClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), type, args);
-        internal void OnNodeMouseMove(TreeItem item, bool hover) => OnNodeMouseMove(item, item.Rect("Text", ScrollBar.ValueX, ScrollBar.ValueY - virtualMode_Y), hover);
+        internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), type, args);
+        internal void OnNodeMouseClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), type, args);
+        internal void OnNodeMouseDown(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDown(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), type, args);
+        internal void OnNodeMouseUp(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseUp(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), type, args);
+        internal void OnNodeMouseDoubleClick(TreeItem item, TreeCType type, MouseEventArgs args) => OnNodeMouseDoubleClick(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), type, args);
+        internal void OnNodeMouseMove(TreeItem item, bool hover) => OnNodeMouseMove(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), hover);
 
         protected virtual void OnSelectChanged(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => SelectChanged?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
         protected virtual void OnNodeMouseClick(TreeItem item, Rectangle rect, TreeCType type, MouseEventArgs args) => NodeMouseClick?.Invoke(this, new TreeSelectEventArgs(item, rect, type, args));
@@ -568,7 +579,6 @@ namespace AntdUI
         List<TreeItem>? _flatListT;
         List<TreeItem>? _flatList;
         int _virtualRowHeight;
-        internal int virtualMode_Y = 0;
         List<TreeItem>? BuildFlatList(TreeItem? parent, TreeItemCollection? items, int depth)
         {
             if (items == null) return null;
@@ -624,7 +634,7 @@ namespace AntdUI
                 return;
             }
             var g = e.Canvas;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY - virtualMode_Y;
+            int sx = ScrollBar.ValueX, sy = ScrollBarRealY;
             g.TranslateTransform(-sx, -sy);
             bool enable = Enabled;
             float _radius = radius * Dpi;
@@ -900,7 +910,7 @@ namespace AntdUI
                 OnTouchDown(e.X, e.Y);
                 if (virtualMode && _flatList != null)
                 {
-                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY - virtualMode_Y;
+                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBarRealY;
                     foreach (var it in _flatList)
                     {
                         if (IMouseDown(e, it, sx, sy, false)) return;
@@ -925,7 +935,7 @@ namespace AntdUI
                 if (items == null || items.Count == 0 || MDown == null) return;
                 if (virtualMode && _flatList != null)
                 {
-                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY - virtualMode_Y;
+                    int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBarRealY;
                     foreach (var it in _flatList)
                     {
                         if (IMouseUp(e, it, MDown, sx, sy, false)) return;
@@ -1207,7 +1217,7 @@ namespace AntdUI
                         int hand = 0;
                         if (virtualMode && _flatList != null)
                         {
-                            int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY - virtualMode_Y;
+                            int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBarRealY;
                             foreach (var it in _flatList) IMouseMove(it, true, sx, sy, ref hand, false);
                         }
                         else
@@ -1902,7 +1912,7 @@ namespace AntdUI
         }
         bool IHitTest(int x, int y, TreeItem item, out TreeItem? mdown, out TreeCType down)
         {
-            down = item.Contains(x + ScrollBar.ValueX, y + ScrollBar.ValueY - virtualMode_Y, checkable, blockNode);
+            down = item.Contains(x + ScrollBar.ValueX, y + ScrollBarRealY, checkable, blockNode);
             if (down > 0)
             {
                 mdown = item;
@@ -2856,7 +2866,7 @@ namespace AntdUI
         public Rectangle Rect(string type = "", bool actual = true)
         {
             if (actual || PARENT == null) return Rect(type, 0, 0);
-            else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBar.ValueY - PARENT.virtualMode_Y);
+            else return Rect(type, PARENT.ScrollBar.ValueX, PARENT.ScrollBarRealY);
         }
         public Rectangle Rect(int x, int y) => Rect("", x, y);
         public Rectangle Rect(string type, int x = 0, int y = 0)
