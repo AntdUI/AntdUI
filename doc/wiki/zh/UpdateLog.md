@@ -1,5 +1,11 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.8` 2026-09-02
+
+- ✍️ Table 归滚修复 MinWidth MaxWidth
+- ✍️ ChatList 修复文本包含 Emoji 行高异常
+- ✍️ 修复 Task 不响应结束
+
 ### `2.4.7` 2026-08-31
 
 - ➕ PageHeader EnableButtonTooltip

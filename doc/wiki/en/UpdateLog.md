@@ -1,5 +1,11 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.8` 2026-09-02
+
+- ✍️ Table Rolling Repair MinWidth MaxWidth
+- ✍️ ChatList fixes text containing emoji line height exception
+- ✍️ Fix Task Not Responding End
+
 ### `2.4.7` 2026-08-31
 
 - ➕ PageHeader EnableButtonTooltip
