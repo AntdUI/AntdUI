@@ -1053,15 +1053,16 @@ namespace AntdUI
 
         internal void OnCreateEdit()
         {
+            if (Edit != null) return;
             if (PARENT is Collapse parent)
             {
-                if (Edit != null)
-                {
-                    if (parent.Controls.Contains(Edit)) parent.Controls.Remove(Edit);
-                    Edit.TextChanged -= edit_TextChanged;
-                    Edit.Dispose();
-                    Edit = null;
-                }
+                //if (Edit != null)
+                //{
+                //    if (parent.Controls.Contains(Edit)) parent.Controls.Remove(Edit);
+                //    Edit.TextChanged -= edit_TextChanged;
+                //    Edit.Dispose();
+                //    Edit = null;
+                //}
                 switch (EditType)
                 {
                     case EButtonEditTypes.Input:
@@ -1097,6 +1098,7 @@ namespace AntdUI
 
                 if (Edit != null)
                 {
+                    Edit.TextChanged -= edit_TextChanged;
                     Edit.TextChanged += edit_TextChanged;
                     if (!string.IsNullOrEmpty(Tooltip)) Edit.MouseHover += (s, e) => parent?.OnButtonMouseHover(rect.X, rect.Y);
                     if (Select) Edit.Focus();
