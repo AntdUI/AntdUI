@@ -917,21 +917,42 @@ namespace AntdUI
         Dictionary<string, Color> GetColorsPoint(Bitmap bmp_colors)
         {
             int w = bmp_colors.Width, h = bmp_colors.Height;
-            var list = new Dictionary<string, Color>(w * h);
-            for (int x = 0; x < w; x++)
+            using (var unsafeBitmap = new UnsafeBitmap(bmp_colors, false))
             {
-                for (int y = 0; y < h; y++)
+                var tmpList = unsafeBitmap.GetPixelAll();
+                bool found = false;
+                int minDist = int.MaxValue, minX = 0, minY = 0;
+                int vr = ValueNAlpha.R, vg = ValueNAlpha.G, vb = ValueNAlpha.B;
+                var list = new Dictionary<string, Color>(tmpList.Count);
+                foreach (var it in tmpList)
                 {
+                    var color = it.Value.ToColor();
+                    list.Add(it.Key[0] + "_" + it.Key[1], color);
                     try
                     {
-                        var value = bmp_colors.GetPixel(x, y);
-                        list.Add(x + "_" + y, value);
-                        if (value == ValueNAlpha) point_colors = new Point(x, y);
+                        if (found) continue;
+                        if (color == ValueNAlpha)
+                        {
+                            point_colors = new Point(it.Key[0], it.Key[1]);
+                            found = true;
+                        }
+                        else
+                        {
+                            int dr = vr - color.R, dg = vg - color.G, db = vb - color.B;
+                            int d = dr * dr + dg * dg + db * db;
+                            if (d < minDist)
+                            {
+                                minDist = d;
+                                minX = it.Key[0];
+                                minY = it.Key[1];
+                            }
+                        }
                     }
                     catch { return list; }
                 }
+                if (!found) point_colors = new Point(minX, minY);
+                return list;
             }
-            return list;
         }
 
         #endregion
@@ -982,18 +1003,21 @@ namespace AntdUI
         void GetHuePoint(Bitmap bmp_hue)
         {
             int y = bmp_hue.Height / 2;
-            var colors = new List<Color>();
-            for (int x = 0; x < bmp_hue.Width; x++)
+            using (var unsafeBitmap = new UnsafeBitmap(bmp_hue, false))
             {
-                var color = bmp_hue.GetPixel(x, y);
-                if (color == ValueHue)
+                var colors = new List<Color>();
+                for (int x = 0; x < unsafeBitmap.Width; x++)
                 {
-                    point_hue = x;
-                    return;
+                    var color = unsafeBitmap.GetPixel(x, y).ToColor();
+                    if (color == ValueHue)
+                    {
+                        point_hue = x;
+                        return;
+                    }
+                    colors.Add(color);
                 }
-                colors.Add(color);
+                point_hue = find_i(colors, ValueHue);
             }
-            point_hue = find_i(colors, ValueHue);
         }
 
         int find_i(List<Color> cols, Color x)
@@ -1056,18 +1080,21 @@ namespace AntdUI
         void GetAlphaPoint(Bitmap bmp_alpha)
         {
             int y = bmp_alpha.Height / 2;
-            var colors = new List<Color>();
-            for (int x = 0; x < bmp_alpha.Width; x++)
+            using (var unsafeBitmap = new UnsafeBitmap(bmp_alpha, false))
             {
-                var color = bmp_alpha.GetPixel(x, y);
-                if (color.A == Value.A)
+                var colors = new List<Color>();
+                for (int x = 0; x < unsafeBitmap.Width; x++)
                 {
-                    point_alpha = x;
-                    return;
+                    var color = unsafeBitmap.GetPixel(x, y);
+                    if (color.Alpha == Value.A)
+                    {
+                        point_alpha = x;
+                        return;
+                    }
+                    colors.Add(color.ToColor());
                 }
-                colors.Add(color);
+                point_alpha = find_i(colors, ValueNAlpha);
             }
-            point_alpha = find_i(colors, ValueNAlpha);
         }
 
         #endregion

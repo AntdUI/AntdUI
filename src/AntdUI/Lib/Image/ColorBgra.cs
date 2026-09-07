@@ -44,8 +44,10 @@ namespace AntdUI
         }
 
         public static bool operator ==(ColorBgra c1, ColorBgra c2) => c1.Bgra == c2.Bgra;
+        public static bool operator ==(ColorBgra c1, Color c2) => c1.Red == c2.R && c1.Green == c2.G && c1.Blue == c2.B && c1.Alpha == c2.A;
 
         public static bool operator !=(ColorBgra c1, ColorBgra c2) => c1.Bgra != c2.Bgra;
+        public static bool operator !=(ColorBgra c1, Color c2) => c1.Red != c2.R || c1.Green != c2.G || c1.Blue != c2.B || c1.Alpha != c2.A;
 
         public override bool Equals(object? obj) => obj is ColorBgra color && color.Bgra == Bgra;
 

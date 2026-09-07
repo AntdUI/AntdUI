@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -22,13 +23,20 @@ namespace AntdUI
         private Bitmap bitmap;
         private BitmapData? bitmapData;
 
-        public UnsafeBitmap(Bitmap bmp, bool lockBitmap = false, ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
+        public UnsafeBitmap(Bitmap bmp, bool w)
         {
             bitmap = bmp;
             Width = bmp.Width;
             Height = bmp.Height;
+            Lock(w ? ImageLockMode.ReadWrite : ImageLockMode.ReadOnly);
+        }
 
-            if (lockBitmap) Lock(imageLockMode);
+        public UnsafeBitmap(Bitmap bmp, ImageLockMode imageLockMode)
+        {
+            bitmap = bmp;
+            Width = bmp.Width;
+            Height = bmp.Height;
+            Lock(imageLockMode);
         }
 
         public void Lock(ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
@@ -67,19 +75,13 @@ namespace AntdUI
             return obj is UnsafeBitmap unsafeBitmap && Compare(unsafeBitmap, this);
         }
 
-        public override int GetHashCode()
-        {
-            return PixelCount;
-        }
+        public override int GetHashCode() => PixelCount;
 
         public static bool Compare(UnsafeBitmap bmp1, UnsafeBitmap bmp2)
         {
             int pixelCount = bmp1.PixelCount;
 
-            if (pixelCount != bmp2.PixelCount)
-            {
-                return false;
-            }
+            if (pixelCount != bmp2.PixelCount) return false;
 
             bmp1.Lock(ImageLockMode.ReadOnly);
             bmp2.Lock(ImageLockMode.ReadOnly);
@@ -89,10 +91,7 @@ namespace AntdUI
 
             for (int i = 0; i < pixelCount; i++)
             {
-                if (pointer1->Bgra != pointer2->Bgra)
-                {
-                    return false;
-                }
+                if (pointer1->Bgra != pointer2->Bgra) return false;
 
                 pointer1++;
                 pointer2++;
@@ -109,10 +108,7 @@ namespace AntdUI
 
             for (int i = 0; i < pixelCount; i++)
             {
-                if (pointer->Alpha < 255)
-                {
-                    return true;
-                }
+                if (pointer->Alpha < 255) return true;
 
                 pointer++;
             }
@@ -120,49 +116,40 @@ namespace AntdUI
             return false;
         }
 
-        public ColorBgra GetPixel(int i)
+        public ColorBgra GetPixel(int i) => Pointer[i];
+
+        public ColorBgra GetPixel(int x, int y) => Pointer[x + (y * Width)];
+
+        public Dictionary<int[], ColorBgra> GetPixelAll()
         {
-            return Pointer[i];
+            int w = Width, h = Height;
+            var list = new Dictionary<int[], ColorBgra>(w * h);
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    try
+                    {
+                        list.Add(new int[] { x, y }, GetPixel(x, y));
+                    }
+                    catch { return list; }
+                }
+            }
+            return list;
         }
 
-        public ColorBgra GetPixel(int x, int y)
-        {
-            return Pointer[x + (y * Width)];
-        }
+        public void SetPixel(int i, ColorBgra color) => Pointer[i] = color;
 
-        public void SetPixel(int i, ColorBgra color)
-        {
-            Pointer[i] = color;
-        }
+        public void SetPixel(int i, uint color) => Pointer[i] = color;
 
-        public void SetPixel(int i, uint color)
-        {
-            Pointer[i] = color;
-        }
+        public void SetPixel(int x, int y, ColorBgra color) => Pointer[x + (y * Width)] = color;
 
-        public void SetPixel(int x, int y, ColorBgra color)
-        {
-            Pointer[x + (y * Width)] = color;
-        }
+        public void SetPixel(int x, int y, uint color) => Pointer[x + (y * Width)] = color;
 
-        public void SetPixel(int x, int y, uint color)
-        {
-            Pointer[x + (y * Width)] = color;
-        }
+        public void ClearPixel(int i) => Pointer[i] = 0;
 
-        public void ClearPixel(int i)
-        {
-            Pointer[i] = 0;
-        }
+        public void ClearPixel(int x, int y) => Pointer[x + (y * Width)] = 0;
 
-        public void ClearPixel(int x, int y)
-        {
-            Pointer[x + (y * Width)] = 0;
-        }
-
-        public void Dispose()
-        {
-            Unlock();
-        }
+        public void Dispose() => Unlock();
     }
 }
