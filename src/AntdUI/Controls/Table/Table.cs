@@ -1515,9 +1515,24 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 获取排序数据
+        /// </summary>
+        public T[] SortList<T>()
+        {
+            if (dataTmp == null || dataTmp.rows.Length == 0) return new T[0];
+            var list = SortData == null ? dataTmp.GetRecord() : dataTmp.GetRecord(SortData);
+            var tmp = new List<T>(list.Length);
+            foreach (var it in list)
+            {
+                if (it is T item) tmp.Add(item);
+            }
+            return tmp.ToArray();
+        }
+
+        /// <summary>
         /// 设置排序数据
         /// </summary>
-        public void SetSortList(object[]? data)
+        public void SetSortList(IList<object>? data)
         {
             if (data == null)
             {

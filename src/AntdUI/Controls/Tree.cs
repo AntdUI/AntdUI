@@ -205,7 +205,6 @@ namespace AntdUI
             set
             {
                 if (selectItem == value) return;
-                selectItem = value;
                 if (value == null) USelect(false);
                 else Select(value, false);
             }

@@ -1276,7 +1276,7 @@ namespace AntdUI
                         }
                         if (borderWidth > 0)
                         {
-                            PaintLoadingWave(g, path, rect_read);
+                            PaintLoadingWave(g, path, rect_read, _radius);
                             float border = borderWidth * Dpi;
                             if (ExtraMouseDown)
                             {
@@ -1306,13 +1306,13 @@ namespace AntdUI
                             if (ExtraMouseDown) g.Fill(_back_active, path);
                             else if (AnimationHover) g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
                             else if (ExtraMouseHover) g.Fill(_back_hover, path);
-                            PaintLoadingWave(g, path, rect_read);
+                            PaintLoadingWave(g, path, rect_read, _radius);
                             PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
                         }
                     }
                     else
                     {
-                        PaintLoadingWave(g, path, rect_read);
+                        PaintLoadingWave(g, path, rect_read, _radius);
                         if (!ghost) g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Button), Name), path);
                         PaintTextLoading(g, text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                     }
@@ -1345,7 +1345,7 @@ namespace AntdUI
 
                     if (ghost)
                     {
-                        PaintLoadingWave(g, path, rect_read);
+                        PaintLoadingWave(g, path, rect_read, _radius);
 
                         #region 绘制背景
 
@@ -1424,14 +1424,14 @@ namespace AntdUI
                             {
                                 g.Fill(_back_active, path);
 
-                                PaintLoadingWave(g, path, rect_read);
+                                PaintLoadingWave(g, path, rect_read, _radius);
                                 PaintTextLoading(g, text, _fore_active, rect_read, enabled, _radius);
                             }
                             else if (AnimationHover)
                             {
                                 g.Fill(Helper.ToColor(AnimationHoverValue, _back_hover), path);
 
-                                PaintLoadingWave(g, path, rect_read);
+                                PaintLoadingWave(g, path, rect_read, _radius);
                                 if (_fore == _fore_hover) PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
                                 else PaintTextLoading(g, text, _fore.BlendColors(Helper.ToColor(AnimationHoverValue, _fore_hover)), rect_read, enabled, _radius);
                             }
@@ -1439,19 +1439,19 @@ namespace AntdUI
                             {
                                 g.Fill(_back_hover, path);
 
-                                PaintLoadingWave(g, path, rect_read);
+                                PaintLoadingWave(g, path, rect_read, _radius);
                                 PaintTextLoading(g, text, _fore_hover, rect_read, enabled, _radius);
                             }
                             else
                             {
-                                PaintLoadingWave(g, path, rect_read);
+                                PaintLoadingWave(g, path, rect_read, _radius);
                                 PaintTextLoading(g, text, _fore, rect_read, enabled, _radius);
                             }
                         }
                         else
                         {
                             g.Fill(Colour.FillTertiary.GetSymbol(ColorScheme, "bgDisabled", nameof(Button), Name), path);
-                            PaintLoadingWave(g, path, rect_read);
+                            PaintLoadingWave(g, path, rect_read, _radius);
                             PaintTextLoading(g, text, Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Button), Name), rect_read, enabled, _radius);
                         }
                     }
@@ -1475,7 +1475,7 @@ namespace AntdUI
             }
         }
 
-        void PaintLoadingWave(Canvas g, GraphicsPath path, Rectangle rect)
+        protected virtual void PaintLoadingWave(Canvas g, GraphicsPath path, Rectangle rect, float radius)
         {
             if (loading && LoadingWaveValue > 0)
             {
