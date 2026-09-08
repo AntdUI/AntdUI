@@ -1,5 +1,16 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.9` 2026-09-08
+
+- ➕ Button Open Background Rendering
+- ✍️ Table virtualization rolling value becomes blurry with large values
+- ✍️ ColorPicker color accuracy is lost and cannot be located
+- ✍️ ColorPicker/CorrectionTextRendering optimizes performance
+- ✍️ LabelLed ConvertImageToDotMatrix optimizes performance
+- ✍️ The issue of Tree SelectItem setting not changing the UI
+- ✍️ Rich SortList Format Table
+- ✍️ The problem of duplicate instantiation caused by SetSet when CollapseGroupButton. EditType is Input or Custom
+
 ### `2.4.8` 2026-09-02
 
 - ✍️ Table Rolling Repair MinWidth MaxWidth

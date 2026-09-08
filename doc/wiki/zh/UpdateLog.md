@@ -1,5 +1,16 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.9` 2026-09-08
+
+- ➕ Button 开放背景渲染
+- ✍️ Table 虚拟化滚动值大变模糊
+- ✍️ Table 丰富 SortList 格式
+- ✍️ ColorPicker 颜色精度丢失定位不到
+- ✍️ ColorPicker/CorrectionTextRendering 优化性能
+- ✍️ LabelLed ConvertImageToDotMatrix 优化性能
+- ✍️ Tree SelectItem 设置不改变UI的问题
+- ✍️ CollapseGroupButton EditType Input或Custom SetRect下导致重复实例化的问题
+
 ### `2.4.8` 2026-09-02
 
 - ✍️ Table 归滚修复 MinWidth MaxWidth
