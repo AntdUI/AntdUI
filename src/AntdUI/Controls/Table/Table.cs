@@ -1281,7 +1281,7 @@ namespace AntdUI
             if (sFixedB != -1 && rect_fixed_B.HasValue) height -= rect_fixed_B.Value.Height;
             return new Rectangle(x, y, width, height);
         }
-        int ScrollLine(Rectangle rect_cel, Rectangle rect, bool force = false) => ScrollLine(rect_cel.Y, rect_cel.Bottom, rect, force);
+        int ScrollLine(Rectangle rect_cel, Rectangle rect, bool force = false) => ScrollLine(rect_cel.Y + virtualMode_Y, rect_cel.Bottom + virtualMode_Y, rect, force);
         int ScrollLine(int y, int b, Rectangle rect, bool force = false)
         {
             if (ScrollBar.ShowY)
@@ -1909,7 +1909,7 @@ namespace AntdUI
                 var it = rows[row];
                 if (it == null) return;
                 var rect = it.RECT;
-                int sy = ScrollBar.ValueY;
+                int sy = ScrollBarRealY;
                 Invalidate(new Rectangle(rect.X, rect.Y - sy, rect.Width, rect.Height));
             }
         }
@@ -1921,7 +1921,7 @@ namespace AntdUI
                 var it = rows[row];
                 if (it == null) return;
                 var rect = it.cells[column].RECT;
-                int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+                int sx = ScrollBar.ValueX, sy = ScrollBarRealY;
                 Invalidate(new Rectangle(rect.X - sx, rect.Y - sy, rect.Width, rect.Height));
             }
         }

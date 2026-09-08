@@ -976,7 +976,7 @@ namespace AntdUI
 
         CELLDB? CellContains(RowTemplate[] rows, bool sethover, int ex, int ey)
         {
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBarRealY;
             int px = ex + sx, py = ey + sy;
             if (summary == null) return CellContainsCore(rows, sethover, ex, ey, sx, sy, px, py);
             else

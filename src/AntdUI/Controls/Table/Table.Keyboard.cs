@@ -163,7 +163,7 @@ namespace AntdUI
                     if (index > dataLen) return;
                     var it = rows?[index];
                     if (it == null) return;
-                    OnCellClick(it.RECORD, it.Type, index, 0, FocusedColumn, RealRect(it.RECT, ScrollBar.ValueX, ScrollBar.ValueY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+                    OnCellClick(it.RECORD, it.Type, index, 0, FocusedColumn, RealRect(it.RECT, ScrollBar.ValueX, ScrollBarRealY), new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     if (editmode == TEditMode.None || focusedxy == null) return;
                     if (inEditMode)
                     {

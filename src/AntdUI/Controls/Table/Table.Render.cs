@@ -39,7 +39,7 @@ namespace AntdUI
         void PaintTable(Canvas g, RowTemplate[] rows, Rectangle rect, Rectangle rect_real, Font column_font)
         {
             float _radius = radius * Dpi;
-            int sx = ScrollBar.ValueX, sy = ScrollBar.ValueY;
+            int sx = ScrollBar.ValueX, sy = ScrollBarRealY;
             using (var brush_fore = new SolidBrush(fore ?? Colour.Text.Get(ColorScheme, nameof(Table), Name)))
             using (var brush_foreEnable = new SolidBrush(fore ?? Colour.TextQuaternary.Get(ColorScheme, nameof(Table), Name)))
             using (var brush_forecolumn = new SolidBrush(columnfore ?? fore ?? Colour.Text.Get(ColorScheme, nameof(Table), Name)))

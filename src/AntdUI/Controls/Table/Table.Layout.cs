@@ -54,7 +54,7 @@ namespace AntdUI
         public Rectangle RectRead => rect_read;
         void LayoutDesign(Rectangle rect)
         {
-            rowSummary = 0;
+            virtualMode_Y = rowSummary = 0;
             has_check = false;
             if (dataTmp == null)
             {
@@ -173,6 +173,9 @@ namespace AntdUI
                     end = start + visibleRowCount;
 
                     #endregion
+
+                    // 虚拟模式：将绝对坐标基准平移到当前可视窗口（模拟减少 sy），渲染/命中测试的滚动值始终为小数值，避免 GDI+ 大数平移导致的精度丢失（模糊）
+                    virtualMode_Y = dataTmp.rows.Length > 0 ? start * RowHeight : 0;
                 });
             }
             else _RowHeightHeader = _RowHeight = null;
@@ -224,6 +227,16 @@ namespace AntdUI
         }
 
         int? _RowHeightHeader, _RowHeight;
+
+        /// <summary>
+        /// 虚拟模式滚动基准偏移（RECT 坐标 = 绝对坐标 - 基准偏移，随滚动窗口整体平移）
+        /// </summary>
+        internal int virtualMode_Y = 0;
+
+        /// <summary>
+        /// 滚动条真实纵向滚动值（仅虚拟模式；已扣除基准偏移，始终为小数值，避免 GDI+ 大数平移导致模糊）
+        /// </summary>
+        public int ScrollBarRealY => ScrollBar.ValueY - virtualMode_Y;
 
         RowList LayoutDesign(Rectangle rect, List<RowTemplate?> _rows, List<Column> _columns, Dictionary<int, object> col_width, int lastRowIndex, out int _x, out int _y, out bool _is_exceed)
         {
@@ -343,6 +356,8 @@ namespace AntdUI
 
                 var width_cell = CalculateWidth(rect, heightEs, true, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
 
+                for (int i = 0; i < firstrow.cells.Length; i++) firstrow.cells[i].COLUMN.WidthPixel = width_cell[i];
+
                 #endregion
 
                 #region 最终坐标
@@ -352,12 +367,7 @@ namespace AntdUI
                 int use_y;
                 if (visibleHeader) use_y = rect.Y;
                 else use_y = rect.Y - firstrow.Height;
-                int i2 = 0;
-                foreach (var cell in firstrow.cells)
-                {
-                    cell.COLUMN.WidthPixel = width_cell[i2];
-                    i2++;
-                }
+                if (VirtualMode && !(fixedHeader && visibleHeader)) use_y -= virtualMode_Y;
                 foreach (var row in _rows)
                 {
                     if (row == null)
@@ -411,6 +421,7 @@ namespace AntdUI
 
                 x -= rect_real.X;
                 y -= rect_real.Y;
+                y += virtualMode_Y;
 
                 #endregion
 
@@ -418,7 +429,8 @@ namespace AntdUI
                 var last = last_row.cells[last_row.cells.Length - 1];
 
                 bool isempty = emptyHeader && _rows.Count == 1;
-                if (!isempty && (rect.Y + rect.Height) > last.RECT.Bottom) rect_real.Height = last.RECT.Bottom - rect.Y + (int)Math.Ceiling(borderWidth / 2F * dpi);
+                int lastBottom = last.RECT.Bottom + virtualMode_Y;
+                if (!isempty && (rect.Y + rect.Height) > lastBottom) rect_real.Height = lastBottom - rect.Y + (int)Math.Ceiling(borderWidth / 2F * dpi);
                 rect_divider = new Rectangle(rect_real.X, rect_real.Y, rect_real.Width, rect_real.Height);
 
                 var MoveHeaders = new List<MoveHeader>();
