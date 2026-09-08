@@ -123,7 +123,7 @@ namespace AntdUI.Design
                     {
                         PaintColors(g2, new Rectangle(0, 0, bmp_colors.Width, bmp_colors.Height));
                     }
-                    GetColorsPoint(bmp_colors);
+                    point_colors = GetColorsPoint(bmp_colors);
                 }
                 g.Image(bmp_colors, rect_colors);
 
@@ -153,11 +153,12 @@ namespace AntdUI.Design
 
                 if (bmp_alpha_read == null)
                 {
-                    bmp_alpha_read = new Bitmap(rect_alpha.Width, rect_alpha.Height);
-                    using (var g2 = Graphics.FromImage(bmp_alpha_read).High())
+                    var tmp = new Bitmap(rect_alpha.Width, rect_alpha.Height);
+                    using (var g2 = Graphics.FromImage(tmp).High())
                     {
-                        PaintAlpha(g2, new Rectangle(0, 0, bmp_alpha_read.Width, bmp_alpha_read.Height), false);
+                        PaintAlpha(g2, new Rectangle(0, 0, tmp.Width, tmp.Height), false);
                     }
+                    bmp_alpha_read = new UnsafeBitmap(tmp, false, true);
                     GetAlphaPoint(bmp_alpha_read);
                 }
                 if (bmp_alpha == null)
@@ -304,18 +305,37 @@ namespace AntdUI.Design
                 g.Fill(brush, new RectangleF(rect.X, rect.Height - 2F, rect.Width, 2F));
             }
         }
-        void GetColorsPoint(Bitmap bmp_colors)
+        Point GetColorsPoint(Bitmap bmp_colors)
         {
-            for (int x = 0; x < bmp_colors.Width; x++)
+            using (var unsafeBitmap = new UnsafeBitmap(bmp_colors, false))
             {
-                for (int y = 0; y < bmp_colors.Height; y++)
+                var tmpList = unsafeBitmap.GetPixelAll();
+                int minDist = int.MaxValue, minX = 0, minY = 0;
+                int vr = ValueNAlpha.R, vg = ValueNAlpha.G, vb = ValueNAlpha.B;
+                foreach (var it in tmpList)
                 {
-                    if (bmp_colors.GetPixel(x, y) == ValueNAlpha)
+                    var color = it.Value.ToColor();
+                    try
                     {
-                        point_colors = new Point(x, y);
-                        return;
+                        if (color == ValueNAlpha) return it.Key;
+                        else
+                        {
+                            int dr = vr - color.R, dg = vg - color.G, db = vb - color.B;
+                            int d = dr * dr + dg * dg + db * db;
+                            if (d < minDist)
+                            {
+                                minDist = d;
+                                minX = it.Key.X;
+                                minY = it.Key.Y;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        return new Point(minX, minY);
                     }
                 }
+                return new Point(minX, minY);
             }
         }
 
@@ -367,18 +387,21 @@ namespace AntdUI.Design
         void GetHuePoint(Bitmap bmp_hue)
         {
             int y = bmp_hue.Height / 2;
-            var colors = new List<Color>();
-            for (int x = 0; x < bmp_hue.Width; x++)
+            using (var unsafeBitmap = new UnsafeBitmap(bmp_hue, false))
             {
-                var color = bmp_hue.GetPixel(x, y);
-                if (color == ValueHue)
+                var colors = new List<Color>(unsafeBitmap.PixelCount);
+                for (int x = 0; x < bmp_hue.Width; x++)
                 {
-                    point_hue = x;
-                    return;
+                    var color = unsafeBitmap.GetPixel(x, y);
+                    if (color == ValueHue)
+                    {
+                        point_hue = x;
+                        return;
+                    }
+                    colors.Add(color.ToColor());
                 }
-                colors.Add(color);
+                point_hue = find_i(colors, ValueHue);
             }
-            point_hue = find_i(colors, ValueHue);
         }
 
         int find_i(List<Color> cols, Color x)
@@ -409,7 +432,8 @@ namespace AntdUI.Design
         int point_alpha = 0;
         Rectangle rect_alpha_big;
         Rectangle rect_alpha;
-        Bitmap? bmp_alpha, bmp_alpha_read;
+        Bitmap? bmp_alpha;
+        UnsafeBitmap? bmp_alpha_read;
         Color color_alpha = Color.White;
         void PaintAlpha(Canvas g, Rectangle rect, bool add)
         {
@@ -438,19 +462,19 @@ namespace AntdUI.Design
                 g.Fill(brush, new Rectangle(rect.Width - 1, 0, 4, rect.Height));
             }
         }
-        void GetAlphaPoint(Bitmap bmp_alpha)
+        void GetAlphaPoint(UnsafeBitmap bmp_alpha)
         {
             int y = bmp_alpha.Height / 2;
             var colors = new List<Color>();
             for (int x = 0; x < bmp_alpha.Width; x++)
             {
                 var color = bmp_alpha.GetPixel(x, y);
-                if (color.A == Value.A)
+                if (color.Alpha == Value.A)
                 {
                     point_alpha = x;
                     return;
                 }
-                colors.Add(color);
+                colors.Add(color.ToColor());
             }
             point_alpha = find_i(colors, ValueNAlpha);
         }
@@ -517,7 +541,7 @@ namespace AntdUI.Design
                         point_alpha = e.X - gap;
                         if (point_alpha < 0) point_alpha = 0;
                         else if (point_alpha > bmp_alpha_read.Width - 1) point_alpha = bmp_alpha_read.Width - 1;
-                        color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).A, ValueNAlpha);
+                        color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).Alpha, ValueNAlpha);
                         action(Value);
                         count++;
                         Invalidate();
@@ -570,7 +594,7 @@ namespace AntdUI.Design
                 point_alpha = e.X - gap;
                 if (point_alpha < 0) point_alpha = 0;
                 else if (point_alpha > bmp_alpha_read.Width - 1) point_alpha = bmp_alpha_read.Width - 1;
-                color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).A, ValueNAlpha);
+                color_alpha = Value = Color.FromArgb(bmp_alpha_read.GetPixel(point_alpha, 1).Alpha, ValueNAlpha);
                 action(Value);
                 count++;
                 Invalidate();

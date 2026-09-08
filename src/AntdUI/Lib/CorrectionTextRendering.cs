@@ -91,30 +91,33 @@ namespace AntdUI
         /// <param name="h">高度</param>
         public static void TextRealY(Bitmap bmp, out int y, out int h)
         {
-            y = TextRealY(bmp);
-            h = TextRealHeight(bmp, y);
+            using (var unsafeBitmap = new UnsafeBitmap(bmp, false))
+            {
+                y = TextRealY(unsafeBitmap);
+                h = TextRealHeight(unsafeBitmap, y);
+            }
         }
 
-        static int TextRealY(Bitmap bmp)
+        static int TextRealY(UnsafeBitmap bmp)
         {
             for (int y = 0; y < bmp.Height; y++)
             {
                 for (int x = 0; x < bmp.Width; x++)
                 {
-                    if (bmp.GetPixel(x, y).A > 0) return y - 1;
+                    if (bmp.GetPixel(x, y).Alpha > 0) return y - 1;
                 }
             }
             return 0;
         }
 
-        static int TextRealHeight(Bitmap bmp, int _y)
+        static int TextRealHeight(UnsafeBitmap bmp, int _y)
         {
             for (int y = bmp.Height - 1; y > _y; y--)
             {
                 int count = 0;
                 for (int x = 0; x < bmp.Width; x++)
                 {
-                    if (bmp.GetPixel(x, y).A > 0) count++;
+                    if (bmp.GetPixel(x, y).Alpha > 0) count++;
                 }
                 if (count > 0) return (y + 1) - _y;
             }

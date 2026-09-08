@@ -14,21 +14,18 @@ namespace AntdUI
     public unsafe class UnsafeBitmap : IDisposable
     {
         public ColorBgra* Pointer { get; private set; }
-        public bool IsLocked { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 
         public int PixelCount => Width * Height;
 
         private Bitmap bitmap;
-        private BitmapData? bitmapData;
+        private BitmapData bitmapData;
 
-        public UnsafeBitmap(Bitmap bmp, bool w)
+        bool IsDispose { get; set; }
+        public UnsafeBitmap(Bitmap bmp, bool write, bool dispose = false) : this(bmp, write ? ImageLockMode.ReadWrite : ImageLockMode.ReadOnly)
         {
-            bitmap = bmp;
-            Width = bmp.Width;
-            Height = bmp.Height;
-            Lock(w ? ImageLockMode.ReadWrite : ImageLockMode.ReadOnly);
+            IsDispose = dispose;
         }
 
         public UnsafeBitmap(Bitmap bmp, ImageLockMode imageLockMode)
@@ -36,69 +33,27 @@ namespace AntdUI
             bitmap = bmp;
             Width = bmp.Width;
             Height = bmp.Height;
-            Lock(imageLockMode);
+            bitmapData = bitmap.LockBits(new Rectangle(0, 0, Width, Height), imageLockMode, PixelFormat.Format32bppArgb);
+            Pointer = (ColorBgra*)bitmapData.Scan0.ToPointer();
         }
 
-        public void Lock(ImageLockMode imageLockMode = ImageLockMode.ReadWrite)
+        public static bool operator ==(UnsafeBitmap? bmp1, UnsafeBitmap? bmp2)
         {
-            if (!IsLocked)
-            {
-                IsLocked = true;
-                bitmapData = bitmap.LockBits(new Rectangle(0, 0, Width, Height), imageLockMode, PixelFormat.Format32bppArgb);
-                Pointer = (ColorBgra*)bitmapData.Scan0.ToPointer();
-            }
+            if (bmp1 is null && bmp2 is null) return true;
+            if (bmp1 is null || bmp2 is null) return false;
+            return bmp1.Equals(bmp2);
         }
 
-        public void Unlock()
+        public static bool operator !=(UnsafeBitmap? bmp1, UnsafeBitmap? bmp2)
         {
-            if (IsLocked)
-            {
-                bitmap.UnlockBits(bitmapData!);
-                bitmapData = null;
-                Pointer = null;
-                IsLocked = false;
-            }
+            if (bmp1 is null && bmp2 is null) return false;
+            if (bmp1 is null || bmp2 is null) return true;
+            return !bmp1.Equals(bmp2);
         }
 
-        public static bool operator ==(UnsafeBitmap bmp1, UnsafeBitmap bmp2)
-        {
-            return ReferenceEquals(bmp1, bmp2) || bmp1.Equals(bmp2);
-        }
-
-        public static bool operator !=(UnsafeBitmap bmp1, UnsafeBitmap bmp2)
-        {
-            return !(bmp1 == bmp2);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is UnsafeBitmap unsafeBitmap && Compare(unsafeBitmap, this);
-        }
+        public override bool Equals(object? obj) => obj is UnsafeBitmap unsafeBitmap && unsafeBitmap.bitmap.Equals(bitmap);
 
         public override int GetHashCode() => PixelCount;
-
-        public static bool Compare(UnsafeBitmap bmp1, UnsafeBitmap bmp2)
-        {
-            int pixelCount = bmp1.PixelCount;
-
-            if (pixelCount != bmp2.PixelCount) return false;
-
-            bmp1.Lock(ImageLockMode.ReadOnly);
-            bmp2.Lock(ImageLockMode.ReadOnly);
-
-            ColorBgra* pointer1 = bmp1.Pointer;
-            ColorBgra* pointer2 = bmp2.Pointer;
-
-            for (int i = 0; i < pixelCount; i++)
-            {
-                if (pointer1->Bgra != pointer2->Bgra) return false;
-
-                pointer1++;
-                pointer2++;
-            }
-
-            return true;
-        }
 
         public bool IsTransparent()
         {
@@ -120,22 +75,16 @@ namespace AntdUI
 
         public ColorBgra GetPixel(int x, int y) => Pointer[x + (y * Width)];
 
-        public Dictionary<int[], ColorBgra> GetPixelAll()
+        public Dictionary<Point, ColorBgra> GetPixelAll()
         {
-            int w = Width, h = Height;
-            var list = new Dictionary<int[], ColorBgra>(w * h);
-            for (int x = 0; x < w; x++)
+            int pixelCount = PixelCount, width = Width;
+            var dict = new Dictionary<Point, ColorBgra>(pixelCount);
+            for (int i = 0; i < pixelCount; i++)
             {
-                for (int y = 0; y < h; y++)
-                {
-                    try
-                    {
-                        list.Add(new int[] { x, y }, GetPixel(x, y));
-                    }
-                    catch { return list; }
-                }
+                int y = Math.DivRem(i, width, out int x);
+                dict.Add(new Point(x, y), Pointer[i]);
             }
-            return list;
+            return dict;
         }
 
         public void SetPixel(int i, ColorBgra color) => Pointer[i] = color;
@@ -150,6 +99,12 @@ namespace AntdUI
 
         public void ClearPixel(int x, int y) => Pointer[x + (y * Width)] = 0;
 
-        public void Dispose() => Unlock();
+        public void Dispose()
+        {
+            bitmap.UnlockBits(bitmapData);
+            bitmapData = null!;
+            Pointer = null;
+            if (IsDispose) bitmap.Dispose();
+        }
     }
 }

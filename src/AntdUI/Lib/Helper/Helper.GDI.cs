@@ -1661,48 +1661,37 @@ namespace AntdUI
             int width = bmp.Width, height = bmp.Height;
             byte[] dotMatrix = new byte[(width * height + 7) / 8];
             int index = 0;
-
-            if (horizontalMode)
+            using (var unsafeBitmap = new UnsafeBitmap(bmp, false))
             {
-                // 横向取模：按行扫描（宽度方向）
-                for (int y = 0; y < height; y++)
+                if (horizontalMode)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        Color pixelColor = bmp.GetPixel(x, y);
-                        bool isBlack = (pixelColor.R < 128 && pixelColor.G < 128 && pixelColor.B < 128);
-
-                        if (isBlack)
-                        {
-                            // 将像素添加到点阵（高位在前）
-                            dotMatrix[index / 8] |= (byte)(1 << (7 - (index % 8)));
-                        }
-
-                        index++;
-                    }
-                }
-            }
-            else
-            {
-                // 纵向取模：按列扫描（高度方向）
-                for (int x = 0; x < width; x++)
-                {
+                    // 横向取模：按行扫描（宽度方向）
                     for (int y = 0; y < height; y++)
                     {
-                        Color pixelColor = bmp.GetPixel(x, y);
-                        bool isBlack = (pixelColor.R < 128 && pixelColor.G < 128 && pixelColor.B < 128);
-
-                        if (isBlack)
+                        for (int x = 0; x < width; x++)
                         {
-                            // 将像素添加到点阵（高位在前）
-                            dotMatrix[index / 8] |= (byte)(1 << (7 - (index % 8)));
+                            var pixelColor = unsafeBitmap.GetPixel(x, y);
+                            bool isBlack = (pixelColor.Red < 128 && pixelColor.Green < 128 && pixelColor.Blue < 128);
+                            if (isBlack) dotMatrix[index / 8] |= (byte)(1 << (7 - (index % 8)));// 将像素添加到点阵（高位在前）
+                            index++;
                         }
-
-                        index++;
+                    }
+                }
+                else
+                {
+                    // 纵向取模：按列扫描（高度方向）
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            var pixelColor = unsafeBitmap.GetPixel(x, y);
+                            bool isBlack = (pixelColor.Red < 128 && pixelColor.Green < 128 && pixelColor.Blue < 128);
+                            if (isBlack) dotMatrix[index / 8] |= (byte)(1 << (7 - (index % 8)));// 将像素添加到点阵（高位在前）
+                            index++;
+                        }
                     }
                 }
             }
-
             return dotMatrix;
         }
 
