@@ -877,6 +877,7 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
+                PARENT?.LoadLayout(false);
                 Invalidate();
             }
         }

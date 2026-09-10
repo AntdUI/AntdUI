@@ -368,7 +368,22 @@ namespace AntdUI
                 OnPropertyChanged(nameof(ForeActive));
             }
         }
-
+        TAlignFlow textAlign = TAlignFlow.Center;
+        /// <summary>
+        /// 文本水平对齐
+        /// </summary>
+        [Description("文本水平对齐"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignFlow.Center)]
+        public TAlignFlow TextAlign
+        {
+            get => textAlign;
+            set
+            {
+                if (textAlign == value) return;
+                textAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Type));
+            }
+        }
         #region 边框
 
         float _borderWidth = 0F;
@@ -770,7 +785,26 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags s_f = FormatFlags.Center | FormatFlags.NoWrapEllipsis;
+        private FormatFlags s_f => GetTextAlign | FormatFlags.NoWrapEllipsis;
+        private FormatFlags GetTextAlign
+        {
+            get
+            {
+                switch (TextAlign)
+                {
+                    case TAlignFlow.Left:
+                        return FormatFlags.Left;
+                    case TAlignFlow.LeftCenter:
+                        return FormatFlags.Left | FormatFlags.VerticalCenter;
+                    case TAlignFlow.Right:
+                        return FormatFlags.Right;
+                    case TAlignFlow.RightCenter:
+                        return FormatFlags.Right | FormatFlags.VerticalCenter;
+                    default:
+                        return FormatFlags.Center;
+                }
+            }
+        }
         protected override void OnDraw(DrawEventArgs e)
         {
             if (items == null || items.Count == 0)
@@ -827,49 +861,51 @@ namespace AntdUI
                 }
             }
             var enable = Enabled;
-            using (var brush = new SolidBrush((fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Segmented), Name))))
             using (var brushDisable = new SolidBrush(Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Segmented), Name)))
             {
                 for (int i = 0; i < item_text.Count; i++)
                 {
                     var it = item_text[i];
-                    if (i == _select)
+                    using (var brush = new SolidBrush((it.ForeColor ?? fore ?? Colour.TextSecondary.Get(ColorScheme, nameof(Segmented), Name))))
                     {
-                        if (enable && it.Enabled)
+                        if (i == _select)
                         {
-                            var color_active = foreactive ?? Colour.Text.Get(ColorScheme, nameof(Segmented), Name);
-                            if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
-                            g.DrawText(it.Text, Font, color_active, it.RectText, s_f);
-                        }
-                        else
-                        {
-                            if (PaintImg(g, it, brushDisable.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brushDisable.Color, it.IconSvg, it.Icon);
-                            g.DrawText(it.Text, Font, brushDisable, it.RectText, s_f);
-                        }
-                    }
-                    else
-                    {
-                        if (enable && it.Enabled)
-                        {
-                            if (i == _hover)
+                            if (enable && it.Enabled)
                             {
-                                var color_hover = ForeHover ?? Colour.HoverColor.Get(ColorScheme, nameof(Segmented), Name);
-                                if (PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon)) PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
-                                g.DrawText(it.Text, Font, color_hover, it.RectText, s_f);
+                                var color_active = foreactive ?? it.ForeColor ?? Colour.Text.Get(ColorScheme, nameof(Segmented), Name);
+                                if (PaintImg(g, it, color_active, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, color_active, it.IconSvg, it.Icon);
+                                g.DrawText(it.Text, Font, color_active, it.RectText, s_f);
                             }
                             else
                             {
-                                PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
-                                g.DrawText(it.Text, Font, brush, it.RectText, s_f);
+                                if (PaintImg(g, it, brushDisable.Color, it.IconActiveSvg, it.IconActive)) PaintImg(g, it, brushDisable.Color, it.IconSvg, it.Icon);
+                                g.DrawText(it.Text, Font, brushDisable, it.RectText, s_f);
                             }
                         }
                         else
                         {
-                            PaintImg(g, it, brushDisable.Color, it.IconSvg, it.Icon);
-                            g.DrawText(it.Text, Font, brushDisable, it.RectText, s_f);
+                            if (enable && it.Enabled)
+                            {
+                                if (i == _hover)
+                                {
+                                    var color_hover = ForeHover ?? it.ForeColor ?? Colour.HoverColor.Get(ColorScheme, nameof(Segmented), Name);
+                                    if (PaintImg(g, it, color_hover, it.IconHoverSvg ?? it.IconSvg, it.IconHover ?? it.Icon)) PaintImg(g, it, color_hover, it.IconSvg, it.Icon);
+                                    g.DrawText(it.Text, Font, color_hover, it.RectText, s_f);
+                                }
+                                else
+                                {
+                                    PaintImg(g, it, brush.Color, it.IconSvg, it.Icon);
+                                    g.DrawText(it.Text, Font, brush, it.RectText, s_f);
+                                }
+                            }
+                            else
+                            {
+                                PaintImg(g, it, brushDisable.Color, it.IconSvg, it.Icon);
+                                g.DrawText(it.Text, Font, brushDisable, it.RectText, s_f);
+                            }
                         }
+                        it.PaintBadge(Font, it.Rect, g, ColorScheme, Name);
                     }
-                    it.PaintBadge(Font, it.Rect, g, ColorScheme, Name);
                 }
             }
             base.OnDraw(e);
@@ -1772,7 +1808,22 @@ namespace AntdUI
         /// </summary>
         [Description("用户定义数据"), Category(nameof(CategoryAttribute.Data)), DefaultValue(null)]
         public object? Tag { get; set; }
-
+        Color? fore;
+        /// <summary>
+        /// 前景颜色
+        /// </summary>
+        [Description("前景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidates();
+            }
+        }
         #region Tooltip
 
         string? tooltip;
