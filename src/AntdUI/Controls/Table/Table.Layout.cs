@@ -171,6 +171,7 @@ namespace AntdUI
 
                     start = (int)Math.Floor((double)sy / RowHeight);
                     end = start + visibleRowCount;
+                    if (start > 0 && visibleHeader && !fixedHeader) start--;
 
                     #endregion
 
@@ -367,13 +368,19 @@ namespace AntdUI
                 int use_y;
                 if (visibleHeader) use_y = rect.Y;
                 else use_y = rect.Y - firstrow.Height;
-                if (VirtualMode && !(fixedHeader && visibleHeader)) use_y -= virtualMode_Y;
+                bool shiftVirtualY = VirtualMode && virtualMode_Y != 0, fvHeader = fixedHeader && visibleHeader;
+                if (shiftVirtualY && !fvHeader) use_y -= virtualMode_Y;
                 foreach (var row in _rows)
                 {
                     if (row == null)
                     {
                         use_y += _RowHeight!.Value;
                         continue;
+                    }
+                    if (shiftVirtualY && fvHeader && !row.IsColumn)
+                    {
+                        use_y -= virtualMode_Y;
+                        shiftVirtualY = false;
                     }
                     rowlist.Add(row);
                     int use_x = rect.X;
