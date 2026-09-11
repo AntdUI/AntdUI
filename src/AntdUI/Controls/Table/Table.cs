@@ -1018,13 +1018,23 @@ namespace AntdUI
         /// </summary>
         public object[] SelectedsReal()
         {
-            if (rows == null || SortData == null || selectedIndex.Length < 1) return new object[0];
+            if (rows == null || selectedIndex.Length < 1) return new object[0];
             if (selectedIndex.Length == 1 && selectedIndex[0] == 0) return new object[0];
             var dir = rows.RealDir();
-            var list = new List<object>(SortData.Length);
-            foreach (var it in selectedIndex)
+            var list = new List<object>(dir.Count);
+            if (SortData == null)
             {
-                if (dir.TryGetValue((SortData[it - 1]), out var r)) list.Add(r);
+                foreach (var it in selectedIndex)
+                {
+                    if (dir.TryGetValue(it - 1, out var r)) list.Add(r);
+                }
+            }
+            else
+            {
+                foreach (var it in selectedIndex)
+                {
+                    if (dir.TryGetValue((SortData[it - 1]), out var r)) list.Add(r);
+                }
             }
             return list.ToArray();
         }
