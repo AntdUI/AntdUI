@@ -95,9 +95,8 @@ namespace AntdUI
                 if (total > 0 && Math.Ceiling(total * 1.0 / pageSize) < current) current = (int)Math.Ceiling(total * 1.0 / pageSize);
                 if (input_SizeChanger != null)
                 {
-                    string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
                     input_SizeChanger.Clear();
-                    input_SizeChanger.PlaceholderText = value.ToString() + " " + tips;
+                    input_SizeChanger.PlaceholderText = GetPerPageText();
                 }
                 OnValueChanged(current, total, pageSize, PageTotal);
                 OnPropertyChanged(nameof(PageSize));
@@ -710,8 +709,7 @@ namespace AntdUI
         {
             if (input_SizeChanger == null)
             {
-                string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
-                var placeholder = pageSize.ToString() + " " + tips;
+                var placeholder = GetPerPageText();
                 bool r = rightToLeft == RightToLeft.Yes;
                 int width = GetSizeChangerWidth(placeholder);
                 if (pageSizeOptions == null || pageSizeOptions.Length == 0)
@@ -724,7 +722,8 @@ namespace AntdUI
                         Dock = DockStyle.Right,
                         Font = Font,
                         BorderColor = fill,
-                        TabStop = sizeChangerTabStop
+                        TabStop = sizeChangerTabStop,
+                        RightToLeft = RightToLeft.No
                     };
                     input_SizeChanger = input;
                 }
@@ -742,7 +741,8 @@ namespace AntdUI
                         Dock = DockStyle.Right,
                         Font = Font,
                         BorderColor = fill,
-                        TabStop = sizeChangerTabStop
+                        TabStop = sizeChangerTabStop,
+                        RightToLeft = RightToLeft.No
                     };
                     foreach (var it in pageSizeOptions) input.Items.Add(it);
                     input.SelectedValue = pageSize;
@@ -765,8 +765,7 @@ namespace AntdUI
             {
                 if (sizeChangerWidth <= 0)
                 {
-                    string tips = RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页");
-                    var placeholder = pageSize.ToString() + " " + tips;
+                    var placeholder = GetPerPageText();
                     int width = GetSizeChangerWidth(placeholder);
                     if (InvokeRequired) Invoke(() => SetSizeChanger(input_SizeChanger, width, placeholder));
                     else SetSizeChanger(input_SizeChanger, width, placeholder);
@@ -775,6 +774,7 @@ namespace AntdUI
                 return input_SizeChanger.Width;
             }
         }
+        string GetPerPageText() => pageSize.ToString() + " " + (RecordsPerPageText ?? Localization.Get("ItemsPerPage", "条/页"));
 
         void SetSizeChanger(Input input_SizeChanger, int width, string placeholder)
         {
