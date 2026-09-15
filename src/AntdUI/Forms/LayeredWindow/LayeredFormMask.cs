@@ -191,9 +191,14 @@ namespace AntdUI
             }
         }
 
+        public override void IClosing()
+        {
+            base.IClosing();
+            owner.Activate();
+        }
+
         protected override void Dispose(bool disposing)
         {
-            owner.Activate();
             if (list == null) owner.VisibleChanged -= Parent_VisibleChanged;
             else
             {

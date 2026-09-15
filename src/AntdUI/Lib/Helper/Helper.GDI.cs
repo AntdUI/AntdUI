@@ -1735,12 +1735,7 @@ namespace AntdUI
                     using (var brush = new LinearGradientBrush(p1, p2, c1, c2))
                     using (var pen = new Pen(brush, lineWidth))
                     {
-                        pen.LineJoin = LineJoin.Round;
-                        pen.StartCap = LineCap.Round;
-                        pen.EndCap = LineCap.Round;
-                        // 关键：禁用Gamma校正，避免颜色变暗
-                        brush.GammaCorrection = false;
-                        // 绘制当前线段
+                        pen.StartCap = pen.EndCap = LineCap.Round;
                         g.DrawLine(pen, p1, p2);
                     }
                 }

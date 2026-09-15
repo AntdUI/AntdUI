@@ -987,8 +987,10 @@ namespace AntdUI
         void PaintProgressCircle(Canvas g, Rectangle rect, Color color, Color back, float size)
         {
             int gapMin, gapMax;
+            bool penRound = false;
             if (GapDegree > 0)
             {
+                penRound = false;
                 int gapTmp = Math.Min(GapDegree, 295);
                 gapMax = 360 - gapTmp;
                 int center;
@@ -1015,18 +1017,21 @@ namespace AntdUI
             if (_value_show > 0)
             {
                 max = (int)Math.Round(gapMax * _value_show);
-                using (var brush = new Pen(color, size))
+                if (Helper.BrushEx(fillExtend, out var colors, out var positions))
                 {
-                    brush.StartCap = brush.EndCap = LineCap.Round;
-                    if (Helper.BrushEx(fillExtend, out var colors, out var positions))
+                    using (var path = new GraphicsPath())
                     {
-                        using (var path = new GraphicsPath())
-                        {
-                            path.AddArc(rect, gapMin, max);
-                            g.DrawNativePathGradient(path, size, colors, positions);
-                        }
+                        path.AddArc(rect, gapMin, max);
+                        g.DrawNativePathGradient(path, size, colors!, positions!);
                     }
-                    else g.DrawArc(brush, rect, gapMin, max);
+                }
+                else
+                {
+                    using (var brush = new Pen(color, size))
+                    {
+                        if (penRound) brush.StartCap = brush.EndCap = LineCap.Round;
+                        g.DrawArc(brush, rect, gapMin, max);
+                    }
                 }
             }
             if (Segments != null && Segments.Length > 0)
@@ -1037,7 +1042,7 @@ namespace AntdUI
                     float sweep = gapMax * seg.Value;
                     using (var brush = new Pen(GetStateColor(seg.State, seg.Fill), size))
                     {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        if (penRound) brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, rect, gapMin, sweep);
                     }
                 }
@@ -1049,7 +1054,7 @@ namespace AntdUI
                     float alpha = 60 * (1F - AnimationLoadingValue);
                     using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), size))
                     {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        if (penRound) brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, rect, gapMin, (int)(max * AnimationLoadingValue));
                     }
                 }
@@ -1059,7 +1064,7 @@ namespace AntdUI
                     float alpha = 80 * (1F - AnimationLoadingValue);
                     using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Progress), Name)), size))
                     {
-                        brush.StartCap = brush.EndCap = LineCap.Round;
+                        if (penRound) brush.StartCap = brush.EndCap = LineCap.Round;
                         g.DrawArc(brush, rect, gapMin, (int)(max * AnimationLoadingValue));
                     }
                 }
