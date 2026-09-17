@@ -787,7 +787,7 @@ namespace AntdUI
         {
             if (delta != 0) ScrollBar.MouseWheel(delta);
         }
-        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
+        protected override bool OnTouchScrollY(int x, int y, int value) => ScrollBar.MouseWheelYCore(value);
 
         #endregion
 

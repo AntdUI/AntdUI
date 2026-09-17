@@ -1442,7 +1442,7 @@ namespace AntdUI
             ScrollBar.MouseWheel(e);
             base.OnMouseWheel(e);
         }
-        protected override bool OnTouchScrollX(int value) => ScrollBar.MouseWheelXCore(value);
-        protected override bool OnTouchScrollY(int value) => ScrollBar.MouseWheelYCore(value);
+        protected override bool OnTouchScrollX(int x, int y, int value) => ScrollBar.MouseWheelXCore(value);
+        protected override bool OnTouchScrollY(int x, int y, int value) => ScrollBar.MouseWheelYCore(value);
     }
 }

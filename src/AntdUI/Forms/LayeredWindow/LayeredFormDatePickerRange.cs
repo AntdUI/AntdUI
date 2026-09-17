@@ -1098,11 +1098,8 @@ namespace AntdUI
         Rectangle rect_mon2, rect_tue2, rect_wed2, rect_thu2, rect_fri2, rect_sat2, rect_sun2;
         Rectangle rect_read_left;
         Dictionary<string, RectCalendari> rect_div = new Dictionary<string, RectCalendari>(0);
-        int ox, oy;
         protected override void OnMouseDown(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            ox = x;
-            oy = y;
             if ((ScrollButtons?.MouseDown(x, y) ?? true)) OnTouchDown(x, y);
         }
         protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
@@ -1389,9 +1386,9 @@ namespace AntdUI
                 catch { }
             }
         }
-        protected override bool OnTouchScrollY(int value)
+        protected override bool OnTouchScrollY(int x, int y, int value)
         {
-            if (ScrollButtons != null && ScrollButtons.Contains(ox, oy)) return ScrollButtons.MouseWheelYCore(value);
+            if (ScrollButtons != null && ScrollButtons.Contains(x, y)) return ScrollButtons.MouseWheelYCore(value);
             return false;
         }
 

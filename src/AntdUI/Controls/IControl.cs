@@ -573,12 +573,12 @@ namespace AntdUI
         #region 触屏
 
         bool mdown = false;
-        int mdownd = 0, oldX, oldY;
+        int mdownd = 0, oldX, oldY, mouseX, mouseY;
         protected virtual void OnTouchDown(int x, int y)
         {
             oldMY = 0;
-            oldX = x;
-            oldY = y;
+            oldX = mouseX = x;
+            oldY = mouseY = y;
             if (Config.TouchEnabled)
             {
                 taskTouch?.Dispose();
@@ -599,8 +599,8 @@ namespace AntdUI
                     oldMY = moveY;
                     if (mdownd > 0)
                     {
-                        if (mdownd == 1) OnTouchScrollY(-moveY);
-                        else OnTouchScrollX(-moveX);
+                        if (mdownd == 1) OnTouchScrollY(mouseX, mouseY, -moveY);
+                        else OnTouchScrollX(mouseX, mouseY, -moveX);
                         oldX = x;
                         oldY = y;
                         return false;
@@ -637,7 +637,7 @@ namespace AntdUI
                         {
                             taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
-                                if (moveYa > 0 && OnTouchScrollY(-incremental))
+                                if (moveYa > 0 && OnTouchScrollY(mouseX, mouseY, -incremental))
                                 {
                                     moveYa -= duration;
                                     return true;
@@ -649,7 +649,7 @@ namespace AntdUI
                         {
                             taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
-                                if (moveYa > 0 && OnTouchScrollY(incremental))
+                                if (moveYa > 0 && OnTouchScrollY(mouseX, mouseY, incremental))
                                 {
                                     moveYa -= duration;
                                     return true;
@@ -669,8 +669,8 @@ namespace AntdUI
             taskTouch = null;
             mdown = false;
         }
-        protected virtual bool OnTouchScrollX(int value) => false;
-        protected virtual bool OnTouchScrollY(int value) => false;
+        protected virtual bool OnTouchScrollX(int x, int y, int value) => false;
+        protected virtual bool OnTouchScrollY(int x, int y, int value) => false;
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -679,14 +679,11 @@ namespace AntdUI
             base.OnMouseWheel(e);
         }
 
-        const int WM_POINTERDOWN = 0x0246, WM_POINTERUP = 0x0247;
-        const int WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202;
-
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
             try
             {
-                if (OS.Win7OrLower && m.Msg == WM_LBUTTONDOWN)
+                if (OS.Win7OrLower && m.Msg == (int)Win32.User32.WindowMessage.WM_LBUTTONDOWN)
                 {
                     Select();
                     base.WndProc(ref m);
@@ -696,13 +693,13 @@ namespace AntdUI
                     base.WndProc(ref m);
                     if (Config.TouchClickEnabled)
                     {
-                        switch (m.Msg)
+                        switch ((Win32.User32.WindowMessage)m.Msg)
                         {
-                            case WM_POINTERDOWN:
-                                Win32.User32.PostMessage(m.HWnd, WM_LBUTTONDOWN, m.WParam, m.LParam);
+                            case Win32.User32.WindowMessage.WM_POINTERDOWN:
+                                Win32.User32.PostMessage(m.HWnd, (int)Win32.User32.WindowMessage.WM_LBUTTONDOWN, m.WParam, m.LParam);
                                 break;
-                            case WM_POINTERUP:
-                                Win32.User32.PostMessage(m.HWnd, WM_LBUTTONUP, m.WParam, m.LParam);
+                            case Win32.User32.WindowMessage.WM_POINTERUP:
+                                Win32.User32.PostMessage(m.HWnd, (int)Win32.User32.WindowMessage.WM_LBUTTONUP, m.WParam, m.LParam);
                                 break;
                         }
                     }

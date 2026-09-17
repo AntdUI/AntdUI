@@ -76,6 +76,9 @@ namespace ChatUI
                 chatList.AddToBottom(new TipChatItem("你撤回了一条消息"));
 
                 chatList.AddToBottom(new TextChatItem("我看一般都前端做的，winform还没见过", Properties.Resources.av3, "阿枫"));
+                Thread.Sleep(200);
+
+                chatList.AddToBottom(new TextChatItem("一起瓜分3️⃣0️⃣0️⃣0️⃣0️⃣杯免单！", Properties.Resources.aduskin, "AduSkin"));
                 Thread.Sleep(700);
 
                 chatList.AddToBottom(new TipChatItem("🤖 管理员开启了全员禁言").SetFore(Style.Db.Warning));

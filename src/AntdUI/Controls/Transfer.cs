@@ -446,11 +446,27 @@ namespace AntdUI
 
         #region 渲染
 
+        Bitmap? tmp;
         protected override void OnDraw(DrawEventArgs e)
         {
             base.OnDraw(e);
-            var g = e.Canvas;
+            if (searching)
+            {
+                if (tmp == null)
+                {
+                    tmp = new Bitmap(e.Rect.Width, e.Rect.Height);
+                    using (var g = Graphics.FromImage(tmp).HighLay(Dpi))
+                    {
+                        PaintMain(g);
+                    }
+                }
+                e.Canvas.Image(tmp, e.Rect);
+            }
+            else PaintMain(e.Canvas);
+        }
 
+        void PaintMain(Canvas g)
+        {
             // 绘制源列表
             PaintListPanel(g, rect_source, rect_source_com, rect_sourceTitle, rect_sourceCheckbox, rect_source_line, SourceTitle ?? Localization.Get("Transfer.Source", "源列表"), ScrollBarSource, sourceSelectAll, false);
 
@@ -749,7 +765,7 @@ namespace AntdUI
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (ScrollBarSource.MouseMoveY(e.X, e.Y) && ScrollBarTarget.MouseMoveY(e.X, e.Y))
+            if (ScrollBarSource.MouseMoveY(e.X, e.Y) && ScrollBarTarget.MouseMoveY(e.X, e.Y) && OnTouchMove(e.X, e.Y))
             {
                 base.OnMouseMove(e);
                 if (DragSort && mdown is TransferItem item)
@@ -868,6 +884,7 @@ namespace AntdUI
             if (ScrollBarSource.MouseDownY(e.X, e.Y) && ScrollBarTarget.MouseDownY(e.X, e.Y))
             {
                 base.OnMouseDown(e);
+                OnTouchDown(e.X, e.Y);
                 if (e.Button == MouseButtons.Left)
                 {
                     if (items == null) return;
@@ -971,7 +988,7 @@ namespace AntdUI
                 }
             }
             dragBody = null;
-            if (ScrollBarSource.MouseUp() && ScrollBarTarget.MouseUp())
+            if (ScrollBarSource.MouseUp() && ScrollBarTarget.MouseUp() && OnTouchUp())
             {
                 base.OnMouseUp(e);
                 if (mdown == null) return;
@@ -1142,6 +1159,13 @@ namespace AntdUI
             foreach (var it in items) it.Hover = false;
         }
 
+        protected override bool OnTouchScrollY(int x, int y, int value)
+        {
+            if (rect_source.Contains(x, y)) return ScrollBarSource.MouseWheelYCore(value);
+            else if (rect_target.Contains(x, y)) return ScrollBarTarget.MouseWheelYCore(value);
+            return false;
+        }
+
         #endregion
 
         #region 事件
@@ -1297,21 +1321,23 @@ namespace AntdUI
             ApplyFilter();
         }
 
-        private void ApplyFilter()
+        private bool ApplyFilter()
         {
             if (items == null)
             {
                 hover_to_right.Enable = hover_to_left.Enable = false;
-                return;
+                return true;
             }
+            searching = true;
             // 过滤源列表
             int check_source = 0, check_target = 0;
-            bool es = string.IsNullOrEmpty(sourceSearchText), et = string.IsNullOrEmpty(targetSearchText);
+            string sourceSearch = sourceSearchText, targetSearch = targetSearchText;
+            bool es = string.IsNullOrEmpty(sourceSearch), et = string.IsNullOrEmpty(targetSearch);
             if (es && et)
             {
                 foreach (var it in items)
                 {
-                    it.Visible = true;
+                    it.SetVisible(true);
                     if (it.selected)
                     {
                         if (it.IsTarget) check_target++;
@@ -1323,48 +1349,55 @@ namespace AntdUI
             {
                 foreach (var it in items)
                 {
-                    var pinyin = it.Text;
-                    if (it.IsTarget)
+                    if (sourceSearchText == sourceSearch && targetSearchText == targetSearch)
                     {
-                        if (pinyin == null) it.Visible = et;
+                        var pinyin = it.Text;
+                        if (it.IsTarget)
+                        {
+                            if (pinyin == null) it.SetVisible(et);
+                            else
+                            {
+                                if (it.PY == null)
+                                {
+                                    it.PY = new string[] {
+                                        pinyin.ToLower(),
+                                        Pinyin.GetPinyin(pinyin).ToLower(),
+                                        Pinyin.GetInitials(pinyin).ToLower()
+                                    };
+                                }
+                                it.SetVisible(et || Helper.SearchContains(targetSearch, pinyin, it.PY, out _) > 0);
+                            }
+                            if (it.Visible && it.Enabled && it.selected) check_target++;
+                        }
                         else
                         {
-                            if (it.PY == null)
+                            if (pinyin == null) it.SetVisible(es);
+                            else
                             {
-                                it.PY = new string[] {
-                                    pinyin.ToLower(),
-                                    Pinyin.GetPinyin(pinyin).ToLower(),
-                                    Pinyin.GetInitials(pinyin).ToLower()
-                                };
+                                if (it.PY == null)
+                                {
+                                    it.PY = new string[] {
+                                        pinyin.ToLower(),
+                                        Pinyin.GetPinyin(pinyin).ToLower(),
+                                        Pinyin.GetInitials(pinyin).ToLower()
+                                    };
+                                }
+                                it.SetVisible(es || Helper.SearchContains(sourceSearch, pinyin, it.PY, out _) > 0);
                             }
-                            it.Visible = et || Helper.SearchContains(targetSearchText, pinyin, it.PY, out _) > 0;
+                            if (it.Visible && it.Enabled && it.selected) check_source++;
                         }
-                        if (it.Visible && it.Enabled && it.selected) check_target++;
                     }
-                    else
-                    {
-                        if (pinyin == null) it.Visible = es;
-                        else
-                        {
-                            if (it.PY == null)
-                            {
-                                it.PY = new string[] {
-                                    pinyin.ToLower(),
-                                    Pinyin.GetPinyin(pinyin).ToLower(),
-                                    Pinyin.GetInitials(pinyin).ToLower()
-                                };
-                            }
-                            it.Visible = es || Helper.SearchContains(sourceSearchText, pinyin, it.PY, out _) > 0;
-                        }
-                        if (it.Visible && it.Enabled && it.selected) check_source++;
-                    }
+                    else return false;
                 }
             }
+            searching = false;
+            tmp?.Dispose();
+            tmp = null;
             hover_to_right.Enable = check_source > 0;
             hover_to_left.Enable = !OneWay && check_target > 0;
             LoadLayout();
-            ScrollBarSource.ValueY = 0;
-            ScrollBarTarget.ValueY = 0;
+            ScrollBarSource.ValueY = ScrollBarTarget.ValueY = 0;
+            return true;
         }
 
         private void MoveSelectedItemsToRight()
@@ -1521,19 +1554,19 @@ namespace AntdUI
             else input_target.Text = text;
         }
 
-        void SetSourceSearchTextCore(string text)
+        bool SetSourceSearchTextCore(string text)
         {
-            if (sourceSearchText == text) return;
+            if (sourceSearchText == text) return false;
             sourceSearchText = text;
             OnSearch(text, true);
-            ApplyFilter();
+            return ApplyFilter();
         }
-        void SetTargetSearchTextCore(string text)
+        bool SetTargetSearchTextCore(string text)
         {
-            if (targetSearchText == text) return;
+            if (targetSearchText == text) return false;
             targetSearchText = text;
             OnSearch(text, false);
-            ApplyFilter();
+            return ApplyFilter();
         }
 
         /// <summary>
@@ -1616,14 +1649,29 @@ namespace AntdUI
             ApplyFilter();
         }
 
+        bool searching = false;
         private void input_source_TextChanged(object? sender, EventArgs e)
         {
-            if (sender is Input input) SetSourceSearchTextCore(input.Text.Trim());
+            if (sender is Input input)
+            {
+                input.Loading = searching = true;
+                ITask.Run(() =>
+                {
+                    if (SetSourceSearchTextCore(input.Text.Trim())) input.Loading = false;
+                });
+            }
         }
 
         private void input_target_TextChanged(object? sender, EventArgs e)
         {
-            if (sender is Input input) SetTargetSearchTextCore(input.Text.Trim());
+            if (sender is Input input)
+            {
+                input.Loading = searching = true;
+                ITask.Run(() =>
+                {
+                    if (SetTargetSearchTextCore(input.Text.Trim())) input.Loading = false;
+                });
+            }
         }
 
         #endregion

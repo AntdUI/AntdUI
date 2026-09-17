@@ -820,6 +820,9 @@ namespace AntdUI
                 /// </summary>
                 WM_LBUTTONUP = 0x0202,
 
+                WM_POINTERDOWN = 0x0246,
+                WM_POINTERUP = 0x0247,
+
                 /// <summary>
                 /// The WM_LBUTTONDBLCLK message is posted when the user double-clicks the left mouse button while the cursor is in the client
                 /// area of a window. If the mouse is not captured, the message is posted to the window beneath the cursor. Otherwise, the

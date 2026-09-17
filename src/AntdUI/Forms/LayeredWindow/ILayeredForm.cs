@@ -279,17 +279,32 @@ namespace AntdUI
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
-            if (m.Msg == 0x02E0)
+            switch ((Win32.User32.WindowMessage)m.Msg)
             {
-                // 低字节是水平DPI，高字节是垂直DPI
-                int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
-                dpi = Helper.GetDpi(dpiX, dpiY);
-            }
-            else if (m.Msg == 0x000A) messageHandler?.SetEnabled(m.WParam != IntPtr.Zero);
-            else if (UFocus && m.Msg == 0x21)
-            {
-                m.Result = new IntPtr(3);
-                return;
+                case Win32.User32.WindowMessage.WM_DPICHANGED:
+                    // 低字节是水平DPI，高字节是垂直DPI
+                    int dpiX = (int)(m.WParam.ToInt64() & 0xFFFF), dpiY = (int)(m.WParam.ToInt64() >> 16);
+                    dpi = Helper.GetDpi(dpiX, dpiY);
+                    break;
+                case Win32.User32.WindowMessage.WM_ENABLE:
+                    messageHandler?.SetEnabled(m.WParam != IntPtr.Zero);
+                    break;
+                case Win32.User32.WindowMessage.WM_LBUTTONDOWN:
+                    if (OS.Win7OrLower) Select();
+                    break;
+                case Win32.User32.WindowMessage.WM_POINTERDOWN:
+                    if (Config.TouchClickEnabled) Win32.User32.PostMessage(m.HWnd, (int)Win32.User32.WindowMessage.WM_LBUTTONDOWN, m.WParam, m.LParam);
+                    break;
+                case Win32.User32.WindowMessage.WM_POINTERUP:
+                    if (Config.TouchClickEnabled) Win32.User32.PostMessage(m.HWnd, (int)Win32.User32.WindowMessage.WM_LBUTTONUP, m.WParam, m.LParam);
+                    break;
+                case Win32.User32.WindowMessage.WM_MOUSEACTIVATE:
+                    if (UFocus)
+                    {
+                        m.Result = new IntPtr(3);
+                        return;
+                    }
+                    break;
             }
             try
             {
@@ -556,12 +571,12 @@ namespace AntdUI
         #region 触屏
 
         bool mdown = false;
-        int mdownd = 0, oldX, oldY;
+        int mdownd = 0, oldX, oldY, mouseX, mouseY;
         protected virtual void OnTouchDown(int x, int y)
         {
             oldMY = 0;
-            oldX = x;
-            oldY = y;
+            oldX = mouseX = x;
+            oldY = mouseY = y;
             if (Config.TouchEnabled)
             {
                 taskTouch?.Dispose();
@@ -582,8 +597,8 @@ namespace AntdUI
                     oldMY = moveY;
                     if (mdownd > 0)
                     {
-                        if (mdownd == 1) OnTouchScrollY(-moveY);
-                        else OnTouchScrollX(-moveX);
+                        if (mdownd == 1) OnTouchScrollY(mouseX, mouseY, -moveY);
+                        else OnTouchScrollX(mouseX, mouseY, -moveX);
                         oldX = x;
                         oldY = y;
                         return false;
@@ -620,7 +635,7 @@ namespace AntdUI
                         {
                             taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
-                                if (moveYa > 0 && OnTouchScrollY(-incremental))
+                                if (moveYa > 0 && OnTouchScrollY(mouseX, mouseY, -incremental))
                                 {
                                     moveYa -= duration;
                                     return true;
@@ -632,7 +647,7 @@ namespace AntdUI
                         {
                             taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
                             {
-                                if (moveYa > 0 && OnTouchScrollY(incremental))
+                                if (moveYa > 0 && OnTouchScrollY(mouseX, mouseY, incremental))
                                 {
                                     moveYa -= duration;
                                     return true;
@@ -646,8 +661,14 @@ namespace AntdUI
             }
             return true;
         }
-        protected virtual bool OnTouchScrollX(int value) => false;
-        protected virtual bool OnTouchScrollY(int value) => false;
+        protected void OnTouchCancel()
+        {
+            taskTouch?.Dispose();
+            taskTouch = null;
+            mdown = false;
+        }
+        protected virtual bool OnTouchScrollX(int x, int y, int value) => false;
+        protected virtual bool OnTouchScrollY(int x, int y, int value) => false;
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {

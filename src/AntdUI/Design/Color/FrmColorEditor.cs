@@ -39,7 +39,6 @@ namespace AntdUI.Design
 
         protected override void OnLoad(EventArgs e)
         {
-            Helper.DpiAuto(Config.Dpi, this);
             base.OnLoad(e);
             count++;
         }

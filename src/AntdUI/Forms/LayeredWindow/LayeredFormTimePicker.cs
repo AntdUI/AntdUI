@@ -283,11 +283,12 @@ namespace AntdUI
             if (ShowH && rect_read_h.Contains(x, y)) ScrollH.MouseDown(x, y);
             else if (ShowM && rect_read_m.Contains(x, y)) ScrollM.MouseDown(x, y);
             else if (ShowS && rect_read_s.Contains(x, y)) ScrollS.MouseDown(x, y);
+            OnTouchDown(x, y);
         }
 
         protected override void OnMouseMove(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (ScrollH.MouseMove(x, y) && ScrollM.MouseMove(x, y) && ScrollS.MouseMove(x, y))
+            if (ScrollH.MouseMove(x, y) && ScrollM.MouseMove(x, y) && ScrollS.MouseMove(x, y) && OnTouchMove(x, y))
             {
                 int count = 0, hand = 0;
                 bool _hover_button = ShowButtonNow && rect_button.Contains(x, y),
@@ -326,7 +327,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseButtons button, int clicks, int x, int y, int delta)
         {
-            if (ScrollH.MouseUp() && ScrollM.MouseUp() && ScrollS.MouseUp())
+            if (ScrollH.MouseUp() && ScrollM.MouseUp() && ScrollS.MouseUp() && OnTouchUp())
             {
                 if (button == MouseButtons.Left)
                 {
@@ -404,6 +405,14 @@ namespace AntdUI
                 else if (ShowM && rect_read_m.Contains(x, y)) ScrollM.MouseWheel(delta);
                 else if (ShowS && rect_read_s.Contains(x, y)) ScrollS.MouseWheel(delta);
             }
+        }
+
+        protected override bool OnTouchScrollY(int x, int y, int value)
+        {
+            if (ScrollH.Contains(x, y)) return ScrollH.MouseWheelYCore(value);
+            else if (ScrollM.Contains(x, y)) return ScrollM.MouseWheelYCore(value);
+            else if (ScrollS.Contains(x, y)) return ScrollS.MouseWheelYCore(value);
+            return false;
         }
 
         #endregion
