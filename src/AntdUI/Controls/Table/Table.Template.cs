@@ -956,7 +956,7 @@ namespace AntdUI
                         g.Fill(Colour.FillTertiary.Get(colorScheme, nameof(Table), PARENT.Name), path_sort);
                     }
                 }
-                g.Svg(SvgDb.IcoTableColumnSort, rect_ico, fore.Color);
+                g.PaintDragHandle(rect_ico, fore.Color, PARENT.Dpi);
             }
 
             #endregion
@@ -1459,48 +1459,274 @@ namespace AntdUI
             {
                 RECT = RECT_REAL = _rect;
                 int rx = _rect.X + ox, sp = gap.x / 2;
-                int use_x;
-                switch (COLUMN.Align)
-                {
-                    case ColumnAlign.Center:
-                        use_x = rx + (_rect.Width - MinWidth + gap.x2) / 2;
-                        break;
-                    case ColumnAlign.Right:
-                        use_x = _rect.Right - MinWidth + gap.x;
-                        break;
-                    case ColumnAlign.Left:
-                    default:
-                        use_x = rx + gap.x;
-                        break;
-                }
                 int maxwidth = _rect.Width - gap.x2;
-                for (int i = 0; i < Value.Count; i++)
+                if (COLUMN.Wrap)
                 {
-                    var it = Value[i];
-                    var size = SIZES[i];
-                    it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, maxwidth, gap);
-                    int w = size.Width + sp;
-                    use_x += w;
-                    maxwidth -= w;
+                    var lines = GroupLines(SIZES, COLUMN.WrapCount, maxwidth, sp);
+                    if (lines.Count == 0) return;
+
+
+                    int[] lineHeights = new int[lines.Count];
+                    int Wmax = 0;
+                    for (int li = 0; li < lines.Count; li++)
+                    {
+                        var line = lines[li];
+                        int lh = 0;
+                        for (int i = line.Start; i < line.End; i++)
+                        {
+                            if (lh < SIZES[i].Height) lh = SIZES[i].Height;
+                        }
+                        lineHeights[li] = lh;
+                        if (Wmax < line.ContentWidth) Wmax = line.ContentWidth;
+                    }
+
+                    int[] vGaps = LineGapY(lines, lineHeights, _rect.Height, sp, COLUMN.WrapGapY, out int leadingGap);
+
+                    int totalH = 0;
+                    for (int li = 0; li < lines.Count; li++) totalH += lineHeights[li];
+                    for (int li = 0; li < vGaps.Length; li++) totalH += vGaps[li];
+                    int use_y = _rect.Y + leadingGap + (leadingGap == 0 && totalH < _rect.Height ? (_rect.Height - totalH) / 2 : 0);
+
+                    for (int li = 0; li < lines.Count; li++)
+                    {
+                        var line = lines[li];
+                        int lh = lineHeights[li];
+                        int gapX = LineGapX(line, Wmax, sp, COLUMN.WrapGapX, out int renderWidth);
+
+                        int use_x;
+                        switch (COLUMN.Align)
+                        {
+                            case ColumnAlign.Center:
+                                use_x = rx + gap.x + (maxwidth - renderWidth) / 2;
+                                break;
+                            case ColumnAlign.Right:
+                                use_x = rx + gap.x + (maxwidth - renderWidth);
+                                break;
+                            case ColumnAlign.Left:
+                            default:
+                                use_x = rx + gap.x;
+                                break;
+                        }
+                        int remain = maxwidth;
+                        int visibleIdx = 0;
+                        for (int i = line.Start; i < line.End; i++)
+                        {
+                            var it = Value[i];
+                            var size = SIZES[i];
+                            if (size.Width <= 0)
+                            {
+                                it.SetRect(g, font, new Rectangle(use_x, use_y, 0, lh), size, remain, gap);
+                                continue;
+                            }
+                            it.SetRect(g, font, new Rectangle(use_x, use_y, size.Width, lh), size, remain, gap);
+                            visibleIdx++;
+                            int w = it.Rect.Width;
+                            if (visibleIdx < line.VisibleCount) w += gapX;
+                            use_x += w;
+                            remain -= w;
+                        }
+                        use_y += lh + (li < vGaps.Length ? vGaps[li] : 0);
+                    }
+                }
+                else
+                {
+                    int use_x;
+                    switch (COLUMN.Align)
+                    {
+                        case ColumnAlign.Center:
+                            use_x = rx + (_rect.Width - MinWidth + gap.x2) / 2;
+                            break;
+                        case ColumnAlign.Right:
+                            use_x = _rect.Right - MinWidth + gap.x;
+                            break;
+                        case ColumnAlign.Left:
+                        default:
+                            use_x = rx + gap.x;
+                            break;
+                    }
+                    for (int i = 0; i < Value.Count; i++)
+                    {
+                        var it = Value[i];
+                        var size = SIZES[i];
+                        it.SetRect(g, font, new Rectangle(use_x, _rect.Y, size.Width, _rect.Height), size, maxwidth, gap);
+                        int w = size.Width + sp;
+                        use_x += w;
+                        maxwidth -= w;
+                    }
                 }
             }
 
             Size[] SIZES = new Size[0];
+
+            private struct CellLine
+            {
+                public int Start;
+                public int End;
+                public int VisibleCount;
+                public int ContentWidth;
+            }
+
+            private static List<CellLine> GroupLines(Size[] sizes, int count, int maxwidth, int sp)
+            {
+                var lines = new List<CellLine>();
+                int n = sizes.Length;
+                if (n == 0) return lines;
+                if (count > 0)
+                {
+                    for (int start = 0; start < n; start += count)
+                    {
+                        int end = Math.Min(start + count, n);
+                        lines.Add(MakeLine(sizes, start, end));
+                    }
+                }
+                else
+                {
+                    if (maxwidth <= 0)
+                    {
+                        lines.Add(MakeLine(sizes, 0, n));
+                        return lines;
+                    }
+                    int start = 0, cur = 0;
+                    bool empty = true;
+                    for (int i = 0; i < n; i++)
+                    {
+                        int sw = sizes[i].Width;
+                        if (sw <= 0) continue;
+                        int add = empty ? sw : sp + sw;
+                        if (!empty && cur + add > maxwidth)
+                        {
+                            lines.Add(MakeLine(sizes, start, i));
+                            start = i;
+                            cur = sw;
+                            empty = false;
+                        }
+                        else
+                        {
+                            cur += add;
+                            empty = false;
+                        }
+                    }
+                    if (!empty) lines.Add(MakeLine(sizes, start, n));
+                }
+                return lines;
+            }
+
+            private static CellLine MakeLine(Size[] sizes, int start, int end)
+            {
+                int visible = 0, content = 0;
+                for (int i = start; i < end; i++)
+                {
+                    int sw = sizes[i].Width;
+                    if (sw <= 0) continue;
+                    visible++;
+                    content += sw;
+                }
+                return new CellLine { Start = start, End = end, VisibleCount = visible, ContentWidth = content };
+            }
+
+            private static int LineGapX(CellLine line, int widthMax, int sp, TableWrapGap gapX, out int renderWidth)
+            {
+                if (gapX == TableWrapGap.SpaceBetween)
+                {
+                    if (line.VisibleCount >= 2)
+                    {
+                        int gap = (widthMax - line.ContentWidth) / (line.VisibleCount - 1);
+                        if (gap < 0)
+                        {
+                            renderWidth = line.ContentWidth + (line.VisibleCount - 1) * sp;
+                            return sp;
+                        }
+                        renderWidth = widthMax;
+                        return gap;
+                    }
+                    renderWidth = line.ContentWidth;
+                    return 0;
+                }
+                renderWidth = line.ContentWidth + (line.VisibleCount > 0 ? (line.VisibleCount - 1) * sp : 0);
+                return sp;
+            }
+
+            private static int[] LineGapY(List<CellLine> lines, int[] lineHeights, int targetHeight, int sp, TableWrapGap gapY, out int leadingGap)
+            {
+                leadingGap = 0;
+                int count = lines.Count;
+                var gaps = new int[count > 1 ? count - 1 : 0];
+                if (count < 2) return gaps;
+                if (gapY == TableWrapGap.SpaceBetween)
+                {
+                    int sum = 0;
+                    for (int i = 0; i < lineHeights.Length; i++) sum += lineHeights[i];
+                    int gap = (targetHeight - sum) / (count + 1);
+                    if (gap >= sp)
+                    {
+                        for (int i = 0; i < gaps.Length; i++) gaps[i] = gap;
+                        leadingGap = gap;
+                        return gaps;
+                    }
+                }
+                for (int i = 0; i < gaps.Length; i++) gaps[i] = sp;
+                return gaps;
+            }
+
             public override Size GetSize(Canvas g, Font font, Size font_size, int width, TableGaps gap)
             {
-                int w = 0, h = 0, sp = gap.x / 2;
+                int sp = gap.x / 2;
                 var sizes = new List<Size>(Value.Count);
-                var impactHeight = PARENT.CellImpactHeight ?? true;
                 foreach (var it in Value)
                 {
-                    var size = it.GetSize(g, font, gap);
-                    sizes.Add(size);
-                    w += size.Width + sp;
-                    if ((it.ImpactHeight ?? impactHeight) && h < size.Height) h = size.Height;
+                    sizes.Add(it.GetSize(g, font, gap));
                 }
-                MinWidth = w + gap.x + sp;
+                Size result;
+                if (COLUMN.Wrap)
+                {
+                    var arr = sizes.ToArray();
+                    var lines = GroupLines(arr, COLUMN.WrapCount, width - gap.x2, sp);
+                    int Wmax = 0;
+                    for (int li = 0; li < lines.Count; li++)
+                    {
+                        if (Wmax < lines[li].ContentWidth) Wmax = lines[li].ContentWidth;
+                    }
+                    int[] lineHeights = new int[lines.Count];
+                    int sumH = 0;
+                    for (int li = 0; li < lines.Count; li++)
+                    {
+                        int lh = 0;
+                        for (int i = lines[li].Start; i < lines[li].End; i++)
+                        {
+                            if (lh < sizes[i].Height) lh = sizes[i].Height;
+                        }
+                        lineHeights[li] = lh;
+                        sumH += lh;
+                    }
+                    int targetHeight = sumH + (lines.Count > 1 ? (lines.Count - 1) * sp : 0);
+                    int[] vGaps = LineGapY(lines, lineHeights, targetHeight, sp, COLUMN.WrapGapY, out int leadingGap);
+                    int h = sumH + leadingGap;
+                    for (int li = 0; li < vGaps.Length; li++) h += vGaps[li];
+                    if (leadingGap > 0) h += leadingGap;
+
+                    int maxRender = 0;
+                    for (int li = 0; li < lines.Count; li++)
+                    {
+                        LineGapX(lines[li], Wmax, sp, COLUMN.WrapGapX, out int renderWidth);
+                        if (maxRender < renderWidth) maxRender = renderWidth;
+                    }
+                    MinWidth = maxRender + gap.x2;
+                    result = new Size(MinWidth, h);
+                }
+                else
+                {
+                    int w = 0, h = 0;
+                    var impactHeight = PARENT.CellImpactHeight ?? true;
+                    for (int i = 0; i < Value.Count; i++)
+                    {
+                        w += sizes[i].Width + sp;
+                        if ((Value[i].ImpactHeight ?? impactHeight) && h < sizes[i].Height) h = sizes[i].Height;
+                    }
+                    MinWidth = w + gap.x + sp;
+                    result = new Size(MinWidth, h);
+                }
                 SIZES = sizes.ToArray();
-                return new Size(MinWidth, h);
+                return result;
             }
 
             public override string? ToString()

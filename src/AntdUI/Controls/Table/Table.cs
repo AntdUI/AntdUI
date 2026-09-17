@@ -2536,6 +2536,66 @@ namespace AntdUI
             }
         }
 
+        bool wrap = false;
+        /// <summary>
+        /// 单元格内子元素自动换行
+        /// </summary>
+        public bool Wrap
+        {
+            get => wrap;
+            set
+            {
+                if (wrap == value) return;
+                wrap = value;
+                Invalidates();
+            }
+        }
+
+        int wrapCount = 0;
+        /// <summary>
+        /// 每行子元素数量，>0 按数量换行，<=0 回退宽度贪心换行
+        /// </summary>
+        public int WrapCount
+        {
+            get => wrapCount;
+            set
+            {
+                if (wrapCount == value) return;
+                wrapCount = value;
+                Invalidates();
+            }
+        }
+
+        TableWrapGap wrapGapX = TableWrapGap.Fixed;
+        /// <summary>
+        /// 行内水平间距模式
+        /// </summary>
+        public TableWrapGap WrapGapX
+        {
+            get => wrapGapX;
+            set
+            {
+                if (wrapGapX == value) return;
+                wrapGapX = value;
+                Invalidates();
+            }
+        }
+
+        TableWrapGap wrapGapY = TableWrapGap.Fixed;
+        /// <summary>
+        /// 行间垂直间距模式
+        /// </summary>
+        public TableWrapGap WrapGapY
+        {
+            get => wrapGapY;
+            set
+            {
+                if (wrapGapY == value) return;
+                wrapGapY = value;
+                Invalidates();
+            }
+        }
+
         bool _fixed = false;
         /// <summary>
         /// 列是否固定
@@ -2949,6 +3009,35 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 设置单元格内子元素换行：0 关闭换行，>0 按数量换行，&lt;0 按宽度自适应换行
+        /// </summary>
+        public Column SetWrap(int count = 0)
+        {
+            if (count > 0) { Wrap = true; WrapCount = count; }
+            else if (count < 0) { Wrap = true; WrapCount = 0; }
+            else { Wrap = false; WrapCount = 0; }
+            return this;
+        }
+
+        /// <summary>
+        /// 设置行内水平间距模式
+        /// </summary>
+        public Column SetWrapGapX(TableWrapGap value)
+        {
+            WrapGapX = value;
+            return this;
+        }
+
+        /// <summary>
+        /// 设置行间垂直间距模式
+        /// </summary>
+        public Column SetWrapGapY(TableWrapGap value)
+        {
+            WrapGapY = value;
+            return this;
+        }
+
+        /// <summary>
         /// 设置列是否固定
         /// </summary>
         public Column SetFixed(bool value = true)
@@ -3192,6 +3281,21 @@ namespace AntdUI
         Left,
         Right,
         Center
+    }
+
+    /// <summary>
+    /// 换行间距模式
+    /// </summary>
+    public enum TableWrapGap : int
+    {
+        /// <summary>
+        /// 固定间距（默认 sp = gap.x / 2）
+        /// </summary>
+        Fixed = 0,
+        /// <summary>
+        /// 等分占满（语义对齐 CSS justify-content: space-between）
+        /// </summary>
+        SpaceBetween = 1
     }
 
     public enum SortMode : int

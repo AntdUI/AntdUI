@@ -178,6 +178,39 @@ namespace AntdUI
         [Description("支持点选多个节点"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool Multiple { get; set; }
 
+        /// <summary>
+        /// 节点可拖拽排序
+        /// </summary>
+        [Description("节点可拖拽"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool Draggable { get; set; } = true;
+
+        bool dragHandleVisible = true;
+        /// <summary>
+        /// 拖拽手柄可见（仅 Draggable=true 时生效）
+        /// </summary>
+        [Description("拖拽手柄可见"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool DragHandleVisible
+        {
+            get => dragHandleVisible;
+            set
+            {
+                if (dragHandleVisible == value) return;
+                dragHandleVisible = value;
+                ChangeList(true);
+            }
+        }
+
+        int dragAutoExpandDelay = 1000;
+        /// <summary>
+        /// 拖拽悬停自动展开延时（毫秒，0=禁用）
+        /// </summary>
+        [Description("拖拽悬停自动展开延时（毫秒，0=禁用）"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(1000)]
+        public int DragAutoExpandDelay
+        {
+            get => dragAutoExpandDelay;
+            set => dragAutoExpandDelay = value < 0 ? 0 : value;
+        }
+
         TreeItemCollection? items;
         /// <summary>
         /// 集合
@@ -348,6 +381,18 @@ namespace AntdUI
         [Description("移动项事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event TreeHoverEventHandler? NodeMouseMove;
 
+        /// <summary>
+        /// 节点拖拽完成前发生（可取消）
+        /// </summary>
+        [Description("节点拖拽完成前发生（可取消）"), Category(nameof(CategoryAttribute.Behavior))]
+        public event TreeDropEventHandler? Drop;
+
+        /// <summary>
+        /// 节点拖拽完成后发生
+        /// </summary>
+        [Description("节点拖拽完成后发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event TreeDropDoneEventHandler? DropDone;
+
         #region 重写
 
         internal void OnSelectChanged(TreeItem item, TreeCType type, MouseEventArgs args) => OnSelectChanged(item, item.Rect("Text", ScrollBar.ValueX, ScrollBarRealY), type, args);
@@ -375,6 +420,14 @@ namespace AntdUI
             }
         }
         protected virtual void OnAfterExpand(TreeItem item, bool value) => AfterExpand?.Invoke(this, new TreeCheckedEventArgs(item, value));
+        protected virtual bool OnDrop(TreeItem item, TreeItem? targetParent, int targetIndex, TreeDropMode mode)
+        {
+            if (Drop == null) return true;
+            var arge = new TreeDropEventArgs(item, targetParent, targetIndex, mode);
+            Drop.Invoke(this, arge);
+            return !arge.Cancel;
+        }
+        protected virtual void OnDropDone(TreeItem item, TreeItem? targetParent, int targetIndex, TreeDropMode mode) => DropDone?.Invoke(this, new TreeDropDoneEventArgs(item, targetParent, targetIndex, mode));
         internal void OnICheckedChanged(TreeItem item, bool value) => OnCheckedChanged(item, value);
         internal bool OnIBeforeExpand(TreeItem item, bool value) => OnBeforeExpand(item, value);
         internal void OnIAfterExpand(TreeItem item, bool value) => OnAfterExpand(item, value);
@@ -655,6 +708,7 @@ namespace AntdUI
                     SetShowItem(e.Rect, sx, sy, items, true);
                     PaintItem(g, e.Rect, -sx, -sy, sx, sy, items, brush_fore, brush_fore_active, brush_hover, brush_active, brush_TextTertiary, _radius, enable);
                 }
+                if (IsDragging && dragBody != null) PaintDragFeedback(g, dragBody, _radius);
             }
             g.ResetTransform();
             ScrollBar.Paint(g, ColorScheme);
@@ -744,7 +798,7 @@ namespace AntdUI
                         PaintBack(g, brush, item.rect, radius);
                     }
                 }
-                else if (item.Hover) PaintBack(g, hover, item.rect, radius);
+                else if (item.Hover && !IsDragging) PaintBack(g, hover, item.rect, radius);
                 if (item.CanExpand) PaintArrow(g, item, tx, ty, fore, sx, sy);
                 if (enable && item.Enabled) PaintItemText(g, item, fore, brushTextTertiary);
                 else
@@ -754,6 +808,10 @@ namespace AntdUI
                         PaintItemText(g, item, brush, brushTextTertiary);
                     }
                 }
+            }
+            if (Draggable && DragHandleVisible && item.handle_rect.Width > 0 && enable && item.Enabled)
+            {
+                g.PaintDragHandle(item.handle_rect, Colour.Text.Get(ColorScheme, nameof(Tree), Name), Dpi);
             }
             if (checkable && item.Checkable)
             {
@@ -892,17 +950,49 @@ namespace AntdUI
             else g.Fill(brush, rect);
         }
 
+        /// <summary>
+        /// 拖拽视觉反馈：源节点高亮 + 目标插入指示线 / 包含提示（由单一 Mode 驱动，分支互斥）
+        /// </summary>
+        void PaintDragFeedback(Canvas g, TreeDragHeader dragBody, float radius)
+        {
+            using (var brush_drag = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Tree), Name)))
+            {
+                g.Fill(brush_drag, dragBody.Item.rect);
+            }
+            var target = dragBody.Target;
+            if (target == null || !dragBody.Mode.HasValue) return;
+            if (dragBody.Mode == TreeDropMode.Into)
+            {
+                using (var brush = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Tree), Name)))
+                {
+                    g.Fill(brush, new Rectangle(0, target.rect.Y, ClientRectangle.Width, target.rect.Height));
+                }
+            }
+            else
+            {
+                int sp = (int)(2 * Dpi);
+                int y = dragBody.Mode == TreeDropMode.Before ? target.rect.Y - sp : target.rect.Bottom - sp;
+                using (var brush_split = new SolidBrush(Colour.BorderColor.Get(ColorScheme, nameof(Tree), Name)))
+                {
+                    g.Fill(brush_split, new Rectangle(0, y, ClientRectangle.Width, sp * 2));
+                }
+            }
+        }
+
         #endregion
 
         #region 鼠标
 
         TreeItem? MDown;
+        TreeDragHeader? dragBody;
+        System.Windows.Forms.Timer? dragExpandTimer;
         bool doubleClick = false;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             doubleClick = e.Clicks > 1;
             MDown = null;
+            dragBody = null;
             if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
@@ -929,6 +1019,20 @@ namespace AntdUI
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (dragBody != null && dragBody.Hand)
+            {
+                var drag = dragBody;
+                dragBody = null;
+                MDown = null;
+                ScrollBar.MouseUpY();
+                ScrollBar.MouseUpX();
+                OnTouchUp();
+                if (Capture) Capture = false;
+                SetCursor(false);
+                DragUp(drag, e);
+                return;
+            }
+            dragBody = null;
             if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX() && OnTouchUp())
             {
                 if (items == null || items.Count == 0 || MDown == null) return;
@@ -959,6 +1063,7 @@ namespace AntdUI
                 if (down > 0)
                 {
                     MDown = item;
+                    if (Draggable && !doubleClick && e.Button == MouseButtons.Left && down == TreeCType.Item) dragBody = new TreeDragHeader(e.X, e.Y, item);
                     OnNodeMouseDown(item, down, e);
                     return true;
                 }
@@ -1206,6 +1311,33 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (Draggable && dragBody != null)
+            {
+                if (dragBody.Hand)
+                {
+                    DragMove(e.X, e.Y, dragBody);
+                    SetCursor(CursorType.SizeAll);
+                    return;
+                }
+                else
+                {
+                    int cx = e.X - dragBody.Ox, cy = e.Y - dragBody.Oy;
+                    int threshold = (int)(Config.TouchThreshold * Dpi);
+                    if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold)
+                    {
+                        if (CanDragNode(dragBody.Item))
+                        {
+                            dragBody.Hand = true;
+                            Capture = true;
+                            SetCursor(CursorType.SizeAll);
+                            DragMove(e.X, e.Y, dragBody);
+                            Invalidate();
+                            return;
+                        }
+                        else dragBody = null;
+                    }
+                }
+            }
             if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y))
             {
                 if (OnTouchMove(e.X, e.Y))
@@ -1214,17 +1346,19 @@ namespace AntdUI
                     try
                     {
                         int hand = 0;
+                        bool onHandle = false;
                         if (virtualMode && _flatList != null)
                         {
                             int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBarRealY;
-                            foreach (var it in _flatList) IMouseMove(it, true, sx, sy, ref hand, false);
+                            foreach (var it in _flatList) IMouseMove(it, true, sx, sy, ref hand, ref onHandle, false);
                         }
                         else
                         {
                             int sx = e.X + ScrollBar.ValueX, sy = e.Y + ScrollBar.ValueY;
-                            foreach (var it in items) IMouseMove(it, true, sx, sy, ref hand, true);
+                            foreach (var it in items) IMouseMove(it, true, sx, sy, ref hand, ref onHandle, true);
                         }
-                        SetCursor(hand > 0);
+                        if (onHandle) SetCursor(CursorType.SizeAll);
+                        else SetCursor(hand > 0);
                     }
                     catch { }
                 }
@@ -1232,18 +1366,19 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(TreeItem item, bool expend, int x, int y, ref int hand, bool forsub)
+        void IMouseMove(TreeItem item, bool expend, int x, int y, ref int hand, ref bool onHandle, bool forsub)
         {
             if (item.show)
             {
                 if (expend && item.Contains(x, y, checkable, blockNode) > 0) hand++;
+                if (item.handle_rect.Width > 0 && item.handle_rect.Contains(x, y) && item.Enabled) onHandle = true;
                 try
                 {
                     if (forsub && item.items != null)
                     {
                         foreach (var sub in item.items.Safe)
                         {
-                            IMouseMove(sub, item.Expand, x, y, ref hand, forsub);
+                            IMouseMove(sub, item.Expand, x, y, ref hand, ref onHandle, forsub);
                         }
                     }
                 }
@@ -1300,6 +1435,290 @@ namespace AntdUI
             if (item.items == null) return;
             foreach (var sub in item.items) IUSelect(sub);
         }
+
+        #region 拖拽
+
+        internal bool IsDragging => Draggable && dragBody != null && dragBody.Hand;
+
+        /// <summary>
+        /// 源节点准入校验：禁用或不可见节点不可作为拖拽源
+        /// </summary>
+        internal bool CanDragNode(TreeItem item)
+        {
+            if (!item.Visible) return false;
+            if (!item.Enabled) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 拖拽中目标三态命中：行高三等分划分 Before / After / Into
+        /// </summary>
+        void DragMove(int x, int y, TreeDragHeader dragBody)
+        {
+            if (x < 0 || x > Width || y < 0 || y > Height)
+            {
+                ClearDragTarget(dragBody);
+                return;
+            }
+            int sx = x + ScrollBar.ValueX, sy = y + (virtualMode ? ScrollBarRealY : ScrollBar.ValueY);
+            var hit = FindDragTarget(sy);
+            if (hit == null || !CanDropOn(dragBody.Item, hit))
+            {
+                ClearDragTarget(dragBody);
+                return;
+            }
+            int h = hit.rect.Height;
+            if (h < 3) h = 3;
+            int oneThird = h / 3;
+            TreeDropMode mode;
+            if (sy < hit.rect.Y + oneThird) mode = TreeDropMode.Before;
+            else if (sy > hit.rect.Bottom - oneThird) mode = TreeDropMode.After;
+            else mode = TreeDropMode.Into;
+
+            // 归一化：相邻节点间隙处 After(上一节点) 与 Before(下一节点) 是同一插入位置，统一为 Before(下一节点)，消除等价双命中态
+            if (mode == TreeDropMode.After)
+            {
+                var next = FindNextVisibleSibling(hit);
+                if (next != null && CanDropOn(dragBody.Item, next))
+                {
+                    hit = next;
+                    mode = TreeDropMode.Before;
+                }
+            }
+
+            if (dragBody.Target == hit && dragBody.Mode == mode) return;
+            dragBody.Target = hit;
+            dragBody.Mode = mode;
+            Invalidate();
+            UpdateDragExpandTimer(dragBody);
+        }
+
+        void ClearDragTarget(TreeDragHeader dragBody)
+        {
+            if (dragBody.Target != null || dragBody.Mode.HasValue)
+            {
+                dragExpandTimer?.Stop();
+                dragBody.Target = null;
+                dragBody.Mode = null;
+                Invalidate();
+            }
+        }
+
+        void UpdateDragExpandTimer(TreeDragHeader dragBody)
+        {
+            dragExpandTimer?.Stop();
+            if (DragAutoExpandDelay > 0 && dragBody.Target != null && dragBody.Target.CanExpand && !dragBody.Target.Expand)
+            {
+                dragExpandTimer ??= new System.Windows.Forms.Timer();
+                dragExpandTimer.Tick -= DragExpandTimer_Tick;
+                dragExpandTimer.Tick += DragExpandTimer_Tick;
+                dragExpandTimer.Interval = DragAutoExpandDelay;
+                dragExpandTimer.Start();
+            }
+        }
+
+        void DragExpandTimer_Tick(object? sender, EventArgs e)
+        {
+            dragExpandTimer?.Stop();
+            if (dragBody == null || !dragBody.Hand) return;
+            var target = dragBody.Target;
+            if (target == null || items == null) return;
+            if (!ContainsItem(items, target)) return;
+            if (!target.CanExpand || target.Expand) return;
+            target.Expand = true;
+        }
+
+        TreeItem? FindDragTarget(int sy)
+        {
+            TreeItem? hit = null;
+            int minDist = int.MaxValue;
+            if (virtualMode && _flatList != null)
+            {
+                foreach (var it in _flatList)
+                {
+                    if (!it.show || !it.Visible) continue;
+                    int cy = it.rect.Y + it.rect.Height / 2;
+                    int dist = Math.Abs(sy - cy);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        hit = it;
+                    }
+                }
+            }
+            else if (items != null) FindDragTarget(items, sy, ref hit, ref minDist);
+            if (hit != null && minDist > hit.rect.Height) return null;
+            return hit;
+        }
+
+        void FindDragTarget(TreeItemCollection collection, int sy, ref TreeItem? hit, ref int minDist)
+        {
+            foreach (var it in collection)
+            {
+                if (!it.show || !it.Visible) continue;
+                int cy = it.rect.Y + it.rect.Height / 2;
+                int dist = Math.Abs(sy - cy);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    hit = it;
+                }
+                if (it.CanExpand && it.Expand && it.items != null && it.items.Count > 0) FindDragTarget(it.items, sy, ref hit, ref minDist);
+            }
+        }
+
+        /// <summary>
+        /// 返回视觉顺序中 item 同级（含逐级向上回溯）的下一个可见节点，用于合并相邻间隙处的 After/Before 等价命中
+        /// </summary>
+        TreeItem? FindNextVisibleSibling(TreeItem item)
+        {
+            var cur = item;
+            while (true)
+            {
+                var parent = cur.ParentItem;
+                TreeItemCollection? list = parent != null ? parent.items : items;
+                if (list != null)
+                {
+                    int i = list.IndexOf(cur);
+                    for (int j = i + 1; j < list.Count; j++)
+                    {
+                        if (list[j].Visible) return list[j];
+                    }
+                }
+                if (parent == null) return null;
+                cur = parent;
+            }
+        }
+
+        /// <summary>
+        /// 目标合法性校验：不得为源节点自身，且祖先链不得包含源节点（防循环引用）
+        /// </summary>
+        bool CanDropOn(TreeItem source, TreeItem target)
+        {
+            if (target == source) return false;
+            var p = target.ParentItem;
+            while (p != null)
+            {
+                if (p == source) return false;
+                p = p.ParentItem;
+            }
+            return true;
+        }
+
+        bool ContainsItem(TreeItemCollection? collection, TreeItem target)
+        {
+            if (collection == null) return false;
+            foreach (var it in collection)
+            {
+                if (it == target) return true;
+                if (it.items != null && it.items.Count > 0 && ContainsItem(it.items, target)) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 松开处理：有效目标走 Commit（前置事件→迁移→完成事件），否则走 Cancel 恢复原状
+        /// </summary>
+        void DragUp(TreeDragHeader dragBody, MouseEventArgs e)
+        {
+            dragExpandTimer?.Stop();
+            var item = dragBody.Item;
+            var target = dragBody.Target;
+            var mode = dragBody.Mode;
+            dragBody.Target = null;
+            dragBody.Mode = null;
+            if (items == null || target == null || mode == null || item.PARENT != this || !ContainsItem(item.ParentItem != null ? item.ParentItem.items : items, item))
+            {
+                Invalidate();
+                return;
+            }
+
+            // 逻辑位置（与视觉反馈一致）
+            TreeItem? targetParent;
+            TreeItemCollection targetCollection;
+            if (mode == TreeDropMode.Into)
+            {
+                targetParent = target;
+                targetCollection = target.Sub;
+            }
+            else
+            {
+                targetParent = target.ParentItem;
+                if (targetParent != null)
+                {
+                    if (targetParent.items == null)
+                    {
+                        Invalidate();
+                        return;
+                    }
+                    targetCollection = targetParent.items;
+                }
+                else targetCollection = items;
+            }
+            int targetIndex;
+            if (mode == TreeDropMode.Before) targetIndex = targetCollection.IndexOf(target);
+            else if (mode == TreeDropMode.After) targetIndex = targetCollection.IndexOf(target) + 1;
+            else targetIndex = targetCollection.Count;
+
+            // 前置事件（可取消），无人订阅时视为确认
+            if (!OnDrop(item, targetParent, targetIndex, mode.Value))
+            {
+                Invalidate();
+                return;
+            }
+
+            // 迁移（先移除 → 再定位目标当前索引 → 后插入）
+            if (MoveDragNode(item, target, mode.Value, targetCollection, out int finalIndex))
+            {
+                ChangeList(true, true);
+                OnDropDone(item, targetParent, finalIndex, mode.Value);
+            }
+            else Invalidate();
+        }
+
+        /// <summary>
+        /// 迁移执行器：源节点及其后代整体迁移，状态（Expand/CheckState/Tag 等）随节点对象保持不变
+        /// </summary>
+        bool MoveDragNode(TreeItem item, TreeItem target, TreeDropMode mode, TreeItemCollection targetCollection, out int targetIndex)
+        {
+            targetIndex = -1;
+            try
+            {
+                TreeItemCollection? sourceCollection;
+                if (item.ParentItem != null) sourceCollection = item.ParentItem.items;
+                else sourceCollection = items;
+                if (sourceCollection == null || !sourceCollection.Contains(item)) return false;
+                if (mode != TreeDropMode.Into && !targetCollection.Contains(target)) return false;
+
+                // 先移除
+                sourceCollection.Remove(item);
+
+                // 再定位目标当前索引
+                int d;
+                if (mode == TreeDropMode.Into) d = targetCollection.Count;
+                else
+                {
+                    d = targetCollection.IndexOf(target);
+                    if (d < 0)
+                    {
+                        // 目标失效，尽力恢复源节点
+                        int old = item.Index;
+                        if (old > sourceCollection.Count) old = sourceCollection.Count;
+                        sourceCollection.Insert(old, item);
+                        return false;
+                    }
+                    if (mode == TreeDropMode.After) d += 1;
+                }
+
+                // 后插入
+                targetCollection.Insert(d, item);
+                targetIndex = d;
+                return true;
+            }
+            catch { return false; }
+        }
+
+        #endregion
 
         #endregion
 
@@ -1933,6 +2352,9 @@ namespace AntdUI
         protected override void Dispose(bool disposing)
         {
             ScrollBar.Dispose();
+            dragExpandTimer?.Stop();
+            dragExpandTimer?.Dispose();
+            dragExpandTimer = null;
             base.Dispose(disposing);
         }
     }
@@ -2699,6 +3121,14 @@ namespace AntdUI
             Depth = depth;
             var size = g.MeasureText(Text, font);
             int x = _x + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _y + (size.Height + gap - icon_size) / 2, ui = icon_size + gap;
+            bool showHandle = PARENT != null && PARENT.Draggable && PARENT.DragHandleVisible && Visible && Enabled;
+            if (showHandle)
+            {
+                handle_rect = new Rectangle(x, y, icon_size, icon_size);
+                x += ui;
+                usew += ui;
+            }
+            else handle_rect = Rectangle.Empty;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -2765,6 +3195,14 @@ namespace AntdUI
             Depth = depth;
             var txt_width = g.MeasureText(Text, font).Width;
             int x = _x + gap + (depth_gap * depth), tmpx = x, usew = 0, y = _y + (text_height + gap - icon_size) / 2, ui = icon_size + gap;
+            bool showHandle = PARENT != null && PARENT.Draggable && PARENT.DragHandleVisible && Visible && Enabled;
+            if (showHandle)
+            {
+                handle_rect = new Rectangle(x, y, icon_size, icon_size);
+                x += ui;
+                usew += ui;
+            }
+            else handle_rect = Rectangle.Empty;
             if (has_sub)
             {
                 arrow_rect = new Rectangle(x, y, icon_size, icon_size);
@@ -2828,6 +3266,7 @@ namespace AntdUI
         internal Rectangle rect_all { get; set; }
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
+        internal Rectangle handle_rect { get; set; }
 
         internal TreeCType Contains(int x, int y, bool _checkable, bool blockNode)
         {
@@ -3159,5 +3598,36 @@ namespace AntdUI
         }
 
         public override string? ToString() => Text;
+    }
+
+    internal class TreeDragHeader
+    {
+        public TreeDragHeader(int ox, int oy, TreeItem _i)
+        {
+            Ox = ox;
+            Oy = oy;
+            Item = _i;
+        }
+        /// <summary>
+        /// 按下起点坐标
+        /// </summary>
+        public int Ox { get; set; }
+        public int Oy { get; set; }
+        /// <summary>
+        /// 拖拽源节点
+        /// </summary>
+        public TreeItem Item { get; set; }
+        /// <summary>
+        /// 是否已激活拖拽（Pending 与 Dragging 两态区分）
+        /// </summary>
+        public bool Hand { get; set; }
+        /// <summary>
+        /// 当前目标节点（可空）
+        /// </summary>
+        public TreeItem? Target { get; set; }
+        /// <summary>
+        /// 当前插入模式（可空）
+        /// </summary>
+        public TreeDropMode? Mode { get; set; }
     }
 }
