@@ -122,6 +122,14 @@ namespace AntdUI
 
         protected virtual void OnItemClick(BreadcrumbItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new BreadcrumbItemEventArgs(item, e));
 
+        /// <summary>
+        /// 空白项目点击事件（包含鼠标信息）
+        /// </summary>
+        [Description("空白项目点击事件"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonItemClick;
+
+        protected virtual void OnNonItemClick(MouseEventArgs e) => NonItemClick?.Invoke(this, e);
+
         #region Change
 
         protected override void OnSizeChanged(EventArgs e)
@@ -408,6 +416,7 @@ namespace AntdUI
                     return;
                 }
             }
+            OnNonItemClick(e);
         }
 
         #endregion

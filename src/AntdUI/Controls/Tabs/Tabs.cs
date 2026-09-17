@@ -779,7 +779,7 @@ namespace AntdUI
             pageDown = pageMove = null;
             base.OnMouseUp(e);
             if (items == null) return;
-            if (clicks > 1) e = new MouseEventArgs(e.Button, clicks, e.X, e.Y, e.Delta);
+            Helper.GenerateMouseEventArgs(ref e, clicks);
             if (_tabMenuVisible)
             {
                 if (_pageMove != null)
@@ -799,7 +799,8 @@ namespace AntdUI
                     }
                     Invalidate();
                 }
-                if (_pageDown != null)
+                if (_pageDown == null) OnNonTabClick(e);
+                else
                 {
                     int i = 0, x = e.X + scroll_x, y = e.Y + scroll_y;
                     foreach (var it in items)
@@ -1715,6 +1716,14 @@ namespace AntdUI
             }
             return flag && OnClosingPage(item);
         }
+
+        /// <summary>
+        /// 点击空白标签时发生
+        /// </summary>
+        [Description("点击空白标签时发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonTabClick;
+
+        protected virtual void OnNonTabClick(MouseEventArgs e) => NonTabClick?.Invoke(this, e);
 
         #endregion
 

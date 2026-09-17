@@ -214,7 +214,11 @@ namespace AntdUI.Chat
             base.OnMouseDown(e);
             if (ScrollBar.MouseDown(e.X, e.Y))
             {
-                if (items == null || items.Count == 0) return;
+                if (items == null || items.Count == 0)
+                {
+                    ItemMouseClick(e, null);
+                    return;
+                }
                 foreach (MsgItem it in Items)
                 {
                     if (it.Visible && it.Contains(e.Location, 0, ScrollBar.Value, out _))
@@ -224,25 +228,29 @@ namespace AntdUI.Chat
                             // 左键点击
                             it.Select = true;
                             OnItemSelected(it);
-                            // 检查是否为双击
-                            if (e.Clicks > 1)
-                            {
-                                OnItemClick(it, e);
-                                OnItemDoubleClick(it, e);
-                                return;
-                            }
                         }
-                        // 触发通用点击事件
-                        OnItemClick(it, e);
+                        ItemMouseClick(e, it);
                         return;
                     }
                 }
+                ItemMouseClick(e, null);
             }
         }
-        protected override void OnMouseUp(MouseEventArgs e)
+
+        void ItemMouseClick(MouseEventArgs e, MsgItem? it)
         {
-            base.OnMouseUp(e);
-            ScrollBar.MouseUp();
+            int mouseClicks = e.Clicks;
+            bool doubleClick = mouseClicks > 1;
+            if (it == null)
+            {
+                if (doubleClick) OnNonItemDoubleClick(e.GenerateMouseEventArgs(mouseClicks));
+                else OnNonItemClick(e.GenerateMouseEventArgs(mouseClicks));
+            }
+            else
+            {
+                if (doubleClick) OnItemDoubleClick(it, e.GenerateMouseEventArgs(mouseClicks));
+                else OnItemClick(it, e.GenerateMouseEventArgs(mouseClicks));
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -321,11 +329,27 @@ namespace AntdUI.Chat
         [Description("项目双击事件"), Category(nameof(CategoryAttribute.Behavior))]
         public event ItemClickEventHandler? ItemDoubleClick;
 
+        /// <summary>
+        /// 空白项目点击事件（包含鼠标信息）
+        /// </summary>
+        [Description("空白项目点击事件"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonItemClick;
+
+        /// <summary>
+        /// 空白项目双击事件
+        /// </summary>
+        [Description("空白项目双击事件"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonItemDoubleClick;
+
         protected virtual void OnItemSelected(MsgItem item) => ItemSelected?.Invoke(this, new MsgItemEventArgs(item));
 
         protected virtual void OnItemClick(MsgItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new MsgItemClickEventArgs(item, e));
 
         protected virtual void OnItemDoubleClick(MsgItem item, MouseEventArgs e) => ItemDoubleClick?.Invoke(this, new MsgItemClickEventArgs(item, e));
+
+        protected virtual void OnNonItemClick(MouseEventArgs e) => NonItemClick?.Invoke(this, e);
+
+        protected virtual void OnNonItemDoubleClick(MouseEventArgs e) => NonItemDoubleClick?.Invoke(this, e);
 
         #endregion
 

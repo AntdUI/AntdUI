@@ -88,6 +88,30 @@ namespace AntdUI
         protected virtual void OnCellClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
+        /// 双击时发生
+        /// </summary>
+        [Description("双击时发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event ClickEventHandler? CellDoubleClick;
+
+        protected virtual void OnCellDoubleClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellDoubleClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
+
+        /// <summary>
+        /// 单击空白时发生
+        /// </summary>
+        [Description("单击空白时发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonCellClick;
+
+        protected virtual void OnNonCellClick(MouseEventArgs e) => NonCellClick?.Invoke(this, e);
+
+        /// <summary>
+        /// 双击空白时发生
+        /// </summary>
+        [Description("双击空白时发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonCellDoubleClick;
+
+        protected virtual void OnNonCellDoubleClick(MouseEventArgs e) => NonCellDoubleClick?.Invoke(this, e);
+
+        /// <summary>
         /// 单击之前发生
         /// </summary>
         [Description("单击之前发生"), Category(nameof(CategoryAttribute.Behavior))]
@@ -135,14 +159,6 @@ namespace AntdUI
         public event ClickButtonEventHandler? CellButtonUp;
 
         protected virtual void OnCellButtonUp(CellLink btn, object record, RowType rowType, int rowIndex, int columnIndex, Column column, Rectangle rect, MouseEventArgs e) => CellButtonUp?.Invoke(this, new TableButtonEventArgs(btn, record, rowType, rowIndex, columnIndex, column, rect, e));
-
-        /// <summary>
-        /// 双击时发生
-        /// </summary>
-        [Description("双击时发生"), Category(nameof(CategoryAttribute.Behavior))]
-        public event ClickEventHandler? CellDoubleClick;
-
-        protected virtual void OnCellDoubleClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e) => CellDoubleClick?.Invoke(this, new TableClickEventArgs(record, rowType, rowIndex, columnIndex, column, rect, e));
 
         /// <summary>
         /// 单元格焦点变更事件

@@ -17,7 +17,7 @@ namespace AntdUI
 
         #region 鼠标按下
 
-        int shift_index = -1;
+        int shift_index = -1, mouseClicks = 1;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -27,6 +27,8 @@ namespace AntdUI
             subForm?.IClose();
             subForm = null;
             CloseTip();
+            mouseClicks = e.Clicks;
+            var doubleClick = mouseClicks > 1;
             if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
             {
                 base.OnMouseDown(e);
@@ -62,8 +64,8 @@ namespace AntdUI
                                     }
                                 }
                             }
-                            cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db, e.Clicks > 1);
-                            if (!cellMouseDown.doubleClick && db.col is ColumnCheck columnCheck && columnCheck.NoTitle)
+                            cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db);
+                            if (!doubleClick && db.col is ColumnCheck columnCheck && columnCheck.NoTitle)
                             {
                                 if (e.Button == MouseButtons.Left && db.cell.CONTAIN_REAL(db.x, db.y))
                                 {
@@ -112,7 +114,7 @@ namespace AntdUI
 
         void MouseDownRow(MouseEventArgs e, RowTemplate it, CELLDB db)
         {
-            cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db, e.Clicks > 1);
+            cellMouseDown = new DownCellTMP<CELL>(it, db.cell, db);
             if (db.cell is Template template)
             {
                 if (e.Button == MouseButtons.Left)
@@ -125,7 +127,7 @@ namespace AntdUI
                             {
                                 if (btn_template.Rect.Contains(db.x, db.y))
                                 {
-                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db, cellMouseDown.doubleClick);
+                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db);
                                     btn_template.ExtraMouseDown = true;
                                     OnCellButtonDown(btn_template, it.RECORD, it.Type, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
                                     return;
@@ -144,7 +146,7 @@ namespace AntdUI
                             {
                                 if (btn_template.Rect.Contains(db.x, db.y))
                                 {
-                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db, cellMouseDown.doubleClick);
+                                    btnMouseDown = new DownCellTMP<CellLink>(it, btn_template, db);
                                     OnCellButtonDown(btn_template, it.RECORD, it.Type, db.i_row, db.i_cel, db.col, RealRect(btn_template.Rect, db.offset_xi, db.offset_y), e);
                                     return;
                                 }
@@ -309,6 +311,7 @@ namespace AntdUI
                             var celdb = CellContains(rows.List, false, e.X, e.Y);
                             if (celdb != null && celdb.mode == CELLDBMode.Summary) Summary_RClick(celdb);
                         }
+                        ItemMouseClick(e);
                         return;
                     }
                     MouseUpRow(rows.List, cellMDown, btnMDown, e);
@@ -348,6 +351,7 @@ namespace AntdUI
             {
                 shift_index = -1;
                 MouseUpBtn(it, btn, e);
+                ItemMouseClick(e);
             }
             else if (it.i_row != db.i_row || it.i_cel != db.i_cel) MouseUpBtn(it, btn, e, db);
             else
@@ -535,18 +539,8 @@ namespace AntdUI
                         }
                     }
                 }
-                bool enterEdit = false;
-                if (it.doubleClick)
-                {
-                    OnCellDoubleClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
-                    if (e.Button == MouseButtons.Left && editmode == TEditMode.DoubleClick) enterEdit = true;
-                }
-                else
-                {
-                    OnCellClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
-                    if (e.Button == MouseButtons.Left && editmode == TEditMode.Click) enterEdit = true;
-                }
-                if (enterEdit)
+                var doubleClick = ItemMouseClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
+                if (e.Button == MouseButtons.Left && editmode == (doubleClick ? TEditMode.DoubleClick : TEditMode.Click))
                 {
                     EditModeClose();
                     int i_row = db.i_row, i_cel = db.i_cel;
@@ -608,15 +602,7 @@ namespace AntdUI
                         if (col.rect_up.Contains(r_x_f, r_y_f) || col.rect_down.Contains(r_x_f, r_y_f)) return false;
                     }
                 }
-                bool enterEdit = false;
-                if (it.doubleClick)
-                {
-                    if (editmode == TEditMode.DoubleClick) enterEdit = true;
-                }
-                else
-                {
-                    if (editmode == TEditMode.Click) enterEdit = true;
-                }
+                bool enterEdit = editmode == (mouseClicks > 1 ? TEditMode.DoubleClick : TEditMode.Click);
                 if (enterEdit && CanEditMode(db.cell)) return false;
             }
             return true;
@@ -1207,11 +1193,28 @@ namespace AntdUI
 
         #endregion
 
+        bool ItemMouseClick(object record, RowType rowType, int rowIndex, int columnIndex, Column? column, Rectangle rect, MouseEventArgs e)
+        {
+            if (mouseClicks > 1)
+            {
+                OnCellDoubleClick(record, rowType, rowIndex, columnIndex, column, rect, e.GenerateMouseEventArgs(mouseClicks));
+                return true;
+            }
+            OnCellClick(record, rowType, rowIndex, columnIndex, column, rect, e.GenerateMouseEventArgs(mouseClicks));
+            return false;
+        }
+
+        void ItemMouseClick(MouseEventArgs e)
+        {
+            if (mouseClicks > 1) OnNonCellDoubleClick(e.GenerateMouseEventArgs(mouseClicks));
+            else OnNonCellClick(e.GenerateMouseEventArgs(mouseClicks));
+        }
+
         DownCellTMP<CELL>? cellMouseDown;
         DownCellTMP<CellLink>? btnMouseDown;
         class DownCellTMP<T>
         {
-            public DownCellTMP(RowTemplate _row, T _cell, CELLDB db, bool _doubleClick)
+            public DownCellTMP(RowTemplate _row, T _cell, CELLDB db)
             {
                 row = _row;
                 cell = _cell;
@@ -1221,9 +1224,7 @@ namespace AntdUI
                 offset_xi = db.offset_xi;
                 offset_y = db.offset_y;
                 col = db.col;
-                doubleClick = _doubleClick;
             }
-            public bool doubleClick { get; set; }
             public T cell { get; set; }
             public RowTemplate row { get; set; }
             public int i_row { get; set; }

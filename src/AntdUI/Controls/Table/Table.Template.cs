@@ -956,7 +956,7 @@ namespace AntdUI
                         g.Fill(Colour.FillTertiary.Get(colorScheme, nameof(Table), PARENT.Name), path_sort);
                     }
                 }
-                g.PaintDragHandle(rect_ico, fore.Color, PARENT.Dpi);
+                g.Svg(SvgDb.IcoTableColumnSort, rect_ico, fore.Color);
             }
 
             #endregion

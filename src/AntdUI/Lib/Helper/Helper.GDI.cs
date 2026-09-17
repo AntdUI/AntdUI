@@ -1239,30 +1239,6 @@ namespace AntdUI
             g.Svg(svg, rect_ico, color);
         }
 
-        /// <summary>
-        /// 绘制拖拽手柄六点指示（2列×3行圆点矩阵）
-        /// </summary>
-        /// <param name="rect">绘制区域，矩阵在其中水平垂直居中</param>
-        /// <param name="color">圆点填充色</param>
-        /// <param name="dpi">DPI 缩放系数</param>
-        internal static void PaintDragHandle(this Canvas g, Rectangle rect, Color color, float dpi)
-        {
-            int dot = (int)(2F * dpi);
-            int gapH = dot, gapV = dot;
-            int mw = 3 * dot, mh = 5 * dot;
-            int mx = rect.X + (rect.Width - mw) / 2, my = rect.Y + (rect.Height - mh) / 2;
-            using (var brush = new SolidBrush(color))
-            {
-                for (int c = 0; c < 2; c++)
-                {
-                    for (int r = 0; r < 3; r++)
-                    {
-                        g.FillEllipse(brush, new Rectangle(mx + c * (dot + gapH), my + r * (dot + gapV), dot, dot));
-                    }
-                }
-            }
-        }
-
         #endregion
 
         #region 阴影/徽标

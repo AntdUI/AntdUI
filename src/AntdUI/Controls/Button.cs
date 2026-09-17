@@ -2151,7 +2151,7 @@ namespace AntdUI
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (clicks > 1) e = new MouseEventArgs(e.Button, clicks, e.X, e.Y, e.Delta);
+            Helper.GenerateMouseEventArgs(ref e, clicks);
             base.OnMouseUp(e);
             if (ExtraMouseDown)
             {

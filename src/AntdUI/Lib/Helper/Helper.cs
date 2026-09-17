@@ -948,6 +948,18 @@ namespace AntdUI
             if (db.HasValue) return Style.Get(db.Value);
             return def;
         }
+
+        internal static MouseEventArgs GenerateMouseEventArgs(this MouseEventArgs e, int clicks)
+        {
+            if (clicks == e.Clicks) return e;
+            else return new MouseEventArgs(e.Button, clicks, e.X, e.Y, e.Delta);
+        }
+
+        internal static void GenerateMouseEventArgs(ref MouseEventArgs e, int clicks)
+        {
+            if (clicks == e.Clicks) return;
+            e = new MouseEventArgs(e.Button, clicks, e.X, e.Y, e.Delta);
+        }
     }
 
     internal class AnchorDock

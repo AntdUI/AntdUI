@@ -759,6 +759,8 @@ namespace AntdUI
         [Description("SelectIndex 属性值更改前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event IntBoolEventHandler? SelectIndexChanging;
 
+        protected virtual bool OnSelectIndexChanging(int i) => SelectIndexChanging?.Invoke(this, new IntEventArgs(i)) ?? true;
+
         /// <summary>
         /// 点击项时发生
         /// </summary>
@@ -766,6 +768,14 @@ namespace AntdUI
         public event SegmentedItemEventHandler? ItemClick;
 
         protected virtual void OnItemClick(SegmentedItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new SegmentedItemEventArgs(item, e));
+
+        /// <summary>
+        /// 空白项目点击事件（包含鼠标信息）
+        /// </summary>
+        [Description("空白项目点击事件"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonItemClick;
+
+        protected virtual void OnNonItemClick(MouseEventArgs e) => NonItemClick?.Invoke(this, e);
 
         bool pauseLayout = false;
         [Browsable(false), Description("暂停布局"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
@@ -1594,20 +1604,22 @@ namespace AntdUI
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
-            if (items == null || items.Count == 0) return;
+            if (items == null || items.Count == 0)
+            {
+                OnNonItemClick(e);
+                return;
+            }
             for (int i = 0; i < items.Count; i++)
             {
                 var it = items[i];
                 if (it != null && it.Enabled && it.Rect.Contains(e.X, e.Y))
                 {
-                    bool pass = false;
-                    if (SelectIndexChanging == null) pass = true;
-                    else if (SelectIndexChanging(this, new IntEventArgs(i))) pass = true;
-                    if (pass) SelectIndex = i;
+                    if (OnSelectIndexChanging(i)) SelectIndex = i;
                     OnItemClick(it, e);
                     return;
                 }
             }
+            OnNonItemClick(e);
         }
 
         #endregion

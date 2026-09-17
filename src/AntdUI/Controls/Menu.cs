@@ -423,7 +423,7 @@ namespace AntdUI
                 if (selectItem == value) return;
                 selectItem = value;
                 if (value == null) return;
-                SelectChanged?.Invoke(this, new MenuSelectEventArgs(value));
+                OnSelectChanged(value);
             }
         }
 
@@ -439,7 +439,7 @@ namespace AntdUI
             var it1 = items[i1];
             it1.Select = true;
             SelectItem = it1;
-            ItemClick?.Invoke(this, new MenuItemEventArgs(it1, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+            OnItemClick(it1, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
             if (focus) Focus(it1);
             Invalidate();
         }
@@ -462,7 +462,7 @@ namespace AntdUI
             var it2 = it1.Sub[i2];
             it1.Select = it2.Select = true;
             SelectItem = it2;
-            ItemClick?.Invoke(this, new MenuItemEventArgs(it2, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+            OnItemClick(it2, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
             if (focus) Focus(it2);
             Invalidate();
         }
@@ -490,7 +490,7 @@ namespace AntdUI
             var it3 = it2.Sub[i3];
             it1.Select = it2.Select = it3.Select = true;
             SelectItem = it3;
-            ItemClick?.Invoke(this, new MenuItemEventArgs(it3, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+            OnItemClick(it3, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
             if (focus) Focus(it3);
             Invalidate();
         }
@@ -1367,11 +1367,11 @@ namespace AntdUI
         #region 鼠标
 
         MenuItem? mDown;
-        int mClicks = 0;
+        int mouseClicks = 0;
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            mClicks = e.Clicks;
+            mouseClicks = e.Clicks;
             if (FocusMode != TFocusMode.None) Focus();
             CloseTip();
             CloseDropDown();
@@ -1397,12 +1397,17 @@ namespace AntdUI
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
             if (ScrollBar.MouseUp() && OnTouchUp())
             {
-                if (items == null || items.Count == 0 || mDown == null) return;
+                if (items == null || items.Count == 0 || mDown == null)
+                {
+                    OnNonItemClick(e);
+                    return;
+                }
                 foreach (var it in items)
                 {
                     var list = new List<MenuItem> { it };
                     if (IMouseUp(items, it, list, e.X, e.Y, mDown, e)) return;
                 }
+                OnNonItemClick(e);
             }
         }
 
@@ -1439,7 +1444,7 @@ namespace AntdUI
                     {
                         if (btn == null)
                         {
-                            if (IsCanChang(item))
+                            if (OnSelectChanging(item))
                             {
                                 if (can)
                                 {
@@ -1459,12 +1464,12 @@ namespace AntdUI
                                     }
                                     item.Select = true;
                                     SelectItem = item;
-                                    ItemClick?.Invoke(this, new MenuItemEventArgs(item, e, mClicks));
+                                    OnItemClick(item, e);
                                     Invalidate();
                                 }
                             }
                         }
-                        else CustomButtonClick?.Invoke(this, new MenuCustomButtonEventArgs(btn, item));
+                        else OnCustomButtonClick(btn, item);
                     }
                     return true;
                 }
@@ -2020,7 +2025,7 @@ namespace AntdUI
                 {
                     it.Select = true;
                     tmpAM = true;
-                    ItemClick?.Invoke(this, new MenuItemEventArgs(it, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                    OnItemClick(it, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                     SelectItem = it;
                     if (SelectEx(it.ParentItem) > 0) ChangeList(true);
                     tmpAM = false;
@@ -2131,11 +2136,23 @@ namespace AntdUI
         [Description("Select 属性值更改时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event SelectEventHandler? SelectChanged;
 
+        protected virtual void OnSelectChanged(MenuItem item) => SelectChanged?.Invoke(this, new MenuSelectEventArgs(item));
+
         /// <summary>
         /// 点击项时发生
         /// </summary>
         [Description("点击项时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event MenuItemEventHandler? ItemClick;
+
+        protected virtual void OnItemClick(MenuItem item, MouseEventArgs e) => ItemClick?.Invoke(this, new MenuItemEventArgs(item, e.GenerateMouseEventArgs(mouseClicks)));
+
+        /// <summary>
+        /// 空白项目点击事件（包含鼠标信息）
+        /// </summary>
+        [Description("空白项目点击事件"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MouseEventHandler? NonItemClick;
+
+        protected virtual void OnNonItemClick(MouseEventArgs e) => NonItemClick?.Invoke(this, e.GenerateMouseEventArgs(mouseClicks));
 
         /// <summary>
         /// Select 属性值更改前发生
@@ -2143,19 +2160,15 @@ namespace AntdUI
         [Description("Select 属性值更改前发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event SelectBoolEventHandler? SelectChanging;
 
+        protected virtual bool OnSelectChanging(MenuItem it) => SelectChanging?.Invoke(this, new MenuSelectEventArgs(it)) ?? true;
+
         /// <summary>
         /// 自定义按钮点击时发生
         /// </summary>
         [Description("自定义按钮点击时发生"), Category(nameof(CategoryAttribute.Behavior))]
         public event MenuCustomButtonEventHandler? CustomButtonClick;
 
-        bool IsCanChang(MenuItem it)
-        {
-            bool pass = false;
-            if (SelectChanging == null) pass = true;
-            else if (SelectChanging(this, new MenuSelectEventArgs(it))) pass = true;
-            return pass;
-        }
+        protected virtual void OnCustomButtonClick(MenuButton btn, MenuItem item) => CustomButtonClick?.Invoke(this, new MenuCustomButtonEventArgs(btn, item));
 
         #endregion
 
@@ -2183,7 +2196,7 @@ namespace AntdUI
             bool can = item.CanExpand;
             if (item.Enabled && item == value)
             {
-                if (IsCanChang(item))
+                if (OnSelectChanging(item))
                 {
                     if (can) item.Expand = !item.Expand;
                     else
@@ -2195,7 +2208,7 @@ namespace AntdUI
                         }
                         item.Select = true;
                         SelectItem = item;
-                        ItemClick?.Invoke(this, new MenuItemEventArgs(item, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0)));
+                        OnItemClick(item, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
                         Invalidate();
                     }
                 }
