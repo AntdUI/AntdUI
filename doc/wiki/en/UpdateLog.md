@@ -1,5 +1,14 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.12` 2026-09-28
+
+- ➕ Modal OnBtns adapt to asynchronous
+- ✍️ TimerParker Value supports null values
+- ✍️ Table respect MinWidth and MaxWidth with fill columns
+- ✍️ Split Panel1, Panel2 enable double buffering to avoid flickering
+- ✍️ Transfer cannot drag sort
+- ✍️ Tree drag and drop insertion gap: Single gap for same level nodes, split into upper and lower gaps for different level nodes (can be placed after child nodes and before the main node)
+
 ### `2.4.11` 2026-09-20
 
 - ➕ Tree node drag and drop (Draggable / Drop / DropDone / TreeDropMode)

@@ -762,13 +762,28 @@ namespace AntdUI
         }
         void ScrollTime(List<CalendarT> calendar_time, DateTime d)
         {
-            CalendarT? find_h = calendar_time.Find(a => a.rx == 0 && a.t == d.Hour),
-                find_m = calendar_time.Find(a => a.rx == 1 && a.t == d.Minute),
-                find_s = calendar_time.Find(a => a.rx == 2 && a.t == d.Second);
-
+            CalendarT? find_h = null, find_m = null, find_s = null;
+            foreach (var it in calendar_time)
+            {
+                switch (it.rx)
+                {
+                    case 0:
+                        if (it.t == d.Hour) find_h = it;
+                        break;
+                    case 1:
+                        if (it.t == d.Minute) find_m = it;
+                        break;
+                    case 2:
+                        if (it.t == d.Second) find_s = it;
+                        break;
+                }
+            }
+            ScrollH.PausePrint = ScrollM.PausePrint = ScrollS.PausePrint = true;
             if (find_h != null) ScrollH.Value = find_h.rect.Y;
             if (find_m != null) ScrollM.Value = find_m.rect.Y;
             if (find_s != null) ScrollS.Value = find_s.rect.Y;
+            ScrollH.PausePrint = ScrollM.PausePrint = ScrollS.PausePrint = false;
+            Print();
         }
 
         #endregion

@@ -29,7 +29,7 @@ namespace AntdUI
             ShowM = control.Format.Contains("m");
             ShowS = control.Format.Contains("s");
             action = _action;
-            SelDate = date ?? TimeSpan.MinValue;
+            SelDate = date;
 
             ScrollH = new ScrollBar(this, control.ColorScheme);
             ScrollM = new ScrollBar(this, control.ColorScheme);
@@ -77,18 +77,36 @@ namespace AntdUI
 
         void ScrollTime()
         {
-            CalendarT? find_h = calendar_time.Find(a => a.rx == 0 && a.t == SelDate.Hours),
-                find_m = calendar_time.Find(a => a.rx == 1 && a.t == SelDate.Minutes),
-                find_s = calendar_time.Find(a => a.rx == 2 && a.t == SelDate.Seconds);
-
-            if (find_h != null) ScrollH.Value = find_h.rect.Y;
-            if (find_m != null) ScrollM.Value = find_m.rect.Y;
-            if (find_s != null) ScrollS.Value = find_s.rect.Y;
+            if (SelDate.HasValue)
+            {
+                CalendarT? find_h = null, find_m = null, find_s = null;
+                foreach (var it in calendar_time)
+                {
+                    switch (it.rx)
+                    {
+                        case 0:
+                            if (it.t == SelDate.Value.Hours) find_h = it;
+                            break;
+                        case 1:
+                            if (it.t == SelDate.Value.Minutes) find_m = it;
+                            break;
+                        case 2:
+                            if (it.t == SelDate.Value.Seconds) find_s = it;
+                            break;
+                    }
+                }
+                ScrollH.PausePrint = ScrollM.PausePrint = ScrollS.PausePrint = true;
+                if (find_h != null) ScrollH.Value = find_h.rect.Y;
+                if (find_m != null) ScrollM.Value = find_m.rect.Y;
+                if (find_s != null) ScrollS.Value = find_s.rect.Y;
+                ScrollH.PausePrint = ScrollM.PausePrint = ScrollS.PausePrint = false;
+                Print();
+            }
         }
 
         #region 属性
 
-        internal TimeSpan SelDate;
+        internal TimeSpan? SelDate;
 
         #region 参数
 
@@ -167,17 +185,20 @@ namespace AntdUI
                     }
                     using (var path = it.rect_read.RoundPath(Radius))
                     {
-                        switch (it.rx)
+                        if (SelDate.HasValue)
                         {
-                            case 0:
-                                if (it.t == SelDate.Hours) g.Fill(brush_bg, path);
-                                break;
-                            case 1:
-                                if (it.t == SelDate.Minutes) g.Fill(brush_bg, path);
-                                break;
-                            case 2:
-                                if (it.t == SelDate.Seconds) g.Fill(brush_bg, path);
-                                break;
+                            switch (it.rx)
+                            {
+                                case 0:
+                                    if (it.t == SelDate.Value.Hours) g.Fill(brush_bg, path);
+                                    break;
+                                case 1:
+                                    if (it.t == SelDate.Value.Minutes) g.Fill(brush_bg, path);
+                                    break;
+                                case 2:
+                                    if (it.t == SelDate.Value.Seconds) g.Fill(brush_bg, path);
+                                    break;
+                            }
                         }
                         if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, name, cname), path);
                         g.String(it.v, Font, brush_fore, it.rect_read);
@@ -335,15 +356,18 @@ namespace AntdUI
                     {
                         var now = DateTime.Now;
                         SelDate = new TimeSpan(now.Hour, now.Minute, now.Second);
-                        action(SelDate);
+                        action(SelDate.Value);
                         ScrollTime();
                         Print();
                         return;
                     }
                     else if (rect_buttonok.Contains(x, y))
                     {
-                        action(SelDate);
-                        IClose();
+                        if (SelDate.HasValue)
+                        {
+                            action(SelDate.Value);
+                            IClose();
+                        }
                         return;
                     }
 
@@ -354,7 +378,8 @@ namespace AntdUI
                             case 1:
                                 if (it.Contains(x, y + ScrollM.Value))
                                 {
-                                    SelDate = new TimeSpan(SelDate.Hours, it.t, SelDate.Seconds);
+                                    if (SelDate.HasValue) SelDate = new TimeSpan(SelDate.Value.Hours, it.t, SelDate.Value.Seconds);
+                                    else SelDate = new TimeSpan(0, it.t, 0);
                                     Print();
                                     if (ValueTimeHorizontal) ScrollTime();
                                     return;
@@ -363,7 +388,8 @@ namespace AntdUI
                             case 2:
                                 if (it.Contains(x, y + ScrollS.Value))
                                 {
-                                    SelDate = new TimeSpan(SelDate.Hours, SelDate.Minutes, it.t);
+                                    if (SelDate.HasValue) SelDate = new TimeSpan(SelDate.Value.Hours, SelDate.Value.Minutes, it.t);
+                                    else SelDate = new TimeSpan(0, 0, it.t);
                                     Print();
                                     if (ValueTimeHorizontal) ScrollTime();
                                     return;
@@ -373,7 +399,8 @@ namespace AntdUI
                             default:
                                 if (it.Contains(x, y + ScrollH.Value))
                                 {
-                                    SelDate = new TimeSpan(it.t, SelDate.Minutes, SelDate.Seconds);
+                                    if (SelDate.HasValue) SelDate = new TimeSpan(it.t, SelDate.Value.Minutes, SelDate.Value.Seconds);
+                                    else SelDate = new TimeSpan(it.t, 0, 0);
                                     Print();
                                     if (ValueTimeHorizontal) ScrollTime();
                                     return;

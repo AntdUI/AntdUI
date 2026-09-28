@@ -235,7 +235,7 @@ namespace AntdUI
             {
                 // 分割行定义和全局行高
                 var spanParts = span.Split(new[] { '-' }, 2, StringSplitOptions.None);
-                string rowDefinitions = spanParts[0], globalRowHeights = spanParts.Length > 1 ? spanParts[1] : "";
+                string rowDefinitions = spanParts[0], globalRowHeights = spanParts.Length > 1 ? spanParts[1] : string.Empty;
 
                 // 解析所有行定义
                 var rowParts = rowDefinitions.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);

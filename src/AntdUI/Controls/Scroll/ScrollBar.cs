@@ -27,6 +27,7 @@ namespace AntdUI
             EnabledY = true;
             Invalidate = rect =>
             {
+                if (PausePrint) return;
                 if (rect.HasValue) control.Invalidate(rect.Value);
                 else control.Invalidate();
             };
@@ -36,7 +37,11 @@ namespace AntdUI
         {
             Dpi = control.Dpi;
             ChangeSize = () => control.IOnSizeChanged();
-            Invalidate = rect => control.IOnSizeChanged();
+            Invalidate = rect =>
+            {
+                if (PausePrint) return;
+                control.IOnSizeChanged();
+            };
             EnabledX = enabledX;
             EnabledY = enabledY;
             Init(control);
@@ -45,7 +50,11 @@ namespace AntdUI
         {
             Dpi = control.Dpi;
             ChangeSize = () => control.IOnSizeChanged();
-            Invalidate = rect => control.IOnSizeChanged();
+            Invalidate = rect =>
+            {
+                if (PausePrint) return;
+                control.IOnSizeChanged();
+            };
             if (control.Vertical) EnabledY = true;
             else EnabledX = true;
             Init(control);
@@ -55,7 +64,11 @@ namespace AntdUI
             Dpi = control.Dpi;
             Back = false;
             ChangeSize = () => control.Print();
-            Invalidate = rect => control.Print();
+            Invalidate = rect =>
+            {
+                if (PausePrint) return;
+                control.Print();
+            };
             EnabledY = true;
             EnabledX = false;
             Init(control);
@@ -71,6 +84,7 @@ namespace AntdUI
             RB = radiusy;
             Invalidate = rect =>
             {
+                if (PausePrint) return;
                 if (rect.HasValue) control.Invalidate(rect.Value);
                 else control.Invalidate();
             };
@@ -109,6 +123,11 @@ namespace AntdUI
 
         public int SIZE_MINIY { get; set; } = 26;
         public int SIZE_MINIX { get; set; } = 26;
+
+        /// <summary>
+        /// 是否暂停刷新
+        /// </summary>
+        public bool PausePrint { get; set; }
 
         #endregion
 

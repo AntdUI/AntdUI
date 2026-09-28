@@ -1,5 +1,14 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.12` 2026-09-28
+
+- ➕ Modal OnBtns 适配异步
+- ✍️ TimerPicker Value支持空值
+- ✍️ Table respect MinWidth and MaxWidth with fill columns
+- ✍️ Splitter Panel1,Panel2 启用双缓冲以避免闪烁
+- ✍️ Transfer 无法拖拽排序
+- ✍️ Tree 拖拽插入间隙：同级节点单间隙，不同级节点拆为上下两间隙（子节点后可放入、主节点前可放入）
+
 ### `2.4.11` 2026-09-20
 
 - ➕ Tree 节点拖拽（Draggable / Drop / DropDone / TreeDropMode）

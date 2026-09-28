@@ -40,7 +40,7 @@ namespace AntdUI
             {
                 if (dateFormat == value) return;
                 dateFormat = value;
-                Text = _value.HasValue ? _value.Value.ToString(dateFormat) : "";
+                SetText(_value);
                 OnPropertyChanged(nameof(Format));
             }
         }
@@ -63,7 +63,7 @@ namespace AntdUI
             }
         }
 
-        void SetText(DateTime? value) => Text = value.HasValue ? value.Value.ToString(Format) : "";
+        void SetText(DateTime? value) => Text = value.HasValue ? value.Value.ToString(Format) : string.Empty;
 
         /// <summary>
         /// 最小日期
