@@ -7,3 +7,6 @@
 
 # 组织 Using
 file_header_template = Copyright (C) Tom <17379620>. All Rights Reserved.\nAntdUI WinForm Library | Licensed under Apache-2.0 License\nGitee: https://gitee.com/AntdUI/AntdUI\nGitHub: https://github.com/AntdUI/AntdUI\nGitCode: https://gitcode.com/AntdUI/AntdUI
+
+# Use block-scoped namespaces instead of file-scoped namespaces
+csharp_style_namespace_declarations = block_scoped:suggestion

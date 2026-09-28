@@ -4,6 +4,7 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using AntdUI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,27 +24,27 @@ namespace Demo.Controls
             #region Table
 
             table1.Columns = new AntdUI.ColumnCollection {
-                new AntdUI.ColumnCheck("check").SetFixed(),
-                new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
-                new AntdUI.ColumnSwitch("enable", "启用", AntdUI.ColumnAlign.Center)
-                {
-                    LocalizationTitle ="Table.Column.{id}",
-                    Call = (value, record, i_row, i_col) => {
-                        System.Threading.Thread.Sleep(2000);
-                        return value;
-                    }
-                },
-                new AntdUI.ColumnSelect("hobby", "爱好").SetItems(GetEHobbies()).SetAlign().SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column.").SetSummaryItem(AntdUI.TSummaryType.AVG),
-                new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetDisplayFormat("yyyy-MM-dd").SetSummaryItem(AntdUI.TSummaryType.Custom,"20后 {0:0} 位"),
-                new AntdUI.Column("tag", "Tag"),
-                new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
-                new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
-            };
+            new AntdUI.ColumnCheck("check").SetFixed(),
+            new AntdUI.Column("name", "姓名").SetFixed().SetLocalizationTitleID("Table.Column."),
+            new AntdUI.ColumnCheck("checkTitle", "不全选标题").SetColAlign().SetLocalizationTitleID("Table.Column."),
+            new AntdUI.ColumnRadio("radio", "单选").SetLocalizationTitleID("Table.Column."),
+            new AntdUI.Column("online", "状态", AntdUI.ColumnAlign.Center).SetLocalizationTitleID("Table.Column."),
+            new AntdUI.ColumnSwitch("enable", "启用", AntdUI.ColumnAlign.Center)
+            {
+                LocalizationTitle ="Table.Column.{id}",
+                Call = (value, record, i_row, i_col) => {
+                    System.Threading.Thread.Sleep(2000);
+                    return value;
+                }
+            },
+            new AntdUI.ColumnSelect("hobby", "爱好").SetItems(GetEHobbies()).SetAlign().SetLocalizationTitleID("Table.Column."),
+            new AntdUI.Column("age", "年龄").SetAlign().SetLocalizationTitleID("Table.Column.").SetSummaryItem(AntdUI.TSummaryType.AVG),
+            new AntdUI.Column("address", "住址").SetLocalizationTitleID("Table.Column."),
+            new AntdUI.Column("date", "日期").SetLocalizationTitleID("Table.Column.").SetDisplayFormat("yyyy-MM-dd").SetSummaryItem(AntdUI.TSummaryType.Custom,"20后 {0:0} 位"),
+            new AntdUI.Column("tag", "Tag"),
+            new AntdUI.Column("imgs", "图片").SetLocalizationTitleID("Table.Column."),
+            new AntdUI.Column("btns", "操作").SetFixed().SetWidth("auto").SetLocalizationTitleID("Table.Column."),
+        };
 
             table1.DataSource = GetPageData(pagination1.Current, pagination1.PageSize);
             pagination1.PageSizeOptions = new int[] { 10, 20, 30, 50, 100 };
@@ -275,11 +276,11 @@ namespace Demo.Controls
             }
             var dataList = (IEnumerable<TestClass>)table1.DataSource;
             table1.Summary = new Dictionary<string, object>
-            {
-                { "age", dataList.Any() ?(int)dataList.Average(x => x.age) : 0},
-                { "address", FormatSummaryStr(dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length),"address","地址")} ,
-                { "hobby", FormatSummaryStr(dataList.Select(x => x.hobby).Distinct().Count(),"hobby","爱好") }
-            };
+        {
+            { "age", dataList.Any() ?(int)dataList.Average(x => x.age) : 0},
+            { "address", FormatSummaryStr(dataList.Sum(x =>string.IsNullOrEmpty(x.address) ? 0 : x.address.Split('\n').Length),"address","地址")} ,
+            { "hobby", FormatSummaryStr(dataList.Select(x => x.hobby).Distinct().Count(),"hobby","爱好") }
+        };
         }
 
         string FormatSummaryStr(int count, string id, string text) => string.Format(AntdUI.Localization.Get("Table.Data.FormatSummary", "共{0}种{1}"), count, AntdUI.Localization.Get("Table.Column." + id, text));
@@ -342,9 +343,9 @@ namespace Demo.Controls
                 else
                 {
                     if (AntdUI.Modal.open(new AntdUI.Modal.Config(form, "是否删除", new AntdUI.Modal.TextLine[] {
-                        new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
-                        new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
-                    }, AntdUI.TType.Error)
+                    new AntdUI.Modal.TextLine(data.name,AntdUI.Style.Db.Primary),
+                    new AntdUI.Modal.TextLine(data.address,6,AntdUI.Style.Db.TextSecondary)
+                }, AntdUI.TType.Error)
                     {
                         CancelText = null,
                         OkType = AntdUI.TTypeMini.Error,
@@ -601,54 +602,54 @@ namespace Demo.Controls
                 if (start == 1)
                 {
                     _imgs = new AntdUI.CellImage[] {
-                        new AntdUI.CellImage(Properties.Resources.img1).SetBorder(Color.BlueViolet, 4),
-                        new AntdUI.CellImage(Properties.Resources.bg1)
-                    };
+                    new AntdUI.CellImage(Properties.Resources.img1).SetBorder(Color.BlueViolet, 4),
+                    new AntdUI.CellImage(Properties.Resources.bg1)
+                };
                 }
 
                 if (start == 1)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("id", null, AntdUI.TTypeMini.Primary).SetIcon("SearchOutlined").SetIconHover(Properties.Resources.icon_like),
-                        new AntdUI.CellButton("id", null, AntdUI.TTypeMini.Warn).SetIcon("ArrowDownOutlined"),
-                        new AntdUI.CellButton("id", null, AntdUI.TTypeMini.Error).SetArrow()
-                    };
+                    new AntdUI.CellButton("id", null, AntdUI.TTypeMini.Primary).SetIcon("SearchOutlined").SetIconHover(Properties.Resources.icon_like),
+                    new AntdUI.CellButton("id", null, AntdUI.TTypeMini.Warn).SetIcon("ArrowDownOutlined"),
+                    new AntdUI.CellButton("id", null, AntdUI.TTypeMini.Error).SetArrow()
+                };
                 }
                 else if (start == 2)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("id").SetBorder().SetIcon("SearchOutlined").SetIconHover(Properties.Resources.icon_like),
-                        new AntdUI.CellButton("id").SetBorder().SetIcon("ArrowDownOutlined"),
-                        new AntdUI.CellButton("id").SetBorder().SetArrow()
-                    };
+                    new AntdUI.CellButton("id").SetBorder().SetIcon("SearchOutlined").SetIconHover(Properties.Resources.icon_like),
+                    new AntdUI.CellButton("id").SetBorder().SetIcon("ArrowDownOutlined"),
+                    new AntdUI.CellButton("id").SetBorder().SetArrow()
+                };
                 }
                 else if (start == 3)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("id").SetBorder().SetGhost().SetIcon("SearchOutlined").SetIconHover(Properties.Resources.icon_like),
-                        new AntdUI.CellButton("id").SetBorder().SetGhost().SetIcon("ArrowDownOutlined"),
-                        new AntdUI.CellButton("id").SetBorder().SetGhost().SetArrow()
-                    };
+                    new AntdUI.CellButton("id").SetBorder().SetGhost().SetIcon("SearchOutlined").SetIconHover(Properties.Resources.icon_like),
+                    new AntdUI.CellButton("id").SetBorder().SetGhost().SetIcon("ArrowDownOutlined"),
+                    new AntdUI.CellButton("id").SetBorder().SetGhost().SetArrow()
+                };
                 }
                 else if (start == 4)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("edit", "Edit", AntdUI.TTypeMini.Primary),
-                        new AntdUI.CellButton("delete", "Delete", AntdUI.TTypeMini.Error)
-                    };
+                    new AntdUI.CellButton("edit", "Edit", AntdUI.TTypeMini.Primary),
+                    new AntdUI.CellButton("delete", "Delete", AntdUI.TTypeMini.Error)
+                };
                 }
                 else if (start == 5)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("edit", "Edit", AntdUI.TTypeMini.Primary).SetBorder().SetGhost(),
-                        new AntdUI.CellButton("delete", "Delete", AntdUI.TTypeMini.Error).SetBorder().SetGhost()
-                    };
+                    new AntdUI.CellButton("edit", "Edit", AntdUI.TTypeMini.Primary).SetBorder().SetGhost(),
+                    new AntdUI.CellButton("delete", "Delete", AntdUI.TTypeMini.Error).SetBorder().SetGhost()
+                };
                 }
                 else if (start == 6)
                 {
                     _btns = new AntdUI.CellLink[] {
-                        new AntdUI.CellButton("download", "Download", AntdUI.TTypeMini.Success).SetIcon("DownloadOutlined")
-                    };
+                    new AntdUI.CellButton("download", "Download", AntdUI.TTypeMini.Success).SetIcon("DownloadOutlined")
+                };
                 }
                 else _btns = new AntdUI.CellLink[] { new AntdUI.CellLink("delete", "Delete") };
             }
@@ -825,6 +826,280 @@ namespace Demo.Controls
               new AntdUI.SelectItem((int)EHobbies.社交).SetIcon("CommentOutlined").SetText("社交","Table.Data.Social"),
               new AntdUI.SelectItem((int)EHobbies.运动).SetIcon("DribbbleOutlined").SetText("运动","Table.Data.Sports")
             };
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            var view = new TableWidthTestView();
+            var config = new AntdUI.Modal.Config(form, "", view)
+            {
+                Resizable = true,
+                CloseIcon = false,
+            };
+
+            view.CloseClick += (s, args) =>
+            {
+                config.Close();
+            };
+            AntdUI.Modal.open(config);
+        }
+
+        public sealed class TableWidthTestView : UserControl
+        {
+            public EventHandler CloseClick;
+
+            public class ClickThroughLabel : AntdUI.Label
+            {
+                private const int WM_NCHITTEST = 0x0084;
+                private const int HTTRANSPARENT = -1;
+
+                protected override void WndProc(ref System.Windows.Forms.Message m)
+                {
+                    if (m.Msg == WM_NCHITTEST)
+                    {
+                        m.Result = (IntPtr)HTTRANSPARENT;
+                        return;
+                    }
+
+                    base.WndProc(ref m);
+                }
+            }
+
+            public TableWidthTestView()
+            {
+                Dock = DockStyle.Fill;
+                Size = new Size(750, 800);
+
+                var pageHeader = new AntdUI.PageHeader
+                {
+                    Dock = DockStyle.Top,
+                    Size = new Size(750, 50),
+                };
+
+                var closeButton = new AntdUI.Button
+                {
+                    IconSvg = "CloseOutlined",
+                    Dock = DockStyle.Right,
+                    Size = new Size(100, 40),
+                    Location = new Point(650, 5),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                    Type = TTypeMini.Error,
+                };
+
+                closeButton.Click += (sender, e) =>
+                {
+                    CloseClick?.Invoke(this, EventArgs.Empty);
+                };
+
+                var title = new ClickThroughLabel
+                {
+                    Text = "Table Width Test (Double click to Maximize/Restore)",
+                    Font = new Font(SystemFonts.DefaultFont.FontFamily, 12F, FontStyle.Bold),
+                    Size = new Size(600, 40),
+                    Location = new Point(10, 5),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left,
+                };
+
+                pageHeader.Controls.Add(title);
+                pageHeader.Controls.Add(closeButton);
+
+                var container = new StackPanel
+                {
+                    Vertical = true,
+                    Dock = DockStyle.Fill,
+                    Gap = 10,
+                    Padding = new Padding(10),
+                    AutoScroll = true,
+                };
+
+                container.SuspendLayout();
+
+                container.Controls.Add(CreateTestSection(
+                    "7. Percentage + Fill",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("20%"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("fill")
+                            .SetMinWidth("300"),
+
+                        new Column(nameof(TableWidthTestRow.Supplier), "SUPPLIER")
+                            .SetWidth("25%")
+                            .SetMinWidth("150")
+                            .SetMaxWidth("350"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.Controls.Add(CreateTestSection(
+                    "6. Multiple Fill + MinWidth / MaxWidth",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("fill")
+                            .SetMinWidth("400")
+                            .SetMaxWidth("700"),
+
+                        new Column(nameof(TableWidthTestRow.Supplier), "SUPPLIER")
+                            .SetWidth("fill")
+                            .SetMinWidth("150")
+                            .SetMaxWidth("500"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.Controls.Add(CreateTestSection(
+                    "5. Multiple Fill",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("fill"),
+
+                        new Column(nameof(TableWidthTestRow.Supplier), "SUPPLIER")
+                            .SetWidth("fill"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.Controls.Add(CreateTestSection(
+                    "4. Single Fill + MinWidth / MaxWidth",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("fill")
+                            .SetMinWidth("400")
+                            .SetMaxWidth("800"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.Controls.Add(CreateTestSection(
+                    "3. Single Fill",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("fill"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.Controls.Add(CreateTestSection(
+                    "2. Auto Width + MinWidth / MaxWidth",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("auto")
+                            .SetMinWidth("400")
+                            .SetMaxWidth("600"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.Controls.Add(CreateTestSection(
+                    "1. Auto Width",
+                    CreateTable(
+                        new Column(nameof(TableWidthTestRow.Code), "CODE")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Name), "NAME")
+                            .SetWidth("auto"),
+
+                        new Column(nameof(TableWidthTestRow.Unit), "UNIT")
+                            .SetWidth("auto"))));
+
+                container.ResumeLayout();
+                Controls.Add(pageHeader);
+                Controls.Add(container);
+            }
+
+            private static Control CreateTestSection(string title, AntdUI.Table table)
+            {
+                var section = new StackPanel
+                {
+                    Vertical = true,
+                    Height = 230,
+                    Gap = 5,
+                };
+
+                var titleLabel = new AntdUI.Label
+                {
+                    Text = title,
+                    Height = 30,
+                    Font = new Font(SystemFonts.DefaultFont.FontFamily, 10F, FontStyle.Bold),
+                };
+
+                table.Height = 190;
+
+                section.Controls.Add(table);
+                section.Controls.Add(titleLabel);
+
+                return section;
+            }
+
+            private static AntdUI.Table CreateTable(params Column[] columns)
+            {
+                return new AntdUI.Table
+                {
+                    Dock = DockStyle.Top,
+                    Height = 190,
+                    Columns = new ColumnCollection(columns),
+                    DataSource = CreateTestData(),
+                };
+            }
+
+            private static List<TableWidthTestRow> CreateTestData()
+            {
+                return new List<TableWidthTestRow>
+                {
+                    new()
+                    {
+                        Code = "ITEM001",
+                        Name = "Wireless Mouse",
+                        Supplier = "Supplier A",
+                        Unit = "PCS",
+                    },
+                    new()
+                    {
+                        Code = "ITEM002",
+                        Name = "Mechanical RGB Keyboard",
+                        Supplier = "Technology Nusantara",
+                        Unit = "PCS",
+                    },
+                    new()
+                    {
+                        Code = "ITEM003",
+                        Name = "24 Inch Full HD IPS LED Monitor",
+                        Supplier = "Electronics Indonesia",
+                        Unit = "UNIT",
+                    },
+                    new()
+                    {
+                        Code = "ITEM004",
+                        Name = "80mm High Speed Bluetooth USB Thermal Printer",
+                        Supplier = "POS Equipment Distributor",
+                        Unit = "UNIT",
+                    },
+                };
+            }
+
+            private sealed class TableWidthTestRow
+            {
+                public string Code { get; set; } = string.Empty;
+                public string Name { get; set; } = string.Empty;
+                public string Supplier { get; set; } = string.Empty;
+                public string Unit { get; set; } = string.Empty;
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Demo.Controls
         private void InitializeComponent()
         {
             header1 = new AntdUI.PageHeader();
+            button1 = new AntdUI.Button();
             pagination1 = new AntdUI.Pagination();
             table1 = new AntdUI.Table();
             panel1 = new System.Windows.Forms.Panel();
@@ -48,11 +49,13 @@ namespace Demo.Controls
             checkRowsDragSort = new AntdUI.Checkbox();
             checkColumnDragSort = new AntdUI.Checkbox();
             checkFixedHeader = new AntdUI.Checkbox();
+            header1.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // header1
             // 
+            header1.Controls.Add(button1);
             header1.Description = "展示行列数据。";
             header1.Dock = DockStyle.Top;
             header1.Font = new Font("Microsoft YaHei UI", 12F);
@@ -65,6 +68,17 @@ namespace Demo.Controls
             header1.TabIndex = 0;
             header1.Text = "Table 表格";
             header1.UseTitleFont = true;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.BorderWidth = 2F;
+            button1.Location = new Point(1085, 21);
+            button1.Name = "button1";
+            button1.Size = new Size(212, 40);
+            button1.TabIndex = 2;
+            button1.Text = "Test Column Width";
+            button1.Click += Button1_Click;
             // 
             // pagination1
             // 
@@ -142,6 +156,7 @@ namespace Demo.Controls
             // 
             checkboxFocusNavigation.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkboxFocusNavigation.Checked = true;
+            checkboxFocusNavigation.CheckState = CheckState.Checked;
             checkboxFocusNavigation.Dock = DockStyle.Left;
             checkboxFocusNavigation.LocalizationText = "Table.{id}";
             checkboxFocusNavigation.Location = new Point(1491, 0);
@@ -246,6 +261,7 @@ namespace Demo.Controls
             // 
             checkVisibleHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkVisibleHeader.Checked = true;
+            checkVisibleHeader.CheckState = CheckState.Checked;
             checkVisibleHeader.Dock = DockStyle.Left;
             checkVisibleHeader.LocalizationText = "Table.{id}";
             checkVisibleHeader.Location = new Point(694, 0);
@@ -331,6 +347,7 @@ namespace Demo.Controls
             // 
             checkFixedHeader.AutoSizeMode = AntdUI.TAutoSize.Width;
             checkFixedHeader.Checked = true;
+            checkFixedHeader.CheckState = CheckState.Checked;
             checkFixedHeader.Dock = DockStyle.Left;
             checkFixedHeader.LocalizationText = "Table.{id}";
             checkFixedHeader.Location = new Point(0, 0);
@@ -349,6 +366,7 @@ namespace Demo.Controls
             Font = new Font("Microsoft YaHei UI", 12F);
             Name = "Table";
             Size = new Size(1300, 676);
+            header1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);
@@ -377,5 +395,6 @@ namespace Demo.Controls
         private AntdUI.Select selectFocusedStyle;
         private AntdUI.Checkbox checkboxFocusNavigation;
         private AntdUI.Checkbox checkboxSummaryCustomize;
+        private AntdUI.Button button1;
     }
 }

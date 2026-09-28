@@ -22,6 +22,16 @@ namespace AntdUI
             /// 最小值
             /// </summary>
             public int minvalue { get; set; }
+
+            /// <summary>
+            /// Minimum width configured by the column.
+            /// </summary>
+            public int? MinWidth { get; set; }
+
+            /// <summary>
+            /// Maximum width configured by the column.
+            /// </summary>
+            public int? MaxWidth { get; set; }
         }
 
         internal class MoveHeader
