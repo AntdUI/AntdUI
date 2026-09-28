@@ -15,7 +15,7 @@ namespace AntdUI
     public class LayeredFormTimePicker : ILayeredShadowForm
     {
         TAMode ColorScheme;
-        public LayeredFormTimePicker(TimePicker control, TimeSpan date, Action<TimeSpan> _action)
+        public LayeredFormTimePicker(TimePicker control, TimeSpan? date, Action<TimeSpan> _action)
         {
             PARENT = control;
             cname = control.Name;
@@ -29,7 +29,7 @@ namespace AntdUI
             ShowM = control.Format.Contains("m");
             ShowS = control.Format.Contains("s");
             action = _action;
-            SelDate = date;
+            SelDate = date ?? TimeSpan.MinValue;
 
             ScrollH = new ScrollBar(this, control.ColorScheme);
             ScrollM = new ScrollBar(this, control.ColorScheme);

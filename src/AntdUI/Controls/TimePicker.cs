@@ -32,18 +32,18 @@ namespace AntdUI
         [Description("格式化"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue("HH:mm:ss")]
         public string Format { get; set; } = "HH:mm:ss";
 
-        TimeSpan _value = new TimeSpan(0, 0, 0);
+        TimeSpan? _value = new TimeSpan(0, 0, 0);
         /// <summary>
         /// 控件当前日期
         /// </summary>
         [Description("控件当前日期"), Category(nameof(CategoryAttribute.Data)), DefaultValue(typeof(TimeSpan), "00:00:00")]
-        public TimeSpan Value
+        public TimeSpan? Value
         {
             get => _value;
             set
             {
                 _value = value;
-                Text = new DateTime(1997, 1, 1, value.Hours, value.Minutes, value.Seconds).ToString(Format);
+                Text = value != null ? new DateTime(1997, 1, 1, value.Value.Hours, value.Value.Minutes, value.Value.Seconds).ToString(Format) : string.Empty;
                 OnValueChanged(value);
                 OnPropertyChanged(nameof(Value));
             }
@@ -116,7 +116,7 @@ namespace AntdUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
+            Text = _value != null ? new DateTime(1997, 1, 1, _value.Value.Hours, _value.Value.Minutes, _value.Value.Seconds).ToString(Format) : string.Empty;
             if (expandDrop) OpenSubForm();
         }
 
@@ -154,7 +154,7 @@ namespace AntdUI
 
         public event TimeSpanNEventHandler? ValueChanged;
 
-        protected virtual void OnValueChanged(TimeSpan e) => ValueChanged?.Invoke(this, new TimeSpanNEventArgs(e));
+        protected virtual void OnValueChanged(TimeSpan? e) => ValueChanged?.Invoke(this, new TimeSpanNEventArgs(e));
 
         /// <summary>
         /// 下拉展开 属性值更改时发生
@@ -231,11 +231,11 @@ namespace AntdUI
             {
                 if (IsTextEmpty)
                 {
-                    Value = new TimeSpan(0, 0, 0);
+                    Value = null;
                     return;
                 }
                 if (DateTime.TryParse("1997-1-1 " + Text, out var _d)) Value = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
-                Text = new DateTime(1997, 1, 1, _value.Hours, _value.Minutes, _value.Seconds).ToString(Format);
+                Text = _value != null ? new DateTime(1997, 1, 1, _value.Value.Hours, _value.Value.Minutes, _value.Value.Seconds).ToString(Format) : string.Empty;
             }
         }
 
@@ -252,7 +252,7 @@ namespace AntdUI
 
         protected override void OnClearValue()
         {
-            Value = new TimeSpan(0, 0, 0);
+            Value = null;
         }
 
         protected override void OnClickContent(MouseEventArgs e)
@@ -287,7 +287,7 @@ namespace AntdUI
             Value = new TimeSpan(value.Hour, value.Minute, value.Second);
             if (subForm is LayeredFormTimePicker _SubForm)
             {
-                _SubForm.SelDate = Value;
+                _SubForm.SelDate = Value ?? TimeSpan.MinValue;
                 _SubForm.Print();
             }
         }

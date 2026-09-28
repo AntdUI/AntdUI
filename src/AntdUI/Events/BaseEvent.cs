@@ -131,9 +131,9 @@ namespace AntdUI
     /// </summary>
     public delegate void DateTimeNEventHandler(object sender, DateTimeNEventArgs e);
 
-    public class TimeSpanNEventArgs : VEventArgs<TimeSpan>
+    public class TimeSpanNEventArgs : VEventArgs<TimeSpan?>
     {
-        public TimeSpanNEventArgs(TimeSpan value) : base(value) { }
+        public TimeSpanNEventArgs(TimeSpan? value) : base(value) { }
     }
 
     /// <summary>
