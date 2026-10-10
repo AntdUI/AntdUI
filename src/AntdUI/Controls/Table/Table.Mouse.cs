@@ -951,7 +951,13 @@ namespace AntdUI
                 OpenTip(rect, tooltip);
             }
         }
-
+        public void OpenTip(AntdUI.Table.CELL cell, int x, int y, string tooltip, TooltipConfig? config = null)
+        {
+            if (cell == null || rows == null) return;
+            var db = CellContains(rows.List, false, x, y);
+            if (db == null) return;
+            OpenTip(RealRect(cell.RECT_REAL, db.offset_xi, db.offset_y), tooltip, config);
+        }
         #endregion
 
         #endregion
