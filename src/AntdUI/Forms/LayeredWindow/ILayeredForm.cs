@@ -570,49 +570,74 @@ namespace AntdUI
 
         #region 触屏
 
-        bool mdown = false;
-        int mdownd = 0, oldX, oldY, mouseX, mouseY;
+        TTouchAction touchAction = TTouchAction.None;
+        int oldX, oldY, mouseX, mouseY, touchThreshold;
+        float touchVX, touchVY;
+        bool touchScrolled = false;
+        int touchTime;
+
         protected virtual void OnTouchDown(int x, int y)
         {
-            oldMY = 0;
+            taskTouch?.Dispose();
+            taskTouch = null;
             oldX = mouseX = x;
             oldY = mouseY = y;
+            touchVX = touchVY = touchTime = 0;
+            touchScrolled = false;
             if (Config.TouchEnabled)
             {
-                taskTouch?.Dispose();
-                taskTouch = null;
-                mdownd = 0;
-                mdown = true;
+                touchAction = TTouchAction.Ready;
+                touchThreshold = (int)(Config.TouchThreshold * Dpi);
             }
+            else touchAction = TTouchAction.None;
         }
 
-        int oldMY = 0;
         protected virtual bool OnTouchMove(int x, int y)
         {
-            if (mdown)
+            if (touchAction > 0)
             {
-                int moveX = oldX - x, moveY = oldY - y, moveXa = Math.Abs(moveX), moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Dpi);
-                if (mdownd > 0 || (moveXa > threshold || moveYa > threshold))
+                if (touchAction.HasFlag(TTouchAction.All)) return OnTouchMoveCore(x, y, true, true);
+                else
                 {
-                    oldMY = moveY;
-                    if (mdownd > 0)
+                    if (touchAction == TTouchAction.Ready)
                     {
-                        if (mdownd == 1) OnTouchScrollY(mouseX, mouseY, -moveY);
-                        else OnTouchScrollX(mouseX, mouseY, -moveX);
+                        // 尚未触发滚动：累计位移需要大于阈值，避免点击、手抖误触
+                        bool reachX = Math.Abs(mouseX - x) > touchThreshold, reachY = Math.Abs(mouseY - y) > touchThreshold;
+                        if (reachY) touchAction |= TTouchAction.Y;
+                        if (reachX) touchAction |= TTouchAction.X;
                         oldX = x;
                         oldY = y;
+                        if (touchAction == TTouchAction.Ready) return true;
+                        touchTime = Environment.TickCount;
                         return false;
                     }
-                    else
-                    {
-                        if (moveYa > moveXa) mdownd = 1;
-                        else mdownd = 2;
-                        oldX = x;
-                        oldY = y;
-                        return false;
-                    }
+                    // 大动作后支持 XY 同时触发：另一轴向的累计位移足够大时并入滚动
+                    int threshold = touchThreshold * 2;
+                    if (Math.Abs(mouseY - y) > threshold) touchAction |= TTouchAction.Y;
+                    if (Math.Abs(mouseX - x) > threshold) touchAction |= TTouchAction.X;
+                    return OnTouchMoveCore(x, y, touchAction.HasFlag(TTouchAction.X), touchAction.HasFlag(TTouchAction.Y));
                 }
             }
+            else return true;
+        }
+
+        protected virtual bool OnTouchMoveCore(int x, int y, bool can_x, bool can_y)
+        {
+            int dx = x - oldX, dy = y - oldY;
+            oldX = x;
+            oldY = y;
+            TouchVelocity(dx, dy);
+            bool can_mx = dx == 0, can_my = dy == 0;
+            if (can_mx && can_my) return true;
+            bool ret = false;
+            if (!can_my && can_y && OnTouchScrollY(mouseX, mouseY, dy)) ret = true;
+            if (!can_mx && can_x && OnTouchScrollX(mouseX, mouseY, dx)) ret = true;
+            if (ret)
+            {
+                touchScrolled = true;
+                return false;
+            }
+            // 无法滚动（不支持或已到边界）时，交还给鼠标处理
             return true;
         }
 
@@ -621,51 +646,90 @@ namespace AntdUI
         {
             taskTouch?.Dispose();
             taskTouch = null;
-            mdown = false;
-            if (mdownd > 0)
+            var touch = touchAction;
+            touchAction = TTouchAction.None;
+            if (touch > 0 && touchScrolled)
             {
-                if (mdownd == 1)
+                if (Config.Animation && Environment.TickCount - touchTime <= 100)
                 {
-                    int moveY = oldMY, moveYa = Math.Abs(moveY), threshold = (int)(Config.TouchThreshold * Dpi);
-                    if (moveYa > threshold)
-                    {
-                        // 缓冲动画
-                        int duration = (int)Math.Ceiling(moveYa * .1F), incremental = moveYa / 2, sleep = 20;
-                        if (moveY > 0)
-                        {
-                            taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
-                            {
-                                if (moveYa > 0 && OnTouchScrollY(mouseX, mouseY, -incremental))
-                                {
-                                    moveYa -= duration;
-                                    return true;
-                                }
-                                return false;
-                            }, sleep).SetPriority());
-                        }
-                        else
-                        {
-                            taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
-                            {
-                                if (moveYa > 0 && OnTouchScrollY(mouseX, mouseY, incremental))
-                                {
-                                    moveYa -= duration;
-                                    return true;
-                                }
-                                return false;
-                            }, sleep).SetPriority());
-                        }
-                    }
+                    // 抬手前仍在移动，开启惯性滚动缓冲
+                    float vx = touch.HasFlag(TTouchAction.X) ? touchVX : 0F, vy = touch.HasFlag(TTouchAction.Y) ? touchVY : 0F;
+                    if (Math.Abs(vx) >= Config.TouchVelocityMin || Math.Abs(vy) >= Config.TouchVelocityMin) TouchScrollInertia(vx, vy);
                 }
                 return false;
             }
             return true;
         }
-        protected void OnTouchCancel()
+
+        /// <summary>
+        /// 记录移动速度（像素/毫秒），按近期加权平均取值，避免单次抖动导致惯性失控
+        /// </summary>
+        /// <param name="dx">横向位移</param>
+        /// <param name="dy">纵向位移</param>
+        void TouchVelocity(int dx, int dy)
+        {
+            int now = Environment.TickCount, dt = now - touchTime;
+            touchTime = now;
+            if (dt <= 0) return;
+            if (dt > 200)
+            {
+                // 停顿过久，视为一次新的移动
+                touchVX = touchVY = 0F;
+                return;
+            }
+            if (dt < 4) dt = 4;
+            touchVX = touchVX * .6F + (dx / (float)dt) * .4F;
+            touchVY = touchVY * .6F + (dy / (float)dt) * .4F;
+        }
+
+        /// <summary>
+        /// 惯性滚动缓冲
+        /// </summary>
+        /// <param name="vx">横向速度（像素/毫秒）</param>
+        /// <param name="vy">纵向速度（像素/毫秒）</param>
+        void TouchScrollInertia(float vx, float vy)
+        {
+            float remX = 0F, remY = 0F;
+            taskTouch = new AnimationTask(new AnimationLoopConfig(this, () =>
+            {
+                bool ret = false;
+                if (vy != 0F)
+                {
+                    remY += vy * Config.TouchInterval;
+                    int step = (int)remY;
+                    if (step != 0)
+                    {
+                        // 保留不足一像素的余量，避免低速时停滞不前
+                        remY -= step;
+                        if (!OnTouchScrollY(mouseX, mouseY, step)) vy = 0F;
+                    }
+                    vy *= Config.TouchDecay;
+                    if (vy > Config.TouchVelocityEnd || vy < -Config.TouchVelocityEnd) ret = true;
+                    else vy = 0F;
+                }
+                if (vx != 0F)
+                {
+                    remX += vx * Config.TouchInterval;
+                    int step = (int)remX;
+                    if (step != 0)
+                    {
+                        remX -= step;
+                        if (!OnTouchScrollX(mouseX, mouseY, step)) vx = 0F;
+                    }
+                    vx *= Config.TouchDecay;
+                    if (vx > Config.TouchVelocityEnd || vx < -Config.TouchVelocityEnd) ret = true;
+                    else vx = 0F;
+                }
+                return ret;
+            }, Config.TouchInterval).SetEnd(() => taskTouch = null).SetPriority());
+        }
+
+        protected virtual void OnTouchCancel()
         {
             taskTouch?.Dispose();
             taskTouch = null;
-            mdown = false;
+            touchAction = TTouchAction.None;
+            touchScrolled = false;
         }
         protected virtual bool OnTouchScrollX(int x, int y, int value) => false;
         protected virtual bool OnTouchScrollY(int x, int y, int value) => false;

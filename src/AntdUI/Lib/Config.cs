@@ -138,6 +138,30 @@ namespace AntdUI
         /// </summary>
         public static int TouchThreshold { get; set; } = 20;
 
+        #region 触屏惯性滚动
+
+        /// <summary>
+        /// 触发惯性滚动的最小速度（像素/毫秒）
+        /// </summary>
+        public static float TouchVelocityMin = .1F;
+
+        /// <summary>
+        /// 惯性滚动停止的最小速度（像素/毫秒）
+        /// </summary>
+        public static float TouchVelocityEnd = .01F;
+
+        /// <summary>
+        /// 惯性滚动帧间隔（毫秒）
+        /// </summary>
+        public static int TouchInterval = 20;
+
+        /// <summary>
+        /// 惯性滚动每帧衰减系数
+        /// </summary>
+        public static float TouchDecay = .94F;
+
+        #endregion
+
         /// <summary>
         /// 触屏点击使能
         /// </summary>

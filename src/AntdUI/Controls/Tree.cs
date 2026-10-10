@@ -1359,9 +1359,9 @@ namespace AntdUI
             }
             if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y))
             {
+                if (items == null || items.Count == 0) return;
                 if (OnTouchMove(e.X, e.Y))
                 {
-                    if (items == null || items.Count == 0) return;
                     try
                     {
                         int hand = 0;

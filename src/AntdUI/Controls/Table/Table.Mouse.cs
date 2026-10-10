@@ -714,53 +714,56 @@ namespace AntdUI
                 Invalidate();
                 return;
             }
-            if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y) && OnTouchMove(e.X, e.Y))
+            if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y))
             {
-                if (rows == null || inEditMode) return;
-                var db = CellContains(rows.List, true, e.X, e.Y);
-                if (db == null || db.mode == CELLDBMode.Summary)
+                if (OnTouchMove(e.X, e.Y))
                 {
-                    hovers = -1;
-                    rows.HoverLeave();
-                    SetCursor(false);
-                }
-                else
-                {
-                    hovers = db.cell.ROW.INDEX;
-                    if (db.mode > 0)
+                    if (rows == null || inEditMode) return;
+                    var db = CellContains(rows.List, true, e.X, e.Y);
+                    if (db == null || db.mode == CELLDBMode.Summary)
                     {
                         hovers = -1;
                         rows.HoverLeave();
-                        var cel = (TCellColumn)db.cell;
-                        if (moveheaders.Length > 0)
-                        {
-                            foreach (var item in moveheaders)
-                            {
-                                if (item.rect.Contains(db.x, db.y))
-                                {
-                                    SetCursor(CursorType.VSplit);
-                                    return;
-                                }
-                            }
-                        }
-                        if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(db.x, db.y)) SetCursor(true);
-                        else if (cel.COLUMN.SortOrder) SetCursor(true);
-                        else if (cel.COLUMN.Filter != null && cel.rect_filter.Contains(db.x - cel.offsetx, db.y - cel.offsety)) SetCursor(true);
-                        else if (ColumnDragSort && cel.COLUMN.DragSort) SetCursor(CursorType.SizeAll);
-                        else SetCursor(false);
+                        SetCursor(false);
                     }
                     else
                     {
-                        int countmove = rows.HoverLeave(db);
-                        if (countmove > 0) SetCursor(CursorType.SizeAll);
+                        hovers = db.cell.ROW.INDEX;
+                        if (db.mode > 0)
+                        {
+                            hovers = -1;
+                            rows.HoverLeave();
+                            var cel = (TCellColumn)db.cell;
+                            if (moveheaders.Length > 0)
+                            {
+                                foreach (var item in moveheaders)
+                                {
+                                    if (item.rect.Contains(db.x, db.y))
+                                    {
+                                        SetCursor(CursorType.VSplit);
+                                        return;
+                                    }
+                                }
+                            }
+                            if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(db.x, db.y)) SetCursor(true);
+                            else if (cel.COLUMN.SortOrder) SetCursor(true);
+                            else if (cel.COLUMN.Filter != null && cel.rect_filter.Contains(db.x - cel.offsetx, db.y - cel.offsety)) SetCursor(true);
+                            else if (ColumnDragSort && cel.COLUMN.DragSort) SetCursor(CursorType.SizeAll);
+                            else SetCursor(false);
+                        }
                         else
                         {
-                            if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
+                            int countmove = rows.HoverLeave(db);
+                            if (countmove > 0) SetCursor(CursorType.SizeAll);
+                            else
                             {
-                                SetCursor(true);
-                                return;
+                                if (db.cell.ROW.CanExpand && db.cell.ROW.RectExpand.Contains(db.x, db.y))
+                                {
+                                    SetCursor(true);
+                                    return;
+                                }
+                                SetCursor(MouseMoveRow(db, e));
                             }
-                            SetCursor(MouseMoveRow(db, e));
                         }
                     }
                 }

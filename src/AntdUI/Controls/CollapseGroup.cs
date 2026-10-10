@@ -392,9 +392,9 @@ namespace AntdUI
             {
                 int hand = 0;
                 if (items == null || items.Count == 0) return;
-                int y = ScrollBar.ValueY;
                 if (OnTouchMove(e.X, e.Y))
                 {
+                    int y = ScrollBar.ValueY;
                     foreach (var it in items)
                     {
                         if (it.rect.Contains(e.X, e.Y + y)) hand++;

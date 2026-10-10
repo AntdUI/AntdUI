@@ -18,14 +18,14 @@ namespace AntdUI
         /// <summary>
         /// 点击下拉其他区域
         /// </summary>
-        Click = 1,
+        Click = 1 << 0,
         /// <summary>
         /// 离开下拉或控件
         /// </summary>
-        Leave = 2,
+        Leave = 1 << 1,
         /// <summary>
         /// 不包含控件
         /// </summary>
-        NoControl = 4
+        NoControl = 1 << 2,
     }
 }

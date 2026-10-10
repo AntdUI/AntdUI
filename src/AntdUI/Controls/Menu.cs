@@ -1491,60 +1491,63 @@ namespace AntdUI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (ScrollBar.MouseMove(e.X, e.Y) && OnTouchMove(e.X, e.Y))
+            if (ScrollBar.MouseMove(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
-                int count = 0, hand = 0;
-                if (scroll_show)
+                if (OnTouchMove(e.X, e.Y))
                 {
-                    if (rect_r.Contains(e.X, e.Y))
+                    int count = 0, hand = 0;
+                    if (scroll_show)
                     {
-                        if (!hover_r)
+                        if (rect_r.Contains(e.X, e.Y))
                         {
-                            hover_r = true;
-                            Invalidate();
+                            if (!hover_r)
+                            {
+                                hover_r = true;
+                                Invalidate();
+                            }
+                            foreach (var it in items) it.Hover = false;
+                            SetCursor(true);
+                            return;
                         }
-                        foreach (var it in items) it.Hover = false;
-                        SetCursor(true);
-                        return;
+                        else
+                        {
+                            if (hover_r) count++;
+                            hover_r = false;
+                        }
+                    }
+                    if (collapsed)
+                    {
+                        foreach (var it in items)
+                        {
+                            if (it.show) it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
+                        }
+                    }
+                    else if (mode == TMenuMode.Inline)
+                    {
+                        foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
+                    }
+                    else if (mode == TMenuMode.InlineNoText)
+                    {
+                        foreach (var it in items)
+                        {
+                            if (it.show)
+                            {
+                                it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
+                                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand);
+                            }
+                        }
                     }
                     else
                     {
-                        if (hover_r) count++;
-                        hover_r = false;
-                    }
-                }
-                if (collapsed)
-                {
-                    foreach (var it in items)
-                    {
-                        if (it.show) it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
-                    }
-                }
-                else if (mode == TMenuMode.Inline)
-                {
-                    foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
-                }
-                else if (mode == TMenuMode.InlineNoText)
-                {
-                    foreach (var it in items)
-                    {
-                        if (it.show)
+                        foreach (var it in items)
                         {
-                            it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
-                            if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand);
+                            if (it.show) it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
                         }
                     }
+                    SetCursor(hand > 0);
+                    if (count > 0) Invalidate();
                 }
-                else
-                {
-                    foreach (var it in items)
-                    {
-                        if (it.show) it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
-                    }
-                }
-                SetCursor(hand > 0);
-                if (count > 0) Invalidate();
             }
             else ILeave();
         }

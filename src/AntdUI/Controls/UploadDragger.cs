@@ -537,9 +537,9 @@ namespace AntdUI
         public enum FilterType
         {
             ALL = 0,
-            Img = 1,
-            Imgs = 2,
-            Video = 4
+            Img = 1 << 0,
+            Imgs = 1 << 1,
+            Video = 1 << 2,
         }
 
         protected override void Dispose(bool disposing)
