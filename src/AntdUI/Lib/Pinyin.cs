@@ -4,6 +4,8 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace AntdUI
@@ -19,10 +21,17 @@ namespace AntdUI
         {
             text = text.Trim();
             StringBuilder chars = new StringBuilder();
-            for (var i = 0; i < text.Length; ++i)
+            for (var i = 0; i < text.Length;)
             {
-                string py = GetPinyin(text[i]);
-                if (py != "") chars.Append(py[0]);
+                var py = MatchWord(text, i, out var len, out var initials);
+                if (py == null)
+                {
+                    py = GetPinyin(text[i]);
+                    len = 1;
+                }
+                if (initials != null) chars.Append(initials);
+                else if (py != null && py != "") chars.Append(py[0]);
+                i += len;
             }
             return chars.ToString();
         }
@@ -47,10 +56,16 @@ namespace AntdUI
         public static string GetPinyin(string text)
         {
             var sbPinyin = new StringBuilder();
-            for (var i = 0; i < text.Length; ++i)
+            for (var i = 0; i < text.Length;)
             {
-                string py = GetPinyin(text[i]);
+                var py = MatchWord(text, i, out var len, out _);
+                if (py == null)
+                {
+                    py = GetPinyin(text[i]);
+                    len = 1;
+                }
                 if (py != "") sbPinyin.Append(py);
+                i += len;
             }
             return sbPinyin.ToString().Trim();
         }
@@ -143,6 +158,400 @@ namespace AntdUI
         /// <returns>文本索引值</returns>
         static short GetHashIndex(char ch) => (short)((uint)ch % codes.Length);
 
+        #region 多音字词组
+
+        static readonly char[] separators = new char[] { ' ', '\t', '\r', '\n' };
+
+        static Dictionary<string, string>? polyphonicDict;
+        static Dictionary<string, string>? polyphonicInitials;
+        static HashSet<char>? polyphonicFirst;
+        static int polyphonicMaxLen = 2;
+
+        /// <summary>
+        /// 多音字词组词典（首次使用时懒加载）
+        /// </summary>
+        static Dictionary<string, string> Polyphonic
+        {
+            get
+            {
+                var dict = polyphonicDict;
+                if (dict == null)
+                {
+                    dict = new Dictionary<string, string>(4096);
+                    var initials = new Dictionary<string, string>(4096);
+                    var first = new HashSet<char>();
+                    var max = 2;
+                    foreach (var item in polyphonic.Split(separators, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var index = item.IndexOf(':');
+                        if (index < 1) continue;
+                        var split = item.IndexOf(':', index + 1);
+                        if (split < 1) continue;
+                        var key = item.Substring(0, index);
+                        dict[key] = item.Substring(index + 1, split - index - 1);
+                        initials[key] = item.Substring(split + 1);
+                        first.Add(key[0]);
+                        if (key.Length > max) max = key.Length;
+                    }
+                    polyphonicMaxLen = max;
+                    polyphonicDict = dict;
+                    polyphonicInitials = initials;
+                    polyphonicFirst = first;
+                }
+                return dict;
+            }
+        }
+
+        /// <summary>
+        /// 按最长匹配取词组拼音
+        /// </summary>
+        /// <param name="text">文本</param>
+        /// <param name="index">起始位置</param>
+        /// <param name="len">命中词组的长度，未命中为1</param>
+        /// <param name="initials">命中词组的拼音首字母，未命中为null</param>
+        /// <returns>命中返回词组拼音，未命中返回null</returns>
+        static string? MatchWord(string text, int index, out int len, out string? initials)
+        {
+            len = 1;
+            initials = null;
+            var dict = Polyphonic;
+            var first = polyphonicFirst;
+            if (first == null || !first.Contains(text[index])) return null;
+            var max = text.Length - index;
+            if (max > polyphonicMaxLen) max = polyphonicMaxLen;
+            for (var i = max; i > 1; i--)
+            {
+                var key = text.Substring(index, i);
+                if (dict.TryGetValue(key, out var py))
+                {
+                    len = i;
+                    if (polyphonicInitials != null) polyphonicInitials.TryGetValue(key, out initials);
+                    return py;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 多音字词组拼音表，格式"词组:拼音:首字母"，以空格或换行分隔
+        /// </summary>
+        internal static string polyphonic = @"
+一个劲地:yigejinde:ygjd 一了百了:yiliaobailiao:ylbl 一传:yizhuan:yz 一佛出世:yifochushi:yfcs 一刹那:yichana:ycn 一帧:yizhen:yz 一幢:yizhuang:yz 一推了之:yituiliaozhi:ytlz
+一无所长:yiwusuozhang:ywsz 一朝:yizhao:yz 一朝一夕:yizhaoyixi:yzyx 一模一样:yimuyiyang:ymyy 一沓:yida:yd 一目了然:yimuliaoran:ymlr 一目十行:yimushihang:ymsh 一笑了之:yixiaoliaozhi:yxlz
+一般地说:yibandeshuo:ybds 一行:yihang:yh 一行行:yihanghang:yhh 一语中的:yiyuzhongdi:yyzd 一语破的:yiyupodi:yypd 一走了之:yizouliaozhi:yzlz 一重:yichong:yc 一针见血:yizhenjianxie:yzjx
+一长制:yizhangzhi:yzz 七十二行:qishierhang:qseh 万乘:wansheng:ws 万千重:wanqianchong:wqc 万夫长:wanfuzhang:wfz 万头攒动:wantoucuandong:wtcd 万家生佛:wanjiashengfo:wjsf 万重:wanchong:wc
+三万重:sanwanchong:swc 三和银行:sanheyinhang:shyh 三藏:sanzang:sz 三行:sanhang:sh 三重:sanchong:sc 三重奏:sanchongzou:scz 三长制:sanzhangzhi:szz 上不着天:shangbuzhaotian:sbzt
+上海银行:shanghaiyinhang:shyh 上调:shangtiao:st 下不了台:xiabuliaotai:xblt 下不着地:xiabuzhaodi:xbzd 下调:xiatiao:xt 不了了之:buliaoliaozhi:bllz 不得了:budeliao:bdl 不曾:buceng:bc
+不甚了了:bushenliaoliao:bsll 不省人事:buxingrenshi:bxrs 不着边际:buzhuobianji:bzbj 不管部长:buguanbuzhang:bgbz 不长一智:buzhangyizhi:bzyz 丑角:choujue:cj 世界银行:shijieyinhang:sjyh 世行:shihang:sh
+丘道长:qiudaozhang:qdz 东柏林:dongbolin:dbl 东阿:donge:de 东阿县:dongexian:dex 丢三落四:diusanlasi:dsls 丢卒保车:diuzubaoju:dzbj 两幢:liangzhuang:lz 两肋插刀:liangleichadao:llcd
+两行:lianghang:lh 两重性:liangchongxing:lcx 中信银行:zhongxinyinhang:zxyh 中国银行:zhongguoyinhang:zgyh 中央乐团:zhongyangyuetuan:zyyt 中央银行:zhongyangyinhang:zyyh 中曾:zhongceng:zc 中牟:zhongmu:zm
+中牟县:zhongmuxian:zmx 中行:zhonghang:zh 中队长:zhongduizhang:zdz 丹佛:danfo:df 丹参:danshen:ds 丹参片:danshenpian:dsp 为什么:weishenme:wsm 主角:zhujue:zj
+主角奖:zhujuejiang:zjj 久别重逢:jiubiechongfeng:jbcf 义薄云天:yiboyuntian:ybyt 乌咀乡:wuzuixiang:wzx 乌思藏:wusizang:wsz 乌斯藏:wusizang:wsz 乌鞘岭:wushaoling:wsl 乍暖还寒:zhanuanhuanhan:znhh
+乐亭:laoting:lt 乐亭县:laotingxian:ltx 乐句:yueju:yj 乐器:yueqi:yq 乐团:yuetuan:yt 乐坛:yuetan:yt 乐声:yuesheng:ys 乐工:yuegong:yg
+乐工舞:yuegongwu:ygw 乐师:yueshi:ys 乐府:yuefu:yf 乐府诗:yuefushi:yfs 乐律:yuelu:yl 乐手:yueshou:ys 乐曲:yuequ:yq 乐曲声:yuequsheng:yqs
+乐歌:yuege:yg 乐段:yueduan:yd 乐毅攻:yueyigong:yyg 乐池:yuechi:yc 乐清:yueqing:yq 乐清市:yueqingshi:yqs 乐理:yueli:yl 乐章:yuezhang:yz
+乐舞:yuewu:yw 乐艺:yueyi:yy 乐谱:yuepu:yp 乐队:yuedui:yd 乐陵:laoling:ll 乐音:yueyin:yy 乘务长:chengwuzhang:cwz 乜斜:miexie:mx
+九重:jiuchong:jc 九重天:jiuchongtian:jct 乡镇长:xiangzhenzhang:xzz 乡长:xiangzhang:xz 书僮:shutong:st 乱弹:luantan:lt 乱弹琴:luantanqin:ltq 乳臭未干:ruxiuweigan:rxwg
+了不得:liaobude:lbd 了不起:liaobuqi:lbq 了事:liaoshi:ls 了如指掌:liaoruzhizhang:lrzz 了得:liaode:ld 了悟:liaowu:lw 了断:liaoduan:ld 了无生趣:liaowushengqu:lwsq
+了此一生:liaociyisheng:lcys 了然:liaoran:lr 了然于胸:liaoranyuxiong:lryx 了结:liaojie:lj 了若指掌:liaoruozhizhang:lrzz 了解:liaojie:lj 事务部长:shiwubuzhang:swbz 事务长:shiwuzhang:swz
+二传:erzhuan:ez 二十八宿:ershibaxiu:esbx 二重唱:erchongchang:ecc 二重奏:erchongzou:ecz 二重性:erchongxing:ecx 于乐调:yuyuediao:yyd 于柏林:yubolin:ybl 于龟兹:yuqiuci:yqc
+云寺佛:yunsifo:ysf 五重奏:wuchongzou:wcz 井木犴:jingmuhan:jmh 交口称赞:jiaokouchengzan:jkcz 交响乐:jiaoxiangyue:jxy 交响乐团:jiaoxiangyuetuan:jxyt 交响乐队:jiaoxiangyuedui:jxyd 交响音乐:jiaoxiangyinyue:jxyy
+交差:jiaochai:jc 交恶:jiaowu:jw 交给:jiaogei:jg 交行:jiaohang:jh 交还:jiaohuan:jh 交通部长:jiaotongbuzhang:jtbz 交通银行:jiaotongyinhang:jtyh 亭长:tingzhang:tz
+亲家:qingjia:qj 亲家母:qingjiamu:qjm 亲率:qinshuai:qs 人参:renshen:rs 人参果:renshenguo:rsg 人头攒动:rentoucuandong:rtcd 人民银行:renminyinhang:rmyh 人称:rencheng:rc
+人行:renhang:rh 什么:shenme:sm 什么样:shenmeyang:smy 什刹海:shichahai:sch 仇世华:qiushihua:qsh 仇士华:qiushihua:qsh 仇士良:qiushiliang:qsl 仇子明:qiuziming:qzm
+仇岂可:qiuqike:qqk 仇得报:qiudebao:qdb 仇必报:qiubibao:qbb 仇志海:qiuzhihai:qzh 仇未复:qiuweifu:qwf 仇未报:qiuweibao:qwb 仇松年:qiusongnian:qsn 仇池:qiuchi:qc
+仇深似:qiushensi:qss 仇萌芽:qiumengya:qmy 今朝:jinzhao:jz 介壳:jieqiao:jq 仓卒:cangcu:cc 付给:fugei:fg 仙乐:xianyue:xy 代理行:dailihang:dlh
+代称:daicheng:dc 代部长:daibuzhang:dbz 以己度人:yijiduoren:yjdr 以牙还牙:yiyahuanya:yyhy 以眼还眼:yiyanhuanyan:yyhy 任为长老:renweizhanglao:rwzl 任柏林:renbolin:rbl 任组长:renzuzhang:rzz
+伎俩:jiliang:jl 伏乾归:fugangui:fgg 众矢之的:zhongshizhidi:zszd 会稽山:kuaijishan:kjs 会稽王:kuaijiwang:kjw 会计:kuaiji:kj 会计处:kuaijichu:kjc 会计学:kuaijixue:kjx
+会计室:kuaijishi:kjs 会计师:kuaijishi:kjs 会计法:kuaijifa:kjf 会计系:kuaijixi:kjx 会计证:kuaijizheng:kjz 会长:huizhang:hz 传给:chuangei:cg 传记:zhuanji:zj
+传记类:zhuanjilei:zjl 伸缩:shensuo:ss 伸缩式:shensuoshi:sss 伸缩性:shensuoxing:ssx 伺候:cihou:ch 似地:shide:sd 似曾相识:sicengxiangshi:scxs 似的:shide:sd
+伽蓝:qielan:ql 伽马:gama:gm 伽马刀:gamadao:gmd 住友银行:zhuyouyinhang:zyyh 何曾:heceng:hc 佛事:foshi:fs 佛像:foxiang:fx 佛光:foguang:fg
+佛光寺:foguangsi:fgs 佛兰德:folande:fld 佛典:fodian:fd 佛号:fohao:fh 佛国:foguo:fg 佛堂:fotang:ft 佛塔:fota:ft 佛头:fotou:ft
+佛学:foxue:fx 佛学院:foxueyuan:fxy 佛家:fojia:fj 佛寺:fosi:fs 佛尔:foer:fe 佛山:foshan:fs 佛山人:foshanren:fsr 佛山市:foshanshi:fss
+佛得角:fodejiao:fdj 佛手:foshou:fs 佛拉:fola:fl 佛教:fojiao:fj 佛教协会:fojiaoxiehui:fjxh 佛教史:fojiaoshi:fjs 佛教徒:fojiaotu:fjt 佛教界:fojiaojie:fjj
+佛朗哥:folangge:flg 佛殿:fodian:fd 佛法:fofa:ff 佛爷:foye:fy 佛牙:foya:fy 佛珠:fozhu:fz 佛祖:fozu:fz 佛经:fojing:fj
+佛罗伦萨:foluolunsa:flls 佛罗里达:foluolida:flld 佛蒙特州:fomengtezhou:fmtz 佛诞节:fodanjie:fdj 佛门:fomen:fm 佛门弟子:fomendizi:fmdz 佛陀:fotuo:ft 佛香阁:foxiangge:fxg
+佛龛:fokan:fk 佯称:yangcheng:yc 佳酿:jianiang:jn 便宜:pianyi:py 便宜货:pianyihuo:pyh 便溺:bianniao:bn 便血:bianxie:bx 俗称:sucheng:sc
+保长:baozhang:bz 信佛:xinfo:xf 信差:xinchai:xc 信称义:xinchengyi:xcy 俯首称臣:fushouchengchen:fscc 倒打一耙:daodayipa:ddyp 倔强:juejiang:jj 借尸还魂:jieshihuanhun:jshh
+借给:jiegei:jg 借花献佛:jiehuaxianfo:jhxf 倾轧:qingya:qy 做不了:zuobuliao:zbl 偿还:changhuan:ch 偿还期:changhuanqi:chq 像模像样:xiangmuxiangyang:xmxy 僧伽罗语:sengqieluoyu:sqly
+僮仆:tongpu:tp 兄长:xiongzhang:xz 充塞:chongse:cs 光大银行:guangdayinhang:gdyh 光栅:guangshan:gs 光栅扫描:guangshansaomiao:gssm 免不了:mianbuliao:mbl 兔起鹘落:tuqihuluo:tqhl
+党参:dangshen:ds 全传:quanzhuan:qz 全军覆没:quanjunfumo:qjfm 全称:quancheng:qc 全行:quanhang:qh 全都:quandou:qd 八行:bahang:bh 公仔:gongzai:gz
+公冶乾:gongyegan:gyg 公安局长:gonganjuzhang:gajz 公差:gongchai:gc 六安:luan:la 六安市:luanshi:las 六畜:liuchu:lc 关卡:guanqia:gq 关学曾:guanxueceng:gxc
+兴业银行:xingyeyinhang:xyyh 具体地说:jutideshuo:jtds 养畜:yangchu:yc 内出血:neichuxie:ncx 内务部长:neiwubuzhang:nwbz 内政部长:neizhengbuzhang:nzbz 内省:neixing:nx 内行:neihang:nh
+内行人:neihangren:nhr 写给:xiegei:xg 军乐:junyue:jy 军乐团:junyuetuan:jyt 军乐队:junyuedui:jyd 军事部长:junshibuzhang:jsbz 军团长:juntuanzhang:jtz 军长:junzhang:jz
+农业部长:nongyebuzhang:nybz 农业银行:nongyeyinhang:nyyh 农发行:nongfahang:nfh 农畜:nongchu:nc 农行:nonghang:nh 冯院长:fengyuanzhang:fyz 冷冷地:lenglengde:lld 冷轧:lengya:ly
+冷颤:lengzhan:lz 减缩:jiansuo:js 几幢:jizhuang:jz 几行:jihang:jh 几重:jichong:jc 出公差:chugongchai:cgc 出头露面:chutouloumian:ctlm 出差:chuchai:cc
+出差费:chuchaifei:ccf 出没:chumo:cm 出没无常:chumowuchang:cmwc 出血:chuxie:cx 出血性:chuxiexing:cxx 出血点:chuxiedian:cxd 出血病:chuxiebing:cxb 出血量:chuxieliang:cxl
+凼仔岛:dangzaidao:dzd 分支行:fenzhihang:fzh 分给:fengei:fg 分行:fenhang:fh 分行业:fenhangye:fhy 分队长:fenduizhang:fdz 列传:liezhuan:lz 列车长:liechezhang:lcz
+刘禅:liushan:ls 刘重阳:liuchongyang:lcy 刘铭传:liumingzhuan:lmz 刘长卿:liuzhangqing:lzq 刚劲:gangjing:gj 刚正不阿:gangzhengbue:gzbe 刚直不阿:gangzhibue:gzbe 删削:shanxue:sx
+刨床:baochuang:bc 刨花:baohua:bh 刨花板:baohuaban:bhb 别传:biezhuan:bz 别称:biecheng:bc 刹帝利:chadili:cdl 刹时:chashi:cs 刹时间:chashijian:csj
+刹那:chana:cn 刹那间:chanajian:cnj 刻薄:kebo:kb 削价:xuejia:xj 削减:xuejian:xj 削发:xuefa:xf 削壁:xuebi:xb 削平:xueping:xp
+削弱:xueruo:xr 削瘦:xueshou:xs 削足适履:xuezushilu:xzsl 削铁如泥:xuetieruni:xtrn 剥削:boxue:bx 剥削者:boxuezhe:bxz 剥削阶级:boxuejieji:bxjj 剥夺:boduo:bd
+剥离:boli:bl 剥落:boluo:bl 剥蚀:boshi:bs 劝降:quanxiang:qx 劝降书:quanxiangshu:qxs 功不可没:gongbukemo:gbkm 加的夫:jiadifu:jdf 动弹:dongtan:dt
+助长:zhuzhang:zz 劲射:jingshe:js 劲敌:jingdi:jd 劲旅:jinglu:jl 劲风:jingfeng:jf 势单力薄:shidanlibo:sdlb 勒死:leisi:ls 勒紧:leijin:lj
+包扎:baoza:bz 北京分行:beijingfenhang:bjfh 区长:quzhang:qz 十三行:shisanhang:ssh 十四行:shisihang:ssh 十四行诗:shisihangshi:sshs 十行:shihang:sh 十里堡:shilipu:slp
+千佛山:qianfoshan:qfs 千佛岩:qianfoyan:qfy 千佛洞:qianfodong:qfd 千重:qianchong:qc 午觉:wujiao:wj 华夏银行:huaxiayinhang:hxyh 华联商厦:hualianshangsha:hlss 华达呢:huadani:hdn
+协调:xietiao:xt 协调会:xietiaohui:xth 协调员:xietiaoyuan:xty 协调性:xietiaoxing:xtx 协调者:xietiaozhe:xtz 单于:chanyu:cy 单于庭:chanyuting:cyt 单峰驼:shanfengtuo:sft
+单廷:shanting:st 单薄:danbo:db 占便宜:zhanpianyi:zpy 卡住:qiazhu:qz 卡壳:qiake:qk 卡子:qiazi:qz 卡脖子:qiabozi:qbz 卢大夫:ludaifu:ldf
+卧佛:wofo:wf 卧佛寺:wofosi:wfs 卫生局长:weishengjuzhang:wsjz 卫生部长:weishengbuzhang:wsbz 卫队长:weiduizhang:wdz 卷土重来:juantuchonglai:jtcl 厂长:changzhang:cz 厅局长:tingjuzhang:tjz
+厅长:tingzhang:tz 历三朝:lisanzhao:lsz 压缩:yasuo:ys 压缩性:yasuoxing:ysx 压缩机:yasuoji:ysj 压缩空气:yasuokongqi:yskq 压缩算法:yasuosuanfa:yssf 压缩饼干:yasuobinggan:ysbg
+厌恶:yanwu:yw 厚朴:houpo:hp 厚此薄彼:houcibobi:hcbb 厚积薄发:houjibofa:hjbf 厦华:shahua:sh 厦大:shada:sd 县长:xianzhang:xz 参差:cenci:cc
+参差不齐:cencibuqi:ccbq 参差错落:cencicuoluo:cccl 参谋长:canmouzhang:cmz 参附汤:shenfutang:sft 又称:youcheng:yc 双重:shuangchong:sc 双重人格:shuangchongrenge:scrg 双重性:shuangchongxing:scx
+反弹:fantan:ft 反省:fanxing:fx 反诘:fanjie:fj 反躬自省:fangongzixing:fgzx 发人深省:farenshenxing:frsx 发卡:faqia:fq 发卡量:faqialiang:fql 发给:fagei:fg
+发胖:fapang:fp 发还:fahuan:fh 受不了:shoubuliao:sbl 受得了:shoudeliao:sdl 受降:shouxiang:sx 口称:koucheng:kc 古刹:gucha:gc 古称:gucheng:gc
+句读:judou:jd 另辟蹊径:lingpixijing:lpxj 叨扰:taorao:tr 只争朝夕:zhizhengzhaoxi:zzzx 可恶:kewu:kw 可的松:kedisong:kds 可调:ketiao:kt 可调式:ketiaoshi:kts
+台长:taizhang:tz 史称皇:shichenghuang:sch 号称:haocheng:hc 司务长:siwuzhang:swz 司法部长:sifabuzhang:sfbz 司长:sizhang:sz 吃里扒外:chilipawai:clpw 各行各业:gehanggeye:ghgy
+合称:hecheng:hc 同行:tonghang:th 同行业:tonghangye:thy 名称:mingcheng:mc 名角:mingjue:mj 名角儿:mingjueer:mje 吐蕃:tubo:tb 吐蕃王:tubowang:tbw
+吐血:tuxie:tx 吐谷浑:tuyuhun:tyh 吕调阳:lutiaoyang:lty 吞没:tunmo:tm 吟哦:yine:ye 吡咯:biluo:bl 否极泰来:pijitailai:pjtl 含情脉脉:hanqingmomo:hqmm
+听差:tingchai:tc 吱吱声:zhizisheng:zzs 吱声:zisheng:zs 吴一氓:wuyimeng:wym 吴中行:wuzhonghang:wzh 吴劲草:wujingcao:wjc 吴四长老:wusizhanglao:wszl 吴基传:wujizhuan:wjz
+吴长老:wuzhanglao:wzl 呆呆地:daidaide:ddd 告老还乡:gaolaohuanxiang:glhx 呜呜咽咽:wuwuyeye:wwyy 呜咽:wuye:wy 呢喃:ninan:nn 呢大衣:nidayi:ndy 呢子:nizi:nz
+呢帽:nimao:nm 呢绒:nirong:nr 周佛海:zhoufohai:zfh 呱呱坠地:guguzhuidi:ggzd 呵叻:kele:kl 呼呼地:huhude:hhd 呼韩邪:huhanye:hhy 咀嚼:jujue:jj
+咋呼:zhahu:zh 咋咋呼呼:zhazhahuhu:zzhh 咋唬:zhahu:zh 咋舌:zeshe:zs 和修佛:hexiufo:hxf 和召公:heshaogong:hsg 和稀泥:huoxini:hxn 咔嚓:kacha:kc
+咖喱:gali:gl 咯吱:gezhi:gz 咯吱咯吱:gezhigezhi:gzgz 咯咯:gege:gg 咯噔:gedeng:gd 咯血:kaxie:kx 咱们:zanmen:zm 咱俩:zanlia:zl
+咱家:zanjia:zj 咱村:zancun:zc 哀乐:aiyue:ay 哀乐声:aiyuesheng:ays 哈佛:hafo:hf 哈佛大学:hafodaxue:hfdx 哨卡:shaoqia:sq 哪吒:nezha:nz
+哽咽:gengye:gy 唐三藏:tangsanzang:tsz 唐学曾:tangxueceng:txc 唐长老:tangzhanglao:tzl 唱主角:changzhujue:czj 唱喏:changre:cr 商业部长:shangyebuzhang:sybz 商业银行:shangyeyinhang:syyh
+商厦:shangsha:ss 商家堡:shangjiapu:sjp 商行:shanghang:sh 商贾:shanggu:sg 啜泣:chuoqi:cq 啜泣声:chuoqisheng:cqs 啜饮:chuoyin:cy 啧啧称奇:zezechengqi:zzcq
+啧啧称赞:zezechengzan:zzcz 喀嚓:kacha:kc 喘吁吁:chuanxuxu:cxx 喷薄而出:penboerchu:pbec 嘁嘁喳喳:qiqichacha:qqcc 器乐:qiyue:qy 器乐曲:qiyuequ:qyq 噱头:xuetou:xt
+四氢吡咯:siqingbiluo:sqbl 四行:sihang:sh 四重:sichong:sc 四重奏:sichongzou:scz 回传:huizhuan:hz 回弹:huitan:ht 回弹性:huitanxing:htx 回调:huitiao:ht
+回鹘:huihu:hh 团长:tuanzhang:tz 囤积:tunji:tj 囤积居奇:tunjijuqi:tjjq 园长:yuanzhang:yz 困难重重:kunnanchongchong:kncc 固着:guzhuo:gz 国乐:guoyue:gy
+国务部长:guowubuzhang:gwbz 国家银行:guojiayinhang:gjyh 国防部长:guofangbuzhang:gfbz 图像压缩:tuxiangyasuo:txys 图穷匕见:tuqiongbixian:tqbx 圈养:juanyang:jy 圜丘:yuanqiu:yq 土生土长:tushengtuzhang:tstz
+圩区:weiqu:wq 地壳:diqiao:dq 地藏王:dizangwang:dzw 场长:changzhang:cz 坚称:jiancheng:jc 坦率:tanshuai:ts 埋怨:manyuan:my 埋没:maimo:mm
+堡子:buzi:bz 堪称:kancheng:kc 堪称一绝:kanchengyijue:kcyj 堰塞湖:yansehu:ysh 堵塞:duse:ds 塞佛特:saifote:sft 塞擦音:secayin:scy 塞音:seyin:sy
+填塞:tianse:ts 增辟:zengpi:zp 增长:zengzhang:zz 增长期:zengzhangqi:zzq 增长极:zengzhangji:zzj 增长点:zengzhangdian:zzd 增长率:zengzhanglu:zzl 增长量:zengzhangliang:zzl
+增长额:zengzhange:zze 壅塞:yongse:ys 声乐:shengyue:sy 声乐系:shengyuexi:syx 声称:shengcheng:sc 壳牌:qiaopai:qp 处长:chuzhang:cz 外交部长:waijiaobuzhang:wjbz
+外传:waizhuan:wz 外出血:waichuxie:wcx 外行:waihang:wh 外行人:waihangren:whr 外行话:waihanghua:whh 外邪:waiye:wy 外长:waizhang:wz 多佛:duofo:df
+多佛尔:duofoer:dfe 多重:duochong:dc 大不了:dabuliao:dbl 大会计:dakuaiji:dkj 大佛:dafo:df 大佛像:dafoxiang:dfx 大佛寺:dafosi:dfs 大佛湾:dafowan:dfw
+大出血:dachuxie:dcx 大厦:dasha:ds 大厦将倾:dashajiangqing:dsjq 大城:daicheng:dc 大埔:dabu:db 大处着眼:dachuzhuoyan:dczy 大夫:daifu:df 大模大样:damudayang:dmdy
+大气磅礴:daqipangbo:dqpb 大腹便便:dafupianpian:dfpp 大萝卜:daluobo:dlb 大藏:dazang:dz 大藏经:dazangjing:dzj 大长老:dazhanglao:dzl 大队长:daduizhang:ddz 天然湖泊:tianranhupo:trhp
+天道好还:tiandaohaohuan:tdhh 太子参:taizishen:tzs 太行:taihang:th 太行山:taihangshan:ths 太行山区:taihangshanqu:thsq 太行山麓:taihangshanlu:thsl 夫差:fuchai:fc 央行:yanghang:yh
+失调:shitiao:st 头颈:toujing:tj 头颈部:toujingbu:tjb 奇偶:jiou:jo 奇数:jishu:js 奉还:fenghuan:fh 奏乐:zouyue:zy 奖给:jianggei:jg
+套色:taoshai:ts 奚长老:xizhanglao:xzl 奥立佛:aolifo:alf 女红:nugong:ng 好恶:haowu:hw 好逸恶劳:haoyiwulao:hywl 如履薄冰:rulubobing:rlbb 如来佛:rulaifo:rlf
+妄称:wangcheng:wc 妄自菲薄:wangzifeibo:wzfb 妇女部长:funubuzhang:fnbz 委员长:weiyuanzhang:wyz 姚贤镐:yaoxianhao:yxh 威吓:weihe:wh 婀娜:enuo:en 婀娜多姿:enuoduozi:endz
+嫌恶:xianwu:xw 嫡长子:dizhangzi:dzz 嬷嬷:momo:mm 子宫颈:zigongjing:zgj 字模:zimu:zm 字里行间:zilihangjian:zlhj 孙毓筠:sunyuyun:syy 孙长老:sunzhanglao:szl
+季长老:jizhanglao:jzl 学长:xuezhang:xz 孱弱:chanruo:cr 宇称:yucheng:yc 安的列斯:andiliesi:adls 宋嬷嬷:songmomo:smm 宋长老:songzhanglao:szl 宗李乾:zongligan:zlg
+官差:guanchai:gc 官房长官:guanfangzhangguan:gfzg 官长:guanzhang:gz 宝刹:baocha:bc 宝坻:baodi:bd 宝坻县:baodixian:bdx 宝藏:baozang:bz 实实地:shishide:ssd
+实弹射击:shitansheji:stsj 审判长:shenpanzhang:spz 审度:shenduo:sd 审时度势:shenshiduoshi:ssds 审计长:shenjizhang:sjz 宣传部长:xuanchuanbuzhang:xcbz 宣家堡:xuanjiapu:xjp 宣称:xuancheng:xc
+室长:shizhang:sz 宫颈:gongjing:gj 宫颈癌:gongjingai:gja 家畜:jiachu:jc 家长:jiazhang:jz 家长会:jiazhanghui:jzh 家长制:jiazhangzhi:jzz 家长式:jiazhangshi:jzs
+密钥:miyao:my 富商巨贾:fushangjugu:fsjg 富士银行:fushiyinhang:fsyh 寒颤:hanzhan:hz 对牛弹琴:duiniutanqin:dntq 封禅:fengshan:fs 尉犁:yuli:yl 尉犁县:yulixian:ylx
+尉迟:yuchi:yc 尉迟乙僧:yuchiyiseng:ycys 尉迟孙:yuchisun:ycs 尉迟孙立:yuchisunli:ycsl 尉迟恭:yuchigong:ycg 尉迟氏:yuchishi:ycs 尉迟连:yuchilian:ycl 尉迟迥:yuchijiong:ycj
+尊称:zuncheng:zc 尊长:zunzhang:zz 小事化了:xiaoshihualiao:xshl 小传:xiaozhuan:xz 小便宜:xiaopianyi:xpy 小组长:xiaozuzhang:xzz 小薄氏:xiaoboshi:xbs 小队长:xiaoduizhang:xdz
+少不了:shaobuliao:sbl 尖削:jianxue:jx 尖沙咀:jianshazui:jsz 尖酸刻薄:jiansuankebo:jskb 尚君长:shangjunzhang:sjz 尿泡:suipao:sp 尿血:niaoxie:nx 局长:juzhang:jz
+屏住:bingzhu:bz 屏弃:bingqi:bq 屏息:bingxi:bx 屏气:bingqi:bq 屏气凝神:bingqiningshen:bqns 属意:zhuyi:zy 山大王:shandaiwang:sdw 山楂:shanzha:sz
+山楂片:shanzhapian:szp 山楂糕:shanzhagao:szg 山重水复:shanchongshuifu:scsf 崆峒:kongtong:kt 崆峒山:kongtongshan:kts 川藏公路:chuanzanggonglu:czgl 川藏线:chuanzangxian:czx 州长:zhouzhang:zz
+工业部长:gongyebuzhang:gybz 工尺:gongche:gc 工行:gonghang:gh 工长:gongzhang:gz 左传:zuozhuan:zz 左路传:zuoluzhuan:zlz 左长史:zuozhangshi:zzs 巨贾:jugu:jg
+差事:chaishi:cs 差使:chaishi:cs 差官:chaiguan:cg 差役:chaiyi:cy 差旅费:chailufei:clf 差遣:chaiqian:cq 巴尔的摩:baerdimo:bedm 巴扎:baza:bz
+巷道:hangdao:hd 市长:shizhang:sz 布率兵:bushuaibing:bsb 师长:shizhang:sz 希腊人:xixiren:xxr 帕隆藏布:palongzangbu:plzb 带给:daigei:dg 帧中继:zhenzhongji:zzj
+帮不了:bangbuliao:bbl 干不了:ganbuliao:gbl 干亲家:ganqingjia:gqj 干什么:ganshenme:gsm 干着急:ganzhaoji:gzj 年增长率:nianzengzhanglu:nzzl 年长:nianzhang:nz 年长者:nianzhangzhe:nzz
+并称:bingcheng:bc 幼畜:youchu:yc 广东音乐:guangdongyinyue:gdyy 广佛华:guangfohua:gfh 广厦:guangsha:gs 广渠门:anqumen:aqm 广种薄收:guangzhongboshou:gzbs 库藏:kuzang:kz
+店长:dianzhang:dz 度德量力:duodeliangli:ddll 庭长:tingzhang:tz 康立乾:kangligan:klg 建行:jianhang:jh 建设银行:jiansheyinhang:jsyh 开天辟地:kaitianpidi:ktpd 开小差:kaixiaochai:kxc
+开辟:kaipi:kp 开都河:kaidouhe:kdh 弄堂:longtang:lt 引吭:yinhang:yh 引吭高歌:yinhanggaoge:yhgg 引着:yinzhao:yz 引颈:yinjing:yj 张一氓:zhangyimeng:zym
+张耀曾:zhangyaoceng:zyc 弥勒佛:milefo:mlf 弦乐:xianyue:xy 弦乐器:xianyueqi:xyq 弹冠相庆:tanguanxiangqing:tgxq 弹力:tanli:tl 弹劾:tanhe:th 弹压:tanya:ty
+弹唱:tanchang:tc 弹回:tanhui:th 弹塑性:tansuxing:tsx 弹奏:tanzou:tz 弹射:tanshe:ts 弹性:tanxing:tx 弹性体:tanxingti:txt 弹性模量:tanxingmoliang:txml
+弹拨:tanbo:tb 弹拨乐器:tanboyueqi:tbyq 弹指:tanzhi:tz 弹球:tanqiu:tq 弹琴:tanqin:tq 弹着点:danzhuodian:dzd 弹簧:tanhuang:th 弹簧秤:tanhuangcheng:thc
+弹簧钢:tanhuanggang:thg 弹簧门:tanhuangmen:thm 弹词:tanci:tc 弹起:tanqi:tq 弹跳:tantiao:tt 强劲:qiangjing:qj 归还:guihuan:gh 归降:guixiang:gx
+当不了:dangbuliao:dbl 当差:dangchai:dc 彭长老:pengzhanglao:pzl 役畜:yichu:yc 徐乾学:xuganxue:xgx 徐行:xuhang:xh 徐长老:xuzhanglao:xzl 徐院长:xuyuanzhang:xyz
+微缩:weisuo:ws 微薄:weibo:wb 微调:weitiao:wt 德莱塞:delaise:dls 心事重重:xinshichongchong:xscc 心惊胆颤:xinjingdanzhan:xjdz 心肌梗塞:xinjigengse:xjgs 忖度:cunduo:cd
+忘不了:wangbuliao:wbl 念佛:nianfo:nf 怎么得了:zenmedeliao:zmdl 怎么着:zenmezhao:zmz 怨艾:yuanyi:yy 怪模怪样:guaimuguaiyang:gmgy 总务长:zongwuzhang:zwz 总参谋长:zongcanmouzhang:zcmz
+总得:zongdei:zd 总称:zongcheng:zc 总行:zonghang:zh 总长:zongzhang:zz 总队长:zongduizhang:zdz 恐吓:konghe:kh 恐吓信:konghexin:khx 恫吓:donghe:dh
+恶性疟:exingnue:exn 悄悄地:qiaoqiaode:qqd 情报局长:qingbaojuzhang:qbjz 慰藉:weijie:wj 憎恶:zengwu:zw 懂行:donghang:dh 懒觉:lanjiao:lj 戏称:xicheng:xc
+成不了:chengbuliao:cbl 成佛:chengfo:cf 成长:chengzhang:cz 成长型:chengzhangxing:czx 成长性:chengzhangxing:czx 成长期:chengzhangqi:czq 戴校本:daijiaoben:djb 戴纶巾:daiguanjin:dgj
+户长:huzhang:hz 所长:suozhang:sz 扁舟:pianzhou:pz 扎染:zaran:zr 扒手:pashou:ps 扒灰:pahui:ph 扒鸡:paji:pj 打击乐:dajiyue:djy
+打击乐器:dajiyueqi:djyq 打工仔:dagongzai:dgz 打颤:dazhan:dz 扛鼎之作:gangdingzhizuo:gdzz 执拗:zhiniu:zn 执着:zhizhuo:zz 执著:zhizhuo:zz 执行长:zhixingzhang:zxz
+抄没:chaomo:cm 投降:touxiang:tx 投降主义:touxiangzhuyi:txzy 投降书:touxiangshu:txs 投降派:touxiangpai:txp 抗疟:kangnue:kn 抗疟药:kangnueyao:kny 抛头露面:paotouloumian:ptlm
+护士长:hushizhang:hsz 报称:baocheng:bc 抱佛脚:baofojiao:bfj 抱厦:baosha:bs 抹布:mabu:mb 抽咽:chouye:cy 抽血:chouxie:cx 拉纤:laqian:lq
+拌和:banhuo:bh 拍卖行:paimaihang:pmh 拍手称快:paishouchengkuai:psck 拎包:linbao:lb 拓本:taben:tb 拓片:tapian:tp 拔苗助长:bamiaozhuzhang:bmzz 拗不过:niubuguo:nbg
+拗陷:niuxian:nx 招商银行:zhaoshangyinhang:zsyh 招行:zhaohang:zh 招降:zhaoxiang:zx 拜佛:baifo:bf 拥塞:yongse:ys 拨给:bogei:bg 择菜:zhaicai:zc
+拱券:gongxuan:gx 拾级:sheji:sj 拾级而上:shejiershang:sjes 拿给:nagei:ng 指称:zhicheng:zc 按辔徐行:anpeixuhang:apxh 挛缩:luansuo:ls 挺括:tinggua:tg
+捆扎:kunza:kz 捐给:juangei:jg 捡便宜:jianpianyi:jpy 换血:huanxie:hx 换行:huanhang:hh 换行符:huanhangfu:hhf 据称:jucheng:jc 排行:paihang:ph
+排行榜:paihangbang:phb 排长:paizhang:pz 掸邦:shanbang:sb 掺和:chanhuo:ch 提防:difang:df 揠苗助长:yamiaozhuzhang:ymzz 揣度:chuaiduo:cd 援藏:yuanzang:yz
+搀和:chanhuo:ch 搅和:jiaohuo:jh 搜括:sougua:sg 搪塞:tangse:ts 摇滚乐:yaogunyue:ygy 摩天大厦:motiandasha:mtds 摩挲:mosuo:ms 摸得着:modezhao:mdz
+攒动:cuandong:cd 攒眉:cuanmei:cm 支行:zhihang:zh 支队长:zhiduizhang:zdz 收缩:shousuo:ss 收缩压:shousuoya:ssy 收缩期:shousuoqi:ssq 收缩率:shousuolu:ssl
+改称:gaicheng:gc 改行:gaihang:gh 放血:fangxie:fx 故伎重演:gujichongyan:gjcy 故地重游:gudichongyou:gdcy 故技重演:gujichongyan:gjcy 教务长:jiaowuzhang:jwz 教学相长:jiaoxuexiangzhang:jxxz
+教给:jiaogei:jg 教育部长:jiaoyubuzhang:jybz 教育长:jiaoyuzhang:jyz 教长:jiaozhang:jz 敛声屏气:lianshengbingqi:lsbq 数传:shuzhuan:sz 数字模拟:shuzimuni:szmn 数得着:shudezhao:sdz
+数行:shuhang:sh 数重:shuchong:sc 敷衍了事:fuyanliaoshi:fyls 敷衍塞责:fuyanseze:fysz 文传:wenzhuan:wz 文化部长:wenhuabuzhang:whbz 斜颈:xiejing:xj 斯再传:sizaizhuan:szz
+斯忒藩:situifan:stf 斯率军:sishuaijun:ssj 新乐府:xinyuefu:xyf 新传:xinzhuan:xz 新闻部长:xinwenbuzhang:xwbz 方西传:fangxizhuan:fxz 施都丁:shidouding:sdd 旅团长:lutuanzhang:ltz
+旅游局长:luyoujuzhang:lyjz 旅长:luzhang:lz 族长:zuzhang:zz 无的放矢:wudifangshi:wdfs 日本央行:ribenyanghang:rbyh 日本银行:ribenyinhang:rbyh 日薄西山:riboxishan:rbxs 旦角:danjue:dj
+旧地重游:jiudichongyou:jdcy 昌废佛:changfeifo:cff 易传:yizhuan:yz 星宿:xingxiu:xx 昵称:nicheng:nc 智真长老:zhizhenzhanglao:zzzl 暖和:nuanhuo:nh 暖暖和和:nuannuanhuohuo:nnhh
+暖暖地:nuannuande:nnd 曝光:baoguang:bg 曝光率:baoguanglu:bgl 曲长老:quzhanglao:qzl 曾世英:cengshiying:csy 曾业英:cengyeying:cyy 曾为楚:cengweichu:cwc 曾之宁:cengzhining:czn
+曾令良:cenglingliang:cll 曾仲鸣:cengzhongming:czm 曾公亮:cenggongliang:cgl 曾几何时:cengjiheshi:cjhs 曾利明:cengliming:clm 曾剑秋:cengjianqiu:cjq 曾华锋:cenghuafeng:chf 曾启亮:cengqiliang:cql
+曾图南:cengtunan:ctn 曾培炎:cengpeiyan:cpy 曾士楚:cengshichu:csc 曾宪林:cengxianlin:cxl 曾宪梓:cengxianzi:cxz 曾家庄:cengjiazhuang:cjz 曾尊固:cengzungu:czg 曾庆云:cengqingyun:cqy
+曾庆红:cengqinghong:cqh 曾得明:cengdeming:cdm 曾思玉:cengsiyu:csy 曾率军:cengshuaijun:csj 曾用名:cengyongming:cym 曾省吾:cengshengwu:csw 曾答允:cengdayun:cdy 曾纪泽:cengjize:cjz
+曾纪鸿:cengjihong:cjh 曾经:cengjing:cj 曾经沧海:cengjingcanghai:cjch 曾辛元:cengxinyuan:cxy 曾述及:cengshuji:csj 曾铁鸥:cengtieou:cto 月氏:yuezhi:yz 有朝一日:youzhaoyiri:yzyr
+有模有样:youmuyouyang:ymyy 有的放矢:youdifangshi:ydfs 服务行业:fuwuhangye:fwhy 朝三暮四:zhaosanmusi:zsms 朝不保夕:zhaobubaoxi:zbbx 朝乾夕惕:zhaoqianxiti:zqxt 朝令夕改:zhaolingxigai:zlxg 朝夕:zhaoxi:zx
+朝夕相处:zhaoxixiangchu:zxxc 朝思暮想:zhaosimuxiang:zsmx 朝日:zhaori:zr 朝朝暮暮:zhaozhaomumu:zzmm 朝歌:zhaoge:zg 朝气:zhaoqi:zq 朝气蓬勃:zhaoqipengbo:zqpb 朝秦暮楚:zhaoqinmuchu:zqmc
+朝闻:zhaowen:zw 朝霞:zhaoxia:zx 朝露:zhaolu:zl 木模:mumu:mm 木管乐器:muguanyueqi:mgyq 未了:weiliao:wl 未曾:weiceng:wc 未雨绸缪:weiyuchoumou:wycm
+末了:moliao:ml 本行:benhang:bh 本行业:benhangye:bhy 朱右曾:zhuyouceng:zyc 朱媚筠:zhumeiyun:zmy 朱重八:zhuchongba:zcb 朴东木:piaodongmu:pdm 朴刀:podao:pd
+朴刀来:podaolai:pdl 朴利茅:piaolimao:plm 朴子内:piaozinei:pzn 朴定洙:piaodingzhu:pdz 朴成哲:piaochengzhe:pcz 朴智星:piaozhixing:pzx 朴次茅斯:piaocimaosi:pcms 朴永训:piaoyongxun:pyx
+朴者和尚:piaozheheshang:pzhs 朴茨茅斯:piaocimaosi:pcms 朴达摩:piaodamo:pdm 机械行业:jixiehangye:jxhy 机长:jizhang:jz 杀出重围:shachuchongwei:sccw 杉木:shamu:sm 李一氓:liyimeng:lym
+李嬷嬷:limomo:lmm 李昌镐:lichanghao:lch 李校书:lijiaoshu:ljs 李石曾:lishiceng:lsc 李适之:likuozhi:lkz 李道长:lidaozhang:ldz 村长:cunzhang:cz 杜长老:duzhanglao:dzl
+杨廷筠:yangtingyun:yty 杨慎矜:yangshenjin:ysj 杨杏佛:yangxingfo:yxf 杨行密:yanghangmi:yhm 松筠庵:songyunan:sya 枕藉:zhenjie:zj 林长老:linzhanglao:lzl 枞树:congshu:cs
+枸橼酸:juyuansuan:jys 柏拉图:bolatu:blt 柏林:bolin:bl 柏林墙:bolinqiang:blq 柏林市:bolinshi:bls 柑桔:ganju:gj 柔佛:roufo:rf 柞水县:zhashuixian:zsx
+查伊璜:zhayihuang:zyh 查德威:zhadewei:zdw 查德森:zhadesen:zds 查志隆:zhazhilong:zzl 查慎行:zhashenxing:zsx 查继佐:zhajizuo:zjz 柳毅传:liuyizhuan:lyz 栅极:shanji:sj
+标的:biaodi:bd 标的物:biaodiwu:bdw 标的额:biaodie:bde 标题音乐:biaotiyinyue:btyy 树碑立传:shubeilizhuan:sblz 栓塞:shuanse:ss 校准:jiaozhun:jz 校勘:jiaokan:jk
+校勘学:jiaokanxue:jkx 校场:jiaochang:jc 校场口:jiaochangkou:jck 校对:jiaodui:jd 校本:jiaoben:jb 校样:jiaoyang:jy 校核:jiaohe:jh 校正:jiaozheng:jz
+校注:jiaozhu:jz 校点:jiaodian:jd 校订:jiaoding:jd 校长:xiaozhang:xz 校阅:jiaoyue:jy 校验:jiaoyan:jy 核儿:huer:he 格列佛:geliefo:glf
+桑葚:sangshen:ss 桔子:juzi:jz 桔红:juhong:jh 桔红色:juhongse:jhs 桔黄色:juhuangse:jhs 梁三长老:liangsanzhanglao:lszl 梁二长老:liangerzhanglao:lezl 梁长老:liangzhanglao:lzl
+梗塞:gengse:gs 检察长:jianchazhang:jcz 椎体:chuiti:ct 槟榔:binglang:bl 模具:muju:mj 模具钢:mujugang:mjg 模子:muzi:mz 模板:muban:mb
+模样:muyang:my 模样儿:muyanger:mye 横传:hengzhuan:hz 欠债还钱:qianzhaihuanqian:qzhq 次长:cizhang:cz 欧洲央行:ouzhouyanghang:ozyh 欧米茄:oumijia:omj 欲说还休:yushuohuanxiu:yshx
+欺行霸市:qihangbashi:qhbs 款识:kuanzhi:kz 歌仔:gezai:gz 正传:zhengzhuan:zz 正着:zhengzhao:zz 正邪:zhengye:zy 此消彼长:cixiaobizhang:cxbz 武行:wuhang:wh
+武装部长:wuzhuangbuzhang:wzbz 歪打正着:waidazhengzhao:wdzz 死不了:sibuliao:sbl 死死地:siside:ssd 殷红:yanhong:yh 母畜:muchu:mc 每行:meihang:mh 民乐:minyue:my
+民政局长:minzhengjuzhang:mzjz 民生银行:minshengyinhang:msyh 民都洛:mindouluo:mdl 气势磅礴:qishipangbo:qspb 气喘吁吁:qichuanxuxu:qcxx 水泊:shuipo:sp 水泊梁山:shuipoliangshan:spls 水浒传:shuihuzhuan:shz
+水萝卜:shuiluobo:slb 求神拜佛:qiushenbaifo:qsbf 汇丰银行:huifengyinhang:hfyh 汉藏语系:hanzangyuxi:hzyx 江竹筠:jiangzhuyun:jzy 汤汤水:shangshangshui:sss 汪校长:wangxiaozhang:wxz 沈曾植:shencengzhi:scz
+沈沈叫:chenchenjiao:ccj 沉没:chenmo:cm 沉着:chenzhuo:cz 沙参:shashen:ss 沙咀:shazui:sz 没什么:meishenme:msm 没入:moru:mr 没奈何:monaihe:mnh
+没完没了:meiwanmeiliao:mwml 没收:moshou:ms 没着没落:meizhemoluo:mzml 没药:moyao:my 没落:moluo:ml 没食子酸:moshizisuan:mszs 没齿不忘:mochibuwang:mcbw 没齿难忘:mochinanwang:mcnw
+泄露:xielou:xl 泄露天机:xieloutianji:xltj 泛称:fancheng:fc 波罗的海:boluodihai:bldh 泰阿剑:taiejian:tej 洋行:yanghang:yh 活佛:huofo:hf 浅薄:qianbo:qb
+浑身解数:hunshenxieshu:hsxs 浒墅关:xushuguan:xsg 浓缩:nongsuo:ns 浓缩铀:nongsuoyou:nsy 浙江广厦:zhejiangguangsha:zjgs 浚县:xunxian:xx 浦发银行:pufayinhang:pfyh 浴佛:yufo:yf
+海参:haishen:hs 海参崴:haishenwai:hsw 浸没:jinmo:jm 消长:xiaozhang:xz 涡河:guohe:gh 淡淡地:dandande:ddd 淡薄:danbo:db 淤塞:yuse:ys
+深恶痛绝:shenwutongjue:swtj 深深地:shenshende:ssd 淹没:yanmo:ym 清平乐:qingpingyue:qpy 渣打银行:zhadayinhang:zdyh 温庭筠:wentingyun:wty 温情脉脉:wenqingmomo:wqmm 游说:youshui:ys
+湖泊:hupo:hp 湮没:yanmo:ym 湮没无闻:yanmowuwen:ymww 滋长:zizhang:zz 灵长目:lingzhangmu:lzm 灵长类:lingzhanglei:lzl 炊事班长:chuishibanzhang:csbz 炮烙:paoluo:pl
+点着:dianzhao:dz 热胀冷缩:rezhanglengsuo:rzls 热轧:reya:ry 烹调:pengtiao:pt 烹调法:pengtiaofa:ptf 熊佛西:xiongfoxi:xfx 熨斗:yundou:yd 熨烫:yuntang:yt
+爪子:zhuazi:zz 爱乐乐团:aiyueyuetuan:ayyt 爵士乐:jueshiyue:jsy 爵士乐队:jueshiyuedui:jsyd 片仔癀:pianzaihuang:pzh 牛仔:niuzai:nz 牛仔布:niuzaibu:nzb 牛仔服:niuzaifu:nzf
+牛仔裤:niuzaiku:nzk 牛正乾:niuzhenggan:nzg 牛羊畜:niuyangchu:nyc 牟平:muping:mp 牲畜:shengchu:sc 牲畜头数:shengchutoushu:scts 犍为:qianwei:qw 犍为县:qianweixian:qwx
+犯不着:fanbuzhao:fbz 犯得着:fandezhao:fdz 狂飚:kuangbiao:kb 狗仔队:gouzaidui:gzd 独辟蹊径:dupixijing:dpxj 狱长:yuzhang:yz 猛地:mengde:md 猜度:caiduo:cd
+猪仔:zhuzai:zz 猪圈:zhujuan:zj 献给:xiangei:xg 献血:xianxie:xx 献血者:xianxiezhe:xxz 玄参:xuanshen:xs 玄参科:xuanshenke:xsk 率众:shuaizhong:sz
+率先:shuaixian:sx 率先垂范:shuaixianchuifan:sxcf 率性:shuaixing:sx 率直:shuaizhi:sz 率真:shuaizhen:sz 率领:shuailing:sl 玉帝传:yudizhuan:ydz 王丙乾:wangbinggan:wbg
+王乾娘:wangganniang:wgn 王体乾:wangtigan:wtg 王大夫:wangdaifu:wdf 王大珩:wangdaheng:wdh 王庭筠:wangtingyun:wty 王曰乾:wangyuegan:wyg 王胖子:wangpangzi:wpz 王蛤蟆:wanghama:whm
+王辟光:wangpiguang:wpg 王述曾:wangshuceng:wsc 王道乾:wangdaogan:wdg 王重阳:wangchongyang:wcy 王镇长:wangzhenzhang:wzz 王队长:wangduizhang:wdz 王降汉:wangxianghan:wxh 环颈雉:huanjingzhi:hjz
+现调机:xiantiaoji:xtj 玻色子:boshaizi:bsz 班组长:banzuzhang:bzz 班长:banzhang:bz 珲春:hunchun:hc 珲春市:hunchunshi:hcs 理事长:lishizhang:lsz 琢磨:zuomo:zm
+琢磨不透:zuomobutou:zmbt 琴行:qinhang:qh 瑞士银行:ruishiyinhang:rsyh 瑟缩:sesuo:ss 瓜蔓:guawan:gw 瓦窑堡:wayaobu:wyb 瓶颈:pingjing:pj 甜甜地:tiantiande:ttd
+生产队长:shengchanduizhang:scdz 生吞活剥:shengtunhuobo:sthb 生还:shenghuan:sh 生还者:shenghuanzhe:shz 生长:shengzhang:sz 生长期:shengzhangqi:szq 生长激素:shengzhangjisu:szjs 生长点:shengzhangdian:szd
+生长素:shengzhangsu:szs 生长量:shengzhangliang:szl 用不着:yongbuzhao:ybz 田曾佩:tiancengpei:tcp 田长焯:tianchangchao:tcc 由召公:youshaogong:ysg 甲壳:jiaqiao:jq 甲壳动物:jiaqiaodongwu:jqdw
+甲壳素:jiaqiaosu:jqs 电子音乐:dianziyinyue:dzyy 电熨斗:dianyundou:dyd 电解池:dianxiechi:dxc 画传:huazhuan:hz 畏畏缩缩:weiweisuosuo:wwss 畏缩:weisuo:ws 畏缩不前:weisuobuqian:wsbq
+留给:liugei:lg 畜力:chuli:cl 畜牲:chusheng:cs 畜生:chusheng:cs 畜禽:chuqin:cq 畜类:chulei:cl 畜群:chuqun:cq 畜舍:chushe:cs
+番禺:panyu:py 番禺区:panyuqu:pyq 番禺县:panyuxian:pyx 番禺市:panyushi:pys 疟原虫:nueyuanchong:nyc 疟疾:nueji:nj 疯长:fengzhang:fz 痴痴地:chichide:ccd
+瘠薄:jibo:jb 瘦削:shouxue:sx 癞蛤蟆:laihama:lhm 白术:baizhu:bz 白术散:baizhusan:bzs 白白地:baibaide:bbd 白白胖胖:baibaipangpang:bbpp 白萝卜:bailuobo:blb
+白蛇传:baishezhuan:bsz 白长老:baizhanglao:bzl 的哥:dige:dg 的士:dishi:ds 的的确确:didiqueque:ddqq 的确:dique:dq 的确如此:diqueruci:dqrc 的确良:diqueliang:dql
+的黎波里:diliboli:dlbl 皱缩:zhousuo:zs 监狱长:jianyuzhang:jyz 盘剥:panbo:pb 盘诘:panjie:pj 盛饭:chengfan:cf 目无尊长:muwuzunzhang:mwzz 目的:mudi:md
+目的地:mudidi:mdd 目的性:mudixing:mdx 目的论:mudilun:mdl 直传:zhizhuan:zz 直截了当:zhijieliaodang:zjld 直接了当:zhijieliaodang:zjld 直率:zhishuai:zs 直直地:zhizhide:zzd
+相率:xiangshuai:xs 省亲:xingqin:xq 省察:xingcha:xc 省悟:xingwu:xw 省视:xingshi:xs 省长:shengzhang:sz 着凉:zhaoliang:zl 着力:zhuoli:zl
+着力点:zhuolidian:zld 着地:zhuodi:zd 着墨:zhuomo:zm 着实:zhuoshi:zs 着床:zhuochuang:zc 着急:zhaoji:zj 着想:zhuoxiang:zx 着意:zhuoyi:zy
+着手:zhuoshou:zs 着手成春:zhuoshouchengchun:zscc 着数:zhaoshu:zs 着法:zhaofa:zf 着火:zhaohuo:zh 着眼:zhuoyan:zy 着眼于:zhuoyanyu:zyy 着眼点:zhuoyandian:zyd
+着着实实:zhezhuoshishi:zzss 着色:zhuose:zs 着色剂:zhuoseji:zsj 着落:zhuoluo:zl 着装:zhuozhuang:zz 着迷:zhaomi:zm 着重:zhuozhong:zz 着重点:zhuozhongdian:zzd
+着陆:zhuolu:zl 着陆器:zhuoluqi:zlq 着陆点:zhuoludian:zld 着魔:zhaomo:zm 睡着:shuizhao:sz 睡觉:shuijiao:sj 督率:dushuai:ds 矜持:jinchi:jc
+短不了:duanbuliao:dbl 矮胖:aipang:ap 石佛寺:shifosi:sfs 石油部长:shiyoubuzhang:sybz 矿长:kuangzhang:kz 破镜重圆:pojingchongyuan:pjcy 硬着陆:yingzhuolu:yzl 碌碡:liuzhou:lz
+磅礴:pangbo:pb 磨削:moxue:mx 礼乐:liyue:ly 礼佛:lifo:lf 礼崩乐坏:libengyuehuai:lbyh 社长:shezhang:sz 神佛:shenfo:sf 神出鬼没:shenchuguimo:scgm
+神差鬼使:shenchaiguishi:scgs 禅让:shanrang:sr 禅让制:shanrangzhi:srz 禽畜:qinchu:qc 种姓:chongxing:cx 种畜场:zhongchuchang:zcc 科长:kezhang:kz 秘书长:mishuzhang:msz
+秘鲁:bilu:bl 秘鲁人:biluren:blr 秘鲁政府:biluzhengfu:blzf 租给:zugei:zg 秦校长:qinxiaozhang:qxz 秦桧:qinhui:qh 秦桧制造:qinhuizhizao:qhzz 秦桧死:qinhuisi:qhs
+称为:chengwei:cw 称之为:chengzhiwei:czw 称作:chengzuo:cz 称做:chengzuo:cz 称兄道弟:chengxiongdaodi:cxdd 称号:chenghao:ch 称呼:chenghu:ch 称奇:chengqi:cq
+称孤道寡:chenggudaogua:cgdg 称帝:chengdi:cd 称得上:chengdeshang:cds 称得起:chengdeqi:cdq 称扬:chengyang:cy 称法:chengfa:cf 称王:chengwang:cw 称王称霸:chengwangchengba:cwcb
+称病:chengbing:cb 称羡:chengxian:cx 称臣:chengchen:cc 称誉:chengyu:cy 称许:chengxu:cx 称谓:chengwei:cw 称谢:chengxie:cx 称赏:chengshang:cs
+称赞:chengzan:cz 称道:chengdao:cd 称重:chengzhong:cz 称量:chengliang:cl 称雄:chengxiong:cx 称霸:chengba:cb 称颂:chengsong:cs 稀薄:xibo:xb
+税务所长:shuiwusuozhang:swsz 稳稳地:wenwende:wwd 稽首:qishou:qs 穆棱:muling:ml 穆棱河:mulinghe:mlh 空落落:konglaolao:kll 空调:kongtiao:kt 空调器:kongtiaoqi:ktq
+空调机:kongtiaoji:ktj 穿着:chuanzhuo:cz 立传:lizhuan:lz 立地成佛:lidichengfo:ldcf 站长:zhanzhang:zz 端的:duandi:dd 第一行:diyihang:dyh 第一重:diyichong:dyc
+第三重:disanchong:dsc 第二行:dierhang:deh 简洁明了:jianjiemingliao:jjml 简称:jiancheng:jc 简长老:jianzhanglao:jzl 算不了:suanbuliao:sbl 管乐:guanyue:gy 管乐器:guanyueqi:gyq
+管乐队:guanyuedui:gyd 管弦乐:guanxianyue:gxy 管弦乐器:guanxianyueqi:gxyq 管弦乐团:guanxianyuetuan:gxyt 管弦乐曲:guanxianyuequ:gxyq 管弦乐队:guanxianyuedui:gxyd 箪食壶浆:dansihujiang:dshj 籍没:jimo:jm
+米芾:mifu:mf 粗率:cushuai:cs 粘乎乎:zhanhuhu:zhh 粘多糖:zhanduotang:zdt 粘弹性:niantanxing:ntx 粘接:zhanjie:zj 粘滞:zhanzhi:zz 粘滞性:zhanzhixing:zzx
+粘着:nianzhuo:nz 粘糊糊:zhanhuhu:zhh 粘虫:zhanchong:zc 粘贴:zhantie:zt 粘连:zhanlian:zl 精辟:jingpi:jp 糖色:tangshai:ts 糜子:meizi:mz
+系带:jidai:jd 系统地:xitongde:xtd 素称:sucheng:sc 紧缩:jinsuo:js 紧缩性:jinsuoxing:jsx 繁峙:fanshi:fs 繁峙县:fanshixian:fsx 红萝卜:hongluobo:hlb
+红颜薄命:hongyanboming:hybm 纤夫:qianfu:qf 纤手:qianshou:qs 纤绳:qiansheng:qs 纪传体:jizhuanti:jzt 纰缪:pimiu:pm 纳降:naxiang:nx 纶巾羽扇:guanjinyushan:gjys
+组织部长:zuzhibuzhang:zzbz 组长:zuzhang:zz 细细地:xixide:xxd 终了:zhongliao:zl 经传:jingzhuan:jz 经济部长:jingjibuzhang:jjbz 绑扎:bangza:bz 结扎:jieza:jz
+给出:geichu:gc 给定:geiding:gd 给钱:geiqian:gq 给面子:geimianzi:gmz 络子:laozi:lz 统战部长:tongzhanbuzhang:tzbz 统率:tongshuai:ts 统称:tongcheng:tc
+绵薄:mianbo:mb 绸缪:choumou:cm 缩写:suoxie:sx 缩减:suojian:sj 缩印本:suoyinben:syb 缩回:suohui:sh 缩头:suotou:st 缩头缩脑:suotousuonao:stsn
+缩小:suoxiao:sx 缩影:suoying:sy 缩微:suowei:sw 缩微胶片:suoweijiaopian:swjp 缩成一团:suochengyituan:scyt 缩手:suoshou:ss 缩手缩脚:suoshousuojiao:sssj 缩水:suoshui:ss
+缩略语:suolueyu:sly 缩短:suoduan:sd 缩紧:suojin:sj 缩编:suobian:sb 缩聚:suoju:sj 缩脖子:suobozi:sbz 缩进:suojin:sj 缩醛:suoquan:sq
+缺血:quexie:qx 缺血性:quexiexing:qxx 罗刹:luocha:lc 罗布泊:luobupo:lbp 罗布泊湖:luobupohu:lbph 罚没:famo:fm 罢了:baliao:bl 署长:shuzhang:sz
+羊圈:yangjuan:yj 美人蕉:meirenjiao:mrj 美国银行:meiguoyinhang:mgyh 美的:meidi:md 美称:meicheng:mc 群氓:qunmeng:qm 羽扇纶巾:yushanguanjin:ysgj 翟俊杰:zhaijunjie:zjj
+翟廷玉:zhaitingyu:zty 翟彦鹏:zhaiyanpeng:zyp 翟振华:zhaizhenhua:zzh 翟景升:zhaijingsheng:zjs 翟理斯:zhailisi:zls 翟秋白:zhaiqiubai:zqb 翟赋明:zhaifuming:zfm 老佛爷:laofoye:lfy
+老大夫:laodaifu:ldf 老所长:laosuozhang:lsz 老本行:laobenhang:lbh 老调重弹:laodiaochongtan:ldct 耕畜:gengchu:gc 耙子:pazi:pz 职称:zhicheng:zc 联队长:lianduizhang:ldz
+肋条:leitiao:lt 肋骨:leigu:lg 肖院长:xiaoyuanzhang:xyz 股长:guzhang:gz 肥差:feichai:fc 肥胖:feipang:fp 肥胖病:feipangbing:fpb 肥胖症:feipangzheng:fpz
+肥胖者:feipangzhe:fpz 背景音乐:beijingyinyue:bjyy 胖乎乎:panghuhu:phh 胖嘟嘟:pangdudu:pdd 胖墩墩:pangdundun:pdd 胖大海:pangdahai:pdh 胖头鱼:pangtouyu:pty 胖子:pangzi:pz
+胖尊者:pangzunzhe:pzz 胖小子:pangxiaozi:pxz 胖瘦:pangshou:ps 胖胖:pangpang:pp 胖胖的:pangpangde:ppd 胡佛:hufo:hf 胡佛坝:hufoba:hfb 胡孝乾:huxiaogan:hxg
+胡校长:huxiaozhang:hxz 胡萝卜:huluobo:hlb 胡萝卜素:huluobosu:hlbs 胳肢窝:gazhiwo:gzw 胳臂:gebei:gb 胶着:jiaozhuo:jz 胶着状态:jiaozhuozhuangtai:jzzt 胶粘:jiaozhan:jz
+胶粘剂:jiaozhanji:jzj 胸脯:xiongpu:xp 能源部长:nengyuanbuzhang:nybz 脉脉:momo:mm 脉脉含情:momohanqing:mmhq 脑出血:naochuxie:ncx 脑栓塞:naoshuanse:nss 脚色:juese:js
+脱不了身:tuobuliaoshen:tbls 腌制:yanzhi:yz 腌渍:yanzi:yz 腌肉:yanrou:yr 腌菜:yancai:yc 腌鱼:yanyu:yy 膀胱:pangguang:pg 膀胱炎:pangguangyan:pgy
+膀胱癌:pangguangai:pga 臧否人物:zangpirenwu:zprw 自传:zizhuan:zz 自传体:zizhuanti:zzt 自怨自艾:ziyuanziyi:zyzy 自省:zixing:zx 自称:zicheng:zc 自称为:zichengwei:zcw
+般地:bande:bd 般若:bore:br 舰长:jianzhang:jz 船长:chuanzhang:cz 船长室:chuanzhangshi:czs 艇长:tingzhang:tz 节衣缩食:jieyisuoshi:jyss 芫荽:yansui:ys
+芭蕉:bajiao:bj 芭蕉叶:bajiaoye:bjy 芭蕉扇:bajiaoshan:bjs 花呢:huani:hn 花旗银行:huaqiyinhang:hqyh 花落谁家:hualuosheijia:hlsj 苍劲:cangjing:cj 苍术:cangzhu:cz
+苎麻:zhuma:zm 苦差:kuchai:kc 苦差事:kuchaishi:kcs 苯并芘:benbingbi:bbb 英雄传:yingxiongzhuan:yxz 茁壮成长:zhuozhuangchengzhang:zzcz 范佛里:fanfoli:ffl 范大夫:fandaifu:fdf
+茅塞:maose:ms 茅塞顿开:maosedunkai:msdk 草率:caoshuai:cs 草草了事:caocaoliaoshi:ccls 草长莺飞:caozhangyingfei:czyf 荨麻疹:xunmazhen:xmz 荷兰银行:helanyinhang:hlyh 荸荠:biqi:bq
+莎草:suocao:sc 莎草科:suocaoke:sck 莞尔:waner:we 莞尔一笑:waneryixiao:weyx 莫朴树:moposhu:mps 莫邪:moye:my 莫长老:mozhanglao:mzl 莲花落:lianhualao:lhl
+菲薄:feibo:fb 萎缩:weisuo:ws 萎缩性:weisuoxing:wsx 萝卜:luobo:lb 萝卜丝:luobosi:lbs 萝卜干:luobogan:lbg 萝卜花:luobohua:lbh 营长:yingzhang:yz
+萧史乘:xiaoshisheng:xss 落枕:laozhen:lz 著称:zhucheng:zc 葛长老:gezhanglao:gzl 董事长:dongshizhang:dsz 葫芦蔓:huluwan:hlw 葫蔓藤:huwanteng:hwt 蓝道行:landaoheng:ldh
+蔚县:yuxian:yx 蔚州:yuzhou:yz 蕉麻:jiaoma:jm 蕴藉:yunjie:yj 薄利多销:boliduoxiao:bldx 薄命:boming:bm 薄幸:boxing:bx 薄幸之:boxingzhi:bxz
+薄弱:boruo:br 薄弱校:boruoxiao:brx 薄弱点:boruodian:brd 薄情:boqing:bq 薄技:boji:bj 薄暮:bomu:bm 薄熙来:boxilai:bxl 薄礼:boli:bl
+薄膜:bomo:bm 薄荷:bohe:bh 薄荷油:boheyou:bhy 薄荷糖:bohetang:bht 薄荷脑:bohenao:bhn 薄荷醇:bohechun:bhc 薄薄地:baobaode:bbd 薄被:bobei:bb
+薄酒:bojiu:bj 薄雾:bowu:bw 藉藉无名:jiejiewuming:jjwm 藏传:cangzhuan:cz 藏刀:zangdao:zd 藏北:zangbei:zb 藏区:zangqu:zq 藏医:zangyi:zy
+藏医学:zangyixue:zyx 藏历:zangli:zl 藏学:zangxue:zx 藏学家:zangxuejia:zxj 藏式:zangshi:zs 藏戏:zangxi:zx 藏文:zangwen:zw 藏族:zangzu:zz
+藏族人:zangzuren:zzr 藏民:zangmin:zm 藏王:zangwang:zw 藏红花:zanghonghua:zhh 藏羚:zangling:zl 藏羚羊:zanglingyang:zly 藏药:zangyao:zy 藏语:zangyu:zy
+藏语文:zangyuwen:zyw 藏青:zangqing:zq 藏青色:zangqingse:zqs 藏香:zangxiang:zx 藤蔓:tengwan:tw 虚与委蛇:xuyuweiyi:xywy 虾蟆:hama:hm 蚌埠:bengbu:bb
+蚌埠市:bengbushi:bbs 蛤蟆:hama:hm 蛤蟆镜:hamajing:hmj 蜜里调油:militiaoyou:mlty 蜷缩:quansuo:qs 血块:xiekuai:xk 血泊:xuepo:xp 血淋淋:xielinlin:xll
+血糊糊:xiehuhu:xhh 行业:hangye:hy 行业性:hangyexing:hyx 行伍:hangwu:hw 行会:hanghui:hh 行内:hangnei:hn 行列:hanglie:hl 行列式:hanglieshi:hls
+行号:hanghao:hh 行商:hangshang:hs 行家:hangjia:hj 行家里手:hangjialishou:hjls 行市:hangshi:hs 行当:hangdang:hd 行情:hangqing:hq 行款:hangkuan:hk
+行规:hanggui:hg 行话:hanghua:hh 行货:hanghuo:hh 行距:hangju:hj 行辈:hangbei:hb 行长:hangzhang:hz 行间:hangjian:hj 衣着:yizhuo:yz
+衣锦还乡:yijinhuanxiang:yjhx 表率:biaoshuai:bs 袅娜:niaonuo:nn 袅袅娜娜:niaoniaonuonuo:nnnn 装帧:zhuangzhen:zz 装模作样:zhuangmuzuoyang:zmzy 裙带关系:qundaiguanji:qdgj 裹扎:guoza:gz
+褚劲风:chujingfeng:cjf 西柏林:xibolin:xbl 西洋参:xiyangshen:xys 西藏:xizang:xz 西藏地区:xizangdiqu:xzdq 西藏大学:xizangdaxue:xzdx 西藏天路:xizangtianlu:xztl 西藏药业:xizangyaoye:xzyy
+西藏路:xizanglu:xzl 西藏高原:xizanggaoyuan:xzgy 西行长:xihangzhang:xhz 西道行:xidaoheng:xdh 要不了:yaobuliao:ybl 覆没:fumo:fm 见称:jiancheng:jc 角儿:jueer:je
+角力:jueli:jl 角抵:juedi:jd 角斗:juedou:jd 角斗场:juedouchang:jdc 角斗士:juedoushi:jds 角色:juese:js 角逐:juezhu:jz 解宝:xiebao:xb
+解数:xieshu:xs 解文豹:xiewenbao:xwb 解调:jietiao:jt 言伯乾:yanbogan:ybg 言归正传:yanguizhengzhuan:ygzz 警长:jingzhang:jz 讨价还价:taojiahuanjia:tjhj 讨便宜:taopianyi:tpy
+讨还:taohuan:th 让给:ranggei:rg 议长:yizhang:yz 许寿裳:xushouchang:xsc 许德珩:xudeheng:xdh 评传:pingzhuan:pz 评弹:pingtan:pt 诈称:zhacheng:zc
+诈降:zhaxiang:zx 诗行:shihang:sh 诘问:jiewen:jw 该行:gaihang:gh 语塞:yuse:ys 诱降:youxiang:yx 说不着:shuobuzhao:sbz 说得着:shuodezhao:sdz
+诸乐调:zhuyuediao:zyd 诸道行:zhudaoheng:zdh 诸长老:zhuzhanglao:zzl 课长:kezhang:kz 调价:tiaojia:tj 调休:tiaoxiu:tx 调低:tiaodi:td 调侃:tiaokan:tk
+调停:tiaoting:tt 调停人:tiaotingren:ttr 调停者:tiaotingzhe:ttz 调养:tiaoyang:ty 调减:tiaojian:tj 调制:tiaozhi:tz 调制器:tiaozhiqi:tzq 调剂:tiaoji:tj
+调匀:tiaoyun:ty 调压:tiaoya:ty 调合:tiaohe:th 调味:tiaowei:tw 调味剂:tiaoweiji:twj 调味品:tiaoweipin:twp 调味品厂:tiaoweipinchang:twpc 调味料:tiaoweiliao:twl
+调和:tiaohe:th 调和主义:tiaohezhuyi:thzy 调和阴阳:tiaoheyinyang:thyy 调唆:tiaosuo:ts 调处:tiaochu:tc 调幅:tiaofu:tf 调弄:tiaonong:tn 调情:tiaoqing:tq
+调戏:tiaoxi:tx 调控:tiaokong:tk 调摄:tiaoshe:ts 调教:tiaojiao:tj 调整:tiaozheng:tz 调整期:tiaozhengqi:tzq 调整法:tiaozhengfa:tzf 调料:tiaoliao:tl
+调治:tiaozhi:tz 调测:tiaoce:tc 调理:tiaoli:tl 调皮:tiaopi:tp 调相:tiaoxiang:tx 调笑:tiaoxiao:tx 调经:tiaojing:tj 调羹:tiaogeng:tg
+调色:tiaose:ts 调色板:tiaoseban:tsb 调节:tiaojie:tj 调节价:tiaojiejia:tjj 调节剂:tiaojieji:tjj 调节器:tiaojieqi:tjq 调节税:tiaojieshui:tjs 调蓄:tiaoxu:tx
+调解:tiaojie:tj 调解书:tiaojieshu:tjs 调解人:tiaojieren:tjr 调试:tiaoshi:ts 调谐:tiaoxie:tx 调适:tiaoshi:ts 调速:tiaosu:ts 调速器:tiaosuqi:tsq
+调配:tiaopei:tp 调酒:tiaojiu:tj 调酒师:tiaojiushi:tjs 调音:tiaoyin:ty 调音师:tiaoyinshi:tys 调频:tiaopin:tp 调香:tiaoxiang:tx 谎称:huangcheng:hc
+谐调:xietiao:xt 贝大夫:beidaifu:bdf 财会:caikuai:ck 财政部长:caizhengbuzhang:czbz 财长:caizhang:cz 败给:baigei:bg 贪便宜:tanpianyi:tpy 贾人达:gurenda:grd
+贾平凹:jiapingwa:jpw 贾长老:jiazhanglao:jzl 赔还:peihuan:ph 赖嬷嬷:laimomo:lmm 赠给:zenggei:zg 赵大夫:zhaodaifu:zdf 赵嬷嬷:zhaomomo:zmm 赵家堡:zhaojiapu:zjp
+起落架:qilaojia:qlj 越长越:yuezhangyue:yzy 趔趄:lieqie:lq 趔趔趄趄:lielieqieqie:llqq 跑马卖解:paomamaixie:pmmx 蹊径:xijing:xj 身单力薄:shendanlibo:sdlb 身着:shenzhuo:sz
+躯壳:quqiao:qq 车行:chehang:ch 车马炮:jumapao:jmp 轧死:yasi:ys 轧花:yahua:yh 轧花厂:yahuachang:yhc 轧花机:yahuaji:yhj 转给:zhuangei:zg
+转行:zhuanhang:zh 软和:ruanhuo:rh 软着陆:ruanzhuolu:rzl 轴颈:zhoujing:zj 轻徭薄赋:qingyaobofu:qybf 轻率:qingshuai:qs 轻薄:qingbo:qb 轻薄无行:qingbowuxing:qbwx
+轻轻地:qingqingde:qqd 轻音乐:qingyinyue:qyy 载畜量:zaichuliang:zcl 输给:shugei:sg 辟谣:piyao:py 辩称:biancheng:bc 辱没:rumo:rm 边路传:bianluzhuan:blz
+返老还童:fanlaohuantong:flht 返还:fanhuan:fh 还乡:huanxiang:hx 还乡团:huanxiangtuan:hxt 还价:huanjia:hj 还俗:huansu:hs 还债:huanzhai:hz 还击:huanji:hj
+还原:huanyuan:hy 还原剂:huanyuanji:hyj 还原性:huanyuanxing:hyx 还原法:huanyuanfa:hyf 还原论:huanyuanlun:hyl 还嘴:huanzui:hz 还愿:huanyuan:hy 还我河山:huanwoheshan:hwhs
+还手:huanshou:hs 还政于民:huanzhengyumin:hzym 还款:huankuan:hk 还款期:huankuanqi:hkq 还款额:huankuane:hke 还清:huanqing:hq 还珠格格:huanzhugege:hzgg 还礼:huanli:hl
+还给:huangei:hg 还贷:huandai:hd 还阳:huanyang:hy 还魂:huanhun:hh 还魂草:huanhuncao:hhc 这么着:zhemezhao:zmz 进藏:jinzang:jz 远涉重洋:yuanshechongyang:yscy
+远渡重洋:yuanduchongyang:ydcy 远远地:yuanyuande:yyd 远隔重洋:yuangechongyang:ygcy 连胖子:lianpangzi:lpz 连长:lianzhang:lz 迫击炮:paijipao:pjp 退缩:tuisuo:ts 退耕还林:tuigenghuanlin:tghl
+退还:tuihuan:th 送给:songgei:sg 送还:songhuan:sh 递给:digei:dg 通称:tongcheng:tc 通货紧缩:tonghuojinsuo:thjs 造血:zaoxie:zx 遒劲:qiujing:qj
+道行:daoheng:dh 道长:daozhang:dz 那罗刹:naluocha:nlc 那长老:nazhanglao:nzl 邮差:youchai:yc 郑长老:zhengzhanglao:zzl 郦食其:liyiji:lyj 部长:buzhang:bz
+部长会议:buzhanghuiyi:bzhy 部长级:buzhangji:bzj 部队长:buduizhang:bdz 郭振乾:guozhengan:gzg 郭靖曾:guojingceng:gjc 都乐:doule:dl 都大锦:doudajin:ddj 都建康:doujiankang:djk
+都必领:doubiling:dbl 都悔青:douhuiqing:dhq 都拉斯:doulasi:dls 都柏林:dubolin:dbl 都柳江:douliujiang:dlj 都江:doujiang:dj 都洛邑:douluoyi:dly 都能安:dounengan:dna
+都行:douxing:dx 都诺夫:dounuofu:dnf 鄙薄:bibo:bb 酋长:qiuzhang:qz 酋长国:qiuzhangguo:qzg 配乐:peiyue:py 配角:peijue:pj 酒酿:jiuniang:jn
+酝酿:yunniang:yn 酬酢:chouzuo:cz 酿制:niangzhi:nz 酿成:niangcheng:nc 酿造:niangzao:nz 酿造业:niangzaoye:nzy 酿酒:niangjiu:nj 酿酒业:niangjiuye:njy
+酿酒厂:niangjiuchang:njc 酿酒师:niangjiushi:njs 里弄:lilong:ll 里长:lizhang:lz 重九:chongjiu:cj 重修:chongxiu:cx 重修旧好:chongxiujiuhao:cxjh 重光:chongguang:cg
+重写:chongxie:cx 重出:chongchu:cc 重印:chongyin:cy 重印本:chongyinben:cyb 重叠:chongdie:cd 重叠式:chongdieshi:cds 重合:chonghe:ch 重名:chongming:cm
+重启:chongqi:cq 重唱:chongchang:cc 重回:chonghui:ch 重围:chongwei:cw 重塑:chongsu:cs 重复:chongfu:cf 重复性:chongfuxing:cfx 重奏:chongzou:cz
+重婚:chonghun:ch 重婚案:chonghunan:cha 重婚罪:chonghunzui:chz 重孙:chongsun:cs 重孙子:chongsunzi:csz 重审:chongshen:cs 重山:chongshan:cs 重峦叠嶂:chongluandiezhang:cldz
+重庆:chongqing:cq 重庆地区:chongqingdiqu:cqdq 重庆大学:chongqingdaxue:cqdx 重庆市:chongqingshi:cqs 重庆队:chongqingdui:cqd 重建:chongjian:cj 重开:chongkai:ck 重归于好:chongguiyuhao:cgyh
+重影:chongying:cy 重振:chongzhen:cz 重振旗鼓:chongzhenqigu:czqg 重排:chongpai:cp 重提:chongti:ct 重播:chongbo:cb 重操旧业:chongcaojiuye:ccjy 重整:chongzheng:cz
+重整旗鼓:chongzhengqigu:czqg 重新:chongxin:cx 重构:chonggou:cg 重檐:chongyan:cy 重氮:chongdan:cd 重氮化:chongdanhua:cdh 重温:chongwen:cw 重演:chongyan:cy
+重现:chongxian:cx 重生:chongsheng:cs 重生父母:chongshengfumu:csfm 重申:chongshen:cs 重登:chongdeng:cd 重组:chongzu:cz 重置:chongzhi:cz 重耳:chonger:ce
+重见:chongjian:cj 重见天日:chongjiantianri:cjtr 重言:chongyan:cy 重设:chongshe:cs 重读:chongdu:cd 重起炉灶:chongqiluzao:cqlz 重蹈:chongdao:cd 重蹈覆辙:chongdaofuzhe:cdfz
+重返:chongfan:cf 重逢:chongfeng:cf 重重:chongchong:cc 重重包围:chongchongbaowei:ccbw 重重叠叠:chongchongdiedie:ccdd 重重围困:chongchongweikun:ccwk 重重地:zhongzhongde:zzd 重重的:chongchongde:ccd
+重阳:chongyang:cy 重阳节:chongyangjie:cyj 金佛山:jinfoshan:jfs 金兀术:jinwuzhu:jwz 金学曾:jinxueceng:jxc 金桔:jinju:jj 金称臣:jinchengchen:jcc 金蝉脱壳:jinchantuoqiao:jctq
+金蝉长老:jinchanzhanglao:jczl 金钥匙:jinyaoshi:jys 金面佛:jinmianfo:jmf 钥匙:yaoshi:ys 钥匙圈:yaoshiquan:ysq 钥匙孔:yaoshikong:ysk 钦差:qinchai:qc 钦差大臣:qinchaidachen:qcdc
+钱校本:qianjiaoben:qjb 铁佛寺:tiefosi:tfs 铃铛:lingdang:ld 铅山:yanshan:ys 铅山县:yanshanxian:ysx 铜管乐:tongguanyue:tgy 铜管乐器:tongguanyueqi:tgyq 铜臭:tongxiu:tx
+银行:yinhang:yh 银行业:yinhangye:yhy 银行券:yinhangquan:yhq 银行卡:yinhangka:yhk 银行学:yinhangxue:yhx 银行家:yinhangjia:yhj 银行法:yinhangfa:yhf 银行界:yinhangjie:yhj
+锒铛入狱:langdangruyu:ldry 键盘乐器:jianpanyueqi:jpyq 镇长:zhenzhang:zz 镜泊湖:jingpohu:jph 长一智:zhangyizhi:zyz 长上:zhangshang:zs 长传:changzhuan:cz 长兄:zhangxiong:zx
+长势:zhangshi:zs 长史:zhangshi:zs 长吁短叹:changxuduantan:cxdt 长大:zhangda:zd 长大成人:zhangdachengren:zdcr 长女:zhangnu:zn 长子:zhangzi:zz 长孙:zhangsun:zs
+长官:zhangguan:zg 长官司:zhangguansi:zgs 长幼慈:zhangyouci:zyc 长幼有序:zhangyouyouxu:zyyx 长成:zhangcheng:zc 长机:zhangji:zj 长毛:zhangmao:zm 长毛兔:zhangmaotu:zmt
+长毛绒:zhangmaorong:zmr 长满:zhangman:zm 长相:zhangxiang:zx 长老:zhanglao:zl 长老会:zhanglaohui:zlh 长老派:zhanglaopai:zlp 长者:zhangzhe:zz 长辈:zhangbei:zb
+长进:zhangjin:zj 长长地:changchangde:ccd 长颈鹿:changjinglu:cjl 门槛:menkan:mk 门槛儿:menkaner:mke 闪闪地:shanshande:ssd 闭塞:bise:bs 闭目塞听:bimuseting:bmst
+闵行区:minhangqu:mhq 闵行校:minhangxiao:mhx 闷闷地:menmende:mmd 阎大夫:yandaifu:ydf 阏氏:yanzhi:yz 阚维雍:kanweiyong:kwy 队长:duizhang:dz 阻塞:zuse:zs
+阻塞性:zusexing:zsx 阿佛洛:afoluo:afl 阿尔忒:aertui:aet 阿弥陀:emituo:emt 阿弥陀佛:emituofo:emtf 阿房宫:epanggong:epg 阿房宫赋:epanggongfu:epgf 阿胶:ejiao:ej
+阿谀:eyu:ey 阿谀奉承:eyufengcheng:eyfc 阿谀逢迎:eyufengying:eyfy 附着:fuzhuo:fz 附着力:fuzhuoli:fzl 附着物:fuzhuowu:fzw 陈之佛:chenzhifo:czf 陈重名:chenchongming:ccm
+陈镐民:chenhaomin:chm 陈长老:chenzhanglao:czl 降伏:xiangfu:xf 降服:xiangfu:xf 降顺:xiangshun:xs 降龙伏虎:xianglongfuhu:xlfh 院长:yuanzhang:yz 陷没:xianmo:xm
+随行就市:suihangjiushi:shjs 隐没:yinmo:ym 雁行:yanhang:yh 雄劲:xiongjing:xj 雅乐:yayue:yy 雪茄:xuejia:xj 雪茄烟:xuejiayan:xjy 霓裳:nichang:nc
+露一手:louyishou:lys 露头:loutou:lt 露脸:loulian:ll 露面:loumian:lm 露馅:louxian:lx 露马脚:loumajiao:lmj 青灯古佛:qingdenggufo:qdgf 青菜萝卜:qingcailuobo:qclb
+青藏:qingzang:qz 青藏公路:qingzanggonglu:qzgl 青藏铁路:qingzangtielu:qztl 青藏高原:qingzanggaoyuan:qzgy 静静地:jingjingde:jjd 非得:feidei:fd 非银行:feiyinhang:fyh 鞭辟入里:bianpiruli:bprl
+音乐:yinyue:yy 音乐会:yinyuehui:yyh 音乐剧:yinyueju:yyj 音乐厅:yinyueting:yyt 音乐史:yinyueshi:yys 音乐堂:yinyuetang:yyt 音乐声:yinyuesheng:yys 音乐季:yinyueji:yyj
+音乐学:yinyuexue:yyx 音乐学院:yinyuexueyuan:yyxy 音乐家:yinyuejia:yyj 音乐性:yinyuexing:yyx 音乐感:yinyuegan:yyg 音乐指导:yinyuezhidao:yyzd 音乐片:yinyuepian:yyp 音乐界:yinyuejie:yyj
+音乐系:yinyuexi:yyx 音乐节:yinyuejie:yyj 音乐课:yinyueke:yyk 须得先:xudeixian:xdx 顾不了:gubuliao:gbl 顾虑重重:guluchongchong:glcc 顾颉刚:guxiegang:gxg 颈侧:jingce:jc
+颈内:jingnei:jn 颈椎:jingzhui:jz 颈椎病:jingzhuibing:jzb 颈肩痛:jingjiantong:jjt 颈脖:jingbo:jb 颈部:jingbu:jb 颈项:jingxiang:jx 颉颃:xiehang:xh
+额手称庆:eshouchengqing:escq 颤栗:zhanli:zl 风调雨顺:fengtiaoyushun:ftys 风雨剥蚀:fengyuboshi:fybs 馆长:guanzhang:gz 首长:shouzhang:sz 香蕉:xiangjiao:xj 香蕉林:xiangjiaolin:xjl
+马圈湾:majuanwan:mjw 马朝旭:mazhaoxu:mzx 马汝珩:maruheng:mrh 马道长:madaozhang:mdz 马都拉:madoula:mdl 驮子:duozi:dz 骂不还口:mabuhuankou:mbhk 骄矜:jiaojin:jj
+验血:yanxie:yx 骠骑:piaoqi:pq 骨殖:gushi:gs 高丽参:gaolishen:gls 高句丽:gaogouli:ggl 高楼大厦:gaoloudasha:glds 高高地:gaogaode:ggd 鬼使神差:guishishenchai:gssc
+鬼蜮伎俩:guiyujiliang:gyjl 魏学曾:weixueceng:wxc 鲁长老:luzhanglao:lzl 鲍长老:baozhanglao:bzl 鸡肋:jilei:jl 鸡血:jixie:jx 鸡血石:jixieshi:jxs 鹿死谁手:lusisheishou:lsss
+黄柏:huangbo:hb 黄柏富:huangbofu:hbf 黄澄澄:huangdengdeng:hdd 黄疸:huangdan:hd 黄老邪:huanglaoye:hly 黄蕉风:huangjiaofeng:hjf 黄裳:huangchang:hc 黄陂:huangpi:hp
+黄陂区:huangpiqu:hpq 黏着:nianzhuo:nz 黑颈鹤:heijinghe:hjh 默默地:momode:mmd 鼓乐:guyue:gy 鼓乐喧天:guyuexuantian:gyxt 鼓乐声:guyuesheng:gys 鼓乐齐鸣:guyueqiming:gyqm
+鼻塞:bise:bs 鼻血:bixie:bx 龙门刨:longmenbao:lmb 龟兹:qiuci:qc 龟缩:guisuo:gs 龟裂:junlie:jl
+";
+
+        #endregion
+
         internal static string[] codes = new string[]{
 "a     :阿啊吖嗄腌锕",
 "ai    :爱埃碍矮挨唉哎哀皑癌蔼艾隘捱嗳嗌嫒瑷暧砹锿霭",
@@ -215,12 +624,12 @@ namespace AntdUI
 "diu   :丢铥",
 "dong  :动东冬懂洞冻董栋侗恫垌咚岽峒氡胨胴硐鸫",
 "dou   :斗豆兜抖陡逗痘蔸窦蚪篼",
-"du    :度都毒独读渡杜堵镀顿督犊睹赌肚妒芏嘟渎椟牍蠹笃髑黩",
+"du    :度都毒独读渡杜堵镀督犊睹赌肚妒芏嘟渎椟牍蠹笃髑黩",
 "duan  :断端段短锻缎椴煅簖",
 "dui   :对队堆兑怼憝碓",
 "dun   :盾吨顿蹲敦墩囤钝遁沌炖砘礅盹镦趸",
 "duo   :多夺朵掇哆垛躲跺舵剁惰堕咄哚沲缍柁铎裰踱",
-"e     :而二尔儿恶额恩俄耳饵蛾饿峨鹅讹娥厄扼遏鄂噩谔垩苊莪萼呃愕屙婀轭腭锇锷鹗颚鳄",
+"e     :恶额俄蛾饿鹅讹娥厄扼遏鄂噩谔垩苊莪萼呃愕屙婀轭腭锇锷鹗颚鳄",
 "ei    :诶",
 "en    :恩蒽摁",
 "er    :而二尔儿耳饵洱贰佴迩珥铒鸸鲕",
@@ -301,7 +710,7 @@ namespace AntdUI
 "kui   :奎溃馈亏盔岿窥葵魁傀愧馗匮夔隗蒉揆喹喟悝愦逵暌睽聩蝰篑跬",
 "kun   :困昆坤捆悃阃琨锟醌鲲髡",
 "kuo   :扩括阔廓蛞",
-"la    :拉啦蜡腊蓝垃喇辣剌邋旯砬瘌",
+"la    :拉啦蜡腊垃喇辣剌邋旯砬瘌",
 "lai   :来赖莱崃徕涞濑赉睐铼癞籁",
 "lan   :兰烂蓝览栏婪拦篮阑澜谰揽懒缆滥岚漤榄斓罱镧褴",
 "lang  :浪朗郎狼琅榔廊莨蒗啷阆锒稂螂",
@@ -346,7 +755,7 @@ namespace AntdUI
 "mou   :某谋牟侔哞眸蛑蝥鍪",
 "mu    :亩目木母墓幕牧姆穆拇牡暮募慕睦仫坶苜沐毪钼",
 "n     :嗯",
-"na    :那南哪拿纳钠呐娜捺肭镎衲",
+"na    :那哪拿纳钠呐娜捺肭镎衲",
 "nai   :耐奶乃氖奈鼐艿萘柰",
 "nan   :南难男喃囝囡楠腩蝻赧",
 "nang  :囊攮囔馕曩",
@@ -355,7 +764,7 @@ namespace AntdUI
 "nei   :内馁",
 "nen   :嫩恁",
 "neng  :能",
-"ni    :你泥尼逆拟尿妮霓倪匿腻溺伲坭猊怩昵旎慝睨铌鲵",
+"ni    :你泥尼逆拟妮霓倪匿腻溺伲坭猊怩昵旎慝睨铌鲵",
 "nian  :年念粘蔫拈碾撵捻酿廿埝辇黏鲇鲶",
 "niang :娘",
 "niao  :尿鸟茑嬲脲袅",
@@ -369,9 +778,9 @@ namespace AntdUI
 "nuan  :暖",
 "nue   :虐",
 "nuo   :诺挪懦糯傩搦喏锘",
-"o     :欧偶哦鸥殴藕呕沤讴噢怄瓯耦",
+"o     :哦噢",
 "ou    :欧偶鸥殴藕呕沤讴怄瓯耦",
-"pa    :怕派爬帕啪趴琶葩杷筢",
+"pa    :怕爬帕啪趴琶葩杷筢",
 "pai   :派排拍牌哌徘湃俳蒎",
 "pan   :判盘叛潘攀磐盼畔胖爿泮袢襻蟠蹒",
 "pang  :旁乓庞耪胖彷滂逄螃",
@@ -383,7 +792,7 @@ namespace AntdUI
 "pian  :片偏篇骗谝骈犏胼翩蹁",
 "piao  :票漂飘瓢剽嘌嫖缥殍瞟螵",
 "pie   :撇瞥丿苤氕",
-"pin   :品贫频拼苹聘拚姘嫔榀牝颦",
+"pin   :品贫频拼聘拚姘嫔榀牝颦",
 "ping  :平评瓶凭苹乒坪萍屏俜娉枰鲆",
 "po    :破迫坡泼颇婆魄粕叵鄱珀攴钋钷皤笸",
 "pou   :剖裒掊",
@@ -424,7 +833,7 @@ namespace AntdUI
 "se    :色瑟涩啬铯穑",
 "sen   :森",
 "seng  :僧",
-"sha   :沙杀砂啥纱莎刹傻煞杉唼歃铩痧裟霎鲨",
+"sha   :沙杀砂啥纱莎刹傻煞唼歃铩痧裟霎鲨",
 "shai  :筛晒",
 "shan  :山闪善珊扇陕苫杉删煽衫擅赡膳汕缮剡讪鄯埏芟潸姗嬗骟膻钐疝蟮舢跚鳝",
 "shang :上商伤尚墒赏晌裳垧绱殇熵觞",
