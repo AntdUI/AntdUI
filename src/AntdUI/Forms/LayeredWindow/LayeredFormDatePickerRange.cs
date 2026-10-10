@@ -279,7 +279,7 @@ namespace AntdUI
         string cname;
 
         CultureInfo Culture;
-        string CultureID = Localization.Get("ID", "zh-CN"),
+        string CultureID = Localization.CurrentLanguage,
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
 

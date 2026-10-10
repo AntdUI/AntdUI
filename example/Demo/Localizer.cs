@@ -12,9 +12,6 @@ namespace Demo
         {
             switch (key)
             {
-                case "ID":
-                    return "en-US";
-
                 case "Cancel":
                     return "Cancel";
                 case "OK":

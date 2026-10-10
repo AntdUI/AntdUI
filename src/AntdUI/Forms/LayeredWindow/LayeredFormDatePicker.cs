@@ -158,7 +158,7 @@ namespace AntdUI
         string cname;
 
         CultureInfo Culture;
-        string CultureID = Localization.Get("ID", "zh-CN"),
+        string CultureID = Localization.CurrentLanguage,
             button_text, OKButton = Localization.Get("OK", "确定"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
@@ -479,7 +479,7 @@ namespace AntdUI
                             g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
                             g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
                         }
-                        if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path); ;
+                        if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path);
                     }
                 }
                 if (badge_list.Count > 0)

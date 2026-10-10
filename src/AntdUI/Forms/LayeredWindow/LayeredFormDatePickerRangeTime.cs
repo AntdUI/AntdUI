@@ -294,7 +294,7 @@ namespace AntdUI
         string cname;
 
         CultureInfo Culture;
-        string CultureID = Localization.Get("ID", "zh-CN"),
+        string CultureID = Localization.CurrentLanguage,
             button_text = Localization.Get("Now", "此刻"), OKButton = Localization.Get("OK", "确定"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;

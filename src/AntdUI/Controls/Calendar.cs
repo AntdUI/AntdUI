@@ -388,7 +388,7 @@ namespace AntdUI
         #region 参数
 
         CultureInfo Culture;
-        string CultureID = Localization.Get("ID", "zh-CN"),
+        string CultureID = Localization.CurrentLanguage,
             button_text = Localization.Get("ToDay", "今天"),
             YearFormat, MonthFormat,
             MondayButton, TuesdayButton, WednesdayButton, ThursdayButton, FridayButton, SaturdayButton, SundayButton;
@@ -1507,7 +1507,7 @@ namespace AntdUI
             switch (id)
             {
                 case EventType.LANG:
-                    CultureID = Localization.Get("ID", "zh-CN");
+                    CultureID = Localization.CurrentLanguage;
                     Culture = new CultureInfo(CultureID);
                     button_text = Localization.Get("ToDay", "今天");
                     YDR = CultureID.StartsWith("en");
