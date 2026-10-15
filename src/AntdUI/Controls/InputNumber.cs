@@ -106,8 +106,9 @@ namespace AntdUI
             get => currentValue;
             set
             {
+                value = Constrain(value);
                 if (currentValue == value) return;
-                currentValue = Constrain(value);
+                currentValue = value;
                 Text = GetNumberText(currentValue);
                 OnValueChanged(currentValue);
                 OnPropertyChanged(nameof(Value));
@@ -135,6 +136,12 @@ namespace AntdUI
         /// </summary>
         [Description("始终显示控制器"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
         public bool AlwaysShowControl { get; set; }
+
+        /// <summary>
+        /// 使用上下方向键修改值
+        /// </summary>
+        [Description("键盘方向键修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
+        public bool KeyboardModifyEnabled { get; set; }
 
         bool wheelModifyEnabled = true;
         /// <summary>
@@ -503,6 +510,29 @@ namespace AntdUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        public override void ProcessShortcutKeys(ShortcutKeys keyData)
+        {
+            if (KeyboardModifyEnabled && (keyData == ShortcutKeys.Up || keyData == ShortcutKeys.Down))
+            {
+                if (Enabled && !ReadOnly) ModifyValue(keyData == ShortcutKeys.Up);
+                return;
+            }
+            base.ProcessShortcutKeys(keyData);
+        }
+
+        void ModifyValue(bool increase)
+        {
+            TryParse(Text);
+            decimal next;
+            try { next = increase ? currentValue + Increment : currentValue - Increment; }
+            catch (OverflowException)
+            {
+                next = increase == (Increment > 0) ? decimal.MaxValue : decimal.MinValue;
+            }
+            Value = next;
+            Text = GetNumberText(currentValue);
+        }
+
         protected override void OnLostFocus(EventArgs e)
         {
             ILostFocus();
@@ -556,9 +586,8 @@ namespace AntdUI
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (ReadOnly || !wheelModifyEnabled) return;
-            if (e.Delta > 0) Value = currentValue + Increment;
-            else Value = currentValue - Increment;
+            if (!Enabled || ReadOnly || !wheelModifyEnabled || e.Delta == 0) return;
+            ModifyValue(e.Delta > 0);
             if (e is HandledMouseEventArgs handled) handled.Handled = true;
         }
 

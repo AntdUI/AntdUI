@@ -21,6 +21,8 @@ Slider 滑动输入条 👚
 **MinValue** | 最小值 | int | 0 |
 **MaxValue** | 最大值 | int | 100 |
 **Value** | 当前值 | int | 0 |
+**KeyboardModifyEnabled** | 方向键修改值，开启后支持 Tab 和点击获取焦点 | bool | false |
+**WheelModifyEnabled** | 鼠标滚轮修改值，每次增减 1；Dots 模式跳到相邻刻度 | bool | false |
 ||||
 **Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Left |
 **ShowValue** | 是否显示数值 | bool | false |

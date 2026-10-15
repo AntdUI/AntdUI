@@ -25,6 +25,30 @@ namespace AntdUI
     {
         #region 属性
 
+        bool keyboardModifyEnabled;
+        /// <summary>
+        /// 使用方向键修改值
+        /// </summary>
+        [Description("键盘方向键修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
+        public bool KeyboardModifyEnabled
+        {
+            get => keyboardModifyEnabled;
+            set
+            {
+                if (keyboardModifyEnabled == value) return;
+                keyboardModifyEnabled = value;
+                SetStyle(ControlStyles.Selectable, value);
+                TabStop = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 使用鼠标滚轮修改值
+        /// </summary>
+        [Description("鼠标滚轮修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
+        public bool WheelModifyEnabled { get; set; }
+
         Color? fill;
         /// <summary>
         /// 颜色
@@ -503,12 +527,63 @@ namespace AntdUI
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (keyboardModifyEnabled && e.Button == MouseButtons.Left) Focus();
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
                 Value = FindIndex(e.X, e.Y, true);
                 mouseFlat = true;
             }
+        }
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            if (keyboardModifyEnabled && Enabled && Focused)
+            {
+                switch (keyData)
+                {
+                    case Keys.Left:
+                        ModifyValue(align == TAlignMini.Right);
+                        return true;
+                    case Keys.Right:
+                        ModifyValue(align != TAlignMini.Right);
+                        return true;
+                    case Keys.Up:
+                        ModifyValue(align != TAlignMini.Top);
+                        return true;
+                    case Keys.Down:
+                        ModifyValue(align == TAlignMini.Top);
+                        return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+            if (!WheelModifyEnabled || !Enabled || e.Delta == 0) return;
+            ModifyValue(e.Delta > 0);
+            if (e is HandledMouseEventArgs handled) handled.Handled = true;
+        }
+
+        void ModifyValue(bool increase)
+        {
+            if (Dots && marks != null && marks.Count > 0)
+            {
+                int? next = null;
+                foreach (var mark in marks)
+                {
+                    int candidate = mark.Value;
+                    if (candidate < _minValue || candidate > _maxValue) continue;
+                    if (increase ? candidate > Value && (!next.HasValue || candidate < next.Value)
+                        : candidate < Value && (!next.HasValue || candidate > next.Value)) next = candidate;
+                }
+                if (next.HasValue) Value = next.Value;
+                return;
+            }
+            long value = (long)Value + (increase ? 1 : -1);
+            Value = (int)Math.Max(_minValue, Math.Min(_maxValue, value));
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
