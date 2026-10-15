@@ -844,7 +844,7 @@ namespace AntdUI
                             {
                                 if (Helper.ClipboardSetText(this, content.Text))
                                 {
-                                    Message.open(new Message.Config(this, "复制成功", TType.Success, Font)
+                                    Message.open(new Message.Config(this, Localization.Get("Preview.CopySuccess", "复制成功"), TType.Success, Font)
                                     {
                                         ShowInWindow = true
                                     });

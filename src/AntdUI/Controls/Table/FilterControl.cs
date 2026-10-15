@@ -125,7 +125,9 @@ namespace AntdUI
                     Margin = new Padding(0),
                     Dock = DockStyle.Fill,
                     CheckedText = "是",
-                    UnCheckedText = "否"
+                    UnCheckedText = "否",
+                    LocalizationCheckedText = "Filter.BoolTrue",
+                    LocalizationUnCheckedText = "Filter.BoolFalse"
                 };
                 tablePanel.Controls.Add(edit, 1, 0);
                 foreach (SelectItem item in selectCondition.Items)
