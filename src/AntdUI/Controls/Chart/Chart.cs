@@ -569,7 +569,7 @@ namespace AntdUI
                 if (dataset.Visible)
                 {
                     var color = dataset.LegendBoxFillColor.HasValue ? dataset.LegendBoxFillColor.Value : (dataset.FillColor.HasValue ? dataset.FillColor.Value : Color.Gray);
-                    legendItems.Add(new LegendItem { Label = dataset.Label ?? "数据集", Color = color });
+                    legendItems.Add(new LegendItem { Label = dataset.Label ?? Localization.Get("Chart.DefaultDatasetLabel", "数据集"), Color = color });
                 }
             }
 

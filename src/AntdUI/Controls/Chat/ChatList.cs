@@ -1774,7 +1774,7 @@ namespace AntdUI.Chat
         public TipChatItem(DateTime time)
         {
             _text = time.ToString("HH:mm");
-            TextFull = time.ToString("yyyy年M月d日 dddd HH:mm");
+            TextFull = time.ToString(Localization.Get("Chat.TipDateFormat", "yyyy年M月d日 dddd HH:mm"));
             TextTmp = _text;
         }
         public TipChatItem(DateTime time, string f)

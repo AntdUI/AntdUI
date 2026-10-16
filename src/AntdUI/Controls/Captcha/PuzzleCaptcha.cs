@@ -498,9 +498,9 @@ namespace AntdUI.Captcha
             // 绘制滑块提示文本
             string sliderText = state switch
             {
-                PuzzleCaptchaState.Success => "验证成功",
-                PuzzleCaptchaState.Failed => "验证失败",
-                _ => "向右拖动滑块填充拼图"
+                PuzzleCaptchaState.Success => Localization.Get("Captcha.Success", "验证成功"),
+                PuzzleCaptchaState.Failed => Localization.Get("Captcha.Failed", "验证失败"),
+                _ => Localization.Get("Captcha.DragHint", "向右拖动滑块填充拼图")
             };
 
             Color textColor = fore ?? Style.Db.Text;

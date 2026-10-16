@@ -159,7 +159,7 @@ namespace AntdUI
 
         public override string ToString()
         {
-            return $"{Label} ({Count} 个数据点)";
+            return $"{Label} ({Count} {Localization.Get("Chart.DataPointsSuffix", "个数据点")})";
         }
     }
 }
