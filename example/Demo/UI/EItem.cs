@@ -59,11 +59,13 @@ namespace AntdUI
             return new Size(size, size);
         }
 
-
         public override void Dispose(VirtualPanel sender, bool disposed)
         {
-            bmp?.Dispose();
-            bmp = null;
+            if (disposed)
+            {
+                bmp?.Dispose();
+                bmp = null;
+            }
             base.Dispose(sender, disposed);
         }
     }

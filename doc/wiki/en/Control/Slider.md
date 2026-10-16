@@ -20,8 +20,8 @@ Name | Description | Type | Default Value |
 **MinValue** | Minimum value | int | 0 |
 **MaxValue** | Maximum value | int | 100 |
 **Value** | Current value | int | 0 |
-**KeyboardModifyEnabled** | Modify value with arrow keys; enable Tab and click focus | bool | false |
-**WheelModifyEnabled** | Modify value with the mouse wheel by 1, or move to an adjacent mark in Dots mode | bool | false |
+**KeyboardModifyEnabled** | Modify value with arrow keys; enable Tab and click focus | bool | true |
+**WheelModifyEnabled** | Modify value with the mouse wheel by 1, or move to an adjacent mark in Dots mode | bool | true |
 ||||
 **Align** | Align | [TAlignMini](Enum.md#talignmini) | Left |
 **ShowValue** | Whether to display numerical values | bool | false |

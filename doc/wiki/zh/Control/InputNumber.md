@@ -20,7 +20,7 @@ InputNumber 数字输入框 👚
 **ShowControl** | 显示控制器 | bool | true |
 **AlwaysShowControl** | 是否始终显示控制器(未获得焦点时也显示) | bool | false |
 **WheelModifyEnabled** | 鼠标滚轮修改值 | bool | true |
-**KeyboardModifyEnabled** | 上下方向键修改值，使用 Increment 步长 | bool | false |
+**KeyboardModifyEnabled** | 上下方向键修改值，使用 Increment 步长 | bool | true |
 **DecimalPlaces** | 显示的小数点位数 | int | 0 |
 **ThousandsSeparator** | 是否显示千分隔符 | bool | false |
 **Hexadecimal** | 值是否应以十六进制显示 | bool | false |

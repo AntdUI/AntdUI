@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.13` 2026-10-16
+
+- ➕ Slider keyboard numerical control and scroll wheel switch
+- ➕ InputNumber keyboard numerical control
+- ➕ Slider can capture focus
+- ✍️ Pinyin supports polyphonic words (调查/空调/倔强 etc.) and fixes single char pinyin of 而、恩、欧、南、蓝、派、苹、尿、杉、顿
+- ✍️ Table overload OpenTip (CELL, X, Y, ToolTip, [Config]) is used to display custom tooltip content in specified cells
+- ✍️ Dropdown Win7 version and below cannot be clicked
+- ✍️ Window suppresses flicker
+- ✍️ Tip: Y cannot center in left and right mode
+- ✍️ VirtualPanel theme switch release item
+- ✍️ Route remaining hardcoded Chinese UI strings through Localization.Get
+- ✍️ Touch screen interaction optimization (XY takes effect simultaneously)
+
 ### `2.4.12` 2026-09-28
 
 - ➕ Modal OnBtns adapt to asynchronous

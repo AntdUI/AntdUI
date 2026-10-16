@@ -19,7 +19,7 @@ Name | Description | Type | Default Value |
 **ShowControl** | Show controller | bool | true |
 **AlwaysShowControl** | Whether to always show the controller, even when not focused | bool | false |
 **WheelModifyEnabled** | Mouse wheel modify value | bool | true |
-**KeyboardModifyEnabled** | Modify value with Up/Down using Increment | bool | false |
+**KeyboardModifyEnabled** | Modify value with Up/Down using Increment | bool | true |
 **DecimalPlaces** | Number of decimal places displayed | int | 0 |
 **ThousandsSeparator** | Whether to show thousands separator | bool | false |
 **Hexadecimal** | Whether values should be displayed in hexadecimal | bool | false |

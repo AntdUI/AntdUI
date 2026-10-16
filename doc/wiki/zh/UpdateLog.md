@@ -1,5 +1,19 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.13` 2026-10-16
+
+- ➕ Slider 键盘数值控制及滚轮开关
+- ➕ InputNumber 键盘数值控制
+- ➕ Slider 可捕获焦点
+- ✍️ Pinyin 支持多音字词组（调查/空调/倔强 等），并修正 而、恩、欧、南、蓝、派、苹、尿、杉、顿 等单字拼音
+- ✍️ Table 重载OpenTip(CELL, X, Y, ToolTip, [Config]) 用于在指定单元格显示自定义工具提示内容
+- ✍️ Dropdown Win7版本及以下无法点击
+- ✍️ Window 抑制闪烁
+- ✍️ Tip 在左右模式下Y无法居中
+- ✍️ VirtualPanel 切换主题释放项
+- ✍️ Route remaining hardcoded Chinese UI strings through Localization.Get
+- ✍️ 触屏交互优化(XY同时生效)
+
 ### `2.4.12` 2026-09-28
 
 - ➕ Modal OnBtns 适配异步

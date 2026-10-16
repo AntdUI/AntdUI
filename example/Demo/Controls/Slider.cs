@@ -15,22 +15,6 @@ namespace Demo.Controls
         {
             form = _form;
             InitializeComponent();
-            slider1.KeyboardModifyEnabled = true;
-            slider2.KeyboardModifyEnabled = true;
-            slider3.KeyboardModifyEnabled = true;
-            slider4.KeyboardModifyEnabled = true;
-            slider5.KeyboardModifyEnabled = true;
-            slider6.KeyboardModifyEnabled = true;
-            slider7.KeyboardModifyEnabled = true;
-            slider8.KeyboardModifyEnabled = true;
-            slider1.WheelModifyEnabled = true;
-            slider2.WheelModifyEnabled = true;
-            slider3.WheelModifyEnabled = true;
-            slider4.WheelModifyEnabled = true;
-            slider5.WheelModifyEnabled = true;
-            slider6.WheelModifyEnabled = true;
-            slider7.WheelModifyEnabled = true;
-            slider8.WheelModifyEnabled = true;
         }
 
         private string slider7_ValueFormatChanged(object sender, AntdUI.IntEventArgs e)
