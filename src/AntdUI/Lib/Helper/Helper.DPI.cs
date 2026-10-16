@@ -15,16 +15,7 @@ namespace AntdUI
     {
         public static void DpiAuto(float dpi, Control control)
         {
-            if (dpi == 1F)
-            {
-                if (control is Window window && window.StartPosition == FormStartPosition.CenterScreen)
-                {
-                    var size = window.sizeInit ?? window.ClientSize;
-                    var screen = Screen.FromPoint(window.Location).WorkingArea;
-                    window.Location = new Point(screen.X + (screen.Width - size.Width) / 2, screen.Y + (screen.Height - size.Height) / 2);
-                }
-                return;
-            }
+            if (dpi == 1F) return;
             if (Config.DpiMode == DpiMode.Compatible)
             {
                 DpiCompatible(dpi, control);
@@ -112,7 +103,7 @@ namespace AntdUI
         {
             if (form is Window window)
             {
-                DpiForm(dpi, window, window.sizeInit ?? window.ClientSize, out var point, out var size);
+                DpiForm(dpi, window, window.ClientSize, out var point, out var size);
                 Size max = window.MaximumSize, min = window.MinimumSize;
                 window.MaximumSize = window.MinimumSize = window.ClientSize = size;
                 window.Location = point;

@@ -101,40 +101,15 @@ namespace AntdUI
 
         #endregion
 
-        bool rmax = false;
         bool DwmEnabled = true;
         public override void OnCreated‌()
         {
             if (OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
             else DwmEnabled = false;
             Win32.User32.DisableProcessWindowsGhosting();
-            if (WindowState == FormWindowState.Maximized) rmax = true;
-            if (FormBorderStyle != FormBorderStyle.None && !rmax)
-            {
-                sizeInit = base.ClientSize;
-                SetSize(sizeInit.Value);
-            }
+            if (OS.Win7OrLower && FormBorderStyle != FormBorderStyle.None && WindowState != FormWindowState.Maximized) SetSize(base.ClientSize);
             HandMessage();
             DwmArea();
-            eNonclient = false;
-        }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                if (DwmEnabled) return base.CreateParams;
-                CreateParams cp = base.CreateParams;
-                // 移除标题栏和系统菜单（按钮）
-                cp.Style &= ~0xC00000 & ~0x80000;
-                return cp;
-            }
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            eNonclient = true;
-            base.OnHandleDestroyed(e);
         }
 
         void SetSize(Size size)
@@ -145,18 +120,17 @@ namespace AntdUI
             MaximumSize = max;
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override CreateParams CreateParams
         {
-            Win32.User32.SetWindowPos(Handle, Win32.HWND.NULL, 0, 0, 0, 0, Win32.User32.SetWindowPosFlags.SWP_NOZORDER | Win32.User32.SetWindowPosFlags.SWP_NOOWNERZORDER | Win32.User32.SetWindowPosFlags.SWP_NOMOVE | Win32.User32.SetWindowPosFlags.SWP_NOSIZE | Win32.User32.SetWindowPosFlags.SWP_FRAMECHANGED);
-            base.OnLoad(e);
-        }
-
-        bool eNonclient = true;
-        private void InvalidateNonclient()
-        {
-            if (eNonclient) return;
-            Win32.User32.UpdateWindow(Handle);
-            Win32.User32.SetWindowPos(Handle, Win32.HWND.NULL, 0, 0, 0, 0, Win32.User32.SetWindowPosFlags.SWP_FRAMECHANGED | Win32.User32.SetWindowPosFlags.SWP_NOACTIVATE | Win32.User32.SetWindowPosFlags.SWP_NOCOPYBITS | Win32.User32.SetWindowPosFlags.SWP_NOMOVE | Win32.User32.SetWindowPosFlags.SWP_NOOWNERZORDER | Win32.User32.SetWindowPosFlags.SWP_NOREPOSITION | Win32.User32.SetWindowPosFlags.SWP_NOSIZE | Win32.User32.SetWindowPosFlags.SWP_NOZORDER);
+            get
+            {
+                if (DwmEnabled) return base.CreateParams;
+                CreateParams cp = base.CreateParams;
+                // 移除标题栏和系统菜单（按钮）
+                cp.Style &= ~0xC00000 & ~0x80000;
+                cp.ExStyle |= 0x00000008; // WS_EX_COMPOSITED
+                return cp;
+            }
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -177,11 +151,19 @@ namespace AntdUI
                     break;
                 case Win32.User32.WindowMessage.WM_ACTIVATEAPP:
                 case Win32.User32.WindowMessage.WM_NCACTIVATE:
-                    if (DwmEnabled) InvalidateNonclient();
-                    else
+                case Win32.User32.WindowMessage.WM_ERASEBKGND:
+                    if (DwmEnabled)
                     {
                         m.Result = TRUE;
                         return;
+                    }
+                    break;
+                case Win32.User32.WindowMessage.WM_WINDOWPOSCHANGING:
+                    if (DwmEnabled && !IsFull)
+                    {
+                        var wp = Win32.PtrToStructure<WindowPos>(m.LParam);
+                        wp.flags &= ~(uint)Win32.User32.SetWindowPosFlags.SWP_FRAMECHANGED;
+                        Marshal.StructureToPtr(wp, m.LParam, false);
                     }
                     break;
                 default:
@@ -195,6 +177,19 @@ namespace AntdUI
             catch { }
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        private struct WindowPos
+        {
+            public IntPtr hwnd;
+            public IntPtr hwndInsertAfter;
+            public int x;
+            public int y;
+            public int cx;
+            public int cy;
+            public uint flags;
+        }
+
+
         static IntPtr TRUE = new IntPtr(1), FALSE = new IntPtr(0);
         bool WmGhostingHandler(System.Windows.Forms.Message m)
         {
@@ -204,7 +199,6 @@ namespace AntdUI
                 case 0x00AF:
                 case 0xC1BC:
                     m.Result = FALSE;
-                    InvalidateNonclient();
                     break;
             }
             return false;
@@ -248,11 +242,7 @@ namespace AntdUI
                 if (winState == WState.Restore) return base.Location;
                 return ScreenRectangle.Location;
             }
-            set
-            {
-                sizeNormal = null;
-                base.Location = value;
-            }
+            set => base.Location = value;
         }
 
         /// <summary>
@@ -262,11 +252,7 @@ namespace AntdUI
         public new int Top
         {
             get => Location.Y;
-            set
-            {
-                sizeNormal = null;
-                base.Top = value;
-            }
+            set => base.Top = value;
         }
 
         /// <summary>
@@ -276,11 +262,7 @@ namespace AntdUI
         public new int Left
         {
             get => Location.X;
-            set
-            {
-                sizeNormal = null;
-                base.Left = value;
-            }
+            set => base.Left = value;
         }
 
         /// <summary>
@@ -308,7 +290,6 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.Size = value;
-                sizeInit = base.ClientSize;
             }
         }
 
@@ -324,7 +305,6 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.ClientSize = value;
-                sizeInit = base.ClientSize;
             }
         }
 
@@ -339,7 +319,6 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.Width = value;
-                sizeInit = base.ClientSize;
             }
         }
 
@@ -354,7 +333,6 @@ namespace AntdUI
             {
                 sizeNormal = null;
                 base.Height = value;
-                sizeInit = base.ClientSize;
             }
         }
 
@@ -376,9 +354,7 @@ namespace AntdUI
             set
             {
                 sizeNormal = null;
-                base.Location = value.Location;
-                base.Size = value.Size;
-                sizeInit = base.ClientSize;
+                Bounds = value;
             }
         }
 
@@ -494,16 +470,10 @@ namespace AntdUI
         void WmSize(ref System.Windows.Forms.Message m)
         {
             if (m.WParam == SIZE_MINIMIZED) WinState = WState.Minimize;
-            else if (m.WParam == SIZE_MAXIMIZED)
-            {
-                WinState = WState.Maximize;
-                Invalidate();
-                InvalidateNonclient();
-            }
+            else if (m.WParam == SIZE_MAXIMIZED) WinState = WState.Maximize;
             else if (m.WParam == SIZE_RESTORED)
             {
                 WinState = WState.Restore;
-                InvalidateNonclient();
                 Invalidate();
                 sizeNormal = ClientSize;
             }
@@ -514,11 +484,7 @@ namespace AntdUI
             if (FormBorderStyle == FormBorderStyle.None) return false;
             if (ISZoomed())
             {
-#if NET40
-                var nccsp = (Win32.RECT)Marshal.PtrToStructure(m.LParam, typeof(Win32.RECT));
-#else
-                var nccsp = Marshal.PtrToStructure<Win32.RECT>(m.LParam);
-#endif
+                var nccsp = Win32.PtrToStructure<Win32.RECT>(m.LParam);
                 var borders = GetNonClientMetrics();
 
                 nccsp.top -= borders.Top;
@@ -534,7 +500,6 @@ namespace AntdUI
             }
         }
 
-        internal Size? sizeInit;
         Size? sizeNormal;
 
         #endregion
@@ -564,17 +529,7 @@ namespace AntdUI
 
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
-            if (DesignMode) base.SetBoundsCore(x, y, width, height, specified);
-            else if (WindowState == FormWindowState.Normal && sizeNormal.HasValue)
-            {
-                if (rmax)
-                {
-                    rmax = false;
-                    base.SetBoundsCore(x, y, width, height, specified);
-                    return;
-                }
-                base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
-            }
+            if (OS.Win7OrLower && !DesignMode && WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
             else base.SetBoundsCore(x, y, width, height, specified);
         }
 

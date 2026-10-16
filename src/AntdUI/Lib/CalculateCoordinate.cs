@@ -30,8 +30,13 @@ namespace AntdUI
         {
             var point = control.PointToScreen(Point.Empty);
             var paddtmp = control.Padding;
-            if (paddtmp.Left > 0 || paddtmp.Top > 0) point.Offset(paddtmp.Left, paddtmp.Top);
             var size = control.ClientSize;
+            if (!rect_real.HasValue)
+            {
+                point.Offset(paddtmp.Left, paddtmp.Top);
+                size.Width -= paddtmp.Horizontal;
+                size.Height -= paddtmp.Vertical;
+            }
             sx = point.X;
             sy = point.Y;
             cw = size.Width;

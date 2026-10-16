@@ -185,12 +185,6 @@ namespace AntdUI
             base.OnMouseEnter(e);
         }
 
-        protected override void OnLostFocus(EventArgs e)
-        {
-            subForm?.IClose();
-            base.OnLostFocus(e);
-        }
-
         internal int select_x = 0;
         void ClickDown()
         {

@@ -106,9 +106,8 @@ namespace AntdUI
             get => currentValue;
             set
             {
-                value = Constrain(value);
                 if (currentValue == value) return;
-                currentValue = value;
+                currentValue = Constrain(value);
                 Text = GetNumberText(currentValue);
                 OnValueChanged(currentValue);
                 OnPropertyChanged(nameof(Value));
@@ -140,24 +139,14 @@ namespace AntdUI
         /// <summary>
         /// 使用上下方向键修改值
         /// </summary>
-        [Description("键盘方向键修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(false)]
-        public bool KeyboardModifyEnabled { get; set; }
+        [Description("键盘方向键修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(true)]
+        public bool KeyboardModifyEnabled { get; set; } = true;
 
-        bool wheelModifyEnabled = true;
         /// <summary>
         /// 鼠标滚轮修改值
         /// </summary>
         [Description("鼠标滚轮修改值"), Category(nameof(CategoryAttribute.Action)), DefaultValue(true)]
-        public bool WheelModifyEnabled
-        {
-            get => wheelModifyEnabled;
-            set
-            {
-                if (wheelModifyEnabled == value) return;
-                wheelModifyEnabled = value;
-                Invalidate();
-            }
-        }
+        public bool WheelModifyEnabled { get; set; } = true;
 
         int decimalPlaces = 0;
         /// <summary>
@@ -510,29 +499,6 @@ namespace AntdUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        public override void ProcessShortcutKeys(ShortcutKeys keyData)
-        {
-            if (KeyboardModifyEnabled && (keyData == ShortcutKeys.Up || keyData == ShortcutKeys.Down))
-            {
-                if (Enabled && !ReadOnly) ModifyValue(keyData == ShortcutKeys.Up);
-                return;
-            }
-            base.ProcessShortcutKeys(keyData);
-        }
-
-        void ModifyValue(bool increase)
-        {
-            TryParse(Text);
-            decimal next;
-            try { next = increase ? currentValue + Increment : currentValue - Increment; }
-            catch (OverflowException)
-            {
-                next = increase == (Increment > 0) ? decimal.MaxValue : decimal.MinValue;
-            }
-            Value = next;
-            Text = GetNumberText(currentValue);
-        }
-
         protected override void OnLostFocus(EventArgs e)
         {
             ILostFocus();
@@ -586,9 +552,38 @@ namespace AntdUI
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (!Enabled || ReadOnly || !wheelModifyEnabled || e.Delta == 0) return;
-            ModifyValue(e.Delta > 0);
-            if (e is HandledMouseEventArgs handled) handled.Handled = true;
+            if (!WheelModifyEnabled || e.Delta == 0) return;
+            if (ModifyValue(e.Delta > 0) && e is HandledMouseEventArgs handled) handled.Handled = true;
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Up:
+                    if (ModifyValue(true)) return true;
+                    break;
+                case Keys.Down:
+                    if (ModifyValue(false)) return true;
+                    break;
+            }
+            return base.IsInputKey(keyData);
+        }
+
+        bool ModifyValue(bool increase)
+        {
+            if (Enabled && !ReadOnly)
+            {
+                try
+                {
+                    Value = currentValue + (increase ? Increment : -Increment);
+                    return true;
+                }
+                catch
+                {
+                }
+            }
+            return false;
         }
 
         #endregion

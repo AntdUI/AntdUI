@@ -1062,6 +1062,8 @@ namespace AntdUI
             {
                 case EventType.THEME:
                     if (Config.HasAnimation(nameof(VirtualPanel), Name) && BlurBar != null) _event.SetWait();
+                    if (items == null || items.Count == 0) return;
+                    foreach (var it in items) it.Dispose(this, false);
                     break;
                 case EventType.LANG:
                     CellCount = -1;
@@ -1321,7 +1323,7 @@ namespace AntdUI
         public virtual void MouseLeave(VirtualPanel sender, VirtualPanelMouseArgs e) { }
         public virtual void MouseClick(VirtualPanel sender, VirtualPanelMouseArgs e) { }
 
-        public virtual void Dispose(VirtualPanel sender, bool disposed) { }
+        public virtual void Dispose(VirtualPanel sender, bool disposed = false) { }
 
         public void Invalidate() => invalidate?.Invoke(this, null);
         public void Invalidate(Rectangle rect) => invalidate?.Invoke(this, rect);

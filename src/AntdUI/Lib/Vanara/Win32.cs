@@ -648,5 +648,14 @@ namespace AntdUI
         #endregion
 
         #endregion
+
+        public static T? PtrToStructure<T>(nint ptr)
+        {
+#if NET40
+            return (T)Marshal.PtrToStructure(ptr, typeof(T));
+#else
+            return Marshal.PtrToStructure<T>(ptr);
+#endif
+        }
     }
 }
