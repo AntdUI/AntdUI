@@ -1,5 +1,10 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.14` 2026-10-17
+
+- ✍️ Window exception
+- ✍️ Mask cannot be released
+
 ### `2.4.13` 2026-10-16
 
 - ➕ Slider keyboard numerical control and scroll wheel switch
