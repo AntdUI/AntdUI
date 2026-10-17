@@ -194,7 +194,8 @@ namespace AntdUI
         public override void IClosing()
         {
             base.IClosing();
-            owner.Activate();
+            if (owner.InvokeRequired) owner.BeginInvoke(new Action(() => owner.Activate()));
+            else owner.Activate();
         }
 
         protected override void Dispose(bool disposing)

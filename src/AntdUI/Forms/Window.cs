@@ -125,10 +125,8 @@ namespace AntdUI
             get
             {
                 if (DwmEnabled) return base.CreateParams;
-                CreateParams cp = base.CreateParams;
-                // 移除标题栏和系统菜单（按钮）
-                cp.Style &= ~0xC00000 & ~0x80000;
-                cp.ExStyle |= 0x00000008; // WS_EX_COMPOSITED
+                var cp = base.CreateParams;
+                cp.Style &= ~0xC00000 & ~0x80000;// 移除标题栏和系统菜单（按钮）
                 return cp;
             }
         }
@@ -158,14 +156,6 @@ namespace AntdUI
                         return;
                     }
                     break;
-                case Win32.User32.WindowMessage.WM_WINDOWPOSCHANGING:
-                    if (DwmEnabled && !IsFull)
-                    {
-                        var wp = Win32.PtrToStructure<WindowPos>(m.LParam);
-                        wp.flags &= ~(uint)Win32.User32.SetWindowPosFlags.SWP_FRAMECHANGED;
-                        Marshal.StructureToPtr(wp, m.LParam, false);
-                    }
-                    break;
                 default:
                     if (WmGhostingHandler(m)) return;
                     break;
@@ -176,19 +166,6 @@ namespace AntdUI
             }
             catch { }
         }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private struct WindowPos
-        {
-            public IntPtr hwnd;
-            public IntPtr hwndInsertAfter;
-            public int x;
-            public int y;
-            public int cx;
-            public int cy;
-            public uint flags;
-        }
-
 
         static IntPtr TRUE = new IntPtr(1), FALSE = new IntPtr(0);
         bool WmGhostingHandler(System.Windows.Forms.Message m)
