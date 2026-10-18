@@ -66,6 +66,7 @@ namespace AntdUI
                 enableDir.Clear();
                 EditModeClose();
                 CellRanges = null;
+                UnsubscribeDataSource(dataSource);
                 dataSource = value;
                 SortData = null;
                 focusedxy = null;
@@ -990,6 +991,7 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            UnsubscribeDataSource(dataSource);
             ThreadState?.Dispose();
             ScrollBar.Dispose();
             base.Dispose(disposing);

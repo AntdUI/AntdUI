@@ -20,6 +20,13 @@ namespace AntdUI
         bool dataOne = true;
         int hovers = -1;
         int dataLen = 0;
+        void UnsubscribeDataSource(object? source)
+        {
+            if (source is BindingSource bindingSource)
+                bindingSource.ListChanged -= Binding_ListChanged;
+            else if (source is IBindingList bindingList)
+                bindingList.ListChanged -= Binding_ListChanged;
+        }
         void ExtractData()
         {
             dataLen = 0;
@@ -45,7 +52,15 @@ namespace AntdUI
                 bindingSource.ListChanged += Binding_ListChanged;
                 ExtractData(bindingSource.DataSource);
             }
-            else ExtractData(dataSource);
+            else
+            {
+                if (dataSource is IBindingList bindingList)
+                {
+                    bindingList.ListChanged -= Binding_ListChanged;
+                    bindingList.ListChanged += Binding_ListChanged;
+                }
+                ExtractData(dataSource);
+            }
         }
 
         bool ExtractDataSummary()
