@@ -1355,7 +1355,9 @@ namespace AntdUI
             if (select)
             {
                 if (rows == null || rows.Length == 0) return 0;
-                int focusedY = focusedxy == null || focusedxy.Length < 2 ? 0 : focusedxy[1];
+                int focusedY = selectedIndex.Length > 0
+                    ? selectedIndex[0]
+                    : focusedxy == null || focusedxy.Length < 2 ? 0 : focusedxy[1];
                 var row = rows[focusedY];
                 if (row == null) return 0;
                 foreach (var cellColumn in row.cells)
