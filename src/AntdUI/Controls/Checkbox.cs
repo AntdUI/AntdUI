@@ -22,6 +22,8 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Checkbox : IControl, IEventListener
     {
+        internal const float DefaultCheckMarkWidth = 2.6F;
+
         public Checkbox() : base(ControlType.Select) { }
 
         #region 属性
@@ -324,7 +326,7 @@ namespace AntdUI
                         {
                             var dot = dot_size * 0.3F;
                             g.Fill(Helper.ToColor(alpha, color), path);
-                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Checkbox), Name)), 2.6F * Dpi))
+                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Checkbox), Name)), DefaultCheckMarkWidth * Dpi))
                             {
                                 g.DrawLines(pen, icon_rect.CheckArrow());
                             }
@@ -347,7 +349,7 @@ namespace AntdUI
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Colour.BgBase.Get(ColorScheme, nameof(Checkbox), Name), 2.6F * Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(ColorScheme, nameof(Checkbox), Name), DefaultCheckMarkWidth * Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
@@ -359,7 +361,7 @@ namespace AntdUI
                 else
                 {
                     g.Fill(Colour.FillQuaternary.GetSymbol(ColorScheme, "bgDisabled", nameof(Checkbox), Name), path);
-                    if (_checked) g.DrawLines(Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Checkbox), Name), 2.6F * Dpi, icon_rect.CheckArrow());
+                    if (_checked) g.DrawLines(Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", nameof(Checkbox), Name), DefaultCheckMarkWidth * Dpi, icon_rect.CheckArrow());
                     g.Draw(Colour.BorderColorDisable.GetSymbol(ColorScheme, "borderColorDisabled", nameof(Checkbox), Name), bor2, path);
                 }
             }

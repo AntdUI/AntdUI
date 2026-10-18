@@ -265,6 +265,7 @@ namespace AntdUI
 
                 check_radius = check_size * .12F * dpi;
                 check_border = check_size * .04F * dpi;
+                check_mark_width = Checkbox.DefaultCheckMarkWidth * dpi;
 
                 var firstrow = _rows[0]!;
 
@@ -1005,7 +1006,7 @@ namespace AntdUI
 
         #endregion
 
-        float check_radius = 0F, check_border = 1F;
+        float check_radius = 0F, check_border = 1F, check_mark_width = Checkbox.DefaultCheckMarkWidth;
         void AddRows(ref List<CELL> cells, ref int processing, ref int check, Column column, IRow row, string key, bool summary = false)
         {
             if (summary)

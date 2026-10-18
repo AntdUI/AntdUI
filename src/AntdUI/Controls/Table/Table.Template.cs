@@ -420,7 +420,7 @@ namespace AntdUI
                             var alpha = 255 * AnimationCheckValue;
 
                             g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(colorScheme, nameof(Checkbox), PARENT.Name)), path);
-                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name)), PARENT.check_border * 2))
+                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name)), PARENT.check_mark_width))
                             {
                                 g.DrawLines(brush, PaintArrow(RECT_REAL));
                             }
@@ -438,7 +438,7 @@ namespace AntdUI
                         else if (Checked)
                         {
                             g.Fill(Colour.Primary.Get(colorScheme, nameof(Checkbox), PARENT.Name), path);
-                            using (var brush = new Pen(Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_border * 2))
+                            using (var brush = new Pen(Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_mark_width))
                             {
                                 g.DrawLines(brush, PaintArrow(RECT_REAL));
                             }
@@ -452,7 +452,7 @@ namespace AntdUI
                     else
                     {
                         g.Fill(Colour.FillQuaternary.Get(colorScheme, nameof(Checkbox), PARENT.Name), path);
-                        if (Checked) g.DrawLines(Colour.TextQuaternary.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_border * 2, PaintArrow(RECT_REAL));
+                        if (Checked) g.DrawLines(Colour.TextQuaternary.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_mark_width, PaintArrow(RECT_REAL));
                         g.Draw(Colour.BorderColorDisable.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_border, path);
                     }
                 }
@@ -1310,7 +1310,7 @@ namespace AntdUI
                         else
                         {
                             g.Fill(Helper.ToColor(alpha, Colour.Primary.Get(colorScheme, nameof(Checkbox), PARENT.Name)), path_check);
-                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name)), PARENT.check_border * 2))
+                            using (var brush = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name)), PARENT.check_mark_width))
                             {
                                 g.DrawLines(brush, PaintArrow(RECT_REAL));
                             }
@@ -1334,7 +1334,7 @@ namespace AntdUI
                     else if (columnCheck.Checked)
                     {
                         g.Fill(Colour.Primary.Get(colorScheme, nameof(Checkbox), PARENT.Name), path_check);
-                        using (var brush = new Pen(Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_border * 2))
+                        using (var brush = new Pen(Colour.BgBase.Get(colorScheme, nameof(Checkbox), PARENT.Name), PARENT.check_mark_width))
                         {
                             g.DrawLines(brush, PaintArrow(RECT_REAL));
                         }
