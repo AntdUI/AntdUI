@@ -265,6 +265,7 @@ namespace AntdUI
 
         void Init()
         {
+            InitKeyboardSelection();
             if (OS.Win7OrLower && ScrollBar.ShowY) Select();
             KeyCall = keys =>
             {
@@ -334,6 +335,24 @@ namespace AntdUI
                 }
                 return false;
             };
+        }
+
+        void InitKeyboardSelection()
+        {
+            int firstIndex = -1;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                var item = Items[i];
+                if (!item.Enable || !item.SID) continue;
+                if (firstIndex < 0) firstIndex = i;
+                if (Equals(item.Tag, selectedValue))
+                {
+                    hoveindex = i;
+                    break;
+                }
+            }
+            if (hoveindex < 0) hoveindex = firstIndex;
+            if (hoveindex > -1) Items[hoveindex].SetHover(true);
         }
 
         int IMouseWheel(int delta)
