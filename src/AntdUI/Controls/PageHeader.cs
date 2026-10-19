@@ -704,23 +704,16 @@ namespace AntdUI
 
             backExtend.BrushEx(e.Rect, g);
 
-            #region 显示颜色
-
-            Color fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get(ColorScheme, nameof(PageHeader), Name),
-                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get(ColorScheme, nameof(PageHeader), Name),
-                foreSecondary = Colour.TextSecondary.GetSymbol(ColorScheme, "subFore", nameof(PageHeader), Name),
-                fillsecondary = Colour.FillSecondary.Get(ColorScheme, nameof(PageHeader), Name);
-
-            #endregion
+            GetPaintColor(out var fore, out var forebase, out var foreSecondary, out var fillSecondary);
 
             if (UseTitleFont)
             {
                 using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
-                    IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillsecondary);
+                    IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillSecondary);
                 }
             }
-            else IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillsecondary);
+            else IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1F, null, fore, forebase, foreSecondary, fillSecondary);
             if (showDivider)
             {
                 int thickness = (int)(dividerthickness * Dpi), margin = (int)(dividerMargin * Dpi);
@@ -732,7 +725,7 @@ namespace AntdUI
             base.OnDraw(e);
         }
 
-        void IPaint(Canvas g, Rectangle rect, Rectangle rect_real, Size size, float ratio, Font? fontTitle, Color fore, Color forebase, Color foreSecondary, Color fillsecondary)
+        void IPaint(Canvas g, Rectangle rect, Rectangle rect_real, Size size, float ratio, Font? fontTitle, Color fore, Color forebase, Color foreSecondary, Color fillSecondary)
         {
             bool showDescription = false;
             int heightDescription = rect_real.Height;
@@ -779,7 +772,7 @@ namespace AntdUI
             }
             hasl = rl;
             PaintContent(g, rect, _hasl, hasr);
-            if (showButton) IPaintButton(g, rect_real, fore, fillsecondary, size);
+            if (showButton) IPaintButton(g, rect_real, fore, fillSecondary, size);
         }
 
         protected virtual void PaintContent(Canvas g, Rectangle rect, int left, int rigth) { }
@@ -900,7 +893,7 @@ namespace AntdUI
             return 0;
         }
 
-        void IPaintButton(Canvas g, Rectangle rect, Color fore, Color fillsecondary, Size size)
+        void IPaintButton(Canvas g, Rectangle rect, Color fore, Color fillSecondary, Size size)
         {
             int btn_size = (int)(size.Height * 1.2F), btn_x = (rect_close.Width - btn_size) / 2, btn_y = (rect_close.Height - btn_size) / 2;
             var rect_close_icon = new Rectangle(rect_close.X + btn_x, rect_close.Y + btn_y, btn_size, btn_size);
@@ -925,9 +918,9 @@ namespace AntdUI
             if (fullBox)
             {
                 var rect_full_icon = new Rectangle(rect_full.X + btn_x, rect_full.Y + btn_y, btn_size, btn_size);
-                if (hove_full.Animation) g.Fill(Helper.ToColor(hove_full.Value, fillsecondary), rect_full);
-                else if (hove_full.Switch) g.Fill(fillsecondary, rect_full);
-                if (hove_full.Down) g.Fill(fillsecondary, rect_full);
+                if (hove_full.Animation) g.Fill(Helper.ToColor(hove_full.Value, fillSecondary), rect_full);
+                else if (hove_full.Switch) g.Fill(fillSecondary, rect_full);
+                if (hove_full.Down) g.Fill(fillSecondary, rect_full);
                 if (IsFull) PrintFullRestore(g, fore, rect_full_icon);
                 else PrintFull(g, fore, rect_full_icon);
             }
@@ -935,20 +928,33 @@ namespace AntdUI
             if (maximizeBox)
             {
                 var rect_max_icon = new Rectangle(rect_max.X + btn_x, rect_max.Y + btn_y, btn_size, btn_size);
-                if (hove_max.Animation) g.Fill(Helper.ToColor(hove_max.Value, fillsecondary), rect_max);
-                else if (hove_max.Switch) g.Fill(fillsecondary, rect_max);
-                if (hove_max.Down) g.Fill(fillsecondary, rect_max);
+                if (hove_max.Animation) g.Fill(Helper.ToColor(hove_max.Value, fillSecondary), rect_max);
+                else if (hove_max.Switch) g.Fill(fillSecondary, rect_max);
+                if (hove_max.Down) g.Fill(fillSecondary, rect_max);
                 if (IsMax) PrintRestore(g, fore, rect_max_icon);
                 else PrintMax(g, fore, rect_max_icon);
             }
             if (minimizeBox)
             {
                 var rect_min_icon = new Rectangle(rect_min.X + btn_x, rect_min.Y + btn_y, btn_size, btn_size);
-                if (hove_min.Animation) g.Fill(Helper.ToColor(hove_min.Value, fillsecondary), rect_min);
-                else if (hove_min.Switch) g.Fill(fillsecondary, rect_min);
-                if (hove_min.Down) g.Fill(fillsecondary, rect_min);
+                if (hove_min.Animation) g.Fill(Helper.ToColor(hove_min.Value, fillSecondary), rect_min);
+                else if (hove_min.Switch) g.Fill(fillSecondary, rect_min);
+                if (hove_min.Down) g.Fill(fillSecondary, rect_min);
                 PrintMin(g, fore, rect_min_icon);
             }
+        }
+
+        bool formActive = true;
+        void GetPaintColor(out Color fore, out Color forebase, out Color foreSecondary, out Color fillSecondary)
+        {
+            if (formActive)
+            {
+                fore = useForeColorDrawIcons ? ForeColor : Colour.Text.Get(ColorScheme, nameof(PageHeader), Name);
+                forebase = useSystemStyleColor ? ForeColor : Colour.TextBase.Get(ColorScheme, nameof(PageHeader), Name);
+            }
+            else fore = forebase = Colour.TextSecondary.Get(ColorScheme, nameof(PageHeader), Name);
+            foreSecondary = Colour.TextSecondary.GetSymbol(ColorScheme, "subFore", nameof(PageHeader), Name);
+            fillSecondary = Colour.FillSecondary.Get(ColorScheme, nameof(PageHeader), Name);
         }
 
         #region 渲染帮助
@@ -1157,8 +1163,8 @@ namespace AntdUI
                 bool _close = rect_close.Contains(e.X, e.Y), _full = fullBox && rect_full.Contains(e.X, e.Y), _max = maximizeBox && rect_max.Contains(e.X, e.Y), _min = minimizeBox && rect_min.Contains(e.X, e.Y);
                 if (_close != hove_close.SwitchDown || _full != hove_full.SwitchDown || _max != hove_max.SwitchDown || _min != hove_min.SwitchDown)
                 {
-                    var fillsecondary = Colour.FillSecondary.Get(ColorScheme, nameof(PageHeader), Name);
-                    hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillsecondary.A;
+                    var fillSecondary = Colour.FillSecondary.Get(ColorScheme, nameof(PageHeader), Name);
+                    hove_max.MaxValue = hove_min.MaxValue = hove_full.MaxValue = fillSecondary.A;
                     hove_close.Switch = _close;
                     hove_full.Switch = _full;
                     hove_max.Switch = _max;
@@ -1326,6 +1332,16 @@ namespace AntdUI
                     break;
                 case EventType.WINDOW_STATE:
                     RMax(Parent.FindPARENT(MDI));
+                    break;
+                case EventType.WINDOW_ACTIVATE:
+                    if (showButton && tag is object[] tags && tags[0] is Form form && tags[1] is bool active)
+                    {
+                        if (form == Parent.FindPARENT(MDI))
+                        {
+                            formActive = active;
+                            Invalidate();
+                        }
+                    }
                     break;
             }
         }

@@ -74,6 +74,10 @@ namespace AntdUI
         /// </summary>
         WINDOW_STATE = 70,
         /// <summary>
+        /// Window 激活状态改变
+        /// </summary>
+        WINDOW_ACTIVATE = 71,
+        /// <summary>
         /// 自定义
         /// </summary>
         DIV = 100

@@ -612,10 +612,10 @@ namespace AntdUI
         {
             if (btn == null) return false;
             btn.cell.ExtraMouseDown = false;
-            if (e.Button == MouseButtons.Left && btn.cell.Rect.Contains(db.x, db.y))
+            bool r = btn.cell.Rect.Contains(db.x, db.y);
+            if (r && e.Button == MouseButtons.Left)
             {
                 btn.cell.Click();
-
                 if (btn.cell.DropDownItems != null && btn.cell.DropDownItems.Count > 0)
                 {
                     subForm?.IClose();
@@ -625,11 +625,10 @@ namespace AntdUI
                     subForm = new LayeredFormSelectDown(this, btn.cell.DropDownItems, btn.cell, rect);
                     subForm.Show(this);
                 }
-                OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
-                OnCellButtonClick(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+                MouseUpButtonEvent(it, btn, e, db, true);
                 return true;
             }
-            OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+            MouseUpButtonEvent(it, btn, e, db, r);
             return false;
         }
         bool MouseUpBtn(DownCellTMP<CELL> it, DownCellTMP<CellLink>? btn, MouseEventArgs e)
@@ -638,6 +637,11 @@ namespace AntdUI
             btn.cell.ExtraMouseDown = false;
             OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, btn.col, RealRect(btn.cell.Rect, it.offset_xi, it.offset_y), e);
             return false;
+        }
+        void MouseUpButtonEvent(DownCellTMP<CELL> it, DownCellTMP<CellLink> btn, MouseEventArgs e, CELLDB db, bool responseClick)
+        {
+            OnCellButtonUp(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
+            if (responseClick) OnCellButtonClick(btn.cell, it.row.RECORD, it.row.Type, it.i_row, it.i_cel, db.col, RealRect(btn.cell.Rect, db.offset_xi, db.offset_y), e);
         }
         LayeredFormSelectDown? subForm;
 

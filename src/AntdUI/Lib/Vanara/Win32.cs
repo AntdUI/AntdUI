@@ -526,9 +526,12 @@ namespace AntdUI
             {
                 try
                 {
-                    int enabled = 0;
-                    DwmApi.DwmIsCompositionEnabled(ref enabled);
-                    return enabled == 1;
+                    if (OS.Version.Major >= 6)
+                    {
+                        int enabled = 0;
+                        DwmApi.DwmIsCompositionEnabled(ref enabled);
+                        return enabled == 1;
+                    }
                 }
                 catch { }
                 return false;

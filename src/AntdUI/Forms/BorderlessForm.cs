@@ -236,6 +236,14 @@ namespace AntdUI
                 case Win32.User32.WindowMessage.WM_NCLBUTTONDOWN:
                     if (!is_resizable && Window.CanHandMessage && ReadMessage) ResizableMouseDown();
                     break;
+                case Win32.User32.WindowMessage.WM_DWMCOMPOSITIONCHANGED:
+                    if (UseDwm)
+                    {
+                        oldmargin = -1;
+                        DwmEnabled = Win32.IsCompositionEnabled;
+                        DwmArea();
+                    }
+                    break;
             }
             try
             {
@@ -368,7 +376,7 @@ namespace AntdUI
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            if (UseDwm && OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
+            DwmEnabled = UseDwm && Win32.IsCompositionEnabled;
             Win32.User32.DisableProcessWindowsGhosting();
             base.OnHandleCreated(e);
             HandMessage();

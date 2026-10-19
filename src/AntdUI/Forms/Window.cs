@@ -93,7 +93,7 @@ namespace AntdUI
                     MinimumSize = min;
                     MaximumSize = max;
                     oldmargin = 0;
-                    DwmArea();
+                    if (DwmEnabled) DwmArea();
                 }
                 else base.ShowInTaskbar = value;
             }
@@ -102,33 +102,13 @@ namespace AntdUI
         #endregion
 
         bool DwmEnabled = true;
-        public override void OnCreated‌()
+        protected override void OnHandleCreated(EventArgs e)
         {
-            if (OS.Version.Major >= 6) DwmEnabled = Win32.IsCompositionEnabled;
-            else DwmEnabled = false;
+            DwmEnabled = Win32.IsCompositionEnabled;
             Win32.User32.DisableProcessWindowsGhosting();
-            if (OS.Win7OrLower && FormBorderStyle != FormBorderStyle.None && WindowState != FormWindowState.Maximized) SetSize(base.ClientSize);
             HandMessage();
-            DwmArea();
-        }
-
-        void SetSize(Size size)
-        {
-            Size max = MaximumSize, min = MinimumSize;
-            MaximumSize = MinimumSize = base.ClientSize = size;
-            MinimumSize = min;
-            MaximumSize = max;
-        }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                if (DwmEnabled) return base.CreateParams;
-                var cp = base.CreateParams;
-                cp.Style &= ~0xC00000 & ~0x80000;// 移除标题栏和系统菜单（按钮）
-                return cp;
-            }
+            if (DwmEnabled) DwmArea();
+            base.OnHandleCreated(e);
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -139,7 +119,23 @@ namespace AntdUI
                     oldmargin = -1;
                     break;
                 case Win32.User32.WindowMessage.WM_ACTIVATE:
-                    DwmArea();
+                    if (DwmEnabled) DwmArea();
+                    break;
+                case Win32.User32.WindowMessage.WM_NCPAINT:
+                    if (!DwmEnabled)
+                    {
+                        m.Result = IntPtr.Zero;
+                        return;
+                    }
+                    break;
+                case Win32.User32.WindowMessage.WM_NCACTIVATE:
+                    bool active = m.WParam != IntPtr.Zero;
+                    EventHub.Dispatch(EventType.WINDOW_ACTIVATE, new object[] { this, active });
+                    if (!DwmEnabled)
+                    {
+                        m.Result = TRUE;
+                        return;
+                    }
                     break;
                 case Win32.User32.WindowMessage.WM_NCCALCSIZE when m.WParam != IntPtr.Zero:
                     if (WmNCCalcSize(ref m)) return;
@@ -147,14 +143,10 @@ namespace AntdUI
                 case Win32.User32.WindowMessage.WM_SIZE:
                     WmSize(ref m);
                     break;
-                case Win32.User32.WindowMessage.WM_ACTIVATEAPP:
-                case Win32.User32.WindowMessage.WM_NCACTIVATE:
-                case Win32.User32.WindowMessage.WM_ERASEBKGND:
-                    if (DwmEnabled)
-                    {
-                        m.Result = TRUE;
-                        return;
-                    }
+                case Win32.User32.WindowMessage.WM_DWMCOMPOSITIONCHANGED:
+                    oldmargin = -1;
+                    DwmEnabled = Win32.IsCompositionEnabled;
+                    if (DwmEnabled) DwmArea();
                     break;
                 default:
                     if (WmGhostingHandler(m)) return;
@@ -167,7 +159,7 @@ namespace AntdUI
             catch { }
         }
 
-        static IntPtr TRUE = new IntPtr(1), FALSE = new IntPtr(0);
+        static IntPtr TRUE = new IntPtr(1);
         bool WmGhostingHandler(System.Windows.Forms.Message m)
         {
             switch (m.Msg)
@@ -175,7 +167,7 @@ namespace AntdUI
                 case 0x00AE:
                 case 0x00AF:
                 case 0xC1BC:
-                    m.Result = FALSE;
+                    m.Result = IntPtr.Zero;
                     break;
             }
             return false;
@@ -187,7 +179,7 @@ namespace AntdUI
             bool value = Win32.User32.IsZoomed(Handle);
             if (iszoomed == value) return value;
             iszoomed = value;
-            DwmArea();
+            if (DwmEnabled) DwmArea();
             return value;
         }
 
@@ -204,7 +196,10 @@ namespace AntdUI
 
         protected override void SetThemeOK(bool dark) => Win32.SetWindowBorderColor(Handle, BorderColor);
 
-        public override void RefreshDWM() => DwmArea();
+        public override void RefreshDWM()
+        {
+            if (DwmEnabled) DwmArea();
+        }
 
         #region 区域
 
@@ -451,19 +446,16 @@ namespace AntdUI
             else if (m.WParam == SIZE_RESTORED)
             {
                 WinState = WState.Restore;
-                Invalidate();
                 sizeNormal = ClientSize;
             }
         }
 
         bool WmNCCalcSize(ref System.Windows.Forms.Message m)
         {
-            if (FormBorderStyle == FormBorderStyle.None) return false;
             if (ISZoomed())
             {
                 var nccsp = Win32.PtrToStructure<Win32.RECT>(m.LParam);
                 var borders = GetNonClientMetrics();
-
                 nccsp.top -= borders.Top;
                 nccsp.top += borders.Bottom;
                 Marshal.StructureToPtr(nccsp, m.LParam, false);

@@ -101,22 +101,8 @@ namespace AntdUI
 
         static void DpiLS(float dpi, Form form, Dictionary<Control, AnchorDock> info)
         {
-            if (form is Window window)
-            {
-                DpiForm(dpi, window, window.ClientSize, out var point, out var size);
-                Size max = window.MaximumSize, min = window.MinimumSize;
-                window.MaximumSize = window.MinimumSize = window.ClientSize = size;
-                window.Location = point;
-                window.MinimumSize = min;
-                window.MaximumSize = max;
-            }
-            else
-            {
-                DpiForm(dpi, form, form.ClientSize, out var point, out var size);
-                form.ClientSize = size;
-                form.Location = point;
-            }
-
+            DpiForm(dpi, form, form.ClientSize, out var point, out var size);
+            form.Bounds = new Rectangle(point, size);
             DpiLS(dpi, info);
         }
         static void DpiLS(float dpi, Dictionary<Control, AnchorDock> info)
