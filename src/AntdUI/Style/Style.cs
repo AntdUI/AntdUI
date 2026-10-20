@@ -369,6 +369,16 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 删除控件的自定义颜色
+        /// </summary>
+        /// <param name="id">色卡</param>
+        /// <param name="control">控件名称</param>
+        public static bool Remove(this Colour id, string control)
+        {
+            return colors.Remove(id.ToString() + control);
+        }
+
+        /// <summary>
         /// 品牌色缓存
         /// </summary>
         internal static Color? tmp_primary;
