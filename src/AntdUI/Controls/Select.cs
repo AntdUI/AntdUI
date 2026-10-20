@@ -94,6 +94,12 @@ namespace AntdUI
         public bool EnterDropDown { get; set; } = true;
 
         /// <summary>
+        /// Whether the Down arrow opens the drop-down while it is closed.
+        /// </summary>
+        [Description("Whether the Down arrow opens the drop-down"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool ArrowKeyDropDown { get; set; } = true;
+
+        /// <summary>
         /// 下拉为空关闭
         /// </summary>
         [Description("下拉为空关闭"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
@@ -597,9 +603,17 @@ namespace AntdUI
             var r = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
-                case Keys.Down:
+                case Keys.F4:
+                case Keys.Alt | Keys.Down:
                     ExpandDrop = true;
                     return true;
+                case Keys.Down:
+                    if (ArrowKeyDropDown)
+                    {
+                        ExpandDrop = true;
+                        return true;
+                    }
+                    break;
                 case Keys.Enter:
                     if (EnterDropDown) ExpandDrop = true;
                     break;
