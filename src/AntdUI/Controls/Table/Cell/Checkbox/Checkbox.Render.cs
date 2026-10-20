@@ -48,7 +48,7 @@ namespace AntdUI
                         {
                             var dot = dot_size * 0.3F;
                             g.Fill(Helper.ToColor(alpha, color), path);
-                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name)), 2.6F * Dpi))
+                            using (var pen = new Pen(Helper.ToColor(alpha, Colour.BgBase.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name)), Checkbox.DefaultCheckMarkWidth * Dpi))
                             {
                                 g.DrawLines(pen, icon_rect.CheckArrow());
                             }
@@ -71,7 +71,7 @@ namespace AntdUI
                     else if (_checked)
                     {
                         g.Fill(color, path);
-                        g.DrawLines(Colour.BgBase.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), 2.6F * Dpi, icon_rect.CheckArrow());
+                        g.DrawLines(Colour.BgBase.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), Checkbox.DefaultCheckMarkWidth * Dpi, icon_rect.CheckArrow());
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace AntdUI
                 else
                 {
                     g.Fill(Colour.FillQuaternary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), path);
-                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), 2.6F * Dpi, icon_rect.CheckArrow());
+                    if (_checked) g.DrawLines(Colour.TextQuaternary.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), Checkbox.DefaultCheckMarkWidth * Dpi, icon_rect.CheckArrow());
                     g.Draw(Colour.BorderColorDisable.Get(ColorScheme, nameof(Checkbox), PARENT.PARENT.Name), bor2, path);
                 }
             }
