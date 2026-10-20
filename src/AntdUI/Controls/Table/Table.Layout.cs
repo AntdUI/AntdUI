@@ -1261,6 +1261,9 @@ namespace AntdUI
         private void Notify_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender == null || e.PropertyName == null) return;
+            if (sender is System.Data.DataRowView rowView &&
+                (rowView.Row.RowState == System.Data.DataRowState.Deleted ||
+                 rowView.Row.RowState == System.Data.DataRowState.Detached)) return;
             PropertyChanged(sender, e.PropertyName);
         }
 
