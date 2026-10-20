@@ -555,225 +555,147 @@ namespace AntdUI
         {
             if (shift)
             {
-                int old = selectionStartTemp;
-                if (selectionStartTemp == selectionStart || selectionStartTemp < selectionStart) selectionStartTemp--;
-                if (selectionStartTemp < 0) selectionStartTemp = 0;
-                if (old == selectionStartTemp) return;
-                selectionStart = selectionStartTemp;
-                bool set_e = SetSelectionLength(selectionLength + 1), set_caret = SetCaretPostion(CurrentPosIndex - 1);
-                if (set_e || set_caret) Invalidate();
+                // 锚点不动，插入符左移一位（可反向收缩已选内容）
+                int caret = SelectionCaretIndex;
+                if (caret > 0 && SetSelectionCaret(caret - 1)) Invalidate();
                 return;
             }
-            if (SelectionLength > 0)
-            {
-                bool set_s, set_e;
-                if (selectionStartTemp < selectionStart) set_s = SetSelectionStart(selectionStartTemp);
-                else
-                {
-                    int old = selectionStart;
-                    selectionStart--;
-                    set_s = SetSelectionStart(old);
-                }
-                set_e = SetSelectionLength(0);
-                if (set_s || set_e) Invalidate();
-            }
-            else
-            {
-                bool set_e = SetSelectionLength(0), set_s = SetSelectionStart(selectionStart - 1);
-                if (set_s || set_e) Invalidate();
-            }
+            // 取消选中：左移至选区起点，否则左移一位
+            bool set_s = SetSelectionStart(SelectionLength > 0 ? selectionStartTemp : selectionStart - 1), set_e = SetSelectionLength(0);
+            if (set_s || set_e) Invalidate();
         }
 
         void ProcessRightKey(bool shift)
         {
             if (shift)
             {
-                bool set_e2;
-                if (selectionStart > selectionStartTemp)
-                {
-                    selectionStartTemp++;
-                    set_e2 = SetSelectionLength(selectionLength - 1);
-                }
-                else set_e2 = SetSelectionLength(selectionLength + 1);
-                bool set_caret = SetCaretPostion(CurrentPosIndex + 1);
-                if (set_e2 || set_caret) Invalidate();
+                // 锚点不动，插入符右移一位（可反向收缩已选内容）
+                int caret = SelectionCaretIndex;
+                if (cache_font != null && caret >= cache_font.Count) return;
+                if (SetSelectionCaret(caret + 1)) Invalidate();
                 return;
             }
-            bool set_s, set_e;
-            if (SelectionLength > 0)
-            {
-                if (selectionStartTemp > selectionStart) set_s = SetSelectionStart(selectionStartTemp + selectionLength);
-                else
-                {
-                    int old = selectionStart;
-                    selectionStart--;
-                    set_s = SetSelectionStart(old + selectionLength);
-                }
-                set_e = SetSelectionLength(0);
-            }
-            else
-            {
-                set_e = SetSelectionLength(0);
-                set_s = SetSelectionStart(selectionStart + 1);
-            }
+            // 取消选中：右移至选区终点，否则右移一位
+            int target = SelectionLength > 0 ? selectionStartTemp + selectionLength : selectionStart + 1;
+            bool set_s = SetSelectionStart(target), set_e = SetSelectionLength(0);
             if (set_s || set_e) Invalidate();
         }
 
         void ProcessUpKey(bool shift)
         {
-            bool set_s, set_e;
             if (shift)
             {
-                if (cache_font == null)
-                {
-                    set_e = SetSelectionLength(0);
-                    set_s = SetSelectionStart(selectionStart - 1);
-                }
+                // 锚点不动，插入符上移（可反向收缩已选内容）
+                int caret = SelectionCaretIndex, target;
+                if (cache_font == null) target = caret - 1;
                 else
                 {
-                    int index = selectionStartTemp, cend = cache_font.Count - 1;
-                    if (index > cend) index = cend;
                     var nearest = GetCaretPostionUp();
-                    if (nearest == null) set_s = set_e = false;
-                    else
-                    {
-                        set_s = SetSelectionStart(nearest.i);
-                        set_e = SetSelectionLength(selectionLength + (index - nearest.i + (index >= cend ? 1 : 0)));
-                    }
+                    target = nearest == null ? caret - 1 : nearest.i;
                 }
+                if (target < caret && SetSelectionCaret(target)) Invalidate();
+                return;
             }
+            bool set_e = SetSelectionLength(0), set_s;
+            if (cache_font == null) set_s = SetSelectionStart(selectionStart - 1);
             else
             {
-                set_e = SetSelectionLength(0);
-                if (cache_font == null) set_s = SetSelectionStart(selectionStart - 1);
-                else
-                {
-                    var nearest = GetCaretPostionUp();
-                    if (nearest == null) set_s = false;
-                    else
-                    {
-                        if (nearest.i == selectionStart) set_s = SetSelectionStart(selectionStart - 1);
-                        else set_s = SetSelectionStart(nearest.i);
-                    }
-                }
+                var nearest = GetCaretPostionUp();
+                if (nearest == null) set_s = false;
+                else if (nearest.i == selectionStart) set_s = SetSelectionStart(selectionStart - 1);
+                else set_s = SetSelectionStart(nearest.i);
             }
             if (set_s || set_e) Invalidate();
         }
 
         void ProcessDownKey(bool shift)
         {
-            bool set_s, set_e;
             if (shift)
             {
-                if (cache_font == null)
-                {
-                    set_e = SetSelectionLength(0);
-                    set_s = SetSelectionStart(selectionStart + 1);
-                }
+                // 锚点不动，插入符下移（可反向收缩已选内容）
+                int caret = SelectionCaretIndex, target;
+                if (cache_font == null) target = caret + 1;
                 else
                 {
-                    int index = selectionStartTemp + selectionLength;
-                    if (index > cache_font.Count - 1) return;
                     var nearest = GetCaretPostionDown();
-                    if (nearest == null) set_e = false;
-                    else set_e = SetSelectionLength(selectionLength + (nearest.i - index));
-                    if (nearest == null) CurrentPosIndex = selectionStart + selectionLength;
-                    else CurrentPosIndex = nearest.index;
-                    set_s = SetCaretPostion();
+                    if (nearest == null) return;
+                    target = nearest.i;
                 }
+                if (target > caret && SetSelectionCaret(target)) Invalidate();
+                return;
             }
+            bool set_e = SetSelectionLength(0), set_s;
+            if (cache_font == null) set_s = SetSelectionStart(selectionStart + 1);
             else
             {
-                set_e = SetSelectionLength(0);
-                if (cache_font == null) set_s = SetSelectionStart(selectionStart + 1);
-                else
-                {
-                    var nearest = GetCaretPostionDown();
-                    if (nearest == null) set_s = false;
-                    else set_s = SetSelectionStart(nearest.i);
-                }
+                var nearest = GetCaretPostionDown();
+                if (nearest == null) set_s = false;
+                else set_s = SetSelectionStart(nearest.i);
             }
             if (set_s || set_e) Invalidate();
         }
 
         void ProcessHomeKey(bool ctrl, bool shift)
         {
-            bool set_s = false, set_e;
-            if (ctrl && shift)
+            int target;
+            if (ctrl)
             {
-                int index = selectionStartTemp;
-                if (index == 0) return;
                 if (ScrollY.Show) ScrollY.Value = 0;
-                set_s = SetSelectionStart(0);
-                set_e = SetSelectionLength(selectionLength + index);
+                target = 0;
+            }
+            else if (multiline)
+            {
+                if (cache_font == null) return;
+                int index = (shift ? SelectionCaretIndex : selectionStart) - 1;
+                if (index < 0) index = 0;
+                target = FindStartY(cache_font, index);
             }
             else
             {
-                set_e = SetSelectionLength(0);
-                if (ctrl)
-                {
-                    if (ScrollY.Show) ScrollY.Value = 0;
-                    set_s = SetSelectionStart(0);
-                }
-                else
-                {
-                    if (multiline)
-                    {
-                        if (cache_font == null) return;
-                        int index = selectionStartTemp;
-                        if (index > 0)
-                        {
-                            int start = FindStartY(cache_font, index - 1);
-                            if (start == index) return;
-                            set_s = SetSelectionStart(start);
-                        }
-                    }
-                    else
-                    {
-                        if (ScrollY.Show) ScrollY.Value = 0;
-                        set_s = SetSelectionStart(0);
-                    }
-                }
+                if (ScrollY.Show) ScrollY.Value = 0;
+                target = 0;
             }
-            if (set_s || set_e) Invalidate();
+            if (shift)
+            {
+                // 锚点不动，插入符移至行首（可反向收缩已选内容）
+                if (SetSelectionCaret(target)) Invalidate();
+            }
+            else
+            {
+                bool set_e = SetSelectionLength(0), set_s = SetSelectionStart(target);
+                if (set_s || set_e) Invalidate();
+            }
         }
 
         void ProcessEndKey(bool ctrl, bool shift)
         {
             if (cache_font == null) return;
-            if (ctrl && shift)
+            int target;
+            if (ctrl)
             {
-                int index = selectionStartTemp + selectionLength;
-                if (index > cache_font.Count - 1) return;
                 if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
-                SelectionLength += cache_font.Count - selectionStartTemp;
+                target = cache_font.Count;
+            }
+            else if (multiline)
+            {
+                int index = shift ? SelectionCaretIndex : selectionStart;
+                if (index > cache_font.Count - 1) index = cache_font.Count - 1;
+                target = FindEndY(cache_font, index) + 1;
+                if (target > cache_font.Count) target = cache_font.Count;
             }
             else
             {
-                bool set_s, set_e = false;
-                if (ctrl)
-                {
-                    if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
-                    set_e = SetSelectionLength(0);
-                    set_s = SetSelectionStart(cache_font.Count);
-                }
-                else
-                {
-                    if (multiline)
-                    {
-                        int index = selectionStartTemp + selectionLength;
-                        if (index > cache_font.Count - 1) return;
-                        int start = FindEndY(cache_font, index) + 1;
-                        if (start == index) return;
-                        set_s = SetSelectionStart(start);
-                    }
-                    else
-                    {
-                        if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
-                        set_e = SetSelectionLength(0);
-                        set_s = SetSelectionStart(cache_font.Count);
-                    }
-                }
+                if (ScrollY.Show) ScrollY.Value = ScrollY.Max;
+                target = cache_font.Count;
+            }
+            if (shift)
+            {
+                // 锚点不动，插入符移至行尾（可反向收缩已选内容）
+                if (SetSelectionCaret(target)) Invalidate();
+            }
+            else
+            {
+                bool set_e = SetSelectionLength(0), set_s = SetSelectionStart(target);
                 if (set_s || set_e) Invalidate();
             }
         }

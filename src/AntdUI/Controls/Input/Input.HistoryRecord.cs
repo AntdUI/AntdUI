@@ -27,7 +27,8 @@ namespace AntdUI
         {
             public TextHistoryRecord(Input input)
             {
-                SelectionStart = input.SelectionStart;
+                // 记录选区起点（selectionStartTemp 为锚点与插入符的最小值），保证撤销时选中区域一致
+                SelectionStart = input.selectionStartTemp;
                 SelectionLength = input.SelectionLength;
                 Text = input.Text;
             }

@@ -22,8 +22,6 @@ namespace AntdUI
     [DefaultEvent("CheckedChanged")]
     public class Checkbox : IControl, IEventListener
     {
-        internal const float DefaultCheckMarkWidth = 2.6F;
-
         public Checkbox() : base(ControlType.Select) { }
 
         #region 属性
@@ -617,5 +615,6 @@ namespace AntdUI
         }
 
         #endregion
+        internal const float DefaultCheckMarkWidth = 2.6F;
     }
 }

@@ -526,12 +526,36 @@ namespace AntdUI
                         item.RectIcon = new Rectangle(rect.X + ux, rect.Y + icon_xy, icon_size, icon_size);
                         ux += tmp;
                     }
-                    if (item.HasSub) item.RectArrow = new Rectangle(rect.Right - gap_x - icon_size, rect.Y + icon_xy, icon_size, icon_size);
-                    if (it.SubText == null) item.RectText = new Rectangle(rect.X + ux, rect.Y, it.TextWidth, rect.Height);
+                    //右侧被箭头/勾选图标占用的宽度
+                    int uw = gap_x + icon_size;
+                    if (item.HasSub)
+                    {
+                        item.RectArrow = new Rectangle(rect.Right - gap_x - icon_size, rect.Y + icon_xy, icon_size, icon_size);
+                        uw += icon_size + icon_gap;
+                    }
+                    //文本可用区域（左侧已让出在线点/图标，右侧已让出箭头/勾选图标）
+                    int text_x = rect.X + ux, text_w = rect.Width - ux - uw;
+                    if (text_w < 0) text_w = 0;
+                    if (it.SubText == null) item.RectText = new Rectangle(text_x, rect.Y, text_w, rect.Height);
                     else
                     {
-                        item.RectText = new Rectangle(rect.X + ux, rect.Y, it.TextWidth, rect.Height);
-                        item.RectSubText = new Rectangle(rect.X + ux + it.TextWidth + icon_gap, item.RectText.Y, it.SubTextWidth, item.RectText.Height);
+                        int sub_w = it.SubTextWidth, gap = icon_gap;
+                        if (it.TextWidth + gap + sub_w > text_w)
+                        {
+                            //空间不足，优先压缩主文本
+                            if (sub_w > text_w) sub_w = text_w;
+                            int w2 = text_w - sub_w - gap;
+                            if (w2 < 0) w2 = 0;
+                            item.RectText = new Rectangle(text_x, rect.Y, w2, rect.Height);
+                            item.RectSubText = new Rectangle(text_x + w2 + gap, rect.Y, sub_w, rect.Height);
+                        }
+                        else
+                        {
+                            //主文本与副文本作为一个整体参与水平对齐
+                            int sx = AlignX(sf, text_x, text_w, it.TextWidth + gap + sub_w);
+                            item.RectText = new Rectangle(sx, rect.Y, it.TextWidth, rect.Height);
+                            item.RectSubText = new Rectangle(sx + it.TextWidth + gap, rect.Y, sub_w, rect.Height);
+                        }
                     }
                 }
                 else item = new ObjectItem(value, i, rect, new Rectangle(rect.X + gap_x, rect.Y, rect.Width - gap_x2, rect.Height)) { NoIndex = no_id };
@@ -539,6 +563,23 @@ namespace AntdUI
                 y += item_height;
             }
             return item;
+        }
+
+        /// <summary>
+        /// 按水平对齐方式计算内容起始坐标
+        /// </summary>
+        /// <param name="sf">布局方式</param>
+        /// <param name="x">可用区域起始坐标</param>
+        /// <param name="width">可用区域宽度</param>
+        /// <param name="content">内容实际宽度</param>
+        static int AlignX(FormatFlags sf, int x, int width, int content)
+        {
+            if (content < width)
+            {
+                if ((sf & FormatFlags.HorizontalCenter) == FormatFlags.HorizontalCenter) return x + (width - content) / 2;
+                if ((sf & FormatFlags.Right) == FormatFlags.Right) return x + width - content;
+            }
+            return x;
         }
 
         public void FocusItem(ObjectItem item)

@@ -952,6 +952,41 @@ namespace AntdUI
             return true;
         }
 
+        /// <summary>
+        /// 插入符所在的选区边界（selectionStart 为锚点，插入符始终位于选区另一端）
+        /// </summary>
+        int SelectionCaretIndex
+        {
+            get
+            {
+                if (selectionLength <= 0) return selectionStart;
+                // 锚点在右端：插入符在左端（selectionStartTemp）
+                if (selectionStart > selectionStartTemp) return selectionStartTemp;
+                return selectionStartTemp + selectionLength;
+            }
+        }
+
+        /// <summary>
+        /// 保持锚点（selectionStart）不动，把插入符移动到 caret 边界并同步选区
+        /// </summary>
+        /// <param name="caret">插入符边界（字符簇索引）</param>
+        /// <returns>是否需要重绘</returns>
+        bool SetSelectionCaret(int caret)
+        {
+            int count = cache_font == null ? 0 : cache_font.Count;
+            if (caret < 0) caret = 0;
+            else if (caret > count) caret = count;
+            int start = selectionStart < caret ? selectionStart : caret;
+            bool set_e = SetSelectionLength(caret > selectionStart ? caret - selectionStart : selectionStart - caret);
+            if (selectionStartTemp != start)
+            {
+                selectionStartTemp = start;
+                set_e = true;
+            }
+            bool set_caret = SetCaretPostion(caret + 1);
+            return set_e || set_caret;
+        }
+
         #endregion
 
         /// <summary>

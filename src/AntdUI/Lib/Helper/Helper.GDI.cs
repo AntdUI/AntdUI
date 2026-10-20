@@ -29,6 +29,7 @@ namespace AntdUI
             var key = (int)flags + "_" + (measure ? "1" : "0");
             if (ffs.TryGetValue(key, out var r)) return r;
             var sf = new StringFormat(StringFormat.GenericTypographic);
+            sf.FormatFlags &= ~StringFormatFlags.LineLimit;
 
             // 处理垂直对齐（LineAlignment）
             if (flags.HasFlag(FormatFlags.VerticalCenter)) sf.LineAlignment = StringAlignment.Center;
@@ -50,11 +51,7 @@ namespace AntdUI
             if (flags.HasFlag(FormatFlags.DirectionRightToLeft)) sf.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
 
             // 处理换行设置
-            if (flags.HasFlag(FormatFlags.NoWrap))
-            {
-                sf.FormatFlags |= StringFormatFlags.NoWrap | StringFormatFlags.MeasureTrailingSpaces;
-                if (!measure) sf.FormatFlags &= ~StringFormatFlags.LineLimit;
-            }
+            if (flags.HasFlag(FormatFlags.NoWrap)) sf.FormatFlags |= StringFormatFlags.NoWrap | StringFormatFlags.MeasureTrailingSpaces;
             else
             {
                 if (measure) sf.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;

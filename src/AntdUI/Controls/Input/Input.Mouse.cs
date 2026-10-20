@@ -97,17 +97,8 @@ namespace AntdUI
                 {
                     if (ModifierKeys.HasFlag(Keys.Shift))
                     {
-                        if (caret.i > selectionStartTemp)
-                        {
-                            if (selectionStart != selectionStartTemp) set_s = SetSelectionStart(selectionStartTemp);
-                            set_e = SetSelectionLength(caret.i - selectionStartTemp);
-                        }
-                        else
-                        {
-                            int len = selectionStartTemp - caret.i;
-                            set_s = SetSelectionStart(caret.i, false);
-                            set_e = SetSelectionLength(len);
-                        }
+                        // 保持锚点（selectionStart），插入符移动到点击处
+                        set_e = SetSelectionCaret(caret.i);
                     }
                     else
                     {
@@ -271,8 +262,9 @@ namespace AntdUI
                 }
                 else
                 {
-                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_s = SetSelectionStart(caret.i, false), set_caret = SetCaretPostion(caret.index), set_scroll = ScrollX.SetValue(ScrollX.Value);
-                    if (set_s || set_e || set_caret || set_scroll) Invalidate();
+                    // 保持锚点（selectionStart）为按下位置，仅更新选区起点与插入符
+                    bool set_e = SetSelectionLength(Math.Abs(caret.i - selectionStart)), set_caret = SetCaretPostion(caret.index), set_scroll = ScrollX.SetValue(ScrollX.Value);
+                    if (set_e || set_caret || set_scroll) Invalidate();
                 }
             }
             else OnClickContent(e);
