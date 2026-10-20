@@ -34,11 +34,11 @@ namespace AntdUI
             AllowClear = control.AllowClear;
             ShowClose = control.ShowClose;
             ShowReset = control.ShowReset;
-            if (control.DropDownFontRatio == 1F) Font = control.Font;
+            if (control.DropDownFontRatio == 1F) SetFont(control.Font);
             else
             {
                 Dfont = true;
-                Font = new Font(control.Font.FontFamily, control.Font.Size * control.DropDownFontRatio);
+                SetFont(new Font(control.Font.FontFamily, control.Font.Size * control.DropDownFontRatio));
             }
             mode = control.Mode;
             if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
@@ -71,7 +71,7 @@ namespace AntdUI
             if (config.FontRatio != 1F && config.Font == null)
             {
                 Dfont = true;
-                Font = new Font(Font.FontFamily, Font.Size * config.FontRatio);
+                SetFont(new Font(Font.FontFamily, Font.Size * config.FontRatio));
             }
             mode = config.Mode;
             color_alpha = Value = ValueDefault = config.Value ?? Style.Db.Primary;
@@ -129,7 +129,7 @@ namespace AntdUI
             {
                 w = this.GDI(g =>
                 {
-                    var size = g.MeasureString("255 %", Font);
+                    var size = g.MeasureString("255 %", FontMe);
                     panel_color_input = (int)(size.Height * 1.52F);
                     if (config.DisabledAlpha) return (size.Width + size.Height) * 3 + ((int)(4 * Dpi) * 2);
                     else return (size.Width + size.Height) * 4 + ((int)(4 * Dpi) * 3);
@@ -139,7 +139,7 @@ namespace AntdUI
                 colors_h = chtmp;
                 h += chxc;
             }
-            else panel_color_input = this.GDI(g => (int)(g.MeasureString("255%", Font).Height * 1.52F));
+            else panel_color_input = this.GDI(g => (int)(g.MeasureString("255%", FontMe).Height * 1.52F));
         }
 
         int InitSize(IColorPicker config, int colors_h)
@@ -1109,7 +1109,7 @@ namespace AntdUI
             bmp_alpha_read = null;
             bmp_dot_12?.Dispose();
             bmp_dot_12 = null;
-            if (Dfont) Font.Dispose();
+            if (Dfont) FontMe.Dispose();
             base.Dispose(disposing);
         }
 

@@ -19,7 +19,7 @@ namespace AntdUI
         {
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             ColorScheme = control.ColorScheme;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -201,7 +201,7 @@ namespace AntdUI
                             }
                         }
                         if (it.hover) g.Fill(Colour.FillTertiary.Get(ColorScheme, name, cname), path);
-                        g.String(it.v, Font, brush_fore, it.rect_read);
+                        g.String(it.v, FontMe, brush_fore, it.rect_read);
                     }
                 }
                 g.Restore(state2);
@@ -213,14 +213,14 @@ namespace AntdUI
 
                 if (ShowButtonNow)
                 {
-                    if (hover_button.Animation) g.String(button_text, Font, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(ColorScheme, name, cname)), rect_button);
-                    else if (hover_button.Switch) g.String(button_text, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_button);
-                    else g.String(button_text, Font, color_active, rect_button);
+                    if (hover_button.Animation) g.String(button_text, FontMe, color_active.BlendColors(hover_button.Value, Colour.PrimaryActive.Get(ColorScheme, name, cname)), rect_button);
+                    else if (hover_button.Switch) g.String(button_text, FontMe, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_button);
+                    else g.String(button_text, FontMe, color_active, rect_button);
                 }
 
-                if (hover_buttonok.Animation) g.String(OKButton, Font, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(ColorScheme, name, cname)), rect_buttonok);
-                else if (hover_buttonok.Switch) g.String(OKButton, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_buttonok);
-                else g.String(OKButton, Font, color_active, rect_buttonok);
+                if (hover_buttonok.Animation) g.String(OKButton, FontMe, color_active.BlendColors(hover_buttonok.Value, Colour.PrimaryActive.Get(ColorScheme, name, cname)), rect_buttonok);
+                else if (hover_buttonok.Switch) g.String(OKButton, FontMe, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_buttonok);
+                else g.String(OKButton, FontMe, color_active, rect_buttonok);
             }
         }
 
@@ -234,7 +234,7 @@ namespace AntdUI
         {
             this.GDI(g =>
             {
-                var size = g.MeasureString(Config.NullText, Font);
+                var size = g.MeasureString(Config.NullText, FontMe);
                 int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;
                 int t_time_height = (int)(size.Height * 1.56F),
                 t_time = (int)(size.Height * 2.9F),

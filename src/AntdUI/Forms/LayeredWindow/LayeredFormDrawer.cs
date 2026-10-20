@@ -38,7 +38,7 @@ namespace AntdUI
             config = _config;
             SetTopMost(config.Form, Handle);
             SetDpi(config.Form);
-            Font = config.Form.Font;
+            SetFont(config.Form.Font);
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi) * 2;
             padding = (int)Math.Round(config.Padding * Dpi);
             Padding = new Padding(padding);

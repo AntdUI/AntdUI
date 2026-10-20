@@ -27,7 +27,7 @@ namespace AntdUI
         {
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             ColorScheme = control.ColorScheme;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -62,7 +62,7 @@ namespace AntdUI
             select_x = sx;
             cname = control.Name;
             PARENT = control;
-            Font = control.Font;
+            SetFont(control.Font);
             lay = parent;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -193,7 +193,7 @@ namespace AntdUI
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.GetSymbol(ColorScheme, "emptyFore", name)));
+            if (nodata) g.PaintEmpty(rect, FontMe, Color.FromArgb(180, Colour.Text.GetSymbol(ColorScheme, "emptyFore", name)));
             else
             {
                 int sy = ScrollBar.Value;
@@ -285,7 +285,7 @@ namespace AntdUI
                         g.Fill(brush, path);
                     }
                 }
-                DrawTextIconSelect(g, it, fore, foreSub, font ?? Font);
+                DrawTextIconSelect(g, it, fore, foreSub, font ?? FontMe);
                 if (it.Online.HasValue)
                 {
                     using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(ColorScheme, name, cname) : Colour.Error.Get(ColorScheme, name, cname))))
@@ -302,12 +302,12 @@ namespace AntdUI
         {
             if (it.SID)
             {
-                if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
+                if (it.Group) g.DrawText(it.Text, FontMe, brush_fore, it.RectText, sf);
                 else if (MaxChoiceCount > 0 && selectedValue.Count >= MaxChoiceCount)
                 {
                     using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                     {
-                        DrawTextIcon(g, it, subbrush, null, null, Font);
+                        DrawTextIcon(g, it, subbrush, null, null, FontMe);
                     }
                 }
                 else
@@ -320,7 +320,7 @@ namespace AntdUI
                             g.Fill(brush_back_hover, path);
                         }
                     }
-                    DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? Font);
+                    DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? FontMe);
                     if (it.Online.HasValue)
                     {
                         using (var brush_online = new SolidBrush(it.OnlineCustom ?? (it.Online == 1 ? Colour.Success.Get(ColorScheme, name, cname) : Colour.Error.Get(ColorScheme, name, cname))))
@@ -344,7 +344,7 @@ namespace AntdUI
                     {
                         g.Fill(brush_back, it.Rect);
                     }
-                    DrawTextIconSelect(g, it, fore, foreSub, font ?? Font);
+                    DrawTextIconSelect(g, it, fore, foreSub, font ?? FontMe);
                 }
                 else
                 {
@@ -352,14 +352,14 @@ namespace AntdUI
                     {
                         using (var subbrush = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                         {
-                            DrawTextIcon(g, it, subbrush, null, null, Font);
+                            DrawTextIcon(g, it, subbrush, null, null, FontMe);
                         }
                     }
                     else
                     {
                         if (PARENT.OnDrawItem(g, it.Rect, it, false, out var fore, out var foreSub, out var font)) return;
                         if (it.Hover) g.Fill(brush_back_hover, it.Rect);
-                        DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? Font);
+                        DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? FontMe);
                     }
                 }
                 if (it.Online.HasValue)
@@ -454,7 +454,7 @@ namespace AntdUI
         List<ObjectItemCheck> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => this.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
         List<ObjectItemCheck> LoadLayout(Canvas g, bool autoWidth, int width, IList<object> items, bool init)
         {
-            var text_height = g.MeasureString(Config.NullText, Font).Height;
+            var text_height = g.MeasureString(Config.NullText, FontMe).Height;
             if (items.Count > 0)
             {
                 nodata = false;
@@ -516,7 +516,7 @@ namespace AntdUI
             {
                 nodata = true;
                 int w = width;
-                if (autoWidth) w = (int)(g.MeasureText(Localization.Get("NoData", "暂无数据"), Font).Width * 1.6F);
+                if (autoWidth) w = (int)(g.MeasureText(Localization.Get("NoData", "暂无数据"), FontMe).Width * 1.6F);
                 if (init) tmpW = w;
                 if (DropNoMatchClose) IClose();
                 else SetSize(w, text_height * 5);
@@ -537,7 +537,7 @@ namespace AntdUI
         {
             if (obj is SelectItem it)
             {
-                int tmp = g.MeasureText(it.Text + it.SubText, Font).Width;
+                int tmp = g.MeasureText(it.Text + it.SubText, FontMe).Width;
                 if (it.Online > -1) tmp += icon_size;
                 if (it.Icon != null || it.IconSvg != null) tmp += icon_size + icon_gap;
                 if (it.Sub != null && it.Sub.Count > 0) tmp += icon_size + icon_gap;
@@ -549,7 +549,7 @@ namespace AntdUI
             {
                 var text = obj.ToString();
                 if (text == null) return 0;
-                var size = g.MeasureText(text, Font);
+                var size = g.MeasureText(text, FontMe);
                 return size.Width + text_height + icon_gap;
             }
         }

@@ -95,8 +95,8 @@ namespace AntdUI
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
-            MaximumSize = MinimumSize = this.RenderMeasure(g, null, out var multiline, out _, out arrowSize);
-            this.Render(g, e.Rect, multiline, arrowSize, -1, s_c, s_l);
+            MaximumSize = MinimumSize = this.RenderMeasure(g, Font, null, out var multiline, out _, out arrowSize);
+            this.Render(g, Font, e.Rect, multiline, arrowSize, -1, s_c, s_l);
             base.OnDraw(e);
         }
 

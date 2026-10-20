@@ -33,7 +33,7 @@ namespace AntdUI
             SetDpi(control);
             PARENT = control;
             select_x = 0;
-            Font = control.Font;
+            SetFont(control.Font);
             if (control.ShowSubBack) backColor = control.BackColor;
             foreColor = control.ForeColor;
             ForeActive = control.ForeActive;
@@ -95,7 +95,7 @@ namespace AntdUI
             SetDpi(control);
             select_x = sx;
             PARENT = control;
-            Font = parent.Font;
+            SetFont(parent.Font);
             lay = parent;
             backColor = parent.backColor;
             foreColor = parent.foreColor;
@@ -288,7 +288,7 @@ namespace AntdUI
                         }
                         using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get(ColorScheme, name, cname)))
                         {
-                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
+                            g.DrawText(it.Val.Text, it.Val.Font ?? FontMe, brush_select, it.RectText, sf);
                         }
                         PaintIcon(g, it, brush.Color);
                     }
@@ -301,7 +301,7 @@ namespace AntdUI
                                 g.Fill(BackHover ?? Colour.FillTertiary.Get(ColorScheme, name, cname), path);
                             }
                         }
-                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
+                        g.DrawText(it.Val.Text, it.Val.Font ?? FontMe, brush, it.RectText, sf);
                         PaintIcon(g, it, brush.Color);
                     }
                 }
@@ -315,7 +315,7 @@ namespace AntdUI
                         }
                         using (var brush_select = new SolidBrush(ForeActive ?? Colour.TextBase.Get(ColorScheme, name, cname)))
                         {
-                            g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush_select, it.RectText, sf);
+                            g.DrawText(it.Val.Text, it.Val.Font ?? FontMe, brush_select, it.RectText, sf);
                         }
                     }
                     else
@@ -327,7 +327,7 @@ namespace AntdUI
                                 g.Fill(BackHover ?? Colour.FillTertiary.Get(ColorScheme, name, cname), path);
                             }
                         }
-                        g.DrawText(it.Val.Text, it.Val.Font ?? Font, brush, it.RectText, sf);
+                        g.DrawText(it.Val.Text, it.Val.Font ?? FontMe, brush, it.RectText, sf);
                     }
                     PaintIcon(g, it, brush.Color);
                 }
@@ -353,7 +353,7 @@ namespace AntdUI
                 }
                 using (var fore = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
                 {
-                    g.DrawText(it.Val.Text, it.Val.Font ?? Font, fore, it.RectText, sf);
+                    g.DrawText(it.Val.Text, it.Val.Font ?? FontMe, fore, it.RectText, sf);
                 }
                 PaintIcon(g, it, brush.Color);
             }
@@ -381,7 +381,7 @@ namespace AntdUI
         List<IMenuItem> LoadLayout(IList<MenuItem> items, Point point) => this.GDI(g => LoadLayout(g, items, point));
         List<IMenuItem> LoadLayout(Canvas g, IList<MenuItem> items, Point point)
         {
-            var text_height = g.MeasureString(Config.NullText, Font).Height;
+            var text_height = g.MeasureString(Config.NullText, FontMe).Height;
 
             int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
             icon_size = (int)(text_height * IconRatio), icon_gap = (int)(text_height * IconGap), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
@@ -454,7 +454,7 @@ namespace AntdUI
             int tmp = 0;
             foreach (var it in items)
             {
-                int tmp2 = g.MeasureText(it.Text, Font).Width;
+                int tmp2 = g.MeasureText(it.Text, FontMe).Width;
                 if (it.HasIcon) tmp2 += icon_size + icon_gap;
                 if (it.items != null && it.items.Count > 0) tmp2 += icon_size + icon_gap;
 

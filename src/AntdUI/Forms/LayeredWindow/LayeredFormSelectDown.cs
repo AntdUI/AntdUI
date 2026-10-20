@@ -30,7 +30,7 @@ namespace AntdUI
             keyid = nameof(AntdUI.Select);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             ColorScheme = control.ColorScheme;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -60,7 +60,7 @@ namespace AntdUI
             keyid = nameof(Dropdown);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             ColorScheme = control.ColorScheme;
             SetDpi(control);
             SetTopMost(control.Parent, Handle);
@@ -91,7 +91,7 @@ namespace AntdUI
             keyid = nameof(Tabs);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             ColorScheme = control.ColorScheme;
             CloseMode = CloseMode.Leave;
             SetTopMost(control.Parent, Handle);
@@ -135,7 +135,7 @@ namespace AntdUI
             keyid = nameof(Table);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             ColorScheme = control.ColorScheme;
             Tag = cell;
             CloseMode = CloseMode.Leave;
@@ -175,7 +175,7 @@ namespace AntdUI
             keyid = nameof(AntdUI.Select);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             lay = parent;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -206,7 +206,7 @@ namespace AntdUI
             keyid = nameof(Dropdown);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             lay = parent;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
@@ -236,7 +236,7 @@ namespace AntdUI
             keyid = nameof(Table);
             PARENT = control;
             cname = control.Name;
-            Font = control.Font;
+            SetFont(control.Font);
             lay = parent;
             Tag = cell;
             SetTopMost(control.Parent, Handle);
@@ -423,7 +423,7 @@ namespace AntdUI
         }
         public override void PrintContent(Canvas g, Rectangle rect, GraphicsState state)
         {
-            if (nodata) g.PaintEmpty(rect, Font, Color.FromArgb(180, Colour.Text.GetSymbol(ColorScheme, "emptyFore", keyid)));
+            if (nodata) g.PaintEmpty(rect, FontMe, Color.FromArgb(180, Colour.Text.GetSymbol(ColorScheme, "emptyFore", keyid)));
             else
             {
                 int sy = ScrollBar.Value;
@@ -448,7 +448,7 @@ namespace AntdUI
         {
             if (it.SID)
             {
-                if (it.Group) g.DrawText(it.Text, Font, brush_fore, it.RectText, sf);
+                if (it.Group) g.DrawText(it.Text, FontMe, brush_fore, it.RectText, sf);
                 else if (Equals(it.Tag, selectedValue))
                 {
                     if (DrawItem(g, it.Rect, it, true, out var fore, out var foreSub, out var font)) return;
@@ -471,7 +471,7 @@ namespace AntdUI
                             g.Fill(brush_back_hover, path);
                         }
                     }
-                    DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? Font);
+                    DrawTextIcon(g, it, brush, fore ?? it.Fore, foreSub, font ?? FontMe);
                 }
                 if (it.Online.HasValue)
                 {
@@ -501,7 +501,7 @@ namespace AntdUI
         {
             if (font_real == null)
             {
-                using (var font = new Font(Font, FontStyle.Bold))
+                using (var font = new Font(FontMe, FontStyle.Bold))
                 {
                     DrawTextIconSelectCore(g, it, fore, foreSub, font);
                 }
@@ -581,7 +581,7 @@ namespace AntdUI
         List<ObjectItem> LoadLayout(bool autoWidth, int width, IList<object> items, string? search, bool init = false) => this.GDI(g => LoadLayout(g, autoWidth, width, SearchList(items, search), init));
         List<ObjectItem> LoadLayout(Canvas g, bool autoWidth, int width, IList<object> items, bool init)
         {
-            var text_height = g.MeasureString(Config.NullText, Font).Height;
+            var text_height = g.MeasureString(Config.NullText, FontMe).Height;
             if (items.Count > 0)
             {
                 nodata = false;
@@ -596,7 +596,7 @@ namespace AntdUI
                 int maxw, maxwr;
                 if (autoWidth)
                 {
-                    using (var font = new Font(Font, FontStyle.Bold))
+                    using (var font = new Font(FontMe, FontStyle.Bold))
                     {
                         maxw = ItemMaxWidth(g, font, items, text_height, icon_size, icon_gap, gap_x);
                         maxwr = maxw + gap_x2;
@@ -670,7 +670,7 @@ namespace AntdUI
             {
                 nodata = true;
                 int w = width, h = text_height * 5;
-                if (autoWidth) w = (int)(g.MeasureText(Localization.Get("NoData", "暂无数据"), Font).Width * 1.6F);
+                if (autoWidth) w = (int)(g.MeasureText(Localization.Get("NoData", "暂无数据"), FontMe).Width * 1.6F);
                 if (init) tmpW = w;
                 else if (animateConfig.Inverted)
                 {
@@ -722,7 +722,7 @@ namespace AntdUI
         }
         void ItemMaxWidth2(Canvas g, IList<object> items)
         {
-            using (var font = new Font(Font, FontStyle.Bold))
+            using (var font = new Font(FontMe, FontStyle.Bold))
             {
                 foreach (var item in items)
                 {

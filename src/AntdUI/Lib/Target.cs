@@ -73,21 +73,30 @@ namespace AntdUI
             else if (Value is IWin32Window) return true;
             return false;
         }
+        public void SetFont(Font? font, ILayeredForm form)
+        {
+            if (Value is Control t) form.SetFont(font ?? t.Font);
+            else if (font != null) form.SetFont(font);
+        }
         public void SetFont(Font? font, Form form)
         {
             if (Value is Control t) form.Font = font ?? t.Font;
             else if (font != null) form.Font = font;
+        }
+        public void SetFontConfig(Font? font, ILayeredForm form)
+        {
+            if (Value is Control t) form.SetFont(font ?? t.Font);
+            else if (font != null) form.SetFont(font);
         }
         public void SetFontConfig(Font? font, Form form)
         {
             if (Value is Control t) form.Font = font ?? t.Font;
             else if (font != null) form.Font = font;
         }
-        public void SetFontConfig(Font? font, Form form, object user)
+        public Font? GetFontConfig(Font? font, Form form)
         {
-            if (user is Control control) form.Font = control.Font;
-            else if (Value is Control t) form.Font = font ?? t.Font;
-            else if (font != null) form.Font = font;
+            if (Value is Control t) return font ?? t.Font;
+            return font;
         }
         public void SetIcon(Form form)
         {

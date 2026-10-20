@@ -401,6 +401,7 @@ namespace AntdUI
         internal void SetDpi(Control? control)
         {
             if (control is IControl icontrol) SetDpi(icontrol);
+            else if (control is ILayeredForm layeredForm) SetDpi(layeredForm);
         }
         internal void SetDpi(Form? form, Control? control)
         {
@@ -411,6 +412,15 @@ namespace AntdUI
         internal void SetDpi(BaseForm form) => dpi = form.Dpi;
         internal void SetDpi(ILayeredForm form) => dpi = form.Dpi;
         internal void SetDpi(IControl control) => dpi = control.Dpi;
+
+        #region 字体
+
+        Font? font;
+        public Font FontMe => font ?? Font;
+
+        public void SetFont(Font value) => font = value;
+
+        #endregion
 
         #endregion
 

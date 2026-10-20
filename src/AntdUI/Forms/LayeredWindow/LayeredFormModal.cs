@@ -17,6 +17,7 @@ namespace AntdUI
         internal Modal.Config config;
         Panel? panel_main;
         private readonly List<Button> navigationButtons = new List<Button>();
+        Font fontme;
 
         public LayeredFormModal(Modal.Config _config, bool istop)
         {
@@ -45,7 +46,10 @@ namespace AntdUI
             int butt_h = (int)Math.Round(config.BtnHeight * Dpi);
             BackColor = Colour.BgElevated.Get(config.ColorScheme, nameof(AntdUI.Modal));
             Size = new Size(416, 122 + butt_h);
-            config.Target.SetFontConfig(config.Font, this);
+            var font = config.Target.GetFontConfig(config.Font, this);
+            if (font == null) fontme = Font;
+            else Font = fontme = font;
+
             ForeColor = Colour.TextBase.Get(config.ColorScheme, nameof(AntdUI.Modal));
 
             if (butt_h > 0)
@@ -392,6 +396,8 @@ namespace AntdUI
             }
             else StartPosition = FormStartPosition.CenterScreen;
         }
+
+        protected override void OnFontChanged(EventArgs e) => Font = fontme;
 
         bool isTop = false;
 

@@ -138,7 +138,7 @@ namespace AntdUI
             config = _config;
             Guid = guid;
             PARENT = parent;
-            Font = parent.Font;
+            SetFont(parent.FontMe);
             SetTopMost(config.Target, Handle, _config.TopMost);
             SetDpi(config.Target);
             rectsContent = LoadLayout(subs);
@@ -199,7 +199,7 @@ namespace AntdUI
                 Radius = (int)(config.Radius * Dpi);
 
                 var list = new List<InRect>(Items.Length);
-                int text_height = g.MeasureString(Config.NullText, Font).Height;
+                int text_height = g.MeasureString(Config.NullText, FontMe).Height;
 
                 int split = (int)Math.Round(1 * Dpi), gap = (int)(text_height * config.Gap), icon_size = (int)(text_height * config.IconRatio), icon_gap = (int)(text_height * config.IconGap);
                 int check_size = (int)(text_height * config.CheckRatio), gap_y = (int)(text_height * config.PaddRatio[1]), gap_x = (int)(text_height * config.PaddRatio[0]), gap2 = gap * 2, gap_x2 = gap_x * 2, gap_y2 = gap_y * 2;
@@ -215,7 +215,7 @@ namespace AntdUI
                     if (it is ContextMenuStripItem item)
                     {
                         list.Add(new InRect(item));
-                        var size = g.MeasureText(item.Text + item.SubText, Font);
+                        var size = g.MeasureText(item.Text + item.SubText, FontMe);
                         int tmp2 = size.Width;
                         if (has_checked) tmp2 += check_size + icon_gap;
                         if (has_icon) tmp2 += icon_size + icon_gap;
@@ -231,7 +231,7 @@ namespace AntdUI
                     }
                     else if (it is ContextMenuStripItemDivider divider) list.Add(new InRect(divider).SetContinue());
                 }
-                if (has_subText) FontSub = new Font(Font.FontFamily, Font.Size * .8F);
+                if (has_subText) FontSub = new Font(FontMe.FontFamily, FontMe.Size * .8F);
 
                 #endregion
 
@@ -292,7 +292,7 @@ namespace AntdUI
         void CLayoutMultiple(Canvas g, InRect it, ContextMenuStripItem item, ref int y, int w, int maxw, bool has_icon, bool has_checked,
             int split, int gap, int gap2, int icon_size, int icon_gap, int check_size, int gap_x, int gap_y, int gap_x2, int gap_y2, int icon_xy, int check_xy)
         {
-            int text_height = g.MeasureString(item.Text, Font).Height, item_height = text_height + gap_y2;
+            int text_height = g.MeasureString(item.Text, FontMe).Height, item_height = text_height + gap_y2;
             it.Rect = new Rectangle(gap, y + gap, w, item_height);
             int x = it.Rect.X + gap_x, usx = 0;
             if (has_checked)
@@ -451,7 +451,7 @@ namespace AntdUI
                         if (item.Enabled)
                         {
                             if (FontSub != null) g.DrawText(item.SubText, FontSub, brushSecondary, it.RectText, sfr);
-                            g.DrawText(item.Text, Font, item.Fore, brush, it.RectText, sfl);
+                            g.DrawText(item.Text, FontMe, item.Fore, brush, it.RectText, sfl);
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
@@ -474,7 +474,7 @@ namespace AntdUI
                         else
                         {
                             if (FontSub != null) g.DrawText(item.SubText, FontSub, brushEnabled, it.RectText, sfr);
-                            g.DrawText(item.Text, Font, brushEnabled, it.RectText, sfl);
+                            g.DrawText(item.Text, FontMe, brushEnabled, it.RectText, sfl);
 
                             if (item.Sub != null && item.Sub.Length > 0)
                             {
@@ -497,7 +497,7 @@ namespace AntdUI
                     }
                     else if (it.Tag is ContextMenuStripItemButtons item_buttons)
                     {
-                        using (var font_mini = new Font(Font.FontFamily, Font.Size * item_buttons.FontRatio))
+                        using (var font_mini = new Font(FontMe.FontFamily, FontMe.Size * item_buttons.FontRatio))
                         {
                             foreach (var btn in it.RectBtns!)
                             {

@@ -765,7 +765,7 @@ namespace AntdUI
                 else if (config.Icon != TType.None) g.PaintIcons(config.Icon, rect_icon, "Message", TAMode.Auto);
                 using (var brush = new SolidBrush(config.Fore ?? Colour.TextBase.Get(name)))
                 {
-                    g.DrawText(config.Text, Font, brush, rect_txt, s_f_left);
+                    g.DrawText(config.Text, FontMe, brush, rect_txt, s_f_left);
                 }
             }
             return rbmp;
@@ -807,11 +807,11 @@ namespace AntdUI
             float dpi = Dpi;
             int maxWidth = 0;
             if (config.MaxWidth.HasValue) maxWidth = (int)(config.MaxWidth.Value * dpi);
-            var size = g.MeasureText(config.Text, Font, maxWidth, s_f_left);
+            var size = g.MeasureText(config.Text, FontMe, maxWidth, s_f_left);
             int paddingx = (int)(config.Padding.Width * dpi), paddingy = (int)(config.Padding.Height * dpi), sp = (int)(8 * dpi), height = size.Height + paddingy * 2;
             if (loading)
             {
-                int icon_size = (int)(g.MeasureText(Config.NullText, Font).Height * .86F);
+                int icon_size = (int)(g.MeasureText(Config.NullText, FontMe).Height * .86F);
                 rect_icon = new Rectangle(shadow + paddingx, shadow + (height - icon_size) / 2, icon_size, icon_size);
                 rect_txt = new Rectangle(rect_icon.Right + sp, shadow, size.Width, height);
 
@@ -827,7 +827,7 @@ namespace AntdUI
             }
             else
             {
-                int icon_size = (int)(g.MeasureText(Config.NullText, Font).Height * .86F);
+                int icon_size = (int)(g.MeasureText(Config.NullText, FontMe).Height * .86F);
                 rect_icon = new Rectangle(shadow + paddingx, shadow + (height - icon_size) / 2, icon_size, icon_size);
                 rect_txt = new Rectangle(rect_icon.Right + sp, shadow, size.Width, height);
                 return new Size(size.Width + icon_size + sp + paddingx * 2 + shadow2, height + shadow2);

@@ -753,6 +753,10 @@ namespace AntdUI
                     };
                     input_SizeChanger = input;
                 }
+                input_SizeChanger.FontChanged += (a, b) =>
+                {
+                    if (a is Input tmp) tmp.Font = Font;
+                };
                 if (InvokeRequired)
                 {
                     Invoke(() => Controls.Add(input_SizeChanger));

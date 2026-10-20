@@ -25,7 +25,8 @@ namespace AntdUI
             CloseMode = CloseMode.Click;
             SetTopMost(config.Control, Handle);
             SetDpi(config.Control);
-            Font = config.Font ?? config.Control.Font;
+            SetFont(config.Font ?? config.Control.Font);
+            Font = FontMe;
 
             this.GDI(g =>
             {
@@ -51,7 +52,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                        using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, cw);
                             h = sizeTitle.Height + sp + ch;
@@ -74,7 +75,7 @@ namespace AntdUI
                         foreach (var txt in list)
                         {
                             if (txt.Call != null) hasmouse = true;
-                            var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
+                            var sizeContent = g.MeasureString(txt.Text, txt.Font ?? FontMe);
                             int txt_w = sizeContent.Width + (int)(txt.Gap * Dpi);
                             _texts.Add(new int[] { paddingx + has_x, paddingy, txt_w });
                             if (max_h < sizeContent.Height) max_h = sizeContent.Height;
@@ -92,7 +93,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                        using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle);
 
@@ -101,7 +102,7 @@ namespace AntdUI
                             foreach (var txt in list)
                             {
                                 if (txt.Call != null) hasmouse = true;
-                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? Font);
+                                var sizeContent = g.MeasureString(txt.Text, txt.Font ?? FontMe);
                                 int txt_w = sizeContent.Width + (int)(txt.Gap * Dpi);
                                 _texts.Add(new int[] { paddingx + has_x, paddingy + sizeTitle.Height + sp, txt_w });
                                 if (max_h < sizeContent.Height) max_h = sizeContent.Height;
@@ -131,16 +132,16 @@ namespace AntdUI
 
                     if (_config.Title == null)
                     {
-                        var sizeContent = g.MeasureText(content, Font);
+                        var sizeContent = g.MeasureText(content, FontMe);
                         int w = sizeContent.Width, h = sizeContent.Height;
                         rectContent = new Rectangle(paddingx, paddingy, w, h);
                         SetSize(w + paddingx2, h + paddingy2);
                     }
                     else
                     {
-                        using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                        using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
                         {
-                            Size sizeTitle = g.MeasureText(config.Title, fontTitle), sizeContent = g.MeasureText(content, Font);
+                            Size sizeTitle = g.MeasureText(config.Title, fontTitle), sizeContent = g.MeasureText(content, FontMe);
                             int w = sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width, h = sizeTitle.Height + sp + sizeContent.Height;
 
                             rectTitle = new Rectangle(paddingx, paddingy, w, sizeTitle.Height + sp);
@@ -162,6 +163,8 @@ namespace AntdUI
                 SetLocation(x, y);
             }
         }
+
+        protected override void OnFontChanged(EventArgs e) => Font = FontMe;
 
         public void LoadOffset(Rectangle rect)
         {
@@ -356,7 +359,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get(config.ColorScheme, name)))
                 {
-                    using (var fontTitle = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                    using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
                     {
                         g.DrawText(config.Title, fontTitle, brush, rectTitle, stringLeft);
                     }
@@ -368,10 +371,10 @@ namespace AntdUI
                             for (int i = 0; i < list.Count; i++)
                             {
                                 var txt = list[i];
-                                g.String(txt.Text, txt.Font ?? Font, txt.Fore, brush, rectsContent[i].Rect, stringCenter);
+                                g.String(txt.Text, txt.Font ?? FontMe, txt.Fore, brush, rectsContent[i].Rect, stringCenter);
                             }
                         }
-                        else g.DrawText(config.Content.ToString(), Font, brush, rectContent, stringLeft);
+                        else g.DrawText(config.Content.ToString(), FontMe, brush, rectContent, stringLeft);
                     }
                 }
             }

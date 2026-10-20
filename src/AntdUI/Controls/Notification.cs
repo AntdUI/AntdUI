@@ -636,7 +636,7 @@ namespace AntdUI
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
-            font_title = config.FontTitle ?? new Font(Font.FontFamily, Font.Size * 1.14F, config.FontStyleTitle ?? Font.Style);
+            font_title = config.FontTitle ?? new Font(FontMe.FontFamily, FontMe.Size * 1.14F, config.FontStyleTitle ?? FontMe.Style);
             this.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
             close_button = new ITaskOpacity(name, this);
         }
@@ -732,7 +732,7 @@ namespace AntdUI
                 using (var brush = new SolidBrush(config.Fore ?? Colour.TextBase.Get(name)))
                 {
                     g.DrawText(config.Title, font_title, brush, rect_title, s_f_left);
-                    g.DrawText(config.Text, Font, brush, rect_txt, s_f_left_left);
+                    g.DrawText(config.Text, FontMe, brush, rect_txt, s_f_left_left);
                 }
                 PrintLink(g);
             }
@@ -749,7 +749,7 @@ namespace AntdUI
                     var linkcolor = link.Fore ?? Colour.Primary.Get(name);
                     using (var pen = new Pen(linkcolor, Dpi))
                     {
-                        g.DrawText(link.Text, Font, linkcolor, link.RectText, s_f);
+                        g.DrawText(link.Text, FontMe, linkcolor, link.RectText, s_f);
                         if (link.Link) g.DrawLines(pen, TAlignMini.Right.TriangleLines(link.RectArrow));
                     }
                 }
@@ -799,7 +799,7 @@ namespace AntdUI
                 t_max_width = size_title.Width;
                 if (config.CloseIcon) t_max_width += close_size + sp;
             }
-            var size_desc = g.MeasureText(config.Text, Font, t_max_width);
+            var size_desc = g.MeasureText(config.Text, FontMe, t_max_width);
             int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = width_desc > width_title ? width_desc : width_title;
             if (config.Icon == TType.None && config.IconCustom == null)
@@ -846,7 +846,7 @@ namespace AntdUI
             {
                 if (it is Notification.ConfigLink link)
                 {
-                    var size_link = g.MeasureText(link.Text, Font, 10000, s_f);
+                    var size_link = g.MeasureText(link.Text, FontMe, 10000, s_f);
                     int rw = size_link.Width + size_link.Height + sp, rh = size_link.Height + sp;
                     if (uw + rw > w)
                     {

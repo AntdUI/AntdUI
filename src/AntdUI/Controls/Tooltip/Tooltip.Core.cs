@@ -14,20 +14,20 @@ namespace AntdUI
     {
         #region 渲染
 
-        public static Size RenderMeasure(this ITooltip core, Canvas g, int? maxWidth, out bool multiline, out int gap, out int arrowSize)
+        public static Size RenderMeasure(this ITooltip core, Canvas g, Font font, int? maxWidth, out bool multiline, out int gap, out int arrowSize)
         {
             multiline = core.Text.Contains("\n");
             gap = (int)(3 * g.Dpi);
             int gap2 = gap * 2, paddingy = (int)(6 * g.Dpi) * 2 + gap2, paddingx = (int)(8 * g.Dpi) * 2 + gap2;
-            var font_size = g.MeasureText(core.Text, core.Font);
+            var font_size = g.MeasureText(core.Text, font);
             if (core.ArrowSize.HasValue) arrowSize = (int)(core.ArrowSize * g.Dpi);
-            else arrowSize = (int)(g.MeasureText(Config.NullText, core.Font).Height * 0.3F);
+            else arrowSize = (int)(g.MeasureText(Config.NullText, font).Height * 0.3F);
             if (core.CustomWidth.HasValue)
             {
                 int width = (int)Math.Ceiling(core.CustomWidth.Value * g.Dpi);
                 if (font_size.Width > width)
                 {
-                    font_size = g.MeasureText(core.Text, core.Font, width);
+                    font_size = g.MeasureText(core.Text, font, width);
                     multiline = true;
                 }
             }
@@ -36,7 +36,7 @@ namespace AntdUI
                 int width = maxWidth.Value - paddingx;
                 if (font_size.Width > width)
                 {
-                    font_size = g.MeasureText(core.Text, core.Font, width);
+                    font_size = g.MeasureText(core.Text, font, width);
                     multiline = true;
                 }
             }
@@ -56,7 +56,7 @@ namespace AntdUI
             }
         }
 
-        public static void Render(this ITooltip core, Canvas g, Rectangle rect, bool multiline, int arrowSize, int arrowX, FormatFlags s_c, FormatFlags s_l)
+        public static void Render(this ITooltip core, Canvas g, Font font, Rectangle rect, bool multiline, int arrowSize, int arrowX, FormatFlags s_c, FormatFlags s_l)
         {
             int gap = (int)(3 * g.Dpi), paddingy = (int)(6 * g.Dpi), paddingx = (int)(8 * g.Dpi), gap2 = gap * 2, paddingy2 = paddingy * 2, paddingx2 = paddingx * 2;
             int radius = (int)(core.Radius * g.Dpi);
@@ -68,10 +68,10 @@ namespace AntdUI
                         rect_text = new Rectangle(rect_shadow.X + paddingx, rect_shadow.Y + paddingy, rect_shadow.Width - paddingx2, rect_shadow.Height - paddingy2);
                     using (var path = rect_shadow.RoundPath(radius))
                     {
-                        DrawShadow(core, g, radius, rect, rect_shadow, path);
+                        DrawShadow(g, radius, rect, rect_shadow, path);
                         g.Fill(brush, path);
                     }
-                    g.DrawText(core.Text, core.Font, core.Fore ?? Style.Get(Colour.TextSpotlight, nameof(Tooltip)), rect_text, multiline ? s_l : s_c);
+                    g.DrawText(core.Text, font, core.Fore ?? Style.Get(Colour.TextSpotlight, nameof(Tooltip)), rect_text, multiline ? s_l : s_c);
                 }
                 else
                 {
@@ -101,17 +101,17 @@ namespace AntdUI
                     var rect_text = new Rectangle(rect_shadow.X + paddingx, rect_shadow.Y + paddingy, rect_shadow.Width - paddingx2, rect_shadow.Height - paddingy2);
                     using (var path = rect_shadow.RoundPath(radius))
                     {
-                        DrawShadow(core, g, radius, rectf, rect_shadow, path);
+                        DrawShadow(g, radius, rectf, rect_shadow, path);
                         g.Fill(brush, path);
                         if (arrowX > -1) g.FillPolygon(brush, core.ArrowAlign.AlignLines(arrowSize, rect, rect_shadow, arrowX));
                         else g.FillPolygon(brush, core.ArrowAlign.AlignLines(arrowSize, rect, rect_shadow));
                     }
-                    g.DrawText(core.Text, core.Font, core.Fore ?? Style.Get(Colour.TextSpotlight, nameof(Tooltip)), rect_text, multiline ? s_l : s_c);
+                    g.DrawText(core.Text, font, core.Fore ?? Style.Get(Colour.TextSpotlight, nameof(Tooltip)), rect_text, multiline ? s_l : s_c);
                 }
             }
         }
 
-        static void DrawShadow(this ITooltip core, Canvas g, int radius, Rectangle rect, Rectangle rect_shadow, GraphicsPath path2)
+        static void DrawShadow(Canvas g, int radius, Rectangle rect, Rectangle rect_shadow, GraphicsPath path2)
         {
             using (var path = rect.RoundPath(radius))
             {
@@ -225,11 +225,6 @@ namespace AntdUI
         /// 文本
         /// </summary>
         string Text { get; set; }
-
-        /// <summary>
-        /// 字体
-        /// </summary>
-        Font Font { get; set; }
 
         /// <summary>
         /// 圆角

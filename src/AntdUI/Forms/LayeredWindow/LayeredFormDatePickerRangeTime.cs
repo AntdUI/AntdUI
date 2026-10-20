@@ -33,7 +33,7 @@ namespace AntdUI
             SetDpi(_control);
             placeholderS = _control.PlaceholderStart;
             placeholderE = _control.PlaceholderEnd;
-            Font = _control.Font;
+            SetFont(_control.Font);
             minDate = _control.MinDate;
             maxDate = _control.MaxDate;
             EndFocused = endFocused;
@@ -401,7 +401,7 @@ namespace AntdUI
         void PrintYear(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
             var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
-            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            using (var font = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
             {
                 g.String(year_str, font, color_fore, rect_year2.Rect);
             }
@@ -430,22 +430,22 @@ namespace AntdUI
                                 if (it.enable)
                                 {
                                     if (rect.Hover) g.Fill(brush_bg_disable, path);
-                                    g.String(it.v, Font, brush_fore, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_fore, rect_div[it.id].Rect);
                                 }
                                 else
                                 {
                                     g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                                    g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_fore_disable, rect_div[it.id].Rect);
                                 }
                                 if (now.ToString(f) == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path);
                                 break;
                             case 1:
                                 g.Fill(brush_active, path);
-                                g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                 break;
                             case 2:
                                 g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                                g.String(it.v, Font, brush_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_fore, rect_div[it.id].Rect);
                                 break;
                             case 3:// ←
                                 g.Fill(brush_active_bg, new RectangleF(rect.RectRead.Right, rect.RectRead.Y, rect.Rect.Width - rect.RectRead.Width, rect.RectRead.Height));
@@ -453,7 +453,7 @@ namespace AntdUI
                                 {
                                     g.Fill(brush_active, path_l);
                                 }
-                                g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                 break;
                             case 4:// →
                                 g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.RectRead.Width, rect.RectRead.Height));
@@ -461,7 +461,7 @@ namespace AntdUI
                                 {
                                     g.Fill(brush_active, path_r);
                                 }
-                                g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                 break;
                         }
                     }
@@ -478,7 +478,7 @@ namespace AntdUI
         void PrintMonth(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
             var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
-            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            using (var font = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture);
                 if (rect_year2.Hover) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_year2.Rect);
@@ -509,22 +509,22 @@ namespace AntdUI
                                 if (it.enable)
                                 {
                                     if (rect.Hover) g.Fill(brush_bg_disable, path);
-                                    g.String(it.v, Font, brush_fore, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_fore, rect_div[it.id].Rect);
                                 }
                                 else
                                 {
                                     g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                                    g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_fore_disable, rect_div[it.id].Rect);
                                 }
                                 if (now.ToString(f) == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path);
                                 break;
                             case 1:
                                 g.Fill(brush_active, path);
-                                g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                 break;
                             case 2:
                                 g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                                g.String(it.v, Font, brush_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_fore, rect_div[it.id].Rect);
                                 break;
                             case 3:// ←
                                 g.Fill(brush_active_bg, new RectangleF(rect.RectRead.Right, rect.RectRead.Y, rect.Rect.Width - rect.RectRead.Width, rect.RectRead.Height));
@@ -532,7 +532,7 @@ namespace AntdUI
                                 {
                                     g.Fill(brush_active, path_l);
                                 }
-                                g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                 break;
                             case 4:// →
                                 g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.RectRead.Width, rect.RectRead.Height));
@@ -540,7 +540,7 @@ namespace AntdUI
                                 {
                                     g.Fill(brush_active, path_r);
                                 }
-                                g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                 break;
                         }
                     }
@@ -557,7 +557,7 @@ namespace AntdUI
         void PrintDay(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
             var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
-            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            using (var font = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
                 if (rect_year.Hover) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_year.Rect, s_f_L);
@@ -573,13 +573,13 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(Colour.Text.Get(ColorScheme, name, cname)))
             {
-                g.String(MondayButton, Font, brush, rect_mon);
-                g.String(TuesdayButton, Font, brush, rect_tue);
-                g.String(WednesdayButton, Font, brush, rect_wed);
-                g.String(ThursdayButton, Font, brush, rect_thu);
-                g.String(FridayButton, Font, brush, rect_fri);
-                g.String(SaturdayButton, Font, brush, rect_sat);
-                g.String(SundayButton, Font, brush, rect_sun);
+                g.String(MondayButton, FontMe, brush, rect_mon);
+                g.String(TuesdayButton, FontMe, brush, rect_tue);
+                g.String(WednesdayButton, FontMe, brush, rect_wed);
+                g.String(ThursdayButton, FontMe, brush, rect_thu);
+                g.String(FridayButton, FontMe, brush, rect_fri);
+                g.String(SaturdayButton, FontMe, brush, rect_sat);
+                g.String(SundayButton, FontMe, brush, rect_sun);
             }
             using (var brush_fore = new SolidBrush(color_fore))
             using (var brush_fore_disable = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, name, cname)))
@@ -594,7 +594,7 @@ namespace AntdUI
                         using (var path = it.rect_read.RoundPath(Radius))
                         {
                             if (it.hover) g.Fill(brush_bg_disable, path);
-                            g.String(it.v, Font, brush_fore, it.rect_text, s_f_LE);
+                            g.String(it.v, FontMe, brush_fore, it.rect_text, s_f_LE);
                         }
                     }
                     g.Restore(state);
@@ -649,7 +649,7 @@ namespace AntdUI
                                     }
                                 }
                                 if (it.hover) g.Fill(brush_bg_disable, path);
-                                g.String(it.v, Font, brush_fore, it.rect_read);
+                                g.String(it.v, FontMe, brush_fore, it.rect_read);
                             }
                         }
                     }
@@ -659,10 +659,10 @@ namespace AntdUI
                     ScrollS.Paint(g, ColorScheme);
                     if (HasDate())
                     {
-                        if (rect_buttonok.Hover) g.String(OKButton, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_buttonok.Rect);
-                        else g.String(OKButton, Font, brush_active, rect_buttonok.Rect);
+                        if (rect_buttonok.Hover) g.String(OKButton, FontMe, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_buttonok.Rect);
+                        else g.String(OKButton, FontMe, brush_active, rect_buttonok.Rect);
                     }
-                    else g.String(OKButton, Font, brush_fore_disable, rect_buttonok.Rect);
+                    else g.String(OKButton, FontMe, brush_fore_disable, rect_buttonok.Rect);
                 }
 
                 var now = DateTime.Now;
@@ -680,23 +680,23 @@ namespace AntdUI
                                     if (it.enable)
                                     {
                                         if (rect.Hover) g.Fill(brush_bg_disable, path);
-                                        if (it.t == 1) g.String(it.v, Font, brush_fore, rect_div[it.id].Rect);
-                                        else g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
+                                        if (it.t == 1) g.String(it.v, FontMe, brush_fore, rect_div[it.id].Rect);
+                                        else g.String(it.v, FontMe, brush_fore_disable, rect_div[it.id].Rect);
                                     }
                                     else
                                     {
                                         g.Fill(brush_bg_disable, new Rectangle(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                                        g.String(it.v, Font, brush_fore_disable, rect_div[it.id].Rect);
+                                        g.String(it.v, FontMe, brush_fore_disable, rect_div[it.id].Rect);
                                     }
                                     if (now.ToString("yyyy-MM-dd") == it.date_str) g.Draw(Colour.Primary.Get(ColorScheme, name, cname), bor, path);
                                     break;
                                 case 1:
                                     g.Fill(brush_active, path);
-                                    g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                     break;
                                 case 2:
                                     g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.Rect.Width, rect.RectRead.Height));
-                                    g.String(it.v, Font, brush_fore, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_fore, rect_div[it.id].Rect);
                                     break;
                                 case 3:// ←
                                     g.Fill(brush_active_bg, new RectangleF(rect.RectRead.Right, rect.RectRead.Y, rect.Rect.Width - rect.RectRead.Width, rect.RectRead.Height));
@@ -704,7 +704,7 @@ namespace AntdUI
                                     {
                                         g.Fill(brush_active, path_l);
                                     }
-                                    g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                     break;
                                 case 4:// →
                                     g.Fill(brush_active_bg, new RectangleF(rect.Rect.X, rect.RectRead.Y, rect.RectRead.Width, rect.RectRead.Height));
@@ -712,7 +712,7 @@ namespace AntdUI
                                     {
                                         g.Fill(brush_active, path_r);
                                     }
-                                    g.String(it.v, Font, brush_active_fore, rect_div[it.id].Rect);
+                                    g.String(it.v, FontMe, brush_active_fore, rect_div[it.id].Rect);
                                     break;
                             }
                         }
@@ -726,8 +726,8 @@ namespace AntdUI
                     }
                 }
 
-                if (rect_button.Hover) g.String(button_text, Font, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_button.Rect);
-                else g.String(button_text, Font, brush_active, rect_button.Rect);
+                if (rect_button.Hover) g.String(button_text, FontMe, Colour.PrimaryActive.Get(ColorScheme, name, cname), rect_button.Rect);
+                else g.String(button_text, FontMe, brush_active, rect_button.Rect);
             }
         }
 
@@ -750,7 +750,7 @@ namespace AntdUI
         void LoadLayout() => this.GDI(g => LoadLayout(g));
         void LoadLayout(Canvas g)
         {
-            var size = g.MeasureString(Config.NullText, Font);
+            var size = g.MeasureString(Config.NullText, FontMe);
             bor = (int)(size.Height * 0.1F);
             int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;
             int t_time_height = (int)(size.Height * 1.56F), t_time = (int)(size.Height * 2.9F), t_button = (int)(size.Height * 1.96F), t_top = (int)(size.Height * 1.76F);

@@ -25,7 +25,7 @@ namespace AntdUI
         {
             config = _config;
             form = _config.Form;
-            Font = form.Font;
+            SetFont(form.Font);
             TopMost = _config.Form.TopMost;
             HasBor = form.FormFrame(out Radius, out Bor);
             if (form is Window window)
@@ -435,7 +435,7 @@ namespace AntdUI
                 if (Tag is Preview.ImageTextContent content && content.Text != null)
                 {
                     // 测量文本大小
-                    var size = g.MeasureText(content.Text, content.Font ?? Font);
+                    var size = g.MeasureText(content.Text, content.Font ?? FontMe);
                     using (var brush = new SolidBrush(content.ForeColor ?? Colour.Text.Get(name)))
                     {
                         Rectangle textRect;
@@ -443,7 +443,7 @@ namespace AntdUI
                         if (size.Width > TargetRect.Width)
                         {
                             // 重新测量换行后的文本所需区域
-                            size = g.MeasureText(content.Text, content.Font ?? Font, TargetRect.Width);
+                            size = g.MeasureText(content.Text, content.Font ?? FontMe, TargetRect.Width);
 
                             //重新测量后重新赋值矩形高度
                             height = Math.Min(size.Height, TargetRect.Height);
@@ -483,7 +483,7 @@ namespace AntdUI
                                 throw new Exception("什么鬼，你怎么可能进入这个异常");
                         }
 
-                        g.DrawText(content.Text, content.Font ?? Font, brush, textRect, format);
+                        g.DrawText(content.Text, content.Font ?? FontMe, brush, textRect, format);
                     }
                 }
             }
@@ -514,12 +514,12 @@ namespace AntdUI
                 {
                     g.DrawArc(penpro, rect_loading, -90, 360F * _value);
                 }
-                if (LoadingProgressStr != null) g.String(LoadingProgressStr, Font, color, new Rectangle(rect_read.X, rect_loading.Y + loading_size, rect_read.Width, rect_loading.Height));
+                if (LoadingProgressStr != null) g.String(LoadingProgressStr, FontMe, color, new Rectangle(rect_read.X, rect_loading.Y + loading_size, rect_read.Width, rect_loading.Height));
             }
             else if (LoadingProgressStr != null)
             {
                 g.DrawEllipse(Colour.Error.Get(name), bor6, rect_loading);
-                g.String(LoadingProgressStr, Font, Colour.ErrorColor.Get(name), new Rectangle(rect_read.X, rect_loading.Y + loading_size, rect_read.Width, rect_loading.Height));
+                g.String(LoadingProgressStr, FontMe, Colour.ErrorColor.Get(name), new Rectangle(rect_read.X, rect_loading.Y + loading_size, rect_read.Width, rect_loading.Height));
             }
         }
 
@@ -844,7 +844,7 @@ namespace AntdUI
                             {
                                 if (Helper.ClipboardSetText(this, content.Text))
                                 {
-                                    Message.open(new Message.Config(this, Localization.Get("Preview.CopySuccess", "复制成功"), TType.Success, Font)
+                                    Message.open(new Message.Config(this, Localization.Get("Preview.CopySuccess", "复制成功"), TType.Success, FontMe)
                                     {
                                         ShowInWindow = true
                                     });
