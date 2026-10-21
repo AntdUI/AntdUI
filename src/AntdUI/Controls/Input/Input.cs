@@ -2768,10 +2768,13 @@ namespace AntdUI
 
         public override Size GetPreferredSize(Size proposedSize)
         {
-            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
-            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
-            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
-            return PSize;
+            switch (autoSize)
+            {
+                case TAutoSize.None: return base.GetPreferredSize(proposedSize);
+                case TAutoSize.Width: return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+                case TAutoSize.Height: return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
+                default: return PSize;
+            }
         }
 
         public virtual Size PSize => this.GDI(g => GetPSize(g));
@@ -2851,6 +2854,8 @@ namespace AntdUI
                 {
                     int maxx = 0, usex = 0, usey = 0;
                     if (ShowPlaceholder && PlaceholderText != null) maxx = g.MeasureText(PlaceholderText, Font).Width;
+                    int? wrap_width = null;
+                    if (wordwrap && (Dock == DockStyle.Top || Dock == DockStyle.Bottom)) wrap_width = Width - UR - bor - ux - (int)(PaddingLR * Dpi) * 2;
                     foreach (var it in cache_font)
                     {
                         if (it.text == "\n" || it.text == "\r\n")
@@ -2861,6 +2866,13 @@ namespace AntdUI
                             continue;
                         }
                         else if (it.text == "\r") continue;
+                        else if (wrap_width.HasValue && usex + it.width > wrap_width.Value)
+                        {
+                            //自动换行
+                            if (usex > maxx) maxx = usex;
+                            usey += lineHeight;
+                            usex = 0;
+                        }
                         usex += it.width;
                     }
                     if (usex > maxx) maxx = usex;
@@ -2884,24 +2896,7 @@ namespace AntdUI
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired) return ITask.Invoke(this, BeforeAutoSize);
-            var PS = PSize;
-            switch (autoSize)
-            {
-                case TAutoSize.Width:
-                    if (Width == PS.Width) return true;
-                    Width = PS.Width;
-                    break;
-                case TAutoSize.Height:
-                    if (Height == PS.Height) return true;
-                    Height = PS.Height;
-                    break;
-                case TAutoSize.Auto:
-                default:
-                    if (Width == PS.Width && Height == PS.Height) return true;
-                    Size = PS;
-                    break;
-            }
-            return false;
+            return this.SetAutoSize(autoSize, PSize);
         }
 
         public virtual void HandleEvent(EventType id, object? tag)

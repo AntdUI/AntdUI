@@ -1399,5 +1399,37 @@ namespace AntdUI
         /// <param name="expand">是否展开</param>
         /// <param name="expandHeight">展开后高度</param>
         public static bool IsItemVisibleExpand(this Rectangle rect, int sy, Rectangle item_rect, bool expand, int expandHeight) => (item_rect.Y < sy + rect.Height) && ((item_rect.Bottom + (expand ? expandHeight : 0)) > sy);
+
+        #region 自动大小
+
+        /// <summary>
+        /// 应用自动大小尺寸
+        /// </summary>
+        /// <param name="control">控件</param>
+        /// <param name="mode">自动大小模式</param>
+        /// <param name="size">首选尺寸</param>
+        /// <returns>true=尺寸已发生变化</returns>
+        public static bool SetAutoSize(this IControl control, TAutoSize mode, Size size)
+        {
+            switch (mode)
+            {
+                case TAutoSize.Width:
+                    if (control.Width == size.Width) return true;
+                    control.Width = size.Width;
+                    break;
+                case TAutoSize.Height:
+                    if (control.Height == size.Height) return true;
+                    control.Height = size.Height;
+                    break;
+                case TAutoSize.Auto:
+                default:
+                    if (control.Width == size.Width && control.Height == size.Height) return true;
+                    control.Size = size;
+                    break;
+            }
+            return false;
+        }
+
+        #endregion
     }
 }

@@ -2227,10 +2227,13 @@ namespace AntdUI
 
         public override Size GetPreferredSize(Size proposedSize)
         {
-            if (autoSize == TAutoSize.None) return base.GetPreferredSize(proposedSize);
-            else if (autoSize == TAutoSize.Width) return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
-            else if (autoSize == TAutoSize.Height) return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
-            return PSize;
+            switch (autoSize)
+            {
+                case TAutoSize.None: return base.GetPreferredSize(proposedSize);
+                case TAutoSize.Width: return new Size(PSize.Width, base.GetPreferredSize(proposedSize).Height);
+                case TAutoSize.Height: return new Size(base.GetPreferredSize(proposedSize).Width, PSize.Height);
+                default: return PSize;
+            }
         }
 
         public virtual Size PSize
@@ -2289,24 +2292,7 @@ namespace AntdUI
         {
             if (autoSize == TAutoSize.None) return true;
             if (InvokeRequired) return ITask.Invoke(this, BeforeAutoSize);
-            var PS = PSize;
-            switch (autoSize)
-            {
-                case TAutoSize.Width:
-                    if (Width == PS.Width) return true;
-                    Width = PS.Width;
-                    break;
-                case TAutoSize.Height:
-                    if (Height == PS.Height) return true;
-                    Height = PS.Height;
-                    break;
-                case TAutoSize.Auto:
-                default:
-                    if (Width == PS.Width && Height == PS.Height) return true;
-                    Size = PS;
-                    break;
-            }
-            return false;
+            return this.SetAutoSize(autoSize, PSize);
         }
 
         #endregion
