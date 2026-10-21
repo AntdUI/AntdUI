@@ -36,11 +36,17 @@ namespace AntdUI
 
         internal class MoveHeader
         {
-            public MoveHeader(Dictionary<int, MoveHeader> dir, Rectangle r, int index, int w, int min)
+            public MoveHeader(Dictionary<int, MoveHeader> dir, Rectangle r, int index, int w, int min, AutoWidth? autoWidth)
             {
                 rect = r;
                 i = index;
                 min_width = min;
+                if (autoWidth != null)
+                {
+                    max_width = autoWidth.MaxWidth;
+                    if (autoWidth.MinWidth.HasValue && min_width < autoWidth.MinWidth.Value) min_width = autoWidth.MinWidth.Value;
+                    if (max_width.HasValue && max_width.Value == min_width) enable = false;
+                }
                 if (dir.TryGetValue(index, out var find) && find.MouseDown)
                 {
                     x = find.x;
@@ -52,11 +58,22 @@ namespace AntdUI
 
             public Rectangle rect { get; set; }
 
+            public bool enable { get; set; } = true;
+
             public bool MouseDown { get; set; }
             public int x { get; set; }
             public int i { get; set; }
             public int width { get; set; }
             public int min_width { get; set; }
+            public int? max_width { get; set; }
+
+            public int GetWidth(int old, int x)
+            {
+                int value = width + x - old;
+                if (value < min_width) return min_width;
+                if (max_width.HasValue && value > max_width.Value) return max_width.Value;
+                return value;
+            }
         }
         internal class DividerList
         {

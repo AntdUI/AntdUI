@@ -55,7 +55,7 @@ namespace AntdUI
                             {
                                 foreach (var item in moveheaders)
                                 {
-                                    if (item.rect.Contains(db.x, db.y))
+                                    if (item.enable && item.rect.Contains(db.x, db.y))
                                     {
                                         item.x = e.X;
                                         Window.CanHandMessage = false;
@@ -174,9 +174,18 @@ namespace AntdUI
                 {
                     if (item.MouseDown)
                     {
-                        int width = item.width + e.X - item.x;
-                        if (width < item.min_width) width = item.min_width;
-                        if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
+                        int width = item.GetWidth(item.x, e.X);
+                        if (tmpcol_width.ContainsKey(item.i))
+                        {
+                            if (tmpcol_width[item.i] == width)
+                            {
+                                item.MouseDown = false;
+                                Window.CanHandMessage = true;
+                                OnTouchCancel();
+                                return;
+                            }
+                            tmpcol_width[item.i] = width;
+                        }
                         else tmpcol_width.Add(item.i, width);
                         item.MouseDown = false;
                         Window.CanHandMessage = true;
@@ -658,9 +667,12 @@ namespace AntdUI
                 {
                     if (item.MouseDown)
                     {
-                        int width = item.width + e.X - item.x;
-                        if (width < item.min_width) return;
-                        if (tmpcol_width.ContainsKey(item.i)) tmpcol_width[item.i] = width;
+                        int width = item.GetWidth(item.x, e.X);
+                        if (tmpcol_width.ContainsKey(item.i))
+                        {
+                            if (tmpcol_width[item.i] == width) return;
+                            tmpcol_width[item.i] = width;
+                        }
                         else tmpcol_width.Add(item.i, width);
                         if (LoadLayout()) Invalidate();
                         SetCursor(CursorType.VSplit);
@@ -742,7 +754,7 @@ namespace AntdUI
                             {
                                 foreach (var item in moveheaders)
                                 {
-                                    if (item.rect.Contains(db.x, db.y))
+                                    if (item.enable && item.rect.Contains(db.x, db.y))
                                     {
                                         SetCursor(CursorType.VSplit);
                                         return;

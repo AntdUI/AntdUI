@@ -271,8 +271,8 @@ namespace AntdUI
 
                 #region 布局高宽
 
-                var read_width_cell = new Dictionary<int, AutoWidth>(firstrow.cells.Length);
-                for (int cel_i = 0; cel_i < firstrow.cells.Length; cel_i++) read_width_cell.Add(cel_i, new AutoWidth());
+                var read_width_cell = GetColumnWidth(rect_real.Width, firstrow);
+
                 var tmp_width_cell = new Dictionary<int, int>();
 
                 #region 处理需要的行
@@ -353,8 +353,6 @@ namespace AntdUI
                 }
 
                 #endregion
-
-                CalculateWidth(rect, _columns, read_width_cell, col_width, firstrow);
 
                 var width_cell = CalculateWidth(rect, heightEs, true, ref rect_real, col_width, read_width_cell, gap.x2, check_size, sort_size, ref is_exceed);
 
@@ -458,7 +456,8 @@ namespace AntdUI
                                 for (int i = 0; i < row.cells.Length; i++)
                                 {
                                     var it = row.cells[i];
-                                    MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth));
+                                    read_width_cell.TryGetValue(i, out var autoWidth);
+                                    MoveHeaders.Add(new MoveHeader(moveheaders_dir, new Rectangle(it.RECT.Right - split_move2, rect.Y, split_move, it.RECT.Height), i, it.RECT.Width, it.MinWidth, autoWidth));
                                 }
                             }
                             if (bordered)
@@ -695,44 +694,40 @@ namespace AntdUI
 
         Dictionary<int, int> tmpcol_width = new Dictionary<int, int>(0);
 
-        void CalculateWidth(Rectangle rect, List<Column> _columns, Dictionary<int, AutoWidth> read_width_cell, Dictionary<int, object> col_width, RowTemplate firstrow)
+        Dictionary<int, AutoWidth> GetColumnWidth(int width, RowTemplate row)
         {
-            foreach (var item in read_width_cell)
+            var read_width_cell = new Dictionary<int, AutoWidth>(row.cells.Length);
+            for (int cel_i = 0; cel_i < row.cells.Length; cel_i++)
             {
-                var info = item.Value;
+                var col = row.cells[cel_i];
+                var columns = col.COLUMN;
+                var info = new AutoWidth
+                {
+                    MinWidth = ColumnWidth(columns.MinWidth, width),
+                    MaxWidth = ColumnWidth(columns.MaxWidth, width)
+                };
 
-                info.MinWidth = ColumnWidth(_columns[item.Key].MinWidth, rect.Width);
-                info.MaxWidth = ColumnWidth(_columns[item.Key].MaxWidth, rect.Width);
+                if (info.MinWidth.HasValue && info.MaxWidth.HasValue && info.MaxWidth.Value < info.MinWidth.Value) info.MaxWidth = info.MinWidth;
 
-                if (info.MinWidth.HasValue && info.MaxWidth.HasValue && info.MaxWidth.Value < info.MinWidth.Value)
-                    info.MaxWidth = info.MinWidth;
+                if (info.MinWidth.HasValue && info.MinWidth.Value > col.MinWidth) col.MinWidth = info.MinWidth.Value;
 
-                if (info.MinWidth.HasValue && info.MinWidth.Value > firstrow.cells[item.Key].MinWidth)
-                    firstrow.cells[item.Key].MinWidth = info.MinWidth.Value;
+                read_width_cell.Add(cel_i, info);
             }
+            return read_width_cell;
         }
 
         int ApplyWidthConstraints(int width, AutoWidth info)
         {
-            if (info.MinWidth.HasValue && width < info.MinWidth.Value)
-                width = info.MinWidth.Value;
-
-            if (info.MaxWidth.HasValue && width > info.MaxWidth.Value)
-                width = info.MaxWidth.Value;
-
+            if (info.MinWidth.HasValue && width < info.MinWidth.Value) width = info.MinWidth.Value;
+            if (info.MaxWidth.HasValue && width > info.MaxWidth.Value) width = info.MaxWidth.Value;
             return width;
         }
 
         int GetFillMinimumWidth(AutoWidth info)
         {
             int width = Math.Max(info.value, info.minvalue);
-
-            if (info.MinWidth.HasValue)
-                width = Math.Max(width, info.MinWidth.Value);
-
-            if (info.MaxWidth.HasValue)
-                width = Math.Min(width, info.MaxWidth.Value);
-
+            if (info.MinWidth.HasValue) width = Math.Max(width, info.MinWidth.Value);
+            if (info.MaxWidth.HasValue) width = Math.Min(width, info.MaxWidth.Value);
             return width;
         }
 
@@ -751,78 +746,20 @@ namespace AntdUI
         {
             int use_width = rect.Width;
             float max_width = 0;
-            Dictionary<int, float> col_width_tmp = new Dictionary<int, float>(col_width.Count);
+            var col_width_tmp = new Dictionary<int, int>(col_width.Count);
             foreach (var it in read_width)
             {
-                if (tmpcol_width.TryGetValue(it.Key, out var tw))
-                {
-                    max_width += tw;
-                    col_width_tmp.Add(it.Key, tw);
-                }
-                else if (col_width.TryGetValue(it.Key, out var value))
-                {
-                    float columnWidth = 0;
-                    if (value is int width)
-                    {
-                        if (width == -1)
-                            columnWidth = ApplyWidthConstraints(it.Value.value, it.Value);
-                        else if (width == -2)
-                            columnWidth = GetFillMinimumWidth(it.Value);
-                        else
-                            columnWidth = ApplyWidthConstraints(width, it.Value);
-                    }
-                    else if (value is float percentage)
-                    {
-                        int width1 = (int)Math.Ceiling(rect.Width * percentage);
-                        columnWidth = ApplyWidthConstraints(width1, it.Value);
-                    }
-                    max_width += columnWidth;
-                    col_width_tmp.Add(it.Key, columnWidth);
-                }
-                else if (it.Value.value == -1F)
-                {
-                    int size = check_size * 2;
-                    max_width += size;
-                    use_width -= size;
-                }
-                else if (it.Value.value == -2F)
-                {
-                    int size = sort_size + gap2;
-                    max_width += size;
-                    use_width -= size;
-                }
-                else max_width += it.Value.value;
+                int columnWidth = GetColumnWidth(it.Key, rect.Width, use_width, null, it.Value, col_width, check_size, sort_size, gap2, out var is_use);
+                if (is_use) use_width -= columnWidth;
+                max_width += columnWidth;
+                col_width_tmp.Add(it.Key, columnWidth);
             }
 
             Dictionary<int, int> width_cell;
             if (max_width > rect.Width)
             {
                 is_exceed = true;
-                width_cell = new Dictionary<int, int>(read_width.Count);
-                foreach (var it in read_width)
-                {
-                    if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
-                    else if (col_width.TryGetValue(it.Key, out var value))
-                    {
-                        if (value is int width)
-                        {
-                            if (width == -1)
-                                width_cell.Add(it.Key, ApplyWidthConstraints(it.Value.value, it.Value));
-                            else if (width == -2)
-                                width_cell.Add(it.Key, GetFillMinimumWidth(it.Value));
-                            else
-                                width_cell.Add(it.Key, ApplyWidthConstraints(width, it.Value));
-                        }
-                        else if (value is float percentage)
-                        {
-                            int width1 = (int)Math.Ceiling(rect.Width * percentage);
-                            width_cell.Add(it.Key, ApplyWidthConstraints(width1, it.Value));
-                        }
-                    }
-                    else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
-                    else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
-                    else width_cell.Add(it.Key, it.Value.value);
-                }
+                width_cell = GetColumnWidths(read_width, rect.Width, use_width, null, col_width, check_size, sort_size, gap2);
             }
             else
             {
@@ -836,7 +773,7 @@ namespace AntdUI
                     {
                         int tmpw = rect_read.Width - ex_width;
                         int fill_width = 0;
-                        foreach (var it in col_width_tmp) fill_width += (int)Math.Round(it.Value);
+                        foreach (var it in col_width_tmp) fill_width += it.Value;
                         sum_width -= fill_width;
                         int tw = tmpw - fill_width;
                         //填充
@@ -863,43 +800,57 @@ namespace AntdUI
         }
         Dictionary<int, int> CalculateWidth(Rectangle rect, Dictionary<int, object> col_width, Dictionary<int, AutoWidth> read_width, int use_width, float? max_width, int gap2, int check_size, int sort_size, out int sum_width)
         {
-            var width_cell = new Dictionary<int, int>(read_width.Count);
+            var width_cell = GetColumnWidths(read_width, rect.Width, use_width, max_width, col_width, check_size, sort_size, gap2);
             var fill_count = new List<int>(col_width.Count);
-            foreach (var it in read_width)
-            {
-                if (tmpcol_width.TryGetValue(it.Key, out var tw)) width_cell.Add(it.Key, tw);
-                else if (col_width.TryGetValue(it.Key, out var value))
-                {
-                    if (value is int width)
-                    {
-                        if (width == -1) width_cell.Add(it.Key, ApplyWidthConstraints(it.Value.value, it.Value));
-                        else if (width == -2) fill_count.Add(it.Key);
-                        else width_cell.Add(it.Key, ApplyWidthConstraints(width, it.Value));
-                    }
-                    else if (value is float percentage)
-                    {
-                        int width1 = (int)Math.Ceiling(rect.Width * percentage);
-                        width_cell.Add(it.Key, ApplyWidthConstraints(width1, it.Value));
-                    }
-                }
-                else if (it.Value.value == -1F) width_cell.Add(it.Key, check_size * 2);
-                else if (it.Value.value == -2F) width_cell.Add(it.Key, sort_size + gap2);
-                else
-                {
-                    if (max_width.HasValue) width_cell.Add(it.Key, (int)Math.Ceiling(use_width * (it.Value.value / max_width.Value)));
-                    else width_cell.Add(it.Key, it.Value.value);
-                }
-            }
             sum_width = 0;
             foreach (var it in width_cell) sum_width += it.Value;
             if (fill_count.Count > 0)
             {
                 DistributeFillWidths(rect.Width - sum_width, fill_count, read_width, width_cell);
                 sum_width = 0;
-                foreach (var item in width_cell)
-                    sum_width += item.Value;
+                foreach (var item in width_cell) sum_width += item.Value;
             }
             return width_cell;
+        }
+
+        Dictionary<int, int> GetColumnWidths(Dictionary<int, AutoWidth> read_width, int width, int use_width, float? max_width, Dictionary<int, object> col_width, int check_size, int sort_size, int gap2)
+        {
+            var width_cell = new Dictionary<int, int>(read_width.Count);
+            foreach (var it in read_width) width_cell.Add(it.Key, GetColumnWidth(it.Key, width, use_width, max_width, it.Value, col_width, check_size, sort_size, gap2, out _));
+            return width_cell;
+        }
+        int GetColumnWidth(int key, int width, int use_width, float? max_width, AutoWidth autoWidth, Dictionary<int, object> col_width, int check_size, int sort_size, int gap2, out bool is_use)
+        {
+            is_use = false;
+            if (tmpcol_width.TryGetValue(key, out var tw)) return tw;
+            else if (col_width.TryGetValue(key, out var value)) return GetColumnWidth(value, width, autoWidth);
+            else if (autoWidth.value == -1F)
+            {
+                is_use = true;
+                return check_size * 2;
+            }
+            else if (autoWidth.value == -2F)
+            {
+                is_use = true;
+                return sort_size + gap2;
+            }
+            else
+            {
+                if (max_width.HasValue) return ApplyWidthConstraints((int)Math.Ceiling(use_width * (autoWidth.value / max_width.Value)), autoWidth);
+                return ApplyWidthConstraints(autoWidth.value, autoWidth);
+            }
+        }
+        int GetColumnWidth(object value, int cwidth, AutoWidth autoWidth)
+        {
+            int columnWidth = 0;
+            if (value is int width_tmp)
+            {
+                if (width_tmp == -1) columnWidth = autoWidth.value;
+                else if (width_tmp == -2) return GetFillMinimumWidth(autoWidth);
+                else columnWidth = width_tmp;
+            }
+            else if (value is float percentage) columnWidth = (int)Math.Ceiling(cwidth * percentage);
+            return ApplyWidthConstraints(columnWidth, autoWidth);
         }
 
         void DistributeFillWidths(int availableWidth, List<int> fillColumns, Dictionary<int, AutoWidth> readWidth, Dictionary<int, int> result)
@@ -917,22 +868,17 @@ namespace AntdUI
                 int minimum = GetFillMinimumWidth(info);
                 int? maximum = info.MaxWidth;
 
-                if (maximum.HasValue && maximum.Value < minimum)
-                    maximum = minimum;
+                if (maximum.HasValue && maximum.Value < minimum) maximum = minimum;
 
                 minimums[index] = minimum;
                 maximums[index] = maximum;
             }
 
             int totalMinimum = 0;
-            foreach (var minimum in minimums.Values)
-                totalMinimum += minimum;
-
+            foreach (var minimum in minimums.Values) totalMinimum += minimum;
             if (availableWidth <= totalMinimum)
             {
-                foreach (var index in fillColumns)
-                    result[index] = minimums[index];
-
+                foreach (var index in fillColumns) result[index] = minimums[index];
                 return;
             }
 
@@ -965,8 +911,7 @@ namespace AntdUI
                     }
                 }
 
-                if (constrained)
-                    continue;
+                if (constrained) continue;
 
                 int width = remainingWidth / active.Count;
                 int remainder = remainingWidth % active.Count;
