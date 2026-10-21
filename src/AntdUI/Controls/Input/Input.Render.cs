@@ -24,7 +24,7 @@ namespace AntdUI
         protected override void OnDraw(DrawEventArgs e)
         {
             var g = e.Canvas;
-            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight);
+            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, joinLeft, joinRight);
             IPaint(g, rect, rect_read);
             base.OnDraw(e);
         }
@@ -33,7 +33,7 @@ namespace AntdUI
         {
             float _radius = round ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-            using (var path = Helper.PathJoin(rect_read, _radius, joinMode, JoinLeft, JoinRight))
+            using (var path = Helper.PathJoin(rect_read, _radius, joinMode, joinLeft, joinRight))
             {
                 Color _back = back ?? Colour.BgContainer.Get(ColorScheme, nameof(Input), Name),
                     _fore = fore ?? Colour.Text.Get(ColorScheme, nameof(Input), Name),
@@ -219,7 +219,7 @@ namespace AntdUI
                         if (IsPaintScroll())
                         {
                             var color = Color.FromArgb(10, bg);
-                            if ((joinMode == TJoinMode.Right || joinMode == TJoinMode.Top) || JoinLeft) g.Fill(color, ScrollX.Rect);
+                            if ((joinMode == TJoinMode.Right || joinMode == TJoinMode.Top) || joinLeft) g.Fill(color, ScrollX.Rect);
                             else
                             {
                                 using (var pathScroll = Helper.RoundPath(ScrollX.Rect, _radius, false, false, false, true))
@@ -261,7 +261,7 @@ namespace AntdUI
                     if (IsPaintScroll())
                     {
                         var color = Color.FromArgb(10, bg);
-                        if (joinMode == TJoinMode.Left || JoinRight) g.Fill(color, ScrollY.Rect);
+                        if (joinMode == TJoinMode.Left || joinRight) g.Fill(color, ScrollY.Rect);
                         else if (joinMode == TJoinMode.Top)
                         {
                             using (var pathScroll = Helper.RoundPath(ScrollY.Rect, _radius, false, true, false, false))
@@ -574,7 +574,7 @@ namespace AntdUI
             {
                 if (AnimationFocusValue > 0)
                 {
-                    using (var path_click = Helper.PathJoin(rect, radius, joinMode, JoinLeft, JoinRight))
+                    using (var path_click = Helper.PathJoin(rect, radius, joinMode, joinLeft, joinRight))
                     {
                         path_click.AddPath(path, false);
                         g.Fill(Helper.ToColor(AnimationFocusValue, color), path_click);
@@ -583,7 +583,7 @@ namespace AntdUI
             }
             else if (ExtraMouseDown && WaveSize > 0)
             {
-                using (var path_click = Helper.PathJoin(rect, radius, joinMode, JoinLeft, JoinRight))
+                using (var path_click = Helper.PathJoin(rect, radius, joinMode, joinLeft, joinRight))
                 {
                     path_click.AddPath(path, false);
                     g.Fill(Color.FromArgb(30, color), path_click);
@@ -593,9 +593,9 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, JoinLeft, JoinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, joinMode, joinLeft, joinRight);
 
-        public override GraphicsPath RenderRegion => Helper.PathJoin(ReadRectangle, radius, Dpi, round, joinMode, JoinLeft, JoinRight);
+        public override GraphicsPath RenderRegion => Helper.PathJoin(ReadRectangle, radius, Dpi, round, joinMode, joinLeft, joinRight);
 
         #endregion
 

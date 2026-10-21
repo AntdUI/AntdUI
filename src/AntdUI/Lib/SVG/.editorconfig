@@ -7,3 +7,18 @@
 
 # 组织 Using
 file_header_template = THIS FILE IS PART OF SVG PROJECT\nTHE SVG PROJECT IS AN OPENSOURCE LIBRARY LICENSED UNDER THE MS-PL License.\nCOPYRIGHT (C) svg-net. ALL RIGHTS RESERVED.\nGITHUB: https://github.com/svg-net/SVG
+
+# The embedded svg-net sources predate nullable reference types. Keep nullable
+# diagnostics scoped out of this vendored subtree without weakening AntdUI.
+dotnet_diagnostic.CS8600.severity = none
+dotnet_diagnostic.CS8601.severity = none
+dotnet_diagnostic.CS8602.severity = none
+dotnet_diagnostic.CS8603.severity = none
+dotnet_diagnostic.CS8604.severity = none
+dotnet_diagnostic.CS8605.severity = none
+dotnet_diagnostic.CS8618.severity = none
+dotnet_diagnostic.CS8619.severity = none
+dotnet_diagnostic.CS8622.severity = none
+dotnet_diagnostic.CS8625.severity = none
+dotnet_diagnostic.CS8629.severity = none
+dotnet_diagnostic.CS8765.severity = none

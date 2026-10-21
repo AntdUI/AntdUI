@@ -222,6 +222,8 @@ namespace AntdUI
                     destCB.B = new byte[rect.Width, rect.Height];
                     destCB.G = new byte[rect.Width, rect.Height];
                     destCB.R = new byte[rect.Width, rect.Height];
+                    byte[,] srcA = srcCB.A!, srcB = srcCB.B!, srcG = srcCB.G!, srcR = srcCB.R!;
+                    byte[,] destA = destCB.A!, destB = destCB.B!, destG = destCB.G!, destR = destCB.R!;
                     var ptInPlane = new PointF();
                     int x1, x2, y1, y2;
                     double dab, dbc, dcd, dda;
@@ -264,14 +266,14 @@ namespace AntdUI
                                     dx1y2 = dx1 * dy2;
                                     dx2y1 = dx2 * dy1;
                                     dx2y2 = dx2 * dy2;
-                                    nbyte = srcCB.A[x1, y1] * dx1y1 + srcCB.A[x2, y1] * dx2y1 + srcCB.A[x1, y2] * dx1y2 + srcCB.A[x2, y2] * dx2y2;
-                                    destCB.A[x, y] = (byte)nbyte;
-                                    nbyte = srcCB.B[x1, y1] * dx1y1 + srcCB.B[x2, y1] * dx2y1 + srcCB.B[x1, y2] * dx1y2 + srcCB.B[x2, y2] * dx2y2;
-                                    destCB.B[x, y] = (byte)nbyte;
-                                    nbyte = srcCB.G[x1, y1] * dx1y1 + srcCB.G[x2, y1] * dx2y1 + srcCB.G[x1, y2] * dx1y2 + srcCB.G[x2, y2] * dx2y2;
-                                    destCB.G[x, y] = (byte)nbyte;
-                                    nbyte = srcCB.R[x1, y1] * dx1y1 + srcCB.R[x2, y1] * dx2y1 + srcCB.R[x1, y2] * dx1y2 + srcCB.R[x2, y2] * dx2y2;
-                                    destCB.R[x, y] = (byte)nbyte;
+                                    nbyte = srcA[x1, y1] * dx1y1 + srcA[x2, y1] * dx2y1 + srcA[x1, y2] * dx1y2 + srcA[x2, y2] * dx2y2;
+                                    destA[x, y] = (byte)nbyte;
+                                    nbyte = srcB[x1, y1] * dx1y1 + srcB[x2, y1] * dx2y1 + srcB[x1, y2] * dx1y2 + srcB[x2, y2] * dx2y2;
+                                    destB[x, y] = (byte)nbyte;
+                                    nbyte = srcG[x1, y1] * dx1y1 + srcG[x2, y1] * dx2y1 + srcG[x1, y2] * dx1y2 + srcG[x2, y2] * dx2y2;
+                                    destG[x, y] = (byte)nbyte;
+                                    nbyte = srcR[x1, y1] * dx1y1 + srcR[x2, y1] * dx2y1 + srcR[x1, y2] * dx1y2 + srcR[x2, y2] * dx2y2;
+                                    destR[x, y] = (byte)nbyte;
                                 }
                             }
                         }

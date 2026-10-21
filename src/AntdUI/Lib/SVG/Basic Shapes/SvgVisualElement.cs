@@ -310,7 +310,7 @@ namespace AntdUI.Svg
                                         pen.DashCap = DashCap.Round;
                                     }
 
-                                    if (StrokeDashOffset != null && StrokeDashOffset.Value != 0)
+                                    if (StrokeDashOffset.Value != 0)
                                     {
                                         pen.DashOffset = ((StrokeDashOffset.ToDeviceValue(renderer, UnitRenderingType.Other, this) <= 0) ? 1 : StrokeDashOffset.ToDeviceValue(renderer, UnitRenderingType.Other, this)) /
                                             ((strokeWidth <= 0) ? 1 : strokeWidth);

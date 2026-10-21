@@ -343,7 +343,7 @@ namespace BallTest
                     //    case "关于":
                     //        break;
                     //}
-                    AntdUI.Notification.open(this, item.Text, "AntdUI 作者人不错", TAlignFrom.Top);
+                    AntdUI.Notification.open(this, item.Text ?? string.Empty, "AntdUI 作者人不错", TAlignFrom.Top);
                 }, menuItems)
                 {
                     Location = screenPos, // 设置菜单位置为当前鼠标位置

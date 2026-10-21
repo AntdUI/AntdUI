@@ -589,13 +589,23 @@ namespace AntdUI
         /// 连接左边
         /// </summary>
         [Obsolete("use JoinMode"), Browsable(false), Description("连接左边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
-        public bool JoinLeft { get; set; }
+        public bool JoinLeft
+        {
+            get => joinLeft;
+            set => joinLeft = value;
+        }
 
         /// <summary>
         /// 连接右边
         /// </summary>
         [Obsolete("use JoinMode"), Browsable(false), Description("连接右边"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
-        public bool JoinRight { get; set; }
+        public bool JoinRight
+        {
+            get => joinRight;
+            set => joinRight = value;
+        }
+
+        bool joinLeft = false, joinRight = false;
 
         #endregion
 

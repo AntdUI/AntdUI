@@ -57,17 +57,17 @@ namespace Demo.Controls
 
             #endregion
 
-            selectEditMode.Items.AddRange(EnumList(typeof(AntdUI.TEditMode)));
+            selectEditMode.Items.AddRange(EnumList<AntdUI.TEditMode>());
 
-            selectEditStyle.Items.AddRange(EnumList(typeof(AntdUI.TEditInputStyle)));
+            selectEditStyle.Items.AddRange(EnumList<AntdUI.TEditInputStyle>());
 
-            selectFocusedStyle.Items.AddRange(EnumList(typeof(AntdUI.TableCellFocusedStyle)));
+            selectFocusedStyle.Items.AddRange(EnumList<AntdUI.TableCellFocusedStyle>());
         }
 
 
-        AntdUI.SelectItem[] EnumList(Type data)
+        AntdUI.SelectItem[] EnumList<T>() where T : struct, Enum
         {
-            Array list = Enum.GetValues(data);
+            T[] list = Enum.GetValues<T>();
             var lists = new List<AntdUI.SelectItem>(list.Length);
             foreach (var it in list) lists.Add(new AntdUI.SelectItem(it));
             lists.RemoveAt(0);

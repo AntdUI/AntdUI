@@ -1101,12 +1101,12 @@ namespace AntdUI
         /// <summary>
         /// 按钮名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 图标SVG
         /// </summary>
-        public string IconSvg { get; set; }
+        public string IconSvg { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户定义数据
